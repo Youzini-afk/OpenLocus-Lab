@@ -387,3 +387,109 @@ Implement a 4-turn deterministic fast-context loop using existing regex/bm25/sym
 - The "missing_questions" are rule-generated, not LLM-generated.
 - No channel-specific error recovery beyond marking disabled_channels.
 - Graph turn adds contextual evidence in fixtures; no general quality claim about graph benefit.
+
+---
+
+## 2026-06-11 — R7 Persistent Local Tantivy BM25 Index + Warm SLO Benchmark
+
+### Objective
+
+Add persistent Tantivy BM25 index with manifest tracking, CLI commands, warm SLO benchmark, and eval safety smoke. Do not change EvidenceCore contract. Do not connect TDB/LLM/dense/daemon. Persistent index requires explicit flag/command; temp BM25 path remains default.
+
+### Hypothesis
+
+A persistent Tantivy BM25 index with per-file content_sha tracking in a manifest will enable warm-query SLO measurement and will correctly skip stale/deleted hits without producing invalid evidence. The manifest enables fast staleness detection without re-reading all indexed content.
+
+### Implementation notes
+
+- **openlocus-index crate** (`crates/openlocus-index`): New workspace crate with manifest module and persistent index module.
+- **Manifest** (`manifest.rs`): Schema version `r7-bm25-v1`, stored at `.openlocus/index/manifest.json`. Contains file_count, chunk_count, policy_hash (blake3 of canonical TOML serialization), and per-file entries (path, content_sha, size_bytes, language, status=indexed|skipped, skipped_reason). Manifest load/save/exists.
+- **Persistent index** (`persistent.rs`): Tantivy index at `.openlocus/index/tantivy/`.
+  - `build_index(repo_root, records, policy)`: Full rebuild, writes Tantivy index + manifest. Removes existing index before rebuild. Uses same chunking logic as temp BM25 (max 30 lines per chunk, same schema fields). **Filters unsafe FileRecord paths via validate_path before indexing** (path_unsafe records are skipped with reason).
+  - `status_index(repo_root, policy)`: Returns exists, schema_version, file_count, chunk_count, policy_hash_matches, requires_rebuild, stale_files_fast (quick sha comparison of all indexed files).
+  - `validate_index(repo_root, policy)`: Full validation of manifest entries against filesystem. Returns valid, stale_files, deleted_files, policy_hash_matches, path_unsafe_files. **Policy hash mismatch → valid=false.**
+  - `purge_index(repo_root)`: Safe deletion of R7 artifacts only (manifest + tantivy dir). Canonicalizes paths and refuses to delete if index_dir escapes repo root.
+  - `search_persistent_bm25(repo_root, query, max_results, policy)`: **Manifest/policy gate**: requires `.openlocus/index/manifest.json`, checks manifest policy_hash matches current Policy, and checks schema version; refuses search (bail) if missing/mismatched. **validate_path** on every Tantivy hit path before reading file. **Empty index_content_sha** → skip (cannot bypass stale check). **Strict chunk range validation**: 1 ≤ start ≤ end ≤ total_lines; invalid range → skip, no clamping. Opens existing Tantivy index, searches, then re-reads current file for every hit. Computes content_sha from current bytes, compares to index-time sha (stale → skip). Performs line-level query token scoring. Returns Evidence + SearchStats (query_ms, materialize_ms, stale_hits_skipped, invalid_hits_skipped).
+  - `PersistentBm25Index::open(repo_root, policy)`: Requires manifest, opens the Tantivy Index/searcher once, validates policy hash + schema version. Returns a reusable handle with a `search()` method that does not reopen the Index per query. Used by bench warm to open once and loop queries.
+- **CLI**:
+  - `openlocus index build --json`: Build persistent index from scanned files.
+  - `openlocus index status --json`: Quick status check.
+  - `openlocus index validate --json`: Full validation against filesystem.
+  - `openlocus index purge --json`: Safe deletion of R7 artifacts.
+  - `openlocus search bm25 <query> --index temp|persistent --json`: Default is temp (existing per-query behavior). `--index persistent` uses pre-built index. **Policy gate enforced**: if manifest policy hash ≠ current policy, search returns an error.
+  - `openlocus bench warm --dataset fixtures/r2.jsonl --iterations 3 --json`: Opens persistent index once via PersistentBm25Index handle, loops queries using the same reader/searcher. Reports index_build_ms (if built), index_open_ms (open cost only), queries, iterations, warm_query_p50_ms, warm_query_p95_ms, warm_query_max_ms, invalid_citations (real citation validation: hash/range/excerpt/freshness), stale_hits_skipped, notes.
+- **Eval**: `eval/persistent_index_smoke.py` with 32 safety checks covering build/status/validate/search/stale_mutation/deleted_file/policy_excluded/policy_change_detection/manifest_missing_refusal/bench_warm/purge.
+- **Safety gates (oracle review)**:
+  1. **Manifest + policy gate**: search_persistent_bm25 and PersistentBm25Index::open require the manifest, check manifest policy_hash against current Policy, and refuse search if missing/mismatched.
+  2. **Path validation**: validate_path on every Tantivy hit path; build_index filters unsafe FileRecord paths.
+  3. **Empty content_sha**: skipped (cannot verify stale check).
+  4. **Strict range**: 1 ≤ start ≤ end ≤ total_lines; no clamping.
+  5. **Warm benchmark honesty**: PersistentBm25Index opens the Index/searcher once and reuses the same handle for all queries; no per-query Index::open; index_open_ms measures open cost only; index_build_ms reported separately if build was needed; invalid_citations uses real citation validation (hash/range/excerpt/freshness).
+
+### R7 Level0 results
+
+| Check | Result |
+|---|---|
+| Build succeeds and writes manifest | ✅ |
+| Build filters unsafe paths via validate_path | ✅ |
+| Status returns exists=true, schema matches, no rebuild needed | ✅ |
+| Validate returns valid=true on fresh index | ✅ |
+| Search persistent returns VerifiedCurrent evidence | ✅ |
+| Search stale_hits_skipped=0, invalid_hits_skipped=0 on fresh index | ✅ |
+| Policy gate: search refuses with policy hash mismatch | ✅ |
+| Policy gate: validate detects policy hash mismatch | ✅ |
+| Empty content_sha → skip (cannot bypass stale check) | ✅ |
+| Strict range validation: 1 ≤ start ≤ end ≤ total_lines, no clamping | ✅ |
+| validate_path on every Tantivy hit path before reading file | ✅ |
+| Stale mutation: modified file → no VerifiedCurrent evidence for stale hit | ✅ |
+| Stale mutation: stale_hits_skipped > 0 or zero results | ✅ |
+| Validate detects stale files after mutation | ✅ |
+| Deleted file: search produces no evidence for deleted file | ✅ |
+| Policy excluded files (.env, .pem) absent from persistent output | ✅ |
+| Policy change after build: search refuses | ✅ |
+| Policy change after build: validate detects mismatch | ✅ |
+| Manifest missing: search refuses instead of trusting Tantivy dir alone | ✅ |
+| Bench warm succeeds with p50/p95/max latency | ✅ |
+| Bench warm invalid_citations=0 (real citation validation) | ✅ |
+| Purge removes manifest and tantivy dir | ✅ |
+| Temp BM25 still works as default | ✅ |
+
+### Warm SLO benchmark results (on current codebase)
+
+```json
+{
+  "index_build_ms": null,
+  "index_open_ms": 1,
+  "queries": 28,
+  "iterations": 3,
+  "warm_query_p50_ms": 1,
+  "warm_query_p95_ms": 2,
+  "warm_query_max_ms": 2,
+  "invalid_citations": 0,
+  "stale_hits_skipped": 0
+}
+```
+
+Note: These are implementation notes and initial SLO measurements on a small self-referential fixture. They are not a general performance claim. The `index_open_ms` measures the cost of opening an already-built Tantivy index and validating the manifest policy/schema gates — this is the actual warm-start cost. The `index_build_ms` is reported separately if the index needed to be built; it is null here because the index already existed. The warm_query_p50_ms reflects search-only cost after the index handle is opened once. The `invalid_citations` count uses real citation validation (hash/range/excerpt/freshness checks), not just range checks.
+
+### Key findings
+
+1. **Manifest-based staleness detection works**: After building an index, modifying a file, and running `search persistent`, the stale hit is correctly skipped (stale_hits_skipped > 0). No stale VerifiedCurrent evidence is emitted.
+2. **Deleted file safety**: After deleting a file, searching the persistent index produces no evidence for the deleted file. The read failure is counted as invalid_hits_skipped.
+3. **Policy exclusion works**: Files matching policy exclude patterns (.env, *.pem) are not scanned and not indexed, so they never appear in persistent search output.
+4. **Validate detects staleness**: After modifying a file, `index validate` correctly reports the file as stale and marks the index as invalid.
+5. **Warm query latency is fast on the current fixture**: On the current small self-referential workspace snapshot, warm queries take 1-2ms per query after index is opened (1ms open cost). The PersistentBm25Index handle opens once and reuses the same Index/searcher for all queries.
+6. **Safety is preserved**: Every persistent search hit is re-verified against the current filesystem. The Tantivy stored body is never used as the final excerpt; the excerpt is always built from the current file content.
+7. **Manifest and policy gates work**: Changing the policy after building the index causes search to refuse (error) and validate to report policy_hash_matches=false. Deleting the manifest also causes persistent search to refuse instead of trusting the Tantivy directory alone. This prevents querying unverifiable or stale-policy indexes.
+8. **Strict validation prevents bypass**: Empty content_sha hits are skipped (cannot verify stale check). Chunk ranges are strictly validated (1 ≤ start ≤ end ≤ total_lines) with no clamping — invalid ranges are skipped.
+
+### Caveats carried forward
+
+- This is a Level0 persistent index implementation only. No incremental update; `build_index` is always a full rebuild.
+- The manifest stores per-file content_sha at build time; it does not track per-chunk sha. If a file changes, all chunks from that file are considered stale (conservative).
+- Warm SLO numbers are from a small self-referential codebase snapshot. Performance on larger repos may differ significantly.
+- Persistent index does not integrate with RRF or fast-context pipelines yet; it is accessible only via `search bm25 --index persistent`.
+- No daemon/watch mode; index becomes stale when files change and must be manually rebuilt.
+- The index is stored under `.openlocus/index/` which may grow large for big repos. No size limit or rotation is implemented.
+- Tantivy index is not encrypted; content is stored in the Tantivy segment files under `.openlocus/index/tantivy/`.
+- R7 Level0 passed only after oracle review gates (policy hash, validate_path, empty sha, strict range, honest warm benchmark).

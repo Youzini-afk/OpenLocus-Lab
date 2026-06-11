@@ -833,12 +833,14 @@ name = "openlocus-cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "blake3",
  "chrono",
  "clap",
  "openlocus-context",
  "openlocus-core",
  "openlocus-derived",
  "openlocus-graph",
+ "openlocus-index",
  "openlocus-repo",
  "openlocus-retrieval",
  "openlocus-store",
@@ -903,6 +905,21 @@ dependencies = [
  "serde",
  "serde_json",
  "tempfile",
+]
+
+[[package]]
+name = "openlocus-index"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "blake3",
+ "openlocus-core",
+ "openlocus-repo",
+ "serde",
+ "serde_json",
+ "tantivy",
+ "tempfile",
+ "toml",
 ]
 
 [[package]]

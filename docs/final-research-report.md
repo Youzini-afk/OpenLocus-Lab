@@ -1,14 +1,14 @@
-# OpenLocus R0-R6 Final Research Report
+# OpenLocus R0-R7 Research Report
 
 Date: 2026-06-11  
 Repository: `https://github.com/Youzini-afk/OpenLocus.git`  
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R7 persistent local index milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed six pushed milestones:
+The implementation completed seven evidence-gated milestones:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -18,17 +18,18 @@ The implementation completed six pushed milestones:
 | `925ed38` | R4 derived indexing safety | `DerivedIndexView`, deterministic rule generator, policy/freshness gates, JSONL store. |
 | `83ae02e` | R5 graph scaffold | Deterministic depth=1 graph, StoreHit materialization, impact/test-selection smoke. |
 | `fb7104e` | R6 fast context prototype | 4-turn deterministic context orchestration with EvidencePack-compatible output. |
+| R7 checkpoint | R7 persistent BM25 index | Persistent Tantivy index with mandatory manifest/policy gates, safe hit validation, and warm benchmark. |
 
 Final verification snapshot:
 
 ```text
-Rust tests: 126 passed
+Rust tests: 153 passed
 fmt: clean
 clippy: clean with -D warnings
 Remote dependency: none
 LLM dependency: none
 TDB dependency: none (placeholder only)
-Safety evals: storage, derived, graph, fast-context all passing their Level0 gates
+Safety evals: storage, derived, graph, fast-context, persistent-index all passing their Level0 gates
 ```
 
 The most important research outcome is not that retrieval quality is solved. It is that the project now has a **safe experimental harness** where BM25, graph, TDB, LLM-derived views, dense embeddings, and future planners can be tested without weakening the EvidenceCore contract.
@@ -60,12 +61,13 @@ Current workspace structure:
 crates/openlocus-core       EvidenceCore, EvidenceMeta, EvidencePack, Policy, trace types
 crates/openlocus-repo       path safety, read, scan, content hashing
 crates/openlocus-retrieval  regex/text search, BM25, symbol search, RRF fusion
+crates/openlocus-index      persistent Tantivy BM25 index, manifest, warm benchmark handle
 crates/openlocus-store      Store traits, StoreHit materialization, conservative store, TDB placeholder
 crates/openlocus-derived    DerivedIndexView safety scaffold
 crates/openlocus-graph      deterministic graph scaffold + graph materialization
 crates/openlocus-context    Fast Context Level0 rule loop
 crates/openlocus-cli        user-facing CLI
-eval/                       retrieval/storage/derived/graph/fast-context smoke and scoring scripts
+eval/                       retrieval/storage/derived/graph/fast-context/persistent-index smoke and scoring scripts
 docs/                       research log, summary, agent guide, final report
 ```
 
@@ -76,6 +78,7 @@ openlocus read <path[:start-end]> --json
 openlocus scan --json
 openlocus search regex <pattern> --json
 openlocus search bm25 <query> --json
+openlocus search bm25 <query> --index persistent --json
 openlocus search symbol <name> --json
 openlocus retrieve <query> --channels regex,bm25,symbol --json
 openlocus citations validate <file.json> --json
@@ -85,6 +88,11 @@ openlocus graph build --json
 openlocus impact <path> --json
 openlocus tests --path <path> --json
 openlocus fast-context <query> --json
+openlocus index build --json
+openlocus index status --json
+openlocus index validate --json
+openlocus index purge --json
+openlocus bench warm --dataset fixtures/r2.jsonl --iterations 3 --json
 ```
 
 ## Stage results
@@ -238,16 +246,56 @@ Implemented:
 
 Status: passed oracle review as Level0 rule orchestration scaffold. It is not a learned agent and makes no general quality claim.
 
+### R7 — persistent BM25 index and warm benchmark
+
+Goal: separate persistent local index performance from per-query cold build cost while preserving evidence safety.
+
+Implemented:
+
+- `openlocus-index` crate with persistent Tantivy index under `.openlocus/index/tantivy/`.
+- Mandatory manifest at `.openlocus/index/manifest.json` with schema version `r7-bm25-v1`, policy hash, file/chunk counts, and per-file content hashes.
+- `openlocus index build/status/validate/purge` CLI commands.
+- `openlocus search bm25 <query> --index persistent --json` as explicit opt-in; default BM25 remains temporary index behavior.
+- `PersistentBm25Index::open(repo_root, policy)` reusable handle used by `openlocus bench warm`.
+- Warm benchmark reports `index_open_ms`, `index_build_ms`, p50/p95/max query latency, stale hits skipped, and invalid citations.
+- `eval/persistent_index_smoke.py` with 32 Level0 safety checks.
+
+Critical gates added after oracle review:
+
+- persistent search/open refuse if manifest is missing;
+- persistent search/open refuse if manifest policy hash or schema version mismatches current policy/schema;
+- every Tantivy hit path is validated with `validate_path` before file read;
+- empty stored `content_sha` is skipped;
+- stored chunk ranges are strictly validated and never clamped;
+- `bench warm` opens the Index/searcher once and reuses the same handle for every query;
+- benchmark `invalid_citations` checks hash/range/excerpt/freshness, not only line range.
+
+Current small-repo measurement:
+
+```text
+Repo scale: small self-referential workspace snapshot
+index_open_ms: 1
+warm_query_p50_ms: 1
+warm_query_p95_ms: 2
+warm_query_max_ms: 2
+invalid_citations: 0
+stale_hits_skipped: 0
+persistent_index_smoke: 32/32 checks passed
+```
+
+Status: passed Level0 smoke and oracle safety gates. This is a small self-referential benchmark, not a general performance claim.
+
 ## Cross-stage findings
 
 ### 1. EvidenceCore stayed stable
 
-R0-R6 did not require changing the core evidence contract. Research features were added around it:
+R0-R7 did not require changing the core evidence contract. Research features were added around it:
 
 - storage uses StoreHit candidates;
 - derived indexing uses DerivedIndexView;
 - graph uses GraphEdge candidates and materialization;
 - fast-context outputs EvidencePack-compatible wrappers.
+- persistent BM25 uses Tantivy hits plus mandatory manifest/policy gates, then materializes from the current filesystem before output.
 
 This validates the original “small and hard” contract design.
 
@@ -306,7 +354,8 @@ The storage scaffold keeps TDB in scope while avoiding premature commitment. The
 
 This prototype is intentionally not production-ready.
 
-- BM25 builds a temporary index per query; persistent Tantivy is not implemented.
+- Default BM25 still builds a temporary index per query unless `--index persistent` is explicitly selected.
+- Persistent Tantivy is implemented at Level0, but updates are full rebuild only; there is no incremental/watch mode yet.
 - ConservativeChunkStore is in-memory and ephemeral.
 - TDB is a placeholder only; no real TriviumDB code is linked.
 - LLM indexing is a deterministic safety scaffold only; no real model/provider is used.
@@ -315,21 +364,9 @@ This prototype is intentionally not production-ready.
 - Fast Context is fixed-rule orchestration, not adaptive planning.
 - Token budget uses chars/4 approximation, not a tokenizer.
 - Policy globbing is simple and needs a mature matcher before broad use.
-- No warm-index SLO benchmark has been run yet.
+- Warm-index SLO has only been measured on a small self-referential repo; larger-repo results are unknown.
 
 ## Recommended next research stages
-
-### R7 — persistent local index and SLO measurement
-
-Priority: high.
-
-Implement persistent Tantivy + metadata snapshots so retrieval quality can be measured separately from index build time. Add warm p50/p95 latency reports for `read`, `search`, `retrieve`, and `fast-context`.
-
-Gate:
-
-- warm `search_text/search_regex/find_symbol` near P0 target;
-- persistent index invalidation correctness;
-- no stale verified evidence.
 
 ### R8 — Tree-sitter chunking and symbol extraction
 
@@ -343,7 +380,20 @@ Gate:
 - no decrease in citation validity;
 - chunk boundaries explainable.
 
-### R9 — real TDB adapter behind feature flag
+### R9 — persistent index incrementality and larger-repo SLO
+
+Priority: high.
+
+Extend R7 from full rebuild to incremental updates and run warm/cold SLO measurements on larger repositories.
+
+Gate:
+
+- dirty overlay/update p95 near P0 target;
+- no stale verified evidence after edit/delete/rename;
+- branch switch does not mix stale manifests;
+- warm persistent search remains inside target on medium repos.
+
+### R10 — real TDB adapter behind feature flag
 
 Priority: medium-high.
 
@@ -355,7 +405,7 @@ Gate:
 - corruption/purge/rebuild behavior understood;
 - quality/latency/resource comparison against conservative track.
 
-### R10 — remote embedding and LLM-derived indexing bakeoffs
+### R11 — remote embedding and LLM-derived indexing bakeoffs
 
 Priority: medium-high.
 
@@ -371,7 +421,7 @@ Gate:
 - no policy regression;
 - graceful degradation when provider unavailable.
 
-### R11 — graph precision upgrade
+### R12 — graph precision upgrade
 
 Priority: medium.
 
@@ -383,7 +433,7 @@ Gate:
 - depth>1 remains opt-in;
 - graph results still materialize through StoreHit.
 
-### R12 — Fast Context quality bakeoff
+### R13 — Fast Context quality bakeoff
 
 Priority: medium.
 
@@ -404,7 +454,7 @@ The current implementation successfully converts the research design into a work
 - local read/search/retrieve primitives;
 - file-backed citation validation;
 - retrieval method bakeoff harness;
-- storage, derived-index, graph, and fast-context safety scaffolds;
+- storage, derived-index, graph, persistent-index, and fast-context safety scaffolds;
 - pushed checkpoints for each stage.
 
-The next phase should not rush into a full LLM/dense/TDB system. The safest path is to first make the local baseline persistent, AST-aware, and benchmarked, then plug TDB, dense vectors, and LLM-derived views into the same evidence-gated harness.
+The next phase should not rush into a full LLM/dense/TDB system. The safest path is to first make the local baseline AST-aware and incrementally maintained, then plug TDB, dense vectors, and LLM-derived views into the same evidence-gated harness.

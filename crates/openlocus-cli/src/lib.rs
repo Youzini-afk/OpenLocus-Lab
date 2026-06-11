@@ -3,8 +3,8 @@ use chrono::Utc;
 use clap::{Parser, Subcommand};
 use openlocus_context::plan::{FastContextPlan, fast_context};
 use openlocus_core::{
-    BudgetUsed, Channel, ContextLitePack, Evidence, EvidencePack, JsonOutput, Policy, TraceEvent,
-    append_trace,
+    BudgetUsed, Channel, ContextLitePack, Evidence, EvidencePack, Freshness, JsonOutput, Policy,
+    TraceEvent, append_trace,
 };
 use openlocus_derived::generator;
 use openlocus_derived::model::{DerivedIndexView, DerivedViewKind};
@@ -12,6 +12,10 @@ use openlocus_derived::store::JsonlDerivedViewStore;
 use openlocus_derived::validation;
 use openlocus_graph::graph::{self, EdgeKind, GraphEdge};
 use openlocus_graph::materialize::materialize_graph_edges;
+use openlocus_index::persistent::{
+    PersistentBm25Index, build_index, purge_index, search_persistent_bm25, status_index,
+    validate_index,
+};
 use openlocus_repo::read::read_file;
 use openlocus_repo::scan::scan_repo;
 use openlocus_repo::validate_path;
@@ -118,6 +122,16 @@ pub enum Commands {
         #[command(subcommand)]
         graph_cmd: GraphCommands,
     },
+    /// Persistent index operations (build, status, validate, purge)
+    Index {
+        #[command(subcommand)]
+        index_cmd: IndexCommands,
+    },
+    /// Benchmark operations
+    Bench {
+        #[command(subcommand)]
+        bench_cmd: BenchCommands,
+    },
     /// Impact analysis: files that depend on or test a given path
     Impact {
         /// Path spec: e.g. src/lib.rs or src/lib.rs:10
@@ -167,6 +181,9 @@ pub enum SearchCommands {
         /// Maximum results
         #[arg(long, default_value_t = 20)]
         limit: usize,
+        /// Index mode: temp (build per-query) or persistent (use pre-built index)
+        #[arg(long, default_value = "temp")]
+        index: String,
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -298,6 +315,50 @@ pub enum GraphCommands {
     },
 }
 
+#[derive(Subcommand)]
+pub enum IndexCommands {
+    /// Build persistent BM25 index from scanned files
+    Build {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Show persistent index status
+    Status {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Validate persistent index against filesystem
+    Validate {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Purge persistent index artifacts
+    Purge {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+}
+
+#[derive(Subcommand)]
+pub enum BenchCommands {
+    /// Warm SLO benchmark: open persistent index once, loop queries
+    Warm {
+        /// Path to dataset JSONL file (fixtures/r2.jsonl format)
+        #[arg(long, default_value = "fixtures/r2.jsonl")]
+        dataset: String,
+        /// Number of iterations
+        #[arg(long, default_value_t = 3)]
+        iterations: usize,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 struct CitationValidationResult {
     valid: Vec<Evidence>,
@@ -363,16 +424,38 @@ pub fn run() -> Result<()> {
                 );
                 print_output(&results, json)
             }
-            SearchCommands::Bm25 { query, limit, json } => {
-                let records = scan_repo(&repo_root, &policy)?;
-                let results = bm25_search(&repo_root, &records, &query, limit)?;
-                trace_event(
-                    &repo_root,
-                    "search_bm25",
-                    serde_json::json!({"query": query, "limit": limit}),
-                    serde_json::json!({"result_count": results.len()}),
-                );
-                print_output(&results, json)
+            SearchCommands::Bm25 {
+                query,
+                limit,
+                index,
+                json,
+            } => {
+                if index == "persistent" {
+                    let (results, stats) =
+                        search_persistent_bm25(&repo_root, &query, limit, &policy)?;
+                    trace_event(
+                        &repo_root,
+                        "search_bm25_persistent",
+                        serde_json::json!({"query": query, "limit": limit}),
+                        serde_json::json!({"result_count": results.len(), "stale_hits_skipped": stats.stale_hits_skipped, "invalid_hits_skipped": stats.invalid_hits_skipped}),
+                    );
+                    let output = serde_json::json!({
+                        "evidence": results,
+                        "stats": stats,
+                    });
+                    print_output(&output, json)
+                } else {
+                    // Default: temp index (per-query build)
+                    let records = scan_repo(&repo_root, &policy)?;
+                    let results = bm25_search(&repo_root, &records, &query, limit)?;
+                    trace_event(
+                        &repo_root,
+                        "search_bm25",
+                        serde_json::json!({"query": query, "limit": limit}),
+                        serde_json::json!({"result_count": results.len()}),
+                    );
+                    print_output(&results, json)
+                }
             }
             SearchCommands::Symbol { query, limit, json } => {
                 let records = scan_repo(&repo_root, &policy)?;
@@ -789,6 +872,69 @@ pub fn run() -> Result<()> {
             );
             print_output(&result, json)
         }
+        Commands::Index { index_cmd } => match index_cmd {
+            IndexCommands::Build { json } => {
+                let records = scan_repo(&repo_root, &policy)?;
+                let result = build_index(&repo_root, &records, &policy)?;
+                trace_event(
+                    &repo_root,
+                    "index_build",
+                    serde_json::json!({}),
+                    serde_json::json!({"success": result.success, "file_count": result.file_count, "chunk_count": result.chunk_count}),
+                );
+                print_output(&result, json)
+            }
+            IndexCommands::Status { json } => {
+                let result = status_index(&repo_root, &policy)?;
+                trace_event(
+                    &repo_root,
+                    "index_status",
+                    serde_json::json!({}),
+                    serde_json::json!({"exists": result.exists, "requires_rebuild": result.requires_rebuild}),
+                );
+                print_output(&result, json)
+            }
+            IndexCommands::Validate { json } => {
+                let result = validate_index(&repo_root, &policy)?;
+                trace_event(
+                    &repo_root,
+                    "index_validate",
+                    serde_json::json!({}),
+                    serde_json::json!({"valid": result.valid, "stale_files": result.stale_files.len(), "deleted_files": result.deleted_files.len()}),
+                );
+                print_output(&result, json)
+            }
+            IndexCommands::Purge { json } => {
+                let result = purge_index(&repo_root)?;
+                trace_event(
+                    &repo_root,
+                    "index_purge",
+                    serde_json::json!({}),
+                    serde_json::json!({"purged": result.purged}),
+                );
+                print_output(&result, json)
+            }
+        },
+        Commands::Bench { bench_cmd } => match bench_cmd {
+            BenchCommands::Warm {
+                dataset,
+                iterations,
+                json,
+            } => {
+                let result = run_bench_warm(&repo_root, &policy, &dataset, iterations)?;
+                trace_event(
+                    &repo_root,
+                    "bench_warm",
+                    serde_json::json!({"dataset": dataset, "iterations": iterations}),
+                    serde_json::json!({
+                        "index_open_ms": result.index_open_ms,
+                        "warm_query_p50_ms": result.warm_query_p50_ms,
+                        "warm_query_p95_ms": result.warm_query_p95_ms,
+                    }),
+                );
+                print_output(&result, json)
+            }
+        },
     }
 }
 
@@ -1347,4 +1493,207 @@ fn derived_purge(repo_root: &Path) -> Result<DerivedPurgeResult> {
         purged: true,
         count,
     })
+}
+
+// ── Bench warm ────────────────────────────────────────────────────────
+
+#[derive(Debug, Serialize, Deserialize)]
+struct BenchWarmResult {
+    success: bool,
+    index_build_ms: Option<u64>,
+    index_open_ms: u64,
+    queries: usize,
+    iterations: usize,
+    warm_query_p50_ms: u64,
+    warm_query_p95_ms: u64,
+    warm_query_max_ms: u64,
+    invalid_citations: u64,
+    stale_hits_skipped: u64,
+    notes: Vec<String>,
+}
+
+/// Run warm SLO benchmark: build index if needed, then open once and loop queries.
+fn run_bench_warm(
+    repo_root: &Path,
+    policy: &Policy,
+    dataset_path: &str,
+    iterations: usize,
+) -> Result<BenchWarmResult> {
+    use std::time::Instant;
+
+    // Build persistent index if it doesn't exist or is stale
+    let mut index_build_ms: Option<u64> = None;
+    let status = status_index(repo_root, policy)?;
+    if !status.exists || status.requires_rebuild {
+        let build_start = Instant::now();
+        let records = scan_repo(repo_root, policy)?;
+        let _build_result = build_index(repo_root, &records, policy)?;
+        index_build_ms = Some(build_start.elapsed().as_millis() as u64);
+    }
+
+    // Open the persistent index once (this is what we're measuring as "warm open")
+    let open_start = Instant::now();
+    let index_handle = match PersistentBm25Index::open(repo_root, policy) {
+        Ok(h) => h,
+        Err(e) => {
+            return Ok(BenchWarmResult {
+                success: false,
+                index_build_ms,
+                index_open_ms: 0,
+                queries: 0,
+                iterations,
+                warm_query_p50_ms: 0,
+                warm_query_p95_ms: 0,
+                warm_query_max_ms: 0,
+                invalid_citations: 0,
+                stale_hits_skipped: 0,
+                notes: vec![format!("failed to open index: {}", e)],
+            });
+        }
+    };
+    let index_open_ms = open_start.elapsed().as_millis() as u64;
+
+    // Load queries from dataset
+    let dataset_content = match fs::read_to_string(dataset_path) {
+        Ok(c) => c,
+        Err(e) => {
+            return Ok(BenchWarmResult {
+                success: false,
+                index_build_ms,
+                index_open_ms,
+                queries: 0,
+                iterations,
+                warm_query_p50_ms: 0,
+                warm_query_p95_ms: 0,
+                warm_query_max_ms: 0,
+                invalid_citations: 0,
+                stale_hits_skipped: 0,
+                notes: vec![format!("failed to read dataset {}: {}", dataset_path, e)],
+            });
+        }
+    };
+
+    let queries: Vec<String> = dataset_content
+        .lines()
+        .filter(|l| !l.trim().is_empty())
+        .filter_map(|line| {
+            serde_json::from_str::<serde_json::Value>(line)
+                .ok()
+                .and_then(|v| {
+                    v.get("query")
+                        .and_then(|q| q.as_str())
+                        .map(|s| s.to_string())
+                })
+        })
+        .collect();
+
+    if queries.is_empty() {
+        return Ok(BenchWarmResult {
+            success: false,
+            index_build_ms,
+            index_open_ms,
+            queries: 0,
+            iterations,
+            warm_query_p50_ms: 0,
+            warm_query_p95_ms: 0,
+            warm_query_max_ms: 0,
+            invalid_citations: 0,
+            stale_hits_skipped: 0,
+            notes: vec!["no queries found in dataset".into()],
+        });
+    }
+
+    // Run warm benchmark: reuse the same index handle for all queries
+    let mut all_latencies: Vec<u64> = Vec::new();
+    let mut total_stale_skipped: u64 = 0;
+    let mut total_invalid_citations: u64 = 0;
+
+    for _iteration in 0..iterations {
+        for query in &queries {
+            let q_start = Instant::now();
+            let (evidence, stats) = index_handle.search(repo_root, query, 10)?;
+            let q_ms = q_start.elapsed().as_millis() as u64;
+            all_latencies.push(q_ms);
+            total_stale_skipped += stats.stale_hits_skipped;
+
+            // Real citation validation: hash/range/excerpt/freshness
+            for ev in &evidence {
+                // Range check
+                if ev.core.start_line < 1 || ev.core.start_line > ev.core.end_line {
+                    total_invalid_citations += 1;
+                    continue;
+                }
+                // Content sha check
+                let full_path = repo_root.join(&ev.core.path);
+                if let Ok(bytes) = std::fs::read(&full_path) {
+                    let current_sha = blake3::hash(&bytes).to_hex().to_string();
+                    if current_sha != ev.core.content_sha {
+                        total_invalid_citations += 1;
+                        continue;
+                    }
+                    // Excerpt check
+                    if let Ok(content) = std::str::from_utf8(&bytes) {
+                        let lines: Vec<&str> = content.lines().collect();
+                        let total_lines = lines.len() as u64;
+                        if ev.core.end_line > total_lines {
+                            total_invalid_citations += 1;
+                            continue;
+                        }
+                        if let Some(ref meta) = ev.meta
+                            && let Some(ref excerpt) = meta.excerpt
+                        {
+                            let start_idx = (ev.core.start_line - 1) as usize;
+                            let end_idx = ev.core.end_line as usize;
+                            if end_idx <= lines.len() {
+                                let actual = lines[start_idx..end_idx].join("\n");
+                                if excerpt != &actual {
+                                    total_invalid_citations += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Freshness check
+                if let Some(ref meta) = ev.meta
+                    && meta.freshness != Some(Freshness::VerifiedCurrent)
+                {
+                    total_invalid_citations += 1;
+                }
+            }
+        }
+    }
+
+    // Compute percentiles
+    all_latencies.sort_unstable();
+    let warm_query_p50_ms = percentile(&all_latencies, 50);
+    let warm_query_p95_ms = percentile(&all_latencies, 95);
+    let warm_query_max_ms = *all_latencies.last().unwrap_or(&0);
+
+    Ok(BenchWarmResult {
+        success: true,
+        index_build_ms,
+        index_open_ms,
+        queries: queries.len(),
+        iterations,
+        warm_query_p50_ms,
+        warm_query_p95_ms,
+        warm_query_max_ms,
+        invalid_citations: total_invalid_citations,
+        stale_hits_skipped: total_stale_skipped,
+        notes: vec![format!(
+            "warm benchmark: {} queries x {} iterations = {} total queries (index opened once)",
+            queries.len(),
+            iterations,
+            all_latencies.len()
+        )],
+    })
+}
+
+/// Compute the percentile value from a sorted slice of u64 values.
+fn percentile(sorted: &[u64], p: u64) -> u64 {
+    if sorted.is_empty() {
+        return 0;
+    }
+    let idx = ((p as usize) * (sorted.len() - 1)) / 100;
+    sorted[idx.min(sorted.len() - 1)]
 }

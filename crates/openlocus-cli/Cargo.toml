@@ -12,12 +12,14 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow.workspace = true
+blake3.workspace = true
 chrono.workspace = true
 clap.workspace = true
 openlocus-context = { path = "../openlocus-context" }
 openlocus-core = { path = "../openlocus-core" }
 openlocus-derived = { path = "../openlocus-derived" }
 openlocus-graph = { path = "../openlocus-graph" }
+openlocus-index = { path = "../openlocus-index" }
 openlocus-repo = { path = "../openlocus-repo" }
 openlocus-retrieval = { path = "../openlocus-retrieval" }
 openlocus-store = { path = "../openlocus-store" }
