@@ -320,3 +320,70 @@ Implement a local-only, deterministic, depth=1 semantic graph scaffold. No LSP/S
 - Graph is rebuilt on each command (not persisted). For large repos, this needs caching.
 - Stale detection works at build time only (graph rebuilt per command). A persistent graph would need materialization-time stale checks, which the StoreHit gate already provides.
 - Graph edges are not integrated with the RRF retrieval pipeline; this is a future optimization.
+
+## 2026-06-11 — R6 Fast Context Level0 Rule Prototype
+
+### Objective
+
+Implement a 4-turn deterministic fast-context loop using existing regex/bm25/symbol/graph channels, returning citation-valid EvidencePack. No LLM planner, no remote calls. Budget cap enforced. Graph depth=1 only.
+
+### Implementation
+
+1. **openlocus-context crate**: FastContextPlan, TurnResult, TurnKind, FastContextResult, ActionRecord, FastContextDiagnostics types.
+2. **4-turn loop**:
+   - Turn 1 (Lexical): regex/text search, optionally BM25. Broad discovery.
+   - Turn 2 (Symbol): if query has identifier-like tokens (camelCase, snake_case), run symbol search.
+   - Turn 3 (Graph): get top file candidates from turns 1-2, build graph, get impact edges, materialize as Evidence via StoreHit.
+   - Turn 4 (Fusion): RRF combine all channel evidence, dedup/narrow, apply token budget cap, compute confidence, generate missing_questions.
+3. **Token budget**: `--budget N` means approximate max tokens (chars/4). Evidence trimmed from bottom if cumulative tokens exceed budget. `--max-evidence` still supported as count cap.
+4. **ActionRecord**: per-channel, per-turn replayable actions with turn, channel, query, result_count, skipped, latency_ms, error. Written to `.openlocus/traces/fast-context-<trace_id>.json`.
+5. **Unknown channel gate**: channels outside `regex,text,bm25,symbol,graph` are rejected with success=false/error.
+6. **Final validation**: before output, evidence is filtered through `is_citation_valid` using safe path validation, current file hash comparison, line-range bounds, excerpt matching, and `VerifiedCurrent` freshness. Invalid citations are dropped and counted in `diagnostics.invalid_citations_dropped`.
+7. **EvidencePack-compatible output**: `pack` field in result is a full EvidencePack with trace_id, budget_used. `evidence` field preserved for direct access.
+8. **Disabled channels tracked**: if a channel fails or is not applicable, it's recorded in disabled_channels.
+
+### Oracle review fixes
+
+- Output now includes `pack` (EvidencePack-compatible) and `trace_id`.
+- ActionRecord per turn/channel for replay. Trace file written to `.openlocus/traces/fast-context-<trace_id>.json`.
+- `--budget` is now token budget (chars/4), not evidence count. `--max-evidence` is count cap. `tokens_estimated` is meaningful >0 when evidence exists.
+- Unknown channels rejected with success=false/error JSON.
+- Final validation drops invalid citations, counted in `diagnostics.invalid_citations_dropped`.
+- Graph turn benefits are fixture-observed only, not a general quality claim.
+
+### R6 Level0 results (after oracle review)
+
+| Check | Result |
+|---|---|
+| Fast-context succeeds | ✅ |
+| EvidencePack-compatible output | ✅ pack with trace_id |
+| trace_id non-empty and matching | ✅ |
+| Actions replayable | ✅ 4 actions with channel/query |
+| Unknown channel blocked | ✅ error with valid channels list |
+| Token budget respected | ✅ budget=50 → 3 evidence, 38 tokens |
+| tokens_estimated meaningful | ✅ >0 when evidence exists |
+| Citation validation (all evidence) | ✅ 100% valid |
+| remote_calls = 0 | ✅ |
+| Turns ≤ 4 | ✅ exactly 4 |
+| Diagnostics present | ✅ invalid_citations_dropped=0 |
+| No raw derived/graph edges in output | ✅ |
+
+### Key findings
+
+1. The 4-turn deterministic loop is a simple orchestration scaffold. It runs each channel in sequence and fuses results at the end.
+2. Symbol search (Turn 2) is skipped when the query lacks identifier-like tokens, avoiding wasted computation and noise.
+3. Token budget (chars/4) is a reasonable approximation. Budget=50 tokens trimmed from 20 to 3 evidence in testing.
+4. All evidence is citation-valid by construction: regex/bm25/symbol search produces VerifiedCurrent evidence; graph evidence goes through StoreHit materialization. Final validation catches any that slip through.
+5. The loop is deterministic: same query + same repo always produces same results.
+6. Confidence is derived from the top evidence's RRF score. Low confidence (<0.1) triggers a missing_question.
+7. ActionRecord enables replay/debugging of each step in the loop.
+
+### Caveats
+
+- This is a Level0 orchestration scaffold only, not a learned agent. No adaptive re-querying, no feedback loops, no LLM planning.
+- Turn ordering is fixed (lexical → symbol → graph → fusion). A smarter planner could reorder or skip turns.
+- Token estimation is chars/4, not a real tokenizer. Actual token counts may differ by 20-50%.
+- Graph is rebuilt every fast-context invocation (not persisted).
+- The "missing_questions" are rule-generated, not LLM-generated.
+- No channel-specific error recovery beyond marking disabled_channels.
+- Graph turn adds contextual evidence in fixtures; no general quality claim about graph benefit.

@@ -1,7 +1,8 @@
 [workspace]
 members = [
-  "crates/openlocus-cli",
-  "crates/openlocus-core",
+    "crates/openlocus-cli",
+    "crates/openlocus-context",
+    "crates/openlocus-core",
   "crates/openlocus-derived",
   "crates/openlocus-graph",
   "crates/openlocus-repo",

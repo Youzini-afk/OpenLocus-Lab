@@ -12,6 +12,7 @@ This document will be updated after each evidence-gated stage.
 | R3 Level0 Storage Scaffold | Passed Level0 conformance | Store traits + StoreHit materialization gate + ConservativeChunkStore + TDB Level0 placeholder. Materialization rejects empty sha / stale / invalid hits, produces citation-valid Evidence from single file read (TOCTOU-safe). |
 | R4 Level0 Derived Safety | Passed oracle review | DerivedIndexView model + deterministic rule generator + policy/citation/freshness gates + JSONL store. data_level hard-gated ≤1. Secret-like tokens filtered. High-risk kinds disabled. View IDs include policy_mode/generator_version. Stale mutation detected. JSONL parse errors surfaced. No quality claim. |
 | R5 Level0 Graph Scaffold | Passed oracle review | GraphEdge carries source_content_sha/source_language. Materialization via StoreHit → openlocus_store::materialize_evidence (not hand-built). Invalid ranges rejected (not clamped). build_graph validates paths/sha, builds safe_records only. Depth=1 only. Channel::Graph. Citation-valid evidence. Not a precise semantic/call graph. |
+| R6 Level0 Fast Context | Passed oracle review | 4-turn deterministic loop (lexical → symbol → graph → RRF fusion). EvidencePack-compatible output with trace_id. ActionRecord per-channel replay. Token budget (chars/4). Unknown channel gate. Final citation validation drops invalid. Orchestration scaffold only, not learned agent. |
 
 ## R0/R1 initial findings
 
@@ -59,18 +60,31 @@ This document will be updated after each evidence-gated stage.
 - **graph inspect wraps output with artifact marker**: `artifact="graph_edges_not_evidence"` makes it clear these are not citation-valid Evidence.
 - **This is a Level0 deterministic scaffold only. Not a precise call graph, type graph, or dependency graph.**
 
+## R6 findings
+
+- **4-turn deterministic loop works as orchestration scaffold**: lexical → symbol → graph → RRF fusion produces multi-channel evidence without any LLM planner.
+- **Symbol turn is conditionally activated**: skipped when query lacks identifier-like tokens, avoiding wasted computation.
+- **Token budget enforced**: `--budget N` uses chars/4 approximation; evidence trimmed from bottom if cumulative tokens exceed budget. `--max-evidence` is separate count cap.
+- **Unknown channel gate**: channels outside regex/text/bm25/symbol/graph are rejected with clear error.
+- **Final citation validation**: evidence filtered through `is_citation_valid` before output; invalid dropped and counted in `diagnostics.invalid_citations_dropped`.
+- **EvidencePack-compatible output**: `pack` field with trace_id, budget_used. `evidence` field preserved for direct access.
+- **ActionRecord per-channel replay**: each turn/channel recorded with query, result_count, latency_ms, optional error. Written to `.openlocus/traces/fast-context-<trace_id>.json`.
+- **Confidence derived from top RRF score**: low confidence (<0.1) triggers a missing_question.
+- **Orchestration scaffold only, not learned agent.** No adaptive re-querying, no feedback loops, no LLM planning.
+
 ## Verification snapshot
 
 ```text
-Rust tests: 115 passed (9 core + 16 repo + 27 retrieval + 18 store + 27 derived + 18 graph)
+Rust tests: 124 passed (9 core + 16 repo + 27 retrieval + 18 store + 27 derived + 18 graph + 9 context)
 fmt: clean
 clippy: clean with -D warnings
-CLI commands: read, scan, search regex/text/bm25/symbol, retrieve, citations validate, context-lite, store status/build/purge, derived build/validate/inspect/purge, graph build/inspect, impact, tests, version
-Eval: regex/bm25/symbol/rrf on fixtures/r2.jsonl; storage_level0_smoke; derived_level0_safety (13/13 checks passed); graph_level0_smoke (11/11 checks passed)
+CLI commands: read, scan, search regex/text/bm25/symbol, retrieve, fast-context, citations validate, context-lite, store status/build/purge, derived build/validate/inspect/purge, graph build/inspect, impact, tests, version
+Eval: regex/bm25/symbol/rrf on fixtures/r2.jsonl; storage_level0_smoke; derived_level0_safety (13/13 checks passed); graph_level0_smoke (11/11 checks passed); fast_context_level0_smoke (14/14 checks passed)
 Structural validity: 1.0 across all methods
 Citation validity: 1.0 across all methods (true file I/O verification)
 Remote dependency: none
 TDB dependency: none (placeholder only)
 LLM dependency: none (rule extractor only)
 Graph: deterministic, local-only, depth=1 only
+Fast-context: 4-turn deterministic loop, EvidencePack output, ActionRecord replay, token budget, unknown channel gate, final citation validation, no LLM, remote_calls=0
 ```

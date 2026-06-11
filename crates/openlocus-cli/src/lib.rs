@@ -1,6 +1,7 @@
 use anyhow::{Context, Result, bail};
 use chrono::Utc;
 use clap::{Parser, Subcommand};
+use openlocus_context::plan::{FastContextPlan, fast_context};
 use openlocus_core::{
     BudgetUsed, Channel, ContextLitePack, Evidence, EvidencePack, JsonOutput, Policy, TraceEvent,
     append_trace,
@@ -67,6 +68,23 @@ pub enum Commands {
         /// Maximum results
         #[arg(long, default_value_t = 20)]
         max_results: usize,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// 4-turn deterministic fast-context loop
+    FastContext {
+        /// Query
+        query: String,
+        /// Approximate token budget cap (0 = no cap)
+        #[arg(long, default_value_t = 0)]
+        budget: usize,
+        /// Maximum evidence count
+        #[arg(long, default_value_t = 20)]
+        max_evidence: usize,
+        /// Comma-separated channels (regex,bm25,symbol,graph)
+        #[arg(long, default_value = "regex,bm25,symbol,graph")]
+        channels: String,
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -430,6 +448,90 @@ pub fn run() -> Result<()> {
             );
 
             print_output(&pack, json)
+        }
+        Commands::FastContext {
+            query,
+            budget,
+            max_evidence,
+            channels,
+            json,
+        } => {
+            let records = scan_repo(&repo_root, &policy)?;
+
+            let channel_list: Vec<String> =
+                channels.split(',').map(|s| s.trim().to_string()).collect();
+
+            let plan = FastContextPlan {
+                query: query.clone(),
+                channels: channel_list,
+                max_evidence,
+                budget,
+            };
+
+            let result = match fast_context(&repo_root, &records, &plan) {
+                Ok(r) => r,
+                Err(e) => {
+                    // Unknown channels or other plan errors
+                    let err_output = serde_json::json!({
+                        "success": false,
+                        "error": e.to_string(),
+                        "query": query,
+                    });
+                    if json {
+                        println!("{}", serde_json::to_string_pretty(&err_output).unwrap());
+                    } else {
+                        eprintln!("error: {e}");
+                    }
+                    return Ok(());
+                }
+            };
+
+            // Write trace file
+            let trace_dir = repo_root.join(".openlocus/traces");
+            let _ = std::fs::create_dir_all(&trace_dir);
+            let trace_file = trace_dir.join(format!("fast-context-{}.json", result.trace_id));
+            let trace_data = serde_json::json!({
+                "trace_id": result.trace_id,
+                "query": result.query,
+                "actions": result.actions,
+                "diagnostics": result.diagnostics,
+            });
+            let _ = std::fs::write(
+                &trace_file,
+                serde_json::to_string_pretty(&trace_data).unwrap(),
+            );
+
+            trace_event(
+                &repo_root,
+                "fast_context",
+                serde_json::json!({"query": query, "channels": channels, "budget": budget, "max_evidence": max_evidence}),
+                serde_json::json!({
+                    "success": result.success,
+                    "evidence_count": result.evidence.len(),
+                    "confidence": result.confidence,
+                    "remote_calls": result.remote_calls,
+                    "turns": result.turns.len(),
+                    "disabled_channels": result.disabled_channels,
+                    "invalid_citations_dropped": result.diagnostics.invalid_citations_dropped,
+                }),
+            );
+
+            let output = serde_json::json!({
+                "success": result.success,
+                "query": result.query,
+                "trace_id": result.trace_id,
+                "turns": result.turns,
+                "actions": result.actions,
+                "evidence": result.evidence,
+                "pack": result.pack,
+                "confidence": result.confidence,
+                "missing_questions": result.missing_questions,
+                "disabled_channels": result.disabled_channels,
+                "remote_calls": result.remote_calls,
+                "budget_used": result.budget_used,
+                "diagnostics": result.diagnostics,
+            });
+            print_output(&output, json)
         }
         Commands::Citations { citations_cmd } => match citations_cmd {
             CitationsCommands::Validate { json_file, json } => {

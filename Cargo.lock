@@ -835,6 +835,7 @@ dependencies = [
  "anyhow",
  "chrono",
  "clap",
+ "openlocus-context",
  "openlocus-core",
  "openlocus-derived",
  "openlocus-graph",
@@ -844,6 +845,22 @@ dependencies = [
  "serde",
  "serde_json",
  "toml",
+]
+
+[[package]]
+name = "openlocus-context"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "blake3",
+ "chrono",
+ "openlocus-core",
+ "openlocus-graph",
+ "openlocus-repo",
+ "openlocus-retrieval",
+ "serde",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]
