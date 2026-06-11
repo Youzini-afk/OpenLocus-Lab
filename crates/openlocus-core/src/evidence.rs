@@ -247,6 +247,18 @@ impl Evidence {
         m.freshness = Some(f);
         self
     }
+
+    pub fn with_score_parts(mut self, sp: ScoreParts) -> Self {
+        let m = self.meta.get_or_insert_with(EvidenceMeta::default);
+        m.score_parts = Some(sp);
+        self
+    }
+
+    pub fn with_symbol(mut self, sym: Symbol) -> Self {
+        let m = self.meta.get_or_insert_with(EvidenceMeta::default);
+        m.symbol = Some(sym);
+        self
+    }
 }
 
 // ── EvidencePack ──────────────────────────────────────────────────────

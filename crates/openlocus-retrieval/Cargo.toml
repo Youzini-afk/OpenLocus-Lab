@@ -14,4 +14,5 @@ openlocus-repo = { path = "../openlocus-repo" }
 regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+tantivy.workspace = true
 tempfile.workspace = true

@@ -1,11 +1,17 @@
 use anyhow::{Context, Result, bail};
 use chrono::Utc;
 use clap::{Parser, Subcommand};
-use openlocus_core::{ContextLitePack, Evidence, JsonOutput, Policy, TraceEvent, append_trace};
+use openlocus_core::{
+    BudgetUsed, Channel, ContextLitePack, Evidence, EvidencePack, JsonOutput, Policy, TraceEvent,
+    append_trace,
+};
 use openlocus_repo::read::read_file;
 use openlocus_repo::scan::scan_repo;
 use openlocus_repo::validate_path;
+use openlocus_retrieval::bm25_search::bm25_search;
 use openlocus_retrieval::regex_search::{regex_search, text_search};
+use openlocus_retrieval::rrf::rrf_combine;
+use openlocus_retrieval::symbol_search::symbol_search;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -42,6 +48,20 @@ pub enum Commands {
         #[command(subcommand)]
         search_cmd: SearchCommands,
     },
+    /// RRF multi-channel retrieve
+    Retrieve {
+        /// Query
+        query: String,
+        /// Comma-separated channels (regex,bm25,symbol)
+        #[arg(long, default_value = "regex,bm25,symbol")]
+        channels: String,
+        /// Maximum results
+        #[arg(long, default_value_t = 20)]
+        max_results: usize,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
     /// Validate citations
     Citations {
         #[command(subcommand)]
@@ -74,6 +94,28 @@ pub enum SearchCommands {
     Text {
         /// Text query
         query: String,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Search with BM25
+    Bm25 {
+        /// Query
+        query: String,
+        /// Maximum results
+        #[arg(long, default_value_t = 20)]
+        limit: usize,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Search for symbol definitions
+    Symbol {
+        /// Symbol name query
+        query: String,
+        /// Maximum results
+        #[arg(long, default_value_t = 20)]
+        limit: usize,
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -157,7 +199,92 @@ pub fn run() -> Result<()> {
                 );
                 print_output(&results, json)
             }
+            SearchCommands::Bm25 { query, limit, json } => {
+                let records = scan_repo(&repo_root, &policy)?;
+                let results = bm25_search(&repo_root, &records, &query, limit)?;
+                trace_event(
+                    &repo_root,
+                    "search_bm25",
+                    serde_json::json!({"query": query, "limit": limit}),
+                    serde_json::json!({"result_count": results.len()}),
+                );
+                print_output(&results, json)
+            }
+            SearchCommands::Symbol { query, limit, json } => {
+                let records = scan_repo(&repo_root, &policy)?;
+                let results = symbol_search(&repo_root, &records, &query, limit)?;
+                trace_event(
+                    &repo_root,
+                    "search_symbol",
+                    serde_json::json!({"query": query, "limit": limit}),
+                    serde_json::json!({"result_count": results.len()}),
+                );
+                print_output(&results, json)
+            }
         },
+        Commands::Retrieve {
+            query,
+            channels,
+            max_results,
+            json,
+        } => {
+            let start = std::time::Instant::now();
+            let records = scan_repo(&repo_root, &policy)?;
+
+            let channel_list: Vec<String> =
+                channels.split(',').map(|s| s.trim().to_string()).collect();
+
+            let mut channel_evidence: Vec<(Vec<Evidence>, Channel)> = Vec::new();
+
+            if channel_list.iter().any(|c| c == "regex") {
+                let ev = regex_search(&repo_root, &records, &query, max_results)?;
+                channel_evidence.push((ev, Channel::Regex));
+            }
+            if channel_list.iter().any(|c| c == "bm25") {
+                let ev = bm25_search(&repo_root, &records, &query, max_results)?;
+                channel_evidence.push((ev, Channel::Bm25));
+            }
+            if channel_list.iter().any(|c| c == "symbol") {
+                let ev = symbol_search(&repo_root, &records, &query, max_results)?;
+                channel_evidence.push((ev, Channel::Regex)); // symbol uses Regex channel
+            }
+
+            let fused = rrf_combine(channel_evidence);
+            let top: Vec<Evidence> = fused.into_iter().take(max_results).collect();
+
+            let latency_ms = start.elapsed().as_millis() as u64;
+
+            let trace_id = format!("tr-{}", Utc::now().timestamp_millis());
+            let pack = EvidencePack {
+                task: query.clone(),
+                intent: "implementation_search".into(),
+                confidence: if top.is_empty() {
+                    0.0
+                } else {
+                    top[0].core.score
+                },
+                evidence: top,
+                entrypoints: vec![],
+                related_tests: vec![],
+                risks: vec![],
+                missing_questions: vec![],
+                trace_id: trace_id.clone(),
+                budget_used: BudgetUsed {
+                    latency_ms,
+                    tokens_estimated: 0,
+                    remote_cost_estimated: 0.0,
+                },
+            };
+
+            trace_event(
+                &repo_root,
+                "retrieve",
+                serde_json::json!({"query": query, "channels": channels, "max_results": max_results}),
+                serde_json::json!({"result_count": pack.evidence.len(), "latency_ms": latency_ms}),
+            );
+
+            print_output(&pack, json)
+        }
         Commands::Citations { citations_cmd } => match citations_cmd {
             CitationsCommands::Validate { json_file, json } => {
                 let result = validate_citations(&repo_root, &json_file)?;
@@ -199,7 +326,6 @@ fn discover_repo_root() -> Result<PathBuf> {
             return Ok(dir);
         }
         if !dir.pop() {
-            // Fallback: use current directory
             return Ok(std::env::current_dir()?);
         }
     }
@@ -227,21 +353,16 @@ fn validate_citations(repo_root: &Path, json_file: &str) -> Result<CitationValid
     let trimmed = content.trim_start();
 
     let evidences: Vec<Evidence> = if trimmed.starts_with('[') {
-        // Format 2: array of Evidence
         serde_json::from_str(&content)?
     } else if trimmed.starts_with('{') {
         let obj: serde_json::Value = serde_json::from_str(&content)?;
         if let Some(arr) = obj.get("evidence") {
-            // Format 3: object with evidence field
             serde_json::from_value(arr.clone())?
+        } else if obj.get("path").is_some() || obj.get("content_sha").is_some() {
+            let single: Evidence = serde_json::from_value(obj)?;
+            vec![single]
         } else {
-            // Format 1: single Evidence object (has path/content_sha fields)
-            if obj.get("path").is_some() || obj.get("content_sha").is_some() {
-                let single: Evidence = serde_json::from_value(obj)?;
-                vec![single]
-            } else {
-                bail!("JSON object must be a single Evidence or have an 'evidence' field");
-            }
+            bail!("JSON object must be a single Evidence or have an 'evidence' field");
         }
     } else {
         bail!("JSON must start with '{{' or '['");
@@ -274,7 +395,6 @@ fn validate_citations(repo_root: &Path, json_file: &str) -> Result<CitationValid
 }
 
 fn validate_single_citation(repo_root: &Path, evidence: &Evidence) -> Result<()> {
-    // Validate line range basics
     if evidence.core.start_line == 0 {
         bail!("start_line must be >= 1, got 0");
     }
@@ -296,7 +416,6 @@ fn validate_single_citation(repo_root: &Path, evidence: &Evidence) -> Result<()>
         bail!("not a file: {}", evidence.core.path);
     }
 
-    // Verify content_sha matches current file
     let current_sha = openlocus_repo::read::compute_content_sha(&full_path)?;
     if current_sha != evidence.core.content_sha {
         bail!(
@@ -306,13 +425,11 @@ fn validate_single_citation(repo_root: &Path, evidence: &Evidence) -> Result<()>
         );
     }
 
-    // Read file content for line-range and excerpt validation
     let content = std::fs::read_to_string(&full_path)
         .with_context(|| format!("failed to read {}", evidence.core.path))?;
     let lines: Vec<&str> = content.lines().collect();
     let total_lines = lines.len() as u64;
 
-    // Validate end_line <= file line count
     if evidence.core.end_line > total_lines {
         bail!(
             "end_line ({}) exceeds file line count ({})",
@@ -321,7 +438,6 @@ fn validate_single_citation(repo_root: &Path, evidence: &Evidence) -> Result<()>
         );
     }
 
-    // If meta.excerpt exists, verify it matches the current line range content
     if let Some(ref meta) = evidence.meta
         && let Some(ref excerpt) = meta.excerpt
     {
@@ -350,7 +466,6 @@ fn build_context_lite(repo_root: &Path, write_files: bool) -> Result<ContextLite
         let ctx_dir = repo_root.join(".openlocus").join("context");
         fs::create_dir_all(&ctx_dir)?;
 
-        // Write dirty-summary.json placeholder
         let dirty_summary_path = ctx_dir.join("dirty-summary.json");
         let dirty_summary = serde_json::json!({
             "repo_root": repo_root.to_string_lossy(),
@@ -363,7 +478,6 @@ fn build_context_lite(repo_root: &Path, write_files: bool) -> Result<ContextLite
         )?;
         generated_files.push(".openlocus/context/dirty-summary.json".into());
 
-        // Write retrieval-latest.jsonl placeholder
         let retrieval_path = ctx_dir.join("retrieval-latest.jsonl");
         fs::write(&retrieval_path, "")?;
         generated_files.push(".openlocus/context/retrieval-latest.jsonl".into());
