@@ -1,7 +1,7 @@
 # OpenLocus R0-R13 Research Report
 
 Date: 2026-06-11  
-Repository: `https://github.com/Youzini-afk/OpenLocus.git`  
+Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
 Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R13 remote embedding / LLM-derived indexing safety scaffold milestone.
 
 ## Executive summary
