@@ -5,6 +5,10 @@ use openlocus_core::{
     BudgetUsed, Channel, ContextLitePack, Evidence, EvidencePack, JsonOutput, Policy, TraceEvent,
     append_trace,
 };
+use openlocus_derived::generator;
+use openlocus_derived::model::{DerivedIndexView, DerivedViewKind};
+use openlocus_derived::store::JsonlDerivedViewStore;
+use openlocus_derived::validation;
 use openlocus_repo::read::read_file;
 use openlocus_repo::scan::scan_repo;
 use openlocus_repo::validate_path;
@@ -83,6 +87,11 @@ pub enum Commands {
     Store {
         #[command(subcommand)]
         store_cmd: StoreCommands,
+    },
+    /// Derived index operations (experimental)
+    Derived {
+        #[command(subcommand)]
+        derived_cmd: DerivedCommands,
     },
     /// Print version
     Version,
@@ -167,6 +176,55 @@ pub enum StoreCommands {
         /// Backend name: conservative or tdb
         #[arg(default_value = "conservative")]
         backend: String,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+}
+
+#[derive(Subcommand)]
+pub enum DerivedCommands {
+    /// Build derived index views
+    Build {
+        /// Kind of views to build: chunk-summary, symbol-tags, query-aliases, or all
+        #[arg(default_value = "all")]
+        kind: String,
+        /// Must be set to enable experimental derived indexing
+        #[arg(long)]
+        experimental: bool,
+        /// Write derived views to .openlocus/derived/
+        #[arg(long)]
+        write_files: bool,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+        /// Maximum data level allowed (default 1)
+        #[arg(long, default_value_t = 1)]
+        max_data_level: u8,
+    },
+    /// Validate stored derived views
+    Validate {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+        /// Maximum data level allowed (default 1)
+        #[arg(long, default_value_t = 1)]
+        max_data_level: u8,
+    },
+    /// Inspect stored derived views
+    Inspect {
+        /// Filter by kind
+        #[arg(long)]
+        kind: Option<String>,
+        /// Maximum number of views to show
+        #[arg(long, default_value_t = 20)]
+        limit: usize,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Purge all stored derived views
+    Purge {
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -378,6 +436,64 @@ pub fn run() -> Result<()> {
                     "store_purge",
                     serde_json::json!({"backend": backend}),
                     serde_json::json!({"purged": true}),
+                );
+                print_output(&result, json)
+            }
+        },
+        Commands::Derived { derived_cmd } => match derived_cmd {
+            DerivedCommands::Build {
+                kind,
+                experimental,
+                write_files,
+                json,
+                max_data_level,
+            } => {
+                let result = derived_build(
+                    &repo_root,
+                    &policy,
+                    &kind,
+                    experimental,
+                    write_files,
+                    max_data_level,
+                )?;
+                trace_event(
+                    &repo_root,
+                    "derived_build",
+                    serde_json::json!({"kind": kind, "experimental": experimental, "max_data_level": max_data_level}),
+                    serde_json::json!({"generated": result.generated, "valid": result.valid, "blocked": result.blocked_kind}),
+                );
+                print_output(&result, json)
+            }
+            DerivedCommands::Validate {
+                json,
+                max_data_level,
+            } => {
+                let result = derived_validate(&repo_root, max_data_level)?;
+                trace_event(
+                    &repo_root,
+                    "derived_validate",
+                    serde_json::json!({"max_data_level": max_data_level}),
+                    serde_json::json!({"valid": result.valid, "stale": result.stale}),
+                );
+                print_output(&result, json)
+            }
+            DerivedCommands::Inspect { kind, limit, json } => {
+                let result = derived_inspect(&repo_root, kind.as_deref(), limit)?;
+                trace_event(
+                    &repo_root,
+                    "derived_inspect",
+                    serde_json::json!({"kind": kind, "limit": limit}),
+                    serde_json::json!({"count": result.views.len()}),
+                );
+                print_output(&result, json)
+            }
+            DerivedCommands::Purge { json } => {
+                let result = derived_purge(&repo_root)?;
+                trace_event(
+                    &repo_root,
+                    "derived_purge",
+                    serde_json::json!({}),
+                    serde_json::json!({"purged": result.purged}),
                 );
                 print_output(&result, json)
             }
@@ -733,4 +849,215 @@ fn store_purge(backend: &str) -> Result<StorePurgeResult> {
             error: Some(format!("unknown backend: {}", backend)),
         }),
     }
+}
+
+// ── Derived helpers ───────────────────────────────────────────────────
+
+#[derive(Debug, Serialize, Deserialize)]
+struct DerivedBuildResult {
+    success: bool,
+    experimental: bool,
+    remote_calls: u64,
+    generated: usize,
+    valid: usize,
+    invalid: usize,
+    blocked_kind: usize,
+    blocked_data_level: usize,
+    data_level: u8,
+    policy_mode: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    views_path: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    audit_path: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    error: Option<String>,
+}
+
+fn derived_build(
+    repo_root: &Path,
+    policy: &Policy,
+    kind_str: &str,
+    experimental: bool,
+    write_files: bool,
+    max_data_level: u8,
+) -> Result<DerivedBuildResult> {
+    if !experimental {
+        return Ok(DerivedBuildResult {
+            success: false,
+            experimental: false,
+            remote_calls: 0,
+            generated: 0,
+            valid: 0,
+            invalid: 0,
+            blocked_kind: 0,
+            blocked_data_level: 0,
+            data_level: max_data_level,
+            policy_mode: "local_only".to_string(),
+            views_path: None,
+            audit_path: None,
+            error: Some("derived indexing requires --experimental flag to opt in".to_string()),
+        });
+    }
+
+    // Level0 hard gate: max_data_level > 1 not allowed
+    if max_data_level > 1 {
+        return Ok(DerivedBuildResult {
+            success: false,
+            experimental: true,
+            remote_calls: 0,
+            generated: 0,
+            valid: 0,
+            invalid: 0,
+            blocked_kind: 0,
+            blocked_data_level: 1, // signal that data_level was blocked
+            data_level: max_data_level,
+            policy_mode: "local_only".to_string(),
+            views_path: None,
+            audit_path: None,
+            error: Some(format!(
+                "R4 Level0 does not allow --max-data-level > 1 (got {}); snippet output path not available",
+                max_data_level
+            )),
+        });
+    }
+
+    // Parse kinds
+    let kinds: Vec<DerivedViewKind> = if kind_str == "all" {
+        DerivedViewKind::l1_kinds().to_vec()
+    } else {
+        match DerivedViewKind::from_str_loose(kind_str) {
+            Some(k) => vec![k],
+            None => {
+                return Ok(DerivedBuildResult {
+                    success: false,
+                    experimental: true,
+                    remote_calls: 0,
+                    generated: 0,
+                    valid: 0,
+                    invalid: 0,
+                    blocked_kind: 0,
+                    blocked_data_level: 0,
+                    data_level: max_data_level,
+                    policy_mode: "local_only".to_string(),
+                    views_path: None,
+                    audit_path: None,
+                    error: Some(format!("unknown kind: {}", kind_str)),
+                });
+            }
+        }
+    };
+
+    let records = scan_repo(repo_root, policy)?;
+    let (views, blocked_kind, blocked_data_level) =
+        generator::generate_views(repo_root, &records, &kinds, max_data_level)?;
+
+    let generated = views.len();
+
+    // Validate views
+    let (valid, stale, bk, bdl, pu, ir) =
+        validation::validate_all_views(repo_root, &views, max_data_level);
+    let invalid = stale + bk + bdl + pu + ir;
+    let blocked_kind = blocked_kind + bk;
+    let blocked_data_level = blocked_data_level + bdl;
+
+    let mut views_path = None;
+    let mut audit_path = None;
+
+    if write_files {
+        let store = JsonlDerivedViewStore::new(repo_root);
+        store.upsert(&views)?;
+        views_path = Some(store.views_path().to_str().unwrap_or_default().to_string());
+        audit_path = Some(store.audit_path().to_str().unwrap_or_default().to_string());
+    }
+
+    Ok(DerivedBuildResult {
+        success: true,
+        experimental: true,
+        remote_calls: 0,
+        generated,
+        valid,
+        invalid,
+        blocked_kind,
+        blocked_data_level,
+        data_level: max_data_level,
+        policy_mode: "local_only".to_string(),
+        views_path,
+        audit_path,
+        error: None,
+    })
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct DerivedValidateResult {
+    total: usize,
+    valid: usize,
+    stale: usize,
+    blocked_kind: usize,
+    blocked_data_level: usize,
+    path_unsafe: usize,
+    invalid_range: usize,
+    parse_errors: usize,
+    data_level: u8,
+}
+
+fn derived_validate(repo_root: &Path, max_data_level: u8) -> Result<DerivedValidateResult> {
+    let store = JsonlDerivedViewStore::new(repo_root);
+    let list_result = store.list_with_errors()?;
+
+    let (valid, stale, blocked_kind, blocked_data_level, path_unsafe, invalid_range) =
+        validation::validate_all_views(repo_root, &list_result.views, max_data_level);
+
+    Ok(DerivedValidateResult {
+        total: list_result.views.len(),
+        valid,
+        stale,
+        blocked_kind,
+        blocked_data_level,
+        path_unsafe,
+        invalid_range,
+        parse_errors: list_result.parse_errors,
+        data_level: max_data_level,
+    })
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct DerivedInspectResult {
+    total: usize,
+    views: Vec<DerivedIndexView>,
+}
+
+fn derived_inspect(
+    repo_root: &Path,
+    kind_filter: Option<&str>,
+    limit: usize,
+) -> Result<DerivedInspectResult> {
+    let store = JsonlDerivedViewStore::new(repo_root);
+    let mut views = store.list()?;
+
+    if let Some(k) = kind_filter {
+        let target = DerivedViewKind::from_str_loose(k);
+        views.retain(|v| Some(&v.kind) == target.as_ref());
+    }
+
+    views.truncate(limit);
+
+    Ok(DerivedInspectResult {
+        total: views.len(),
+        views,
+    })
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct DerivedPurgeResult {
+    purged: bool,
+    count: usize,
+}
+
+fn derived_purge(repo_root: &Path) -> Result<DerivedPurgeResult> {
+    let store = JsonlDerivedViewStore::new(repo_root);
+    let count = store.purge()?;
+    Ok(DerivedPurgeResult {
+        purged: true,
+        count,
+    })
 }

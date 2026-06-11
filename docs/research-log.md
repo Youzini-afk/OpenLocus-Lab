@@ -188,3 +188,75 @@ A storage abstraction layer with materialization gating (StoreHit → filesystem
 - VectorStore and GraphStore traits are defined but not implemented; they are placeholders for R4+ experimentation.
 - The store does not yet integrate with BM25 search; BM25 still builds a fresh Tantivy index per query.
 - This is a Level0 storage scaffold, not a full storage bakeoff or TDB comparison. No real storage-backed retrieval quality comparison is claimed.
+
+---
+
+## 2026-06-11 — R4 LLM Indexing Research Candidate Level0 Safety Scaffold
+
+### Objective
+
+Add DerivedIndexView model + deterministic rule/mock generator + policy/citation/freshness gates + JSONL store + CLI/eval. No real LLM, no quality claim. This is a Level0 safety scaffold: prove the gates work before connecting any remote service.
+
+### Hypothesis
+
+A derived index view system with strict safety gates (no-LLM-required generator, policy-gated kinds, data_level bounds, source validation, experimental opt-in) can be implemented and verified without any remote calls. The safety gates should block all high-risk operations by default.
+
+### Implementation notes
+
+- **Derived crate** (`openlocus-derived`): New workspace crate with model (DerivedIndexView, DerivedViewKind, DerivedSource, DerivedGeneratorKind, DerivedProvenance, DerivedValidation), generator (deterministic rule extractor for L1 kinds), validation (path/content_sha/range/kind/data_level checks), and JSONL store.
+- **Key constraint**: DerivedIndexView is NOT Evidence. It cannot bypass StoreHit/materialize_evidence. If derived search is ever implemented, it must materialize source evidence.
+- **Generator**: Deterministic rule-based extractor for chunk_summary, symbol_tags, query_aliases. No full raw code snippets at data_level ≤ 1 (only metadata + first identifier per chunk). Identifier extraction via simple heuristics; query alias splitting via camelCase/snake_case decomposition.
+- **Validation**: validate_derived_view checks path safety (via validate_path), source content_sha matches current file, range valid, kind allowed, data_level allowed. No remote calls.
+- **Store**: JsonlDerivedViewStore writes to `.openlocus/derived/views.jsonl` with audit log at `.openlocus/derived/audit.jsonl`. Supports upsert (replaces by view_id), list, purge.
+- **View ID**: Deterministic hash of (source_path, source_sha, kind, generator, data_level, policy_mode, generator_version). Same inputs always produce the same ID. Source, policy, or generator-version changes produce different IDs.
+- **High-risk kinds**: candidate_edge and bug_symptom_hint are disabled by default (is_high_risk() = true). Generator skips them entirely.
+- **CLI**: `openlocus derived build/validate/inspect/purge`. Build requires `--experimental`. All commands output JSON with remote_calls=0, data_level, policy_mode.
+- **Eval**: `eval/derived_safety.py` with report_kind="derived_level0_safety".
+
+### R4 Level0 safety results (after oracle review fixes)
+
+| Safety Check | Result |
+|---|---|
+| Build without --experimental blocked | ✅ clear error JSON |
+| Build with --experimental succeeds | ✅ views generated |
+| Build with --max-data-level 2 blocked | ✅ Level0 hard gate |
+| remote_calls always 0 | ✅ |
+| candidate_edge blocked | ✅ blocked_kind=1, generated=0 |
+| bug_symptom_hint blocked | ✅ blocked_kind=1, generated=0 |
+| data_level ≤ 1 enforced | ✅ Level0 hard gate |
+| No raw full code in derived text at data_level=1 | ✅ test passes |
+| Secret-like tokens filtered (SECRET_KEY, API_TOKEN, sk_, ghp_, AKIA) | ✅ test passes |
+| View ID deterministic | ✅ test passes |
+| View ID changes on source change | ✅ test passes |
+| View ID changes on policy_mode change | ✅ test passes |
+| View ID changes on generator_version change | ✅ test passes |
+| Validate detects stale views | ✅ test passes |
+| Validate detects blocked kind | ✅ test passes |
+| Validate detects blocked data_level | ✅ test passes |
+| Validate detects path_unsafe | ✅ test passes |
+| Validate detects invalid range | ✅ test passes |
+| Validate surfaces parse_errors | ✅ corrupt JSONL test passes |
+| Stale mutation detected (modify file → validate → stale>0) | ✅ eval passes |
+| Policy-excluded paths absent (.env, *.pem) | ✅ eval passes |
+| Purge removes views and audit files | ✅ eval passes |
+
+### Key findings
+
+1. The safety scaffold works: all gates are functional and block by default. High-risk kinds are blocked, data_level is hard-gated at ≤1 for Level0, experimental opt-in is required, and no remote calls are made.
+2. Deterministic view IDs include policy_mode and generator_version: the same source/kind/generator/data_level/policy_mode/generator_version always produces the same ID, and a change in any of these produces a different ID.
+3. At data_level ≤ 1, derived text contains only metadata (line range, language, first identifier) — no full raw code snippets. This prevents accidental exposure of sensitive code in derived artifacts.
+4. Secret-like tokens are aggressively filtered: identifiers containing SECRET/TOKEN/PASSWORD/API_KEY/PRIVATE_KEY, or with prefixes sk_/ghp_/AKIA, or long high-entropy mixed-case strings are not emitted in tags or aliases.
+5. JSONL parse errors are surfaced (not silently skipped): `derived validate` reports parse_errors count; safety eval fails if parse_errors > 0.
+6. Stale mutation is detected: building views, modifying a source file, then validating correctly reports stale views.
+7. The rule-based generator is intentionally simple: identifier extraction, camelCase/snake_case splitting. It is not a replacement for real LLM-based indexing; it proves the pipeline shape works.
+
+### Caveats carried forward
+
+- This is a Level0 safety scaffold only. No quality claim about derived view relevance or usefulness.
+- The rule-based generator produces coarse metadata; real LLM indexing would produce richer summaries and aliases.
+- DerivedIndexView is not Evidence and cannot be used as such. Any future derived search must materialize source evidence through the store gate.
+- The JSONL store does not scale for large repos; it reads/writes the full file on each operation.
+- candidate_edge and bug_symptom_hint are defined but never generated; they serve as API surface for future high-risk experiments.
+- No real LLM adapter exists. The MockLlm generator kind is defined but not implemented.
+- Derived views are not integrated with the RRF retrieval pipeline; this is a future optimization.
+- The secrets/ directory is not in the default exclude list; only .env* and **/*.pem are excluded by default.

@@ -9,7 +9,8 @@ This document will be updated after each evidence-gated stage.
 | R0 Research Harness | Passed initial gate | EvidenceCore/EvidenceMeta, trace JSONL, citation validation, and smoke eval harness are implemented. |
 | R1 Local Evidence Kernel | Passed initial gate | Local read, repo scan, line-based regex/text search, policy basics, path safety, and context-lite file output are implemented without remote dependencies. |
 | R2 Retrieval Method Bakeoff | Passed oracle review | BM25 (Tantivy), simple symbol search, and RRF fusion added. BM25 uses line-scoring, stale-hash skip, no-overlap skip. Symbol uses boundary delimiters. RRF merges wider metadata into narrower survivors. Eval harness with file/line/span metrics + true citation validity. |
-| R3 Level0 Storage Scaffold | Passed Level0 conformance | Store traits + StoreHit materialization gate + ConservativeChunkStore + TDB Level0 placeholder. Materialization rejects empty sha / stale / invalid hits, produces citation-valid Evidence from single file read (TOCTOU-safe). Conservative skips stale/empty/traversal records. TDB placeholder returns available=false without panicking. |
+| R3 Level0 Storage Scaffold | Passed Level0 conformance | Store traits + StoreHit materialization gate + ConservativeChunkStore + TDB Level0 placeholder. Materialization rejects empty sha / stale / invalid hits, produces citation-valid Evidence from single file read (TOCTOU-safe). |
+| R4 Level0 Derived Safety | Passed oracle review | DerivedIndexView model + deterministic rule generator + policy/citation/freshness gates + JSONL store. data_level hard-gated ≤1. Secret-like tokens filtered. High-risk kinds disabled. View IDs include policy_mode/generator_version. Stale mutation detected. JSONL parse errors surfaced. No quality claim. |
 
 ## R0/R1 initial findings
 
@@ -33,19 +34,30 @@ This document will be updated after each evidence-gated stage.
 - **TOCTOU safety matters**: reading file bytes once and deriving both sha and excerpt from that single read prevents a modification between reads from producing inconsistent evidence.
 - **ConservativeChunkStore validates paths and skips bad records**: traversal paths rejected, stale content_sha skipped, empty files produce no invalid chunks.
 - **TDB placeholder provides clean Level0 surface**: returns available=false, success=false with descriptive errors, never panics.
-- **All ingest from scan_repo records**: stores never walk the filesystem, so policy filtering is automatically respected.
-- **This is a Level0 storage scaffold**, not a full storage bakeoff or TDB comparison. No real storage-backed retrieval quality comparison is claimed. No real triviumdb adapter exists. No persistence across CLI invocations.
+- **This is a Level0 storage scaffold**, not a full storage bakeoff or TDB comparison.
+
+## R4 findings
+
+- **Safety scaffold works**: all gates are functional and block by default. High-risk kinds blocked, data_level hard-gated at ≤1 for Level0, experimental opt-in required, no remote calls.
+- **Deterministic view IDs include policy_mode and generator_version**: same source/kind/generator/data_level/policy_mode/generator_version always produces the same ID; change in any produces different ID.
+- **No raw full code at data_level ≤ 1**: derived text contains only metadata (line range, language, first identifier). Prevents accidental exposure in derived artifacts.
+- **Secret-like tokens are aggressively filtered**: identifiers containing SECRET/TOKEN/PASSWORD/API_KEY/PRIVATE_KEY, or with prefixes sk_/ghp_/AKIA, or long high-entropy mixed strings are not emitted in tags or aliases.
+- **JSONL parse errors are surfaced** (not silently skipped): `derived validate` reports parse_errors count.
+- **Stale mutation is detected**: building views, modifying a source file, then validating correctly reports stale views.
+- **DerivedIndexView is NOT Evidence**: cannot bypass StoreHit/materialize_evidence gate. Any future derived search must materialize source evidence.
+- **This is a Level0 safety scaffold only. No quality claim about derived view relevance or usefulness.**
 
 ## Verification snapshot
 
 ```text
-Rust tests: 70 passed (9 core + 16 repo + 27 retrieval + 18 store)
+Rust tests: 97 passed (9 core + 16 repo + 27 retrieval + 18 store + 27 derived)
 fmt: clean
 clippy: clean with -D warnings
-CLI commands: read, scan, search regex/text/bm25/symbol, retrieve, citations validate, context-lite, store status/build/purge, version
-Eval: regex/bm25/symbol/rrf on fixtures/r2.jsonl; storage_level0_smoke for conservative+tdb
+CLI commands: read, scan, search regex/text/bm25/symbol, retrieve, citations validate, context-lite, store status/build/purge, derived build/validate/inspect/purge, version
+Eval: regex/bm25/symbol/rrf on fixtures/r2.jsonl; storage_level0_smoke; derived_level0_safety (13/13 checks passed)
 Structural validity: 1.0 across all methods
 Citation validity: 1.0 across all methods (true file I/O verification)
 Remote dependency: none
 TDB dependency: none (placeholder only)
+LLM dependency: none (rule extractor only)
 ```

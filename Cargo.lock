@@ -836,6 +836,7 @@ dependencies = [
  "chrono",
  "clap",
  "openlocus-core",
+ "openlocus-derived",
  "openlocus-repo",
  "openlocus-retrieval",
  "openlocus-store",
@@ -855,6 +856,21 @@ dependencies = [
  "tempfile",
  "thiserror",
  "toml",
+]
+
+[[package]]
+name = "openlocus-derived"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "blake3",
+ "chrono",
+ "openlocus-core",
+ "openlocus-repo",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
 ]
 
 [[package]]
