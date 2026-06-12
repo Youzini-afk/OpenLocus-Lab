@@ -2159,3 +2159,43 @@ A targeted stress dataset with precise category composition will maximize failur
 - **No runner/scorer matrix exists for R26.** R26 is a static dataset with a static validator.
 - **R26 labels are stress failure-surface labels, not EvidenceCore.**
 - No Rust core changes
+
+## 2026-06-12 — R28 Promotion Candidate Report
+
+### Objective
+
+Synthesize R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets into a conservative `promotion_candidate_report` that answers whether defaults should change, whether guard/dense/graph/QuIVer are promotion-ready, and which evidence gaps block promotion.
+
+### Implementation
+
+- Added `eval/r28_promotion_candidate_report.py`.
+- Reads already validated artifacts only: R21 auto-wide strategy matrix, R23 guard sweep, R24 dense/QuIVer/TDB probe, R25 graph+dense ablation, and R26 auto-stress static validation.
+- Produces `docs/r28-promotion-candidate-report.json` and `docs/r28-promotion-candidate-report.md`.
+- No retrieval CLI invocation.
+- No core changes.
+- remote_calls=0.
+
+### Findings
+
+- `promotion_ready=false`.
+- Current default should not change.
+- `best_recall_channel=rrf`, but RRF still has high false-primary/no-gold risk on R20 auto-wide.
+- `best_precision_anchor=symbol`.
+- `query_noise_plus_rrf_agree_min` is promising but not stable enough: R21 shows useful risk reduction without recall kill, but R23 finds bucket regressions for all 51 swept strategies and R26 has not been run through a retrieval runner/scorer matrix yet.
+- QuIVer/TDB have no independent quality evidence. QuIVer is not implemented; TDB is not an ANN/search backend in default build.
+- Dense mock is safety/noise probe only, not semantic quality. R24/R25 show high false-primary/noise.
+- Graph default expansion is blocked: R25 graph added 0 gold spans and 435 false spans.
+- Dense default expansion is blocked: R25 dense added 2 gold spans and 20,273 false spans.
+
+### Blocking evidence gaps
+
+- R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet.
+- R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.
+- R23 guard sweep shows bucket regressions across all swept strategies.
+- QuIVer is unavailable, so there is no BQ/ANN compatibility or quality evidence.
+- Dense real provider is unavailable.
+- Graph/dense expansions are net-negative in R25.
+
+### Recommendation
+
+Keep all new channels as candidate/supporting/research-only. Next work should run R26 through the strategy matrix and add human-verified labels for high-risk buckets before any default policy change.

@@ -1,0 +1,256 @@
+{
+  "answers": {
+    "coverage_gaps": [
+      "R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet.",
+      "R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.",
+      "R23 all 51 guard strategies have bucket regressions; guard generalization is blocked.",
+      "QuIVer is not implemented, so no BQ/ANN compatibility or quality evidence exists.",
+      "Dense real provider is unavailable; dense_mock is non-semantic and mostly noise.",
+      "Graph depth=1 ablation adds more false spans than gold spans.",
+      "No broad human-verified stress/negative benchmark for default policy decisions."
+    ],
+    "current_default_should_change": {
+      "answer": false,
+      "why": "RRF is the strongest recall channel but has high false-primary/no-gold rate on auto-wide; guards reduce risk but show bucket regressions; graph/dense expansions are net-negative."
+    },
+    "dense_quiver_supporting_channel_only": {
+      "answer": true,
+      "why": "Dense mock is non-semantic and noisy; QuIVer is unavailable. Any future dense/QuIVer channel must remain candidate/supporting and pass EvidenceCore materialization."
+    },
+    "graph_added_more_gold_than_noise": {
+      "answer": false,
+      "evidence": {
+        "graph_added_false_span": 435,
+        "graph_added_gold_span": 0,
+        "graph_default_expansion_blocked": true,
+        "graph_tasks_expansion_blocked": 113,
+        "graph_tasks_with_additions": 113
+      }
+    },
+    "query_noise_plus_rrf_agree_min_stability": {
+      "answer": "not_stable_enough_for_promotion",
+      "evidence": {
+        "r21_file_recall_at_1": 0.6925133689839572,
+        "r21_guard_recall_kill_rate": 0.0,
+        "r21_primary_false_positive_rate": 0.22072072072072071,
+        "r23_bucket_regressions": {
+          "strategies_with_bucket_regression": 51,
+          "total_bucket_regressions": 6877,
+          "total_strategies": 51
+        }
+      }
+    },
+    "quiver_tdb_independent_quality_gain": {
+      "answer": "no_evidence_yet",
+      "why": "QuIVer is not implemented; TDB is not an ANN/search backend in default build; R24 reports unavailable/not_measured rather than quality numbers."
+    }
+  },
+  "blocking_evidence_gaps": [
+    "R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet.",
+    "R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.",
+    "R23 all 51 guard strategies have bucket regressions; guard generalization is blocked.",
+    "QuIVer is not implemented, so no BQ/ANN compatibility or quality evidence exists.",
+    "Dense real provider is unavailable; dense_mock is non-semantic and mostly noise.",
+    "Graph depth=1 ablation adds more false spans than gold spans.",
+    "No broad human-verified stress/negative benchmark for default policy decisions."
+  ],
+  "core_changes": false,
+  "next_required_tests": [
+    "Run R26 auto-stress with R21/R24/R25 strategy matrix under runner/scorer separation.",
+    "Add human-verified labels for high-impact R20/R26 failure buckets.",
+    "Implement real embedding provider bakeoff only after R26 runner gates exist.",
+    "If QuIVer is implemented, run per-view/per-language/per-repo sharded compatibility diagnostics before quality claims.",
+    "Extend failure attribution to consume R24/R25/R26 artifacts, not only R21 artifacts.",
+    "Add guard bucket regression gates to any candidate default policy."
+  ],
+  "not_promotion_evidence": true,
+  "program": "R28 Promotion Candidate Report",
+  "promotion_ready": false,
+  "r21_key_metrics": {
+    "query_noise_plus_rrf_agree_min": {
+      "FileRecall@1": 0.6925133689839572,
+      "abstain_rate": 0.349527665317139,
+      "guard_recall_kill_rate": 0.0,
+      "primary_false_positive_rate": 0.22072072072072071
+    },
+    "rrf": {
+      "FileRecall@1": 0.6925133689839572,
+      "MRR": 0.7525825550392611,
+      "SpanF0.5": 0.18454165137358475,
+      "abstain_rate": 0.18218623481781376,
+      "primary_false_positive_rate": 0.4954954954954955
+    },
+    "symbol": {
+      "FileRecall@1": 0.5748663101604278,
+      "SpanF0.5": 0.21481448399617897,
+      "SpanPrecision": 0.4484902500945281,
+      "abstain_rate": 0.5168690958164642,
+      "primary_false_positive_rate": 0.16666666666666666
+    }
+  },
+  "r23_guard_observations": {
+    "blocked_bucket_counts": {
+      "strategies_with_bucket_regression": 51,
+      "total_bucket_regressions": 6877,
+      "total_strategies": 51
+    },
+    "observations": [
+      {
+        "FileRecall@1": 0.0106951871657754,
+        "abstain_rate": 0.9946018893387314,
+        "guard_recall_kill_rate": 0.9876543209876543,
+        "observation_type": "lowest_pfp_with_recall",
+        "params": {
+          "top1_top2_gap_threshold": 0.02
+        },
+        "primary_false_positive_rate": 0.0,
+        "promotion_blocked_by_bucket_regression": true,
+        "strategy_name": "top1_top2_gap_threshold_0.02"
+      },
+      {
+        "FileRecall@1": 0.0106951871657754,
+        "abstain_rate": 0.9946018893387314,
+        "guard_recall_kill_rate": 0.9876543209876543,
+        "no_gold_nonempty_rate": 0.0,
+        "observation_type": "lowest_no_gold_nonempty",
+        "params": {
+          "top1_top2_gap_threshold": 0.02
+        },
+        "promotion_blocked_by_bucket_regression": true,
+        "strategy_name": "top1_top2_gap_threshold_0.02"
+      },
+      {
+        "FileRecall@1": 0.6925133689839572,
+        "abstain_rate": 0.2253711201079622,
+        "guard_recall_kill_rate": 0.0,
+        "no_gold_nonempty_rate": 0.4369369369369369,
+        "observation_type": "best_recall_with_low_kill",
+        "params": {
+          "query_noise_threshold": 1
+        },
+        "primary_false_positive_rate": 0.4369369369369369,
+        "promotion_blocked_by_bucket_regression": true,
+        "strategy_name": "query_noise_threshold_1"
+      },
+      {
+        "FileRecall@1": 0.3716577540106952,
+        "abstain_rate": 0.7557354925775979,
+        "guard_recall_kill_rate": 0.5277777777777778,
+        "no_gold_nonempty_rate": 0.02252252252252252,
+        "observation_type": "best_combined_guard",
+        "params": {
+          "query_noise_threshold": 2,
+          "regex_or_symbol_agreement_required": true,
+          "top1_top2_gap_threshold": 0.01
+        },
+        "primary_false_positive_rate": 0.02252252252252252,
+        "promotion_blocked_by_bucket_regression": true,
+        "strategy_name": "query_noise_2_plus_gap_0.01_plus_regex_or_symbol_agree"
+      },
+      {
+        "FileRecall@1": 0.6925133689839572,
+        "abstain_rate": 0.18218623481781376,
+        "guard_recall_kill_rate": null,
+        "no_gold_nonempty_rate": 0.4954954954954955,
+        "observation_type": "rrf_baseline_reference",
+        "params": {},
+        "primary_false_positive_rate": 0.4954954954954955,
+        "promotion_blocked_by_bucket_regression": false,
+        "strategy_name": "rrf_raw"
+      }
+    ],
+    "sweep_count": 51
+  },
+  "r24_dense_quiver_tdb_findings": {
+    "dense_mock_candidate_total": 5264,
+    "dense_mock_metrics": {
+      "FileRecall@1": 0.02406417112299465,
+      "MRR": 0.07250445632798569,
+      "primary_false_positive_rate": 0.8783783783783784,
+      "token_waste": 0.850163205778179
+    },
+    "dense_mock_plus_rrf_metrics": {
+      "FileRecall@1": 0.13368983957219252,
+      "MRR": 0.45128009058029334,
+      "primary_false_positive_rate": 0.9234234234234234,
+      "token_waste": 0.9279577866495572
+    },
+    "quiver_implemented": false,
+    "tdb_stale_leak_count": "not_applicable"
+  },
+  "r25_graph_dense_ablation_findings": {
+    "combined_contribution": {
+      "combined_added_false_span": 20695,
+      "combined_added_gold_span": 2,
+      "combined_default_expansion_blocked": true,
+      "combined_tasks_expansion_blocked": 330,
+      "combined_tasks_with_additions": 330
+    },
+    "dense_contribution": {
+      "dense_added_false_span": 20273,
+      "dense_added_gold_span": 2,
+      "dense_default_expansion_blocked": true,
+      "dense_tasks_expansion_blocked": 318,
+      "dense_tasks_with_additions": 318
+    },
+    "graph_contribution": {
+      "graph_added_false_span": 435,
+      "graph_added_gold_span": 0,
+      "graph_default_expansion_blocked": true,
+      "graph_tasks_expansion_blocked": 113,
+      "graph_tasks_with_additions": 113
+    }
+  },
+  "r26_auto_stress_status": {
+    "categories": {
+      "ambiguous_vague": 150,
+      "dense_quiver_specific_trap": 100,
+      "frontend_backend_confusion": 75,
+      "generated_vendor_trap": 50,
+      "hard_distractor": 200,
+      "negative_nonexistent": 150,
+      "same_name_symbol": 100,
+      "semantic_trap": 150,
+      "stale_index_like": 50,
+      "test_source_confusion": 75
+    },
+    "expected_behavior_distribution": {
+      "abstain": 590,
+      "no_primary": 70,
+      "primary_evidence": 366,
+      "weak_candidates": 74
+    },
+    "oracle_type_distribution": {
+      "deterministic": 239,
+      "metamorphic": 50,
+      "mined": 318,
+      "stress": 493
+    },
+    "safety_passed": true,
+    "total_labels": 1100,
+    "total_tasks": 1100
+  },
+  "recommendation": {
+    "best_default_candidate": "no_change_current_evidence_gated_local_retrieval",
+    "best_dense_candidate": "none_available_for_default; dense_mock is safety/noise probe only",
+    "best_precision_anchor": "symbol",
+    "best_recall_channel": "rrf",
+    "default_should_change": false,
+    "dense_recommendation": "supporting_only_after_real_embedding_bakeoff; mock dense rejected for quality",
+    "graph_recommendation": "hold_default_expansion; graph may remain explicit/supporting only",
+    "promotion_ready": false,
+    "quiver_recommendation": "hold"
+  },
+  "remote_calls": 0,
+  "schema_version": "r28-v1",
+  "source_artifacts": {
+    "r21": "runs/r21-auto-wide-report.json",
+    "r23": "runs/r23-guard-sweep.json",
+    "r24": "runs/r24-quiver-tdb-probe.json",
+    "r25": "runs/r25-graph-dense-ablation-report.json",
+    "r26_safety": "fixtures/r26_auto_stress/safety_checks.json",
+    "r26_summary": "fixtures/r26_auto_stress/summary.json"
+  },
+  "source_artifacts_validated": true,
+  "source_validation_scope": "schema_versions, promotion flags, safety gates, core_changes, remote_calls, dense_or_llm_claim flags where present, selected key metrics non-null, R26 task count consistency"
+}
