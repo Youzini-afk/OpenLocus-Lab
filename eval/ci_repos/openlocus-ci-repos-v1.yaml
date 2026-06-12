@@ -1,0 +1,324 @@
+# OpenLocus CI Public Corpus Manifest v1
+#
+# Migrated from ci-test/openlocus-ci-repos-v1.yaml with policy fixes:
+#   - weekly_large no longer includes dense_real/quiver (R50: workflow_dispatch only, default disabled)
+#   - nightly_medium now includes dense_mock
+#   - Dual expected_license (MIT_OR_UNLICENSE, MIT_OR_APACHE) preserved without
+#     weakening allowed single-license policy
+#
+schema_version: openlocus-ci-repos-v1
+purpose: >
+  Public GitHub repository pool for OpenLocus retrieval benchmarks. Repos are cloned in CI,
+  locked by commit SHA, scanned, and used to auto-generate deterministic/mined/stress tasks.
+  This manifest is a starting pool; CI must verify license, default branch, size, lock SHA, and
+  file manifest before use.
+policy:
+  evidence_core_required: true
+  run_phase_public_only: true
+  score_phase_labels_only: true
+  no_promotion_evidence_by_default: true
+  clone_depth_default: 1
+  fetch_history_depth_for_commit_tasks: 80
+  max_matrix_jobs_per_workflow: 128
+  max_job_minutes: 45
+  artifact_retention_days: 7
+  upload_raw_source_artifacts: false
+  upload_evidence_excerpts: false
+  upload_metrics_and_sanitized_examples_only: true
+  allowed_licenses:
+    - MIT
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - ISC
+    - MPL-2.0
+    - EPL-2.0
+    - Unlicense
+    - curl
+  # Dual-license markers used in expected_license only (not standalone allowed values).
+  # MIT_OR_UNLICENSE means the repo is dual-licensed under MIT OR Unlicense (either accepted).
+  # MIT_OR_APACHE  means the repo is dual-licensed under MIT OR Apache-2.0 (either accepted).
+  dual_license_markers:
+    - MIT_OR_UNLICENSE
+    - MIT_OR_APACHE
+stages:
+  pr_smoke:
+    cadence: pull_request
+    max_repos: 6
+    max_tasks_per_repo: 60
+    strategies: [regex, bm25, symbol, rrf, query_noise_plus_rrf_agree_min]
+  nightly_medium:
+    cadence: schedule_or_workflow_dispatch
+    max_repos: 20
+    max_tasks_per_repo: 180
+    strategies: [regex, bm25, symbol, rrf, bm25_regex, bm25_symbol, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, ast_chunk_bm25, graph_basic, dense_mock]
+  weekly_large:
+    cadence: weekly_or_workflow_dispatch
+    max_repos: 12
+    max_tasks_per_repo: 300
+    # dense_real and quiver intentionally omitted: R50 defines them as workflow_dispatch only
+    # with default disabled; they must not appear in scheduled weekly runs.
+    strategies: [regex, bm25, symbol, rrf, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, ast_chunk_bm25, graph_basic]
+  manual_extreme:
+    cadence: workflow_dispatch_only
+    max_repos: 6
+    max_tasks_per_repo: 500
+    strategies: [all_available]
+repos:
+  # ── PR smoke: broad but manageable, high-signal language coverage. ──
+
+  - id: py_flask
+    repo: pallets/flask
+    tier: smoke
+    primary_language: Python
+    expected_license: BSD-3-Clause
+    risk_tags: [web_framework, routing, decorators, tests]
+
+  - id: js_express
+    repo: expressjs/express
+    tier: smoke
+    primary_language: JavaScript
+    expected_license: MIT
+    risk_tags: [web_framework, middleware, routing, callback_patterns]
+
+  - id: go_gin
+    repo: gin-gonic/gin
+    tier: smoke
+    primary_language: Go
+    expected_license: MIT
+    risk_tags: [web_framework, routing, middleware, go_methods]
+
+  - id: rust_ripgrep
+    repo: BurntSushi/ripgrep
+    tier: smoke
+    primary_language: Rust
+    expected_license: MIT_OR_UNLICENSE
+    risk_tags: [cli, regex, rust_modules, feature_flags]
+
+  - id: go_cobra
+    repo: spf13/cobra
+    tier: smoke
+    primary_language: Go
+    expected_license: Apache-2.0
+    risk_tags: [cli, commands, flags, go_methods]
+
+  - id: py_httpx
+    repo: encode/httpx
+    tier: smoke
+    primary_language: Python
+    expected_license: BSD-3-Clause
+    risk_tags: [http_client, async, tests, config]
+
+  - id: js_axios
+    repo: axios/axios
+    tier: smoke
+    primary_language: JavaScript
+    expected_license: MIT
+    risk_tags: [http_client, browser_node_split, adapters, config]
+
+  - id: rust_mdbook
+    repo: rust-lang/mdBook
+    tier: smoke
+    primary_language: Rust
+    expected_license: MPL-2.0
+    risk_tags: [cli, markdown, config, rust_modules]
+
+  # ── Nightly medium: broader ecosystem, still intended to finish in normal hosted runners. ──
+
+  - id: py_fastapi
+    repo: fastapi/fastapi
+    tier: nightly_medium
+    primary_language: Python
+    expected_license: MIT
+    risk_tags: [web_framework, routing, decorators, docs_heavy, tests]
+
+  - id: py_pytest
+    repo: pytest-dev/pytest
+    tier: nightly_medium
+    primary_language: Python
+    expected_license: MIT
+    risk_tags: [testing_framework, plugin_hooks, fixtures, decorators]
+
+  - id: py_requests
+    repo: psf/requests
+    tier: nightly_medium
+    primary_language: Python
+    expected_license: Apache-2.0
+    risk_tags: [http_client, sessions, adapters, config]
+
+  - id: py_rich
+    repo: Textualize/rich
+    tier: nightly_medium
+    primary_language: Python
+    expected_license: MIT
+    risk_tags: [terminal_ui, rich_types, tests]
+
+  - id: go_chi
+    repo: go-chi/chi
+    tier: nightly_medium
+    primary_language: Go
+    expected_license: MIT
+    risk_tags: [web_framework, routing, middleware]
+
+  - id: go_gh_cli
+    repo: cli/cli
+    tier: nightly_medium
+    primary_language: Go
+    expected_license: MIT
+    risk_tags: [cli, commands, api_client, config]
+
+  - id: go_prometheus
+    repo: prometheus/prometheus
+    tier: nightly_medium
+    primary_language: Go
+    expected_license: Apache-2.0
+    risk_tags: [large_go, config, storage, web_ui]
+
+  - id: go_hugo
+    repo: gohugoio/hugo
+    tier: nightly_medium
+    primary_language: Go
+    expected_license: Apache-2.0
+    risk_tags: [large_go, cli, content_pipeline, config]
+
+  - id: ts_vite
+    repo: vitejs/vite
+    tier: nightly_medium
+    primary_language: TypeScript
+    expected_license: MIT
+    risk_tags: [monorepo, build_tool, plugins, config]
+
+  - id: ts_hono
+    repo: honojs/hono
+    tier: nightly_medium
+    primary_language: TypeScript
+    expected_license: MIT
+    risk_tags: [web_framework, routing, middleware, edge_runtime]
+
+  - id: js_prettier
+    repo: prettier/prettier
+    tier: nightly_medium
+    primary_language: JavaScript
+    expected_license: MIT
+    risk_tags: [parser, printer, language_plugins, tests]
+
+  - id: ts_vue_core
+    repo: vuejs/core
+    tier: nightly_medium
+    primary_language: TypeScript
+    expected_license: MIT
+    risk_tags: [framework, monorepo, compiler_runtime_split]
+
+  - id: ts_redux_toolkit
+    repo: reduxjs/redux-toolkit
+    tier: nightly_medium
+    primary_language: TypeScript
+    expected_license: MIT
+    risk_tags: [state_management, monorepo, tests]
+
+  - id: java_spring_petclinic
+    repo: spring-projects/spring-petclinic
+    tier: nightly_medium
+    primary_language: Java
+    expected_license: Apache-2.0
+    risk_tags: [java_web, controllers, services, tests]
+
+  - id: kotlin_okhttp
+    repo: square/okhttp
+    tier: nightly_medium
+    primary_language: Kotlin
+    expected_license: Apache-2.0
+    risk_tags: [http_client, kotlin_java_mix, tests]
+
+  - id: java_junit5
+    repo: junit-team/junit5
+    tier: nightly_medium
+    primary_language: Java
+    expected_license: EPL-2.0
+    risk_tags: [testing_framework, annotations, engines]
+
+  - id: csharp_serilog
+    repo: serilog/serilog
+    tier: nightly_medium
+    primary_language: C#
+    expected_license: Apache-2.0
+    risk_tags: [logging, csharp_api, tests]
+
+  - id: cpp_json
+    repo: nlohmann/json
+    tier: nightly_medium
+    primary_language: C++
+    expected_license: MIT
+    risk_tags: [header_only, templates, tests]
+
+  - id: c_curl
+    repo: curl/curl
+    tier: nightly_medium
+    primary_language: C
+    expected_license: curl
+    risk_tags: [c_project, cli, networking, generated_vendor_trap]
+
+  # ── Weekly / manual large stress. These should be sharded and timeout-capped. ──
+
+  - id: ts_vscode
+    repo: microsoft/vscode
+    tier: weekly_large
+    primary_language: TypeScript
+    expected_license: MIT
+    risk_tags: [very_large, monorepo, frontend_backend_confusion, extensions]
+
+  - id: go_kubernetes
+    repo: kubernetes/kubernetes
+    tier: weekly_large
+    primary_language: Go
+    expected_license: Apache-2.0
+    risk_tags: [very_large, generated_files, api_types, same_name_symbol]
+
+  - id: rust_rust
+    repo: rust-lang/rust
+    tier: manual_extreme
+    primary_language: Rust
+    expected_license: MIT_OR_APACHE
+    risk_tags: [extreme_large, compiler, tests, generated_vendor_trap]
+
+  - id: rust_deno
+    repo: denoland/deno
+    tier: weekly_large
+    primary_language: Rust
+    expected_license: MIT
+    risk_tags: [large, rust_ts_mix, runtime, cli]
+
+  - id: ts_nextjs
+    repo: vercel/next.js
+    tier: weekly_large
+    primary_language: TypeScript
+    expected_license: MIT
+    risk_tags: [large_monorepo, routing, frontend_backend_confusion, tests]
+
+  - id: py_django
+    repo: django/django
+    tier: weekly_large
+    primary_language: Python
+    expected_license: BSD-3-Clause
+    risk_tags: [large_python, web_framework, ORM, routing, tests]
+
+  - id: ruby_rails
+    repo: rails/rails
+    tier: weekly_large
+    primary_language: Ruby
+    expected_license: MIT
+    risk_tags: [large_ruby, framework, monorepo, tests]
+
+  - id: dotnet_runtime
+    repo: dotnet/runtime
+    tier: manual_extreme
+    primary_language: C#
+    expected_license: MIT
+    risk_tags: [extreme_large, csharp, native_mix, generated_files]
+
+  - id: py_superset
+    repo: apache/superset
+    tier: weekly_large
+    primary_language: Python
+    expected_license: Apache-2.0
+    risk_tags: [large_python_ts, frontend_backend_confusion, config]
