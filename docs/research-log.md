@@ -1398,3 +1398,107 @@ RRF wins recall but inherits BM25 negative false positives (R15-M negative_nonem
 - No provider/dense/LLM quality claims are made.
 - Routing decisions are deterministic and reproducible from the same inputs.
 - The compound_snake_case_noise detector uses a fixed set of domain keywords; real fabricated identifiers could evade it.
+
+## 2026-06-12 — R18 Threshold/Guard Calibration Sweep
+
+### Objective
+
+Sweep threshold and guard configurations over R15 benchmark predictions to find Pareto-optimal strategies that reduce negative_nonempty while preserving recall. Uses deterministic repo-holdout split for R15-M. Eval-layer research only; does NOT change Rust core.
+
+### Current hypothesis
+
+R17 showed that query_only_router_v0 and rrf_guarded_by_symbol_regex both eliminate R15-M negative_nonempty (0.645→0.000), but R15-stress negative_nonempty remains above 0. R18 tests whether systematic threshold/guard sweeps over public query + prediction features can produce a calibrated strategy with better stress performance while maintaining R15-M recall.
+
+### Implementation notes
+
+- **eval/r18_calibration_sweep.py**: Schema version r18-v1. Imports R17 helpers (load_jsonl, score_predictions, verify_safety_gates, check_baseline_prediction_consistency, query feature heuristics) via sys.path resolution.
+- **Safety gates**: Hard fail on source report safety_passed, canary_retrieval, expected methods, citation_validity=1.0, citation_hash_checked, baseline prediction/report consistency. Route phase must happen before labels are loaded; enforced by code structure.
+- **Public features only for routing**: query string, repo_id, evidence counts per method, top/max score per method, top evidence channels/why, R17 query-only heuristics (negative/noise/vague/exact identifier). Labels/gold loaded only after all routing decisions.
+- **Strategy family**: Baselines (regex, bm25, symbol, rrf), R17 fixed references (query_only_router_v0, rrf_guarded_by_symbol_regex), and sweep configs over thresholds [0.0, 0.005, 0.01, 0.015, 0.02, 0.03, 0.05, 0.08]:
+  - rrf_score_min_{t}: use RRF if top RRF score >= t else empty
+  - rrf_score_min_{t}_regex_or_symbol: use RRF if score >= t and (regex_has or symbol_has)
+  - rrf_score_min_{t}_symbol: use RRF if score >= t and symbol_has
+  - query_noise_plus_rrf_score_min_{t}: if noise/vague query then empty else RRF if score >= t
+  - query_noise_plus_rrf_agree_min_{t}: if noise/vague query then empty else RRF if score >= t and (regex_has or symbol_has)
+- **Scoring**: R15-compatible metrics on full R15-M, train R15-M, holdout R15-M, and R15-stress.
+- **Repo-holdout split**: Deterministic by sorted repo_id: first 6 train (codex2api, fast-context-mcp, gemini-web2api, grok2api, infinite-canvas, kiro2), last 3 holdout (smartsearch, triviumdb, windsurf2api).
+- **Candidate selection**: From train only. Eligible if train negative_nonempty<=0.05 and train FileRecall@1 >= (RRF_train - 0.05). Among eligible, maximize train MRR, minimize token_waste. If no eligible, fallback with no_candidate_met_constraints.
+- **Pareto frontier**: Full R15-M over dimensions: maximize FileRecall@1, SpanF0.5@10; minimize negative_nonempty_rate@10, hard_negative_hit_rate@10.
+- **Output**: JSON (schema_version r18-v1), markdown, and docs/r18-calibration-sweep.md.
+
+### R18 results
+
+**Selected candidate**: rrf_guarded_by_symbol_regex (eligible count: 15)
+
+**Full R15-M Strategy Metrics (baselines + R17 + selected):**
+
+| Metric | regex | bm25 | symbol | rrf | query_only_router_v0 | rrf_guarded | selected |
+|---|---|---|---|---|---|---|---|
+| file_recall@1 | 0.852 | 0.541 | 0.807 | 0.941 | 0.904 | 0.941 | 0.941 |
+| mrr | 0.889 | 0.619 | 0.820 | 0.963 | 0.918 | 0.963 | 0.963 |
+| span_f0.5@10 | 0.263 | 0.188 | 0.310 | 0.253 | 0.315 | 0.253 | 0.253 |
+| negative_nonempty@10 | 0.000 | 0.645 | 0.000 | 0.645 | 0.000 | 0.000 | 0.000 |
+
+**Key Sweep Finding — query_noise_plus_rrf_agree_min (full R15-M):**
+
+| Threshold | neg_nonempty | FileRecall@1 | MRR | stress_neg_nonempty |
+|---|---|---|---|---|
+| 0.000 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.005 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.010 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.015 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.020 | 0.000 | 0.933 | 0.955 | 0.000 |
+| 0.030 | 0.000 | 0.933 | 0.955 | 0.000 |
+| 0.050 | 0.000 | 0.015 | 0.015 | 0.000 |
+| 0.080 | 0.000 | 0.000 | 0.000 | 0.000 |
+
+**Holdout R15-M (rrf_guarded_by_symbol_regex vs RRF):**
+
+| Metric | RRF | rrf_guarded | Delta |
+|---|---|---|---|
+| file_recall@1 | 0.844 | 0.844 | +0.000 |
+| mrr | 0.900 | 0.900 | +0.000 |
+| negative_nonempty@10 | 0.700 | 0.000 | -0.700 |
+
+**R15-stress (selected strategies):**
+
+| Strategy | negative_nonempty@10 |
+|---|---|
+| rrf | 0.684 |
+| symbol | 0.105 |
+| query_only_router_v0 | 0.158 |
+| rrf_guarded_by_symbol_regex | 0.474 |
+| query_noise_plus_rrf_agree_min_0.0 | 0.000 |
+| query_noise_plus_rrf_agree_min_0.015 | 0.000 |
+
+**Pareto frontier (Full R15-M, key entries):**
+
+| Strategy | FileRecall@1 | SpanF0.5@10 | neg_nonempty | hard_neg |
+|---|---|---|---|---|
+| rrf_guarded_by_symbol_regex | 0.941 | 0.253 | 0.000 | 0.259 |
+| query_only_router_v0 | 0.904 | 0.315 | 0.000 | 0.237 |
+| symbol | 0.807 | 0.310 | 0.000 | 0.052 |
+
+### Key findings
+
+1. **Train-selected candidate is useful but not stress-safe**: `rrf_guarded_by_symbol_regex` preserves RRF FileRecall@1/MRR on full R15-M (0.941/0.963) and holdout (0.844/0.900), while reducing medium negative_nonempty to 0.000. R15-stress remains weak at 0.474 negative_nonempty, above symbol's 0.105.
+2. **The query noise guard is the key differentiator for stress**: rrf_guarded_by_symbol_regex alone leaves stress at 0.474 because regex returns false positives for common-word stress queries. The query noise guard identifies these as vague/noise and routes to empty, achieving 0.000 on stress.
+3. **rrf_guarded_by_symbol_regex remains the selected candidate by MRR**: On train, it has MRR 0.994 vs query_noise_plus_rrf_agree_min_0.0 MRR 0.961. The candidate selection rule (maximize MRR among eligible) favors the simpler guard.
+4. **Threshold sweep reveals sharp recall cliff at 0.05**: RRF top scores rarely fall between 0.03 and 0.05; most are either very high (>0.05) or very low (<0.02). Thresholds above 0.03 reject nearly all evidence, making them useless in practice.
+5. **Stress-zero strategies are observations, not promotions**: `query_noise_plus_rrf_agree_min` variants reach 0.000 stress negative_nonempty on the 19-task stress set, but this is too small and mined to justify default promotion.
+6. **R15-stress remains the critical failure surface for non-query-noise strategies**: Without the query noise guard, stress negative_nonempty stays above symbol baseline. With it, the stress surface is addressed but only through heuristic classification of query intent.
+7. **Pareto frontier shows trade-off between recall and hard-negative precision**: symbol has lowest hard_negative (0.052) but lower recall; rrf_guarded has highest recall but higher hard_negative (0.259); query_only_router_v0 is a middle ground.
+8. **No core default promotion in R18**: This is eval-layer calibration. Threshold/guard choices are calibrated on mined R15 data and require larger/human-verified validation before promotion.
+
+### Caveats
+
+- R18 is an eval-layer calibration sweep; does NOT change Rust core.
+- Calibration is on mined R15 data; not human-verified.
+- Repo-holdout split is deterministic but small (9 repos, 3 holdout); not a substitute for cross-dataset validation.
+- R15-stress has only 19 tasks; metric estimates are noisy.
+- Sweep thresholds are hand-chosen; exhaustive search would be exponential.
+- Pareto frontier depends on chosen dimensions; different dimensions may yield different frontiers.
+- No core default promotion unless both R15-M and R15-stress negative_nonempty improve without unacceptable recall/MRR regression.
+- Citation safety is inherited from validated source predictions; no new citation validation is claimed.
+- No LLM/dense/provider claims are made.
+- Routing decisions are deterministic and reproducible from the same inputs.

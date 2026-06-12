@@ -1,14 +1,14 @@
-# OpenLocus R0-R16 Research Report
+# OpenLocus R0-R18 Research Report
 
 Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R16 multi-method quality bakeoff milestone.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R18 threshold/guard calibration sweep milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed sixteen evidence-gated checkpoints:
+The implementation completed eighteen evidence-gated checkpoints:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -29,6 +29,7 @@ The implementation completed sixteen evidence-gated checkpoints:
 | R15 checkpoint | R15 External Multi-Repo Benchmark Expansion | 9 independent external repos across 5 languages (Rust/Python/Go/JS/TS), 166 medium-tier tasks, 270 hard negatives. Multi-language symbol extraction with regex-based patterns. Isolated roots allowlist-copy only manifest/source files under repo_id-specific folders; symlinks and artifacts are not copied. Runtime `.openlocus` traces are cleaned after each query/citation validation and audited as hard-gate artifacts. Rust citation validator runs before cleanup (`citation_hash_checked=true`). Scoring accepts exact or single `repo_id/` prefix paths only. Regex FileRecall@1=0.852, BM25=0.548 on R15-M. BM25 negative_nonempty_rate@10=0.645. 112/112 smoke checks passed. 0 critical leakage issues. Mined benchmark expansion, not quality conclusion. |
 | R16 checkpoint | R16 Multi-Method Quality Bakeoff | Cross-matrix bakeoff of regex/bm25/symbol/rrf across R14-S/R15-M/R15-stress. All safety gates passed (citation_validity=1.0, citation_hash_checked=true, canary_retrieval.passed=true). RRF wins R15-M recall (FileRecall@1 0.933, @5/10 0.993, MRR 0.959) but inherits BM25 negative_nonempty false positives (0.645 R15-M, 0.684 stress). Symbol best span precision (0.310 SpanF0.5, 0.052 hard_neg, 0.000 neg_nonempty on R15-M). No method promoted to universal default. Lexical/symbol/RRF only; no provider/dense/LLM claims. No remote calls. |
 | R17 checkpoint | R17 Query Intent Router / Negative Guard Experiment | Eval-layer router/guard experiment; does NOT change Rust core. query_only_router_v0 eliminates R15-M negative_nonempty (0.645→0.000) with acceptable recall regression (FileRecall@1 0.904 vs 0.941, delta -0.037). rrf_guarded_by_symbol_regex eliminates R15-M negative_nonempty with zero recall regression. R15-stress negative_nonempty reduces but not eliminated (0.158/0.474). Citation safety inherited from validated source predictions. No LLM/dense claims. remote_calls=0. |
+| R18 checkpoint | R18 Threshold/Guard Calibration Sweep | Eval-layer calibration sweep over 46 strategies with 8 thresholds on R15-M and R15-stress; does NOT change Rust core. Train-selected candidate `rrf_guarded_by_symbol_regex` preserves RRF recall on R15-M/holdout and drops medium negative_nonempty to 0.000, but remains weak on R15-stress (0.474, worse than symbol 0.105). Separate `query_noise_plus_rrf_agree_min` strategies reach 0.000 stress negative_nonempty but are observations, not promotion candidates. Pareto frontier computed. No core default promotion. No LLM/dense claims. remote_calls=0. |
 
 Final verification snapshot:
 
@@ -39,7 +40,7 @@ clippy: clean with -D warnings
 Remote dependency: none
 LLM dependency: none
 TDB dependency: optional only (behind `tdb` feature; not in default build)
-Safety evals: storage, derived, graph, fast-context, persistent-index, AST-chunking all passing their Level0 gates; AST quality bakeoff safety checks 16/16 passed; incremental index smoke 48/48 checks passed; synthetic SLO bench 0 invalid citations; TDB adapter probe 11/11 checks passed; real-repo incremental bench 149/149 hard safety checks passed; provider dense safety 45/45 checks passed
+Safety evals: storage, derived, graph, fast-context, persistent-index, AST-chunking all passing their Level0 gates; AST quality bakeoff safety checks 16/16 passed; incremental index smoke 48/48 checks passed; synthetic SLO bench 0 invalid citations; TDB adapter probe 11/11 checks passed; real-repo incremental bench 149/149 hard safety checks passed; provider dense safety 45/45 checks passed; R18 calibration sweep all source safety gates passed, baseline consistency checked
 ```
 
 The most important research outcome is not that retrieval quality is solved. It is that the project now has a **safe experimental harness** where BM25, graph, TDB, LLM-derived views, dense embeddings, and future planners can be tested without weakening the EvidenceCore contract.
@@ -522,6 +523,52 @@ Key finding:
 
 Status: 149/149 hard safety checks passed; latency/growth gates measured honestly (report-only). Level0 one real-repo sample only.
 
+### R17 — query intent router / negative guard experiment
+
+Goal: test whether query-only routing heuristics and negative guards can reduce negative_nonempty false positives (inherited by RRF from BM25) while preserving recall. Eval-layer research only; does NOT change Rust core.
+
+Implemented:
+
+- `eval/r17_router_guard_experiment.py`: Loads existing R15 predictions, applies three synthetic routing strategies without invoking OpenLocus again, scores with R15-compatible metrics.
+- **query_only_router_v0**: Routes based only on query text. Heuristics: negative/noise marker detection, compound snake_case noise, vague multi-word queries, exact identifier detection, identifier token detection, default RRF for recall.
+- **rrf_guarded_by_symbol_regex**: Choose RRF only if either symbol or regex has evidence; otherwise empty.
+- **task_type_assisted_router_upper_bound**: Uses task_type as upper-bound reference (not production router).
+
+R17 results:
+
+- **rrf_guarded_by_symbol_regex eliminates R15-M negative_nonempty (0.645→0.000) with zero recall/MRR regression**: The guard only returns RRF evidence when symbol or regex also found evidence, and positive tasks always have at least one of those.
+- **query_only_router_v0 eliminates R15-M negative_nonempty (0.645→0.000) with acceptable recall regression**: FileRecall@1 drops from 0.941 to 0.904 (delta -0.037), MRR from 0.963 to 0.918 (delta -0.044). SpanF0.5 improves from 0.253 to 0.315.
+- **R15-stress negative_nonempty reduces but is not eliminated**: query_only_router_v0 drops from 0.684 to 0.158; rrf_guarded drops to 0.474.
+
+Status: Eval-layer research only; does NOT change Rust core. No LLM/dense claims.
+
+### R18 — threshold/guard calibration sweep
+
+Goal: systematically sweep threshold and guard configurations over R15 benchmark predictions to find Pareto-optimal strategies that reduce negative_nonempty while preserving recall. Uses deterministic repo-holdout split for R15-M. Eval-layer research only; does NOT change Rust core.
+
+Implemented:
+
+- `eval/r18_calibration_sweep.py`: Schema version r18-v1. Imports R17 helpers. 46 strategies across 8 thresholds (0.0, 0.005, 0.01, 0.015, 0.02, 0.03, 0.05, 0.08).
+- **Strategy family**: Baselines (regex, bm25, symbol, rrf), R17 fixed references (query_only_router_v0, rrf_guarded_by_symbol_regex), and sweep configs:
+  - rrf_score_min_{t}: use RRF if top RRF score >= t else empty
+  - rrf_score_min_{t}_regex_or_symbol: use RRF if score >= t and (regex_has or symbol_has)
+  - rrf_score_min_{t}_symbol: use RRF if score >= t and symbol_has
+  - query_noise_plus_rrf_score_min_{t}: if noise/vague query then empty else RRF if score >= t
+  - query_noise_plus_rrf_agree_min_{t}: if noise/vague query then empty else RRF if score >= t and (regex_has or symbol_has)
+- **Repo-holdout split**: Deterministic by sorted repo_id: first 6 train, last 3 holdout.
+- **Candidate selection**: From train only. Eligible if train negative_nonempty<=0.05 and train FileRecall@1 >= (RRF_train - 0.05). Among eligible, maximize train MRR, minimize token_waste.
+- **Pareto frontier**: Full R15-M over maximize FileRecall@1, SpanF0.5@10; minimize negative_nonempty_rate@10, hard_negative_hit_rate@10.
+
+R18 results:
+
+- **rrf_guarded_by_symbol_regex is the train-selected calibration candidate**: It preserves RRF FileRecall@1/MRR on full R15-M (0.941/0.963) and holdout (0.844/0.900) while reducing medium negative_nonempty to 0.000. It is not stress-safe: R15-stress negative_nonempty remains 0.474, above symbol's 0.105.
+- **query_noise_plus_rrf_agree_min is a stress-zero observation, not a promotion**: Several thresholds reach 0.000 negative_nonempty on both R15-M and the 19-task stress set. This suggests combining query noise heuristics with regex/symbol agreement is promising, but the stress sample is too small and mined to justify promotion.
+- **Threshold sweep reveals sharp recall cliff at 0.05**: Most RRF top scores are either very high or very low; thresholds above 0.03 reject nearly all evidence.
+- **Pareto frontier shows recall vs hard-negative trade-off**: symbol (0.052 hard_neg, 0.807 recall) vs rrf_guarded (0.259 hard_neg, 0.941 recall) vs query_only_router_v0 (0.237 hard_neg, 0.904 recall).
+- **No core default promotion in R18**: This is eval-layer calibration. Requires larger/human-verified validation before promotion.
+
+Status: Eval-layer calibration only; does NOT change Rust core. No LLM/dense claims.
+
 ## Cross-stage findings
 
 ### 1. EvidenceCore stayed stable
@@ -613,6 +660,9 @@ This prototype is intentionally not production-ready.
 - Policy globbing is simple and needs a mature matcher before broad use.
 - Warm-index SLO now has Level0 synthetic measurement and real-repo measurement; larger and more diverse repo behavior is still unknown.
 - R12 real-repo benchmark uses one repo (OpenLocus temp copy) with per-run unique alphanumeric markers; not a general performance claim. Growth catastrophic guard passed (observed 20-cycle ~1.11×); does not prove long-term bounded growth.
+- R18 calibration sweep is on mined R15 data; not human-verified. Repo-holdout is small (9 repos, 3 holdout). R15-stress has only 19 tasks; metric estimates are noisy.
+- R18 includes strategies that eliminate both R15-M and R15-stress negative_nonempty, but those are stress-zero observations on a small mined stress set, not default-promotion evidence. The train-selected candidate still leaves R15-stress negative_nonempty at 0.474.
+- No core default promotion from R18; threshold/guard choices require larger/human-verified validation before promotion.
 
 ## Recommended next research stages
 
