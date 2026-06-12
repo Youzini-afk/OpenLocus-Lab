@@ -1,0 +1,19 @@
+{"task_id": "r15s-001", "query": "FIXME_bogus_method_xyz123", "task_type": "mutation_negative", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15s-002", "query": "TODO_nonexistent_feature_abc456", "task_type": "mutation_negative", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15s-003", "query": "HACK_impossible_refactor_def789", "task_type": "mutation_negative", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15s-004", "query": "embedding provider mock", "task_type": "provider_ish", "method_hint": "bm25", "repo_id": "triviumdb"}
+{"task_id": "r15s-005", "query": "api key rotation", "task_type": "provider_ish", "method_hint": "bm25", "repo_id": "gemini-web2api"}
+{"task_id": "r15s-006", "query": "rate limit handler", "task_type": "provider_ish", "method_hint": "bm25", "repo_id": "codex2api"}
+{"task_id": "r15s-007", "query": "the", "task_type": "query_noise", "method_hint": "bm25", "repo_id": "fast-context-mcp"}
+{"task_id": "r15s-008", "query": "function", "task_type": "query_noise", "method_hint": "bm25", "repo_id": "grok2api"}
+{"task_id": "r15s-009", "query": "return", "task_type": "query_noise", "method_hint": "bm25", "repo_id": "smartsearch"}
+{"task_id": "r15s-010", "query": "initialization", "task_type": "stress", "method_hint": "bm25", "repo_id": "grok2api"}
+{"task_id": "r15s-011", "query": "serialization", "task_type": "stress", "method_hint": "bm25", "repo_id": "smartsearch"}
+{"task_id": "r15s-012", "query": "validation", "task_type": "stress", "method_hint": "bm25", "repo_id": "codex2api"}
+{"task_id": "r15s-013", "query": "logging", "task_type": "stress", "method_hint": "bm25", "repo_id": "infinite-canvas"}
+{"task_id": "r15s-014", "query": "testing", "task_type": "stress", "method_hint": "bm25", "repo_id": "triviumdb"}
+{"task_id": "r15s-015", "query": "configuration", "task_type": "stress", "method_hint": "bm25", "repo_id": "kiro2"}
+{"task_id": "r15s-016", "query": "routing", "task_type": "stress", "method_hint": "bm25", "repo_id": "fast-context-mcp"}
+{"task_id": "r15s-017", "query": "parsing", "task_type": "stress", "method_hint": "bm25", "repo_id": "gemini-web2api"}
+{"task_id": "r15s-018", "query": "buffering", "task_type": "stress", "method_hint": "bm25", "repo_id": "windsurf2api"}
+{"task_id": "r15s-019", "query": "cleanup", "task_type": "stress", "method_hint": "bm25", "repo_id": "grok2api"}

@@ -1,0 +1,14 @@
+{
+  "total_checks": 10,
+  "critical_issues": 0,
+  "warning_issues": 0,
+  "issues": [],
+  "passed": true,
+  "canary_tokens_planted": [
+    "R15_CANARY_fixture_label_secret_1a2b",
+    "R15_CANARY_eval_benchmark_secret_3c4d",
+    "R15_CANARY_docs_summary_secret_5e6f",
+    "R15_CANARY_runs_prediction_secret_7g8h"
+  ],
+  "r15_extensions": true
+}

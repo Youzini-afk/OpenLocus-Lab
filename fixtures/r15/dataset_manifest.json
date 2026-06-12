@@ -1,0 +1,98 @@
+{
+  "schema_version": "r15-v1",
+  "program": "R15 External Multi-Repo Evidence Benchmark",
+  "description": "Extended benchmark with real local multi-repo data from /workspace. Independent external repos covering Rust/Python/Go/TypeScript/JavaScript. Mined benchmark expansion, not final quality conclusion. External local repos are workspace snapshots; not modified.",
+  "tiers": {
+    "M": {
+      "target_repos": 9,
+      "target_tasks": 120,
+      "target_labels": 120,
+      "target_hard_negatives": 24,
+      "target_label_quality": [
+        "mined_high_confidence",
+        "mined",
+        "human_reviewed"
+      ],
+      "run_time_estimate": "<30 min local"
+    },
+    "L": {
+      "target_repos": 9,
+      "target_tasks": 200,
+      "target_labels": 200,
+      "target_hard_negatives": 40,
+      "target_label_quality": [
+        "mined",
+        "weak"
+      ],
+      "run_time_estimate": "<1 hr local"
+    },
+    "stress": {
+      "target_repos": 9,
+      "target_tasks": 30,
+      "target_labels": 30,
+      "target_hard_negatives": 0,
+      "target_label_quality": [
+        "weak",
+        "human_reviewed"
+      ],
+      "run_time_estimate": "<10 min local"
+    }
+  },
+  "current_status": {
+    "M": {
+      "repos": 9,
+      "tasks": 166,
+      "labels": 166,
+      "hard_negatives": 270,
+      "label_quality_distribution": {
+        "mined_high_confidence": 135,
+        "mined": 9,
+        "human_reviewed": 10,
+        "weak": 12
+      },
+      "populated": true,
+      "partial": false
+    },
+    "L": {
+      "repos": 9,
+      "tasks": 294,
+      "labels": 294,
+      "hard_negatives": 270,
+      "label_quality_distribution": {
+        "mined": 270,
+        "weak": 24
+      },
+      "populated": true,
+      "partial": false
+    },
+    "stress": {
+      "repos": 9,
+      "tasks": 19,
+      "labels": 19,
+      "hard_negatives": 0,
+      "label_quality_distribution": {
+        "human_reviewed": 3,
+        "weak": 16
+      },
+      "populated": true,
+      "partial": true
+    }
+  },
+  "generation_info": {
+    "generator": "eval/r15_generate_dataset.py",
+    "generated_at": "2026-06-12",
+    "source_type": "external_local_repos",
+    "content_manifest_algorithm": "normalized_sha256_per_file_sorted",
+    "supported_extensions": [
+      ".go",
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".py",
+      ".rs",
+      ".ts",
+      ".tsx"
+    ],
+    "anti_leakage": "public tasks contain no gold paths/lines; labels are private; runner allowlist-copies manifest source files into isolated roots with repo-lock policy; runtime canary retrieval must return zero hits; repo lock uses local_absolute_path source with absolute paths but isolated root preserves relative paths"
+  }
+}

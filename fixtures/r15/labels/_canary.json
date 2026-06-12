@@ -1,0 +1,10 @@
+{
+  "canary_tokens": [
+    "R15_CANARY_fixture_label_secret_1a2b",
+    "R15_CANARY_eval_benchmark_secret_3c4d",
+    "R15_CANARY_docs_summary_secret_5e6f",
+    "R15_CANARY_runs_prediction_secret_7g8h"
+  ],
+  "description": "These tokens must never appear in public tasks, indexed content, or prediction results",
+  "purpose": "Runtime canary retrieval in eval/r15_benchmark.py must return zero hits"
+}

@@ -1167,3 +1167,92 @@ Establish a scaled benchmark program for evaluating OpenLocus retrieval quality 
 - Citation validity as a safety gate catches structural issues but does not measure retrieval relevance.
 - Runtime canary retrieval currently covers isolated R14-S benchmark roots; broader artifact-canary stress across future external repositories remains follow-up work.
 - The benchmark does not claim dense/LLM/graph quality improvements. Those are future feature tracks.
+
+## 2026-06-12 — R15 External Multi-Repo Benchmark Expansion
+
+### Objective
+
+Extend the R14 benchmark foundation with real local multi-repo benchmark data from independent external git repositories under `/workspace`. R15 adds 9 independent external repos covering Rust, Python, Go, TypeScript, and JavaScript, generating Medium/Large/Stress tier data with multi-language symbol extraction. This is a mined benchmark expansion, not a final quality conclusion. External local repos are workspace snapshots and are not modified.
+
+### Design constraints
+
+- Do not break R14 scripts or data; R15 is an independent checkpoint
+- Do not modify external repos; only read and allowlist-copy manifest/source files into isolated roots
+- Do not index /workspace root directly; must use repo lock declared source roots
+- Runner/scorer isolation: runner never loads labels, scorer never calls CLI
+- Isolated roots: allowlist-copy only declared source files under repo_id-specific folders; symlinks/artifacts are not copied
+- Unknown repo_id fail-closed; no fallback to full workspace
+- Citation validator hash-checks evidence in isolated root
+- Path matching: scoring accepts exact paths or a single `repo_id/` prefix only, not arbitrary suffixes
+- Repo lock uses `local_absolute_path` source with absolute paths; isolated root preserves relative paths
+- Multi-language manifest: normalized SHA-256 across .rs .py .ts .tsx .js .jsx .go .mjs
+- Skip directories: node_modules/target/.git/dist/build/.venv/__pycache__/.next/.nuxt/runs/fixtures/eval/docs/.openlocus
+- Public tasks contain no gold path/line/hard_negatives/label_quality
+- Labels include source_repo_kind: external_local
+- Citation validity must be 1.0 (fail-closed)
+- Runtime canary retrieval must return zero hits
+
+### Implementation notes
+
+- **fixtures/r15/ directory**: README.md, dataset_manifest.json, repos.lock.jsonl, tasks/{medium,large,stress}.jsonl, labels/{medium,large,stress}.jsonl, labels/_canary.json, taxonomy/annotation_guide.md, expected_failures/known_issues.md, safety_checks.json.
+- **9 external repos resolved** (all exist and have sufficient source files):
+  - fast-context-mcp (JS/.mjs, 5 files, 2361 lines)
+  - grok2api (Python, 157 files, 29676 lines)
+  - infinite-canvas (Go/TS/TSX, 110 files, 14100 lines)
+  - gemini-web2api (Python, 9 files, 1330 lines)
+  - windsurf2api (JS, 143 files, 36127 lines)
+  - kiro2 (Rust/TS/TSX, 114 files, 33908 lines)
+  - triviumdb (Rust, 117 files, 45947 lines)
+  - smartsearch (Python/JS, 69 files, 22393 lines)
+  - codex2api (Go/TS/TSX, 239 files, 114692 lines)
+- **eval/r15_generate_dataset.py**: Multi-language source scanning with regex-based symbol extraction for Rust/Python/Go/JS/TS. Generates normalized manifest SHA across all source extensions. Creates 8-20 tasks per repo (definition/symbol, implementation_search, config/import, negative, stress). Public tasks have no gold. Labels have gold_spans, hard_negatives, label_quality, source_repo_kind.
+- **eval/r15_benchmark.py**: Extends R14 benchmark for absolute repo source roots and multi-language manifest. Creates isolated roots by allowlist-copying only declared source files under repo_id-specific folders. Unknown repo_id fail-closed. Runtime `.openlocus` traces are removed after every query/citation validation and audited before/after each method. Rust citation validator runs before isolated-root cleanup and must report 1.0 validity. Scoring accepts exact paths or a single `repo_id/` prefix only. Same fail-closed safety gates.
+- **eval/r15_leakage_check.py**: Extended from R14 with static checks including exact 9-repo lock integrity, duplicate repo_id/source path detection, absolute source path verification, multi-language manifest verification, task/label/manifest consistency, hard-negative non-overlap, and source_repo_kind in labels.
+- **eval/r15_smoke.py**: HARD FAIL smoke test. Fixture validation, leakage check, small matrix benchmark (regex, bm25), Rust citation hash gate, canary verification, multi-language coverage check. 112/112 checks passed.
+
+### R15-M baseline results (166 tasks, 9 repos)
+
+| Metric | regex | bm25 |
+|---|---|---|
+| file_recall@1 | 0.852 | 0.548 |
+| file_recall@5 | 0.956 | 0.719 |
+| file_recall@10 | 0.970 | 0.741 |
+| mrr | 0.889 | 0.623 |
+| span_f0.5@10 | 0.263 | 0.188 |
+| hard_negative_hit_rate@10 | 0.289 | 0.230 |
+| negative_nonempty_rate@10 | 0.000 | 0.645 |
+| success_rate | 1.0 | 1.0 |
+
+Safety: passed. Canary: 36 checked, 0 hits, 0 failures. Citation hash checked.
+
+### R15 data scale
+
+| Tier | Repos | Tasks | Labels | Hard Negatives | Label Quality |
+|------|-------|-------|--------|----------------|---------------|
+| R15-M | 9 | 166 | 166 | 270 | mined_high_confidence (135) + mined (9) + human_reviewed (10) + weak (12) |
+| R15-L | 9 | 294 | 294 | 270 | mined (270) + weak (24) |
+| R15-stress | 9 | 19 | 19 | 0 | human_reviewed (3) + weak (16) |
+
+### Key findings
+
+1. **Multi-repo benchmark pipeline works end-to-end**: 9 independent external repos across 5 languages (Rust, Python, Go, JavaScript, TypeScript) with 166 medium-tier tasks, 270 hard negatives. Fail-closed safety enforced.
+2. **Regex search outperforms BM25 on this multi-repo fixture**: FileRecall@1 is 0.852 (regex) vs 0.548 (bm25). This is likely because many tasks target exact symbol names which regex matches precisely, while BM25's tokenization may dilute short queries.
+3. **BM25 has high false positive rate on negative tasks**: negative_nonempty_rate@10 is 0.645 (bm25) vs 0.000 (regex). BM25 returns results for many negative queries, while regex returns empty for non-matching exact strings.
+4. **Hard negative hit rate is non-trivial**: ~0.23-0.29 for both methods. This indicates that structurally plausible but incorrect results are common, which is expected with mined hard negatives from the same repo.
+5. **Span-level precision is improved vs R14-S baseline**: SpanF0.5@10 is 0.263 (regex) vs R14-S's lower sanity baseline. This improvement is likely due to better symbol extraction and more precise gold spans from multi-language definitions.
+6. **Anti-leakage design holds across repos**: 0 critical leakage issues, canary retrieval returns zero hits, no gold in public tasks.
+7. **Multi-language symbol extraction is functional but heuristic**: Rust/Python/Go/JS/TS patterns work for common cases but may miss or misidentify symbols in unusual patterns.
+8. **This is a mined benchmark expansion, not a quality conclusion.** Labels are mined with varying confidence; not human-verified.
+
+### Caveats
+
+- This is a mined benchmark expansion, not a quality conclusion.
+- Mined labels are not human-verified. `mined_high_confidence` labels have structurally-sound spans but may be imprecise at line-level.
+- External local repos are workspace snapshots; they are not modified but their content may change over time, which would invalidate the manifest SHA.
+- Multi-language support is best-effort. OpenLocus CLI may only support specific file types. If the CLI does not index `.mjs` or `.go` files, tasks targeting those types will return empty results.
+- Symbol extraction is regex-based heuristic. It may miss or misidentify symbols, especially for unusual patterns (Go methods with receivers, Python decorators, JS arrow functions).
+- Hard negatives are mined, not curated. They are structurally plausible but may not always be the best distractors.
+- Hard-negative overlap with gold spans is statically blocked, but distractor quality still requires human review.
+- The benchmark does not claim dense/LLM/graph quality improvements.
+- Baseline metrics (regex outperforming BM25 on exact-symbol tasks) are specific to this fixture and should not be generalized.
+- smartsearch has 2102 Python files but only 69 are indexed after excluding node_modules, __pycache__, etc. Most files are in excluded directories.

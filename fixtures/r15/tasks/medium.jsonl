@@ -1,0 +1,166 @@
+{"task_id": "r15m-001", "query": "FastContextError", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-002", "query": "_classifyError", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-003", "query": "definition", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-004", "query": "_trimMessages", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-005", "query": "buildSystemPrompt", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-006", "query": "_buildCommandSchema", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-007", "query": "getToolDefinitions", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-008", "query": "autoDiscoverApiKey", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-009", "query": "getApiKey", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-010", "query": "_getJwtExp", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-011", "query": "getCachedJwt", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-012", "query": "_applyTlsFallback", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-013", "query": "_unaryRequest", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-014", "query": "doFetch", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-015", "query": "doFetch", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-016", "query": "create_repository", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-017", "query": "describe_repository_target", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-018", "query": "get_repository_backend", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-019", "query": "_get_env", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-020", "query": "_get_required_env", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-021", "query": "_resolve_local_db_path", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-022", "query": "_redact_url", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-023", "query": "_make_local", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-024", "query": "_make_redis", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-025", "query": "_make_sql", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-026", "query": "LocalAccountRepository", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "grok2api"}
+{"task_id": "r15m-027", "query": "_record_key", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-028", "query": "_pool_key", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-029", "query": "RedisAccountRepository", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "grok2api"}
+{"task_id": "r15m-030", "query": "_normalize_sql_url", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-031", "query": "Config", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-032", "query": "Load", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-033", "query": "randomSecret", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-034", "query": "adminSyncRequest", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-035", "query": "AdminPromptCategories", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-036", "query": "AdminPrompts", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-037", "query": "AdminSavePrompt", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-038", "query": "AdminDeletePrompt", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-039", "query": "AdminSyncPromptCategories", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-040", "query": "AIImagesGenerations", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-041", "query": "AIImagesEdits", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-042", "query": "AIChatCompletions", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-043", "query": "proxyAIRequest", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-044", "query": "readAIRequest", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-045", "query": "readMultipartModel", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-046", "query": "main", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-047", "query": "load_config", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-048", "query": "find_config", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-049", "query": "load_env", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-050", "query": "log", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-051", "query": "_get_ssl_ctx", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-052", "query": "_get_httpx_client", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-053", "query": "load_cookie", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-054", "query": "make_sapisidhash", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-055", "query": "_account_prefix", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-056", "query": "_build_headers", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-057", "query": "_build_payload", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-058", "query": "_get_url", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-059", "query": "clean_text", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-060", "query": "_extract_texts_from_line", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-061", "query": "proxy", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-062", "query": "getArg", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-063", "query": "logEntry", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-064", "query": "chatCompletion", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-065", "query": "processLine", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-066", "query": "testBasicChat", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-067", "query": "testMultiTurn", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-068", "query": "testToolCalls", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-069", "query": "testNonStream", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-070", "query": "testAnthropicProtocol", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-071", "query": "testProjectWriting", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-072", "query": "called", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-073", "query": "main", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-074", "query": "isThinking", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-075", "query": "buildEntries", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-076", "query": "GithubIcon", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-077", "query": "Tab", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "kiro2"}
+{"task_id": "r15m-078", "query": "readTabFromHash", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-079", "query": "App", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-080", "query": "onHash", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-081", "query": "switchTab", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-082", "query": "handleLogin", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-083", "query": "handleLogout", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-084", "query": "toggleDarkMode", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-085", "query": "listClientKeys", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-086", "query": "createClientKey", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-087", "query": "deleteClientKey", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-088", "query": "updateClientKey", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-089", "query": "setClientKeyDisabled", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-090", "query": "resetClientKeyStats", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-091", "query": "ScalarSig", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-092", "query": "Rng", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-093", "query": "Rng", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-094", "query": "FhtKacRotator", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-095", "query": "PartialEq", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-096", "query": "Eq", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-097", "query": "PartialOrd", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-098", "query": "Ord", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-099", "query": "DppGraphIndex", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-100", "query": "DppBuildConfig", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-101", "query": "Default", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-102", "query": "DppSearchConfig", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-103", "query": "DppGraphIndex", "task_type": "implementation_search", "method_hint": "symbol", "repo_id": "triviumdb"}
+{"task_id": "r15m-104", "query": "build", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "triviumdb"}
+{"task_id": "r15m-105", "query": "search", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "triviumdb"}
+{"task_id": "r15m-106", "query": "run", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-107", "query": "pythonCandidates", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-108", "query": "findPython", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-109", "query": "venvPython", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-110", "query": "parseArgs", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-111", "query": "printUsage", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-112", "query": "escapeRegExp", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-113", "query": "readPublishedVersions", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-114", "query": "resolvePrereleaseVersion", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-115", "query": "main", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-116", "query": "writeJsonVersion", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-117", "query": "run", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-118", "query": "capture", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-119", "query": "runNpm", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-120", "query": "get_locale", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-121", "query": "accountGroupResponse", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "codex2api"}
+{"task_id": "r15m-122", "query": "toAccountGroupResponse", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-123", "query": "ListAccountGroups", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-124", "query": "createAccountGroupReq", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "codex2api"}
+{"task_id": "r15m-125", "query": "CreateAccountGroup", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-126", "query": "updateAccountGroupReq", "task_type": "exact_symbol", "method_hint": "symbol", "repo_id": "codex2api"}
+{"task_id": "r15m-127", "query": "UpdateAccountGroup", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-128", "query": "DeleteAccountGroup", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-129", "query": "refreshAPIKeyAllowedGroupsAfterGroupDelete", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-130", "query": "sanitizeAccountGroupName", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-131", "query": "removeInt64", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-132", "query": "containsInt64", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-133", "query": "dedupeInt64", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-134", "query": "TestShouldMarkBatchTestAccountError", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-135", "query": "TestResolveBatchTestAccountsDefaultsToAllAccounts", "task_type": "implementation_search", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-136", "query": "configuration settings", "task_type": "config_import", "method_hint": "bm25", "repo_id": "grok2api"}
+{"task_id": "r15m-137", "query": "import dependencies", "task_type": "config_import", "method_hint": "bm25", "repo_id": "smartsearch"}
+{"task_id": "r15m-138", "query": "module exports", "task_type": "config_import", "method_hint": "bm25", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-139", "query": "server setup", "task_type": "config_import", "method_hint": "bm25", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-140", "query": "route definitions", "task_type": "config_import", "method_hint": "bm25", "repo_id": "codex2api"}
+{"task_id": "r15m-141", "query": "error types", "task_type": "config_import", "method_hint": "bm25", "repo_id": "triviumdb"}
+{"task_id": "r15m-142", "query": "client initialization", "task_type": "config_import", "method_hint": "bm25", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-143", "query": "connection setup", "task_type": "config_import", "method_hint": "bm25", "repo_id": "windsurf2api"}
+{"task_id": "r15m-144", "query": "builder pattern", "task_type": "config_import", "method_hint": "bm25", "repo_id": "kiro2"}
+{"task_id": "r15m-145", "query": "quantum_entanglement_solver", "task_type": "negative", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-146", "query": "neural_network_training_loop", "task_type": "negative", "method_hint": "regex", "repo_id": "grok2api"}
+{"task_id": "r15m-147", "query": "blockchain_consensus_protocol", "task_type": "negative", "method_hint": "regex", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-148", "query": "distributed_database_replication", "task_type": "negative", "method_hint": "regex", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-149", "query": "machine_learning_inference", "task_type": "negative", "method_hint": "regex", "repo_id": "windsurf2api"}
+{"task_id": "r15m-150", "query": "cryptographic_key_rotation", "task_type": "negative", "method_hint": "regex", "repo_id": "kiro2"}
+{"task_id": "r15m-151", "query": "microservice_orchestration", "task_type": "negative", "method_hint": "regex", "repo_id": "triviumdb"}
+{"task_id": "r15m-152", "query": "web_server_http_handler", "task_type": "negative", "method_hint": "regex", "repo_id": "smartsearch"}
+{"task_id": "r15m-153", "query": "real_time_streaming_pipeline", "task_type": "negative", "method_hint": "regex", "repo_id": "codex2api"}
+{"task_id": "r15m-154", "query": "image_processing_pipeline", "task_type": "negative", "method_hint": "regex", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-155", "query": "error handling", "task_type": "stress", "method_hint": "bm25", "repo_id": "grok2api"}
+{"task_id": "r15m-156", "query": "search implementation", "task_type": "stress", "method_hint": "bm25", "repo_id": "smartsearch"}
+{"task_id": "r15m-157", "query": "data storage", "task_type": "stress", "method_hint": "bm25", "repo_id": "triviumdb"}
+{"task_id": "r15m-158", "query": "api endpoint", "task_type": "stress", "method_hint": "bm25", "repo_id": "codex2api"}
+{"task_id": "r15m-159", "query": "request handler", "task_type": "stress", "method_hint": "bm25", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-160", "query": "configuration setup", "task_type": "stress", "method_hint": "bm25", "repo_id": "gemini-web2api"}
+{"task_id": "r15m-161", "query": "connection management", "task_type": "stress", "method_hint": "bm25", "repo_id": "windsurf2api"}
+{"task_id": "r15m-162", "query": "data processing", "task_type": "stress", "method_hint": "bm25", "repo_id": "kiro2"}
+{"task_id": "r15m-163", "query": "server startup", "task_type": "stress", "method_hint": "bm25", "repo_id": "fast-context-mcp"}
+{"task_id": "r15m-164", "query": "response handling", "task_type": "stress", "method_hint": "bm25", "repo_id": "grok2api"}
+{"task_id": "r15m-165", "query": "event processing", "task_type": "stress", "method_hint": "bm25", "repo_id": "infinite-canvas"}
+{"task_id": "r15m-166", "query": "model interface", "task_type": "stress", "method_hint": "bm25", "repo_id": "triviumdb"}
