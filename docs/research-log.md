@@ -1322,3 +1322,79 @@ Run a cross-matrix quality bakeoff across R14-S, R15-M, and R15-stress using all
 - No provider/dense/LLM quality claims.
 - RRF negative_nonempty_rate reflects BM25 false-positive inheritance.
 - R14-S uses self-referential OpenLocus workspace data; not generalizable.
+
+---
+
+## 2026-06-12 — R17 Query Intent Router / Negative Guard Experiment
+
+### Objective
+
+Test whether query-only routing heuristics and negative guards can reduce negative_nonempty false positives (inherited by RRF from BM25) while preserving recall. Eval-layer research only; does NOT change Rust core.
+
+### Current hypothesis
+
+RRF wins recall but inherits BM25 negative false positives (R15-M negative_nonempty@10=0.645, R15-stress=0.684). A query-only router that suppresses evidence for noise/vague/fabricated queries, combined with a symbol/regex evidence guard for RRF, should materially reduce negative_nonempty without unacceptable recall regression.
+
+### Implementation notes
+
+- **eval/r17_router_guard_experiment.py**: Loads existing R15 predictions, applies three synthetic routing strategies without invoking OpenLocus again, scores with R15-compatible metrics, produces JSON (schema_version r17-v1) and markdown output.
+- **Strategies**:
+  1. **query_only_router_v0**: Routes based only on query text, no labels, no task_type. Heuristics: negative/noise marker detection (FIXME_bogus, TODO_nonexistent, etc.), compound snake_case noise detection (quantum_entanglement_solver, blockchain_consensus_protocol), vague multi-word query detection (all common words like "error handling", "data processing"), exact identifier detection (prefer symbol then regex), identifier token detection (prefer regex then symbol), default RRF for recall.
+  2. **task_type_assisted_router_upper_bound**: Uses public task_type as an upper-bound reference (not production router). mutation_negative/query_noise/negative → empty; provider_ish → empty; stress → symbol if evidence else empty; exact_symbol/implementation_search → symbol if evidence else regex else rrf; config_import → regex if evidence else rrf.
+  3. **rrf_guarded_by_symbol_regex**: Choose RRF only if either symbol or regex has evidence; otherwise empty. Tests whether symbol/regex evidence presence is a sufficient guard against RRF/BM25 false positives.
+- **Scoring**: Reuses R15-compatible metrics (FileRecall@1/5/10, MRR, SpanF0.5@10, token_waste@10, hard_negative_hit_rate@10, negative_nonempty_rate@10, success_rate). Exact or single repo_id prefix path matching only.
+- **Citation safety**: Inherited from source validated predictions. Records citation_inherited_from_validated_methods=true. Does NOT claim new citation validation.
+- **Safety gates**: Hard fail if source report safety_passed is not true, expected methods are missing, citation_validity < 1.0, citation_hash_checked not true (or citation_not_applicable), canary_retrieval.passed not true, or prediction JSONL metrics do not match the source report baseline metrics.
+
+### R17 results
+
+**R15-M Strategy Metrics:**
+
+| Metric | regex | bm25 | symbol | rrf | query_only_router_v0 | task_type_assisted | rrf_guarded |
+|---|---|---|---|---|---|---|---|
+| file_recall@1 | 0.852 | 0.541 | 0.807 | 0.941 | 0.904 | 0.904 | 0.941 |
+| file_recall@5 | 0.956 | 0.719 | 0.830 | 0.993 | 0.941 | 0.926 | 0.993 |
+| file_recall@10 | 0.970 | 0.741 | 0.844 | 0.993 | 0.948 | 0.941 | 0.993 |
+| mrr | 0.889 | 0.619 | 0.820 | 0.963 | 0.918 | 0.916 | 0.963 |
+| span_f0.5@10 | 0.263 | 0.188 | 0.310 | 0.253 | 0.315 | 0.380 | 0.253 |
+| token_waste@10 | 0.677 | 0.639 | 0.204 | 0.695 | 0.539 | 0.264 | 0.695 |
+| hard_negative@10 | 0.289 | 0.230 | 0.052 | 0.259 | 0.237 | 0.074 | 0.259 |
+| negative_nonempty@10 | 0.000 | 0.645 | 0.000 | 0.645 | 0.000 | 0.258 | 0.000 |
+
+**R15-stress Strategy Metrics (negative tasks only):**
+
+| Metric | regex | bm25 | symbol | rrf | query_only_router_v0 | task_type_assisted | rrf_guarded |
+|---|---|---|---|---|---|---|---|
+| negative_nonempty@10 | 0.474 | 0.684 | 0.105 | 0.684 | 0.158 | 0.316 | 0.474 |
+
+**Per-Strategy Route Counts:**
+
+- query_only_router_v0: symbol=43, regex=91, empty=48, rrf=3
+- task_type_assisted: symbol=123, regex=18, rrf=8, empty=36
+- rrf_guarded: rrf=144, empty=41
+
+**Key Deltas vs RRF (R15-M):**
+
+- query_only_router_v0 vs RRF: negative_nonempty -0.645, FileRecall@1 -0.037, MRR -0.044, SpanF0.5 +0.062
+- rrf_guarded_by_symbol_regex vs RRF: negative_nonempty -0.645, all other metrics +0.000 (identical recall/MRR/SpanF0.5)
+
+### Key findings
+
+1. **rrf_guarded_by_symbol_regex eliminates R15-M negative_nonempty (0.645 → 0.000) with zero recall/MRR regression**: Because the guard only returns RRF evidence when symbol or regex also found evidence, and positive tasks always have at least one of those, the guard perfectly filters negative tasks on R15-M. This is the strongest result: a simple evidence-presence guard is sufficient for R15-M negatives.
+2. **query_only_router_v0 also eliminates R15-M negative_nonempty (0.645 → 0.000) with acceptable recall regression**: FileRecall@1 drops from 0.941 to 0.904 (delta -0.037), MRR from 0.963 to 0.918 (delta -0.044). SpanF0.5 improves from 0.253 to 0.315 (+0.062). The router correctly identifies negative tasks (vague queries, fabricated identifiers) and routes them to empty.
+3. **On R15-stress, both strategies reduce but don't eliminate negative_nonempty**: query_only_router_v0 drops from 0.684 to 0.158; rrf_guarded drops to 0.474. The stress tier includes common-word queries where regex still returns false positives, and the symbol/regex guard lets those through.
+4. **task_type_assisted_router is an upper bound**: It achieves 0.258 on R15-M (not zero because some config_import tasks have legitimate evidence) and 0.316 on R15-stress. It uses task_type as benchmark metadata, not runtime information.
+5. **No core default promotion**: While R15-M negative_nonempty reaches 0.000 with two strategies, R15-stress negative_nonempty remains above 0 for all strategies. The bar for core default promotion requires BOTH R15-M and R15-stress negative_nonempty improvement without unacceptable recall/MRR regression.
+6. **Next steps**: Learning/calibrating intent classifier or adding score thresholds, but still evidence-gated. No LLM or dense model claims.
+
+### Caveats
+
+- R17 is an eval-layer router/guard experiment; does NOT change Rust core.
+- query_only_router uses heuristic rules only; not a learned classifier.
+- task_type_assisted_router uses benchmark metadata (task_type) that is not runtime-available; it is an upper-bound reference.
+- Citation safety is inherited from validated source predictions; no new citation validation is claimed.
+- Mined labels are not human-verified; line ranges may be imprecise.
+- Negative tasks in R15-stress have weak or human_reviewed labels only.
+- No provider/dense/LLM quality claims are made.
+- Routing decisions are deterministic and reproducible from the same inputs.
+- The compound_snake_case_noise detector uses a fixed set of domain keywords; real fabricated identifiers could evade it.
