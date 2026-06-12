@@ -1085,3 +1085,85 @@ python3 eval/provider_dense_safety.py --openlocus target/debug/openlocus --out r
 - Cache is not yet used for deduplication (build always recomputes). Cache key stability is verified by unit tests. Cache key builder/stability only; no cache-hit behavior yet.
 - No ANN index; cosine search is linear scan over all records. Not suitable for large corpus.
 - Dense mock search is integration/safety only; not a real semantic retrieval claim.
+
+## 2026-06-12 — R14 Scaled Evidence Benchmark Foundation
+
+### Objective
+
+Establish a scaled benchmark program for evaluating OpenLocus retrieval quality across repository groups and task types, structured as S/M/L/X tiers with increasing scale and label quality requirements. This is a benchmark *foundation*, not a quality conclusion. The current S/M data uses logical repo groups from one OpenLocus workspace snapshot; independent external repositories are a follow-up expansion. The goal is to have a reproducible, anti-leakage evaluation pipeline that can run locally and produce meaningful file-level and span-level metrics with hard negatives as a first-class indicator.
+
+### Design constraints
+
+- Do not change EvidenceCore, Cargo license, or introduce remote dependencies.
+- Public tasks contain no gold paths/lines; labels are private and separate.
+- Hard negatives are first-class data, not optional.
+- Citation validity/freshness/lock validation is a fail-closed safety gate (must be 1.0).
+- No dense/LLM/graph quality claims.
+- R14-S must be locally runnable; M/L/X define target structures for future expansion.
+- Runner/scorer must be strictly isolated: runner never loads labels, scorer never calls CLI.
+- Isolated benchmark root per repo: temp root with only declared source paths.
+- Repo lock content manifest must be recomputed and verified (normalized SHA-256 per file sorted).
+- Benchmark runner writes isolated `.openlocus/policy.toml` from repo lock glob-style excludes (fixtures/**, eval/**, etc).
+- Canary tokens in labels must never appear in indexed/retrieved content; runtime canary retrieval runs inside isolated roots.
+- Predictions with forbidden path prefixes/components are CRITICAL failures.
+- Unknown `repo_id` is CRITICAL; runner refuses to fall back to the full workspace.
+
+### Implementation notes
+
+- **fixtures/r14/ directory**: README, taxonomy/annotation guide, dataset_manifest.json, repos.lock.jsonl, tasks/{sanity,medium,large,stress}.jsonl, labels/{sanity,medium,large,stress}.jsonl, labels/_canary.json, expected_failures/known_issues.md.
+- **Data schema**: Public tasks have `task_id`, `query`, `task_type`, `method_hint`, `repo_id` — no gold. Labels have `task_id`, `gold_spans`, `hard_negatives`, `label_quality`. Repo lock has `repo_id`, `source`, `commit`, `content_manifest_sha`, `content_manifest_algorithm`, `policy/excludes` (glob-style), `language/tier` metadata.
+- **R14-S data**: 4 logical repo groups from one OpenLocus workspace snapshot, 48 tasks, 48 labels, 47 hard negatives. Label quality: 8 human_reviewed, 37 mined_high_confidence, 3 mined. Populated=True.
+- **R14-M data**: same 4 logical repo groups as S, 36 tasks, 36 labels, 31 hard negatives. Partial=True. Full M requires 8+ independent repo groups/repositories.
+- **R14-L data**: 10 placeholder tasks with weak labels. Populated=False. Requires additional repos beyond current workspace.
+- **R14-X data**: Not populated. Requires external repo sources. Running --tier X will fail.
+- **eval/r14_generate_dataset.py**: Generates/refreshes R14 data with normalized content manifest SHA (sha256 per file sorted). Glob-style policy excludes. Avoids label leakage.
+- **eval/r14_benchmark.py**: Strictly separated RUN phase (public tasks only, no labels) and SCORE phase (labels only, no CLI). Isolated temp roots per repo group with `.openlocus/policy.toml` written from repo lock. Unknown repo_id fail-closed. Failed-closed Rust citation validation (must be 1.0). Forbidden path prefix/component detection. Negative task metrics (negative_nonempty_rate@10). Span-overlap hard negative hit rate. Repo lock content manifest re-verification.
+- **eval/r14_leakage_check.py**: static checks: task gold leakage, query-gold overlap, labels not in indexed root (path-component matching), glob-style policy excludes, label file isolation, canary placement, repo lock manifest verification, predictions forbidden path scan. Runtime canary retrieval is enforced by `r14_benchmark.py`.
+- **eval/r14_smoke.py**: HARD FAIL smoke test. No best-effort. All checks must pass. Includes runtime canary retrieval, citation validity=1.0 with hash checked by Rust validator, forbidden path checks, isolated runner/scorer verification.
+
+### R14-S foundation data
+
+| Metric | Value |
+|---|---|
+| Repo groups | 4 logical groups from one OpenLocus workspace snapshot (openlocus-core, openlocus-retrieval, openlocus-store, openlocus-cli) |
+| Tasks (sanity) | 48 |
+| Labels (sanity) | 48 |
+| Hard negatives (sanity) | 47 |
+| Label quality | 8 human_reviewed, 37 mined_high_confidence, 3 mined |
+| Task types | exact_symbol, implementation_search, config_policy, negative, stress, cross_repo |
+| Anti-leakage | Public tasks have no gold; labels are private; runtime canary retrieval; isolated roots with repo-lock policy excludes |
+| Citation gate | Fail-closed (validity must be 1.0) |
+| Run time estimate | <5 min local |
+
+### Current tier status
+
+| Tier | Repo groups | Tasks | Labels | Hard Negatives | Populated | Evaluable |
+|---|---|---|---|---|---|---|
+| R14-S | 4 | 48 | 48 | 47 | True | True |
+| R14-M | 4 | 36 | 36 | 31 | True (partial) | True |
+| R14-L | 0 | 10 (placeholder) | 10 (weak) | 0 | False | False |
+| R14-X | 0 | 0 | 0 | 0 | False | False |
+
+### Key findings
+
+1. **Benchmark pipeline works end-to-end with fail-closed safety**: Runner/scorer isolation, isolated temp roots, citation validity must be 1.0, forbidden path detection, unknown repo_id refusal, repo-lock policy files, and runtime canary retrieval are enforced.
+2. **Anti-leakage design is strictly enforced**: Public tasks contain no gold information. Labels are in a separate directory with canary tokens. The leakage check catches gold path/line exposure, query-gold overlap, and forbidden prediction paths. 8 checks, 0 critical issues.
+3. **Hard negatives are first-class with span-overlap metrics**: 47 hard negatives in R14-S. `hard_negative_hit_rate@10` requires line overlap unless a hard negative is explicitly file-level. `negative_nonempty_rate@10` measures false positive rate on negative tasks.
+4. **Citation validity is fail-closed**: validity must be 1.0. Every citation must be hash+range+path valid. No path-only fallback.
+5. **Repo lock content manifest is verified**: Normalized SHA-256 per file sorted. Mismatch = CRITICAL fail closed. Generator and benchmark use the same algorithm.
+6. **Mined labels are usable but not human-verified**: `mined_high_confidence` labels are structurally sound but may have imprecise line ranges. Explicit `label_quality` field.
+7. **R14-S is a safety foundation, not a quality conclusion**: Validates the pipeline is fail-closed. Does not support quality claims.
+8. **R14-L/X are not populated**: Running --tier L or --tier X will fail with clear message. Structure is defined but data requires additional independent repos.
+9. **Previous R14 graph precision is a future feature track**: Not the current R14 definition.
+
+### Caveats
+
+- This is a benchmark *safety foundation*. R14-S validates the pipeline is fail-closed; it does not support quality conclusions about retrieval methods.
+- Mined labels are not human-verified. `mined_high_confidence` labels have structurally-sound spans but may be imprecise at line-level.
+- R14-M is partial (4 logical repo groups; target is 8+ independent repo groups/repositories). R14-L/X are not populated.
+- The current repo-group set is self-referential (OpenLocus codebase). External repos are required for generalizability.
+- Stress and negative tasks have limited gold spans. Stress tasks have weak labels; negative tasks have empty gold.
+- Hard negative hit rate depends on method quality; a high rate indicates the method is returning plausible but incorrect results.
+- Citation validity as a safety gate catches structural issues but does not measure retrieval relevance.
+- Runtime canary retrieval currently covers isolated R14-S benchmark roots; broader artifact-canary stress across future external repositories remains follow-up work.
+- The benchmark does not claim dense/LLM/graph quality improvements. Those are future feature tracks.

@@ -1,0 +1,10 @@
+{"task_id":"r14l-001","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-store/src/lib.rs","start_line":221,"end_line":280,"rationale":"materialize_evidence checks freshness verification"}],"hard_negatives":[]}
+{"task_id":"r14l-002","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-store/src/lib.rs","start_line":101,"end_line":120,"rationale":"StoreCapabilities struct"}],"hard_negatives":[]}
+{"task_id":"r14l-003","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-retrieval/src/bm25_search.rs","start_line":38,"end_line":100,"rationale":"BM25 search builds Tantivy schema"}],"hard_negatives":[]}
+{"task_id":"r14l-004","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-retrieval/src/bm25_search.rs","start_line":38,"end_line":100,"rationale":"BM25 uses line-window chunking"}],"hard_negatives":[]}
+{"task_id":"r14l-005","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-ast/src/chunk.rs","start_line":112,"end_line":170,"rationale":"AST chunk uses tree-sitter node types"}],"hard_negatives":[]}
+{"task_id":"r14l-006","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-graph/src/graph.rs","start_line":109,"end_line":170,"rationale":"build_graph includes import resolution"}],"hard_negatives":[]}
+{"task_id":"r14l-007","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-graph/src/graph.rs","start_line":109,"end_line":170,"rationale":"build_graph includes test heuristics"}],"hard_negatives":[]}
+{"task_id":"r14l-008","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-provider/src/mock.rs","start_line":30,"end_line":80,"rationale":"MockEmbeddingProvider deterministic_vector normalizes"}],"hard_negatives":[]}
+{"task_id":"r14l-009","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-provider/src/gate.rs","start_line":15,"end_line":60,"rationale":"scan_secrets implements secret scanning"}],"hard_negatives":[]}
+{"task_id":"r14l-010","label_quality":"weak","gold_spans":[{"path":"crates/openlocus-provider/src/audit.rs","start_line":15,"end_line":30,"rationale":"append_audit_event implements audit logging"}],"hard_negatives":[]}

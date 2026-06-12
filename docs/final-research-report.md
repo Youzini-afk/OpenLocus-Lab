@@ -25,6 +25,7 @@ The implementation completed thirteen evidence-gated checkpoints:
 | R11 checkpoint | R11 TDB Level0 adapter probe | Feature-gated TriviumDB 0.7.0 adapter behind `tdb` Cargo feature. TdbChunkStore with dim=1 smoke probe, metadata+chunks only, marker-based purge, materialization conformance. 11/11 adapter checks passed. No default dependency. No retrieval quality claim. |
 | R12 checkpoint | R12 real-repo incremental robustness benchmark | eval/real_repo_incremental_bench.py on temp copy of OpenLocus repo. modify/add/delete/rename/policy_exclude/batch workloads pass 149/149 hard safety checks. total_invalid_citations=0. No stale VerifiedCurrent violations. Growth catastrophic guard passed (not bounded proof). Latency measured as report-only. Level0 one real-repo sample only. |
 | R13 checkpoint | R13 remote embedding / LLM-derived indexing safety scaffold | New `openlocus-provider` crate with EmbeddingProvider trait, MockEmbeddingProvider (deterministic blake3 vectors, dim=32), DisabledEmbeddingProvider. Policy gate: remote denied by default, data_level ≤1 and ≤provider max, secret scanning. Dense JSONL store contains vectors but no raw text/code. Audit JSONL contains no raw text/vector/query. Search → StoreHit → materialize_evidence(Channel::Dense). CLI: provider status/audit, dense build/search/purge; dense output uses query_sha/query_len. 45/45 safety checks passed. Mock quality only; not real semantic retrieval. |
+| R14 checkpoint | R14 Scaled Evidence Benchmark Foundation | Scaled benchmark program with S/M/L/X tiers. Fail-closed safety: runner/scorer isolation, isolated temp roots per repo group, isolated `.openlocus/policy.toml` from repo lock, unknown repo_id refusal, citation validity must be 1.0 via Rust validator, runtime canary retrieval, repo lock content manifest re-verification (normalized SHA-256 per file sorted). R14-S: 4 logical repo groups from one OpenLocus workspace snapshot, 48 tasks, 48 labels, 47 hard negatives. Span-overlap hard_negative_hit_rate@10 + negative_nonempty_rate@10. 8 leakage checks, 0 critical. R14-M partial. R14-L/X not populated. Safety foundation, not quality conclusion. |
 
 Final verification snapshot:
 
@@ -685,17 +686,56 @@ Gate:
 - 45/45 safety checks passed ✅;
 - mock quality only — not a real semantic retrieval claim.
 
-### R14 — graph precision upgrade
+### R14 — Scaled Evidence Benchmark Foundation ✅ DONE
 
-Priority: medium.
+Priority: high. **Completed in R14. Safety foundation passed.**
 
-Add Tree-sitter/LSP/SCIP-like graph adapters behind the same graph model. Keep heuristic graph as baseline.
+R14 establishes a scaled benchmark program for evaluating OpenLocus retrieval quality across repository groups and task types, structured as S/M/L/X tiers with increasing scale and label quality requirements. **This is a safety foundation, not a quality conclusion.** The current S/M data uses logical repo groups from one OpenLocus workspace snapshot; independent external repositories are a follow-up expansion.
+
+Implemented:
+
+- `fixtures/r14/` directory structure: README, taxonomy/annotation guide (fake path examples only), dataset_manifest.json, repos.lock.jsonl, tasks/{sanity,medium,large,stress}.jsonl, labels/{sanity,medium,large,stress}.jsonl, labels/_canary.json, expected_failures/known_issues.md.
+- R14-S: 4 logical repo groups from one OpenLocus workspace snapshot, 48 tasks, 48 labels, 47 hard negatives. Label quality: 8 human_reviewed, 37 mined_high_confidence, 3 mined. **Populated=True, Evaluable=True.**
+- R14-M: same 4 logical repo groups as S, 36 tasks, 36 labels, 31 hard negatives. **Populated=True, Partial=True.** Full M requires 8+ independent repo groups/repositories.
+- R14-L: 10 placeholder tasks with weak labels. **Populated=False, Evaluable=False.** Requires additional repos.
+- R14-X: Not populated. Running --tier X fails with clear message. **Populated=False.**
+- `eval/r14_generate_dataset.py`: Generates/refreshes R14 data with normalized content manifest SHA (sha256 per file sorted). Glob-style policy excludes. Avoids label leakage.
+- `eval/r14_benchmark.py`: Strictly separated RUN phase (public tasks only, no labels) and SCORE phase (labels only, no CLI). Isolated temp roots per repo group with `.openlocus/policy.toml` written from repo lock. Unknown repo_id fail-closed. Rust citation validation must be 1.0 (no path-only fallback). Forbidden path prefix/component detection. Span-overlap hard_negative_hit_rate@10. negative_nonempty_rate@10. Repo lock content manifest re-verification.
+- `eval/r14_leakage_check.py`: 8 static checks: task gold leakage, query-gold overlap, labels not in indexed root (path-component matching), glob-style policy excludes, label file isolation, canary placement, repo lock manifest verification, predictions forbidden path scan. Runtime canary retrieval is enforced by `r14_benchmark.py`. 0 critical issues on R14-S.
+- `eval/r14_smoke.py`: HARD FAIL smoke test. No best-effort. All checks must pass. Includes runtime canary retrieval, citation validity=1.0 with hash checked by Rust validator, forbidden path checks, isolated runner/scorer verification.
+
+Key safety properties (fail-closed):
+
+- Runner never loads labels/gold. Scorer never calls CLI. Strict phase separation.
+- Isolated temp roots per repo group: only declared source paths are exposed. No fixtures/eval/docs/runs/target artifacts.
+- Each isolated root writes `.openlocus/policy.toml` from the repo lock; unknown `repo_id` refuses to run instead of falling back to the full workspace.
+- Citation validity must be 1.0 (fail-closed) via Rust citation validator. No path-only fallback.
+- Repo lock content manifest is recomputed and verified (normalized SHA-256 per file sorted). Mismatch = CRITICAL.
+- Policy excludes are glob-style patterns (fixtures/**, eval/**, etc) and are written into isolated roots.
+- Canary tokens planted in labels; runtime retrieval against them must return 0 results.
+- Predictions with forbidden path prefixes/components are CRITICAL failures.
+- Hard negatives use span-overlap matching unless explicitly file-level.
+- Negative task metrics: negative_nonempty_rate@10 (false positive rate).
+- Label quality is explicit (human_reviewed / mined_high_confidence / mined / weak).
+- R14-L/X not populated: running --tier L/X fails with clear message.
 
 Gate:
 
-- impact/test-selection fixture improvement;
-- depth>1 remains opt-in;
-- graph results still materialize through StoreHit.
+- benchmark pipeline works end-to-end with fail-closed safety ✅;
+- anti-leakage checks pass (0 critical issues, 8 checks) ✅;
+- runner/scorer isolation enforced ✅;
+- isolated temp roots per repo group ✅;
+- citation validity is fail-closed (must be 1.0) ✅;
+- repo lock content manifest re-verified ✅;
+- glob-style policy excludes written into isolated roots ✅;
+- runtime canary retrieval returns zero hits ✅;
+- hard negatives are span-overlap first-class data ✅;
+- negative task metrics present ✅;
+- R14-L/X fail gracefully with clear messages ✅;
+- R14-S is a safety foundation, not a quality conclusion ✅;
+- graph precision is a future feature track ✅.
+
+**Note**: The previous R14 roadmap item was "graph precision upgrade." This R14 redefines the stage as the scaled benchmark foundation. Graph precision is now tracked as a separate future feature.
 
 ### R15 — Fast Context quality bakeoff
 
@@ -724,12 +764,14 @@ The current implementation successfully converts the research design into a work
 - feature-gated TriviumDB Level0 adapter probe;
 - real-repo incremental robustness benchmark (modify/add/delete/rename/policy-exclude/batch/latency/growth);
 - provider/embedding safety scaffold with mock provider, policy gate, secret scanning, dense JSONL store, and embedding audit (45/45 safety checks passed);
+- **scaled evidence benchmark safety foundation (R14) with S/M/L/X tiers, fail-closed runner/scorer isolation, isolated temp roots, citation validity=1.0 via Rust validator, repo-lock policy files, runtime canary retrieval, repo lock manifest re-verification, span-overlap hard negatives, negative task metrics, and explicit label quality tracking**;
 - pushed checkpoints for each stage.
 
 The next phase should not rush into a full LLM/dense/TDB system. The safest path is to continue testing incremental robustness on more real repositories (R12 completed one OpenLocus temp-copy sample), then extend TDB to meaningful search quality (R11 adapter probe complete), plug in real embedding providers behind the existing policy gate (R13 scaffold ready), and run bakeoffs against the conservative baseline.
 
 ### Recommended next stages
 
-- **R14 graph precision**: Add Tree-sitter/LSP/SCIP-like graph adapters behind the same graph model. Keep heuristic graph as baseline. Gate: impact/test-selection fixture improvement; depth>1 opt-in; graph results still materialize through StoreHit.
+- **R14+ graph precision**: Add Tree-sitter/LSP/SCIP-like graph adapters behind the same graph model. Keep heuristic graph as baseline. Gate: impact/test-selection fixture improvement; depth>1 opt-in; graph results still materialize through StoreHit. This is a future feature track, not the current R14 definition.
 - **R15 fast-context quality bakeoff**: Compare `openlocus fast-context` against `retrieve` over larger task sets. Add ablations: no graph, no symbol, BM25 only, derived hints, dense hints. Gate: no citation regressions; budget violations=0; FileRecall/MRR/SpanF0.5 improve or stay within allowed regression.
 - **R16 real remote embedding after policy review**: Integrate real embedding providers (e.g. OpenAI, local ONNX) behind the R13 policy gate. Requires policy review, API key management, and cost tracking. Gate: quality gain measured in eval; no policy regression; graceful degradation when provider unavailable; audit trail complete.
+- **R14-M/L/X expansion**: Expand the benchmark to additional repositories (8+ for M, 16+ for L, 32+ for X). Add human-reviewed labels for critical tasks. Run full method comparison across tiers.

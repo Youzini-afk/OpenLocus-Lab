@@ -1,0 +1,10 @@
+{"task_id":"r14l-001","query":"evidence freshness verification","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14l-002","query":"store backend capabilities","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14l-003","query":"tantivy index schema fields","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14l-004","query":"chunk window line boundaries","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14l-005","query":"tree-sitter node types","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14l-006","query":"import resolution heuristic","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14l-007","query":"test heuristic file linking","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14l-008","query":"embedding vector normalization","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14l-009","query":"secret scanning patterns","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14l-010","query":"audit event logging","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}

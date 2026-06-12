@@ -1,0 +1,8 @@
+{"task_id":"r14stress-001","query":"retrieval quality","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14stress-002","query":"index persistence","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14stress-003","query":"code evidence","task_type":"stress","method_hint":"rrf","repo_id":"openlocus-core"}
+{"task_id":"r14stress-004","query":"embedding search","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14stress-005","query":"workspace configuration","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-cli"}
+{"task_id":"r14stress-006","query":"file scanning","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-core"}
+{"task_id":"r14stress-007","query":"machine_learning_inference","task_type":"negative","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14stress-008","query":"web_server_http_handler","task_type":"negative","method_hint":"bm25","repo_id":"openlocus-retrieval"}

@@ -1,0 +1,10 @@
+{
+  "canary_tokens": [
+    "R14_CANARY_fixture_label_secret_7a3f",
+    "R14_CANARY_eval_benchmark_secret_9b2e",
+    "R14_CANARY_docs_summary_secret_4c1d",
+    "R14_CANARY_runs_prediction_secret_8e5a"
+  ],
+  "description": "These tokens must never appear in any indexed content or prediction results",
+  "purpose": "If any retrieval returns these tokens, benchmark artifacts are indexed"
+}

@@ -1,0 +1,36 @@
+{"task_id":"r14m-001","query":"TdbChunkStore","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-002","query":"TdbPlaceholderStore","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-003","query":"FileRecord","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14m-004","query":"StoreError","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-005","query":"StoreHealth","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-006","query":"ChunkRecord","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-007","query":"EmbeddingRecord","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-008","query":"EmbeddingAuditEvent","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-009","query":"ProviderLocality","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-010","query":"ProviderMetadata","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-011","query":"DerivedViewKind","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-012","query":"DerivedSource","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-013","query":"DerivedProvenance","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-014","query":"GraphEdge","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-015","query":"EdgeKind","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-016","query":"ActionRecord","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-017","query":"TurnKind","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-018","query":"purge_index","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14m-019","query":"JsonlDerivedViewStore","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14m-020","query":"status_index","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14m-021","query":"cosine_similarity","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14m-022","query":"compute_cache_key","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14m-023","query":"append_audit_event","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14m-024","query":"guess_language","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14m-025","query":"persistent index manifest","task_type":"config_policy","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14m-026","query":"embedding policy gate","task_type":"config_policy","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14m-027","query":"graph edge kinds","task_type":"config_policy","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14m-028","query":"derived view store","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14m-029","query":"incremental index update","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14m-030","query":"context orchestration loop","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14m-031","query":"blockchain_consensus_protocol","task_type":"negative","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14m-032","query":"distributed_database_replication","task_type":"negative","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14m-033","query":"memory safety","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14m-034","query":"test coverage","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14m-035","query":"configuration loading","task_type":"cross_repo","method_hint":"bm25","repo_id":"openlocus-cli"}
+{"task_id":"r14m-036","query":"path validation","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-core"}

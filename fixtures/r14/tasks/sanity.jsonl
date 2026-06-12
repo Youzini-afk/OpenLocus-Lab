@@ -1,0 +1,48 @@
+{"task_id":"r14s-001","query":"EvidenceCore","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-002","query":"EvidenceMeta","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-003","query":"Channel","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-004","query":"Freshness","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-005","query":"Policy","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-006","query":"scan_repo","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14s-007","query":"validate_path","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14s-008","query":"read_file","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14s-009","query":"compute_content_sha","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14s-010","query":"bm25_search","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-011","query":"regex_search","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-012","query":"symbol_search","task_type":"implementation_search","method_hint":"symbol","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-013","query":"rrf_combine","task_type":"implementation_search","method_hint":"rrf","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-014","query":"materialize_evidence","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14s-015","query":"StoreHit","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-016","query":"StoreBackend","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-017","query":"build_index","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-018","query":"search_persistent_bm25","task_type":"implementation_search","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-019","query":"dirty_index","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-020","query":"update_index","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-021","query":"validate_index","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-022","query":"generate_views","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14s-023","query":"DerivedIndexView","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-024","query":"build_graph","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14s-025","query":"fast_context","task_type":"implementation_search","method_hint":"rrf","repo_id":"openlocus-store"}
+{"task_id":"r14s-026","query":"EmbeddingProvider","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-027","query":"gate_embed_input","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14s-028","query":"scan_secrets","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-store"}
+{"task_id":"r14s-029","query":"extract_ast_chunks","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-030","query":"extract_ast_symbols","task_type":"implementation_search","method_hint":"regex","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-031","query":"IndexManifest","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-032","query":"ChunkStrategy","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-033","query":"Policy exclude patterns","task_type":"config_policy","method_hint":"bm25","repo_id":"openlocus-core"}
+{"task_id":"r14s-034","query":"default ignore patterns","task_type":"config_policy","method_hint":"bm25","repo_id":"openlocus-core"}
+{"task_id":"r14s-035","query":"content hashing implementation","task_type":"config_policy","method_hint":"bm25","repo_id":"openlocus-core"}
+{"task_id":"r14s-036","query":"tests for evidence validation","task_type":"test_selection","method_hint":"bm25","repo_id":"openlocus-core"}
+{"task_id":"r14s-037","query":"quantum_entanglement_solver","task_type":"negative","method_hint":"regex","repo_id":"openlocus-core"}
+{"task_id":"r14s-038","query":"neural_network_training_loop","task_type":"negative","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-039","query":"error handling","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14s-040","query":"search implementation","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-retrieval"}
+{"task_id":"r14s-041","query":"data storage","task_type":"stress","method_hint":"bm25","repo_id":"openlocus-store"}
+{"task_id":"r14s-042","query":"main entry point","task_type":"cross_repo","method_hint":"regex","repo_id":"openlocus-cli"}
+{"task_id":"r14s-043","query":"ScoreParts","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-044","query":"Symbol struct","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-core"}
+{"task_id":"r14s-045","query":"StoreCapabilities","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-046","query":"ConservativeChunkStore","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-047","query":"MockEmbeddingProvider","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}
+{"task_id":"r14s-048","query":"FastContextResult","task_type":"exact_symbol","method_hint":"symbol","repo_id":"openlocus-store"}

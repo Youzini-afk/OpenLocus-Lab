@@ -1,0 +1,117 @@
+{
+  "schema_version": "r14-v1",
+  "program": "R14 Scaled Evidence Benchmark",
+  "description": "Scaled benchmark program for OpenLocus retrieval quality across repository groups and task types. S/M/L/X tiers with increasing scale and label quality requirements. Current S/M data uses logical repo groups from one OpenLocus workspace snapshot; independent external repositories are a follow-up expansion. Safety foundation, not quality conclusion.",
+  "tiers": {
+    "S": {
+      "target_repos": 4,
+      "target_tasks": 40,
+      "target_labels": 40,
+      "target_hard_negatives": 8,
+      "target_label_quality": ["human_reviewed", "mined_high_confidence"],
+      "run_time_estimate": "<5 min local"
+    },
+    "M": {
+      "target_repos": 8,
+      "target_tasks": 120,
+      "target_labels": 120,
+      "target_hard_negatives": 24,
+      "target_label_quality": ["mined_high_confidence", "mined"],
+      "run_time_estimate": "<30 min local"
+    },
+    "L": {
+      "target_repos": 16,
+      "target_tasks": 400,
+      "target_labels": 400,
+      "target_hard_negatives": 80,
+      "target_label_quality": ["mined", "weak"],
+      "run_time_estimate": "<2 hr"
+    },
+    "X": {
+      "target_repos": 32,
+      "target_tasks": 1000,
+      "target_labels": 1000,
+      "target_hard_negatives": 200,
+      "target_label_quality": ["weak"],
+      "run_time_estimate": "multi-run"
+    }
+  },
+  "current_status": {
+    "S": {
+      "repos": 4,
+      "tasks": 48,
+      "labels": 48,
+      "hard_negatives": 47,
+      "label_quality_distribution": {
+        "human_reviewed": 8,
+        "mined_high_confidence": 37,
+        "mined": 3
+      },
+      "populated": true,
+      "evaluable": true,
+      "note": "R14-S is populated and locally runnable over 4 logical repo groups from one OpenLocus workspace snapshot. 8 human_reviewed negative/stress labels + 37 mined_high_confidence symbol/impl labels + 3 mined config/policy labels."
+    },
+    "M": {
+      "repos": 4,
+      "tasks": 36,
+      "labels": 36,
+      "hard_negatives": 31,
+      "label_quality_distribution": {
+        "human_reviewed": 2,
+        "mined_high_confidence": 7,
+        "mined": 25,
+        "weak": 2
+      },
+      "populated": true,
+      "evaluable": true,
+      "partial": true,
+      "note": "M-tier uses the same 4 logical repo groups as S with additional mined tasks. Full M target requires 8+ independent repo groups/repositories. This is partial."
+    },
+    "L": {
+      "repos": 0,
+      "tasks": 10,
+      "labels": 10,
+      "hard_negatives": 0,
+      "populated": false,
+      "evaluable": false,
+      "note": "L-tier is placeholder with 10 weak-label tasks. Not populated: requires additional repos beyond current workspace."
+    },
+    "X": {
+      "repos": 0,
+      "tasks": 0,
+      "labels": 0,
+      "hard_negatives": 0,
+      "populated": false,
+      "evaluable": false,
+      "note": "X-tier not populated. Requires external repo sources. Running --tier X will fail."
+    }
+  },
+  "generation_info": {
+    "generator": "eval/r14_generate_dataset.py",
+    "generated_at": "2026-06-12",
+    "source_workspace": "/workspace/OpenLocus/OpenLocus-Lab",
+    "content_manifest_algorithm": "normalized_sha256_per_file_sorted",
+    "anti_leakage": "public tasks contain no gold paths/lines; labels are private; runner copies declared sources into isolated roots and writes repo-lock policy.toml excludes fixtures/**/eval/**/docs/**/runs/**/.openlocus/**/target/**; runtime canary retrieval must return zero hits"
+  },
+  "metrics": {
+    "available": [
+      "file_recall@1", "file_recall@5", "file_recall@10",
+      "mrr",
+      "span_f0.5@10",
+      "token_waste@10",
+      "wrong_span_rate@10",
+      "zero_overlap_evidence_rate@10",
+      "hard_negative_hit_rate@10",
+      "negative_nonempty_rate@10",
+      "citation_validity",
+      "structural_validity",
+      "success_rate",
+      "latency_p50_ms", "latency_p95_ms"
+    ],
+    "not_yet_meaningful": [
+      "span_precision@10", "span_recall@10",
+      "line_precision@10", "line_recall@10"
+    ],
+    "notes": "Span-level precision/recall metrics are computed but not yet meaningful due to coarse gold spans and small dataset size. File-level recall and MRR are the primary metrics for R14-S. citation_validity is a fail-closed safety gate (must be 1.0). negative_nonempty_rate@10 measures false positive rate on negative tasks."
+  }
+}
