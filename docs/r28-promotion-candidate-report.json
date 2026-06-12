@@ -46,7 +46,7 @@
     }
   },
   "blocking_evidence_gaps": [
-    "R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet.",
+    "R26 auto-stress retrieval runner/scorer matrix is now provided by R29, but remains failure-surface evidence rather than promotion-grade evidence.",
     "R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.",
     "R23 all 51 guard strategies have bucket regressions; guard generalization is blocked.",
     "QuIVer is not implemented, so no BQ/ANN compatibility or quality evidence exists.",

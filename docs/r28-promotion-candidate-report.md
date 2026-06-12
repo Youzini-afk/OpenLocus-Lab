@@ -19,7 +19,7 @@ R28 is a conservative synthesis of R21/R23/R24/R25/R26 reports over the R20/R26 
 ## Direct answers
 
 1. **Current default should change?** No. RRF is strongest recall, but false-primary risk remains high; guard strategies still have bucket regressions; graph/dense expansions are net-negative.
-2. **If not, why?** The evidence base is failure-oriented rather than promotion-grade: R20 labels are weak/mined, R26 oracle types are deterministic/metamorphic/mined/stress, no human-verified promotion tier covers the new stress space, and R26 has no retrieval runner/scorer matrix yet.
+2. **If not, why?** The evidence base is failure-oriented rather than promotion-grade: R20 labels are weak/mined, R26 oracle types are deterministic/metamorphic/mined/stress, no human-verified promotion tier covers the new stress space. R29 later added the R26 retrieval runner/scorer matrix, but did not change the non-promotion conclusion.
 3. **`query_noise_plus_rrf_agree_min` stable on auto-wide/auto-stress?** Not stable enough. R21 shows useful risk reduction without recall kill, but R23 finds bucket regressions across the entire sweep and R26 has not been run through a retrieval runner/scorer matrix yet.
 4. **QuIVer/TDB independent quality gain?** No evidence. QuIVer is not implemented; TDB is not an ANN/search backend in default build.
 5. **QuIVer/TDB gains by bucket?** Unknown; unavailable/not_measured.
@@ -43,7 +43,7 @@ R28 is a conservative synthesis of R21/R23/R24/R25/R26 reports over the R20/R26 
 
 ## Blocking evidence gaps
 
-- R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet.
+- R26 auto-stress retrieval runner/scorer matrix is now provided by R29, but remains failure-surface evidence rather than promotion-grade evidence.
 - R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.
 - R23 all 51 guard strategies have bucket regressions; guard generalization is blocked.
 - QuIVer is not implemented, so no BQ/ANN compatibility or quality evidence exists.
@@ -68,4 +68,3 @@ R28 is a conservative synthesis of R21/R23/R24/R25/R26 reports over the R20/R26 
 - remote_calls=0
 - R28 source validation checks schema versions, promotion flags, safety gates, core_changes, remote_calls, dense_or_llm_claim flags where present, selected non-null key metrics, and R26 task count consistency before synthesis.
 - Candidate remains candidate: no BM25/RRF/regex/symbol/graph/dense/TDB/QuIVer/LLM-derived output is treated as fact without EvidenceCore materialization.
-

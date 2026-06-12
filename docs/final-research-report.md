@@ -1,14 +1,14 @@
-# OpenLocus R0-R28 Research Report
+# OpenLocus R0-R29 Research Report
 
 Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R28 Promotion Candidate Report milestone.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R29 R26 Auto-Stress Strategy Matrix milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed evidence-gated checkpoints through R28:
+The implementation completed evidence-gated checkpoints through R29:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -37,8 +37,9 @@ The implementation completed evidence-gated checkpoints through R28:
 | R23 checkpoint | R23 Guard Parameter Sweep | Eval-layer guard parameter sweep consuming R21 artifacts and R20 labels; does NOT change Rust core. 51 strategies across 8 guard parameter dimensions plus 15 combined strategies. R21 artifacts manifest is verified fail-closed for every recorded path, sha256, byte count, and JSONL line count. All 51 strategies have bucket regressions (6877 total after bucket-level guard_recall_kill checks). Combined query_noise_1+regex_or_symbol_agree is best R23 guard balance (no_gold_nonempty_rate 0.221 vs RRF 0.495, FileRecall@1 0.693 preserved, zero guard_recall_kill). Agreement guards reduce false positives without recall cost (0.279 no_gold_nonempty at zero kill). RRF score threshold >0.02 causes sharp recall cliff. Gap threshold kills too much recall. No strategy eliminates false positives without unacceptable recall loss. Curves: risk_coverage, recall_vs_negative, recall_vs_false_primary, precision_vs_abstain. promotion_ready=false. not_promotion_evidence=true. No LLM/dense claims. remote_calls=0. |
 | R24 checkpoint | R24 QuIVer/TDB/Dense Probe | NOT a QuIVer bakeoff. QuIVer is not implemented (scan confirms no impl in Rust crates; quiver_implemented=false). TDB is a feature-gated metadata/chunk store placeholder (available=false in default build). Dense mock is available as candidate-channel safety/quality-smoke (not semantic quality). Dense real is unavailable. R24 runs dense mock build/search on R20 auto-wide tasks in isolated repo roots, preserves embeddings/audit between build/search, validates citations fail-closed (hash+range+path), and scores against R20 labels. Dense mock produced 5,264 citation-valid candidates but poor/noisy behavior (FileRecall@1 0.024, MRR 0.073, SpanF0.5 ~0.000, primary_false_positive_rate 0.878) plus 99 explicit candidate rejections. Canary hardening is non-vacuous: 8 non-empty dense stores checked, path/query canaries returned evidence, raw canary/query leakage=0. dense_mock_plus_rrf confirms dense contribution but amplifies noise (primary_false_positive_rate 0.923, hard_distractor_hit_rate 0.215). QuIVer diagnostic fields report unavailable/not_measured with reason quiver_not_implemented; no numeric 0 output as quality result. tdb_stale_leak_count is not_applicable. No Rust core changes. No LLM/dense real/QuIVer quality claims. remote_calls=0. |
 | R25 checkpoint | R25 Graph+Dense Ablation | Eval-layer ablation of graph_basic and dense_mock on R20 auto-wide (741 tasks). graph_basic: net-negative (0 gold, 435 false spans → blocked). dense_mock: net-negative (2 gold, 20,273 false → blocked). rrf_plus_graph dilutes RRF (FileRecall@1 0.693→0.497). rrf_plus_dense_mock also dilutes (0.693→0.134). graph_pollution_ratio=0.0. Citation validity remains 1.0: graph/dense/composites are revalidated in R25; no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use. R25 source-leak canary is regex-only with seeded self-test, not a dense-path canary. QuIVer/TDB unavailable/not_measured. No Rust core changes. No LLM/dense real/QuIVer quality claims. remote_calls=0. promotion_ready=false. |
-| R26 checkpoint | R26 Auto-Stress-1000 | Weak/mined/deterministic stress dataset for retrieval failure discovery. 1100 tasks across exact target counts for 10 stress categories (negative_nonexistent 150, ambiguous_vague 150, hard_distractor 200, semantic_trap 150, same_name_symbol 100, frontend_backend_confusion 75, test_source_confusion 75, generated_vendor_trap 50, stale_index_like 50, dense_quiver_specific_trap 100) and 9 R20 repos. Uses the same external repo set as R20 and derives some queries from existing R20 tasks/labels where useful. Deterministic seed 42. No canary tokens. Public tasks contain only test_id/repo_id/query/public_version/source; category/risk/judgement fields live only in private labels. 19/19 fail-closed static validation checks passed, including exact category targets, public/private schema separation, task/label query consistency, span path/range validity, SHA-256 artifact checks, and repo content manifest SHA lock recomputation. NOT promotion evidence. Negative/abstain cases dominate (60%). No runner/scorer matrix yet. Designed to maximize failure discovery. No Rust core changes. No LLM/dense claims. remote_calls=0. promotion_ready=false. not_promotion_evidence=true. |
-| R28 checkpoint | R28 Promotion Candidate Report | Conservative synthesis of R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets. promotion_ready=false; current default should not change. best_recall_channel=rrf; best_precision_anchor=symbol; best_dense_candidate=none_available_for_default; quiver_recommendation=hold; graph_recommendation=hold_default_expansion; dense_recommendation=supporting_only_after_real_embedding_bakeoff. Key blockers: R26 has no retrieval runner/scorer matrix, R20 labels are weak/mined, R26 oracle types are deterministic/metamorphic/mined/stress, R23 guard sweep has bucket regressions across all 51 swept strategies, QuIVer is not implemented, dense real is unavailable, and R25 graph/dense default expansion is net-negative. No retrieval CLI invocation; no core changes; remote_calls=0. |
+| R26 checkpoint | R26 Auto-Stress-1000 | Weak/mined/deterministic stress dataset for retrieval failure discovery. 1100 tasks across exact target counts for 10 stress categories (negative_nonexistent 150, ambiguous_vague 150, hard_distractor 200, semantic_trap 150, same_name_symbol 100, frontend_backend_confusion 75, test_source_confusion 75, generated_vendor_trap 50, stale_index_like 50, dense_quiver_specific_trap 100) and 9 R20 repos. Uses the same external repo set as R20 and derives some queries from existing R20 tasks/labels where useful. Deterministic seed 42. No canary tokens. Public tasks contain only test_id/repo_id/query/public_version/source; category/risk/judgement fields live only in private labels. 19/19 fail-closed static validation checks passed, including exact category targets, public/private schema separation, task/label query consistency, span path/range validity, SHA-256 artifact checks, and repo content manifest SHA lock recomputation. NOT promotion evidence. Negative/abstain cases dominate (60%). Runner/scorer matrix is now provided by R29. Designed to maximize failure discovery. No Rust core changes. No LLM/dense claims. remote_calls=0. promotion_ready=false. not_promotion_evidence=true. |
+| R28 checkpoint | R28 Promotion Candidate Report | Conservative synthesis of R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets. promotion_ready=false; current default should not change. best_recall_channel=rrf; best_precision_anchor=symbol; best_dense_candidate=none_available_for_default; quiver_recommendation=hold; graph_recommendation=hold_default_expansion; dense_recommendation=supporting_only_after_real_embedding_bakeoff. R29 later resolved the R26 matrix gap but preserved the non-promotion conclusion: R20/R26 labels are weak/mined/deterministic/stress, R23 guard sweep has bucket regressions across all 51 swept strategies, QuIVer is not implemented, dense real is unavailable, and graph/dense default expansion is net-negative. No retrieval CLI invocation in R28 itself; no core changes; remote_calls=0. |
+| R29 checkpoint | R29 R26 Auto-Stress Strategy Matrix | Eval-layer strategy matrix across 16 strategies (4 base + 6 composite/guard + 6 graph/dense/composite) on R26 auto-stress (1100 tasks, 10 stress categories, 9 repos). Strict RUN/SCORE separation: run phase loads only public tasks + repo lock, never labels; score phase loads labels only. R26 provenance validated before run and label SHA/count validation deferred to score phase. Citation validity=1.0 for all implemented strategies. Safety gates passed; artifact manifest verified (64 files); private field/canary scans clean. RRF is strongest recall (FileRecall@1=0.803, FileRecall@5=0.923) but high false-primary (0.453). query_noise_plus_rrf_agree_min preserves RRF recall and cuts false-primary to 0.106 with guard_recall_kill_rate=0.003, still not promotion due to prior bucket-regression/human-label gaps. Symbol is precision anchor (SpanF0.5=0.291, primary_false_positive_rate=0.080). Dense mock is high-noise (primary_false_positive_rate=0.874; dense+RRF=0.906). Graph/dense expansions blocked: graph_basic added 0 gold / 437 false; dense_mock added 2 gold / 20,038 false. 14 failure clusters computed; bucket_regressions=448. 5 unavailable strategies report reason only; QuIVer not implemented. No Rust core changes. remote_calls=0. promotion_ready=false. not_promotion_evidence=true. |
 
 Final verification snapshot:
 
@@ -48,9 +49,11 @@ R22/R27 failure attribution: 13 clusters (110 RRF/BM25 false positives, 67 guard
 R23 guard parameter sweep: 51 strategies across 8 dimensions, 6877 total bucket regressions, all strategies blocked by bucket regression
 R24 QuIVer/TDB/Dense Probe: quiver_implemented=false (scan confirmed), TDB placeholder (available=false), dense_mock candidate-channel safety smoke with 5,264 citation-valid candidates but high false-primary rate (0.878), 99 explicit candidate rejections, non-vacuous canary pass, dense_mock_plus_rrf amplifies noise, dense_real unavailable, no numeric 0 as QuIVer quality result
 R25 Graph+Dense Ablation: graph_basic net-negative (0 gold, 435 false spans → blocked), dense_mock net-negative (2 gold, 20,273 false → blocked), rrf_plus_graph dilutes RRF (FileRecall@1 0.693→0.497), rrf_plus_dense_mock dilutes (0.693→0.134), graph_pollution_ratio=0.0, citation validity remains 1.0 with no_graph inherited from R21 after manifest verification, source-leak canary regex-only with seeded self-test, QuIVer/TDB unavailable/not_measured
-R26 Auto-Stress-1000: 1100 tasks across exact target counts for 10 stress categories (negative_nonexistent 150, ambiguous_vague 150, hard_distractor 200, semantic_trap 150, same_name_symbol 100, frontend_backend_confusion 75, test_source_confusion 75, generated_vendor_trap 50, stale_index_like 50, dense_quiver_specific_trap 100), 9 repos, deterministic seed 42, 19/19 fail-closed static validation checks passed including task/label query consistency, span path/range validity, and repo content manifest SHA lock recomputation, NOT promotion evidence, negative/abstain cases dominate (60%), no canary tokens, no runner/scorer matrix yet
+R26 Auto-Stress-1000: 1100 tasks across exact target counts for 10 stress categories (negative_nonexistent 150, ambiguous_vague 150, hard_distractor 200, semantic_trap 150, same_name_symbol 100, frontend_backend_confusion 75, test_source_confusion 75, generated_vendor_trap 50, stale_index_like 50, dense_quiver_specific_trap 100), 9 repos, deterministic seed 42, 19/19 fail-closed static validation checks passed including task/label query consistency, span path/range validity, and repo content manifest SHA lock recomputation, NOT promotion evidence, negative/abstain cases dominate (60%), no canary tokens, runner/scorer matrix now provided by R29
 
-R28 Promotion Candidate Report: promotion_ready=false; current default should not change; RRF remains best recall channel but false-primary risk remains high; symbol remains precision anchor; query_noise_plus_rrf_agree_min is promising but blocked by R23 bucket regressions and unrun R26; QuIVer/TDB have no independent quality evidence; graph/dense default expansion blocked; next required tests are R26 strategy matrix and human-verified high-risk labels
+R29 R26 Auto-Stress Strategy Matrix: 16 strategies (4 base + 6 composite/guard + 6 graph/dense/composite) across 1100 R26 tasks, strict RUN/SCORE separation, all safety gates passed, artifact manifest verified (64 files), citation_validity=1.0 for all implemented strategies, 14 failure clusters computed, bucket regressions=448 vs RRF baseline, span contribution analysis, private field scan clean, 5 unavailable strategies report reason only, dense_mock is safety smoke not semantic quality, QuIVer not implemented. RRF FileRecall@1=0.803 / primary_false_positive_rate=0.453; query_noise_plus_rrf_agree_min preserves RRF recall and reduces primary_false_positive_rate to 0.106 with guard_recall_kill_rate=0.003; symbol remains precision anchor (SpanF0.5=0.291, primary_false_positive_rate=0.080); dense_mock and dense+RRF are high-noise; graph/dense expansions are blocked by added_false_span > added_gold_span
+
+R28 Promotion Candidate Report: promotion_ready=false; current default should not change; RRF remains best recall channel but false-primary risk remains high; symbol remains precision anchor; query_noise_plus_rrf_agree_min is promising but blocked by R23 bucket regressions; QuIVer/TDB have no independent quality evidence; graph/dense default expansion blocked; R26 strategy matrix now available via R29; next required tests are human-verified high-risk labels and real embedding bakeoff
 citation_validity: 1.0 all strategies
 Rust tests: 243 passed (193 existing + 50 new in openlocus-provider)
 fmt: clean
@@ -1044,6 +1047,61 @@ Gate:
 - citation validity remains 1.0 (R25 revalidated graph/dense/composites; no_graph inherited from R21 after manifest verification) ✅;
 - QuIVer/TDB unavailable/not_measured ✅;
 - default expansion blocked for all expansion strategies ✅;
+- promotion_ready=false ✅;
+- no Rust core changes ✅;
+- no LLM/dense real/QuIVer quality claims ✅;
+- remote_calls=0 ✅.
+
+## R29 checkpoint: R26 Auto-Stress Strategy Matrix
+
+Eval-layer strategy matrix across 16 strategies on the R26 auto-stress failure-surface dataset (1100 tasks, 10 stress categories, 9 repos). Strict RUN/SCORE phase separation: run phase loads only public tasks + repo lock, never labels; score phase loads labels only after all run artifacts written, citations validated, and manifest written. Does NOT change Rust core or EvidenceCore.
+
+Key honesty constraints:
+- R26 labels are weak/mined/deterministic/stress — not human-verified; not promotion evidence
+- dense_mock is non-semantic (deterministic blake3 vectors do NOT capture semantic similarity)
+- QuIVer is not implemented (unavailable/not_measured; no numeric zero as quality result)
+- TDB is a feature-gated placeholder (not applicable)
+- graph_basic is deterministic depth=1 impact derivation, not precise call/type graph
+- No LLM/dense real/QuIVer quality claims
+
+16 implemented strategies:
+- 4 base: regex, bm25, symbol, rrf
+- 6 composite/guard: bm25_regex, bm25_symbol, rrf_guarded_by_symbol, rrf_guarded_by_regex, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min
+- 6 graph/dense/composite: dense_mock, dense_mock_plus_rrf, graph_basic, rrf_plus_graph, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph
+
+5 unavailable strategies (report reason only, no fake numeric quality):
+- dense_real_if_available (not_configured_or_policy_disabled)
+- tdb_quiver_if_available (quiver_not_implemented)
+- tdb_quiver_plus_rrf (quiver_not_implemented)
+- tdb_quiver_guarded_by_symbol_regex (quiver_not_implemented)
+- fast_context_if_available (fast_context_is_4turn_orchestration_scaffold_not_standalone_matrix_strategy)
+
+Key structural guarantees:
+
+- **R26 public provenance validated before run**: summary.json, safety_checks.json, dataset_manifest.json, repos.lock.jsonl all verified; labels SHA/count validation deferred to score phase after run artifacts/citations/manifest are written
+- **Citation validity fail-closed**: every citation must pass `openlocus citations validate`; exit non-zero if any invalid
+- **14 required failure clusters**: RRF_INHERITED_BM25_FALSE_POSITIVE, GUARD_RECALL_KILL, SYMBOL_EXTRACTION_MISS, REGEX_NORMALIZATION_BUG, DENSE_MOCK_NOISE, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE, GRAPH_NEIGHBOR_FALSE_POSITIVE, GRAPH_ADDS_NO_GOLD, HARD_DISTRACTOR_CONFUSION, NEGATIVE_NONEXISTENT_FALSE_PRIMARY, STALE_INDEX_LIKE_FALSE_PRIMARY, TEST_SOURCE_CONFUSION, FRONTEND_BACKEND_CONFUSION, BENCHMARK_ORACLE_SUSPECT
+- **Bucket regressions**: across source_category, expected_behavior, oracle_type, repo_id, risk_tags vs RRF baseline
+- **Span contribution analysis**: graph/dense/composite strategies vs fresh RRF baseline (added_gold_span, added_false_span, net_span_contribution)
+- **Private field scan**: all JSONL artifacts checked for source_category, risk_public, intent_guess, risk_tags, oracle_type, expected_behavior, gold_spans, hard_distractors, must_not_primary, why_this_is_hard, which_strategy_it_targets
+- **Artifact manifest verified**: SHA-256 manifest of all runtime artifacts
+
+Report top-level fields: schema_version="r29-v1", promotion_ready=false, not_promotion_evidence=true, core_changes=false, remote_calls=0, labels_loaded_after_run=true, run_phase_public_only=true, score_phase_labels_only=true, r26_source_artifacts_validated=true, r26_label_artifacts_validated_after_run=true, citation_validity_all_strategies=1.0, quiver_implemented=false, dense_mock_is_semantic_quality=false, artifact_manifest_verified=true
+
+Full-run highlights: RRF FileRecall@1=0.803 / primary_false_positive_rate=0.453; query_noise_plus_rrf_agree_min FileRecall@1=0.803 / primary_false_positive_rate=0.106 / guard_recall_kill_rate=0.003; symbol SpanF0.5=0.291 / primary_false_positive_rate=0.080; dense_mock primary_false_positive_rate=0.874; graph_basic added_gold_span=0 and added_false_span=437; bucket_regressions=448.
+
+Gate:
+
+- 16/16 implemented strategies evaluated ✅;
+- 5/5 unavailable strategies reported with reason ✅;
+- 14/14 failure clusters computed ✅;
+- bucket regressions vs RRF baseline ✅;
+- span contribution analysis ✅;
+- private field scan ✅;
+- citation validity 1.0 for all strategies ✅;
+- R26 provenance validated ✅;
+- artifact manifest verified ✅;
+- RUN/SCORE phase separation enforced ✅;
 - promotion_ready=false ✅;
 - no Rust core changes ✅;
 - no LLM/dense real/QuIVer quality claims ✅;

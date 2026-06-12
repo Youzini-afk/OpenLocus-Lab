@@ -2189,7 +2189,7 @@ Synthesize R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets
 
 ### Blocking evidence gaps
 
-- R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet.
+- R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet. (Resolved by R29.)
 - R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.
 - R23 guard sweep shows bucket regressions across all swept strategies.
 - QuIVer is unavailable, so there is no BQ/ANN compatibility or quality evidence.
@@ -2199,3 +2199,52 @@ Synthesize R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets
 ### Recommendation
 
 Keep all new channels as candidate/supporting/research-only. Next work should run R26 through the strategy matrix and add human-verified labels for high-risk buckets before any default policy change.
+
+## 2026-06-12 — R29 R26 Auto-Stress Strategy Matrix
+
+### Objective
+
+Run R26's 1100 public stress tasks through a 16-strategy matrix to maximize failure discovery, NOT promotion. Must be fresh run; no skip-run support.
+
+### Current hypothesis
+
+A comprehensive strategy matrix across base (regex/bm25/symbol/rrf), composite/guard, and R24/R25-style (dense_mock, graph_basic, composites) strategies on R26's stress dataset will reveal systematic failure surfaces. R26's 10 stress categories (negative_nonexistent, ambiguous_vague, hard_distractor, semantic_trap, same_name_symbol, frontend_backend_confusion, test_source_confusion, generated_vendor_trap, stale_index_like, dense_quiver_specific_trap) are specifically designed to expose retrieval failures.
+
+### Implementation notes
+
+- **eval/r29_r26_stress_matrix.py**: Strictly separated RUN and SCORE phases.
+  - RUN phase: loads only public tasks + repo lock + R26 safety/manifest. Creates isolated benchmark roots by allowlist-copying source files. Runs base methods via openlocus CLI. Builds composite/guard strategies from base predictions. Runs dense_mock build/search and graph_basic. Never reads labels. Validates all citations while isolated roots exist. Writes all run artifacts before loading labels.
+  - SCORE phase: loads predictions + labels. Computes metrics, failure clusters, span contributions, bucket regressions. Never invokes CLI.
+- **16 implemented strategies**: regex, bm25, symbol, rrf, bm25_regex, bm25_symbol, rrf_guarded_by_symbol, rrf_guarded_by_regex, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, dense_mock, dense_mock_plus_rrf, graph_basic, rrf_plus_graph, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph.
+- **5 unavailable strategies**: dense_real_if_available (not_configured_or_policy_disabled), tdb_quiver_if_available (quiver_not_implemented), tdb_quiver_plus_rrf (quiver_not_implemented), tdb_quiver_guarded_by_symbol_regex (quiver_not_implemented), fast_context_if_available (fast_context_is_4turn_orchestration_scaffold_not_standalone_matrix_strategy). No fake numeric quality.
+- **Citation validation**: Every implemented strategy's evidence validated via `openlocus citations validate` while isolated roots exist. Composite/fusion evidence revalidated. No synthetic EvidenceCore channels (no "RRF" channel added). If any citation invalid, exit non-zero.
+- **Isolation**: Allowlisted source files copied from R26 repos.lock into isolated temp roots. No docs/eval/fixtures/runs/.git. Symlinks disallowed. `.openlocus/policy.toml` in isolated root. Runtime traces cleaned between queries; dense embeddings preserved after build.
+- **R26 provenance validation**: run phase validates safety_checks.passed=true, task_count=1100, not_promotion_evidence=true, core_changes=false, remote_calls=0, dense_or_llm_claims=false, and tasks SHA. Declared label count is recorded but label file content/SHA validation is deferred to score phase after run artifacts/citations/manifest are written.
+- **14 required failure clusters**: RRF_INHERITED_BM25_FALSE_POSITIVE, GUARD_RECALL_KILL, SYMBOL_EXTRACTION_MISS, REGEX_NORMALIZATION_BUG, DENSE_MOCK_NOISE, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE, GRAPH_NEIGHBOR_FALSE_POSITIVE, GRAPH_ADDS_NO_GOLD, HARD_DISTRACTOR_CONFUSION, NEGATIVE_NONEXISTENT_FALSE_PRIMARY, STALE_INDEX_LIKE_FALSE_PRIMARY, TEST_SOURCE_CONFUSION, FRONTEND_BACKEND_CONFUSION, BENCHMARK_ORACLE_SUSPECT.
+- **Span contribution analysis**: graph/dense/composites vs fresh RRF baseline; added_gold_span, added_false_span, tasks_with_additions, default_expansion_blocked.
+- **Bucket regressions**: per source_category, expected_behavior, oracle_type, repo_id, risk_tags. Regression types: recall drop, false-primary increase, no-gold-nonempty increase, must-not-primary increase, abstain spike on primary_evidence.
+- **Private field scan**: prediction/evidence/rejection/trace JSONL must not include: source_category, risk_public, intent_guess, risk_tags, oracle_type, expected_behavior, gold_spans, hard_distractors, must_not_primary, why_this_is_hard, which_strategy_it_targets.
+- **Report fields**: schema_version="r29-v1", promotion_ready=false, not_promotion_evidence=true, core_changes=false, remote_calls=0, labels_loaded_after_run=true, run_phase_public_only=true, score_phase_labels_only=true, r26_source_artifacts_validated=true, r26_label_artifacts_validated_after_run=true, citation_validity_all_strategies=1.0, quiver_implemented=false, dense_mock_is_semantic_quality=false, artifact_manifest_verified=true.
+- **No skip-run**: Fresh run always required.
+
+### Full-run results
+
+- Full R29 completed on 1100 R26 tasks across 16 implemented strategies.
+- Safety gates: ALL PASSED. Artifact manifest verified (64 files). Artifact private-field scan and canary scan clean. Citation validity is 1.0 for every implemented strategy.
+- RRF remains the best recall channel but unsafe alone: FileRecall@1=0.803, FileRecall@5=0.923, MRR=0.858, primary_false_positive_rate=0.453.
+- `query_noise_plus_rrf_agree_min` reduces false-primary while preserving RRF recall on R26: FileRecall@1=0.803, FileRecall@5=0.923, primary_false_positive_rate=0.106, guard_recall_kill_rate=0.003. This is still not promotion evidence because R23 showed bucket regressions and R26 labels are not human-verified.
+- Symbol remains the precision anchor: SpanF0.5=0.291, primary_false_positive_rate=0.080, token_waste=0.247, abstain_rate=0.671.
+- Dense mock is a high-noise failure probe: dense_mock primary_false_positive_rate=0.874; dense_mock_plus_rrf and rrf_plus_dense_mock primary_false_positive_rate=0.906.
+- Graph remains default-blocked: graph_basic added_gold_span=0, added_false_span=437.
+- All graph/dense expansion variants are blocked by `added_false_span > added_gold_span`.
+- Failure clusters: DENSE_MOCK_NOISE=577, RRF_INHERITED_BM25_FALSE_POSITIVE=299, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE=219, GRAPH_ADDS_NO_GOLD=90, SYMBOL_EXTRACTION_MISS=63, GUARD_RECALL_KILL=62, FRONTEND_BACKEND_CONFUSION=57, HARD_DISTRACTOR_CONFUSION=43, NEGATIVE_NONEXISTENT_FALSE_PRIMARY=41, TEST_SOURCE_CONFUSION=41, REGEX_NORMALIZATION_BUG=36, GRAPH_NEIGHBOR_FALSE_POSITIVE=26.
+- Bucket regressions total=448 across bm25, bm25_regex, bm25_symbol, dense_mock, dense_mock_plus_rrf, graph_basic, regex, rrf_guarded_by_symbol, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph, symbol.
+
+### Caveats
+
+- No promotion, no default change, failure-surface only.
+- R26 labels are weak/mined/deterministic/stress; not human-verified.
+- dense_mock is candidate-channel safety smoke, not semantic quality.
+- graph_basic is deterministic depth=1, not precise call/type graph.
+- QuIVer/TDB unavailable; no fabricated numeric quality.
+- Fresh run only; no skip-run support.
