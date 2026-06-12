@@ -1,14 +1,14 @@
-# OpenLocus R0-R24 Research Report
+# OpenLocus R0-R25 Research Report
 
 Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R24 QuIVer/TDB/Dense Probe milestone.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R25 Graph+Dense Ablation milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed twenty-four evidence-gated checkpoints:
+The implementation completed twenty-five evidence-gated checkpoints:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -36,6 +36,7 @@ The implementation completed twenty-four evidence-gated checkpoints:
 | R22/R27 checkpoint | R22/R27 Failure Attribution | Eval-layer failure attribution analysis consuming R21 artifacts and R20 labels; does NOT change Rust core. 13 failure clusters: RRF_INHERITED_BM25_FALSE_POSITIVE=110, GUARD_RECALL_KILL=67 (rrf_guarded_by_symbol kills recall on positive tasks; per_guard: symbol=67, regex=0, symbol_regex=0, query_noise=0), SYMBOL_EXTRACTION_MISS=91, REGEX_NORMALIZATION_BUG=1, BENCHMARK_ORACLE_SUSPECT=62 (weak labels where strategies disagree with oracle). Unrun strategies (dense, TDB/QuIVer, graph, AST) have count=0 with recommended_next_tests. EVIDENCECORE_REJECTION_EXPECTED/UNEXPECTED have metric_unavailable=true. 206 bucket regressions detected. promotion_blocked_by_bucket_regression=true. Analysis-only score phase; no retrieval re-run; no labels in run phase. source_report_sha, labels_sha, artifact_manifest_sha verified. Runs artifacts gitignored. No promotion claims, no dense/LLM/QuIVer quality claims. promotion_ready=false. not_promotion_evidence=true. remote_calls=0. |
 | R23 checkpoint | R23 Guard Parameter Sweep | Eval-layer guard parameter sweep consuming R21 artifacts and R20 labels; does NOT change Rust core. 51 strategies across 8 guard parameter dimensions plus 15 combined strategies. R21 artifacts manifest is verified fail-closed for every recorded path, sha256, byte count, and JSONL line count. All 51 strategies have bucket regressions (6877 total after bucket-level guard_recall_kill checks). Combined query_noise_1+regex_or_symbol_agree is best R23 guard balance (no_gold_nonempty_rate 0.221 vs RRF 0.495, FileRecall@1 0.693 preserved, zero guard_recall_kill). Agreement guards reduce false positives without recall cost (0.279 no_gold_nonempty at zero kill). RRF score threshold >0.02 causes sharp recall cliff. Gap threshold kills too much recall. No strategy eliminates false positives without unacceptable recall loss. Curves: risk_coverage, recall_vs_negative, recall_vs_false_primary, precision_vs_abstain. promotion_ready=false. not_promotion_evidence=true. No LLM/dense claims. remote_calls=0. |
 | R24 checkpoint | R24 QuIVer/TDB/Dense Probe | NOT a QuIVer bakeoff. QuIVer is not implemented (scan confirms no impl in Rust crates; quiver_implemented=false). TDB is a feature-gated metadata/chunk store placeholder (available=false in default build). Dense mock is available as candidate-channel safety/quality-smoke (not semantic quality). Dense real is unavailable. R24 runs dense mock build/search on R20 auto-wide tasks in isolated repo roots, preserves embeddings/audit between build/search, validates citations fail-closed (hash+range+path), and scores against R20 labels. Dense mock produced 5,264 citation-valid candidates but poor/noisy behavior (FileRecall@1 0.024, MRR 0.073, SpanF0.5 ~0.000, primary_false_positive_rate 0.878) plus 99 explicit candidate rejections. Canary hardening is non-vacuous: 8 non-empty dense stores checked, path/query canaries returned evidence, raw canary/query leakage=0. dense_mock_plus_rrf confirms dense contribution but amplifies noise (primary_false_positive_rate 0.923, hard_distractor_hit_rate 0.215). QuIVer diagnostic fields report unavailable/not_measured with reason quiver_not_implemented; no numeric 0 output as quality result. tdb_stale_leak_count is not_applicable. No Rust core changes. No LLM/dense real/QuIVer quality claims. remote_calls=0. |
+| R25 checkpoint | R25 Graph+Dense Ablation | Eval-layer ablation of graph_basic and dense_mock on R20 auto-wide (741 tasks). graph_basic: net-negative (0 gold, 435 false spans → blocked). dense_mock: net-negative (2 gold, 20,273 false → blocked). rrf_plus_graph dilutes RRF (FileRecall@1 0.693→0.497). rrf_plus_dense_mock also dilutes (0.693→0.134). graph_pollution_ratio=0.0. Citation validity remains 1.0: graph/dense/composites are revalidated in R25; no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use. R25 source-leak canary is regex-only with seeded self-test, not a dense-path canary. QuIVer/TDB unavailable/not_measured. No Rust core changes. No LLM/dense real/QuIVer quality claims. remote_calls=0. promotion_ready=false. |
 
 Final verification snapshot:
 
@@ -44,7 +45,8 @@ R21 auto-wide matrix: 741 tasks, 9 repos, 10 strategies, 0 critical safety issue
 R22/R27 failure attribution: 13 clusters (110 RRF/BM25 false positives, 67 guard recall kills, 91 symbol misses, 1 regex normalization bug, 62 benchmark-oracle suspects for label review, 8 unrun count=0), 206 bucket regressions, promotion_blocked_by_bucket_regression=true
 R23 guard parameter sweep: 51 strategies across 8 dimensions, 6877 total bucket regressions, all strategies blocked by bucket regression
 R24 QuIVer/TDB/Dense Probe: quiver_implemented=false (scan confirmed), TDB placeholder (available=false), dense_mock candidate-channel safety smoke with 5,264 citation-valid candidates but high false-primary rate (0.878), 99 explicit candidate rejections, non-vacuous canary pass, dense_mock_plus_rrf amplifies noise, dense_real unavailable, no numeric 0 as QuIVer quality result
-citation_validity: 1.0 all 10 strategies
+R25 Graph+Dense Ablation: graph_basic net-negative (0 gold, 435 false spans → blocked), dense_mock net-negative (2 gold, 20,273 false → blocked), rrf_plus_graph dilutes RRF (FileRecall@1 0.693→0.497), rrf_plus_dense_mock dilutes (0.693→0.134), graph_pollution_ratio=0.0, citation validity remains 1.0 with no_graph inherited from R21 after manifest verification, source-leak canary regex-only with seeded self-test, QuIVer/TDB unavailable/not_measured
+citation_validity: 1.0 all strategies
 Rust tests: 243 passed (193 existing + 50 new in openlocus-provider)
 fmt: clean
 clippy: clean with -D warnings
@@ -907,6 +909,7 @@ The current implementation successfully converts the research design into a work
 - **multi-method quality bakeoff (R16) across R14-S/R15-M/R15-stress with regex/bm25/symbol/rrf, all safety gates passed, RRF wins recall but inherits BM25 false positives, symbol best span precision, no method promoted to universal default, lexical/symbol/RRF only, no provider/dense/LLM claims**;
 - **large/stress guard generalization validation (R19) on R15-L (294 weak/mined tasks) and R15-stress, rrf_guarded_by_symbol_regex generalizes to R15-L (recall preserved, neg_nonempty 0.917→0.042) but fails stress (0.474 vs symbol 0.105), query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated, R15-L labels are weak/mined so generalization smoke only, promotion_ready=false always, no core changes, no LLM/dense claims**;
 - **auto-wide failure attribution (R22/R27) consuming R21 artifacts and R20 labels, 13 failure clusters (RRF_INHERITED_BM25_FALSE_POSITIVE=110, GUARD_RECALL_KILL=67, SYMBOL_EXTRACTION_MISS=91, REGEX_NORMALIZATION_BUG=1, BENCHMARK_ORACLE_SUSPECT=62, unrun strategies count=0), 206 bucket regressions, expanded per-strategy metrics, analysis-only score phase, no retrieval re-run, no Rust core changes, no LLM/dense claims, promotion_ready=false**;
+- **graph+dense ablation (R25) on R20 auto-wide dataset, graph_basic net-negative (0 gold, 435 false spans → blocked), dense_mock net-negative (2 gold, 20,273 false → blocked), rrf_plus_graph dilutes RRF (FileRecall@1 0.693→0.497), rrf_plus_dense_mock dilutes (0.693→0.134), graph_pollution_ratio=0.0, citation validity remains 1.0 with no_graph inherited from R21 after manifest verification, source-leak canary regex-only with seeded self-test, QuIVer/TDB unavailable/not_measured, no Rust core changes, no LLM/dense real/QuIVer quality claims, promotion_ready=false**;
 - pushed checkpoints for each stage.
 
 The next phase should not rush into a full LLM/dense/TDB system. The safest path is to continue testing incremental robustness on more real repositories (R12 completed one OpenLocus temp-copy sample), then extend TDB to meaningful search quality (R11 adapter probe complete), plug in real embedding providers behind the existing policy gate (R13 scaffold ready), and run bakeoffs against the conservative baseline.
@@ -993,3 +996,50 @@ Gate:
 - safety checks all pass ✅;
 - promotion_ready=false ✅;
 - no Rust core changes ✅.
+
+## R25 checkpoint: R25 Graph+Dense Ablation
+
+Eval-layer ablation study measuring the contribution of graph_basic and dense_mock strategies — individually and in combination with R21 RRF — on the R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories). Does NOT change Rust core or EvidenceCore.
+
+Key honesty constraints:
+- dense_mock is non-semantic (deterministic blake3 vectors do NOT capture semantic similarity)
+- QuIVer is not implemented (unavailable/not_measured; no numeric zero as quality result)
+- TDB is a feature-gated placeholder (not applicable for this ablation)
+- R20 labels are weak/mined (258 weak, 315 mined_high_confidence, 168 mined; no human_reviewed)
+
+6 strategies tested: no_graph (R21 rrf baseline), graph_basic, rrf_plus_graph, dense_mock, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph.
+
+Key results:
+
+- **graph_basic is net-negative**: Added 0 gold spans and 435 false spans. Default expansion blocked.
+- **dense_mock is net-negative**: Added 2 gold spans and 20,273 false spans. Default expansion blocked.
+- **rrf_plus_graph dilutes RRF**: FileRecall@1 drops from 0.693 to 0.497 because graph evidence competes with RRF evidence in the RRF score calculation.
+- **rrf_plus_dense_mock also dilutes RRF**: FileRecall@1 drops from 0.693 to 0.134. Dense mock evidence floods the RRF pool with irrelevant candidates.
+- **Graph pollution is zero**: graph_pollution_ratio=0.000. No graph evidence returned on forbidden paths.
+- **Citation validity remains 1.0**: graph_basic, dense_mock, and composite strategies are revalidated in R25 with Rust hash/range/path citation validation. no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use.
+- **QuIVer/TDB honestly reported as unavailable/not_measured**
+
+Retrieval quality table:
+
+| Metric | no_graph | graph_basic | rrf_plus_graph | dense_mock | rrf_plus_dense_mock | rrf_plus_dense_mock_plus_graph |
+|--------|---------:|------------:|---------------:|-----------:|--------------------:|-------------------------------:|
+| FileRecall@1 | 0.693 | 0.003 | 0.497 | 0.024 | 0.134 | 0.112 |
+| FileRecall@5 | 0.829 | 0.013 | 0.791 | 0.152 | 0.781 | 0.767 |
+| MRR | 0.753 | 0.008 | 0.641 | 0.073 | 0.451 | 0.405 |
+| SpanF0.5 | 0.185 | 0.000 | 0.172 | 0.000 | 0.077 | 0.068 |
+| citation_validity | 1.0 inherited | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+
+Ablation metrics: graph added 0 gold / 435 false spans; dense added 2 gold / 20,273 false spans; combined added 2 gold / 20,695 false spans. All default expansions blocked.
+
+Gate:
+
+- 6/6 strategies evaluated ✅;
+- ablation metrics computed ✅;
+- graph_pollution_ratio=0.0 ✅;
+- citation validity remains 1.0 (R25 revalidated graph/dense/composites; no_graph inherited from R21 after manifest verification) ✅;
+- QuIVer/TDB unavailable/not_measured ✅;
+- default expansion blocked for all expansion strategies ✅;
+- promotion_ready=false ✅;
+- no Rust core changes ✅;
+- no LLM/dense real/QuIVer quality claims ✅;
+- remote_calls=0 ✅.

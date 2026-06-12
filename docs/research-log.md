@@ -2009,3 +2009,102 @@ Probe QuIVer/TDB/dense availability and run dense_mock as a candidate-channel sa
 - R20 labels are weak/mined; not promotion evidence
 - promotion_ready=false always
 - No Rust core changes
+
+---
+
+## 2026-06-12 — R25 Graph+Dense Ablation
+
+### Objective
+
+Eval-layer ablation study measuring the contribution of graph_basic and dense_mock strategies — individually and in combination with R21 RRF — on the R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories). Does NOT change Rust core or EvidenceCore.
+
+### Core principles
+
+1. dense_mock is non-semantic (deterministic blake3 vectors do NOT capture semantic similarity)
+2. QuIVer is not implemented (unavailable/not_measured; no numeric zero as quality result)
+3. TDB is a feature-gated placeholder (not applicable for this ablation)
+4. R20 labels are weak/mined (258 weak, 315 mined_high_confidence, 168 mined; no human_reviewed)
+
+### Implementation notes
+
+- **eval/r25_graph_dense_ablation.py**: Strictly separated RUN and SCORE phases.
+  - Phase 1 (RUN): Loads only public tasks + repo lock + R21 rrf predictions. Creates isolated benchmark roots by allowlist-copying source files. Runs graph_basic (derive top path via symbol→regex fallback, then impact) and dense_mock (build + search) via openlocus CLI in isolated roots. Builds composite strategies (rrf_plus_graph, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph) by RRF-fusing base predictions. Never reads labels.
+  - Phase 2 (SCORE): Loads all strategy predictions + R20 labels. Computes metrics. Never invokes openlocus CLI.
+- **6 strategies**: no_graph (R21 rrf baseline), graph_basic, rrf_plus_graph, dense_mock, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph.
+- **New ablation metrics**: added_gold_span, added_false_span, graph_pollution_ratio, graph_token_waste_delta, dense_added_gold_span, dense_added_false_span, combined_added_gold_span, combined_added_false_span.
+- **Rule**: If added_false_span > added_gold_span, default expansion is blocked.
+- **QuIVer/TDB**: Explicit unavailable/not_measured; no numeric zero quality output.
+- **Safety gates**: Labels not loaded until after run; R21 artifact manifest path/sha/bytes/jsonl line count verified fail-closed before using RRF baseline; citation validator hash/range/path for graph/dense/composite strategies (no_graph inherits R21 validation after manifest verification); artifact manifest verified; scans for private fields/canary tokens; promotion_ready=false, not_promotion_evidence=true, remote_calls=0.
+- **Bug fix**: `_extract_evidence_from_search_result()` helper added because search commands return JSON array (wrapped as `result["items"]` by `run_cli`), while impact/retrieve return `result["evidence"]`.
+- **Bug fix**: `INIMPLEMENTED_STRATEGIES` → `IMPLEMENTED_STRATEGIES` typo.
+
+### R25 ablation results (741 tasks, 9 repos)
+
+#### Retrieval quality
+
+| Metric | no_graph | graph_basic | rrf_plus_graph | dense_mock | rrf_plus_dense_mock | rrf_plus_dense_mock_plus_graph |
+|--------|---------:|------------:|---------------:|-----------:|--------------------:|-------------------------------:|
+| FileRecall@1 | 0.693 | 0.003 | 0.497 | 0.024 | 0.134 | 0.112 |
+| FileRecall@3 | 0.791 | 0.013 | 0.762 | 0.110 | 0.719 | 0.698 |
+| FileRecall@5 | 0.829 | 0.013 | 0.791 | 0.152 | 0.781 | 0.767 |
+| MRR | 0.753 | 0.008 | 0.641 | 0.073 | 0.451 | 0.405 |
+| SpanF0.5 | 0.185 | 0.000 | 0.172 | 0.000 | 0.077 | 0.068 |
+| token_waste | 0.779 | 0.310 | 0.800 | 0.850 | 0.928 | 0.938 |
+| no_gold_nonempty | 0.495 | 0.072 | 0.495 | 0.878 | 0.923 | 0.923 |
+| abstain_rate | 0.182 | 0.785 | 0.182 | 0.134 | 0.034 | 0.034 |
+| citation_validity | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+
+#### Ablation metrics
+
+| Metric | graph | dense | rrf_plus_graph | rrf_plus_dense | combined |
+|--------|------:|------:|---------------:|---------------:|---------:|
+| added_gold_span | 0 | 2 | 0 | 2 | 2 |
+| added_false_span | 435 | 20,273 | 435 | 20,273 | 20,695 |
+| default_expansion_blocked | true | true | true | true | true |
+
+#### Graph-specific metrics
+
+| Metric | Value |
+|--------|-------|
+| Path derivation: symbol | 358/741 (48.3%) |
+| Path derivation: regex | 156/741 (21.1%) |
+| Path derivation: none | 227/741 (30.6%) |
+| Impact failures (no top path) | 227 |
+| Impact no evidence (top path found but impact empty) | 355 |
+| graph_pollution_ratio | 0.000 |
+| graph_token_waste_delta | -0.469 |
+
+### Key findings
+
+1. **graph_basic produces net-negative contribution**: Added 0 gold spans and 435 false spans. Default expansion blocked.
+2. **dense_mock is net-negative as expected**: Added 2 gold spans and 20,273 false spans. Non-semantic mock vectors produce massive noise. Default expansion blocked.
+3. **rrf_plus_graph dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.497 because graph evidence competes with RRF evidence in the RRF score calculation.
+4. **rrf_plus_dense_mock also dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.134. Dense mock evidence floods the RRF pool with irrelevant candidates.
+5. **Graph pollution is zero**: No graph evidence was returned on forbidden paths. graph_pollution_ratio=0.000.
+6. **Graph has low token waste when it fires**: graph_basic token_waste=0.310 vs no_graph=0.779, but this is because graph_basic mostly abstains (0.785 abstain rate).
+7. **Citation validity remains 1.0**: graph_basic, dense_mock, and composite strategies are revalidated in R25 with Rust hash/range/path citation validation. no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use.
+8. **QuIVer/TDB are honestly reported as unavailable/not_measured**: No numeric zero quality results for QuIVer. TDB is not applicable for this ablation.
+9. **Canary scope is source-leak only**: R25 uses a regex canary over isolated copied source before dense build. A seeded self-test proves regex hits are detectable, then 36 leakage checks produce 0 hits and 0 failures. It does not claim a dense-path canary; R24 owns dense-path canary hardening.
+
+### Safety
+
+- All safety checks passed
+- Labels not loaded until after run complete (strict RUN/SCORE phase separation)
+- Citation validator hash/range/path for every strategy with evidence
+- Artifact manifest path/sha/bytes/line count verified
+- Artifact scans for private fields: 0 issues
+- Artifact scans for canary tokens: 0 issues
+- promotion_ready=false, not_promotion_evidence=true, remote_calls=0
+- R20 labels weak/mined caveat recorded
+
+### Caveats
+
+- R20 labels are weak/mined (no human_reviewed); not promotion evidence
+- dense_mock is non-semantic; no real embedding quality claim
+- Graph impact is depth=1 only; deeper impact not tested
+- Graph path derivation uses symbol→regex fallback; not LSP/SCIP
+- Impact returns empty evidence for 355/514 tasks with top path (no graph edges found)
+- graph_basic abstains on 78.5% of tasks (no path or no impact)
+- Combined strategies show additive noise: graph + dense false spans accumulate
+- Runs artifacts are gitignored; report not committed
+- No Rust core changes
