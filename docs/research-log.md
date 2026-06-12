@@ -1937,3 +1937,75 @@ Systematic parameter sweep across guard dimensions will reveal Pareto-optimal op
 - All strategies blocked by bucket regression; expected given R20 label diversity
 - Combined strategies are observations, not promotions
 - query_noise_score is deterministic/heuristic; not learned from data
+
+---
+
+## 2026-06-12 — R24 QuIVer/TDB/Dense Probe
+
+### Objective
+
+Probe QuIVer/TDB/dense availability and run dense_mock as a candidate-channel safety/quality smoke on the R20 auto-wide failure-surface dataset. NOT a QuIVer bakeoff. QuIVer is not implemented and must be reported unavailable; no fabricated QuIVer quality data is produced. TDB is a feature-gated metadata/chunk store, not an ANN/QuIVer backend. Dense real is unavailable; dense_mock is candidate-channel safety/quality-smoke (not semantic quality).
+
+### Core principles
+
+1. QuIVer is not implemented -> report unavailable, not run. No numeric 0 as quality result.
+2. TDB is NOT ANN/QuIVer -> feature-gated metadata/chunk store. Probe placeholder only.
+3. dense_real unavailable; dense_mock is candidate-channel safety/quality-smoke (not semantic quality).
+
+### Implementation notes
+
+- **eval/r24_quiver_tdb_probe.py**: Strictly separated RUN and SCORE phases.
+  - Phase 1 (RUN): Availability checks + dense mock candidate-channel probe. Loads only public tasks + repo lock. Creates isolated benchmark roots by allowlist-copying source files. Runs dense build/search via openlocus CLI. Never reads labels.
+  - Phase 2 (SCORE): Loads predictions + labels. Computes metrics. Never invokes openlocus CLI.
+- **Availability checks** (fail-closed evidence):
+  - QuIVer implementation scan: no files/deps/symbols for QuIVer except eval/docs placeholders. Report unavailable, not run.
+  - TDB default status via `openlocus store status tdb --json`: available=false, success=false. No retrieval quality claimed.
+  - Dense provider status: mock and disabled available; real provider unavailable.
+- **Dense mock candidate-channel probe**:
+  - Uses R20 repo lock source paths. Builds isolated temp roots by allowlist-copying source files under repo_id/ and .openlocus/policy.toml.
+  - For each repo, runs `openlocus dense build --provider mock --experimental --json` once.
+  - For R20 tasks, runs `openlocus dense search --provider mock --limit 10 --json <query>` in that repo isolated root.
+  - Preserves `.openlocus/embeddings` and `.openlocus/audit` between build/search; only transient traces/context are cleaned during the run.
+  - Produces R24-owned artifacts in runs/: dense_mock predictions/evidence/rejections/trace plus dense_mock_plus_rrf predictions/evidence/rejections/trace, and manifest json. Does NOT commit runs.
+  - Validates dense evidence through `openlocus citations validate --json` before cleanup. citation_validity must be 1.0 if evidence exists.
+  - Scans .openlocus/embeddings and audit for canary tokens and query leaks. A non-secret dense path canary runs after dense build and fails closed if it cannot traverse the vector store and return evidence for non-empty stores. `success=false` task searches are recorded as candidate rejections, not process failures, when CLI exits cleanly with a block/no-hit reason.
+  - Scores dense_mock using R20 labels: FileRecall@1/3/5, MRR, SpanF0.5, SpanPrecision, SpanRecall, token_waste, no_gold_nonempty_rate, primary_false_positive_rate, must_not_primary_violation_rate, abstain_rate, weak_candidate_rate, hard_distractor_hit_rate. Bucket metrics for query_category, risk_tags, expected_behavior, repo_id, language. Dense semantic trap/proper_name/config/API buckets separately summarized.
+- **Optional fusion**: dense_mock_plus_rrf by RRF-fusing dense_mock with R21 rrf predictions, only if dense evidence citation-valid and no synthetic invalid channels. Score separately and report dense candidate contribution.
+- **TDB stale/materialization smoke**: Default build TDB is unavailable placeholder. `store status tdb` confirms. Does not enable feature. Reports tdb_feature_probe_not_run with reason. tdb_stale_leak_count is not_applicable.
+- **QuIVer diagnostic fields**: R24.1 fields (BQ_overlap, quiver recall, etc.) set status unavailable/not_measured with reason quiver_not_implemented and next_required_tests. Does NOT output numeric 0 as quality result.
+
+### Safety gates
+
+- Labels not loaded until after dense run complete
+- Citation validator pass for dense artifacts
+- Artifact manifest path/sha/bytes/lines verified
+- Dense mock must produce non-empty materialized candidates; otherwise R24 fails as a vacuous candidate-channel probe
+- Non-secret dense path canary must return evidence for non-empty dense stores; raw canary/query text must not appear in stdout/stderr or artifacts
+- Canary/no label leakage: public tasks only in run phase; labels only score
+- No promotion/dense real/QuIVer quality claims
+- Runs artifacts gitignored
+- Private field scan: no gold_spans/expected_behavior/query_category in R24 artifacts
+- Canary token scan: no canary tokens in R24 artifacts
+
+### Key findings
+
+1. **QuIVer is not implemented**: Scan of all Rust crates, Cargo.toml files, and source code confirms no QuIVer implementation exists outside eval/docs placeholders. quiver_implemented=false.
+2. **TDB is a placeholder in default build**: `openlocus store status tdb --json` returns available=false, success=false, mode=placeholder. TDB is a feature-gated metadata/chunk store, not an ANN/QuIVer backend.
+3. **Dense mock is available as a candidate-channel safety smoke**: mock and disabled providers are available; real provider is unavailable. Dense mock uses deterministic blake3-based vectors that do NOT capture semantic similarity.
+4. **Dense mock produces real, materialized candidates but mostly finds failure surfaces**: full run produced 5,264 dense_mock candidates, all Rust citation-valid. Quality is poor as expected for non-semantic mock vectors: FileRecall@1 0.024, MRR 0.073, SpanF0.5 ~0.000, token_waste 0.850, primary_false_positive_rate 0.878.
+5. **Dense CLI rejections are now explicit**: full run recorded 99 candidate rejections (`candidate_rejection_rate` 0.134), mostly expected block/no-hit outcomes surfaced explicitly rather than hidden as empty successes.
+6. **Canary hardening is non-vacuous**: 8 non-empty dense stores checked, 1 empty store skipped, path canary returned 66 evidence items, query canaries returned 132 evidence items, and raw canary/query leakage count was 0.
+7. **Dense mock + RRF fusion is a noise-amplification probe, not a recommendation**: full run confirms dense contribution (642 tasks with dense candidates; 5,264 dense spans retained in fusion), but fusion increases false-primary/noise: FileRecall@1 0.134, MRR 0.451, token_waste 0.928, primary_false_positive_rate 0.923, hard_distractor_hit_rate 0.215.
+8. **Citation validity is enforced**: dense_mock evidence and dense_mock_plus_rrf evidence both pass Rust citation validation (hash+range+path) before cleanup. dense_mock citation_total=5,264; fusion citation_total=13,149; invalid=0.
+9. **QuIVer diagnostic fields are properly unavailable**: All R24.1 fields report unavailable/not_measured with reason quiver_not_implemented and explicit next_required_tests. No numeric 0 is output as a quality result.
+
+### Caveats
+
+- This is an availability + mock dense candidate-channel probe, NOT a QuIVer bakeoff
+- QuIVer remains future work
+- Dense mock scores are NOT semantic quality metrics
+- TDB is a metadata/chunk store, not an ANN/QuIVer backend
+- Dense real provider is unavailable
+- R20 labels are weak/mined; not promotion evidence
+- promotion_ready=false always
+- No Rust core changes

@@ -1,14 +1,14 @@
-# OpenLocus R0-R23 Research Report
+# OpenLocus R0-R24 Research Report
 
 Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R23 guard parameter sweep milestone.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R24 QuIVer/TDB/Dense Probe milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed twenty-three evidence-gated checkpoints:
+The implementation completed twenty-four evidence-gated checkpoints:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -35,6 +35,7 @@ The implementation completed twenty-three evidence-gated checkpoints:
 | R21 checkpoint | R21 Auto-Wide Strategy Matrix | Eval-layer strategy matrix across 10 strategies (4 base + 6 composite/guard) on R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories); does NOT change Rust core. 0 critical safety issues; 2 non-critical regex parse warnings on route-style `{model_id}` query. citation_validity=1.0 for all 10 strategies (Rust hash+range+path); composite/guard strategies are also Rust citation-validated before cleanup. All strategies have non-zero no_gold_nonempty_rate (0.167–0.495). BM25/RRF are no-gold-heavy (both 0.495). Symbol precision-best but abstains most (0.517). rrf_guarded_by_symbol kills 22.8% recall (guard_recall_kill_rate=0.228). query_noise_plus_rrf_agree_min is the best R21 guard balance (no_gold_nonempty_rate 0.221 vs RRF 0.495, FileRecall@1 0.693 preserved). R20 labels weak/mined (258 weak, 315 mined_high_confidence, 168 mined); not promotion evidence. promotion_ready=false. not_promotion_evidence=true. No LLM/dense claims. remote_calls=0. |
 | R22/R27 checkpoint | R22/R27 Failure Attribution | Eval-layer failure attribution analysis consuming R21 artifacts and R20 labels; does NOT change Rust core. 13 failure clusters: RRF_INHERITED_BM25_FALSE_POSITIVE=110, GUARD_RECALL_KILL=67 (rrf_guarded_by_symbol kills recall on positive tasks; per_guard: symbol=67, regex=0, symbol_regex=0, query_noise=0), SYMBOL_EXTRACTION_MISS=91, REGEX_NORMALIZATION_BUG=1, BENCHMARK_ORACLE_SUSPECT=62 (weak labels where strategies disagree with oracle). Unrun strategies (dense, TDB/QuIVer, graph, AST) have count=0 with recommended_next_tests. EVIDENCECORE_REJECTION_EXPECTED/UNEXPECTED have metric_unavailable=true. 206 bucket regressions detected. promotion_blocked_by_bucket_regression=true. Analysis-only score phase; no retrieval re-run; no labels in run phase. source_report_sha, labels_sha, artifact_manifest_sha verified. Runs artifacts gitignored. No promotion claims, no dense/LLM/QuIVer quality claims. promotion_ready=false. not_promotion_evidence=true. remote_calls=0. |
 | R23 checkpoint | R23 Guard Parameter Sweep | Eval-layer guard parameter sweep consuming R21 artifacts and R20 labels; does NOT change Rust core. 51 strategies across 8 guard parameter dimensions plus 15 combined strategies. R21 artifacts manifest is verified fail-closed for every recorded path, sha256, byte count, and JSONL line count. All 51 strategies have bucket regressions (6877 total after bucket-level guard_recall_kill checks). Combined query_noise_1+regex_or_symbol_agree is best R23 guard balance (no_gold_nonempty_rate 0.221 vs RRF 0.495, FileRecall@1 0.693 preserved, zero guard_recall_kill). Agreement guards reduce false positives without recall cost (0.279 no_gold_nonempty at zero kill). RRF score threshold >0.02 causes sharp recall cliff. Gap threshold kills too much recall. No strategy eliminates false positives without unacceptable recall loss. Curves: risk_coverage, recall_vs_negative, recall_vs_false_primary, precision_vs_abstain. promotion_ready=false. not_promotion_evidence=true. No LLM/dense claims. remote_calls=0. |
+| R24 checkpoint | R24 QuIVer/TDB/Dense Probe | NOT a QuIVer bakeoff. QuIVer is not implemented (scan confirms no impl in Rust crates; quiver_implemented=false). TDB is a feature-gated metadata/chunk store placeholder (available=false in default build). Dense mock is available as candidate-channel safety/quality-smoke (not semantic quality). Dense real is unavailable. R24 runs dense mock build/search on R20 auto-wide tasks in isolated repo roots, preserves embeddings/audit between build/search, validates citations fail-closed (hash+range+path), and scores against R20 labels. Dense mock produced 5,264 citation-valid candidates but poor/noisy behavior (FileRecall@1 0.024, MRR 0.073, SpanF0.5 ~0.000, primary_false_positive_rate 0.878) plus 99 explicit candidate rejections. Canary hardening is non-vacuous: 8 non-empty dense stores checked, path/query canaries returned evidence, raw canary/query leakage=0. dense_mock_plus_rrf confirms dense contribution but amplifies noise (primary_false_positive_rate 0.923, hard_distractor_hit_rate 0.215). QuIVer diagnostic fields report unavailable/not_measured with reason quiver_not_implemented; no numeric 0 output as quality result. tdb_stale_leak_count is not_applicable. No Rust core changes. No LLM/dense real/QuIVer quality claims. remote_calls=0. |
 
 Final verification snapshot:
 
@@ -42,6 +43,7 @@ Final verification snapshot:
 R21 auto-wide matrix: 741 tasks, 9 repos, 10 strategies, 0 critical safety issues, 2 non-critical regex parse warnings
 R22/R27 failure attribution: 13 clusters (110 RRF/BM25 false positives, 67 guard recall kills, 91 symbol misses, 1 regex normalization bug, 62 benchmark-oracle suspects for label review, 8 unrun count=0), 206 bucket regressions, promotion_blocked_by_bucket_regression=true
 R23 guard parameter sweep: 51 strategies across 8 dimensions, 6877 total bucket regressions, all strategies blocked by bucket regression
+R24 QuIVer/TDB/Dense Probe: quiver_implemented=false (scan confirmed), TDB placeholder (available=false), dense_mock candidate-channel safety smoke with 5,264 citation-valid candidates but high false-primary rate (0.878), 99 explicit candidate rejections, non-vacuous canary pass, dense_mock_plus_rrf amplifies noise, dense_real unavailable, no numeric 0 as QuIVer quality result
 citation_validity: 1.0 all 10 strategies
 Rust tests: 243 passed (193 existing + 50 new in openlocus-provider)
 fmt: clean
