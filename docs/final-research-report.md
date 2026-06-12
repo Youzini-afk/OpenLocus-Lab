@@ -33,11 +33,13 @@ The implementation completed twenty-one evidence-gated checkpoints:
 | R19 checkpoint | R19 Large/Stress Guard Generalization Validation | Eval-layer generalization validation on R15-L (294 weak/mined tasks) and R15-stress; does NOT change Rust core. rrf_guarded_by_symbol_regex generalizes to R15-L (FileRecall@1 preserved at 0.911, negative_nonempty drops from 0.917 to 0.042) but fails stress (0.474 vs symbol 0.105). query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated (0.000 on both R15-L and R15-stress). R15-L labels are weak/mined (270 mined, 24 weak); generalization smoke only, not promotion evidence. promotion_ready=false always. No LLM/dense claims. remote_calls=0. |
 | R20 checkpoint | R20 Auto-Wide Retrieval Failure-Surface Benchmark (Dataset + Static Validator) | Generated/mined/weak failure-surface dataset for retrieval failure discovery, NOT promotion evidence. 741 tasks across 25 required categories and 9 R15 repos. Public tasks contain only task_id/repo_id/query/public_version/source_tier. Private labels carry all judgement fields (query_category, expected_behavior, oracle_type, risk_tags, gold_spans, hard_distractors, must_not_primary, etc.). label_quality: mined_high_confidence/mined/weak only (no human_reviewed). Static validator enforces schema, enum, coverage, anti-leakage, manifest SHA, overlap constraints. 14/14 validation checks passed, 0 critical errors. R20 labels are failure-surface oracle/probe labels, not EvidenceCore. No runner/scorer matrix yet. R21 will use it. Dataset + static validator only; no Rust core changes. |
 | R21 checkpoint | R21 Auto-Wide Strategy Matrix | Eval-layer strategy matrix across 10 strategies (4 base + 6 composite/guard) on R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories); does NOT change Rust core. 0 critical safety issues; 2 non-critical regex parse warnings on route-style `{model_id}` query. citation_validity=1.0 for all 10 strategies (Rust hash+range+path); composite/guard strategies are also Rust citation-validated before cleanup. All strategies have non-zero no_gold_nonempty_rate (0.167–0.495). BM25/RRF are no-gold-heavy (both 0.495). Symbol precision-best but abstains most (0.517). rrf_guarded_by_symbol kills 22.8% recall (guard_recall_kill_rate=0.228). query_noise_plus_rrf_agree_min is the best R21 guard balance (no_gold_nonempty_rate 0.221 vs RRF 0.495, FileRecall@1 0.693 preserved). R20 labels weak/mined (258 weak, 315 mined_high_confidence, 168 mined); not promotion evidence. promotion_ready=false. not_promotion_evidence=true. No LLM/dense claims. remote_calls=0. |
+| R22/R27 checkpoint | R22/R27 Failure Attribution | Eval-layer failure attribution analysis consuming R21 artifacts and R20 labels; does NOT change Rust core. 13 failure clusters: RRF_INHERITED_BM25_FALSE_POSITIVE=110, GUARD_RECALL_KILL=67 (rrf_guarded_by_symbol kills recall on positive tasks; per_guard: symbol=67, regex=0, symbol_regex=0, query_noise=0), SYMBOL_EXTRACTION_MISS=91, REGEX_NORMALIZATION_BUG=1, BENCHMARK_ORACLE_SUSPECT=62 (weak labels where strategies disagree with oracle). Unrun strategies (dense, TDB/QuIVer, graph, AST) have count=0 with recommended_next_tests. EVIDENCECORE_REJECTION_EXPECTED/UNEXPECTED have metric_unavailable=true. 206 bucket regressions detected. promotion_blocked_by_bucket_regression=true. Analysis-only score phase; no retrieval re-run; no labels in run phase. source_report_sha, labels_sha, artifact_manifest_sha verified. Runs artifacts gitignored. No promotion claims, no dense/LLM/QuIVer quality claims. promotion_ready=false. not_promotion_evidence=true. remote_calls=0. |
 
 Final verification snapshot:
 
 ```text
 R21 auto-wide matrix: 741 tasks, 9 repos, 10 strategies, 0 critical safety issues, 2 non-critical regex parse warnings
+R22/R27 failure attribution: 13 clusters (110 RRF/BM25 false positives, 67 guard recall kills, 91 symbol misses, 1 regex normalization bug, 62 benchmark-oracle suspects for label review, 8 unrun count=0), 206 bucket regressions, promotion_blocked_by_bucket_regression=true
 citation_validity: 1.0 all 10 strategies
 Rust tests: 243 passed (193 existing + 50 new in openlocus-provider)
 fmt: clean
@@ -900,6 +902,7 @@ The current implementation successfully converts the research design into a work
 - **external multi-repo benchmark expansion (R15) with 9 independent external repos across 5 languages (Rust/Python/Go/JS/TS), 166 medium-tier tasks, 270 hard negatives, multi-language symbol extraction, absolute source paths, isolated roots with repo_id-specific allowlist source-file copying, strict Rust citation validation, exact/single-prefix scoring path matching, 112/112 smoke checks passed, mined benchmark expansion not quality conclusion**;
 - **multi-method quality bakeoff (R16) across R14-S/R15-M/R15-stress with regex/bm25/symbol/rrf, all safety gates passed, RRF wins recall but inherits BM25 false positives, symbol best span precision, no method promoted to universal default, lexical/symbol/RRF only, no provider/dense/LLM claims**;
 - **large/stress guard generalization validation (R19) on R15-L (294 weak/mined tasks) and R15-stress, rrf_guarded_by_symbol_regex generalizes to R15-L (recall preserved, neg_nonempty 0.917→0.042) but fails stress (0.474 vs symbol 0.105), query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated, R15-L labels are weak/mined so generalization smoke only, promotion_ready=false always, no core changes, no LLM/dense claims**;
+- **auto-wide failure attribution (R22/R27) consuming R21 artifacts and R20 labels, 13 failure clusters (RRF_INHERITED_BM25_FALSE_POSITIVE=110, GUARD_RECALL_KILL=67, SYMBOL_EXTRACTION_MISS=91, REGEX_NORMALIZATION_BUG=1, BENCHMARK_ORACLE_SUSPECT=62, unrun strategies count=0), 206 bucket regressions, expanded per-strategy metrics, analysis-only score phase, no retrieval re-run, no Rust core changes, no LLM/dense claims, promotion_ready=false**;
 - pushed checkpoints for each stage.
 
 The next phase should not rush into a full LLM/dense/TDB system. The safest path is to continue testing incremental robustness on more real repositories (R12 completed one OpenLocus temp-copy sample), then extend TDB to meaningful search quality (R11 adapter probe complete), plug in real embedding providers behind the existing policy gate (R13 scaffold ready), and run bakeoffs against the conservative baseline.
@@ -912,3 +915,51 @@ The next phase should not rush into a full LLM/dense/TDB system. The safest path
 - **R19 large/stress guard generalization validation** ✅ DONE: Eval-layer validation on R15-L and R15-stress. rrf_guarded_by_symbol_regex generalizes to R15-L but fails stress. query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated. R15-L labels are weak/mined; generalization smoke only. No promotion. No core changes. Next: human-verified labels and larger stress dataset needed before any default change.
 - **R18 real remote embedding after policy review**: Integrate real embedding providers (e.g. OpenAI, local ONNX) behind the R13 policy gate. Requires policy review, API key management, and cost tracking. Gate: quality gain measured in eval; no policy regression; graceful degradation when provider unavailable; audit trail complete.
 - **R14-M/L/X expansion**: Expand the benchmark to additional repositories (8+ for M, 16+ for L, 32+ for X). Add human-reviewed labels for critical tasks. Run full method comparison across tiers.
+
+### R22/R27 — Failure Attribution ✅ DONE
+
+Priority: high. **Completed in R22/R27.**
+
+R22/R27 is an analysis-only score phase that consumes R21 artifacts and R20 labels to produce automatic failure clusters and expanded metrics. It does NOT re-run retrieval. It does NOT change Rust core.
+
+Implemented:
+
+- `eval/r22_r27_failure_attribution.py`: Loads R21 predictions (JSONL), R21 report (JSON), R20 labels (private JSONL). Computes 13 failure clusters and expanded per-strategy metrics. Never invokes openlocus CLI. Never loads labels in a run phase.
+- 13 required cluster keys: RRF_INHERITED_BM25_FALSE_POSITIVE, GUARD_RECALL_KILL, SYMBOL_EXTRACTION_MISS, REGEX_NORMALIZATION_BUG, AST_SPAN_BOUNDARY_BAD, DENSE_SEMANTIC_TRAP, TDB_QUIVER_SEMANTIC_TRAP, TDB_STALE_REJECTED, TDB_STALE_LEAK, GRAPH_POLLUTION, EVIDENCECORE_REJECTION_EXPECTED, EVIDENCECORE_REJECTION_UNEXPECTED, BENCHMARK_ORACLE_SUSPECT.
+- Each cluster: count, affected_strategies, unaffected_strategies, representative_examples (<=5), suspected_cause, recommended_next_tests.
+- Unrun clusters (dense, TDB, graph, AST) have count=0 with recommended_next_tests. No fabricated data.
+- Path matching: R20 labels use relative paths; R21 predictions use repo_id/path format. Suffix comparison handles the difference.
+- Expanded metrics: Per strategy: FileRecall@1/3/5, MRR, SpanF0.5, SpanPrecision, SpanRecall, token_waste, no_gold_nonempty_rate, primary_false_positive_rate, must_not_primary_violation_rate, abstain_rate, weak_candidate_rate, hard_distractor_hit_rate, guard_recall_kill_rate (if available), citation_validity.
+- Bucket regressions: Flag promotion_blocked_by_bucket_regression when no_gold_nonempty>0.3 or recall gap>0.15 vs RRF or guard kills>0.1 in bucket.
+- Safety: promotion_ready=false, not_promotion_evidence=true, source_report_sha, labels_sha, artifact_manifest_sha verified, no labels in run phase, runs artifacts gitignored, no promotion claims, no dense/LLM/QuIVer quality claims.
+
+R22/R27 cluster results:
+
+| Cluster | Count | Key finding |
+|---------|-------|-------------|
+| RRF_INHERITED_BM25_FALSE_POSITIVE | 110 | BM25+RRF both return false primary on no-gold tasks |
+| GUARD_RECALL_KILL | 67 | rrf_guarded_by_symbol kills recall (per_guard: symbol=67) |
+| SYMBOL_EXTRACTION_MISS | 91 | Regex/RRF find gold but symbol misses |
+| REGEX_NORMALIZATION_BUG | 1 | Curly braces cause Rust regex parse errors |
+| AST_SPAN_BOUNDARY_BAD | 0 | Not run; AST experimental |
+| DENSE_SEMANTIC_TRAP | 0 | Not run; no real embedding provider |
+| TDB_QUIVER_SEMANTIC_TRAP | 0 | Not run; TDB behind feature gate |
+| TDB_STALE_REJECTED | 0 | Not run; TDB not evaluated |
+| TDB_STALE_LEAK | 0 | Not run; TDB not evaluated |
+| GRAPH_POLLUTION | 0 | Not run; graph not in R21 matrix |
+| EVIDENCECORE_REJECTION_EXPECTED | 0 | metric_unavailable; R21 rate=0.0 |
+| EVIDENCECORE_REJECTION_UNEXPECTED | 0 | metric_unavailable; no unexpected rejections |
+| BENCHMARK_ORACLE_SUSPECT | 62 | Weak labels where strategies disagree with oracle |
+
+Bucket regressions: 206. promotion_blocked_by_bucket_regression: true.
+
+Gate:
+
+- all 13 required cluster keys present ✅;
+- unrun clusters have count=0 with recommended_next_tests ✅;
+- no fabricated data ✅;
+- expanded metrics computed for all 10 strategies ✅;
+- bucket regressions detected ✅;
+- safety checks all pass ✅;
+- promotion_ready=false ✅;
+- no Rust core changes ✅.

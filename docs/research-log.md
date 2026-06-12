@@ -1814,3 +1814,64 @@ All 10 strategies: citation_validity=1.0. Composite/guard strategies are built f
 - Latency for composite strategies is 0ms (built from existing predictions, no CLI).
 - One task (r20aw-0625) fails regex parse due to `{model_id}` metacharacters.
 - No Rust core changes in R21. Eval-layer research only.
+
+---
+
+## 2026-06-12 — R22/R27 Failure Attribution
+
+### Objective
+
+Consume R21 artifacts and R20 labels to produce automatic failure clusters and expanded metrics. Do NOT re-run retrieval. Do NOT change Rust core. This is analysis-only score phase.
+
+### Hypothesis
+
+Systematic cross-strategy comparison of R21 predictions against R20 labels will reveal structured failure patterns (inherited false positives, guard recall kills, symbol extraction misses, regex normalization bugs, benchmark oracle suspects) that are not visible from per-strategy metrics alone. Unrun strategy clusters (dense, TDB, graph, AST) should have count=0 with recommended tests, not fabricated data.
+
+### Implementation notes
+
+- **eval/r22_r27_failure_attribution.py**: Analysis-only score-phase script. Loads R21 predictions (JSONL), R21 report (JSON), R20 labels (private JSONL). Never invokes openlocus CLI. Computes 13 failure clusters and expanded per-strategy metrics.
+- **13 required cluster keys**: RRF_INHERITED_BM25_FALSE_POSITIVE, GUARD_RECALL_KILL, SYMBOL_EXTRACTION_MISS, REGEX_NORMALIZATION_BUG, AST_SPAN_BOUNDARY_BAD, DENSE_SEMANTIC_TRAP, TDB_QUIVER_SEMANTIC_TRAP, TDB_STALE_REJECTED, TDB_STALE_LEAK, GRAPH_POLLUTION, EVIDENCECORE_REJECTION_EXPECTED, EVIDENCECORE_REJECTION_UNEXPECTED, BENCHMARK_ORACLE_SUSPECT.
+- **Each cluster**: count, affected_strategies, unaffected_strategies, representative_examples (<=5), suspected_cause, recommended_next_tests.
+- **Unrun clusters**: count=0 with suspected_cause explaining why not measured and recommended_next_tests for future experiments.
+- **Path matching**: R20 labels use relative paths (e.g., `src/core.mjs`); R21 predictions use `repo_id/path` format. Matching uses suffix comparison.
+- **Expanded metrics**: Per strategy: FileRecall@1/3/5, MRR, SpanF0.5, SpanPrecision, SpanRecall, token_waste, no_gold_nonempty_rate, primary_false_positive_rate, must_not_primary_violation_rate, abstain_rate, weak_candidate_rate, hard_distractor_hit_rate, guard_recall_kill_rate (if available), citation_validity.
+- **Bucket regressions**: Flag promotion_blocked_by_bucket_regression when strategy has high no_gold_nonempty (>0.3) or recall gap >0.15 vs RRF in bucket or guard kills >0.1 in bucket.
+- **Safety**: promotion_ready=false, not_promotion_evidence=true, source_report_sha, labels_sha, artifact_manifest_sha verified, no labels in run phase, runs artifacts gitignored, no promotion claims, no dense/LLM/QuIVer quality claims.
+
+### R22/R27 failure attribution results
+
+| Cluster | Count | Key finding |
+|---------|-------|-------------|
+| RRF_INHERITED_BM25_FALSE_POSITIVE | 110 | BM25 and RRF both return false primary evidence on no-gold tasks |
+| GUARD_RECALL_KILL | 67 | rrf_guarded_by_symbol kills recall on positive tasks (per_guard: symbol=67, regex=0, symbol_regex=0, query_noise=0) |
+| SYMBOL_EXTRACTION_MISS | 91 | Regex/RRF find gold but symbol search misses |
+| REGEX_NORMALIZATION_BUG | 1 | Curly braces in route queries cause Rust regex parse errors |
+| AST_SPAN_BOUNDARY_BAD | 0 | Not run; AST chunking experimental |
+| DENSE_SEMANTIC_TRAP | 0 | Not run; no real embedding provider |
+| TDB_QUIVER_SEMANTIC_TRAP | 0 | Not run; TDB behind feature gate |
+| TDB_STALE_REJECTED | 0 | Not run; TDB not evaluated |
+| TDB_STALE_LEAK | 0 | Not run; TDB not evaluated |
+| GRAPH_POLLUTION | 0 | Not run; graph not in R21 matrix |
+| EVIDENCECORE_REJECTION_EXPECTED | 0 | metric_unavailable; R21 rate=0.0 for all strategies |
+| EVIDENCECORE_REJECTION_UNEXPECTED | 0 | metric_unavailable; no unexpected rejections |
+| BENCHMARK_ORACLE_SUSPECT | 62 | Weak labels where strategies strongly disagree with oracle |
+
+Bucket regressions: 206 detected. promotion_blocked_by_bucket_regression: true.
+
+### Key findings
+
+1. **RRF inherits BM25 false positives on 110 no-gold tasks**: The largest actionable cluster. BM25's broad lexical matching produces false primary hits that RRF propagates.
+2. **Symbol guard kills recall on 67 positive tasks**: rrf_guarded_by_symbol has the highest per_guard kill count (67). rrf_guarded_by_regex and rrf_guarded_by_symbol_regex have 0 kills because regex always returns evidence on these tasks.
+3. **Symbol extraction misses 91 positive tasks**: Heuristic regex-based symbol extraction fails for non-standard patterns where regex/RRF succeed.
+4. **62 weak labels are suspect**: On 62/258 weak-quality labels, strategies strongly disagree with the oracle, suggesting label error rather than strategy failure.
+5. **Unrun strategy clusters have count=0 by design**: No data is fabricated for dense, TDB, graph, or AST strategies.
+6. **206 bucket regressions**: Multiple strategies exceed thresholds for no_gold_nonempty (>0.3), recall gap vs RRF (>0.15), or guard kills (>0.1) in specific query_category/risk_tags/repo/language/expected_behavior buckets.
+
+### Caveats
+
+- R20 labels are weak/mined (no human_reviewed). Failure attribution may reflect label quality rather than strategy quality.
+- This is analysis-only; no retrieval was re-run.
+- Unrun cluster counts are 0 by construction, not negative results.
+- Path matching uses suffix comparison; may produce false matches on very short paths.
+- No Rust core changes. Eval-layer research only.
+- promotion_ready=false. not_promotion_evidence=true.

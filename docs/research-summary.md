@@ -28,6 +28,7 @@ This document will be updated after each evidence-gated stage.
 | R19 Large/Stress Guard Generalization | All source safety gates passed; citation inherited from validated predictions; baseline consistency checked | Eval-layer generalization validation on R15-L (294 weak/mined tasks) and R15-stress. rrf_guarded_by_symbol_regex generalizes to R15-L (recall preserved, neg_nonempty 0.917→0.042) but fails stress (0.474 vs symbol 0.105). query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated (0.000). R15-L labels are weak/mined; generalization smoke only, not promotion evidence. promotion_ready=false always. No core changes. No LLM/dense claims. |
 | R20 Auto-Wide Retrieval Failure-Surface Benchmark | Static validation passed (14/14 checks, 0 critical errors) | Generated/mined/weak failure-surface dataset for retrieval failure discovery, NOT promotion evidence. 741 tasks across 25 categories and 9 R15 repos. Public tasks contain only task_id/repo_id/query/public_version/source_tier. Private labels carry all judgement fields (query_category, expected_behavior, oracle_type, risk_tags, gold_spans, hard_distractors, must_not_primary, etc.). label_quality: mined_high_confidence/mined/weak only (no human_reviewed). Static validator enforces schema, enum, coverage, anti-leakage, manifest SHA, overlap constraints. No runner/scorer matrix yet. R21 will use it. Dataset + static validator only; no Rust core changes. |
 | R21 Auto-Wide Strategy Matrix | 0 critical safety issues; citation_validity=1.0 all 10 strategies; promotion_ready=false | Eval-layer strategy matrix across 10 strategies on R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories). All strategies have non-zero no_gold_nonempty_rate (0.167-0.495). BM25/RRF are no-gold-heavy (both 0.495). Symbol precision-best but abstains most (0.517). rrf_guarded_by_symbol kills 22.8% recall. query_noise_plus_rrf_agree_min best R21 guard balance (no_gold_nonempty_rate 0.221, FileRecall@1 0.693 preserved). Composite/guard strategies built from base predictions and also Rust citation-validated before cleanup; no labels in RUN. R20 labels weak/mined; not promotion evidence. No Rust core changes. No LLM/dense claims. |
+| R22/R27 Failure Attribution | 13 failure clusters computed; 206 bucket regressions; promotion_ready=false | Analysis-only score phase: consumes R21 artifacts + R20 labels, produces failure clusters + expanded metrics. RRF_INHERITED_BM25_FALSE_POSITIVE=110, GUARD_RECALL_KILL=67 (symbol guard), SYMBOL_EXTRACTION_MISS=91, REGEX_NORMALIZATION_BUG=1, BENCHMARK_ORACLE_SUSPECT=62. Unrun strategies (dense/TDB/graph/AST) count=0 with recommended_next_tests. EVIDENCECORE_REJECTION metric_unavailable. 206 bucket regressions; promotion_blocked_by_bucket_regression=true. No retrieval re-run. No Rust core changes. No LLM/dense claims. |
 
 ## R0/R1 initial findings
 
@@ -269,3 +270,16 @@ R19 large/stress guard generalization: eval-layer generalization validation on R
 - **R20 labels are failure-surface oracle/probe labels, not EvidenceCore.**
 - **R20 is a failure-surface dataset, NOT promotion evidence.** No runner/scorer matrix exists yet; R21 will use this data.
 - **Dataset + static validator only; no Rust core changes.**
+
+## R22/R27 findings
+
+- **Failure attribution is analysis-only**: Consumes R21 artifacts and R20 labels without re-running retrieval. 13 failure clusters computed from cross-strategy comparison heuristics.
+- **RRF_INHERITED_BM25_FALSE_POSITIVE is the largest actionable cluster (110 tasks)**: BM25 and RRF both return false primary evidence on no-gold tasks. RRF inherits BM25's broad lexical matching without a negative gate.
+- **GUARD_RECALL_KILL affects 67 positive tasks**: rrf_guarded_by_symbol kills recall when symbol returns empty on natural-language/vague queries but RRF finds gold. Per-guard: symbol=67 kills, regex=0, symbol_regex=0, query_noise=0.
+- **SYMBOL_EXTRACTION_MISS affects 91 positive tasks**: Regex/RRF find gold but heuristic symbol extraction misses due to non-standard definition patterns.
+- **REGEX_NORMALIZATION_BUG affects 1 task**: Curly braces in route-style queries cause Rust regex parse errors.
+- **62 BENCHMARK_ORACLE_SUSPECT tasks**: Weak-quality labels where strategies strongly disagree with the oracle, suggesting label (not strategy) error.
+- **Unrun strategy clusters have count=0**: Dense, TDB/QuIVer, graph, AST strategies not evaluated in R21. No fabricated data. recommended_next_tests provided for each.
+- **EVIDENCECORE_REJECTION clusters have metric_unavailable=true**: R21 shows rate=0.0 for all strategies; no rejection data to analyze.
+- **206 bucket regressions detected**: Multiple strategies exceed thresholds in specific buckets. promotion_blocked_by_bucket_regression=true.
+- **promotion_ready=false. not_promotion_evidence=true. No Rust core changes. No LLM/dense claims.**
