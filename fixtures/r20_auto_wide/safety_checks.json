@@ -1,0 +1,36 @@
+{
+  "categories_meeting_minimum": 25,
+  "category_count": 25,
+  "core_changes": false,
+  "critical_issues": 0,
+  "dense_or_llm_claims": false,
+  "expected_behavior_distribution": {
+    "abstain": 177,
+    "no_primary": 45,
+    "primary_evidence": 374,
+    "supporting_only": 55,
+    "weak_candidates": 90
+  },
+  "issues": [],
+  "label_count": 741,
+  "label_quality_distribution": {
+    "mined": 168,
+    "mined_high_confidence": 315,
+    "weak": 258
+  },
+  "not_promotion_evidence": true,
+  "oracle_type_distribution": {
+    "deterministic": 438,
+    "differential": 9,
+    "metamorphic": 36,
+    "mined": 110,
+    "stress": 148
+  },
+  "passed": true,
+  "remote_calls": 0,
+  "repo_count": 9,
+  "task_count": 741,
+  "total_checks": 14,
+  "validation_timestamp": "2026-06-12",
+  "warning_issues": 0
+}

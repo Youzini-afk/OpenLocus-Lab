@@ -1,0 +1,741 @@
+{"public_version": "0", "query": "FastContextError", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0001"}
+{"public_version": "0", "query": "ProtobufEncoder", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0002"}
+{"public_version": "0", "query": "ToolExecutor", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0003"}
+{"public_version": "0", "query": "_applyTlsFallback", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0004"}
+{"public_version": "0", "query": "_buildChatMessage", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0005"}
+{"public_version": "0", "query": "_buildCommandSchema", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0006"}
+{"public_version": "0", "query": "_buildMetadata", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0007"}
+{"public_version": "0", "query": "_buildRequest", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0008"}
+{"public_version": "0", "query": "_classifyError", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0009"}
+{"public_version": "0", "query": "_excludePatternToRegex", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0010"}
+{"public_version": "0", "query": "_fnmatch", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0011"}
+{"public_version": "0", "query": "_getJwtExp", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0012"}
+{"public_version": "0", "query": "_globWalk", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0013"}
+{"public_version": "0", "query": "_parseAnswer", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0014"}
+{"public_version": "0", "query": "_parseResponse", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0015"}
+{"public_version": "0", "query": "_parseToolCall", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0016"}
+{"public_version": "0", "query": "_streamingRequest", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0017"}
+{"public_version": "0", "query": "_trimMessages", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0018"}
+{"public_version": "0", "query": "_unaryRequest", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0019"}
+{"public_version": "0", "query": "autoDiscoverApiKey", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0020"}
+{"public_version": "0", "query": "AccountChangeSet", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0021"}
+{"public_version": "0", "query": "AccountDirectory", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0022"}
+{"public_version": "0", "query": "AccountFeedback", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0023"}
+{"public_version": "0", "query": "AccountLease", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0024"}
+{"public_version": "0", "query": "AccountMutationResult", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0025"}
+{"public_version": "0", "query": "AccountPage", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0026"}
+{"public_version": "0", "query": "AccountPatch", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0027"}
+{"public_version": "0", "query": "AccountQuotaSet", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0028"}
+{"public_version": "0", "query": "AccountRecord", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0029"}
+{"public_version": "0", "query": "AccountRefreshScheduler", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0030"}
+{"public_version": "0", "query": "AccountRefreshService", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0031"}
+{"public_version": "0", "query": "AccountRepository", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0032"}
+{"public_version": "0", "query": "AccountRuntimeTable", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0033"}
+{"public_version": "0", "query": "AccountStatus", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0034"}
+{"public_version": "0", "query": "AccountUpsert", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0035"}
+{"public_version": "0", "query": "AccountUsageStats", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0036"}
+{"public_version": "0", "query": "AddTokensRequest", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0037"}
+{"public_version": "0", "query": "AppError", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0038"}
+{"public_version": "0", "query": "AsyncTask", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0039"}
+{"public_version": "0", "query": "AuthError", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0040"}
+{"public_version": "0", "query": "AIChatCompletions", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0041"}
+{"public_version": "0", "query": "AIImagesEdits", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0042"}
+{"public_version": "0", "query": "AIImagesGenerations", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0043"}
+{"public_version": "0", "query": "ActiveConnectionPath", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0044"}
+{"public_version": "0", "query": "AdminAsset", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0045"}
+{"public_version": "0", "query": "AdminAssetListResponse", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0046"}
+{"public_version": "0", "query": "AdminAssetQuery", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0047"}
+{"public_version": "0", "query": "AdminAssets", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0048"}
+{"public_version": "0", "query": "AdminAssetsPage", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0049"}
+{"public_version": "0", "query": "AdminAuth", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0050"}
+{"public_version": "0", "query": "AdminDeleteAsset", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0051"}
+{"public_version": "0", "query": "AdminDeletePrompt", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0052"}
+{"public_version": "0", "query": "AdminDeleteUser", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0053"}
+{"public_version": "0", "query": "AdminLayout", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0054"}
+{"public_version": "0", "query": "AdminLogin", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0055"}
+{"public_version": "0", "query": "AdminModelChannel", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0056"}
+{"public_version": "0", "query": "AdminPage", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0057"}
+{"public_version": "0", "query": "AdminPrivateSettings", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0058"}
+{"public_version": "0", "query": "AdminPromptCategories", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0059"}
+{"public_version": "0", "query": "AdminPromptCategory", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0060"}
+{"public_version": "0", "query": "GeminiHandler", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0061"}
+{"public_version": "0", "query": "ThreadedServer", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0062"}
+{"public_version": "0", "query": "_account_prefix", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0063"}
+{"public_version": "0", "query": "_build_headers", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0064"}
+{"public_version": "0", "query": "_build_payload", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0065"}
+{"public_version": "0", "query": "_build_tool_choice_instruction", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0066"}
+{"public_version": "0", "query": "_cached_page_tokens", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0067"}
+{"public_version": "0", "query": "_compress_b64_if_needed", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0068"}
+{"public_version": "0", "query": "_extract_texts_from_line", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0069"}
+{"public_version": "0", "query": "_get_httpx_client", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0070"}
+{"public_version": "0", "query": "_get_page_tokens", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0071"}
+{"public_version": "0", "query": "_get_ssl_ctx", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0072"}
+{"public_version": "0", "query": "_get_url", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0073"}
+{"public_version": "0", "query": "_google_tool_choice_instruction", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0074"}
+{"public_version": "0", "query": "_raise_bard_error_if_present", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0075"}
+{"public_version": "0", "query": "_upload_images", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0076"}
+{"public_version": "0", "query": "_usage", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0077"}
+{"public_version": "0", "query": "build_tool_prompt", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0078"}
+{"public_version": "0", "query": "clean_text", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0079"}
+{"public_version": "0", "query": "extract_response_text", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0080"}
+{"public_version": "0", "query": "AUTO_RESTART_BASE_DELAY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0081"}
+{"public_version": "0", "query": "AUTO_RESTART_BASE_DELAY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0082"}
+{"public_version": "0", "query": "AUTO_RESTART_MAX_RETRIES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0083"}
+{"public_version": "0", "query": "AUTO_RESTART_MAX_RETRIES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0084"}
+{"public_version": "0", "query": "AnthropicStreamTranslator", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0085"}
+{"public_version": "0", "query": "BatchImportParseError", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0086"}
+{"public_version": "0", "query": "CASCADE_REUSE_STRICT_RETRY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0087"}
+{"public_version": "0", "query": "CASCADE_REUSE_STRICT_RETRY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0088"}
+{"public_version": "0", "query": "MAX_BINDINGS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0089"}
+{"public_version": "0", "query": "MAX_BINDINGS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0090"}
+{"public_version": "0", "query": "MAX_LS_INSTANCES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0091"}
+{"public_version": "0", "query": "MAX_LS_INSTANCES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0092"}
+{"public_version": "0", "query": "PathSanitizeStream", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0093"}
+{"public_version": "0", "query": "ResponsesStreamTranslator", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0094"}
+{"public_version": "0", "query": "StreamingFrameParser", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0095"}
+{"public_version": "0", "query": "TTL_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0096"}
+{"public_version": "0", "query": "TTL_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0097"}
+{"public_version": "0", "query": "ToolCallStreamParser", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0098"}
+{"public_version": "0", "query": "VERSION", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0099"}
+{"public_version": "0", "query": "VERSION", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0100"}
+{"public_version": "0", "query": "AddCredentialDialog", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0101"}
+{"public_version": "0", "query": "AddCredentialDialogProps", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0102"}
+{"public_version": "0", "query": "AddCredentialRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0103"}
+{"public_version": "0", "query": "AddCredentialRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0104"}
+{"public_version": "0", "query": "AddCredentialResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0105"}
+{"public_version": "0", "query": "AddCredentialResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0106"}
+{"public_version": "0", "query": "AddProxyRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0107"}
+{"public_version": "0", "query": "AddProxyRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0108"}
+{"public_version": "0", "query": "AdminError", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0109"}
+{"public_version": "0", "query": "AdminErrorResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0110"}
+{"public_version": "0", "query": "AdminErrorResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0111"}
+{"public_version": "0", "query": "AdminErrorResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0112"}
+{"public_version": "0", "query": "AdminService", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0113"}
+{"public_version": "0", "query": "AdminService", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0114"}
+{"public_version": "0", "query": "AdminServiceError", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0115"}
+{"public_version": "0", "query": "AdminServiceError", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0116"}
+{"public_version": "0", "query": "AdminState", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0117"}
+{"public_version": "0", "query": "AdminState", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0118"}
+{"public_version": "0", "query": "App", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0119"}
+{"public_version": "0", "query": "AppState", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0120"}
+{"public_version": "0", "query": "AdjacencySnapshot", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0121"}
+{"public_version": "0", "query": "AggFunc", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0122"}
+{"public_version": "0", "query": "Bitset", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0123"}
+{"public_version": "0", "query": "Bq2Signature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0124"}
+{"public_version": "0", "query": "Bq2Signature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0125"}
+{"public_version": "0", "query": "Bq2Store", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0126"}
+{"public_version": "0", "query": "Bq2Store", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0127"}
+{"public_version": "0", "query": "BqSignature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0128"}
+{"public_version": "0", "query": "BqSignature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0129"}
+{"public_version": "0", "query": "CompactionThread", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0130"}
+{"public_version": "0", "query": "CompactionThread", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0131"}
+{"public_version": "0", "query": "CompositeHook", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0132"}
+{"public_version": "0", "query": "CompositeHook", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0133"}
+{"public_version": "0", "query": "ConcurrentFlatAdj", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0134"}
+{"public_version": "0", "query": "Config", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0135"}
+{"public_version": "0", "query": "CreateAction", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0136"}
+{"public_version": "0", "query": "CreateEdge", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0137"}
+{"public_version": "0", "query": "CreateNode", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0138"}
+{"public_version": "0", "query": "Database", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0139"}
+{"public_version": "0", "query": "Default", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0140"}
+{"public_version": "0", "query": "AdminAnalyticsResponse", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0141"}
+{"public_version": "0", "query": "ApiToken", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0142"}
+{"public_version": "0", "query": "AuditEvent", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0143"}
+{"public_version": "0", "query": "AuditRecord", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0144"}
+{"public_version": "0", "query": "AuthError", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0145"}
+{"public_version": "0", "query": "Base", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0146"}
+{"public_version": "0", "query": "BaseSearchProvider", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0147"}
+{"public_version": "0", "query": "CloudConfigResolver", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0148"}
+{"public_version": "0", "query": "Config", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0149"}
+{"public_version": "0", "query": "Context7Provider", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0150"}
+{"public_version": "0", "query": "DBBackedQueue", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0151"}
+{"public_version": "0", "query": "DeepPlanRequest", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0152"}
+{"public_version": "0", "query": "DeepStartRequest", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0153"}
+{"public_version": "0", "query": "DocsSearchRequest", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0154"}
+{"public_version": "0", "query": "DoctorRequest", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0155"}
+{"public_version": "0", "query": "DummyResponse", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0156"}
+{"public_version": "0", "query": "DummyResponse", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0157"}
+{"public_version": "0", "query": "ExaSearchProvider", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0158"}
+{"public_version": "0", "query": "FetchUrlRequest", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0159"}
+{"public_version": "0", "query": "ForbiddenError", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0160"}
+{"public_version": "0", "query": "APIError", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0161"}
+{"public_version": "0", "query": "APIKeyAllowsAccount", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0162"}
+{"public_version": "0", "query": "APIKeyInput", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0163"}
+{"public_version": "0", "query": "APIKeyLimits", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0164"}
+{"public_version": "0", "query": "APIKeyLimits", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0165"}
+{"public_version": "0", "query": "APIKeyMultiSelect", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0166"}
+{"public_version": "0", "query": "APIKeyRow", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0167"}
+{"public_version": "0", "query": "APIKeyRow", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0168"}
+{"public_version": "0", "query": "APIKeyStatsPanel", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0169"}
+{"public_version": "0", "query": "APIKeyTokenStat", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0170"}
+{"public_version": "0", "query": "APIKeyTokenStat", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0171"}
+{"public_version": "0", "query": "APIKeyTokenUsagePanel", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0172"}
+{"public_version": "0", "query": "APIKeyUpdate", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0173"}
+{"public_version": "0", "query": "APIKeyWindowUsage", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0174"}
+{"public_version": "0", "query": "APIKeys", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0175"}
+{"public_version": "0", "query": "APIKeysResponse", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0176"}
+{"public_version": "0", "query": "AccentBar", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0177"}
+{"public_version": "0", "query": "AccessTokenInfo", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0178"}
+{"public_version": "0", "query": "Account", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0179"}
+{"public_version": "0", "query": "AccountCount", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0180"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0181"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0182"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0183"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0184"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0185"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0186"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0187"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0188"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0189"}
+{"public_version": "0", "query": "", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0190"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0191"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0192"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0193"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0194"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0195"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0196"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0197"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0198"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0199"}
+{"public_version": "0", "query": "", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0200"}
+{"public_version": "0", "query": "AIChat.*Completions", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0201"}
+{"public_version": "0", "query": "AIImages.*Edits", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0202"}
+{"public_version": "0", "query": "AIImages.*Generations", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0203"}
+{"public_version": "0", "query": "Active.*Connection.*Path", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0204"}
+{"public_version": "0", "query": "Admin.*Assets", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0205"}
+{"public_version": "0", "query": "Admin.*Assets.*Page", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0206"}
+{"public_version": "0", "query": "Admin.*Auth", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0207"}
+{"public_version": "0", "query": "Admin.*Delete.*Asset", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0208"}
+{"public_version": "0", "query": "Admin.*Delete.*Prompt", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0209"}
+{"public_version": "0", "query": "Admin.*Delete.*User", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0210"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0211"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0212"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0213"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0214"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0215"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0216"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0217"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0218"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0219"}
+{"public_version": "0", "query": "", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0220"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0221"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0222"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0223"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0224"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0225"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0226"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0227"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0228"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0229"}
+{"public_version": "0", "query": "", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0230"}
+{"public_version": "0", "query": "Add.*Credential.*Dialog", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0231"}
+{"public_version": "0", "query": "App", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0232"}
+{"public_version": "0", "query": "Badge", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0233"}
+{"public_version": "0", "query": "Balance.*Dialog", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0234"}
+{"public_version": "0", "query": "Batch.*Import.*Dialog", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0235"}
+{"public_version": "0", "query": "Batch.*Verify.*Dialog", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0236"}
+{"public_version": "0", "query": "Chart.*Tooltip", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0237"}
+{"public_version": "0", "query": "Client.*Keys.*Page", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0238"}
+{"public_version": "0", "query": "Credential.*Bar.*Chart.*Impl", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0239"}
+{"public_version": "0", "query": "Credential.*Card", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0240"}
+{"public_version": "0", "query": "ablation", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0241"}
+{"public_version": "0", "query": "accumulate", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0242"}
+{"public_version": "0", "query": "active", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0243"}
+{"public_version": "0", "query": "active", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0244"}
+{"public_version": "0", "query": "add", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0245"}
+{"public_version": "0", "query": "add", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0246"}
+{"public_version": "0", "query": "add", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0247"}
+{"public_version": "0", "query": "advance", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0248"}
+{"public_version": "0", "query": "advise", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0249"}
+{"public_version": "0", "query": "advise", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0250"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0251"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0252"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0253"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0254"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0255"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0256"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0257"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0258"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0259"}
+{"public_version": "0", "query": "", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0260"}
+{"public_version": "0", "query": "APIKey.*Allows.*Account", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0261"}
+{"public_version": "0", "query": "APIKey.*Multi.*Select", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0262"}
+{"public_version": "0", "query": "APIKey.*Stats.*Panel", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0263"}
+{"public_version": "0", "query": "APIKey.*Token.*Usage.*Panel", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0264"}
+{"public_version": "0", "query": "APIKeys", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0265"}
+{"public_version": "0", "query": "Accent.*Bar", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0266"}
+{"public_version": "0", "query": "Account.*Count", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0267"}
+{"public_version": "0", "query": "Account.*Mobile.*Action.*Button", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0268"}
+{"public_version": "0", "query": "Account.*Mobile.*Card", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0269"}
+{"public_version": "0", "query": "Account.*Mobile.*Metric", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0270"}
+{"public_version": "0", "query": "how does fast context handle errors", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0271"}
+{"public_version": "0", "query": "how does the API handle rate limiting", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0272"}
+{"public_version": "0", "query": "how are canvas elements rendered", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0273"}
+{"public_version": "0", "query": "how does the service authenticate requests", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0274"}
+{"public_version": "0", "query": "how does the API proxy work", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0275"}
+{"public_version": "0", "query": "how does the Rust backend process requests", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0276"}
+{"public_version": "0", "query": "how are vectors stored and indexed", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0277"}
+{"public_version": "0", "query": "how does the search engine rank results", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0278"}
+{"public_version": "0", "query": "how does the API handle concurrent requests", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0279"}
+{"public_version": "0", "query": "FastContext server crashes on large file uploads", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0280"}
+{"public_version": "0", "query": "API returns 500 when grok service is unavailable", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0281"}
+{"public_version": "0", "query": "Canvas state lost on reconnect", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0282"}
+{"public_version": "0", "query": "Authentication token not refreshed before expiry", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0283"}
+{"public_version": "0", "query": "WindsurfAPI proxy timeout on slow upstream", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0284"}
+{"public_version": "0", "query": "Rust backend memory leak on long-running sessions", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0285"}
+{"public_version": "0", "query": "Vector search returns wrong results for high-dimensional data", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0286"}
+{"public_version": "0", "query": "Search index not updated after document deletion", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0287"}
+{"public_version": "0", "query": "Codex API rate limiting not enforced for batch requests", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0288"}
+{"public_version": "0", "query": "SingularityGateway", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0289"}
+{"public_version": "0", "query": "HyperVortexProcessor", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0290"}
+{"public_version": "0", "query": "QuantumResolver", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0291"}
+{"public_version": "0", "query": "TemporalStreamAggregator", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0292"}
+{"public_version": "0", "query": "CryptoShardFactory", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0293"}
+{"public_version": "0", "query": "CryptoShardFactory", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0294"}
+{"public_version": "0", "query": "NeuralMeshBuilder", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0295"}
+{"public_version": "0", "query": "HyperVortexProcessor", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0296"}
+{"public_version": "0", "query": "FluxCapacitor", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0297"}
+{"public_version": "0", "query": "ParadoxValidator", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0298"}
+{"public_version": "0", "query": "ParadoxValidator", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0299"}
+{"public_version": "0", "query": "DimensionalReducer", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0300"}
+{"public_version": "0", "query": "QuantumResolver", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0301"}
+{"public_version": "0", "query": "WarpFieldManager", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0302"}
+{"public_version": "0", "query": "HyperVortexProcessor", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0303"}
+{"public_version": "0", "query": "CryptoShardFactory", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0304"}
+{"public_version": "0", "query": "WarpFieldManager", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0305"}
+{"public_version": "0", "query": "FluxCapacitor", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0306"}
+{"public_version": "0", "query": "QuantumResolver", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0307"}
+{"public_version": "0", "query": "SingularityGateway", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0308"}
+{"public_version": "0", "query": "WarpFieldManager", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0309"}
+{"public_version": "0", "query": "SingularityGateway", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0310"}
+{"public_version": "0", "query": "FluxCapacitor", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0311"}
+{"public_version": "0", "query": "DimensionalReducer", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0312"}
+{"public_version": "0", "query": "CryptoShardFactory", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0313"}
+{"public_version": "0", "query": "EntropyBalancer", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0314"}
+{"public_version": "0", "query": "ParadoxValidator", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0315"}
+{"public_version": "0", "query": "TemporalStreamAggregator", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0316"}
+{"public_version": "0", "query": "QuantumResolver", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0317"}
+{"public_version": "0", "query": "NeuralMeshBuilder", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0318"}
+{"public_version": "0", "query": "WarpFieldManager", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0319"}
+{"public_version": "0", "query": "DimensionalReducer", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0320"}
+{"public_version": "0", "query": "ProbabilisticCache", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0321"}
+{"public_version": "0", "query": "TemporalStreamAggregator", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0322"}
+{"public_version": "0", "query": "NeuralMeshBuilder", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0323"}
+{"public_version": "0", "query": "CryptoShardFactory", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0324"}
+{"public_version": "0", "query": "ProbabilisticCache", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0325"}
+{"public_version": "0", "query": "HyperVortexProcessor", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0326"}
+{"public_version": "0", "query": "ParadoxValidator", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0327"}
+{"public_version": "0", "query": "DimensionalReducer", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0328"}
+{"public_version": "0", "query": "HyperVortexProcessor", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0329"}
+{"public_version": "0", "query": "ProbabilisticCache", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0330"}
+{"public_version": "0", "query": "SingularityGateway", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0331"}
+{"public_version": "0", "query": "TemporalStreamAggregator", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0332"}
+{"public_version": "0", "query": "QuantumResolver", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0333"}
+{"public_version": "0", "query": "real-time streaming pipeline", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0334"}
+{"public_version": "0", "query": "image processing pipeline optimizer", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0335"}
+{"public_version": "0", "query": "blockchain consensus protocol", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0336"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0337"}
+{"public_version": "0", "query": "quantum entanglement solver", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0338"}
+{"public_version": "0", "query": "image processing pipeline optimizer", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0339"}
+{"public_version": "0", "query": "machine learning inference pipeline", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0340"}
+{"public_version": "0", "query": "cryptographic key rotation", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0341"}
+{"public_version": "0", "query": "voice recognition module", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0342"}
+{"public_version": "0", "query": "blockchain consensus protocol", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0343"}
+{"public_version": "0", "query": "blockchain consensus protocol", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0344"}
+{"public_version": "0", "query": "quantum entanglement solver", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0345"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0346"}
+{"public_version": "0", "query": "microservice orchestration engine", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0347"}
+{"public_version": "0", "query": "neural network training loop", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0348"}
+{"public_version": "0", "query": "blockchain consensus protocol", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0349"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0350"}
+{"public_version": "0", "query": "voice recognition module", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0351"}
+{"public_version": "0", "query": "image processing pipeline optimizer", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0352"}
+{"public_version": "0", "query": "neural network training loop", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0353"}
+{"public_version": "0", "query": "real-time streaming pipeline", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0354"}
+{"public_version": "0", "query": "cryptographic key rotation", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0355"}
+{"public_version": "0", "query": "neural network training loop", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0356"}
+{"public_version": "0", "query": "voice recognition module", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0357"}
+{"public_version": "0", "query": "microservice orchestration engine", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0358"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0359"}
+{"public_version": "0", "query": "machine learning inference pipeline", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0360"}
+{"public_version": "0", "query": "blockchain consensus protocol", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0361"}
+{"public_version": "0", "query": "image processing pipeline optimizer", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0362"}
+{"public_version": "0", "query": "cryptographic key rotation", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0363"}
+{"public_version": "0", "query": "neural network training loop", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0364"}
+{"public_version": "0", "query": "image processing pipeline optimizer", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0365"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0366"}
+{"public_version": "0", "query": "blockchain consensus protocol", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0367"}
+{"public_version": "0", "query": "real-time streaming pipeline", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0368"}
+{"public_version": "0", "query": "microservice orchestration engine", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0369"}
+{"public_version": "0", "query": "machine learning inference pipeline", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0370"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0371"}
+{"public_version": "0", "query": "cryptographic key rotation", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0372"}
+{"public_version": "0", "query": "neural network training loop", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0373"}
+{"public_version": "0", "query": "quantum entanglement solver", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0374"}
+{"public_version": "0", "query": "distributed database replication", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0375"}
+{"public_version": "0", "query": "voice recognition module", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0376"}
+{"public_version": "0", "query": "microservice orchestration engine", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0377"}
+{"public_version": "0", "query": "neural network training loop", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0378"}
+{"public_version": "0", "query": "client", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0379"}
+{"public_version": "0", "query": "model", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0380"}
+{"public_version": "0", "query": "process", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0381"}
+{"public_version": "0", "query": "manager", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0382"}
+{"public_version": "0", "query": "builder", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0383"}
+{"public_version": "0", "query": "service", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0384"}
+{"public_version": "0", "query": "config", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0385"}
+{"public_version": "0", "query": "manager", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0386"}
+{"public_version": "0", "query": "builder", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0387"}
+{"public_version": "0", "query": "adapter", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0388"}
+{"public_version": "0", "query": "manager", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0389"}
+{"public_version": "0", "query": "connection", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0390"}
+{"public_version": "0", "query": "model", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0391"}
+{"public_version": "0", "query": "process", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0392"}
+{"public_version": "0", "query": "client", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0393"}
+{"public_version": "0", "query": "builder", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0394"}
+{"public_version": "0", "query": "adapter", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0395"}
+{"public_version": "0", "query": "model", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0396"}
+{"public_version": "0", "query": "service", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0397"}
+{"public_version": "0", "query": "manager", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0398"}
+{"public_version": "0", "query": "client", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0399"}
+{"public_version": "0", "query": "adapter", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0400"}
+{"public_version": "0", "query": "service", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0401"}
+{"public_version": "0", "query": "process", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0402"}
+{"public_version": "0", "query": "builder", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0403"}
+{"public_version": "0", "query": "builder", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0404"}
+{"public_version": "0", "query": "manager", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0405"}
+{"public_version": "0", "query": "process", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0406"}
+{"public_version": "0", "query": "client", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0407"}
+{"public_version": "0", "query": "handler", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0408"}
+{"public_version": "0", "query": "process", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0409"}
+{"public_version": "0", "query": "connection", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0410"}
+{"public_version": "0", "query": "builder", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0411"}
+{"public_version": "0", "query": "client", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0412"}
+{"public_version": "0", "query": "service", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0413"}
+{"public_version": "0", "query": "client", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0414"}
+{"public_version": "0", "query": "process", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0415"}
+{"public_version": "0", "query": "adapter", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0416"}
+{"public_version": "0", "query": "config", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0417"}
+{"public_version": "0", "query": "model", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0418"}
+{"public_version": "0", "query": "manager", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0419"}
+{"public_version": "0", "query": "builder", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0420"}
+{"public_version": "0", "query": "model", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0421"}
+{"public_version": "0", "query": "adapter", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0422"}
+{"public_version": "0", "query": "handler", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0423"}
+{"public_version": "0", "query": "data", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0424"}
+{"public_version": "0", "query": "delete", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0425"}
+{"public_version": "0", "query": "process", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0426"}
+{"public_version": "0", "query": "check", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0427"}
+{"public_version": "0", "query": "function", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0428"}
+{"public_version": "0", "query": "handle", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0429"}
+{"public_version": "0", "query": "set", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0430"}
+{"public_version": "0", "query": "result", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0431"}
+{"public_version": "0", "query": "load", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0432"}
+{"public_version": "0", "query": "the", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0433"}
+{"public_version": "0", "query": "process", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0434"}
+{"public_version": "0", "query": "create", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0435"}
+{"public_version": "0", "query": "result", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0436"}
+{"public_version": "0", "query": "data", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0437"}
+{"public_version": "0", "query": "set", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0438"}
+{"public_version": "0", "query": "handle", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0439"}
+{"public_version": "0", "query": "create", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0440"}
+{"public_version": "0", "query": "value", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0441"}
+{"public_version": "0", "query": "error", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0442"}
+{"public_version": "0", "query": "result", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0443"}
+{"public_version": "0", "query": "result", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0444"}
+{"public_version": "0", "query": "delete", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0445"}
+{"public_version": "0", "query": "create", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0446"}
+{"public_version": "0", "query": "the", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0447"}
+{"public_version": "0", "query": "handle", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0448"}
+{"public_version": "0", "query": "check", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0449"}
+{"public_version": "0", "query": "save", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0450"}
+{"public_version": "0", "query": "the", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0451"}
+{"public_version": "0", "query": "data", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0452"}
+{"public_version": "0", "query": "load", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0453"}
+{"public_version": "0", "query": "update", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0454"}
+{"public_version": "0", "query": "handle", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0455"}
+{"public_version": "0", "query": "item", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0456"}
+{"public_version": "0", "query": "function", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0457"}
+{"public_version": "0", "query": "data", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0458"}
+{"public_version": "0", "query": "init", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0459"}
+{"public_version": "0", "query": "return", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0460"}
+{"public_version": "0", "query": "delete", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0461"}
+{"public_version": "0", "query": "save", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0462"}
+{"public_version": "0", "query": "set", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0463"}
+{"public_version": "0", "query": "return", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0464"}
+{"public_version": "0", "query": "delete", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0465"}
+{"public_version": "0", "query": "error", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0466"}
+{"public_version": "0", "query": "create", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0467"}
+{"public_version": "0", "query": "check", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0468"}
+{"public_version": "0", "query": "doFetch", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0469"}
+{"public_version": "0", "query": "log", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0470"}
+{"public_version": "0", "query": "readIntEnv", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0471"}
+{"public_version": "0", "query": "walk", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0472"}
+{"public_version": "0", "query": "ModeId", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0473"}
+{"public_version": "0", "query": "_bootSiteFooter", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0474"}
+{"public_version": "0", "query": "_build_payload", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0475"}
+{"public_version": "0", "query": "_download_image_bytes", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0476"}
+{"public_version": "0", "query": "_extract_user_id", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0477"}
+{"public_version": "0", "query": "AdminSettings", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0478"}
+{"public_version": "0", "query": "Asset", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0479"}
+{"public_version": "0", "query": "AssetFormValues", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0480"}
+{"public_version": "0", "query": "AuthSession", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0481"}
+{"public_version": "0", "query": "AuthUser", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0482"}
+{"public_version": "0", "query": "AUTO_RESTART_BASE_DELAY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0483"}
+{"public_version": "0", "query": "AUTO_RESTART_MAX_RETRIES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0484"}
+{"public_version": "0", "query": "CASCADE_REUSE_STRICT_RETRY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0485"}
+{"public_version": "0", "query": "MAX_BINDINGS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0486"}
+{"public_version": "0", "query": "MAX_LS_INSTANCES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0487"}
+{"public_version": "0", "query": "AddCredentialRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0488"}
+{"public_version": "0", "query": "AddCredentialResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0489"}
+{"public_version": "0", "query": "AddProxyRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0490"}
+{"public_version": "0", "query": "AdminErrorResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0491"}
+{"public_version": "0", "query": "AdminService", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0492"}
+{"public_version": "0", "query": "Bq2Signature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0493"}
+{"public_version": "0", "query": "Bq2Store", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0494"}
+{"public_version": "0", "query": "BqSignature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0495"}
+{"public_version": "0", "query": "CompactionThread", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0496"}
+{"public_version": "0", "query": "CompositeHook", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0497"}
+{"public_version": "0", "query": "DummyResponse", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0498"}
+{"public_version": "0", "query": "_error_payload", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0499"}
+{"public_version": "0", "query": "_is_retryable_exception", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0500"}
+{"public_version": "0", "query": "_isolate_config", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0501"}
+{"public_version": "0", "query": "_isolate_env", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0502"}
+{"public_version": "0", "query": "APIKeyLimits", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0503"}
+{"public_version": "0", "query": "APIKeyRow", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0504"}
+{"public_version": "0", "query": "APIKeyTokenStat", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0505"}
+{"public_version": "0", "query": "AccountGroup", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0506"}
+{"public_version": "0", "query": "AccountModelStat", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0507"}
+{"public_version": "0", "query": "doFetch", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0508"}
+{"public_version": "0", "query": "log", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0509"}
+{"public_version": "0", "query": "readIntEnv", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0510"}
+{"public_version": "0", "query": "walk", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0511"}
+{"public_version": "0", "query": "ModeId", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0512"}
+{"public_version": "0", "query": "_bootSiteFooter", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0513"}
+{"public_version": "0", "query": "_build_payload", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0514"}
+{"public_version": "0", "query": "_download_image_bytes", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0515"}
+{"public_version": "0", "query": "_extract_user_id", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0516"}
+{"public_version": "0", "query": "AdminSettings", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0517"}
+{"public_version": "0", "query": "Asset", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0518"}
+{"public_version": "0", "query": "AssetFormValues", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0519"}
+{"public_version": "0", "query": "AuthSession", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0520"}
+{"public_version": "0", "query": "AuthUser", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0521"}
+{"public_version": "0", "query": "AUTO_RESTART_BASE_DELAY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0522"}
+{"public_version": "0", "query": "AUTO_RESTART_MAX_RETRIES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0523"}
+{"public_version": "0", "query": "CASCADE_REUSE_STRICT_RETRY_MS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0524"}
+{"public_version": "0", "query": "MAX_BINDINGS", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0525"}
+{"public_version": "0", "query": "MAX_LS_INSTANCES", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0526"}
+{"public_version": "0", "query": "AddCredentialRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0527"}
+{"public_version": "0", "query": "AddCredentialResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0528"}
+{"public_version": "0", "query": "AddProxyRequest", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0529"}
+{"public_version": "0", "query": "AdminErrorResponse", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0530"}
+{"public_version": "0", "query": "AdminService", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0531"}
+{"public_version": "0", "query": "Bq2Signature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0532"}
+{"public_version": "0", "query": "Bq2Store", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0533"}
+{"public_version": "0", "query": "BqSignature", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0534"}
+{"public_version": "0", "query": "CompactionThread", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0535"}
+{"public_version": "0", "query": "CompositeHook", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0536"}
+{"public_version": "0", "query": "DummyResponse", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0537"}
+{"public_version": "0", "query": "_error_payload", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0538"}
+{"public_version": "0", "query": "_is_retryable_exception", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0539"}
+{"public_version": "0", "query": "_isolate_config", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0540"}
+{"public_version": "0", "query": "_isolate_env", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0541"}
+{"public_version": "0", "query": "APIKeyLimits", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0542"}
+{"public_version": "0", "query": "APIKeyRow", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0543"}
+{"public_version": "0", "query": "APIKeyTokenStat", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0544"}
+{"public_version": "0", "query": "AccountGroup", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0545"}
+{"public_version": "0", "query": "AccountModelStat", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0546"}
+{"public_version": "0", "query": "CanvasAssistantPanelProps", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0547"}
+{"public_version": "0", "query": "ParsedTokenData", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0548"}
+{"public_version": "0", "query": "BriefTile", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0549"}
+{"public_version": "0", "query": "_load_headers_module", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0550"}
+{"public_version": "0", "query": "with", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0551"}
+{"public_version": "0", "query": "SearchHook", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0552"}
+{"public_version": "0", "query": "test_deep_research_plan_complex_docs_query_has_decomposition", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0553"}
+{"public_version": "0", "query": "TestSQLiteAPIKeyQuotaAndExpiration", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0554"}
+{"public_version": "0", "query": "extractKeyInfo documentation", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0555"}
+{"public_version": "0", "query": "_extract_message documentation", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0556"}
+{"public_version": "0", "query": "WithUser documentation", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0557"}
+{"public_version": "0", "query": "_raise_bard_error_if_present documentation", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0558"}
+{"public_version": "0", "query": "defaultLsBinaryPath documentation", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0559"}
+{"public_version": "0", "query": "getTimeSeries documentation", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0560"}
+{"public_version": "0", "query": "debug_connectivity documentation", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0561"}
+{"public_version": "0", "query": "_credential_response documentation", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0562"}
+{"public_version": "0", "query": "SetCooldown documentation", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0563"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0564"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0565"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0566"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0567"}
+{"public_version": "0", "query": "metadataStrings", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0568"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0569"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0570"}
+{"public_version": "0", "query": "node_modules_helper", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0571"}
+{"public_version": "0", "query": "QuotaWindow", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0572"}
+{"public_version": "0", "query": "port", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0573"}
+{"public_version": "0", "query": "host", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0574"}
+{"public_version": "0", "query": "timeout", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0575"}
+{"public_version": "0", "query": "debug", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0576"}
+{"public_version": "0", "query": "max_retries", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0577"}
+{"public_version": "0", "query": "port", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0578"}
+{"public_version": "0", "query": "host", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0579"}
+{"public_version": "0", "query": "timeout", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0580"}
+{"public_version": "0", "query": "debug", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0581"}
+{"public_version": "0", "query": "max_retries", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0582"}
+{"public_version": "0", "query": "port", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0583"}
+{"public_version": "0", "query": "host", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0584"}
+{"public_version": "0", "query": "timeout", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0585"}
+{"public_version": "0", "query": "debug", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0586"}
+{"public_version": "0", "query": "max_retries", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0587"}
+{"public_version": "0", "query": "port", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0588"}
+{"public_version": "0", "query": "host", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0589"}
+{"public_version": "0", "query": "timeout", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0590"}
+{"public_version": "0", "query": "debug", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0591"}
+{"public_version": "0", "query": "max_retries", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0592"}
+{"public_version": "0", "query": "port", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0593"}
+{"public_version": "0", "query": "host", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0594"}
+{"public_version": "0", "query": "timeout", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0595"}
+{"public_version": "0", "query": "debug", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0596"}
+{"public_version": "0", "query": "max_retries", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0597"}
+{"public_version": "0", "query": "port", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0598"}
+{"public_version": "0", "query": "host", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0599"}
+{"public_version": "0", "query": "timeout", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0600"}
+{"public_version": "0", "query": "debug", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0601"}
+{"public_version": "0", "query": "max_retries", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0602"}
+{"public_version": "0", "query": "port", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0603"}
+{"public_version": "0", "query": "host", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0604"}
+{"public_version": "0", "query": "timeout", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0605"}
+{"public_version": "0", "query": "debug", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0606"}
+{"public_version": "0", "query": "max_retries", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0607"}
+{"public_version": "0", "query": "port", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0608"}
+{"public_version": "0", "query": "host", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0609"}
+{"public_version": "0", "query": "timeout", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0610"}
+{"public_version": "0", "query": "debug", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0611"}
+{"public_version": "0", "query": "max_retries", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0612"}
+{"public_version": "0", "query": "port", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0613"}
+{"public_version": "0", "query": "host", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0614"}
+{"public_version": "0", "query": "timeout", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0615"}
+{"public_version": "0", "query": "debug", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0616"}
+{"public_version": "0", "query": "max_retries", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0617"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0618"}
+{"public_version": "0", "query": "/health", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0619"}
+{"public_version": "0", "query": "/api/config", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0620"}
+{"public_version": "0", "query": "/favicon.ico", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0621"}
+{"public_version": "0", "query": "/health", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0622"}
+{"public_version": "0", "query": "/messages", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0623"}
+{"public_version": "0", "query": "/models", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0624"}
+{"public_version": "0", "query": "/models/{model_id}", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0625"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0626"}
+{"public_version": "0", "query": "/health", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0627"}
+{"public_version": "0", "query": "/api/config", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0628"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0629"}
+{"public_version": "0", "query": "/health", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0630"}
+{"public_version": "0", "query": "/api/config", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0631"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0632"}
+{"public_version": "0", "query": "/health", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0633"}
+{"public_version": "0", "query": "/api/config", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0634"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0635"}
+{"public_version": "0", "query": "/health", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0636"}
+{"public_version": "0", "query": "/api/config", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0637"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0638"}
+{"public_version": "0", "query": "/health", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0639"}
+{"public_version": "0", "query": "/api/config", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0640"}
+{"public_version": "0", "query": "/login", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0641"}
+{"public_version": "0", "query": "/login", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0642"}
+{"public_version": "0", "query": "/logout", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0643"}
+{"public_version": "0", "query": "/dashboard", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0644"}
+{"public_version": "0", "query": "/tokens", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0645"}
+{"public_version": "0", "query": "/api/v1/status", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0646"}
+{"public_version": "0", "query": "/health", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0647"}
+{"public_version": "0", "query": "/api/config", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0648"}
+{"public_version": "0", "query": "Error: FastContextError at core.mjs:35", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0649"}
+{"public_version": "0", "query": "TypeError: cannot read property of undefined at app.py:42", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0650"}
+{"public_version": "0", "query": "panic: index out of range at handler.go:128", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0651"}
+{"public_version": "0", "query": "ConnectionError: timeout at service.py:67", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0652"}
+{"public_version": "0", "query": "Error: ECONNREFUSED at server.js:201", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0653"}
+{"public_version": "0", "query": "thread 'main' panicked at src/main.rs:45", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0654"}
+{"public_version": "0", "query": "panic: assertion failed at src/engine.rs:312", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0655"}
+{"public_version": "0", "query": "ValueError: invalid query at search.py:89", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0656"}
+{"public_version": "0", "query": "Error: context deadline exceeded at handler.go:95", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0657"}
+{"public_version": "0", "query": "modified buildSystemPrompt", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0658"}
+{"public_version": "0", "query": "modified renderMarkdown", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0659"}
+{"public_version": "0", "query": "modified User", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0660"}
+{"public_version": "0", "query": "modified _extract_texts_from_line", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0661"}
+{"public_version": "0", "query": "modified ry", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0662"}
+{"public_version": "0", "query": "modified load", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0663"}
+{"public_version": "0", "query": "modified GruCache", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0664"}
+{"public_version": "0", "query": "modified create_engine_from_url", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0665"}
+{"public_version": "0", "query": "modified sub2apiFetchAllList", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0666"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0667"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0668"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0669"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0670"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0671"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0672"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0673"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0674"}
+{"public_version": "0", "query": "deleted_module_old_api", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0675"}
+{"public_version": "0", "query": "searchWithContent in src_old/core.mjs", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0676"}
+{"public_version": "0", "query": "_to_quota_window in app/dataplane/reverse/protocol_old/xai_usage.py", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0677"}
+{"public_version": "0", "query": "move in web/src/app/(user)/canvas/components_old/canvas-assistant-panel.tsx", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0678"}
+{"public_version": "0", "query": "parse_tool_calls in gemini_web2api_old/tools.py", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0679"}
+{"public_version": "0", "query": "isUntrustedWorkspace in src_old/client.js", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0680"}
+{"public_version": "0", "query": "new in src/admin_old/usage_stats.rs", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0681"}
+{"public_version": "0", "query": "dpp_greedy in src_old/cognitive.rs", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0682"}
+{"public_version": "0", "query": "app in tests_old/test_server_tools.py", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0683"}
+{"public_version": "0", "query": "TranslateStreamChunk in proxy_old/translator.go", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0684"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0685"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0686"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0687"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0688"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0689"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0690"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0691"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0692"}
+{"public_version": "0", "query": "feature_branch_only_function", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0693"}
+{"public_version": "0", "query": "_streamingRequest", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0694"}
+{"public_version": "0", "query": "sanitizeRenderedHtml", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0695"}
+{"public_version": "0", "query": "RootLayout", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0696"}
+{"public_version": "0", "query": "GeminiHandler", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0697"}
+{"public_version": "0", "query": "safeBlockToString", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0698"}
+{"public_version": "0", "query": "formatTs", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0699"}
+{"public_version": "0", "query": "flush", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0700"}
+{"public_version": "0", "query": "TestTaskAPI", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0701"}
+{"public_version": "0", "query": "TestFastModelAliasOpenAIResponsesPreparePreservesExplicitTier", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0702"}
+{"public_version": "0", "query": "_buildRequest", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0703"}
+{"public_version": "0", "query": "build_usage", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0704"}
+{"public_version": "0", "query": "CanvasUiStore", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0705"}
+{"public_version": "0", "query": "_build_tool_choice_instruction", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0706"}
+{"public_version": "0", "query": "makeWorkspace", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0707"}
+{"public_version": "0", "query": "ConversationState", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0708"}
+{"public_version": "0", "query": "build", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0709"}
+{"public_version": "0", "query": "deep_read_write_token", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0710"}
+{"public_version": "0", "query": "TestPersistUsageSnapshot5hOnlyUpdatesFastSchedulerPriority", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0711"}
+{"public_version": "0", "query": "embedding similarity search", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0712"}
+{"public_version": "0", "query": "vector index lookup", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0713"}
+{"public_version": "0", "query": "semantic search engine", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0714"}
+{"public_version": "0", "query": "neural network inference", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0715"}
+{"public_version": "0", "query": "deep learning model serving", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0716"}
+{"public_version": "0", "query": "transformer attention mechanism", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0717"}
+{"public_version": "0", "query": "approximate nearest neighbor", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0718"}
+{"public_version": "0", "query": "semantic similarity scoring", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0719"}
+{"public_version": "0", "query": "embedding dimension reduction", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0720"}
+{"public_version": "0", "query": "MCP", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0721"}
+{"public_version": "0", "query": "OpenAI", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0722"}
+{"public_version": "0", "query": "Grok", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0723"}
+{"public_version": "0", "query": "OpenAI", "repo_id": "grok2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0724"}
+{"public_version": "0", "query": "WebSocket", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0725"}
+{"public_version": "0", "query": "React", "repo_id": "infinite-canvas", "source_tier": "r20_auto_wide", "task_id": "r20aw-0726"}
+{"public_version": "0", "query": "Gemini", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0727"}
+{"public_version": "0", "query": "Google", "repo_id": "gemini-web2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0728"}
+{"public_version": "0", "query": "Windsurf", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0729"}
+{"public_version": "0", "query": "Codeium", "repo_id": "windsurf2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0730"}
+{"public_version": "0", "query": "Kiro", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0731"}
+{"public_version": "0", "query": "OpenAI", "repo_id": "kiro2", "source_tier": "r20_auto_wide", "task_id": "r20aw-0732"}
+{"public_version": "0", "query": "TriviumDB", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0733"}
+{"public_version": "0", "query": "SQLite", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0734"}
+{"public_version": "0", "query": "External database reference", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0735"}
+{"public_version": "0", "query": "Elasticsearch", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0736"}
+{"public_version": "0", "query": "OpenSearch", "repo_id": "smartsearch", "source_tier": "r20_auto_wide", "task_id": "r20aw-0737"}
+{"public_version": "0", "query": "Codex", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0738"}
+{"public_version": "0", "query": "OpenAI", "repo_id": "codex2api", "source_tier": "r20_auto_wide", "task_id": "r20aw-0739"}
+{"public_version": "0", "query": "r20_synthetic_frontend_backend_confusion_1", "repo_id": "fast-context-mcp", "source_tier": "r20_auto_wide", "task_id": "r20aw-0740"}
+{"public_version": "0", "query": "r20_synthetic_frontend_backend_confusion_2", "repo_id": "triviumdb", "source_tier": "r20_auto_wide", "task_id": "r20aw-0741"}

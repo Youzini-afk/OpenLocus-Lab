@@ -1588,3 +1588,148 @@ The R18 train-selected `rrf_guarded_by_symbol_regex` should preserve recall and 
 - No LLM/dense/provider claims are made.
 - Routing decisions are deterministic and reproducible from the same inputs.
 - promotion_ready is always false in R19; requires human-verified labels and larger stress dataset.
+
+---
+
+## 2026-06-12 — R20 Auto-Wide Retrieval Failure-Surface Benchmark (Dataset + Static Validator)
+
+### Objective
+
+Generate a failure-discovery benchmark dataset and static validation artifacts from R15 repos.lock.jsonl and local source paths. R20 labels are failure-surface oracle/probe labels, NOT EvidenceCore or promotion evidence. No Rust core changes, no strategy matrix, no promotion, no provider/QuIVer.
+
+### Design constraints
+
+- **Candidate is not fact.** R20 labels are failure-surface oracle/probe labels, not EvidenceCore.
+- **Public tasks** contain ONLY: `task_id`, `repo_id`, `query`, `public_version`, `source_tier`. No gold/expected/oracle/risk/judgement fields.
+- **Private labels** carry all judgement fields: `query_category`, `intent_guess`, `risk_tags`, `oracle_type`, `expected_behavior`, `label_quality`, `gold_spans`, `hard_distractors`, `must_not_primary`, `why_this_is_hard`, `which_strategy_it_targets`, `caveat`.
+- **expected_behavior** enum: `primary_evidence` | `supporting_only` | `weak_candidates` | `abstain` | `no_primary`
+- **oracle_type** enum: `deterministic` | `mined` | `differential` | `metamorphic` | `stress`
+- **label_quality**: `mined_high_confidence` | `mined` | `weak` (NO `human_reviewed`)
+- **R20 is failure discovery + static validation, NOT promotion evidence.**
+- No Rust core changes, no strategy matrix, no promotion, no provider/QuIVer.
+
+### Implementation notes
+
+- **eval/r20_generate_auto_wide.py**: Deterministic generator (seed=42) that:
+  - Reuses R15 repos.lock.jsonl and local source paths
+  - Extracts symbols/config/routes/imports/tests/files from source text via regex heuristics
+  - Generates 25 required query_category types across all 9 R15 repos
+  - Produces public tasks (minimal fields) and private labels (all judgement fields)
+  - Validates gold_spans / must_not_primary / hard_distractors overlap
+  - Sorts outputs by task_id for determinism
+  - Fills minimum coverage gaps with synthetic weak probes
+
+- **eval/r20_static_validate.py**: Static validator enforcing:
+  1. No private fields in public tasks
+  2. Task/label ID bijection, no duplicates, no unknown repo_ids
+  3. Enum validity (expected_behavior, oracle_type, label_quality)
+  4. `primary_evidence` must have gold_spans; `abstain`/`no_primary` must not
+  5. `must_not_primary` must not overlap `gold_spans`
+  6. `hard_distractors` must not overlap `gold_spans`
+  7. Gold span paths/ranges must exist in locked source and be in bounds
+  8. Repo lock content_manifest_sha must match recomputed SHA
+  9. `label_quality` must not be `human_reviewed`
+  10. All 25 required categories present with >= 5 tasks each
+  11. >= 9 repos, >= 300 total tasks, >= 15 per repo
+  12. `dataset_manifest` flags: `not_promotion_evidence=true`, `core_changes=false`, `remote_calls=0`, `dense_or_llm_claims=false`
+
+- **fixtures/r20_auto_wide/**: Dataset directory with:
+  - `dataset_manifest.json`, `repos.lock.jsonl`
+  - `tasks/auto_wide.jsonl` (public tasks)
+  - `labels/auto_wide.jsonl` (private labels)
+  - `safety_checks.json`, `coverage_report.json`, `README.md`
+
+### R20 generation results
+
+| Metric | Value |
+|---|---|
+| Repos | 9 |
+| Tasks | 741 |
+| Labels | 741 |
+| Categories | 25 (all >= 5 tasks) |
+| Per-repo minimum | 72 |
+| Label quality distribution | mined_high_confidence: 315, mined: 168, weak: 258 |
+| Expected behavior distribution | primary_evidence: 374, abstain: 177, weak_candidates: 90, no_primary: 45, supporting_only: 55 |
+| Oracle type distribution | deterministic: 438, stress: 148, mined: 110, metamorphic: 36, differential: 9 |
+
+### R20 static validation results
+
+| Check | Result |
+|---|---|
+| No private fields in public tasks | ✅ |
+| Task/label ID bijection | ✅ |
+| No duplicate IDs | ✅ |
+| No unknown repo_ids | ✅ |
+| Enum validity (expected_behavior, oracle_type, label_quality) | ✅ |
+| primary_evidence has gold_spans | ✅ |
+| abstain/no_primary has empty gold_spans | ✅ |
+| must_not_primary no gold overlap | ✅ |
+| hard_distractors no gold overlap | ✅ |
+| Gold span paths exist in locked source | ✅ |
+| Gold span ranges in bounds | ✅ |
+| Repo lock content_manifest_sha verified | ✅ |
+| label_quality != human_reviewed | ✅ |
+| All 25 categories >= 5 tasks | ✅ |
+| >= 9 repos | ✅ |
+| >= 300 total tasks | ✅ |
+| >= 15 tasks per repo | ✅ |
+| not_promotion_evidence=true | ✅ |
+| core_changes=false | ✅ |
+| remote_calls=0 | ✅ |
+| dense_or_llm_claims=false | ✅ |
+
+**All 14 validation categories passed. 0 critical errors, 0 warnings.**
+
+### Oracle review: fail-closed validator fixes
+
+The initial validator was fail-open on several critical paths. The following
+fixes were applied after oracle review:
+
+1. **Public task extra fields → ERROR** (was warning): Any field not in
+   `PUBLIC_TASK_FIELDS` in a public task is now a hard error, not a warning.
+   This prevents leaking judgement fields through unexpected public fields.
+
+2. **Source path inaccessible → ERROR** (was warning): If a repo's source path
+   is not accessible, both the file cache build and the manifest SHA
+   verification now emit errors instead of warnings. Inaccessible source means
+   the dataset cannot be verified — this must fail, not warn.
+
+3. **Label required-field schema hard validation** (was missing): All 14
+   required label fields (`task_id`, `repo_id`, `query_category`, `intent_guess`,
+   `risk_tags`, `oracle_type`, `expected_behavior`, `label_quality`,
+   `gold_spans`, `hard_distractors`, `must_not_primary`, `why_this_is_hard`,
+   `which_strategy_it_targets`, `caveat`) must be present with correct types
+   (str/list). Non-caveat string fields must be non-empty.
+
+4. **hard_distractors / must_not_primary path/range validation** (was missing):
+   Both `hard_distractors` and `must_not_primary` spans now have their
+   paths verified against locked source and their line ranges checked for
+   bounds, same as `gold_spans`.
+
+5. **Per-repo coverage iterates ALL repos in repo_lock** (was only repos with
+   tasks): If a repo appears in `repo_lock` but has zero tasks, this is now
+   a hard failure (0 < 15). Previously, only repos that appeared in task
+   data were checked, meaning an empty repo would silently pass.
+
+Post-fix validation: 741 tasks, 741 labels, 9 repos, 25 categories, 0 errors,
+0 warnings. All injection tests (extra public field, inaccessible source,
+missing label fields, out-of-bounds distractor, empty repo) correctly fail.
+
+### Key findings
+
+1. **Failure-surface dataset generation works**: 741 tasks across 25 categories and 9 repos, with deterministic generation from fixed seed.
+2. **Public/private separation is clean**: No private/leak fields appear in public tasks. All judgement fields are in separate private labels.
+3. **Category coverage is complete**: All 25 required categories have >= 5 tasks. Some categories (positive_exact_symbol, positive_regex_anchor) have many more due to per-repo symbol extraction.
+4. **Metamorphic/stress categories encode expected behavior without source mutation**: dirty_overlay, deleted_file, renamed_file, branch_switch_like are probes for R21/R26 that encode what should happen but do not mutate source in R20.
+5. **Static validation catches schema/safety violations**: The validator enforces enum validity, gold_span consistency, overlap constraints, manifest SHA verification, and coverage minimums.
+6. **R20 labels are failure-surface oracle/probe labels, not EvidenceCore.**
+
+### Caveats
+
+- **R20 is a failure-surface dataset, NOT promotion evidence.** No runner/scorer matrix exists yet.
+- **Labels are mined/weak, not human-verified.** `human_reviewed` is forbidden.
+- **Metamorphic/stress categories** (dirty_overlay, deleted_file, renamed_file, branch_switch_like) encode expected behavior for R21/R26 but do NOT mutate source in R20.
+- **generated_vendor_trap** may be synthetic if repos lack vendor/generated files.
+- **dense_semantic_trap / proper_name_api_config_regression** target semantic false positives around provider/api/config names.
+- **No Rust core changes in R20.** Dataset and validator only.
+- **R21 will use this dataset** for retrieval failure-surface analysis with actual runner/scorer.

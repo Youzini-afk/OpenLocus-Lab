@@ -26,6 +26,7 @@ This document will be updated after each evidence-gated stage.
 | R17 Query Intent Router / Negative Guard | All source safety gates passed; citation inherited from validated predictions | Eval-layer router/guard experiment. query_only_router_v0 eliminates R15-M negative_nonempty (0.645→0.000) with acceptable recall regression (FileRecall@1 -0.037). rrf_guarded_by_symbol_regex eliminates R15-M negative_nonempty with zero recall regression. R15-stress negative_nonempty reduces but not eliminated (0.158/0.474). No Rust core changes. No LLM/dense claims. |
 | R18 Threshold/Guard Calibration Sweep | All source safety gates passed; citation inherited from validated predictions; baseline consistency checked | Eval-layer calibration sweep over 46 strategies with 8 thresholds. Train-selected `rrf_guarded_by_symbol_regex` preserves RRF recall on R15-M/holdout and drops medium negative_nonempty to 0.000, but remains weak on stress (0.474 vs symbol 0.105). Separate query-noise+agreement strategies reach stress 0.000 as observations, not promotions. Pareto frontier computed. No core changes. No LLM/dense claims. |
 | R19 Large/Stress Guard Generalization | All source safety gates passed; citation inherited from validated predictions; baseline consistency checked | Eval-layer generalization validation on R15-L (294 weak/mined tasks) and R15-stress. rrf_guarded_by_symbol_regex generalizes to R15-L (recall preserved, neg_nonempty 0.917→0.042) but fails stress (0.474 vs symbol 0.105). query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated (0.000). R15-L labels are weak/mined; generalization smoke only, not promotion evidence. promotion_ready=false always. No core changes. No LLM/dense claims. |
+| R20 Auto-Wide Retrieval Failure-Surface Benchmark | Static validation passed (14/14 checks, 0 critical errors) | Generated/mined/weak failure-surface dataset for retrieval failure discovery, NOT promotion evidence. 741 tasks across 25 categories and 9 R15 repos. Public tasks contain only task_id/repo_id/query/public_version/source_tier. Private labels carry all judgement fields (query_category, expected_behavior, oracle_type, risk_tags, gold_spans, hard_distractors, must_not_primary, etc.). label_quality: mined_high_confidence/mined/weak only (no human_reviewed). Static validator enforces schema, enum, coverage, anti-leakage, manifest SHA, overlap constraints. No runner/scorer matrix yet. R21 will use it. Dataset + static validator only; no Rust core changes. |
 
 ## R0/R1 initial findings
 
@@ -253,3 +254,17 @@ R19 large/stress guard generalization: eval-layer generalization validation on R
 - **R15-L labels are weak/mined (270 mined, 24 weak)**: Generalization smoke only, not promotion evidence. R15-stress has only 19 tasks.
 - **No core default promotion from R19**: promotion_ready is always false. Requires human-verified labels and larger stress dataset.
 - **Eval-layer generalization validation only; does NOT change Rust core. No LLM/dense claims.**
+
+## R20 findings
+
+- **Failure-surface dataset generation works**: 741 tasks across 25 required categories and 9 R15 repos, with deterministic generation from fixed seed=42.
+- **Public/private separation is clean**: Public tasks contain only task_id, repo_id, query, public_version, source_tier. No gold/expected/oracle/risk/judgement fields leak. All judgement fields are in separate private labels.
+- **Category coverage is complete**: All 25 required categories have >= 5 tasks. positive_exact_symbol (180) and positive_regex_anchor (90) dominate due to per-repo symbol extraction.
+- **Label quality distribution**: mined_high_confidence: 315, mined: 168, weak: 258. No human_reviewed (forbidden in R20).
+- **Expected behavior distribution**: primary_evidence: 374, abstain: 177, weak_candidates: 90, no_primary: 45, supporting_only: 55.
+- **Oracle type distribution**: deterministic: 438, stress: 148, mined: 110, metamorphic: 36, differential: 9.
+- **Static validation passes all 14 check categories**: no private field leaks, task/label ID bijection, enum validity, required label schema, gold_span consistency, overlap constraints, span path/range validation, manifest SHA verification, coverage minimums, dataset manifest flags.
+- **Metamorphic/stress categories** (dirty_overlay, deleted_file, renamed_file, branch_switch_like) encode expected behavior for R21/R26 but do NOT mutate source in R20.
+- **R20 labels are failure-surface oracle/probe labels, not EvidenceCore.**
+- **R20 is a failure-surface dataset, NOT promotion evidence.** No runner/scorer matrix exists yet; R21 will use this data.
+- **Dataset + static validator only; no Rust core changes.**

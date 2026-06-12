@@ -1,14 +1,14 @@
-# OpenLocus R0-R18 Research Report
+# OpenLocus R0-R20 Research Report
 
 Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R18 threshold/guard calibration sweep milestone.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R20 auto-wide retrieval failure-surface benchmark milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed eighteen evidence-gated checkpoints:
+The implementation completed twenty evidence-gated checkpoints:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -31,6 +31,7 @@ The implementation completed eighteen evidence-gated checkpoints:
 | R17 checkpoint | R17 Query Intent Router / Negative Guard Experiment | Eval-layer router/guard experiment; does NOT change Rust core. query_only_router_v0 eliminates R15-M negative_nonempty (0.645→0.000) with acceptable recall regression (FileRecall@1 0.904 vs 0.941, delta -0.037). rrf_guarded_by_symbol_regex eliminates R15-M negative_nonempty with zero recall regression. R15-stress negative_nonempty reduces but not eliminated (0.158/0.474). Citation safety inherited from validated source predictions. No LLM/dense claims. remote_calls=0. |
 | R18 checkpoint | R18 Threshold/Guard Calibration Sweep | Eval-layer calibration sweep over 46 strategies with 8 thresholds on R15-M and R15-stress; does NOT change Rust core. Train-selected candidate `rrf_guarded_by_symbol_regex` preserves RRF recall on R15-M/holdout and drops medium negative_nonempty to 0.000, but remains weak on R15-stress (0.474, worse than symbol 0.105). Separate `query_noise_plus_rrf_agree_min` strategies reach 0.000 stress negative_nonempty but are observations, not promotion candidates. Pareto frontier computed. No core default promotion. No LLM/dense claims. remote_calls=0. |
 | R19 checkpoint | R19 Large/Stress Guard Generalization Validation | Eval-layer generalization validation on R15-L (294 weak/mined tasks) and R15-stress; does NOT change Rust core. rrf_guarded_by_symbol_regex generalizes to R15-L (FileRecall@1 preserved at 0.911, negative_nonempty drops from 0.917 to 0.042) but fails stress (0.474 vs symbol 0.105). query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeated (0.000 on both R15-L and R15-stress). R15-L labels are weak/mined (270 mined, 24 weak); generalization smoke only, not promotion evidence. promotion_ready=false always. No LLM/dense claims. remote_calls=0. |
+| R20 checkpoint | R20 Auto-Wide Retrieval Failure-Surface Benchmark (Dataset + Static Validator) | Generated/mined/weak failure-surface dataset for retrieval failure discovery, NOT promotion evidence. 741 tasks across 25 required categories and 9 R15 repos. Public tasks contain only task_id/repo_id/query/public_version/source_tier. Private labels carry all judgement fields (query_category, expected_behavior, oracle_type, risk_tags, gold_spans, hard_distractors, must_not_primary, etc.). label_quality: mined_high_confidence/mined/weak only (no human_reviewed). Static validator enforces schema, enum, coverage, anti-leakage, manifest SHA, overlap constraints. 14/14 validation checks passed, 0 critical errors. R20 labels are failure-surface oracle/probe labels, not EvidenceCore. No runner/scorer matrix yet. R21 will use it. Dataset + static validator only; no Rust core changes. |
 
 Final verification snapshot:
 
