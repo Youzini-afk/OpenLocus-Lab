@@ -1733,3 +1733,84 @@ missing label fields, out-of-bounds distractor, empty repo) correctly fail.
 - **dense_semantic_trap / proper_name_api_config_regression** target semantic false positives around provider/api/config names.
 - **No Rust core changes in R20.** Dataset and validator only.
 - **R21 will use this dataset** for retrieval failure-surface analysis with actual runner/scorer.
+
+## 2026-06-12 — R21 Auto-Wide Strategy Matrix
+
+### Objective
+
+Run a strategy matrix across 10 retrieval strategies on the R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories). Evaluate failure surfaces: where strategies fail, what types of queries cause false positives, and which guard patterns reduce negatives without killing recall. NOT promotion evidence.
+
+### Architecture
+
+Strictly separated RUN and SCORE phases (same as R15/R17/R18/R19):
+
+- **Phase 1 (RUN)**: loads only public tasks + repo lock. Creates isolated benchmark roots by allowlist-copying source files under repo_id-specific folders. Runs base methods (regex, bm25, symbol, rrf) via openlocus CLI. Builds composite/guard strategies from base predictions. Never reads labels.
+- **Phase 2 (SCORE)**: loads predictions + labels. Computes metrics. Never invokes CLI.
+
+Safety:
+- Runner never loads private labels/gold
+- Retrieval runs inside isolated temp roots (no fixtures/eval/docs/runs)
+- Repo lock content manifest re-verified (normalized hash)
+- Citation validation runs BEFORE isolated root cleanup
+- Predictions with forbidden prefixes are critical failures
+- Composite/guard strategies built from base predictions only; no CLI, no labels
+- R20 labels weak/mined; promotion_ready=false, not_promotion_evidence=true
+
+### Implemented strategies (10)
+
+1. regex — `openlocus search regex`
+2. bm25 — `openlocus search bm25`
+3. symbol — `openlocus search symbol`
+4. rrf — `openlocus retrieve` (RRF fusion)
+5. bm25_regex — RRF fuse bm25+regex predictions
+6. bm25_symbol — RRF fuse bm25+symbol predictions
+7. rrf_guarded_by_symbol — RRF only if symbol has evidence
+8. rrf_guarded_by_regex — RRF only if regex has evidence
+9. rrf_guarded_by_symbol_regex — RRF only if symbol OR regex has evidence
+10. query_noise_plus_rrf_agree_min — R17 noise guard + RRF agree (threshold=0.0)
+
+### Unavailable strategies (10)
+
+ast_chunk_bm25, ast_chunk_rrf, graph_basic, graph_rrf, dense_mock, dense_real_if_available, tdb_quiver_if_available, tdb_quiver_plus_rrf, tdb_quiver_guarded_by_symbol_regex, fast_context_if_available — each with documented reason.
+
+### Key findings
+
+1. **All strategies have non-zero no-gold false positives**: Even guards that suppress RRF false positives still return evidence on 16.7-49.5% of no-gold tasks. No strategy eliminates false positives entirely on the auto-wide failure-surface dataset.
+
+2. **BM25/RRF are no-gold-heavy**: BM25 `no_gold_nonempty_rate=0.495`, RRF `0.495`. These methods are recall-strong but precision-weak on no-answer/abstain tasks.
+
+3. **Symbol is precision-best but abstains most**: symbol `no_gold_nonempty_rate=0.167` (lowest among base methods) but `abstain_rate=0.517` (highest). When symbol fires, it's precise; when it doesn't, there's no fallback.
+
+4. **rrf_guarded_by_symbol kills recall**: guard_recall_kill_rate=0.228 — the guard eliminates 23% of RRF's recall hits. The symbol-availability gate is too strict for the auto-wide query distribution.
+
+5. **query_noise_plus_rrf_agree_min is the best R21 guard balance**: `no_gold_nonempty_rate=0.221` (vs RRF 0.495) with `FileRecall@1=0.693` preserved (same as raw RRF).
+
+6. **Regex parse failures**: Tasks with regex metacharacters (e.g., `/models/{model_id}`) fail for regex/rrf methods.
+
+7. **R20 label quality limits conclusions**: 258/741 labels are "weak", 315 "mined_high_confidence", 168 "mined". No human_reviewed labels.
+
+### Metrics (741 tasks, 9 repos)
+
+| Strategy | FileRecall@1 | MRR | no_gold_nonempty_rate | abstain_rate |
+|----------|-------------|-----|-----------------------|-------------|
+| regex | 0.524 | 0.583 | 0.279 | 0.306 |
+| bm25 | 0.388 | 0.455 | 0.495 | 0.366 |
+| symbol | 0.575 | 0.585 | 0.167 | 0.517 |
+| rrf | 0.693 | 0.753 | 0.495 | 0.182 |
+| bm25_regex | 0.612 | 0.671 | 0.495 | 0.182 |
+| bm25_symbol | 0.551 | 0.643 | 0.495 | 0.224 |
+| rrf_guarded_by_symbol | 0.561 | 0.598 | 0.167 | 0.517 |
+| rrf_guarded_by_regex | 0.693 | 0.753 | 0.279 | 0.306 |
+| rrf_guarded_by_symbol_regex | 0.693 | 0.753 | 0.279 | 0.306 |
+| query_noise_plus_rrf_agree_min | 0.693 | 0.753 | 0.221 | 0.350 |
+
+All 10 strategies: citation_validity=1.0. Composite/guard strategies are built from validated base predictions and also Rust citation-validated before isolated root cleanup.
+
+### Caveats
+
+- **R21 is a failure-discovery matrix, NOT promotion evidence.** promotion_ready=false. not_promotion_evidence=true.
+- R20 labels are weak/mined (no human_reviewed); metrics are probes, not evidence.
+- No LLM, dense, graph, TDB, or fast-context strategies are included.
+- Latency for composite strategies is 0ms (built from existing predictions, no CLI).
+- One task (r20aw-0625) fails regex parse due to `{model_id}` metacharacters.
+- No Rust core changes in R21. Eval-layer research only.
