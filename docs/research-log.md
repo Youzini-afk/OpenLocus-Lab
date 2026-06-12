@@ -1875,3 +1875,65 @@ Bucket regressions: 206 detected. promotion_blocked_by_bucket_regression: true.
 - Path matching uses suffix comparison; may produce false matches on very short paths.
 - No Rust core changes. Eval-layer research only.
 - promotion_ready=false. not_promotion_evidence=true.
+
+## 2026-06-12 — R23 Guard Parameter Sweep
+
+### Objective
+
+Eval-layer guard parameter sweep consuming R21 artifacts and R20 labels. Sweep over 8 guard parameter dimensions (query_noise_threshold, rrf_score_threshold, regex_agreement_required, symbol_agreement_required, regex_or_symbol_agreement_required, top1_top2_gap_threshold, identifier_density_threshold, candidate_channel_count_threshold) plus 15 combined strategies. Does NOT re-run retrieval, does NOT change Rust core.
+
+### Hypothesis
+
+Systematic parameter sweep across guard dimensions will reveal Pareto-optimal operating points for the recall-vs-false-positive trade-off. Combined strategies (query noise + agreement + score threshold) should outperform single-dimension guards.
+
+### Implementation notes
+
+- **eval/r23_guard_sweep.py**: Analysis-only score phase. Loads R21 predictions (rrf, regex, symbol) + R20 labels + R21 report. Never invokes openlocus CLI. Labels only in score phase.
+- **Guard semantics**: Based on raw RRF evidence; if guard condition fails then abstain. Agreement based on regex/symbol predictions evidence presence. Score threshold based on RRF top score. Gap threshold based on top1-top2 score gap. Identifier density from query parsing. Candidate channel count from top evidence channels union estimate.
+- **51 strategies**: 7 query_noise_threshold values, 10 rrf_score_threshold values, 3 boolean agreement strategies, 7 top1_top2_gap_threshold values, 4 identifier_density_threshold values, 5 candidate_channel_count_threshold values, plus 15 combined strategies.
+- **Output**: runs/r23-guard-sweep.json with strategies, curves (risk_coverage, recall_vs_negative, recall_vs_false_primary, precision_vs_abstain), bucket_summary, observations.
+- **Bucket regression**: recall gap vs RRF >0.15, no_gold_nonempty_rate >0.3, primary_false_positive_rate >0.3, guard_recall_kill_rate >0.1.
+- **Safety**: promotion_ready=false, not_promotion_evidence=true, no promotion claims, no dense/LLM/QuIVer claims, labels only in score phase, R21 artifact manifest verified fail-closed for every recorded path/sha256/byte-count/jsonl-line-count.
+
+### R23 guard sweep results (51 strategies, 741 tasks)
+
+| Strategy | FileRecall@1 | no_gold_nonempty | pfp | abstain | guard_kill | blocked |
+|---|---|---|---|---|---|---|
+| rrf_raw (baseline) | 0.693 | 0.495 | 0.495 | 0.182 | N/A | false |
+| query_noise_threshold_1 | 0.693 | 0.437 | 0.437 | 0.225 | 0.000 | true |
+| regex_or_symbol_agreement | 0.693 | 0.279 | 0.279 | 0.306 | 0.000 | true |
+| query_noise_1+regex_or_symbol_agree | 0.693 | 0.221 | 0.221 | 0.350 | 0.000 | true |
+| symbol_agreement | 0.561 | 0.167 | 0.167 | 0.517 | 0.228 | true |
+| rrf_score_threshold_0.02 | 0.602 | 0.198 | 0.198 | 0.456 | 0.151 | true |
+| rrf_score_threshold_0.04 | 0.329 | 0.018 | 0.018 | 0.804 | 0.571 | true |
+| top1_top2_gap_0.005 | 0.372 | 0.036 | 0.036 | 0.746 | 0.528 | true |
+| ident_1+regex_or_symbol_agree | 0.610 | 0.207 | 0.207 | 0.470 | 0.120 | true |
+
+### Key findings
+
+1. **All 51 strategies have bucket regressions**: Every guard strategy has at least one bucket where recall gap, no_gold_nonempty_rate, primary_false_positive_rate, or guard_recall_kill_rate exceeds the regression threshold.
+2. **Query noise guard is effective but insufficient alone**: query_noise_threshold_1 preserves FileRecall@1 (0.693) with zero guard_recall_kill, but no_gold_nonempty_rate remains at 0.437.
+3. **Agreement guards reduce false positives without recall cost**: regex_or_symbol_agreement_required reduces no_gold_nonempty_rate from 0.495 to 0.279 with zero guard_recall_kill.
+4. **Combined query_noise + agreement is the best R23 guard balance**: query_noise_1_plus_regex_or_symbol_agree achieves no_gold_nonempty_rate 0.221 with FileRecall@1 0.693 and zero guard_recall_kill.
+5. **RRF score threshold above 0.02 causes sharp recall cliff**: Most RRF top scores are concentrated near 0.03-0.06; thresholds above 0.02 reject substantial recall.
+6. **top1_top2_gap threshold kills too much recall**: Gap thresholds even at 0.005 cause >50% guard_recall_kill_rate.
+7. **Symbol agreement alone kills 22.8% recall**: Confirms R22 finding that rrf_guarded_by_symbol is too aggressive.
+8. **No strategy eliminates no_gold_nonempty_rate to zero without unacceptable recall cost**: Strategies achieving near-zero false positives do so by abstaining on >99% of queries.
+
+### Safety
+
+- promotion_ready=false, not_promotion_evidence=true always
+- No promotion claims, no dense/LLM/QuIVer quality claims
+- Labels only in score phase; never used for routing
+- R21 artifacts manifest verified fail-closed for path/sha256/byte-count/jsonl-line-count
+- Analysis-only no CLI
+- R20 labels weak/mined; not promotion evidence
+
+### Caveats
+
+- R20 labels are weak/mined (258 weak, 315 mined_high_confidence, 168 mined); not promotion evidence
+- Guard parameter sweep is analysis-only; no Rust core changes
+- Bucket regression thresholds (0.15 recall gap, 0.3 no_gold, 0.3 pfp, 0.1 kill) are heuristic
+- All strategies blocked by bucket regression; expected given R20 label diversity
+- Combined strategies are observations, not promotions
+- query_noise_score is deterministic/heuristic; not learned from data
