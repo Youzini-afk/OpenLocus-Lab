@@ -1,0 +1,53 @@
+{
+  "categories_meeting_minimum": 10,
+  "category_count": 10,
+  "category_distribution": {
+    "ambiguous_vague": 150,
+    "dense_quiver_specific_trap": 100,
+    "frontend_backend_confusion": 75,
+    "generated_vendor_trap": 50,
+    "hard_distractor": 200,
+    "negative_nonexistent": 150,
+    "same_name_symbol": 100,
+    "semantic_trap": 150,
+    "stale_index_like": 50,
+    "test_source_confusion": 75
+  },
+  "core_changes": false,
+  "critical_issues": 0,
+  "dense_or_llm_claims": false,
+  "expected_behavior_distribution": {
+    "abstain": 590,
+    "no_primary": 70,
+    "primary_evidence": 366,
+    "weak_candidates": 74
+  },
+  "issues": [],
+  "label_count": 1100,
+  "not_promotion_evidence": true,
+  "oracle_type_distribution": {
+    "deterministic": 239,
+    "metamorphic": 50,
+    "mined": 318,
+    "stress": 493
+  },
+  "passed": true,
+  "remote_calls": 0,
+  "repo_count": 9,
+  "target_composition": {
+    "ambiguous_vague": 150,
+    "dense_quiver_specific_trap": 100,
+    "frontend_backend_confusion": 75,
+    "generated_vendor_trap": 50,
+    "hard_distractor": 200,
+    "negative_nonexistent": 150,
+    "same_name_symbol": 100,
+    "semantic_trap": 150,
+    "stale_index_like": 50,
+    "test_source_confusion": 75
+  },
+  "task_count": 1100,
+  "total_checks": 19,
+  "validation_timestamp": "2026-06-12",
+  "warning_issues": 0
+}

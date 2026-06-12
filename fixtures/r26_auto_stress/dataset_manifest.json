@@ -1,0 +1,86 @@
+{
+  "core_changes": false,
+  "current_status": {
+    "auto_stress": {
+      "categories": {
+        "ambiguous_vague": 150,
+        "dense_quiver_specific_trap": 100,
+        "frontend_backend_confusion": 75,
+        "generated_vendor_trap": 50,
+        "hard_distractor": 200,
+        "negative_nonexistent": 150,
+        "same_name_symbol": 100,
+        "semantic_trap": 150,
+        "stale_index_like": 50,
+        "test_source_confusion": 75
+      },
+      "labels": 1100,
+      "partial": false,
+      "populated": true,
+      "repos": 9,
+      "repos_count": {
+        "codex2api": 128,
+        "fast-context-mcp": 126,
+        "gemini-web2api": 125,
+        "grok2api": 123,
+        "infinite-canvas": 123,
+        "kiro2": 121,
+        "smartsearch": 118,
+        "triviumdb": 118,
+        "windsurf2api": 118
+      },
+      "tasks": 1100
+    }
+  },
+  "dense_or_llm_claims": false,
+  "description": "Weak/mined/deterministic stress dataset for retrieval failure discovery. NOT promotion evidence. NOT a retrieval strategy promotion mechanism. Designed to maximize failure discovery. Labels are weak/mined/deterministic; not human-verified. No canary tokens. Uses the same external repo set as R20 and derives some queries from existing R20 tasks/labels where useful.",
+  "generation_info": {
+    "anti_leakage": "Public tasks contain only test_id, repo_id, query, public_version, source. No category/risk/gold/expected/oracle/risk_tags/intent_guess/why/strategy fields. Labels are private and separate. R26 labels are stress failure-surface labels, not EvidenceCore.",
+    "content_manifest_algorithm": "normalized_sha256_per_file_sorted",
+    "generated_at": "2026-06-12",
+    "generator": "eval/r26_generate_auto_stress.py",
+    "labels_sha256": "b7add2500c203aa644339156fd6e557df54232ad282381a3474ea58aa1afddd8",
+    "seed": 42,
+    "source_type": "external_local_repos_and_r20_derivatives",
+    "supported_extensions": [
+      ".go",
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".py",
+      ".rs",
+      ".ts",
+      ".tsx"
+    ],
+    "tasks_sha256": "868d21de2c6f955ebf4dcb7235c100e03c0be7c71425ee99bd20155bf1f5c39c"
+  },
+  "not_promotion_evidence": true,
+  "program": "R26 Auto-Stress-1000 Retrieval Failure-Surface Benchmark",
+  "remote_calls": 0,
+  "schema_version": "r26-v1",
+  "target_composition": {
+    "ambiguous_vague": 150,
+    "dense_quiver_specific_trap": 100,
+    "frontend_backend_confusion": 75,
+    "generated_vendor_trap": 50,
+    "hard_distractor": 200,
+    "negative_nonexistent": 150,
+    "same_name_symbol": 100,
+    "semantic_trap": 150,
+    "stale_index_like": 50,
+    "test_source_confusion": 75
+  },
+  "tiers": {
+    "auto_stress": {
+      "generated_labels": 1100,
+      "generated_tasks": 1100,
+      "label_quality_note": "per-row label_quality is intentionally omitted; oracle_type plus R26 caveats define weak/mined/deterministic status",
+      "min_per_category": 10,
+      "min_per_repo": 50,
+      "minimum_labels": 1000,
+      "minimum_tasks": 1000,
+      "target_categories": 10,
+      "target_repos": 9
+    }
+  }
+}

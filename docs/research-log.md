@@ -2108,3 +2108,54 @@ Eval-layer ablation study measuring the contribution of graph_basic and dense_mo
 - Combined strategies show additive noise: graph + dense false spans accumulate
 - Runs artifacts are gitignored; report not committed
 - No Rust core changes
+
+---
+
+## 2026-06-12 — R26 Auto-Stress-1000
+
+### Objective
+
+Generate a large-scale stress dataset with >= 1000 cases targeting specific failure categories, using the same external repo set as R20 and deriving some queries from existing R20 tasks/labels where useful. Data generation/static validation only; no Rust core changes, no retrieval strategy promotion.
+
+### Hypothesis
+
+A targeted stress dataset with precise category composition will maximize failure discovery across retrieval strategies. Specifically: negative/abstain-heavy cases will expose hallucination and false-positive vulnerabilities; hard-distractor and same-name cases will test precision under confusion; semantic-trap and dense_quiver cases will test dense/infrastructure naming confusion; stale-index cases will test freshness detection.
+
+### Implementation notes
+
+- Created `eval/r26_generate_auto_stress.py` — generates 1100 stress cases from the same external repo set as R20 and some R20 derivative labels using deterministic seed 42.
+- Created `eval/r26_validate_auto_stress.py` — fail-closed static validator with 19 checks.
+- Created `fixtures/r26_auto_stress/` with tasks, labels, manifest, repos.lock, safety_checks, summary.
+- Public tasks contain only: test_id, repo_id, query, public_version, source. No category/risk/judgement fields leak.
+- Private labels carry all judgement fields: source_category, risk_public, intent_guess, risk_tags, oracle_type, expected_behavior, gold_spans, hard_distractors, must_not_primary, why_this_is_hard, which_strategy_it_targets.
+- 10 stress categories with exact target composition: negative_nonexistent 150, ambiguous_vague 150, hard_distractor 200, semantic_trap 150, same_name_symbol 100, frontend_backend_confusion 75, test_source_confusion 75, generated_vendor_trap 50, stale_index_like 50, dense_quiver_specific_trap 100.
+- Uses the same external repo set as R20 and derives some queries from existing R20 tasks/labels where useful (hard_distractor, same_name_symbol, frontend_backend_confusion, test_source_confusion, generated_vendor_trap, stale_index_like categories use R20 label queries as seeds).
+- No canary tokens anywhere.
+- Deterministic seed 42.
+
+### Validation results
+
+- 19/19 fail-closed static validation checks passed, including exact category target counts, public/private schema separation, SHA-256 artifact checks, and repo content manifest SHA lock recomputation
+- 0 critical errors
+- 0 warnings
+- Tasks: 1100, Labels: 1100, Repos: 9, Categories: 10
+- All categories meet minimum count (10)
+- All repos meet minimum count (50)
+- No canary tokens found
+- No private fields in public tasks
+- Label-public task query/repo consistency verified
+- Span path/range validity verified against locked source files
+- Deterministic SHA256 checksums verified
+- dataset_manifest flags correct
+
+### Caveats
+
+- **R26 is weak/mined/deterministic stress, NOT promotion evidence.** It is designed to maximize failure discovery, not demonstrate quality.
+- **Labels are mined/weak/deterministic, not human-verified.** `human_reviewed` is forbidden.
+- **Negative/abstain cases dominate** (590/1100 abstain + 70/1100 no_primary = 60%). This is intentional.
+- **Derivation from R20 is shallow.** R26 reuses R20 repo sources and some R20 label queries as seeds, but does NOT inherit R20 gold spans or oracle judgments.
+- **semantic_trap and dense_quiver_specific_trap categories contain queries about ML/AI/vector infrastructure that these repos do NOT implement.** These test false-positive resistance, not retrieval quality.
+- **stale_index_like cases are metamorphic probes.** They reference code that may not exist in the current snapshot.
+- **No runner/scorer matrix exists for R26.** R26 is a static dataset with a static validator.
+- **R26 labels are stress failure-surface labels, not EvidenceCore.**
+- No Rust core changes
