@@ -56,14 +56,15 @@ stages:
     cadence: weekly_or_workflow_dispatch
     max_repos: 12
     max_tasks_per_repo: 300
+    shard_count: 3
     # dense_real and quiver intentionally omitted: R50 defines them as workflow_dispatch only
     # with default disabled; they must not appear in scheduled weekly runs.
-    strategies: [regex, bm25, symbol, rrf, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, ast_chunk_bm25, graph_basic]
+    strategies: [regex, bm25, symbol, rrf, bm25_regex, bm25_symbol, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, ast_chunk_bm25, graph_basic, dense_mock]
   manual_extreme:
     cadence: workflow_dispatch_only
     max_repos: 6
     max_tasks_per_repo: 500
-    strategies: [all_available]
+    strategies: [regex, bm25, symbol, rrf, bm25_regex, bm25_symbol, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, ast_chunk_bm25, graph_basic, dense_mock, DenseReal, QuIVer]
 repos:
   # ── PR smoke: broad but manageable, high-signal language coverage. ──
 
@@ -265,14 +266,14 @@ repos:
     tier: weekly_large
     primary_language: TypeScript
     expected_license: MIT
-    risk_tags: [very_large, monorepo, frontend_backend_confusion, extensions]
+    risk_tags: [very_large, monorepo, frontend_backend_confusion, test_source_confusion, same_name_symbol, stale_index_like, extensions]
 
   - id: go_kubernetes
     repo: kubernetes/kubernetes
     tier: weekly_large
     primary_language: Go
     expected_license: Apache-2.0
-    risk_tags: [very_large, generated_files, api_types, same_name_symbol]
+    risk_tags: [very_large, generated_files, generated_vendor, api_types, same_name_symbol, stale_index_like, test_source_confusion]
 
   - id: rust_rust
     repo: rust-lang/rust
@@ -286,28 +287,28 @@ repos:
     tier: weekly_large
     primary_language: Rust
     expected_license: MIT
-    risk_tags: [large, rust_ts_mix, runtime, cli]
+    risk_tags: [large, rust_ts_mix, runtime, cli, generated_vendor, same_name_symbol, stale_index_like]
 
   - id: ts_nextjs
     repo: vercel/next.js
     tier: weekly_large
     primary_language: TypeScript
     expected_license: MIT
-    risk_tags: [large_monorepo, routing, frontend_backend_confusion, tests]
+    risk_tags: [large_monorepo, routing, frontend_backend_confusion, test_source_confusion, same_name_symbol, stale_index_like, tests]
 
   - id: py_django
     repo: django/django
     tier: weekly_large
     primary_language: Python
     expected_license: BSD-3-Clause
-    risk_tags: [large_python, web_framework, ORM, routing, tests]
+    risk_tags: [large_python, web_framework, ORM, routing, test_source_confusion, same_name_symbol, stale_index_like, tests]
 
   - id: ruby_rails
     repo: rails/rails
     tier: weekly_large
     primary_language: Ruby
     expected_license: MIT
-    risk_tags: [large_ruby, framework, monorepo, tests]
+    risk_tags: [large_ruby, framework, monorepo, test_source_confusion, same_name_symbol, stale_index_like, tests]
 
   - id: dotnet_runtime
     repo: dotnet/runtime
@@ -321,4 +322,4 @@ repos:
     tier: weekly_large
     primary_language: Python
     expected_license: Apache-2.0
-    risk_tags: [large_python_ts, frontend_backend_confusion, config]
+    risk_tags: [large_python_ts, frontend_backend_confusion, test_source_confusion, generated_vendor, stale_index_like, config]

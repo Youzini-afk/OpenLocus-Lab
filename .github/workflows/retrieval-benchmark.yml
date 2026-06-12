@@ -1,0 +1,207 @@
+name: retrieval-benchmark
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'crates/**'
+      - 'eval/**'
+      - 'docs/**'
+      - '.github/workflows/retrieval-benchmark.yml'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  schedule:
+    # Nightly medium; non-hour minute avoids GitHub schedule congestion.
+    - cron: '17 4 * * *'
+    # Weekly large stress, sharded by repository matrix.
+    - cron: '43 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Benchmark stage'
+        required: false
+        default: 'pr_smoke'
+        type: choice
+        options:
+          - pr_smoke
+          - nightly_medium
+          - weekly_large
+          - manual_extreme
+      max_repos:
+        description: 'Optional repo cap for selected stage'
+        required: false
+        default: ''
+      enable_remote_models:
+        description: 'Allow real embedding / QuIVer providers (manual only)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: retrieval-benchmark-${{ github.event_name }}-${{ github.ref }}-${{ inputs.stage || 'auto' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      stage: ${{ steps.stage.outputs.stage }}
+      allow_remote: ${{ steps.remote.outputs.allow_remote }}
+      timeout_minutes: ${{ steps.stage.outputs.timeout_minutes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: stage
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            stage="pr_smoke"
+            max_repos="6"
+            timeout_minutes="45"
+          elif [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "43 5 * * 1" ]]; then
+            stage="weekly_large"
+            max_repos="12"
+            timeout_minutes="45"
+          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+            stage="nightly_medium"
+            max_repos="20"
+            timeout_minutes="45"
+          else
+            stage="${{ inputs.stage || 'pr_smoke' }}"
+            max_repos="${{ inputs.max_repos || '' }}"
+            timeout_minutes="45"
+          fi
+          echo "stage=$stage" >> "$GITHUB_OUTPUT"
+          echo "max_repos=$max_repos" >> "$GITHUB_OUTPUT"
+          echo "timeout_minutes=$timeout_minutes" >> "$GITHUB_OUTPUT"
+      - id: remote
+        run: |
+          allow_remote="0"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.enable_remote_models }}" == "true" ]]; then
+            allow_remote="1"
+          fi
+          echo "allow_remote=$allow_remote" >> "$GITHUB_OUTPUT"
+      - name: Validate CI repo manifest
+        run: |
+          python3 eval/ci_make_repo_matrix.py \
+            --manifest eval/ci_repos/openlocus-ci-repos-v1.yaml \
+            --stage "${{ steps.stage.outputs.stage }}" \
+            --validate-only
+      - id: matrix
+        run: |
+          extra=()
+          if [[ -n "${{ steps.stage.outputs.max_repos }}" ]]; then
+            extra+=(--max-repos "${{ steps.stage.outputs.max_repos }}")
+          fi
+          matrix=$(python3 eval/ci_make_repo_matrix.py \
+            --manifest eval/ci_repos/openlocus-ci-repos-v1.yaml \
+            --stage "${{ steps.stage.outputs.stage }}" \
+            "${extra[@]}")
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  benchmark:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ fromJson(needs.plan.outputs.timeout_minutes) }}
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    env:
+      OPENLOCUS_ALLOW_REMOTE: ${{ needs.plan.outputs.allow_remote }}
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build OpenLocus CLI
+        run: cargo build --locked --release -p openlocus-cli
+      - name: Clone and lock public corpus repo
+        run: |
+          mkdir -p artifacts
+          python3 eval/ci_clone_and_lock_repo.py \
+            --manifest eval/ci_repos/openlocus-ci-repos-v1.yaml \
+            --repo-id "${{ matrix.repo_id }}" \
+            --out-root "$RUNNER_TEMP/openlocus-corpus" \
+            --lock-out artifacts/repo-lock.json
+      - name: Generate public tasks only
+        run: |
+          python3 eval/ci_generate_tasks.py \
+            --repo-lock artifacts/repo-lock.json \
+            --out-dir artifacts/tasks \
+            --max-tasks-per-repo "${{ matrix.max_tasks }}" \
+            --no-labels
+      - name: 'RUN phase: public tasks only'
+        run: |
+          strategies=$(python3 - <<'PY'
+          import json, os
+          value = os.environ['MATRIX_STRATEGIES']
+          parsed = json.loads(value) if value.startswith('[') else value
+          print(','.join(parsed) if isinstance(parsed, list) else parsed)
+          PY
+          )
+          python3 eval/ci_run_strategy_matrix.py \
+            --tasks artifacts/tasks/tasks/ci_tasks.jsonl \
+            --repo-lock artifacts/repo-lock.json \
+            --openlocus target/release/openlocus \
+            --out-dir artifacts/run \
+            --strategies "$strategies" \
+            --shard-id "${{ matrix.shard_id }}" \
+            --shard-count "${{ matrix.shard_count }}"
+        env:
+          MATRIX_STRATEGIES: ${{ toJson(matrix.strategies) }}
+          OPENLOCUS_CI_QUERY_TIMEOUT_SECONDS: '30'
+          OPENLOCUS_CI_BUILD_TIMEOUT_SECONDS: '300'
+      - name: Generate private labels for SCORE phase
+        run: |
+          python3 eval/ci_generate_tasks.py \
+            --repo-lock artifacts/repo-lock.json \
+            --out-dir artifacts/tasks \
+            --max-tasks-per-repo "${{ matrix.max_tasks }}"
+      - name: 'SCORE phase: labels only'
+        run: |
+          python3 eval/ci_score_strategy_matrix.py \
+            --labels artifacts/tasks/labels/ci_labels.jsonl \
+            --run-dir artifacts/run \
+            --out artifacts/report.json
+      - name: Validate CI benchmark invariants
+        run: |
+          python3 eval/ci_validate_report.py \
+            --report artifacts/report.json \
+            --run-dir artifacts/run
+      - name: Upload sanitized benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retrieval-${{ needs.plan.outputs.stage }}-${{ matrix.repo_id }}-s${{ matrix.shard_id }}of${{ matrix.shard_count }}
+          path: |
+            artifacts/report.json
+            artifacts/repo-lock.json
+            artifacts/tasks/tasks/ci_tasks.jsonl
+            artifacts/tasks/coverage.json
+            artifacts/run/run-manifest.json
+            artifacts/run/*-status.json
+          retention-days: 7
+          if-no-files-found: ignore
+          include-hidden-files: false
+
+  remote-provider-policy:
+    if: github.event_name == 'workflow_dispatch' && inputs.enable_remote_models == true
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Enforce explicit remote-provider opt-in
+        run: |
+          test "${{ needs.plan.outputs.allow_remote }}" = "1"
+          echo "OPENLOCUS_ALLOW_REMOTE=1 is explicitly enabled for manual dispatch."
+          echo "DenseReal / QuIVer remain candidate/supporting-only, non-promotion paths."

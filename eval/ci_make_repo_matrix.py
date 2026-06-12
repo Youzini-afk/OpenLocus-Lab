@@ -306,6 +306,12 @@ def validate_manifest(manifest: dict) -> list[str]:
                 f"Repo '{r.get('id', '?')}': unknown tier '{tier}'"
             )
 
+    nightly_count = sum(1 for r in repos if r.get("tier") == "nightly_medium")
+    if nightly_count < 15 or nightly_count > 20:
+        errors.append(
+            f"nightly_medium must contain 15-20 repos, got {nightly_count}"
+        )
+
     return errors
 
 
@@ -326,10 +332,12 @@ def build_matrix(
     stage: str,
     stage_config: dict,
     max_repos_override: int | None = None,
+    shard_count_override: int | None = None,
 ) -> dict:
     """Build the GitHub Actions matrix JSON."""
     max_repos = max_repos_override or stage_config.get("max_repos", 10)
     max_tasks = stage_config.get("max_tasks_per_repo", 60)
+    shard_count = shard_count_override or int(stage_config.get("shard_count", 1) or 1)
     strategies = stage_config.get("strategies", [])
     if strategies == ["all_available"]:
         strategies = [
@@ -343,16 +351,19 @@ def build_matrix(
 
     include = []
     for r in selected:
-        entry = {
-            "repo_id": r["id"],
-            "repo": r["repo"],
-            "primary_language": r.get("primary_language", "unknown"),
-            "expected_license": r.get("expected_license", ""),
-            "tier": r.get("tier", ""),
-            "max_tasks": max_tasks,
-            "strategies": strategies,
-        }
-        include.append(entry)
+        for shard_id in range(shard_count):
+            entry = {
+                "repo_id": r["id"],
+                "repo": r["repo"],
+                "primary_language": r.get("primary_language", "unknown"),
+                "expected_license": r.get("expected_license", ""),
+                "tier": r.get("tier", ""),
+                "max_tasks": max_tasks,
+                "strategies": strategies,
+                "shard_id": shard_id,
+                "shard_count": shard_count,
+            }
+            include.append(entry)
 
     return {"include": include}
 
@@ -385,6 +396,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Optional cap overriding the stage max_repos value",
     )
+    p.add_argument(
+        "--shard-count",
+        type=int,
+        default=None,
+        help="Optional task shard count overriding the stage shard_count value",
+    )
     return p.parse_args(argv)
 
 
@@ -416,7 +433,7 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(1)
 
     repos = manifest.get("repos", [])
-    matrix = build_matrix(repos, args.stage, stage_config, args.max_repos)
+    matrix = build_matrix(repos, args.stage, stage_config, args.max_repos, args.shard_count)
 
     print(json.dumps(matrix, separators=(",", ":")))
 
