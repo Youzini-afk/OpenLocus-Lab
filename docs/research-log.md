@@ -1502,3 +1502,89 @@ R17 showed that query_only_router_v0 and rrf_guarded_by_symbol_regex both elimin
 - Citation safety is inherited from validated source predictions; no new citation validation is claimed.
 - No LLM/dense/provider claims are made.
 - Routing decisions are deterministic and reproducible from the same inputs.
+
+---
+
+## 2026-06-12 — R19 Large/Stress Guard Generalization Validation
+
+### Objective
+
+Validate whether R18 train-selected guard strategies generalize to R15-L (294 weak/mined tasks) and R15-stress. R15-L labels are mostly weak/mined; used only for generalization smoke, not as promotion evidence. Does NOT change Rust core.
+
+### Current hypothesis
+
+The R18 train-selected `rrf_guarded_by_symbol_regex` should preserve recall and reduce negative_nonempty on R15-L, similar to its R15-M behavior. The `query_noise_plus_rrf_agree_min` stress-zero observation should repeat on R15-stress. However, R15-L labels are weak/mined, so any "improvement" is a generalization smoke test, not promotion evidence.
+
+### Implementation notes
+
+- **eval/r19_large_guard_validation.py**: Schema version r19-v1. Imports R17 and R18 helpers. Runs R15 benchmark for L and stress tiers with R19-owned report/prediction artifacts.
+- **R19-owned prediction artifacts**: Generic `r15-large-{method}-predictions.jsonl` and `r15-stress-{method}-predictions.jsonl` are copied to `r19-r15-large-{method}-predictions.jsonl` and `r19-r15-stress-{method}-predictions.jsonl` immediately after benchmark run. Provenance includes sha256/bytes/jsonl_lines. --skip-run requires R19-owned predictions only.
+- **Safety gates**: source report safety_passed, canary_retrieval passed, expected methods present, citation_validity=1.0, citation_hash_checked or citation_not_applicable true, baseline prediction/report consistency hard gate (imported from R17). Labels loaded only after all route predictions generated.
+- **Strategy set (9 total)**:
+  - Baselines: regex, bm25, symbol, rrf
+  - query_only_router_v0 (R17 fixed reference)
+  - rrf_guarded_by_symbol_regex (R18 train-selected candidate)
+  - query_noise_plus_rrf_agree_min_0.0 (R18 stress-zero observation)
+  - query_noise_plus_rrf_agree_min_0.02
+  - query_noise_plus_rrf_score_min_0.02
+- **Scoring**: FileRecall@1/5/10, MRR, SpanF0.5@10, token_waste@10, hard_negative_hit_rate@10, negative_nonempty_rate@10, success_rate. Label quality counts for large/stress with explicit caveat.
+- **Generalization assessment fields**: selected_candidate_large_ok, selected_candidate_stress_ok, stress_zero_observation_repeated, promotion_ready (always false).
+
+### R19 results
+
+#### R15-L strategy metrics (294 tasks, labels: 270 mined, 24 weak)
+
+| Strategy | FileRecall@1 | MRR | SpanF0.5@10 | neg_nonempty@10 |
+|---|---:|---:|---:|---:|
+| regex | 0.848 | 0.884 | 0.270 | 0.042 |
+| bm25 | 0.456 | 0.532 | 0.156 | 0.917 |
+| symbol | 0.822 | 0.838 | 0.360 | 0.000 |
+| rrf | 0.911 | 0.949 | 0.264 | 0.917 |
+| query_only_router_v0 | 0.885 | 0.902 | 0.319 | 0.333 |
+| rrf_guarded_by_symbol_regex | 0.911 | 0.949 | 0.264 | 0.042 |
+| query_noise_plus_rrf_agree_min_0.0 | 0.900 | 0.938 | 0.264 | 0.000 |
+| query_noise_plus_rrf_agree_min_0.02 | 0.896 | 0.933 | 0.263 | 0.000 |
+| query_noise_plus_rrf_score_min_0.02 | 0.896 | 0.933 | 0.263 | 0.000 |
+
+#### R15-stress strategy metrics (19 tasks, labels: 3 human_reviewed, 16 weak)
+
+| Strategy | neg_nonempty@10 |
+|---|---:|
+| regex | 0.474 |
+| bm25 | 0.684 |
+| symbol | 0.105 |
+| rrf | 0.684 |
+| query_only_router_v0 | 0.158 |
+| rrf_guarded_by_symbol_regex | 0.474 |
+| query_noise_plus_rrf_agree_min_0.0 | 0.000 |
+| query_noise_plus_rrf_agree_min_0.02 | 0.000 |
+| query_noise_plus_rrf_score_min_0.02 | 0.000 |
+
+#### Generalization assessment
+
+| Field | Value |
+|---|---|
+| selected_candidate_large_ok | True |
+| selected_candidate_stress_ok | False |
+| stress_zero_observation_repeated | True |
+| promotion_ready | False |
+
+### Key findings
+
+1. **rrf_guarded_by_symbol_regex generalizes to R15-L**: FileRecall@1 is preserved (0.911 vs RRF 0.911, delta +0.000), negative_nonempty drops from 0.917 to 0.042. However, R15-L labels are weak/mined; this is generalization smoke only, not promotion evidence.
+2. **rrf_guarded_by_symbol_regex does NOT improve stress beyond symbol**: Stress negative_nonempty is 0.474, above symbol's 0.105. The selected candidate fails the stress test, consistent with R18 findings. Query noise guard is needed for stress improvement.
+3. **query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeats**: Achieves 0.000 stress negative_nonempty and 0.000 R15-L negative_nonempty. On R15-L, FileRecall@1 is 0.904 (delta -0.007 vs RRF). This is an observation, not promotion evidence.
+4. **R15-L labels are weak/mined (270 mined, 24 weak)**: Any metric improvement or regression is generalization smoke only. These labels cannot serve as promotion evidence.
+5. **R15-stress has only 19 tasks (3 human_reviewed, 16 weak)**: Metric estimates are very noisy. The stress-zero result is a pattern observation on a small sample, not a reliable measurement.
+6. **No core default promotion from R19**: promotion_ready is always false. Requires human-verified labels and larger stress dataset.
+
+### Caveats
+
+- R19 is an eval-layer generalization validation; does NOT change Rust core.
+- R15-L labels are mostly weak/mined; used for generalization smoke only, not as promotion evidence.
+- R15-stress has only 19 tasks; metric estimates are very noisy.
+- Guard strategies were calibrated on R15-M in R18; R15-L generalization is a smoke test, not a validation.
+- Citation safety is inherited from validated source predictions; no new citation validation is claimed.
+- No LLM/dense/provider claims are made.
+- Routing decisions are deterministic and reproducible from the same inputs.
+- promotion_ready is always false in R19; requires human-verified labels and larger stress dataset.
