@@ -1,14 +1,14 @@
-# OpenLocus R0-R13 Research Report
+# OpenLocus R0-R16 Research Report
 
-Date: 2026-06-11  
+Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`
-Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R13 remote embedding / LLM-derived indexing safety scaffold milestone.
+Scope: continuous evidence-gated research implementation from the initial design into a working local retrieval kernel prototype, now including the R16 multi-method quality bakeoff milestone.
 
 ## Executive summary
 
 OpenLocus now has a working Rust prototype that validates the core design direction: **all agent-facing code facts must be evidence-backed, citation-checkable, and freshness-aware**.
 
-The implementation completed thirteen evidence-gated checkpoints:
+The implementation completed sixteen evidence-gated checkpoints:
 
 | Commit | Stage | Result |
 |---|---|---|
@@ -27,6 +27,7 @@ The implementation completed thirteen evidence-gated checkpoints:
 | R13 checkpoint | R13 remote embedding / LLM-derived indexing safety scaffold | New `openlocus-provider` crate with EmbeddingProvider trait, MockEmbeddingProvider (deterministic blake3 vectors, dim=32), DisabledEmbeddingProvider. Policy gate: remote denied by default, data_level ≤1 and ≤provider max, secret scanning. Dense JSONL store contains vectors but no raw text/code. Audit JSONL contains no raw text/vector/query. Search → StoreHit → materialize_evidence(Channel::Dense). CLI: provider status/audit, dense build/search/purge; dense output uses query_sha/query_len. 45/45 safety checks passed. Mock quality only; not real semantic retrieval. |
 | R14 checkpoint | R14 Scaled Evidence Benchmark Foundation | Scaled benchmark program with S/M/L/X tiers. Fail-closed safety: runner/scorer isolation, isolated temp roots per repo group, isolated `.openlocus/policy.toml` from repo lock, unknown repo_id refusal, citation validity must be 1.0 via Rust validator, runtime canary retrieval, repo lock content manifest re-verification (normalized SHA-256 per file sorted). R14-S: 4 logical repo groups from one OpenLocus workspace snapshot, 48 tasks, 48 labels, 47 hard negatives. Span-overlap hard_negative_hit_rate@10 + negative_nonempty_rate@10. 8 leakage checks, 0 critical. R14-M partial. R14-L/X not populated. Safety foundation, not quality conclusion. |
 | R15 checkpoint | R15 External Multi-Repo Benchmark Expansion | 9 independent external repos across 5 languages (Rust/Python/Go/JS/TS), 166 medium-tier tasks, 270 hard negatives. Multi-language symbol extraction with regex-based patterns. Isolated roots allowlist-copy only manifest/source files under repo_id-specific folders; symlinks and artifacts are not copied. Runtime `.openlocus` traces are cleaned after each query/citation validation and audited as hard-gate artifacts. Rust citation validator runs before cleanup (`citation_hash_checked=true`). Scoring accepts exact or single `repo_id/` prefix paths only. Regex FileRecall@1=0.852, BM25=0.548 on R15-M. BM25 negative_nonempty_rate@10=0.645. 112/112 smoke checks passed. 0 critical leakage issues. Mined benchmark expansion, not quality conclusion. |
+| R16 checkpoint | R16 Multi-Method Quality Bakeoff | Cross-matrix bakeoff of regex/bm25/symbol/rrf across R14-S/R15-M/R15-stress. All safety gates passed (citation_validity=1.0, citation_hash_checked=true, canary_retrieval.passed=true). RRF wins R15-M recall (FileRecall@1 0.933, @5/10 0.993, MRR 0.959) but inherits BM25 negative_nonempty false positives (0.645 R15-M, 0.684 stress). Symbol best span precision (0.310 SpanF0.5, 0.052 hard_neg, 0.000 neg_nonempty on R15-M). No method promoted to universal default. Lexical/symbol/RRF only; no provider/dense/LLM claims. No remote calls. |
 
 Final verification snapshot:
 
@@ -782,18 +783,48 @@ Gate:
 - 112/112 smoke checks passed ✅
 - mined benchmark expansion, not quality conclusion ✅
 
-### R16 — fast-context quality bakeoff
+### R16 — multi-method quality bakeoff ✅ DONE
 
-Priority: medium.
+Priority: high. **Completed in R16. All safety gates passed.**
 
-Compare `openlocus fast-context` against `retrieve` over larger task sets. Add ablations: no graph, no symbol, BM25 only, derived hints, dense hints.
+R16 runs a cross-matrix quality bakeoff across R14-S, R15-M, and R15-stress using all four lexical/symbol/RRF methods (regex, BM25, symbol, RRF). It produces aggregate JSON and markdown reports with winners per metric and safety verification.
+
+Implemented:
+
+- **eval/r16_quality_bakeoff.py**: CLI args `--openlocus`, `--workspace`, `--out`, `--skip-run`. Runs three benchmark matrices via subprocess. Verifies safety_passed, citation_validity=1.0 for each method with evidence, citation_hash_checked true or citation_not_applicable true, canary_retrieval.passed where present. Produces aggregate JSON (schema_version r16-v1) with runs metadata, method tables, winners per metric, safety_checks, conclusions. Produces markdown report. Hard fails on any safety gate or runner failure. No provider/dense/LLM claims.
+- **docs/r16-quality-bakeoff.md**: Stable report with current results and caveats.
+
+R16 bakeoff results:
+
+R14-S: BM25 dominates recall/MRR; symbol wins span precision (0.199 SpanF0.5, 0.043 hard_neg); all methods 0.000 negative_nonempty.
+
+R15-M: RRF wins recall (FileRecall@1 0.933, @5/10 0.993, MRR 0.959) but inherits BM25 negative_nonempty false positives (0.645); symbol wins span precision (0.310 SpanF0.5, 0.052 hard_neg, 0.000 neg_nonempty).
+
+R15-stress: Symbol has lowest false-positive rate (0.105 negative_nonempty); BM25/RRF worst (0.684).
+
+Key conclusions:
+
+1. RRF wins recall but inherits BM25 false-positive behavior; not safe as default without negative gating or query intent routing.
+2. Symbol best span precision/hard-negative profile; ideal as precision anchor, not sole retriever.
+3. Regex strong on exact-symbol tasks but reflects task distribution bias.
+4. BM25 strong in R14-S but weak/false-positive-heavy in R15-M/stress.
+5. No method promoted to universal default; next research should be query intent router / negative guard / method fusion policy.
+
+Safety facts:
+
+- All three matrices: safety_passed=true
+- All methods: citation_validity=1.0, citation_hash_checked=true
+- canary_retrieval.passed=true where present
+- No remote calls; lexical/symbol/RRF only
 
 Gate:
 
-- no citation regressions;
-- budget violations = 0;
-- FileRecall/MRR/SpanF0.5 improve or stay within allowed regression;
-- trace replay coverage = 100%.
+- safety_passed=true across all matrices ✅
+- citation_validity=1.0 for all methods ✅
+- citation_hash_checked=true ✅
+- canary_retrieval.passed=true ✅
+- no remote calls ✅
+- no provider/dense/LLM claims ✅
 
 ## Final conclusion
 
@@ -811,6 +842,7 @@ The current implementation successfully converts the research design into a work
 - provider/embedding safety scaffold with mock provider, policy gate, secret scanning, dense JSONL store, and embedding audit (45/45 safety checks passed);
 - **scaled evidence benchmark safety foundation (R14) with S/M/L/X tiers, fail-closed runner/scorer isolation, isolated temp roots, citation validity=1.0 via Rust validator, repo-lock policy files, runtime canary retrieval, repo lock manifest re-verification, span-overlap hard negatives, negative task metrics, and explicit label quality tracking**;
 - **external multi-repo benchmark expansion (R15) with 9 independent external repos across 5 languages (Rust/Python/Go/JS/TS), 166 medium-tier tasks, 270 hard negatives, multi-language symbol extraction, absolute source paths, isolated roots with repo_id-specific allowlist source-file copying, strict Rust citation validation, exact/single-prefix scoring path matching, 112/112 smoke checks passed, mined benchmark expansion not quality conclusion**;
+- **multi-method quality bakeoff (R16) across R14-S/R15-M/R15-stress with regex/bm25/symbol/rrf, all safety gates passed, RRF wins recall but inherits BM25 false positives, symbol best span precision, no method promoted to universal default, lexical/symbol/RRF only, no provider/dense/LLM claims**;
 - pushed checkpoints for each stage.
 
 The next phase should not rush into a full LLM/dense/TDB system. The safest path is to continue testing incremental robustness on more real repositories (R12 completed one OpenLocus temp-copy sample), then extend TDB to meaningful search quality (R11 adapter probe complete), plug in real embedding providers behind the existing policy gate (R13 scaffold ready), and run bakeoffs against the conservative baseline.
@@ -818,6 +850,7 @@ The next phase should not rush into a full LLM/dense/TDB system. The safest path
 ### Recommended next stages
 
 - **R14+ graph precision**: Add Tree-sitter/LSP/SCIP-like graph adapters behind the same graph model. Keep heuristic graph as baseline. Gate: impact/test-selection fixture improvement; depth>1 opt-in; graph results still materialize through StoreHit. This is a future feature track, not the current R14 definition.
-- **R15 fast-context quality bakeoff**: Compare `openlocus fast-context` against `retrieve` over larger task sets. Add ablations: no graph, no symbol, BM25 only, derived hints, dense hints. Gate: no citation regressions; budget violations=0; FileRecall/MRR/SpanF0.5 improve or stay within allowed regression.
-- **R16 real remote embedding after policy review**: Integrate real embedding providers (e.g. OpenAI, local ONNX) behind the R13 policy gate. Requires policy review, API key management, and cost tracking. Gate: quality gain measured in eval; no policy regression; graceful degradation when provider unavailable; audit trail complete.
+- **R15+ fast-context quality bakeoff**: Compare `openlocus fast-context` against `retrieve` over larger task sets. Add ablations: no graph, no symbol, BM25 only, derived hints, dense hints. Gate: no citation regressions; budget violations=0; FileRecall/MRR/SpanF0.5 improve or stay within allowed regression.
+- **R17 query intent router / negative guard**: Build a query intent classifier that routes precision-sensitive queries to symbol/regex and recall-sensitive queries to RRF. Add a negative guard that suppresses BM25/RRF results on negative tasks. Gate: negative_nonempty_rate@10 drops below 0.1 on R15-M/stress; FileRecall/MRR not worse than single-method best.
+- **R18 real remote embedding after policy review**: Integrate real embedding providers (e.g. OpenAI, local ONNX) behind the R13 policy gate. Requires policy review, API key management, and cost tracking. Gate: quality gain measured in eval; no policy regression; graceful degradation when provider unavailable; audit trail complete.
 - **R14-M/L/X expansion**: Expand the benchmark to additional repositories (8+ for M, 16+ for L, 32+ for X). Add human-reviewed labels for critical tasks. Run full method comparison across tiers.

@@ -1256,3 +1256,69 @@ Safety: passed. Canary: 36 checked, 0 hits, 0 failures. Citation hash checked.
 - The benchmark does not claim dense/LLM/graph quality improvements.
 - Baseline metrics (regex outperforming BM25 on exact-symbol tasks) are specific to this fixture and should not be generalized.
 - smartsearch has 2102 Python files but only 69 are indexed after excluding node_modules, __pycache__, etc. Most files are in excluded directories.
+
+## 2026-06-12 — R16 Multi-Method Quality Bakeoff
+
+### Objective
+
+Run a cross-matrix quality bakeoff across R14-S, R15-M, and R15-stress using all four lexical/symbol/RRF methods (regex, BM25, symbol, RRF). Produce aggregate report with winners, safety verification, and conclusions. No provider/dense/LLM claims.
+
+### Implementation notes
+
+- **eval/r16_quality_bakeoff.py**: CLI args `--openlocus`, `--workspace`, `--out`, `--skip-run`. Runs three benchmark matrices via subprocess: R14-S, R15-M, R15-stress. Loads JSON reports, verifies safety_passed, citation_validity=1.0 for each method with evidence, citation_hash_checked true or citation_not_applicable true, canary_retrieval.passed where present. Produces aggregate JSON (schema_version r16-v1) with runs metadata, method tables, winners per metric, safety_checks, conclusions. Produces markdown report alongside output. Hard fails (exit nonzero) if any safety gate fails or any runner command fails. No provider/dense/LLM claims.
+
+### R16 bakeoff results
+
+**R14-S Matrix:**
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| FileRecall@1 | 0.457 | **0.696** | 0.674 | 0.543 |
+| FileRecall@5 | 0.587 | **0.870** | 0.717 | **0.870** |
+| FileRecall@10 | 0.630 | **0.870** | 0.717 | **0.870** |
+| MRR | 0.518 | **0.770** | 0.684 | 0.661 |
+| SpanF0.5@10 | 0.068 | 0.064 | **0.199** | 0.084 |
+| hard_negative@10 | 0.152 | 0.196 | **0.043** | 0.152 |
+| negative_nonempty@10 | **0.000** | **0.000** | **0.000** | **0.000** |
+
+**R15-M Matrix:**
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| FileRecall@1 | 0.852 | 0.548 | 0.807 | **0.933** |
+| FileRecall@5 | 0.956 | 0.719 | 0.830 | **0.993** |
+| FileRecall@10 | 0.970 | 0.741 | 0.844 | **0.993** |
+| MRR | 0.889 | 0.623 | 0.820 | **0.959** |
+| SpanF0.5@10 | 0.263 | 0.188 | **0.310** | 0.253 |
+| hard_negative@10 | 0.289 | 0.230 | **0.052** | 0.259 |
+| negative_nonempty@10 | **0.000** | 0.645 | **0.000** | 0.645 |
+
+**R15-stress Matrix (negative tasks only):**
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| negative_nonempty@10 | 0.474 | 0.684 | **0.105** | 0.684 |
+
+### Safety facts
+
+- All three matrices: safety_passed=true
+- All methods across all matrices: citation_validity=1.0
+- Citation hash checked in R14/R15 reports via Rust validator
+- canary_retrieval.passed=true where present
+- No remote calls
+
+### Conclusions
+
+1. **RRF wins R15-M recall/MRR** (FileRecall@1 0.933, @5/10 0.993, MRR 0.959) but inherits BM25 negative false positive behavior (negative_nonempty@10 0.645 on R15-M and 0.684 on stress), so it is not safe as default for precision-sensitive tasks without negative gating or query intent routing.
+2. **Symbol has best span precision/hard-negative profile on R15-M** (SpanF0.5 0.310, hard_negative_hit_rate 0.052, negative_nonempty 0.000) but lower recall than RRF, so it is ideal as precision anchor, not sole retriever.
+3. **Regex is surprisingly strong on mined exact-symbol external tasks** (R15-M FileRecall@1 0.852, negative_nonempty 0.000), but this reflects task distribution and exact-string bias; not a general natural-language conclusion.
+4. **BM25 strong in R14-S but weak and false-positive-heavy in R15-M/stress**; needs query intent routing or threshold/negative guard.
+5. **No promotion of any method to universal default from R16**; next research should be query intent router / negative guard / method fusion policy, not raw channel addition.
+
+### Caveats
+
+- R16 is a multi-method quality bakeoff; not a universal quality conclusion.
+- Mined labels are not human-verified.
+- No provider/dense/LLM quality claims.
+- RRF negative_nonempty_rate reflects BM25 false-positive inheritance.
+- R14-S uses self-referential OpenLocus workspace data; not generalizable.
