@@ -146,7 +146,10 @@ def load_repo_lock(path: Path) -> dict[str, Path]:
     repos: dict[str, Path] = {}
     rows = load_jsonl(path) if path.suffix == ".jsonl" else json.loads(path.read_text(encoding="utf-8"))
     if isinstance(rows, dict):
-        rows = rows.get("repos", rows.get("repositories", []))
+        if "repo_id" in rows and "source" in rows:
+            rows = [rows]
+        else:
+            rows = rows.get("repos", rows.get("repositories", []))
     for row in rows:
         repo_id = row["repo_id"]
         source = row.get("source", {})
