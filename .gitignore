@@ -5,3 +5,11 @@
 *.log
 __pycache__/
 .pytest_cache/
+
+# Local provider credentials / endpoints. Never commit real values.
+.env
+.env.*
+!.env.example
+!.env.local.example
+openlocus-provider.env
+openlocus-provider.*.env
