@@ -827,7 +827,14 @@ def run_bakeoff(args: argparse.Namespace) -> dict[str, Any]:
             current["index_build_time_ms"] = embed_status.get("latency_ms", 0)
             current["vector_store_size"] = len(records)
             current["remote_calls"] = embed_status.get("remote_calls", 0)
-            build_summaries[view] = {"records": len(records), "repos": len(records_by_repo), "remote_calls": embed_status.get("remote_calls", 0)}
+            build_summaries[view] = {
+                "records": len(records),
+                "repos": len(records_by_repo),
+                "remote_calls": embed_status.get("remote_calls", 0),
+                "remote_requests": embed_status.get("remote_requests", 0),
+                "remote_texts": embed_status.get("remote_texts", 0),
+                "batch_size": embed_status.get("batch_size"),
+            }
             reports[view] = {"status": "ok", "metrics": current}
 
         ranked_views = [
