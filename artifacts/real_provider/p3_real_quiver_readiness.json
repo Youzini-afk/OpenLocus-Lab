@@ -1,0 +1,44 @@
+{
+  "BQ_diagnostics_only": true,
+  "core_changes": false,
+  "default_should_change": false,
+  "diagnostics": {
+    "BQ_overlap@10": 1.0,
+    "BQ_overlap@100": 1.0,
+    "BQ_overlap@50": 1.0,
+    "BQ_vs_f32_MRR": 0.6666666666666666,
+    "angular_gap@10": 0.12836819247660844,
+    "angular_gap@50": 0.12836819247660844,
+    "effective_dimension_proxy": 1445.9460927367115,
+    "language_shard_variance": 0.14175235212047,
+    "query_corpus_centroid_angle": 0.2480443402240376,
+    "quiver_fit": "mixed",
+    "recommendation": "continue_diagnostics_then_proto",
+    "sign_entropy_mean": 0.37186322919739884,
+    "sign_entropy_std": 0.4297542815607398,
+    "status": "ok",
+    "view_shard_variance": 0.0
+  },
+  "elapsed_ms": 13830,
+  "evidencecore_semantics_changed": false,
+  "fit_summary": {
+    "quiver_fit": "mixed",
+    "reason": "BQ overlap/sign-entropy diagnostic only; no Vamana graph or ANN quality measured",
+    "recommendation": "continue_diagnostics_then_proto"
+  },
+  "generated_at": "2026-06-13T06:17:28.270449+00:00",
+  "not_promotion_evidence": true,
+  "promotion_ready": false,
+  "provider": "openai-compatible",
+  "provider_status": "ok",
+  "query_count": 3,
+  "quiver_graph_implemented": false,
+  "quiver_quality_metrics_emitted": false,
+  "record_count": 4,
+  "remote_calls": 7,
+  "repo_count": 1,
+  "schema_version": "r33-quiver-readiness-v1",
+  "views": [
+    "path_plus_symbol"
+  ]
+}
