@@ -24,7 +24,7 @@ Key aggregate numbers:
 - missing `not_evidence` rate: `0.0`
 - private labels written/uploaded: `false`
 
-Interpretation: the model can emit parseable, policy-compliant alias records, but query-only aliases add far more false span surface than gold because the model has too little repo-specific context. The failure mode is semantic/existence grounding, not provider plumbing. This result supports moving toward quality-first rich context: source snippets, candidate metadata, symbols, paths, signatures, local retrieval scores, and context windows should be available to the model in explicitly opted-in public-corpus runs.
+Interpretation: the model can emit parseable, policy-compliant alias records, but query-only aliases add far more false span surface than gold because the model has too little repo-specific context. The failure mode is semantic/existence grounding, not provider plumbing. This result supports moving toward P21-G cross-model context injection: source snippets, candidate metadata, symbols, paths, signatures, local retrieval scores, hard distractors, and context windows should be available to the model in explicitly opted-in public-corpus runs, then compared across model profiles rather than treated as one universal token-size rule.
 
 What remains blocked:
 

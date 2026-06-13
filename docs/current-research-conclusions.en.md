@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, P20-LS/P20-LS-A low-context LLM query-alias results, and the P21-Q rich-context research pivot.
+Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, P20-LS/P20-LS-A low-context LLM query-alias results, and the P21-G cross-model context-injection pivot.
 
 Status: Research summary, not a promotion request.
 
@@ -21,7 +21,7 @@ candidate != fact
 candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
 ```
 
-Within that system, real embedding models now show **candidate/file-level recall signal**, but the L1/L2 large-slice tests also show that dense-only/global dense is unstable at larger scale, with low SpanF0.5 and high primary false-positive risk. P20-LS-A similarly shows that low-context/query-only LLM aliases are not enough. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now, but P21-Q should test richer context rather than continuing metadata-only model inputs.
+Within that system, real embedding models now show **candidate/file-level recall signal**, but the L1/L2 large-slice tests also show that dense-only/global dense is unstable at larger scale, with low SpanF0.5 and high primary false-positive risk. P20-LS-A similarly shows that low-context/query-only LLM aliases are not enough. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now, but P21-G should test cross-model context injection rather than continuing metadata-only model inputs or single-model token sweeps.
 
 ---
 
@@ -98,11 +98,11 @@ The useful role for LLMs is query aliases, symbol tags, intent views, candidate 
 
 P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The initial offline slice was already a caution signal. P20-LS-A then ran the real LLM provider (`[mk]Kimi-K2.7-Code`) on self-test plus 9 real CI corpus runs. Schema/guardrail behavior was acceptable, but low-context/query-only alias quality failed completely: 0/9 real runs passed quality, added_gold_span=`289` vs added_false_span=`8312` (~28.8:1 false:gold), and average fabricated_identifier_rate was ~`0.459`. Therefore, scale-up is blocked for the low-context/query-only alias mode. This is not a verdict on rich-context LLM retrieval; future alias/retrieval research should use source snippets, candidate metadata, symbol/path inventories, and prompt/context matrices.
 
-### 2.10 P21-Q should prioritize rich context quality and efficiency
+### 2.10 P21-G should study cross-model context injection effects
 
-The next model phase should stop treating metadata-only remote inputs as the default research posture. For public corpora and explicit opt-in remote runs, the model should receive enough code facts to be useful: raw code snippets, path headers, signatures, symbol bodies, neighboring lines, local retrieval scores, and top-k candidate sets. Necessary boundaries remain: exclude secrets, ignored files, provider keys, and private labels/gold answers; keep EvidenceCore as final fact authority; do not use LLMs as promotion judges.
+The next model phase should stop treating metadata-only remote inputs as the default research posture, but it should also avoid pretending that one model's best token budget is an OpenLocus-wide law. For public corpora and explicit opt-in remote runs, models should receive enough code facts to be useful: raw code snippets, path headers, signatures, symbol bodies, neighboring lines, local retrieval scores, hard distractors, and top-k candidate sets. Necessary boundaries remain: exclude secrets, ignored files, provider keys, and private labels/gold answers; keep EvidenceCore as final fact authority; do not use LLMs as promotion judges.
 
-P21-Q should compare rich embedding views (`raw_chunk_256/512/1024`, `snippet_with_neighbors`, `signature_plus_body_window`, `path_symbol_raw_hybrid`) and rich LLM support roles (candidate rerank, false-positive filter, span narrowing, inventory-grounded aliases). Every report must measure both quality and efficiency: SpanF0.5, added_gold/false, PFP, provider calls, input/output tokens, p50/p95 latency, and cost.
+P21-G should compare context atoms and packs across model profiles, query buckets, repo types, roles, and layouts. The primary variables are not fixed token caps but injected information: signatures, matched lines, source/test/doc flags, retrieval scores, body windows, neighbor symbols, related tests, hard distractors, candidate uncertainty, and inventory grounding. Token count must still be recorded as an efficiency outcome. Every report must measure quality, efficiency, and cross-model generalization: SpanF0.5, added_gold/false, PFP, provider calls, input/output tokens, p50/p95 latency, cost, model-averaged treatment effect, per-model effect, and effect variance.
 
 ---
 
@@ -118,7 +118,8 @@ P21-Q should compare rich embedding views (`raw_chunk_256/512/1024`, `snippet_wi
 | Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
 | LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Rich context derived views add gold or stress coverage without inducing primary hallucinations. |
 | LLM query aliases can improve anchors without pollution. | Low-context P20-LS-A query aliases are blocked for `[mk]Kimi-K2.7-Code`: 0/9 real quality pass, false:gold span ≈28.8:1, avg fabricated identifier rate≈0.459. | A grounded variant succeeds: aliases selected from repo inventories or top-k candidate context, `alias_added_gold > alias_added_false`, no PFP increase, low fabricated identifier rate. |
-| Rich LLM candidate support can improve span targeting. | Planned P21-Q hypothesis. | Rerank/filter/span-narrow over snippet-backed local candidates improves SpanF0.5 and reduces false spans at acceptable latency/cost. |
+| Context atoms can generalize across model families. | Planned P21-G hypothesis. | Signature/matched-lines/scores/flags/body-window atoms show positive model-averaged treatment effect with low model variance and no PFP increase. |
+| Rich LLM candidate support can improve span targeting. | Planned P21-G role hypothesis. | Rerank/filter/span-narrow over snippet-backed local candidates improves SpanF0.5 and reduces false spans at acceptable latency/cost. |
 
 ---
 
@@ -218,10 +219,10 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P7: real-provider summary.
 - P8/P9: GitHub Actions public corpus scale-up, model bakeoff, and multilingual smoke.
 
-### P20-P21: LLM scale-up and quality-first rich context
+### P20-P21: LLM scale-up and cross-model context injection
 
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
-- P21-Q: planned rich-context quality/efficiency phase using snippets, candidate metadata, symbols, signatures, prompt matrices, and latency/cost accounting.
+- P21-G: planned/configured cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting.
 
 Key detailed reports:
 
@@ -233,7 +234,7 @@ Key detailed reports:
 - `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results.
 - `docs/real-provider-ci-large-scale.en.md` — L1/L2 real-provider large-scale results.
 - `docs/p20-llm-large-scale.md` — P20-LS-A low-context LLM alias scale-up result.
-- `docs/p21-quality-first-rich-context.md` — P21-Q quality-first rich-context plan.
+- `docs/p21-g-cross-model-context-injection.md` — P21-G cross-model context-injection plan.
 
 ---
 
@@ -242,7 +243,7 @@ Key detailed reports:
 The next step is not promotion. It is larger, more granular, more reproducible validation:
 
 1. Freeze the L2 task set into a reproducible suite to avoid task-generation drift.
-2. Run quality-first rich embedding views on public/opt-in corpora: raw chunks, snippet windows, signature/body windows, path-symbol-raw hybrids.
+2. Run P21-G context atom screening on public/opt-in corpora: signatures, matched lines, retrieval scores, flags, body windows, neighbors, related tests, and hard distractors.
 3. Extend P3/P4 beyond Django/Kubernetes only after false-span analysis.
 4. Continue bge-m3 vs Qwen 0.6B/4B/8B bakeoffs on identical task sets, including latency/cost.
 5. Feed P5 stress traps into anchored dense/QuIVer validation and measure whether added_gold consistently exceeds added_false.
@@ -250,10 +251,10 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 7. Add real dense support scores to admission_v2 research, but only as supporting features.
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
 9. If LLM query aliases are revisited, test only grounded variants: inventory-selected aliases or aliases derived after seeing top-k local candidate snippets.
-10. Run P21-Q rich LLM candidate support: rerank/filter/span-narrow over snippet-backed local candidates and record quality, latency, token, and cost trade-offs.
+10. Run P21-G rich LLM candidate support: rerank/filter/span-narrow/abstain/inventory_alias over snippet-backed local candidates, record model-averaged and per-model effects, and report quality, latency, token, and cost trade-offs.
 
 ---
 
 ## 9. Current Bottom Line
 
-OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. The next key question is whether rich snippets, candidate metadata, lexical/symbol seeded retrieval, inventory-grounded aliases, sharding, and span-aware reranking can make real-model retrieval add gold consistently without increasing false-primary or false-span rates at unacceptable latency/cost.
+OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. The next key question is which context atoms, packs, roles, layouts, and model profiles make real-model retrieval add gold consistently across models without increasing false-primary or false-span rates at unacceptable latency/cost.

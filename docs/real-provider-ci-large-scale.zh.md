@@ -160,7 +160,7 @@ Caps: 60 tasks / 1000 records / 2000 files
 
 ## 9. 下一步建议
 
-1. 在明确 public/opt-in rich-context 模式下跑 L2/P21-Q multi-view 对照：raw chunks、snippet windows、signature/body windows、path-symbol-raw hybrids。继续排除 secrets、ignored files、provider keys、private labels/gold answers。
+1. 在明确 public/opt-in rich-context 模式下跑 L2/P21-G multi-view/context-injection 对照：raw chunks、snippet windows、signature/body windows、path-symbol-raw hybrids、model profiles 和 context packs。继续排除 secrets、ignored files、provider keys、private labels/gold answers。
 2. 对 L2 的 false positives 做 failure cluster：是否来自 generated/vendor、test/source confusion、same-name symbol、path-only noise。
 3. 增加 lexical anchor seeded 的 P2/P4 版本，不让 dense 在 1000 records 中 global top-k。
 4. 将 L2 tasks 固定成 reproducible suite，避免每次 task generation drift。

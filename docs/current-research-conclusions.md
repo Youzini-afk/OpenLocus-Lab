@@ -25,7 +25,7 @@ below.
 - [Real-provider CI large-repo slice results zh](real-provider-ci-large-scale.zh.md)
 - [Real-provider CI large-repo slice results en](real-provider-ci-large-scale.en.md)
 - [P20-LS low-context LLM alias scale-up](p20-llm-large-scale.md)
-- [P21-Q quality-first rich-context plan](p21-quality-first-rich-context.md)
+- [P21-G cross-model context-injection plan](p21-g-cross-model-context-injection.md)
 
 ## Current one-line conclusion
 
@@ -33,12 +33,12 @@ OpenLocus has established a quality-and-evidence-gated research direction:
 local lexical/symbol/RRF retrieval is the backbone, while models are useful only
 when they receive enough code facts to be grounded. L1/L2 blocked global
 dense-only, and P20-LS-A blocked low-context/query-only LLM aliases. The next
-direction is P21-Q: richer snippets, candidate metadata, symbols, signatures,
-and prompt/context matrices, with EvidenceCore still serving as the final fact
-authority.
+direction is P21-G: cross-model context atoms, packs, roles, layouts, model
+profiles, and candidate metadata, with EvidenceCore still serving as the final
+fact authority.
 
 OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地
 lexical/symbol/RRF 是事实检索主干，模型只有在拿到足够代码事实后才可能有效。
 L1/L2 阻断了 global dense-only，P20-LS-A 阻断了低上下文/query-only LLM aliases。
-下一步是 P21-Q：使用更丰富的 snippets、candidate metadata、symbols、signatures
-和 prompt/context matrix，同时让 EvidenceCore 继续作为最终事实权威。
+下一步是 P21-G：研究跨模型 context atoms、packs、roles、layouts、model profiles
+和 candidate metadata，同时让 EvidenceCore 继续作为最终事实权威。

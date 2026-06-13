@@ -165,7 +165,7 @@ More specifically:
 
 ## 9. Next Steps
 
-1. Run L2/P21-Q multi-view comparisons in explicit public/opt-in rich-context mode: raw chunks, snippet windows, signature/body windows, and path-symbol-raw hybrids. Continue excluding secrets, ignored files, provider keys, and private labels/gold answers.
+1. Run L2/P21-G multi-view/context-injection comparisons in explicit public/opt-in rich-context mode: raw chunks, snippet windows, signature/body windows, path-symbol-raw hybrids, model profiles, and context packs. Continue excluding secrets, ignored files, provider keys, and private labels/gold answers.
 2. Cluster L2 false positives: generated/vendor, test/source confusion, same-name symbol, path-only noise.
 3. Add lexical-anchor seeded P2/P4 variants so dense does not run global top-k over 1000 records.
 4. Freeze L2 tasks into a reproducible suite to avoid task generation drift.

@@ -477,6 +477,24 @@ def remote_embed(texts: list[str]) -> list[list[float]]:
     return vectors
 
 
+def embedding_model_metadata(provider: str) -> dict[str, Any]:
+    if provider == "local_token_hash":
+        return {
+            "embedding_model": "local_token_hash",
+            "embedding_dimensions": 256,
+            "embedding_send_dimensions": False,
+        }
+    dimensions = os.environ.get("OPENLOCUS_EMBEDDING_DIMENSIONS")
+    parsed_dimensions: int | None = None
+    if dimensions and dimensions.isdigit():
+        parsed_dimensions = int(dimensions)
+    return {
+        "embedding_model": os.environ.get("OPENLOCUS_EMBEDDING_MODEL") or "unknown",
+        "embedding_dimensions": parsed_dimensions,
+        "embedding_send_dimensions": os.environ.get("OPENLOCUS_EMBEDDING_SEND_DIMENSIONS", "1") != "0",
+    }
+
+
 def text_has_secret(text: str) -> bool:
     return any(pattern.search(text) for pattern in SECRET_PATTERNS)
 
@@ -884,6 +902,7 @@ def run_bakeoff(args: argparse.Namespace) -> dict[str, Any]:
             "schema_version": SCHEMA_VERSION,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "provider": provider,
+            **embedding_model_metadata(provider),
             "provider_status": "ok" if ranked_views else "unavailable",
             "provider_role": "candidate/supporting-only",
             "data_level_max": 1,
@@ -927,6 +946,7 @@ def write_doc(report: dict[str, Any], path: Path) -> None:
         "## Safety",
         "",
         f"- provider: `{report.get('provider')}`",
+        f"- embedding_model: `{report.get('embedding_model')}`",
         f"- run_phase_public_only: `{report.get('run_phase_public_only')}`",
         f"- labels_loaded_after_run: `{report.get('labels_loaded_after_run')}`",
         f"- promotion_ready: `{report.get('promotion_ready')}`",

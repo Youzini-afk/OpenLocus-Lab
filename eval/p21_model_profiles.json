@@ -1,0 +1,117 @@
+{
+  "schema_version": "p21-g-model-profiles-v1",
+  "purpose": "Cross-model context-injection research model profiles for OpenLocus P21-G.",
+  "policy": {
+    "candidate_not_fact": true,
+    "evidence_authority": "EvidenceCore current-source read + content_sha/range validation",
+    "remote_runs_require": "workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1",
+    "excluded_remote_inputs": [
+      "secrets",
+      "ignored_files",
+      "provider_keys",
+      "private_labels",
+      "gold_answers"
+    ],
+    "rich_context_allowed_on_public_or_opt_in_runs": true,
+    "promotion_ready": false,
+    "default_should_change": false
+  },
+  "defaults": {
+    "dataset": "ci_smoke",
+    "repos": ["py_flask", "js_express", "go_gin", "rust_ripgrep"],
+    "max_tasks": 20,
+    "max_records": 80,
+    "max_files_per_repo": 120,
+    "llm_stage": "p20_llm_large",
+    "embedding_stage": "p2_embedding",
+    "embedding_model_for_llm_stage": "BAAI/bge-m3"
+  },
+  "llm_profiles": [
+    {
+      "profile_id": "kimi_k2_7_code_current",
+      "model_id": "[mk]Kimi-K2.7-Code",
+      "family": "code",
+      "enabled_by_default": true,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["rerank", "filter", "span_narrow", "inventory_alias", "abstain"],
+      "effective_context_bucket": "unknown",
+      "cost_class": "unknown",
+      "latency_class": "unknown",
+      "notes": "P20-LS-A baseline model; low-context alias mode failed. Reuse only as one model in cross-model P21-G comparisons."
+    },
+    {
+      "profile_id": "small_fast_slot",
+      "model_id": "",
+      "family": "small_fast",
+      "enabled_by_default": false,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["filter", "inventory_alias", "abstain"],
+      "effective_context_bucket": "short",
+      "cost_class": "low",
+      "latency_class": "fast",
+      "notes": "Fill model_id locally or pass --llm-model profile_id=model_id to eval/p21_multimodel_plan.py."
+    },
+    {
+      "profile_id": "long_context_slot",
+      "model_id": "",
+      "family": "long_context",
+      "enabled_by_default": false,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["rerank", "span_narrow", "abstain"],
+      "effective_context_bucket": "long",
+      "cost_class": "medium_or_high",
+      "latency_class": "balanced_or_slow",
+      "notes": "Fill with a provider-supported long-context model before dispatch."
+    },
+    {
+      "profile_id": "reasoning_strong_slot",
+      "model_id": "",
+      "family": "reasoning_strong",
+      "enabled_by_default": false,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["rerank", "filter", "span_narrow"],
+      "effective_context_bucket": "medium_or_long",
+      "cost_class": "high",
+      "latency_class": "slow",
+      "notes": "Fill with a stronger reasoning/code model for expensive focused ablations."
+    }
+  ],
+  "embedding_profiles": [
+    {
+      "profile_id": "bge_m3",
+      "model_id": "BAAI/bge-m3",
+      "family": "multilingual_dense",
+      "enabled_by_default": true,
+      "dimensions": 1024,
+      "send_dimensions": false,
+      "roles_planned": ["file_locator", "candidate_generator", "bq_diagnostic"]
+    },
+    {
+      "profile_id": "qwen3_embedding_0_6b",
+      "model_id": "Qwen/Qwen3-Embedding-0.6B",
+      "family": "embedding_small_fast",
+      "enabled_by_default": true,
+      "dimensions": 1024,
+      "send_dimensions": true,
+      "roles_planned": ["file_locator", "candidate_generator", "bq_diagnostic"]
+    },
+    {
+      "profile_id": "qwen3_embedding_4b",
+      "model_id": "Qwen/Qwen3-Embedding-4B",
+      "family": "embedding_balanced",
+      "enabled_by_default": true,
+      "dimensions": 2560,
+      "send_dimensions": true,
+      "roles_planned": ["file_locator", "candidate_generator", "bq_diagnostic"]
+    },
+    {
+      "profile_id": "qwen3_embedding_8b",
+      "model_id": "Qwen/Qwen3-Embedding-8B",
+      "family": "embedding_large",
+      "enabled_by_default": true,
+      "dimensions": 4096,
+      "send_dimensions": true,
+      "roles_planned": ["file_locator", "candidate_generator", "bq_diagnostic"]
+    }
+  ]
+}

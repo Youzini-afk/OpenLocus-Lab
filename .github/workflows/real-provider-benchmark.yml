@@ -46,6 +46,10 @@ on:
           - Qwen/Qwen3-Embedding-4B
           - Qwen/Qwen3-Embedding-0.6B
           - BAAI/bge-m3
+      llm_model:
+        description: 'Optional LLM model override for remote LLM stages; empty uses OPENLOCUS_LLM_MODEL repo variable'
+        required: false
+        default: ''
       max_tasks:
         description: 'Task/query cap for smoke runs'
         required: false
@@ -71,7 +75,7 @@ defaults:
     shell: bash
 
 concurrency:
-  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}-${{ inputs.dataset }}-${{ inputs.repo_id }}-${{ inputs.embedding_model }}
+  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}-${{ inputs.dataset }}-${{ inputs.repo_id }}-${{ inputs.embedding_model }}-${{ inputs.llm_model }}
   cancel-in-progress: false
 
 jobs:
@@ -99,6 +103,7 @@ jobs:
           INPUT_REPO_ID: ${{ inputs.repo_id }}
           INPUT_VIEWS: ${{ inputs.views }}
           INPUT_EMBEDDING_MODEL: ${{ inputs.embedding_model }}
+          INPUT_LLM_MODEL: ${{ inputs.llm_model }}
           INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
           INPUT_MAX_FILES_PER_REPO: ${{ inputs.max_files_per_repo }}
@@ -174,14 +179,18 @@ jobs:
               embedding_send_dimensions = allowed_embedding_models[embedding_model]["send_dimensions"]
               if not embedding_model:
                   raise SystemExit("missing OPENLOCUS_EMBEDDING_MODEL variable")
-              if not getenv("VAR_LLM_MODEL"):
+              llm_model = getenv("INPUT_LLM_MODEL").strip() or getenv("VAR_LLM_MODEL")
+              if not llm_model:
                   raise SystemExit("missing OPENLOCUS_LLM_MODEL variable")
+              if not re.fullmatch(r"[A-Za-z0-9_./:@+\-\[\] ]{1,160}", llm_model):
+                  raise SystemExit("llm_model contains unsupported characters")
           else:
               embedding_provider = "local_token_hash"
               llm_provider = "offline_deterministic"
               embedding_model = "local_token_hash"
               embedding_dimensions = 64
               embedding_send_dimensions = "0"
+              llm_model = "offline_deterministic"
 
           Path("artifacts/real_provider_ci").mkdir(parents=True, exist_ok=True)
           Path("docs/real-provider-ci").mkdir(parents=True, exist_ok=True)
@@ -199,6 +208,7 @@ jobs:
               "embedding_dimensions": str(embedding_dimensions),
               "embedding_send_dimensions": embedding_send_dimensions,
               "llm_provider": llm_provider,
+              "llm_model": llm_model,
               "allow_remote": "1" if remote_enabled else "0",
           }
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
@@ -215,6 +225,7 @@ jobs:
               "embedding_dimensions": embedding_dimensions,
               "embedding_send_dimensions": embedding_send_dimensions,
               "llm_provider": llm_provider,
+              "llm_model": llm_model,
               "views": views,
               "max_tasks": max_tasks,
               "max_records": max_records,
@@ -351,7 +362,7 @@ jobs:
         if: ${{ inputs.stage == 'p5_llm_stress' || inputs.stage == 'all_smoke' }}
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
-          OPENLOCUS_LLM_MODEL: ${{ vars.OPENLOCUS_LLM_MODEL }}
+          OPENLOCUS_LLM_MODEL: ${{ steps.plan.outputs.llm_model }}
           OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
           OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.llm_provider }}
@@ -379,7 +390,7 @@ jobs:
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
           OPENLOCUS_LLM_WORKFLOW_DISPATCH: "1"
-          OPENLOCUS_LLM_MODEL: ${{ vars.OPENLOCUS_LLM_MODEL }}
+          OPENLOCUS_LLM_MODEL: ${{ steps.plan.outputs.llm_model }}
           OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
           OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.llm_provider }}

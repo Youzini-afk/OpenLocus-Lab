@@ -2,7 +2,7 @@
 
 日期：2026-06-13
 
-范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试、P20-LS/P20-LS-A 低上下文 LLM query-alias 结果，以及 P21-Q rich-context 研究转向。
+范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试、P20-LS/P20-LS-A 低上下文 LLM query-alias 结果，以及 P21-G 跨模型上下文注入研究转向。
 
 状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
 
@@ -21,7 +21,7 @@ candidate != fact
 candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
 ```
 
-在这个体系下，真实向量模型已经显示出**候选/文件级召回信号**，但 L1/L2 大型 slice 测试也显示：dense-only/global dense 在更大规模下不稳定，SpanF0.5 很低，primary_false_positive 风险高。P20-LS-A 也显示：低上下文/query-only LLM aliases 不够。RRF 仍是最强 recall base，symbol/regex 仍是 precision anchor，`query_noise_plus_rrf_agree_min` 仍是当前最值得继续研究的 guard candidate。Dense/QuIVer/LLM-derived/graph 暂时仍只能是 candidate/supporting/diagnostic 层，但 P21-Q 应该测试 richer context，而不是继续只给 metadata-only 模型输入。
+在这个体系下，真实向量模型已经显示出**候选/文件级召回信号**，但 L1/L2 大型 slice 测试也显示：dense-only/global dense 在更大规模下不稳定，SpanF0.5 很低，primary_false_positive 风险高。P20-LS-A 也显示：低上下文/query-only LLM aliases 不够。RRF 仍是最强 recall base，symbol/regex 仍是 precision anchor，`query_noise_plus_rrf_agree_min` 仍是当前最值得继续研究的 guard candidate。Dense/QuIVer/LLM-derived/graph 暂时仍只能是 candidate/supporting/diagnostic 层，但 P21-G 应该测试跨模型 context injection，而不是继续只给 metadata-only 模型输入，也不是做单模型 token sweep。
 
 ---
 
@@ -98,11 +98,11 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 
 P20-LS 把这条边界变成了可执行检查：LS0 做安全预检，LS1 生成 `not_evidence=true` query aliases 并只作为 candidate/supporting 检索扩展评测，LS3 默认只写 public stress split。初始离线 slice 已经给出警告信号；随后 P20-LS-A 用真实 LLM provider（`[mk]Kimi-K2.7-Code`）跑了 self-test 与 9 个真实 CI corpus runs。schema/guardrail 表现可以接受，但低上下文/query-only alias 质量完全失败：9 个真实 runs 中 0 个 quality pass，added_gold_span=`289`、added_false_span=`8312`（约 28.8:1 false:gold），平均 fabricated_identifier_rate 约 `0.459`。因此低上下文 LLM query aliases 已经 blocked，不应继续扩大。这不是 rich-context LLM retrieval 的结论；后续 alias/retrieval 研究应使用 source snippets、candidate metadata、symbol/path inventories 和 prompt/context matrices。
 
-### 2.10 P21-Q 应转向 rich context 的质量与效率
+### 2.10 P21-G 应研究跨模型上下文注入效应
 
-下一阶段模型研究不应该继续把 metadata-only remote input 当作默认姿态。对于 public corpus 和明确 opt-in 的远程 runs，模型应该拿到足够代码事实：raw code snippets、path headers、signatures、symbol bodies、neighboring lines、local retrieval scores、top-k candidate sets。必要边界仍然保留：排除 secrets、ignored files、provider keys、private labels/gold answers；EvidenceCore 仍是最终事实权威；不让 LLM 做 promotion judge。
+下一阶段模型研究不应该继续把 metadata-only remote input 当作默认姿态，但也不应把某一个模型的最佳 token budget 当成 OpenLocus 的全局规律。对于 public corpus 和明确 opt-in 的远程 runs，模型应该拿到足够代码事实：raw code snippets、path headers、signatures、symbol bodies、neighboring lines、local retrieval scores、hard distractors、top-k candidate sets。必要边界仍然保留：排除 secrets、ignored files、provider keys、private labels/gold answers；EvidenceCore 仍是最终事实权威；不让 LLM 做 promotion judge。
 
-P21-Q 应比较 rich embedding views（`raw_chunk_256/512/1024`、`snippet_with_neighbors`、`signature_plus_body_window`、`path_symbol_raw_hybrid`）和 rich LLM support roles（candidate rerank、false-positive filter、span narrowing、inventory-grounded aliases）。每份报告都必须同时记录质量和效率：SpanF0.5、added_gold/false、PFP、provider calls、input/output tokens、p50/p95 latency、cost。
+P21-G 应跨 model profiles、query buckets、repo types、roles 和 layouts 比较 context atoms 与 context packs。主变量不是固定 token cap，而是注入的信息：signatures、matched lines、source/test/doc flags、retrieval scores、body windows、neighbor symbols、related tests、hard distractors、candidate uncertainty 和 inventory grounding。Token count 仍必须记录为效率结果。每份报告都必须同时记录质量、效率和跨模型泛化：SpanF0.5、added_gold/false、PFP、provider calls、input/output tokens、p50/p95 latency、cost、model-averaged treatment effect、per-model effect 和 effect variance。
 
 ---
 
@@ -118,7 +118,8 @@ P21-Q 应比较 rich embedding views（`raw_chunk_256/512/1024`、`snippet_with_
 | 小 embedding 模型可能足够。 | P9 初步支持继续比较。 | 更多 repo 同任务并记录 latency/cost。 |
 | LLM-derived 可安全扩大失败面。 | 机制可行，质量未证。 | rich context derived views 增加 gold 或 stress coverage，且不诱导 primary hallucination。 |
 | LLM query aliases 能在不污染 primary 的情况下改善 anchor。 | 低上下文 P20-LS-A query aliases 对 `[mk]Kimi-K2.7-Code` 已 blocked：真实 runs 0/9 quality pass，false:gold span≈28.8:1，平均 fabricated identifier rate≈0.459。 | Grounded variant 成功：从 repo inventories 或 top-k candidate context 中选择 aliases，`alias_added_gold > alias_added_false`，PFP 不升，fabricated identifier rate 低。 |
-| Rich LLM candidate support 能改善 span targeting。 | P21-Q planned hypothesis。 | 在 snippet-backed local candidates 上 rerank/filter/span-narrow，SpanF0.5 上升、false spans 下降，latency/cost 可接受。 |
+| Context atoms 能跨模型泛化。 | P21-G planned hypothesis。 | Signature/matched-lines/scores/flags/body-window atoms 具有正向 model-averaged treatment effect，模型间方差低，且不增加 PFP。 |
+| Rich LLM candidate support 能改善 span targeting。 | P21-G role hypothesis。 | 在 snippet-backed local candidates 上 rerank/filter/span-narrow，SpanF0.5 上升、false spans 下降，latency/cost 可接受。 |
 
 ---
 
@@ -218,10 +219,10 @@ P21-Q 应比较 rich embedding views（`raw_chunk_256/512/1024`、`snippet_with_
 - P7：real-provider summary。
 - P8/P9：GitHub Actions public corpus scale-up、model bakeoff、multilingual smoke。
 
-### P20-P21：LLM scale-up 与质量优先 rich context
+### P20-P21：LLM scale-up 与跨模型 context injection
 
 - P20-LS/P20-LS-A：低上下文/query-only LLM aliases safety-passed 但 quality-failed；direct low-context alias scale-up blocked。
-- P21-Q：计划中的 rich-context 质量/效率阶段，使用 snippets、candidate metadata、symbols、signatures、prompt matrices，并记录 latency/cost。
+- P21-G：计划/已配置的跨模型 context-injection 阶段，使用 context atoms、context packs、candidate metadata、model profiles、roles、layouts，并记录 latency/cost。
 
 关键详细报告：
 
@@ -233,7 +234,7 @@ P21-Q 应比较 rich embedding views（`raw_chunk_256/512/1024`、`snippet_with_
 - `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results。
 - `docs/real-provider-ci-large-scale.zh.md` — L1/L2 大型真实-provider测试结论。
 - `docs/p20-llm-large-scale.md` — P20-LS-A 低上下文 LLM alias scale-up 结果。
-- `docs/p21-quality-first-rich-context.md` — P21-Q quality-first rich-context 计划。
+- `docs/p21-g-cross-model-context-injection.md` — P21-G 跨模型 context-injection 计划。
 
 ---
 
@@ -242,7 +243,7 @@ P21-Q 应比较 rich embedding views（`raw_chunk_256/512/1024`、`snippet_with_
 下一步不是 promotion，而是更大、更细、更可复现的验证：
 
 1. 将 L2 task set 固定为可复现 suite，避免 task generation drift。
-2. 在 public/opt-in corpus 上验证质量优先的 rich embedding views：raw chunks、snippet windows、signature/body windows、path-symbol-raw hybrids。
+2. 在 public/opt-in corpus 上跑 P21-G context atom screening：signatures、matched lines、retrieval scores、flags、body windows、neighbors、related tests、hard distractors。
 3. 在完成 false-span analysis 后，再把 P3/P4 扩到更多 repo。
 4. 在同一任务集上继续比较 bge-m3 与 Qwen 0.6B/4B/8B，加入 latency/cost。
 5. 把 P5 stress traps 接入 anchored dense/QuIVer 验证，看 added_gold 是否持续大于 added_false。
@@ -250,10 +251,10 @@ P21-Q 应比较 rich embedding views（`raw_chunk_256/512/1024`、`snippet_with_
 7. 把 real dense support score 接入 admission_v2 研究，但只作为 supporting feature。
 8. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
 9. 如果重新研究 LLM query aliases，只测试 grounded variants：从 inventories 中选择 aliases，或在看到 top-k local candidate snippets 后生成 aliases。
-10. 跑 P21-Q rich LLM candidate support：在 snippet-backed local candidates 上 rerank/filter/span-narrow，并记录质量、latency、token、cost trade-off。
+10. 跑 P21-G rich LLM candidate support：在 snippet-backed local candidates 上 rerank/filter/span-narrow/abstain/inventory_alias，记录 model-averaged/per-model effects，并报告质量、latency、token、cost trade-off。
 
 ---
 
 ## 9. 当前一句话总结
 
-OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地 lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 只有在 grounded 与 validated 时才有价值。L1/L2 证明 dense-only/global dense 不能 primary/default；P20-LS-A 证明低上下文/query-only LLM aliases 不能按当前形式扩大。下一阶段的关键问题是：rich snippets、candidate metadata、lexical/symbol seeded retrieval、inventory-grounded aliases、sharding 与 span-aware rerank 能否让 real-model retrieval 稳定增加 gold，同时不以不可接受的 latency/cost 增加 false-primary 与 false-span。
+OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地 lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 只有在 grounded 与 validated 时才有价值。L1/L2 证明 dense-only/global dense 不能 primary/default；P20-LS-A 证明低上下文/query-only LLM aliases 不能按当前形式扩大。下一阶段的关键问题是：哪些 context atoms、packs、roles、layouts 和 model profiles 能让 real-model retrieval 跨模型稳定增加 gold，同时不以不可接受的 latency/cost 增加 false-primary 与 false-span。
