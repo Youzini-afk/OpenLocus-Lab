@@ -1,5 +1,11 @@
 # OpenLocus Research Summary
 
+For the current bilingual research-conclusion synthesis, see
+[`docs/current-research-conclusions.md`](current-research-conclusions.md).
+
+当前中英双语研究结论总报告见
+[`docs/current-research-conclusions.md`](current-research-conclusions.md)。
+
 This document will be updated after each evidence-gated stage.
 
 ## Stage status
