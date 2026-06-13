@@ -35,6 +35,16 @@ on:
         description: 'Comma-separated embedding views; remote runs should use path_plus_symbol first'
         required: false
         default: 'path_plus_symbol'
+      embedding_model:
+        description: 'Allowed embedding model override for remote runs'
+        required: false
+        default: 'Qwen/Qwen3-Embedding-8B'
+        type: choice
+        options:
+          - Qwen/Qwen3-Embedding-8B
+          - Qwen/Qwen3-Embedding-4B
+          - Qwen/Qwen3-Embedding-0.6B
+          - BAAI/bge-m3
       max_tasks:
         description: 'Task/query cap for smoke runs'
         required: false
@@ -87,6 +97,7 @@ jobs:
           INPUT_DATASET: ${{ inputs.dataset }}
           INPUT_REPO_ID: ${{ inputs.repo_id }}
           INPUT_VIEWS: ${{ inputs.views }}
+          INPUT_EMBEDDING_MODEL: ${{ inputs.embedding_model }}
           INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
           INPUT_MAX_FILES_PER_REPO: ${{ inputs.max_files_per_repo }}
@@ -108,6 +119,12 @@ jobs:
           allowed_datasets = {"self_test", "ci_smoke"}
           allowed_views = {"path_plus_symbol"}
           provider_aliases = {"openai": "openai-compatible", "openai_compatible": "openai-compatible", "openai-compatible": "openai-compatible"}
+          allowed_embedding_models = {
+              "Qwen/Qwen3-Embedding-8B": 4096,
+              "Qwen/Qwen3-Embedding-4B": 2560,
+              "Qwen/Qwen3-Embedding-0.6B": 1024,
+              "BAAI/bge-m3": 1024,
+          }
 
           def getenv(name: str, default: str = "") -> str:
               value = os.environ.get(name, default)
@@ -149,13 +166,19 @@ jobs:
               llm_provider = provider_aliases.get(getenv("VAR_LLM_PROVIDER", "openai_compatible"))
               if not embedding_provider or not llm_provider:
                   raise SystemExit("unsupported provider variable")
-              if not getenv("VAR_EMBEDDING_MODEL"):
+              embedding_model = getenv("INPUT_EMBEDDING_MODEL") or getenv("VAR_EMBEDDING_MODEL")
+              if embedding_model not in allowed_embedding_models:
+                  raise SystemExit("unsupported embedding model override")
+              embedding_dimensions = allowed_embedding_models[embedding_model]
+              if not embedding_model:
                   raise SystemExit("missing OPENLOCUS_EMBEDDING_MODEL variable")
               if not getenv("VAR_LLM_MODEL"):
                   raise SystemExit("missing OPENLOCUS_LLM_MODEL variable")
           else:
               embedding_provider = "local_token_hash"
               llm_provider = "offline_deterministic"
+              embedding_model = "local_token_hash"
+              embedding_dimensions = 64
 
           Path("artifacts/real_provider_ci").mkdir(parents=True, exist_ok=True)
           Path("docs/real-provider-ci").mkdir(parents=True, exist_ok=True)
@@ -169,6 +192,8 @@ jobs:
               "max_files_per_repo": str(max_files_per_repo),
               "max_stress_tasks": str(max_stress_tasks),
               "embedding_provider": embedding_provider,
+              "embedding_model": embedding_model,
+              "embedding_dimensions": str(embedding_dimensions),
               "llm_provider": llm_provider,
               "allow_remote": "1" if remote_enabled else "0",
           }
@@ -182,6 +207,8 @@ jobs:
               "repo_id": repo_id,
               "remote_enabled": remote_enabled,
               "embedding_provider": embedding_provider,
+              "embedding_model": embedding_model,
+              "embedding_dimensions": embedding_dimensions,
               "llm_provider": llm_provider,
               "views": views,
               "max_tasks": max_tasks,
@@ -232,8 +259,8 @@ jobs:
         if: ${{ inputs.stage == 'p2_embedding' || inputs.stage == 'all_smoke' }}
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
-          OPENLOCUS_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
-          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
           OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
@@ -260,8 +287,8 @@ jobs:
         if: ${{ inputs.stage == 'p3_quiver_readiness' || inputs.stage == 'all_smoke' }}
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
-          OPENLOCUS_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
-          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
           OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
@@ -288,8 +315,8 @@ jobs:
         if: ${{ inputs.stage == 'p4_anchor_proto' || inputs.stage == 'all_smoke' }}
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
-          OPENLOCUS_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
-          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
           OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
