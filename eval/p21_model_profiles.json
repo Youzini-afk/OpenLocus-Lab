@@ -24,7 +24,8 @@
     "max_files_per_repo": 120,
     "max_workflow_runs_per_batch": 20,
     "llm_stage": "p20_llm_large",
-    "embedding_stage": "p2_embedding",
+    "embedding_stage": "p21_embedding_context",
+    "embedding_strategies": "atom_path_symbol,atom_signature,atom_matched_lines,atom_body_window,pack1_metadata,pack2_evidence_sketch,pack3_local_code,pack5_contrastive",
     "embedding_model_for_llm_stage": "BAAI/bge-m3"
   },
   "autonomous_run_policy": {

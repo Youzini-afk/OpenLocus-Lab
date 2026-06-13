@@ -263,6 +263,15 @@ latency
 
 Embedding long input is not the same as LLM long context. Prefer multi-vector views over one giant vector.
 
+P21-G1E now provides the first dedicated embedding context-atom screening harness:
+
+- `eval/p21_embedding_context.py`
+- workflow stage: `p21_embedding_context`
+- committed offline smoke report: `artifacts/p21_g/embedding_context_report.json`
+- report doc: `docs/p21-g-embedding-context.md`
+
+This harness compares embedding atoms/packs as candidate/supporting-only strategies, preserving RUN/SCORE separation and never committing raw snippets. Remote P21-G1E runs may send data-level-1 rich snippets only on public/explicit opt-in corpora after ignore/secret filtering.
+
 Views:
 
 ```text
@@ -343,6 +352,7 @@ Configuration files:
 - `eval/p21_model_profiles.json` — model profile registry for LLM and embedding model groups.
 - `eval/p21_multimodel_plan.py` — emits reproducible `gh workflow run real-provider-benchmark.yml ...` commands for selected model profiles, repos, and caps.
 - `.github/workflows/real-provider-benchmark.yml` — supports `embedding_model` and `llm_model` workflow inputs. `llm_model` overrides the repo variable for a single dispatch.
+- `eval/p21_embedding_context.py` — P21-G1E embedding context atom/pack screening harness.
 
 Default enabled LLM roster:
 
@@ -375,7 +385,7 @@ python3 eval/p21_multimodel_plan.py \
   --print-commands
 ```
 
-Run embedding model sweeps separately (`--mode embedding`) so each batch also stays under 20 workflow runs. A combined `--mode both` over four repos currently creates 32 runs and will not execute unless explicitly allowed with `--allow-large-batch`.
+Run embedding model sweeps separately (`--mode embedding`) so each batch also stays under 20 workflow runs. Embedding sweeps now default to the `p21_embedding_context` workflow stage and compare P21-G1E context strategies. A combined `--mode both` over four repos currently creates 32 runs and will not execute unless explicitly allowed with `--allow-large-batch`.
 
 To add provider-specific LLMs without committing private provider config:
 

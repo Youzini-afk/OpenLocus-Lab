@@ -14,6 +14,7 @@ on:
           - p4_anchor_proto
           - p5_llm_stress
           - p20_llm_large
+          - p21_embedding_context
           - all_smoke
       enable_remote_models:
         description: 'Allow real embedding / LLM providers from production environment'
@@ -33,7 +34,7 @@ on:
         required: false
         default: 'py_flask'
       views:
-        description: 'Comma-separated embedding views; remote runs should use path_plus_symbol first'
+        description: 'Comma-separated embedding views/strategies; P21 allows rich context strategies on public/opt-in runs'
         required: false
         default: 'path_plus_symbol'
       embedding_model:
@@ -121,9 +122,15 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
-          allowed_views = {"path_plus_symbol"}
+          r32_allowed_views = {"path_plus_symbol"}
+          p21_allowed_views = {
+              "all",
+              "atom_path_symbol", "atom_signature", "atom_signature_doc", "atom_matched_lines",
+              "atom_body_window", "atom_comment_doc", "atom_test_intent", "atom_config_route",
+              "pack1_metadata", "pack2_evidence_sketch", "pack3_local_code", "pack5_contrastive",
+          }
           provider_aliases = {"openai": "openai-compatible", "openai_compatible": "openai-compatible", "openai-compatible": "openai-compatible"}
           allowed_embedding_models = {
               "Qwen/Qwen3-Embedding-8B": {"dimensions": 4096, "send_dimensions": "1"},
@@ -159,8 +166,9 @@ jobs:
               raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
           view_list = [view.strip() for view in views.split(",") if view.strip()]
+          allowed_views = p21_allowed_views if stage == "p21_embedding_context" else r32_allowed_views
           if not view_list or any(view not in allowed_views for view in view_list):
-              raise SystemExit("real-provider CI currently allows only path_plus_symbol")
+              raise SystemExit("unsupported views/strategies for selected stage")
           views = ",".join(view_list)
           max_tasks = positive_int("INPUT_MAX_TASKS", 100)
           max_records = positive_int("INPUT_MAX_RECORDS", 1000)
@@ -168,10 +176,15 @@ jobs:
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
 
           if remote_enabled:
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
-              llm_provider = provider_aliases.get(getenv("VAR_LLM_PROVIDER", "openai_compatible"))
-              if not embedding_provider or not llm_provider:
-                  raise SystemExit("unsupported provider variable")
+              if not embedding_provider:
+                  raise SystemExit("unsupported embedding provider variable")
+              llm_provider = "unused"
+              if stage in llm_stages:
+                  llm_provider = provider_aliases.get(getenv("VAR_LLM_PROVIDER", "openai_compatible"))
+                  if not llm_provider:
+                      raise SystemExit("unsupported llm provider variable")
               embedding_model = getenv("INPUT_EMBEDDING_MODEL") or getenv("VAR_EMBEDDING_MODEL")
               if embedding_model not in allowed_embedding_models:
                   raise SystemExit("unsupported embedding model override")
@@ -179,11 +192,14 @@ jobs:
               embedding_send_dimensions = allowed_embedding_models[embedding_model]["send_dimensions"]
               if not embedding_model:
                   raise SystemExit("missing OPENLOCUS_EMBEDDING_MODEL variable")
-              llm_model = getenv("INPUT_LLM_MODEL").strip() or getenv("VAR_LLM_MODEL")
-              if not llm_model:
-                  raise SystemExit("missing OPENLOCUS_LLM_MODEL variable")
-              if not re.fullmatch(r"[A-Za-z0-9_./:@+\-\[\] ]{1,160}", llm_model):
-                  raise SystemExit("llm_model contains unsupported characters")
+              if stage in llm_stages:
+                  llm_model = getenv("INPUT_LLM_MODEL").strip() or getenv("VAR_LLM_MODEL")
+                  if not llm_model:
+                      raise SystemExit("missing OPENLOCUS_LLM_MODEL variable")
+                  if not re.fullmatch(r"[A-Za-z0-9_./:@+\-\[\] ]{1,160}", llm_model):
+                      raise SystemExit("llm_model contains unsupported characters")
+              else:
+                  llm_model = getenv("INPUT_LLM_MODEL").strip() or "unused"
           else:
               embedding_provider = "local_token_hash"
               llm_provider = "offline_deterministic"
@@ -383,6 +399,35 @@ jobs:
             cmd+=(--allow-remote)
           fi
           cmd+=(--max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records "$MAX_RECORDS" --max-stress-tasks "$MAX_STRESS_TASKS" --openlocus target/debug/openlocus --derived-out artifacts/real_provider_ci/p5_llm_derived_views.jsonl --stress-tasks-out artifacts/real_provider_ci/p5_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p5_llm_stress_labels.private.jsonl" --out artifacts/real_provider_ci/p5_llm_derived_stress.json --doc docs/real-provider-ci/p5-llm-derived-stress.md)
+          "${cmd[@]}"
+
+      - name: P21-G1E embedding context atom screening
+        if: ${{ inputs.stage == 'p21_embedding_context' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
+          OPENLOCUS_EMBEDDING_SEND_DIMENSIONS: ${{ steps.plan.outputs.embedding_send_dimensions }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
+          STRATEGIES: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/p21_embedding_context.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl" --labels "$RUNNER_TEMP/openlocus-real-provider-work/tasks/labels/ci_labels.jsonl")
+          fi
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--strategies "$STRATEGIES" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_embedding_context.json --doc docs/real-provider-ci/p21-embedding-context.md)
           "${cmd[@]}"
 
       - name: P20-LS LLM alias/stress harness

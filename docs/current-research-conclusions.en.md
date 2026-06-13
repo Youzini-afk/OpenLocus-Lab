@@ -102,7 +102,7 @@ P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates
 
 The next model phase should stop treating metadata-only remote inputs as the default research posture, but it should also avoid pretending that one model's best token budget is an OpenLocus-wide law. For public corpora and explicit opt-in remote runs, models should receive enough code facts to be useful: raw code snippets, path headers, signatures, symbol bodies, neighboring lines, local retrieval scores, hard distractors, and top-k candidate sets. Necessary boundaries remain: exclude secrets, ignored files, provider keys, and private labels/gold answers; keep EvidenceCore as final fact authority; do not use LLMs as promotion judges.
 
-P21-G should compare context atoms and packs across model profiles, query buckets, repo types, roles, and layouts. The primary variables are not fixed token caps but injected information: signatures, matched lines, source/test/doc flags, retrieval scores, body windows, neighbor symbols, related tests, hard distractors, candidate uncertainty, and inventory grounding. Token count must still be recorded as an efficiency outcome. Every report must measure quality, efficiency, and cross-model generalization: SpanF0.5, added_gold/false, PFP, provider calls, input/output tokens, p50/p95 latency, cost, model-averaged treatment effect, per-model effect, and effect variance.
+P21-G should compare context atoms and packs across embedding and LLM model profiles, query buckets, repo types, roles, and layouts. The primary variables are not fixed token caps but injected information: signatures, matched lines, source/test/doc flags, retrieval scores, body windows, neighbor symbols, related tests, hard distractors, candidate uncertainty, and inventory grounding. Token count must still be recorded as an efficiency outcome. P21-G1E now starts with the embedding track (`eval/p21_embedding_context.py`) because LLM rerank/filter/span-narrow is capped by candidate-pool quality. Every report must measure quality, efficiency, and cross-model generalization: SpanF0.5, added_gold/false, PFP, provider calls, input/output tokens/chars, p50/p95 latency, cost, model-averaged treatment effect, per-model effect, and effect variance.
 
 ---
 
@@ -222,7 +222,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 ### P20-P21: LLM scale-up and cross-model context injection
 
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
-- P21-G: planned/configured cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting.
+- P21-G: planned/configured cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E embedding context screening harness is implemented and committed with offline smoke artifacts; remote 4-embedding × 4-repo smoke is next.
 
 Key detailed reports:
 

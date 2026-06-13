@@ -181,6 +181,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
 
     llm_stage = args.llm_stage or defaults.get("llm_stage", "p20_llm_large")
     embedding_stage = args.embedding_stage or defaults.get("embedding_stage", "p2_embedding")
+    embedding_views = args.views or defaults.get("embedding_strategies", "path_plus_symbol")
     embedding_for_llm = args.embedding_model_for_llm_stage or defaults.get("embedding_model_for_llm_stage", "BAAI/bge-m3")
     remote = "true" if args.enable_remote_models else "false"
 
@@ -217,6 +218,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
                     "repo_id": repo_id,
                     "embedding_model": model_id,
                     "llm_model": "",
+                    "views": embedding_views,
                     "max_tasks": str(max_tasks),
                     "max_records": str(max_records),
                     "max_files_per_repo": str(max_files),
@@ -269,6 +271,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--llm-stage", default=None)
     parser.add_argument("--embedding-stage", default=None)
     parser.add_argument("--embedding-model-for-llm-stage", default=None)
+    parser.add_argument("--views", default=None, help="Embedding views/strategies for embedding workflow entries")
     parser.add_argument("--enable-remote-models", action="store_true")
     parser.add_argument("--max-tasks", default=None)
     parser.add_argument("--max-records", default=None)
