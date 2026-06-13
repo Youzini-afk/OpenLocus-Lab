@@ -333,6 +333,7 @@ def remote_embed(texts: list[str]) -> list[list[float]]:
     api_key = os.environ.get("OPENLOCUS_EMBEDDING_API_KEY")
     model = os.environ.get("OPENLOCUS_EMBEDDING_MODEL")
     dimensions = os.environ.get("OPENLOCUS_EMBEDDING_DIMENSIONS")
+    send_dimensions = os.environ.get("OPENLOCUS_EMBEDDING_SEND_DIMENSIONS", "1") != "0"
     if not base_url or not api_key or not model:
         raise RuntimeError("missing OPENLOCUS_EMBEDDING_* remote configuration")
     url = base_url.rstrip("/") + "/embeddings"
@@ -343,7 +344,7 @@ def remote_embed(texts: list[str]) -> list[list[float]]:
             "input": text,
             "encoding_format": "float",
         }
-        if dimensions:
+        if dimensions and send_dimensions:
             payload["dimensions"] = int(dimensions)
         req = urllib.request.Request(
             url,

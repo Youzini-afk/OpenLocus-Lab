@@ -5,6 +5,8 @@
 //! - `OPENLOCUS_EMBEDDING_API_KEY`
 //! - `OPENLOCUS_EMBEDDING_MODEL`
 //! - `OPENLOCUS_EMBEDDING_DIMENSIONS`
+//! - `OPENLOCUS_EMBEDDING_SEND_DIMENSIONS` (optional; set to `0` for
+//!   OpenAI-compatible providers that reject the request `dimensions` field)
 //!
 //! Provider creation requires `OPENLOCUS_ALLOW_REMOTE=1`.
 //! The implementation never logs the API key or raw embedding inputs.
@@ -21,6 +23,7 @@ pub struct OpenAiEmbeddingConfig {
     pub api_key: String,
     pub model: String,
     pub dimensions: usize,
+    pub send_dimensions: bool,
 }
 
 impl std::fmt::Debug for OpenAiEmbeddingConfig {
@@ -30,6 +33,7 @@ impl std::fmt::Debug for OpenAiEmbeddingConfig {
             .field("api_key", &"[REDACTED]")
             .field("model", &self.model)
             .field("dimensions", &self.dimensions)
+            .field("send_dimensions", &self.send_dimensions)
             .finish()
     }
 }
@@ -59,12 +63,16 @@ impl OpenAiEmbeddingConfig {
             .context("OPENLOCUS_EMBEDDING_DIMENSIONS not set")?
             .parse::<usize>()
             .context("OPENLOCUS_EMBEDDING_DIMENSIONS must be a positive integer")?;
+        let send_dimensions = get_var("OPENLOCUS_EMBEDDING_SEND_DIMENSIONS")
+            .map(|value| value != "0")
+            .unwrap_or(true);
 
         Ok(Self {
             base_url,
             api_key,
             model,
             dimensions,
+            send_dimensions,
         })
     }
 
@@ -127,7 +135,10 @@ impl EmbeddingProvider for OpenAiEmbeddingProvider {
         let request = OpenAiEmbeddingsRequest {
             model: self.config.model.clone(),
             input: text.to_string(),
-            dimensions: self.config.dimensions,
+            dimensions: self
+                .config
+                .send_dimensions
+                .then_some(self.config.dimensions),
             encoding_format: "float".to_string(),
         };
 
@@ -180,7 +191,8 @@ pub fn sanitize_provider_error(error: &anyhow::Error) -> String {
 struct OpenAiEmbeddingsRequest {
     model: String,
     input: String,
-    dimensions: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    dimensions: Option<usize>,
     encoding_format: String,
 }
 
@@ -251,6 +263,23 @@ mod tests {
         assert_eq!(config.api_key, "sk-test");
         assert_eq!(config.model, "text-embedding-3-small");
         assert_eq!(config.dimensions, 1536);
+        assert!(config.send_dimensions);
+    }
+
+    #[test]
+    fn config_can_disable_dimensions_request_field() {
+        let config = OpenAiEmbeddingConfig::from_env_values(vars(&[
+            ("OPENLOCUS_ALLOW_REMOTE", "1"),
+            ("OPENLOCUS_EMBEDDING_BASE_URL", "https://api.example.com/v1"),
+            ("OPENLOCUS_EMBEDDING_API_KEY", "sk-test"),
+            ("OPENLOCUS_EMBEDDING_MODEL", "BAAI/bge-m3"),
+            ("OPENLOCUS_EMBEDDING_DIMENSIONS", "1024"),
+            ("OPENLOCUS_EMBEDDING_SEND_DIMENSIONS", "0"),
+        ]))
+        .unwrap();
+
+        assert_eq!(config.dimensions, 1024);
+        assert!(!config.send_dimensions);
     }
 
     #[test]
@@ -260,6 +289,7 @@ mod tests {
             api_key: "sk-test".into(),
             model: "text-embedding-3-small".into(),
             dimensions: 1536,
+            send_dimensions: true,
         };
         let provider = OpenAiEmbeddingProvider::new(config);
         let metadata = provider.metadata();
@@ -277,6 +307,7 @@ mod tests {
             api_key: "sk-test".into(),
             model: "text-embedding-3-small".into(),
             dimensions: 1536,
+            send_dimensions: true,
         };
         let provider = OpenAiEmbeddingProvider::new(config);
         assert_eq!(
