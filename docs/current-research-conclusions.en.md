@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, and L1/L2 real-provider large-repo-slice tests.
+Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, and initial P20-LS offline harness results.
 
 Status: Research summary, not a promotion request.
 
@@ -94,6 +94,8 @@ The real LLM provider has run successfully, and P5 generated derived/stress outp
 
 The useful role for LLMs is query aliases, symbol tags, intent views, and failure/stress generation. LLMs can expand the failure surface, but they cannot replace EvidenceCore.
 
+The initial P20-LS offline harness makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The first 8-task R26 negative slice is intentionally not a quality proof; it is a caution signal. Offline deterministic aliases added false spans (`alias_added_false_span=204`, `alias_added_gold_span=0`), increased PFP for direct alias strategies by `+0.625`, and had `fabricated_identifier_rate=1.0`. Therefore LS1 quality is blocked in this slice; aliases may continue only as a constrained experiment, preferably behind guard/supporting paths and existence filters.
+
 ---
 
 ## 3. Current Hypotheses
@@ -107,6 +109,7 @@ The useful role for LLMs is query aliases, symbol tags, intent views, and failur
 | BQ diagnostics may be compatible with current code-embedding distributions. | Diagnostic signal promising on Flask. | Sharded BQ/proto graph beats flat f32 or improves latency without false-span growth. |
 | Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
 | LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Derived views add gold or stress coverage without inducing primary hallucinations. |
+| LLM query aliases can improve anchors without pollution. | Initial P20-LS offline slice blocks direct alias expansion; guard-supporting alias mode avoided extra PFP in this small negative slice. | Large public/provider runs show `alias_added_gold > alias_added_false`, no PFP increase, low fabricated identifier rate, and stable guard recall. |
 
 ---
 
@@ -120,6 +123,7 @@ These negative results are among the most valuable findings because they prevent
 4. **Graph expansion is repeatedly net-negative**: graph_basic mostly adds false spans and almost no gold.
 5. **Larger embedding models did not win the first bakeoff**: 8B did not dominate 0.6B/4B/bge-m3.
 6. **JS Express underperformed Go/Python/Rust**: embedding quality varies across language/framework buckets.
+7. **P20-LS direct alias expansion polluted negative tasks**: the initial offline slice added false candidates and raised direct alias-strategy PFP; this supports keeping LLM aliases candidate/supporting-only.
 
 ---
 

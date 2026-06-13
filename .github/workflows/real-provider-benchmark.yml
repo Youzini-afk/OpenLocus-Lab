@@ -13,6 +13,7 @@ on:
           - p3_quiver_readiness
           - p4_anchor_proto
           - p5_llm_stress
+          - p20_llm_large
           - all_smoke
       enable_remote_models:
         description: 'Allow real embedding / LLM providers from production environment'
@@ -115,7 +116,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           allowed_views = {"path_plus_symbol"}
           provider_aliases = {"openai": "openai-compatible", "openai_compatible": "openai-compatible", "openai-compatible": "openai-compatible"}
@@ -373,6 +374,31 @@ jobs:
           cmd+=(--max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records "$MAX_RECORDS" --max-stress-tasks "$MAX_STRESS_TASKS" --openlocus target/debug/openlocus --derived-out artifacts/real_provider_ci/p5_llm_derived_views.jsonl --stress-tasks-out artifacts/real_provider_ci/p5_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p5_llm_stress_labels.private.jsonl" --out artifacts/real_provider_ci/p5_llm_derived_stress.json --doc docs/real-provider-ci/p5-llm-derived-stress.md)
           "${cmd[@]}"
 
+      - name: P20-LS LLM alias/stress harness
+        if: ${{ inputs.stage == 'p20_llm_large' || inputs.stage == 'all_smoke' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_LLM_WORKFLOW_DISPATCH: "1"
+          OPENLOCUS_LLM_MODEL: ${{ vars.OPENLOCUS_LLM_MODEL }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.llm_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/p20_llm_large_scale.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl" --labels "$RUNNER_TEMP/openlocus-real-provider-work/tasks/labels/ci_labels.jsonl")
+          fi
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--max-tasks "$MAX_TASKS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p20_llm_large_report.json --alias-out artifacts/real_provider_ci/p20_llm_aliases.jsonl --stress-tasks-out artifacts/real_provider_ci/p20_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p20_llm_stress_labels.private.jsonl" --doc docs/real-provider-ci/p20-llm-large-scale.md)
+          "${cmd[@]}"
+
       - name: Validate artifacts and privacy gates
         env:
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
@@ -433,12 +459,16 @@ jobs:
               if isinstance(stress_dataset, dict) and stress_dataset.get("private_labels") not in {None, "not_uploaded_in_ci"}:
                   raise SystemExit(f"{json_path} contains a private label artifact path")
 
-          public_path = pathlib.Path("artifacts/real_provider_ci/p5_llm_stress_public.jsonl")
-          if public_path.exists():
+          for public_path in [
+              pathlib.Path("artifacts/real_provider_ci/p5_llm_stress_public.jsonl"),
+              pathlib.Path("artifacts/real_provider_ci/p20_llm_stress_public.jsonl"),
+          ]:
+              if not public_path.exists():
+                  continue
               allowed = {"test_id", "repo_id", "query", "public_version", "source"}
               for line in public_path.read_text(encoding="utf-8").splitlines():
                   if line.strip() and not set(json.loads(line)) <= allowed:
-                      raise SystemExit("P5 public stress task leaked private fields")
+                      raise SystemExit(f"{public_path} leaked private fields")
 
           print("real-provider CI artifact validation ok")
           PY
@@ -451,6 +481,8 @@ jobs:
             artifacts/real_provider_ci/plan.json
             artifacts/real_provider_ci/*.json
             artifacts/real_provider_ci/p5_llm_stress_public.jsonl
+            artifacts/real_provider_ci/p20_llm_aliases.jsonl
+            artifacts/real_provider_ci/p20_llm_stress_public.jsonl
             docs/real-provider-ci/*.md
             !artifacts/real_provider_ci/**/labels/**
             !artifacts/real_provider_ci/**/corpus/**

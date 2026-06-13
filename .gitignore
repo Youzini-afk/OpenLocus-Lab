@@ -13,3 +13,7 @@ __pycache__/
 !.env.local.example
 openlocus-provider.env
 openlocus-provider.*.env
+
+# P20-LS private labels are local/internal only unless explicitly reviewed.
+/artifacts/p20_llm_large/private/
+/datasets/p20-llm-stress/labels/

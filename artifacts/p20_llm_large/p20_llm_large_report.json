@@ -1,0 +1,392 @@
+{
+  "allow_remote": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-13T12:16:24.657471+00:00",
+  "input_artifacts": {
+    "labels": {
+      "path": "fixtures/r26_auto_stress/labels/auto_stress.jsonl",
+      "sha256": "b7add2500c203aa644339156fd6e557df54232ad282381a3474ea58aa1afddd8"
+    },
+    "repo_lock": {
+      "path": "fixtures/r26_auto_stress/repos.lock.jsonl",
+      "sha256": "3d60ab401cfb77ad906f61625f32129972b881808d147ee7c7d3489bfa77666d"
+    },
+    "tasks": {
+      "path": "fixtures/r26_auto_stress/tasks/auto_stress.jsonl",
+      "sha256": "868d21de2c6f955ebf4dcb7235c100e03c0be7c71425ee99bd20155bf1f5c39c"
+    }
+  },
+  "labels_loaded_after_run": true,
+  "llm_default_allowed": false,
+  "llm_direct_evidence_allowed": false,
+  "ls0": {
+    "actual_alias_artifact_validated": true,
+    "alias_not_evidence_coverage": true,
+    "alias_schema_issues": [],
+    "alias_schema_version_coverage": true,
+    "artifact_raw_source_hits": 0,
+    "artifact_secret_scan_clean": true,
+    "artifact_secret_scan_hits": 0,
+    "default_should_change": false,
+    "evidencecore_semantics_changed": false,
+    "llm_outputs_not_evidence_labels_judge_router_default_promotion": true,
+    "ls0_passed": true,
+    "private_labels_not_uploaded": true,
+    "promotion_ready": false,
+    "public_task_schema_clean": true,
+    "public_task_schema_issues": [],
+    "raw_prompt_response_stored": false,
+    "raw_source_sent": false,
+    "remote_explicit_gate_enabled": false,
+    "run_phase_public_only": true
+  },
+  "ls1": {
+    "alias_added_false_file": 77,
+    "alias_added_false_span": 204,
+    "alias_added_gold_file": 0,
+    "alias_added_gold_span": 0,
+    "alias_contributions": {
+      "bm25_llm_aliases_vs_bm25_original": {
+        "alias_added_false_file": 21,
+        "alias_added_false_span": 61,
+        "alias_added_gold_file": 0,
+        "alias_added_gold_span": 0,
+        "tasks_with_alias_additions": 7
+      },
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": {
+        "alias_added_false_file": 8,
+        "alias_added_false_span": 10,
+        "alias_added_gold_file": 0,
+        "alias_added_gold_span": 0,
+        "tasks_with_alias_additions": 2
+      },
+      "regex_llm_aliases_vs_regex_original": {
+        "alias_added_false_file": 21,
+        "alias_added_false_span": 61,
+        "alias_added_gold_file": 0,
+        "alias_added_gold_span": 0,
+        "tasks_with_alias_additions": 7
+      },
+      "rrf_llm_aliases_vs_rrf_original": {
+        "alias_added_false_file": 27,
+        "alias_added_false_span": 72,
+        "alias_added_gold_file": 0,
+        "alias_added_gold_span": 0,
+        "tasks_with_alias_additions": 8
+      }
+    },
+    "alias_count": 8,
+    "alias_deltas": {
+      "bm25_llm_aliases_vs_bm25_original": {
+        "FileRecall@1": 0.0,
+        "SpanF0.5": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.625,
+        "no_gold_nonempty_rate": 0.625,
+        "primary_false_positive_rate": 0.625,
+        "token_waste": 0.625
+      },
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": {
+        "FileRecall@1": 0.0,
+        "SpanF0.5": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.0,
+        "no_gold_nonempty_rate": 0.0,
+        "primary_false_positive_rate": 0.0,
+        "token_waste": 0.0
+      },
+      "regex_llm_aliases_vs_regex_original": {
+        "FileRecall@1": 0.0,
+        "SpanF0.5": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.625,
+        "no_gold_nonempty_rate": 0.625,
+        "primary_false_positive_rate": 0.625,
+        "token_waste": 0.625
+      },
+      "rrf_llm_aliases_vs_rrf_original": {
+        "FileRecall@1": 0.0,
+        "SpanF0.5": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.625,
+        "no_gold_nonempty_rate": 0.625,
+        "primary_false_positive_rate": 0.625,
+        "token_waste": 0.625
+      }
+    },
+    "alias_harm_rate": 0.46875,
+    "alias_help_rate": 0.0,
+    "alias_metrics": {
+      "bm25_llm_aliases": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 1.0,
+        "no_gold_nonempty_rate": 1.0,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 1.0,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 1.0
+      },
+      "query_noise_guard_plus_llm_aliases_supporting": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.375,
+        "no_gold_nonempty_rate": 0.375,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 0.375,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 0.375
+      },
+      "regex_llm_aliases": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 1.0,
+        "no_gold_nonempty_rate": 1.0,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 1.0,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 1.0
+      },
+      "rrf_llm_aliases": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 1.0,
+        "no_gold_nonempty_rate": 1.0,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 1.0,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 1.0
+      }
+    },
+    "alias_out": "artifacts/p20_llm_large/ls1_aliases.jsonl",
+    "alias_schema_issues": [],
+    "fabricated_identifier_rate": 1.0,
+    "guard_recall_kill_delta": {
+      "bm25_llm_aliases_vs_bm25_original": null,
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": null,
+      "regex_llm_aliases_vs_regex_original": null,
+      "rrf_llm_aliases_vs_rrf_original": null
+    },
+    "invalid_json_rate": 0.0,
+    "labels_loaded_after_run": true,
+    "ls1_completed": true,
+    "ls1_quality_passed": false,
+    "ls1_safety_passed": true,
+    "model_id": "offline_deterministic",
+    "negative_nonexistent_false_primary_delta": {
+      "bm25_llm_aliases_vs_bm25_original": 0.625,
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": 0.0,
+      "regex_llm_aliases_vs_regex_original": 0.625,
+      "rrf_llm_aliases_vs_rrf_original": 0.625
+    },
+    "not_evidence_missing_rate": 0.0,
+    "original_metrics": {
+      "bm25_original": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.375,
+        "no_gold_nonempty_rate": 0.375,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 0.375,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 0.375
+      },
+      "query_noise_guard": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.375,
+        "no_gold_nonempty_rate": 0.375,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 0.375,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 0.375
+      },
+      "regex_original": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.375,
+        "no_gold_nonempty_rate": 0.375,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 0.375,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 0.375
+      },
+      "rrf_original": {
+        "FileRecall@1": 0.0,
+        "FileRecall@3": 0.0,
+        "FileRecall@5": 0.0,
+        "MRR": 0.0,
+        "SpanF0.5": 0.0,
+        "SpanPrecision": 0.0,
+        "SpanRecall": null,
+        "SpanRecall_positive_only": null,
+        "guard_recall_kill_rate": null,
+        "hard_negative_hit_rate": 0.0,
+        "negative_nonexistent_false_primary_rate": 0.375,
+        "no_gold_nonempty_rate": 0.375,
+        "positive_task_count": 0,
+        "primary_false_positive_rate": 0.375,
+        "semantic_trap_nonempty_rate": 0.0,
+        "task_count": 8,
+        "token_waste": 0.375
+      }
+    },
+    "prediction_counts": {
+      "bm25_llm_aliases": 8,
+      "bm25_original": 8,
+      "query_noise_guard": 8,
+      "query_noise_guard_plus_llm_aliases_supporting": 8,
+      "regex_llm_aliases": 8,
+      "regex_original": 8,
+      "rrf_llm_aliases": 8,
+      "rrf_original": 8
+    },
+    "primary_false_positive_delta": {
+      "bm25_llm_aliases_vs_bm25_original": 0.625,
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": 0.0,
+      "regex_llm_aliases_vs_regex_original": 0.625,
+      "rrf_llm_aliases_vs_rrf_original": 0.625
+    },
+    "provider_calls": 0,
+    "provider_cost_estimate": 0.0,
+    "quality_blocking_reasons": [
+      "primary_false_positive_delta_increased",
+      "fabricated_identifier_rate_gt_0.5",
+      "alias_harm_rate_gt_help_rate",
+      "alias_added_false_span_gt_gold_span"
+    ],
+    "remote_enabled": false,
+    "remote_stats": {
+      "calls": 0,
+      "cost_estimate": 0.0,
+      "failures": 0,
+      "invalid_json": 0,
+      "not_evidence_missing": 0,
+      "schema_violation": 0
+    },
+    "run_phase_read_labels": false,
+    "schema_violation_rate": 0.0,
+    "score_phase_read_labels": true,
+    "semantic_trap_nonempty_delta": {
+      "bm25_llm_aliases_vs_bm25_original": 0.0,
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": 0.0,
+      "regex_llm_aliases_vs_regex_original": 0.0,
+      "rrf_llm_aliases_vs_rrf_original": 0.0
+    },
+    "token_waste_delta": {
+      "bm25_llm_aliases_vs_bm25_original": 0.625,
+      "query_noise_guard_plus_llm_aliases_supporting_vs_query_noise_guard": 0.0,
+      "regex_llm_aliases_vs_regex_original": 0.625,
+      "rrf_llm_aliases_vs_rrf_original": 0.625
+    }
+  },
+  "ls3": {
+    "cluster_counts": {
+      "DENSE_DOC_SOURCE_CONFUSION": 1,
+      "DENSE_FILE_RIGHT_SPAN_WRONG": 1,
+      "DENSE_FRONTEND_BACKEND_CONFUSION": 1,
+      "DENSE_MODULE_RIGHT_FUNCTION_WRONG": 1,
+      "DENSE_SAME_NAME_SYMBOL_CONFUSION": 1,
+      "DENSE_TEST_SOURCE_CONFUSION": 1,
+      "GUARD_RECALL_KILL": 1,
+      "RRF_INHERITED_BM25_FALSE_POSITIVE": 1
+    },
+    "ls3_passed": true,
+    "private_label_fields_all_present": true,
+    "private_labels_not_uploaded": true,
+    "private_labels_written": false,
+    "promotion_ready": false,
+    "public_field_leak_issues": [],
+    "stress_label_count": 8,
+    "stress_labels_out": null,
+    "stress_task_count": 8,
+    "stress_tasks_out": "datasets/p20-llm-stress/tasks/stress_public.jsonl"
+  },
+  "model_id": "offline_deterministic",
+  "phase": "all",
+  "promotion_ready": false,
+  "provider": "offline_deterministic",
+  "raw_prompt_response_stored": false,
+  "raw_source_sent": false,
+  "remote_disabled_reason": "provider not openai-compatible",
+  "remote_enabled": false,
+  "repo_lock_validation": {
+    "info": [
+      "Repo fast-context-mcp: content_manifest_sha verified (5 files, 2361 lines)",
+      "Repo grok2api: content_manifest_sha verified (157 files, 29676 lines)",
+      "Repo infinite-canvas: content_manifest_sha verified (110 files, 14100 lines)",
+      "Repo gemini-web2api: content_manifest_sha verified (9 files, 1330 lines)",
+      "Repo windsurf2api: content_manifest_sha verified (143 files, 36127 lines)",
+      "Repo kiro2: content_manifest_sha verified (114 files, 33908 lines)",
+      "Repo triviumdb: content_manifest_sha verified (117 files, 45947 lines)",
+      "Repo smartsearch: content_manifest_sha verified (69 files, 22393 lines)",
+      "Repo codex2api: content_manifest_sha verified (239 files, 114692 lines)"
+    ],
+    "issues": [],
+    "manifest_validation": "r29_content_manifest_sha",
+    "repo_count": 9,
+    "repo_lock_path": "fixtures/r26_auto_stress/repos.lock.jsonl"
+  },
+  "run_phase_public_only": true,
+  "schema_version": "p20-llm-large-report-v1"
+}

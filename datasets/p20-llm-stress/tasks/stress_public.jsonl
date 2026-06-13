@@ -1,0 +1,8 @@
+{"public_version": "p20-ls3-v1", "query": "voice recognition module", "repo_id": "codex2api", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00000"}
+{"public_version": "p20-ls3-v1", "query": "differential privacy sanitizer", "repo_id": "fast-context-mcp", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00001"}
+{"public_version": "p20-ls3-v1", "query": "EntropyBalancer", "repo_id": "gemini-web2api", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00002"}
+{"public_version": "p20-ls3-v1", "query": "MesonTransformer", "repo_id": "grok2api", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00003"}
+{"public_version": "p20-ls3-v1", "query": "homomorphic encryption engine", "repo_id": "infinite-canvas", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00004"}
+{"public_version": "p20-ls3-v1", "query": "machine learning inference pipeline", "repo_id": "kiro2", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00005"}
+{"public_version": "p20-ls3-v1", "query": "PionDistributor", "repo_id": "smartsearch", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00006"}
+{"public_version": "p20-ls3-v1", "query": "generative adversarial trainer", "repo_id": "triviumdb", "source": "p20-ls3-stress", "test_id": "p20ls3-62e1fd37-00007"}

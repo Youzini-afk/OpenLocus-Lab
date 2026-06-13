@@ -2,7 +2,7 @@
 
 日期：2026-06-13
 
-范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up，以及 L1/L2 真实-provider 大仓库 slice 测试。
+范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试，以及 P20-LS 初始离线 harness 结果。
 
 状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
 
@@ -94,6 +94,8 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 
 当前 LLM 最适合的角色是：query aliases、symbol tags、intent views、failure/stress generation。它可以扩大失败面，但不能替代 EvidenceCore。
 
+P20-LS 初始离线 harness 把这条边界变成了可执行检查：LS0 做安全预检，LS1 生成 `not_evidence=true` query aliases 并只作为 candidate/supporting 检索扩展评测，LS3 默认只写 public stress split。首个 R26 8-task negative slice 不是质量证明，而是一个反向提醒：offline deterministic aliases 增加了 false spans（`alias_added_false_span=204`、`alias_added_gold_span=0`），direct alias strategies 的 PFP 增加 `+0.625`，`fabricated_identifier_rate=1.0`。因此该 slice 中 LS1 quality blocked；aliases 后续只能作为受约束实验继续，优先放在 guard/supporting 路径，并加 existence filter。
+
 ---
 
 ## 3. 当前研究假设
@@ -107,6 +109,7 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 | BQ 诊断可能适配当前 code embedding 分布。 | Flask 诊断信号积极。 | 分片 BQ/proto graph 在速度/质量上有优势且不增 false。 |
 | 小 embedding 模型可能足够。 | P9 初步支持继续比较。 | 更多 repo 同任务并记录 latency/cost。 |
 | LLM-derived 可安全扩大失败面。 | 机制可行，质量未证。 | 增加 gold/失败覆盖且不诱导 primary 幻觉。 |
+| LLM query aliases 能在不污染 primary 的情况下改善 anchor。 | 初始 P20-LS 离线 slice 阻断 direct alias expansion；guard-supporting alias mode 在这个小 negative slice 中没有额外增加 PFP。 | 大规模 public/provider runs 显示 `alias_added_gold > alias_added_false`、PFP 不升、fabricated identifier rate 低、guard recall 稳定。 |
 
 ---
 
@@ -120,6 +123,7 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 4. **Graph expansion 多次 net-negative**：graph_basic 在 R29 中几乎只加 false，不加 gold。
 5. **更大 embedding 模型未在首批样本中胜出**：8B 没有压倒 0.6B/4B/bge-m3。
 6. **JS Express 表现弱于 Go/Python/Rust**：真实 embedding 质量有语言/框架差异，不能只看平均数。
+7. **P20-LS direct alias expansion 污染 negative tasks**：初始离线 slice 增加 false candidates 并抬高 direct alias-strategy PFP；这支持继续保持 LLM aliases candidate/supporting-only。
 
 ---
 
