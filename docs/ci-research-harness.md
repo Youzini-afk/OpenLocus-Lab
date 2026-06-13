@@ -148,9 +148,9 @@ All artifacts (run and score) are scanned for private-field leakage:
 | Trigger | Tier | Repos | Timeout |
 |---------|------|-------|---------|
 | `pull_request` | smoke | 4–6 small/medium | 45 min/job |
-| `schedule` (nightly) | nightly | 15–20 medium | 45 min/job |
-| `schedule` (weekly) | weekly | large repos, repo × task-shard matrix | 45 min/job |
-| `workflow_dispatch` | configurable | configurable | configurable |
+| `schedule` (nightly) | nightly | 15–20 medium | 120 min/job |
+| `schedule` (weekly) | weekly | large repos, repo × task-shard matrix | 180 min/job |
+| `workflow_dispatch` | configurable | configurable | 45/120/180/240 min/job by stage |
 
 - `permissions: contents:read` only — no `pull_request_target`
 - Unique artifacts per repo/shard (no raw source artifacts or evidence excerpts uploaded)
