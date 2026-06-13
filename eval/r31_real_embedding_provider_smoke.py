@@ -220,6 +220,13 @@ def build_report(openlocus: Path, out: Path) -> dict[str, Any]:
         trace_paths = sorted(trace_dir.glob("*.jsonl")) if trace_dir.exists() else []
         forbidden_tokens = [CANARY_KEY, base_url, CANARY_QUERY, CANARY_CODE]
         leak_scan = scan_for_leaks([audit_path, store_path, *trace_paths], forbidden_tokens)
+        command_outputs = "\n".join(
+            result.stdout + "\n" + result.stderr
+            for result in [status_default, deny_build, status_remote, build, search]
+        )
+        for token in [CANARY_KEY, base_url, CANARY_QUERY]:
+            if token and token in command_outputs:
+                leak_scan.append({"path": "command_output", "token": token})
 
         build_json = build.json() if build.stdout.strip().startswith("{") else {}
         search_json = search.json() if search.stdout.strip().startswith("{") else {}
@@ -273,7 +280,12 @@ def build_report(openlocus: Path, out: Path) -> dict[str, Any]:
             "leak_scan": {
                 "clean": not leak_scan,
                 "violations": leak_scan,
-                "scanned_artifacts": ["audit", "vector_store", "trace_jsonl"],
+                "scanned_artifacts": [
+                    "audit",
+                    "vector_store",
+                    "trace_jsonl",
+                    "command_stdout_stderr_for_key_url_query_only",
+                ],
             },
             "notes": [
                 "Smoke uses a local OpenAI-compatible server, not the user's configured provider.",
