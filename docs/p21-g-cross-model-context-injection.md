@@ -344,11 +344,29 @@ Configuration files:
 - `eval/p21_multimodel_plan.py` — emits reproducible `gh workflow run real-provider-benchmark.yml ...` commands for selected model profiles, repos, and caps.
 - `.github/workflows/real-provider-benchmark.yml` — supports `embedding_model` and `llm_model` workflow inputs. `llm_model` overrides the repo variable for a single dispatch.
 
-Example dry-run plan for baseline cross-model wiring:
+Default enabled LLM roster:
+
+| Profile | Model | Family | Intended role |
+|---|---|---|---|
+| `deepseek_v4_flash_small_fast` | `[mk]DeepSeek-V4-Flash` | small/fast long-context | cheap first-pass filter, abstain, inventory alias, latency baseline |
+| `kimi_k2_7_code` | `[mk]Kimi-K2.7-Code` | code | primary code rerank/filter/span-narrow model |
+| `deepseek_v4_pro_long_context` | `[mk]DeepSeek-V4-Pro` | long-context/text-strong | Pack5/Pack6, hard distractors, long-layout tests |
+| `glm_5_1_reasoning_code` | `[mk]GLM-5.1` | reasoning/code-strong | expensive review/ablation model, cross-family validation |
+
+The autonomous policy is smoke first, then medium only for promising profiles:
+
+```text
+smoke: 20 tasks × py_flask/js_express/go_gin/rust_ripgrep × all enabled profiles
+medium: 60 tasks × same repos × profiles/roles that pass smoke
+max_workflow_runs_per_batch: 20
+stop if added_false_span >= 3× added_gold_span, PFP increases, schema violation >5%, or repeated provider/rate-limit failures occur
+```
+
+Example dry-run plan for the default LLM roster. This creates 16 workflow runs: four LLM profiles across four repos, staying under the default batch cap of 20.
 
 ```bash
 python3 eval/p21_multimodel_plan.py \
-  --mode both \
+  --mode llm \
   --enable-remote-models \
   --repos py_flask,js_express,go_gin,rust_ripgrep \
   --max-tasks 20 \
@@ -356,6 +374,8 @@ python3 eval/p21_multimodel_plan.py \
   --max-files-per-repo 120 \
   --print-commands
 ```
+
+Run embedding model sweeps separately (`--mode embedding`) so each batch also stays under 20 workflow runs. A combined `--mode both` over four repos currently creates 32 runs and will not execute unless explicitly allowed with `--allow-large-batch`.
 
 To add provider-specific LLMs without committing private provider config:
 

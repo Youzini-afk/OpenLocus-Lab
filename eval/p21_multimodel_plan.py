@@ -157,6 +157,11 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         name="max_files_per_repo",
         maximum=3000,
     )
+    max_workflow_runs = positive_int(
+        args.max_workflow_runs or str(defaults.get("max_workflow_runs_per_batch", 20)),
+        name="max_workflow_runs",
+        maximum=200,
+    )
     dataset = args.dataset or defaults.get("dataset", "ci_smoke")
     if dataset not in {"self_test", "ci_smoke"}:
         raise SystemExit("dataset must be self_test or ci_smoke")
@@ -227,6 +232,8 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "dataset": dataset,
         "repos": repos,
         "entry_count": len(entries),
+        "max_workflow_runs_per_batch": max_workflow_runs,
+        "batch_over_cap": len(entries) > max_workflow_runs,
         "promotion_ready": False,
         "default_should_change": False,
         "candidate_not_fact": True,
@@ -266,6 +273,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--max-tasks", default=None)
     parser.add_argument("--max-records", default=None)
     parser.add_argument("--max-files-per-repo", default=None)
+    parser.add_argument("--max-workflow-runs", default=None)
+    parser.add_argument("--allow-large-batch", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/p21_g/multimodel_dispatch_plan.json"))
     parser.add_argument("--print-commands", action="store_true")
     parser.add_argument("--execute", action="store_true", help="Dispatch via gh; also requires P21_G_ALLOW_DISPATCH=1")
@@ -277,6 +286,11 @@ def main(argv: list[str] | None = None) -> None:
         for item in plan["entries"]:
             print(item["gh_command_shell"])
     if args.execute:
+        if plan["batch_over_cap"] and not args.allow_large_batch:
+            raise SystemExit(
+                f"Refusing to dispatch {plan['entry_count']} runs above cap "
+                f"{plan['max_workflow_runs_per_batch']}; split mode/repos or pass --allow-large-batch"
+            )
         execute_entries(plan["entries"])
     print(json.dumps({"status": "ok", "out": str(args.out), "entry_count": plan["entry_count"]}, sort_keys=True))
 

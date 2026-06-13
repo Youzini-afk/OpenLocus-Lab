@@ -22,58 +22,87 @@
     "max_tasks": 20,
     "max_records": 80,
     "max_files_per_repo": 120,
+    "max_workflow_runs_per_batch": 20,
     "llm_stage": "p20_llm_large",
     "embedding_stage": "p2_embedding",
     "embedding_model_for_llm_stage": "BAAI/bge-m3"
   },
+  "autonomous_run_policy": {
+    "smoke": {
+      "max_tasks": 20,
+      "repos": ["py_flask", "js_express", "go_gin", "rust_ripgrep"],
+      "all_enabled_models": true
+    },
+    "medium": {
+      "max_tasks": 60,
+      "repos": ["py_flask", "js_express", "go_gin", "rust_ripgrep"],
+      "only_promising_profiles": true
+    },
+    "stop_rules": {
+      "added_false_to_gold_ratio_stop": 3.0,
+      "schema_violation_rate_stop": 0.05,
+      "fabricated_identifier_rate_alias_requires_inventory_filter": 0.2,
+      "pfp_increase_blocks_role": true,
+      "repeat_rate_limit_or_provider_failures_pause_batch": true,
+      "large_expansion_requires_positive_smoke_and_medium": true
+    }
+  },
   "llm_profiles": [
     {
-      "profile_id": "kimi_k2_7_code_current",
+      "profile_id": "deepseek_v4_flash_small_fast",
+      "model_id": "[mk]DeepSeek-V4-Flash",
+      "family": "small_fast",
+      "enabled_by_default": true,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["filter", "inventory_alias", "abstain", "rerank"],
+      "effective_context_bucket": "long",
+      "advertised_context_tokens": 1000000,
+      "approx_decode_tokens_per_second": 300,
+      "cost_class": "low_or_medium",
+      "latency_class": "fast",
+      "notes": "150B-class fast long-context model. Use as the small/fast profile and latency baseline; good for first-pass filter, abstain, and cheap rerank tests."
+    },
+    {
+      "profile_id": "kimi_k2_7_code",
       "model_id": "[mk]Kimi-K2.7-Code",
       "family": "code",
       "enabled_by_default": true,
       "provider": "OPENLOCUS_LLM_PROVIDER",
       "roles_planned": ["rerank", "filter", "span_narrow", "inventory_alias", "abstain"],
-      "effective_context_bucket": "unknown",
-      "cost_class": "unknown",
-      "latency_class": "unknown",
-      "notes": "P20-LS-A baseline model; low-context alias mode failed. Reuse only as one model in cross-model P21-G comparisons."
-    },
-    {
-      "profile_id": "small_fast_slot",
-      "model_id": "",
-      "family": "small_fast",
-      "enabled_by_default": false,
-      "provider": "OPENLOCUS_LLM_PROVIDER",
-      "roles_planned": ["filter", "inventory_alias", "abstain"],
-      "effective_context_bucket": "short",
-      "cost_class": "low",
-      "latency_class": "fast",
-      "notes": "Fill model_id locally or pass --llm-model profile_id=model_id to eval/p21_multimodel_plan.py."
-    },
-    {
-      "profile_id": "long_context_slot",
-      "model_id": "",
-      "family": "long_context",
-      "enabled_by_default": false,
-      "provider": "OPENLOCUS_LLM_PROVIDER",
-      "roles_planned": ["rerank", "span_narrow", "abstain"],
       "effective_context_bucket": "long",
+      "advertised_context_tokens": 256000,
+      "approx_decode_tokens_per_second": 330,
       "cost_class": "medium_or_high",
-      "latency_class": "balanced_or_slow",
-      "notes": "Fill with a provider-supported long-context model before dispatch."
+      "latency_class": "fast_for_size",
+      "notes": "1.1T-class strongest coding profile in the current roster. P20-LS-A low-context alias mode failed on this model; reuse as the primary code model for grounded context-injection roles."
     },
     {
-      "profile_id": "reasoning_strong_slot",
-      "model_id": "",
-      "family": "reasoning_strong",
-      "enabled_by_default": false,
+      "profile_id": "deepseek_v4_pro_long_context",
+      "model_id": "[mk]DeepSeek-V4-Pro",
+      "family": "long_context",
+      "enabled_by_default": true,
       "provider": "OPENLOCUS_LLM_PROVIDER",
-      "roles_planned": ["rerank", "filter", "span_narrow"],
-      "effective_context_bucket": "medium_or_long",
+      "roles_planned": ["rerank", "filter", "span_narrow", "abstain"],
+      "effective_context_bucket": "long",
+      "advertised_context_tokens": 1000000,
+      "approx_decode_tokens_per_second": 110,
       "cost_class": "high",
       "latency_class": "slow",
-      "notes": "Fill with a stronger reasoning/code model for expensive focused ablations."
+      "notes": "1.8T-class strongest text/long-context profile. Use for Pack5/Pack6, long-layout tests, hard distractor contrast, and leave-one-family-out validation."
+    },
+    {
+      "profile_id": "glm_5_1_reasoning_code",
+      "model_id": "[mk]GLM-5.1",
+      "family": "reasoning_code_strong",
+      "enabled_by_default": true,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["rerank", "filter", "span_narrow", "abstain"],
+      "effective_context_bucket": "medium_long",
+      "advertised_context_tokens": 200000,
+      "approx_decode_tokens_per_second": 130,
+      "cost_class": "high",
+      "latency_class": "balanced_slow",
+      "notes": "700B-class strong coding/reasoning profile. Use as the strong review/ablation model and as a contrast against Kimi code and DeepSeek long-context behavior."
     }
   ],
   "embedding_profiles": [
