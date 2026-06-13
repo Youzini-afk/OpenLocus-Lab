@@ -1,6 +1,7 @@
 //! Embedding provider trait and implementations.
 
 use crate::model::{ProviderLocality, ProviderMetadata};
+use crate::openai::OpenAiEmbeddingProvider;
 use anyhow::Result;
 
 /// Trait for embedding providers.
@@ -48,16 +49,31 @@ impl EmbeddingProvider for DisabledEmbeddingProvider {
     }
 }
 
-/// Create a provider by name. Only "mock" and "disabled" are supported in R13.
+/// Create a provider by name.
+/// Supported providers: "mock", "disabled", and OpenAI-compatible remote
+/// aliases (requires explicit env config).
 pub fn create_provider(name: &str) -> Result<Box<dyn EmbeddingProvider>> {
     match name {
         "mock" => Ok(Box::new(crate::mock::MockEmbeddingProvider::new())),
         "disabled" => Ok(Box::new(DisabledEmbeddingProvider::new())),
+        "openai" | "openai-compatible" | "openai_compatible" => {
+            Ok(Box::new(OpenAiEmbeddingProvider::from_env()?))
+        }
         other => anyhow::bail!(
-            "unknown provider '{}'; supported providers: mock, disabled",
+            "unknown provider '{}'; supported providers: mock, disabled, openai-compatible",
             other
         ),
     }
+}
+
+/// Returns true when the OpenAI-compatible remote provider appears to be
+/// configured and explicitly allowed via environment variables.
+pub fn is_remote_provider_configured() -> bool {
+    std::env::var("OPENLOCUS_ALLOW_REMOTE").unwrap_or_default() == "1"
+        && std::env::var_os("OPENLOCUS_EMBEDDING_BASE_URL").is_some()
+        && std::env::var_os("OPENLOCUS_EMBEDDING_API_KEY").is_some()
+        && std::env::var_os("OPENLOCUS_EMBEDDING_MODEL").is_some()
+        && std::env::var_os("OPENLOCUS_EMBEDDING_DIMENSIONS").is_some()
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────
@@ -89,7 +105,19 @@ mod tests {
 
     #[test]
     fn create_provider_unknown() {
+        let result = create_provider("unknown_provider");
+        assert!(result.is_err());
+        let err = result.err().unwrap().to_string();
+        assert!(err.contains("supported providers"));
+    }
+
+    #[test]
+    fn create_provider_openai_requires_allow_remote() {
+        // Without OPENLOCUS_ALLOW_REMOTE=1, creating the openai provider fails
+        // during configuration parsing.
         let result = create_provider("openai");
         assert!(result.is_err());
+        let err = result.err().unwrap().to_string();
+        assert!(err.contains("OPENLOCUS_ALLOW_REMOTE"));
     }
 }

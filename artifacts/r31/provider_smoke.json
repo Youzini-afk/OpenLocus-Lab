@@ -1,0 +1,62 @@
+{
+  "core_changes": false,
+  "counts": {
+    "build_remote_calls": 1,
+    "evidence_count": 1,
+    "leak_count": 0,
+    "record_count": 1,
+    "search_remote_calls": 1,
+    "server_bad_auth": 0,
+    "server_bad_paths": 0,
+    "server_embedding_requests": 2
+  },
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-13T05:13:22.547412+00:00",
+  "leak_scan": {
+    "clean": true,
+    "scanned_artifacts": [
+      "audit",
+      "vector_store",
+      "trace_jsonl"
+    ],
+    "violations": []
+  },
+  "not_promotion_evidence": true,
+  "notes": [
+    "Smoke uses a local OpenAI-compatible server, not the user's configured provider.",
+    "DenseReal remains candidate/supporting-only; this smoke is not quality or promotion evidence."
+  ],
+  "promotion_ready": false,
+  "provider_protocol": "openai-compatible",
+  "provider_status": {
+    "default_supported_providers": [
+      "mock",
+      "disabled"
+    ],
+    "outbound_default": false,
+    "remote_default": false,
+    "remote_supported_providers": [
+      "mock",
+      "disabled",
+      "openai-compatible"
+    ]
+  },
+  "safety_gates": {
+    "artifacts_contain_no_api_key": true,
+    "artifacts_contain_no_base_url": true,
+    "audit_contains_no_raw_code": true,
+    "audit_contains_no_raw_query": true,
+    "audit_file_exists": true,
+    "citation_shape_present": true,
+    "evidence_materialized": true,
+    "no_quality_claim": true,
+    "openai_compatible_hidden_until_env_enabled": true,
+    "openai_compatible_visible_when_env_enabled": true,
+    "provider_build_success": true,
+    "provider_search_success": true,
+    "remote_denied_by_default": true,
+    "vector_store_exists": true
+  },
+  "schema_version": "r31-real-embedding-provider-smoke-v1"
+}

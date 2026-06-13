@@ -2080,11 +2080,15 @@ fn provider_status(repo_root: &Path) -> ProviderStatusResult {
         .to_str()
         .unwrap_or_default()
         .to_string();
+    let mut supported_providers = vec!["mock".into(), "disabled".into()];
+    if openlocus_provider::provider::is_remote_provider_configured() {
+        supported_providers.push("openai-compatible".into());
+    }
     ProviderStatusResult {
         success: true,
         remote_default: false,
         outbound_default: false,
-        supported_providers: vec!["mock".into(), "disabled".into()],
+        supported_providers,
         audit_path,
         policy_mode: "local_only".into(),
     }
@@ -2185,7 +2189,7 @@ fn dense_build(
                 blocked: 0,
                 remote_calls: 0,
                 error: Some(format!(
-                    "unknown provider '{}'; supported providers: mock, disabled",
+                    "unknown provider '{}'; supported providers: mock, disabled, openai-compatible",
                     provider_name
                 )),
                 store_path: None,
@@ -2255,7 +2259,7 @@ fn dense_build(
         record_count: build_result.record_count,
         skipped: build_result.skipped,
         blocked: build_result.blocked,
-        remote_calls: 0,
+        remote_calls: build_result.remote_calls,
         error: None,
         store_path: Some(store_path),
         audit_path: Some(audit_path),
@@ -2268,6 +2272,7 @@ struct DenseSearchResult {
     query_sha: String,
     query_len: usize,
     provider: String,
+    remote_calls: u64,
     evidence: Vec<Evidence>,
     skipped_count: usize,
     blocked: bool,
@@ -2315,11 +2320,12 @@ fn dense_search(
                 query_sha,
                 query_len,
                 provider: provider_name.into(),
+                remote_calls: 0,
                 evidence: vec![],
                 skipped_count: 0,
                 blocked: false,
                 reason: Some(format!(
-                    "unknown provider '{}'; supported providers: mock, disabled",
+                    "unknown provider '{}'; supported providers: mock, disabled, openai-compatible",
                     provider_name
                 )),
             });
@@ -2356,6 +2362,7 @@ fn dense_search(
             query_sha,
             query_len,
             provider: provider_name.into(),
+            remote_calls: 0,
             evidence: vec![],
             skipped_count: 0,
             blocked: false,
@@ -2372,6 +2379,7 @@ fn dense_search(
             query_sha,
             query_len,
             provider: provider_name.into(),
+            remote_calls: search_result.remote_calls,
             evidence: vec![],
             skipped_count: 0,
             blocked: true,
@@ -2385,6 +2393,7 @@ fn dense_search(
             query_sha,
             query_len,
             provider: provider_name.into(),
+            remote_calls: search_result.remote_calls,
             evidence: vec![],
             skipped_count: 0,
             blocked: false,
@@ -2407,6 +2416,7 @@ fn dense_search(
         query_sha,
         query_len,
         provider: provider_name.into(),
+        remote_calls: search_result.remote_calls,
         evidence,
         skipped_count,
         blocked: false,

@@ -8,6 +8,7 @@
 use crate::audit;
 use crate::cache::compute_cache_key;
 use crate::gate::gate_embed_input;
+use crate::model::ProviderLocality;
 use crate::model::{EmbedInput, EmbeddingAuditEvent, EmbeddingRecord, ProviderMetadata};
 use crate::provider::EmbeddingProvider;
 use anyhow::Result;
@@ -37,6 +38,7 @@ impl JsonlEmbeddingStore {
         let mut built = Vec::new();
         let mut skipped = 0usize;
         let mut blocked = 0usize;
+        let mut remote_calls = 0u64;
         let request_id = format!("build-{}", chrono::Utc::now().timestamp_millis());
 
         for record in records {
@@ -117,7 +119,7 @@ impl JsonlEmbeddingStore {
                     secret_scan: decision.secret_scan.clone(),
                     policy_decision: "block".into(),
                     cache_key: String::new(),
-                    outbound_attempted: false,
+                    outbound_attempted: metadata.locality.is_remote(),
                     reason: Some(decision.reason.clone()),
                 };
                 let _ = audit::append_audit_event(repo_root, &audit_event);
@@ -137,6 +139,9 @@ impl JsonlEmbeddingStore {
             );
 
             // Embed
+            if metadata.locality.is_remote() {
+                remote_calls += 1;
+            }
             let vector = match provider.embed(&view_text, &text_sha) {
                 Ok(v) => v,
                 Err(e) => {
@@ -158,8 +163,8 @@ impl JsonlEmbeddingStore {
                         secret_scan: decision.secret_scan,
                         policy_decision: "provider_error".into(),
                         cache_key,
-                        outbound_attempted: false,
-                        reason: Some(e.to_string()),
+                        outbound_attempted: metadata.locality.is_remote(),
+                        reason: Some(sanitize_embed_error(&metadata.locality, &e)),
                     };
                     let _ = audit::append_audit_event(repo_root, &audit_event);
                     continue;
@@ -201,7 +206,7 @@ impl JsonlEmbeddingStore {
                 secret_scan: decision.secret_scan,
                 policy_decision: "allow".into(),
                 cache_key: embedding_record.cache_key.clone(),
-                outbound_attempted: false,
+                outbound_attempted: metadata.locality.is_remote(),
                 reason: None,
             };
             let _ = audit::append_audit_event(repo_root, &audit_event);
@@ -226,6 +231,7 @@ impl JsonlEmbeddingStore {
             record_count: built.len(),
             skipped,
             blocked,
+            remote_calls,
         })
     }
 
@@ -244,18 +250,30 @@ impl JsonlEmbeddingStore {
                 hits: Vec::new(),
                 skipped: 0,
                 blocked: false,
+                remote_calls: 0,
                 reason: Some("embedding store not found; run 'dense build' first".into()),
             });
         }
 
         // Read records
         let records = Self::list(repo_root)?;
-        if records.is_empty() {
+        let matching_records: Vec<&EmbeddingRecord> = records
+            .iter()
+            .filter(|record| {
+                record.provider_id == metadata.provider_id
+                    && record.model_id == metadata.model_id
+                    && record.dimensions == metadata.dimensions
+            })
+            .collect();
+        if matching_records.is_empty() {
             return Ok(SearchResult {
                 hits: Vec::new(),
                 skipped: 0,
                 blocked: false,
-                reason: Some("embedding store is empty".into()),
+                remote_calls: 0,
+                reason: Some(
+                    "embedding store has no records for requested provider/model/dimensions".into(),
+                ),
             });
         }
 
@@ -310,7 +328,7 @@ impl JsonlEmbeddingStore {
                 secret_scan: decision.secret_scan,
                 policy_decision: "block".into(),
                 cache_key,
-                outbound_attempted: false,
+                outbound_attempted: metadata.locality.is_remote(),
                 reason: Some(decision.reason.clone()),
             };
             let _ = audit::append_audit_event(repo_root, &audit_event);
@@ -319,10 +337,12 @@ impl JsonlEmbeddingStore {
                 hits: Vec::new(),
                 skipped: 0,
                 blocked: true,
+                remote_calls: 0,
                 reason: Some(decision.reason),
             });
         }
 
+        let remote_calls = u64::from(metadata.locality.is_remote());
         let query_vector = match provider.embed(&query_text, &query_text_sha) {
             Ok(v) => v,
             Err(e) => {
@@ -354,8 +374,8 @@ impl JsonlEmbeddingStore {
                     secret_scan: decision.secret_scan,
                     policy_decision: "provider_error".into(),
                     cache_key,
-                    outbound_attempted: false,
-                    reason: Some(e.to_string()),
+                    outbound_attempted: metadata.locality.is_remote(),
+                    reason: Some(sanitize_embed_error(&metadata.locality, &e)),
                 };
                 let _ = audit::append_audit_event(repo_root, &audit_event);
 
@@ -363,7 +383,11 @@ impl JsonlEmbeddingStore {
                     hits: Vec::new(),
                     skipped: 0,
                     blocked: false,
-                    reason: Some(format!("provider error: {}", e)),
+                    remote_calls,
+                    reason: Some(format!(
+                        "provider error: {}",
+                        sanitize_embed_error(&metadata.locality, &e)
+                    )),
                 });
             }
         };
@@ -396,14 +420,14 @@ impl JsonlEmbeddingStore {
             secret_scan: decision.secret_scan,
             policy_decision: "allow".into(),
             cache_key,
-            outbound_attempted: false,
+            outbound_attempted: metadata.locality.is_remote(),
             reason: None,
         };
         let _ = audit::append_audit_event(repo_root, &audit_event);
 
         // Compute cosine similarity and rank
         let mut scored: Vec<(f64, &EmbeddingRecord)> = Vec::new();
-        for record in &records {
+        for record in &matching_records {
             let score = cosine_similarity(&query_vector, &record.vector);
             scored.push((score, record));
         }
@@ -428,6 +452,7 @@ impl JsonlEmbeddingStore {
             hits,
             skipped,
             blocked: false,
+            remote_calls,
             reason: None,
         })
     }
@@ -465,6 +490,14 @@ impl JsonlEmbeddingStore {
     }
 }
 
+fn sanitize_embed_error(locality: &ProviderLocality, error: &anyhow::Error) -> String {
+    if locality.is_remote() {
+        crate::openai::sanitize_provider_error(error)
+    } else {
+        error.to_string()
+    }
+}
+
 /// Compute cosine similarity between two vectors.
 pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f64 {
     if a.len() != b.len() || a.is_empty() {
@@ -489,6 +522,7 @@ pub struct BuildResult {
     pub record_count: usize,
     pub skipped: usize,
     pub blocked: usize,
+    pub remote_calls: u64,
 }
 
 /// Result of searching the embedding store.
@@ -497,6 +531,7 @@ pub struct SearchResult {
     pub hits: Vec<StoreHit>,
     pub skipped: usize,
     pub blocked: bool,
+    pub remote_calls: u64,
     pub reason: Option<String>,
 }
 
