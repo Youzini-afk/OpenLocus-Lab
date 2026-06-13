@@ -8,7 +8,45 @@ or the index page [`docs/current-research-conclusions.md`](current-research-conc
 [`docs/current-research-conclusions.zh.md`](current-research-conclusions.zh.md)，
 入口索引见 [`docs/current-research-conclusions.md`](current-research-conclusions.md)。
 
-This document will be updated after each evidence-gated stage.
+This document will be updated after each evidence-gated stage. The detailed
+chronological notes below are preserved for traceability; the current high-level
+research conclusion is summarized first.
+
+## Current status update — 2026-06-13
+
+The research program has moved beyond the original local-only benchmark stages
+into controlled real-provider CI experiments. The current conclusion is not a
+promotion decision; it is a sharper research boundary:
+
+```text
+RRF remains the recall base.
+symbol/regex remain precision anchors.
+query_noise_plus_rrf_agree_min remains the strongest guard candidate.
+real dense embeddings have candidate/file-level signal but are unstable as global dense.
+Dense/QuIVer/LLM-derived/graph remain supporting/diagnostic/candidate only.
+promotion_ready=false and current_default_should_change=false.
+```
+
+Most important recent finding: **L1/L2 real-provider large-repo-slice tests made
+the dense-only/global-dense risk more concrete**. With `BAAI/bge-m3` and the
+remote-safe `path_plus_symbol` view at `60 tasks / 1000 records / 2000 files`,
+four large-repo slices all had `primary_false_positive_rate=1.0`, very low
+`SpanF0.5`, and unstable file recall. This blocks dense-only/global dense from
+primary/default use and shifts the next research phase toward constrained,
+lexical/symbol-seeded dense support.
+
+Current detailed conclusion reports:
+
+- [`current-research-conclusions.zh.md`](current-research-conclusions.zh.md) /
+  [`current-research-conclusions.en.md`](current-research-conclusions.en.md)
+- [`real-provider-ci-large-scale.zh.md`](real-provider-ci-large-scale.zh.md) /
+  [`real-provider-ci-large-scale.en.md`](real-provider-ci-large-scale.en.md)
+- [`real-provider-ci-scale-p8-p9.md`](real-provider-ci-scale-p8-p9.md)
+- [`real-provider-p7-summary.md`](real-provider-p7-summary.md)
+
+Next research direction: freeze the L2 suite, attribute false positives, then
+test remote-safe multi-view and lexical/symbol/RRF-constrained dense variants
+before spending more provider budget on larger runs.
 
 ## Stage status
 
@@ -43,6 +81,19 @@ This document will be updated after each evidence-gated stage.
 | R26 Auto-Stress-1000 | Static validation passed (19/19 checks, 0 critical errors); NOT promotion evidence | Weak/mined/deterministic stress dataset for retrieval failure discovery. 1100 tasks across exact target counts for 10 stress categories and 9 R20 repos. Uses the same external repo set as R20 and derives some queries from existing R20 tasks/labels where useful. Public tasks contain only test_id/repo_id/query/public_version/source; category/risk/judgement fields live only in private labels. Private labels carry all judgement fields. No canary tokens. Deterministic seed 42. Validator fail-closes on exact category counts, public/private schema separation, task/label query consistency, span path/range validity, SHA-256 artifact checks, and repo content manifest SHA lock recomputation. Runner/scorer matrix now provided by R29. Designed to maximize failure discovery; NOT promotion evidence. Negative/abstain cases dominate (60%). No Rust core changes. No LLM/dense claims. |
 | R28 Promotion Candidate Report | promotion_ready=false; current default should not change | Conservative synthesis of R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets. RRF remains best recall channel, symbol remains precision anchor, query_noise_plus_rrf_agree_min is promising but not stable enough due to R23 bucket regressions and unrun R26 retrieval matrix, graph/dense expansions are blocked by R25 added_false_span > added_gold_span, QuIVer/TDB have no independent quality evidence, dense_mock is noise/safety probe only. Default recommendation: no_change_current_evidence_gated_local_retrieval. Next required tests: run R26 strategy matrix, add human-verified labels, implement real embedding/QuIVer only after runner gates exist. |
 | R29 R26 Auto-Stress Strategy Matrix | promotion_ready=false; not_promotion_evidence=true; failure-surface only | Eval-layer strategy matrix across 16 strategies (4 base + 6 composite/guard + 6 graph/dense/composite) on R26 auto-stress (1100 tasks, 10 stress categories, 9 repos). Strict RUN/SCORE separation: run phase loads only public tasks + repo lock, never labels; score phase loads labels only. R26 provenance validated before run. Citation validity must be 1.0 for all strategies. 14 required failure clusters computed. Span contribution analysis for graph/dense/composites vs fresh RRF baseline. Bucket regressions across source_category/expected_behavior/oracle_type/repo_id/risk_tags. Private field scan on all JSONL artifacts. 5 unavailable strategies report reason only (no fake numeric quality). dense_mock is candidate-channel safety smoke, not semantic quality. QuIVer not implemented. No Rust core changes. No LLM/dense real/QuIVer quality claims. remote_calls=0. |
+| R30 Baseline Freeze | Completed; no promotion | Frozen R29/R26 stress matrix as the comparison baseline. When raw R29 runtime artifacts were absent from checkout, R30 explicitly used committed R29 docs/manifests and recorded missing artifact status rather than fabricating original predictions. Subsequent experiments report `delta_vs_r29_*` fields against this frozen baseline. |
+| R31 Real Embedding Provider Smoke | Completed; safety gates first | Implemented OpenAI-compatible real embedding provider plumbing, remote-default-deny gates, audit/no-raw-text policy, provider request headers, optional `dimensions` field support, and local mock plus real-provider smoke. Real provider access was validated, but R31 made no quality claim. |
+| R32 Embedding View Bakeoff Harness | Completed; supporting-only | Added view bakeoff harness for multiple embedding views with RUN/SCORE separation. Default is local/mock; real remote runs are explicit/manual and currently remote-safe `path_plus_symbol` only. Reports FileRecall, SpanF0.5, PFP, citation validity, provider calls, and `delta_vs_r29_baseline`. Dense output remains candidate/supporting-only. |
+| R33 QuIVer Readiness Diagnostics | Completed; diagnostic-only | Added BQ2/sign-magnitude diagnostics over real embeddings: BQ overlap, BQ-vs-f32 MRR, sign entropy, angular gap, centroid/shard variance. QuIVer graph/Vamana is still not implemented; R33 emits diagnostic evidence only, no ANN quality claim. |
+| R34-R36 QuIVer/BQ + Anchor Prototype | Completed; no default expansion | Added offline/real-provider prototype comparisons: flat f32, BQ top-k + f32 rerank, source/test split, per-view/language ideas, and regex/symbol anchor variants. Early tiny results were optimistic, but public corpus and L1 slice runs showed added_false often exceeds added_gold. QuIVer/dense remain supporting-only. |
+| R37-R38 LLM-Derived Views + Stress | Completed; not Evidence | Real LLM provider smoke succeeded. LLM output is used only for derived views/stress/failure discovery with `not_evidence=true`; it does not generate Evidence, gold labels, citation verdicts, or promotion verdicts. Private labels are not uploaded in CI. |
+| R39-R40 Symbol/Regex Repair Bakeoff | Completed; needs larger validation | Offline repair bakeoff showed `regex_hybrid_normalized` and symbol extraction repair are promising recall-safe directions. They still need fixed-suite validation for bucket regressions before any default-path consideration. |
+| R41-R42 Graph Role + Admission v2 | Completed; research-only | Reframed graph as supporting/rerank/explainer, not default expansion. Added admission_v2 rule research with actions like admit_primary/admit_supporting/weak_candidate/abstain, but no learned/default admission change. |
+| R43-R45 Integrated Long-Run Report | Completed; promotion_ready=false | Consolidated R30-R42 outputs into real-model matrix summary, failure clusters, and promotion candidate report. Conclusion: RRF recall base, symbol precision anchor, query-noise guard best current candidate, dense/QuIVer/LLM-derived/graph all non-default. |
+| P1-P7 Real Provider Bring-up | Completed; real providers usable | Ran real embedding and LLM smoke locally/CI with gitignored `.env.local` and GitHub `production` environment. SiliconFlow embedding and OpenAI-compatible LLM access were validated. P2/P3/P4/P5/P6/P7 produced first real-provider summaries; no provider URL/key committed. |
+| P8/P9 Real-Provider CI Scale-Up | Completed; first public CI slices | Added `real-provider-benchmark.yml` manual workflow with `environment: production`, guarded secrets, input validation, and no private label upload. Ran small public corpus, model bakeoff (`bge-m3`, Qwen 0.6B/4B/8B), and multilingual smoke. Result: file-level signal exists, but SpanF0.5 remains low and model size did not dominate in first slices. |
+| L1/L2 Real-Provider Large-Repo Slices | Completed; strong dense-only/global-dense block | Ran controlled large-repo slices across Django, Kubernetes, Next.js, and Deno. L1 showed file-recall variability and P4 false-span growth. L2 (`60 tasks / 1000 records / 2000 files`) had PFP=1.0 on all four repos, very low SpanF0.5, and unstable FileRecall. Conclusion: dense-only/global dense must remain supporting/candidate-only; next phase should freeze L2, attribute false positives, and test constrained dense. |
+| P10-P14 Constrained Dense Research | Planned | Proposed next phase: freeze `real_provider_l2_v1`, attribute L2 false positives, simulate constrained candidate pools locally, run small remote constrained variants, then rerun fixed L2 only if added_gold exceeds added_false and PFP drops. No EvidenceCore changes and no promotion. |
 
 ## R0/R1 initial findings
 
@@ -174,7 +225,11 @@ This document will be updated after each evidence-gated stage.
 - **Growth is a catastrophic guard, not bounded proof**: 20 cycles observed growth ~1.11×; catastrophic guard passed (max(3×rebuild, rebuild+64MiB)). Does not prove long-term bounded growth.
 - **Level0 one real-repo sample only**: OpenLocus temp copy is one data point. Not a general performance or robustness claim.
 
-## Verification snapshot
+## Historical verification snapshot
+
+This snapshot is preserved from the earlier local-first stages. It is not the
+latest complete real-provider CI status; see the current-status section and the
+L1/L2 reports above for recent remote-provider runs.
 
 ```text
 Rust tests: 243 passed (193 existing + 50 new in openlocus-provider); 29 passed (store with --features tdb)
