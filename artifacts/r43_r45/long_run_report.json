@@ -1,0 +1,3360 @@
+{
+  "generated_at": "2026-06-13T05:49:57.577019+00:00",
+  "r43_matrix": {
+    "compatibility_probes": {
+      "CORE-Bench": "not_run",
+      "ContextBench": "not_run"
+    },
+    "datasets": [
+      "R26/R29 baseline",
+      "R32 self-test view bakeoff",
+      "R38 failure discovery stress",
+      "R39-R42 self-test tracks"
+    ],
+    "required_future_work": [
+      "run real embeddings on CI corpus",
+      "run R38 failure-discovery stress in non-promotion mode",
+      "add CORE-Bench/ContextBench compatibility sample"
+    ],
+    "schema_version": "r43-consolidated-real-model-readiness-summary-v1",
+    "strategies": {
+      "admission_v2_rules": {
+        "metrics": {
+          "FileRecall@1": 0.0,
+          "SpanF0.5": 0.1923076923076923,
+          "action_counts": {
+            "abstain": 2,
+            "admit_primary": 1
+          },
+          "coverage": 0.3333333333333333,
+          "selective_risk": 0.0
+        },
+        "role": "explainable research only",
+        "source": "R42 admission rules"
+      },
+      "dense_view_ast_header": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.0,
+          "FileRecall@3": 0.3333333333333333,
+          "FileRecall@5": 0.3333333333333333,
+          "MRR": 0.16666666666666666,
+          "SpanF0.5": 0.11494252873563218,
+          "SpanPrecision": 0.09523809523809523,
+          "SpanRecall": 0.6666666666666666,
+          "abstain_rate": 0.6666666666666666,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.13482438499639585,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.1351531150073513,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.6857923497267759,
+              "SpanF0.5": -0.1761768235818971,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.25,
+          "vector_store_size": 3,
+          "weak_candidate_rate": 0.3333333333333333
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_comment_docstring": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.0,
+          "FileRecall@3": 0.0,
+          "FileRecall@5": 0.0,
+          "MRR": 0.0,
+          "SpanF0.5": 0.0,
+          "SpanPrecision": 0.0,
+          "SpanRecall": 0.3333333333333333,
+          "abstain_rate": 1.0,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.24976691373202803,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.2500956437429835,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.6857923497267759,
+              "SpanF0.5": -0.2911193523175293,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.0,
+          "vector_store_size": 1,
+          "weak_candidate_rate": 0.0
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_config_key_plus_context": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.3333333333333333,
+          "FileRecall@5": 0.3333333333333333,
+          "MRR": 0.3333333333333333,
+          "SpanF0.5": 0.19607843137254902,
+          "SpanPrecision": 0.16666666666666666,
+          "SpanRecall": 0.6666666666666666,
+          "abstain_rate": 0.6666666666666666,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.05368848235947901,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.05401721237043447,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.09504092094498026,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.16666666666666666,
+          "vector_store_size": 1,
+          "weak_candidate_rate": 0.3333333333333333
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_mixed_all_views": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.37878787878787873,
+          "SpanPrecision": 0.3333333333333333,
+          "SpanRecall": 0.8333333333333334,
+          "abstain_rate": 0.3333333333333333,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.1290209650558507,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.12869223504489524,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.08766852647034945,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.27777777777777773,
+          "vector_store_size": 9,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_path_plus_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.5434782608695652,
+          "SpanPrecision": 0.5,
+          "SpanRecall": 0.8333333333333334,
+          "abstain_rate": 0.3333333333333333,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.29371134713753716,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.2933826171265817,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.2523589085520359,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.16666666666666666,
+          "vector_store_size": 4,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_raw_code_trimmed": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.4166666666666667,
+          "vector_store_size": 3,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_route_plus_handler_signature": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.0,
+          "FileRecall@3": 0.0,
+          "FileRecall@5": 0.0,
+          "MRR": 0.0,
+          "SpanF0.5": 0.0,
+          "SpanPrecision": 0.0,
+          "SpanRecall": 0.3333333333333333,
+          "abstain_rate": 1.0,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.24976691373202803,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.2500956437429835,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.6857923497267759,
+              "SpanF0.5": -0.2911193523175293,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.0,
+          "vector_store_size": 0,
+          "weak_candidate_rate": 0.0
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_signature_only": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.3333333333333333,
+          "FileRecall@5": 0.3333333333333333,
+          "MRR": 0.3333333333333333,
+          "SpanF0.5": 0.3571428571428571,
+          "SpanPrecision": 0.3333333333333333,
+          "SpanRecall": 0.5,
+          "abstain_rate": 0.6666666666666666,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.10737594341082907,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.10704721339987361,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.06602350482532782,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.0,
+          "vector_store_size": 3,
+          "weak_candidate_rate": 0.3333333333333333
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_signature_plus_doc": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.3333333333333333,
+          "FileRecall@5": 0.3333333333333333,
+          "MRR": 0.3333333333333333,
+          "SpanF0.5": 0.1923076923076923,
+          "SpanPrecision": 0.16666666666666666,
+          "SpanRecall": 0.5,
+          "abstain_rate": 0.6666666666666666,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.05745922142433574,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.057787951435291196,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.09881166000983699,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.16666666666666666,
+          "vector_store_size": 3,
+          "weak_candidate_rate": 0.3333333333333333
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "dense_view_test_name_plus_assert_terms": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.0,
+          "FileRecall@3": 0.0,
+          "FileRecall@5": 0.0,
+          "MRR": 0.0,
+          "SpanF0.5": 0.0,
+          "SpanPrecision": 0.0,
+          "SpanRecall": 0.3333333333333333,
+          "abstain_rate": 0.6666666666666666,
+          "citation_validity": 1.0,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.24976691373202803,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.8032786885245902,
+              "SpanF0.5": -0.2500956437429835,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.6857923497267759,
+              "SpanF0.5": -0.2911193523175293,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "embedding_cost_estimate": 0.0,
+          "hard_negative_hit_rate": 0.0,
+          "index_build_time_ms": 0,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "remote_calls": 0,
+          "semantic_trap_hit_rate": 0.0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "vector_store_size": 1,
+          "weak_candidate_rate": 0.3333333333333333
+        },
+        "role": "dense candidate/supporting-only",
+        "source": "R32 view bakeoff",
+        "status": "ok"
+      },
+      "graph_supporting_only": {
+        "metrics": {
+          "graph_added_false_span": 1,
+          "graph_added_gold_span": 1,
+          "graph_expansion_blocked": true,
+          "graph_explainer_precision": 0.5
+        },
+        "role": "supporting_or_explainer_only",
+        "source": "R41 graph role research"
+      },
+      "llm_derived_views": {
+        "metrics": {
+          "artifact_secret_scan_clean": true,
+          "derived_view_count": 20,
+          "remote_calls": 0
+        },
+        "role": "derived-only not evidence",
+        "source": "R37 derived views"
+      },
+      "quiver_diag_bq_topk_f32_rerank__generated_excluded__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.15151515151515152,
+          "SpanPrecision": 0.125,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09825176221687651,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09858049222783197,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.13960420080237776,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 2,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.7976190476190476,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__generated_excluded__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__generated_excluded__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__generated_excluded__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__global_mixed_all__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.15151515151515152,
+          "SpanPrecision": 0.125,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09825176221687651,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09858049222783197,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.13960420080237776,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 3,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.7976190476190476,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__global_mixed_all__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__global_mixed_all__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__global_mixed_all__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_language__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.15151515151515152,
+          "SpanPrecision": 0.125,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09825176221687651,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09858049222783197,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.13960420080237776,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 3,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.7976190476190476,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_language__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_language__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_language__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.15151515151515152,
+          "SpanPrecision": 0.125,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09825176221687651,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09858049222783197,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.13960420080237776,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 2,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.7976190476190476,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view_plus_language__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.15151515151515152,
+          "SpanPrecision": 0.125,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09825176221687651,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.09858049222783197,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.13960420080237776,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 2,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.7976190476190476,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view_plus_language__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view_plus_language__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__per_view_plus_language__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__source_vs_test_split__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.15151515151515152,
+          "SpanPrecision": 0.125,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": -0.09825176221687651,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": -0.09858049222783197,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": -0.13960420080237776,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 2,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.822412155745489,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__source_vs_test_split__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.3246753246753246,
+          "SpanPrecision": 0.27777777777777773,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 0,
+          "added_gold_span": 9,
+          "candidate_count": 9,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07490841094329659,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07457968093234113,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.03355597235779534,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__source_vs_test_split__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.3246753246753246,
+          "SpanPrecision": 0.27777777777777773,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 0,
+          "added_gold_span": 9,
+          "candidate_count": 9,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07490841094329659,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07457968093234113,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.03355597235779534,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_bq_topk_f32_rerank__source_vs_test_split__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.3246753246753246,
+          "SpanPrecision": 0.27777777777777773,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 0,
+          "added_gold_span": 9,
+          "candidate_count": 9,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07490841094329659,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07457968093234113,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.03355597235779534,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 1,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__generated_excluded__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.1417004048582996,
+          "SpanPrecision": 0.11666666666666665,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 21,
+          "added_gold_span": 9,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10806650887372843,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10839523888468389,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.14941894745922968,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.8333333333333334,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__generated_excluded__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__generated_excluded__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__generated_excluded__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__global_mixed_all__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.1417004048582996,
+          "SpanPrecision": 0.11666666666666665,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 21,
+          "added_gold_span": 9,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10806650887372843,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10839523888468389,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.14941894745922968,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.8333333333333334,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__global_mixed_all__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__global_mixed_all__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__global_mixed_all__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_language__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.1417004048582996,
+          "SpanPrecision": 0.11666666666666665,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 21,
+          "added_gold_span": 9,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10806650887372843,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10839523888468389,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.14941894745922968,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.8333333333333334,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_language__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_language__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_language__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.1417004048582996,
+          "SpanPrecision": 0.11666666666666665,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 21,
+          "added_gold_span": 9,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10806650887372843,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10839523888468389,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.14941894745922968,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.8333333333333334,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view_plus_language__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.1417004048582996,
+          "SpanPrecision": 0.11666666666666665,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 21,
+          "added_gold_span": 9,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10806650887372843,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": -0.10839523888468389,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": -0.14941894745922968,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.8333333333333334,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view_plus_language__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view_plus_language__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__per_view_plus_language__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.3333333333333333,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.5,
+          "SpanF0.5": 0.29411764705882354,
+          "SpanPrecision": 0.25,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 5,
+          "added_gold_span": 9,
+          "candidate_count": 14,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04435073332679551,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.46994535519125685,
+              "SpanF0.5": 0.04402200331584005,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.3524590163934426,
+              "SpanF0.5": 0.0029982947412942607,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.38888888888888884,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__source_vs_test_split__anchor_global": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.18394648829431437,
+          "SpanPrecision": 0.15277777777777776,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "added_false_span": 19,
+          "added_gold_span": 11,
+          "candidate_count": 30,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": true,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": -0.06582042543771366,
+              "primary_false_positive_rate": 0.8939393939393939
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": -0.06614915544866912,
+              "primary_false_positive_rate": 0.546969696969697
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": -0.10717286402321491,
+              "primary_false_positive_rate": 0.9196969696969697
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.3333333333333333,
+          "primary_false_positive_rate": 1.0,
+          "semantic_trap_hit_rate": 1.0,
+          "semantic_trap_nonempty": 1,
+          "task_count": 3,
+          "token_waste": 0.8056897477187333,
+          "weak_candidate_rate": 1.0
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__source_vs_test_split__anchor_regex": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.3246753246753246,
+          "SpanPrecision": 0.27777777777777773,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 0,
+          "added_gold_span": 9,
+          "candidate_count": 9,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07490841094329659,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07457968093234113,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.03355597235779534,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__source_vs_test_split__anchor_regex_or_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.3246753246753246,
+          "SpanPrecision": 0.27777777777777773,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 0,
+          "added_gold_span": 9,
+          "candidate_count": 9,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07490841094329659,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07457968093234113,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.03355597235779534,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_diag_flat_f32__source_vs_test_split__anchor_symbol": {
+        "metrics": {
+          "EvidenceCore_rejection_rate": 0.0,
+          "FileRecall@1": 0.6666666666666666,
+          "FileRecall@3": 0.6666666666666666,
+          "FileRecall@5": 0.6666666666666666,
+          "MRR": 0.6666666666666666,
+          "SpanF0.5": 0.3246753246753246,
+          "SpanPrecision": 0.27777777777777773,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.3333333333333333,
+          "added_false_span": 0,
+          "added_gold_span": 9,
+          "candidate_count": 9,
+          "citation_validity": 1.0,
+          "default_expansion_blocked": false,
+          "delta_vs_r29_baseline": {
+            "delta_vs_r29_query_noise_guard": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07490841094329659,
+              "primary_false_positive_rate": -0.10606060606060606
+            },
+            "delta_vs_r29_rrf": {
+              "FileRecall@1": -0.13661202185792354,
+              "SpanF0.5": 0.07457968093234113,
+              "primary_false_positive_rate": -0.453030303030303
+            },
+            "delta_vs_r29_symbol": {
+              "FileRecall@1": -0.01912568306010931,
+              "SpanF0.5": 0.03355597235779534,
+              "primary_false_positive_rate": -0.0803030303030303
+            }
+          },
+          "hard_negative_hit_rate": 0.0,
+          "hot_memory_estimate_bytes": 19456,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0,
+          "no_gold_nonempty_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "semantic_trap_hit_rate": 0.0,
+          "semantic_trap_nonempty": 0,
+          "task_count": 3,
+          "token_waste": 0.3333333333333333,
+          "weak_candidate_rate": 0.6666666666666666
+        },
+        "role": "candidate/supporting-only",
+        "source": "R34-R36 diagnostic prototype"
+      },
+      "quiver_readiness_bq_diag": {
+        "metrics": {
+          "BQ_overlap@10": 0.5666666666666667,
+          "BQ_overlap@100": 1.0,
+          "BQ_overlap@50": 1.0,
+          "BQ_vs_f32_MRR": 0.15132275132275133,
+          "angular_gap@10": 0.2526450760875365,
+          "angular_gap@50": 0.3135031380325549,
+          "effective_dimension_proxy": 22.58509171939,
+          "language_shard_variance": 0.24736077154114083,
+          "query_corpus_centroid_angle": 0.4771721980972285,
+          "quiver_fit": "mixed",
+          "recommendation": "continue_diagnostics_then_proto",
+          "sign_entropy_mean": 0.043338776310816535,
+          "sign_entropy_std": 0.1762111091099084,
+          "status": "ok",
+          "view_shard_variance": 0.2342472932467008
+        },
+        "quiver_graph_implemented": false,
+        "role": "diagnostic_only",
+        "source": "R33 BQ diagnostics"
+      },
+      "r29_query_noise_plus_rrf_agree_min": {
+        "metrics": {
+          "FileRecall@1": 0.8032786885245902,
+          "FileRecall@3": 0.8934426229508197,
+          "FileRecall@5": 0.9234972677595629,
+          "MRR": 0.8572700406973734,
+          "SpanF0.5": 0.24976691373202803,
+          "SpanPrecision": 0.3063111720885917,
+          "SpanRecall": 0.1436771656195389,
+          "abstain_rate": 0.5881818181818181,
+          "candidate_count_avg": 4.092727272727273,
+          "citation_hash_checked": true,
+          "citation_inherited_from_base": true,
+          "citation_invalid_count": 0,
+          "citation_not_applicable": false,
+          "citation_total_count": 4502,
+          "citation_valid_count": 4502,
+          "citation_validated_by_rust": true,
+          "citation_validation_mode": "fail_closed_hash_range_path",
+          "citation_validator_invocations": 9,
+          "citation_validity": 1.0,
+          "guard_recall_kill_rate": 0.002785515320334262,
+          "hard_distractor_hit_rate": 0.39245283018867927,
+          "latency": {
+            "count": 1100,
+            "max": 0,
+            "p50": 0,
+            "p95": 0
+          },
+          "materialized_span_count_avg": 6.832727272727273,
+          "must_not_primary_violation_rate": 0.05527638190954774,
+          "no_gold_nonempty_rate": 0.10606060606060606,
+          "primary_false_positive_rate": 0.10606060606060606,
+          "success_rate": 1.0,
+          "successful": 1100,
+          "token_waste": 0.6909565874742513,
+          "total_tasks": 1100,
+          "weak_candidate_rate": 0.24324324324324326
+        },
+        "role": "current_best_guard_candidate",
+        "source": "R30 baseline freeze"
+      },
+      "r29_rrf": {
+        "metrics": {
+          "FileRecall@1": 0.8032786885245902,
+          "FileRecall@3": 0.8934426229508197,
+          "FileRecall@5": 0.9234972677595629,
+          "MRR": 0.8576115707520183,
+          "SpanF0.5": 0.2500956437429835,
+          "SpanPrecision": 0.30658439613230754,
+          "SpanRecall": 0.1439807478903343,
+          "abstain_rate": 0.3427272727272727,
+          "candidate_count_avg": 7.3954545454545455,
+          "citation_hash_checked": true,
+          "citation_inherited_from_base": false,
+          "citation_invalid_count": 0,
+          "citation_not_applicable": false,
+          "citation_total_count": 8135,
+          "citation_valid_count": 8135,
+          "citation_validated_by_rust": false,
+          "citation_validation_mode": "fail_closed_hash_range_path",
+          "citation_validator_invocations": 9,
+          "citation_validity": 1.0,
+          "guard_recall_kill_rate": null,
+          "hard_distractor_hit_rate": 0.39245283018867927,
+          "latency": {
+            "count": 1100,
+            "max": 1265,
+            "p50": 514,
+            "p95": 1111
+          },
+          "materialized_span_count_avg": 22.033636363636365,
+          "must_not_primary_violation_rate": 0.05527638190954774,
+          "no_gold_nonempty_rate": 0.453030303030303,
+          "primary_false_positive_rate": 0.453030303030303,
+          "success_rate": 1.0,
+          "successful": 1100,
+          "token_waste": 0.693415603867694,
+          "total_tasks": 1100,
+          "weak_candidate_rate": 0.7837837837837838
+        },
+        "role": "current_best_recall_channel",
+        "source": "R30 baseline freeze"
+      },
+      "r29_symbol": {
+        "metrics": {
+          "FileRecall@1": 0.6857923497267759,
+          "FileRecall@3": 0.7240437158469946,
+          "FileRecall@5": 0.726775956284153,
+          "MRR": 0.7041699193338538,
+          "SpanF0.5": 0.2911193523175293,
+          "SpanPrecision": 0.5809970057800338,
+          "SpanRecall": 0.09717824278014832,
+          "abstain_rate": 0.6709090909090909,
+          "candidate_count_avg": 0.8854545454545455,
+          "citation_hash_checked": true,
+          "citation_inherited_from_base": false,
+          "citation_invalid_count": 0,
+          "citation_not_applicable": false,
+          "citation_total_count": 974,
+          "citation_valid_count": 974,
+          "citation_validated_by_rust": false,
+          "citation_validation_mode": "fail_closed_hash_range_path",
+          "citation_validator_invocations": 9,
+          "citation_validity": 1.0,
+          "guard_recall_kill_rate": null,
+          "hard_distractor_hit_rate": 0.30943396226415093,
+          "latency": {
+            "count": 1100,
+            "max": 2123,
+            "p50": 656,
+            "p95": 1959
+          },
+          "materialized_span_count_avg": 1.2254545454545454,
+          "must_not_primary_violation_rate": 0.06532663316582915,
+          "no_gold_nonempty_rate": 0.0803030303030303,
+          "primary_false_positive_rate": 0.0803030303030303,
+          "success_rate": 1.0,
+          "successful": 1100,
+          "token_waste": 0.24687184667898265,
+          "total_tasks": 1100,
+          "weak_candidate_rate": 0.08108108108108109
+        },
+        "role": "current_best_precision_anchor",
+        "source": "R30 baseline freeze"
+      },
+      "r38_failure_discovery_stress": {
+        "metrics": {
+          "label_quality": [
+            "deterministic_validated_failure_discovery"
+          ],
+          "stress_by_category": {
+            "ambiguous_vague": 4,
+            "dense_quiver_specific_trap": 4,
+            "frontend_backend_confusion": 4,
+            "hard_distractor": 4,
+            "misspell_noise_variant": 4,
+            "proper_name_api_config_regression": 4,
+            "semantic_trap": 4,
+            "test_source_confusion": 4
+          },
+          "stress_public_task_count": 32
+        },
+        "role": "failure_discovery_only not promotion",
+        "source": "R38 stress expansion"
+      },
+      "regex_hybrid_normalized": {
+        "metrics": {
+          "FileRecall@1": 0.8,
+          "FileRecall@5": 1.0,
+          "SpanF0.5": 0.8333333333333334,
+          "SpanPrecision": 0.8,
+          "SpanRecall": 1.0,
+          "abstain_rate": 0.0,
+          "parse_error_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "task_count": 5
+        },
+        "role": "query normalization candidate",
+        "source": "R40 regex repair"
+      },
+      "symbol_new": {
+        "delta": {
+          "symbol_FileRecall_delta": 0.2,
+          "symbol_abstain_delta": -0.20000000000000007,
+          "symbol_false_primary_delta": 0.0
+        },
+        "metrics": {
+          "FileRecall@1": 0.4,
+          "FileRecall@5": 0.4,
+          "SpanF0.5": 0.10650887573964496,
+          "SpanPrecision": 0.09,
+          "SpanRecall": 0.4,
+          "abstain_rate": 0.6,
+          "parse_error_rate": 0.0,
+          "primary_false_positive_rate": 0.0,
+          "task_count": 5
+        },
+        "role": "precision-anchor repair candidate",
+        "source": "R39 symbol repair"
+      }
+    }
+  },
+  "r44_clusters": {
+    "clusters": [
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "BENCHMARK_ORACLE_SUSPECT",
+        "count": 0,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "DENSE_MOCK_NOISE",
+        "count": 577,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "DENSE_SEMANTIC_TRAP_FALSE_POSITIVE",
+        "count": 219,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "FRONTEND_BACKEND_CONFUSION",
+        "count": 57,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "GRAPH_ADDS_NO_GOLD",
+        "count": 90,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "GRAPH_NEIGHBOR_FALSE_POSITIVE",
+        "count": 26,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "GUARD_RECALL_KILL",
+        "count": 62,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "HARD_DISTRACTOR_CONFUSION",
+        "count": 43,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "NEGATIVE_NONEXISTENT_FALSE_PRIMARY",
+        "count": 41,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "REGEX_NORMALIZATION_BUG",
+        "count": 36,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "RRF_INHERITED_BM25_FALSE_POSITIVE",
+        "count": 299,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "STALE_INDEX_LIKE_FALSE_PRIMARY",
+        "count": 0,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "SYMBOL_EXTRACTION_MISS",
+        "count": 63,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "r29 matrix"
+        ],
+        "cluster": "TEST_SOURCE_CONFUSION",
+        "count": 41,
+        "likely_cause": "frozen R29 failure cluster",
+        "needs_new_tests": true,
+        "recommended_next_fix": "covered by R30 baseline; re-evaluate in R43 full matrix"
+      },
+      {
+        "affected_strategies": [
+          "quiver_diag"
+        ],
+        "cluster": "QUIVER_BQ_DISTRIBUTION_MISMATCH",
+        "count": 1,
+        "likely_cause": "R33 fit=mixed; graph not implemented",
+        "needs_new_tests": true,
+        "recommended_next_fix": "test sharded/proto only; no default expansion",
+        "unaffected_strategies": [
+          "symbol",
+          "regex"
+        ]
+      },
+      {
+        "affected_strategies": [
+          "global_mixed_all"
+        ],
+        "cluster": "QUIVER_GLOBAL_INDEX_MIXING_FAILURE",
+        "count": 1,
+        "likely_cause": "global mixing remains unsafe in diagnostic prototype",
+        "needs_new_tests": true,
+        "recommended_next_fix": "continue per-view/language/source-test sharding bakeoff"
+      },
+      {
+        "affected_strategies": [
+          "llm_derived"
+        ],
+        "cluster": "LLM_DERIVED_VIEW_HALLUCINATION",
+        "count": 0,
+        "likely_cause": "offline deterministic run only; no real LLM content trusted",
+        "needs_new_tests": true,
+        "recommended_next_fix": "when real LLM is used, require schema and source span validation"
+      },
+      {
+        "affected_strategies": [
+          "graph_supporting_only"
+        ],
+        "cluster": "GRAPH_ADDS_NO_GOLD",
+        "count": 1,
+        "likely_cause": "graph edges are useful as support but still pollute expansion",
+        "needs_new_tests": true,
+        "recommended_next_fix": "keep graph out of primary expansion; use as explanation/rerank feature only"
+      },
+      {
+        "affected_strategies": [
+          "regex_raw"
+        ],
+        "cluster": "REGEX_NORMALIZATION_BUG",
+        "count": null,
+        "likely_cause": "user query should not be raw regex by default",
+        "needs_new_tests": true,
+        "recommended_next_fix": "do_not_use_raw_regex_for_user_query_by_default",
+        "unaffected_strategies": [
+          "regex_hybrid_normalized"
+        ]
+      },
+      {
+        "affected_strategies": [
+          "symbol_old"
+        ],
+        "cluster": "SYMBOL_EXTRACTION_MISS",
+        "count": null,
+        "likely_cause": "missing impl/decorator/arrow/export patterns",
+        "needs_new_tests": true,
+        "recommended_next_fix": "validate R39 repair on R26/R38 before integration",
+        "unaffected_strategies": [
+          "symbol_new candidate"
+        ]
+      },
+      {
+        "affected_strategies": [
+          "dense_real",
+          "quiver"
+        ],
+        "cluster": "DENSE_REAL_SEMANTIC_TRAP",
+        "count": 4,
+        "likely_cause": "failure-discovery trap tasks generated, real model matrix pending",
+        "needs_new_tests": true,
+        "recommended_next_fix": "run real embeddings supporting-only on R38 traps"
+      }
+    ],
+    "schema_version": "r44-failure-cluster-deep-dive-v1"
+  },
+  "r45_report": {
+    "answers": {
+      "current_default_should_change": false,
+      "dense_buckets_helped": "path_plus_symbol",
+      "dense_real_independent_positive_signal": "not_established; committed run is offline local_token_hash only",
+      "dense_risk_buckets": [
+        "negative_nonexistent",
+        "semantic_trap",
+        "proper_name_api_config"
+      ],
+      "graph_role": "supporting_or_explainer_only",
+      "llm_derived_gold_vs_false": "not measured; derived/stress only",
+      "promotion_blockers": [
+        "real embeddings not yet run on full R26/R20/R15 matrix",
+        "QuIVer graph remains diagnostic_only; no Vamana/default backend",
+        "LLM-derived views are offline/failure-discovery only, not evidence",
+        "graph expansion remains blocked",
+        "R39/R40 repairs need broad R26/R38 regression validation",
+        "CORE-Bench/ContextBench compatibility not run"
+      ],
+      "quiver_faster_noise_risk": "unknown; graph not implemented, diagnostic only",
+      "quiver_fit": "mixed",
+      "quiver_requires_sharding": true,
+      "r29_query_noise_guard_still_best_guard": true,
+      "symbol_regex_repair_guard_recall_kill": "proxy improvements observed; broad guard validation pending"
+    },
+    "best_dense_candidate": "path_plus_symbol",
+    "best_guard_candidate": "query_noise_plus_rrf_agree_min",
+    "best_precision_anchor": "symbol",
+    "best_recall_channel": "rrf",
+    "blocking_buckets": [
+      "real embeddings not yet run on full R26/R20/R15 matrix",
+      "QuIVer graph remains diagnostic_only; no Vamana/default backend",
+      "LLM-derived views are offline/failure-discovery only, not evidence",
+      "graph expansion remains blocked",
+      "R39/R40 repairs need broad R26/R38 regression validation",
+      "CORE-Bench/ContextBench compatibility not run"
+    ],
+    "core_changes": false,
+    "current_default_should_change": false,
+    "dense_recommendation": "continue_harness_only_supporting_only",
+    "evidencecore_changed": false,
+    "generated_at": "2026-06-13T05:49:57.576959+00:00",
+    "graph_recommendation": "explainer_only",
+    "llm_derived_recommendation": "continue_derived_only_supporting_only",
+    "next_required_tests": [
+      "run R32 real embedding view bakeoff with path_plus_symbol then richer local-only views",
+      "run R34-R36 on CI medium corpus with supporting-only outputs",
+      "validate R39/R40 repair on R26 and R38 generated stress",
+      "run R41/R42 admission rules on R26/R38 without changing defaults",
+      "add CORE-Bench/ContextBench compatibility probe"
+    ],
+    "promotion_ready": false,
+    "quiver_recommendation": "continue_diagnostics_only",
+    "safety_gates": {
+      "graph_default_blocked": true,
+      "llm_not_evidence": true,
+      "no_default_change": true,
+      "no_evidencecore_change": true,
+      "no_promotion": true,
+      "quiver_graph_not_claimed": true,
+      "remote_default_disabled": true,
+      "unavailable_reason_only": true
+    },
+    "schema_version": "r45-promotion-report-v1",
+    "source_artifacts": {
+      "r30": {
+        "path": "artifacts/r30/baseline_manifest.json",
+        "present": true
+      },
+      "r31": {
+        "path": "artifacts/r31/provider_smoke.json",
+        "present": true
+      },
+      "r32": {
+        "path": "artifacts/r32/view_bakeoff_report.json",
+        "present": true
+      },
+      "r33": {
+        "path": "artifacts/r33/quiver_readiness.json",
+        "present": true
+      },
+      "r34_r36": {
+        "path": "artifacts/r34_r36/quiver_anchor_proto.json",
+        "present": true
+      },
+      "r37_r38": {
+        "path": "artifacts/r37_r38/llm_derived_stress_report.json",
+        "present": true
+      },
+      "r39_r40": {
+        "path": "artifacts/r39_r40/symbol_regex_repair.json",
+        "present": true
+      },
+      "r41_r42": {
+        "path": "artifacts/r41_r42/graph_admission.json",
+        "present": true
+      }
+    }
+  },
+  "schema_version": "r43-r45-long-run-report-v1"
+}

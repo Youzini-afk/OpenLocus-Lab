@@ -1,0 +1,100 @@
+{
+  "answers": {
+    "current_default_should_change": false,
+    "dense_buckets_helped": "path_plus_symbol",
+    "dense_real_independent_positive_signal": "not_established; committed run is offline local_token_hash only",
+    "dense_risk_buckets": [
+      "negative_nonexistent",
+      "semantic_trap",
+      "proper_name_api_config"
+    ],
+    "graph_role": "supporting_or_explainer_only",
+    "llm_derived_gold_vs_false": "not measured; derived/stress only",
+    "promotion_blockers": [
+      "real embeddings not yet run on full R26/R20/R15 matrix",
+      "QuIVer graph remains diagnostic_only; no Vamana/default backend",
+      "LLM-derived views are offline/failure-discovery only, not evidence",
+      "graph expansion remains blocked",
+      "R39/R40 repairs need broad R26/R38 regression validation",
+      "CORE-Bench/ContextBench compatibility not run"
+    ],
+    "quiver_faster_noise_risk": "unknown; graph not implemented, diagnostic only",
+    "quiver_fit": "mixed",
+    "quiver_requires_sharding": true,
+    "r29_query_noise_guard_still_best_guard": true,
+    "symbol_regex_repair_guard_recall_kill": "proxy improvements observed; broad guard validation pending"
+  },
+  "best_dense_candidate": "path_plus_symbol",
+  "best_guard_candidate": "query_noise_plus_rrf_agree_min",
+  "best_precision_anchor": "symbol",
+  "best_recall_channel": "rrf",
+  "blocking_buckets": [
+    "real embeddings not yet run on full R26/R20/R15 matrix",
+    "QuIVer graph remains diagnostic_only; no Vamana/default backend",
+    "LLM-derived views are offline/failure-discovery only, not evidence",
+    "graph expansion remains blocked",
+    "R39/R40 repairs need broad R26/R38 regression validation",
+    "CORE-Bench/ContextBench compatibility not run"
+  ],
+  "core_changes": false,
+  "current_default_should_change": false,
+  "dense_recommendation": "continue_harness_only_supporting_only",
+  "evidencecore_changed": false,
+  "generated_at": "2026-06-13T05:49:57.576959+00:00",
+  "graph_recommendation": "explainer_only",
+  "llm_derived_recommendation": "continue_derived_only_supporting_only",
+  "next_required_tests": [
+    "run R32 real embedding view bakeoff with path_plus_symbol then richer local-only views",
+    "run R34-R36 on CI medium corpus with supporting-only outputs",
+    "validate R39/R40 repair on R26 and R38 generated stress",
+    "run R41/R42 admission rules on R26/R38 without changing defaults",
+    "add CORE-Bench/ContextBench compatibility probe"
+  ],
+  "promotion_ready": false,
+  "quiver_recommendation": "continue_diagnostics_only",
+  "safety_gates": {
+    "graph_default_blocked": true,
+    "llm_not_evidence": true,
+    "no_default_change": true,
+    "no_evidencecore_change": true,
+    "no_promotion": true,
+    "quiver_graph_not_claimed": true,
+    "remote_default_disabled": true,
+    "unavailable_reason_only": true
+  },
+  "schema_version": "r45-promotion-report-v1",
+  "source_artifacts": {
+    "r30": {
+      "path": "artifacts/r30/baseline_manifest.json",
+      "present": true
+    },
+    "r31": {
+      "path": "artifacts/r31/provider_smoke.json",
+      "present": true
+    },
+    "r32": {
+      "path": "artifacts/r32/view_bakeoff_report.json",
+      "present": true
+    },
+    "r33": {
+      "path": "artifacts/r33/quiver_readiness.json",
+      "present": true
+    },
+    "r34_r36": {
+      "path": "artifacts/r34_r36/quiver_anchor_proto.json",
+      "present": true
+    },
+    "r37_r38": {
+      "path": "artifacts/r37_r38/llm_derived_stress_report.json",
+      "present": true
+    },
+    "r39_r40": {
+      "path": "artifacts/r39_r40/symbol_regex_repair.json",
+      "present": true
+    },
+    "r41_r42": {
+      "path": "artifacts/r41_r42/graph_admission.json",
+      "present": true
+    }
+  }
+}
