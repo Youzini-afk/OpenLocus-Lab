@@ -331,13 +331,22 @@ def remote_embed(texts: list[str]) -> list[list[float]]:
     url = base_url.rstrip("/") + "/embeddings"
     vectors: list[list[float]] = []
     for text in texts:
-        payload: dict[str, Any] = {"model": model, "input": text}
+        payload: dict[str, Any] = {
+            "model": model,
+            "input": text,
+            "encoding_format": "float",
+        }
         if dimensions:
             payload["dimensions"] = int(dimensions)
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": "OpenLocus/0.1 (OpenAI-compatible research harness)",
+            },
             method="POST",
         )
         try:

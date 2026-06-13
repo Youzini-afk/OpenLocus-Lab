@@ -137,6 +137,11 @@ impl EmbeddingProvider for OpenAiEmbeddingProvider {
             .post(&url)
             .set("Authorization", &format!("Bearer {}", self.config.api_key))
             .set("Content-Type", "application/json")
+            .set("Accept", "application/json")
+            .set(
+                "User-Agent",
+                "OpenLocus/0.1 (OpenAI-compatible research harness)",
+            )
             .send_json(request)
             .map_err(|e| anyhow::anyhow!(e))
             .with_context(Self::provider_error_reason)?

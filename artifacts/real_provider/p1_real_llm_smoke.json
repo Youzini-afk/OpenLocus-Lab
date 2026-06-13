@@ -1,0 +1,64 @@
+{
+  "core_changes": false,
+  "default_should_change": false,
+  "derived_by_kind": {
+    "chunk_role": 1,
+    "config_role": 2,
+    "query_aliases": 8,
+    "route_intent": 1,
+    "symbol_tags": 6,
+    "test_intent": 2
+  },
+  "derived_view_count": 20,
+  "elapsed_ms": 762,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-13T05:59:49.415865+00:00",
+  "leak_scan": {
+    "clean": true,
+    "violations": []
+  },
+  "llm_outputs_are_evidence": false,
+  "llm_outputs_are_labels": false,
+  "llm_status": {
+    "raw_response_stored": false,
+    "remote_calls": 1,
+    "status": "ok"
+  },
+  "not_promotion_evidence": true,
+  "promotion_ready": false,
+  "provider": "openai-compatible",
+  "raw_prompt_stored": false,
+  "raw_response_stored": false,
+  "remote_calls": 1,
+  "run_phase_public_only": true,
+  "safety_gates": {
+    "artifact_secret_scan_clean": true,
+    "derived_views_have_not_evidence": true,
+    "no_citation_verdicts": true,
+    "no_evidence_generation": true,
+    "no_gold_label_authority": true,
+    "no_promotion_verdict": true,
+    "stress_labels_not_promotion": true
+  },
+  "schema_version": "r37-r38-llm-derived-stress-v1",
+  "stress_by_category": {
+    "ambiguous_vague": 1,
+    "dense_quiver_specific_trap": 1,
+    "frontend_backend_confusion": 1,
+    "hard_distractor": 1,
+    "misspell_noise_variant": 1,
+    "proper_name_api_config_regression": 1,
+    "semantic_trap": 1,
+    "test_source_confusion": 1
+  },
+  "stress_dataset": {
+    "not_promotion_evidence": true,
+    "private_labels": "artifacts/real_provider/p1_real_llm_stress_labels.jsonl",
+    "public_tasks": "artifacts/real_provider/p1_real_llm_stress_public.jsonl"
+  },
+  "stress_label_quality": [
+    "deterministic_validated_failure_discovery"
+  ],
+  "stress_private_label_count": 8,
+  "stress_public_task_count": 8
+}

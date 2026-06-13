@@ -1,0 +1,87 @@
+{
+  "conclusion": {
+    "best_dense_view": "path_plus_symbol",
+    "dense_has_positive_signal": true,
+    "dense_should_remain_supporting_only": true,
+    "note": "real embedding run remains candidate/supporting-only",
+    "promotion_ready": false,
+    "worst_dense_view": "path_plus_symbol"
+  },
+  "core_changes": false,
+  "data_level_max": 1,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-13T06:04:48.287518+00:00",
+  "hash_mode": "openlocus_scan_blake3_if_available_else_sha256",
+  "labels_loaded_after_run": true,
+  "not_promotion_evidence": true,
+  "promotion_ready": false,
+  "provider": "openai-compatible",
+  "provider_role": "candidate/supporting-only",
+  "provider_status": "ok",
+  "raw_query_stored": false,
+  "raw_text_stored": false,
+  "remote_enabled": true,
+  "repo_count": 1,
+  "run_phase_public_only": true,
+  "schema_version": "r32-embedding-view-bakeoff-v1",
+  "score_phase_labels_only": true,
+  "tasks_scored": 3,
+  "view_build_summaries": {
+    "path_plus_symbol": {
+      "records": 4,
+      "remote_calls": 4,
+      "repos": 1
+    }
+  },
+  "view_results": {
+    "path_plus_symbol": {
+      "metrics": {
+        "EvidenceCore_rejection_rate": 0.0,
+        "FileRecall@1": 0.6666666666666666,
+        "FileRecall@3": 0.6666666666666666,
+        "FileRecall@5": 0.6666666666666666,
+        "MRR": 0.6666666666666666,
+        "SpanF0.5": 0.16025641025641027,
+        "SpanPrecision": 0.13333333333333333,
+        "SpanRecall": 0.8333333333333334,
+        "abstain_rate": 0.0,
+        "citation_validity": 1.0,
+        "delta_vs_r29_baseline": {
+          "delta_vs_r29_query_noise_guard": {
+            "FileRecall@1": -0.13661202185792354,
+            "SpanF0.5": -0.08951050347561776,
+            "primary_false_positive_rate": 0.8939393939393939
+          },
+          "delta_vs_r29_rrf": {
+            "FileRecall@1": -0.13661202185792354,
+            "SpanF0.5": -0.08983923348657322,
+            "primary_false_positive_rate": 0.546969696969697
+          },
+          "delta_vs_r29_symbol": {
+            "FileRecall@1": -0.01912568306010931,
+            "SpanF0.5": -0.130862942061119,
+            "primary_false_positive_rate": 0.9196969696969697
+          }
+        },
+        "embedding_cost_estimate": null,
+        "hard_negative_hit_rate": 0.0,
+        "index_build_time_ms": 1759,
+        "latency_p50_ms": 337,
+        "latency_p95_ms": 647,
+        "no_gold_nonempty_rate": 0.3333333333333333,
+        "primary_false_positive_rate": 1.0,
+        "remote_calls": 4,
+        "semantic_trap_hit_rate": 1.0,
+        "task_count": 3,
+        "token_waste": 0.8666666666666667,
+        "vector_store_size": 4,
+        "weak_candidate_rate": 1.0
+      },
+      "status": "ok"
+    }
+  },
+  "views": [
+    "path_plus_symbol"
+  ]
+}
