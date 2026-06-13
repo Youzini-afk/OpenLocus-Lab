@@ -74,6 +74,56 @@ PRIVATE_FIELD_DENYLIST = {
 }
 
 
+class RemoteEmbeddingProviderError(RuntimeError):
+    """Remote provider failure with sanitized fields safe for CI artifacts."""
+
+    def __init__(
+        self,
+        reason: str,
+        *,
+        http_status: int | None = None,
+        provider_code: str | None = None,
+        provider_error_type: str | None = None,
+        retriable: bool = False,
+    ) -> None:
+        super().__init__(reason)
+        self.reason = reason
+        self.http_status = http_status
+        self.provider_code = provider_code
+        self.provider_error_type = provider_error_type
+        self.retriable = retriable
+
+    def as_public_dict(self) -> dict[str, Any]:
+        data: dict[str, Any] = {"reason_code": self.reason}
+        if self.http_status is not None:
+            data["http_status"] = self.http_status
+        if self.provider_code:
+            data["provider_code"] = self.provider_code
+        if self.provider_error_type:
+            data["provider_error_type"] = self.provider_error_type
+        return data
+
+
+def safe_reason_token(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value)
+    if re.fullmatch(r"[A-Za-z0-9_.:-]{1,80}", text):
+        return text
+    return "redacted"
+
+
+def positive_env_int(name: str, default: int, *, minimum: int, maximum: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    try:
+        value = int(raw)
+    except ValueError:
+        return default
+    return max(minimum, min(maximum, value))
+
+
 SYMBOL_PATTERNS: list[tuple[str, re.Pattern[str], str]] = [
     ("rust", re.compile(r"^\s*(?:pub\s+)?(?:async\s+)?fn\s+(\w+)", re.M), "fn"),
     ("rust", re.compile(r"^\s*(?:pub\s+)?(?:struct|enum|trait)\s+(\w+)", re.M), "type"),
@@ -326,7 +376,7 @@ def cosine(a: list[float], b: list[float]) -> float:
     return sum(x * y for x, y in zip(a, b))
 
 
-def remote_embed(texts: list[str]) -> list[list[float]]:
+def remote_embed_detailed(texts: list[str]) -> tuple[list[list[float]], dict[str, Any]]:
     if os.environ.get("OPENLOCUS_ALLOW_REMOTE") != "1":
         raise RuntimeError("OPENLOCUS_ALLOW_REMOTE must be 1 for remote R32 embedding")
     base_url = os.environ.get("OPENLOCUS_EMBEDDING_BASE_URL")
@@ -337,11 +387,14 @@ def remote_embed(texts: list[str]) -> list[list[float]]:
     if not base_url or not api_key or not model:
         raise RuntimeError("missing OPENLOCUS_EMBEDDING_* remote configuration")
     url = base_url.rstrip("/") + "/embeddings"
+    batch_size = positive_env_int("OPENLOCUS_EMBEDDING_BATCH_SIZE", 16, minimum=1, maximum=64)
+    retries = positive_env_int("OPENLOCUS_EMBEDDING_RETRIES", 2, minimum=0, maximum=5)
     vectors: list[list[float]] = []
-    for text in texts:
+
+    def post_payload(input_value: str | list[str]) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": model,
-            "input": text,
+            "input": input_value,
             "encoding_format": "float",
         }
         if dimensions and send_dimensions:
@@ -357,12 +410,70 @@ def remote_embed(texts: list[str]) -> list[list[float]]:
             },
             method="POST",
         )
-        try:
-            with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310 - explicit research opt-in
-                body = json.loads(resp.read().decode("utf-8"))
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
-            raise RuntimeError("remote embedding provider request failed") from exc
-        vectors.append([float(x) for x in body["data"][0]["embedding"]])
+        last_error: RemoteEmbeddingProviderError | None = None
+        for attempt in range(retries + 1):
+            try:
+                with urllib.request.urlopen(req, timeout=90) as resp:  # noqa: S310 - explicit research opt-in
+                    return json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                raw_body = exc.read().decode("utf-8", errors="ignore")
+                provider_code = None
+                provider_error_type = None
+                try:
+                    body = json.loads(raw_body)
+                    error_obj = body.get("error") if isinstance(body, dict) else None
+                    if isinstance(error_obj, dict):
+                        provider_code = safe_reason_token(error_obj.get("code"))
+                        provider_error_type = safe_reason_token(error_obj.get("type"))
+                    elif isinstance(body, dict):
+                        provider_code = safe_reason_token(body.get("code"))
+                        provider_error_type = safe_reason_token(body.get("type"))
+                except json.JSONDecodeError:
+                    pass
+                retriable = exc.code == 429 or 500 <= exc.code < 600
+                last_error = RemoteEmbeddingProviderError(
+                    f"provider_http_{exc.code}",
+                    http_status=exc.code,
+                    provider_code=provider_code,
+                    provider_error_type=provider_error_type,
+                    retriable=retriable,
+                )
+            except TimeoutError:
+                last_error = RemoteEmbeddingProviderError("provider_timeout", retriable=True)
+            except urllib.error.URLError as exc:
+                reason_class = type(exc.reason).__name__ if getattr(exc, "reason", None) is not None else "unknown"
+                last_error = RemoteEmbeddingProviderError(
+                    "provider_url_error",
+                    provider_error_type=safe_reason_token(reason_class),
+                    retriable=True,
+                )
+            except json.JSONDecodeError:
+                last_error = RemoteEmbeddingProviderError("provider_invalid_json", retriable=True)
+            if last_error is None or not last_error.retriable or attempt >= retries:
+                break
+            time.sleep(min(8.0, 0.5 * (2**attempt)))
+        assert last_error is not None
+        raise last_error
+
+    request_count = 0
+    for start in range(0, len(texts), batch_size):
+        batch = texts[start : start + batch_size]
+        request_count += 1
+        body = post_payload(batch if len(batch) > 1 else batch[0])
+        items = body.get("data")
+        if not isinstance(items, list) or len(items) != len(batch):
+            raise RemoteEmbeddingProviderError("provider_response_count_mismatch")
+        if all(isinstance(item, dict) and "index" in item for item in items):
+            items = sorted(items, key=lambda item: int(item.get("index", 0)))
+        for item in items:
+            if not isinstance(item, dict) or "embedding" not in item:
+                raise RemoteEmbeddingProviderError("provider_response_missing_embedding")
+            vectors.append([float(x) for x in item["embedding"]])
+    return vectors, {"remote_requests": request_count, "remote_texts": len(texts), "batch_size": batch_size}
+
+
+def remote_embed(texts: list[str]) -> list[list[float]]:
+    vectors, _stats = remote_embed_detailed(texts)
     return vectors
 
 
@@ -396,17 +507,32 @@ def embed_records(records: list[ViewRecord], provider: str, allow_remote: bool) 
                 "reason": "remote R32 view blocked by data-level or secret scan",
             }
         try:
-            vectors = remote_embed([rec.text for rec in records])
-        except Exception:
+            vectors, remote_stats = remote_embed_detailed([rec.text for rec in records])
+        except RemoteEmbeddingProviderError as exc:
             return {
                 "provider": provider,
                 "remote_calls": 0,
                 "status": "unavailable",
                 "reason": "remote embedding provider unavailable_or_failed",
+                **exc.as_public_dict(),
+            }
+        except Exception as exc:
+            return {
+                "provider": provider,
+                "remote_calls": 0,
+                "status": "unavailable",
+                "reason": "remote embedding provider unavailable_or_failed",
+                "error_type": type(exc).__name__,
             }
         for rec, vector in zip(records, vectors):
             rec.vector = vector
-        return {"provider": provider, "remote_calls": len(records), "latency_ms": int((time.time() - started) * 1000), "status": "ok"}
+        return {
+            "provider": provider,
+            "remote_calls": len(records),
+            "latency_ms": int((time.time() - started) * 1000),
+            "status": "ok",
+            **remote_stats,
+        }
     return {"provider": provider, "remote_calls": 0, "status": "unavailable", "reason": "unknown provider"}
 
 
