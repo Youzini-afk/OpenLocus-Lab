@@ -182,14 +182,22 @@ def to_evidence(items: list[CandidateRecord], strategy: str) -> list[dict[str, A
     return evidence
 
 
-def run_strategy(tasks: list[dict[str, Any]], records: list[r32.ViewRecord], args: argparse.Namespace, strategy: str, layout: str, anchor_mode: str) -> tuple[list[dict[str, Any]], list[int]]:
+def run_strategy(
+    tasks: list[dict[str, Any]],
+    records: list[r32.ViewRecord],
+    args: argparse.Namespace,
+    strategy: str,
+    layout: str,
+    anchor_mode: str,
+    query_cache: dict[str, list[float]],
+) -> tuple[list[dict[str, Any]], list[int]]:
     predictions: list[dict[str, Any]] = []
     latencies: list[int] = []
     for task in tasks:
         started = time.time()
         repo_records = [rec for rec in records if rec.repo_id == task["repo_id"]]
         filtered = anchor_filter(layout_filter(repo_records, layout, task["query"]), task["query"], anchor_mode)
-        query_vec = query_vector(task["query"], args)
+        query_vec = query_cache.get(task["query"], [])
         if not query_vec or not filtered:
             items: list[CandidateRecord] = []
         elif strategy.startswith("flat_f32"):
@@ -238,6 +246,7 @@ def contribution(predictions: list[dict[str, Any]], labels: dict[str, dict[str, 
 def run(args: argparse.Namespace) -> dict[str, Any]:
     tasks, repo_roots, _ = load_inputs(args)
     records = build_records(args, repo_roots)
+    query_cache = {task["query"]: query_vector(task["query"], args) for task in tasks}
     run_outputs: dict[str, tuple[list[dict[str, Any]], list[int]]] = {}
     # RUN phase: labels are not loaded until every strategy has produced its
     # predictions from public tasks + candidate records.
@@ -248,7 +257,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for anchor in ANCHOR_MODES:
             for mode in ["flat_f32", "bq_topk_f32_rerank"]:
                 strategy = f"{mode}__{layout}__anchor_{anchor}"
-                preds, latencies = run_strategy(tasks, records, args, strategy, layout, anchor)
+                preds, latencies = run_strategy(
+                    tasks, records, args, strategy, layout, anchor, query_cache
+                )
                 run_outputs[strategy] = (preds, latencies)
 
     # SCORE phase: private labels are loaded only after all RUN predictions are
@@ -285,6 +296,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "repo_count": len(repo_roots),
         "task_count": len(tasks),
         "record_count": len(records),
+        "query_embedding_cache_size": len(query_cache),
         "run_phase_public_only": True,
         "labels_loaded_after_run": labels_loaded_after_run,
         "score_phase_labels_only": True,
