@@ -1,0 +1,861 @@
+{
+  "artifact_inventory": {
+    "expected_files_present": true,
+    "file_count": 67,
+    "files": [
+      {
+        "bytes": 17134,
+        "jsonl_lines": null,
+        "path": "runs/r29-r26-stress-artifacts-manifest.json",
+        "sha256": "d44c316e2b52a479f3f5c92d1a0b654799f183a7b4e760e5194ee66696ad4d24"
+      },
+      {
+        "bytes": 4456705,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25-evidence.jsonl",
+        "sha256": "db9cadfe999a5b347dfd41f93cb58d7510cb57bd480b1edd64e6a23becbffbe9"
+      },
+      {
+        "bytes": 4621280,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25-predictions.jsonl",
+        "sha256": "8b96e64baa4181c1d44a4962f64c468dd2a288a0dfb1f00eb59eec4870670f38"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-bm25-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 245201,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25-trace.jsonl",
+        "sha256": "12b1b98cc73f7431d66462588ec4233f97ca93de85648851b549406907a53682"
+      },
+      {
+        "bytes": 10074814,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25_regex-evidence.jsonl",
+        "sha256": "9b131fe344946ec18605f6e1f2779efaf224002f8bc0c077dc12aaa86f46781b"
+      },
+      {
+        "bytes": 10254976,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25_regex-predictions.jsonl",
+        "sha256": "ad76ecce02841bb9d69b9288ee9e8356e4cbf03468676d99142d0b7baa5c8885"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-bm25_regex-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 260998,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25_regex-trace.jsonl",
+        "sha256": "2a86135ba65ee5cd17d4f347487d6423b51716e67d2cb4169127172ee0d413cd"
+      },
+      {
+        "bytes": 4976336,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25_symbol-evidence.jsonl",
+        "sha256": "648703ac045dbd93323e8e7e13be9ca3c6c6fa009ee338a09009f8c63c036238"
+      },
+      {
+        "bytes": 5158698,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25_symbol-predictions.jsonl",
+        "sha256": "324a853c5da137e19bec9572d1be2c8dd828f89a6d34dfdea7403d6dfee99da4"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-bm25_symbol-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 263001,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-bm25_symbol-trace.jsonl",
+        "sha256": "f1a6bbcad557e584cbd7303f91932b78bc03a84b3a28e5922da5c75bb98c87b5"
+      },
+      {
+        "bytes": 5118443,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-dense_mock-evidence.jsonl",
+        "sha256": "f08baacfecdbfde4cb59bf81b9e2b2ba8b0532f4f180e1ffbc872702360d7cd3"
+      },
+      {
+        "bytes": 5219405,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-dense_mock-predictions.jsonl",
+        "sha256": "117d476733ec320db6a864af0c35d6c191645a5da1ddc23d3dd74675fee8332e"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-dense_mock-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 231489,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-dense_mock-trace.jsonl",
+        "sha256": "257b565351f4aa8990defacf73bc2fd884606e0cb20d1e44159c654a87350fb2"
+      },
+      {
+        "bytes": 9938379,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-dense_mock_plus_rrf-evidence.jsonl",
+        "sha256": "5eb3a2b55842739ba61e3e94f6d7e1776f73d683222103dfb91b785133f80541"
+      },
+      {
+        "bytes": 10049241,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-dense_mock_plus_rrf-predictions.jsonl",
+        "sha256": "a5090fd6f7ff879e9c5b56506a96750545d5d9de1435614f18e4a6e229f0d421"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-dense_mock_plus_rrf-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 241486,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-dense_mock_plus_rrf-trace.jsonl",
+        "sha256": "bd1f356d9ea67f8202c0cadd409e6ea72ded39f7899ae68aed464f36ce1008dc"
+      },
+      {
+        "bytes": 374930,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-graph_basic-evidence.jsonl",
+        "sha256": "951d81a20ada794e95c8a914ba6f6b195619fc057b5ad05de78dcc8db6b0a3db"
+      },
+      {
+        "bytes": 476992,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-graph_basic-predictions.jsonl",
+        "sha256": "8f18b045c3203d7f6fabb5ea60cb76a1f8dcec5e40956ceee3a6879f219e0f94"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-graph_basic-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 231905,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-graph_basic-trace.jsonl",
+        "sha256": "05ef0360c0776cb4381782115de939e3a18ea9744e9aa9c340ae68b4d949a377"
+      },
+      {
+        "bytes": 253164,
+        "jsonl_lines": null,
+        "path": "runs/r29-r26-stress-matrix-report.json",
+        "sha256": "61ad710131575a497ff1a92aeddc08f86c07e42665efaa4e949464d65d36e010"
+      },
+      {
+        "bytes": 2363,
+        "jsonl_lines": null,
+        "path": "runs/r29-r26-stress-matrix-report.md",
+        "sha256": "b380b9320802d5f90f371a4b55941bacc07940e42259999cb0ec737327064a8b"
+      },
+      {
+        "bytes": 2441715,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-query_noise_plus_rrf_agree_min-evidence.jsonl",
+        "sha256": "86e3caf6d8a0b5a356f1fdf41085fcbecfa781e0208e662c952a3bd42986dfbf"
+      },
+      {
+        "bytes": 2659271,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-query_noise_plus_rrf_agree_min-predictions.jsonl",
+        "sha256": "a8b783becbd6bf0271af60a0248204d383a24277fc23a4e87edd5ec641876e25"
+      },
+      {
+        "bytes": 5841,
+        "jsonl_lines": 34,
+        "path": "runs/r29-r26-stress-query_noise_plus_rrf_agree_min-rejections.jsonl",
+        "sha256": "922e4a42b9b7b86d3b386ba7c099b520de6d24952a842ec8a915367c4a808763"
+      },
+      {
+        "bytes": 298081,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-query_noise_plus_rrf_agree_min-trace.jsonl",
+        "sha256": "62956666766a45782b65f553f66e23b840324ceb2fb93dd353fc6537d630fd43"
+      },
+      {
+        "bytes": 5470872,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-regex-evidence.jsonl",
+        "sha256": "884d470158b2a41ff3a0551c62587577e67dca1df36302d970acfe3a4a2b1ade"
+      },
+      {
+        "bytes": 5637597,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-regex-predictions.jsonl",
+        "sha256": "a1ff703c2dc6fe67f1092c36ac28dc9dd7415faad17ef8d1cd01b6d7defd578e"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-regex-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 247351,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-regex-trace.jsonl",
+        "sha256": "a9e0813ff6fe3734ec1afa3265c32f25c0463f927729550bdd097e3b8f8b6174"
+      },
+      {
+        "bytes": 4897640,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf-evidence.jsonl",
+        "sha256": "b17a7fd9a00e106e7d0b18305d97727a0f19f0aef796f5ed7155ff7acc1ff1c1"
+      },
+      {
+        "bytes": 5059318,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf-predictions.jsonl",
+        "sha256": "21cc10b64c6b5b99e596913afe0bd92ba0dff03b2b9710c0de1b122aaf9d677c"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-rrf-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 242376,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf-trace.jsonl",
+        "sha256": "77089deb28917d9a74cbb3019a1c2ad107a09da21abd38db4e207aab9b8099d5"
+      },
+      {
+        "bytes": 2697809,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_regex-evidence.jsonl",
+        "sha256": "e7b8c96abae2e5acf4aeba089ab7ea7387aa18aa76c1e741e2ff75847dfd0d7d"
+      },
+      {
+        "bytes": 2888214,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_regex-predictions.jsonl",
+        "sha256": "5cedffe2585945f4d155fd4ed498a5f0aee40219e0f32222bc8ccb801194b972"
+      },
+      {
+        "bytes": 101715,
+        "jsonl_lines": 619,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_regex-rejections.jsonl",
+        "sha256": "e5a302984188f53257b6b16ad7c4e78359dc9583585d5b1d206a6e4408f1b3a1"
+      },
+      {
+        "bytes": 270955,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_regex-trace.jsonl",
+        "sha256": "73ebc84d5e107538cc7ee8b1ba3b114b6b4b4973d5ab0d7c7d560b86b433a827"
+      },
+      {
+        "bytes": 2000872,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol-evidence.jsonl",
+        "sha256": "013c7b8c0322c9a411e53a034b72528dc6ffc107f3274e33f2feedf5811abdfa"
+      },
+      {
+        "bytes": 2193120,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol-predictions.jsonl",
+        "sha256": "f4b77fc8b5f9f21a1c9c46278658c9d13d151fcf961a9ce98abc9ed02c1dddda"
+      },
+      {
+        "bytes": 122691,
+        "jsonl_lines": 738,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol-rejections.jsonl",
+        "sha256": "4c6be3fa9449590e184b640cdad75b35e9488413460f9f6382d05177ce701271"
+      },
+      {
+        "bytes": 272737,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol-trace.jsonl",
+        "sha256": "1de4971a3641ab26bf76714557724e1fbcc6233dbbe790c2f31fa9b478137464"
+      },
+      {
+        "bytes": 2697809,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol_regex-evidence.jsonl",
+        "sha256": "e7b8c96abae2e5acf4aeba089ab7ea7387aa18aa76c1e741e2ff75847dfd0d7d"
+      },
+      {
+        "bytes": 2906914,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol_regex-predictions.jsonl",
+        "sha256": "2e23b7825434972dff6427fe29d0266039ab916ec89d8e8cc582240ef1775a99"
+      },
+      {
+        "bytes": 112238,
+        "jsonl_lines": 619,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol_regex-rejections.jsonl",
+        "sha256": "639e8c8107f7ffe9e78f906923c194a499d9882373a444a2c8bee0927204c55a"
+      },
+      {
+        "bytes": 289655,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_guarded_by_symbol_regex-trace.jsonl",
+        "sha256": "5177e5a933a40e455e3bc4c9226c51e1c4cca650347c2024b84c109a028e78fb"
+      },
+      {
+        "bytes": 9938379,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock-evidence.jsonl",
+        "sha256": "5eb3a2b55842739ba61e3e94f6d7e1776f73d683222103dfb91b785133f80541"
+      },
+      {
+        "bytes": 10049241,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock-predictions.jsonl",
+        "sha256": "4d407b1802c60237cfa53fe1dfe83905d2fe00795afb74e754adb1aae6b5dccd"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 241486,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock-trace.jsonl",
+        "sha256": "6a4587418be894f9f219776d2cb062f984a7d6df39ad5cb88af4ec162b5eb80f"
+      },
+      {
+        "bytes": 10239951,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock_plus_graph-evidence.jsonl",
+        "sha256": "45ad75f6628feed579ea206cdec3984d84f238012df293994cf6ea558f5707f3"
+      },
+      {
+        "bytes": 10362913,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock_plus_graph-predictions.jsonl",
+        "sha256": "b8b9f1fae306879288756d24866941b614146d77739ab36958e41b1e328e4ce2"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock_plus_graph-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 253586,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_dense_mock_plus_graph-trace.jsonl",
+        "sha256": "f9d3dd0b19cb85fbe5cf203dde860e47abb51be1229e8c39518c2c4ce4e85c00"
+      },
+      {
+        "bytes": 5197297,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_graph-evidence.jsonl",
+        "sha256": "3f165033c0e1e89d7202a431d5c59b0cd0a2280955fa5d0dfd6f2be7ed4e72f1"
+      },
+      {
+        "bytes": 5302659,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_graph-predictions.jsonl",
+        "sha256": "d6fb941235f8c0440411b5edae495c64fcc21565689d3895e2c516fc5fafc400"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-rrf_plus_graph-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 235572,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-rrf_plus_graph-trace.jsonl",
+        "sha256": "9b24b8e9ffeef83ee962628b710dacf9244fe7dbe90c4fa1e80c0b2f81cd8015"
+      },
+      {
+        "bytes": 569012,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-symbol-evidence.jsonl",
+        "sha256": "d9ddbb6042bc3a245a7c950debd67f302cf6278343fa6baf789b8c7b037782c8"
+      },
+      {
+        "bytes": 740443,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-symbol-predictions.jsonl",
+        "sha256": "7d4dd33d80036f42bfd296451cf36b430404052ba6ba08cbdea83931b60814cc"
+      },
+      {
+        "bytes": 0,
+        "jsonl_lines": 0,
+        "path": "runs/r29-r26-stress-symbol-rejections.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 251785,
+        "jsonl_lines": 1100,
+        "path": "runs/r29-r26-stress-symbol-trace.jsonl",
+        "sha256": "d0b27bbffcf3755940b0deed25c44e7a672487d876a32e81eeefe2fe5d045aaf"
+      }
+    ],
+    "missing_expected_files": [],
+    "present": true
+  },
+  "baseline_name": "r29_r26_stress_matrix",
+  "baseline_source": "runs/r29-r26-stress-matrix-report.json",
+  "bucket_regressions": {
+    "regression_details_count": 448,
+    "strategies_with_bucket_regression": [
+      "bm25",
+      "bm25_regex",
+      "bm25_symbol",
+      "dense_mock",
+      "dense_mock_plus_rrf",
+      "graph_basic",
+      "regex",
+      "rrf_guarded_by_symbol",
+      "rrf_plus_dense_mock",
+      "rrf_plus_dense_mock_plus_graph",
+      "symbol"
+    ],
+    "total_bucket_regressions": 448,
+    "worst_buckets": [
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "symbol",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "risk_tags",
+        "bucket_value": "frontend_backend_overlap",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "symbol",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "rrf_guarded_by_symbol",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "risk_tags",
+        "bucket_value": "frontend_backend_overlap",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "rrf_guarded_by_symbol",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_fpr": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "false_primary_increase",
+        "strategy": "dense_mock",
+        "strategy_fpr": 1.0
+      },
+      {
+        "baseline": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "no_gold_nonempty_increase",
+        "strategy": "dense_mock",
+        "strategy_value": 1.0
+      },
+      {
+        "baseline_FileRecall@5": 1.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "gemini-web2api",
+        "regression_type": "recall_drop",
+        "strategy": "dense_mock",
+        "strategy_FileRecall@5": 0.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "gemini-web2api",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "dense_mock",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_fpr": 0.0,
+        "bucket_key": "risk_tags",
+        "bucket_value": "frontend_backend_overlap",
+        "regression_type": "false_primary_increase",
+        "strategy": "dense_mock",
+        "strategy_fpr": 1.0
+      },
+      {
+        "baseline": 0.0,
+        "bucket_key": "risk_tags",
+        "bucket_value": "frontend_backend_overlap",
+        "regression_type": "no_gold_nonempty_increase",
+        "strategy": "dense_mock",
+        "strategy_value": 1.0
+      },
+      {
+        "baseline_fpr": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "false_primary_increase",
+        "strategy": "dense_mock_plus_rrf",
+        "strategy_fpr": 1.0
+      },
+      {
+        "baseline": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "no_gold_nonempty_increase",
+        "strategy": "dense_mock_plus_rrf",
+        "strategy_value": 1.0
+      },
+      {
+        "baseline_fpr": 0.0,
+        "bucket_key": "risk_tags",
+        "bucket_value": "frontend_backend_overlap",
+        "regression_type": "false_primary_increase",
+        "strategy": "dense_mock_plus_rrf",
+        "strategy_fpr": 1.0
+      },
+      {
+        "baseline": 0.0,
+        "bucket_key": "risk_tags",
+        "bucket_value": "frontend_backend_overlap",
+        "regression_type": "no_gold_nonempty_increase",
+        "strategy": "dense_mock_plus_rrf",
+        "strategy_value": 1.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "source_category",
+        "bucket_value": "frontend_backend_confusion",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "graph_basic",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_FileRecall@5": 1.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "codex2api",
+        "regression_type": "recall_drop",
+        "strategy": "graph_basic",
+        "strategy_FileRecall@5": 0.0
+      },
+      {
+        "baseline_FileRecall@5": 1.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "fast-context-mcp",
+        "regression_type": "recall_drop",
+        "strategy": "graph_basic",
+        "strategy_FileRecall@5": 0.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "fast-context-mcp",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "graph_basic",
+        "strategy_abstain": 1.0
+      },
+      {
+        "baseline_FileRecall@5": 1.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "gemini-web2api",
+        "regression_type": "recall_drop",
+        "strategy": "graph_basic",
+        "strategy_FileRecall@5": 0.0
+      },
+      {
+        "baseline_abstain": 0.0,
+        "bucket_key": "repo_id",
+        "bucket_value": "gemini-web2api",
+        "regression_type": "abstain_spike_on_primary_evidence",
+        "strategy": "graph_basic",
+        "strategy_abstain": 1.0
+      }
+    ]
+  },
+  "current_best_guard_candidate": "query_noise_plus_rrf_agree_min",
+  "current_best_precision_anchor": "symbol",
+  "current_best_recall_channel": "rrf",
+  "docs_report": {
+    "path": "docs/r29-r26-stress-matrix.md",
+    "results_section_sha256": "bb907a3345fc661870488c0f49d3577adaa369e5eba5117f70caec3e08c6b35f",
+    "sha256": "c3adb0598f5af39643105ed377d830aa46d923cd12c01b3432e6bc74939dddcd"
+  },
+  "failure_clusters": {
+    "BENCHMARK_ORACLE_SUSPECT": 0,
+    "DENSE_MOCK_NOISE": 577,
+    "DENSE_SEMANTIC_TRAP_FALSE_POSITIVE": 219,
+    "FRONTEND_BACKEND_CONFUSION": 57,
+    "GRAPH_ADDS_NO_GOLD": 90,
+    "GRAPH_NEIGHBOR_FALSE_POSITIVE": 26,
+    "GUARD_RECALL_KILL": 62,
+    "HARD_DISTRACTOR_CONFUSION": 43,
+    "NEGATIVE_NONEXISTENT_FALSE_PRIMARY": 41,
+    "REGEX_NORMALIZATION_BUG": 36,
+    "RRF_INHERITED_BM25_FALSE_POSITIVE": 299,
+    "STALE_INDEX_LIKE_FALSE_PRIMARY": 0,
+    "SYMBOL_EXTRACTION_MISS": 63,
+    "TEST_SOURCE_CONFUSION": 41
+  },
+  "generated_at": "2026-06-13T04:58:31.833387+00:00",
+  "implemented_strategies": 16,
+  "implemented_strategy_names": [
+    "regex",
+    "bm25",
+    "symbol",
+    "rrf",
+    "bm25_regex",
+    "bm25_symbol",
+    "rrf_guarded_by_symbol",
+    "rrf_guarded_by_regex",
+    "rrf_guarded_by_symbol_regex",
+    "query_noise_plus_rrf_agree_min",
+    "dense_mock",
+    "dense_mock_plus_rrf",
+    "graph_basic",
+    "rrf_plus_graph",
+    "rrf_plus_dense_mock",
+    "rrf_plus_dense_mock_plus_graph"
+  ],
+  "observations": {
+    "query_noise_plus_rrf_agree_min": {
+      "FileRecall@1": 0.8032786885245902,
+      "guard_recall_kill_rate": 0.002785515320334262,
+      "primary_false_positive_rate": 0.10606060606060606,
+      "role": "current_best_guard_candidate",
+      "summary": "Preserves RRF recall on R26 while reducing false-primary, but prior bucket regressions still block promotion."
+    },
+    "rrf": {
+      "FileRecall@1": 0.8032786885245902,
+      "FileRecall@5": 0.9234972677595629,
+      "primary_false_positive_rate": 0.453030303030303,
+      "role": "current_best_recall_channel",
+      "summary": "RRF remains recall-strong but primary-false-positive high on R26 stress."
+    },
+    "symbol": {
+      "FileRecall@1": 0.6857923497267759,
+      "SpanF0.5": 0.2911193523175293,
+      "abstain_rate": 0.6709090909090909,
+      "primary_false_positive_rate": 0.0803030303030303,
+      "role": "current_best_precision_anchor",
+      "summary": "Symbol is the precision anchor with low false-primary and high abstain."
+    }
+  },
+  "r26_source_artifacts": {
+    "dataset_manifest": {
+      "labels_sha256": "b7add2500c203aa644339156fd6e557df54232ad282381a3474ea58aa1afddd8",
+      "path": "fixtures/r26_auto_stress/dataset_manifest.json",
+      "schema_version": "r26-v1",
+      "sha256": "7bc0836a987a737560b2ba18bc1c998ca8a5076e88728a9196d632e78ba2f506",
+      "tasks_sha256": "868d21de2c6f955ebf4dcb7235c100e03c0be7c71425ee99bd20155bf1f5c39c"
+    },
+    "public_task_validation": {
+      "issues": [],
+      "public_only": true,
+      "task_count": 1100
+    },
+    "safety_checks": {
+      "passed": true,
+      "path": "fixtures/r26_auto_stress/safety_checks.json",
+      "sha256": "495530167b3486eadca8c898a1c16bf4c89bbd58f096f169533c4d30c5384a21",
+      "total_checks": 19
+    },
+    "summary": {
+      "path": "fixtures/r26_auto_stress/summary.json",
+      "sha256": "66d5b632aba222c9dc2a952f489634542189742ac021b27c45c2427f03eac114",
+      "total_labels": 1100,
+      "total_tasks": 1100
+    }
+  },
+  "r29_key_metrics": {
+    "query_noise_plus_rrf_agree_min": {
+      "FileRecall@1": 0.8032786885245902,
+      "FileRecall@3": 0.8934426229508197,
+      "FileRecall@5": 0.9234972677595629,
+      "MRR": 0.8572700406973734,
+      "SpanF0.5": 0.24976691373202803,
+      "SpanPrecision": 0.3063111720885917,
+      "SpanRecall": 0.1436771656195389,
+      "abstain_rate": 0.5881818181818181,
+      "candidate_count_avg": 4.092727272727273,
+      "citation_hash_checked": true,
+      "citation_inherited_from_base": true,
+      "citation_invalid_count": 0,
+      "citation_not_applicable": false,
+      "citation_total_count": 4502,
+      "citation_valid_count": 4502,
+      "citation_validated_by_rust": true,
+      "citation_validation_mode": "fail_closed_hash_range_path",
+      "citation_validator_invocations": 9,
+      "citation_validity": 1.0,
+      "guard_recall_kill_rate": 0.002785515320334262,
+      "hard_distractor_hit_rate": 0.39245283018867927,
+      "latency": {
+        "count": 1100,
+        "max": 0,
+        "p50": 0,
+        "p95": 0
+      },
+      "materialized_span_count_avg": 6.832727272727273,
+      "must_not_primary_violation_rate": 0.05527638190954774,
+      "no_gold_nonempty_rate": 0.10606060606060606,
+      "primary_false_positive_rate": 0.10606060606060606,
+      "success_rate": 1.0,
+      "successful": 1100,
+      "token_waste": 0.6909565874742513,
+      "total_tasks": 1100,
+      "weak_candidate_rate": 0.24324324324324326
+    },
+    "rrf": {
+      "FileRecall@1": 0.8032786885245902,
+      "FileRecall@3": 0.8934426229508197,
+      "FileRecall@5": 0.9234972677595629,
+      "MRR": 0.8576115707520183,
+      "SpanF0.5": 0.2500956437429835,
+      "SpanPrecision": 0.30658439613230754,
+      "SpanRecall": 0.1439807478903343,
+      "abstain_rate": 0.3427272727272727,
+      "candidate_count_avg": 7.3954545454545455,
+      "citation_hash_checked": true,
+      "citation_inherited_from_base": false,
+      "citation_invalid_count": 0,
+      "citation_not_applicable": false,
+      "citation_total_count": 8135,
+      "citation_valid_count": 8135,
+      "citation_validated_by_rust": false,
+      "citation_validation_mode": "fail_closed_hash_range_path",
+      "citation_validator_invocations": 9,
+      "citation_validity": 1.0,
+      "guard_recall_kill_rate": null,
+      "hard_distractor_hit_rate": 0.39245283018867927,
+      "latency": {
+        "count": 1100,
+        "max": 1265,
+        "p50": 514,
+        "p95": 1111
+      },
+      "materialized_span_count_avg": 22.033636363636365,
+      "must_not_primary_violation_rate": 0.05527638190954774,
+      "no_gold_nonempty_rate": 0.453030303030303,
+      "primary_false_positive_rate": 0.453030303030303,
+      "success_rate": 1.0,
+      "successful": 1100,
+      "token_waste": 0.693415603867694,
+      "total_tasks": 1100,
+      "weak_candidate_rate": 0.7837837837837838
+    },
+    "symbol": {
+      "FileRecall@1": 0.6857923497267759,
+      "FileRecall@3": 0.7240437158469946,
+      "FileRecall@5": 0.726775956284153,
+      "MRR": 0.7041699193338538,
+      "SpanF0.5": 0.2911193523175293,
+      "SpanPrecision": 0.5809970057800338,
+      "SpanRecall": 0.09717824278014832,
+      "abstain_rate": 0.6709090909090909,
+      "candidate_count_avg": 0.8854545454545455,
+      "citation_hash_checked": true,
+      "citation_inherited_from_base": false,
+      "citation_invalid_count": 0,
+      "citation_not_applicable": false,
+      "citation_total_count": 974,
+      "citation_valid_count": 974,
+      "citation_validated_by_rust": false,
+      "citation_validation_mode": "fail_closed_hash_range_path",
+      "citation_validator_invocations": 9,
+      "citation_validity": 1.0,
+      "guard_recall_kill_rate": null,
+      "hard_distractor_hit_rate": 0.30943396226415093,
+      "latency": {
+        "count": 1100,
+        "max": 2123,
+        "p50": 656,
+        "p95": 1959
+      },
+      "materialized_span_count_avg": 1.2254545454545454,
+      "must_not_primary_violation_rate": 0.06532663316582915,
+      "no_gold_nonempty_rate": 0.0803030303030303,
+      "primary_false_positive_rate": 0.0803030303030303,
+      "success_rate": 1.0,
+      "successful": 1100,
+      "token_waste": 0.24687184667898265,
+      "total_tasks": 1100,
+      "weak_candidate_rate": 0.08108108108108109
+    }
+  },
+  "required_future_delta_baselines": [
+    "delta_vs_r29_rrf",
+    "delta_vs_r29_query_noise_guard",
+    "delta_vs_r29_symbol"
+  ],
+  "runtime_artifact_note": "Runtime R29 artifacts were hashed and inventoried.",
+  "runtime_artifacts_available": true,
+  "safety_gates": {
+    "artifact_manifest_verified_if_present": true,
+    "citation_validity_all_strategies": 1.0,
+    "core_changes": false,
+    "default_should_change": false,
+    "dense_or_llm_claims": false,
+    "evidencecore_semantics_changed": false,
+    "labels_loaded_after_run": true,
+    "not_promotion_evidence": true,
+    "promotion_ready": false,
+    "r26_public_tasks_public_only": true,
+    "remote_calls": 0,
+    "run_phase_public_only": true,
+    "score_phase_labels_only": true,
+    "unavailable_strategies_reason_only": true
+  },
+  "schema_version": "r30-baseline-freeze-v1",
+  "span_contributions": {
+    "dense_mock_added_false_span": 20038,
+    "dense_mock_added_gold_span": 2,
+    "dense_mock_default_expansion_blocked": true,
+    "dense_mock_plus_rrf_added_false_span": 20038,
+    "dense_mock_plus_rrf_added_gold_span": 2,
+    "dense_mock_plus_rrf_default_expansion_blocked": true,
+    "dense_mock_plus_rrf_tasks_with_additions": 309,
+    "dense_mock_tasks_with_additions": 309,
+    "graph_basic_added_false_span": 437,
+    "graph_basic_added_gold_span": 0,
+    "graph_basic_default_expansion_blocked": true,
+    "graph_basic_tasks_with_additions": 100,
+    "rrf_plus_dense_mock_added_false_span": 20038,
+    "rrf_plus_dense_mock_added_gold_span": 2,
+    "rrf_plus_dense_mock_default_expansion_blocked": true,
+    "rrf_plus_dense_mock_plus_graph_added_false_span": 20467,
+    "rrf_plus_dense_mock_plus_graph_added_gold_span": 2,
+    "rrf_plus_dense_mock_plus_graph_default_expansion_blocked": true,
+    "rrf_plus_dense_mock_plus_graph_tasks_with_additions": 311,
+    "rrf_plus_dense_mock_tasks_with_additions": 309,
+    "rrf_plus_graph_added_false_span": 437,
+    "rrf_plus_graph_added_gold_span": 0,
+    "rrf_plus_graph_default_expansion_blocked": true,
+    "rrf_plus_graph_tasks_with_additions": 100
+  },
+  "unavailable_strategies": 5,
+  "unavailable_strategy_reasons": {
+    "dense_real_if_available": "not_configured_or_policy_disabled",
+    "fast_context_if_available": "not wired as standalone matrix strategy",
+    "tdb_quiver_guarded_by_symbol_regex": "quiver_not_implemented",
+    "tdb_quiver_if_available": "quiver_not_implemented",
+    "tdb_quiver_plus_rrf": "quiver_not_implemented"
+  }
+}
