@@ -1,0 +1,79 @@
+{
+  "decision": {
+    "default_should_change": false,
+    "dense_recommendation": "supporting_only_and_anchor_seeded_only_for_now",
+    "graph_recommendation": "supporting_or_explainer_only",
+    "llm_derived_recommendation": "derived_stress_only_not_evidence",
+    "promotion_ready": false,
+    "quiver_recommendation": "continue_diagnostics_no_global_default"
+  },
+  "generated_at": "2026-06-13T06:28:59.307159+00:00",
+  "next_required_tests": [
+    "run P2/P3/P4 on CI smoke public corpus with repo/file caps",
+    "add remote-safe repo/file cap before running R26/R38 large locks",
+    "compare Qwen3-Embedding-8B/4B/0.6B and bge-m3 on the same capped corpus",
+    "validate anchored dense/quiver against P5 stress traps",
+    "run admission_v2_rules with real dense support features"
+  ],
+  "p1_provider_smoke": {
+    "embedding_citation_validity": 1.0,
+    "embedding_remote_calls": 4,
+    "embedding_status": "ok",
+    "llm_remote_calls": 1,
+    "llm_status": "ok"
+  },
+  "p2_real_embedding_bakeoff": {
+    "FileRecall@1": 0.0,
+    "FileRecall@3": 0.6666666666666666,
+    "SpanF0.5": 0.16025641025641027,
+    "primary_false_positive_rate": 1.0,
+    "provider_status": "ok",
+    "view": [
+      "path_plus_symbol"
+    ]
+  },
+  "p3_quiver_readiness": {
+    "BQ_overlap@10": 1.0,
+    "quiver_fit": "mixed",
+    "quiver_graph_implemented": false,
+    "sign_entropy_mean": 0.37186322919739884
+  },
+  "p4_anchor_seeded": {
+    "FileRecall@1": 0.6666666666666666,
+    "SpanF0.5": 0.5434782608695652,
+    "added_false_span": 0,
+    "added_gold_span": 2,
+    "best_strategy": "flat_f32__source_vs_test_split__anchor_regex",
+    "semantic_trap_nonempty": 0
+  },
+  "p5_llm_derived_stress": {
+    "artifact_secret_scan_clean": true,
+    "derived_view_count": 20,
+    "llm_status": "ok",
+    "remote_calls": 1,
+    "stress_private_label_count": 24,
+    "stress_public_task_count": 24
+  },
+  "p6_replay": {
+    "best_regex_mode": "regex_hybrid_normalized",
+    "graph_expansion_blocked": true,
+    "p5_public_fields_ok": true,
+    "selective_risk": 0.0,
+    "symbol_FileRecall_delta": 0.2
+  },
+  "provider_protocols": {
+    "committed_url_or_key": false,
+    "embedding": "openai-compatible via local env only",
+    "llm": "openai-compatible via local env only"
+  },
+  "safety_gates": {
+    "dense_outputs_are_evidence": false,
+    "env_file_ignored": true,
+    "llm_outputs_are_evidence": false,
+    "no_url_or_key_committed": true,
+    "quiver_graph_quality_claimed": false,
+    "raw_prompt_stored": false,
+    "raw_response_stored": false
+  },
+  "schema_version": "p7-real-provider-summary-v1"
+}
