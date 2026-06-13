@@ -192,13 +192,17 @@ def fallback_file_sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def iter_source_files(repo_root: Path) -> Iterable[Path]:
+def iter_source_files(repo_root: Path, max_files: int | None = None) -> Iterable[Path]:
+    emitted = 0
     for dirpath, dirnames, filenames in os.walk(repo_root):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
         for fname in sorted(filenames):
             path = Path(dirpath) / fname
             if path.suffix.lower() in SOURCE_EXTENSIONS and not path.is_symlink():
                 yield path
+                emitted += 1
+                if max_files is not None and emitted >= max_files:
+                    return
 
 
 def line_no_from_offset(text: str, offset: int) -> int:
@@ -646,7 +650,7 @@ def run_bakeoff(args: argparse.Namespace) -> dict[str, Any]:
         hash_mode = "openlocus_scan_blake3_if_available_else_sha256"
         for repo_id, root in repo_roots.items():
             scan_map = run_scan(args.openlocus, root)
-            for file_path in iter_source_files(root):
+            for file_path in iter_source_files(root, args.max_files_per_repo):
                 rel = str(file_path.relative_to(root)).replace(os.sep, "/")
                 built = build_views_for_file(repo_id, root, file_path, scan_map.get(rel))
                 for view in views:
@@ -795,6 +799,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--provider", default="local_token_hash", choices=["local_token_hash", "openai-compatible"])
     parser.add_argument("--allow-remote", action="store_true")
     parser.add_argument("--max-tasks", type=int, default=200)
+    parser.add_argument("--max-files-per-repo", type=int, default=None)
     parser.add_argument("--max-records-per-repo", type=int, default=2000)
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--self-test", action="store_true", help="Run a tiny generated repo smoke instead of external corpora")

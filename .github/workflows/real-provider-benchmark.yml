@@ -19,6 +19,18 @@ on:
         required: false
         default: false
         type: boolean
+      dataset:
+        description: 'Dataset source for the smoke run'
+        required: false
+        default: 'self_test'
+        type: choice
+        options:
+          - self_test
+          - ci_smoke
+      repo_id:
+        description: 'CI corpus repo id when dataset=ci_smoke'
+        required: false
+        default: 'py_flask'
       views:
         description: 'Comma-separated embedding views; remote runs should use path_plus_symbol first'
         required: false
@@ -31,6 +43,10 @@ on:
         description: 'Record cap for embedding/index diagnostics'
         required: false
         default: '40'
+      max_files_per_repo:
+        description: 'File traversal cap for public corpus runs'
+        required: false
+        default: '80'
       max_stress_tasks:
         description: 'P5 stress task cap'
         required: false
@@ -68,9 +84,12 @@ jobs:
         env:
           INPUT_STAGE: ${{ inputs.stage }}
           INPUT_ENABLE_REMOTE: ${{ inputs.enable_remote_models }}
+          INPUT_DATASET: ${{ inputs.dataset }}
+          INPUT_REPO_ID: ${{ inputs.repo_id }}
           INPUT_VIEWS: ${{ inputs.views }}
           INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
+          INPUT_MAX_FILES_PER_REPO: ${{ inputs.max_files_per_repo }}
           INPUT_MAX_STRESS_TASKS: ${{ inputs.max_stress_tasks }}
           VAR_EMBEDDING_PROVIDER: ${{ vars.OPENLOCUS_EMBEDDING_PROVIDER }}
           VAR_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
@@ -86,6 +105,7 @@ jobs:
           from pathlib import Path
 
           allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "all_smoke"}
+          allowed_datasets = {"self_test", "ci_smoke"}
           allowed_views = {"path_plus_symbol"}
           provider_aliases = {"openai": "openai-compatible", "openai_compatible": "openai-compatible", "openai-compatible": "openai-compatible"}
 
@@ -108,6 +128,12 @@ jobs:
           if stage not in allowed_stages:
               raise SystemExit(f"unsupported stage: {stage}")
           remote_enabled = getenv("INPUT_ENABLE_REMOTE", "false").lower() == "true"
+          dataset = getenv("INPUT_DATASET", "self_test")
+          if dataset not in allowed_datasets:
+              raise SystemExit(f"unsupported dataset: {dataset}")
+          repo_id = getenv("INPUT_REPO_ID", "py_flask")
+          if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", repo_id):
+              raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
           view_list = [view.strip() for view in views.split(",") if view.strip()]
           if not view_list or any(view not in allowed_views for view in view_list):
@@ -115,6 +141,7 @@ jobs:
           views = ",".join(view_list)
           max_tasks = positive_int("INPUT_MAX_TASKS", 20)
           max_records = positive_int("INPUT_MAX_RECORDS", 200)
+          max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 500)
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
 
           if remote_enabled:
@@ -134,9 +161,12 @@ jobs:
           Path("docs/real-provider-ci").mkdir(parents=True, exist_ok=True)
           outputs = {
               "stage": stage,
+              "dataset": dataset,
+              "repo_id": repo_id,
               "views": views,
               "max_tasks": str(max_tasks),
               "max_records": str(max_records),
+              "max_files_per_repo": str(max_files_per_repo),
               "max_stress_tasks": str(max_stress_tasks),
               "embedding_provider": embedding_provider,
               "llm_provider": llm_provider,
@@ -148,18 +178,54 @@ jobs:
           plan = {
               "schema_version": "real-provider-ci-plan-v1",
               "stage": stage,
+              "dataset": dataset,
+              "repo_id": repo_id,
               "remote_enabled": remote_enabled,
               "embedding_provider": embedding_provider,
               "llm_provider": llm_provider,
               "views": views,
               "max_tasks": max_tasks,
               "max_records": max_records,
+              "max_files_per_repo": max_files_per_repo,
               "max_stress_tasks": max_stress_tasks,
               "provider_url_or_key_committed": False,
               "promotion_ready": False,
               "default_should_change": False,
           }
           Path("artifacts/real_provider_ci/plan.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+
+      - name: Prepare public CI corpus dataset
+        if: ${{ steps.plan.outputs.dataset == 'ci_smoke' }}
+        env:
+          REPO_ID: ${{ steps.plan.outputs.repo_id }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
+        run: |
+          work_root="$RUNNER_TEMP/openlocus-real-provider-work"
+          mkdir -p "$work_root/corpus" "$work_root/tasks"
+          python3 eval/ci_clone_and_lock_repo.py \
+            --manifest eval/ci_repos/openlocus-ci-repos-v1.yaml \
+            --repo-id "$REPO_ID" \
+            --out-root "$work_root/corpus" \
+            --lock-out "$work_root/repo-lock.json" \
+            --max-indexed-bytes 3000000
+          python3 eval/ci_generate_tasks.py \
+            --repo-lock "$work_root/repo-lock.json" \
+            --out-dir "$work_root/tasks" \
+            --max-tasks-per-repo "$MAX_TASKS" \
+            --max-files-per-repo "$MAX_FILES_PER_REPO"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          allowed = {"test_id", "repo_id", "query", "public_version", "source"}
+          # Resolve via RUNNER_TEMP at runtime to avoid writing temp paths into artifacts.
+          import os
+          public = Path(os.environ["RUNNER_TEMP"]) / "openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl"
+          for line in public.read_text(encoding="utf-8").splitlines():
+              if line.strip() and not set(json.loads(line)) <= allowed:
+                  raise SystemExit("CI corpus public tasks leaked private fields")
+          print("CI corpus public tasks field scan ok")
           PY
 
       - name: P2 embedding view bakeoff smoke
@@ -171,16 +237,23 @@ jobs:
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
           OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
           VIEWS: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
         run: |
-          cmd=(python3 eval/r32_embedding_view_bakeoff.py --self-test --provider "$PROVIDER")
+          cmd=(python3 eval/r32_embedding_view_bakeoff.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl" --labels "$RUNNER_TEMP/openlocus-real-provider-work/tasks/labels/ci_labels.jsonl")
+          fi
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote)
           fi
-          cmd+=(--views "$VIEWS" --max-tasks "$MAX_TASKS" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p2_embedding_view_bakeoff.json --doc docs/real-provider-ci/p2-embedding-view-bakeoff.md)
+          cmd+=(--views "$VIEWS" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p2_embedding_view_bakeoff.json --doc docs/real-provider-ci/p2-embedding-view-bakeoff.md)
           "${cmd[@]}"
 
       - name: P3 QuIVer readiness smoke
@@ -192,16 +265,23 @@ jobs:
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
           OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
           VIEWS: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
         run: |
-          cmd=(python3 eval/r33_quiver_readiness.py --self-test --provider "$PROVIDER")
+          cmd=(python3 eval/r33_quiver_readiness.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl")
+          fi
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote)
           fi
-          cmd+=(--views "$VIEWS" --max-queries "$MAX_TASKS" --max-records "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p3_quiver_readiness.json --doc docs/real-provider-ci/p3-quiver-readiness.md)
+          cmd+=(--views "$VIEWS" --max-queries "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p3_quiver_readiness.json --doc docs/real-provider-ci/p3-quiver-readiness.md)
           "${cmd[@]}"
 
       - name: P4 anchor-seeded diagnostic smoke
@@ -213,16 +293,23 @@ jobs:
           OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
           OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
           VIEWS: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
         run: |
-          cmd=(python3 eval/r34_r36_quiver_anchor_proto.py --self-test --provider "$PROVIDER")
+          cmd=(python3 eval/r34_r36_quiver_anchor_proto.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl" --labels "$RUNNER_TEMP/openlocus-real-provider-work/tasks/labels/ci_labels.jsonl")
+          fi
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote)
           fi
-          cmd+=(--views "$VIEWS" --max-tasks "$MAX_TASKS" --max-records "$MAX_RECORDS" --bq-limit 20 --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p4_quiver_anchor_proto.json --doc docs/real-provider-ci/p4-quiver-anchor-proto.md)
+          cmd+=(--views "$VIEWS" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records "$MAX_RECORDS" --bq-limit 20 --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p4_quiver_anchor_proto.json --doc docs/real-provider-ci/p4-quiver-anchor-proto.md)
           "${cmd[@]}"
 
       - name: P5 LLM derived/stress smoke
@@ -233,16 +320,23 @@ jobs:
           OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
           OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
           PROVIDER: ${{ steps.plan.outputs.llm_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           MAX_STRESS_TASKS: ${{ steps.plan.outputs.max_stress_tasks }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
         run: |
-          cmd=(python3 eval/r37_r38_llm_derived_stress.py --self-test --provider "$PROVIDER")
+          cmd=(python3 eval/r37_r38_llm_derived_stress.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl")
+          fi
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote)
           fi
-          cmd+=(--max-tasks "$MAX_TASKS" --max-records "$MAX_RECORDS" --max-stress-tasks "$MAX_STRESS_TASKS" --openlocus target/debug/openlocus --derived-out artifacts/real_provider_ci/p5_llm_derived_views.jsonl --stress-tasks-out artifacts/real_provider_ci/p5_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p5_llm_stress_labels.private.jsonl" --out artifacts/real_provider_ci/p5_llm_derived_stress.json --doc docs/real-provider-ci/p5-llm-derived-stress.md)
+          cmd+=(--max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records "$MAX_RECORDS" --max-stress-tasks "$MAX_STRESS_TASKS" --openlocus target/debug/openlocus --derived-out artifacts/real_provider_ci/p5_llm_derived_views.jsonl --stress-tasks-out artifacts/real_provider_ci/p5_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p5_llm_stress_labels.private.jsonl" --out artifacts/real_provider_ci/p5_llm_derived_stress.json --doc docs/real-provider-ci/p5-llm-derived-stress.md)
           "${cmd[@]}"
 
       - name: Validate artifacts and privacy gates
@@ -322,11 +416,13 @@ jobs:
           path: |
             artifacts/real_provider_ci/plan.json
             artifacts/real_provider_ci/*.json
-            artifacts/real_provider_ci/p5_llm_derived_views.jsonl
             artifacts/real_provider_ci/p5_llm_stress_public.jsonl
             docs/real-provider-ci/*.md
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
             !artifacts/real_provider_ci/*label*
             !artifacts/real_provider_ci/*private*
+            !**/*private*
             !docs/real-provider-ci/*label*
             !docs/real-provider-ci/*private*
           if-no-files-found: warn

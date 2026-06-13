@@ -250,7 +250,7 @@ def build_points(args: argparse.Namespace) -> tuple[list[DiagnosticPoint], list[
         all_records: list[r32.ViewRecord] = []
         for repo_id, root in repo_roots.items():
             scan_map = r32.run_scan(args.openlocus, root)
-            for file_path in r32.iter_source_files(root):
+            for file_path in r32.iter_source_files(root, args.max_files_per_repo):
                 rel = str(file_path.relative_to(root)).replace("\\", "/")
                 built = r32.build_views_for_file(repo_id, root, file_path, scan_map.get(rel))
                 for view in views:
@@ -413,6 +413,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--provider", default="local_token_hash", choices=["local_token_hash", "openai-compatible"])
     parser.add_argument("--allow-remote", action="store_true")
     parser.add_argument("--max-records", type=int, default=2000)
+    parser.add_argument("--max-files-per-repo", type=int, default=None)
     parser.add_argument("--max-records-per-file", type=int, default=20)
     parser.add_argument("--max-queries", type=int, default=200)
     parser.add_argument("--self-test", action="store_true")

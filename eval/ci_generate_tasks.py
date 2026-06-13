@@ -167,6 +167,7 @@ def ext_to_language(ext: str) -> str:
 def find_source_files(
     repo_path: Path,
     extensions: set[str] | None = None,
+    max_files: int | None = None,
 ) -> list[tuple[str, Path]]:
     if extensions is None:
         extensions = SOURCE_EXTENSIONS
@@ -184,6 +185,9 @@ def find_source_files(
                 except ValueError:
                     continue
                 results.append((rel, full))
+                if max_files is not None and len(results) >= max_files:
+                    results.sort(key=lambda x: x[0])
+                    return results
     results.sort(key=lambda x: x[0])
     return results
 
@@ -327,6 +331,7 @@ def generate_tasks(
     repos: dict[str, dict[str, Any]],
     seed: int = 42,
     max_tasks_per_repo: int | None = None,
+    max_files_per_repo: int | None = None,
 ) -> tuple[list[dict], list[dict], dict[str, Any]]:
     """Generate CI benchmark tasks and labels from repo-lock."""
     import random
@@ -351,7 +356,7 @@ def generate_tasks(
             continue
 
         extensions = set(entry.get("metadata", {}).get("extensions", list(SOURCE_EXTENSIONS)))
-        source_files = find_source_files(repo_path, extensions)
+        source_files = find_source_files(repo_path, extensions, max_files_per_repo)
         repo_files[repo_id] = source_files
 
         symbols: list[dict[str, Any]] = []
@@ -661,6 +666,12 @@ def main() -> None:
         help="Optional cap for generated tasks per repo",
     )
     parser.add_argument(
+        "--max-files-per-repo",
+        type=int,
+        default=None,
+        help="Optional cap for source files scanned per repo during task generation",
+    )
+    parser.add_argument(
         "--no-labels",
         action="store_true",
         help="Write public tasks/coverage only; use before RUN phase so labels do not exist yet",
@@ -679,6 +690,7 @@ def main() -> None:
         repos,
         seed=args.seed,
         max_tasks_per_repo=args.max_tasks_per_repo,
+        max_files_per_repo=args.max_files_per_repo,
     )
     print(f"Generated {len(tasks)} tasks, {len(labels)} labels")
 

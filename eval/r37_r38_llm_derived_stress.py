@@ -116,7 +116,7 @@ def symbol_records(repo_roots: dict[str, Path], args: argparse.Namespace) -> lis
     records: list[r32.ViewRecord] = []
     for repo_id, root in repo_roots.items():
         scan_map = r32.run_scan(args.openlocus, root)
-        for file_path in r32.iter_source_files(root):
+        for file_path in r32.iter_source_files(root, args.max_files_per_repo):
             rel = str(file_path.relative_to(root)).replace("\\", "/")
             built = r32.build_views_for_file(repo_id, root, file_path, scan_map.get(rel))
             # Use metadata/symbol-level views only for committed derived output.
@@ -457,6 +457,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--provider", default="offline_deterministic", choices=["offline_deterministic", "openai-compatible"])
     parser.add_argument("--allow-remote", action="store_true")
     parser.add_argument("--max-tasks", type=int, default=200)
+    parser.add_argument("--max-files-per-repo", type=int, default=None)
     parser.add_argument("--max-records", type=int, default=500)
     parser.add_argument("--max-records-per-file", type=int, default=6)
     parser.add_argument("--max-stress-tasks", type=int, default=80)
