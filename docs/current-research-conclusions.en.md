@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, and P20-LS/P20-LS-A LLM query-alias results.
+Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, P20-LS/P20-LS-A low-context LLM query-alias results, and the P21-Q rich-context research pivot.
 
 Status: Research summary, not a promotion request.
 
@@ -10,7 +10,9 @@ Status: Research summary, not a promotion request.
 
 ## 0. Executive Research Thesis
 
-The most important current finding is not that semantic retrieval is solved. It is that OpenLocus now has a safe, evidence-gated research system for studying semantic retrieval, QuIVer, LLM-derived views, graph signals, and admission guards without weakening the evidence contract.
+The most important current finding is not that semantic retrieval is solved. It is that OpenLocus now has an evidence-gated research system for studying semantic retrieval, QuIVer, LLM-derived views, graph signals, and admission guards without weakening the evidence contract.
+
+The research posture is now quality/efficiency first, with necessary safety boundaries rather than context starvation. On public corpora or explicit opt-in remote runs, rich code context is acceptable: raw snippets, path/symbol/signature metadata, neighbor windows, top-k local candidates, and retrieval scores should be available to models when that improves quality and speed.
 
 The invariant remains:
 
@@ -19,7 +21,7 @@ candidate != fact
 candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
 ```
 
-Within that system, real embedding models now show **candidate/file-level recall signal**, but the L1/L2 large-slice tests also show that dense-only/global dense is unstable at larger scale, with low SpanF0.5 and high primary false-positive risk. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now.
+Within that system, real embedding models now show **candidate/file-level recall signal**, but the L1/L2 large-slice tests also show that dense-only/global dense is unstable at larger scale, with low SpanF0.5 and high primary false-positive risk. P20-LS-A similarly shows that low-context/query-only LLM aliases are not enough. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now, but P21-Q should test richer context rather than continuing metadata-only model inputs.
 
 ---
 
@@ -27,12 +29,12 @@ Within that system, real embedding models now show **candidate/file-level recall
 
 | Evidence tier | What it supports | What it does not support |
 |---|---|---|
-| **Strong: EvidenceCore, materialization gates, citation validation, CI privacy gates** | Safety architecture is working: current-file validation, `content_sha`, strict line ranges, citation validity, RUN/SCORE separation. | Does not prove any retrieval strategy should be default. |
+| **Strong: EvidenceCore, materialization gates, citation validation, CI privacy gates** | Fact authority is working: current-file validation, `content_sha`, strict line ranges, citation validity, RUN/SCORE separation, secret/private-label exclusion. | Does not prove any retrieval strategy should be default, and should not force low-context model inputs on public/opt-in runs. |
 | **Strong for failure discovery: R29 on R26 auto-stress 1100 tasks** | RRF/symbol/guard/dense_mock/graph failure patterns are visible across broad stress buckets. | R26 labels are weak/mined/deterministic; not human promotion evidence. |
 | **Moderate: real-provider P8/P9 CI scale-up** | Real embeddings show initial, repeatable file-level recall signal on bounded public repo slices; QuIVer BQ diagnostics are worth continuing. | Samples are small; span quality and default safety are not proven. |
-| **Moderate-to-strong negative evidence: L1/L2 large-repo slices** | Dense-only/global dense is unstable on larger slices; all four L2 repos had PFP=`1.0`, and SpanF0.5 remained extremely low. | Still not a full-repo exhaustive benchmark; does not prove all embeddings/views are useless. |
+| **Moderate-to-strong negative evidence: L1/L2 large-repo slices** | Dense-only/global dense is unstable on larger slices; all four L2 repos had PFP=`1.0`, and SpanF0.5 remained extremely low. | Still not a full-repo exhaustive benchmark; does not prove rich raw-code embedding views are useless. |
 | **Directional: P1-P7 self-tests and bounded runs** | Provider, LLM status, local harness, and initial anchor-seeded hypotheses work mechanically. | Tiny/self-test outcomes can be contradicted by larger public corpus runs. |
-| **Not quality evidence: dense_mock, LLM-generated stress, unavailable QuIVer/TDB** | Useful for safety, failure discovery, and plumbing. | Must not be used as semantic quality or promotion evidence. |
+| **Not quality evidence: dense_mock, LLM-generated stress, unavailable QuIVer/TDB** | Useful for failure discovery and plumbing. | Must not be used as semantic quality or promotion evidence. |
 
 ---
 
@@ -92,9 +94,15 @@ R25/R29/P6 support the same conclusion: graph is not safe as default expansion. 
 
 The real LLM provider has run successfully, and P5 generated derived/stress outputs. These outputs must remain `not_evidence=true`: the LLM must not generate Evidence, gold labels, citation verdicts, or promotion verdicts.
 
-The useful role for LLMs is query aliases, symbol tags, intent views, and failure/stress generation. LLMs can expand the failure surface, but they cannot replace EvidenceCore.
+The useful role for LLMs is query aliases, symbol tags, intent views, candidate rerank/filter/span narrowing, and failure/stress generation. LLMs can expand the failure surface and help interpret rich candidate context, but they cannot replace EvidenceCore.
 
-P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The initial offline slice was already a caution signal. P20-LS-A then ran the real LLM provider (`[mk]Kimi-K2.7-Code`) on self-test plus 9 real CI corpus runs. Safety/schema behavior was acceptable, but direct alias quality failed completely: 0/9 real runs passed quality, added_gold_span=`289` vs added_false_span=`8312` (~28.8:1 false:gold), and average fabricated_identifier_rate was ~`0.459`. Direct LLM query aliases are therefore blocked for scale-up. Future alias research must be separately named and guarded, e.g. existence-filtered and guard-supporting only.
+P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The initial offline slice was already a caution signal. P20-LS-A then ran the real LLM provider (`[mk]Kimi-K2.7-Code`) on self-test plus 9 real CI corpus runs. Schema/guardrail behavior was acceptable, but low-context/query-only alias quality failed completely: 0/9 real runs passed quality, added_gold_span=`289` vs added_false_span=`8312` (~28.8:1 false:gold), and average fabricated_identifier_rate was ~`0.459`. Therefore, scale-up is blocked for the low-context/query-only alias mode. This is not a verdict on rich-context LLM retrieval; future alias/retrieval research should use source snippets, candidate metadata, symbol/path inventories, and prompt/context matrices.
+
+### 2.10 P21-Q should prioritize rich context quality and efficiency
+
+The next model phase should stop treating metadata-only remote inputs as the default research posture. For public corpora and explicit opt-in remote runs, the model should receive enough code facts to be useful: raw code snippets, path headers, signatures, symbol bodies, neighboring lines, local retrieval scores, and top-k candidate sets. Necessary boundaries remain: exclude secrets, ignored files, provider keys, and private labels/gold answers; keep EvidenceCore as final fact authority; do not use LLMs as promotion judges.
+
+P21-Q should compare rich embedding views (`raw_chunk_256/512/1024`, `snippet_with_neighbors`, `signature_plus_body_window`, `path_symbol_raw_hybrid`) and rich LLM support roles (candidate rerank, false-positive filter, span narrowing, inventory-grounded aliases). Every report must measure both quality and efficiency: SpanF0.5, added_gold/false, PFP, provider calls, input/output tokens, p50/p95 latency, and cost.
 
 ---
 
@@ -104,12 +112,13 @@ P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates
 |---|---|---|
 | RRF should remain the recall base. | Strongly supported by R29, but needs guard. | Stable recall under guard across human-reviewed and stress tiers. |
 | Symbol/regex should be precision anchors. | Strongly supported. | Broader symbol repair validation without PFP increase. |
-| Dense should remain supporting-only for now. | Current L1/L2 evidence blocks dense-only/global dense as primary/default. | Safer views/anchoring add gold more than false spans with low PFP. |
+| Dense should remain supporting-only for now. | Current L1/L2 evidence blocks dense-only/global dense as primary/default. | Rich raw-code/snippet views add gold more than false spans with low PFP and acceptable latency/cost. |
 | Anchor-seeded dense/QuIVer may be safer than global dense. | Plausible but mixed. | P4-like tests on multiple repos show repeatable false-span suppression. |
 | BQ diagnostics may be compatible with current code-embedding distributions. | Diagnostic signal promising on Flask. | Sharded BQ/proto graph beats flat f32 or improves latency without false-span growth. |
 | Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
-| LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Derived views add gold or stress coverage without inducing primary hallucinations. |
-| LLM query aliases can improve anchors without pollution. | Direct P20-LS-A query aliases are blocked for `[mk]Kimi-K2.7-Code`: 0/9 real quality pass, false:gold span ≈28.8:1, avg fabricated identifier rate≈0.459. | Only a new guarded variant could revive this: existence-filtered aliases, LLM aliases never admitting primary alone, `alias_added_gold > alias_added_false`, no PFP increase, and low fabricated identifier rate. |
+| LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Rich context derived views add gold or stress coverage without inducing primary hallucinations. |
+| LLM query aliases can improve anchors without pollution. | Low-context P20-LS-A query aliases are blocked for `[mk]Kimi-K2.7-Code`: 0/9 real quality pass, false:gold span ≈28.8:1, avg fabricated identifier rate≈0.459. | A grounded variant succeeds: aliases selected from repo inventories or top-k candidate context, `alias_added_gold > alias_added_false`, no PFP increase, low fabricated identifier rate. |
+| Rich LLM candidate support can improve span targeting. | Planned P21-Q hypothesis. | Rerank/filter/span-narrow over snippet-backed local candidates improves SpanF0.5 and reduces false spans at acceptable latency/cost. |
 
 ---
 
@@ -123,21 +132,28 @@ These negative results are among the most valuable findings because they prevent
 4. **Graph expansion is repeatedly net-negative**: graph_basic mostly adds false spans and almost no gold.
 5. **Larger embedding models did not win the first bakeoff**: 8B did not dominate 0.6B/4B/bge-m3.
 6. **JS Express underperformed Go/Python/Rust**: embedding quality varies across language/framework buckets.
-7. **P20-LS direct alias expansion failed real-provider scale-up**: all safety gates passed, but direct aliases produced far more false spans than gold spans (8312 vs 289 on real CI runs), with high fabricated identifier rates. This blocks direct LLM alias scale-up.
+7. **P20-LS low-context alias expansion failed real-provider scale-up**: all guardrails passed, but query-only aliases produced far more false spans than gold spans (8312 vs 289 on real CI runs), with high fabricated identifier rates. This blocks low-context LLM alias scale-up, not rich-context LLM retrieval.
 
 ---
 
-## 5. Current Safe Architecture Boundary
+## 5. Current Quality and Boundary Policy
 
-All conclusions depend on preserving these boundaries:
+The new research priority is quality and efficiency. Boundaries should protect the fact layer and secrets, not starve the model of useful public-code context. All conclusions depend on preserving these necessary boundaries:
 
 - `EvidenceCore` remains the only authoritative fact layer.
 - Dense, QuIVer, graph, and LLM-derived outputs remain candidate/supporting/diagnostic, not Evidence.
 - Evidence must come from reading current source files and validating `content_sha` plus line ranges.
 - RUN phase must not read private labels; SCORE phase reads labels only after run artifacts exist.
 - Real providers run only under `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`.
-- Reports and artifacts must not upload provider URLs/keys, raw source, private labels, or Evidence excerpts.
+- Reports and artifacts must not upload provider URLs/keys, private labels, or gold answers. Raw snippets may be sent to providers in explicit public/opt-in rich-context runs, but should not be committed as artifacts unless intentionally documented.
 - Unavailable strategies must be reason-only and must not emit fake quality numbers.
+
+Allowed in quality-first public/opt-in remote runs:
+
+- raw code snippets/chunks after secret and ignore filtering;
+- path, symbol, signature, doc heading, and neighbor-line context;
+- top-k local candidate metadata and retrieval scores;
+- prompt/context matrices that trade quality, cost, and latency.
 
 ---
 
@@ -147,8 +163,8 @@ The research has established four things with reasonable confidence:
 
 1. **The fact-layer safety constraints are executable**: EvidenceCore, materialization, and citation validation are implemented across local retrieval, store, graph, dense, and CI runner paths.
 2. **Local lexical/symbol/RRF remain the backbone**: real models did not replace RRF/symbol/regex; they made anchors and guards more important.
-3. **Real models are useful but role-limited**: embeddings have file-level signal, LLMs can expand stress/derived views, and QuIVer BQ deserves continuation; none should directly become facts.
-4. **The experiment system can find counterexamples**: the P4 → P8a and P20-LS offline → remote scale-up shifts show that the harness can challenge tiny optimistic or merely safe results with realistic corpus slices.
+3. **Real models are useful but context-sensitive**: embeddings have file-level signal, LLMs can expand stress/derived views, and QuIVer BQ deserves continuation; none should directly become facts, but future tests should give models richer code context.
+4. **The experiment system can find counterexamples**: the P4 → P8a and P20-LS offline → remote scale-up shifts show that the harness can challenge tiny optimistic or merely schema-safe results with realistic corpus slices.
 
 ---
 
@@ -202,6 +218,11 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P7: real-provider summary.
 - P8/P9: GitHub Actions public corpus scale-up, model bakeoff, and multilingual smoke.
 
+### P20-P21: LLM scale-up and quality-first rich context
+
+- P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
+- P21-Q: planned rich-context quality/efficiency phase using snippets, candidate metadata, symbols, signatures, prompt matrices, and latency/cost accounting.
+
 Key detailed reports:
 
 - `docs/final-research-report.md` — long R0-R29 historical report.
@@ -211,6 +232,8 @@ Key detailed reports:
 - `docs/real-provider-p7-summary.md` — P1-P6 real-provider summary.
 - `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results.
 - `docs/real-provider-ci-large-scale.en.md` — L1/L2 real-provider large-scale results.
+- `docs/p20-llm-large-scale.md` — P20-LS-A low-context LLM alias scale-up result.
+- `docs/p21-quality-first-rich-context.md` — P21-Q quality-first rich-context plan.
 
 ---
 
@@ -219,17 +242,18 @@ Key detailed reports:
 The next step is not promotion. It is larger, more granular, more reproducible validation:
 
 1. Freeze the L2 task set into a reproducible suite to avoid task-generation drift.
-2. Run safer multi-view / lexical-seeded dense variants on L2, still remote-safe and supporting-only.
+2. Run quality-first rich embedding views on public/opt-in corpora: raw chunks, snippet windows, signature/body windows, path-symbol-raw hybrids.
 3. Extend P3/P4 beyond Django/Kubernetes only after false-span analysis.
 4. Continue bge-m3 vs Qwen 0.6B/4B/8B bakeoffs on identical task sets, including latency/cost.
 5. Feed P5 stress traps into anchored dense/QuIVer validation and measure whether added_gold consistently exceeds added_false.
 6. Re-validate symbol repair and regex normalization on R26/R38, focusing on bucket regressions.
 7. Add real dense support scores to admission_v2 research, but only as supporting features.
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
-9. If LLM query aliases are revisited, test only a separately reported existence-filtered/guard-supporting variant; do not continue direct alias scale-up.
+9. If LLM query aliases are revisited, test only grounded variants: inventory-selected aliases or aliases derived after seeing top-k local candidate snippets.
+10. Run P21-Q rich LLM candidate support: rerank/filter/span-narrow over snippet-backed local candidates and record quality, latency, token, and cost trade-offs.
 
 ---
 
 ## 9. Current Bottom Line
 
-OpenLocus has established a safe research direction: local evidence-gated lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only as supporting/diagnostic/candidate layers for now. The L1/L2 large-slice tests show that dense-only/global dense cannot be primary/default, and P20-LS-A shows that direct LLM query aliases also cannot be scaled as-is. The next key question is whether better views, lexical/symbol seeded retrieval, existence-filtered aliases, sharding, and span-aware reranking can make real-model retrieval add gold consistently without increasing false-primary or false-span rates.
+OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. The next key question is whether rich snippets, candidate metadata, lexical/symbol seeded retrieval, inventory-grounded aliases, sharding, and span-aware reranking can make real-model retrieval add gold consistently without increasing false-primary or false-span rates at unacceptable latency/cost.

@@ -160,7 +160,7 @@ Caps: 60 tasks / 1000 records / 2000 files
 
 ## 9. 下一步建议
 
-1. 跑 L2 的多 view 对照，但 remote 只能用经过安全审查的 data-level-0/1 views。
+1. 在明确 public/opt-in rich-context 模式下跑 L2/P21-Q multi-view 对照：raw chunks、snippet windows、signature/body windows、path-symbol-raw hybrids。继续排除 secrets、ignored files、provider keys、private labels/gold answers。
 2. 对 L2 的 false positives 做 failure cluster：是否来自 generated/vendor、test/source confusion、same-name symbol、path-only noise。
 3. 增加 lexical anchor seeded 的 P2/P4 版本，不让 dense 在 1000 records 中 global top-k。
 4. 将 L2 tasks 固定成 reproducible suite，避免每次 task generation drift。
@@ -168,4 +168,4 @@ Caps: 60 tasks / 1000 records / 2000 files
 
 ## 10. 当前一句话结论
 
-这轮大仓库 slice 真实-provider 测试没有支持 promotion，反而更强地证明了当前安全边界是必要的：真实 embedding 在小 slice 上有文件级信号，但在更大的 large-repo slice 上迅速暴露出不稳定、低 SpanF0.5 和高 primary false-positive 风险，因此必须继续作为 supporting/candidate 层，而不能进入默认 primary 路径。
+这轮大仓库 slice 真实-provider 测试没有支持 promotion。它证明 global dense-only retrieval 不够：真实 embedding 在小 slice 上有文件级信号，但在更大的 large-repo slice 上迅速暴露出不稳定、低 SpanF0.5 和高 primary false-positive 风险，因此必须继续作为 supporting/candidate 层，而不能进入默认 primary 路径。下一步质量导向不是继续 metadata-only 的 `path_plus_symbol`，而是使用 richer code context，并同时度量 latency/cost，EvidenceCore 仍作为最终事实权威。

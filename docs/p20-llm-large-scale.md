@@ -4,9 +4,11 @@ P20-LS is an eval-only harness for LLM-derived query aliases and stress-label ge
 
 ## P20-LS-A remote verdict
 
-Direct LLM query-alias expansion is **blocked** for `[mk]Kimi-K2.7-Code` and should not be scaled further in its current form.
+Low-context, query-only LLM alias expansion is **blocked** for `[mk]Kimi-K2.7-Code` and should not be scaled further in its current form.
 
-The remote provider behaved well enough at the safety/schema boundary, but retrieval quality failed. Across 9 real CI corpus runs (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`, `py_httpx`, `go_cobra`, `js_axios`, `rust_mdbook`, plus a 60-task `py_flask` confirmation), every run passed LS0/LS1 safety and every run failed LS1 quality.
+This is deliberately a narrow verdict. P20-LS-A did **not** test rich-context LLM retrieval, LLM reranking over source snippets, raw-code embedding views, candidate metadata grounding, call/context windows, or prompt matrices. It tested the conservative baseline where the model saw only public query/task metadata and then generated aliases that were handed to existing local retrieval channels.
+
+The remote provider behaved well enough at the schema/guardrail boundary, but retrieval quality failed under this low-context setup. Across 9 real CI corpus runs (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`, `py_httpx`, `go_cobra`, `js_axios`, `rust_mdbook`, plus a 60-task `py_flask` confirmation), every run passed LS0/LS1 safety and every run failed LS1 quality.
 
 Key aggregate numbers:
 
@@ -22,7 +24,20 @@ Key aggregate numbers:
 - missing `not_evidence` rate: `0.0`
 - private labels written/uploaded: `false`
 
-Interpretation: the model can emit parseable, policy-compliant alias records, but direct aliases add far more false span surface than gold. The failure mode is semantic/existence grounding, not provider plumbing. Continue only with a separately named guarded variant, e.g. existence-filtered aliases or guard-supporting aliases that cannot admit primary by themselves.
+Interpretation: the model can emit parseable, policy-compliant alias records, but query-only aliases add far more false span surface than gold because the model has too little repo-specific context. The failure mode is semantic/existence grounding, not provider plumbing. This result supports moving toward quality-first rich context: source snippets, candidate metadata, symbols, paths, signatures, local retrieval scores, and context windows should be available to the model in explicitly opted-in public-corpus runs.
+
+What remains blocked:
+
+- query-only aliases that invent identifiers from generic programming priors;
+- aliases that directly expand the primary candidate pool without local grounding;
+- any LLM-only hit admitting primary by itself.
+
+What should be tested next:
+
+- rich-code embedding views (`raw_chunk_256/512/1024`, snippet-with-path headers, symbol body windows, neighbors);
+- LLM rerank/filter/span-narrow over top-k local candidates with actual snippets;
+- existence-filtered aliases selected from repo symbol/path inventories;
+- prompt/context matrices that trade context size, latency, cost, and quality.
 
 Detailed run summary is stored in `artifacts/p20_llm_large/p20_ls_a_remote_summary.json`.
 

@@ -24,16 +24,21 @@ below.
 - [Real-provider CI scale-up P8/P9](real-provider-ci-scale-p8-p9.md)
 - [Real-provider CI large-repo slice results zh](real-provider-ci-large-scale.zh.md)
 - [Real-provider CI large-repo slice results en](real-provider-ci-large-scale.en.md)
+- [P20-LS low-context LLM alias scale-up](p20-llm-large-scale.md)
+- [P21-Q quality-first rich-context plan](p21-quality-first-rich-context.md)
 
 ## Current one-line conclusion
 
-OpenLocus has established a safe research direction: local evidence-gated
-lexical/symbol/RRF retrieval is the backbone. The L1/L2 large-slice tests make
-the boundary sharper: real embeddings have candidate/file-level signal, but
-dense-only/global dense is unstable at larger scale and must remain
-supporting-only.
+OpenLocus has established a quality-and-evidence-gated research direction:
+local lexical/symbol/RRF retrieval is the backbone, while models are useful only
+when they receive enough code facts to be grounded. L1/L2 blocked global
+dense-only, and P20-LS-A blocked low-context/query-only LLM aliases. The next
+direction is P21-Q: richer snippets, candidate metadata, symbols, signatures,
+and prompt/context matrices, with EvidenceCore still serving as the final fact
+authority.
 
-OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated
-lexical/symbol/RRF 是事实检索主干。L1/L2 大型 slice 测试让边界更清楚：真实
-embedding 有 candidate/file-level 信号，但 dense-only/global dense 在更大规模下不稳定，
-必须继续 supporting-only。
+OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地
+lexical/symbol/RRF 是事实检索主干，模型只有在拿到足够代码事实后才可能有效。
+L1/L2 阻断了 global dense-only，P20-LS-A 阻断了低上下文/query-only LLM aliases。
+下一步是 P21-Q：使用更丰富的 snippets、candidate metadata、symbols、signatures
+和 prompt/context matrix，同时让 EvidenceCore 继续作为最终事实权威。

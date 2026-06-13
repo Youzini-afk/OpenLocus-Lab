@@ -23,17 +23,22 @@ RRF remains the recall base.
 symbol/regex remain precision anchors.
 query_noise_plus_rrf_agree_min remains the strongest guard candidate.
 real dense embeddings have candidate/file-level signal but are unstable as global dense.
+P20-LS-A blocks low-context/query-only LLM aliases, not rich-context LLM retrieval.
+P21-Q should prioritize richer code context, quality, latency, and cost.
 Dense/QuIVer/LLM-derived/graph remain supporting/diagnostic/candidate only.
 promotion_ready=false and current_default_should_change=false.
 ```
 
-Most important recent finding: **L1/L2 real-provider large-repo-slice tests made
-the dense-only/global-dense risk more concrete**. With `BAAI/bge-m3` and the
-remote-safe `path_plus_symbol` view at `60 tasks / 1000 records / 2000 files`,
-four large-repo slices all had `primary_false_positive_rate=1.0`, very low
-`SpanF0.5`, and unstable file recall. This blocks dense-only/global dense from
-primary/default use and shifts the next research phase toward constrained,
-lexical/symbol-seeded dense support.
+Most important recent finding: **L1/L2 and P20-LS-A exposed the weakness of
+under-contextualized model retrieval**. L1/L2 showed dense-only/global dense risk
+with `BAAI/bge-m3` and the conservative `path_plus_symbol` view at
+`60 tasks / 1000 records / 2000 files`: four large-repo slices all had
+`primary_false_positive_rate=1.0`, very low `SpanF0.5`, and unstable file recall.
+P20-LS-A showed the same pattern for low-context/query-only LLM aliases: schema
+and guardrails passed, but quality failed. This blocks dense-only/global dense
+and low-context aliases from primary/default use, and shifts the next phase to
+P21-Q: richer snippets, candidate metadata, symbols, signatures, prompt/context
+matrices, and explicit latency/cost accounting.
 
 Current detailed conclusion reports:
 
@@ -41,12 +46,17 @@ Current detailed conclusion reports:
   [`current-research-conclusions.en.md`](current-research-conclusions.en.md)
 - [`real-provider-ci-large-scale.zh.md`](real-provider-ci-large-scale.zh.md) /
   [`real-provider-ci-large-scale.en.md`](real-provider-ci-large-scale.en.md)
+- [`p20-llm-large-scale.md`](p20-llm-large-scale.md)
+- [`p21-quality-first-rich-context.md`](p21-quality-first-rich-context.md)
 - [`real-provider-ci-scale-p8-p9.md`](real-provider-ci-scale-p8-p9.md)
 - [`real-provider-p7-summary.md`](real-provider-p7-summary.md)
 
 Next research direction: freeze the L2 suite, attribute false positives, then
-test remote-safe multi-view and lexical/symbol/RRF-constrained dense variants
-before spending more provider budget on larger runs.
+run P21-Q rich-context experiments on public/opt-in corpora: raw/snippet
+embedding views, LLM rerank/filter/span-narrow over local candidates,
+inventory-grounded aliases, and prompt/context matrices. Continue excluding
+secrets, ignored files, provider keys, and private labels/gold answers, but do
+not let context minimization dominate quality.
 
 ## Stage status
 
@@ -94,7 +104,8 @@ before spending more provider budget on larger runs.
 | P8/P9 Real-Provider CI Scale-Up | Completed; first public CI slices | Added `real-provider-benchmark.yml` manual workflow with `environment: production`, guarded secrets, input validation, and no private label upload. Ran small public corpus, model bakeoff (`bge-m3`, Qwen 0.6B/4B/8B), and multilingual smoke. Result: file-level signal exists, but SpanF0.5 remains low and model size did not dominate in first slices. |
 | L1/L2 Real-Provider Large-Repo Slices | Completed; strong dense-only/global-dense block | Ran controlled large-repo slices across Django, Kubernetes, Next.js, and Deno. L1 showed file-recall variability and P4 false-span growth. L2 (`60 tasks / 1000 records / 2000 files`) had PFP=1.0 on all four repos, very low SpanF0.5, and unstable FileRecall. Conclusion: dense-only/global dense must remain supporting/candidate-only; next phase should freeze L2, attribute false positives, and test constrained dense. |
 | P10-P14 Constrained Dense Research | Planned | Proposed next phase: freeze `real_provider_l2_v1`, attribute L2 false positives, simulate constrained candidate pools locally, run small remote constrained variants, then rerun fixed L2 only if added_gold exceeds added_false and PFP drops. No EvidenceCore changes and no promotion. |
-| P20-LS LLM Large-Scale Eval Harness | P20-LS-A completed; direct alias blocked | Bounded eval-only harness (`eval/p20_llm_large_scale.py`) for LLM-derived query aliases and stress-label generation. Remote runs require `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`. P20-LS-A ran `[mk]Kimi-K2.7-Code` on self-test plus 9 real CI corpus runs (220 real provider calls). All LS0/LS1 safety gates passed, no raw source/private labels/prompts uploaded, but 0/9 real runs passed quality: added_gold_span=289 vs added_false_span=8312 (~28.8:1 false:gold), avg fabricated_identifier_rate≈0.459. Decision: stop scaling direct LLM aliases; future work must be existence-filtered/guard-supporting only. No EvidenceCore changes; promotion_ready=false; default_should_change=false. |
+| P20-LS LLM Large-Scale Eval Harness | P20-LS-A completed; low-context alias blocked | Bounded eval-only harness (`eval/p20_llm_large_scale.py`) for LLM-derived query aliases and stress-label generation. Remote runs require `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`. P20-LS-A ran `[mk]Kimi-K2.7-Code` on self-test plus 9 real CI corpus runs (220 real provider calls). All LS0/LS1 safety gates passed, no raw source/private labels/prompts uploaded, but 0/9 real runs passed quality: added_gold_span=289 vs added_false_span=8312 (~28.8:1 false:gold), avg fabricated_identifier_rate≈0.459. Narrow decision: stop scaling low-context/query-only LLM aliases. This is not a verdict on rich-context LLM retrieval; it motivates context-grounded rerank/filter/span-narrow experiments. No EvidenceCore changes; promotion_ready=false; default_should_change=false. |
+| P21-Q Quality-First Rich Context Model Retrieval | Planned | Research pivot from minimal-context remote-safe baselines to quality/efficiency-first model retrieval. On public corpora or explicit opt-in remote runs, allow richer code context after excluding secrets/ignored files/provider keys/private labels: raw snippets, path/symbol/signature context, neighbor windows, top-k local candidate metadata, retrieval scores, and prompt/context matrices. Planned tests: raw_chunk embedding views, snippet-with-neighbors, symbol body windows, LLM rerank/filter/span-narrow over local candidates, inventory-grounded aliases. Metrics must include both quality (SpanF0.5, added_gold/false, PFP) and efficiency (provider calls, tokens, p50/p95 latency, cost). EvidenceCore remains final authority. |
 
 ## R0/R1 initial findings
 

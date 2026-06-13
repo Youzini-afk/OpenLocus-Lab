@@ -165,7 +165,7 @@ More specifically:
 
 ## 9. Next Steps
 
-1. Run L2 multi-view comparisons, but only for remote-safe data-level-0/1 views.
+1. Run L2/P21-Q multi-view comparisons in explicit public/opt-in rich-context mode: raw chunks, snippet windows, signature/body windows, and path-symbol-raw hybrids. Continue excluding secrets, ignored files, provider keys, and private labels/gold answers.
 2. Cluster L2 false positives: generated/vendor, test/source confusion, same-name symbol, path-only noise.
 3. Add lexical-anchor seeded P2/P4 variants so dense does not run global top-k over 1000 records.
 4. Freeze L2 tasks into a reproducible suite to avoid task generation drift.
@@ -173,4 +173,4 @@ More specifically:
 
 ## 10. Bottom Line
 
-These large-repo-slice real-provider tests do not support promotion. They make the current safety boundary more important: real embeddings have file-level signal on smaller slices, but larger large-repo slices quickly expose instability, low SpanF0.5, and high primary false-positive risk. Dense must remain a supporting/candidate layer and must not enter the default primary path.
+These large-repo-slice real-provider tests do not support promotion. They show that global dense-only retrieval is not enough: real embeddings have file-level signal on smaller slices, but larger large-repo slices quickly expose instability, low SpanF0.5, and high primary false-positive risk. Dense must remain a supporting/candidate layer and must not enter the default primary path. The next quality-oriented step is not more metadata-only `path_plus_symbol`; it is richer code context with measured latency/cost and EvidenceCore still serving as final authority.
