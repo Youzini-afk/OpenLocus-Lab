@@ -1,0 +1,129 @@
+{
+  "admission_model": "admission_v2_rules",
+  "blocking": {
+    "graph_expansion_blocked": true,
+    "promotion_blocked": true
+  },
+  "core_changes": false,
+  "default_should_change": false,
+  "edge_count": 6,
+  "edge_types": [
+    "CONTAINS",
+    "DEFINES"
+  ],
+  "evidencecore_semantics_changed": false,
+  "example_decisions": [
+    {
+      "action": "admit_primary",
+      "features": {
+        "api_config_score": 0.0,
+        "graph_support": {
+          "confidence_boost": 0.06,
+          "edge_types": [
+            "DEFINES"
+          ],
+          "support_count": 2,
+          "support_paths": [
+            "src/lib.py",
+            "tests/test_lib.py"
+          ]
+        },
+        "identifier_density": 1.0,
+        "path_match_score": 0.0,
+        "proper_name_score": 0.0,
+        "regex_hit_count": 2,
+        "symbol_hit_count": 2
+      },
+      "reasons": [
+        "regex_symbol_agreement"
+      ],
+      "task_id": "r32-001"
+    },
+    {
+      "action": "abstain",
+      "features": {
+        "api_config_score": 1.0,
+        "graph_support": {
+          "confidence_boost": 0.0,
+          "edge_types": [],
+          "support_count": 0,
+          "support_paths": []
+        },
+        "identifier_density": 1.0,
+        "path_match_score": 0.3333333333333333,
+        "proper_name_score": 0.0,
+        "regex_hit_count": 1,
+        "symbol_hit_count": 0
+      },
+      "reasons": [
+        "proper_name_or_api_config_requires_anchor"
+      ],
+      "task_id": "r32-002"
+    },
+    {
+      "action": "abstain",
+      "features": {
+        "api_config_score": 0.0,
+        "graph_support": {
+          "confidence_boost": 0.0,
+          "edge_types": [],
+          "support_count": 0,
+          "support_paths": []
+        },
+        "identifier_density": 1.0,
+        "path_match_score": 0.0,
+        "proper_name_score": 0.0,
+        "regex_hit_count": 0,
+        "symbol_hit_count": 0
+      },
+      "reasons": [
+        "no_anchor"
+      ],
+      "task_id": "r32-003"
+    }
+  ],
+  "file_count": 3,
+  "generated_at": "2026-06-13T06:26:24.579942+00:00",
+  "graph_default_expansion_allowed": false,
+  "graph_role_recommendation": "supporting_or_explainer_only",
+  "learned_calibrator_default_allowed": false,
+  "metrics": {
+    "EvidenceCore_rejection_rate": 0.0,
+    "FileRecall@1": 0.0,
+    "FileRecall@3": 0.3333333333333333,
+    "FileRecall@5": 0.3333333333333333,
+    "MRR": 0.16666666666666666,
+    "SpanF0.5": 0.1923076923076923,
+    "SpanPrecision": 0.16666666666666666,
+    "SpanRecall": 0.5,
+    "abstain_rate": 0.6666666666666666,
+    "action_counts": {
+      "abstain": 2,
+      "admit_primary": 1
+    },
+    "citation_validity": 1.0,
+    "coverage": 0.3333333333333333,
+    "graph_added_false_span": 1,
+    "graph_added_gold_span": 1,
+    "graph_confidence_calibration": "supporting_only",
+    "graph_expansion_blocked": true,
+    "graph_explainer_precision": 0.5,
+    "graph_pollution_ratio": 0.5,
+    "hard_negative_hit_rate": 0.0,
+    "latency_p50_ms": 0,
+    "latency_p95_ms": 0,
+    "no_gold_nonempty_rate": 0.0,
+    "primary_false_positive_rate": 0.0,
+    "selective_risk": 0.0,
+    "semantic_trap_hit_rate": 0.0,
+    "task_count": 3,
+    "test_selector_hit_rate": 0.0,
+    "token_waste": 0.16666666666666666,
+    "weak_candidate_rate": 0.3333333333333333
+  },
+  "not_promotion_evidence": true,
+  "promotion_ready": false,
+  "run_phase_public_only": true,
+  "schema_version": "r41-r42-graph-admission-v1",
+  "task_count": 3
+}

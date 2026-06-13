@@ -1,0 +1,122 @@
+{
+  "core_changes": false,
+  "default_should_change": false,
+  "elapsed_ms": 9,
+  "evidencecore_semantics_changed": false,
+  "file_count": 3,
+  "generated_at": "2026-06-13T06:26:24.488359+00:00",
+  "not_promotion_evidence": true,
+  "promotion_ready": false,
+  "regex_repair": {
+    "best_regex_mode": "regex_hybrid_normalized",
+    "default_recommendation": "do_not_use_raw_regex_for_user_query_by_default",
+    "results": {
+      "regex_escaped_literal": {
+        "FileRecall@1": 0.6,
+        "FileRecall@5": 0.6,
+        "SpanF0.5": 0.5172413793103449,
+        "SpanPrecision": 0.5,
+        "SpanRecall": 0.6,
+        "abstain_rate": 0.4,
+        "parse_error_rate": 0.0,
+        "primary_false_positive_rate": 0.0,
+        "task_count": 5
+      },
+      "regex_hybrid_normalized": {
+        "FileRecall@1": 0.8,
+        "FileRecall@5": 1.0,
+        "SpanF0.5": 0.8333333333333334,
+        "SpanPrecision": 0.8,
+        "SpanRecall": 1.0,
+        "abstain_rate": 0.0,
+        "parse_error_rate": 0.0,
+        "primary_false_positive_rate": 0.0,
+        "task_count": 5
+      },
+      "regex_identifier_mode": {
+        "FileRecall@1": 0.6,
+        "FileRecall@5": 0.6,
+        "SpanF0.5": 0.6,
+        "SpanPrecision": 0.6,
+        "SpanRecall": 0.6,
+        "abstain_rate": 0.2,
+        "parse_error_rate": 0.2,
+        "primary_false_positive_rate": 0.0,
+        "task_count": 5
+      },
+      "regex_path_mode": {
+        "FileRecall@1": 0.6,
+        "FileRecall@5": 0.6,
+        "SpanF0.5": 0.5172413793103449,
+        "SpanPrecision": 0.5,
+        "SpanRecall": 0.6,
+        "abstain_rate": 0.4,
+        "parse_error_rate": 0.0,
+        "primary_false_positive_rate": 0.0,
+        "task_count": 5
+      },
+      "regex_raw": {
+        "FileRecall@1": 0.6,
+        "FileRecall@5": 0.6,
+        "SpanF0.5": 0.5172413793103449,
+        "SpanPrecision": 0.5,
+        "SpanRecall": 0.6,
+        "abstain_rate": 0.4,
+        "parse_error_rate": 0.0,
+        "primary_false_positive_rate": 0.0,
+        "task_count": 5
+      },
+      "regex_tokenized": {
+        "FileRecall@1": 0.8,
+        "FileRecall@5": 0.8,
+        "SpanF0.5": 0.717948717948718,
+        "SpanPrecision": 0.7,
+        "SpanRecall": 0.8,
+        "abstain_rate": 0.2,
+        "parse_error_rate": 0.0,
+        "primary_false_positive_rate": 0.0,
+        "task_count": 5
+      }
+    },
+    "separate_modes_required": [
+      "literal_search",
+      "regex_search_explicit",
+      "identifier_search",
+      "path_search"
+    ]
+  },
+  "run_phase_public_only": true,
+  "schema_version": "r39-r40-symbol-regex-repair-v1",
+  "symbol_repair": {
+    "promotion_gate": {
+      "false_primary_within_plus_0_02": true,
+      "recall_not_lower": true
+    },
+    "symbol_FileRecall_delta": 0.2,
+    "symbol_abstain_delta": -0.20000000000000007,
+    "symbol_false_primary_delta": 0.0,
+    "symbol_new": {
+      "FileRecall@1": 0.4,
+      "FileRecall@5": 0.4,
+      "SpanF0.5": 0.10650887573964496,
+      "SpanPrecision": 0.09,
+      "SpanRecall": 0.4,
+      "abstain_rate": 0.6,
+      "parse_error_rate": 0.0,
+      "primary_false_positive_rate": 0.0,
+      "task_count": 5
+    },
+    "symbol_old": {
+      "FileRecall@1": 0.2,
+      "FileRecall@5": 0.2,
+      "SpanF0.5": 0.04761904761904762,
+      "SpanPrecision": 0.04,
+      "SpanRecall": 0.2,
+      "abstain_rate": 0.8,
+      "parse_error_rate": 0.0,
+      "primary_false_positive_rate": 0.0,
+      "task_count": 5
+    }
+  },
+  "task_count": 5
+}

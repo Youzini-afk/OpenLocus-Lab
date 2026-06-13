@@ -1,0 +1,41 @@
+{
+  "core_changes": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-13T06:27:18.352108+00:00",
+  "not_promotion_evidence": true,
+  "p5_label_quality": [
+    "deterministic_validated_failure_discovery"
+  ],
+  "p5_public_fields_ok": true,
+  "p5_public_private_pairing_ok": true,
+  "p5_stress_by_category": {
+    "ambiguous_vague": 3,
+    "dense_quiver_specific_trap": 3,
+    "frontend_backend_confusion": 3,
+    "hard_distractor": 3,
+    "misspell_noise_variant": 3,
+    "proper_name_api_config_regression": 3,
+    "semantic_trap": 3,
+    "test_source_confusion": 3
+  },
+  "p5_stress_private_labels": 24,
+  "p5_stress_public_tasks": 24,
+  "promotion_ready": false,
+  "r39_r40_replay": {
+    "best_regex_mode": "regex_hybrid_normalized",
+    "promotion_ready": false,
+    "symbol_FileRecall_delta": 0.2,
+    "symbol_false_primary_delta": 0.0,
+    "task_count": 5
+  },
+  "r41_r42_replay": {
+    "coverage": 0.3333333333333333,
+    "graph_expansion_blocked": true,
+    "graph_pollution_ratio": 0.5,
+    "promotion_ready": false,
+    "selective_risk": 0.0,
+    "task_count": 3
+  },
+  "schema_version": "p6-real-provider-replay-summary-v1"
+}
