@@ -2,7 +2,7 @@
 
 日期：2026-06-13
 
-范围：R0-R45、real-provider P1-P9，以及第一轮 GitHub Actions real-provider 逐规模测试。
+范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up，以及 L1/L2 真实-provider 大仓库 slice 测试。
 
 状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
 
@@ -19,7 +19,7 @@ candidate != fact
 candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
 ```
 
-在这个体系下，真实向量模型已经显示出清晰的**文件级召回信号**，但还没有证明能够安全提供 primary span evidence。RRF 仍是最强 recall base，symbol/regex 仍是 precision anchor，`query_noise_plus_rrf_agree_min` 仍是当前最值得继续研究的 guard candidate。Dense/QuIVer/LLM-derived/graph 都还不能进入默认 primary 路径。
+在这个体系下，真实向量模型已经显示出**候选/文件级召回信号**，但 L1/L2 大型 slice 测试也显示：dense-only/global dense 在更大规模下不稳定，SpanF0.5 很低，primary_false_positive 风险高。RRF 仍是最强 recall base，symbol/regex 仍是 precision anchor，`query_noise_plus_rrf_agree_min` 仍是当前最值得继续研究的 guard candidate。Dense/QuIVer/LLM-derived/graph 都还不能进入默认 primary 路径。
 
 ---
 
@@ -30,6 +30,7 @@ candidate/supporting channels -> current source read -> content_sha/range valida
 | **强：EvidenceCore、materialization gates、citation validation、CI privacy gates** | 安全架构成立：当前文件校验、内容哈希、严格 line range、citation validity、RUN/SCORE 分离。 | 不证明任何检索策略应成为默认。 |
 | **强失败面证据：R29 on R26 auto-stress 1100 tasks** | RRF、symbol、guard、dense_mock、graph 的失败模式已经在较宽 stress bucket 中暴露。 | R26 labels 是 weak/mined/deterministic，不是人工 promotion evidence。 |
 | **中等：real-provider P8/P9 CI scale-up** | 真实向量在有界 public repo slice 上出现了初步、可复验的文件级召回信号；QuIVer BQ 诊断值得继续。 | 样本仍小，span quality 与 default safety 未证明。 |
+| **中等偏强负证据：L1/L2 large-repo slice** | dense-only/global dense 在更大 slice 上不稳定，L2 四个 repo 的 PFP 都为 `1.0`，SpanF0.5 极低。 | 仍不是 full-repo exhaustive benchmark；不证明所有 embedding/view 都无效。 |
 | **方向性：P1-P7 self-tests 与 bounded runs** | provider、LLM status、local harness、anchor-seeded 假设在机制上可跑。 | tiny/self-test 结果可能被更大 public corpus 推翻。 |
 | **非质量证据：dense_mock、LLM-generated stress、unavailable QuIVer/TDB** | 适合安全验证、失败面发现、管线验证。 | 不能作为 semantic quality 或 promotion evidence。 |
 
@@ -57,9 +58,9 @@ R29 中 `query_noise_plus_rrf_agree_min` 基本保留了 RRF recall，同时把 
 
 ### 2.4 真实向量有文件级召回信号，但还不是 span evidence
 
-P8/P9 的 CI scale-up 显示：真实 embedding 在有界 public corpus slice 上出现了初步、可复验的文件级召回信号，但稳定性仍需扩大验证。比如 bounded Flask slice 上 P2 的 FileRecall@1=`0.800`、FileRecall@3=`1.000`；多语言 bge-m3 smoke 中 Go/Python 表现强，Rust 中等，JS Express 更弱。
+P8/P9 的 CI scale-up 显示：真实 embedding 在有界 public corpus slice 上出现了初步、可复验的文件级召回信号。比如 bounded Flask slice 上 P2 的 FileRecall@1=`0.800`、FileRecall@3=`1.000`；多语言 bge-m3 smoke 中 Go/Python 表现强，Rust 中等，JS Express 更弱。
 
-但 SpanF0.5 很低，典型范围约 `0.067` 到 `0.143`。这说明 dense 当前更像“文件/候选支持通道”，而不是可直接作为 EvidenceCore primary span 的证据通道。
+但后续 L1/L2 大型 slice 测试削弱了这个乐观信号：当扩大到 60 tasks / 1000 records / 2000 files 后，Django/Kubernetes 的 FileRecall@1 降到约 `0.25`，Next.js/Deno 接近 `0`，四个 repo 的 primary_false_positive_rate 都是 `1.0`，SpanF0.5 最高也只有约 `0.022`。这说明 dense 当前更像“候选支持通道”，而不是可直接作为 EvidenceCore primary span 的证据通道。
 
 ### 2.5 第一批结果没有证明“大模型更好”
 
@@ -71,11 +72,15 @@ P9a 在同一个 Flask slice 上比较了 `BAAI/bge-m3`、`Qwen/Qwen3-Embedding-
 
 早期 tiny/self-test 中，anchor-seeded dense/QuIVer 看起来很乐观：P4 best strategy 曾出现 added_gold=`2`、added_false=`0`。但 P8a 在真实 public Flask slice 上出现了反向信号：FileRecall@1=`1.000`，但 added_gold=`3`、added_false=`15`。
 
+L1 P4 进一步强化了 blocked 结论：`py_django` best anchor strategy added_gold=`0`、added_false=`40`；`go_kubernetes` added_gold=`5`、added_false=`44`。
+
 这正是 research harness 的价值：小样本乐观信号被更真实的 corpus 约束住了。当前结论不是“anchor-seeded 不行”，而是：anchor-seeded 方向仍值得继续，但必须继续 supporting-only，并重点优化 span targeting 与 false-span suppression。
 
 ### 2.7 QuIVer 仍是诊断阶段，但 BQ 信号不再是空的
 
 P3 在真实 embedding 上做了 BQ readiness 诊断。Flask slice 上 BQ_overlap@10=`0.680`、BQ_overlap@50=`0.728`、BQ_vs_f32_MRR=`1.000`，quiver_fit 标记为 `promising`。这说明 BQ/QuIVer 方向值得继续，而不是直接放弃。
+
+L1 P3 在更大 slice 上仍有非空 BQ 诊断信号：Django 标记为 `promising`，Kubernetes 为 `mixed`。这仍只是 BQ diagnostic，不是 QuIVer graph/ANN quality。
 
 但 QuIVer graph/Vamana 后端尚未实现，当前没有 ANN graph quality claim。QuIVer 仍然只能是 diagnostic/prototype-only。
 
@@ -97,7 +102,7 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 |---|---|---|
 | RRF 应保留为 recall base。 | R29 强支持，但必须配 guard。 | 在人工与 stress tier 上 guard 后仍稳定召回。 |
 | symbol/regex 应作为 precision anchor。 | 强支持。 | 更广 symbol repair 后 false-positive 不升。 |
-| dense 目前应保持 supporting-only。 | 当前证据支持这个安全边界；promotion 需要更大真实 provider 验证。 | 更大数据上 added_gold > added_false。 |
+| dense 目前应保持 supporting-only。 | 当前 L1/L2 证据已经 blocking dense-only/global dense 的 primary/default。 | 更安全的 view/anchoring 能稳定 added_gold > added_false 且 PFP 低。 |
 | anchor-seeded dense/QuIVer 可能比 global dense 更安全。 | 有希望但信号混合。 | 多 repo 上可复验地抑制 false span。 |
 | BQ 诊断可能适配当前 code embedding 分布。 | Flask 诊断信号积极。 | 分片 BQ/proto graph 在速度/质量上有优势且不增 false。 |
 | 小 embedding 模型可能足够。 | P9 初步支持继续比较。 | 更多 repo 同任务并记录 latency/cost。 |
@@ -201,6 +206,7 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 - `docs/r45-promotion-candidate-report.md` — R30-R45 conclusion checkpoint。
 - `docs/real-provider-p7-summary.md` — P1-P6 real-provider summary。
 - `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results。
+- `docs/real-provider-ci-large-scale.zh.md` — L1/L2 大型真实-provider测试结论。
 
 ---
 
@@ -208,16 +214,17 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 
 下一步不是 promotion，而是更大、更细、更可复现的验证：
 
-1. 在相同 public task set 上扩大 P8/P9 的 repo/task/record cap，验证 dense file recall 是否稳定。
-2. 对 JS/Go/Rust/Python 都跑 P3/P4，不只在 Flask 上看 QuIVer/anchor-seeded 信号。
-3. 在同一任务集上继续比较 bge-m3 与 Qwen 0.6B/4B/8B，加入 latency/cost。
-4. 把 P5 stress traps 接入 anchored dense/QuIVer 验证，看 added_gold 是否持续大于 added_false。
-5. 在 R26/R38 上复验 symbol repair 和 regex normalization，重点看 bucket regression。
-6. 把 real dense support score 接入 admission_v2 研究，但只作为 supporting feature。
-7. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
+1. 将 L2 task set 固定为可复现 suite，避免 task generation drift。
+2. 在 L2 上验证更安全的 multi-view / lexical-seeded dense variant，但仍保持 remote-safe 与 supporting-only。
+3. 在完成 false-span analysis 后，再把 P3/P4 扩到更多 repo。
+4. 在同一任务集上继续比较 bge-m3 与 Qwen 0.6B/4B/8B，加入 latency/cost。
+5. 把 P5 stress traps 接入 anchored dense/QuIVer 验证，看 added_gold 是否持续大于 added_false。
+6. 在 R26/R38 上复验 symbol repair 和 regex normalization，重点看 bucket regression。
+7. 把 real dense support score 接入 admission_v2 研究，但只作为 supporting feature。
+8. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
 
 ---
 
 ## 9. 当前一句话总结
 
-OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 都有研究价值，但必须作为 supporting/diagnostic/candidate 层存在。下一阶段的关键问题是：在更大 public corpus 与 stress traps 上，anchor-seeded real-model retrieval 能否稳定增加 gold，同时不增加 false-primary 与 false-span。
+OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 都有研究价值，但必须作为 supporting/diagnostic/candidate 层存在。L1/L2 大型 slice 测试进一步证明，dense-only/global dense 不能 primary/default；下一阶段的关键问题是：更好的 view、lexical/symbol seeded retrieval、sharding 与 span-aware rerank 能否让 real-model retrieval 稳定增加 gold，同时不增加 false-primary 与 false-span。

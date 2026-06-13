@@ -22,14 +22,18 @@ below.
 - [R45 promotion candidate report](r45-promotion-candidate-report.md)
 - [Real-provider P7 summary](real-provider-p7-summary.md)
 - [Real-provider CI scale-up P8/P9](real-provider-ci-scale-p8-p9.md)
+- [Real-provider CI large-repo slice results zh](real-provider-ci-large-scale.zh.md)
+- [Real-provider CI large-repo slice results en](real-provider-ci-large-scale.en.md)
 
 ## Current one-line conclusion
 
 OpenLocus has established a safe research direction: local evidence-gated
-lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer,
-LLM-derived views, and graph signals are valuable only as supporting,
-diagnostic, or candidate layers for now.
+lexical/symbol/RRF retrieval is the backbone. The L1/L2 large-slice tests make
+the boundary sharper: real embeddings have candidate/file-level signal, but
+dense-only/global dense is unstable at larger scale and must remain
+supporting-only.
 
 OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated
-lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph
-都有研究价值，但目前必须作为 supporting、diagnostic 或 candidate 层存在。
+lexical/symbol/RRF 是事实检索主干。L1/L2 大型 slice 测试让边界更清楚：真实
+embedding 有 candidate/file-level 信号，但 dense-only/global dense 在更大规模下不稳定，
+必须继续 supporting-only。

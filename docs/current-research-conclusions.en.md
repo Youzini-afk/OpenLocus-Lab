@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Scope: R0-R45, real-provider P1-P9, and the first GitHub Actions real-provider scale-up.
+Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, and L1/L2 real-provider large-repo-slice tests.
 
 Status: Research summary, not a promotion request.
 
@@ -19,7 +19,7 @@ candidate != fact
 candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
 ```
 
-Within that system, real embedding models now show clear **file-level recall signal**, but they have not yet proven safe as primary span evidence. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now.
+Within that system, real embedding models now show **candidate/file-level recall signal**, but the L1/L2 large-slice tests also show that dense-only/global dense is unstable at larger scale, with low SpanF0.5 and high primary false-positive risk. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now.
 
 ---
 
@@ -30,6 +30,7 @@ Within that system, real embedding models now show clear **file-level recall sig
 | **Strong: EvidenceCore, materialization gates, citation validation, CI privacy gates** | Safety architecture is working: current-file validation, `content_sha`, strict line ranges, citation validity, RUN/SCORE separation. | Does not prove any retrieval strategy should be default. |
 | **Strong for failure discovery: R29 on R26 auto-stress 1100 tasks** | RRF/symbol/guard/dense_mock/graph failure patterns are visible across broad stress buckets. | R26 labels are weak/mined/deterministic; not human promotion evidence. |
 | **Moderate: real-provider P8/P9 CI scale-up** | Real embeddings show initial, repeatable file-level recall signal on bounded public repo slices; QuIVer BQ diagnostics are worth continuing. | Samples are small; span quality and default safety are not proven. |
+| **Moderate-to-strong negative evidence: L1/L2 large-repo slices** | Dense-only/global dense is unstable on larger slices; all four L2 repos had PFP=`1.0`, and SpanF0.5 remained extremely low. | Still not a full-repo exhaustive benchmark; does not prove all embeddings/views are useless. |
 | **Directional: P1-P7 self-tests and bounded runs** | Provider, LLM status, local harness, and initial anchor-seeded hypotheses work mechanically. | Tiny/self-test outcomes can be contradicted by larger public corpus runs. |
 | **Not quality evidence: dense_mock, LLM-generated stress, unavailable QuIVer/TDB** | Useful for safety, failure discovery, and plumbing. | Must not be used as semantic quality or promotion evidence. |
 
@@ -57,9 +58,9 @@ It still cannot be promoted. R23 showed many bucket regressions, and R26/R29 are
 
 ### 2.4 Real embeddings help file recall but not span evidence yet
 
-P8/P9 CI scale-up shows initial, repeatable file-level recall signal on bounded public corpus slices, but stability still needs larger validation. For example, the bounded Flask P2 run achieved FileRecall@1=`0.800` and FileRecall@3=`1.000`; in the multilingual bge-m3 smoke, Go/Python were strong, Rust was moderate, and JavaScript Express was weaker.
+P8/P9 CI scale-up showed initial, repeatable file-level recall signal on bounded public corpus slices. For example, the bounded Flask P2 run achieved FileRecall@1=`0.800` and FileRecall@3=`1.000`; in the multilingual bge-m3 smoke, Go/Python were strong, Rust was moderate, and JavaScript Express was weaker.
 
-However, SpanF0.5 remains low, typically around `0.067` to `0.143`. Dense retrieval is currently a file/candidate-support channel, not a primary span-evidence channel.
+The later L1/L2 large-slice tests weakened this optimistic signal. At 60 tasks / 1000 records / 2000 files, Django/Kubernetes dropped to roughly `0.25` FileRecall@1, Next.js/Deno were near `0`, all four repos had primary_false_positive_rate=`1.0`, and the best SpanF0.5 was only about `0.022`. Dense retrieval is currently a candidate-support channel, not a primary span-evidence channel.
 
 ### 2.5 Bigger embedding models did not dominate in the first slice
 
@@ -71,11 +72,15 @@ This does not prove smaller models are better, but it is enough to avoid assumin
 
 Early tiny/self-tests made anchor-seeded dense/QuIVer look promising: P4 once showed added_gold=`2` and added_false=`0`. But P8a on a real public Flask slice produced the opposite caution signal: FileRecall@1=`1.000`, but added_gold=`3` and added_false=`15`.
 
+L1 P4 strengthened the block: on `py_django`, the best anchor strategy had added_gold=`0` and added_false=`40`; on `go_kubernetes`, it had added_gold=`5` and added_false=`44`.
+
 This is exactly why the research harness matters: a small optimistic signal was constrained by a more realistic corpus slice. The conclusion is not that anchor-seeding is useless; it is that anchor-seeded dense/QuIVer must remain supporting-only while span targeting and false-span suppression are improved.
 
 ### 2.7 QuIVer is still diagnostic, but BQ signals are no longer empty
 
 P3 ran BQ readiness diagnostics on real embeddings. On the Flask slice, BQ_overlap@10=`0.680`, BQ_overlap@50=`0.728`, BQ_vs_f32_MRR=`1.000`, and quiver_fit was marked `promising`. This means the BQ/QuIVer direction is worth continuing.
+
+L1 P3 kept BQ diagnostics non-empty on larger slices: Django was marked `promising`, Kubernetes `mixed`. This remains BQ diagnostic evidence only, not QuIVer graph/ANN quality.
 
 But the QuIVer graph/Vamana backend is not implemented, and no ANN graph quality claim exists yet. QuIVer remains diagnostic/prototype-only.
 
@@ -97,7 +102,7 @@ The useful role for LLMs is query aliases, symbol tags, intent views, and failur
 |---|---|---|
 | RRF should remain the recall base. | Strongly supported by R29, but needs guard. | Stable recall under guard across human-reviewed and stress tiers. |
 | Symbol/regex should be precision anchors. | Strongly supported. | Broader symbol repair validation without PFP increase. |
-| Dense should remain supporting-only for now. | Current evidence supports this safety boundary; promotion requires larger real-provider validation. | Dense adds gold more than false across larger R26/R38/CI medium slices. |
+| Dense should remain supporting-only for now. | Current L1/L2 evidence blocks dense-only/global dense as primary/default. | Safer views/anchoring add gold more than false spans with low PFP. |
 | Anchor-seeded dense/QuIVer may be safer than global dense. | Plausible but mixed. | P4-like tests on multiple repos show repeatable false-span suppression. |
 | BQ diagnostics may be compatible with current code-embedding distributions. | Diagnostic signal promising on Flask. | Sharded BQ/proto graph beats flat f32 or improves latency without false-span growth. |
 | Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
@@ -201,6 +206,7 @@ Key detailed reports:
 - `docs/r45-promotion-candidate-report.md` — R30-R45 conclusion checkpoint.
 - `docs/real-provider-p7-summary.md` — P1-P6 real-provider summary.
 - `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results.
+- `docs/real-provider-ci-large-scale.en.md` — L1/L2 real-provider large-scale results.
 
 ---
 
@@ -208,16 +214,17 @@ Key detailed reports:
 
 The next step is not promotion. It is larger, more granular, more reproducible validation:
 
-1. Increase P8/P9 repo/task/record caps on the same public task sets to test whether dense file recall is stable.
-2. Run P3/P4 across JS/Go/Rust/Python, not only Flask.
-3. Continue bge-m3 vs Qwen 0.6B/4B/8B bakeoffs on identical task sets, including latency/cost.
-4. Feed P5 stress traps into anchored dense/QuIVer validation and measure whether added_gold consistently exceeds added_false.
-5. Re-validate symbol repair and regex normalization on R26/R38, focusing on bucket regressions.
-6. Add real dense support scores to admission_v2 research, but only as supporting features.
-7. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
+1. Freeze the L2 task set into a reproducible suite to avoid task-generation drift.
+2. Run safer multi-view / lexical-seeded dense variants on L2, still remote-safe and supporting-only.
+3. Extend P3/P4 beyond Django/Kubernetes only after false-span analysis.
+4. Continue bge-m3 vs Qwen 0.6B/4B/8B bakeoffs on identical task sets, including latency/cost.
+5. Feed P5 stress traps into anchored dense/QuIVer validation and measure whether added_gold consistently exceeds added_false.
+6. Re-validate symbol repair and regex normalization on R26/R38, focusing on bucket regressions.
+7. Add real dense support scores to admission_v2 research, but only as supporting features.
+8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
 
 ---
 
 ## 9. Current Bottom Line
 
-OpenLocus has established a safe research direction: local evidence-gated lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only as supporting/diagnostic/candidate layers for now. The next key question is whether anchor-seeded real-model retrieval can consistently add gold without increasing false-primary or false-span rates on larger public corpora and stress traps.
+OpenLocus has established a safe research direction: local evidence-gated lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only as supporting/diagnostic/candidate layers for now. The L1/L2 large-slice tests further show that dense-only/global dense cannot be primary/default. The next key question is whether better views, lexical/symbol seeded retrieval, sharding, and span-aware reranking can make real-model retrieval add gold consistently without increasing false-primary or false-span rates.
