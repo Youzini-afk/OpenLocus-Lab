@@ -568,9 +568,41 @@ def hard_negative_hit(evidence: list[dict[str, Any]], label: dict[str, Any]) -> 
     return False
 
 
-def rank_tasks(tasks: list[dict[str, Any]], records_by_repo: dict[str, list[ViewRecord]], provider: str, top_k: int) -> tuple[list[dict[str, Any]], list[int]]:
+def rank_tasks(
+    tasks: list[dict[str, Any]],
+    records_by_repo: dict[str, list[ViewRecord]],
+    provider: str,
+    top_k: int,
+) -> tuple[list[dict[str, Any]], list[int], dict[str, Any]]:
     predictions: list[dict[str, Any]] = []
     latencies: list[int] = []
+    query_vectors: dict[str, list[float]] = {}
+    query_remote_stats: dict[str, Any] = {"remote_calls": 0, "remote_requests": 0, "remote_texts": 0}
+
+    if provider != "local_token_hash":
+        query_texts: list[str] = []
+        query_keys: list[str] = []
+        for task in tasks:
+            query = task["query"]
+            tid = task.get("test_id") or task.get("task_id")
+            if tid and not text_has_secret(query):
+                query_keys.append(str(tid))
+                query_texts.append(f"query {query}")
+        if query_texts:
+            try:
+                vectors, stats = remote_embed_detailed(query_texts)
+                query_vectors = dict(zip(query_keys, vectors))
+                query_remote_stats = {
+                    "remote_calls": len(query_texts),
+                    "remote_requests": stats.get("remote_requests", 0),
+                    "remote_texts": stats.get("remote_texts", len(query_texts)),
+                    "batch_size": stats.get("batch_size"),
+                }
+            except RemoteEmbeddingProviderError as exc:
+                query_remote_stats = {"remote_calls": 0, "remote_requests": 0, "remote_texts": 0, **exc.as_public_dict()}
+            except Exception as exc:
+                query_remote_stats = {"remote_calls": 0, "remote_requests": 0, "remote_texts": 0, "error_type": type(exc).__name__}
+
     for task in tasks:
         started = time.time()
         tid = task.get("test_id") or task.get("task_id")
@@ -580,13 +612,7 @@ def rank_tasks(tasks: list[dict[str, Any]], records_by_repo: dict[str, list[View
         if provider == "local_token_hash":
             query_vec = token_hash_embedding(f"query {query}")
         else:
-            if text_has_secret(query):
-                query_vec = []
-            else:
-                try:
-                    query_vec = remote_embed([f"query {query}"])[0]
-                except Exception:
-                    query_vec = []
+            query_vec = query_vectors.get(str(tid), [])
         scored = sorted(((cosine(query_vec, rec.vector or []), rec) for rec in candidates), key=lambda x: x[0], reverse=True)
         evidence = []
         for score, rec in scored[:top_k]:
@@ -613,7 +639,7 @@ def rank_tasks(tasks: list[dict[str, Any]], records_by_repo: dict[str, list[View
             "latency_ms": latency_ms,
             "returncode": 0,
         })
-    return predictions, latencies
+    return predictions, latencies, query_remote_stats
 
 
 def percentile(values: list[int], pct: float) -> int:
@@ -800,13 +826,14 @@ def run_bakeoff(args: argparse.Namespace) -> dict[str, Any]:
             records_by_repo: dict[str, list[ViewRecord]] = {}
             for rec in records:
                 records_by_repo.setdefault(rec.repo_id, []).append(rec)
-            predictions, latencies = rank_tasks(tasks[: args.max_tasks], records_by_repo, provider, args.top_k)
+            predictions, latencies, query_remote_stats = rank_tasks(tasks[: args.max_tasks], records_by_repo, provider, args.top_k)
             run_outputs[view] = {
                 "records": records,
                 "records_by_repo": records_by_repo,
                 "predictions": predictions,
                 "latencies": latencies,
                 "embed_status": embed_status,
+                "query_remote_stats": query_remote_stats,
             }
 
         # SCORE phase starts here: labels are loaded only after all RUN outputs
@@ -821,18 +848,27 @@ def run_bakeoff(args: argparse.Namespace) -> dict[str, Any]:
             predictions = run_output["predictions"]
             latencies = run_output["latencies"]
             embed_status = run_output["embed_status"]
+            query_remote_stats = run_output.get("query_remote_stats", {})
             current = metrics_for(predictions, labels, repo_roots, latencies)
             current["delta_vs_r29_baseline"] = delta(current, baseline)
             current["embedding_cost_estimate"] = 0.0 if provider == "local_token_hash" else None
             current["index_build_time_ms"] = embed_status.get("latency_ms", 0)
             current["vector_store_size"] = len(records)
-            current["remote_calls"] = embed_status.get("remote_calls", 0)
+            current["remote_calls"] = embed_status.get("remote_calls", 0) + query_remote_stats.get("remote_calls", 0)
+            current["remote_requests"] = embed_status.get("remote_requests", 0) + query_remote_stats.get("remote_requests", 0)
+            current["remote_texts"] = embed_status.get("remote_texts", 0) + query_remote_stats.get("remote_texts", 0)
             build_summaries[view] = {
                 "records": len(records),
                 "repos": len(records_by_repo),
-                "remote_calls": embed_status.get("remote_calls", 0),
-                "remote_requests": embed_status.get("remote_requests", 0),
-                "remote_texts": embed_status.get("remote_texts", 0),
+                "record_remote_calls": embed_status.get("remote_calls", 0),
+                "record_remote_requests": embed_status.get("remote_requests", 0),
+                "record_remote_texts": embed_status.get("remote_texts", 0),
+                "query_remote_calls": query_remote_stats.get("remote_calls", 0),
+                "query_remote_requests": query_remote_stats.get("remote_requests", 0),
+                "query_remote_texts": query_remote_stats.get("remote_texts", 0),
+                "remote_calls": current["remote_calls"],
+                "remote_requests": current["remote_requests"],
+                "remote_texts": current["remote_texts"],
                 "batch_size": embed_status.get("batch_size"),
             }
             reports[view] = {"status": "ok", "metrics": current}

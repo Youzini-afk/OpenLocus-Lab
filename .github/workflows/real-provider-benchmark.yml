@@ -77,7 +77,7 @@ jobs:
   real-provider:
     name: ${{ inputs.stage }}
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     environment: production
     env:
       CARGO_TERM_COLOR: always
@@ -156,9 +156,9 @@ jobs:
           if not view_list or any(view not in allowed_views for view in view_list):
               raise SystemExit("real-provider CI currently allows only path_plus_symbol")
           views = ",".join(view_list)
-          max_tasks = positive_int("INPUT_MAX_TASKS", 20)
-          max_records = positive_int("INPUT_MAX_RECORDS", 200)
-          max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 500)
+          max_tasks = positive_int("INPUT_MAX_TASKS", 100)
+          max_records = positive_int("INPUT_MAX_RECORDS", 1000)
+          max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 3000)
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
 
           if remote_enabled:
