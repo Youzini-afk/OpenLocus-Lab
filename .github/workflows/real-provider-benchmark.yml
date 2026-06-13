@@ -1,0 +1,333 @@
+name: real-provider-benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Real-provider stage to run'
+        required: false
+        default: 'all_smoke'
+        type: choice
+        options:
+          - p2_embedding
+          - p3_quiver_readiness
+          - p4_anchor_proto
+          - p5_llm_stress
+          - all_smoke
+      enable_remote_models:
+        description: 'Allow real embedding / LLM providers from production environment'
+        required: false
+        default: false
+        type: boolean
+      views:
+        description: 'Comma-separated embedding views; remote runs should use path_plus_symbol first'
+        required: false
+        default: 'path_plus_symbol'
+      max_tasks:
+        description: 'Task/query cap for smoke runs'
+        required: false
+        default: '3'
+      max_records:
+        description: 'Record cap for embedding/index diagnostics'
+        required: false
+        default: '40'
+      max_stress_tasks:
+        description: 'P5 stress task cap'
+        required: false
+        default: '24'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}
+  cancel-in-progress: false
+
+jobs:
+  real-provider:
+    name: ${{ inputs.stage }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: production
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Build OpenLocus CLI
+        run: cargo build --locked -p openlocus-cli
+
+      - name: Plan real-provider run
+        id: plan
+        env:
+          INPUT_STAGE: ${{ inputs.stage }}
+          INPUT_ENABLE_REMOTE: ${{ inputs.enable_remote_models }}
+          INPUT_VIEWS: ${{ inputs.views }}
+          INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
+          INPUT_MAX_RECORDS: ${{ inputs.max_records }}
+          INPUT_MAX_STRESS_TASKS: ${{ inputs.max_stress_tasks }}
+          VAR_EMBEDDING_PROVIDER: ${{ vars.OPENLOCUS_EMBEDDING_PROVIDER }}
+          VAR_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
+          VAR_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          VAR_LLM_PROVIDER: ${{ vars.OPENLOCUS_LLM_PROVIDER }}
+          VAR_LLM_MODEL: ${{ vars.OPENLOCUS_LLM_MODEL }}
+          VAR_REMOTE_DATA_LEVEL: ${{ vars.OPENLOCUS_REMOTE_DATA_LEVEL }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "all_smoke"}
+          allowed_views = {"path_plus_symbol"}
+          provider_aliases = {"openai": "openai-compatible", "openai_compatible": "openai-compatible", "openai-compatible": "openai-compatible"}
+
+          def getenv(name: str, default: str = "") -> str:
+              value = os.environ.get(name, default)
+              if any(ch in value for ch in "\r\n\0"):
+                  raise SystemExit(f"{name} contains a disallowed control character")
+              return value
+
+          def positive_int(name: str, upper: int) -> int:
+              raw = getenv(name)
+              if not re.fullmatch(r"[1-9][0-9]*", raw):
+                  raise SystemExit(f"{name} must be a positive integer")
+              value = int(raw)
+              if value > upper:
+                  raise SystemExit(f"{name} exceeds cap {upper}")
+              return value
+
+          stage = getenv("INPUT_STAGE", "all_smoke")
+          if stage not in allowed_stages:
+              raise SystemExit(f"unsupported stage: {stage}")
+          remote_enabled = getenv("INPUT_ENABLE_REMOTE", "false").lower() == "true"
+          views = getenv("INPUT_VIEWS", "path_plus_symbol")
+          view_list = [view.strip() for view in views.split(",") if view.strip()]
+          if not view_list or any(view not in allowed_views for view in view_list):
+              raise SystemExit("real-provider CI currently allows only path_plus_symbol")
+          views = ",".join(view_list)
+          max_tasks = positive_int("INPUT_MAX_TASKS", 20)
+          max_records = positive_int("INPUT_MAX_RECORDS", 200)
+          max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
+
+          if remote_enabled:
+              embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
+              llm_provider = provider_aliases.get(getenv("VAR_LLM_PROVIDER", "openai_compatible"))
+              if not embedding_provider or not llm_provider:
+                  raise SystemExit("unsupported provider variable")
+              if not getenv("VAR_EMBEDDING_MODEL"):
+                  raise SystemExit("missing OPENLOCUS_EMBEDDING_MODEL variable")
+              if not getenv("VAR_LLM_MODEL"):
+                  raise SystemExit("missing OPENLOCUS_LLM_MODEL variable")
+          else:
+              embedding_provider = "local_token_hash"
+              llm_provider = "offline_deterministic"
+
+          Path("artifacts/real_provider_ci").mkdir(parents=True, exist_ok=True)
+          Path("docs/real-provider-ci").mkdir(parents=True, exist_ok=True)
+          outputs = {
+              "stage": stage,
+              "views": views,
+              "max_tasks": str(max_tasks),
+              "max_records": str(max_records),
+              "max_stress_tasks": str(max_stress_tasks),
+              "embedding_provider": embedding_provider,
+              "llm_provider": llm_provider,
+              "allow_remote": "1" if remote_enabled else "0",
+          }
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for key, value in outputs.items():
+                  f.write(f"{key}={value}\n")
+          plan = {
+              "schema_version": "real-provider-ci-plan-v1",
+              "stage": stage,
+              "remote_enabled": remote_enabled,
+              "embedding_provider": embedding_provider,
+              "llm_provider": llm_provider,
+              "views": views,
+              "max_tasks": max_tasks,
+              "max_records": max_records,
+              "max_stress_tasks": max_stress_tasks,
+              "provider_url_or_key_committed": False,
+              "promotion_ready": False,
+              "default_should_change": False,
+          }
+          Path("artifacts/real_provider_ci/plan.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+
+      - name: P2 embedding view bakeoff smoke
+        if: ${{ inputs.stage == 'p2_embedding' || inputs.stage == 'all_smoke' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          VIEWS: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/r32_embedding_view_bakeoff.py --self-test --provider "$PROVIDER")
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--views "$VIEWS" --max-tasks "$MAX_TASKS" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p2_embedding_view_bakeoff.json --doc docs/real-provider-ci/p2-embedding-view-bakeoff.md)
+          "${cmd[@]}"
+
+      - name: P3 QuIVer readiness smoke
+        if: ${{ inputs.stage == 'p3_quiver_readiness' || inputs.stage == 'all_smoke' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          VIEWS: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/r33_quiver_readiness.py --self-test --provider "$PROVIDER")
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--views "$VIEWS" --max-queries "$MAX_TASKS" --max-records "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p3_quiver_readiness.json --doc docs/real-provider-ci/p3-quiver-readiness.md)
+          "${cmd[@]}"
+
+      - name: P4 anchor-seeded diagnostic smoke
+        if: ${{ inputs.stage == 'p4_anchor_proto' || inputs.stage == 'all_smoke' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          VIEWS: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/r34_r36_quiver_anchor_proto.py --self-test --provider "$PROVIDER")
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--views "$VIEWS" --max-tasks "$MAX_TASKS" --max-records "$MAX_RECORDS" --bq-limit 20 --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p4_quiver_anchor_proto.json --doc docs/real-provider-ci/p4-quiver-anchor-proto.md)
+          "${cmd[@]}"
+
+      - name: P5 LLM derived/stress smoke
+        if: ${{ inputs.stage == 'p5_llm_stress' || inputs.stage == 'all_smoke' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_LLM_MODEL: ${{ vars.OPENLOCUS_LLM_MODEL }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.llm_provider }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_STRESS_TASKS: ${{ steps.plan.outputs.max_stress_tasks }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/r37_r38_llm_derived_stress.py --self-test --provider "$PROVIDER")
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--max-tasks "$MAX_TASKS" --max-records "$MAX_RECORDS" --max-stress-tasks "$MAX_STRESS_TASKS" --openlocus target/debug/openlocus --derived-out artifacts/real_provider_ci/p5_llm_derived_views.jsonl --stress-tasks-out artifacts/real_provider_ci/p5_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p5_llm_stress_labels.private.jsonl" --out artifacts/real_provider_ci/p5_llm_derived_stress.json --doc docs/real-provider-ci/p5-llm-derived-stress.md)
+          "${cmd[@]}"
+
+      - name: Validate artifacts and privacy gates
+        env:
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import pathlib
+          import re
+
+          roots = [pathlib.Path("artifacts/real_provider_ci"), pathlib.Path("docs/real-provider-ci")]
+          p5_report = pathlib.Path("artifacts/real_provider_ci/p5_llm_derived_stress.json")
+          if p5_report.exists():
+              data = json.loads(p5_report.read_text(encoding="utf-8"))
+              stress_dataset = data.get("stress_dataset")
+              if isinstance(stress_dataset, dict) and "private_labels" in stress_dataset:
+                  stress_dataset["private_labels"] = "not_uploaded_in_ci"
+                  p5_report.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+          secret_values = [
+              os.environ.get("OPENLOCUS_EMBEDDING_BASE_URL"),
+              os.environ.get("OPENLOCUS_EMBEDDING_API_KEY"),
+              os.environ.get("OPENLOCUS_LLM_BASE_URL"),
+              os.environ.get("OPENLOCUS_LLM_API_KEY"),
+          ]
+          secret_values = [value for value in secret_values if value]
+          secret_patterns = [
+              re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
+              re.compile(r"(?i)authorization\s*[:=]"),
+              re.compile(r"(?i)bearer\s+[A-Za-z0-9_.-]{20,}"),
+              re.compile(r"(?i)(api_key|base_url)\s*[:=]"),
+          ]
+          violations = []
+          for root in roots:
+              if not root.exists():
+                  continue
+              for path in root.rglob("*"):
+                  if not path.is_file():
+                      continue
+                  text = path.read_text(encoding="utf-8", errors="ignore")
+                  if any(value in text for value in secret_values):
+                      violations.append(str(path))
+                  if any(pattern.search(text) for pattern in secret_patterns):
+                      violations.append(str(path))
+          if violations:
+              raise SystemExit("secret leak in artifacts: " + ", ".join(sorted(set(violations))))
+
+          for json_path in pathlib.Path("artifacts/real_provider_ci").glob("*.json"):
+              data = json.loads(json_path.read_text(encoding="utf-8"))
+              if data.get("promotion_ready") is not False:
+                  raise SystemExit(f"{json_path} does not explicitly keep promotion_ready=false")
+              if data.get("default_should_change") is not False:
+                  raise SystemExit(f"{json_path} does not explicitly keep default_should_change=false")
+              stress_dataset = data.get("stress_dataset")
+              if isinstance(stress_dataset, dict) and stress_dataset.get("private_labels") not in {None, "not_uploaded_in_ci"}:
+                  raise SystemExit(f"{json_path} contains a private label artifact path")
+
+          public_path = pathlib.Path("artifacts/real_provider_ci/p5_llm_stress_public.jsonl")
+          if public_path.exists():
+              allowed = {"test_id", "repo_id", "query", "public_version", "source"}
+              for line in public_path.read_text(encoding="utf-8").splitlines():
+                  if line.strip() and not set(json.loads(line)) <= allowed:
+                      raise SystemExit("P5 public stress task leaked private fields")
+
+          print("real-provider CI artifact validation ok")
+          PY
+
+      - name: Upload real-provider artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/plan.json
+            artifacts/real_provider_ci/*.json
+            artifacts/real_provider_ci/p5_llm_derived_views.jsonl
+            artifacts/real_provider_ci/p5_llm_stress_public.jsonl
+            docs/real-provider-ci/*.md
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+          if-no-files-found: warn
+          retention-days: 14
