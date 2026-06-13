@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, and initial P20-LS offline harness results.
+Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, and P20-LS/P20-LS-A LLM query-alias results.
 
 Status: Research summary, not a promotion request.
 
@@ -94,7 +94,7 @@ The real LLM provider has run successfully, and P5 generated derived/stress outp
 
 The useful role for LLMs is query aliases, symbol tags, intent views, and failure/stress generation. LLMs can expand the failure surface, but they cannot replace EvidenceCore.
 
-The initial P20-LS offline harness makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The first 8-task R26 negative slice is intentionally not a quality proof; it is a caution signal. Offline deterministic aliases added false spans (`alias_added_false_span=204`, `alias_added_gold_span=0`), increased PFP for direct alias strategies by `+0.625`, and had `fabricated_identifier_rate=1.0`. Therefore LS1 quality is blocked in this slice; aliases may continue only as a constrained experiment, preferably behind guard/supporting paths and existence filters.
+P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The initial offline slice was already a caution signal. P20-LS-A then ran the real LLM provider (`[mk]Kimi-K2.7-Code`) on self-test plus 9 real CI corpus runs. Safety/schema behavior was acceptable, but direct alias quality failed completely: 0/9 real runs passed quality, added_gold_span=`289` vs added_false_span=`8312` (~28.8:1 false:gold), and average fabricated_identifier_rate was ~`0.459`. Direct LLM query aliases are therefore blocked for scale-up. Future alias research must be separately named and guarded, e.g. existence-filtered and guard-supporting only.
 
 ---
 
@@ -109,7 +109,7 @@ The initial P20-LS offline harness makes this boundary executable: LS0 validates
 | BQ diagnostics may be compatible with current code-embedding distributions. | Diagnostic signal promising on Flask. | Sharded BQ/proto graph beats flat f32 or improves latency without false-span growth. |
 | Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
 | LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Derived views add gold or stress coverage without inducing primary hallucinations. |
-| LLM query aliases can improve anchors without pollution. | Initial P20-LS offline slice blocks direct alias expansion; guard-supporting alias mode avoided extra PFP in this small negative slice. | Large public/provider runs show `alias_added_gold > alias_added_false`, no PFP increase, low fabricated identifier rate, and stable guard recall. |
+| LLM query aliases can improve anchors without pollution. | Direct P20-LS-A query aliases are blocked for `[mk]Kimi-K2.7-Code`: 0/9 real quality pass, false:gold span ≈28.8:1, avg fabricated identifier rate≈0.459. | Only a new guarded variant could revive this: existence-filtered aliases, LLM aliases never admitting primary alone, `alias_added_gold > alias_added_false`, no PFP increase, and low fabricated identifier rate. |
 
 ---
 
@@ -123,7 +123,7 @@ These negative results are among the most valuable findings because they prevent
 4. **Graph expansion is repeatedly net-negative**: graph_basic mostly adds false spans and almost no gold.
 5. **Larger embedding models did not win the first bakeoff**: 8B did not dominate 0.6B/4B/bge-m3.
 6. **JS Express underperformed Go/Python/Rust**: embedding quality varies across language/framework buckets.
-7. **P20-LS direct alias expansion polluted negative tasks**: the initial offline slice added false candidates and raised direct alias-strategy PFP; this supports keeping LLM aliases candidate/supporting-only.
+7. **P20-LS direct alias expansion failed real-provider scale-up**: all safety gates passed, but direct aliases produced far more false spans than gold spans (8312 vs 289 on real CI runs), with high fabricated identifier rates. This blocks direct LLM alias scale-up.
 
 ---
 
@@ -148,7 +148,7 @@ The research has established four things with reasonable confidence:
 1. **The fact-layer safety constraints are executable**: EvidenceCore, materialization, and citation validation are implemented across local retrieval, store, graph, dense, and CI runner paths.
 2. **Local lexical/symbol/RRF remain the backbone**: real models did not replace RRF/symbol/regex; they made anchors and guards more important.
 3. **Real models are useful but role-limited**: embeddings have file-level signal, LLMs can expand stress/derived views, and QuIVer BQ deserves continuation; none should directly become facts.
-4. **The experiment system can find counterexamples**: the P4 → P8a shift shows that the harness can challenge tiny optimistic results with more realistic corpus slices.
+4. **The experiment system can find counterexamples**: the P4 → P8a and P20-LS offline → remote scale-up shifts show that the harness can challenge tiny optimistic or merely safe results with realistic corpus slices.
 
 ---
 
@@ -226,9 +226,10 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 6. Re-validate symbol repair and regex normalization on R26/R38, focusing on bucket regressions.
 7. Add real dense support scores to admission_v2 research, but only as supporting features.
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
+9. If LLM query aliases are revisited, test only a separately reported existence-filtered/guard-supporting variant; do not continue direct alias scale-up.
 
 ---
 
 ## 9. Current Bottom Line
 
-OpenLocus has established a safe research direction: local evidence-gated lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only as supporting/diagnostic/candidate layers for now. The L1/L2 large-slice tests further show that dense-only/global dense cannot be primary/default. The next key question is whether better views, lexical/symbol seeded retrieval, sharding, and span-aware reranking can make real-model retrieval add gold consistently without increasing false-primary or false-span rates.
+OpenLocus has established a safe research direction: local evidence-gated lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only as supporting/diagnostic/candidate layers for now. The L1/L2 large-slice tests show that dense-only/global dense cannot be primary/default, and P20-LS-A shows that direct LLM query aliases also cannot be scaled as-is. The next key question is whether better views, lexical/symbol seeded retrieval, existence-filtered aliases, sharding, and span-aware reranking can make real-model retrieval add gold consistently without increasing false-primary or false-span rates.

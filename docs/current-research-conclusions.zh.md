@@ -2,7 +2,7 @@
 
 日期：2026-06-13
 
-范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试，以及 P20-LS 初始离线 harness 结果。
+范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试，以及 P20-LS/P20-LS-A LLM query-alias 结果。
 
 状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
 
@@ -94,7 +94,7 @@ R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 gra
 
 当前 LLM 最适合的角色是：query aliases、symbol tags、intent views、failure/stress generation。它可以扩大失败面，但不能替代 EvidenceCore。
 
-P20-LS 初始离线 harness 把这条边界变成了可执行检查：LS0 做安全预检，LS1 生成 `not_evidence=true` query aliases 并只作为 candidate/supporting 检索扩展评测，LS3 默认只写 public stress split。首个 R26 8-task negative slice 不是质量证明，而是一个反向提醒：offline deterministic aliases 增加了 false spans（`alias_added_false_span=204`、`alias_added_gold_span=0`），direct alias strategies 的 PFP 增加 `+0.625`，`fabricated_identifier_rate=1.0`。因此该 slice 中 LS1 quality blocked；aliases 后续只能作为受约束实验继续，优先放在 guard/supporting 路径，并加 existence filter。
+P20-LS 把这条边界变成了可执行检查：LS0 做安全预检，LS1 生成 `not_evidence=true` query aliases 并只作为 candidate/supporting 检索扩展评测，LS3 默认只写 public stress split。初始离线 slice 已经给出警告信号；随后 P20-LS-A 用真实 LLM provider（`[mk]Kimi-K2.7-Code`）跑了 self-test 与 9 个真实 CI corpus runs。安全/schema 表现可以接受，但 direct alias 质量完全失败：9 个真实 runs 中 0 个 quality pass，added_gold_span=`289`、added_false_span=`8312`（约 28.8:1 false:gold），平均 fabricated_identifier_rate 约 `0.459`。因此 direct LLM query aliases 已经 blocked，不应继续扩大。后续 alias 研究必须单独命名为 guarded variant，例如 existence-filtered + guard-supporting only。
 
 ---
 
@@ -109,7 +109,7 @@ P20-LS 初始离线 harness 把这条边界变成了可执行检查：LS0 做安
 | BQ 诊断可能适配当前 code embedding 分布。 | Flask 诊断信号积极。 | 分片 BQ/proto graph 在速度/质量上有优势且不增 false。 |
 | 小 embedding 模型可能足够。 | P9 初步支持继续比较。 | 更多 repo 同任务并记录 latency/cost。 |
 | LLM-derived 可安全扩大失败面。 | 机制可行，质量未证。 | 增加 gold/失败覆盖且不诱导 primary 幻觉。 |
-| LLM query aliases 能在不污染 primary 的情况下改善 anchor。 | 初始 P20-LS 离线 slice 阻断 direct alias expansion；guard-supporting alias mode 在这个小 negative slice 中没有额外增加 PFP。 | 大规模 public/provider runs 显示 `alias_added_gold > alias_added_false`、PFP 不升、fabricated identifier rate 低、guard recall 稳定。 |
+| LLM query aliases 能在不污染 primary 的情况下改善 anchor。 | Direct P20-LS-A query aliases 对 `[mk]Kimi-K2.7-Code` 已 blocked：真实 runs 0/9 quality pass，false:gold span≈28.8:1，平均 fabricated identifier rate≈0.459。 | 只有新 guarded variant 才可能重新评估：existence-filtered aliases，LLM aliases 不能单独 admit primary，`alias_added_gold > alias_added_false`，PFP 不升，fabricated identifier rate 低。 |
 
 ---
 
@@ -123,7 +123,7 @@ P20-LS 初始离线 harness 把这条边界变成了可执行检查：LS0 做安
 4. **Graph expansion 多次 net-negative**：graph_basic 在 R29 中几乎只加 false，不加 gold。
 5. **更大 embedding 模型未在首批样本中胜出**：8B 没有压倒 0.6B/4B/bge-m3。
 6. **JS Express 表现弱于 Go/Python/Rust**：真实 embedding 质量有语言/框架差异，不能只看平均数。
-7. **P20-LS direct alias expansion 污染 negative tasks**：初始离线 slice 增加 false candidates 并抬高 direct alias-strategy PFP；这支持继续保持 LLM aliases candidate/supporting-only。
+7. **P20-LS direct alias expansion 真实-provider scale-up 失败**：所有 safety gates 通过，但 direct aliases 在真实 CI runs 上 false spans 远多于 gold spans（8312 vs 289），且 fabricated identifier rate 高；这阻断 direct LLM alias scale-up。
 
 ---
 
@@ -148,7 +148,7 @@ P20-LS 初始离线 harness 把这条边界变成了可执行检查：LS0 做安
 1. **事实层安全约束可执行**：EvidenceCore + materialization + citation validation 不是口号，而是已经贯穿本地检索、store、graph、dense、CI runner 的机制。
 2. **本地 lexical/symbol/RRF 仍是主干**：真实模型进场后，并没有取代 RRF/symbol/regex，反而更明确需要它们作为 anchor 与 guard。
 3. **真实模型有价值，但角色有限**：embedding 有 file-level signal，LLM 可扩展 stress/derived views，QuIVer BQ 值得继续；但都不能直接进入事实层。
-4. **实验体系能发现反例**：P4 → P8a 的变化说明系统可以把 tiny 乐观信号拉回现实，这对长期研究非常重要。
+4. **实验体系能发现反例**：P4 → P8a、P20-LS offline → remote scale-up 的变化说明系统可以把 tiny 乐观或“只是安全”的结果拉回现实，这对长期研究非常重要。
 
 ---
 
@@ -226,9 +226,10 @@ P20-LS 初始离线 harness 把这条边界变成了可执行检查：LS0 做安
 6. 在 R26/R38 上复验 symbol repair 和 regex normalization，重点看 bucket regression。
 7. 把 real dense support score 接入 admission_v2 研究，但只作为 supporting feature。
 8. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
+9. 如果重新研究 LLM query aliases，只能测试单独报告的 existence-filtered / guard-supporting variant；不要继续 direct alias scale-up。
 
 ---
 
 ## 9. 当前一句话总结
 
-OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 都有研究价值，但必须作为 supporting/diagnostic/candidate 层存在。L1/L2 大型 slice 测试进一步证明，dense-only/global dense 不能 primary/default；下一阶段的关键问题是：更好的 view、lexical/symbol seeded retrieval、sharding 与 span-aware rerank 能否让 real-model retrieval 稳定增加 gold，同时不增加 false-primary 与 false-span。
+OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 都有研究价值，但必须作为 supporting/diagnostic/candidate 层存在。L1/L2 大型 slice 测试证明 dense-only/global dense 不能 primary/default；P20-LS-A 进一步证明 direct LLM query aliases 也不能按当前形式扩大。下一阶段的关键问题是：更好的 view、lexical/symbol seeded retrieval、existence-filtered aliases、sharding 与 span-aware rerank 能否让 real-model retrieval 稳定增加 gold，同时不增加 false-primary 与 false-span。
