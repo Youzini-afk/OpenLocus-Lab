@@ -1,0 +1,223 @@
+# OpenLocus 当前研究结论
+
+日期：2026-06-13
+
+范围：R0-R45、real-provider P1-P9，以及第一轮 GitHub Actions real-provider 逐规模测试。
+
+状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
+
+---
+
+## 0. 核心研究判断
+
+OpenLocus 当前最重要的研究结论不是“语义检索已经解决”，而是：项目已经形成了一个可以安全研究语义检索、QuIVer、LLM-derived views、graph、admission guard 的 evidence-gated 实验体系。
+
+这个体系的核心不变量是：
+
+```text
+candidate != fact
+candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
+```
+
+在这个体系下，真实向量模型已经显示出清晰的**文件级召回信号**，但还没有证明能够安全提供 primary span evidence。RRF 仍是最强 recall base，symbol/regex 仍是 precision anchor，`query_noise_plus_rrf_agree_min` 仍是当前最值得继续研究的 guard candidate。Dense/QuIVer/LLM-derived/graph 都还不能进入默认 primary 路径。
+
+---
+
+## 1. 证据强度分层
+
+| 证据层级 | 支持什么 | 不支持什么 |
+|---|---|---|
+| **强：EvidenceCore、materialization gates、citation validation、CI privacy gates** | 安全架构成立：当前文件校验、内容哈希、严格 line range、citation validity、RUN/SCORE 分离。 | 不证明任何检索策略应成为默认。 |
+| **强失败面证据：R29 on R26 auto-stress 1100 tasks** | RRF、symbol、guard、dense_mock、graph 的失败模式已经在较宽 stress bucket 中暴露。 | R26 labels 是 weak/mined/deterministic，不是人工 promotion evidence。 |
+| **中等：real-provider P8/P9 CI scale-up** | 真实向量在有界 public repo slice 上出现了初步、可复验的文件级召回信号；QuIVer BQ 诊断值得继续。 | 样本仍小，span quality 与 default safety 未证明。 |
+| **方向性：P1-P7 self-tests 与 bounded runs** | provider、LLM status、local harness、anchor-seeded 假设在机制上可跑。 | tiny/self-test 结果可能被更大 public corpus 推翻。 |
+| **非质量证据：dense_mock、LLM-generated stress、unavailable QuIVer/TDB** | 适合安全验证、失败面发现、管线验证。 | 不能作为 semantic quality 或 promotion evidence。 |
+
+---
+
+## 2. 主要研究结论
+
+### 2.1 RRF 仍是召回底座
+
+RRF 在 R26/R29 上仍然是最强 recall channel：FileRecall@1 约 `0.803`，FileRecall@5 约 `0.923`。这说明多路本地 lexical/symbol 信号融合确实能覆盖更多任务。
+
+但 RRF 的核心风险也很明确：primary false-positive 高，R29 中约 `0.453`。也就是说，RRF 适合做 recall base，但不能裸奔成为 primary admission。它需要 guard、anchor 或 admission model。
+
+### 2.2 Symbol 和 regex 是精度锚点
+
+Symbol 在 R29 中保持了 precision-anchor 角色：SpanF0.5 约 `0.291`，primary_false_positive_rate 约 `0.080`。它的问题不是太吵，而是 abstain 高、覆盖不足。因此，symbol extraction repair 是非常有价值的 recall-safe 改进方向。
+
+Regex 也仍然是基础 anchor，但需要 normalization。用户 query 不应该默认当 raw regex；需要区分 literal search、explicit regex search、identifier search、path search。R39/R40 的结果支持 `regex_hybrid_normalized` 继续扩大验证。
+
+### 2.3 当前最强 guard candidate 仍是 `query_noise_plus_rrf_agree_min`
+
+R29 中 `query_noise_plus_rrf_agree_min` 基本保留了 RRF recall，同时把 RRF 的 primary false-positive 从约 `0.453` 降到约 `0.106`，guard_recall_kill_rate 约 `0.003`。这是目前最清楚的 guard 正信号。
+
+但是它仍然不能 promotion：R23 guard sweep 出现大量 bucket regression，R26/R29 本身也不是人工 high-confidence promotion tier。因此它是“继续深入验证的 guard candidate”，不是默认策略。
+
+### 2.4 真实向量有文件级召回信号，但还不是 span evidence
+
+P8/P9 的 CI scale-up 显示：真实 embedding 在有界 public corpus slice 上出现了初步、可复验的文件级召回信号，但稳定性仍需扩大验证。比如 bounded Flask slice 上 P2 的 FileRecall@1=`0.800`、FileRecall@3=`1.000`；多语言 bge-m3 smoke 中 Go/Python 表现强，Rust 中等，JS Express 更弱。
+
+但 SpanF0.5 很低，典型范围约 `0.067` 到 `0.143`。这说明 dense 当前更像“文件/候选支持通道”，而不是可直接作为 EvidenceCore primary span 的证据通道。
+
+### 2.5 第一批结果没有证明“大模型更好”
+
+P9a 在同一个 Flask slice 上比较了 `BAAI/bge-m3`、`Qwen/Qwen3-Embedding-0.6B`、`Qwen/Qwen3-Embedding-4B`、`Qwen/Qwen3-Embedding-8B`。这个小样本中，8B 没有明显优于小模型；bge-m3 和 Qwen 0.6B/4B 都达到 FileRecall@1=`1.000`，8B 为 `0.800`。
+
+这不能说明小模型一定更好，但足以提醒我们：后续不应默认假设最大 embedding 模型最好，而应在相同任务、corpus、cap 下继续 bakeoff，并同时记录 latency/cost。
+
+### 2.6 Anchor-seeded dense/QuIVer 有希望，但尚不安全
+
+早期 tiny/self-test 中，anchor-seeded dense/QuIVer 看起来很乐观：P4 best strategy 曾出现 added_gold=`2`、added_false=`0`。但 P8a 在真实 public Flask slice 上出现了反向信号：FileRecall@1=`1.000`，但 added_gold=`3`、added_false=`15`。
+
+这正是 research harness 的价值：小样本乐观信号被更真实的 corpus 约束住了。当前结论不是“anchor-seeded 不行”，而是：anchor-seeded 方向仍值得继续，但必须继续 supporting-only，并重点优化 span targeting 与 false-span suppression。
+
+### 2.7 QuIVer 仍是诊断阶段，但 BQ 信号不再是空的
+
+P3 在真实 embedding 上做了 BQ readiness 诊断。Flask slice 上 BQ_overlap@10=`0.680`、BQ_overlap@50=`0.728`、BQ_vs_f32_MRR=`1.000`，quiver_fit 标记为 `promising`。这说明 BQ/QuIVer 方向值得继续，而不是直接放弃。
+
+但 QuIVer graph/Vamana 后端尚未实现，当前没有 ANN graph quality claim。QuIVer 仍然只能是 diagnostic/prototype-only。
+
+### 2.8 Graph expansion 继续 blocked
+
+R25/R29/P6 都支持同一结论：graph 不适合默认 expansion。R29 中 graph_basic added_gold=`0`、added_false=`437`。Graph 更可能适合 explainer、rerank feature、impact/test selector，而不是默认 recall expansion。
+
+### 2.9 LLM-derived 适合 stress 和 hint，不适合事实层
+
+真实 LLM provider 已经跑通，P5 生成了 derived/stress 结果。但这些输出必须保持 `not_evidence=true`：LLM 不能生成 Evidence，不能生成 gold label，不能做 citation verdict，也不能做 promotion verdict。
+
+当前 LLM 最适合的角色是：query aliases、symbol tags、intent views、failure/stress generation。它可以扩大失败面，但不能替代 EvidenceCore。
+
+---
+
+## 3. 当前研究假设
+
+| 假设 | 当前状态 | 需要什么来确认 |
+|---|---|---|
+| RRF 应保留为 recall base。 | R29 强支持，但必须配 guard。 | 在人工与 stress tier 上 guard 后仍稳定召回。 |
+| symbol/regex 应作为 precision anchor。 | 强支持。 | 更广 symbol repair 后 false-positive 不升。 |
+| dense 目前应保持 supporting-only。 | 当前证据支持这个安全边界；promotion 需要更大真实 provider 验证。 | 更大数据上 added_gold > added_false。 |
+| anchor-seeded dense/QuIVer 可能比 global dense 更安全。 | 有希望但信号混合。 | 多 repo 上可复验地抑制 false span。 |
+| BQ 诊断可能适配当前 code embedding 分布。 | Flask 诊断信号积极。 | 分片 BQ/proto graph 在速度/质量上有优势且不增 false。 |
+| 小 embedding 模型可能足够。 | P9 初步支持继续比较。 | 更多 repo 同任务并记录 latency/cost。 |
+| LLM-derived 可安全扩大失败面。 | 机制可行，质量未证。 | 增加 gold/失败覆盖且不诱导 primary 幻觉。 |
+
+---
+
+## 4. 矛盾信号与负结果
+
+这些负结果是目前最有价值的部分之一，因为它们防止研究结论过早乐观：
+
+1. **P4 tiny 乐观信号被 P8a 弱化**：tiny self-test 中 anchor-seeded added_false=`0`，但 public Flask slice 中 added_false=`15`。
+2. **Dense file recall 与 span quality 分离**：多个 P8/P9 结果显示 FileRecall 可以很好，但 SpanF0.5 仍低。
+3. **RRF recall 与 false-primary 绑定**：RRF 强召回同时携带高 false-primary，说明 admission 比 raw recall 更关键。
+4. **Graph expansion 多次 net-negative**：graph_basic 在 R29 中几乎只加 false，不加 gold。
+5. **更大 embedding 模型未在首批样本中胜出**：8B 没有压倒 0.6B/4B/bge-m3。
+6. **JS Express 表现弱于 Go/Python/Rust**：真实 embedding 质量有语言/框架差异，不能只看平均数。
+
+---
+
+## 5. 当前安全边界
+
+目前所有研究结论都依赖以下边界继续成立：
+
+- `EvidenceCore` 仍是唯一事实层。
+- Dense/QuIVer/graph/LLM-derived 只能产出 candidate/supporting/diagnostic，不直接产出 Evidence。
+- Evidence 必须来自当前源文件读取，并通过 `content_sha` 与 line range 校验。
+- RUN phase 不读取 private labels；SCORE phase 才读取 labels。
+- 真实 provider 只在 `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1` 下运行。
+- 报告与 artifacts 不上传 provider URL/key、raw source、private labels、Evidence excerpts。
+- unavailable strategy 只能 reason-only，不能输出假质量数字。
+
+---
+
+## 6. 目前真正建立了什么
+
+目前已经比较稳地建立了四件事：
+
+1. **事实层安全约束可执行**：EvidenceCore + materialization + citation validation 不是口号，而是已经贯穿本地检索、store、graph、dense、CI runner 的机制。
+2. **本地 lexical/symbol/RRF 仍是主干**：真实模型进场后，并没有取代 RRF/symbol/regex，反而更明确需要它们作为 anchor 与 guard。
+3. **真实模型有价值，但角色有限**：embedding 有 file-level signal，LLM 可扩展 stress/derived views，QuIVer BQ 值得继续；但都不能直接进入事实层。
+4. **实验体系能发现反例**：P4 → P8a 的变化说明系统可以把 tiny 乐观信号拉回现实，这对长期研究非常重要。
+
+---
+
+## 7. 阶段摘要索引
+
+详细阶段报告均保留；本节只是索引，不替代原报告。
+
+### R0-R13：本地事实层与安全脚手架
+
+- R0/R1：local evidence kernel、read/scan/search、trace、citation validation。
+- R2：regex/BM25/symbol/RRF local bakeoff。
+- R3：StoreHit materialization gate 与 conservative store。
+- R4：DerivedIndexView safety scaffold；derived views are not Evidence。
+- R5：deterministic graph scaffold；graph output is not direct Evidence。
+- R6：deterministic fast-context orchestration scaffold。
+- R7-R10：persistent BM25、AST chunking、quality bakeoff、incremental index。
+- R11：TDB Level0 adapter probe；metadata/chunks only，无 retrieval quality claim。
+- R12：real-repo incremental robustness bench。
+- R13：provider/dense safety scaffold with mock embeddings and no remote quality claim。
+
+### R14-R29：benchmark 与失败面扩张
+
+- R14-R16：scaled benchmark foundation、external multi-repo expansion、multi-method bakeoff。
+- R17-R19：query router、guard calibration、large/stress guard generalization。
+- R20-R23：auto-wide failure-surface dataset、strategy matrix、failure attribution、guard sweep。
+- R24-R25：QuIVer/TDB availability probe、dense_mock/graph ablation；graph/dense default expansion blocked。
+- R26：auto-stress-1000 static dataset。
+- R28：conservative promotion candidate report；no default change。
+- R29：R26 strategy matrix；RRF recall strong、symbol precision anchor、query-noise guard promising、graph/dense blocked。
+
+### R30-R45：真实模型准备与诊断扩展
+
+- R30：freeze R29 baseline。
+- R31：real embedding provider smoke and safety gates。
+- R32：embedding view bakeoff harness。
+- R33：QuIVer BQ readiness diagnostics。
+- R34-R36：QuIVer/BQ prototype and anchor-seeded dense/quiver experiments。
+- R37-R38：LLM-derived views and stress expansion；not Evidence。
+- R39-R40：symbol extraction and regex normalization repair tracks。
+- R41-R42：graph role research and admission model v2 rules。
+- R43-R45：integrated long-run report；no promotion。
+
+### P1-P9：真实 provider 与 CI 逐步放大
+
+- P1：real embedding and LLM smoke，provider access validated。
+- P2：bounded real embedding view bakeoff。
+- P3：real embedding QuIVer BQ readiness。
+- P4：real embedding anchor prototype。
+- P5：LLM-derived/stress harness with not-evidence boundary。
+- P6：repair/admission replay。
+- P7：real-provider summary。
+- P8/P9：GitHub Actions public corpus scale-up、model bakeoff、multilingual smoke。
+
+关键详细报告：
+
+- `docs/final-research-report.md` — R0-R29 historical report。
+- `docs/research-summary.md` — stage-by-stage status summary。
+- `docs/r29-r26-stress-matrix.md` — R29 matrix and failure clusters。
+- `docs/r45-promotion-candidate-report.md` — R30-R45 conclusion checkpoint。
+- `docs/real-provider-p7-summary.md` — P1-P6 real-provider summary。
+- `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results。
+
+---
+
+## 8. 下一步研究问题
+
+下一步不是 promotion，而是更大、更细、更可复现的验证：
+
+1. 在相同 public task set 上扩大 P8/P9 的 repo/task/record cap，验证 dense file recall 是否稳定。
+2. 对 JS/Go/Rust/Python 都跑 P3/P4，不只在 Flask 上看 QuIVer/anchor-seeded 信号。
+3. 在同一任务集上继续比较 bge-m3 与 Qwen 0.6B/4B/8B，加入 latency/cost。
+4. 把 P5 stress traps 接入 anchored dense/QuIVer 验证，看 added_gold 是否持续大于 added_false。
+5. 在 R26/R38 上复验 symbol repair 和 regex normalization，重点看 bucket regression。
+6. 把 real dense support score 接入 admission_v2 研究，但只作为 supporting feature。
+7. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
+
+---
+
+## 9. 当前一句话总结
+
+OpenLocus 目前已经建立了一条安全研究路线：本地 evidence-gated lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 都有研究价值，但必须作为 supporting/diagnostic/candidate 层存在。下一阶段的关键问题是：在更大 public corpus 与 stress traps 上，anchor-seeded real-model retrieval 能否稳定增加 gold，同时不增加 false-primary 与 false-span。

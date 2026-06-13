@@ -1,10 +1,12 @@
 # OpenLocus Research Summary
 
-For the current bilingual research-conclusion synthesis, see
-[`docs/current-research-conclusions.md`](current-research-conclusions.md).
+For the current research-conclusion synthesis, see
+[`docs/current-research-conclusions.en.md`](current-research-conclusions.en.md)
+or the index page [`docs/current-research-conclusions.md`](current-research-conclusions.md).
 
-当前中英双语研究结论总报告见
-[`docs/current-research-conclusions.md`](current-research-conclusions.md)。
+当前研究结论总报告见
+[`docs/current-research-conclusions.zh.md`](current-research-conclusions.zh.md)，
+入口索引见 [`docs/current-research-conclusions.md`](current-research-conclusions.md)。
 
 This document will be updated after each evidence-gated stage.
 

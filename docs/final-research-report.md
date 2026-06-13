@@ -1,11 +1,12 @@
 # OpenLocus R0-R29 Research Report
 
-For the current bilingual research-conclusion synthesis through R45 and
-real-provider P9, see
-[`docs/current-research-conclusions.md`](current-research-conclusions.md).
+For the current research-conclusion synthesis through R45 and real-provider P9,
+see [`docs/current-research-conclusions.en.md`](current-research-conclusions.en.md)
+or the index page [`docs/current-research-conclusions.md`](current-research-conclusions.md).
 
-当前覆盖 R45 与 real-provider P9 的中英双语研究结论总报告见
-[`docs/current-research-conclusions.md`](current-research-conclusions.md)。
+当前覆盖 R45 与 real-provider P9 的中文研究结论总报告见
+[`docs/current-research-conclusions.zh.md`](current-research-conclusions.zh.md)，
+入口索引见 [`docs/current-research-conclusions.md`](current-research-conclusions.md)。
 
 Date: 2026-06-12
 Repository: `https://github.com/Youzini-afk/OpenLocus-Lab.git`

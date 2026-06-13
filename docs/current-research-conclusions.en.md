@@ -1,0 +1,223 @@
+# OpenLocus Current Research Conclusions
+
+Date: 2026-06-13
+
+Scope: R0-R45, real-provider P1-P9, and the first GitHub Actions real-provider scale-up.
+
+Status: Research summary, not a promotion request.
+
+---
+
+## 0. Executive Research Thesis
+
+The most important current finding is not that semantic retrieval is solved. It is that OpenLocus now has a safe, evidence-gated research system for studying semantic retrieval, QuIVer, LLM-derived views, graph signals, and admission guards without weakening the evidence contract.
+
+The invariant remains:
+
+```text
+candidate != fact
+candidate/supporting channels -> current source read -> content_sha/range validation -> EvidenceCore
+```
+
+Within that system, real embedding models now show clear **file-level recall signal**, but they have not yet proven safe as primary span evidence. RRF remains the recall base, symbol/regex remain precision anchors, and `query_noise_plus_rrf_agree_min` remains the strongest current guard candidate. Dense, QuIVer, LLM-derived views, and graph signals must remain candidate/supporting/diagnostic layers for now.
+
+---
+
+## 1. Evidence Strength
+
+| Evidence tier | What it supports | What it does not support |
+|---|---|---|
+| **Strong: EvidenceCore, materialization gates, citation validation, CI privacy gates** | Safety architecture is working: current-file validation, `content_sha`, strict line ranges, citation validity, RUN/SCORE separation. | Does not prove any retrieval strategy should be default. |
+| **Strong for failure discovery: R29 on R26 auto-stress 1100 tasks** | RRF/symbol/guard/dense_mock/graph failure patterns are visible across broad stress buckets. | R26 labels are weak/mined/deterministic; not human promotion evidence. |
+| **Moderate: real-provider P8/P9 CI scale-up** | Real embeddings show initial, repeatable file-level recall signal on bounded public repo slices; QuIVer BQ diagnostics are worth continuing. | Samples are small; span quality and default safety are not proven. |
+| **Directional: P1-P7 self-tests and bounded runs** | Provider, LLM status, local harness, and initial anchor-seeded hypotheses work mechanically. | Tiny/self-test outcomes can be contradicted by larger public corpus runs. |
+| **Not quality evidence: dense_mock, LLM-generated stress, unavailable QuIVer/TDB** | Useful for safety, failure discovery, and plumbing. | Must not be used as semantic quality or promotion evidence. |
+
+---
+
+## 2. Main Research Conclusions
+
+### 2.1 RRF is still the recall base
+
+RRF remains the strongest recall channel on R26/R29: FileRecall@1 is about `0.803`, and FileRecall@5 is about `0.923`. This confirms that fusing local lexical/symbol channels improves coverage.
+
+Its main risk is also clear: high primary false-positive rate, about `0.453` in R29. RRF is a strong recall base, but it should not directly become primary admission without guards, anchors, or an admission model.
+
+### 2.2 Symbol and regex are precision anchors
+
+Symbol search remains the precision anchor. In R29 it has SpanF0.5 around `0.291` and primary_false_positive_rate around `0.080`. Its weakness is high abstention and incomplete extraction coverage, not excessive noise. This makes symbol extraction repair a promising recall-safe improvement path.
+
+Regex remains a foundational anchor too, but it needs normalization. User queries should not default to raw regex. The system needs separate modes for literal search, explicit regex search, identifier search, and path search. R39/R40 support continuing validation of `regex_hybrid_normalized`.
+
+### 2.3 `query_noise_plus_rrf_agree_min` is the best current guard candidate
+
+In R29, `query_noise_plus_rrf_agree_min` preserved RRF recall while reducing primary false-positive rate from about `0.453` to about `0.106`, with guard_recall_kill_rate around `0.003`. This is the clearest current guard signal.
+
+It still cannot be promoted. R23 showed many bucket regressions, and R26/R29 are not human-reviewed promotion tiers. It is a strong guard candidate for continued study, not a default strategy.
+
+### 2.4 Real embeddings help file recall but not span evidence yet
+
+P8/P9 CI scale-up shows initial, repeatable file-level recall signal on bounded public corpus slices, but stability still needs larger validation. For example, the bounded Flask P2 run achieved FileRecall@1=`0.800` and FileRecall@3=`1.000`; in the multilingual bge-m3 smoke, Go/Python were strong, Rust was moderate, and JavaScript Express was weaker.
+
+However, SpanF0.5 remains low, typically around `0.067` to `0.143`. Dense retrieval is currently a file/candidate-support channel, not a primary span-evidence channel.
+
+### 2.5 Bigger embedding models did not dominate in the first slice
+
+P9a compared `BAAI/bge-m3`, `Qwen/Qwen3-Embedding-0.6B`, `Qwen/Qwen3-Embedding-4B`, and `Qwen/Qwen3-Embedding-8B` on the same Flask slice. In this small sample, the largest model did not dominate: bge-m3 and Qwen 0.6B/4B reached FileRecall@1=`1.000`, while 8B reached `0.800`.
+
+This does not prove smaller models are better, but it is enough to avoid assuming the largest model is best without same-task bakeoffs. Future bakeoffs should compare models on the same tasks, corpus, caps, latency, and cost.
+
+### 2.6 Anchor-seeded dense/QuIVer is promising but not safe yet
+
+Early tiny/self-tests made anchor-seeded dense/QuIVer look promising: P4 once showed added_gold=`2` and added_false=`0`. But P8a on a real public Flask slice produced the opposite caution signal: FileRecall@1=`1.000`, but added_gold=`3` and added_false=`15`.
+
+This is exactly why the research harness matters: a small optimistic signal was constrained by a more realistic corpus slice. The conclusion is not that anchor-seeding is useless; it is that anchor-seeded dense/QuIVer must remain supporting-only while span targeting and false-span suppression are improved.
+
+### 2.7 QuIVer is still diagnostic, but BQ signals are no longer empty
+
+P3 ran BQ readiness diagnostics on real embeddings. On the Flask slice, BQ_overlap@10=`0.680`, BQ_overlap@50=`0.728`, BQ_vs_f32_MRR=`1.000`, and quiver_fit was marked `promising`. This means the BQ/QuIVer direction is worth continuing.
+
+But the QuIVer graph/Vamana backend is not implemented, and no ANN graph quality claim exists yet. QuIVer remains diagnostic/prototype-only.
+
+### 2.8 Graph expansion remains blocked
+
+R25/R29/P6 support the same conclusion: graph is not safe as default expansion. In R29, graph_basic added_gold=`0` and added_false=`437`. Graph is more likely useful as an explainer, rerank feature, impact signal, or test selector than as default recall expansion.
+
+### 2.9 LLM-derived views are useful for stress and hints, not facts
+
+The real LLM provider has run successfully, and P5 generated derived/stress outputs. These outputs must remain `not_evidence=true`: the LLM must not generate Evidence, gold labels, citation verdicts, or promotion verdicts.
+
+The useful role for LLMs is query aliases, symbol tags, intent views, and failure/stress generation. LLMs can expand the failure surface, but they cannot replace EvidenceCore.
+
+---
+
+## 3. Current Hypotheses
+
+| Hypothesis | Current state | What would confirm it |
+|---|---|---|
+| RRF should remain the recall base. | Strongly supported by R29, but needs guard. | Stable recall under guard across human-reviewed and stress tiers. |
+| Symbol/regex should be precision anchors. | Strongly supported. | Broader symbol repair validation without PFP increase. |
+| Dense should remain supporting-only for now. | Current evidence supports this safety boundary; promotion requires larger real-provider validation. | Dense adds gold more than false across larger R26/R38/CI medium slices. |
+| Anchor-seeded dense/QuIVer may be safer than global dense. | Plausible but mixed. | P4-like tests on multiple repos show repeatable false-span suppression. |
+| BQ diagnostics may be compatible with current code-embedding distributions. | Diagnostic signal promising on Flask. | Sharded BQ/proto graph beats flat f32 or improves latency without false-span growth. |
+| Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
+| LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Derived views add gold or stress coverage without inducing primary hallucinations. |
+
+---
+
+## 4. Contradictions and Negative Results
+
+These negative results are among the most valuable findings because they prevent premature optimism:
+
+1. **P4 tiny optimism weakened by P8a**: tiny self-test had added_false=`0`; the public Flask slice had added_false=`15`.
+2. **Dense file recall and span quality diverge**: P8/P9 show good FileRecall but low SpanF0.5.
+3. **RRF recall is coupled with false-primary risk**: raw recall is not enough; admission is critical.
+4. **Graph expansion is repeatedly net-negative**: graph_basic mostly adds false spans and almost no gold.
+5. **Larger embedding models did not win the first bakeoff**: 8B did not dominate 0.6B/4B/bge-m3.
+6. **JS Express underperformed Go/Python/Rust**: embedding quality varies across language/framework buckets.
+
+---
+
+## 5. Current Safe Architecture Boundary
+
+All conclusions depend on preserving these boundaries:
+
+- `EvidenceCore` remains the only authoritative fact layer.
+- Dense, QuIVer, graph, and LLM-derived outputs remain candidate/supporting/diagnostic, not Evidence.
+- Evidence must come from reading current source files and validating `content_sha` plus line ranges.
+- RUN phase must not read private labels; SCORE phase reads labels only after run artifacts exist.
+- Real providers run only under `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`.
+- Reports and artifacts must not upload provider URLs/keys, raw source, private labels, or Evidence excerpts.
+- Unavailable strategies must be reason-only and must not emit fake quality numbers.
+
+---
+
+## 6. What the Research Has Actually Established
+
+The research has established four things with reasonable confidence:
+
+1. **The fact-layer safety constraints are executable**: EvidenceCore, materialization, and citation validation are implemented across local retrieval, store, graph, dense, and CI runner paths.
+2. **Local lexical/symbol/RRF remain the backbone**: real models did not replace RRF/symbol/regex; they made anchors and guards more important.
+3. **Real models are useful but role-limited**: embeddings have file-level signal, LLMs can expand stress/derived views, and QuIVer BQ deserves continuation; none should directly become facts.
+4. **The experiment system can find counterexamples**: the P4 → P8a shift shows that the harness can challenge tiny optimistic results with more realistic corpus slices.
+
+---
+
+## 7. Stage Summary Index
+
+The detailed phase reports are preserved. This section is an index, not a replacement.
+
+### R0-R13: Local evidence kernel and safety scaffolds
+
+- R0/R1: local evidence kernel, read/scan/search, trace, citation validation.
+- R2: regex/BM25/symbol/RRF local bakeoff.
+- R3: StoreHit materialization gate and conservative store.
+- R4: DerivedIndexView safety scaffold; derived views are not Evidence.
+- R5: deterministic graph scaffold; graph output is not direct Evidence.
+- R6: deterministic fast-context orchestration scaffold.
+- R7-R10: persistent BM25, AST chunking, quality bakeoff, incremental index.
+- R11: TDB Level0 adapter probe; metadata/chunks only, no retrieval quality claim.
+- R12: real-repo incremental robustness bench.
+- R13: provider/dense safety scaffold with mock embeddings and no remote quality claim.
+
+### R14-R29: Benchmark/failure-surface expansion
+
+- R14-R16: scaled benchmark foundation, external multi-repo expansion, multi-method bakeoff.
+- R17-R19: query router, guard calibration, large/stress guard generalization.
+- R20-R23: auto-wide failure-surface dataset, strategy matrix, failure attribution, guard sweep.
+- R24-R25: QuIVer/TDB availability probe, dense_mock/graph ablation; graph/dense default expansion blocked.
+- R26: auto-stress-1000 static dataset.
+- R28: conservative promotion candidate report; no default change.
+- R29: R26 strategy matrix; RRF recall strong, symbol precision anchor, query-noise guard promising, graph/dense blocked.
+
+### R30-R45: Real-model readiness and diagnostic expansion
+
+- R30: freeze R29 baseline.
+- R31: real embedding provider smoke and safety gates.
+- R32: embedding view bakeoff harness.
+- R33: QuIVer BQ readiness diagnostics.
+- R34-R36: QuIVer/BQ prototype and anchor-seeded dense/quiver experiments.
+- R37-R38: LLM-derived views and stress expansion; not Evidence.
+- R39-R40: symbol extraction and regex normalization repair tracks.
+- R41-R42: graph role research and admission model v2 rules.
+- R43-R45: integrated long-run report; no promotion.
+
+### P1-P9: Real-provider and CI scale-up
+
+- P1: real embedding and LLM smoke, provider access validated.
+- P2: bounded real embedding view bakeoff.
+- P3: real embedding QuIVer BQ readiness.
+- P4: real embedding anchor prototype.
+- P5: LLM-derived/stress harness with not-evidence boundary.
+- P6: repair/admission replay.
+- P7: real-provider summary.
+- P8/P9: GitHub Actions public corpus scale-up, model bakeoff, and multilingual smoke.
+
+Key detailed reports:
+
+- `docs/final-research-report.md` — long R0-R29 historical report.
+- `docs/research-summary.md` — stage-by-stage status summary.
+- `docs/r29-r26-stress-matrix.md` — R29 matrix and failure clusters.
+- `docs/r45-promotion-candidate-report.md` — R30-R45 conclusion checkpoint.
+- `docs/real-provider-p7-summary.md` — P1-P6 real-provider summary.
+- `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results.
+
+---
+
+## 8. Next Research Questions
+
+The next step is not promotion. It is larger, more granular, more reproducible validation:
+
+1. Increase P8/P9 repo/task/record caps on the same public task sets to test whether dense file recall is stable.
+2. Run P3/P4 across JS/Go/Rust/Python, not only Flask.
+3. Continue bge-m3 vs Qwen 0.6B/4B/8B bakeoffs on identical task sets, including latency/cost.
+4. Feed P5 stress traps into anchored dense/QuIVer validation and measure whether added_gold consistently exceeds added_false.
+5. Re-validate symbol repair and regex normalization on R26/R38, focusing on bucket regressions.
+6. Add real dense support scores to admission_v2 research, but only as supporting features.
+7. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
+
+---
+
+## 9. Current Bottom Line
+
+OpenLocus has established a safe research direction: local evidence-gated lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only as supporting/diagnostic/candidate layers for now. The next key question is whether anchor-seeded real-model retrieval can consistently add gold without increasing false-primary or false-span rates on larger public corpora and stress traps.
