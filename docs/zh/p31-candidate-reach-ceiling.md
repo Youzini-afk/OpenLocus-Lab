@@ -1,14 +1,13 @@
 # P31 Candidate Reach Ceiling Study
 
-> 中文译本待补充。The full Chinese translation is pending.
-> 这是同名文件的占位符：保留英文原文，方便未来翻译对照。
+> 中文译本待补充。当前文件先作为 `docs/en/p31-candidate-reach-ceiling.md` 的 1:1 中文镜像，保留英文原文以保证内容不丢失和链接可回溯。
 
 ## English source / 英文原文
 
 # P31 Candidate Reach Ceiling Study
 
 - Schema: `p31-candidate-reach-ceiling-report-v1`
-- Generated: 2026-06-14T15:38:44.962003+00:00
+- Generated: 2026-06-14T15:52:29.359187+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P31: 0

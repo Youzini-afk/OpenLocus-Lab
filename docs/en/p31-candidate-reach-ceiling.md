@@ -1,7 +1,7 @@
 # P31 Candidate Reach Ceiling Study
 
 - Schema: `p31-candidate-reach-ceiling-report-v1`
-- Generated: 2026-06-14T15:38:44.962003+00:00
+- Generated: 2026-06-14T15:52:29.359187+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P31: 0

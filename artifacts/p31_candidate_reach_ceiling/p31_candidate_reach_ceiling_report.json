@@ -15,7 +15,7 @@
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-14T15:38:44.962003+00:00",
+  "generated_at": "2026-06-14T15:52:29.359187+00:00",
   "generated_by": "eval/p31_candidate_reach_ceiling.py",
   "gold_spans_in_artifact": false,
   "input_paths": [

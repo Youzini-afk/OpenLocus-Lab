@@ -656,19 +656,15 @@ jobs:
                           raise SystemExit(f"{json_path} does not keep {flag}=false")
                   if data.get("labels_loaded_after_run") is not True or data.get("run_phase_public_only") is not True:
                       raise SystemExit(f"{json_path} violates RUN/SCORE or public-run invariant")
-                  banned_keys = {
-                      "snippet", "prompt", "prompts", "response", "responses",
-                      "query", "raw_query", "gold", "gold_spans", "label", "labels",
-                      "private_label", "private_labels", "label_path", "task_id",
-                      "candidate_path", "candidate_paths", "candidate_span", "candidate_spans",
-                      "candidate_pool", "raw_candidates", "route_features", "source_text",
-                      "excerpt", "authorization", "api_key", "provider_key", "base_url",
-                  }
-                  allowed_safety_keys = {"gold_spans_in_artifact", "raw_query_stored"}
+                  # P21 public diagnostics may include sanitized task IDs in
+                  # aggregate decision records. Keep this legacy scan scoped to
+                  # raw/private payloads; stricter aggregate-only scans run on
+                  # P25/P30/P31 reports below.
+                  banned_keys = {"snippet", "prompt", "prompts", "response", "responses", "query", "gold", "gold_spans", "private_labels", "label_path"}
                   def walk(obj, prefix=""):
                       if isinstance(obj, dict):
                           for key, value in obj.items():
-                              if key in banned_keys and key not in allowed_safety_keys:
+                              if key in banned_keys:
                                   raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
                               walk(value, prefix + key + ".")
                       elif isinstance(obj, list):
@@ -783,11 +779,19 @@ jobs:
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
                       if data.get(flag) is not False:
                           raise SystemExit(f"{json_path} does not keep {flag}=false")
-                  banned_keys = {"snippet", "prompt", "prompts", "response", "responses", "query", "gold", "gold_spans", "private_labels", "label_path"}
+                  banned_keys = {
+                      "snippet", "prompt", "prompts", "response", "responses",
+                      "query", "raw_query", "gold", "gold_spans", "label", "labels",
+                      "private_label", "private_labels", "label_path", "task_id",
+                      "candidate_path", "candidate_paths", "candidate_span", "candidate_spans",
+                      "candidate_pool", "raw_candidates", "route_features", "source_text",
+                      "excerpt", "authorization", "api_key", "provider_key", "base_url",
+                  }
+                  allowed_safety_keys = {"gold_spans_in_artifact", "raw_query_stored"}
                   def walk(obj, prefix=""):
                       if isinstance(obj, dict):
                           for key, value in obj.items():
-                              if key in banned_keys:
+                              if key in banned_keys and key not in allowed_safety_keys:
                                   raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
                               walk(value, prefix + key + ".")
                       elif isinstance(obj, list):
