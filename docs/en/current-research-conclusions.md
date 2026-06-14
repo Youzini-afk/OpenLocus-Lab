@@ -244,14 +244,19 @@ diagnostics (`FilterKillGoldRate`, `AdmissionFalsePrimaryRate`,
 when rejection fields are not present), and a K=5 failure funnel with
 `funnel_sums_to_positive_tasks=true`.
 
+P31-H1 extends the P21 rich-candidate handoff so ephemeral records now carry
+lightweight candidate pools (`p31_candidate_pools`) and private SCORE-phase gold
+spans (`p31_score_gold`), tagged with `p31_h1_candidate_reach_handoff=true` and
+`p31_h1_schema_version="p31-h1-candidate-reach-handoff-v1"`. Pool items keep only
+`rank`, `path`, `start_line`, `end_line`, plus optional `content_sha`, `score`,
+and `channels`; no snippets, raw queries, prompts, responses, or provider fields.
+
 Public artifacts are aggregate-only: no per-task rows, raw queries, snippets,
 prompts, responses, candidate paths/spans, gold spans, private labels, or
 provider fields. Safety flags are locked: `promotion_ready=false`,
 `default_should_change=false`, `evidencecore_semantics_changed=false`,
 `candidate_not_fact=true`, `remote_calls_by_p31=0`,
-`score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`. The
-next step is to extend the P21/P25 ephemeral handoff with candidate evidence
-pools so P31 can compute real reach ceilings.
+`score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`.
 
 ---
 

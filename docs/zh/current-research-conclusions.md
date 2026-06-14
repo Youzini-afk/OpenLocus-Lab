@@ -175,13 +175,19 @@ P31 测量候选证据本身在没有任何路由或准入决策前覆盖 gold l
 `AdmissionFalseSpanPerNoGoldTask`）、`EvidenceCoreRejectRate`
 （无 rejection 字段时为 `not_measured`），以及满足 `funnel_sums_to_positive_tasks=true` 的 K=5 失败漏斗。
 
+P31-H1 扩展了 P21 rich-candidate 临时 handoff：临时 records 现在携带轻量级候选池
+（`p31_candidate_pools`）与仅 SCORE 阶段使用的 private gold spans（`p31_score_gold`），
+并标记 `p31_h1_candidate_reach_handoff=true` 与
+`p31_h1_schema_version="p31-h1-candidate-reach-handoff-v1"`。
+池内条目仅保留 `rank`、`path`、`start_line`、`end_line`，以及可选的 `content_sha`、
+`score`、`channels`；不含 snippet、原始 query/prompt/response 或 provider 字段。
+
 公开产物仅限聚合指标：不含 per-task 行、原始 query/snippet/prompt/response、
 candidate paths/spans、gold spans、private labels 或 provider 字段。
 安全标志锁定：`promotion_ready=false`、`default_should_change=false`、
 `evidencecore_semantics_changed=false`、`candidate_not_fact=true`、
 `remote_calls_by_p31=0`、`score_phase_only_metrics=true`、
-`aggregate_only_public_artifact=true`。下一步应扩展 P21/P25 临时 handoff，使其携带候选证据池，
-以便 P31 计算真实 reach ceiling。
+`aggregate_only_public_artifact=true`。
 
 ---
 

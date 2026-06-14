@@ -14,7 +14,16 @@
 
 - Candidate pool availability: `partial`
 - Reach metrics available: True
+- P31-H1 handoff detected: True
 - Tasks: 5 positive=4 positive_with_gold_spans=4 no_gold=1
+
+## P31-H1 handoff
+
+P31-H1 extends the P21 rich-candidate ephemeral handoff with lightweight
+`p31_candidate_pools` and private SCORE-phase `p31_score_gold`. When the handoff
+is present, P31 computes real reach metrics; when absent, it falls back to
+outcome-only metrics with `candidate_pool_availability=missing_candidate_pool`
+and `reach_metrics_available=false`.
 
 ## Reach metrics by K
 

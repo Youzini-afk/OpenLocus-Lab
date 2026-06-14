@@ -89,6 +89,8 @@ FORBIDDEN_PUBLIC_KEYS = {
     "candidate_span",
     "candidate_spans",
     "candidate_pool",
+    "p31_candidate_pools",
+    "p31_score_gold",
     "raw_candidates",
     "route_features",
     "source_text",
@@ -128,7 +130,13 @@ SAFETY_FLAG_KEYS = {
     "provider_keys_in_artifact",
     "gold_spans_in_artifact",
     "elapsed_ms",
+    "p31_h1_handoff_detected",
+    "p31_h1_handoff_detected_count",
     "candidate_pool_availability",
+    "candidate_pool_detected_count",
+    "gold_span_availability",
+    "positive_with_gold_spans_count",
+    "positive_without_gold_spans_count",
     "reach_metrics_available",
     "outcome_metrics_available",
     "candidate_pool_detected_count",
@@ -244,6 +252,35 @@ def normalize_label(raw: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _extract_p31_candidate_pools(raw: dict[str, Any]) -> dict[str, list[dict[str, Any]]] | None:
+    """Return P31-H1 candidate pools if present."""
+    pools = raw.get("p31_candidate_pools")
+    if not isinstance(pools, dict):
+        return None
+    out: dict[str, list[dict[str, Any]]] = {}
+    for strategy in ["candidate_baseline", "llm_span_narrow", "llm_filter", "llm_abstain_filter", "symbol_regex_union", "rrf_primary"]:
+        items = pools.get(strategy)
+        if isinstance(items, list):
+            out[strategy] = list(items)
+    return out if out else None
+
+
+def _extract_p31_score_gold(raw: dict[str, Any]) -> dict[str, Any] | None:
+    """Return P31-H1 private SCORE-phase gold metadata if present."""
+    sg = raw.get("p31_score_gold")
+    if not isinstance(sg, dict):
+        return None
+    gold_spans: list[dict[str, Any]] = []
+    for gs in sg.get("gold_spans") or []:
+        if isinstance(gs, dict):
+            gold_spans.append(gs)
+    return {
+        "has_gold": bool(gold_spans),
+        "gold_spans": gold_spans,
+        "gold_files": {str(gs.get("path") or gs.get("file") or "").lower() for gs in gold_spans if gs.get("path") or gs.get("file")},
+    }
+
+
 def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
     tid = raw.get("task_id") or raw.get("test_id")
     if not tid:
@@ -257,6 +294,10 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
         risk_tags = []
     risk_tags = p25.sanitize_public_tags(risk_tags)
 
+    # Gold spans: prefer P31-H1 private SCORE metadata, then legacy/self-test label.
+    label = _extract_p31_score_gold(raw) or normalize_label(raw.get("label") or {})
+    p31_h1_handoff_detected = bool(raw.get("p31_candidate_pools") and raw.get("p31_score_gold"))
+
     if raw.get("score_group") == "positive":
         has_gold_label = True
     elif raw.get("score_group") == "no_gold":
@@ -264,10 +305,8 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
     else:
         has_gold_label = bool(raw.get("has_gold", False))
 
-    label = normalize_label(raw.get("label") or {})
-    # If a private label is embedded, prefer it but never propagate it.
-    if "score_group" in raw and not label["has_gold"]:
-        # No embedded label; keep has_gold from score_group only for aggregate grouping.
+    # If no explicit gold metadata, fall back to score_group / has_gold flags.
+    if not label["has_gold"] and has_gold_label is not None:
         label["has_gold"] = has_gold_label
 
     outcomes: dict[str, Any] = {}
@@ -275,14 +314,16 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
         src = _extract_outcome(raw, strategy)
         outcomes[strategy] = {**_as_float(src, "file_recall_at_5", "span_f0_5", "primary_false_positive_rate", "no_gold_false_primary_rate"), **_as_int(src, "added_gold_span", "added_false_span"), "abstained": bool(src.get("abstained", False))}
 
-    # Evidence pool availability: check strategy stored evidence lists.
-    candidate_pool: dict[str, list[dict[str, Any]]] = {}
-    has_pool = False
-    for key in ("candidate_baseline", "symbol_regex_union", "rrf_primary", "llm_span_narrow", "llm_filter", "llm_abstain_filter"):
-        ev = _extract_evidence_list(raw, key)
-        if ev is not None:
-            candidate_pool[key] = ev
-            has_pool = True
+    # Evidence pools: prefer P31-H1, then legacy formats.
+    candidate_pool = _extract_p31_candidate_pools(raw)
+    has_pool = candidate_pool is not None
+    if not has_pool:
+        candidate_pool = {}
+        for key in ("candidate_baseline", "symbol_regex_union", "rrf_primary", "llm_span_narrow", "llm_filter", "llm_abstain_filter"):
+            ev = _extract_evidence_list(raw, key)
+            if ev is not None:
+                candidate_pool[key] = ev
+                has_pool = True
 
     return {
         "task_id": tid,
@@ -295,6 +336,7 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
         "outcomes": outcomes,
         "candidate_pool": candidate_pool,
         "has_candidate_pool": has_pool,
+        "p31_h1_handoff_detected": p31_h1_handoff_detected,
     }
 
 
@@ -795,7 +837,9 @@ def build_report(
     candidate_pool_availability = "available" if tasks and all(t.get("has_candidate_pool") for t in tasks) else "partial" if any(t.get("has_candidate_pool") for t in tasks) else "missing_candidate_pool"
     positive_with_gold_spans = sum(1 for t in tasks if t["has_gold"] and t.get("has_gold_spans"))
     positive_without_gold_spans = sum(1 for t in tasks if t["has_gold"] and not t.get("has_gold_spans"))
-    reach_metrics_available = candidate_pool_availability != "missing_candidate_pool" and positive_with_gold_spans > 0
+    gold_span_availability = "available" if tasks and all(t.get("has_gold_spans") for t in tasks if t["has_gold"]) else "partial" if any(t.get("has_gold_spans") for t in tasks if t["has_gold"]) else "missing_gold_spans"
+    p31_h1_handoff_detected = any(t.get("p31_h1_handoff_detected") for t in tasks)
+    reach_metrics_available = (candidate_pool_availability != "missing_candidate_pool" and gold_span_availability != "missing_gold_spans")
     outcome_metrics_available = bool(tasks)
 
     reach: dict[str, Any] = {"by_k": {k: {} for k in K_VALUES}}
@@ -886,8 +930,11 @@ def build_report(
         "private_labels_committed": False,
         "provider_keys_in_artifact": False,
         "gold_spans_in_artifact": False,
+        "p31_h1_handoff_detected": p31_h1_handoff_detected,
+        "p31_h1_handoff_detected_count": sum(1 for t in tasks if t.get("p31_h1_handoff_detected")),
         "candidate_pool_availability": candidate_pool_availability,
         "candidate_pool_detected_count": sum(1 for t in tasks if t.get("has_candidate_pool")),
+        "gold_span_availability": gold_span_availability,
         "positive_with_gold_spans_count": positive_with_gold_spans,
         "positive_without_gold_spans_count": positive_without_gold_spans,
         "reach_metrics_available": reach_metrics_available,
@@ -923,7 +970,8 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append(f"- Generated: {report['generated_at']}")
     lines.append(f"- Status: `{report['status']}`")
     lines.append(f"- Self-test: {report['self_test']}")
-    lines.append(f"- Remote calls by P31: {report['remote_calls_by_p31']}\n")
+    lines.append(f"- Remote calls by P31: {report['remote_calls_by_p31']}")
+    lines.append(f"- P31-H1 handoff detected: {report.get('p31_h1_handoff_detected', False)}\n")
 
     if report["status"] not in {"ok", "self_test_only"}:
         lines.append("## Status")
@@ -981,6 +1029,21 @@ def build_markdown(report: dict[str, Any]) -> str:
             f"| {k} | {fmt_counts(block.get('gold_file_reach'))} | {fmt_counts(block.get('gold_span_reach'))} | "
             f"{fmt_counts(block.get('gold_span_exact_reach'))} | {fmt_counts(block.get('candidate_absent_rate'))} | "
             f"{fmt_counts(block.get('file_right_span_wrong_rate'))} |"
+        )
+    lines.append("")
+
+    lines.append("## P31-H1 handoff\n")
+    if report.get("p31_h1_handoff_detected"):
+        lines.append(
+            "P31-H1 ephemeral handoff detected. Candidate pools and private SCORE-phase gold spans "
+            "were read from the input records. Pool items are lightweight (`rank`, `path`, `start_line`, "
+            "`end_line`, optional `content_sha`/`score`/`channels`); no snippets or provider fields are stored."
+        )
+    else:
+        lines.append(
+            "P31-H1 ephemeral handoff not detected. Reach metrics require `p31_candidate_pools` and "
+            "`p31_score_gold` fields produced by `eval/p21_llm_rich_candidate.py --p25-policy-records-out`. "
+            "When these fields are absent, P31 falls back to outcome-only metrics."
         )
     lines.append("")
 

@@ -1,10 +1,11 @@
 # P31 Candidate Reach Ceiling Study
 
 - Schema: `p31-candidate-reach-ceiling-report-v1`
-- Generated: 2026-06-14T15:52:29.359187+00:00
+- Generated: 2026-06-14T16:10:49.622719+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P31: 0
+- P31-H1 handoff detected: False
 
 - Candidate pool availability: `partial`
 - Reach metrics available: True
@@ -29,6 +30,10 @@
 | 5 | 2/3 | 1/3 | 1/3 | 1/3 | 1/2 |
 | 10 | 2/3 | 1/3 | 1/3 | 1/3 | 1/2 |
 | 20 | 2/3 | 1/3 | 1/3 | 1/3 | 1/2 |
+
+## P31-H1 handoff
+
+P31-H1 ephemeral handoff not detected. Reach metrics require `p31_candidate_pools` and `p31_score_gold` fields produced by `eval/p21_llm_rich_candidate.py --p25-policy-records-out`. When these fields are absent, P31 falls back to outcome-only metrics.
 
 ## Strategy miss given gold present@K=5
 

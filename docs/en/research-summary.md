@@ -194,11 +194,17 @@ SCORE-phase-only: labels are loaded only after RUN and are used only for
 aggregate metrics.
 
 Inputs are the same ephemeral `p25-policy-records-ephemeral-v1` records used by
-P25/P30, though most current P25/P30 records do not yet carry candidate evidence
-lists. When candidate pools are missing, P31 computes outcome-only fallback
-metrics and reports `candidate_pool_availability=missing_candidate_pool` with
-`reach_metrics_available=false`, rather than fabricating zeros. When pools are
-present, it reports `GoldFileReach@K`, `GoldSpanReach@K`,
+P25/P30. P31-H1 extends the P21 rich-candidate handoff so ephemeral records now
+carry lightweight candidate pools (`p31_candidate_pools`) and private SCORE-phase
+gold spans (`p31_score_gold`), marked with
+`p31_h1_candidate_reach_handoff=true` and schema
+`p31-h1-candidate-reach-handoff-v1`. Pool items keep only `rank`, `path`,
+`start_line`, `end_line`, and optional `content_sha`, `score`, and `channels`;
+no snippets, raw queries, prompts, responses, or provider fields. When H1 pools
+are absent, P31 computes outcome-only fallback metrics and reports
+`candidate_pool_availability=missing_candidate_pool` with
+`reach_metrics_available=false`, rather than fabricating zeros. When pools and
+gold spans are present, it reports `GoldFileReach@K`, `GoldSpanReach@K`,
 `GoldSpanExactReach@K`, `CandidateAbsentRate@K`, and
 `FileRightSpanWrongRate@K` for K=1/3/5/10/20.
 

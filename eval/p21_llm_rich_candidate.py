@@ -638,6 +638,55 @@ def _anchor_agreement_features(rrf_ev: list[dict[str, Any]], symbol_ev: list[dic
     }
 
 
+def _p31_lightweight_evidence(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return lightweight candidate evidence for P31 reach study.
+
+    Keeps only rank, path, line range, content_sha, score, and channels.
+    Never stores snippet text, raw queries, prompts, or responses.
+    """
+    out: list[dict[str, Any]] = []
+    for rank, ev in enumerate(items, start=1):
+        entry: dict[str, Any] = {
+            "rank": rank,
+            "path": str(ev.get("path") or ""),
+            "start_line": ev.get("start_line"),
+            "end_line": ev.get("end_line"),
+        }
+        if ev.get("content_sha"):
+            entry["content_sha"] = str(ev["content_sha"])
+        if ev.get("score") is not None:
+            entry["score"] = float(ev["score"])
+        if ev.get("channels"):
+            entry["channels"] = list(ev["channels"])
+        out.append(entry)
+    return out
+
+
+def _p31_score_gold(label: dict[str, Any]) -> dict[str, Any]:
+    """Private SCORE-phase gold metadata for P31 reach study.
+
+    Ephemeral only; never committed or uploaded.
+    """
+    gold_spans: list[dict[str, Any]] = []
+    for gs in label.get("gold_spans") or []:
+        if not isinstance(gs, dict):
+            continue
+        entry: dict[str, Any] = {
+            "path": str(gs.get("path") or ""),
+            "start_line": int(gs["start_line"]) if isinstance(gs.get("start_line"), (int, float, str)) else None,
+            "end_line": int(gs["end_line"]) if isinstance(gs.get("end_line"), (int, float, str)) else None,
+        }
+        if gs.get("content_sha"):
+            entry["content_sha"] = str(gs["content_sha"])
+        gold_spans.append(entry)
+    has_gold = bool(gold_spans)
+    return {
+        "has_gold": has_gold,
+        "score_group": "positive" if has_gold else "no_gold",
+        "gold_spans": gold_spans,
+    }
+
+
 def write_p25_policy_records(
     path: Path,
     tasks: list[dict[str, Any]],
@@ -744,14 +793,29 @@ def write_p25_policy_records(
             {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": [], "latency_ms": 0},
             label, labels, repo_roots, top_k, abstained=True,
         )
+
+        # P31-H1: lightweight candidate pools and private SCORE-phase gold spans.
+        # These live only in the ephemeral handoff, never in committed artifacts.
+        p31_pools: dict[str, list[dict[str, Any]]] = {}
+        for strategy in ["candidate_baseline", "llm_span_narrow", "llm_filter", "llm_abstain_filter"]:
+            pred = preds_by_strategy_task.get(strategy, {}).get(tid, {})
+            p31_pools[strategy] = _p31_lightweight_evidence(list(pred.get("evidence", []) or [])[:top_k])
+        p31_pools["symbol_regex_union"] = _p31_lightweight_evidence(symbol_regex_evidence[:top_k])
+        p31_pools["rrf_primary"] = _p31_lightweight_evidence(rrf_ev[:top_k])
+        rec["p31_candidate_pools"] = p31_pools
+        rec["p31_score_gold"] = _p31_score_gold(label)
+
         records.append(rec)
     payload = {
         "schema_version": "p25-policy-records-ephemeral-v1",
+        "p31_h1_candidate_reach_handoff": True,
+        "p31_h1_schema_version": "p31-h1-candidate-reach-handoff-v1",
         "p30_h1_fields_present": True,
         "contains_local_anchor_outcomes": True,
         "p30_h1_route_features_present": True,
         "not_artifact_for_commit": True,
         "score_phase_gold_group_stored": True,
+        "p31_score_gold_spans_stored": True,
         "raw_queries_stored": False,
         "raw_snippets_stored": False,
         "raw_prompts_stored": False,
