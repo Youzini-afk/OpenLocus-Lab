@@ -485,7 +485,7 @@
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-14T14:29:54.425713+00:00",
+  "generated_at": "2026-06-14T14:43:40.310688+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "gold_spans_in_artifact": false,
   "h3_action_span_cost_accounting": {
@@ -506,7 +506,7 @@
     "diagnostic_only": true,
     "evidencecore_semantics_changed": false,
     "external_calls": 0,
-    "generated_at": "2026-06-14T14:29:54.425513+00:00",
+    "generated_at": "2026-06-14T14:43:40.310517+00:00",
     "generated_by": "eval/p30_admission_model_v3.py",
     "labels_loaded_after_run": true,
     "no_gold_task_count": 4,
@@ -1233,7 +1233,7 @@
           "llm_abstain_filter": {
             "action_added_false_span": 0,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "budget_limit": 0,
             "budget_violated": false,
             "budget_violation_reason": null,
@@ -1257,10 +1257,10 @@
           "llm_filter": {
             "action_added_false_span": 2,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "budget_limit": 0,
             "budget_violated": true,
-            "budget_violation_reason": "unclassified action false cost (2) exceeds gold (0)",
+            "budget_violation_reason": "non-primary action has false cost (2)",
             "delta_added_false_span_vs_baseline": -12,
             "delta_added_gold_span_vs_baseline": -3,
             "false_per_gold": null,
@@ -1281,7 +1281,7 @@
           "llm_span_narrow": {
             "action_added_false_span": 5,
             "action_added_gold_span": 5,
-            "action_kind": "unclassified",
+            "action_kind": "primary",
             "budget_limit": 5,
             "budget_violated": false,
             "budget_violation_reason": null,
@@ -1306,21 +1306,21 @@
         "budget_violation_count": 7,
         "budget_violation_rate": 0.5,
         "budget_violation_reasons": {
-          "unclassified action false cost (2) exceeds gold (0)": 5,
+          "non-primary action has false cost (2)": 5,
           "unclassified action false cost (4) exceeds gold (2)": 2
         },
         "no_gold_task_count": 4,
-        "non_primary_false_span_cost": 0,
+        "non_primary_false_span_cost": 2,
         "positive_task_count": 10,
-        "primary_false_span_cost": 0,
+        "primary_false_span_cost": 5,
         "task_count": 14,
-        "unclassified_false_span_cost": 11,
+        "unclassified_false_span_cost": 4,
         "worst_actions_by_false_cost": [
           {
             "action": "llm_span_narrow",
             "action_added_false_span": 5,
             "action_added_gold_span": 5,
-            "action_kind": "unclassified",
+            "action_kind": "primary",
             "false_per_gold": 1.0,
             "selected_count": 5
           },
@@ -1336,7 +1336,7 @@
             "action": "llm_filter",
             "action_added_false_span": 2,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "false_per_gold": null,
             "selected_count": 5
           },
@@ -1344,7 +1344,7 @@
             "action": "llm_abstain_filter",
             "action_added_false_span": 0,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "false_per_gold": null,
             "selected_count": 2
           }
@@ -1352,7 +1352,7 @@
         "worst_actions_by_gold_kill": [
           {
             "action": "llm_filter",
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "gold_kill_count": 3,
             "gold_kill_rate": 1.0,
             "selected_count": 5
@@ -1366,14 +1366,14 @@
           },
           {
             "action": "llm_abstain_filter",
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "gold_kill_count": 0,
             "gold_kill_rate": null,
             "selected_count": 2
           },
           {
             "action": "llm_span_narrow",
-            "action_kind": "unclassified",
+            "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
             "selected_count": 5
@@ -1443,7 +1443,7 @@
           "llm_abstain_filter": {
             "action_added_false_span": 0,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "budget_limit": 0,
             "budget_violated": false,
             "budget_violation_reason": null,
@@ -1479,7 +1479,7 @@
             "action": "llm_abstain_filter",
             "action_added_false_span": 0,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "false_per_gold": null,
             "selected_count": 14
           }
@@ -1487,7 +1487,7 @@
         "worst_actions_by_gold_kill": [
           {
             "action": "llm_abstain_filter",
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "gold_kill_count": 10,
             "gold_kill_rate": 1.0,
             "selected_count": 14
@@ -1499,10 +1499,10 @@
           "llm_filter": {
             "action_added_false_span": 4,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "budget_limit": 0,
             "budget_violated": true,
-            "budget_violation_reason": "unclassified action false cost (4) exceeds gold (0)",
+            "budget_violation_reason": "non-primary action has false cost (4)",
             "delta_added_false_span_vs_baseline": -32,
             "delta_added_gold_span_vs_baseline": -10,
             "false_per_gold": null,
@@ -1524,20 +1524,20 @@
         "budget_violation_count": 14,
         "budget_violation_rate": 1.0,
         "budget_violation_reasons": {
-          "unclassified action false cost (4) exceeds gold (0)": 14
+          "non-primary action has false cost (4)": 14
         },
         "no_gold_task_count": 4,
-        "non_primary_false_span_cost": 0,
+        "non_primary_false_span_cost": 4,
         "positive_task_count": 10,
         "primary_false_span_cost": 0,
         "task_count": 14,
-        "unclassified_false_span_cost": 4,
+        "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
             "action": "llm_filter",
             "action_added_false_span": 4,
             "action_added_gold_span": 0,
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "false_per_gold": null,
             "selected_count": 14
           }
@@ -1545,7 +1545,7 @@
         "worst_actions_by_gold_kill": [
           {
             "action": "llm_filter",
-            "action_kind": "unclassified",
+            "action_kind": "non_primary",
             "gold_kill_count": 10,
             "gold_kill_rate": 1.0,
             "selected_count": 14
@@ -1557,10 +1557,10 @@
           "llm_span_narrow": {
             "action_added_false_span": 22,
             "action_added_gold_span": 10,
-            "action_kind": "unclassified",
+            "action_kind": "primary",
             "budget_limit": 10,
             "budget_violated": true,
-            "budget_violation_reason": "unclassified action false cost (22) exceeds gold (10)",
+            "budget_violation_reason": "primary action false cost (22) exceeds gold (10)",
             "delta_added_false_span_vs_baseline": -14,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 2.2,
@@ -1582,20 +1582,20 @@
         "budget_violation_count": 14,
         "budget_violation_rate": 1.0,
         "budget_violation_reasons": {
-          "unclassified action false cost (22) exceeds gold (10)": 14
+          "primary action false cost (22) exceeds gold (10)": 14
         },
         "no_gold_task_count": 4,
         "non_primary_false_span_cost": 0,
         "positive_task_count": 10,
-        "primary_false_span_cost": 0,
+        "primary_false_span_cost": 22,
         "task_count": 14,
-        "unclassified_false_span_cost": 22,
+        "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
             "action": "llm_span_narrow",
             "action_added_false_span": 22,
             "action_added_gold_span": 10,
-            "action_kind": "unclassified",
+            "action_kind": "primary",
             "false_per_gold": 2.2,
             "selected_count": 14
           }
@@ -1603,7 +1603,7 @@
         "worst_actions_by_gold_kill": [
           {
             "action": "llm_span_narrow",
-            "action_kind": "unclassified",
+            "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
             "selected_count": 14

@@ -1,7 +1,7 @@
 # P30-H3 Action-Specific Span-Cost Accounting
 
 - Schema: `p30-h3-action-span-cost-report-v1`
-- Generated: 2026-06-14T14:29:54.425513+00:00
+- Generated: 2026-06-14T14:43:40.310517+00:00
 - Tasks: 14 (+10 / no_gold 4)
 - Status: `score_phase_only_accounting=true`, `diagnostic_only=true`, `promotion_ready=false`, `default_should_change=false`.
 
@@ -17,10 +17,10 @@
 | Policy | tasks | primary_false_cost | non_primary_false_cost | unclassified_false_cost | budget_violations | budget_violation_rate |
 |---|---:|---:|---:|---:|---:|---:|
 | candidate_baseline | 14 | 0 | 0 | 36 | 14 | 1.0000 |
-| llm_span_narrow | 14 | 0 | 0 | 22 | 14 | 1.0000 |
-| llm_filter | 14 | 0 | 0 | 4 | 14 | 1.0000 |
+| llm_span_narrow | 14 | 22 | 0 | 0 | 14 | 1.0000 |
+| llm_filter | 14 | 0 | 4 | 0 | 14 | 1.0000 |
 | llm_abstain_filter | 14 | 0 | 0 | 0 | 0 | 0.0000 |
-| bucket_routed_v0 | 14 | 0 | 0 | 11 | 7 | 0.5000 |
+| bucket_routed_v0 | 14 | 5 | 2 | 4 | 7 | 0.5000 |
 | admission_v3 | 14 | 3 | 1 | 0 | 2 | 0.1429 |
 | admission_v3_h1 | 14 | 3 | 1 | 0 | 2 | 0.1429 |
 | admission_v3_h2 | 14 | 0 | 7 | 0 | 9 | 0.6429 |
@@ -47,82 +47,82 @@
 
 | Action | kind | selected | selected_rate | added_gold | added_false | false/gold | gold/false | net_1x | net_2x | gold_kill | false_reduction | budget_violated |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| llm_span_narrow | unclassified | 14 | 1.0000 | 10 | 22 | 2.2000 | 0.4545 | -12 | -34 | 0 | 4 | True |
+| llm_span_narrow | primary | 14 | 1.0000 | 10 | 22 | 2.2000 | 0.4545 | -12 | -34 | 0 | 4 | True |
 
 ### Worst actions by false cost: llm_span_narrow
 
 | Action | kind | selected | added_false | added_gold | false/gold |
 |---|---:|---:|---:|---:|---:|
-| llm_span_narrow | unclassified | 14 | 22 | 10 | 2.2000 |
+| llm_span_narrow | primary | 14 | 22 | 10 | 2.2000 |
 
 ### Worst actions by gold kill: llm_span_narrow
 
 | Action | kind | selected | gold_kill | gold_kill_rate |
 |---|---:|---:|---:|---:|
-| llm_span_narrow | unclassified | 14 | 0 | 0.0000 |
+| llm_span_narrow | primary | 14 | 0 | 0.0000 |
 
 ## Action span-cost table: llm_filter
 
 | Action | kind | selected | selected_rate | added_gold | added_false | false/gold | gold/false | net_1x | net_2x | gold_kill | false_reduction | budget_violated |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| llm_filter | unclassified | 14 | 1.0000 | 0 | 4 | n/a | 0.0000 | -4 | -8 | 10 | 4 | True |
+| llm_filter | non_primary | 14 | 1.0000 | 0 | 4 | n/a | 0.0000 | -4 | -8 | 10 | 4 | True |
 
 ### Worst actions by false cost: llm_filter
 
 | Action | kind | selected | added_false | added_gold | false/gold |
 |---|---:|---:|---:|---:|---:|
-| llm_filter | unclassified | 14 | 4 | 0 | n/a |
+| llm_filter | non_primary | 14 | 4 | 0 | n/a |
 
 ### Worst actions by gold kill: llm_filter
 
 | Action | kind | selected | gold_kill | gold_kill_rate |
 |---|---:|---:|---:|---:|
-| llm_filter | unclassified | 14 | 10 | 1.0000 |
+| llm_filter | non_primary | 14 | 10 | 1.0000 |
 
 ## Action span-cost table: llm_abstain_filter
 
 | Action | kind | selected | selected_rate | added_gold | added_false | false/gold | gold/false | net_1x | net_2x | gold_kill | false_reduction | budget_violated |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| llm_abstain_filter | unclassified | 14 | 1.0000 | 0 | 0 | n/a | n/a | 0 | 0 | 10 | 4 | False |
+| llm_abstain_filter | non_primary | 14 | 1.0000 | 0 | 0 | n/a | n/a | 0 | 0 | 10 | 4 | False |
 
 ### Worst actions by false cost: llm_abstain_filter
 
 | Action | kind | selected | added_false | added_gold | false/gold |
 |---|---:|---:|---:|---:|---:|
-| llm_abstain_filter | unclassified | 14 | 0 | 0 | n/a |
+| llm_abstain_filter | non_primary | 14 | 0 | 0 | n/a |
 
 ### Worst actions by gold kill: llm_abstain_filter
 
 | Action | kind | selected | gold_kill | gold_kill_rate |
 |---|---:|---:|---:|---:|
-| llm_abstain_filter | unclassified | 14 | 10 | 1.0000 |
+| llm_abstain_filter | non_primary | 14 | 10 | 1.0000 |
 
 ## Action span-cost table: bucket_routed_v0
 
 | Action | kind | selected | selected_rate | added_gold | added_false | false/gold | gold/false | net_1x | net_2x | gold_kill | false_reduction | budget_violated |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | candidate_baseline | unclassified | 2 | 0.1429 | 2 | 4 | 2.0000 | 0.5000 | -2 | -6 | 0 | 0 | True |
-| llm_abstain_filter | unclassified | 2 | 0.1429 | 0 | 0 | n/a | n/a | 0 | 0 | 0 | 2 | False |
-| llm_filter | unclassified | 5 | 0.3571 | 0 | 2 | n/a | 0.0000 | -2 | -4 | 3 | 2 | True |
-| llm_span_narrow | unclassified | 5 | 0.3571 | 5 | 5 | 1.0000 | 1.0000 | 0 | -5 | 0 | 0 | False |
+| llm_abstain_filter | non_primary | 2 | 0.1429 | 0 | 0 | n/a | n/a | 0 | 0 | 0 | 2 | False |
+| llm_filter | non_primary | 5 | 0.3571 | 0 | 2 | n/a | 0.0000 | -2 | -4 | 3 | 2 | True |
+| llm_span_narrow | primary | 5 | 0.3571 | 5 | 5 | 1.0000 | 1.0000 | 0 | -5 | 0 | 0 | False |
 
 ### Worst actions by false cost: bucket_routed_v0
 
 | Action | kind | selected | added_false | added_gold | false/gold |
 |---|---:|---:|---:|---:|---:|
-| llm_span_narrow | unclassified | 5 | 5 | 5 | 1.0000 |
+| llm_span_narrow | primary | 5 | 5 | 5 | 1.0000 |
 | candidate_baseline | unclassified | 2 | 4 | 2 | 2.0000 |
-| llm_filter | unclassified | 5 | 2 | 0 | n/a |
-| llm_abstain_filter | unclassified | 2 | 0 | 0 | n/a |
+| llm_filter | non_primary | 5 | 2 | 0 | n/a |
+| llm_abstain_filter | non_primary | 2 | 0 | 0 | n/a |
 
 ### Worst actions by gold kill: bucket_routed_v0
 
 | Action | kind | selected | gold_kill | gold_kill_rate |
 |---|---:|---:|---:|---:|
-| llm_filter | unclassified | 5 | 3 | 1.0000 |
+| llm_filter | non_primary | 5 | 3 | 1.0000 |
 | candidate_baseline | unclassified | 2 | 0 | 0.0000 |
-| llm_abstain_filter | unclassified | 2 | 0 | n/a |
-| llm_span_narrow | unclassified | 5 | 0 | 0.0000 |
+| llm_abstain_filter | non_primary | 2 | 0 | n/a |
+| llm_span_narrow | primary | 5 | 0 | 0.0000 |
 
 ## Action span-cost table: admission_v3
 

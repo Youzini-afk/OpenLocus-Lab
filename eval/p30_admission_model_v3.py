@@ -989,9 +989,23 @@ def _delta(a: Any, b: Any) -> float | None:
 # H3 action-specific span-cost accounting helpers.
 
 def _action_kind(action: str) -> str:
-    if action in {"admit_symbol_regex_union", "admit_rrf_primary", "admit_llm_span_narrow"}:
+    if action in {
+        "admit_symbol_regex_union",
+        "admit_rrf_primary",
+        "admit_llm_span_narrow",
+        # P25 bucket-routed role action: emits narrowed span candidates.
+        "llm_span_narrow",
+    }:
         return "primary"
-    if action in {"abstain", "apply_llm_filter", "supporting_only", "weak_candidate_only"}:
+    if action in {
+        "abstain",
+        "apply_llm_filter",
+        "supporting_only",
+        "weak_candidate_only",
+        # P25 bucket-routed role actions: filter/abstain-like gates.
+        "llm_filter",
+        "llm_abstain_filter",
+    }:
         return "non_primary"
     return "unclassified"
 

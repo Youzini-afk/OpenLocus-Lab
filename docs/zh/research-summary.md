@@ -184,6 +184,13 @@ actions by false cost and gold kill. The dedicated artifact is
 `promotion_ready=false`, `default_should_change=false`, `diagnostic_only=true`,
 `score_phase_only_accounting=true`.
 
+第一轮真实 P30-H3 smoke 已完成 6 个成功 runs（108 个任务）。baseline 为
+`27/102` added gold/false spans；P25 `bucket_routed_v0` 仍是最强 reference，
+为 `19/45`；P30-H1 为 `18/88`；P30-H2 为 `15/90`。H3 显示 P30-H1/H2 的
+false-span 成本主要来自 primary local-admit actions，尤其是
+`admit_symbol_regex_union` 和 H2 的 `admit_rrf_primary`；`supporting_only` 的主要成本是杀掉 gold、造成 recall loss，而不是新增 false spans。见
+[`p30-h3-remote-smoke.md`](p30-h3-remote-smoke.md)。
+
 ## Stage status
 
 | Stage | Status | Summary |
@@ -557,4 +564,3 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Dense mock and dense+RRF are net-negative failure surfaces**: dense_mock primary_false_positive_rate=0.874; dense_mock_plus_rrf/rrf_plus_dense_mock primary_false_positive_rate=0.906.
 - **Graph remains default-blocked**: graph_basic added_gold_span=0 and added_false_span=437; all graph/dense expansion variants are blocked by added_false_span > added_gold_span.
 - **Failure clusters surfaced at scale**: DENSE_MOCK_NOISE=577, RRF_INHERITED_BM25_FALSE_POSITIVE=299, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE=219, GRAPH_ADDS_NO_GOLD=90, GUARD_RECALL_KILL=62. Bucket regressions total=448.
-

@@ -177,6 +177,14 @@ actions by false cost and gold kill. The dedicated artifact is
 `promotion_ready=false`, `default_should_change=false`, `diagnostic_only=true`,
 `score_phase_only_accounting=true`.
 
+The first real P30-H3 smoke completed 6 successful runs (108 tasks). Baseline
+was `27/102` added gold/false spans; P25 `bucket_routed_v0` remained the
+strongest reference at `19/45`; P30-H1 was `18/88`; P30-H2 was `15/90`. H3
+shows P30-H1/H2 false-span cost is dominated by primary local-admit actions,
+especially `admit_symbol_regex_union` and H2 `admit_rrf_primary`; `supporting_only`
+mostly costs recall by killing gold rather than adding false spans. See
+[`p30-h3-remote-smoke.md`](p30-h3-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

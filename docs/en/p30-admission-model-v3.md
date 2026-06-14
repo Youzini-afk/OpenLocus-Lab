@@ -1,7 +1,7 @@
 # P30 Admission Model V3 Report
 
 - Schema: `p30-admission-v3-report-v1`
-- Generated: 2026-06-14T14:29:54.425713+00:00
+- Generated: 2026-06-14T14:43:40.310688+00:00
 - Status: `self_test_only`
 - Self-test: True
 - External calls: 0

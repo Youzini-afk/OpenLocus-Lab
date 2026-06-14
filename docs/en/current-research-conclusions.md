@@ -210,6 +210,16 @@ routes; it derives per-action cost from the existing `bucket_routed_v0`,
 a dedicated `artifacts/p30_admission_v3/p30_h3_span_cost_report.json` artifact
 with schema `p30-h3-action-span-cost-report-v1`.
 
+The real P30-H3 smoke (6 successful runs, 108 tasks) explains the P30 failure
+mode more precisely. Baseline was `27/102` added gold/false spans; P25
+`bucket_routed_v0` remained the strongest reference at `19/45`; P30-H1 was
+`18/88`; P30-H2 was `15/90`. H3 shows P30-H1/H2 false-span cost is dominated
+by primary local-admit actions (`admit_symbol_regex_union`, and H2
+`admit_rrf_primary`), while `supporting_only` mainly costs recall by killing
+gold rather than adding false spans. Therefore P30-H4 should use explicit
+action budgets for primary local-admit actions instead of globally tightening
+all non-primary actions.
+
 ---
 
 ## 3. Current Hypotheses
@@ -349,6 +359,7 @@ Key detailed reports:
 - `docs/p30-h1-remote-smoke.md` — P30-H1 enriched handoff real remote smoke.
 - `docs/p30-h2-remote-smoke.md` — P30-H2 stricter local-anchor admission real remote smoke.
 - `docs/p30-h3-span-cost-accounting.md` — P30-H3 action-specific span-cost accounting (diagnostic-only, score-phase-only, no route change).
+- `docs/p30-h3-remote-smoke.md` — P30-H3 real remote smoke action-cost diagnosis.
 
 ---
 
