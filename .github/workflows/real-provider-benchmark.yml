@@ -542,6 +542,8 @@ jobs:
           cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --p25-policy-records-out "$P25_RECORDS" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
           "${cmd[@]}"
           python3 eval/p25_bucket_policy.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/p25_bucket_policy.json --doc docs/real-provider-ci/p25-bucket-routed-policy.md
+          # P30 Admission Model V3: local aggregate-only follow-on using the same ephemeral records.
+          python3 eval/p30_admission_model_v3.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/p30_admission_v3_report.json --doc docs/real-provider-ci/p30-admission-model-v3.md
           rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
@@ -674,7 +676,36 @@ jobs:
                       raise SystemExit(f"{json_path} persisted per-task routing")
                   if data.get("raw_query_stored") is not False or data.get("gold_spans_in_artifact") is not False:
                       raise SystemExit(f"{json_path} persisted raw query or gold spans")
+              if json_path.name == "p30_admission_v3_report.json":
+                  if data.get("status") != "ok":
+                      raise SystemExit(f"{json_path} status is not ok")
+                  if data.get("real_policy_evaluation") is not True or data.get("not_quality_evidence") is not False:
+                      raise SystemExit(f"{json_path} is not a real aggregate admission evaluation")
+                  if data.get("external_calls") != 0:
+                      raise SystemExit(f"{json_path} should not make external calls")
+                  if data.get("evidencecore_semantics_changed") is not False:
+                      raise SystemExit(f"{json_path} must not claim EvidenceCore semantics changed")
+                  if data.get("candidate_not_fact") is not True:
+                      raise SystemExit(f"{json_path} must keep candidate_not_fact=true")
+                  # Real run must not persist per-task routing records.
+                  if data.get("admission_v3", {}).get("per_task_routing"):
+                      raise SystemExit(f"{json_path} persisted per-task routing records")
+                  for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} does not keep {flag}=false")
+                  banned_keys = {"snippet", "prompt", "prompts", "response", "responses", "query", "gold", "gold_spans", "private_labels", "label_path"}
+                  def walk(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              if key in banned_keys:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
+                              walk(value, prefix + key + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              walk(value, prefix + str(idx) + ".")
+                  walk(data)
               stress_dataset = data.get("stress_dataset")
+
               if isinstance(stress_dataset, dict) and stress_dataset.get("private_labels") not in {None, "not_uploaded_in_ci"}:
                   raise SystemExit(f"{json_path} contains a private label artifact path")
 

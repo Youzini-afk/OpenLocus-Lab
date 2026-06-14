@@ -135,6 +135,47 @@ bucket-sampled tasks each). `bucket_routed_v0` reduced added false spans
 repo/model-dependent. Therefore P25 is useful as a false-primary reducer signal
 for P30 Admission V3, not a default policy.
 
+### 2.12 P30 Admission Model V3 scaffold is ready
+
+`eval/p30_admission_model_v3.py` is a deterministic, no-remote admission model
+research harness (schema `p30-admission-v3-report-v1`). The committed
+self-test artifact is a sanitized synthetic scaffold
+(`status=self_test_only`, `not_quality_evidence=true`), not a quality result.
+Real P30 evaluation requires the same ephemeral
+`p25-policy-records-ephemeral-v1` records produced by
+`eval/p21_llm_rich_candidate.py --p25-policy-records-out`; those records stay
+under runner temp and are not uploaded, while P30 uploads aggregate metrics
+only.
+
+P30 routes only from RUN-phase public/observable features: public
+`task_bucket`, `task_risk_tags`, and `route_features`. `score_group`,
+`has_gold`, gold spans, private labels, and outcome metrics are used only for
+aggregate scoring after actions are chosen. Allowed actions are `abstain`,
+`admit_symbol_regex_union`, `admit_rrf_primary`, `admit_llm_span_narrow`,
+`apply_llm_filter`, `supporting_only`, and `weak_candidate_only`. The
+`admission_v3` scorecard combines explainable monotonic feature scores (query
+noise, exact/unique symbol anchor, symbol/regex/local anchors, RRF backed by
+anchor, LLM span-narrow validity/within candidate) with hard guards for
+negative/ambiguous/dense-false-positive buckets. Dense and graph signals are
+allowed only as supporting features; they cannot invent primary evidence.
+
+The evaluator compares `candidate_baseline`, `llm_span_narrow`, `llm_filter`,
+`llm_abstain_filter`, `bucket_routed_v0` (reused from P25), and
+`admission_v3`. It reports task count, SpanF0.5, PFP, added gold/false spans,
+filter gold kill rate, abstain rate, action counts, score bands,
+selective risk proxy, mean deltas versus the candidate baseline and
+`bucket_routed_v0`, and explicit outcome-fallback counters for actions that do
+not have measured outcomes in a given ephemeral record. Public output is
+recursively scanned for forbidden keys
+(raw query/snippet/prompt/response/gold/gold_spans/private labels/provider
+keys). `promotion_ready=false`, `default_should_change=false`,
+`evidencecore_semantics_changed=false`, `candidate_not_fact=true`,
+`external_calls=0`.
+
+P30 is not a promotion candidate. The next step is to run it against real P25
+ephemeral smoke records and compare the scorecard to P25 `bucket_routed_v0`
+and the P22/P23 evidence-seeking guard surfaces.
+
 ---
 
 ## 3. Current Hypotheses
@@ -250,10 +291,12 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P7: real-provider summary.
 - P8/P9: GitHub Actions public corpus scale-up, model bakeoff, and multilingual smoke.
 
-### P20-P21: LLM scale-up and cross-model context injection
+### P20-P25/P30: LLM scale-up, policy routing, and explainable admission
 
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
 - P21-G: cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E found useful file/span signal (`pack2_evidence_sketch`, `atom_signature`) but naked dense false spans dominated. P21-G2E found constrained dense has modest supporting value (`dense_atom_signature_rrf_file_constrained`) while dense-only remains diagnostic/non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain need prompt/bucket routing and GLM needs schema repair.
+- P25: bucket-routed LLM role policy evaluator. Deterministic, no-remote, routes by public `task_bucket`/`task_risk_tags`; reduces false primary but also some gold spans; useful as a P30 input, not default.
+- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from RUN-phase public features, compares baselines plus `admission_v3`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. Self-test scaffold only; real validation requires the ephemeral P21→P25 handoff.
 
 Key detailed reports:
 
@@ -266,6 +309,8 @@ Key detailed reports:
 - `docs/real-provider-ci-large-scale.en.md` — L1/L2 real-provider large-scale results.
 - `docs/p20-llm-large-scale.md` — P20-LS-A low-context LLM alias scale-up result.
 - `docs/p21-g-cross-model-context-injection.md` — P21-G cross-model context-injection plan.
+- `docs/p25-bucket-routed-policy.md` — P25 bucket-routed LLM role policy.
+- `docs/p30-admission-model-v3.md` — P30 Admission Model V3 report.
 
 ---
 
@@ -283,9 +328,10 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
 9. If LLM query aliases are revisited, test only grounded variants: inventory-selected aliases or aliases derived after seeing top-k local candidate snippets.
 10. Run P21-G rich LLM candidate support: rerank/filter/span-narrow/abstain/inventory_alias over snippet-backed local candidates, record model-averaged and per-model effects, and report quality, latency, token, and cost trade-offs.
+11. Run P30 against real P25 ephemeral policy records and compare `admission_v3` to P25 `bucket_routed_v0`, R20 positive reach, and R26 no-gold guard surfaces.
 
 ---
 
 ## 9. Current Bottom Line
 
-OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. P22/P23 now frames the next phase as evidence-seeking retrieval policy research: preserve local recall, use precision anchors and guard surfaces to suppress false primary, route dense/LLM roles only where the bucket/candidate surface supports them, and let EvidenceCore remain the only fact authority.
+OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. P22/P23 now frames the next phase as evidence-seeking retrieval policy research: preserve local recall, use precision anchors and guard surfaces to suppress false primary, route dense/LLM roles only where the bucket/candidate surface supports them, and let EvidenceCore remain the only fact authority. P30 provides a deterministic, explainable admission scaffold to compare these policy surfaces.

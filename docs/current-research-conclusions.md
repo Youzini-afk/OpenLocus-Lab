@@ -28,6 +28,7 @@ below.
 - [P21-G cross-model context-injection plan](p21-g-cross-model-context-injection.md)
 - [P22/P23 evidence-seeking policy surface](p22-p23-policy-surface.md)
 - [P25 bucket-routed LLM role policy](p25-bucket-routed-policy.md)
+- [P30 Admission Model V3](p30-admission-model-v3.md)
 
 ## Current one-line conclusion
 

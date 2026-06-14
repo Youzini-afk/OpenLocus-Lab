@@ -86,6 +86,46 @@ repo/model-dependent. This makes P25 useful as a false-primary reducer component
 for P30 Admission V3, not a default/promotion candidate. Remote summary:
 [`docs/p25-bucket-routed-policy-remote-smoke.md`](p25-bucket-routed-policy-remote-smoke.md).
 
+## P30 Admission Model V3 (2026-06-14)
+
+P30 adds a deterministic explainable admission model evaluator
+(`eval/p30_admission_model_v3.py`) as a research-only follow-on to P25.
+The committed artifact is a sanitized synthetic self-test scaffold
+(`status=self_test_only`, `not_quality_evidence=true`) and is not a quality
+result. P30 consumes the same ephemeral `p25-policy-records-ephemeral-v1`
+records produced by `eval/p21_llm_rich_candidate.py --p25-policy-records-out`,
+rejects aggregate summaries and non-ephemeral schemas, and routes only from
+RUN-phase public/observable features (`task_bucket`, `task_risk_tags`,
+`route_features`). Labels, gold, `score_group`, and outcome metrics are used
+only for aggregate scoring after actions are chosen.
+
+Allowed admission actions are: `abstain`, `admit_symbol_regex_union`,
+`admit_rrf_primary`, `admit_llm_span_narrow`, `apply_llm_filter`,
+`supporting_only`, and `weak_candidate_only`. The `admission_v3` scorecard
+uses monotonic feature scores and hard guards around query noise,
+exact/unique symbol anchors, symbol/regex/local anchors, RRF-backed-by-anchor
+signals, LLM span-narrow validity/within-candidate, and negative/ambiguous/
+dense-false-positive buckets. Dense and graph signals are allowed only as
+supporting features; they cannot invent primary evidence.
+
+The evaluator compares `candidate_baseline`, `llm_span_narrow`, `llm_filter`,
+`llm_abstain_filter`, `bucket_routed_v0` (reused from P25), and
+`admission_v3`. Aggregates include task count, SpanF0.5, PFP, added gold/false
+spans, filter gold kill rate, abstain rate, action counts, score bands,
+selective risk proxy, deltas versus the candidate baseline and
+`bucket_routed_v0`, and explicit outcome-fallback counters for actions that do
+not have measured outcomes in a given ephemeral record. Public output is
+recursively scanned for forbidden keys
+(raw query/snippet/prompt/response/gold/gold_spans/private label/provider key
+fields). `promotion_ready=false`, `default_should_change=false`,
+`evidencecore_semantics_changed=false`, `candidate_not_fact=true`,
+`external_calls=0`.
+
+P30 is intentionally not a promotion candidate. The next validation step is to
+run the evaluator against real P25 ephemeral smoke records and compare the
+scorecard to P25 `bucket_routed_v0` and the P22/P23 evidence-seeking guard
+surfaces. See [`docs/p30-admission-model-v3.md`](p30-admission-model-v3.md).
+
 ## Stage status
 
 | Stage | Status | Summary |
@@ -136,6 +176,8 @@ for P30 Admission V3, not a default/promotion candidate. Remote summary:
 | P21-G Cross-Model Context Injection Research | P21-G3L-R GLM tool_call confirmed under low concurrency | Research pivot from minimal-context baselines to cross-model context-injection effects. P21-G1E found rich embedding views have file/span signal but naked dense false spans dominate. P21-G2E found constrained dense (`dense_atom_signature_rrf_file_constrained`) has modest supporting value but dense remains non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain often kill gold. P21-G3L-R added provider-level output modes (`prompt_only`, `json_object`, `json_schema_strict`, `tool_call`), fallback diagnostics, and one no-fallback schema repair retry. GLM 4-mode comparison found `tool_call` best (avg SpanNarrow Δ +0.0677), `prompt_only` blocked, `json_object` insufficient, `json_schema_strict` mixed. A sequential low-concurrency `tool_call` rerun removed 429 noise and improved GLM SpanNarrow avg Δ to +0.1361 across py_flask/js_express. Next: bucketed GLM/Kimi/Flash `span_narrow` with `tool_call` for GLM; filter/abstain remain non-default. EvidenceCore remains final authority. |
 | P21-G3B Bucketed LLM Role Study | Bucketed smoke completed; global LLM roles blocked | Public task generation now exposes safe `task_bucket/task_risk_tags` and P21 runners support `round_robin_public_buckets`, so RUN can sample mixed buckets without labels/gold. First true bucketed LLM role smoke ran 6 runs (Flash/Kimi/GLM × py_flask/js_express, 18 tasks each, provider concurrency ≤6). Bucket coverage now includes abstain/weak/no_gold/ambiguous/dense_false_positive buckets. Result: all LLM roles reduce PFP materially, but often by killing gold spans; global `span_narrow` is positive on py_flask but negative on js_express mixed buckets; `filter`/`abstain` are useful as false-positive reducers only in specific buckets, not as defaults. Next: build a rule-based policy that routes `span_narrow` only to likely-positive/high-confidence tasks and `filter/abstain` only to negative/dense_false_positive/ambiguous buckets. |
 | P22/P23 Evidence-Seeking Policy Surface | Decision surfaces frozen; bottlenecks decomposed | P22/P23 moves from channel bakeoffs to strategy-surface analysis. It freezes two capped local surfaces with hashes and no remote/model calls: `r20_positive` (120 positive tasks across 9 repos) and `r26_guard` (120 no-gold stress tasks across 9 repos). R20 shows RRF is still the reach base (`Reach@5=0.975`, `SpanReach@5=0.95`) but symbol has best local SpanF0.5 (`0.3169`) and `symbol_regex_union` is the best precision/reach experimental baseline candidate for P25/P30. R26 shows BM25/RRF create noisy false primary (`NoGoldFP=0.2833`) while symbol/regex/union/guard abstain, so guard stress must be evaluated separately from positive reach. Reports: `docs/p22-p23-policy-surface.md`, per-surface docs/artifacts under `docs/` and `artifacts/p22_p23/`. |
+| P25 Bucket-Routed LLM Role Policy evaluator | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p25_bucket_policy.py` is deterministic and no-remote. It routes by public `task_bucket`/`task_risk_tags` and compares candidate_baseline, global span/filter/abstain, and bucket_routed_v0. Aggregate summaries/non-ephemeral schemas are rejected. First real smoke reduced false spans but also some gold spans; useful as P30 false-primary reducer, not default. Report: `docs/p25-bucket-routed-policy.md`. |
+| P30 Admission Model V3 | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p30_admission_model_v3.py` is deterministic, explainable, no-remote. Routes only from public task_bucket/task_risk_tags/route_features; allowed actions are abstain/admit_symbol_regex_union/admit_rrf_primary/admit_llm_span_narrow/apply_llm_filter/supporting_only/weak_candidate_only. Compares baselines plus admission_v3, reports score bands/selective_risk/deltas, and recursively scans public output for forbidden keys. Not promotion-ready; next step compare to P25 real smoke and P22/P23 guards. Report: `docs/p30-admission-model-v3.md`. |
 
 ## R0/R1 initial findings
 

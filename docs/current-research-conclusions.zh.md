@@ -116,6 +116,38 @@ P22/P23 把下一阶段从“继续比较单个通道”推进到 evidence-seeki
 
 第一轮真实 P25 remote smoke 使用这个安全的 P21→P25 ephemeral handoff，完成 6 个成功聚合 runs（`Flash/Kimi/GLM × py_flask/js_express`，每个 run 18 个按 bucket 抽样任务）。`bucket_routed_v0` 显著降低 false spans（`108 -> 28`）和平均 PFP（约 `-0.0926`），但也损失了一些 gold spans（`24 -> 21`）；平均 SpanF0.5 只小幅正向（`+0.0026`），且强依赖 repo/model。因此 P25 适合作为 P30 Admission V3 的 false-primary reducer 组件，而不是 default policy。
 
+### 2.12 P30 Admission Model V3 脚手架已就绪
+
+`eval/p30_admission_model_v3.py` 是一个确定性、无远程调用的 admission model
+研究脚手架（schema `p30-admission-v3-report-v1`）。当前提交的报告同样是经过净化的
+self-test 脚手架（`status=self_test_only`、`not_quality_evidence=true`），不是质量证据。
+真实 P30 评估仍需使用
+`eval/p21_llm_rich_candidate.py --p25-policy-records-out` 在 SCORE 阶段生成的临时
+`p25-policy-records-ephemeral-v1` records；这些记录留在 runner temp，不上传，P30 只上传聚合指标。
+
+P30 只从 RUN-phase 公开可观测特征进行路由：public `task_bucket`、
+`task_risk_tags` 和 `route_features`。`score_group`、`has_gold`、gold spans、
+private labels 和 outcome metrics 只在动作确定后用于聚合评分。允许的动作包括
+`abstain`、`admit_symbol_regex_union`、`admit_rrf_primary`、
+`admit_llm_span_narrow`、`apply_llm_filter`、`supporting_only`、
+`weak_candidate_only`。`admission_v3` 评分卡结合可解释单调特征分数（query noise、
+exact/unique symbol anchor、symbol/regex/local anchors、RRF backed by anchor、
+LLM span-narrow validity/within candidate）与 negative/ambiguous/dense-false-positive
+桶的 hard guard。dense 和 graph 信号只允许作为 supporting feature，不能发明 primary evidence。
+
+评估器比较 `candidate_baseline`、`llm_span_narrow`、`llm_filter`、
+`llm_abstain_filter`、`bucket_routed_v0`（从 P25 复用）和 `admission_v3`。
+报告 task count、SpanF0.5、PFP、added gold/false spans、filter gold kill rate、
+abstain rate、action counts、score bands、selective risk proxy、与
+candidate baseline 和 `bucket_routed_v0` 的 mean deltas，以及对输入中没有测量 outcome
+的动作的 fallback 计数。公开输出会递归扫描禁用键
+（raw query/snippet/prompt/response/gold/gold_spans/private labels/provider keys）。
+`promotion_ready=false`、`default_should_change=false`、
+`evidencecore_semantics_changed=false`、`candidate_not_fact=true`、`external_calls=0`。
+
+P30 不是 promotion candidate。下一步应把它接入真实 P25 ephemeral smoke records，
+与 P25 `bucket_routed_v0` 以及 P22/P23 evidence-seeking guard surfaces 进行比较。
+
 ---
 
 ## 3. 当前研究假设
@@ -231,10 +263,12 @@ P22/P23 把下一阶段从“继续比较单个通道”推进到 evidence-seeki
 - P7：real-provider summary。
 - P8/P9：GitHub Actions public corpus scale-up、model bakeoff、multilingual smoke。
 
-### P20-P21：LLM scale-up 与跨模型 context injection
+### P20-P25/P30：LLM 放大、策略路由与可解释 admission
 
 - P20-LS/P20-LS-A：低上下文/query-only LLM aliases safety-passed 但 quality-failed；direct low-context alias scale-up blocked。
 - P21-G：跨模型 context-injection 阶段，使用 context atoms、context packs、candidate metadata、model profiles、roles、layouts，并记录 latency/cost。P21-G1E 显示 `pack2_evidence_sketch`、`atom_signature` 有 file/span 信号但 naked dense false spans 占主导。P21-G2E 显示 constrained dense 有 modest supporting value（`dense_atom_signature_rrf_file_constrained`），但 dense-only 仍只是 diagnostic/non-primary。P21-G3L 显示 LLM span narrowing 有 promising 但 model/repo-specific 信号；filter/abstain 需要 prompt/bucket routing，GLM 需要 schema repair。
+- P25：bucket-routed LLM role policy 评估器。确定性、无远程、只按公开 `task_bucket`/`task_risk_tags` 路由；能降低 false primary 但也会损失一些 gold span；作为 P30 输入有价值，不是默认策略。
+- P30：Admission Model V3 研究脚手架。确定性可解释评分卡加 hard guard，只从 RUN-phase 公开特征路由，比较多个 baseline 和 `admission_v3`，输出 score bands/selective risk/deltas，并递归扫描公开输出中的禁用键。当前仅 self-test 脚手架，真实验证需要 P21→P25 临时 handoff。
 
 关键详细报告：
 
@@ -247,6 +281,8 @@ P22/P23 把下一阶段从“继续比较单个通道”推进到 evidence-seeki
 - `docs/real-provider-ci-large-scale.zh.md` — L1/L2 大型真实-provider测试结论。
 - `docs/p20-llm-large-scale.md` — P20-LS-A 低上下文 LLM alias scale-up 结果。
 - `docs/p21-g-cross-model-context-injection.md` — P21-G 跨模型 context-injection 计划。
+- `docs/p25-bucket-routed-policy.md` — P25 bucket-routed LLM role policy。
+- `docs/p30-admission-model-v3.md` — P30 Admission Model V3 报告。
 
 ---
 
@@ -264,9 +300,10 @@ P22/P23 把下一阶段从“继续比较单个通道”推进到 evidence-seeki
 8. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
 9. 如果重新研究 LLM query aliases，只测试 grounded variants：从 inventories 中选择 aliases，或在看到 top-k local candidate snippets 后生成 aliases。
 10. 跑 P21-G rich LLM candidate support：在 snippet-backed local candidates 上 rerank/filter/span-narrow/abstain/inventory_alias，记录 model-averaged/per-model effects，并报告质量、latency、token、cost trade-off。
+11. 在真实 P25 ephemeral policy records 上跑 P30，比较 `admission_v3` 与 P25 `bucket_routed_v0`、R20 正例 reach 和 R26 no-gold guard surface。
 
 ---
 
 ## 9. 当前一句话总结
 
-OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地 lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 只有在 grounded 与 validated 时才有价值。L1/L2 证明 dense-only/global dense 不能 primary/default；P20-LS-A 证明低上下文/query-only LLM aliases 不能按当前形式扩大。下一阶段的关键问题是：哪些 context atoms、packs、roles、layouts 和 model profiles 能让 real-model retrieval 跨模型稳定增加 gold，同时不以不可接受的 latency/cost 增加 false-primary 与 false-span。
+OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地 lexical/symbol/RRF 是事实检索主干；真实 embedding、QuIVer、LLM-derived、graph 只有在 grounded 与 validated 时才有价值。L1/L2 证明 dense-only/global dense 不能 primary/default；P20-LS-A 证明低上下文/query-only LLM aliases 不能按当前形式扩大。下一阶段的关键问题是：哪些 context atoms、packs、roles、layouts 和 model profiles 能让 real-model retrieval 跨模型稳定增加 gold，同时不以不可接受的 latency/cost 增加 false-primary 与 false-span。P30 提供了一个确定性的可解释 admission 脚手架，用于横向比较这些策略面。
