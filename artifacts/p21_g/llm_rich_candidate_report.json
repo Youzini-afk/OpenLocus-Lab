@@ -1,10 +1,16 @@
 {
   "all_pack_file_filters_applied": true,
   "call_summary": {
+    "actual_output_modes": [],
+    "fallback_event_count": 0,
+    "fallback_events": [],
+    "fallback_used_count": 0,
     "input_chars_total": 0,
     "latency_ms_p50": 0,
     "packed_candidates_total": 1,
-    "schema_error_count": 0
+    "schema_error_count": 0,
+    "schema_repair_attempted_count": 0,
+    "schema_repair_success_count": 0
   },
   "candidate_info": {
     "actual_candidate_strategy": "dense_atom_signature_rrf_file_constrained",
@@ -133,7 +139,7 @@
   "embedding_model": "local_token_hash",
   "embedding_provider": "local_token_hash",
   "embedding_send_dimensions": false,
-  "generated_at": "2026-06-14T01:39:35.156000+00:00",
+  "generated_at": "2026-06-14T02:42:51.088410+00:00",
   "labels_loaded_after_run": true,
   "llm_direct_evidence_allowed": false,
   "llm_disabled_reason": "provider not openai-compatible",
@@ -152,6 +158,7 @@
   "raw_snippets_committed": false,
   "raw_snippets_sent_to_provider": false,
   "raw_text_stored": false,
+  "requested_output_mode": "json_object",
   "run_phase_public_only": true,
   "schema_valid_calls": 3,
   "schema_version": "p21-g3l-llm-rich-candidate-v1",

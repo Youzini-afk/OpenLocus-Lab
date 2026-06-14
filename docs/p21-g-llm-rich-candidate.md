@@ -6,6 +6,7 @@ LLM sees constrained candidate snippets and may filter, abstain, or narrow spans
 
 - llm_remote_enabled: `False`
 - llm_model: `offline_deterministic`
+- requested_output_mode: `json_object`
 - candidate_strategy: `dense_atom_signature_rrf_file_constrained`
 - raw_snippets_sent_to_provider: `False`
 - raw_snippets_committed: `False`
@@ -28,6 +29,12 @@ LLM sees constrained candidate snippets and may filter, abstain, or narrow spans
   "latency_ms_p50": 0,
   "input_chars_total": 0,
   "schema_error_count": 0,
+  "schema_repair_attempted_count": 0,
+  "schema_repair_success_count": 0,
+  "actual_output_modes": [],
+  "fallback_used_count": 0,
+  "fallback_event_count": 0,
+  "fallback_events": [],
   "packed_candidates_total": 1
 }
 ```

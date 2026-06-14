@@ -53,6 +53,16 @@ on:
         description: 'Optional LLM model override for remote LLM stages; empty uses OPENLOCUS_LLM_MODEL repo variable'
         required: false
         default: ''
+      llm_output_mode:
+        description: 'P21-G3L structured output mode for LLM rich candidate runs'
+        required: false
+        default: 'json_object'
+        type: choice
+        options:
+          - prompt_only
+          - json_object
+          - json_schema_strict
+          - tool_call
       max_tasks:
         description: 'Task/query cap for smoke runs'
         required: false
@@ -78,7 +88,7 @@ defaults:
     shell: bash
 
 concurrency:
-  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}-${{ inputs.dataset }}-${{ inputs.repo_id }}-${{ inputs.embedding_model }}-${{ inputs.llm_model }}
+  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}-${{ inputs.dataset }}-${{ inputs.repo_id }}-${{ inputs.embedding_model }}-${{ inputs.llm_model }}-${{ inputs.llm_output_mode }}
   cancel-in-progress: false
 
 jobs:
@@ -107,6 +117,7 @@ jobs:
           INPUT_VIEWS: ${{ inputs.views }}
           INPUT_EMBEDDING_MODEL: ${{ inputs.embedding_model }}
           INPUT_LLM_MODEL: ${{ inputs.llm_model }}
+          INPUT_LLM_OUTPUT_MODE: ${{ inputs.llm_output_mode }}
           INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
           INPUT_MAX_FILES_PER_REPO: ${{ inputs.max_files_per_repo }}
@@ -140,6 +151,7 @@ jobs:
               "Qwen/Qwen3-Embedding-0.6B": {"dimensions": 1024, "send_dimensions": "1"},
               "BAAI/bge-m3": {"dimensions": 1024, "send_dimensions": "0"},
           }
+          allowed_llm_output_modes = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
 
           def getenv(name: str, default: str = "") -> str:
               value = os.environ.get(name, default)
@@ -178,6 +190,9 @@ jobs:
           max_records = positive_int("INPUT_MAX_RECORDS", 1000)
           max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 3000)
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
+          llm_output_mode = getenv("INPUT_LLM_OUTPUT_MODE", "json_object")
+          if llm_output_mode not in allowed_llm_output_modes:
+              raise SystemExit(f"unsupported llm_output_mode: {llm_output_mode}")
 
           if remote_enabled:
               llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "all_smoke"}
@@ -229,6 +244,7 @@ jobs:
               "embedding_send_dimensions": embedding_send_dimensions,
               "llm_provider": llm_provider,
               "llm_model": llm_model,
+              "llm_output_mode": llm_output_mode,
               "allow_remote": "1" if remote_enabled else "0",
           }
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
@@ -246,6 +262,7 @@ jobs:
               "embedding_send_dimensions": embedding_send_dimensions,
               "llm_provider": llm_provider,
               "llm_model": llm_model,
+              "llm_output_mode": llm_output_mode,
               "views": views,
               "max_tasks": max_tasks,
               "max_records": max_records,
@@ -478,6 +495,7 @@ jobs:
           OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
           EMBEDDING_PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
           LLM_PROVIDER: ${{ steps.plan.outputs.llm_provider }}
+          LLM_OUTPUT_MODE: ${{ steps.plan.outputs.llm_output_mode }}
           DATASET: ${{ steps.plan.outputs.dataset }}
           DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
@@ -494,7 +512,7 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote-embedding --allow-remote-llm)
           fi
-          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
+          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
           "${cmd[@]}"
 
       - name: P20-LS LLM alias/stress harness
@@ -586,6 +604,9 @@ jobs:
               if json_path.name == "p21_llm_rich_candidate.json":
                   if data.get("provider_status") not in {"ok", "degraded"}:
                       raise SystemExit(f"{json_path} provider_status is invalid")
+                  plan_data = json.loads(pathlib.Path("artifacts/real_provider_ci/plan.json").read_text(encoding="utf-8"))
+                  if data.get("requested_output_mode") != plan_data.get("llm_output_mode"):
+                      raise SystemExit(f"{json_path} did not honor requested llm_output_mode")
                   if data.get("candidate_info", {}).get("candidate_strategy_available") is not True:
                       raise SystemExit(f"{json_path} candidate strategy was unavailable")
                   if data.get("llm_remote_enabled") is True and data.get("all_pack_file_filters_applied") is not True:

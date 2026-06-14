@@ -17,6 +17,8 @@ import os
 import sys
 import tempfile
 import time
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -39,6 +41,77 @@ SCHEMA_VERSION = "p21-g3l-llm-rich-candidate-v1"
 PROMPT_VERSION = "p21-g3l-rich-candidate-v1"
 DEFAULT_CANDIDATE_STRATEGY = "dense_atom_signature_rrf_file_constrained"
 DECISIONS = {"primary", "supporting", "reject"}
+OUTPUT_MODES = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
+
+
+def candidate_decision_schema() -> dict[str, Any]:
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["not_evidence", "candidate_not_fact", "answerable", "items"],
+        "properties": {
+            "not_evidence": {"const": True},
+            "candidate_not_fact": {"const": True},
+            "answerable": {"type": "boolean"},
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["candidate_id", "decision", "start_line", "end_line", "reason_code"],
+                    "properties": {
+                        "candidate_id": {"type": "string"},
+                        "decision": {"type": "string", "enum": sorted(DECISIONS)},
+                        "start_line": {"type": "integer", "minimum": 1},
+                        "end_line": {"type": "integer", "minimum": 1},
+                        "reason_code": {"type": "string"},
+                    },
+                },
+            },
+        },
+    }
+
+
+def output_mode_payload(mode: str) -> dict[str, Any]:
+    schema = candidate_decision_schema()
+    if mode == "prompt_only":
+        return {}
+    if mode == "json_object":
+        return {"response_format": {"type": "json_object"}}
+    if mode == "json_schema_strict":
+        return {
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "p21_g3l_candidate_decision",
+                    "strict": True,
+                    "schema": schema,
+                },
+            }
+        }
+    if mode == "tool_call":
+        return {
+            "tools": [{
+                "type": "function",
+                "function": {
+                    "name": "emit_candidate_decisions",
+                    "description": "Emit candidate-only retrieval decisions for P21-G3L.",
+                    "parameters": schema,
+                },
+            }],
+            "tool_choice": {"type": "function", "function": {"name": "emit_candidate_decisions"}},
+        }
+    raise ValueError(f"unsupported output mode: {mode}")
+
+
+def fallback_modes(mode: str) -> list[str]:
+    if mode == "tool_call":
+        return ["json_schema_strict", "json_object", "prompt_only"]
+    if mode == "json_schema_strict":
+        return ["json_object", "prompt_only"]
+    if mode == "json_object":
+        return ["prompt_only"]
+    return []
 
 
 def write_json(path: Path, obj: Any) -> None:
@@ -196,7 +269,78 @@ def local_decision(task: dict[str, Any], packed: list[dict[str, Any]]) -> tuple[
     }, {"call_succeeded": True, "offline_deterministic": True, "latency_ms": 0}
 
 
-def remote_decision(task: dict[str, Any], packed: list[dict[str, Any]]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+def post_chat_completion_structured(messages: list[dict[str, str]], temperature: float, mode: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    base_url = os.environ.get("OPENLOCUS_LLM_BASE_URL", "").rstrip("/")
+    api_key = os.environ.get("OPENLOCUS_LLM_API_KEY", "")
+    model = os.environ.get("OPENLOCUS_LLM_MODEL", "")
+    url = base_url + "/chat/completions"
+    retries = p20.positive_env_int("OPENLOCUS_LLM_RETRIES", 2, minimum=0, maximum=5)
+    timeout = p20.positive_env_int("OPENLOCUS_LLM_TIMEOUT_SEC", 90, minimum=5, maximum=300)
+    payload: dict[str, Any] = {"model": model, "messages": messages, "temperature": temperature}
+    payload.update(output_mode_payload(mode))
+    last_error: p20.RemoteLLMProviderError | None = None
+    for attempt in range(retries + 1):
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": "OpenLocus/0.1 (research harness)",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 - explicit opt-in
+                body = json.loads(resp.read().decode("utf-8"))
+            message = body.get("choices", [{}])[0].get("message", {})
+            if mode == "tool_call":
+                calls = message.get("tool_calls") or []
+                if not calls:
+                    raise json.JSONDecodeError("missing_tool_calls", "", 0)
+                fn = calls[0].get("function", {})
+                if fn.get("name") != "emit_candidate_decisions":
+                    raise json.JSONDecodeError("unexpected_tool_call", "", 0)
+                args = fn.get("arguments", "{}")
+                return json.loads(args), {"actual_output_mode": mode, "provider_accepted_output_mode": True}
+            content = message.get("content", "{}")
+            return json.loads(content), {"actual_output_mode": mode, "provider_accepted_output_mode": True}
+        except urllib.error.HTTPError as exc:
+            raw_body = exc.read().decode("utf-8", errors="ignore")
+            provider_code = None
+            provider_error_type = None
+            try:
+                body = json.loads(raw_body)
+                error_obj = body.get("error") if isinstance(body, dict) else None
+                if isinstance(error_obj, dict):
+                    provider_code = p20.safe_reason_token(error_obj.get("code"))
+                    provider_error_type = p20.safe_reason_token(error_obj.get("type"))
+            except json.JSONDecodeError:
+                pass
+            retriable = exc.code == 429 or 500 <= exc.code < 600
+            last_error = p20.RemoteLLMProviderError(
+                f"provider_http_{exc.code}",
+                http_status=exc.code,
+                provider_code=provider_code,
+                provider_error_type=provider_error_type,
+                retriable=retriable,
+            )
+        except TimeoutError:
+            last_error = p20.RemoteLLMProviderError("provider_timeout", retriable=True)
+        except urllib.error.URLError as exc:
+            reason_class = type(exc.reason).__name__ if getattr(exc, "reason", None) is not None else "unknown"
+            last_error = p20.RemoteLLMProviderError("provider_url_error", provider_error_type=p20.safe_reason_token(reason_class), retriable=True)
+        except json.JSONDecodeError:
+            last_error = p20.RemoteLLMProviderError("provider_invalid_json", retriable=True)
+        if last_error is None or not last_error.retriable or attempt >= retries:
+            break
+        time.sleep(min(8.0, 0.5 * (2**attempt)))
+    assert last_error is not None
+    raise last_error
+
+
+def remote_decision(task: dict[str, Any], packed: list[dict[str, Any]], output_mode: str, *, allow_fallback: bool = True) -> tuple[dict[str, Any] | None, dict[str, Any]]:
     model_id = os.environ.get("OPENLOCUS_LLM_MODEL", "unknown")
     candidates_text = []
     for cand in packed:
@@ -214,18 +358,40 @@ def remote_decision(task: dict[str, Any], packed: list[dict[str, Any]]) -> tuple
         "\"answerable\": true|false, \"items\": [{\"candidate_id\": \"C1\", \"decision\": \"primary|supporting|reject\", "
         "\"start_line\": 1, \"end_line\": 2, \"reason_code\": \"short_token\"}]}"
     )
+    if task.get("repair_instruction"):
+        user_content += "\n\nSCHEMA REPAIR INSTRUCTION:\n" + str(task["repair_instruction"])
     messages = [
         {"role": "system", "content": "You are a code retrieval candidate filter. Output JSON only. Your output is not Evidence, not a label, and not a promotion verdict. If candidates do not support the query, set answerable=false and items=[]."},
         {"role": "user", "content": user_content},
     ]
     t0 = time.time()
-    try:
-        parsed = p20._post_chat_completion(messages, temperature=0.0)  # type: ignore[attr-defined]
-    except p20.RemoteLLMProviderError as exc:
-        return None, {"call_succeeded": False, **exc.as_public_dict(), "latency_ms": int((time.time() - t0) * 1000), "input_chars": len(user_content), "model_id": model_id}
-    except Exception as exc:
-        return None, {"call_succeeded": False, "error_type": type(exc).__name__, "latency_ms": int((time.time() - t0) * 1000), "input_chars": len(user_content), "model_id": model_id}
-    return parsed, {"call_succeeded": True, "latency_ms": int((time.time() - t0) * 1000), "input_chars": len(user_content), "output_chars": len(json.dumps(parsed)), "model_id": model_id}
+    attempted = [output_mode] + (fallback_modes(output_mode) if allow_fallback else [])
+    errors: list[dict[str, Any]] = []
+    for idx, mode in enumerate(attempted):
+        try:
+            parsed, mode_diag = post_chat_completion_structured(messages, 0.0, mode)
+            return parsed, {
+                "call_succeeded": True,
+                "latency_ms": int((time.time() - t0) * 1000),
+                "input_chars": len(user_content),
+                "output_chars": len(json.dumps(parsed)),
+                "model_id": model_id,
+                "requested_output_mode": output_mode,
+                "actual_output_mode": mode_diag.get("actual_output_mode", mode),
+                "fallback_used": idx > 0,
+                "fallback_errors": errors,
+            }
+        except p20.RemoteLLMProviderError as exc:
+            public = exc.as_public_dict()
+            errors.append({"mode": mode, **public})
+            provider_rejected = exc.http_status in {400, 404, 422}
+            if provider_rejected and idx < len(attempted) - 1:
+                continue
+            return None, {"call_succeeded": False, **public, "latency_ms": int((time.time() - t0) * 1000), "input_chars": len(user_content), "model_id": model_id, "requested_output_mode": output_mode, "actual_output_mode": mode, "fallback_errors": errors}
+        except Exception as exc:
+            errors.append({"mode": mode, "error_type": type(exc).__name__})
+            return None, {"call_succeeded": False, "error_type": type(exc).__name__, "latency_ms": int((time.time() - t0) * 1000), "input_chars": len(user_content), "model_id": model_id, "requested_output_mode": output_mode, "actual_output_mode": mode, "fallback_errors": errors}
+    return None, {"call_succeeded": False, "error_type": "all_output_modes_failed", "latency_ms": int((time.time() - t0) * 1000), "input_chars": len(user_content), "model_id": model_id, "requested_output_mode": output_mode, "fallback_errors": errors}
 
 
 def validate_decision(parsed: dict[str, Any] | None, packed: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -345,12 +511,38 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 parsed, call_diag = local_decision(task, packed)
                 call_diag["disabled_reason"] = "no_packed_candidates"
             elif remote_enabled:
-                parsed, call_diag = remote_decision(task, packed)
+                parsed, call_diag = remote_decision(task, packed, args.llm_output_mode)
             else:
                 parsed, call_diag = local_decision(task, packed)
                 call_diag["disabled_reason"] = remote_reason
             decision, schema_diag = validate_decision(parsed, packed)
+            repair_diag: dict[str, Any] = {"schema_repair_attempted": False, "schema_repair_success": False}
+            if remote_enabled and args.schema_repair_retry and call_diag.get("call_succeeded") and not schema_diag.get("schema_valid"):
+                repair_diag["schema_repair_attempted"] = True
+                repair_task = dict(task)
+                repair_task["repair_instruction"] = (
+                    "Your previous output violated schema. Error: "
+                    + str(schema_diag.get("schema_error") or "invalid_items")
+                    + ". Re-output only valid JSON/tool arguments for the same candidates. Do not add explanation."
+                )
+                repair_mode = str(call_diag.get("actual_output_mode") or args.llm_output_mode)
+                repaired, repair_call_diag = remote_decision(repair_task, packed, repair_mode, allow_fallback=False)
+                repaired_decision, repaired_schema_diag = validate_decision(repaired, packed)
+                repair_diag.update({
+                    "schema_repair_call_succeeded": repair_call_diag.get("call_succeeded"),
+                    "schema_repair_requested_output_mode": repair_mode,
+                    "schema_repair_actual_output_mode": repair_call_diag.get("actual_output_mode"),
+                    "schema_repair_fallback_used": repair_call_diag.get("fallback_used", False),
+                    "schema_repair_fallback_errors": repair_call_diag.get("fallback_errors", []),
+                    "schema_repair_latency_ms": repair_call_diag.get("latency_ms", 0),
+                    "schema_repair_schema_valid": repaired_schema_diag.get("schema_valid"),
+                })
+                if repaired_schema_diag.get("schema_valid"):
+                    decision = repaired_decision
+                    schema_diag = repaired_schema_diag
+                    repair_diag["schema_repair_success"] = True
             call_diag.update(schema_diag)
+            call_diag.update(repair_diag)
             call_diag["task_id"] = tid
             call_diags.append(call_diag)
             decision_records.append({
@@ -374,6 +566,21 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             payload["primary_promotion_eligible"] = False
         successful_calls = sum(1 for d in call_diags if d.get("call_succeeded"))
         schema_valid = sum(1 for d in call_diags if d.get("schema_valid"))
+        fallback_events = [
+            {
+                "task_id": d.get("task_id"),
+                "requested_output_mode": d.get("requested_output_mode"),
+                "actual_output_mode": d.get("actual_output_mode"),
+                "fallback_used": d.get("fallback_used", False),
+                "fallback_errors": d.get("fallback_errors", []),
+                "schema_repair_attempted": d.get("schema_repair_attempted", False),
+                "schema_repair_success": d.get("schema_repair_success", False),
+                "schema_repair_actual_output_mode": d.get("schema_repair_actual_output_mode"),
+                "schema_repair_fallback_errors": d.get("schema_repair_fallback_errors", []),
+            }
+            for d in call_diags
+            if d.get("fallback_used") or d.get("fallback_errors") or d.get("schema_repair_attempted")
+        ]
         all_pack_filters_applied = all(bool(d.get("remote_file_filter_applied")) for d in pack_diags) if pack_diags else False
         if not candidate_info.get("candidate_strategy_available"):
             provider_status = "unavailable"
@@ -390,6 +597,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "stage": "P21-G3L LLM rich candidate pilot",
             "prompt_version": PROMPT_VERSION,
+            "requested_output_mode": args.llm_output_mode,
             "llm_provider": args.llm_provider,
             "llm_model": os.environ.get("OPENLOCUS_LLM_MODEL") if remote_enabled else "offline_deterministic",
             "llm_remote_requested": remote_requested,
@@ -423,6 +631,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 "latency_ms_p50": sorted([d.get("latency_ms", 0) for d in call_diags])[len(call_diags)//2] if call_diags else 0,
                 "input_chars_total": sum(int(d.get("input_chars", 0)) for d in call_diags),
                 "schema_error_count": sum(1 for d in call_diags if not d.get("schema_valid")),
+                "schema_repair_attempted_count": sum(1 for d in call_diags if d.get("schema_repair_attempted")),
+                "schema_repair_success_count": sum(1 for d in call_diags if d.get("schema_repair_success")),
+                "actual_output_modes": sorted({str(d.get("actual_output_mode")) for d in call_diags if d.get("actual_output_mode")}),
+                "fallback_used_count": sum(1 for d in call_diags if d.get("fallback_used")),
+                "fallback_event_count": len(fallback_events),
+                "fallback_events": fallback_events,
                 "packed_candidates_total": sum(d.get("packed_count", 0) for d in pack_diags),
             },
             "decision_records": decision_records,
@@ -442,6 +656,7 @@ def write_doc(report: dict[str, Any], path: Path) -> None:
         "",
         f"- llm_remote_enabled: `{report.get('llm_remote_enabled')}`",
         f"- llm_model: `{report.get('llm_model')}`",
+        f"- requested_output_mode: `{report.get('requested_output_mode')}`",
         f"- candidate_strategy: `{report.get('candidate_strategy')}`",
         f"- raw_snippets_sent_to_provider: `{report.get('raw_snippets_sent_to_provider')}`",
         f"- raw_snippets_committed: `{report.get('raw_snippets_committed')}`",
@@ -470,6 +685,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--openlocus", type=Path, default=Path("target/debug/openlocus"))
     parser.add_argument("--embedding-provider", default="local_token_hash", choices=["local_token_hash", "openai-compatible"])
     parser.add_argument("--llm-provider", default="offline_deterministic", choices=["offline_deterministic", "openai-compatible"])
+    parser.add_argument("--llm-output-mode", default="json_object", choices=sorted(OUTPUT_MODES))
+    parser.add_argument("--schema-repair-retry", action="store_true")
     parser.add_argument("--allow-remote-embedding", action="store_true")
     parser.add_argument("--allow-remote-llm", action="store_true")
     parser.add_argument("--dense-strategies", default=p21d.DEFAULT_DENSE_STRATEGIES)
