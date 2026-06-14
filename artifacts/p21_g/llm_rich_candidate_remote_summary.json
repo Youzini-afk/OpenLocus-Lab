@@ -1,0 +1,391 @@
+{
+  "aggregate_by_strategy": {
+    "candidate_baseline": {
+      "FileRecall@5_avg": 0.85,
+      "SpanF0.5_avg": 0.233477,
+      "added_false_span_total": 107,
+      "added_gold_span_total": 76,
+      "delta_SpanF0.5_vs_candidate_avg": null,
+      "primary_false_positive_rate_avg": 0.0,
+      "runs": 8
+    },
+    "llm_abstain_filter": {
+      "FileRecall@5_avg": 0.6625,
+      "SpanF0.5_avg": 0.186517,
+      "added_false_span_total": 34,
+      "added_gold_span_total": 54,
+      "delta_SpanF0.5_vs_candidate_avg": -0.046959,
+      "primary_false_positive_rate_avg": 0.0,
+      "runs": 8
+    },
+    "llm_filter": {
+      "FileRecall@5_avg": 0.6625,
+      "SpanF0.5_avg": 0.186517,
+      "added_false_span_total": 34,
+      "added_gold_span_total": 54,
+      "delta_SpanF0.5_vs_candidate_avg": -0.046959,
+      "primary_false_positive_rate_avg": 0.0,
+      "runs": 8
+    },
+    "llm_span_narrow": {
+      "FileRecall@5_avg": 0.6625,
+      "SpanF0.5_avg": 0.269258,
+      "added_false_span_total": 30,
+      "added_gold_span_total": 58,
+      "delta_SpanF0.5_vs_candidate_avg": 0.035782,
+      "primary_false_positive_rate_avg": 0.0,
+      "runs": 8
+    }
+  },
+  "candidate_not_fact": true,
+  "conclusion": {
+    "best_average_role": "llm_span_narrow",
+    "default_should_change": false,
+    "filter_abstain_tradeoff": "filter/abstain strongly reduce false spans but often kill gold spans; not default-ready",
+    "llm_span_narrow_avg_delta_vs_candidate": 0.035782,
+    "model_notes": [
+      "DeepSeek-V4-Flash and Kimi improve span narrowing on py_flask but not js_express.",
+      "DeepSeek-V4-Pro is mixed; improves py_flask slightly, hurts js_express.",
+      "GLM-5.1 produced schema errors in both runs; degraded until prompt/schema repair."
+    ],
+    "next_step": "P21-G3L prompt/schema repair + bucketed tasks; do not scale broad LLM filter yet.",
+    "promotion_ready": false
+  },
+  "default_should_change": false,
+  "degraded_runs": 2,
+  "embedding_model": "Qwen/Qwen3-Embedding-4B",
+  "generated_at": "2026-06-14T01:49:26.989486+00:00",
+  "llm_direct_evidence_allowed": false,
+  "llm_models": [
+    "[mk]DeepSeek-V4-Flash",
+    "[mk]DeepSeek-V4-Pro",
+    "[mk]GLM-5.1",
+    "[mk]Kimi-K2.7-Code"
+  ],
+  "not_promotion_evidence": true,
+  "ok_runs": 6,
+  "per_model": {
+    "[mk]DeepSeek-V4-Flash": {
+      "input_chars_total": 30621,
+      "latency_ms_p50_avg": 854,
+      "provider_statuses": {
+        "ok": 2
+      },
+      "runs": 2,
+      "schema_error_count": 0,
+      "strategies": {
+        "candidate_baseline": {
+          "SpanF0.5_avg": 0.232851,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "SpanF0.5_avg": 0.221853,
+          "added_false_span_total": 10,
+          "added_gold_span_total": 16,
+          "delta_SpanF0.5_vs_candidate_avg": -0.010998
+        },
+        "llm_filter": {
+          "SpanF0.5_avg": 0.221853,
+          "added_false_span_total": 10,
+          "added_gold_span_total": 16,
+          "delta_SpanF0.5_vs_candidate_avg": -0.010998
+        },
+        "llm_span_narrow": {
+          "SpanF0.5_avg": 0.297787,
+          "added_false_span_total": 9,
+          "added_gold_span_total": 17,
+          "delta_SpanF0.5_vs_candidate_avg": 0.064936
+        }
+      }
+    },
+    "[mk]DeepSeek-V4-Pro": {
+      "input_chars_total": 30083,
+      "latency_ms_p50_avg": 1130.5,
+      "provider_statuses": {
+        "ok": 2
+      },
+      "runs": 2,
+      "schema_error_count": 0,
+      "strategies": {
+        "candidate_baseline": {
+          "SpanF0.5_avg": 0.235352,
+          "added_false_span_total": 26,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "SpanF0.5_avg": 0.213765,
+          "added_false_span_total": 9,
+          "added_gold_span_total": 15,
+          "delta_SpanF0.5_vs_candidate_avg": -0.021587
+        },
+        "llm_filter": {
+          "SpanF0.5_avg": 0.213765,
+          "added_false_span_total": 9,
+          "added_gold_span_total": 15,
+          "delta_SpanF0.5_vs_candidate_avg": -0.021587
+        },
+        "llm_span_narrow": {
+          "SpanF0.5_avg": 0.227122,
+          "added_false_span_total": 8,
+          "added_gold_span_total": 16,
+          "delta_SpanF0.5_vs_candidate_avg": -0.00823
+        }
+      }
+    },
+    "[mk]GLM-5.1": {
+      "input_chars_total": 30621,
+      "latency_ms_p50_avg": 8590,
+      "provider_statuses": {
+        "degraded": 2
+      },
+      "runs": 2,
+      "schema_error_count": 7,
+      "strategies": {
+        "candidate_baseline": {
+          "SpanF0.5_avg": 0.232851,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "SpanF0.5_avg": 0.098012,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 8,
+          "delta_SpanF0.5_vs_candidate_avg": -0.134839
+        },
+        "llm_filter": {
+          "SpanF0.5_avg": 0.098012,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 8,
+          "delta_SpanF0.5_vs_candidate_avg": -0.134839
+        },
+        "llm_span_narrow": {
+          "SpanF0.5_avg": 0.266859,
+          "added_false_span_total": 4,
+          "added_gold_span_total": 9,
+          "delta_SpanF0.5_vs_candidate_avg": 0.034007
+        }
+      }
+    },
+    "[mk]Kimi-K2.7-Code": {
+      "input_chars_total": 30621,
+      "latency_ms_p50_avg": 4426,
+      "provider_statuses": {
+        "ok": 2
+      },
+      "runs": 2,
+      "schema_error_count": 0,
+      "strategies": {
+        "candidate_baseline": {
+          "SpanF0.5_avg": 0.232851,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "SpanF0.5_avg": 0.212439,
+          "added_false_span_total": 10,
+          "added_gold_span_total": 15,
+          "delta_SpanF0.5_vs_candidate_avg": -0.020412
+        },
+        "llm_filter": {
+          "SpanF0.5_avg": 0.212439,
+          "added_false_span_total": 10,
+          "added_gold_span_total": 15,
+          "delta_SpanF0.5_vs_candidate_avg": -0.020412
+        },
+        "llm_span_narrow": {
+          "SpanF0.5_avg": 0.285265,
+          "added_false_span_total": 9,
+          "added_gold_span_total": 16,
+          "delta_SpanF0.5_vs_candidate_avg": 0.052413
+        }
+      }
+    }
+  },
+  "per_repo": {
+    "js_express": {
+      "candidate_baseline": {
+        "SpanF0.5_avg": 0.218173,
+        "added_false_span_total": 68,
+        "added_gold_span_total": 44,
+        "delta_SpanF0.5_vs_candidate_avg": null
+      },
+      "llm_abstain_filter": {
+        "SpanF0.5_avg": 0.165202,
+        "added_false_span_total": 3,
+        "added_gold_span_total": 27,
+        "delta_SpanF0.5_vs_candidate_avg": -0.052972
+      },
+      "llm_filter": {
+        "SpanF0.5_avg": 0.165202,
+        "added_false_span_total": 3,
+        "added_gold_span_total": 27,
+        "delta_SpanF0.5_vs_candidate_avg": -0.052972
+      },
+      "llm_span_narrow": {
+        "SpanF0.5_avg": 0.224705,
+        "added_false_span_total": 3,
+        "added_gold_span_total": 27,
+        "delta_SpanF0.5_vs_candidate_avg": 0.006531
+      }
+    },
+    "py_flask": {
+      "candidate_baseline": {
+        "SpanF0.5_avg": 0.24878,
+        "added_false_span_total": 39,
+        "added_gold_span_total": 32,
+        "delta_SpanF0.5_vs_candidate_avg": null
+      },
+      "llm_abstain_filter": {
+        "SpanF0.5_avg": 0.207833,
+        "added_false_span_total": 31,
+        "added_gold_span_total": 27,
+        "delta_SpanF0.5_vs_candidate_avg": -0.040947
+      },
+      "llm_filter": {
+        "SpanF0.5_avg": 0.207833,
+        "added_false_span_total": 31,
+        "added_gold_span_total": 27,
+        "delta_SpanF0.5_vs_candidate_avg": -0.040947
+      },
+      "llm_span_narrow": {
+        "SpanF0.5_avg": 0.313811,
+        "added_false_span_total": 27,
+        "added_gold_span_total": 31,
+        "delta_SpanF0.5_vs_candidate_avg": 0.065032
+      }
+    }
+  },
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": true,
+  "raw_text_stored": false,
+  "remote_enabled": true,
+  "repos": [
+    "js_express",
+    "py_flask"
+  ],
+  "run_ids": [
+    "27485040450",
+    "27485036003",
+    "27485037172",
+    "27485039008",
+    "27485036627",
+    "27485037821",
+    "27485039701",
+    "27485038396"
+  ],
+  "run_manifest": [
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 16815,
+      "latency_ms_p50": 846,
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "packed_candidates_total": 22,
+      "provider_status": "ok",
+      "repo_id": "js_express",
+      "run_id": "27485036627",
+      "schema_error_count": 0,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 13806,
+      "latency_ms_p50": 862,
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "packed_candidates_total": 18,
+      "provider_status": "ok",
+      "repo_id": "py_flask",
+      "run_id": "27485036003",
+      "schema_error_count": 0,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 16815,
+      "latency_ms_p50": 1029,
+      "llm_model": "[mk]DeepSeek-V4-Pro",
+      "packed_candidates_total": 22,
+      "provider_status": "ok",
+      "repo_id": "js_express",
+      "run_id": "27485040450",
+      "schema_error_count": 0,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 13268,
+      "latency_ms_p50": 1232,
+      "llm_model": "[mk]DeepSeek-V4-Pro",
+      "packed_candidates_total": 17,
+      "provider_status": "ok",
+      "repo_id": "py_flask",
+      "run_id": "27485039701",
+      "schema_error_count": 0,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 16815,
+      "latency_ms_p50": 6714,
+      "llm_model": "[mk]GLM-5.1",
+      "packed_candidates_total": 22,
+      "provider_status": "degraded",
+      "repo_id": "js_express",
+      "run_id": "27485039008",
+      "schema_error_count": 2,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 13806,
+      "latency_ms_p50": 10466,
+      "llm_model": "[mk]GLM-5.1",
+      "packed_candidates_total": 18,
+      "provider_status": "degraded",
+      "repo_id": "py_flask",
+      "run_id": "27485038396",
+      "schema_error_count": 5,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 16815,
+      "latency_ms_p50": 4533,
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "packed_candidates_total": 22,
+      "provider_status": "ok",
+      "repo_id": "js_express",
+      "run_id": "27485037821",
+      "schema_error_count": 0,
+      "tasks_scored": 10
+    },
+    {
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "input_chars_total": 13806,
+      "latency_ms_p50": 4319,
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "packed_candidates_total": 18,
+      "provider_status": "ok",
+      "repo_id": "py_flask",
+      "run_id": "27485037172",
+      "schema_error_count": 0,
+      "tasks_scored": 10
+    }
+  ],
+  "schema_version": "p21-g3l-remote-summary-v1",
+  "source_run_count": 8,
+  "stage": "P21-G3L LLM rich candidate remote smoke",
+  "successful_or_degraded_runs": 8,
+  "tasks_per_run": [
+    10
+  ]
+}
