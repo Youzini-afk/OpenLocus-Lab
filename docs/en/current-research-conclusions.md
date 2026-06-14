@@ -220,6 +220,39 @@ gold rather than adding false spans. Therefore P30-H4 should use explicit
 action budgets for primary local-admit actions instead of globally tightening
 all non-primary actions.
 
+### 2.13 P31 Candidate Reach Ceiling Study scaffold is ready
+
+`eval/p31_candidate_reach_ceiling.py` is a deterministic, no-remote diagnostic
+scaffold (schema `p31-candidate-reach-ceiling-report-v1`). The committed
+self-test artifact is sanitized synthetic data (`status=self_test_only`,
+`not_quality_evidence=true`), not quality evidence. P31 is SCORE-phase-only:
+labels are loaded only after RUN and are used only for aggregate metrics. It
+does not influence routing or admission decisions.
+
+P31 measures whether candidate evidence alone reaches the gold label before any
+routing or admission. Inputs are the same ephemeral
+`p25-policy-records-ephemeral-v1` records used by P25/P30. When records do not
+yet carry candidate evidence pools, P31 reports
+`candidate_pool_availability=missing_candidate_pool` and
+`reach_metrics_available=false`, then computes outcome-only fallback metrics
+rather than fabricating reach zeros. When pools are present, it reports
+aggregate `GoldFileReach@K`, `GoldSpanReach@K`, `GoldSpanExactReach@K`,
+`CandidateAbsentRate@K`, and `FileRightSpanWrongRate@K` for K=1/3/5/10/20, plus
+`ModelMissGivenGoldPresent@K` against `candidate_baseline`, action/strategy
+diagnostics (`FilterKillGoldRate`, `AdmissionFalsePrimaryRate`,
+`AdmissionFalseSpanPerNoGoldTask`), `EvidenceCoreRejectRate` (`not_measured`
+when rejection fields are not present), and a K=5 failure funnel with
+`funnel_sums_to_positive_tasks=true`.
+
+Public artifacts are aggregate-only: no per-task rows, raw queries, snippets,
+prompts, responses, candidate paths/spans, gold spans, private labels, or
+provider fields. Safety flags are locked: `promotion_ready=false`,
+`default_should_change=false`, `evidencecore_semantics_changed=false`,
+`candidate_not_fact=true`, `remote_calls_by_p31=0`,
+`score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`. The
+next step is to extend the P21/P25 ephemeral handoff with candidate evidence
+pools so P31 can compute real reach ceilings.
+
 ---
 
 ## 3. Current Hypotheses

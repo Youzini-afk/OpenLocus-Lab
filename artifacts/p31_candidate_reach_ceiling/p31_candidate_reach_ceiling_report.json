@@ -1,0 +1,556 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "candidate_pool_detected_count": 4,
+  "conclusion": [
+    "Self-test-only scaffold evaluated 5 synthetic tasks; this is not quality evidence.",
+    "Reach@5: GoldFile=0.666667, GoldSpan=0.333333, ExactSpan=0.333333, CandidateAbsent=0.333333, FileRightSpanWrong=0.5.",
+    "Reach metrics measure whether candidate evidence alone reaches the gold before routing/admission; they are not a promotion claim and are independent of any policy decision.",
+    "P31 is diagnostic-only and SCORE-phase-only; it does not influence routing or admission.",
+    "FilterKillGoldRate=1.0; AdmissionFalsePrimaryRate=not_measured; AdmissionFalseSpanPerNoGoldTask=None; EvidenceCoreRejectRate=not_measured.",
+    "No policy is promotion-ready or default-ready.",
+    "Next: run P31 against ephemeral records that include candidate evidence pools and compare reach ceilings across candidate_baseline, transformed strategies, and admission policies."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-14T15:38:44.962003+00:00",
+  "generated_by": "eval/p31_candidate_reach_ceiling.py",
+  "gold_spans_in_artifact": false,
+  "input_paths": [
+    "self_test"
+  ],
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_paths": [],
+  "labels_loaded_after_run": true,
+  "metrics": {
+    "admission_false_primary_rate": {
+      "denominator": 0,
+      "numerator": 0,
+      "outcome_pfp_incidence_by_strategy": {
+        "llm_filter": {
+          "denominator": 3,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "llm_span_narrow": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "rrf_primary": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "symbol_regex_union": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "rate": null,
+      "reason": "selected_admission_action_rows_unavailable",
+      "status": "not_measured"
+    },
+    "admission_false_span_per_no_gold_task": {
+      "by_strategy": {},
+      "rate": null,
+      "total_false_spans": 0,
+      "total_no_gold_tasks": 0
+    },
+    "evidencecore_reject_rate": {
+      "denominator": 0,
+      "numerator": 0,
+      "rate": null,
+      "status": "not_measured"
+    },
+    "failure_funnel": {
+      "buckets": {
+        "candidate_present_no_file": 1,
+        "evaluated": 4,
+        "file_reach_no_span": 1,
+        "has_candidate_pool": 3,
+        "model_output_loses_gold": 1,
+        "no_candidate_pool": 1,
+        "pool_but_no_candidate_at_5": 0,
+        "span_exact_reached": 1,
+        "span_reached": 1
+      },
+      "funnel_sums_to_positive_tasks": true
+    },
+    "filter_kill_gold_rate": {
+      "denominator": 3,
+      "numerator": 3,
+      "rate": 1.0
+    },
+    "outcome_only_fallback": {
+      "admission_v3": {
+        "file_recall_at_5_rate": null,
+        "mean_primary_false_positive_rate": null,
+        "mean_span_f0_5": null
+      },
+      "admission_v3_h1": {
+        "file_recall_at_5_rate": null,
+        "mean_primary_false_positive_rate": null,
+        "mean_span_f0_5": null
+      },
+      "admission_v3_h2": {
+        "file_recall_at_5_rate": null,
+        "mean_primary_false_positive_rate": null,
+        "mean_span_f0_5": null
+      },
+      "bucket_routed_v0": {
+        "file_recall_at_5_rate": null,
+        "mean_primary_false_positive_rate": null,
+        "mean_span_f0_5": null
+      },
+      "candidate_baseline": {
+        "file_recall_at_5_rate": 0.6,
+        "mean_primary_false_positive_rate": 0.224,
+        "mean_span_f0_5": 0.116
+      },
+      "llm_abstain_filter": {
+        "file_recall_at_5_rate": null,
+        "mean_primary_false_positive_rate": null,
+        "mean_span_f0_5": null
+      },
+      "llm_filter": {
+        "file_recall_at_5_rate": 1.0,
+        "mean_primary_false_positive_rate": 0.0,
+        "mean_span_f0_5": 0.066667
+      },
+      "llm_span_narrow": {
+        "file_recall_at_5_rate": 1.0,
+        "mean_primary_false_positive_rate": 0.075,
+        "mean_span_f0_5": 0.185
+      },
+      "rrf_primary": {
+        "file_recall_at_5_rate": 1.0,
+        "mean_primary_false_positive_rate": 0.115,
+        "mean_span_f0_5": 0.165
+      },
+      "symbol_regex_union": {
+        "file_recall_at_5_rate": 1.0,
+        "mean_primary_false_positive_rate": 0.0,
+        "mean_span_f0_5": 0.25
+      }
+    },
+    "reach": {
+      "by_k": {
+        "1": {
+          "candidate_absent_rate": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "file_right_span_wrong_rate": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          },
+          "gold_file_reach": {
+            "denominator": 3,
+            "numerator": 2,
+            "rate": 0.666667
+          },
+          "gold_span_exact_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "gold_span_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          }
+        },
+        "3": {
+          "candidate_absent_rate": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "file_right_span_wrong_rate": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          },
+          "gold_file_reach": {
+            "denominator": 3,
+            "numerator": 2,
+            "rate": 0.666667
+          },
+          "gold_span_exact_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "gold_span_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          }
+        },
+        "5": {
+          "candidate_absent_rate": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "file_right_span_wrong_rate": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          },
+          "gold_file_reach": {
+            "denominator": 3,
+            "numerator": 2,
+            "rate": 0.666667
+          },
+          "gold_span_exact_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "gold_span_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          }
+        },
+        "10": {
+          "candidate_absent_rate": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "file_right_span_wrong_rate": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          },
+          "gold_file_reach": {
+            "denominator": 3,
+            "numerator": 2,
+            "rate": 0.666667
+          },
+          "gold_span_exact_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "gold_span_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          }
+        },
+        "20": {
+          "candidate_absent_rate": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "file_right_span_wrong_rate": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          },
+          "gold_file_reach": {
+            "denominator": 3,
+            "numerator": 2,
+            "rate": 0.666667
+          },
+          "gold_span_exact_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          },
+          "gold_span_reach": {
+            "denominator": 3,
+            "numerator": 1,
+            "rate": 0.333333
+          }
+        }
+      }
+    },
+    "strategy_miss_given_gold_present": {
+      "admission_v3": {
+        "1": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "3": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "10": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "20": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        }
+      },
+      "admission_v3_h1": {
+        "1": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "3": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "10": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "20": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        }
+      },
+      "admission_v3_h2": {
+        "1": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "3": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "10": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "20": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        }
+      },
+      "bucket_routed_v0": {
+        "1": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "3": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "10": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "20": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        }
+      },
+      "llm_abstain_filter": {
+        "1": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "3": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "5": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "10": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "20": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        }
+      },
+      "llm_filter": {
+        "1": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "3": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "5": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "10": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "20": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "llm_span_narrow": {
+        "1": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "3": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "5": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "10": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "20": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "rrf_primary": {
+        "1": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "3": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "5": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "10": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "20": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "symbol_regex_union": {
+        "1": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "3": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "5": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "10": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "20": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      }
+    }
+  },
+  "no_gold_task_count": 1,
+  "not_quality_evidence": true,
+  "outcome_metrics_available": true,
+  "positive_task_count": 4,
+  "positive_with_gold_spans_count": 4,
+  "positive_without_gold_spans_count": 0,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_policy_evaluation": false,
+  "remote_calls_by_p31": 0,
+  "run_phase_public_only": true,
+  "schema_version": "p31-candidate-reach-ceiling-report-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "stage": "P31 Candidate Reach Ceiling Study",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 5,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}

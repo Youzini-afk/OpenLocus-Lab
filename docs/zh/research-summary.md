@@ -191,6 +191,33 @@ false-span 成本主要来自 primary local-admit actions，尤其是
 `admit_symbol_regex_union` 和 H2 的 `admit_rrf_primary`；`supporting_only` 的主要成本是杀掉 gold、造成 recall loss，而不是新增 false spans。见
 [`p30-h3-remote-smoke.md`](p30-h3-remote-smoke.md)。
 
+## P31 Candidate Reach Ceiling Study (2026-06-14)
+
+P31（`eval/p31_candidate_reach_ceiling.py`）是一个确定性、无远程调用的诊断性后续工具，
+用于测量候选证据本身在没有任何路由或准入决策前覆盖 gold label 的频率。
+它仅用于 SCORE 阶段：labels 只在 RUN 之后加载，并仅用于聚合指标。
+
+输入与 P25/P30 相同，是 `p25-policy-records-ephemeral-v1` 临时 records。
+当前大多数 P25/P30 records 尚未携带候选证据列表；当候选池缺失时，P31 只计算 outcome-only
+fallback 指标，并报告 `candidate_pool_availability=missing_candidate_pool`、`reach_metrics_available=false`，
+而不是伪造零值。当候选池存在时，报告 K=1/3/5/10/20 的 `GoldFileReach@K`、`GoldSpanReach@K`、
+`GoldSpanExactReach@K`、`CandidateAbsentRate@K` 和 `FileRightSpanWrongRate@K`。
+
+其他聚合诊断包括：与 `candidate_baseline` 对比的 `ModelMissGivenGoldPresent@K`
+（覆盖 `llm_span_narrow`、`llm_filter`、`llm_abstain_filter`、`symbol_regex_union`、
+`rrf_primary`、`bucket_routed_v0`、`admission_v3` 及 H1/H2）；从可用 per-action/per-strategy
+outcome 字段推导的 `FilterKillGoldRate`、`AdmissionFalsePrimaryRate`、
+`AdmissionFalseSpanPerNoGoldTask`；若不存在 rejection 字段则 `EvidenceCoreRejectRate` 为 `not_measured`。
+同时输出 K=5 的聚合 failure funnel，并满足 `funnel_sums_to_positive_tasks=true`。
+
+公开产物仅限聚合指标与公共任务元数据：不含 per-task 行、原始 query/snippet/prompt/response、
+candidate paths/spans、gold spans、private labels 或 provider 字段。
+安全标志锁定：`promotion_ready=false`、`default_should_change=false`、
+`evidencecore_semantics_changed=false`、`candidate_not_fact=true`、
+`remote_calls_by_p31=0`、`score_phase_only_metrics=true`、
+`aggregate_only_public_artifact=true`。报告：
+[`docs/p31-candidate-reach-ceiling.md`](p31-candidate-reach-ceiling.md)。
+
 ## Stage status
 
 | Stage | Status | Summary |
@@ -243,6 +270,7 @@ false-span 成本主要来自 primary local-admit actions，尤其是
 | P22/P23 Evidence-Seeking Policy Surface | Decision surfaces frozen; bottlenecks decomposed | P22/P23 moves from channel bakeoffs to strategy-surface analysis. It freezes two capped local surfaces with hashes and no remote/model calls: `r20_positive` (120 positive tasks across 9 repos) and `r26_guard` (120 no-gold stress tasks across 9 repos). R20 shows RRF is still the reach base (`Reach@5=0.975`, `SpanReach@5=0.95`) but symbol has best local SpanF0.5 (`0.3169`) and `symbol_regex_union` is the best precision/reach experimental baseline candidate for P25/P30. R26 shows BM25/RRF create noisy false primary (`NoGoldFP=0.2833`) while symbol/regex/union/guard abstain, so guard stress must be evaluated separately from positive reach. Reports: `docs/p22-p23-policy-surface.md`, per-surface docs/artifacts under `docs/` and `artifacts/p22_p23/`. |
 | P25 Bucket-Routed LLM Role Policy evaluator | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p25_bucket_policy.py` is deterministic and no-remote. It routes by public `task_bucket`/`task_risk_tags` and compares candidate_baseline, global span/filter/abstain, and bucket_routed_v0. Aggregate summaries/non-ephemeral schemas are rejected. First real smoke reduced false spans but also some gold spans; useful as P30 false-primary reducer, not default. Report: `docs/p25-bucket-routed-policy.md`. |
 | P30 Admission Model V3 | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p30_admission_model_v3.py` is deterministic, explainable, no-remote. Routes only from public task_bucket/task_risk_tags/route_features; allowed actions are abstain/admit_symbol_regex_union/admit_rrf_primary/admit_llm_span_narrow/apply_llm_filter/supporting_only/weak_candidate_only. Compares baselines plus admission_v3, reports score bands/selective_risk/deltas, and recursively scans public output for forbidden keys. Not promotion-ready; next step compare to P25 real smoke and P22/P23 guards. Report: `docs/p30-admission-model-v3.md`. |
+| P31 Candidate Reach Ceiling Study | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p31_candidate_reach_ceiling.py` measures whether candidate evidence alone reaches the gold label at K=1/3/5/10/20 before any routing or admission. Deterministic, no-remote, aggregate-only. Falls back to outcome-only metrics when candidate pools are missing, clearly marked `missing_candidate_pool`/`reach_metrics_available=false`. Reports reach@K, span-exact reach, candidate absent rate, file-right-span-wrong rate, strategy miss given gold present, filter/admission diagnostics, and K=5 failure funnel. `promotion_ready=false`, `remote_calls_by_p31=0`. Report: `docs/p31-candidate-reach-ceiling.md`. |
 
 ## R0/R1 initial findings
 
