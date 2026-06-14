@@ -5,6 +5,8 @@
         "admission_v3_action": "admit_symbol_regex_union",
         "admission_v3_h1_action": "admit_symbol_regex_union",
         "admission_v3_h1_score": 5,
+        "admission_v3_h2_action": "admit_symbol_regex_union",
+        "admission_v3_h2_score": 5,
         "admission_v3_score": 5,
         "repo_id": "py_flask",
         "task_bucket": "exact_symbol_unique",
@@ -19,6 +21,8 @@
         "admission_v3_action": "admit_symbol_regex_union",
         "admission_v3_h1_action": "admit_symbol_regex_union",
         "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 3,
         "admission_v3_score": 3,
         "repo_id": "py_flask",
         "task_bucket": "positive",
@@ -32,6 +36,8 @@
         "admission_v3_action": "admit_symbol_regex_union",
         "admission_v3_h1_action": "admit_symbol_regex_union",
         "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 3,
         "admission_v3_score": 3,
         "repo_id": "js_express",
         "task_bucket": "positive",
@@ -44,6 +50,8 @@
         "admission_v3_action": "admit_rrf_primary",
         "admission_v3_h1_action": "admit_rrf_primary",
         "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 3,
         "admission_v3_score": 3,
         "repo_id": "py_flask",
         "task_bucket": "positive",
@@ -56,6 +64,8 @@
         "admission_v3_action": "admit_llm_span_narrow",
         "admission_v3_h1_action": "admit_llm_span_narrow",
         "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "abstain",
+        "admission_v3_h2_score": 3,
         "admission_v3_score": 3,
         "repo_id": "js_express",
         "task_bucket": "positive",
@@ -68,6 +78,8 @@
         "admission_v3_action": "abstain",
         "admission_v3_h1_action": "abstain",
         "admission_v3_h1_score": 1,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 1,
         "admission_v3_score": 1,
         "repo_id": "js_express",
         "task_bucket": "config",
@@ -81,6 +93,8 @@
         "admission_v3_action": "abstain",
         "admission_v3_h1_action": "abstain",
         "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -7,
         "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "negative",
@@ -93,6 +107,8 @@
         "admission_v3_action": "abstain",
         "admission_v3_h1_action": "abstain",
         "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -7,
         "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "negative",
@@ -105,6 +121,8 @@
         "admission_v3_action": "supporting_only",
         "admission_v3_h1_action": "supporting_only",
         "admission_v3_h1_score": -6,
+        "admission_v3_h2_action": "supporting_only",
+        "admission_v3_h2_score": -6,
         "admission_v3_score": -6,
         "repo_id": "py_flask",
         "task_bucket": "dense_quiver_trap",
@@ -117,6 +135,8 @@
         "admission_v3_action": "supporting_only",
         "admission_v3_h1_action": "supporting_only",
         "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "supporting_only",
+        "admission_v3_h2_score": -7,
         "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "dense_quiver_trap",
@@ -130,6 +150,8 @@
         "admission_v3_action": "abstain",
         "admission_v3_h1_action": "abstain",
         "admission_v3_h1_score": -6,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -6,
         "admission_v3_score": -6,
         "repo_id": "py_flask",
         "task_bucket": "ambiguous",
@@ -143,6 +165,8 @@
         "admission_v3_action": "abstain",
         "admission_v3_h1_action": "abstain",
         "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -7,
         "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "ambiguous",
@@ -156,6 +180,8 @@
         "admission_v3_action": "abstain",
         "admission_v3_h1_action": "abstain",
         "admission_v3_h1_score": -6,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -6,
         "admission_v3_score": -6,
         "repo_id": "py_flask",
         "task_bucket": "ambiguous",
@@ -168,6 +194,8 @@
         "admission_v3_action": "weak_candidate_only",
         "admission_v3_h1_action": "weak_candidate_only",
         "admission_v3_h1_score": -1,
+        "admission_v3_h2_action": "abstain",
+        "admission_v3_h2_score": -1,
         "admission_v3_score": -1,
         "repo_id": "js_express",
         "task_bucket": "unknown",
@@ -202,22 +230,262 @@
       "graph_support_present"
     ]
   },
+  "admission_v3_h2": {
+    "per_task_routing": [
+      {
+        "admission_v3_action": "admit_symbol_regex_union",
+        "admission_v3_h1_action": "admit_symbol_regex_union",
+        "admission_v3_h1_score": 5,
+        "admission_v3_h2_action": "admit_symbol_regex_union",
+        "admission_v3_h2_score": 5,
+        "admission_v3_score": 5,
+        "repo_id": "py_flask",
+        "task_bucket": "exact_symbol_unique",
+        "task_id": "p30-001",
+        "task_risk_tags": [
+          "exact_symbol",
+          "unique_symbol",
+          "high_confidence"
+        ]
+      },
+      {
+        "admission_v3_action": "admit_symbol_regex_union",
+        "admission_v3_h1_action": "admit_symbol_regex_union",
+        "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 3,
+        "admission_v3_score": 3,
+        "repo_id": "py_flask",
+        "task_bucket": "positive",
+        "task_id": "p30-002",
+        "task_risk_tags": [
+          "symbol_anchor",
+          "route_handler"
+        ]
+      },
+      {
+        "admission_v3_action": "admit_symbol_regex_union",
+        "admission_v3_h1_action": "admit_symbol_regex_union",
+        "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 3,
+        "admission_v3_score": 3,
+        "repo_id": "js_express",
+        "task_bucket": "positive",
+        "task_id": "p30-003",
+        "task_risk_tags": [
+          "likely_positive"
+        ]
+      },
+      {
+        "admission_v3_action": "admit_rrf_primary",
+        "admission_v3_h1_action": "admit_rrf_primary",
+        "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 3,
+        "admission_v3_score": 3,
+        "repo_id": "py_flask",
+        "task_bucket": "positive",
+        "task_id": "p30-004",
+        "task_risk_tags": [
+          "high_confidence"
+        ]
+      },
+      {
+        "admission_v3_action": "admit_llm_span_narrow",
+        "admission_v3_h1_action": "admit_llm_span_narrow",
+        "admission_v3_h1_score": 3,
+        "admission_v3_h2_action": "abstain",
+        "admission_v3_h2_score": 3,
+        "admission_v3_score": 3,
+        "repo_id": "js_express",
+        "task_bucket": "positive",
+        "task_id": "p30-005",
+        "task_risk_tags": [
+          "likely_positive"
+        ]
+      },
+      {
+        "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": 1,
+        "admission_v3_h2_action": "weak_candidate_only",
+        "admission_v3_h2_score": 1,
+        "admission_v3_score": 1,
+        "repo_id": "js_express",
+        "task_bucket": "config",
+        "task_id": "p30-006",
+        "task_risk_tags": [
+          "config",
+          "positive"
+        ]
+      },
+      {
+        "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -7,
+        "admission_v3_score": -7,
+        "repo_id": "js_express",
+        "task_bucket": "negative",
+        "task_id": "p30-007",
+        "task_risk_tags": [
+          "negative"
+        ]
+      },
+      {
+        "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -7,
+        "admission_v3_score": -7,
+        "repo_id": "js_express",
+        "task_bucket": "negative",
+        "task_id": "p30-008",
+        "task_risk_tags": [
+          "negative"
+        ]
+      },
+      {
+        "admission_v3_action": "supporting_only",
+        "admission_v3_h1_action": "supporting_only",
+        "admission_v3_h1_score": -6,
+        "admission_v3_h2_action": "supporting_only",
+        "admission_v3_h2_score": -6,
+        "admission_v3_score": -6,
+        "repo_id": "py_flask",
+        "task_bucket": "dense_quiver_trap",
+        "task_id": "p30-009",
+        "task_risk_tags": [
+          "dense_false_positive"
+        ]
+      },
+      {
+        "admission_v3_action": "supporting_only",
+        "admission_v3_h1_action": "supporting_only",
+        "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "supporting_only",
+        "admission_v3_h2_score": -7,
+        "admission_v3_score": -7,
+        "repo_id": "js_express",
+        "task_bucket": "dense_quiver_trap",
+        "task_id": "p30-010",
+        "task_risk_tags": [
+          "dense_false_positive",
+          "hard_distractor"
+        ]
+      },
+      {
+        "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -6,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -6,
+        "admission_v3_score": -6,
+        "repo_id": "py_flask",
+        "task_bucket": "ambiguous",
+        "task_id": "p30-011",
+        "task_risk_tags": [
+          "ambiguous",
+          "weak_candidates"
+        ]
+      },
+      {
+        "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -7,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -7,
+        "admission_v3_score": -7,
+        "repo_id": "js_express",
+        "task_bucket": "ambiguous",
+        "task_id": "p30-012",
+        "task_risk_tags": [
+          "ambiguous",
+          "hallucination_risk"
+        ]
+      },
+      {
+        "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -6,
+        "admission_v3_h2_action": "apply_llm_filter",
+        "admission_v3_h2_score": -6,
+        "admission_v3_score": -6,
+        "repo_id": "py_flask",
+        "task_bucket": "ambiguous",
+        "task_id": "p30-013",
+        "task_risk_tags": [
+          "weak_candidates"
+        ]
+      },
+      {
+        "admission_v3_action": "weak_candidate_only",
+        "admission_v3_h1_action": "weak_candidate_only",
+        "admission_v3_h1_score": -1,
+        "admission_v3_h2_action": "abstain",
+        "admission_v3_h2_score": -1,
+        "admission_v3_score": -1,
+        "repo_id": "js_express",
+        "task_bucket": "unknown",
+        "task_id": "p30-014",
+        "task_risk_tags": [
+          "other"
+        ]
+      }
+    ],
+    "routing_rules": [
+      "negative/dense_quiver_trap/hard_distractor bucket or negative/hard_distractor/dense_false_positive tag -> supporting_only if dense/graph support; else apply_llm_filter",
+      "ambiguous/hallucination_risk bucket or tag -> weak_candidate_only if strong span agreement and query_noise <= 0.2; supporting_only if dense/graph support; else apply_llm_filter",
+      "exact_unique_symbol_anchor + symbol_anchor + query_noise <= 0.1 -> admit_symbol_regex_union",
+      "symbol_regex_agree_span + positive bucket + query_noise <= 0.2 + no negative tags -> admit_symbol_regex_union",
+      "symbol_regex_agree_file only + positive bucket + query_noise <= 0.2 + no negative tags -> weak_candidate_only",
+      "rrf_anchor_agree_span + positive bucket + query_noise <= 0.2 + no negative tags -> admit_rrf_primary",
+      "rrf_anchor_agree_file only + positive bucket + query_noise <= 0.2 + no negative tags -> weak_candidate_only",
+      "llm_span_narrow_valid + within_candidate + (symbol_regex_agree_span or rrf_anchor_agree_span or exact_unique_symbol_anchor) + positive bucket + query_noise <= 0.2 + no negative tags -> admit_llm_span_narrow",
+      "remaining local_anchor -> weak_candidate_only",
+      "dense_support_present or graph_support_present -> supporting_only",
+      "otherwise -> abstain"
+    ],
+    "scorecard_features": [
+      "exact_unique_symbol_anchor",
+      "symbol_anchor",
+      "regex_anchor",
+      "local_anchor",
+      "symbol_regex_agree_file",
+      "symbol_regex_agree_span",
+      "rrf_anchor_agree_file",
+      "rrf_anchor_agree_span",
+      "rrf_backed_by_anchor",
+      "query_noise",
+      "llm_span_narrow_valid",
+      "llm_span_within_candidate",
+      "negative/hard_distractor/dense_false_positive tags and buckets",
+      "ambiguous/hallucination_risk tags and buckets",
+      "dense_support_present",
+      "graph_support_present"
+    ]
+  },
   "candidate_not_fact": true,
   "conclusion": [
     "Self-test-only scaffold evaluated 14 synthetic tasks; this is not quality evidence.",
     "admission_v3 uses an explainable monotonic scorecard over pre-SCORE observable task_bucket, task_risk_tags, and route_features; it does not use score_group, has_gold, gold, or outcome metrics during routing.",
     "Baseline SpanF0.5=0.14285714285714285, PFP=0.18571428571428572; admission_v3 SpanF0.5=0.10142857142857144, PFP=0.042857142857142864.",
     "admission_v3_h1 (handoff enriched) SpanF0.5=0.1457142857142857, PFP=0.023571428571428573, quality_comparable=True, selected_action_fallback_rate=0.0.",
+    "admission_v3_h2 (strict local anchor) SpanF0.5=0.060000000000000005, PFP=0.03571428571428571, quality_comparable=True, selected_action_fallback_rate=0.0.",
     "No policy is promotion-ready or default-ready.",
     "admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; a non-zero fallback rate on legacy admission_v3 preserves the old missing-outcome behavior for comparison.",
-    "Next: compare admission_v3_h1 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs.",
+    "admission_v3_h2 is a stricter local-anchor policy over the same P30-H1 records; it should be fallback-free whenever enriched local-anchor outcomes are present for every selected action.",
+    "Next: compare admission_v3_h1 and admission_v3_h2 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs.",
     "admission_v3 relied on fallback outcomes for 7 action selections; real runs should include measured outcomes for every selected action."
   ],
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-14T11:43:01.440113+00:00",
+  "generated_at": "2026-06-14T12:31:43.849245+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "gold_spans_in_artifact": false,
   "input_paths": [
@@ -469,6 +737,121 @@
         "model_success": {
           "count": 9,
           "rate": 0.6428571428571429
+        }
+      },
+      "task_count": 14
+    },
+    "admission_v3_h2": {
+      "SpanF0.5": 0.060000000000000005,
+      "abstain_rate": 0.14285714285714285,
+      "action_rates": {
+        "abstain": 0.14285714285714285,
+        "admit_symbol_regex_union": 0.07142857142857142,
+        "apply_llm_filter": 0.35714285714285715,
+        "supporting_only": 0.14285714285714285,
+        "weak_candidate_only": 0.2857142857142857
+      },
+      "added_false_span": 7,
+      "added_gold_span": 1,
+      "blocked_by_missing_action_outcomes": false,
+      "delta_vs_bucket_routed_v0": {
+        "delta_SpanF0.5": -0.10857142857142857,
+        "delta_added_false_span": -4,
+        "delta_added_gold_span": -6,
+        "delta_primary_false_positive_rate": -0.017857142857142856
+      },
+      "delta_vs_candidate_baseline": {
+        "delta_SpanF0.5": -0.08285714285714285,
+        "delta_added_false_span": -29,
+        "delta_added_gold_span": -9,
+        "delta_primary_false_positive_rate": -0.15000000000000002
+      },
+      "filter_gold_kill_rate": 0.9,
+      "no_gold_false_primary_rate": 0.07500000000000001,
+      "no_gold_task_count": 4,
+      "outcome_fallback": {
+        "fallback_action_counts": {},
+        "fallback_strategy_counts": {},
+        "missing_action_outcome_count": 0,
+        "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+      },
+      "policy_action_counts": {
+        "abstain": 2,
+        "admit_symbol_regex_union": 1,
+        "apply_llm_filter": 5,
+        "supporting_only": 2,
+        "weak_candidate_only": 4
+      },
+      "positive_task_count": 10,
+      "primary_false_positive_rate": 0.03571428571428571,
+      "quality_comparable": true,
+      "score_bands": {
+        "hard_guard": {
+          "SpanF0.5": 0.03428571428571429,
+          "action_counts": {
+            "apply_llm_filter": 5,
+            "supporting_only": 2
+          },
+          "count": 7,
+          "fraction_positive": 0.42857142857142855,
+          "no_gold_count": 4,
+          "positive_count": 3,
+          "primary_false_positive_rate": 0.042857142857142864
+        },
+        "high_admit": {
+          "SpanF0.5": 0.1,
+          "action_counts": {
+            "abstain": 1,
+            "admit_symbol_regex_union": 1,
+            "weak_candidate_only": 3
+          },
+          "count": 5,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 5,
+          "primary_false_positive_rate": 0.030000000000000006
+        },
+        "medium_admit": {
+          "SpanF0.5": 0.0,
+          "action_counts": {
+            "weak_candidate_only": 1
+          },
+          "count": 1,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "primary_false_positive_rate": 0.05
+        },
+        "neutral": {
+          "SpanF0.5": 0.1,
+          "action_counts": {
+            "abstain": 1
+          },
+          "count": 1,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "primary_false_positive_rate": 0.0
+        }
+      },
+      "selected_action_fallback_rate": 0.0,
+      "selective_risk_proxy": 0.030612244897959183,
+      "success_layers": {
+        "admission_success": {
+          "count": 14,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 10,
+          "rate": 0.7142857142857143
+        },
+        "evidence_success": {
+          "count": 1,
+          "rate": 0.07142857142857142
+        },
+        "model_success": {
+          "count": 5,
+          "rate": 0.35714285714285715
         }
       },
       "task_count": 14

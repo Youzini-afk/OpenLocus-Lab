@@ -702,7 +702,18 @@ jobs:
                       raise SystemExit(f"{json_path} H1 must be quality_comparable for real smoke")
                   if pc["admission_v3_h1"].get("selected_action_fallback_rate") not in {0, 0.0}:
                       raise SystemExit(f"{json_path} H1 selected_action_fallback_rate must be zero")
-                  # Schema/safety check only: real H1 is not required to outperform.
+                  if "admission_v3_h2" not in pc:
+                      raise SystemExit(f"{json_path} missing admission_v3_h2 policy comparison")
+                  h2_fb = pc["admission_v3_h2"].get("outcome_fallback", {})
+                  if h2_fb.get("missing_action_outcome_count") is None:
+                      raise SystemExit(f"{json_path} missing H2 outcome_fallback metadata")
+                  if pc["admission_v3_h2"].get("quality_comparable") is not True:
+                      raise SystemExit(f"{json_path} H2 must be quality_comparable for real smoke")
+                  if pc["admission_v3_h2"].get("selected_action_fallback_rate") not in {0, 0.0}:
+                      raise SystemExit(f"{json_path} H2 selected_action_fallback_rate must be zero")
+                  if data.get("admission_v3_h2", {}).get("per_task_routing"):
+                      raise SystemExit(f"{json_path} persisted H2 per-task routing records")
+                  # Schema/safety check only: real H1/H2 are not required to outperform.
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
                       if data.get(flag) is not False:
                           raise SystemExit(f"{json_path} does not keep {flag}=false")

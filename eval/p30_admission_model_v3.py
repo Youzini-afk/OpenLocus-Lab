@@ -65,6 +65,7 @@ POLICIES = [
     "bucket_routed_v0",
     "admission_v3",
     "admission_v3_h1",
+    "admission_v3_h2",
 ]
 
 # Mapping from emitted action to the outcome key used for aggregate scoring.
@@ -477,6 +478,194 @@ def route_admission_v3_h1(task: dict[str, Any]) -> dict[str, Any]:
     return route_admission_v3(task)
 
 
+def route_admission_v3_h2(task: dict[str, Any]) -> dict[str, Any]:
+    """Strict local-anchor admission policy (P30-H2).
+
+    H2 does not add new channels; it uses the same enriched pre-SCORE
+    route_features and measured local-anchor outcomes as admission_v3_h1, but
+    applies stricter guards:
+
+    * Primary-admit only when span-level or exact-unique-symbol agreement is
+      present, the bucket is positive, and query noise is low.
+    * Hard-negative/dense/hard-distractor tasks get no primary admit.
+    * Ambiguous/hallucination-risk tasks get no primary admit.
+    * File-only agreement is demoted to weak_candidate_only.
+    * Remaining local anchors become weak candidates; dense/graph support
+      becomes supporting; otherwise abstain.
+    """
+    rf = task["route_features"]
+    labels = bucket_labels(task)
+    labels_lower = {label.lower() for label in labels}
+    qn = float(rf.get("query_noise") or 0.0)
+    positive_bucket = task["task_bucket"] in POSITIVE_BUCKET_NAMES
+
+    score = 0
+    reasons: list[str] = []
+
+    def add(points: int, reason: str) -> None:
+        nonlocal score
+        score += points
+        if points != 0:
+            reasons.append(f"{reason}({'+' if points > 0 else ''}{points})")
+
+    # Positive local-anchor signals.
+    if rf.get("exact_unique_symbol_anchor"):
+        add(2, "exact_unique_symbol_anchor")
+    if rf.get("symbol_anchor"):
+        add(1, "symbol_anchor")
+    if rf.get("regex_anchor"):
+        add(1, "regex_anchor")
+    if rf.get("local_anchor"):
+        add(1, "local_anchor")
+    if rf.get("symbol_regex_agree_file"):
+        add(1, "symbol_regex_agree_file")
+    if rf.get("symbol_regex_agree_span"):
+        add(1, "symbol_regex_agree_span")
+    if rf.get("rrf_anchor_agree_file"):
+        add(1, "rrf_anchor_agree_file")
+    if rf.get("rrf_anchor_agree_span"):
+        add(1, "rrf_anchor_agree_span")
+    if rf.get("rrf_backed_by_anchor"):
+        add(1, "rrf_backed_by_anchor")
+
+    # LLM span narrowing is a positive signal only when anchored.
+    if rf.get("llm_span_narrow_valid"):
+        add(1, "llm_span_narrow_valid")
+    if rf.get("llm_span_within_candidate"):
+        add(1, "llm_span_within_candidate")
+
+    # Query-noise penalty.
+    if qn > 0.5:
+        add(-2, "high_query_noise")
+    elif qn > 0.25:
+        add(-1, "moderate_query_noise")
+
+    # Public risk-tag penalties (kept in sync with admission_v3 for comparability).
+    if "dense_false_positive" in labels_lower or "dense_quiver_trap" in labels_lower:
+        add(-3, "dense_false_positive_tag")
+    if "negative" in labels_lower:
+        add(-3, "negative_tag")
+    if "ambiguous" in labels_lower:
+        add(-2, "ambiguous_tag")
+    if "hallucination_risk" in labels_lower:
+        add(-2, "hallucination_risk_tag")
+    if "weak_candidates" in labels_lower:
+        add(-1, "weak_candidates_tag")
+    if "hard_distractor" in labels_lower:
+        add(-1, "hard_distractor_tag")
+
+    # Bucket-level scorecard contribution.
+    if task["task_bucket"] in {"negative", "dense_quiver_trap"}:
+        add(-2, f"bucket_{task['task_bucket']}")
+    elif task["task_bucket"] == "ambiguous":
+        add(-2, "bucket_ambiguous")
+    elif positive_bucket:
+        add(1, f"bucket_{task['task_bucket']}")
+
+    negative_tags = {"negative", "hard_distractor", "dense_false_positive"}
+    ambiguous_tags = {"ambiguous", "hallucination_risk"}
+    no_negative_tags = not bool(labels_lower & negative_tags)
+    dense_or_graph = bool(rf.get("dense_support_present") or rf.get("graph_support_present"))
+    strong_span_agree = bool(rf.get("symbol_regex_agree_span") or rf.get("rrf_anchor_agree_span"))
+    anchor_agree_for_llm = bool(
+        rf.get("symbol_regex_agree_span")
+        or rf.get("rrf_anchor_agree_span")
+        or rf.get("exact_unique_symbol_anchor")
+    )
+
+    action: str
+    rule: str
+
+    # 1. Hard negative/dense/hard-distractor guard: no primary admit.
+    if (
+        task["task_bucket"] in {"negative", "dense_quiver_trap", "hard_distractor"}
+        or labels_lower & negative_tags
+    ):
+        if dense_or_graph:
+            action = "supporting_only"
+            rule = "negative_dense_supporting_only"
+        else:
+            action = "apply_llm_filter"
+            rule = "negative_dense_apply_llm_filter"
+
+    # 2. Ambiguous/hallucination guard: no primary admit.
+    elif task["task_bucket"] == "ambiguous" or labels_lower & ambiguous_tags:
+        if strong_span_agree and qn <= 0.2:
+            action = "weak_candidate_only"
+            rule = "ambiguous_weak_candidate_span_agreement"
+        elif dense_or_graph:
+            action = "supporting_only"
+            rule = "ambiguous_supporting_only"
+        else:
+            action = "apply_llm_filter"
+            rule = "ambiguous_apply_llm_filter"
+
+    # 3. Exact unique symbol admission.
+    elif (
+        rf.get("exact_unique_symbol_anchor")
+        and rf.get("symbol_anchor")
+        and qn <= 0.1
+        and no_negative_tags
+    ):
+        action = "admit_symbol_regex_union"
+        rule = "exact_unique_symbol_anchor_low_noise"
+
+    # 4. Symbol+regex span agreement; file-only is not enough.
+    elif rf.get("symbol_regex_agree_span") and positive_bucket and qn <= 0.2 and no_negative_tags:
+        action = "admit_symbol_regex_union"
+        rule = "symbol_regex_agree_span_positive_low_noise"
+    elif (
+        rf.get("symbol_regex_agree_file")
+        and positive_bucket
+        and qn <= 0.2
+        and no_negative_tags
+    ):
+        action = "weak_candidate_only"
+        rule = "symbol_regex_file_only_weak_candidate"
+
+    # 5. RRF span agreement; file-only is not enough.
+    elif rf.get("rrf_anchor_agree_span") and positive_bucket and qn <= 0.2 and no_negative_tags:
+        action = "admit_rrf_primary"
+        rule = "rrf_anchor_agree_span_positive_low_noise"
+    elif rf.get("rrf_anchor_agree_file") and positive_bucket and qn <= 0.2 and no_negative_tags:
+        action = "weak_candidate_only"
+        rule = "rrf_file_only_weak_candidate"
+
+    # 6. LLM span narrowing, only when backed by span/exact-symbol agreement.
+    elif (
+        rf.get("llm_span_narrow_valid")
+        and rf.get("llm_span_within_candidate")
+        and anchor_agree_for_llm
+        and positive_bucket
+        and qn <= 0.2
+        and no_negative_tags
+    ):
+        action = "admit_llm_span_narrow"
+        rule = "llm_span_narrow_with_anchor_agreement"
+
+    # 7. Remaining local anchor signals are too weak for a primary admit.
+    elif rf.get("local_anchor"):
+        action = "weak_candidate_only"
+        rule = "local_anchor_weak_candidate"
+
+    # 8. Dense/graph support without a strong local anchor.
+    elif dense_or_graph:
+        action = "supporting_only"
+        rule = "dense_graph_supporting_only"
+
+    # 9. Default abstain.
+    else:
+        action = "abstain"
+        rule = "fallback_abstain_for_uncertain_signal"
+
+    return {
+        "action": action,
+        "score": score,
+        "scorecard_reasons": reasons,
+        "rule": rule,
+    }
+
+
 def _avg(vals: list[float]) -> float | None:
     return sum(vals) / len(vals) if vals else None
 
@@ -731,12 +920,24 @@ def aggregate_admission_v3_h1(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     return _aggregate_admission_v3_impl(tasks, route_admission_v3_h1)
 
 
+def aggregate_admission_v3_h2(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate metrics for the P30-H2 strict local-anchor admission policy.
+
+    H2 uses the full set of enriched local-anchor measured outcomes; it does not
+    fall back to legacy outcome keys.  It should be fallback-free on P30-H1
+    records that include outcomes for every action it can select.
+    """
+    return _aggregate_admission_v3_impl(tasks, route_admission_v3_h2)
+
+
 def compute_policy_metrics(tasks: list[dict[str, Any]], policy: str) -> dict[str, Any]:
     """Return aggregate metrics for one of the compared policies."""
     if policy == "admission_v3":
         return aggregate_admission_v3(tasks)
     if policy == "admission_v3_h1":
         return aggregate_admission_v3_h1(tasks)
+    if policy == "admission_v3_h2":
+        return aggregate_admission_v3_h2(tasks)
     # Reuse p25 aggregation for the baseline comparison policies.
     return p25.aggregate_policy(tasks, policy)
 
@@ -874,6 +1075,7 @@ def build_report(
             for task in tasks:
                 routing = route_admission_v3(task)
                 routing_h1 = route_admission_v3_h1(task)
+                routing_h2 = route_admission_v3_h2(task)
                 per_task_routing.append({
                     "task_id": task["task_id"],
                     "repo_id": task.get("repo_id"),
@@ -883,6 +1085,8 @@ def build_report(
                     "admission_v3_score": routing["score"],
                     "admission_v3_h1_action": routing_h1["action"],
                     "admission_v3_h1_score": routing_h1["score"],
+                    "admission_v3_h2_action": routing_h2["action"],
+                    "admission_v3_h2_score": routing_h2["score"],
                 })
 
     conclusion_lines: list[str] = []
@@ -908,6 +1112,7 @@ def build_report(
             "task_risk_tags, and route_features; it does not use score_group, has_gold, gold, or outcome metrics during routing."
         )
         h1 = policy_comparison["admission_v3_h1"]
+        h2 = policy_comparison["admission_v3_h2"]
         conclusion_lines.append(
             f"Baseline SpanF0.5={baseline.get('SpanF0.5')}, PFP={baseline.get('primary_false_positive_rate')}; "
             f"admission_v3 SpanF0.5={admission.get('SpanF0.5')}, PFP={admission.get('primary_false_positive_rate')}."
@@ -917,13 +1122,22 @@ def build_report(
             f"quality_comparable={h1.get('quality_comparable')}, "
             f"selected_action_fallback_rate={h1.get('selected_action_fallback_rate')}."
         )
+        conclusion_lines.append(
+            f"admission_v3_h2 (strict local anchor) SpanF0.5={h2.get('SpanF0.5')}, PFP={h2.get('primary_false_positive_rate')}, "
+            f"quality_comparable={h2.get('quality_comparable')}, "
+            f"selected_action_fallback_rate={h2.get('selected_action_fallback_rate')}."
+        )
         conclusion_lines.append("No policy is promotion-ready or default-ready.")
         conclusion_lines.append(
             "admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; "
             "a non-zero fallback rate on legacy admission_v3 preserves the old missing-outcome behavior for comparison."
         )
         conclusion_lines.append(
-            "Next: compare admission_v3_h1 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs."
+            "admission_v3_h2 is a stricter local-anchor policy over the same P30-H1 records; it should be fallback-free "
+            "whenever enriched local-anchor outcomes are present for every selected action."
+        )
+        conclusion_lines.append(
+            "Next: compare admission_v3_h1 and admission_v3_h2 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs."
         )
 
     total_route_features_ignored = sum(t.get("_route_features_ignored_count", 0) for t in tasks)
@@ -938,6 +1152,9 @@ def build_report(
     missing_outcomes_h1 = policy_comparison.get("admission_v3_h1", {}).get("outcome_fallback", {}).get(
         "missing_action_outcome_count", 0
     )
+    missing_outcomes_h2 = policy_comparison.get("admission_v3_h2", {}).get("outcome_fallback", {}).get(
+        "missing_action_outcome_count", 0
+    )
     if missing_outcomes_v3:
         conclusion_lines.append(
             f"admission_v3 relied on fallback outcomes for {missing_outcomes_v3} action selections; "
@@ -947,6 +1164,11 @@ def build_report(
         conclusion_lines.append(
             f"admission_v3_h1 relied on fallback outcomes for {missing_outcomes_h1} action selections; "
             "H1 handoff records are missing enriched local-anchor outcomes."
+        )
+    if missing_outcomes_h2:
+        conclusion_lines.append(
+            f"admission_v3_h2 relied on fallback outcomes for {missing_outcomes_h2} action selections; "
+            "H2 strict local-anchor routing required outcomes that were not present in the input records."
         )
 
     report = {
@@ -1008,6 +1230,40 @@ def build_report(
                 "graph_support_present",
             ],
             "per_task_routing": per_task_routing,
+        },
+        "admission_v3_h2": {
+            "routing_rules": [
+                "negative/dense_quiver_trap/hard_distractor bucket or negative/hard_distractor/dense_false_positive tag -> supporting_only if dense/graph support; else apply_llm_filter",
+                "ambiguous/hallucination_risk bucket or tag -> weak_candidate_only if strong span agreement and query_noise <= 0.2; supporting_only if dense/graph support; else apply_llm_filter",
+                "exact_unique_symbol_anchor + symbol_anchor + query_noise <= 0.1 -> admit_symbol_regex_union",
+                "symbol_regex_agree_span + positive bucket + query_noise <= 0.2 + no negative tags -> admit_symbol_regex_union",
+                "symbol_regex_agree_file only + positive bucket + query_noise <= 0.2 + no negative tags -> weak_candidate_only",
+                "rrf_anchor_agree_span + positive bucket + query_noise <= 0.2 + no negative tags -> admit_rrf_primary",
+                "rrf_anchor_agree_file only + positive bucket + query_noise <= 0.2 + no negative tags -> weak_candidate_only",
+                "llm_span_narrow_valid + within_candidate + (symbol_regex_agree_span or rrf_anchor_agree_span or exact_unique_symbol_anchor) + positive bucket + query_noise <= 0.2 + no negative tags -> admit_llm_span_narrow",
+                "remaining local_anchor -> weak_candidate_only",
+                "dense_support_present or graph_support_present -> supporting_only",
+                "otherwise -> abstain",
+            ],
+            "scorecard_features": [
+                "exact_unique_symbol_anchor",
+                "symbol_anchor",
+                "regex_anchor",
+                "local_anchor",
+                "symbol_regex_agree_file",
+                "symbol_regex_agree_span",
+                "rrf_anchor_agree_file",
+                "rrf_anchor_agree_span",
+                "rrf_backed_by_anchor",
+                "query_noise",
+                "llm_span_narrow_valid",
+                "llm_span_within_candidate",
+                "negative/hard_distractor/dense_false_positive tags and buckets",
+                "ambiguous/hallucination_risk tags and buckets",
+                "dense_support_present",
+                "graph_support_present",
+            ],
+            "per_task_routing": per_task_routing if self_test else [],
         },
         "conclusion": conclusion_lines,
     }
@@ -1083,6 +1339,11 @@ def build_markdown(report: dict[str, Any]) -> str:
         "that include pre-SCORE local-anchor features and measured local-anchor outcomes "
         "(symbol_regex_union, rrf_primary, supporting_only, weak_candidate_only). |"
     )
+    lines.append(
+        "| admission_v3_h2 | Stricter local-anchor policy over the same P30-H1 records; "
+        "demotes file-only agreement and unanchored LLM spans to weak/supporting/abstain, "
+        "and requires span-level/exact-unique-symbol agreement for primary admissions. |"
+    )
     lines.append("")
 
     lines.append("## Aggregate results\n")
@@ -1109,7 +1370,7 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append("## Quality comparability\n")
     lines.append("| Policy | quality_comparable | blocked_by_missing_action_outcomes | selected_action_fallback_rate |")
     lines.append("|---|---:|---:|---:|")
-    for policy in ("admission_v3", "admission_v3_h1"):
+    for policy in ("admission_v3", "admission_v3_h1", "admission_v3_h2"):
         m = report["policy_comparison"].get(policy, {})
         qc = m.get("quality_comparable")
         blocked = m.get("blocked_by_missing_action_outcomes")
@@ -1165,6 +1426,15 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"| {action} | {counts_h1.get(action, 0)} | {rates_h1.get(action, 'n/a')} |")
     lines.append("")
 
+    lines.append("## admission_v3_h2 action distribution\n")
+    counts_h2 = report["policy_comparison"]["admission_v3_h2"].get("policy_action_counts", {})
+    rates_h2 = report["policy_comparison"]["admission_v3_h2"].get("action_rates", {})
+    lines.append("| Action | Count | Rate |")
+    lines.append("|---:|---:|---:|")
+    for action in sorted(P30_ACTIONS):
+        lines.append(f"| {action} | {counts_h2.get(action, 0)} | {rates_h2.get(action, 'n/a')} |")
+    lines.append("")
+
     lines.append("## Score bands (admission_v3)\n")
     lines.append(
         "Bands are scorecard score ranges, not held-out calibrated probabilities. "
@@ -1186,6 +1456,7 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append("## Outcome fallback caveat\n")
     fb = report["policy_comparison"]["admission_v3"].get("outcome_fallback", {})
     fb_h1 = report["policy_comparison"]["admission_v3_h1"].get("outcome_fallback", {})
+    fb_h2 = report["policy_comparison"]["admission_v3_h2"].get("outcome_fallback", {})
     lines.append(
         f"- Missing action outcomes for admission_v3: {fb.get('missing_action_outcome_count', 0)}"
     )
@@ -1193,10 +1464,16 @@ def build_markdown(report: dict[str, Any]) -> str:
         f"- Missing action outcomes for admission_v3_h1: {fb_h1.get('missing_action_outcome_count', 0)}"
     )
     lines.append(
+        f"- Missing action outcomes for admission_v3_h2: {fb_h2.get('missing_action_outcome_count', 0)}"
+    )
+    lines.append(
         f"- Fallback strategy counts (admission_v3): {fb.get('fallback_strategy_counts', {})}"
     )
     lines.append(
         f"- Fallback strategy counts (admission_v3_h1): {fb_h1.get('fallback_strategy_counts', {})}"
+    )
+    lines.append(
+        f"- Fallback strategy counts (admission_v3_h2): {fb_h2.get('fallback_strategy_counts', {})}"
     )
     lines.append(
         "- If an action selected by admission_v3 has no measured outcome in the input record, "
@@ -1208,23 +1485,37 @@ def build_markdown(report: dict[str, Any]) -> str:
         "- admission_v3_h1 is designed to have zero missing outcomes when P21 writes P30-H1 enriched "
         "handoff records; a non-zero value here indicates the input records lack the required local-anchor outcomes."
     )
+    lines.append(
+        "- admission_v3_h2 is designed to be fallback-free on P30-H1 records because it selects only "
+        "from the local-anchor measured outcomes already included in the handoff; a non-zero value here "
+        "indicates the input records are missing outcomes for actions H2 selects."
+    )
     lines.append("")
 
-    lines.append("## Routing rules\n")
+    lines.append("## Routing rules (admission_v3)\n")
     for rule in report["admission_v3"]["routing_rules"]:
+        lines.append(f"- {rule}")
+    lines.append("")
+
+    lines.append("## Routing rules (admission_v3_h2)\n")
+    for rule in report["admission_v3_h2"]["routing_rules"]:
         lines.append(f"- {rule}")
     lines.append("")
 
     if report.get("self_test"):
         lines.append("## Per-task routing (self-test only)\n")
-        lines.append("| task_id | repo_id | task_bucket | task_risk_tags | v3_action | v3_score | h1_action | h1_score |")
-        lines.append("|---|---|---|---|---|---|---|---|")
+        lines.append(
+            "| task_id | repo_id | task_bucket | task_risk_tags | "
+            "v3_action | v3_score | h1_action | h1_score | h2_action | h2_score |"
+        )
+        lines.append("|---|---|---|---|---|---|---|---|---|---|")
         for row in report["admission_v3"]["per_task_routing"]:
             tags = ", ".join(row.get("task_risk_tags") or [])
             lines.append(
                 f"| {row['task_id']} | {row.get('repo_id') or ''} | {row.get('task_bucket') or ''} | "
                 f"{tags} | {row['admission_v3_action']} | {row['admission_v3_score']} | "
-                f"{row['admission_v3_h1_action']} | {row['admission_v3_h1_score']} |"
+                f"{row['admission_v3_h1_action']} | {row['admission_v3_h1_score']} | "
+                f"{row['admission_v3_h2_action']} | {row['admission_v3_h2_score']} |"
             )
         lines.append("")
 
