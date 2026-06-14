@@ -276,9 +276,9 @@ def r45_report(artifacts: dict[str, Any], matrix: dict[str, Any], clusters: dict
 
 
 def write_docs(root: Path, matrix: dict[str, Any], clusters: dict[str, Any], report: dict[str, Any]) -> None:
-    matrix_path = root / "docs/r43-real-model-full-matrix.md"
-    cluster_path = root / "docs/r44-failure-clusters.md"
-    report_path = root / "docs/r45-promotion-candidate-report.md"
+    matrix_path = root / "docs/en/r43-real-model-full-matrix.md"
+    cluster_path = root / "docs/en/r44-failure-clusters.md"
+    report_path = root / "docs/en/r45-promotion-candidate-report.md"
 
     matrix_lines = [
         "# R43 Consolidated Real-Model Readiness Matrix",
@@ -345,9 +345,9 @@ def main(argv: list[str] | None = None) -> None:
     write_json(root / "artifacts/r43_r45/long_run_report.json", out)
     write_docs(root, matrix, clusters, report)
     print("Wrote artifacts/r43_r45/long_run_report.json")
-    print("Wrote docs/r43-real-model-full-matrix.md")
-    print("Wrote docs/r44-failure-clusters.md")
-    print("Wrote docs/r45-promotion-candidate-report.md")
+    print("Wrote docs/en/r43-real-model-full-matrix.md")
+    print("Wrote docs/en/r44-failure-clusters.md")
+    print("Wrote docs/en/r45-promotion-candidate-report.md")
     print("Wrote docs/r45-promotion-candidate-report.json")
 
 

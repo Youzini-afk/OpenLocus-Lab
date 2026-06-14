@@ -2162,7 +2162,7 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Write LS3 private labels to --stress-labels-out. Default is false to avoid uploading private labels.",
     )
-    parser.add_argument("--doc", type=Path, default=Path("docs/p20-llm-large-scale.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/p20-llm-large-scale.md"))
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--max-tasks", type=int, default=None)
     parser.add_argument("--ls3-seed", type=int, default=42)

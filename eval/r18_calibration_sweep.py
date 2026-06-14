@@ -1505,7 +1505,7 @@ def main() -> None:
     md_path = out_path.with_suffix(".md")
     md_path.write_text(md_content, encoding="utf-8")
 
-    # ── Step 13: Write docs/r18-calibration-sweep.md ─────────────────────
+    # ── Step 13: Write docs/en/r18-calibration-sweep.md ─────────────────────
 
     docs_r18 = workspace / "docs" / "r18-calibration-sweep.md"
     docs_r18.write_text(md_content, encoding="utf-8")

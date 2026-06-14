@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "artifacts/real_provider/p7_real_provider_summary.json"
-DOC = ROOT / "docs/real-provider-p7-summary.md"
+DOC = ROOT / "docs/en/real-provider-p7-summary.md"
 
 
 def load(path: str) -> dict:

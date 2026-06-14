@@ -1,0 +1,2258 @@
+# OpenLocus Research Log
+
+> 中文译本待补充。The full Chinese translation is pending.
+> 这是同名文件的占位符：保留英文原文，方便未来翻译对照。
+
+## English source / 英文原文
+
+# OpenLocus Research Log
+
+## 2026-06-11 — R0/R1 bootstrap
+
+### Objective
+
+Start an evidence-gated implementation that can validate the core contract before adding dense, graph, TDB, or LLM indexing experiments.
+
+### Current hypothesis
+
+The first useful milestone is not semantic retrieval. It is a trustworthy local evidence kernel with traceability, citation validation, and file-backed context-lite.
+
+### Stage gates
+
+- R0 passes when every returned result is traceable as `EvidenceCore` and citation validation can verify path/range/hash.
+- R1 passes when read, repo scan, regex search, and context-lite work without remote dependencies.
+
+### Implementation notes
+
+- Initialized a Rust workspace with separate crates for core contracts, repo IO, retrieval, and CLI.
+- Implemented `EvidenceCore` as the stable output contract: `path`, `start_line`, `end_line`, `content_sha`, `score`, `why`, `channels`.
+- Kept `EvidenceMeta` optional so policy/freshness/excerpt/language metadata can evolve without breaking core evidence.
+- Implemented local-only policy defaults and basic `.openlocus/policy.toml` loading.
+- Implemented trace JSONL output under `.openlocus/traces/` for command-level observability.
+- Implemented file reads with range parsing and symlink escape protection.
+- Implemented repo scanning with default ignores, policy include/exclude, and gitignore control.
+- Implemented line-based regex/text search. A review caught an early over-wide span design; it was corrected so each matched line returns a narrow Evidence span.
+- Implemented citation validation for single Evidence, Evidence arrays, and `{ evidence: [...] }` packs, including range/hash/excerpt checks.
+- Implemented context-lite file creation as an initial file-backed session fact surface.
+
+### Review findings resolved
+
+- **Search span precision**: fixed broad first-match-to-last-match spans; regex/text search now returns per-line evidence.
+- **Citation validation**: now validates path, range, current file hash, and excerpt consistency.
+- **Path safety**: existing targets are canonicalized to prevent symlink escapes outside the repo.
+- **Freshness correctness**: search evidence hashes the bytes actually read for the match, avoiding stale scan-record hashes.
+- **Policy basics**: scan include/exclude and `include_gitignored` now affect scan behavior.
+
+### Verification
+
+```text
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo build --workspace
+openlocus read README.md:1-3 --json
+openlocus citations validate /tmp/openlocus-evidence.json --json
+openlocus search regex OpenLocus --json
+openlocus citations validate /tmp/openlocus-search.json --json
+openlocus context-lite --write-files --json
+python3 eval/run_retrieval.py --dataset fixtures/smoke.jsonl --out runs/smoke-rg.jsonl --openlocus target/debug/openlocus
+python3 eval/score.py --pred runs/smoke-rg.jsonl
+```
+
+All Rust checks passed. CLI smoke eval returned success rate `1.0`.
+
+### Caveats carried forward
+
+- Regex search is intentionally line-based in R1; multiline regex spanning line boundaries is not supported yet.
+- Context-lite currently writes minimal placeholder files; deeper dirty/test/diagnostics ingestion belongs in a later hardening pass.
+- Policy globbing is intentionally simple and should be replaced with a mature matcher before broad user-facing use.
+- Trace events are command-level and not yet full replayable retrieval trajectories.
+
+---
+
+## 2026-06-11 — R2 Retrieval Method Bakeoff
+
+### Objective
+
+Add local-only, evaluable, EvidenceCore-compatible BM25/symbol/RRF retrieval methods. Do not implement dense, TDB, LLM, or graph indexing yet.
+
+### Hypothesis
+
+BM25 over bounded line chunks with line tightening will outperform plain regex for file-level recall while maintaining narrow evidence spans. Symbol search will provide high-precision single-line hits for definition queries. RRF fusion of regex + BM25 + symbol will achieve the best combined file recall and MRR.
+
+### Implementation notes
+
+- **BM25 search** (`bm25_search.rs`): Builds an in-temp Tantivy index over bounded line chunks (max 30 lines). Schema: path, language, content_sha (STRING|STORED), start_line, end_line (u64 STORED), content (TEXT|STORED). Returns Evidence tightened to the best-matching line ±2 context, capped at 7 lines. content_sha recomputed from current file bytes. Channel::Bm25, meta.score_parts.bm25, meta.freshness = verified_current. Query parser safe fallback on parse errors.
+- **BM25 span selection**: Each chunk hit is line-scored by query token overlap (not chunk center). If no line has any query token overlap, the hit is skipped (precision-biased). The best-scoring line becomes the center, ±2 context, capped at 7 lines.
+- **BM25 stale check**: Index-time content_sha from Tantivy stored fields is compared to current file hash. Mismatch → skip hit. Line range strictly guarded: 1 ≤ start ≤ end ≤ total_lines.
+- **Symbol search** (`symbol_search.rs`): Simple heuristic regex-based symbol extraction for Rust/Python/TS/JS/Go. Returns narrow single-line Evidence around the signature/head. Uses Channel::Regex with why="simple_symbol: {name}". Fills meta.symbol with name + kind. Language-aware pattern filtering prevents cross-language false matches. Word-boundary delimiters prevent partial matches (e.g. "User" won't match "UserProfile").
+- **RRF fusion** (`rrf.rs`): Combines evidence from multiple channels using Reciprocal Rank Fusion (k=60). Exact same (path, start_line, end_line) → merge why/score/channels. Overlapping spans on same path → keep narrower, discard wider. The wider's why, channels, and RRF score are merged into the narrower survivor (no span widening). Tie-break: score desc, path asc, start_line asc, end_line asc. RRF only changes ranking/score, never widens spans.
+- **CLI**: Added `search bm25 <query>`, `search symbol <query>`, `retrieve <query> --channels regex,bm25,symbol --max-results N`. All new commands append trace events.
+- **Eval**: Updated `run_retrieval.py` to accept `--method regex|text|bm25|symbol|rrf`, `--channels` for RRF. Updated `score.py` with structural_validity + citation_validity, FileRecall@1/5/10, FilePrecision@5/10, MRR, LinePrecision@10, LineRecall@10, SpanF0.5@10, token_waste_ratio@10, wrong_span_rate@10 (gold-file-only), zero_overlap_evidence_rate@10 (all evidence). Python scorer verifies path/range and verifies BLAKE3 hashes when optional Python `blake3` is installed; Rust CLI validator is used for hash/excerpt-backed citation checks. Added `fixtures/r2.jsonl` with 28 tasks, gold spans refreshed to current codebase.
+
+### R2 eval results (after oracle review fixes)
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| file_recall@1 | 0.21 | **0.39** | **0.39** | **0.39** |
+| file_recall@5 | 0.36 | **0.86** | 0.39 | 0.82 |
+| file_recall@10 | 0.50 | **0.86** | 0.39 | 0.82 |
+| mrr | 0.29 | **0.58** | 0.39 | 0.56 |
+| line_precision@10 | 0.06 | 0.04 | **0.39** | 0.06 |
+| line_recall@10 | 0.01 | **0.04** | 0.01 | 0.04 |
+| span_f0.5@10 | 0.04 | 0.04 | **0.06** | 0.06 |
+| structural_validity | **1.0** | **1.0** | **1.0** | **1.0** |
+| citation_validity | **1.0** | **1.0** | **1.0** | **1.0** |
+| wrong_span_rate@10 | 0.77 | 0.80 | **0.0** | 0.76 |
+| zero_overlap@10 | 0.92 | 0.95 | **0.0** | 0.93 |
+| avg_latency_ms† | 18 | 145 | 272 | 421 |
+
+† CLI end-to-end latency including index build (BM25/RRF) or file scan (symbol). Not a warm-index benchmark.
+
+### Key findings
+
+1. BM25 substantially improves file-level recall on the current self-referential fixture (0.39 vs 0.21 at k=1, 0.86 vs 0.36 at k=5). This is an early local-only bakeoff result, not a general benchmark claim.
+2. Symbol search has the highest line precision (0.39) and zero wrong spans when it fires, but only activates for definition-style queries on known languages.
+3. RRF fusion approaches BM25-level file recall (0.82 at k=5) while incorporating symbol precision, achieving 0.057 SpanF0.5@10 in this fixture.
+4. All methods produce structurally citation-valid evidence in the Python scorer. Current aggregated R2 output was also validated by `openlocus citations validate` with `0` invalid citations (hash/range/excerpt checked).
+5. Token waste ratio remains high (~0.92) — evidence spans are narrow but often miss gold lines. Query-token line scoring fixed chunk-center anchoring, but chunking/query expansion/gold-span calibration need further refinement.
+6. BM25 stale check and no-overlap skip are effective: no stale or center-only hits appear in the output.
+7. Symbol boundary delimiters prevent partial matches (verified: "User" does not match "UserProfile").
+
+### Oracle review fixes applied
+
+- **BM25 span selection**: Replaced chunk-center anchoring with line-level query token overlap scoring. Hits with no token overlap are skipped (precision-biased).
+- **BM25 stale check**: Index-time content_sha compared to current file hash. Mismatch → skip. Strict line range guard added.
+- **BM25 query fallback**: Removed `*` all-doc fallback; parse failures now degrade to sanitized query or empty results.
+- **Symbol boundary**: Added `(?:[^a-zA-Z0-9_]|$)` delimiter after symbol name in all patterns. Prevents partial matches.
+- **RRF overlap dedup**: Wider span's why/channels/score are now merged into the narrower survivor. Deterministic tie-break: score desc, path asc, start_line asc, end_line asc.
+- **Eval citation validity**: Split into `structural_validity` (no I/O) and `citation_validity` (path/range by default; hash check when optional Python `blake3` is installed). Added `--repo-root`. For hash/excerpt-backed validation, use `openlocus citations validate`.
+- **Eval metrics**: Added `zero_overlap_evidence_rate@10` (all evidence, not just gold-file). `wrong_span_rate@10` now only counts evidence on gold files. Added `--channels` to `run_retrieval.py`.
+- **Fixtures**: Refreshed gold spans to current codebase actual line numbers.
+
+### Caveats carried forward
+
+- BM25 builds a fresh Tantivy index per query; not suitable for large repos without persistent indexing.
+- Symbol search is heuristic-only; real TreeSitter or SCIP would improve recall.
+- Line-level metrics are low because gold spans target specific code regions; the eval is more meaningful for file-level metrics at this stage.
+- BM25 CLI end-to-end latency includes index build; a persistent index would reduce this significantly.
+- The Rust `regex` crate does not support lookahead; symbol boundary uses consuming match `(?:[^a-zA-Z0-9_]|$)` instead.
+
+---
+
+## 2026-06-11 — R3 Level0 Storage Scaffold/Conformance
+
+### Objective
+
+Add Store traits + StoreHit materialization gate + conservative storage surface + TDB Level 0 test surface. Do not implement dense/LLM/graph quality or make TDB a default dependency. This is a Level0 storage scaffold, not a full storage bakeoff or TDB comparison.
+
+### Hypothesis
+
+A storage abstraction layer with materialization gating (StoreHit → filesystem Evidence) will enable safe backend substitution. The conservative in-memory chunk store should pass conformance tests. TDB can be represented as a placeholder that correctly reports unavailability rather than being silently missing.
+
+### Implementation notes
+
+- **Store crate** (`openlocus-store`): New workspace crate with types (SnapshotId, ChunkKind, ChunkKey, ChunkRecord, StoreSource, StoreDebug, StoreHit, StoreCapabilities, StoreHealth, StoreError) and traits (StoreBackend, ChunkStore, LexicalStore, VectorStore, GraphStore).
+- **Materialization gate** (`materialize_evidence`): Critical gate that converts StoreHit → Evidence by: (0) reject empty content_sha, (1) validate_path (symlink protection), (2) read file bytes once; compute content_sha from same bytes (TOCTOU-safe), (3) reject stale hits (sha mismatch), (4) decode same bytes for line content; validate range (1 ≤ start ≤ end ≤ total_lines), (5) build excerpt from decoded content, (6) return Evidence with freshness=VerifiedCurrent. Store backends never directly output authoritative Evidence.
+- **ConservativeChunkStore**: In-memory ephemeral implementation (mode=ephemeral_in_memory, persistent=false) with metadata=true, chunks=true, lexical=false, vector=false, graph=false. Build validates paths via validate_path, skips stale records (content_sha mismatch), skips empty files (no start=1,end=0 invalid chunks), computes content_sha from same bytes used for line splitting. Does not walk filesystem itself.
+- **TdbPlaceholderStore**: Level 0 test surface implementing StoreBackend with available=false, success=false, mode=placeholder, and all capabilities false. Returns clear error messages ("feature 'tdb' is not enabled"). Does not add triviumdb as a dependency.
+- **CLI**: Added `openlocus store status/build/purge conservative|tdb --json`. JSON output includes mode, persistent, and success fields. All commands append trace events.
+- **Eval**: Added `eval/storage_bakeoff.py` with report_kind="storage_level0_smoke". Uses positional backend syntax.
+
+### R3 Level0 conformance results
+
+| Check | Result |
+|---|---|
+| Conservative build from scan_repo | ✅ chunks, files, valid ranges |
+| Conservative capabilities explicit | ✅ metadata+chunks only |
+| Conservative skips stale records | ✅ test passes |
+| Conservative skips empty files (no invalid chunks) | ✅ test passes |
+| Conservative skips traversal records | ✅ test passes |
+| Conservative purge | ✅ clears all data |
+| TDB status returns available=false, success=false | ✅ |
+| TDB build returns error, not panic | ✅ |
+| TDB purge returns error, not panic | ✅ |
+| Materialize rejects empty content_sha | ✅ test passes |
+| Materialize rejects stale hit | ✅ test passes |
+| Materialize rejects invalid range | ✅ test passes |
+| Materialize produces citation-valid Evidence | ✅ test passes |
+| Materialize TOCTOU-safe (sha + excerpt from same read) | ✅ test passes |
+| Ingest only from scan_repo records | ✅ store never walks filesystem |
+| Unknown backend returns error | ✅ |
+
+### Key findings
+
+1. The materialization gate is essential and works correctly: empty sha rejected, stale hits rejected, invalid ranges rejected, and produced Evidence is citation-valid (verified_current freshness, correct content_sha, excerpt from current file).
+2. TOCTOU safety matters: reading file bytes once and deriving both sha and excerpt from that single read prevents a file modification between sha computation and excerpt extraction from producing inconsistent evidence.
+3. ConservativeChunkStore validates paths and skips stale/invalid records: traversal paths are rejected, stale content_sha records are skipped, empty files produce no invalid chunks.
+4. TDB placeholder provides a clean Level 0 test surface: CLI commands return JSON with available=false, success=false, and descriptive errors rather than panicking or silently failing.
+5. All ingest comes from scan_repo filtered records; stores never walk the filesystem. Policy filtering is automatically respected.
+
+### Caveats carried forward
+
+- ConservativeChunkStore is in-memory ephemeral only; data does not persist across CLI invocations. A persistent index (e.g. sidecar file) would be needed for production use.
+- TDB placeholder does not exercise any actual TriviumDB code; it only validates the API shape. When a real adapter is needed, it should be behind a feature flag with an optional dependency.
+- VectorStore and GraphStore traits are defined but not implemented; they are placeholders for R4+ experimentation.
+- The store does not yet integrate with BM25 search; BM25 still builds a fresh Tantivy index per query.
+- This is a Level0 storage scaffold, not a full storage bakeoff or TDB comparison. No real storage-backed retrieval quality comparison is claimed.
+
+---
+
+## 2026-06-11 — R4 LLM Indexing Research Candidate Level0 Safety Scaffold
+
+### Objective
+
+Add DerivedIndexView model + deterministic rule/mock generator + policy/citation/freshness gates + JSONL store + CLI/eval. No real LLM, no quality claim. This is a Level0 safety scaffold: prove the gates work before connecting any remote service.
+
+### Hypothesis
+
+A derived index view system with strict safety gates (no-LLM-required generator, policy-gated kinds, data_level bounds, source validation, experimental opt-in) can be implemented and verified without any remote calls. The safety gates should block all high-risk operations by default.
+
+### Implementation notes
+
+- **Derived crate** (`openlocus-derived`): New workspace crate with model (DerivedIndexView, DerivedViewKind, DerivedSource, DerivedGeneratorKind, DerivedProvenance, DerivedValidation), generator (deterministic rule extractor for L1 kinds), validation (path/content_sha/range/kind/data_level checks), and JSONL store.
+- **Key constraint**: DerivedIndexView is NOT Evidence. It cannot bypass StoreHit/materialize_evidence. If derived search is ever implemented, it must materialize source evidence.
+- **Generator**: Deterministic rule-based extractor for chunk_summary, symbol_tags, query_aliases. No full raw code snippets at data_level ≤ 1 (only metadata + first identifier per chunk). Identifier extraction via simple heuristics; query alias splitting via camelCase/snake_case decomposition.
+- **Validation**: validate_derived_view checks path safety (via validate_path), source content_sha matches current file, range valid, kind allowed, data_level allowed. No remote calls.
+- **Store**: JsonlDerivedViewStore writes to `.openlocus/derived/views.jsonl` with audit log at `.openlocus/derived/audit.jsonl`. Supports upsert (replaces by view_id), list, purge.
+- **View ID**: Deterministic hash of (source_path, source_sha, kind, generator, data_level, policy_mode, generator_version). Same inputs always produce the same ID. Source, policy, or generator-version changes produce different IDs.
+- **High-risk kinds**: candidate_edge and bug_symptom_hint are disabled by default (is_high_risk() = true). Generator skips them entirely.
+- **CLI**: `openlocus derived build/validate/inspect/purge`. Build requires `--experimental`. All commands output JSON with remote_calls=0, data_level, policy_mode.
+- **Eval**: `eval/derived_safety.py` with report_kind="derived_level0_safety".
+
+### R4 Level0 safety results (after oracle review fixes)
+
+| Safety Check | Result |
+|---|---|
+| Build without --experimental blocked | ✅ clear error JSON |
+| Build with --experimental succeeds | ✅ views generated |
+| Build with --max-data-level 2 blocked | ✅ Level0 hard gate |
+| remote_calls always 0 | ✅ |
+| candidate_edge blocked | ✅ blocked_kind=1, generated=0 |
+| bug_symptom_hint blocked | ✅ blocked_kind=1, generated=0 |
+| data_level ≤ 1 enforced | ✅ Level0 hard gate |
+| No raw full code in derived text at data_level=1 | ✅ test passes |
+| Secret-like tokens filtered (SECRET_KEY, API_TOKEN, sk_, ghp_, AKIA) | ✅ test passes |
+| View ID deterministic | ✅ test passes |
+| View ID changes on source change | ✅ test passes |
+| View ID changes on policy_mode change | ✅ test passes |
+| View ID changes on generator_version change | ✅ test passes |
+| Validate detects stale views | ✅ test passes |
+| Validate detects blocked kind | ✅ test passes |
+| Validate detects blocked data_level | ✅ test passes |
+| Validate detects path_unsafe | ✅ test passes |
+| Validate detects invalid range | ✅ test passes |
+| Validate surfaces parse_errors | ✅ corrupt JSONL test passes |
+| Stale mutation detected (modify file → validate → stale>0) | ✅ eval passes |
+| Policy-excluded paths absent (.env, *.pem) | ✅ eval passes |
+| Purge removes views and audit files | ✅ eval passes |
+
+### Key findings
+
+1. The safety scaffold works: all gates are functional and block by default. High-risk kinds are blocked, data_level is hard-gated at ≤1 for Level0, experimental opt-in is required, and no remote calls are made.
+2. Deterministic view IDs include policy_mode and generator_version: the same source/kind/generator/data_level/policy_mode/generator_version always produces the same ID, and a change in any of these produces a different ID.
+3. At data_level ≤ 1, derived text contains only metadata (line range, language, first identifier) — no full raw code snippets. This prevents accidental exposure of sensitive code in derived artifacts.
+4. Secret-like tokens are aggressively filtered: identifiers containing SECRET/TOKEN/PASSWORD/API_KEY/PRIVATE_KEY, or with prefixes sk_/ghp_/AKIA, or long high-entropy mixed-case strings are not emitted in tags or aliases.
+5. JSONL parse errors are surfaced (not silently skipped): `derived validate` reports parse_errors count; safety eval fails if parse_errors > 0.
+6. Stale mutation is detected: building views, modifying a source file, then validating correctly reports stale views.
+7. The rule-based generator is intentionally simple: identifier extraction, camelCase/snake_case splitting. It is not a replacement for real LLM-based indexing; it proves the pipeline shape works.
+
+### Caveats carried forward
+
+- This is a Level0 safety scaffold only. No quality claim about derived view relevance or usefulness.
+- The rule-based generator produces coarse metadata; real LLM indexing would produce richer summaries and aliases.
+- DerivedIndexView is not Evidence and cannot be used as such. Any future derived search must materialize source evidence through the store gate.
+- The JSONL store does not scale for large repos; it reads/writes the full file on each operation.
+- candidate_edge and bug_symptom_hint are defined but never generated; they serve as API surface for future high-risk experiments.
+- No real LLM adapter exists. The MockLlm generator kind is defined but not implemented.
+- Derived views are not integrated with the RRF retrieval pipeline; this is a future optimization.
+- The secrets/ directory is not in the default exclude list; only .env* and **/*.pem are excluded by default.
+
+## 2026-06-11 — R5 Semantic Graph Level0 Deterministic Scaffold
+
+### Objective
+
+Implement a local-only, deterministic, depth=1 semantic graph scaffold. No LSP/SCIP/LLM. Graph candidates cannot directly substitute for Evidence; must be materialized through StoreHit → `openlocus_store::materialize_evidence()`.
+
+### Implementation
+
+1. **openlocus-graph crate**: Types (GraphNode, GraphEdge with source_content_sha/source_language, EdgeKind, GraphBuildResult, GraphCapabilities), builder, and materializer.
+2. **Edge kinds**:
+   - imports: parse Rust `mod/use`, TS/JS `import ... from`, Python `import/from`, Go `import` lines. Resolution uses path_set and basename_index.
+   - tests: path/name heuristic (tests/ dir, *_test.*, *.test.*, test_*) linking to source files with matching basename.
+   - configures: config files (Cargo.toml, package.json, etc.) to nearby source files (bounded max 50).
+3. **Safe record construction**: `build_graph` validates paths and current sha, creates safe_records, and builds import/test/config edges only from safe/current records. Stale and path-unsafe records are counted and skipped.
+4. **Materialization via StoreHit**: `materialize_graph_evidence()` converts GraphEdge to StoreHit and delegates to `openlocus_store::materialize_evidence(repo_root, &hit, Channel::Graph)`. Invalid ranges are rejected (not clamped). Graph-specific why/score_parts are added post-materialization without changing span/hash.
+5. **Depth gate**: depth>1 returns error, not silently expanded.
+6. **CLI**: `graph build`, `graph inspect` (with artifact="graph_edges_not_evidence" marker), `impact <path> --depth N` (with skipped count), `tests select --path P` (with skipped count).
+
+### Oracle review fixes
+
+- GraphEdge now carries source_content_sha and source_language at build time.
+- materialize_graph_evidence converts to StoreHit and calls openlocus_store::materialize_evidence (not hand-building Evidence). Invalid ranges rejected (not clamped).
+- build_graph builds safe_records/path_set/sha map from validated current records only; test/config edges built from safe_records only.
+- graph inspect wraps output with artifact="graph_edges_not_evidence" marker.
+- tests command includes skipped count.
+- eval/graph_smoke.py uses synthetic temp fixture repo, includes import/test/config examples, true citation validation via `openlocus citations validate`, policy-excluded file checks, depth-2 blocking.
+
+### R5 Level0 results (after oracle review)
+
+| Check | Result |
+|---|---|
+| Graph build succeeds | ✅ |
+| Edges > 0 (imports + configures + tests) | ✅ |
+| Inspect has artifact marker | ✅ |
+| Impact returns citation-valid evidence | ✅ verified via citations validate |
+| Depth=2 blocked | ✅ clear error JSON |
+| Tests select works | ✅ with skipped count |
+| Stale check active (skipped_stale field) | ✅ |
+| Policy excluded (.env, .pem) absent from edges | ✅ |
+| StoreHit materialization gate | ✅ edges → StoreHit → materialize_evidence |
+
+### Key findings
+
+1. Simple line-based import parsing is surprisingly effective for Rust and Python repos. The path_set resolution approach (look for candidate files in same directory or by basename) avoids needing a full module resolver.
+2. Config edges dominate because each config file links to all nearby source files. This is noisy but safe for Level0.
+3. Test heuristics work for common patterns (*_test.rs, *.test.ts, tests/ dir) but don't handle inline tests or less common naming conventions.
+4. Materialization via StoreHit gate is essential: graph edges carry build-time sha, and `materialize_evidence` rejects stale/invalid hits. This means graph-derived evidence is always citation-valid.
+5. Graph is rebuilt on each command (not persisted). Stale records are caught at build time.
+
+### Caveats
+
+- This is a Level0 deterministic scaffold only. Not a precise call graph, type graph, or dependency graph.
+- Import parsing is line-based heuristic, not a full parser. It will miss multi-line imports and macro-generated code.
+- Go import resolution is not implemented (requires module path mapping).
+- Test heuristic only links by filename/path convention, not by analyzing test content.
+- Config edges are noisy (many false positives). A future version should be more targeted.
+- Graph is rebuilt on each command (not persisted). For large repos, this needs caching.
+- Stale detection works at build time only (graph rebuilt per command). A persistent graph would need materialization-time stale checks, which the StoreHit gate already provides.
+- Graph edges are not integrated with the RRF retrieval pipeline; this is a future optimization.
+
+## 2026-06-11 — R6 Fast Context Level0 Rule Prototype
+
+### Objective
+
+Implement a 4-turn deterministic fast-context loop using existing regex/bm25/symbol/graph channels, returning citation-valid EvidencePack. No LLM planner, no remote calls. Budget cap enforced. Graph depth=1 only.
+
+### Implementation
+
+1. **openlocus-context crate**: FastContextPlan, TurnResult, TurnKind, FastContextResult, ActionRecord, FastContextDiagnostics types.
+2. **4-turn loop**:
+   - Turn 1 (Lexical): regex/text search, optionally BM25. Broad discovery.
+   - Turn 2 (Symbol): if query has identifier-like tokens (camelCase, snake_case), run symbol search.
+   - Turn 3 (Graph): get top file candidates from turns 1-2, build graph, get impact edges, materialize as Evidence via StoreHit.
+   - Turn 4 (Fusion): RRF combine all channel evidence, dedup/narrow, apply token budget cap, compute confidence, generate missing_questions.
+3. **Token budget**: `--budget N` means approximate max tokens (chars/4). Evidence trimmed from bottom if cumulative tokens exceed budget. `--max-evidence` still supported as count cap.
+4. **ActionRecord**: per-channel, per-turn replayable actions with turn, channel, query, result_count, skipped, latency_ms, error. Written to `.openlocus/traces/fast-context-<trace_id>.json`.
+5. **Unknown channel gate**: channels outside `regex,text,bm25,symbol,graph` are rejected with success=false/error.
+6. **Final validation**: before output, evidence is filtered through `is_citation_valid` using safe path validation, current file hash comparison, line-range bounds, excerpt matching, and `VerifiedCurrent` freshness. Invalid citations are dropped and counted in `diagnostics.invalid_citations_dropped`.
+7. **EvidencePack-compatible output**: `pack` field in result is a full EvidencePack with trace_id, budget_used. `evidence` field preserved for direct access.
+8. **Disabled channels tracked**: if a channel fails or is not applicable, it's recorded in disabled_channels.
+
+### Oracle review fixes
+
+- Output now includes `pack` (EvidencePack-compatible) and `trace_id`.
+- ActionRecord per turn/channel for replay. Trace file written to `.openlocus/traces/fast-context-<trace_id>.json`.
+- `--budget` is now token budget (chars/4), not evidence count. `--max-evidence` is count cap. `tokens_estimated` is meaningful >0 when evidence exists.
+- Unknown channels rejected with success=false/error JSON.
+- Final validation drops invalid citations, counted in `diagnostics.invalid_citations_dropped`.
+- Graph turn benefits are fixture-observed only, not a general quality claim.
+
+### R6 Level0 results (after oracle review)
+
+| Check | Result |
+|---|---|
+| Fast-context succeeds | ✅ |
+| EvidencePack-compatible output | ✅ pack with trace_id |
+| trace_id non-empty and matching | ✅ |
+| Actions replayable | ✅ 4 actions with channel/query |
+| Unknown channel blocked | ✅ error with valid channels list |
+| Token budget respected | ✅ budget=50 → 3 evidence, 38 tokens |
+| tokens_estimated meaningful | ✅ >0 when evidence exists |
+| Citation validation (all evidence) | ✅ 100% valid |
+| remote_calls = 0 | ✅ |
+| Turns ≤ 4 | ✅ exactly 4 |
+| Diagnostics present | ✅ invalid_citations_dropped=0 |
+| No raw derived/graph edges in output | ✅ |
+
+### Key findings
+
+1. The 4-turn deterministic loop is a simple orchestration scaffold. It runs each channel in sequence and fuses results at the end.
+2. Symbol search (Turn 2) is skipped when the query lacks identifier-like tokens, avoiding wasted computation and noise.
+3. Token budget (chars/4) is a reasonable approximation. Budget=50 tokens trimmed from 20 to 3 evidence in testing.
+4. All evidence is citation-valid by construction: regex/bm25/symbol search produces VerifiedCurrent evidence; graph evidence goes through StoreHit materialization. Final validation catches any that slip through.
+5. The loop is deterministic: same query + same repo always produces same results.
+6. Confidence is derived from the top evidence's RRF score. Low confidence (<0.1) triggers a missing_question.
+7. ActionRecord enables replay/debugging of each step in the loop.
+
+### Caveats
+
+- This is a Level0 orchestration scaffold only, not a learned agent. No adaptive re-querying, no feedback loops, no LLM planning.
+- Turn ordering is fixed (lexical → symbol → graph → fusion). A smarter planner could reorder or skip turns.
+- Token estimation is chars/4, not a real tokenizer. Actual token counts may differ by 20-50%.
+- Graph is rebuilt every fast-context invocation (not persisted).
+- The "missing_questions" are rule-generated, not LLM-generated.
+- No channel-specific error recovery beyond marking disabled_channels.
+- Graph turn adds contextual evidence in fixtures; no general quality claim about graph benefit.
+
+---
+
+## 2026-06-11 — R7 Persistent Local Tantivy BM25 Index + Warm SLO Benchmark
+
+### Objective
+
+Add persistent Tantivy BM25 index with manifest tracking, CLI commands, warm SLO benchmark, and eval safety smoke. Do not change EvidenceCore contract. Do not connect TDB/LLM/dense/daemon. Persistent index requires explicit flag/command; temp BM25 path remains default.
+
+### Hypothesis
+
+A persistent Tantivy BM25 index with per-file content_sha tracking in a manifest will enable warm-query SLO measurement and will correctly skip stale/deleted hits without producing invalid evidence. The manifest enables fast staleness detection without re-reading all indexed content.
+
+### Implementation notes
+
+- **openlocus-index crate** (`crates/openlocus-index`): New workspace crate with manifest module and persistent index module.
+- **Manifest** (`manifest.rs`): Schema version `r7-bm25-v1`, stored at `.openlocus/index/manifest.json`. Contains file_count, chunk_count, policy_hash (blake3 of canonical TOML serialization), and per-file entries (path, content_sha, size_bytes, language, status=indexed|skipped, skipped_reason). Manifest load/save/exists.
+- **Persistent index** (`persistent.rs`): Tantivy index at `.openlocus/index/tantivy/`.
+  - `build_index(repo_root, records, policy)`: Full rebuild, writes Tantivy index + manifest. Removes existing index before rebuild. Uses same chunking logic as temp BM25 (max 30 lines per chunk, same schema fields). **Filters unsafe FileRecord paths via validate_path before indexing** (path_unsafe records are skipped with reason).
+  - `status_index(repo_root, policy)`: Returns exists, schema_version, file_count, chunk_count, policy_hash_matches, requires_rebuild, stale_files_fast (quick sha comparison of all indexed files).
+  - `validate_index(repo_root, policy)`: Full validation of manifest entries against filesystem. Returns valid, stale_files, deleted_files, policy_hash_matches, path_unsafe_files. **Policy hash mismatch → valid=false.**
+  - `purge_index(repo_root)`: Safe deletion of R7 artifacts only (manifest + tantivy dir). Canonicalizes paths and refuses to delete if index_dir escapes repo root.
+  - `search_persistent_bm25(repo_root, query, max_results, policy)`: **Manifest/policy gate**: requires `.openlocus/index/manifest.json`, checks manifest policy_hash matches current Policy, and checks schema version; refuses search (bail) if missing/mismatched. **validate_path** on every Tantivy hit path before reading file. **Empty index_content_sha** → skip (cannot bypass stale check). **Strict chunk range validation**: 1 ≤ start ≤ end ≤ total_lines; invalid range → skip, no clamping. Opens existing Tantivy index, searches, then re-reads current file for every hit. Computes content_sha from current bytes, compares to index-time sha (stale → skip). Performs line-level query token scoring. Returns Evidence + SearchStats (query_ms, materialize_ms, stale_hits_skipped, invalid_hits_skipped).
+  - `PersistentBm25Index::open(repo_root, policy)`: Requires manifest, opens the Tantivy Index/searcher once, validates policy hash + schema version. Returns a reusable handle with a `search()` method that does not reopen the Index per query. Used by bench warm to open once and loop queries.
+- **CLI**:
+  - `openlocus index build --json`: Build persistent index from scanned files.
+  - `openlocus index status --json`: Quick status check.
+  - `openlocus index validate --json`: Full validation against filesystem.
+  - `openlocus index purge --json`: Safe deletion of R7 artifacts.
+  - `openlocus search bm25 <query> --index temp|persistent --json`: Default is temp (existing per-query behavior). `--index persistent` uses pre-built index. **Policy gate enforced**: if manifest policy hash ≠ current policy, search returns an error.
+  - `openlocus bench warm --dataset fixtures/r2.jsonl --iterations 3 --json`: Opens persistent index once via PersistentBm25Index handle, loops queries using the same reader/searcher. Reports index_build_ms (if built), index_open_ms (open cost only), queries, iterations, warm_query_p50_ms, warm_query_p95_ms, warm_query_max_ms, invalid_citations (real citation validation: hash/range/excerpt/freshness), stale_hits_skipped, notes.
+- **Eval**: `eval/persistent_index_smoke.py` with 32 safety checks covering build/status/validate/search/stale_mutation/deleted_file/policy_excluded/policy_change_detection/manifest_missing_refusal/bench_warm/purge.
+- **Safety gates (oracle review)**:
+  1. **Manifest + policy gate**: search_persistent_bm25 and PersistentBm25Index::open require the manifest, check manifest policy_hash against current Policy, and refuse search if missing/mismatched.
+  2. **Path validation**: validate_path on every Tantivy hit path; build_index filters unsafe FileRecord paths.
+  3. **Empty content_sha**: skipped (cannot verify stale check).
+  4. **Strict range**: 1 ≤ start ≤ end ≤ total_lines; no clamping.
+  5. **Warm benchmark honesty**: PersistentBm25Index opens the Index/searcher once and reuses the same handle for all queries; no per-query Index::open; index_open_ms measures open cost only; index_build_ms reported separately if build was needed; invalid_citations uses real citation validation (hash/range/excerpt/freshness).
+
+### R7 Level0 results
+
+| Check | Result |
+|---|---|
+| Build succeeds and writes manifest | ✅ |
+| Build filters unsafe paths via validate_path | ✅ |
+| Status returns exists=true, schema matches, no rebuild needed | ✅ |
+| Validate returns valid=true on fresh index | ✅ |
+| Search persistent returns VerifiedCurrent evidence | ✅ |
+| Search stale_hits_skipped=0, invalid_hits_skipped=0 on fresh index | ✅ |
+| Policy gate: search refuses with policy hash mismatch | ✅ |
+| Policy gate: validate detects policy hash mismatch | ✅ |
+| Empty content_sha → skip (cannot bypass stale check) | ✅ |
+| Strict range validation: 1 ≤ start ≤ end ≤ total_lines, no clamping | ✅ |
+| validate_path on every Tantivy hit path before reading file | ✅ |
+| Stale mutation: modified file → no VerifiedCurrent evidence for stale hit | ✅ |
+| Stale mutation: stale_hits_skipped > 0 or zero results | ✅ |
+| Validate detects stale files after mutation | ✅ |
+| Deleted file: search produces no evidence for deleted file | ✅ |
+| Policy excluded files (.env, .pem) absent from persistent output | ✅ |
+| Policy change after build: search refuses | ✅ |
+| Policy change after build: validate detects mismatch | ✅ |
+| Manifest missing: search refuses instead of trusting Tantivy dir alone | ✅ |
+| Bench warm succeeds with p50/p95/max latency | ✅ |
+| Bench warm invalid_citations=0 (real citation validation) | ✅ |
+| Purge removes manifest and tantivy dir | ✅ |
+| Temp BM25 still works as default | ✅ |
+
+### Warm SLO benchmark results (on current codebase)
+
+```json
+{
+  "index_build_ms": null,
+  "index_open_ms": 1,
+  "queries": 28,
+  "iterations": 3,
+  "warm_query_p50_ms": 1,
+  "warm_query_p95_ms": 2,
+  "warm_query_max_ms": 2,
+  "invalid_citations": 0,
+  "stale_hits_skipped": 0
+}
+```
+
+Note: These are implementation notes and initial SLO measurements on a small self-referential fixture. They are not a general performance claim. The `index_open_ms` measures the cost of opening an already-built Tantivy index and validating the manifest policy/schema gates — this is the actual warm-start cost. The `index_build_ms` is reported separately if the index needed to be built; it is null here because the index already existed. The warm_query_p50_ms reflects search-only cost after the index handle is opened once. The `invalid_citations` count uses real citation validation (hash/range/excerpt/freshness checks), not just range checks.
+
+### Key findings
+
+1. **Manifest-based staleness detection works**: After building an index, modifying a file, and running `search persistent`, the stale hit is correctly skipped (stale_hits_skipped > 0). No stale VerifiedCurrent evidence is emitted.
+2. **Deleted file safety**: After deleting a file, searching the persistent index produces no evidence for the deleted file. The read failure is counted as invalid_hits_skipped.
+3. **Policy exclusion works**: Files matching policy exclude patterns (.env, *.pem) are not scanned and not indexed, so they never appear in persistent search output.
+4. **Validate detects staleness**: After modifying a file, `index validate` correctly reports the file as stale and marks the index as invalid.
+5. **Warm query latency is fast on the current fixture**: On the current small self-referential workspace snapshot, warm queries take 1-2ms per query after index is opened (1ms open cost). The PersistentBm25Index handle opens once and reuses the same Index/searcher for all queries.
+6. **Safety is preserved**: Every persistent search hit is re-verified against the current filesystem. The Tantivy stored body is never used as the final excerpt; the excerpt is always built from the current file content.
+7. **Manifest and policy gates work**: Changing the policy after building the index causes search to refuse (error) and validate to report policy_hash_matches=false. Deleting the manifest also causes persistent search to refuse instead of trusting the Tantivy directory alone. This prevents querying unverifiable or stale-policy indexes.
+8. **Strict validation prevents bypass**: Empty content_sha hits are skipped (cannot verify stale check). Chunk ranges are strictly validated (1 ≤ start ≤ end ≤ total_lines) with no clamping — invalid ranges are skipped.
+
+### Caveats carried forward
+
+- This is a Level0 persistent index implementation. Incremental update added in R10; the index still becomes stale when files change until `index update --dirty` is run.
+- The manifest stores per-file content_sha at build time; it does not track per-chunk sha. If a file changes, all chunks from that file are considered stale (conservative).
+- Warm SLO numbers are from a small self-referential codebase snapshot. Performance on larger repos may differ significantly.
+- Persistent index does not integrate with RRF or fast-context pipelines yet; it is accessible only via `search bm25 --index persistent`.
+- No daemon/watch mode; index becomes stale when files change and must be manually rebuilt.
+- The index is stored under `.openlocus/index/` which may grow large for big repos. No size limit or rotation is implemented.
+- Tantivy index is not encrypted; content is stored in the Tantivy segment files under `.openlocus/index/tantivy/`.
+- R7 Level0 passed only after oracle review gates (policy hash, validate_path, empty sha, strict range, honest warm benchmark).
+
+## 2026-06-11 — R8 AST-bounded chunking + AST symbol extraction (experimental)
+
+### Objective
+
+Add Tree-sitter-based AST chunking and symbol extraction as an experimental, opt-in alternative to line-window chunking. AST mode changes candidate chunk/symbol boundaries; final Evidence still requires current-filesystem path/range/hash/excerpt/freshness verification. Line-window chunking remains the default.
+
+### Current hypothesis
+
+AST-bounded chunks should improve retrieval precision by aligning chunk boundaries with logical code structures (functions, classes, structs, etc.) rather than arbitrary line windows. However, the quality lift is not yet proven by eval; this is an experimental scaffold.
+
+### Stage gates
+
+- R8 passes when AST build/search/validate/status work correctly, AST symbol search returns tree_sitter-channel Evidence, stale mutation is detected, fallback (unsupported language, parse error) is correct, and R7 persistent smoke still passes.
+- AST mode is opt-in (`--chunk-strategy ast`); line remains default.
+- No quality claim unless eval computes it.
+
+### Implementation notes
+
+- New crate `openlocus-ast` with Tree-sitter 0.25.x + language grammars (Rust, Python, JavaScript, TypeScript).
+- `extract_ast_chunks(path, language, source, max_lines)`: Parses source with Tree-sitter for supported languages, extracts definition nodes (fn/struct/enum/trait/impl/mod/type/macro for Rust; function_definition/class_definition/decorated_definition for Python; function/class/method/lexical/variable/export for JS/TS plus interface/type/enum for TS). Oversized nodes split into line windows. Gaps covered by fallback line windows. No overlapping chunks. Strict 1-based line ranges. Unsupported language or parse error → fallback line windows.
+- `extract_ast_symbols(path, language, source)`: Extracts narrow header/signature spans (max 10 lines, usually signature/header only rather than full bodies) for definitions. Uses Tree-sitter node field "name" for symbol extraction, with special handling for decorated Python definitions. Unsupported/parse error → empty symbols + fallback status; callers use regex fallback.
+- Manifest schema version changed to `r8-bm25-v2`. R7 manifests (`r7-bm25-v1`) still loadable with default chunk_strategy=line_window_v1. Unrecognized schema versions refuse with rebuild instruction.
+- `ChunkStrategy` enum: `LineWindowV1` (default), `AstV1` (experimental). Stored in manifest.
+- `AstManifestStats` in manifest: supported_files, fallback_files, parser_error_files, ast_chunks, fallback_chunks.
+- CLI: `openlocus index build --chunk-strategy line|ast` (default line). `openlocus search symbol <name> --mode regex|ast|auto` (default auto: AST first for supported files, regex fallback).
+- Search/validate/status refuse if manifest chunk_strategy is unrecognized. R7 manifests without chunk_strategy are loaded as line_window_v1 for compatibility; R8-written manifests always include chunk_strategy. No silent search of unverifiable strategy.
+- AST symbol Evidence uses Channel::TreeSitter, narrow span, current-file hash/excerpt/freshness validation. Regex symbol Evidence uses Channel::Regex (unchanged).
+- `eval/ast_chunking_smoke.py`: 40 safety checks covering AST build/status/validate/search, parser-error visibility, stale mutation, narrow AST symbol header, symbol search modes, citation validation, schema mismatch, policy exclusion, default line build compatibility.
+
+### R8 AST chunking safety checks
+
+| Check | Result |
+|---|---|
+| Line build succeeds (default strategy) | ✅ |
+| Line build has chunk_strategy=line | ✅ |
+| Line build has no ast_stats | ✅ |
+| AST build succeeds | ✅ |
+| AST build has chunk_strategy=ast | ✅ |
+| AST build has ast_stats | ✅ |
+| AST stats: supported_files > 0 | ✅ |
+| AST stats: ast_chunks > 0 | ✅ |
+| AST stats: parser_error_files visible | ✅ |
+| AST status: chunk_strategy=ast | ✅ |
+| AST status: has ast_stats | ✅ |
+| AST status: no rebuild needed | ✅ |
+| AST validate: valid | ✅ |
+| AST validate: chunk_strategy=ast | ✅ |
+| AST search persistent: returns evidence | ✅ |
+| AST search: all freshness verified_current | ✅ |
+| Stale mutation: no verified_current evidence for stale file | ✅ |
+| Stale mutation: stale_hits_skipped > 0 | ✅ |
+| Validate detects stale after mutation | ✅ |
+| AST symbol search: returns results | ✅ |
+| AST symbol: uses tree_sitter channel | ✅ |
+| AST symbol: header/signature span, not full body | ✅ |
+| Regex symbol search: returns results | ✅ |
+| Auto symbol search: returns results | ✅ |
+| Policy excluded files absent | ✅ |
+| Citation validation: valid | ✅ |
+| Citation validation: invalid_count=0 | ✅ |
+| Bad schema version: search refuses | ✅ |
+| Line build after AST: succeeds | ✅ |
+| Line build after AST: strategy=line | ✅ |
+
+### Key findings
+
+1. **AST chunking is functional as an experimental scaffold**: Tree-sitter parsing works for Rust, Python, JavaScript, and TypeScript. Chunk boundaries align with logical code structures.
+2. **Fallback is correct**: Unsupported languages fall back to line-window chunking. Parse errors also fall back. No data loss.
+3. **Oversized node splitting works**: Functions exceeding max_lines are split into line windows with kind=fallback_line_window.
+4. **Gap filling ensures complete coverage**: No gaps or overlaps between chunks.
+5. **AST symbol extraction produces narrow, citation-valid Evidence**: Symbols use Channel::TreeSitter, narrow header/signature spans (max 10 lines, usually signature/header only rather than full bodies), and are verified against the current filesystem.
+6. **R7 persistent smoke still passes**: Default line build continues to work. Schema version is backward-compatible (R7 manifests loadable).
+7. **Quality lift is NOT proven**: This is an experimental scaffold. No comparative eval has been run to measure retrieval quality improvement from AST chunking vs line-window chunking.
+
+### Caveats
+
+- AST mode is experimental and opt-in. Line-window chunking remains the default and recommended strategy.
+- Tree-sitter parsers may have edge cases or version-specific behavior. The quality of chunking depends on the grammar quality.
+- AST symbol extraction does not handle all possible symbol patterns (e.g., re-exports, aliased imports, nested definitions). Regex fallback covers many of these.
+- The `auto` mode for symbol search tries AST first for supported files and falls back to regex if no results. This may miss cases where regex finds results that AST does not.
+- No incremental update for AST index in this R8 iteration; R10 adds incremental update for both line and ast strategies.
+- Manifest schema version `r8-bm25-v2` is not compatible with `r7-bm25-v1` for search purposes (older schemas load but may require rebuild for search).
+- AST chunking adds Tree-sitter as a dependency, increasing binary size and compile time.
+
+## 2026-06-11 — R9 AST vs Line Persistent BM25 Quality Bakeoff
+
+### Objective
+
+Evaluate `index build --chunk-strategy line` vs `--chunk-strategy ast` persistent BM25 retrieval quality on the R2 self-referential fixture. Produce a reproducible script and research log. Do not change EvidenceCore, default behaviour, or implement incremental indexing.
+
+### Hypothesis
+
+AST-bounded chunks should improve span-level precision/recall (SpanF0.5@10) by aligning chunk boundaries with logical code structures, but the effect may be small or negative on this small self-referential fixture. File-level recall may not improve because AST chunking changes span boundaries, not file-level ranking.
+
+### R9 bakeoff results (persistent BM25 on fixtures/r2.jsonl, 28 tasks)
+
+| Metric | line | ast | delta |
+|---|---:|---:|---:|
+| FileRecall@1 | 0.393 | 0.536 | +0.143 |
+| FileRecall@5 | 0.821 | 0.750 | −0.071 |
+| FileRecall@10 | 0.821 | 0.821 | 0.000 |
+| MRR | 0.548 | 0.624 | +0.076 |
+| SpanF0.5@10 | 0.039 | 0.064 | +0.025 |
+| token_waste_ratio@10 | 0.961 | 0.940 | −0.022 |
+| wrong_span_rate@10 | 0.776 | 0.689 | −0.087 |
+| zero_overlap_evidence_rate@10 | 0.950 | 0.913 | −0.038 |
+| citation_validity | 1.0 | 1.0 | 0.0 |
+| structural_validity | 1.0 | 1.0 | 0.0 |
+| success_rate | 1.0 | 1.0 | 0.0 |
+| avg_latency_ms | ~10.4 | ~9.1 | noisy/comparable |
+| latency_ratio | — | ~1.0 | noisy |
+
+### Quality gate
+
+| Gate condition | Result |
+|---|---|
+| Both citation_validity == 1.0 | ✅ |
+| Both success_rate == 1.0 | ✅ |
+| AST FileRecall@5 ≥ line | ❌ (0.750 < 0.821) |
+| AST SpanF0.5@10 ≥ line | ✅ (0.064 > 0.039) |
+| AST token_waste not worse | ✅ (0.940 < 0.961) |
+| Latency ratio ≤ 1.25 | ✅ (comparable; latest run ~0.88) |
+| **Overall quality_gate_passed** | **false** (FileRecall@5 regression) |
+
+### Safety checks
+
+| Safety check | Result |
+|---|---|
+| Line build succeeds | ✅ |
+| AST build succeeds | ✅ |
+| Line validate valid | ✅ |
+| AST validate valid | ✅ |
+| Line status strategy=line | ✅ |
+| AST status strategy=ast | ✅ |
+| Evidence nonempty (both) | ✅ |
+| Citation validator invalid_count=0 (both) | ✅ |
+| Search stats counters present/nonnegative (both) | ✅ |
+| Build strategy explicit (both) | ✅ |
+| **All safety checks passed** | **true** |
+
+### Key findings
+
+1. **AST improves SpanF0.5@10 by +0.025** (0.039 → 0.064, ~63% relative in the latest run). AST-bounded chunks align better with logical code structures, producing evidence spans that overlap gold lines more often. This is the strongest positive signal for AST chunking.
+2. **AST improves FileRecall@1 by +0.143** (0.393 → 0.536, +36% relative). The finer-grained AST chunks appear to help top-1 file retrieval, likely because more specific chunks match queries more precisely at the top rank.
+3. **AST regresses FileRecall@5 by −0.071** (0.821 → 0.750 in the latest run). This is the quality gate failure. AST chunking produces more, smaller chunks (e.g., 15 chunks vs 5 for a 5-file repo), which can dilute BM25 scores for some files, causing them to rank outside top-5. This is a real trade-off: finer chunks help precision at k=1 but may hurt recall at higher k because the same file's chunks compete with each other.
+4. **AST reduces token_waste_ratio@10 by −0.022** (0.961 → 0.940 in the latest run). Narrower, more targeted evidence spans waste fewer tokens on irrelevant lines. The improvement is modest on this fixture.
+5. **AST reduces wrong_span_rate@10 by −0.087** (0.776 → 0.689 in the latest run). AST-bounded evidence on gold files is more likely to overlap gold spans, reducing the rate of evidence that hits the right file but the wrong location.
+6. **Latency is comparable/noisy** (latest ratio ~0.88). Both strategies have similar per-query latency in this tiny CLI benchmark; this is not a general performance claim.
+7. **Citation validity and structural validity are perfect for both strategies** (1.0). AST chunking does not compromise evidence safety.
+8. **Quality gate is false** due to FileRecall@5 regression. This is a negative result on the gate but not on safety. The gate correctly captures the trade-off.
+
+### Interpretation
+
+**AST remains experimental/opt-in. Line remains default.**
+
+The R9 bakeoff shows a mixed picture: AST improves span precision (SpanF0.5, token waste, wrong_span_rate) and top-1 recall (FileRecall@1, MRR), but regresses FileRecall@5. On this small self-referential fixture, the trade-off is real but the magnitude is small. The regression at FileRecall@5 likely reflects chunk-score dilution: more granular AST chunks can scatter a file's BM25 signal across many smaller chunks, reducing the chance that any single chunk ranks the file into the top-5.
+
+Whether this trade-off is acceptable depends on the use case: for top-1 precision and span quality, AST is preferable; for broad file discovery at k=5+, line chunking is more conservative. The fixture is too small and self-referential to generalise these findings. A larger, diverse codebase eval would be needed to determine whether AST chunking provides a consistent quality improvement.
+
+### Caveats
+
+- Fixture is R2 small self-referential (28 tasks, ~20 source files). Results are not generalisable.
+- FileRecall@5 regression may be an artifact of chunk granularity on small repos; larger repos may not exhibit the same trade-off.
+- No incremental indexing in this R9 bakeoff; R10 adds incremental update.
+- The bakeoff only tests persistent BM25; temp BM25, RRF, and fast-context are not compared here.
+- token_waste_ratio remains high (~0.94) for both strategies. The bottleneck is query-evidence alignment, not chunking strategy.
+- Python citation validation uses path_range_only mode (no blake3 Python package installed); Rust CLI citation validator confirmed invalid_count=0 for both strategies.
+- AST mode is experimental and opt-in. Line-window chunking remains the default and recommended strategy.
+
+## 2026-06-11 — R10 Incremental Index + Dirty Summary + Synthetic SLO
+
+### Objective
+
+Add persistent index dirty summary, file-level incremental update, context-lite dirty integration, and synthetic SLO benchmark. Do not implement TDB/daemon/watcher. Do not add LLM/dense. EvidenceCore unchanged.
+
+### Current hypothesis
+
+A manifest-vs-filesystem dirty summary enables incremental index updates that avoid full rebuilds for small changes. File-level update with Tantivy delete-by-term + re-add should correctly maintain the index without producing duplicate or stale evidence. Policy/schema/strategy mismatches must refuse update, requiring rebuild instead. Note: the Tantivy commit and manifest file write are not a single transaction; failure between them may leave a safe but inconsistent state requiring rebuild or re-update.
+
+### Implementation notes
+
+- **Dirty summary** (`dirty_index`): Computes manifest-vs-current scan returning `DirtyResult` with:
+  - `clean`: bool (true if no changes and policy/schema match)
+  - `requires_update`: bool (true if added/modified/deleted files, no rebuild needed)
+  - `requires_rebuild`: bool (true if policy/schema/strategy mismatch or no index)
+  - `added_files`, `modified_files`, `deleted_files`: arrays of path strings
+  - `added_count`, `modified_count`, `deleted_count`: u64 counts
+  - `policy_hash_matches`, `schema_matches`: bool flags
+  - `chunk_strategy`: from manifest
+  - Discovers policy-included added files not in manifest; policy-excluded added files do not dirty.
+  - Status must not say clean if validate would fail.
+
+- **File-level update** (`update_index`): CLI: `openlocus index update --dirty --json` and/or `openlocus index update --path <path> --json`.
+  - If index/manifest missing → error (requires rebuild).
+  - If policy hash/schema/strategy mismatch → refuse update, require rebuild.
+  - For `--dirty`: compute added/modified/deleted from dirty summary, then:
+    - Delete old Tantivy docs by path using `Term::from_field_text(path_field, path)`.
+    - For added/modified policy-included files: validate_path, read current file, compute sha, chunk according to manifest chunk_strategy, add docs.
+    - For deleted files: delete docs by path, remove manifest entry.
+    - Commit once after batch.
+    - Write manifest file using tmp+rename (not a single transaction with Tantivy commit; failure between may require rebuild/update).
+  - Added detection uses ALL manifest paths (indexed + skipped), not just indexed. Skipped entries with unchanged sha remain clean; skipped→nonempty is reported as modified (not added).
+  - For `--path`: update only that policy-included path. If file exists add/update; if missing delete from index. Validate path safety.
+  - Returns `UpdateResult` with `added_count`, `modified_count`, `deleted_count`, `commit_ms`, `manifest_written`, `post_status_clean`.
+  - Tantivy deletes are tombstones until merge; documented, not a bug.
+  - Prevents duplicate old+new docs by delete_term(path) before add.
+  - Chunk according to manifest chunk_strategy; does not mix strategies.
+
+- **Context-lite integration**: R10 populates dirty-summary.json with actual dirty index status (clean, requires_update, requires_rebuild, added/modified/deleted counts and files) instead of the R1 empty placeholder. If index doesn't exist, reports requires_rebuild=true.
+
+- **CLI commands**:
+  - `openlocus index dirty --json`: Show dirty summary.
+  - `openlocus index update --dirty --json`: Update all dirty files.
+  - `openlocus index update --path <path> --json`: Update single file.
+
+- **Eval scripts**:
+  - `eval/incremental_index_smoke.py`: 48 safety checks covering build/clean, modify/update/search/clean, add/update/search/clean, delete/update/search/clean, rename simulation, policy-excluded no dirty, policy mismatch refuses update, missing manifest refuses update, skipped empty file clean/promotion, schema/strategy mismatch refuses update, citations invalid_count=0.
+  - `eval/synthetic_slo_bench.py`: Deterministic 1000-file synthetic repo (mix .rs/.py/.ts/.md/.txt), measures build_ms, dirty status latency, persistent_cli_search p95, bench_warm open-once query p95, and one-file update latency (true modification each iteration). Validates no invalid citations. Level0 synthetic only; no broad performance claims.
+
+### R10 incremental index smoke results (48/48 checks passed)
+
+| Check | Result |
+|---|---|
+| Build succeeds, file_count > 0 | ✅ |
+| Dirty clean after build | ✅ |
+| Dirty: no requires_update/rebuild after build | ✅ |
+| Dirty: policy_hash_matches + schema_matches | ✅ |
+| Modify file → dirty detects modified | ✅ |
+| Search before update: no stale VerifiedCurrent | ✅ |
+| Update dirty: modifies file, manifest written | ✅ |
+| Search after update: finds new content | ✅ |
+| Dirty clean after update | ✅ |
+| Add new file → dirty detects added | ✅ |
+| Update dirty: adds file | ✅ |
+| Search finds added file | ✅ |
+| Dirty clean after add update | ✅ |
+| Delete file → dirty detects deleted | ✅ |
+| Update dirty: deletes file | ✅ |
+| Search: no evidence for deleted file | ✅ |
+| Dirty clean after delete update | ✅ |
+| Rename: old gone, new found | ✅ |
+| Policy-excluded added file does not dirty | ✅ |
+| Policy hash mismatch refuses update | ✅ |
+| Missing manifest refuses update | ✅ |
+| Citations: invalid_count=0 | ✅ |
+| Purge after smoke succeeds | ✅ |
+
+### R10 synthetic SLO benchmark results (1000 files, seed=42)
+
+```json
+{
+  "build_ms": 147,
+  "build_file_count": 1000,
+  "build_chunk_count": 1072,
+  "dirty_status_latency_ms": {"p50": 44, "p95": 48, "max": 48},
+  "dirty_clean": true,
+  "persistent_cli_search_latency_ms": {"p50": 13, "p95": 14, "max": 15},
+  "bench_warm": {"index_open_ms": 5, "queries": 10, "iterations": 3, "warm_query_p50_ms": 0, "warm_query_p95_ms": 0, "warm_query_max_ms": 1, "invalid_citations": 0},
+  "total_invalid_citations": 0,
+  "one_file_update_latency_ms": {"p50": 115, "p95": 117, "max": 126},
+  "update_success": true,
+  "update_modified_count_ok": true,
+  "all_safety_checks_passed": true
+}
+```
+
+Note: These are Level0 synthetic-only measurements on a deterministic 1000-file fixture. They are not a general performance claim. Actual performance on real-world repos will vary with file sizes, content diversity, and hardware. `persistent_cli_search_latency_ms` measures CLI search (each call opens index fresh); `bench_warm` reports the Rust CLI's internal open-once query latency over a synthetic dataset. The dirty_status_latency includes a full file rescan which is bounded by the number of indexed files; for very large repos this would need optimization (e.g., filesystem watchers, mtimes). One-file update latency reflects a true modification (different content each iteration), not a no-op.
+
+### Key findings
+
+1. **Incremental update works correctly**: Modified, added, and deleted files are properly detected, updated in the Tantivy index, and the manifest is written using tmp+rename. Post-update status shows clean.
+2. **Dirty summary is accurate**: It correctly identifies added/modified/deleted files, distinguishes requires_update from requires_rebuild, and does not report policy-excluded files as dirty.
+3. **Safety gates are enforced**: Policy hash mismatch and missing manifest refuse update with clear error messages. Schema and strategy mismatches also refuse update.
+4. **Search-after-update correctness**: After updating modified files, persistent search returns only new content (verified_current freshness). After deleting files, no evidence appears. After adding files, new files are discoverable.
+5. **Tantivy delete-by-term works**: Using `Term::from_field_text(path_field, path)` correctly removes all chunks for a given path before re-adding, preventing duplicate old+new docs.
+6. **Manifest file write uses tmp+rename**: This prevents partial manifest writes. However, the Tantivy commit and manifest write are not a single transaction; a crash between them may leave a safe but inconsistent state (Tantivy committed but manifest stale), requiring a rebuild or re-update.
+7. **One-file update latency is reasonable for synthetic small edits**: ~115ms p50 for a true single-file update in a 1000-file repo (dev profile, unoptimized). This includes scan + dirty computation + Tantivy write + manifest write.
+8. **Dirty status latency scales with file count**: ~44ms p50 for 1000 files in dev build. For very large repos, filesystem watchers or mtime-based optimization would be needed.
+9. **Context-lite dirty summary is now written to file**: R10 replaces the R1 empty placeholder by writing actual dirty counts and status information to `.openlocus/context/dirty-summary.json`. The `ContextLitePack.dirty_summary` struct field remains `None` (the file is the authoritative source, not the struct field).
+
+### Caveats
+
+- This is a Level0 incremental index implementation. Not a daemon/watcher; index becomes stale when files change and must be manually updated via `index update --dirty` or `--path`.
+- Tantivy deletes are tombstones until merge. For repos with frequent updates, periodic full rebuild or explicit merge may be needed to reclaim space.
+- Chunk count in manifest after update is approximate (old_count + new_chunks - estimated_deleted_chunks). A full rebuild produces exact counts.
+- Dirty summary re-scans all indexed files to compare content_sha. For very large repos, this is O(n) in indexed file count. A filesystem watcher or mtime cache would be needed for sub-second dirty detection.
+- The update does not handle branch switches or concurrent modifications; a rebuild is recommended after significant changes.
+- AST strategy update uses the same `compute_chunks` helper as build; it respects the manifest's chunk_strategy and does not mix strategies.
+- The Tantivy commit and manifest file write are not a single transaction. If the process crashes between them, the index may be in a safe but inconsistent state (Tantivy committed, manifest stale). A rebuild or re-update resolves this.
+- Skipped entries (empty files, read errors, path_unsafe) are tracked in the manifest; they do not appear as "added" on subsequent dirty scans if sha is unchanged. A skipped→nonempty transition is reported as "modified" and the update promotes it to "indexed".
+- R7/R8/R9 smoke tests still pass after R10 changes.
+- TDB moves to a later research stage (was R10 in original roadmap, now deferred to R11).
+
+---
+
+## 2026-06-11 — R11 TriviumDB/TDB Feature-Gated Level0 Adapter Probe
+
+### Objective
+
+Implement a feature-gated TriviumDB (TDB) adapter behind a `tdb` Cargo feature, proving the StoreBackend / ChunkStore trait hierarchy can be wired to a real TDB instance. This is a Level0 adapter probe for metadata/chunk persistence only — not a retrieval quality claim. If the TDB crate was not compilable or its API was unsuitable, the fallback was a negative feasibility report.
+
+### Current hypothesis
+
+TriviumDB 0.7.0 (from crates.io) can be used as an optional dependency behind a Cargo feature flag to store chunk metadata as JSON payloads in TDB nodes with dim=1 dummy vectors. The adapter should pass the same build discipline as ConservativeChunkStore (validate_path, TOCTOU-safe sha, skip stale/traversal/empty) and honestly report capabilities (metadata+chunks only, no lexical/vector/graph claims). TDB hits must go through StoreHit → materialize_evidence(); they cannot directly become Evidence.
+
+### Implementation notes
+
+- **Cargo feature**: Added `[features] default = []` and `tdb = ["dep:triviumdb"]` to `crates/openlocus-store/Cargo.toml`. Added `triviumdb = { version = "=0.7.0", optional = true }`. Workspace/default build does NOT enable the feature; `cargo test --workspace` does not compile or require TriviumDB.
+- **TdbChunkStore** (`crates/openlocus-store/src/tdb_adapter.rs`): Behind `#[cfg(feature = "tdb")]`.
+  - Opens a `Database<f32>` with `dim=1` and stores chunk metadata as JSON payloads with schema `openlocus_schema=tdb_chunk_v1`.
+  - The vector `[0.0]` is a smoke probe only — this is NOT vector quality. Documentation explicitly states this.
+  - Payload schema: `openlocus_schema`, `path`, `start_line`, `end_line`, `content_sha`, `language`, `kind`.
+  - Build discipline copies ConservativeChunkStore: `validate_path`, read current bytes once, sha from same bytes, skip stale/traversal/empty invalid chunks; line chunks OK.
+  - Uses `db.insert(&[0.0f32], payload)` with auto-assigned NodeIds. In-memory `ChunkRecord` list maintained for conformance.
+  - Capabilities: metadata=true, chunks=true, lexical=false, vector=false, graph=false.
+  - Marker file (`.openlocus_marker`) written alongside the `.tdb` file to identify adapter-owned data.
+  - Purge only deletes the adapter-owned TDB artifact set (`.tdb` plus known sidecars) after verifying the marker. Refuses purge if marker is missing or mismatched.
+  - Ingest only from `scan_repo` filtered records; never walks filesystem itself.
+  - If adapter exposes hits, they must be converted to `StoreHit` and go through `materialize_evidence()`.
+- **Module registration**: `#[cfg(feature = "tdb")] pub mod tdb_adapter;` in `lib.rs`.
+- **Placeholder preserved**: `TdbPlaceholderStore` (always available) unchanged — it still reports `available=false` when the `tdb` feature is not enabled.
+
+### R11 Level0 adapter probe results
+
+| Check | Result |
+|---|---|
+| `cargo test --workspace` (default, no tdb) | ✅ 193 passed |
+| `cargo test -p openlocus-store --features tdb` | ✅ 28 passed (18 existing + 10 new adapter) |
+| `cargo fmt --all -- --check` | ✅ clean |
+| `cargo clippy --workspace --all-targets -- -D warnings` | ✅ clean |
+| `cargo clippy -p openlocus-store --features tdb -- -D warnings` | ✅ clean |
+| TDB adapter health available when open | ✅ |
+| TDB adapter build from records | ✅ chunks, files, valid ranges |
+| TDB adapter capabilities conservative | ✅ metadata+chunks only, no lexical/vector/graph |
+| TDB adapter skips stale records | ✅ test passes |
+| TDB adapter skips empty files (no invalid chunks) | ✅ test passes |
+| TDB adapter skips traversal records | ✅ test passes |
+| TDB adapter purge marker-owned only | ✅ deletes .tdb + known sidecars + marker |
+| TDB adapter purge refuses without marker | ✅ error with marker/refused |
+| TDB adapter materialization conformance | ✅ StoreHit → materialize_evidence → VerifiedCurrent |
+| TDB adapter materialization rejects stale | ✅ StaleHit |
+| TDB adapter materialization rejects empty sha | ✅ error |
+| TDB adapter materialization rejects invalid range | ✅ error |
+| Default build unchanged | ✅ no TDB dependency in default |
+| Placeholder unchanged | ✅ TdbPlaceholderStore preserved |
+| EvidenceCore unchanged | ✅ |
+| No default dependency on triviumdb | ✅ optional only |
+
+### Key findings
+
+1. **TriviumDB 0.7.0 compiles and works**: The crate from crates.io compiles with the workspace's Rust edition (2024) and toolchain. `Database::open(path, dim=1)` creates/opens a database; `db.insert(&[0.0f32], payload)` inserts nodes with JSON payloads; `db.flush()` persists to disk.
+2. **Feature-gated adapter works correctly**: The `tdb` feature flag cleanly gates the adapter. Default builds do not compile or require TriviumDB. The adapter module is only included when the feature is enabled.
+3. **Build discipline is preserved**: The TDB adapter follows the same ConservativeChunkStore discipline — validate_path, TOCTOU-safe sha computation, stale/traversal/empty skipping. This ensures consistent behavior across store backends.
+4. **dim=1 is a smoke probe, not vector quality**: The adapter explicitly does not claim vector search capability. The `[0.0]` vector is used solely to satisfy TDB's API requirement. Capabilities honestly report vector=false.
+5. **Marker-based purge is safe**: The adapter writes a marker file alongside the `.tdb` file. Purge verifies the marker before deletion and refuses to delete paths without a valid marker. This prevents accidental deletion of arbitrary files.
+6. **Materialization conformance is enforced**: TDB chunk records are converted to StoreHit and must go through `materialize_evidence()`. Stale, empty-sha, and invalid-range hits are correctly rejected.
+7. **TDB is NOT a default backend**: The adapter is feature-gated and opt-in. TDB does not replace Tantivy persistent BM25 or the conservative store. The placeholder store continues to report unavailability when the feature is not enabled.
+8. **This is a Level0 adapter probe**: No retrieval quality claim is made. The adapter proves wiring and persistence; it does not provide meaningful lexical, vector, or graph search through TDB.
+
+### Caveats
+
+- This is a Level0 adapter probe only. No retrieval quality comparison against Tantivy BM25 or conservative store.
+- The TDB adapter uses auto-assigned NodeIds (via `db.insert()`). The `insert_with_id` API exists but requires predetermined IDs; this is a possible future enhancement for deterministic chunk IDs.
+- The TDB adapter does not implement `LexicalStore`, `VectorStore`, or `GraphStore`. It only provides `StoreBackend` + `ChunkStore`.
+- TDB file locking prevents multiple processes from opening the same database simultaneously (by design in TriviumDB).
+- Chunk insert and flush failures now fail the Level0 build instead of silently claiming persistence success.
+- No CLI integration for TDB adapter in this R11 iteration. The adapter is only usable programmatically.
+- TDB is not integrated with the RRF retrieval pipeline or fast-context orchestration.
+- The `TdbPlaceholderStore` still exists and reports `available=false` regardless of whether the `tdb` feature is enabled. A future iteration could make the placeholder aware of the feature flag.
+- Warm/persistent query benchmark not yet run against the TDB adapter (not meaningful until search is implemented).
+
+---
+
+## 2026-06-11 — R12 Real-Repo Incremental Robustness Benchmark
+
+### Objective
+
+Add a real-repo sample benchmark using a safe temporary copy of the current OpenLocus repository to test R10 incremental index's real-scenario robustness. Do not change Rust core, default CLI/search/retrieve, and do not introduce watcher/daemon/TDB changes.
+
+### Current hypothesis
+
+R10 proved incremental update works on a synthetic 1000-file repo. A real repo with mixed file types, larger files, and real code patterns should also pass all safety gates (no stale VerifiedCurrent evidence, correct dirty detection, valid citations). Incremental update should be faster than full rebuild for small edits on a real repo.
+
+### Implementation notes
+
+- **New eval script**: `eval/real_repo_incremental_bench.py` with `report_kind=real_repo_incremental_bench`.
+- **Source repo**: defaults to current working directory; copies to temp repo excluding `target`, `.git`, `.openlocus`, `runs`, `node_modules`, `dist`, `__pycache__`, etc. Creates empty `.git/` and `.openlocus/policy.toml` in temp repo.
+- **All workload file mutations only in temp repo**: original source files are never modified. `--out` writes report to caller workspace.
+- **Per-run unique markers**: Each run generates a random 8-hex-char suffix (e.g. `a3f7b2c1`). All markers are concatenated with this suffix (e.g. `r12addalphaa3f7b2c1`). Before baseline build, `assert_markers_absent` scans the temp repo to confirm no marker self-contamination from copied docs/scripts.
+- **All search**: `openlocus search bm25 <query> --index persistent --json`. Search returncode must be 0 for positive gates.
+- **Collected marker-search evidence validation**: `openlocus citations validate <file> --json` with `invalid_count=0` and validator returncode==0.
+- **Positive gates use path+marker conjunction**: `evidence_has_path_and_marker` requires BOTH the target relative path AND the marker in the cited excerpt. Disjunction (path OR marker) is not used for positive assertions.
+- **Empty evidence is not a pass for positive gates**: Where a marker must be found, `len(evidence) > 0` is required.
+- **`sys.exit(1)` on safety failure**: `all_safety_checks_passed` false exits with code 1. Latency/growth gate false does NOT cause exit failure.
+- **Latency comparison uses twin repo copies**: For each iteration, two fresh copies of the source repo are made. Same mutation is applied to both; one gets `update --dirty`, the other gets `build`. This ensures fair comparison of the same final state.
+- **Growth gate renamed to catastrophic guard**: `growth_catastrophic_guard_passed` (not "bounded proof"). Observed 20-cycle growth ratio reported separately. The catastrophic bound (max(3×rebuild, rebuild+64MiB)) is a backstop, not proof of long-term bounded growth.
+- **Branch-like batch checks are specific**: At least one add target path+marker AND one rename-new target path+marker must be found. At least one deleted path and one rename-old path must have no VerifiedCurrent evidence.
+
+### Script CLI
+
+```bash
+python3 eval/real_repo_incremental_bench.py \
+  --openlocus target/debug/openlocus \
+  --source /workspace/OpenLocus/OpenLocus \
+  --out runs/real-repo-incremental-bench.json \
+  --iterations 3 \
+  --growth-cycles 20
+```
+
+Optional `--keep-temp` to preserve temp repo after benchmark.
+
+### Workloads
+
+A. **modify_one**: Append per-run marker to existing file; dirty detects modified; search old marker has no VerifiedCurrent for modified path; update; new marker found at path with marker in evidence (path AND marker); old marker gone; clean + valid + citations invalid_count=0.
+
+B. **add_one**: Add `r12_bench/r12_add_target_{sfx}.rs` with per-run marker; dirty detects added; update; search finds marker at path with marker in evidence; clean + valid + citations invalid_count=0.
+
+C. **delete_one**: Delete `r12_bench/r12_delete_target_{sfx}.rs`; dirty detects deleted; update; search marker no VerifiedCurrent for deleted path; clean + valid + citations invalid_count=0.
+
+D. **rename_one**: Rename `r12_rename_old_{sfx}.rs` → `r12_rename_new_{sfx}.rs` + change marker; dirty detects added+deleted; update; old gone (no VerifiedCurrent for old path); new found at new path with marker (path AND marker); clean + valid + citations invalid_count=0.
+
+E. **policy_exclude**: Add `.env.r12bench{sfx}` with marker; dirty stays clean; no evidence from excluded path (path-aware check).
+
+F. **branch_like_batch**: Batch add 5 + delete 3 + rename 3; old delete/rename markers are first proven indexed; dirty covers categories; update; add target 0 found at path+marker; rename-new target 0 found at path+marker; deleted path 0 no VerifiedCurrent; rename-old path 0 no VerifiedCurrent; clean + valid + citations invalid_count=0.
+
+G. **latency_compare**: Twin repo copies per iteration; same mutation applied; compare `update --dirty` vs `build` for modify_one and batch. Gate: p50 update < p50 rebuild. If false, report only; does not cause exit failure.
+
+H. **growth_cycles**: N cycles of modify same file + update. Each cycle: dirty detects modified, update succeeds, dirty clean, validate valid. Catastrophic guard: `final_after_updates_size <= max(3 * post_full_rebuild_size, post_full_rebuild_size + 64MiB)`. Observed growth ratio reported. This is a catastrophic guard, not proof of long-term bounded growth.
+
+### R12 results (after per-run marker + safety gate fixes)
+
+| Check | Result |
+|---|---|
+| Baseline markers absent pre-build (no self-contamination) | ✅ |
+| Baseline build succeeds, file/chunk count >0 | ✅ |
+| Baseline dirty clean after build | ✅ |
+| Baseline validate valid | ✅ |
+| modify_one: dirty detects modified | ✅ |
+| modify_one: update succeeds | ✅ |
+| modify_one: new marker found at path+marker | ✅ |
+| modify_one: old marker gone (no VerifiedCurrent for path) | ✅ |
+| modify_one: clean + valid after update | ✅ |
+| add_one: dirty detects added | ✅ |
+| add_one: search finds marker at path+marker | ✅ |
+| add_one: clean + valid after update | ✅ |
+| delete_one: dirty detects deleted | ✅ |
+| delete_one: no VerifiedCurrent for deleted path | ✅ |
+| delete_one: clean + valid after update | ✅ |
+| rename_one: dirty detects added + deleted | ✅ |
+| rename_one: old gone, new found at path+marker | ✅ |
+| rename_one: clean + valid after update | ✅ |
+| policy_exclude: dirty stays clean | ✅ |
+| policy_exclude: no evidence from excluded path | ✅ |
+| branch_batch: add target 0 found at path+marker | ✅ |
+| branch_batch: rename-new target 0 found at path+marker | ✅ |
+| branch_batch: deleted/rename-old markers indexed before removal | ✅ |
+| branch_batch: deleted path 0 no VerifiedCurrent | ✅ |
+| branch_batch: rename-old path 0 no VerifiedCurrent | ✅ |
+| branch_batch: clean + valid after update | ✅ |
+| growth_cycles: all cycles dirty→update→clean→valid | ✅ |
+| growth_cycles: catastrophic guard passed | ✅ |
+| total_invalid_citations | 0 |
+| stale_verified_current_violations | [] |
+
+### Latency compare (twin repo copies, same mutation)
+
+| Scenario | Update p50 (ms) | Rebuild p50 (ms) | Update faster? |
+|---|---|---|---|
+| modify_one | 96.2 | 165.8 | ✅ yes |
+| branch_like_batch | 99.7 | 169.4 | ✅ yes |
+
+Incremental update is ~42% faster than full rebuild for both single-file and batch modifications on this real-repo sample (75 files, 804 chunks, dev profile). Latency gate is report-only; false does not cause exit failure.
+
+### Growth result
+
+| Metric | Value |
+|---|---|
+| Size after 20 update cycles | ~905 KB |
+| Size after full rebuild | ~823 KB |
+| Observed growth ratio | 1.11 |
+| Catastrophic guard (≤ max(3×rebuild, rebuild+64MiB)) | ✅ passed |
+
+20 cycles observed growth ~1.11×; catastrophic guard passed. Does not prove long-term bounded growth.
+
+### Safety checks
+
+149/149 hard safety checks passed. Script exits with code 1 if any hard safety check fails; latency/growth gate failures are report-only.
+
+### Key findings
+
+1. **Real-repo incremental update passes this Level0 sample**: On a temp copy of the OpenLocus repository (mixed Rust, Python, TypeScript, Markdown files), incremental update correctly handles sampled modify, add, delete, rename, policy-excluded, and batch workloads. No stale VerifiedCurrent evidence is produced.
+2. **Citation validity is maintained for collected marker-search evidence**: Evidence validated through `openlocus citations validate` has `invalid_count=0` and validator returncode==0.
+3. **Per-run unique markers avoid self-contamination**: Fixed markers appeared in copied docs/scripts, causing false positives. Per-run suffixes (8-hex chars) and pre-build assert prevent this.
+4. **Positive gates use path+marker conjunction**: Previous `evidence_has_path_or_marker` (disjunction) could pass from unrelated evidence. New `evidence_has_path_and_marker` requires both path and marker in the cited excerpt of the same evidence item.
+5. **Empty evidence is not a pass for positive gates**: Previous code could pass add/rename checks with empty evidence returning `invalid_citations=0`. Now requires `len(evidence) > 0`.
+6. **Latency comparison uses twin repo copies**: Previous code compared update on a dirty repo vs rebuild on a clean repo (unfair). Now both start from the same state with the same mutation applied.
+7. **Growth gate is honestly named as catastrophic guard**: 20 cycles observed growth ~1.11×; catastrophic guard passed. This does not prove long-term bounded growth.
+8. **This is one real-repo sample (OpenLocus temp copy)**: Not a general performance claim. Different repos, hardware, and workloads may produce different results.
+
+### Caveats
+
+- This is a Level0 real-repo sample benchmark using one repo (OpenLocus temp copy). Not a general performance or robustness claim.
+- Per-run unique markers avoid self-contamination but are not representative of real search queries.
+- The temp repo excludes `.git` history; real repos with large git histories may behave differently in scan time.
+- Tantivy deletes are tombstones until merge; index size after many updates may be larger than a fresh rebuild. The catastrophic guard bounds extreme growth but does not prove bounded growth.
+- The latency comparison uses CLI wall-clock time which includes process startup overhead. Internal Rust timing would be more precise.
+- No concurrent access testing; single-process only.
+- No crash/recovery testing between Tantivy commit and manifest write.
+- Branch-like batch does not actually switch git branches; it simulates the file-level effects of a branch switch.
+- Collected marker-search evidence is validated; this is not "all evidence in repo" — only evidence from workload-specific marker searches.
+
+## 2026-06-11 — R13 Remote Embedding / LLM-Derived Indexing Bakeoff Safety Scaffold
+
+### Objective
+
+Add a safe scaffold for future dense/semantic embedding and LLM-derived indexing experiments, without connecting to any real remote service, reading API keys, downloading models, or adding reqwest/async-openai/fastembed/ANN DB dependencies.
+
+### Design constraints
+
+- No real remote calls, no API key reads, no model downloads.
+- Default build is fully local; EvidenceCore is unchanged.
+- Dense/mock/derived hints produce candidate StoreHits only; final Evidence must go through `openlocus_store::materialize_evidence(repo_root, hit, Channel::Dense)`.
+- Audit never stores raw snippet text or vectors; vector store stores path/range/source_content_sha/language/vector but not raw text/code snippet.
+- CLI/trace/audit never store raw query text; use query_sha + query_len instead.
+- Quality claims limited to mock integration; no real semantic gain claimed.
+
+### Implementation
+
+1. **New crate `openlocus-provider`** with modules:
+   - `model.rs`: `ProviderLocality`, `ProviderMetadata`, `EmbedInput`, `EmbeddingRecord`, `EmbeddingAuditEvent`, `ProviderDecision`.
+   - `provider.rs`: `EmbeddingProvider` trait, `DisabledEmbeddingProvider`, `create_provider()`.
+   - `mock.rs`: `MockEmbeddingProvider` — deterministic vector from blake3(provider_id/model_id/text_sha/index), normalized, dimensions=32, no network.
+   - `gate.rs`: `gate_embed_input()` — Remote requires policy.remote.allow + allow_embedding + provider in allowed list + data_level gate. Mock/Local: data_level ≤ 1 AND data_level ≤ metadata.max_data_level. Secret gate blocks SECRET/TOKEN/PASSWORD/API_KEY/PRIVATE_KEY/sk_/ghp_/AKIA and high-entropy strings.
+   - `cache.rs`: Domain-separated stable cache key with `emb1:` prefix + blake3 hex. Cache key builder/stability only; no cache-hit behavior yet.
+   - `audit.rs`: JSONL audit writer at `.openlocus/audit/embeddings.jsonl`; no raw text/vector in audit events. Audit events use accurate names: `allow`, `block`, `query_embed`, `provider_unavailable` (not `cache_hit` unless real cache).
+   - `dense_store.rs`: `JsonlEmbeddingStore` at `.openlocus/embeddings/vectors.jsonl`. Build from FileRecords with metadata-only views (`path:<path> language:<language> basename:<stem> words:<path tokens>`, no code snippet). Build uses real line counts: end_line=min(total_lines, 8), so short files get valid ranges. Cosine similarity search. Store `EmbeddingRecord` (no raw text; vector present for search).
+
+2. **CLI additions**:
+   - `openlocus provider status --json`: reports remote_default=false, outbound_default=false, supported providers [mock, disabled].
+   - `openlocus provider audit --limit N --json`: reads audit JSONL, outputs events (no raw text).
+   - `openlocus dense build --provider mock --experimental --json`: requires --experimental; builds vector store from metadata-only views.
+   - `openlocus dense search <query> --provider mock --limit N --json`: embeds query, searches by cosine, materializes StoreHits via `materialize_evidence(Channel::Dense)`. CLI JSON uses query_sha/query_len instead of raw query text.
+   - `openlocus dense purge --json`: removes vector store.
+
+3. **Eval script** `eval/provider_dense_safety.py`: 45 safety checks covering remote/outbound defaults, experimental gate, vector/audit no raw text, secret blocking, stale hit rejection, disabled/unknown provider graceful degradation, missing store graceful error, cache key stability, short file range correctness, query SHA not raw query, audit event naming, trace no raw query/secret.
+
+### Verification
+
+```text
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+python3 eval/provider_dense_safety.py --openlocus target/debug/openlocus --out runs/provider-dense-safety.json
+```
+
+### Safety checks
+
+45/45 safety checks passed:
+- remote_default=false, outbound_default=false
+- build without --experimental fails
+- build with --experimental --provider mock succeeds with remote_calls=0
+- vectors.jsonl exists, contains no raw code marker, no "text" field, valid ranges
+- audit JSONL exists, has events, no raw marker, no "vector" field, no "text" field, no "cache_hit" event
+- dense search returns citation-valid Evidence (Channel::Dense, freshness=verified_current)
+- stale hit after file modification is skipped (materialize rejects stale SHA)
+- disabled/unknown provider degrades gracefully (no panic, success=false), audit event written
+- secret-like query text (sk_ prefix) is blocked; no raw secret in CLI JSON/audit/traces
+- CLI JSON uses query_sha/query_len, not raw query field
+- short file range is correct (end_line=min(total_lines, 8))
+- missing store returns graceful error
+- audit_raw_text_leak=false, remote_calls=0, citation_invalid_count=0
+
+### Key findings
+
+1. **Safe scaffold works**: All gates are functional. Remote is denied by default. Experimental opt-in is required. Secret scanning blocks token-like inputs. Audit contains no raw text or vectors. Vector store contains embedding vectors but no raw text/code snippet.
+2. **Mock provider is deterministic and normalized**: Same inputs always produce the same unit-length vector. Different inputs produce different vectors. No network dependency.
+3. **Materialization gate is essential**: Dense search produces StoreHits which must be materialized through `materialize_evidence()`. Stale hits (content_sha mismatch) are correctly rejected.
+4. **Metadata-only views prevent code leakage**: The dense store builds views from path/language/basename/path-tokens only. No code snippets are included at data_level=0. The vector store and audit log do not contain raw code text.
+5. **Short file ranges are now valid**: end_line=min(total_lines, 8) ensures materialize_evidence can verify ranges. Short files produce valid evidence.
+6. **Query text never leaks**: CLI JSON uses query_sha/query_len. Trace events use query_sha. Audit never stores raw query text. Blocked secret queries do not appear in traces.
+7. **Audit events use accurate names**: `query_embed` for query embedding, `allow`/`block`/`provider_unavailable` for decisions. Not `cache_hit` (no real cache behavior in R13).
+8. **This is a safety scaffold only. No real semantic quality claim.** Mock vectors are deterministic blake3-based and do not capture semantic similarity. Dense mock search is integration/safety only.
+
+### Caveats
+
+- Mock provider vectors are deterministic but not semantically meaningful. Quality claims are limited to mock integration.
+- The dense store builds one record per file (metadata view only). Future work could add chunk-level views with real embeddings.
+- No real remote provider is implemented. The gate infrastructure is in place for future R14+ integration.
+- Cache is not yet used for deduplication (build always recomputes). Cache key stability is verified by unit tests. Cache key builder/stability only; no cache-hit behavior yet.
+- No ANN index; cosine search is linear scan over all records. Not suitable for large corpus.
+- Dense mock search is integration/safety only; not a real semantic retrieval claim.
+
+## 2026-06-12 — R14 Scaled Evidence Benchmark Foundation
+
+### Objective
+
+Establish a scaled benchmark program for evaluating OpenLocus retrieval quality across repository groups and task types, structured as S/M/L/X tiers with increasing scale and label quality requirements. This is a benchmark *foundation*, not a quality conclusion. The current S/M data uses logical repo groups from one OpenLocus workspace snapshot; independent external repositories are a follow-up expansion. The goal is to have a reproducible, anti-leakage evaluation pipeline that can run locally and produce meaningful file-level and span-level metrics with hard negatives as a first-class indicator.
+
+### Design constraints
+
+- Do not change EvidenceCore, Cargo license, or introduce remote dependencies.
+- Public tasks contain no gold paths/lines; labels are private and separate.
+- Hard negatives are first-class data, not optional.
+- Citation validity/freshness/lock validation is a fail-closed safety gate (must be 1.0).
+- No dense/LLM/graph quality claims.
+- R14-S must be locally runnable; M/L/X define target structures for future expansion.
+- Runner/scorer must be strictly isolated: runner never loads labels, scorer never calls CLI.
+- Isolated benchmark root per repo: temp root with only declared source paths.
+- Repo lock content manifest must be recomputed and verified (normalized SHA-256 per file sorted).
+- Benchmark runner writes isolated `.openlocus/policy.toml` from repo lock glob-style excludes (fixtures/**, eval/**, etc).
+- Canary tokens in labels must never appear in indexed/retrieved content; runtime canary retrieval runs inside isolated roots.
+- Predictions with forbidden path prefixes/components are CRITICAL failures.
+- Unknown `repo_id` is CRITICAL; runner refuses to fall back to the full workspace.
+
+### Implementation notes
+
+- **fixtures/r14/ directory**: README, taxonomy/annotation guide, dataset_manifest.json, repos.lock.jsonl, tasks/{sanity,medium,large,stress}.jsonl, labels/{sanity,medium,large,stress}.jsonl, labels/_canary.json, expected_failures/known_issues.md.
+- **Data schema**: Public tasks have `task_id`, `query`, `task_type`, `method_hint`, `repo_id` — no gold. Labels have `task_id`, `gold_spans`, `hard_negatives`, `label_quality`. Repo lock has `repo_id`, `source`, `commit`, `content_manifest_sha`, `content_manifest_algorithm`, `policy/excludes` (glob-style), `language/tier` metadata.
+- **R14-S data**: 4 logical repo groups from one OpenLocus workspace snapshot, 48 tasks, 48 labels, 47 hard negatives. Label quality: 8 human_reviewed, 37 mined_high_confidence, 3 mined. Populated=True.
+- **R14-M data**: same 4 logical repo groups as S, 36 tasks, 36 labels, 31 hard negatives. Partial=True. Full M requires 8+ independent repo groups/repositories.
+- **R14-L data**: 10 placeholder tasks with weak labels. Populated=False. Requires additional repos beyond current workspace.
+- **R14-X data**: Not populated. Requires external repo sources. Running --tier X will fail.
+- **eval/r14_generate_dataset.py**: Generates/refreshes R14 data with normalized content manifest SHA (sha256 per file sorted). Glob-style policy excludes. Avoids label leakage.
+- **eval/r14_benchmark.py**: Strictly separated RUN phase (public tasks only, no labels) and SCORE phase (labels only, no CLI). Isolated temp roots per repo group with `.openlocus/policy.toml` written from repo lock. Unknown repo_id fail-closed. Failed-closed Rust citation validation (must be 1.0). Forbidden path prefix/component detection. Negative task metrics (negative_nonempty_rate@10). Span-overlap hard negative hit rate. Repo lock content manifest re-verification.
+- **eval/r14_leakage_check.py**: static checks: task gold leakage, query-gold overlap, labels not in indexed root (path-component matching), glob-style policy excludes, label file isolation, canary placement, repo lock manifest verification, predictions forbidden path scan. Runtime canary retrieval is enforced by `r14_benchmark.py`.
+- **eval/r14_smoke.py**: HARD FAIL smoke test. No best-effort. All checks must pass. Includes runtime canary retrieval, citation validity=1.0 with hash checked by Rust validator, forbidden path checks, isolated runner/scorer verification.
+
+### R14-S foundation data
+
+| Metric | Value |
+|---|---|
+| Repo groups | 4 logical groups from one OpenLocus workspace snapshot (openlocus-core, openlocus-retrieval, openlocus-store, openlocus-cli) |
+| Tasks (sanity) | 48 |
+| Labels (sanity) | 48 |
+| Hard negatives (sanity) | 47 |
+| Label quality | 8 human_reviewed, 37 mined_high_confidence, 3 mined |
+| Task types | exact_symbol, implementation_search, config_policy, negative, stress, cross_repo |
+| Anti-leakage | Public tasks have no gold; labels are private; runtime canary retrieval; isolated roots with repo-lock policy excludes |
+| Citation gate | Fail-closed (validity must be 1.0) |
+| Run time estimate | <5 min local |
+
+### Current tier status
+
+| Tier | Repo groups | Tasks | Labels | Hard Negatives | Populated | Evaluable |
+|---|---|---|---|---|---|---|
+| R14-S | 4 | 48 | 48 | 47 | True | True |
+| R14-M | 4 | 36 | 36 | 31 | True (partial) | True |
+| R14-L | 0 | 10 (placeholder) | 10 (weak) | 0 | False | False |
+| R14-X | 0 | 0 | 0 | 0 | False | False |
+
+### Key findings
+
+1. **Benchmark pipeline works end-to-end with fail-closed safety**: Runner/scorer isolation, isolated temp roots, citation validity must be 1.0, forbidden path detection, unknown repo_id refusal, repo-lock policy files, and runtime canary retrieval are enforced.
+2. **Anti-leakage design is strictly enforced**: Public tasks contain no gold information. Labels are in a separate directory with canary tokens. The leakage check catches gold path/line exposure, query-gold overlap, and forbidden prediction paths. 8 checks, 0 critical issues.
+3. **Hard negatives are first-class with span-overlap metrics**: 47 hard negatives in R14-S. `hard_negative_hit_rate@10` requires line overlap unless a hard negative is explicitly file-level. `negative_nonempty_rate@10` measures false positive rate on negative tasks.
+4. **Citation validity is fail-closed**: validity must be 1.0. Every citation must be hash+range+path valid. No path-only fallback.
+5. **Repo lock content manifest is verified**: Normalized SHA-256 per file sorted. Mismatch = CRITICAL fail closed. Generator and benchmark use the same algorithm.
+6. **Mined labels are usable but not human-verified**: `mined_high_confidence` labels are structurally sound but may have imprecise line ranges. Explicit `label_quality` field.
+7. **R14-S is a safety foundation, not a quality conclusion**: Validates the pipeline is fail-closed. Does not support quality claims.
+8. **R14-L/X are not populated**: Running --tier L or --tier X will fail with clear message. Structure is defined but data requires additional independent repos.
+9. **Previous R14 graph precision is a future feature track**: Not the current R14 definition.
+
+### Caveats
+
+- This is a benchmark *safety foundation*. R14-S validates the pipeline is fail-closed; it does not support quality conclusions about retrieval methods.
+- Mined labels are not human-verified. `mined_high_confidence` labels have structurally-sound spans but may be imprecise at line-level.
+- R14-M is partial (4 logical repo groups; target is 8+ independent repo groups/repositories). R14-L/X are not populated.
+- The current repo-group set is self-referential (OpenLocus codebase). External repos are required for generalizability.
+- Stress and negative tasks have limited gold spans. Stress tasks have weak labels; negative tasks have empty gold.
+- Hard negative hit rate depends on method quality; a high rate indicates the method is returning plausible but incorrect results.
+- Citation validity as a safety gate catches structural issues but does not measure retrieval relevance.
+- Runtime canary retrieval currently covers isolated R14-S benchmark roots; broader artifact-canary stress across future external repositories remains follow-up work.
+- The benchmark does not claim dense/LLM/graph quality improvements. Those are future feature tracks.
+
+## 2026-06-12 — R15 External Multi-Repo Benchmark Expansion
+
+### Objective
+
+Extend the R14 benchmark foundation with real local multi-repo benchmark data from independent external git repositories under `/workspace`. R15 adds 9 independent external repos covering Rust, Python, Go, TypeScript, and JavaScript, generating Medium/Large/Stress tier data with multi-language symbol extraction. This is a mined benchmark expansion, not a final quality conclusion. External local repos are workspace snapshots and are not modified.
+
+### Design constraints
+
+- Do not break R14 scripts or data; R15 is an independent checkpoint
+- Do not modify external repos; only read and allowlist-copy manifest/source files into isolated roots
+- Do not index /workspace root directly; must use repo lock declared source roots
+- Runner/scorer isolation: runner never loads labels, scorer never calls CLI
+- Isolated roots: allowlist-copy only declared source files under repo_id-specific folders; symlinks/artifacts are not copied
+- Unknown repo_id fail-closed; no fallback to full workspace
+- Citation validator hash-checks evidence in isolated root
+- Path matching: scoring accepts exact paths or a single `repo_id/` prefix only, not arbitrary suffixes
+- Repo lock uses `local_absolute_path` source with absolute paths; isolated root preserves relative paths
+- Multi-language manifest: normalized SHA-256 across .rs .py .ts .tsx .js .jsx .go .mjs
+- Skip directories: node_modules/target/.git/dist/build/.venv/__pycache__/.next/.nuxt/runs/fixtures/eval/docs/.openlocus
+- Public tasks contain no gold path/line/hard_negatives/label_quality
+- Labels include source_repo_kind: external_local
+- Citation validity must be 1.0 (fail-closed)
+- Runtime canary retrieval must return zero hits
+
+### Implementation notes
+
+- **fixtures/r15/ directory**: README.md, dataset_manifest.json, repos.lock.jsonl, tasks/{medium,large,stress}.jsonl, labels/{medium,large,stress}.jsonl, labels/_canary.json, taxonomy/annotation_guide.md, expected_failures/known_issues.md, safety_checks.json.
+- **9 external repos resolved** (all exist and have sufficient source files):
+  - fast-context-mcp (JS/.mjs, 5 files, 2361 lines)
+  - grok2api (Python, 157 files, 29676 lines)
+  - infinite-canvas (Go/TS/TSX, 110 files, 14100 lines)
+  - gemini-web2api (Python, 9 files, 1330 lines)
+  - windsurf2api (JS, 143 files, 36127 lines)
+  - kiro2 (Rust/TS/TSX, 114 files, 33908 lines)
+  - triviumdb (Rust, 117 files, 45947 lines)
+  - smartsearch (Python/JS, 69 files, 22393 lines)
+  - codex2api (Go/TS/TSX, 239 files, 114692 lines)
+- **eval/r15_generate_dataset.py**: Multi-language source scanning with regex-based symbol extraction for Rust/Python/Go/JS/TS. Generates normalized manifest SHA across all source extensions. Creates 8-20 tasks per repo (definition/symbol, implementation_search, config/import, negative, stress). Public tasks have no gold. Labels have gold_spans, hard_negatives, label_quality, source_repo_kind.
+- **eval/r15_benchmark.py**: Extends R14 benchmark for absolute repo source roots and multi-language manifest. Creates isolated roots by allowlist-copying only declared source files under repo_id-specific folders. Unknown repo_id fail-closed. Runtime `.openlocus` traces are removed after every query/citation validation and audited before/after each method. Rust citation validator runs before isolated-root cleanup and must report 1.0 validity. Scoring accepts exact paths or a single `repo_id/` prefix only. Same fail-closed safety gates.
+- **eval/r15_leakage_check.py**: Extended from R14 with static checks including exact 9-repo lock integrity, duplicate repo_id/source path detection, absolute source path verification, multi-language manifest verification, task/label/manifest consistency, hard-negative non-overlap, and source_repo_kind in labels.
+- **eval/r15_smoke.py**: HARD FAIL smoke test. Fixture validation, leakage check, small matrix benchmark (regex, bm25), Rust citation hash gate, canary verification, multi-language coverage check. 112/112 checks passed.
+
+### R15-M baseline results (166 tasks, 9 repos)
+
+| Metric | regex | bm25 |
+|---|---|---|
+| file_recall@1 | 0.852 | 0.548 |
+| file_recall@5 | 0.956 | 0.719 |
+| file_recall@10 | 0.970 | 0.741 |
+| mrr | 0.889 | 0.623 |
+| span_f0.5@10 | 0.263 | 0.188 |
+| hard_negative_hit_rate@10 | 0.289 | 0.230 |
+| negative_nonempty_rate@10 | 0.000 | 0.645 |
+| success_rate | 1.0 | 1.0 |
+
+Safety: passed. Canary: 36 checked, 0 hits, 0 failures. Citation hash checked.
+
+### R15 data scale
+
+| Tier | Repos | Tasks | Labels | Hard Negatives | Label Quality |
+|------|-------|-------|--------|----------------|---------------|
+| R15-M | 9 | 166 | 166 | 270 | mined_high_confidence (135) + mined (9) + human_reviewed (10) + weak (12) |
+| R15-L | 9 | 294 | 294 | 270 | mined (270) + weak (24) |
+| R15-stress | 9 | 19 | 19 | 0 | human_reviewed (3) + weak (16) |
+
+### Key findings
+
+1. **Multi-repo benchmark pipeline works end-to-end**: 9 independent external repos across 5 languages (Rust, Python, Go, JavaScript, TypeScript) with 166 medium-tier tasks, 270 hard negatives. Fail-closed safety enforced.
+2. **Regex search outperforms BM25 on this multi-repo fixture**: FileRecall@1 is 0.852 (regex) vs 0.548 (bm25). This is likely because many tasks target exact symbol names which regex matches precisely, while BM25's tokenization may dilute short queries.
+3. **BM25 has high false positive rate on negative tasks**: negative_nonempty_rate@10 is 0.645 (bm25) vs 0.000 (regex). BM25 returns results for many negative queries, while regex returns empty for non-matching exact strings.
+4. **Hard negative hit rate is non-trivial**: ~0.23-0.29 for both methods. This indicates that structurally plausible but incorrect results are common, which is expected with mined hard negatives from the same repo.
+5. **Span-level precision is improved vs R14-S baseline**: SpanF0.5@10 is 0.263 (regex) vs R14-S's lower sanity baseline. This improvement is likely due to better symbol extraction and more precise gold spans from multi-language definitions.
+6. **Anti-leakage design holds across repos**: 0 critical leakage issues, canary retrieval returns zero hits, no gold in public tasks.
+7. **Multi-language symbol extraction is functional but heuristic**: Rust/Python/Go/JS/TS patterns work for common cases but may miss or misidentify symbols in unusual patterns.
+8. **This is a mined benchmark expansion, not a quality conclusion.** Labels are mined with varying confidence; not human-verified.
+
+### Caveats
+
+- This is a mined benchmark expansion, not a quality conclusion.
+- Mined labels are not human-verified. `mined_high_confidence` labels have structurally-sound spans but may be imprecise at line-level.
+- External local repos are workspace snapshots; they are not modified but their content may change over time, which would invalidate the manifest SHA.
+- Multi-language support is best-effort. OpenLocus CLI may only support specific file types. If the CLI does not index `.mjs` or `.go` files, tasks targeting those types will return empty results.
+- Symbol extraction is regex-based heuristic. It may miss or misidentify symbols, especially for unusual patterns (Go methods with receivers, Python decorators, JS arrow functions).
+- Hard negatives are mined, not curated. They are structurally plausible but may not always be the best distractors.
+- Hard-negative overlap with gold spans is statically blocked, but distractor quality still requires human review.
+- The benchmark does not claim dense/LLM/graph quality improvements.
+- Baseline metrics (regex outperforming BM25 on exact-symbol tasks) are specific to this fixture and should not be generalized.
+- smartsearch has 2102 Python files but only 69 are indexed after excluding node_modules, __pycache__, etc. Most files are in excluded directories.
+
+## 2026-06-12 — R16 Multi-Method Quality Bakeoff
+
+### Objective
+
+Run a cross-matrix quality bakeoff across R14-S, R15-M, and R15-stress using all four lexical/symbol/RRF methods (regex, BM25, symbol, RRF). Produce aggregate report with winners, safety verification, and conclusions. No provider/dense/LLM claims.
+
+### Implementation notes
+
+- **eval/r16_quality_bakeoff.py**: CLI args `--openlocus`, `--workspace`, `--out`, `--skip-run`. Runs three benchmark matrices via subprocess: R14-S, R15-M, R15-stress. Loads JSON reports, verifies safety_passed, citation_validity=1.0 for each method with evidence, citation_hash_checked true or citation_not_applicable true, canary_retrieval.passed where present. Produces aggregate JSON (schema_version r16-v1) with runs metadata, method tables, winners per metric, safety_checks, conclusions. Produces markdown report alongside output. Hard fails (exit nonzero) if any safety gate fails or any runner command fails. No provider/dense/LLM claims.
+
+### R16 bakeoff results
+
+**R14-S Matrix:**
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| FileRecall@1 | 0.457 | **0.696** | 0.674 | 0.543 |
+| FileRecall@5 | 0.587 | **0.870** | 0.717 | **0.870** |
+| FileRecall@10 | 0.630 | **0.870** | 0.717 | **0.870** |
+| MRR | 0.518 | **0.770** | 0.684 | 0.661 |
+| SpanF0.5@10 | 0.068 | 0.064 | **0.199** | 0.084 |
+| hard_negative@10 | 0.152 | 0.196 | **0.043** | 0.152 |
+| negative_nonempty@10 | **0.000** | **0.000** | **0.000** | **0.000** |
+
+**R15-M Matrix:**
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| FileRecall@1 | 0.852 | 0.548 | 0.807 | **0.933** |
+| FileRecall@5 | 0.956 | 0.719 | 0.830 | **0.993** |
+| FileRecall@10 | 0.970 | 0.741 | 0.844 | **0.993** |
+| MRR | 0.889 | 0.623 | 0.820 | **0.959** |
+| SpanF0.5@10 | 0.263 | 0.188 | **0.310** | 0.253 |
+| hard_negative@10 | 0.289 | 0.230 | **0.052** | 0.259 |
+| negative_nonempty@10 | **0.000** | 0.645 | **0.000** | 0.645 |
+
+**R15-stress Matrix (negative tasks only):**
+
+| Metric | regex | bm25 | symbol | rrf |
+|---|---|---|---|---|
+| negative_nonempty@10 | 0.474 | 0.684 | **0.105** | 0.684 |
+
+### Safety facts
+
+- All three matrices: safety_passed=true
+- All methods across all matrices: citation_validity=1.0
+- Citation hash checked in R14/R15 reports via Rust validator
+- canary_retrieval.passed=true where present
+- No remote calls
+
+### Conclusions
+
+1. **RRF wins R15-M recall/MRR** (FileRecall@1 0.933, @5/10 0.993, MRR 0.959) but inherits BM25 negative false positive behavior (negative_nonempty@10 0.645 on R15-M and 0.684 on stress), so it is not safe as default for precision-sensitive tasks without negative gating or query intent routing.
+2. **Symbol has best span precision/hard-negative profile on R15-M** (SpanF0.5 0.310, hard_negative_hit_rate 0.052, negative_nonempty 0.000) but lower recall than RRF, so it is ideal as precision anchor, not sole retriever.
+3. **Regex is surprisingly strong on mined exact-symbol external tasks** (R15-M FileRecall@1 0.852, negative_nonempty 0.000), but this reflects task distribution and exact-string bias; not a general natural-language conclusion.
+4. **BM25 strong in R14-S but weak and false-positive-heavy in R15-M/stress**; needs query intent routing or threshold/negative guard.
+5. **No promotion of any method to universal default from R16**; next research should be query intent router / negative guard / method fusion policy, not raw channel addition.
+
+### Caveats
+
+- R16 is a multi-method quality bakeoff; not a universal quality conclusion.
+- Mined labels are not human-verified.
+- No provider/dense/LLM quality claims.
+- RRF negative_nonempty_rate reflects BM25 false-positive inheritance.
+- R14-S uses self-referential OpenLocus workspace data; not generalizable.
+
+---
+
+## 2026-06-12 — R17 Query Intent Router / Negative Guard Experiment
+
+### Objective
+
+Test whether query-only routing heuristics and negative guards can reduce negative_nonempty false positives (inherited by RRF from BM25) while preserving recall. Eval-layer research only; does NOT change Rust core.
+
+### Current hypothesis
+
+RRF wins recall but inherits BM25 negative false positives (R15-M negative_nonempty@10=0.645, R15-stress=0.684). A query-only router that suppresses evidence for noise/vague/fabricated queries, combined with a symbol/regex evidence guard for RRF, should materially reduce negative_nonempty without unacceptable recall regression.
+
+### Implementation notes
+
+- **eval/r17_router_guard_experiment.py**: Loads existing R15 predictions, applies three synthetic routing strategies without invoking OpenLocus again, scores with R15-compatible metrics, produces JSON (schema_version r17-v1) and markdown output.
+- **Strategies**:
+  1. **query_only_router_v0**: Routes based only on query text, no labels, no task_type. Heuristics: negative/noise marker detection (FIXME_bogus, TODO_nonexistent, etc.), compound snake_case noise detection (quantum_entanglement_solver, blockchain_consensus_protocol), vague multi-word query detection (all common words like "error handling", "data processing"), exact identifier detection (prefer symbol then regex), identifier token detection (prefer regex then symbol), default RRF for recall.
+  2. **task_type_assisted_router_upper_bound**: Uses public task_type as an upper-bound reference (not production router). mutation_negative/query_noise/negative → empty; provider_ish → empty; stress → symbol if evidence else empty; exact_symbol/implementation_search → symbol if evidence else regex else rrf; config_import → regex if evidence else rrf.
+  3. **rrf_guarded_by_symbol_regex**: Choose RRF only if either symbol or regex has evidence; otherwise empty. Tests whether symbol/regex evidence presence is a sufficient guard against RRF/BM25 false positives.
+- **Scoring**: Reuses R15-compatible metrics (FileRecall@1/5/10, MRR, SpanF0.5@10, token_waste@10, hard_negative_hit_rate@10, negative_nonempty_rate@10, success_rate). Exact or single repo_id prefix path matching only.
+- **Citation safety**: Inherited from source validated predictions. Records citation_inherited_from_validated_methods=true. Does NOT claim new citation validation.
+- **Safety gates**: Hard fail if source report safety_passed is not true, expected methods are missing, citation_validity < 1.0, citation_hash_checked not true (or citation_not_applicable), canary_retrieval.passed not true, or prediction JSONL metrics do not match the source report baseline metrics.
+
+### R17 results
+
+**R15-M Strategy Metrics:**
+
+| Metric | regex | bm25 | symbol | rrf | query_only_router_v0 | task_type_assisted | rrf_guarded |
+|---|---|---|---|---|---|---|---|
+| file_recall@1 | 0.852 | 0.541 | 0.807 | 0.941 | 0.904 | 0.904 | 0.941 |
+| file_recall@5 | 0.956 | 0.719 | 0.830 | 0.993 | 0.941 | 0.926 | 0.993 |
+| file_recall@10 | 0.970 | 0.741 | 0.844 | 0.993 | 0.948 | 0.941 | 0.993 |
+| mrr | 0.889 | 0.619 | 0.820 | 0.963 | 0.918 | 0.916 | 0.963 |
+| span_f0.5@10 | 0.263 | 0.188 | 0.310 | 0.253 | 0.315 | 0.380 | 0.253 |
+| token_waste@10 | 0.677 | 0.639 | 0.204 | 0.695 | 0.539 | 0.264 | 0.695 |
+| hard_negative@10 | 0.289 | 0.230 | 0.052 | 0.259 | 0.237 | 0.074 | 0.259 |
+| negative_nonempty@10 | 0.000 | 0.645 | 0.000 | 0.645 | 0.000 | 0.258 | 0.000 |
+
+**R15-stress Strategy Metrics (negative tasks only):**
+
+| Metric | regex | bm25 | symbol | rrf | query_only_router_v0 | task_type_assisted | rrf_guarded |
+|---|---|---|---|---|---|---|---|
+| negative_nonempty@10 | 0.474 | 0.684 | 0.105 | 0.684 | 0.158 | 0.316 | 0.474 |
+
+**Per-Strategy Route Counts:**
+
+- query_only_router_v0: symbol=43, regex=91, empty=48, rrf=3
+- task_type_assisted: symbol=123, regex=18, rrf=8, empty=36
+- rrf_guarded: rrf=144, empty=41
+
+**Key Deltas vs RRF (R15-M):**
+
+- query_only_router_v0 vs RRF: negative_nonempty -0.645, FileRecall@1 -0.037, MRR -0.044, SpanF0.5 +0.062
+- rrf_guarded_by_symbol_regex vs RRF: negative_nonempty -0.645, all other metrics +0.000 (identical recall/MRR/SpanF0.5)
+
+### Key findings
+
+1. **rrf_guarded_by_symbol_regex eliminates R15-M negative_nonempty (0.645 → 0.000) with zero recall/MRR regression**: Because the guard only returns RRF evidence when symbol or regex also found evidence, and positive tasks always have at least one of those, the guard perfectly filters negative tasks on R15-M. This is the strongest result: a simple evidence-presence guard is sufficient for R15-M negatives.
+2. **query_only_router_v0 also eliminates R15-M negative_nonempty (0.645 → 0.000) with acceptable recall regression**: FileRecall@1 drops from 0.941 to 0.904 (delta -0.037), MRR from 0.963 to 0.918 (delta -0.044). SpanF0.5 improves from 0.253 to 0.315 (+0.062). The router correctly identifies negative tasks (vague queries, fabricated identifiers) and routes them to empty.
+3. **On R15-stress, both strategies reduce but don't eliminate negative_nonempty**: query_only_router_v0 drops from 0.684 to 0.158; rrf_guarded drops to 0.474. The stress tier includes common-word queries where regex still returns false positives, and the symbol/regex guard lets those through.
+4. **task_type_assisted_router is an upper bound**: It achieves 0.258 on R15-M (not zero because some config_import tasks have legitimate evidence) and 0.316 on R15-stress. It uses task_type as benchmark metadata, not runtime information.
+5. **No core default promotion**: While R15-M negative_nonempty reaches 0.000 with two strategies, R15-stress negative_nonempty remains above 0 for all strategies. The bar for core default promotion requires BOTH R15-M and R15-stress negative_nonempty improvement without unacceptable recall/MRR regression.
+6. **Next steps**: Learning/calibrating intent classifier or adding score thresholds, but still evidence-gated. No LLM or dense model claims.
+
+### Caveats
+
+- R17 is an eval-layer router/guard experiment; does NOT change Rust core.
+- query_only_router uses heuristic rules only; not a learned classifier.
+- task_type_assisted_router uses benchmark metadata (task_type) that is not runtime-available; it is an upper-bound reference.
+- Citation safety is inherited from validated source predictions; no new citation validation is claimed.
+- Mined labels are not human-verified; line ranges may be imprecise.
+- Negative tasks in R15-stress have weak or human_reviewed labels only.
+- No provider/dense/LLM quality claims are made.
+- Routing decisions are deterministic and reproducible from the same inputs.
+- The compound_snake_case_noise detector uses a fixed set of domain keywords; real fabricated identifiers could evade it.
+
+## 2026-06-12 — R18 Threshold/Guard Calibration Sweep
+
+### Objective
+
+Sweep threshold and guard configurations over R15 benchmark predictions to find Pareto-optimal strategies that reduce negative_nonempty while preserving recall. Uses deterministic repo-holdout split for R15-M. Eval-layer research only; does NOT change Rust core.
+
+### Current hypothesis
+
+R17 showed that query_only_router_v0 and rrf_guarded_by_symbol_regex both eliminate R15-M negative_nonempty (0.645→0.000), but R15-stress negative_nonempty remains above 0. R18 tests whether systematic threshold/guard sweeps over public query + prediction features can produce a calibrated strategy with better stress performance while maintaining R15-M recall.
+
+### Implementation notes
+
+- **eval/r18_calibration_sweep.py**: Schema version r18-v1. Imports R17 helpers (load_jsonl, score_predictions, verify_safety_gates, check_baseline_prediction_consistency, query feature heuristics) via sys.path resolution.
+- **Safety gates**: Hard fail on source report safety_passed, canary_retrieval, expected methods, citation_validity=1.0, citation_hash_checked, baseline prediction/report consistency. Route phase must happen before labels are loaded; enforced by code structure.
+- **Public features only for routing**: query string, repo_id, evidence counts per method, top/max score per method, top evidence channels/why, R17 query-only heuristics (negative/noise/vague/exact identifier). Labels/gold loaded only after all routing decisions.
+- **Strategy family**: Baselines (regex, bm25, symbol, rrf), R17 fixed references (query_only_router_v0, rrf_guarded_by_symbol_regex), and sweep configs over thresholds [0.0, 0.005, 0.01, 0.015, 0.02, 0.03, 0.05, 0.08]:
+  - rrf_score_min_{t}: use RRF if top RRF score >= t else empty
+  - rrf_score_min_{t}_regex_or_symbol: use RRF if score >= t and (regex_has or symbol_has)
+  - rrf_score_min_{t}_symbol: use RRF if score >= t and symbol_has
+  - query_noise_plus_rrf_score_min_{t}: if noise/vague query then empty else RRF if score >= t
+  - query_noise_plus_rrf_agree_min_{t}: if noise/vague query then empty else RRF if score >= t and (regex_has or symbol_has)
+- **Scoring**: R15-compatible metrics on full R15-M, train R15-M, holdout R15-M, and R15-stress.
+- **Repo-holdout split**: Deterministic by sorted repo_id: first 6 train (codex2api, fast-context-mcp, gemini-web2api, grok2api, infinite-canvas, kiro2), last 3 holdout (smartsearch, triviumdb, windsurf2api).
+- **Candidate selection**: From train only. Eligible if train negative_nonempty<=0.05 and train FileRecall@1 >= (RRF_train - 0.05). Among eligible, maximize train MRR, minimize token_waste. If no eligible, fallback with no_candidate_met_constraints.
+- **Pareto frontier**: Full R15-M over dimensions: maximize FileRecall@1, SpanF0.5@10; minimize negative_nonempty_rate@10, hard_negative_hit_rate@10.
+- **Output**: JSON (schema_version r18-v1), markdown, and docs/r18-calibration-sweep.md.
+
+### R18 results
+
+**Selected candidate**: rrf_guarded_by_symbol_regex (eligible count: 15)
+
+**Full R15-M Strategy Metrics (baselines + R17 + selected):**
+
+| Metric | regex | bm25 | symbol | rrf | query_only_router_v0 | rrf_guarded | selected |
+|---|---|---|---|---|---|---|---|
+| file_recall@1 | 0.852 | 0.541 | 0.807 | 0.941 | 0.904 | 0.941 | 0.941 |
+| mrr | 0.889 | 0.619 | 0.820 | 0.963 | 0.918 | 0.963 | 0.963 |
+| span_f0.5@10 | 0.263 | 0.188 | 0.310 | 0.253 | 0.315 | 0.253 | 0.253 |
+| negative_nonempty@10 | 0.000 | 0.645 | 0.000 | 0.645 | 0.000 | 0.000 | 0.000 |
+
+**Key Sweep Finding — query_noise_plus_rrf_agree_min (full R15-M):**
+
+| Threshold | neg_nonempty | FileRecall@1 | MRR | stress_neg_nonempty |
+|---|---|---|---|---|
+| 0.000 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.005 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.010 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.015 | 0.000 | 0.941 | 0.961 | 0.000 |
+| 0.020 | 0.000 | 0.933 | 0.955 | 0.000 |
+| 0.030 | 0.000 | 0.933 | 0.955 | 0.000 |
+| 0.050 | 0.000 | 0.015 | 0.015 | 0.000 |
+| 0.080 | 0.000 | 0.000 | 0.000 | 0.000 |
+
+**Holdout R15-M (rrf_guarded_by_symbol_regex vs RRF):**
+
+| Metric | RRF | rrf_guarded | Delta |
+|---|---|---|---|
+| file_recall@1 | 0.844 | 0.844 | +0.000 |
+| mrr | 0.900 | 0.900 | +0.000 |
+| negative_nonempty@10 | 0.700 | 0.000 | -0.700 |
+
+**R15-stress (selected strategies):**
+
+| Strategy | negative_nonempty@10 |
+|---|---|
+| rrf | 0.684 |
+| symbol | 0.105 |
+| query_only_router_v0 | 0.158 |
+| rrf_guarded_by_symbol_regex | 0.474 |
+| query_noise_plus_rrf_agree_min_0.0 | 0.000 |
+| query_noise_plus_rrf_agree_min_0.015 | 0.000 |
+
+**Pareto frontier (Full R15-M, key entries):**
+
+| Strategy | FileRecall@1 | SpanF0.5@10 | neg_nonempty | hard_neg |
+|---|---|---|---|---|
+| rrf_guarded_by_symbol_regex | 0.941 | 0.253 | 0.000 | 0.259 |
+| query_only_router_v0 | 0.904 | 0.315 | 0.000 | 0.237 |
+| symbol | 0.807 | 0.310 | 0.000 | 0.052 |
+
+### Key findings
+
+1. **Train-selected candidate is useful but not stress-safe**: `rrf_guarded_by_symbol_regex` preserves RRF FileRecall@1/MRR on full R15-M (0.941/0.963) and holdout (0.844/0.900), while reducing medium negative_nonempty to 0.000. R15-stress remains weak at 0.474 negative_nonempty, above symbol's 0.105.
+2. **The query noise guard is the key differentiator for stress**: rrf_guarded_by_symbol_regex alone leaves stress at 0.474 because regex returns false positives for common-word stress queries. The query noise guard identifies these as vague/noise and routes to empty, achieving 0.000 on stress.
+3. **rrf_guarded_by_symbol_regex remains the selected candidate by MRR**: On train, it has MRR 0.994 vs query_noise_plus_rrf_agree_min_0.0 MRR 0.961. The candidate selection rule (maximize MRR among eligible) favors the simpler guard.
+4. **Threshold sweep reveals sharp recall cliff at 0.05**: RRF top scores rarely fall between 0.03 and 0.05; most are either very high (>0.05) or very low (<0.02). Thresholds above 0.03 reject nearly all evidence, making them useless in practice.
+5. **Stress-zero strategies are observations, not promotions**: `query_noise_plus_rrf_agree_min` variants reach 0.000 stress negative_nonempty on the 19-task stress set, but this is too small and mined to justify default promotion.
+6. **R15-stress remains the critical failure surface for non-query-noise strategies**: Without the query noise guard, stress negative_nonempty stays above symbol baseline. With it, the stress surface is addressed but only through heuristic classification of query intent.
+7. **Pareto frontier shows trade-off between recall and hard-negative precision**: symbol has lowest hard_negative (0.052) but lower recall; rrf_guarded has highest recall but higher hard_negative (0.259); query_only_router_v0 is a middle ground.
+8. **No core default promotion in R18**: This is eval-layer calibration. Threshold/guard choices are calibrated on mined R15 data and require larger/human-verified validation before promotion.
+
+### Caveats
+
+- R18 is an eval-layer calibration sweep; does NOT change Rust core.
+- Calibration is on mined R15 data; not human-verified.
+- Repo-holdout split is deterministic but small (9 repos, 3 holdout); not a substitute for cross-dataset validation.
+- R15-stress has only 19 tasks; metric estimates are noisy.
+- Sweep thresholds are hand-chosen; exhaustive search would be exponential.
+- Pareto frontier depends on chosen dimensions; different dimensions may yield different frontiers.
+- No core default promotion unless both R15-M and R15-stress negative_nonempty improve without unacceptable recall/MRR regression.
+- Citation safety is inherited from validated source predictions; no new citation validation is claimed.
+- No LLM/dense/provider claims are made.
+- Routing decisions are deterministic and reproducible from the same inputs.
+
+---
+
+## 2026-06-12 — R19 Large/Stress Guard Generalization Validation
+
+### Objective
+
+Validate whether R18 train-selected guard strategies generalize to R15-L (294 weak/mined tasks) and R15-stress. R15-L labels are mostly weak/mined; used only for generalization smoke, not as promotion evidence. Does NOT change Rust core.
+
+### Current hypothesis
+
+The R18 train-selected `rrf_guarded_by_symbol_regex` should preserve recall and reduce negative_nonempty on R15-L, similar to its R15-M behavior. The `query_noise_plus_rrf_agree_min` stress-zero observation should repeat on R15-stress. However, R15-L labels are weak/mined, so any "improvement" is a generalization smoke test, not promotion evidence.
+
+### Implementation notes
+
+- **eval/r19_large_guard_validation.py**: Schema version r19-v1. Imports R17 and R18 helpers. Runs R15 benchmark for L and stress tiers with R19-owned report/prediction artifacts.
+- **R19-owned prediction artifacts**: Generic `r15-large-{method}-predictions.jsonl` and `r15-stress-{method}-predictions.jsonl` are copied to `r19-r15-large-{method}-predictions.jsonl` and `r19-r15-stress-{method}-predictions.jsonl` immediately after benchmark run. Provenance includes sha256/bytes/jsonl_lines. --skip-run requires R19-owned predictions only.
+- **Safety gates**: source report safety_passed, canary_retrieval passed, expected methods present, citation_validity=1.0, citation_hash_checked or citation_not_applicable true, baseline prediction/report consistency hard gate (imported from R17). Labels loaded only after all route predictions generated.
+- **Strategy set (9 total)**:
+  - Baselines: regex, bm25, symbol, rrf
+  - query_only_router_v0 (R17 fixed reference)
+  - rrf_guarded_by_symbol_regex (R18 train-selected candidate)
+  - query_noise_plus_rrf_agree_min_0.0 (R18 stress-zero observation)
+  - query_noise_plus_rrf_agree_min_0.02
+  - query_noise_plus_rrf_score_min_0.02
+- **Scoring**: FileRecall@1/5/10, MRR, SpanF0.5@10, token_waste@10, hard_negative_hit_rate@10, negative_nonempty_rate@10, success_rate. Label quality counts for large/stress with explicit caveat.
+- **Generalization assessment fields**: selected_candidate_large_ok, selected_candidate_stress_ok, stress_zero_observation_repeated, promotion_ready (always false).
+
+### R19 results
+
+#### R15-L strategy metrics (294 tasks, labels: 270 mined, 24 weak)
+
+| Strategy | FileRecall@1 | MRR | SpanF0.5@10 | neg_nonempty@10 |
+|---|---:|---:|---:|---:|
+| regex | 0.848 | 0.884 | 0.270 | 0.042 |
+| bm25 | 0.456 | 0.532 | 0.156 | 0.917 |
+| symbol | 0.822 | 0.838 | 0.360 | 0.000 |
+| rrf | 0.911 | 0.949 | 0.264 | 0.917 |
+| query_only_router_v0 | 0.885 | 0.902 | 0.319 | 0.333 |
+| rrf_guarded_by_symbol_regex | 0.911 | 0.949 | 0.264 | 0.042 |
+| query_noise_plus_rrf_agree_min_0.0 | 0.900 | 0.938 | 0.264 | 0.000 |
+| query_noise_plus_rrf_agree_min_0.02 | 0.896 | 0.933 | 0.263 | 0.000 |
+| query_noise_plus_rrf_score_min_0.02 | 0.896 | 0.933 | 0.263 | 0.000 |
+
+#### R15-stress strategy metrics (19 tasks, labels: 3 human_reviewed, 16 weak)
+
+| Strategy | neg_nonempty@10 |
+|---|---:|
+| regex | 0.474 |
+| bm25 | 0.684 |
+| symbol | 0.105 |
+| rrf | 0.684 |
+| query_only_router_v0 | 0.158 |
+| rrf_guarded_by_symbol_regex | 0.474 |
+| query_noise_plus_rrf_agree_min_0.0 | 0.000 |
+| query_noise_plus_rrf_agree_min_0.02 | 0.000 |
+| query_noise_plus_rrf_score_min_0.02 | 0.000 |
+
+#### Generalization assessment
+
+| Field | Value |
+|---|---|
+| selected_candidate_large_ok | True |
+| selected_candidate_stress_ok | False |
+| stress_zero_observation_repeated | True |
+| promotion_ready | False |
+
+### Key findings
+
+1. **rrf_guarded_by_symbol_regex generalizes to R15-L**: FileRecall@1 is preserved (0.911 vs RRF 0.911, delta +0.000), negative_nonempty drops from 0.917 to 0.042. However, R15-L labels are weak/mined; this is generalization smoke only, not promotion evidence.
+2. **rrf_guarded_by_symbol_regex does NOT improve stress beyond symbol**: Stress negative_nonempty is 0.474, above symbol's 0.105. The selected candidate fails the stress test, consistent with R18 findings. Query noise guard is needed for stress improvement.
+3. **query_noise_plus_rrf_agree_min_0.0 stress-zero observation repeats**: Achieves 0.000 stress negative_nonempty and 0.000 R15-L negative_nonempty. On R15-L, FileRecall@1 is 0.904 (delta -0.007 vs RRF). This is an observation, not promotion evidence.
+4. **R15-L labels are weak/mined (270 mined, 24 weak)**: Any metric improvement or regression is generalization smoke only. These labels cannot serve as promotion evidence.
+5. **R15-stress has only 19 tasks (3 human_reviewed, 16 weak)**: Metric estimates are very noisy. The stress-zero result is a pattern observation on a small sample, not a reliable measurement.
+6. **No core default promotion from R19**: promotion_ready is always false. Requires human-verified labels and larger stress dataset.
+
+### Caveats
+
+- R19 is an eval-layer generalization validation; does NOT change Rust core.
+- R15-L labels are mostly weak/mined; used for generalization smoke only, not as promotion evidence.
+- R15-stress has only 19 tasks; metric estimates are very noisy.
+- Guard strategies were calibrated on R15-M in R18; R15-L generalization is a smoke test, not a validation.
+- Citation safety is inherited from validated source predictions; no new citation validation is claimed.
+- No LLM/dense/provider claims are made.
+- Routing decisions are deterministic and reproducible from the same inputs.
+- promotion_ready is always false in R19; requires human-verified labels and larger stress dataset.
+
+---
+
+## 2026-06-12 — R20 Auto-Wide Retrieval Failure-Surface Benchmark (Dataset + Static Validator)
+
+### Objective
+
+Generate a failure-discovery benchmark dataset and static validation artifacts from R15 repos.lock.jsonl and local source paths. R20 labels are failure-surface oracle/probe labels, NOT EvidenceCore or promotion evidence. No Rust core changes, no strategy matrix, no promotion, no provider/QuIVer.
+
+### Design constraints
+
+- **Candidate is not fact.** R20 labels are failure-surface oracle/probe labels, not EvidenceCore.
+- **Public tasks** contain ONLY: `task_id`, `repo_id`, `query`, `public_version`, `source_tier`. No gold/expected/oracle/risk/judgement fields.
+- **Private labels** carry all judgement fields: `query_category`, `intent_guess`, `risk_tags`, `oracle_type`, `expected_behavior`, `label_quality`, `gold_spans`, `hard_distractors`, `must_not_primary`, `why_this_is_hard`, `which_strategy_it_targets`, `caveat`.
+- **expected_behavior** enum: `primary_evidence` | `supporting_only` | `weak_candidates` | `abstain` | `no_primary`
+- **oracle_type** enum: `deterministic` | `mined` | `differential` | `metamorphic` | `stress`
+- **label_quality**: `mined_high_confidence` | `mined` | `weak` (NO `human_reviewed`)
+- **R20 is failure discovery + static validation, NOT promotion evidence.**
+- No Rust core changes, no strategy matrix, no promotion, no provider/QuIVer.
+
+### Implementation notes
+
+- **eval/r20_generate_auto_wide.py**: Deterministic generator (seed=42) that:
+  - Reuses R15 repos.lock.jsonl and local source paths
+  - Extracts symbols/config/routes/imports/tests/files from source text via regex heuristics
+  - Generates 25 required query_category types across all 9 R15 repos
+  - Produces public tasks (minimal fields) and private labels (all judgement fields)
+  - Validates gold_spans / must_not_primary / hard_distractors overlap
+  - Sorts outputs by task_id for determinism
+  - Fills minimum coverage gaps with synthetic weak probes
+
+- **eval/r20_static_validate.py**: Static validator enforcing:
+  1. No private fields in public tasks
+  2. Task/label ID bijection, no duplicates, no unknown repo_ids
+  3. Enum validity (expected_behavior, oracle_type, label_quality)
+  4. `primary_evidence` must have gold_spans; `abstain`/`no_primary` must not
+  5. `must_not_primary` must not overlap `gold_spans`
+  6. `hard_distractors` must not overlap `gold_spans`
+  7. Gold span paths/ranges must exist in locked source and be in bounds
+  8. Repo lock content_manifest_sha must match recomputed SHA
+  9. `label_quality` must not be `human_reviewed`
+  10. All 25 required categories present with >= 5 tasks each
+  11. >= 9 repos, >= 300 total tasks, >= 15 per repo
+  12. `dataset_manifest` flags: `not_promotion_evidence=true`, `core_changes=false`, `remote_calls=0`, `dense_or_llm_claims=false`
+
+- **fixtures/r20_auto_wide/**: Dataset directory with:
+  - `dataset_manifest.json`, `repos.lock.jsonl`
+  - `tasks/auto_wide.jsonl` (public tasks)
+  - `labels/auto_wide.jsonl` (private labels)
+  - `safety_checks.json`, `coverage_report.json`, `README.md`
+
+### R20 generation results
+
+| Metric | Value |
+|---|---|
+| Repos | 9 |
+| Tasks | 741 |
+| Labels | 741 |
+| Categories | 25 (all >= 5 tasks) |
+| Per-repo minimum | 72 |
+| Label quality distribution | mined_high_confidence: 315, mined: 168, weak: 258 |
+| Expected behavior distribution | primary_evidence: 374, abstain: 177, weak_candidates: 90, no_primary: 45, supporting_only: 55 |
+| Oracle type distribution | deterministic: 438, stress: 148, mined: 110, metamorphic: 36, differential: 9 |
+
+### R20 static validation results
+
+| Check | Result |
+|---|---|
+| No private fields in public tasks | ✅ |
+| Task/label ID bijection | ✅ |
+| No duplicate IDs | ✅ |
+| No unknown repo_ids | ✅ |
+| Enum validity (expected_behavior, oracle_type, label_quality) | ✅ |
+| primary_evidence has gold_spans | ✅ |
+| abstain/no_primary has empty gold_spans | ✅ |
+| must_not_primary no gold overlap | ✅ |
+| hard_distractors no gold overlap | ✅ |
+| Gold span paths exist in locked source | ✅ |
+| Gold span ranges in bounds | ✅ |
+| Repo lock content_manifest_sha verified | ✅ |
+| label_quality != human_reviewed | ✅ |
+| All 25 categories >= 5 tasks | ✅ |
+| >= 9 repos | ✅ |
+| >= 300 total tasks | ✅ |
+| >= 15 tasks per repo | ✅ |
+| not_promotion_evidence=true | ✅ |
+| core_changes=false | ✅ |
+| remote_calls=0 | ✅ |
+| dense_or_llm_claims=false | ✅ |
+
+**All 14 validation categories passed. 0 critical errors, 0 warnings.**
+
+### Oracle review: fail-closed validator fixes
+
+The initial validator was fail-open on several critical paths. The following
+fixes were applied after oracle review:
+
+1. **Public task extra fields → ERROR** (was warning): Any field not in
+   `PUBLIC_TASK_FIELDS` in a public task is now a hard error, not a warning.
+   This prevents leaking judgement fields through unexpected public fields.
+
+2. **Source path inaccessible → ERROR** (was warning): If a repo's source path
+   is not accessible, both the file cache build and the manifest SHA
+   verification now emit errors instead of warnings. Inaccessible source means
+   the dataset cannot be verified — this must fail, not warn.
+
+3. **Label required-field schema hard validation** (was missing): All 14
+   required label fields (`task_id`, `repo_id`, `query_category`, `intent_guess`,
+   `risk_tags`, `oracle_type`, `expected_behavior`, `label_quality`,
+   `gold_spans`, `hard_distractors`, `must_not_primary`, `why_this_is_hard`,
+   `which_strategy_it_targets`, `caveat`) must be present with correct types
+   (str/list). Non-caveat string fields must be non-empty.
+
+4. **hard_distractors / must_not_primary path/range validation** (was missing):
+   Both `hard_distractors` and `must_not_primary` spans now have their
+   paths verified against locked source and their line ranges checked for
+   bounds, same as `gold_spans`.
+
+5. **Per-repo coverage iterates ALL repos in repo_lock** (was only repos with
+   tasks): If a repo appears in `repo_lock` but has zero tasks, this is now
+   a hard failure (0 < 15). Previously, only repos that appeared in task
+   data were checked, meaning an empty repo would silently pass.
+
+Post-fix validation: 741 tasks, 741 labels, 9 repos, 25 categories, 0 errors,
+0 warnings. All injection tests (extra public field, inaccessible source,
+missing label fields, out-of-bounds distractor, empty repo) correctly fail.
+
+### Key findings
+
+1. **Failure-surface dataset generation works**: 741 tasks across 25 categories and 9 repos, with deterministic generation from fixed seed.
+2. **Public/private separation is clean**: No private/leak fields appear in public tasks. All judgement fields are in separate private labels.
+3. **Category coverage is complete**: All 25 required categories have >= 5 tasks. Some categories (positive_exact_symbol, positive_regex_anchor) have many more due to per-repo symbol extraction.
+4. **Metamorphic/stress categories encode expected behavior without source mutation**: dirty_overlay, deleted_file, renamed_file, branch_switch_like are probes for R21/R26 that encode what should happen but do not mutate source in R20.
+5. **Static validation catches schema/safety violations**: The validator enforces enum validity, gold_span consistency, overlap constraints, manifest SHA verification, and coverage minimums.
+6. **R20 labels are failure-surface oracle/probe labels, not EvidenceCore.**
+
+### Caveats
+
+- **R20 is a failure-surface dataset, NOT promotion evidence.** No runner/scorer matrix exists yet.
+- **Labels are mined/weak, not human-verified.** `human_reviewed` is forbidden.
+- **Metamorphic/stress categories** (dirty_overlay, deleted_file, renamed_file, branch_switch_like) encode expected behavior for R21/R26 but do NOT mutate source in R20.
+- **generated_vendor_trap** may be synthetic if repos lack vendor/generated files.
+- **dense_semantic_trap / proper_name_api_config_regression** target semantic false positives around provider/api/config names.
+- **No Rust core changes in R20.** Dataset and validator only.
+- **R21 will use this dataset** for retrieval failure-surface analysis with actual runner/scorer.
+
+## 2026-06-12 — R21 Auto-Wide Strategy Matrix
+
+### Objective
+
+Run a strategy matrix across 10 retrieval strategies on the R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories). Evaluate failure surfaces: where strategies fail, what types of queries cause false positives, and which guard patterns reduce negatives without killing recall. NOT promotion evidence.
+
+### Architecture
+
+Strictly separated RUN and SCORE phases (same as R15/R17/R18/R19):
+
+- **Phase 1 (RUN)**: loads only public tasks + repo lock. Creates isolated benchmark roots by allowlist-copying source files under repo_id-specific folders. Runs base methods (regex, bm25, symbol, rrf) via openlocus CLI. Builds composite/guard strategies from base predictions. Never reads labels.
+- **Phase 2 (SCORE)**: loads predictions + labels. Computes metrics. Never invokes CLI.
+
+Safety:
+- Runner never loads private labels/gold
+- Retrieval runs inside isolated temp roots (no fixtures/eval/docs/runs)
+- Repo lock content manifest re-verified (normalized hash)
+- Citation validation runs BEFORE isolated root cleanup
+- Predictions with forbidden prefixes are critical failures
+- Composite/guard strategies built from base predictions only; no CLI, no labels
+- R20 labels weak/mined; promotion_ready=false, not_promotion_evidence=true
+
+### Implemented strategies (10)
+
+1. regex — `openlocus search regex`
+2. bm25 — `openlocus search bm25`
+3. symbol — `openlocus search symbol`
+4. rrf — `openlocus retrieve` (RRF fusion)
+5. bm25_regex — RRF fuse bm25+regex predictions
+6. bm25_symbol — RRF fuse bm25+symbol predictions
+7. rrf_guarded_by_symbol — RRF only if symbol has evidence
+8. rrf_guarded_by_regex — RRF only if regex has evidence
+9. rrf_guarded_by_symbol_regex — RRF only if symbol OR regex has evidence
+10. query_noise_plus_rrf_agree_min — R17 noise guard + RRF agree (threshold=0.0)
+
+### Unavailable strategies (10)
+
+ast_chunk_bm25, ast_chunk_rrf, graph_basic, graph_rrf, dense_mock, dense_real_if_available, tdb_quiver_if_available, tdb_quiver_plus_rrf, tdb_quiver_guarded_by_symbol_regex, fast_context_if_available — each with documented reason.
+
+### Key findings
+
+1. **All strategies have non-zero no-gold false positives**: Even guards that suppress RRF false positives still return evidence on 16.7-49.5% of no-gold tasks. No strategy eliminates false positives entirely on the auto-wide failure-surface dataset.
+
+2. **BM25/RRF are no-gold-heavy**: BM25 `no_gold_nonempty_rate=0.495`, RRF `0.495`. These methods are recall-strong but precision-weak on no-answer/abstain tasks.
+
+3. **Symbol is precision-best but abstains most**: symbol `no_gold_nonempty_rate=0.167` (lowest among base methods) but `abstain_rate=0.517` (highest). When symbol fires, it's precise; when it doesn't, there's no fallback.
+
+4. **rrf_guarded_by_symbol kills recall**: guard_recall_kill_rate=0.228 — the guard eliminates 23% of RRF's recall hits. The symbol-availability gate is too strict for the auto-wide query distribution.
+
+5. **query_noise_plus_rrf_agree_min is the best R21 guard balance**: `no_gold_nonempty_rate=0.221` (vs RRF 0.495) with `FileRecall@1=0.693` preserved (same as raw RRF).
+
+6. **Regex parse failures**: Tasks with regex metacharacters (e.g., `/models/{model_id}`) fail for regex/rrf methods.
+
+7. **R20 label quality limits conclusions**: 258/741 labels are "weak", 315 "mined_high_confidence", 168 "mined". No human_reviewed labels.
+
+### Metrics (741 tasks, 9 repos)
+
+| Strategy | FileRecall@1 | MRR | no_gold_nonempty_rate | abstain_rate |
+|----------|-------------|-----|-----------------------|-------------|
+| regex | 0.524 | 0.583 | 0.279 | 0.306 |
+| bm25 | 0.388 | 0.455 | 0.495 | 0.366 |
+| symbol | 0.575 | 0.585 | 0.167 | 0.517 |
+| rrf | 0.693 | 0.753 | 0.495 | 0.182 |
+| bm25_regex | 0.612 | 0.671 | 0.495 | 0.182 |
+| bm25_symbol | 0.551 | 0.643 | 0.495 | 0.224 |
+| rrf_guarded_by_symbol | 0.561 | 0.598 | 0.167 | 0.517 |
+| rrf_guarded_by_regex | 0.693 | 0.753 | 0.279 | 0.306 |
+| rrf_guarded_by_symbol_regex | 0.693 | 0.753 | 0.279 | 0.306 |
+| query_noise_plus_rrf_agree_min | 0.693 | 0.753 | 0.221 | 0.350 |
+
+All 10 strategies: citation_validity=1.0. Composite/guard strategies are built from validated base predictions and also Rust citation-validated before isolated root cleanup.
+
+### Caveats
+
+- **R21 is a failure-discovery matrix, NOT promotion evidence.** promotion_ready=false. not_promotion_evidence=true.
+- R20 labels are weak/mined (no human_reviewed); metrics are probes, not evidence.
+- No LLM, dense, graph, TDB, or fast-context strategies are included.
+- Latency for composite strategies is 0ms (built from existing predictions, no CLI).
+- One task (r20aw-0625) fails regex parse due to `{model_id}` metacharacters.
+- No Rust core changes in R21. Eval-layer research only.
+
+---
+
+## 2026-06-12 — R22/R27 Failure Attribution
+
+### Objective
+
+Consume R21 artifacts and R20 labels to produce automatic failure clusters and expanded metrics. Do NOT re-run retrieval. Do NOT change Rust core. This is analysis-only score phase.
+
+### Hypothesis
+
+Systematic cross-strategy comparison of R21 predictions against R20 labels will reveal structured failure patterns (inherited false positives, guard recall kills, symbol extraction misses, regex normalization bugs, benchmark oracle suspects) that are not visible from per-strategy metrics alone. Unrun strategy clusters (dense, TDB, graph, AST) should have count=0 with recommended tests, not fabricated data.
+
+### Implementation notes
+
+- **eval/r22_r27_failure_attribution.py**: Analysis-only score-phase script. Loads R21 predictions (JSONL), R21 report (JSON), R20 labels (private JSONL). Never invokes openlocus CLI. Computes 13 failure clusters and expanded per-strategy metrics.
+- **13 required cluster keys**: RRF_INHERITED_BM25_FALSE_POSITIVE, GUARD_RECALL_KILL, SYMBOL_EXTRACTION_MISS, REGEX_NORMALIZATION_BUG, AST_SPAN_BOUNDARY_BAD, DENSE_SEMANTIC_TRAP, TDB_QUIVER_SEMANTIC_TRAP, TDB_STALE_REJECTED, TDB_STALE_LEAK, GRAPH_POLLUTION, EVIDENCECORE_REJECTION_EXPECTED, EVIDENCECORE_REJECTION_UNEXPECTED, BENCHMARK_ORACLE_SUSPECT.
+- **Each cluster**: count, affected_strategies, unaffected_strategies, representative_examples (<=5), suspected_cause, recommended_next_tests.
+- **Unrun clusters**: count=0 with suspected_cause explaining why not measured and recommended_next_tests for future experiments.
+- **Path matching**: R20 labels use relative paths (e.g., `src/core.mjs`); R21 predictions use `repo_id/path` format. Matching uses suffix comparison.
+- **Expanded metrics**: Per strategy: FileRecall@1/3/5, MRR, SpanF0.5, SpanPrecision, SpanRecall, token_waste, no_gold_nonempty_rate, primary_false_positive_rate, must_not_primary_violation_rate, abstain_rate, weak_candidate_rate, hard_distractor_hit_rate, guard_recall_kill_rate (if available), citation_validity.
+- **Bucket regressions**: Flag promotion_blocked_by_bucket_regression when strategy has high no_gold_nonempty (>0.3) or recall gap >0.15 vs RRF in bucket or guard kills >0.1 in bucket.
+- **Safety**: promotion_ready=false, not_promotion_evidence=true, source_report_sha, labels_sha, artifact_manifest_sha verified, no labels in run phase, runs artifacts gitignored, no promotion claims, no dense/LLM/QuIVer quality claims.
+
+### R22/R27 failure attribution results
+
+| Cluster | Count | Key finding |
+|---------|-------|-------------|
+| RRF_INHERITED_BM25_FALSE_POSITIVE | 110 | BM25 and RRF both return false primary evidence on no-gold tasks |
+| GUARD_RECALL_KILL | 67 | rrf_guarded_by_symbol kills recall on positive tasks (per_guard: symbol=67, regex=0, symbol_regex=0, query_noise=0) |
+| SYMBOL_EXTRACTION_MISS | 91 | Regex/RRF find gold but symbol search misses |
+| REGEX_NORMALIZATION_BUG | 1 | Curly braces in route queries cause Rust regex parse errors |
+| AST_SPAN_BOUNDARY_BAD | 0 | Not run; AST chunking experimental |
+| DENSE_SEMANTIC_TRAP | 0 | Not run; no real embedding provider |
+| TDB_QUIVER_SEMANTIC_TRAP | 0 | Not run; TDB behind feature gate |
+| TDB_STALE_REJECTED | 0 | Not run; TDB not evaluated |
+| TDB_STALE_LEAK | 0 | Not run; TDB not evaluated |
+| GRAPH_POLLUTION | 0 | Not run; graph not in R21 matrix |
+| EVIDENCECORE_REJECTION_EXPECTED | 0 | metric_unavailable; R21 rate=0.0 for all strategies |
+| EVIDENCECORE_REJECTION_UNEXPECTED | 0 | metric_unavailable; no unexpected rejections |
+| BENCHMARK_ORACLE_SUSPECT | 62 | Weak labels where strategies strongly disagree with oracle |
+
+Bucket regressions: 206 detected. promotion_blocked_by_bucket_regression: true.
+
+### Key findings
+
+1. **RRF inherits BM25 false positives on 110 no-gold tasks**: The largest actionable cluster. BM25's broad lexical matching produces false primary hits that RRF propagates.
+2. **Symbol guard kills recall on 67 positive tasks**: rrf_guarded_by_symbol has the highest per_guard kill count (67). rrf_guarded_by_regex and rrf_guarded_by_symbol_regex have 0 kills because regex always returns evidence on these tasks.
+3. **Symbol extraction misses 91 positive tasks**: Heuristic regex-based symbol extraction fails for non-standard patterns where regex/RRF succeed.
+4. **62 weak labels are suspect**: On 62/258 weak-quality labels, strategies strongly disagree with the oracle, suggesting label error rather than strategy failure.
+5. **Unrun strategy clusters have count=0 by design**: No data is fabricated for dense, TDB, graph, or AST strategies.
+6. **206 bucket regressions**: Multiple strategies exceed thresholds for no_gold_nonempty (>0.3), recall gap vs RRF (>0.15), or guard kills (>0.1) in specific query_category/risk_tags/repo/language/expected_behavior buckets.
+
+### Caveats
+
+- R20 labels are weak/mined (no human_reviewed). Failure attribution may reflect label quality rather than strategy quality.
+- This is analysis-only; no retrieval was re-run.
+- Unrun cluster counts are 0 by construction, not negative results.
+- Path matching uses suffix comparison; may produce false matches on very short paths.
+- No Rust core changes. Eval-layer research only.
+- promotion_ready=false. not_promotion_evidence=true.
+
+## 2026-06-12 — R23 Guard Parameter Sweep
+
+### Objective
+
+Eval-layer guard parameter sweep consuming R21 artifacts and R20 labels. Sweep over 8 guard parameter dimensions (query_noise_threshold, rrf_score_threshold, regex_agreement_required, symbol_agreement_required, regex_or_symbol_agreement_required, top1_top2_gap_threshold, identifier_density_threshold, candidate_channel_count_threshold) plus 15 combined strategies. Does NOT re-run retrieval, does NOT change Rust core.
+
+### Hypothesis
+
+Systematic parameter sweep across guard dimensions will reveal Pareto-optimal operating points for the recall-vs-false-positive trade-off. Combined strategies (query noise + agreement + score threshold) should outperform single-dimension guards.
+
+### Implementation notes
+
+- **eval/r23_guard_sweep.py**: Analysis-only score phase. Loads R21 predictions (rrf, regex, symbol) + R20 labels + R21 report. Never invokes openlocus CLI. Labels only in score phase.
+- **Guard semantics**: Based on raw RRF evidence; if guard condition fails then abstain. Agreement based on regex/symbol predictions evidence presence. Score threshold based on RRF top score. Gap threshold based on top1-top2 score gap. Identifier density from query parsing. Candidate channel count from top evidence channels union estimate.
+- **51 strategies**: 7 query_noise_threshold values, 10 rrf_score_threshold values, 3 boolean agreement strategies, 7 top1_top2_gap_threshold values, 4 identifier_density_threshold values, 5 candidate_channel_count_threshold values, plus 15 combined strategies.
+- **Output**: runs/r23-guard-sweep.json with strategies, curves (risk_coverage, recall_vs_negative, recall_vs_false_primary, precision_vs_abstain), bucket_summary, observations.
+- **Bucket regression**: recall gap vs RRF >0.15, no_gold_nonempty_rate >0.3, primary_false_positive_rate >0.3, guard_recall_kill_rate >0.1.
+- **Safety**: promotion_ready=false, not_promotion_evidence=true, no promotion claims, no dense/LLM/QuIVer claims, labels only in score phase, R21 artifact manifest verified fail-closed for every recorded path/sha256/byte-count/jsonl-line-count.
+
+### R23 guard sweep results (51 strategies, 741 tasks)
+
+| Strategy | FileRecall@1 | no_gold_nonempty | pfp | abstain | guard_kill | blocked |
+|---|---|---|---|---|---|---|
+| rrf_raw (baseline) | 0.693 | 0.495 | 0.495 | 0.182 | N/A | false |
+| query_noise_threshold_1 | 0.693 | 0.437 | 0.437 | 0.225 | 0.000 | true |
+| regex_or_symbol_agreement | 0.693 | 0.279 | 0.279 | 0.306 | 0.000 | true |
+| query_noise_1+regex_or_symbol_agree | 0.693 | 0.221 | 0.221 | 0.350 | 0.000 | true |
+| symbol_agreement | 0.561 | 0.167 | 0.167 | 0.517 | 0.228 | true |
+| rrf_score_threshold_0.02 | 0.602 | 0.198 | 0.198 | 0.456 | 0.151 | true |
+| rrf_score_threshold_0.04 | 0.329 | 0.018 | 0.018 | 0.804 | 0.571 | true |
+| top1_top2_gap_0.005 | 0.372 | 0.036 | 0.036 | 0.746 | 0.528 | true |
+| ident_1+regex_or_symbol_agree | 0.610 | 0.207 | 0.207 | 0.470 | 0.120 | true |
+
+### Key findings
+
+1. **All 51 strategies have bucket regressions**: Every guard strategy has at least one bucket where recall gap, no_gold_nonempty_rate, primary_false_positive_rate, or guard_recall_kill_rate exceeds the regression threshold.
+2. **Query noise guard is effective but insufficient alone**: query_noise_threshold_1 preserves FileRecall@1 (0.693) with zero guard_recall_kill, but no_gold_nonempty_rate remains at 0.437.
+3. **Agreement guards reduce false positives without recall cost**: regex_or_symbol_agreement_required reduces no_gold_nonempty_rate from 0.495 to 0.279 with zero guard_recall_kill.
+4. **Combined query_noise + agreement is the best R23 guard balance**: query_noise_1_plus_regex_or_symbol_agree achieves no_gold_nonempty_rate 0.221 with FileRecall@1 0.693 and zero guard_recall_kill.
+5. **RRF score threshold above 0.02 causes sharp recall cliff**: Most RRF top scores are concentrated near 0.03-0.06; thresholds above 0.02 reject substantial recall.
+6. **top1_top2_gap threshold kills too much recall**: Gap thresholds even at 0.005 cause >50% guard_recall_kill_rate.
+7. **Symbol agreement alone kills 22.8% recall**: Confirms R22 finding that rrf_guarded_by_symbol is too aggressive.
+8. **No strategy eliminates no_gold_nonempty_rate to zero without unacceptable recall cost**: Strategies achieving near-zero false positives do so by abstaining on >99% of queries.
+
+### Safety
+
+- promotion_ready=false, not_promotion_evidence=true always
+- No promotion claims, no dense/LLM/QuIVer quality claims
+- Labels only in score phase; never used for routing
+- R21 artifacts manifest verified fail-closed for path/sha256/byte-count/jsonl-line-count
+- Analysis-only no CLI
+- R20 labels weak/mined; not promotion evidence
+
+### Caveats
+
+- R20 labels are weak/mined (258 weak, 315 mined_high_confidence, 168 mined); not promotion evidence
+- Guard parameter sweep is analysis-only; no Rust core changes
+- Bucket regression thresholds (0.15 recall gap, 0.3 no_gold, 0.3 pfp, 0.1 kill) are heuristic
+- All strategies blocked by bucket regression; expected given R20 label diversity
+- Combined strategies are observations, not promotions
+- query_noise_score is deterministic/heuristic; not learned from data
+
+---
+
+## 2026-06-12 — R24 QuIVer/TDB/Dense Probe
+
+### Objective
+
+Probe QuIVer/TDB/dense availability and run dense_mock as a candidate-channel safety/quality smoke on the R20 auto-wide failure-surface dataset. NOT a QuIVer bakeoff. QuIVer is not implemented and must be reported unavailable; no fabricated QuIVer quality data is produced. TDB is a feature-gated metadata/chunk store, not an ANN/QuIVer backend. Dense real is unavailable; dense_mock is candidate-channel safety/quality-smoke (not semantic quality).
+
+### Core principles
+
+1. QuIVer is not implemented -> report unavailable, not run. No numeric 0 as quality result.
+2. TDB is NOT ANN/QuIVer -> feature-gated metadata/chunk store. Probe placeholder only.
+3. dense_real unavailable; dense_mock is candidate-channel safety/quality-smoke (not semantic quality).
+
+### Implementation notes
+
+- **eval/r24_quiver_tdb_probe.py**: Strictly separated RUN and SCORE phases.
+  - Phase 1 (RUN): Availability checks + dense mock candidate-channel probe. Loads only public tasks + repo lock. Creates isolated benchmark roots by allowlist-copying source files. Runs dense build/search via openlocus CLI. Never reads labels.
+  - Phase 2 (SCORE): Loads predictions + labels. Computes metrics. Never invokes openlocus CLI.
+- **Availability checks** (fail-closed evidence):
+  - QuIVer implementation scan: no files/deps/symbols for QuIVer except eval/docs placeholders. Report unavailable, not run.
+  - TDB default status via `openlocus store status tdb --json`: available=false, success=false. No retrieval quality claimed.
+  - Dense provider status: mock and disabled available; real provider unavailable.
+- **Dense mock candidate-channel probe**:
+  - Uses R20 repo lock source paths. Builds isolated temp roots by allowlist-copying source files under repo_id/ and .openlocus/policy.toml.
+  - For each repo, runs `openlocus dense build --provider mock --experimental --json` once.
+  - For R20 tasks, runs `openlocus dense search --provider mock --limit 10 --json <query>` in that repo isolated root.
+  - Preserves `.openlocus/embeddings` and `.openlocus/audit` between build/search; only transient traces/context are cleaned during the run.
+  - Produces R24-owned artifacts in runs/: dense_mock predictions/evidence/rejections/trace plus dense_mock_plus_rrf predictions/evidence/rejections/trace, and manifest json. Does NOT commit runs.
+  - Validates dense evidence through `openlocus citations validate --json` before cleanup. citation_validity must be 1.0 if evidence exists.
+  - Scans .openlocus/embeddings and audit for canary tokens and query leaks. A non-secret dense path canary runs after dense build and fails closed if it cannot traverse the vector store and return evidence for non-empty stores. `success=false` task searches are recorded as candidate rejections, not process failures, when CLI exits cleanly with a block/no-hit reason.
+  - Scores dense_mock using R20 labels: FileRecall@1/3/5, MRR, SpanF0.5, SpanPrecision, SpanRecall, token_waste, no_gold_nonempty_rate, primary_false_positive_rate, must_not_primary_violation_rate, abstain_rate, weak_candidate_rate, hard_distractor_hit_rate. Bucket metrics for query_category, risk_tags, expected_behavior, repo_id, language. Dense semantic trap/proper_name/config/API buckets separately summarized.
+- **Optional fusion**: dense_mock_plus_rrf by RRF-fusing dense_mock with R21 rrf predictions, only if dense evidence citation-valid and no synthetic invalid channels. Score separately and report dense candidate contribution.
+- **TDB stale/materialization smoke**: Default build TDB is unavailable placeholder. `store status tdb` confirms. Does not enable feature. Reports tdb_feature_probe_not_run with reason. tdb_stale_leak_count is not_applicable.
+- **QuIVer diagnostic fields**: R24.1 fields (BQ_overlap, quiver recall, etc.) set status unavailable/not_measured with reason quiver_not_implemented and next_required_tests. Does NOT output numeric 0 as quality result.
+
+### Safety gates
+
+- Labels not loaded until after dense run complete
+- Citation validator pass for dense artifacts
+- Artifact manifest path/sha/bytes/lines verified
+- Dense mock must produce non-empty materialized candidates; otherwise R24 fails as a vacuous candidate-channel probe
+- Non-secret dense path canary must return evidence for non-empty dense stores; raw canary/query text must not appear in stdout/stderr or artifacts
+- Canary/no label leakage: public tasks only in run phase; labels only score
+- No promotion/dense real/QuIVer quality claims
+- Runs artifacts gitignored
+- Private field scan: no gold_spans/expected_behavior/query_category in R24 artifacts
+- Canary token scan: no canary tokens in R24 artifacts
+
+### Key findings
+
+1. **QuIVer is not implemented**: Scan of all Rust crates, Cargo.toml files, and source code confirms no QuIVer implementation exists outside eval/docs placeholders. quiver_implemented=false.
+2. **TDB is a placeholder in default build**: `openlocus store status tdb --json` returns available=false, success=false, mode=placeholder. TDB is a feature-gated metadata/chunk store, not an ANN/QuIVer backend.
+3. **Dense mock is available as a candidate-channel safety smoke**: mock and disabled providers are available; real provider is unavailable. Dense mock uses deterministic blake3-based vectors that do NOT capture semantic similarity.
+4. **Dense mock produces real, materialized candidates but mostly finds failure surfaces**: full run produced 5,264 dense_mock candidates, all Rust citation-valid. Quality is poor as expected for non-semantic mock vectors: FileRecall@1 0.024, MRR 0.073, SpanF0.5 ~0.000, token_waste 0.850, primary_false_positive_rate 0.878.
+5. **Dense CLI rejections are now explicit**: full run recorded 99 candidate rejections (`candidate_rejection_rate` 0.134), mostly expected block/no-hit outcomes surfaced explicitly rather than hidden as empty successes.
+6. **Canary hardening is non-vacuous**: 8 non-empty dense stores checked, 1 empty store skipped, path canary returned 66 evidence items, query canaries returned 132 evidence items, and raw canary/query leakage count was 0.
+7. **Dense mock + RRF fusion is a noise-amplification probe, not a recommendation**: full run confirms dense contribution (642 tasks with dense candidates; 5,264 dense spans retained in fusion), but fusion increases false-primary/noise: FileRecall@1 0.134, MRR 0.451, token_waste 0.928, primary_false_positive_rate 0.923, hard_distractor_hit_rate 0.215.
+8. **Citation validity is enforced**: dense_mock evidence and dense_mock_plus_rrf evidence both pass Rust citation validation (hash+range+path) before cleanup. dense_mock citation_total=5,264; fusion citation_total=13,149; invalid=0.
+9. **QuIVer diagnostic fields are properly unavailable**: All R24.1 fields report unavailable/not_measured with reason quiver_not_implemented and explicit next_required_tests. No numeric 0 is output as a quality result.
+
+### Caveats
+
+- This is an availability + mock dense candidate-channel probe, NOT a QuIVer bakeoff
+- QuIVer remains future work
+- Dense mock scores are NOT semantic quality metrics
+- TDB is a metadata/chunk store, not an ANN/QuIVer backend
+- Dense real provider is unavailable
+- R20 labels are weak/mined; not promotion evidence
+- promotion_ready=false always
+- No Rust core changes
+
+---
+
+## 2026-06-12 — R25 Graph+Dense Ablation
+
+### Objective
+
+Eval-layer ablation study measuring the contribution of graph_basic and dense_mock strategies — individually and in combination with R21 RRF — on the R20 auto-wide failure-surface dataset (741 tasks, 9 repos, 25 categories). Does NOT change Rust core or EvidenceCore.
+
+### Core principles
+
+1. dense_mock is non-semantic (deterministic blake3 vectors do NOT capture semantic similarity)
+2. QuIVer is not implemented (unavailable/not_measured; no numeric zero as quality result)
+3. TDB is a feature-gated placeholder (not applicable for this ablation)
+4. R20 labels are weak/mined (258 weak, 315 mined_high_confidence, 168 mined; no human_reviewed)
+
+### Implementation notes
+
+- **eval/r25_graph_dense_ablation.py**: Strictly separated RUN and SCORE phases.
+  - Phase 1 (RUN): Loads only public tasks + repo lock + R21 rrf predictions. Creates isolated benchmark roots by allowlist-copying source files. Runs graph_basic (derive top path via symbol→regex fallback, then impact) and dense_mock (build + search) via openlocus CLI in isolated roots. Builds composite strategies (rrf_plus_graph, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph) by RRF-fusing base predictions. Never reads labels.
+  - Phase 2 (SCORE): Loads all strategy predictions + R20 labels. Computes metrics. Never invokes openlocus CLI.
+- **6 strategies**: no_graph (R21 rrf baseline), graph_basic, rrf_plus_graph, dense_mock, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph.
+- **New ablation metrics**: added_gold_span, added_false_span, graph_pollution_ratio, graph_token_waste_delta, dense_added_gold_span, dense_added_false_span, combined_added_gold_span, combined_added_false_span.
+- **Rule**: If added_false_span > added_gold_span, default expansion is blocked.
+- **QuIVer/TDB**: Explicit unavailable/not_measured; no numeric zero quality output.
+- **Safety gates**: Labels not loaded until after run; R21 artifact manifest path/sha/bytes/jsonl line count verified fail-closed before using RRF baseline; citation validator hash/range/path for graph/dense/composite strategies (no_graph inherits R21 validation after manifest verification); artifact manifest verified; scans for private fields/canary tokens; promotion_ready=false, not_promotion_evidence=true, remote_calls=0.
+- **Bug fix**: `_extract_evidence_from_search_result()` helper added because search commands return JSON array (wrapped as `result["items"]` by `run_cli`), while impact/retrieve return `result["evidence"]`.
+- **Bug fix**: `INIMPLEMENTED_STRATEGIES` → `IMPLEMENTED_STRATEGIES` typo.
+
+### R25 ablation results (741 tasks, 9 repos)
+
+#### Retrieval quality
+
+| Metric | no_graph | graph_basic | rrf_plus_graph | dense_mock | rrf_plus_dense_mock | rrf_plus_dense_mock_plus_graph |
+|--------|---------:|------------:|---------------:|-----------:|--------------------:|-------------------------------:|
+| FileRecall@1 | 0.693 | 0.003 | 0.497 | 0.024 | 0.134 | 0.112 |
+| FileRecall@3 | 0.791 | 0.013 | 0.762 | 0.110 | 0.719 | 0.698 |
+| FileRecall@5 | 0.829 | 0.013 | 0.791 | 0.152 | 0.781 | 0.767 |
+| MRR | 0.753 | 0.008 | 0.641 | 0.073 | 0.451 | 0.405 |
+| SpanF0.5 | 0.185 | 0.000 | 0.172 | 0.000 | 0.077 | 0.068 |
+| token_waste | 0.779 | 0.310 | 0.800 | 0.850 | 0.928 | 0.938 |
+| no_gold_nonempty | 0.495 | 0.072 | 0.495 | 0.878 | 0.923 | 0.923 |
+| abstain_rate | 0.182 | 0.785 | 0.182 | 0.134 | 0.034 | 0.034 |
+| citation_validity | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+
+#### Ablation metrics
+
+| Metric | graph | dense | rrf_plus_graph | rrf_plus_dense | combined |
+|--------|------:|------:|---------------:|---------------:|---------:|
+| added_gold_span | 0 | 2 | 0 | 2 | 2 |
+| added_false_span | 435 | 20,273 | 435 | 20,273 | 20,695 |
+| default_expansion_blocked | true | true | true | true | true |
+
+#### Graph-specific metrics
+
+| Metric | Value |
+|--------|-------|
+| Path derivation: symbol | 358/741 (48.3%) |
+| Path derivation: regex | 156/741 (21.1%) |
+| Path derivation: none | 227/741 (30.6%) |
+| Impact failures (no top path) | 227 |
+| Impact no evidence (top path found but impact empty) | 355 |
+| graph_pollution_ratio | 0.000 |
+| graph_token_waste_delta | -0.469 |
+
+### Key findings
+
+1. **graph_basic produces net-negative contribution**: Added 0 gold spans and 435 false spans. Default expansion blocked.
+2. **dense_mock is net-negative as expected**: Added 2 gold spans and 20,273 false spans. Non-semantic mock vectors produce massive noise. Default expansion blocked.
+3. **rrf_plus_graph dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.497 because graph evidence competes with RRF evidence in the RRF score calculation.
+4. **rrf_plus_dense_mock also dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.134. Dense mock evidence floods the RRF pool with irrelevant candidates.
+5. **Graph pollution is zero**: No graph evidence was returned on forbidden paths. graph_pollution_ratio=0.000.
+6. **Graph has low token waste when it fires**: graph_basic token_waste=0.310 vs no_graph=0.779, but this is because graph_basic mostly abstains (0.785 abstain rate).
+7. **Citation validity remains 1.0**: graph_basic, dense_mock, and composite strategies are revalidated in R25 with Rust hash/range/path citation validation. no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use.
+8. **QuIVer/TDB are honestly reported as unavailable/not_measured**: No numeric zero quality results for QuIVer. TDB is not applicable for this ablation.
+9. **Canary scope is source-leak only**: R25 uses a regex canary over isolated copied source before dense build. A seeded self-test proves regex hits are detectable, then 36 leakage checks produce 0 hits and 0 failures. It does not claim a dense-path canary; R24 owns dense-path canary hardening.
+
+### Safety
+
+- All safety checks passed
+- Labels not loaded until after run complete (strict RUN/SCORE phase separation)
+- Citation validator hash/range/path for every strategy with evidence
+- Artifact manifest path/sha/bytes/line count verified
+- Artifact scans for private fields: 0 issues
+- Artifact scans for canary tokens: 0 issues
+- promotion_ready=false, not_promotion_evidence=true, remote_calls=0
+- R20 labels weak/mined caveat recorded
+
+### Caveats
+
+- R20 labels are weak/mined (no human_reviewed); not promotion evidence
+- dense_mock is non-semantic; no real embedding quality claim
+- Graph impact is depth=1 only; deeper impact not tested
+- Graph path derivation uses symbol→regex fallback; not LSP/SCIP
+- Impact returns empty evidence for 355/514 tasks with top path (no graph edges found)
+- graph_basic abstains on 78.5% of tasks (no path or no impact)
+- Combined strategies show additive noise: graph + dense false spans accumulate
+- Runs artifacts are gitignored; report not committed
+- No Rust core changes
+
+---
+
+## 2026-06-12 — R26 Auto-Stress-1000
+
+### Objective
+
+Generate a large-scale stress dataset with >= 1000 cases targeting specific failure categories, using the same external repo set as R20 and deriving some queries from existing R20 tasks/labels where useful. Data generation/static validation only; no Rust core changes, no retrieval strategy promotion.
+
+### Hypothesis
+
+A targeted stress dataset with precise category composition will maximize failure discovery across retrieval strategies. Specifically: negative/abstain-heavy cases will expose hallucination and false-positive vulnerabilities; hard-distractor and same-name cases will test precision under confusion; semantic-trap and dense_quiver cases will test dense/infrastructure naming confusion; stale-index cases will test freshness detection.
+
+### Implementation notes
+
+- Created `eval/r26_generate_auto_stress.py` — generates 1100 stress cases from the same external repo set as R20 and some R20 derivative labels using deterministic seed 42.
+- Created `eval/r26_validate_auto_stress.py` — fail-closed static validator with 19 checks.
+- Created `fixtures/r26_auto_stress/` with tasks, labels, manifest, repos.lock, safety_checks, summary.
+- Public tasks contain only: test_id, repo_id, query, public_version, source. No category/risk/judgement fields leak.
+- Private labels carry all judgement fields: source_category, risk_public, intent_guess, risk_tags, oracle_type, expected_behavior, gold_spans, hard_distractors, must_not_primary, why_this_is_hard, which_strategy_it_targets.
+- 10 stress categories with exact target composition: negative_nonexistent 150, ambiguous_vague 150, hard_distractor 200, semantic_trap 150, same_name_symbol 100, frontend_backend_confusion 75, test_source_confusion 75, generated_vendor_trap 50, stale_index_like 50, dense_quiver_specific_trap 100.
+- Uses the same external repo set as R20 and derives some queries from existing R20 tasks/labels where useful (hard_distractor, same_name_symbol, frontend_backend_confusion, test_source_confusion, generated_vendor_trap, stale_index_like categories use R20 label queries as seeds).
+- No canary tokens anywhere.
+- Deterministic seed 42.
+
+### Validation results
+
+- 19/19 fail-closed static validation checks passed, including exact category target counts, public/private schema separation, SHA-256 artifact checks, and repo content manifest SHA lock recomputation
+- 0 critical errors
+- 0 warnings
+- Tasks: 1100, Labels: 1100, Repos: 9, Categories: 10
+- All categories meet minimum count (10)
+- All repos meet minimum count (50)
+- No canary tokens found
+- No private fields in public tasks
+- Label-public task query/repo consistency verified
+- Span path/range validity verified against locked source files
+- Deterministic SHA256 checksums verified
+- dataset_manifest flags correct
+
+### Caveats
+
+- **R26 is weak/mined/deterministic stress, NOT promotion evidence.** It is designed to maximize failure discovery, not demonstrate quality.
+- **Labels are mined/weak/deterministic, not human-verified.** `human_reviewed` is forbidden.
+- **Negative/abstain cases dominate** (590/1100 abstain + 70/1100 no_primary = 60%). This is intentional.
+- **Derivation from R20 is shallow.** R26 reuses R20 repo sources and some R20 label queries as seeds, but does NOT inherit R20 gold spans or oracle judgments.
+- **semantic_trap and dense_quiver_specific_trap categories contain queries about ML/AI/vector infrastructure that these repos do NOT implement.** These test false-positive resistance, not retrieval quality.
+- **stale_index_like cases are metamorphic probes.** They reference code that may not exist in the current snapshot.
+- **No runner/scorer matrix exists for R26.** R26 is a static dataset with a static validator.
+- **R26 labels are stress failure-surface labels, not EvidenceCore.**
+- No Rust core changes
+
+## 2026-06-12 — R28 Promotion Candidate Report
+
+### Objective
+
+Synthesize R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets into a conservative `promotion_candidate_report` that answers whether defaults should change, whether guard/dense/graph/QuIVer are promotion-ready, and which evidence gaps block promotion.
+
+### Implementation
+
+- Added `eval/r28_promotion_candidate_report.py`.
+- Reads already validated artifacts only: R21 auto-wide strategy matrix, R23 guard sweep, R24 dense/QuIVer/TDB probe, R25 graph+dense ablation, and R26 auto-stress static validation.
+- Produces `docs/r28-promotion-candidate-report.json` and `docs/r28-promotion-candidate-report.md`.
+- No retrieval CLI invocation.
+- No core changes.
+- remote_calls=0.
+
+### Findings
+
+- `promotion_ready=false`.
+- Current default should not change.
+- `best_recall_channel=rrf`, but RRF still has high false-primary/no-gold risk on R20 auto-wide.
+- `best_precision_anchor=symbol`.
+- `query_noise_plus_rrf_agree_min` is promising but not stable enough: R21 shows useful risk reduction without recall kill, but R23 finds bucket regressions for all 51 swept strategies and R26 has not been run through a retrieval runner/scorer matrix yet.
+- QuIVer/TDB have no independent quality evidence. QuIVer is not implemented; TDB is not an ANN/search backend in default build.
+- Dense mock is safety/noise probe only, not semantic quality. R24/R25 show high false-primary/noise.
+- Graph default expansion is blocked: R25 graph added 0 gold spans and 435 false spans.
+- Dense default expansion is blocked: R25 dense added 2 gold spans and 20,273 false spans.
+
+### Blocking evidence gaps
+
+- R26 auto-stress has static validation only; no retrieval runner/scorer matrix yet. (Resolved by R29.)
+- R20 labels are weak/mined and R26 oracle types are deterministic/metamorphic/mined/stress; neither is human-verified promotion evidence.
+- R23 guard sweep shows bucket regressions across all swept strategies.
+- QuIVer is unavailable, so there is no BQ/ANN compatibility or quality evidence.
+- Dense real provider is unavailable.
+- Graph/dense expansions are net-negative in R25.
+
+### Recommendation
+
+Keep all new channels as candidate/supporting/research-only. Next work should run R26 through the strategy matrix and add human-verified labels for high-risk buckets before any default policy change.
+
+## 2026-06-12 — R29 R26 Auto-Stress Strategy Matrix
+
+### Objective
+
+Run R26's 1100 public stress tasks through a 16-strategy matrix to maximize failure discovery, NOT promotion. Must be fresh run; no skip-run support.
+
+### Current hypothesis
+
+A comprehensive strategy matrix across base (regex/bm25/symbol/rrf), composite/guard, and R24/R25-style (dense_mock, graph_basic, composites) strategies on R26's stress dataset will reveal systematic failure surfaces. R26's 10 stress categories (negative_nonexistent, ambiguous_vague, hard_distractor, semantic_trap, same_name_symbol, frontend_backend_confusion, test_source_confusion, generated_vendor_trap, stale_index_like, dense_quiver_specific_trap) are specifically designed to expose retrieval failures.
+
+### Implementation notes
+
+- **eval/r29_r26_stress_matrix.py**: Strictly separated RUN and SCORE phases.
+  - RUN phase: loads only public tasks + repo lock + R26 safety/manifest. Creates isolated benchmark roots by allowlist-copying source files. Runs base methods via openlocus CLI. Builds composite/guard strategies from base predictions. Runs dense_mock build/search and graph_basic. Never reads labels. Validates all citations while isolated roots exist. Writes all run artifacts before loading labels.
+  - SCORE phase: loads predictions + labels. Computes metrics, failure clusters, span contributions, bucket regressions. Never invokes CLI.
+- **16 implemented strategies**: regex, bm25, symbol, rrf, bm25_regex, bm25_symbol, rrf_guarded_by_symbol, rrf_guarded_by_regex, rrf_guarded_by_symbol_regex, query_noise_plus_rrf_agree_min, dense_mock, dense_mock_plus_rrf, graph_basic, rrf_plus_graph, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph.
+- **5 unavailable strategies**: dense_real_if_available (not_configured_or_policy_disabled), tdb_quiver_if_available (quiver_not_implemented), tdb_quiver_plus_rrf (quiver_not_implemented), tdb_quiver_guarded_by_symbol_regex (quiver_not_implemented), fast_context_if_available (fast_context_is_4turn_orchestration_scaffold_not_standalone_matrix_strategy). No fake numeric quality.
+- **Citation validation**: Every implemented strategy's evidence validated via `openlocus citations validate` while isolated roots exist. Composite/fusion evidence revalidated. No synthetic EvidenceCore channels (no "RRF" channel added). If any citation invalid, exit non-zero.
+- **Isolation**: Allowlisted source files copied from R26 repos.lock into isolated temp roots. No docs/eval/fixtures/runs/.git. Symlinks disallowed. `.openlocus/policy.toml` in isolated root. Runtime traces cleaned between queries; dense embeddings preserved after build.
+- **R26 provenance validation**: run phase validates safety_checks.passed=true, task_count=1100, not_promotion_evidence=true, core_changes=false, remote_calls=0, dense_or_llm_claims=false, and tasks SHA. Declared label count is recorded but label file content/SHA validation is deferred to score phase after run artifacts/citations/manifest are written.
+- **14 required failure clusters**: RRF_INHERITED_BM25_FALSE_POSITIVE, GUARD_RECALL_KILL, SYMBOL_EXTRACTION_MISS, REGEX_NORMALIZATION_BUG, DENSE_MOCK_NOISE, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE, GRAPH_NEIGHBOR_FALSE_POSITIVE, GRAPH_ADDS_NO_GOLD, HARD_DISTRACTOR_CONFUSION, NEGATIVE_NONEXISTENT_FALSE_PRIMARY, STALE_INDEX_LIKE_FALSE_PRIMARY, TEST_SOURCE_CONFUSION, FRONTEND_BACKEND_CONFUSION, BENCHMARK_ORACLE_SUSPECT.
+- **Span contribution analysis**: graph/dense/composites vs fresh RRF baseline; added_gold_span, added_false_span, tasks_with_additions, default_expansion_blocked.
+- **Bucket regressions**: per source_category, expected_behavior, oracle_type, repo_id, risk_tags. Regression types: recall drop, false-primary increase, no-gold-nonempty increase, must-not-primary increase, abstain spike on primary_evidence.
+- **Private field scan**: prediction/evidence/rejection/trace JSONL must not include: source_category, risk_public, intent_guess, risk_tags, oracle_type, expected_behavior, gold_spans, hard_distractors, must_not_primary, why_this_is_hard, which_strategy_it_targets.
+- **Report fields**: schema_version="r29-v1", promotion_ready=false, not_promotion_evidence=true, core_changes=false, remote_calls=0, labels_loaded_after_run=true, run_phase_public_only=true, score_phase_labels_only=true, r26_source_artifacts_validated=true, r26_label_artifacts_validated_after_run=true, citation_validity_all_strategies=1.0, quiver_implemented=false, dense_mock_is_semantic_quality=false, artifact_manifest_verified=true.
+- **No skip-run**: Fresh run always required.
+
+### Full-run results
+
+- Full R29 completed on 1100 R26 tasks across 16 implemented strategies.
+- Safety gates: ALL PASSED. Artifact manifest verified (64 files). Artifact private-field scan and canary scan clean. Citation validity is 1.0 for every implemented strategy.
+- RRF remains the best recall channel but unsafe alone: FileRecall@1=0.803, FileRecall@5=0.923, MRR=0.858, primary_false_positive_rate=0.453.
+- `query_noise_plus_rrf_agree_min` reduces false-primary while preserving RRF recall on R26: FileRecall@1=0.803, FileRecall@5=0.923, primary_false_positive_rate=0.106, guard_recall_kill_rate=0.003. This is still not promotion evidence because R23 showed bucket regressions and R26 labels are not human-verified.
+- Symbol remains the precision anchor: SpanF0.5=0.291, primary_false_positive_rate=0.080, token_waste=0.247, abstain_rate=0.671.
+- Dense mock is a high-noise failure probe: dense_mock primary_false_positive_rate=0.874; dense_mock_plus_rrf and rrf_plus_dense_mock primary_false_positive_rate=0.906.
+- Graph remains default-blocked: graph_basic added_gold_span=0, added_false_span=437.
+- All graph/dense expansion variants are blocked by `added_false_span > added_gold_span`.
+- Failure clusters: DENSE_MOCK_NOISE=577, RRF_INHERITED_BM25_FALSE_POSITIVE=299, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE=219, GRAPH_ADDS_NO_GOLD=90, SYMBOL_EXTRACTION_MISS=63, GUARD_RECALL_KILL=62, FRONTEND_BACKEND_CONFUSION=57, HARD_DISTRACTOR_CONFUSION=43, NEGATIVE_NONEXISTENT_FALSE_PRIMARY=41, TEST_SOURCE_CONFUSION=41, REGEX_NORMALIZATION_BUG=36, GRAPH_NEIGHBOR_FALSE_POSITIVE=26.
+- Bucket regressions total=448 across bm25, bm25_regex, bm25_symbol, dense_mock, dense_mock_plus_rrf, graph_basic, regex, rrf_guarded_by_symbol, rrf_plus_dense_mock, rrf_plus_dense_mock_plus_graph, symbol.
+
+### Caveats
+
+- No promotion, no default change, failure-surface only.
+- R26 labels are weak/mined/deterministic/stress; not human-verified.
+- dense_mock is candidate-channel safety smoke, not semantic quality.
+- graph_basic is deterministic depth=1, not precise call/type graph.
+- QuIVer/TDB unavailable; no fabricated numeric quality.
+- Fresh run only; no skip-run support.
+

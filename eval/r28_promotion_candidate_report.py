@@ -325,7 +325,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Generate R28 promotion candidate report")
     parser.add_argument("--workspace", default=".")
     parser.add_argument("--json-out", default="docs/r28-promotion-candidate-report.json")
-    parser.add_argument("--md-out", default="docs/r28-promotion-candidate-report.md")
+    parser.add_argument("--md-out", default="docs/en/r28-promotion-candidate-report.md")
     args = parser.parse_args()
 
     workspace = Path(args.workspace).resolve()

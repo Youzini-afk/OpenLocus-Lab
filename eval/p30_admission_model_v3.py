@@ -43,7 +43,7 @@ SCHEMA_VERSION = "p30-admission-v3-report-v1"
 GENERATED_BY = "eval/p30_admission_model_v3.py"
 
 DEFAULT_OUT = Path("artifacts/p30_admission_v3/p30_admission_v3_report.json")
-DEFAULT_DOC = Path("docs/p30-admission-model-v3.md")
+DEFAULT_DOC = Path("docs/en/p30-admission-model-v3.md")
 
 # Actions that the admission model is allowed to emit.  They are semantic
 # choices; per-record outcomes are looked up from the task's outcome table.

@@ -381,7 +381,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--max-files", type=int, default=2000)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/r39_r40/symbol_regex_repair.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r39-r40-symbol-regex-repair.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r39-r40-symbol-regex-repair.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
     args._tmp_ctx = None

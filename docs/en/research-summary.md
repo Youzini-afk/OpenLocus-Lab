@@ -1,12 +1,12 @@
 # OpenLocus Research Summary
 
 For the current research-conclusion synthesis, see
-[`docs/current-research-conclusions.en.md`](current-research-conclusions.en.md)
-or the index page [`docs/current-research-conclusions.md`](current-research-conclusions.md).
+[`docs/en/current-research-conclusions.md`](current-research-conclusions.md)
+or the index page [`docs/current-research-conclusions.md`](../current-research-conclusions.md).
 
 当前研究结论总报告见
-[`docs/current-research-conclusions.zh.md`](current-research-conclusions.zh.md)，
-入口索引见 [`docs/current-research-conclusions.md`](current-research-conclusions.md)。
+[`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
+入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
 This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
@@ -42,10 +42,10 @@ snippets/candidate metadata, and explicit latency/cost accounting.
 
 Current detailed conclusion reports:
 
-- [`current-research-conclusions.zh.md`](current-research-conclusions.zh.md) /
-  [`current-research-conclusions.en.md`](current-research-conclusions.en.md)
-- [`real-provider-ci-large-scale.zh.md`](real-provider-ci-large-scale.zh.md) /
-  [`real-provider-ci-large-scale.en.md`](real-provider-ci-large-scale.en.md)
+- [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md) /
+  [`docs/en/current-research-conclusions.md`](current-research-conclusions.md)
+- [`docs/zh/real-provider-ci-large-scale.md`](../zh/real-provider-ci-large-scale.md) /
+  [`docs/en/real-provider-ci-large-scale.md`](real-provider-ci-large-scale.md)
 - [`p20-llm-large-scale.md`](p20-llm-large-scale.md)
 - [`p21-g-cross-model-context-injection.md`](p21-g-cross-model-context-injection.md)
 - [`real-provider-ci-scale-p8-p9.md`](real-provider-ci-scale-p8-p9.md)

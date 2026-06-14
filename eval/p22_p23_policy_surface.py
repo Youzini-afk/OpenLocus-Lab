@@ -60,8 +60,8 @@ COMPOSITE_STRATEGIES = ["symbol_regex_union", "rrf_guarded_by_symbol_regex"]
 ALL_STRATEGIES = BASE_STRATEGIES + COMPOSITE_STRATEGIES
 
 REFERENCE_PATHS = [
-    Path("docs/r29-r26-stress-matrix.md"),
-    Path("docs/r30-baseline-freeze.md"),
+    Path("docs/en/r29-r26-stress-matrix.md"),
+    Path("docs/en/r30-baseline-freeze.md"),
     Path("artifacts/r30/baseline_manifest.json"),
     Path("artifacts/p20_llm_large/p20_llm_large_report.json"),
 ]
@@ -789,7 +789,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/p22_p23/policy_surface_full_report.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/p22-p23-policy-surface-full.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/p22-p23-policy-surface.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
 

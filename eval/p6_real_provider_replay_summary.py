@@ -15,7 +15,7 @@ LABELS = ROOT / "artifacts/real_provider/p5_real_llm_stress_labels.jsonl"
 R39 = ROOT / "artifacts/real_provider/p6_symbol_regex_repair.json"
 R41 = ROOT / "artifacts/real_provider/p6_graph_admission.json"
 OUT = ROOT / "artifacts/real_provider/p6_real_provider_replay_summary.json"
-DOC = ROOT / "docs/real-provider-p6-replay-summary.md"
+DOC = ROOT / "docs/en/real-provider-p6-replay-summary.md"
 
 
 def load_jsonl(path: Path) -> list[dict]:

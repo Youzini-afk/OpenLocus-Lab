@@ -997,7 +997,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--self-test", action="store_true", help="Run a tiny generated repo smoke instead of external corpora")
     parser.add_argument("--out", type=Path, default=Path("artifacts/r32/view_bakeoff_report.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r32-embedding-view-bakeoff.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r32-embedding-view-bakeoff.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
 

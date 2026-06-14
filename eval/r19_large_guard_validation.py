@@ -1144,7 +1144,7 @@ def main() -> None:
     md_path = out_path.with_suffix(".md")
     md_path.write_text(md_content, encoding="utf-8")
 
-    # ── Step 12: Write docs/r19-large-guard-validation.md ──────────────
+    # ── Step 12: Write docs/en/r19-large-guard-validation.md ──────────────
 
     docs_r19 = workspace / "docs" / "r19-large-guard-validation.md"
     docs_r19.write_text(md_content, encoding="utf-8")

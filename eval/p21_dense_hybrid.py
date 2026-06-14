@@ -398,7 +398,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--anchor-file-k", type=int, default=5)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/p21_g/dense_hybrid_report.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/p21-g-dense-hybrid.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/p21-g-dense-hybrid.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
     report = run(args)

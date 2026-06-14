@@ -336,7 +336,7 @@ Key detailed reports:
 - `docs/r45-promotion-candidate-report.md` — R30-R45 conclusion checkpoint.
 - `docs/real-provider-p7-summary.md` — P1-P6 real-provider summary.
 - `docs/real-provider-ci-scale-p8-p9.md` — first CI scale-up results.
-- `docs/real-provider-ci-large-scale.en.md` — L1/L2 real-provider large-scale results.
+- `docs/en/real-provider-ci-large-scale.md` — L1/L2 real-provider large-scale results.
 - `docs/p20-llm-large-scale.md` — P20-LS-A low-context LLM alias scale-up result.
 - `docs/p21-g-cross-model-context-injection.md` — P21-G cross-model context-injection plan.
 - `docs/p25-bucket-routed-policy.md` — P25 bucket-routed LLM role policy.

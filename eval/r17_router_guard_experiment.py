@@ -1431,7 +1431,7 @@ def main() -> None:
     md_path = out_path.with_suffix(".md")
     md_path.write_text(md_content, encoding="utf-8")
 
-    # ── Step 11: Generate docs/r17-router-guard.md ───────────────────────
+    # ── Step 11: Generate docs/en/r17-router-guard.md ───────────────────────
 
     docs_r17 = workspace / "docs" / "r17-router-guard.md"
     docs_r17.write_text(md_content, encoding="utf-8")

@@ -422,7 +422,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--max-queries", type=int, default=200)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/r33/quiver_readiness.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r33-quiver-readiness.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r33-quiver-readiness.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
 

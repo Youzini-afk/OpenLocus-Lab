@@ -662,7 +662,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/p21_g/embedding_context_report.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/p21-g-embedding-context.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/p21-g-embedding-context.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
 

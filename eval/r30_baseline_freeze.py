@@ -286,7 +286,7 @@ def build_report(workspace: Path) -> dict[str, Any]:
         failure_clusters = parse_markdown_clusters(markdown)
         span_contributions = parse_markdown_contributions(markdown)
         bucket_regressions = parse_bucket_regressions(markdown)
-        metrics_source = "docs/r29-r26-stress-matrix.md"
+        metrics_source = "docs/en/r29-r26-stress-matrix.md"
 
     issues: list[str] = []
     for strategy in ["rrf", "symbol", "query_noise_plus_rrf_agree_min"]:
@@ -495,7 +495,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", type=Path, default=Path.cwd())
     parser.add_argument("--out", type=Path, default=Path("artifacts/r30/baseline_manifest.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r30-baseline-freeze.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r30-baseline-freeze.md"))
     args = parser.parse_args(argv)
 
     workspace = args.workspace.resolve()

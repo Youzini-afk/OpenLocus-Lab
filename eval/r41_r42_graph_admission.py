@@ -320,7 +320,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--max-files", type=int, default=2000)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("artifacts/r41_r42/graph_admission.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r41-r42-graph-admission.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r41-r42-graph-admission.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
     args._tmp_ctx = None

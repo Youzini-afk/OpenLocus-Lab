@@ -105,7 +105,7 @@ STRATEGIES = {
 }
 
 DEFAULT_OUT = Path("artifacts/p25_bucket_policy/p25_bucket_policy_report.json")
-DEFAULT_DOC = Path("docs/p25-bucket-routed-policy.md")
+DEFAULT_DOC = Path("docs/en/p25-bucket-routed-policy.md")
 
 
 def write_json(path: Path, obj: Any) -> None:

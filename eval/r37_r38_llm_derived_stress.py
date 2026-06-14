@@ -466,7 +466,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--stress-tasks-out", type=Path, default=Path("datasets/r38-auto-stress-llm/tasks/stress_public.jsonl"))
     parser.add_argument("--stress-labels-out", type=Path, default=Path("datasets/r38-auto-stress-llm/labels/stress_labels.jsonl"))
     parser.add_argument("--out", type=Path, default=Path("artifacts/r37_r38/llm_derived_stress_report.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r37-r38-llm-derived-stress.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r37-r38-llm-derived-stress.md"))
     args = parser.parse_args(argv)
     args.openlocus = args.openlocus.resolve()
     args._tmp_ctx = None

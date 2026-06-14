@@ -335,7 +335,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--openlocus", type=Path, default=Path("target/debug/openlocus"))
     parser.add_argument("--out", type=Path, default=Path("artifacts/r31/provider_smoke.json"))
-    parser.add_argument("--doc", type=Path, default=Path("docs/r31-real-embedding-provider.md"))
+    parser.add_argument("--doc", type=Path, default=Path("docs/en/r31-real-embedding-provider.md"))
     args = parser.parse_args(argv)
 
     openlocus = args.openlocus.resolve()
