@@ -295,6 +295,7 @@ jobs:
         env:
           REPO_ID: ${{ steps.plan.outputs.repo_id }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          TASK_SAMPLE_MODE: ${{ steps.plan.outputs.task_sample_mode }}
           MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
         run: |
           work_root="$RUNNER_TEMP/openlocus-real-provider-work"
@@ -305,10 +306,16 @@ jobs:
             --out-root "$work_root/corpus" \
             --lock-out "$work_root/repo-lock.json" \
             --max-indexed-bytes 3000000
+          gen_max_tasks="$MAX_TASKS"
+          if [[ "$TASK_SAMPLE_MODE" == "round_robin_public_buckets" ]]; then
+            gen_max_tasks=$(( MAX_TASKS * 8 ))
+            if [[ "$gen_max_tasks" -lt 80 ]]; then gen_max_tasks=80; fi
+            if [[ "$gen_max_tasks" -gt 100 ]]; then gen_max_tasks=100; fi
+          fi
           python3 eval/ci_generate_tasks.py \
             --repo-lock "$work_root/repo-lock.json" \
             --out-dir "$work_root/tasks" \
-            --max-tasks-per-repo "$MAX_TASKS" \
+            --max-tasks-per-repo "$gen_max_tasks" \
             --max-files-per-repo "$MAX_FILES_PER_REPO"
           python3 - <<'PY'
           import json
