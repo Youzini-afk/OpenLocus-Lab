@@ -1,0 +1,527 @@
+{
+  "by_mode": {
+    "json_object": {
+      "actual_output_modes": [
+        "json_object"
+      ],
+      "fallback_event_count": 11,
+      "fallback_used_count": 0,
+      "input_chars_total": 30621,
+      "latency_ms_p50_avg": 5761,
+      "provider_statuses": {
+        "degraded": 2
+      },
+      "repos": [
+        "js_express",
+        "py_flask"
+      ],
+      "runs": 2,
+      "schema_error_count": 11,
+      "schema_error_rate": 0.55,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0,
+      "schema_repair_success_rate": null,
+      "strategy_results": {
+        "candidate_baseline": {
+          "FileRecall@5_avg": 0.85,
+          "SpanF0.5_avg": 0.232851,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "FileRecall@5_avg": 0.2,
+          "SpanF0.5_avg": 0.05185,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 5,
+          "delta_SpanF0.5_vs_candidate_avg": -0.181001
+        },
+        "llm_filter": {
+          "FileRecall@5_avg": 0.2,
+          "SpanF0.5_avg": 0.05185,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 5,
+          "delta_SpanF0.5_vs_candidate_avg": -0.181001
+        },
+        "llm_span_narrow": {
+          "FileRecall@5_avg": 0.2,
+          "SpanF0.5_avg": 0.112533,
+          "added_false_span_total": 4,
+          "added_gold_span_total": 6,
+          "delta_SpanF0.5_vs_candidate_avg": -0.120318
+        }
+      },
+      "tasks_total": 20
+    },
+    "json_schema_strict": {
+      "actual_output_modes": [
+        "json_schema_strict"
+      ],
+      "fallback_event_count": 7,
+      "fallback_used_count": 0,
+      "input_chars_total": 30695,
+      "latency_ms_p50_avg": 7875.5,
+      "provider_statuses": {
+        "degraded": 2
+      },
+      "repos": [
+        "js_express",
+        "py_flask"
+      ],
+      "runs": 2,
+      "schema_error_count": 7,
+      "schema_error_rate": 0.35,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0,
+      "schema_repair_success_rate": null,
+      "strategy_results": {
+        "candidate_baseline": {
+          "FileRecall@5_avg": 0.85,
+          "SpanF0.5_avg": 0.233539,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "FileRecall@5_avg": 0.4,
+          "SpanF0.5_avg": 0.098012,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 8,
+          "delta_SpanF0.5_vs_candidate_avg": -0.135527
+        },
+        "llm_filter": {
+          "FileRecall@5_avg": 0.4,
+          "SpanF0.5_avg": 0.098012,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 8,
+          "delta_SpanF0.5_vs_candidate_avg": -0.135527
+        },
+        "llm_span_narrow": {
+          "FileRecall@5_avg": 0.4,
+          "SpanF0.5_avg": 0.226321,
+          "added_false_span_total": 5,
+          "added_gold_span_total": 8,
+          "delta_SpanF0.5_vs_candidate_avg": -0.007218
+        }
+      },
+      "tasks_total": 20
+    },
+    "prompt_only": {
+      "actual_output_modes": [
+        "prompt_only"
+      ],
+      "fallback_event_count": 16,
+      "fallback_used_count": 0,
+      "input_chars_total": 30621,
+      "latency_ms_p50_avg": 9192,
+      "provider_statuses": {
+        "degraded": 2
+      },
+      "repos": [
+        "js_express",
+        "py_flask"
+      ],
+      "runs": 2,
+      "schema_error_count": 16,
+      "schema_error_rate": 0.8,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0,
+      "schema_repair_success_rate": null,
+      "strategy_results": {
+        "candidate_baseline": {
+          "FileRecall@5_avg": 0.85,
+          "SpanF0.5_avg": 0.232851,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "FileRecall@5_avg": 0.0,
+          "SpanF0.5_avg": 0.0,
+          "added_false_span_total": 0,
+          "added_gold_span_total": 0,
+          "delta_SpanF0.5_vs_candidate_avg": -0.232851
+        },
+        "llm_filter": {
+          "FileRecall@5_avg": 0.0,
+          "SpanF0.5_avg": 0.0,
+          "added_false_span_total": 0,
+          "added_gold_span_total": 0,
+          "delta_SpanF0.5_vs_candidate_avg": -0.232851
+        },
+        "llm_span_narrow": {
+          "FileRecall@5_avg": 0.0,
+          "SpanF0.5_avg": 0.0,
+          "added_false_span_total": 0,
+          "added_gold_span_total": 0,
+          "delta_SpanF0.5_vs_candidate_avg": -0.232851
+        }
+      },
+      "tasks_total": 20
+    },
+    "tool_call": {
+      "actual_output_modes": [
+        "tool_call"
+      ],
+      "fallback_event_count": 9,
+      "fallback_used_count": 0,
+      "input_chars_total": 30621,
+      "latency_ms_p50_avg": 5500,
+      "provider_statuses": {
+        "degraded": 2
+      },
+      "repos": [
+        "js_express",
+        "py_flask"
+      ],
+      "runs": 2,
+      "schema_error_count": 6,
+      "schema_error_rate": 0.3,
+      "schema_repair_attempted_count": 5,
+      "schema_repair_success_count": 3,
+      "schema_repair_success_rate": 0.6,
+      "strategy_results": {
+        "candidate_baseline": {
+          "FileRecall@5_avg": 0.85,
+          "SpanF0.5_avg": 0.232851,
+          "added_false_span_total": 27,
+          "added_gold_span_total": 19,
+          "delta_SpanF0.5_vs_candidate_avg": null
+        },
+        "llm_abstain_filter": {
+          "FileRecall@5_avg": 0.5,
+          "SpanF0.5_avg": 0.152382,
+          "added_false_span_total": 7,
+          "added_gold_span_total": 10,
+          "delta_SpanF0.5_vs_candidate_avg": -0.08047
+        },
+        "llm_filter": {
+          "FileRecall@5_avg": 0.5,
+          "SpanF0.5_avg": 0.152382,
+          "added_false_span_total": 7,
+          "added_gold_span_total": 10,
+          "delta_SpanF0.5_vs_candidate_avg": -0.08047
+        },
+        "llm_span_narrow": {
+          "FileRecall@5_avg": 0.5,
+          "SpanF0.5_avg": 0.300565,
+          "added_false_span_total": 7,
+          "added_gold_span_total": 10,
+          "delta_SpanF0.5_vs_candidate_avg": 0.067713
+        }
+      },
+      "tasks_total": 20
+    }
+  },
+  "by_repo_mode": {
+    "js_express": {
+      "json_object": {
+        "actual_output_modes": [
+          "json_object"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2181734317343173,
+        "fallback_event_count": 6,
+        "latency_ms_p50": 4327,
+        "llm_filter_SpanF0.5": 0.041666666666666664,
+        "llm_span_narrow_SpanF0.5": 0.06818181818181818,
+        "llm_span_narrow_delta": -0.14999161355249913,
+        "provider_status": "degraded",
+        "run_id": "27486264487",
+        "schema_error_count": 6,
+        "schema_repair_attempted_count": 0,
+        "schema_repair_success_count": 0
+      },
+      "json_schema_strict": {
+        "actual_output_modes": [
+          "json_schema_strict"
+        ],
+        "candidate_baseline_SpanF0.5": 0.21954835766423358,
+        "fallback_event_count": 2,
+        "latency_ms_p50": 3003,
+        "llm_filter_SpanF0.5": 0.12228260869565219,
+        "llm_span_narrow_SpanF0.5": 0.36832740213523135,
+        "llm_span_narrow_delta": 0.14877904447099777,
+        "provider_status": "degraded",
+        "run_id": "27486265801",
+        "schema_error_count": 2,
+        "schema_repair_attempted_count": 0,
+        "schema_repair_success_count": 0
+      },
+      "prompt_only": {
+        "actual_output_modes": [
+          "prompt_only"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2181734317343173,
+        "fallback_event_count": 8,
+        "latency_ms_p50": 5241,
+        "llm_filter_SpanF0.5": 0.0,
+        "llm_span_narrow_SpanF0.5": 0.0,
+        "llm_span_narrow_delta": -0.2181734317343173,
+        "provider_status": "degraded",
+        "run_id": "27486263046",
+        "schema_error_count": 8,
+        "schema_repair_attempted_count": 0,
+        "schema_repair_success_count": 0
+      },
+      "tool_call": {
+        "actual_output_modes": [
+          "tool_call"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2181734317343173,
+        "fallback_event_count": 5,
+        "latency_ms_p50": 4264,
+        "llm_filter_SpanF0.5": 0.09722222222222224,
+        "llm_span_narrow_SpanF0.5": 0.2566091954022989,
+        "llm_span_narrow_delta": 0.03843576366798157,
+        "provider_status": "degraded",
+        "run_id": "27486267106",
+        "schema_error_count": 4,
+        "schema_repair_attempted_count": 3,
+        "schema_repair_success_count": 1
+      }
+    },
+    "py_flask": {
+      "json_object": {
+        "actual_output_modes": [
+          "json_object"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2475294867708001,
+        "fallback_event_count": 5,
+        "latency_ms_p50": 7195,
+        "llm_filter_SpanF0.5": 0.06203358208955224,
+        "llm_span_narrow_SpanF0.5": 0.15688437775816413,
+        "llm_span_narrow_delta": -0.09064510901263598,
+        "provider_status": "degraded",
+        "run_id": "27486263720",
+        "schema_error_count": 5,
+        "schema_repair_attempted_count": 0,
+        "schema_repair_success_count": 0
+      },
+      "json_schema_strict": {
+        "actual_output_modes": [
+          "json_schema_strict"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2475294867708001,
+        "fallback_event_count": 5,
+        "latency_ms_p50": 12748,
+        "llm_filter_SpanF0.5": 0.07374164026751143,
+        "llm_span_narrow_SpanF0.5": 0.08431518112297842,
+        "llm_span_narrow_delta": -0.1632143056478217,
+        "provider_status": "degraded",
+        "run_id": "27486265157",
+        "schema_error_count": 5,
+        "schema_repair_attempted_count": 0,
+        "schema_repair_success_count": 0
+      },
+      "prompt_only": {
+        "actual_output_modes": [
+          "prompt_only"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2475294867708001,
+        "fallback_event_count": 8,
+        "latency_ms_p50": 13143,
+        "llm_filter_SpanF0.5": 0.0,
+        "llm_span_narrow_SpanF0.5": 0.0,
+        "llm_span_narrow_delta": -0.2475294867708001,
+        "provider_status": "degraded",
+        "run_id": "27486262392",
+        "schema_error_count": 8,
+        "schema_repair_attempted_count": 0,
+        "schema_repair_success_count": 0
+      },
+      "tool_call": {
+        "actual_output_modes": [
+          "tool_call"
+        ],
+        "candidate_baseline_SpanF0.5": 0.2475294867708001,
+        "fallback_event_count": 4,
+        "latency_ms_p50": 6736,
+        "llm_filter_SpanF0.5": 0.20754119138149557,
+        "llm_span_narrow_SpanF0.5": 0.344520698505824,
+        "llm_span_narrow_delta": 0.0969912117350239,
+        "provider_status": "degraded",
+        "run_id": "27486266480",
+        "schema_error_count": 2,
+        "schema_repair_attempted_count": 2,
+        "schema_repair_success_count": 2
+      }
+    }
+  },
+  "candidate_not_fact": true,
+  "conclusion": {
+    "best_schema_stability": "tool_call",
+    "best_span_narrow_avg": "tool_call",
+    "json_object_insufficient_for_glm": true,
+    "json_schema_strict_mixed": true,
+    "next_step": "Use tool_call as GLM default for P21-G3L-R follow-up, rerun with lower concurrency and bucketed tasks; keep no promotion/default change.",
+    "notes": [
+      "prompt_only failed badly for GLM: 16/20 schema/provider invalid calls and zero useful predictions.",
+      "json_object improved over prompt_only but still had 11/20 schema/provider failures and negative span delta.",
+      "json_schema_strict reduced schema/provider failures to 7/20 and helped js_express, but hurt py_flask.",
+      "tool_call had the best overall span signal and repair behavior: schema_error_rate 0.30, repair_success 3/5, avg \u0394SpanF0.5 +0.0677.",
+      "Several failures are provider_http_429 rate limits, so repeat with lower parallelism before drawing final provider capability conclusions."
+    ],
+    "prompt_only_blocked": true,
+    "tool_call_preferred_for_glm_next": true
+  },
+  "default_should_change": false,
+  "embedding_model": "Qwen/Qwen3-Embedding-4B",
+  "generated_at": "2026-06-14T02:50:45.840297+00:00",
+  "llm_direct_evidence_allowed": false,
+  "llm_model": "[mk]GLM-5.1",
+  "not_promotion_evidence": true,
+  "output_modes": [
+    "prompt_only",
+    "json_object",
+    "json_schema_strict",
+    "tool_call"
+  ],
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": true,
+  "raw_text_stored": false,
+  "remote_enabled": true,
+  "repos": [
+    "js_express",
+    "py_flask"
+  ],
+  "run_ids": [
+    "27486265801",
+    "27486267106",
+    "27486263046",
+    "27486262392",
+    "27486264487",
+    "27486263720",
+    "27486266480",
+    "27486265157"
+  ],
+  "run_manifest": [
+    {
+      "actual_output_modes": [
+        "json_object"
+      ],
+      "fallback_event_count": 6,
+      "latency_ms_p50": 4327,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "js_express",
+      "requested_output_mode": "json_object",
+      "run_id": "27486264487",
+      "schema_error_count": 6,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0
+    },
+    {
+      "actual_output_modes": [
+        "json_object"
+      ],
+      "fallback_event_count": 5,
+      "latency_ms_p50": 7195,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "py_flask",
+      "requested_output_mode": "json_object",
+      "run_id": "27486263720",
+      "schema_error_count": 5,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0
+    },
+    {
+      "actual_output_modes": [
+        "json_schema_strict"
+      ],
+      "fallback_event_count": 2,
+      "latency_ms_p50": 3003,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "js_express",
+      "requested_output_mode": "json_schema_strict",
+      "run_id": "27486265801",
+      "schema_error_count": 2,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0
+    },
+    {
+      "actual_output_modes": [
+        "json_schema_strict"
+      ],
+      "fallback_event_count": 5,
+      "latency_ms_p50": 12748,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "py_flask",
+      "requested_output_mode": "json_schema_strict",
+      "run_id": "27486265157",
+      "schema_error_count": 5,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0
+    },
+    {
+      "actual_output_modes": [
+        "prompt_only"
+      ],
+      "fallback_event_count": 8,
+      "latency_ms_p50": 5241,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "js_express",
+      "requested_output_mode": "prompt_only",
+      "run_id": "27486263046",
+      "schema_error_count": 8,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0
+    },
+    {
+      "actual_output_modes": [
+        "prompt_only"
+      ],
+      "fallback_event_count": 8,
+      "latency_ms_p50": 13143,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "py_flask",
+      "requested_output_mode": "prompt_only",
+      "run_id": "27486262392",
+      "schema_error_count": 8,
+      "schema_repair_attempted_count": 0,
+      "schema_repair_success_count": 0
+    },
+    {
+      "actual_output_modes": [
+        "tool_call"
+      ],
+      "fallback_event_count": 5,
+      "latency_ms_p50": 4264,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "js_express",
+      "requested_output_mode": "tool_call",
+      "run_id": "27486267106",
+      "schema_error_count": 4,
+      "schema_repair_attempted_count": 3,
+      "schema_repair_success_count": 1
+    },
+    {
+      "actual_output_modes": [
+        "tool_call"
+      ],
+      "fallback_event_count": 4,
+      "latency_ms_p50": 6736,
+      "llm_model": "[mk]GLM-5.1",
+      "provider_status": "degraded",
+      "repo_id": "py_flask",
+      "requested_output_mode": "tool_call",
+      "run_id": "27486266480",
+      "schema_error_count": 2,
+      "schema_repair_attempted_count": 2,
+      "schema_repair_success_count": 2
+    }
+  ],
+  "schema_version": "p21-g3lr-structured-output-summary-v1",
+  "source_run_count": 8,
+  "stage": "P21-G3L-R structured output repair smoke"
+}
