@@ -29,6 +29,7 @@ below.
 - [P22/P23 evidence-seeking policy surface](p22-p23-policy-surface.md)
 - [P25 bucket-routed LLM role policy](p25-bucket-routed-policy.md)
 - [P30 Admission Model V3](p30-admission-model-v3.md)
+- [P30 Admission Model V3 remote smoke](p30-admission-model-v3-remote-smoke.md)
 
 ## Current one-line conclusion
 

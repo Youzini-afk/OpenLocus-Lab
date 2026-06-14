@@ -1,0 +1,403 @@
+{
+  "aggregate": {
+    "admission_v3": {
+      "added_false_span": 41,
+      "added_gold_span": 17,
+      "mean_delta_PFP_vs_baseline": -0.08333333333333333,
+      "mean_delta_SpanF0.5_vs_baseline": -0.010169022747824285,
+      "missing_action_outcome_count": 9
+    },
+    "bucket_routed_v0": {
+      "added_false_span": 39,
+      "added_gold_span": 19,
+      "mean_delta_PFP_vs_baseline": -0.08333333333333333,
+      "mean_delta_SpanF0.5_vs_baseline": 0.0009797578993123134
+    },
+    "candidate_baseline": {
+      "added_false_span": 102,
+      "added_gold_span": 27
+    }
+  },
+  "candidate_not_fact": true,
+  "conclusion": {
+    "comparison": "bucket_routed_v0 is better than admission_v3 in this run set: gold 19 vs 17, false 39 vs 41, mean SpanF0.5 delta +0.0010 vs -0.0102.",
+    "diagnosis": "P30 currently routes mostly to apply_llm_filter/abstain/weak_candidate_only because P21 ephemeral records do not expose enough local anchor outcomes/features for admit_symbol_regex_union or admit_rrf_primary; fallback counters are non-zero.",
+    "next": "Do not promote. Extend P21/P22 handoff with measured local anchor outcomes and richer RUN-phase route_features, then rerun P30.",
+    "p30_result": "admission_v3 reduced PFP as much as bucket_routed_v0 on this smoke but lost more gold and slightly worsened SpanF0.5 vs baseline."
+  },
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "external_calls_by_p30": 0,
+  "generated_at": "2026-06-14T10:54:24.974196+00:00",
+  "gold_spans_in_artifact": false,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "run_count": 6,
+  "run_ids": [
+    "27496427996",
+    "27496428496",
+    "27496427981",
+    "27496428438",
+    "27496428015",
+    "27496428505"
+  ],
+  "runs": [
+    {
+      "admission_v3": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.061433664374840845,
+        "abstain_rate": 0.6111111111111112,
+        "added_false_span": 8,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.1111111111111111,
+        "outcome_fallback": {
+          "fallback_action_counts": {
+            "weak_candidate_only": 2
+          },
+          "fallback_strategy_counts": {
+            "zero_primary": 2
+          },
+          "missing_action_outcome_count": 2,
+          "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+        },
+        "policy_action_counts": {
+          "abstain": 6,
+          "apply_llm_filter": 10,
+          "weak_candidate_only": 2
+        }
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.061433664374840845,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 8,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        }
+      },
+      "candidate_baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.06366459627329192,
+        "abstain_rate": 0.0,
+        "added_false_span": 13,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        }
+      },
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "py_flask",
+      "run_id": "27496427996",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.7222222222222222,
+        "added_false_span": 7,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.2857142857142857,
+        "outcome_fallback": {
+          "fallback_action_counts": {
+            "weak_candidate_only": 1
+          },
+          "fallback_strategy_counts": {
+            "zero_primary": 1
+          },
+          "missing_action_outcome_count": 1,
+          "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+        },
+        "policy_action_counts": {
+          "abstain": 8,
+          "apply_llm_filter": 9,
+          "weak_candidate_only": 1
+        }
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 7,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 2
+        }
+      },
+      "candidate_baseline": {
+        "PFP": 0.2222222222222222,
+        "SpanF0.5": 0.038580246913580245,
+        "abstain_rate": 0.0,
+        "added_false_span": 21,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        }
+      },
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "js_express",
+      "run_id": "27496428496",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.07605354741577652,
+        "abstain_rate": 0.6111111111111112,
+        "added_false_span": 9,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": {
+          "fallback_action_counts": {
+            "weak_candidate_only": 2
+          },
+          "fallback_strategy_counts": {
+            "zero_primary": 2
+          },
+          "missing_action_outcome_count": 2,
+          "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+        },
+        "policy_action_counts": {
+          "abstain": 6,
+          "apply_llm_filter": 10,
+          "weak_candidate_only": 2
+        }
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.11589989531166002,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 8,
+        "added_gold_span": 6,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        }
+      },
+      "candidate_baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.06366459627329192,
+        "abstain_rate": 0.0,
+        "added_false_span": 13,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        }
+      },
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "py_flask",
+      "run_id": "27496427981",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.8333333333333334,
+        "added_false_span": 3,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.2857142857142857,
+        "outcome_fallback": {
+          "fallback_action_counts": {
+            "weak_candidate_only": 1
+          },
+          "fallback_strategy_counts": {
+            "zero_primary": 1
+          },
+          "missing_action_outcome_count": 1,
+          "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+        },
+        "policy_action_counts": {
+          "abstain": 8,
+          "apply_llm_filter": 9,
+          "weak_candidate_only": 1
+        }
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.5,
+        "added_false_span": 3,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 2
+        }
+      },
+      "candidate_baseline": {
+        "PFP": 0.2222222222222222,
+        "SpanF0.5": 0.038580246913580245,
+        "abstain_rate": 0.0,
+        "added_false_span": 21,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        }
+      },
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "js_express",
+      "run_id": "27496428438",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.07351095906083119,
+        "abstain_rate": 0.6111111111111112,
+        "added_false_span": 10,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": {
+          "fallback_action_counts": {
+            "weak_candidate_only": 2
+          },
+          "fallback_strategy_counts": {
+            "zero_primary": 2
+          },
+          "missing_action_outcome_count": 2,
+          "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+        },
+        "policy_action_counts": {
+          "abstain": 6,
+          "apply_llm_filter": 10,
+          "weak_candidate_only": 2
+        }
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.10055729504776728,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 9,
+        "added_gold_span": 6,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        }
+      },
+      "candidate_baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.06366459627329192,
+        "abstain_rate": 0.0,
+        "added_false_span": 13,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        }
+      },
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "real_policy_evaluation": true,
+      "repo": "py_flask",
+      "run_id": "27496428015",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.8333333333333334,
+        "added_false_span": 4,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.2857142857142857,
+        "outcome_fallback": {
+          "fallback_action_counts": {
+            "weak_candidate_only": 1
+          },
+          "fallback_strategy_counts": {
+            "zero_primary": 1
+          },
+          "missing_action_outcome_count": 1,
+          "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+        },
+        "policy_action_counts": {
+          "abstain": 8,
+          "apply_llm_filter": 9,
+          "weak_candidate_only": 1
+        }
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.5,
+        "added_false_span": 4,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 2
+        }
+      },
+      "candidate_baseline": {
+        "PFP": 0.2222222222222222,
+        "SpanF0.5": 0.038580246913580245,
+        "abstain_rate": 0.0,
+        "added_false_span": 21,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "outcome_fallback": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        }
+      },
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "real_policy_evaluation": true,
+      "repo": "js_express",
+      "run_id": "27496428505",
+      "status": "ok",
+      "task_count": 18
+    }
+  ],
+  "schema_version": "p30-admission-v3-remote-smoke-summary-v1",
+  "task_count_total": 108
+}

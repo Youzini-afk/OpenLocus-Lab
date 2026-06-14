@@ -176,6 +176,18 @@ P30 is not a promotion candidate. The next step is to run it against real P25
 ephemeral smoke records and compare the scorecard to P25 `bucket_routed_v0`
 and the P22/P23 evidence-seeking guard surfaces.
 
+The first real P30 remote smoke completed six successful runs
+(`Flash/Kimi/GLM × py_flask/js_express`, 18 bucket-sampled tasks each). It
+confirmed that the current `admission_v3` scaffold is too conservative:
+baseline produced `27/102` added gold/false spans, P25 `bucket_routed_v0`
+produced `19/39`, and P30 `admission_v3` produced `17/41`. P30 matched the mean
+PFP reduction (`-0.0833`) but had worse mean SpanF0.5 delta than
+`bucket_routed_v0` (`-0.0102` vs `+0.0010`). Non-zero fallback counts show the
+current ephemeral handoff lacks measured outcomes/features for the richer local
+admission actions. Next: extend P21/P22 handoff with measured
+`symbol_regex_union` / `rrf_primary` outcomes and safe route features before
+rerunning P30.
+
 ---
 
 ## 3. Current Hypotheses
@@ -296,7 +308,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
 - P21-G: cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E found useful file/span signal (`pack2_evidence_sketch`, `atom_signature`) but naked dense false spans dominated. P21-G2E found constrained dense has modest supporting value (`dense_atom_signature_rrf_file_constrained`) while dense-only remains diagnostic/non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain need prompt/bucket routing and GLM needs schema repair.
 - P25: bucket-routed LLM role policy evaluator. Deterministic, no-remote, routes by public `task_bucket`/`task_risk_tags`; reduces false primary but also some gold spans; useful as a P30 input, not default.
-- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from RUN-phase public features, compares baselines plus `admission_v3`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. Self-test scaffold only; real validation requires the ephemeral P21→P25 handoff.
+- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from RUN-phase public features, compares baselines plus `admission_v3`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. First real smoke shows current `admission_v3` is too conservative and underperforms P25 `bucket_routed_v0`; richer local-anchor handoff is required before rerun.
 
 Key detailed reports:
 
@@ -311,6 +323,7 @@ Key detailed reports:
 - `docs/p21-g-cross-model-context-injection.md` — P21-G cross-model context-injection plan.
 - `docs/p25-bucket-routed-policy.md` — P25 bucket-routed LLM role policy.
 - `docs/p30-admission-model-v3.md` — P30 Admission Model V3 report.
+- `docs/p30-admission-model-v3-remote-smoke.md` — first P30 real remote smoke.
 
 ---
 
@@ -328,7 +341,7 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
 9. If LLM query aliases are revisited, test only grounded variants: inventory-selected aliases or aliases derived after seeing top-k local candidate snippets.
 10. Run P21-G rich LLM candidate support: rerank/filter/span-narrow/abstain/inventory_alias over snippet-backed local candidates, record model-averaged and per-model effects, and report quality, latency, token, and cost trade-offs.
-11. Run P30 against real P25 ephemeral policy records and compare `admission_v3` to P25 `bucket_routed_v0`, R20 positive reach, and R26 no-gold guard surfaces.
+11. Extend the P21/P22 handoff with measured local-anchor outcomes (`symbol_regex_union`, `rrf_primary`) and safe route features, then rerun P30 against real P25 ephemeral policy records.
 
 ---
 

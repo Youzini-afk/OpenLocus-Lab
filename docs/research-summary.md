@@ -126,6 +126,19 @@ run the evaluator against real P25 ephemeral smoke records and compare the
 scorecard to P25 `bucket_routed_v0` and the P22/P23 evidence-seeking guard
 surfaces. See [`docs/p30-admission-model-v3.md`](p30-admission-model-v3.md).
 
+The first real P30 remote smoke ran six successful workflow runs
+(`Flash/Kimi/GLM × py_flask/js_express`, 18 bucket-sampled tasks each). On this
+smoke, `admission_v3` matched `bucket_routed_v0`'s mean PFP reduction versus
+baseline (`-0.0833`) but was more conservative and lower quality: baseline
+`27/102` gold/false, `bucket_routed_v0` `19/39`, and `admission_v3` `17/41`.
+Mean SpanF0.5 delta was `+0.0010` for `bucket_routed_v0` versus `-0.0102` for
+`admission_v3`. Non-zero fallback counts show the current ephemeral handoff does
+not yet provide enough measured local-anchor outcomes/features for P30's richer
+admission actions. Conclusion: no promotion; extend the handoff with measured
+`symbol_regex_union` / `rrf_primary` outcomes and safe route features before
+rerunning P30. Remote report:
+[`docs/p30-admission-model-v3-remote-smoke.md`](p30-admission-model-v3-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |
