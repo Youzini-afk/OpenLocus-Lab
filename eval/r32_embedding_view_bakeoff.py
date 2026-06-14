@@ -66,7 +66,7 @@ DEFAULT_VIEWS = [
     "route_plus_handler_signature",
     "mixed_all_views",
 ]
-PUBLIC_TASK_FIELDS = {"test_id", "task_id", "repo_id", "query", "public_version", "source"}
+PUBLIC_TASK_FIELDS = {"test_id", "task_id", "repo_id", "query", "public_version", "source", "task_bucket", "task_risk_tags"}
 PRIVATE_FIELD_DENYLIST = {
     "source_category", "risk_public", "intent_guess", "risk_tags",
     "oracle_type", "expected_behavior", "gold_spans", "hard_distractors",

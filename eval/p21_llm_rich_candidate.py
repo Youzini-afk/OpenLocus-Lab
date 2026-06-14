@@ -669,6 +669,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "successful_calls": successful_calls,
             "schema_valid_calls": schema_valid,
             "tasks_scored": len(tasks),
+            "task_sample_mode": getattr(args, "task_sample_mode", "prefix"),
             "candidate_strategy": candidate_info.get("actual_candidate_strategy"),
             "raw_snippets_sent_to_provider": bool(remote_enabled and any(d.get("packed_count", 0) for d in pack_diags)),
             "all_pack_file_filters_applied": all_pack_filters_applied,
@@ -753,6 +754,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--candidate-strategy", default=DEFAULT_CANDIDATE_STRATEGY)
     parser.add_argument("--max-remote-data-level", type=int, default=1)
     parser.add_argument("--max-tasks", type=int, default=20)
+    parser.add_argument("--task-sample-mode", default="prefix", choices=["prefix", "round_robin_public_buckets"])
     parser.add_argument("--max-files-per-repo", type=int, default=None)
     parser.add_argument("--max-records-per-repo", type=int, default=120)
     parser.add_argument("--top-k", type=int, default=10)

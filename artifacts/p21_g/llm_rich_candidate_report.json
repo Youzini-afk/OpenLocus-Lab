@@ -473,7 +473,7 @@
   "embedding_model": "local_token_hash",
   "embedding_provider": "local_token_hash",
   "embedding_send_dimensions": false,
-  "generated_at": "2026-06-14T03:22:56.575862+00:00",
+  "generated_at": "2026-06-14T03:32:32.429490+00:00",
   "labels_loaded_after_run": true,
   "llm_direct_evidence_allowed": false,
   "llm_disabled_reason": "provider not openai-compatible",
@@ -669,5 +669,6 @@
     }
   },
   "successful_calls": 3,
+  "task_sample_mode": "round_robin_public_buckets",
   "tasks_scored": 3
 }

@@ -391,6 +391,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--allow-remote", action="store_true")
     parser.add_argument("--max-remote-data-level", type=int, default=1)
     parser.add_argument("--max-tasks", type=int, default=80)
+    parser.add_argument("--task-sample-mode", default="prefix", choices=["prefix", "round_robin_public_buckets"])
     parser.add_argument("--max-files-per-repo", type=int, default=None)
     parser.add_argument("--max-records-per-repo", type=int, default=400)
     parser.add_argument("--top-k", type=int, default=10)

@@ -67,6 +67,14 @@ on:
         description: 'Task/query cap for smoke runs'
         required: false
         default: '3'
+      task_sample_mode:
+        description: 'Task sampling mode for P21 stages'
+        required: false
+        default: 'prefix'
+        type: choice
+        options:
+          - prefix
+          - round_robin_public_buckets
       max_records:
         description: 'Record cap for embedding/index diagnostics'
         required: false
@@ -88,7 +96,7 @@ defaults:
     shell: bash
 
 concurrency:
-  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}-${{ inputs.dataset }}-${{ inputs.repo_id }}-${{ inputs.embedding_model }}-${{ inputs.llm_model }}-${{ inputs.llm_output_mode }}
+  group: real-provider-benchmark-${{ github.ref }}-${{ inputs.stage }}-${{ inputs.dataset }}-${{ inputs.repo_id }}-${{ inputs.embedding_model }}-${{ inputs.llm_model }}-${{ inputs.llm_output_mode }}-${{ inputs.task_sample_mode }}
   cancel-in-progress: false
 
 jobs:
@@ -119,6 +127,7 @@ jobs:
           INPUT_LLM_MODEL: ${{ inputs.llm_model }}
           INPUT_LLM_OUTPUT_MODE: ${{ inputs.llm_output_mode }}
           INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
+          INPUT_TASK_SAMPLE_MODE: ${{ inputs.task_sample_mode }}
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
           INPUT_MAX_FILES_PER_REPO: ${{ inputs.max_files_per_repo }}
           INPUT_MAX_STRESS_TASKS: ${{ inputs.max_stress_tasks }}
@@ -152,6 +161,7 @@ jobs:
               "BAAI/bge-m3": {"dimensions": 1024, "send_dimensions": "0"},
           }
           allowed_llm_output_modes = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
+          allowed_task_sample_modes = {"prefix", "round_robin_public_buckets"}
 
           def getenv(name: str, default: str = "") -> str:
               value = os.environ.get(name, default)
@@ -193,6 +203,9 @@ jobs:
           llm_output_mode = getenv("INPUT_LLM_OUTPUT_MODE", "json_object")
           if llm_output_mode not in allowed_llm_output_modes:
               raise SystemExit(f"unsupported llm_output_mode: {llm_output_mode}")
+          task_sample_mode = getenv("INPUT_TASK_SAMPLE_MODE", "prefix")
+          if task_sample_mode not in allowed_task_sample_modes:
+              raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
               llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "all_smoke"}
@@ -235,6 +248,7 @@ jobs:
               "repo_id": repo_id,
               "views": views,
               "max_tasks": str(max_tasks),
+              "task_sample_mode": task_sample_mode,
               "max_records": str(max_records),
               "max_files_per_repo": str(max_files_per_repo),
               "max_stress_tasks": str(max_stress_tasks),
@@ -245,6 +259,7 @@ jobs:
               "llm_provider": llm_provider,
               "llm_model": llm_model,
               "llm_output_mode": llm_output_mode,
+              "task_sample_mode": task_sample_mode,
               "allow_remote": "1" if remote_enabled else "0",
           }
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
@@ -298,7 +313,7 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
-          allowed = {"test_id", "repo_id", "query", "public_version", "source"}
+          allowed = {"test_id", "repo_id", "query", "public_version", "source", "task_bucket", "task_risk_tags"}
           # Resolve via RUNNER_TEMP at runtime to avoid writing temp paths into artifacts.
           import os
           public = Path(os.environ["RUNNER_TEMP"]) / "openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl"
@@ -321,6 +336,7 @@ jobs:
           DATASET: ${{ steps.plan.outputs.dataset }}
           VIEWS: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          TASK_SAMPLE_MODE: ${{ steps.plan.outputs.task_sample_mode }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
           MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
@@ -448,7 +464,7 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote)
           fi
-          cmd+=(--strategies "$STRATEGIES" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_embedding_context.json --doc docs/real-provider-ci/p21-embedding-context.md)
+          cmd+=(--strategies "$STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_embedding_context.json --doc docs/real-provider-ci/p21-embedding-context.md)
           "${cmd[@]}"
 
       - name: P21-G2E constrained/fused dense hybrid
@@ -464,6 +480,7 @@ jobs:
           DATASET: ${{ steps.plan.outputs.dataset }}
           DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          TASK_SAMPLE_MODE: ${{ steps.plan.outputs.task_sample_mode }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
           MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
@@ -477,7 +494,7 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote)
           fi
-          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_dense_hybrid.json --doc docs/real-provider-ci/p21-dense-hybrid.md)
+          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_dense_hybrid.json --doc docs/real-provider-ci/p21-dense-hybrid.md)
           "${cmd[@]}"
 
       - name: P21-G3L LLM rich candidate pilot
@@ -499,6 +516,7 @@ jobs:
           DATASET: ${{ steps.plan.outputs.dataset }}
           DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          TASK_SAMPLE_MODE: ${{ steps.plan.outputs.task_sample_mode }}
           MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
           MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
@@ -512,7 +530,7 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote-embedding --allow-remote-llm)
           fi
-          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
+          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
           "${cmd[@]}"
 
       - name: P20-LS LLM alias/stress harness
@@ -644,7 +662,7 @@ jobs:
           ]:
               if not public_path.exists():
                   continue
-              allowed = {"test_id", "repo_id", "query", "public_version", "source"}
+              allowed = {"test_id", "repo_id", "query", "public_version", "source", "task_bucket", "task_risk_tags"}
               for line in public_path.read_text(encoding="utf-8").splitlines():
                   if line.strip() and not set(json.loads(line)) <= allowed:
                       raise SystemExit(f"{public_path} leaked private fields")

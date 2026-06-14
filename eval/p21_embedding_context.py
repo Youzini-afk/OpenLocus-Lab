@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -89,6 +90,33 @@ def strategy_list(raw: str) -> list[str]:
     return out
 
 
+def public_bucket_for_task(task: dict[str, Any]) -> str:
+    bucket = task.get("task_bucket") or "unknown"
+    tags = task.get("task_risk_tags") or []
+    if isinstance(tags, list) and tags:
+        return f"{bucket}:{tags[0]}"
+    return str(bucket)
+
+
+def sample_public_tasks(tasks: list[dict[str, Any]], max_tasks: int, mode: str) -> list[dict[str, Any]]:
+    if mode == "prefix" or max_tasks >= len(tasks):
+        return tasks[:max_tasks]
+    if mode != "round_robin_public_buckets":
+        raise SystemExit(f"unsupported task sample mode: {mode}")
+    by_bucket: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for task in tasks:
+        by_bucket[public_bucket_for_task(task)].append(task)
+    selected: list[dict[str, Any]] = []
+    bucket_names = sorted(by_bucket)
+    idx = 0
+    while len(selected) < max_tasks and any(by_bucket.values()):
+        bucket = bucket_names[idx % len(bucket_names)]
+        if by_bucket[bucket]:
+            selected.append(by_bucket[bucket].pop(0))
+        idx += 1
+    return selected
+
+
 def load_inputs(args: argparse.Namespace) -> tuple[tempfile.TemporaryDirectory[str] | None, list[dict[str, Any]], Path, dict[str, Path]]:
     if args.self_test:
         tmp_ctx = tempfile.TemporaryDirectory(prefix="openlocus-p21-g1e-")
@@ -102,7 +130,8 @@ def load_inputs(args: argparse.Namespace) -> tuple[tempfile.TemporaryDirectory[s
     if issues:
         raise SystemExit("public task validation failed: " + "; ".join(issues[:5]))
     repo_roots = {repo_id: root for repo_id, root in repo_roots.items() if root.exists()}
-    tasks = [task for task in tasks if task["repo_id"] in repo_roots][: args.max_tasks]
+    tasks = [task for task in tasks if task["repo_id"] in repo_roots]
+    tasks = sample_public_tasks(tasks, args.max_tasks, getattr(args, "task_sample_mode", "prefix"))
     return tmp_ctx, tasks, labels_path, repo_roots
 
 
@@ -627,6 +656,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--allow-remote", action="store_true")
     parser.add_argument("--max-remote-data-level", type=int, default=1)
     parser.add_argument("--max-tasks", type=int, default=120)
+    parser.add_argument("--task-sample-mode", default="prefix", choices=["prefix", "round_robin_public_buckets"])
     parser.add_argument("--max-files-per-repo", type=int, default=None)
     parser.add_argument("--max-records-per-repo", type=int, default=800)
     parser.add_argument("--top-k", type=int, default=10)

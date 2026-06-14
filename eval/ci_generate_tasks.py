@@ -57,6 +57,7 @@ PRIVATE_FIELDS = frozenset({
 
 PUBLIC_TASK_FIELDS = frozenset({
     "test_id", "repo_id", "query", "public_version", "source",
+    "task_bucket", "task_risk_tags",
 })
 
 CATEGORIES = [
@@ -398,6 +399,8 @@ def generate_tasks(
             "query": query,
             "public_version": PUBLIC_VERSION,
             "source": "ci_harness",
+            "task_bucket": source_category,
+            "task_risk_tags": risk_tags,
         })
         all_labels.append({
             "test_id": tid,

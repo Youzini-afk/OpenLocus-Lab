@@ -121,7 +121,7 @@ UNAVAILABLE_STRATEGIES = {
     },
 }
 
-PUBLIC_TASK_FIELDS = frozenset({"test_id", "task_id", "repo_id", "query", "public_version", "source"})
+PUBLIC_TASK_FIELDS = frozenset({"test_id", "task_id", "repo_id", "query", "public_version", "source", "task_bucket", "task_risk_tags"})
 
 # ── Noise detection (inlined from R17) ─────────────────────────────────
 
