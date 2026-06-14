@@ -1,0 +1,221 @@
+{
+  "default_should_change": false,
+  "external_calls": 0,
+  "generated_at": "2026-06-14T07:21:39.153210+00:00",
+  "interpretation": {
+    "r20_positive": "RRF maximizes positive-slice reach (Reach@5=0.975, SpanReach@5=0.95), but symbol has the best SpanF0.5; symbol_regex_union is a better precision/reach experimental baseline for P25/P30 than plain RRF. This capped R20 run has no no-gold tasks.",
+    "r26_guard": "No-gold stress surface confirms BM25/RRF create false primary while symbol/regex/union/guard abstain; use this surface to calibrate admission guards, not gold reach."
+  },
+  "labels_loaded_after_run": true,
+  "promotion_ready": false,
+  "run_phase_public_only": true,
+  "schema_version": "p22-p23-policy-surface-summary-v1",
+  "surfaces": {
+    "r20_positive": {
+      "available_repo_count": 9,
+      "bottleneck_summary": {
+        "best_candidate_reach_strategy": "rrf",
+        "highest_no_gold_false_primary_strategy": null,
+        "note": "P22/P23 are research-only; none of these local deterministic strategies should change defaults. Use RRF as the recall reference and research_baseline_candidate_for_p25_p30 only as a research baseline candidate for P25 admission/filter refinements and P30 guard experiments.",
+        "research_baseline_candidate_for_p25_p30": "symbol_regex_union",
+        "surface_type": "positive_only"
+      },
+      "input_hashes": {
+        "labels": "eb827b9c477e9b3975a5e652c4d7d312eecec7e17f28e920f31e0f711564d5b4",
+        "repo_lock": "63cb24b252808c0f5940765452bb3780d0c11b5015b557e168d377fd08fb0681",
+        "tasks": "4263364f33b9066c589c682b30dd402f082c13e8bbdf581c39dabb1a92f675ce"
+      },
+      "repo_count_loaded": 9,
+      "strategy_metrics": {
+        "bm25": {
+          "FileRecall@5": 0.65,
+          "SpanF0.5": 0.14109740213002428,
+          "abstain_rate": 0.25833333333333336,
+          "candidate_absent_rate": 0.275,
+          "candidate_gold_file_reach@5": 0.65,
+          "candidate_gold_span_reach@5": 0.49166666666666664,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.26666666666666666,
+          "file_wrong_rate": 0.25,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120
+        },
+        "regex": {
+          "FileRecall@5": 0.7416666666666667,
+          "SpanF0.5": 0.22254121007936678,
+          "abstain_rate": 0.0,
+          "candidate_absent_rate": 0.2,
+          "candidate_gold_file_reach@5": 0.7416666666666667,
+          "candidate_gold_span_reach@5": 0.7416666666666667,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.058333333333333334,
+          "file_wrong_rate": 0.4166666666666667,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120
+        },
+        "rrf": {
+          "FileRecall@5": 0.975,
+          "SpanF0.5": 0.23545166444323612,
+          "abstain_rate": 0.0,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.975,
+          "candidate_gold_span_reach@5": 0.95,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.05,
+          "file_wrong_rate": 0.18333333333333332,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120
+        },
+        "rrf_guarded_by_symbol_regex": {
+          "FileRecall@5": 0.975,
+          "SpanF0.5": 0.23545166444323612,
+          "abstain_rate": 0.0,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.975,
+          "candidate_gold_span_reach@5": 0.95,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.05,
+          "file_wrong_rate": 0.18333333333333332,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120
+        },
+        "symbol": {
+          "FileRecall@5": 0.8583333333333333,
+          "SpanF0.5": 0.31693019506014986,
+          "abstain_rate": 0.1,
+          "candidate_absent_rate": 0.14166666666666666,
+          "candidate_gold_file_reach@5": 0.8583333333333333,
+          "candidate_gold_span_reach@5": 0.85,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.03333333333333333,
+          "file_wrong_rate": 0.06666666666666667,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120
+        },
+        "symbol_regex_union": {
+          "FileRecall@5": 0.9333333333333333,
+          "SpanF0.5": 0.24362848322649017,
+          "abstain_rate": 0.0,
+          "candidate_absent_rate": 0.016666666666666666,
+          "candidate_gold_file_reach@5": 0.9333333333333333,
+          "candidate_gold_span_reach@5": 0.925,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.041666666666666664,
+          "file_wrong_rate": 0.1,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120
+        }
+      },
+      "task_count_scored": 120
+    },
+    "r26_guard": {
+      "available_repo_count": 9,
+      "bottleneck_summary": {
+        "best_candidate_reach_strategy": null,
+        "highest_no_gold_false_primary_strategy": "bm25",
+        "note": "P22/P23 are research-only; none of these local deterministic strategies should change defaults. Use RRF as the recall reference and research_baseline_candidate_for_p25_p30 only as a research baseline candidate for P25 admission/filter refinements and P30 guard experiments.",
+        "research_baseline_candidate_for_p25_p30": "rrf_guarded_by_symbol_regex",
+        "surface_type": "guard_only_no_gold"
+      },
+      "input_hashes": {
+        "labels": "b7add2500c203aa644339156fd6e557df54232ad282381a3474ea58aa1afddd8",
+        "repo_lock": "3d60ab401cfb77ad906f61625f32129972b881808d147ee7c7d3489bfa77666d",
+        "tasks": "868d21de2c6f955ebf4dcb7235c100e03c0be7c71425ee99bd20155bf1f5c39c"
+      },
+      "repo_count_loaded": 9,
+      "strategy_metrics": {
+        "bm25": {
+          "FileRecall@5": null,
+          "SpanF0.5": null,
+          "abstain_rate": 0.7166666666666667,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.0,
+          "candidate_gold_span_reach@5": 0.0,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.0,
+          "file_wrong_rate": 0.0,
+          "no_gold_false_primary_rate": 0.2833333333333333,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0
+        },
+        "regex": {
+          "FileRecall@5": null,
+          "SpanF0.5": null,
+          "abstain_rate": 1.0,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.0,
+          "candidate_gold_span_reach@5": 0.0,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.0,
+          "file_wrong_rate": 0.0,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0
+        },
+        "rrf": {
+          "FileRecall@5": null,
+          "SpanF0.5": null,
+          "abstain_rate": 0.7166666666666667,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.0,
+          "candidate_gold_span_reach@5": 0.0,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.0,
+          "file_wrong_rate": 0.0,
+          "no_gold_false_primary_rate": 0.2833333333333333,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0
+        },
+        "rrf_guarded_by_symbol_regex": {
+          "FileRecall@5": null,
+          "SpanF0.5": null,
+          "abstain_rate": 1.0,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.0,
+          "candidate_gold_span_reach@5": 0.0,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.0,
+          "file_wrong_rate": 0.0,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0
+        },
+        "symbol": {
+          "FileRecall@5": null,
+          "SpanF0.5": null,
+          "abstain_rate": 1.0,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.0,
+          "candidate_gold_span_reach@5": 0.0,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.0,
+          "file_wrong_rate": 0.0,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0
+        },
+        "symbol_regex_union": {
+          "FileRecall@5": null,
+          "SpanF0.5": null,
+          "abstain_rate": 1.0,
+          "candidate_absent_rate": 0.0,
+          "candidate_gold_file_reach@5": 0.0,
+          "candidate_gold_span_reach@5": 0.0,
+          "citation_validity": 1.0,
+          "file_right_span_wrong_rate": 0.0,
+          "file_wrong_rate": 0.0,
+          "no_gold_false_primary_rate": 0.0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0
+        }
+      },
+      "task_count_scored": 120
+    }
+  }
+}

@@ -26,19 +26,21 @@ below.
 - [Real-provider CI large-repo slice results en](real-provider-ci-large-scale.en.md)
 - [P20-LS low-context LLM alias scale-up](p20-llm-large-scale.md)
 - [P21-G cross-model context-injection plan](p21-g-cross-model-context-injection.md)
+- [P22/P23 evidence-seeking policy surface](p22-p23-policy-surface.md)
 
 ## Current one-line conclusion
 
 OpenLocus has established a quality-and-evidence-gated research direction:
 local lexical/symbol/RRF retrieval is the backbone, while models are useful only
 when they receive enough code facts to be grounded. L1/L2 blocked global
-dense-only, and P20-LS-A blocked low-context/query-only LLM aliases. The next
-direction is P21-G: cross-model context atoms, packs, roles, layouts, model
-profiles, and candidate metadata, with EvidenceCore still serving as the final
-fact authority.
+dense-only, and P20-LS-A blocked low-context/query-only LLM aliases. P22/P23 now
+reframes the next phase as evidence-seeking retrieval policy research: preserve
+RRF reach, use symbol/regex anchors and guard surfaces to suppress false primary,
+route dense/LLM roles by bucket, and keep EvidenceCore as the final fact authority.
 
 OpenLocus 目前已经建立了一条质量与证据双重约束的研究路线：本地
 lexical/symbol/RRF 是事实检索主干，模型只有在拿到足够代码事实后才可能有效。
 L1/L2 阻断了 global dense-only，P20-LS-A 阻断了低上下文/query-only LLM aliases。
-下一步是 P21-G：研究跨模型 context atoms、packs、roles、layouts、model profiles
-和 candidate metadata，同时让 EvidenceCore 继续作为最终事实权威。
+P22/P23 已把下一阶段转成 evidence-seeking retrieval policy research：保留 RRF reach，
+用 symbol/regex anchors 与 guard surfaces 压 false primary，按 bucket 路由 dense/LLM roles，
+并继续让 EvidenceCore 作为最终事实权威。

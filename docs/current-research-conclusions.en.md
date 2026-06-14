@@ -108,6 +108,8 @@ P21-G3L-R is now the structured-output repair path for LLM roles. The rich-candi
 
 P21-G3B adds public-safe bucket sampling (`task_bucket` and `task_risk_tags`) and confirms that global LLM roles are unsafe across mixed buckets. In the 6-run bucketed smoke, LLM roles reduced PFP but frequently killed gold spans. `span_narrow` remains useful on likely-positive/high-confidence tasks, but it is not a cross-bucket default. `filter` and `abstain` should be routed only to negative/dense-false-positive/ambiguous buckets, not applied globally.
 
+P22/P23 shifts the next phase from channel testing to evidence-seeking policy surfaces. The current freeze has two separate local, no-remote decision surfaces: `r20_positive` for positive candidate reach and `r26_guard` for no-gold guard stress. On the capped R20 positive slice, RRF remains the reach base (`Reach@5=0.975`, `SpanReach@5=0.95`), but symbol has the best local SpanF0.5 (`0.3169`), and `symbol_regex_union` is the best precision/reach experimental baseline candidate for P25/P30. On R26, BM25/RRF still create no-gold false primary (`0.2833`), while symbol/regex/union/guard abstain. This confirms P25/P30 must optimize policy surfaces separately: reach preservation, false-primary suppression, and EvidenceCore materialization are distinct success layers.
+
 ---
 
 ## 3. Current Hypotheses
@@ -261,4 +263,4 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 
 ## 9. Current Bottom Line
 
-OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. The next key question is which context atoms, packs, roles, layouts, and model profiles make real-model retrieval add gold consistently across models without increasing false-primary or false-span rates at unacceptable latency/cost.
+OpenLocus has established a quality-and-evidence-gated research direction: local lexical/symbol/RRF retrieval is the backbone, while real embeddings, QuIVer, LLM-derived views, and graph signals are valuable only when grounded and validated. L1/L2 shows dense-only/global dense cannot be primary/default, and P20-LS-A shows low-context/query-only LLM aliases cannot be scaled as-is. P22/P23 now frames the next phase as evidence-seeking retrieval policy research: preserve local recall, use precision anchors and guard surfaces to suppress false primary, route dense/LLM roles only where the bucket/candidate surface supports them, and let EvidenceCore remain the only fact authority.

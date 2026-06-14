@@ -1,0 +1,307 @@
+{
+  "bottleneck_summary": {
+    "best_candidate_reach_strategy": null,
+    "highest_no_gold_false_primary_strategy": "bm25",
+    "note": "P22/P23 are research-only; none of these local deterministic strategies should change defaults. Use RRF as the recall reference and research_baseline_candidate_for_p25_p30 only as a research baseline candidate for P25 admission/filter refinements and P30 guard experiments.",
+    "research_baseline_candidate_for_p25_p30": "rrf_guarded_by_symbol_regex",
+    "surface_type": "guard_only_no_gold"
+  },
+  "core_changes": false,
+  "decision_surface": {
+    "available_repo_count": 9,
+    "available_repos": [
+      {
+        "content_manifest_sha": "f668444a54e881238cd556d199faf424a6f9660ffa0739419c9c5a5c9f65e8f3",
+        "repo_id": "codex2api"
+      },
+      {
+        "content_manifest_sha": "f227b100daea392a4cd59f4ab8f14d1a3e52ccea828faca625597549640a17e0",
+        "repo_id": "fast-context-mcp"
+      },
+      {
+        "content_manifest_sha": "bc75ab9d96c9deb42b2b2d37f7126a8dcef8c4dca6a1e0f9d47ab8a758e641d7",
+        "repo_id": "gemini-web2api"
+      },
+      {
+        "content_manifest_sha": "c365995c1c7799ccb2f80faa5e67b085067a53d205c12652d9ec0b40f3385d24",
+        "repo_id": "grok2api"
+      },
+      {
+        "content_manifest_sha": "70cf6e9a33572d33d8458859a4fe3f1f31738f73ad960bd89b50150036ca67dd",
+        "repo_id": "infinite-canvas"
+      },
+      {
+        "content_manifest_sha": "53f0e2eae4278f9ec200659c2a022a1f1566bfe5b87b844e63214eca0c2bb5e4",
+        "repo_id": "kiro2"
+      },
+      {
+        "content_manifest_sha": "23ad0c11d1eaf4c3c3dc6b39279119387ada970ab19c7a13d32d2684770eb2dd",
+        "repo_id": "smartsearch"
+      },
+      {
+        "content_manifest_sha": "c3b54c22040f74389e9a9f36115b1b876c0408887e29121d94f2882aeaeafe9d",
+        "repo_id": "triviumdb"
+      },
+      {
+        "content_manifest_sha": "ab4c59d575f504efa1a0ecccf1641686aea6cdb4236d9343a9506894e8808b91",
+        "repo_id": "windsurf2api"
+      }
+    ],
+    "available_strategy_baselines": [
+      "regex",
+      "bm25",
+      "symbol",
+      "rrf",
+      "symbol_regex_union",
+      "rrf_guarded_by_symbol_regex"
+    ],
+    "elapsed_ms": 233722,
+    "input_hashes": {
+      "labels": "b7add2500c203aa644339156fd6e557df54232ad282381a3474ea58aa1afddd8",
+      "repo_lock": "3d60ab401cfb77ad906f61625f32129972b881808d147ee7c7d3489bfa77666d",
+      "tasks": "868d21de2c6f955ebf4dcb7235c100e03c0be7c71425ee99bd20155bf1f5c39c"
+    },
+    "model_profile_manifest": {
+      "bytes": 5809,
+      "path": "eval/p21_model_profiles.json",
+      "sha256": "ba30f0aea55eaef5c4dee68c2de36e9ef9757e3b4aebb6b750939ce0eb027b88"
+    },
+    "reference_artifact_hashes": {
+      "artifacts/p20_llm_large/p20_llm_large_report.json": {
+        "bytes": 13729,
+        "path": "artifacts/p20_llm_large/p20_llm_large_report.json",
+        "sha256": "ba509da2c611ef11bf34e4a5c76f8086881e633566b7789a77f4ad49d021083b"
+      },
+      "artifacts/r30/baseline_manifest.json": {
+        "bytes": 31160,
+        "path": "artifacts/r30/baseline_manifest.json",
+        "sha256": "d3c39f3b97b0eea5766d2bb649ba1da6054b7b18beb5148eacbff2b94db86669"
+      },
+      "docs/r29-r26-stress-matrix.md": {
+        "bytes": 9871,
+        "path": "docs/r29-r26-stress-matrix.md",
+        "sha256": "c3adb0598f5af39643105ed377d830aa46d923cd12c01b3432e6bc74939dddcd"
+      },
+      "docs/r30-baseline-freeze.md": {
+        "bytes": 2609,
+        "path": "docs/r30-baseline-freeze.md",
+        "sha256": "8c970ab5bd09311396fd4b80f1523bfd4422f1ddf06212b487f9c3e1fd2127b3"
+      }
+    },
+    "repo_count_loaded": 9,
+    "self_test_inputs": false,
+    "task_count_loaded": 120,
+    "task_count_scored": 120
+  },
+  "default_should_change": false,
+  "elapsed_ms": 233722,
+  "evidencecore_semantics_changed": false,
+  "external_calls": 0,
+  "generated_at": "2026-06-14T07:21:09.508293+00:00",
+  "labels_loaded_after_run": true,
+  "legacy_task_rows_sanitized": true,
+  "promotion_ready": false,
+  "run_phase_public_only": true,
+  "run_phase_task_fields": [
+    "query",
+    "repo_id",
+    "task_id",
+    "test_id"
+  ],
+  "schema_version": "p22-p23-policy-surface-v1",
+  "stage": "P22/P23 evidence-seeking policy surface and bottleneck decomposition",
+  "strategy_results": {
+    "bm25": {
+      "metrics": {
+        "abstain_rate": 0.7166666666666667,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.0,
+        "candidate_gold_file_reach@10": 0.0,
+        "candidate_gold_file_reach@5": 0.0,
+        "candidate_gold_span_reach@1": 0.0,
+        "candidate_gold_span_reach@10": 0.0,
+        "candidate_gold_span_reach@5": 0.0,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.0,
+        "file_wrong_rate": 0.0,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.2833333333333333,
+        "no_gold_task_count": 120,
+        "positive_task_count": 0,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 0,
+          "file_wrong_count": 0,
+          "no_gold_false_primary_count": 34,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "regex": {
+      "metrics": {
+        "abstain_rate": 1.0,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.0,
+        "candidate_gold_file_reach@10": 0.0,
+        "candidate_gold_file_reach@5": 0.0,
+        "candidate_gold_span_reach@1": 0.0,
+        "candidate_gold_span_reach@10": 0.0,
+        "candidate_gold_span_reach@5": 0.0,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.0,
+        "file_wrong_rate": 0.0,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 120,
+        "positive_task_count": 0,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 0,
+          "file_wrong_count": 0,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "rrf": {
+      "metrics": {
+        "abstain_rate": 0.7166666666666667,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.0,
+        "candidate_gold_file_reach@10": 0.0,
+        "candidate_gold_file_reach@5": 0.0,
+        "candidate_gold_span_reach@1": 0.0,
+        "candidate_gold_span_reach@10": 0.0,
+        "candidate_gold_span_reach@5": 0.0,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.0,
+        "file_wrong_rate": 0.0,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.2833333333333333,
+        "no_gold_task_count": 120,
+        "positive_task_count": 0,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 0,
+          "file_wrong_count": 0,
+          "no_gold_false_primary_count": 34,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "rrf_guarded_by_symbol_regex": {
+      "metrics": {
+        "abstain_rate": 1.0,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.0,
+        "candidate_gold_file_reach@10": 0.0,
+        "candidate_gold_file_reach@5": 0.0,
+        "candidate_gold_span_reach@1": 0.0,
+        "candidate_gold_span_reach@10": 0.0,
+        "candidate_gold_span_reach@5": 0.0,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.0,
+        "file_wrong_rate": 0.0,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 120,
+        "positive_task_count": 0,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 0,
+          "file_wrong_count": 0,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "symbol": {
+      "metrics": {
+        "abstain_rate": 1.0,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.0,
+        "candidate_gold_file_reach@10": 0.0,
+        "candidate_gold_file_reach@5": 0.0,
+        "candidate_gold_span_reach@1": 0.0,
+        "candidate_gold_span_reach@10": 0.0,
+        "candidate_gold_span_reach@5": 0.0,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.0,
+        "file_wrong_rate": 0.0,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 120,
+        "positive_task_count": 0,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 0,
+          "file_wrong_count": 0,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "symbol_regex_union": {
+      "metrics": {
+        "abstain_rate": 1.0,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.0,
+        "candidate_gold_file_reach@10": 0.0,
+        "candidate_gold_file_reach@5": 0.0,
+        "candidate_gold_span_reach@1": 0.0,
+        "candidate_gold_span_reach@10": 0.0,
+        "candidate_gold_span_reach@5": 0.0,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.0,
+        "file_wrong_rate": 0.0,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 120,
+        "positive_task_count": 0,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 0,
+          "file_wrong_count": 0,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 120,
+          "positive_task_count": 0,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    }
+  }
+}

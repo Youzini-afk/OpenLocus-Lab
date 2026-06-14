@@ -1,0 +1,343 @@
+{
+  "bottleneck_summary": {
+    "best_candidate_reach_strategy": "rrf",
+    "highest_no_gold_false_primary_strategy": null,
+    "note": "P22/P23 are research-only; none of these local deterministic strategies should change defaults. Use RRF as the recall reference and research_baseline_candidate_for_p25_p30 only as a research baseline candidate for P25 admission/filter refinements and P30 guard experiments.",
+    "research_baseline_candidate_for_p25_p30": "symbol_regex_union",
+    "surface_type": "positive_only"
+  },
+  "core_changes": false,
+  "decision_surface": {
+    "available_repo_count": 9,
+    "available_repos": [
+      {
+        "content_manifest_sha": "f668444a54e881238cd556d199faf424a6f9660ffa0739419c9c5a5c9f65e8f3",
+        "repo_id": "codex2api"
+      },
+      {
+        "content_manifest_sha": "f227b100daea392a4cd59f4ab8f14d1a3e52ccea828faca625597549640a17e0",
+        "repo_id": "fast-context-mcp"
+      },
+      {
+        "content_manifest_sha": "bc75ab9d96c9deb42b2b2d37f7126a8dcef8c4dca6a1e0f9d47ab8a758e641d7",
+        "repo_id": "gemini-web2api"
+      },
+      {
+        "content_manifest_sha": "c365995c1c7799ccb2f80faa5e67b085067a53d205c12652d9ec0b40f3385d24",
+        "repo_id": "grok2api"
+      },
+      {
+        "content_manifest_sha": "70cf6e9a33572d33d8458859a4fe3f1f31738f73ad960bd89b50150036ca67dd",
+        "repo_id": "infinite-canvas"
+      },
+      {
+        "content_manifest_sha": "53f0e2eae4278f9ec200659c2a022a1f1566bfe5b87b844e63214eca0c2bb5e4",
+        "repo_id": "kiro2"
+      },
+      {
+        "content_manifest_sha": "23ad0c11d1eaf4c3c3dc6b39279119387ada970ab19c7a13d32d2684770eb2dd",
+        "repo_id": "smartsearch"
+      },
+      {
+        "content_manifest_sha": "c3b54c22040f74389e9a9f36115b1b876c0408887e29121d94f2882aeaeafe9d",
+        "repo_id": "triviumdb"
+      },
+      {
+        "content_manifest_sha": "ab4c59d575f504efa1a0ecccf1641686aea6cdb4236d9343a9506894e8808b91",
+        "repo_id": "windsurf2api"
+      }
+    ],
+    "available_strategy_baselines": [
+      "regex",
+      "bm25",
+      "symbol",
+      "rrf",
+      "symbol_regex_union",
+      "rrf_guarded_by_symbol_regex"
+    ],
+    "elapsed_ms": 157170,
+    "input_hashes": {
+      "labels": "eb827b9c477e9b3975a5e652c4d7d312eecec7e17f28e920f31e0f711564d5b4",
+      "repo_lock": "63cb24b252808c0f5940765452bb3780d0c11b5015b557e168d377fd08fb0681",
+      "tasks": "4263364f33b9066c589c682b30dd402f082c13e8bbdf581c39dabb1a92f675ce"
+    },
+    "model_profile_manifest": {
+      "bytes": 5809,
+      "path": "eval/p21_model_profiles.json",
+      "sha256": "ba30f0aea55eaef5c4dee68c2de36e9ef9757e3b4aebb6b750939ce0eb027b88"
+    },
+    "reference_artifact_hashes": {
+      "artifacts/p20_llm_large/p20_llm_large_report.json": {
+        "bytes": 13729,
+        "path": "artifacts/p20_llm_large/p20_llm_large_report.json",
+        "sha256": "ba509da2c611ef11bf34e4a5c76f8086881e633566b7789a77f4ad49d021083b"
+      },
+      "artifacts/r30/baseline_manifest.json": {
+        "bytes": 31160,
+        "path": "artifacts/r30/baseline_manifest.json",
+        "sha256": "d3c39f3b97b0eea5766d2bb649ba1da6054b7b18beb5148eacbff2b94db86669"
+      },
+      "docs/r29-r26-stress-matrix.md": {
+        "bytes": 9871,
+        "path": "docs/r29-r26-stress-matrix.md",
+        "sha256": "c3adb0598f5af39643105ed377d830aa46d923cd12c01b3432e6bc74939dddcd"
+      },
+      "docs/r30-baseline-freeze.md": {
+        "bytes": 2609,
+        "path": "docs/r30-baseline-freeze.md",
+        "sha256": "8c970ab5bd09311396fd4b80f1523bfd4422f1ddf06212b487f9c3e1fd2127b3"
+      }
+    },
+    "repo_count_loaded": 9,
+    "self_test_inputs": false,
+    "task_count_loaded": 120,
+    "task_count_scored": 120
+  },
+  "default_should_change": false,
+  "elapsed_ms": 157170,
+  "evidencecore_semantics_changed": false,
+  "external_calls": 0,
+  "generated_at": "2026-06-14T07:17:15.614905+00:00",
+  "labels_loaded_after_run": true,
+  "legacy_task_rows_sanitized": true,
+  "promotion_ready": false,
+  "run_phase_public_only": true,
+  "run_phase_task_fields": [
+    "query",
+    "repo_id",
+    "task_id",
+    "test_id"
+  ],
+  "schema_version": "p22-p23-policy-surface-v1",
+  "stage": "P22/P23 evidence-seeking policy surface and bottleneck decomposition",
+  "strategy_results": {
+    "bm25": {
+      "metrics": {
+        "FileRecall@1": 0.49166666666666664,
+        "FileRecall@5": 0.65,
+        "MRR": 0.5585747354497357,
+        "SpanF0.5": 0.14109740213002428,
+        "abstain_rate": 0.25833333333333336,
+        "candidate_absent_rate": 0.275,
+        "candidate_gold_file_reach@1": 0.49166666666666664,
+        "candidate_gold_file_reach@10": 0.725,
+        "candidate_gold_file_reach@5": 0.65,
+        "candidate_gold_span_reach@1": 0.225,
+        "candidate_gold_span_reach@10": 0.5833333333333334,
+        "candidate_gold_span_reach@5": 0.49166666666666664,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.26666666666666666,
+        "file_wrong_rate": 0.25,
+        "gold_file_present_span_absent_rate": 0.14166666666666666,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 0,
+        "positive_task_count": 120,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "FileRecall@5": 0.65,
+          "SpanF0.5": 0.14109740213002428,
+          "candidate_absent_count": 33,
+          "file_right_span_wrong_count": 32,
+          "file_wrong_count": 30,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "regex": {
+      "metrics": {
+        "FileRecall@1": 0.5833333333333334,
+        "FileRecall@5": 0.7416666666666667,
+        "MRR": 0.6404464285714286,
+        "SpanF0.5": 0.22254121007936678,
+        "abstain_rate": 0.0,
+        "candidate_absent_rate": 0.2,
+        "candidate_gold_file_reach@1": 0.5833333333333334,
+        "candidate_gold_file_reach@10": 0.8,
+        "candidate_gold_file_reach@5": 0.7416666666666667,
+        "candidate_gold_span_reach@1": 0.525,
+        "candidate_gold_span_reach@10": 0.8,
+        "candidate_gold_span_reach@5": 0.7416666666666667,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.058333333333333334,
+        "file_wrong_rate": 0.4166666666666667,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 0,
+        "positive_task_count": 120,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "FileRecall@5": 0.7416666666666667,
+          "SpanF0.5": 0.22254121007936678,
+          "candidate_absent_count": 24,
+          "file_right_span_wrong_count": 7,
+          "file_wrong_count": 50,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "rrf": {
+      "metrics": {
+        "FileRecall@1": 0.8166666666666667,
+        "FileRecall@5": 0.975,
+        "MRR": 0.8793287037037036,
+        "SpanF0.5": 0.23545166444323612,
+        "abstain_rate": 0.0,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.8166666666666667,
+        "candidate_gold_file_reach@10": 1.0,
+        "candidate_gold_file_reach@5": 0.975,
+        "candidate_gold_span_reach@1": 0.7666666666666667,
+        "candidate_gold_span_reach@10": 0.9916666666666667,
+        "candidate_gold_span_reach@5": 0.95,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.05,
+        "file_wrong_rate": 0.18333333333333332,
+        "gold_file_present_span_absent_rate": 0.008333333333333333,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 0,
+        "positive_task_count": 120,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "FileRecall@5": 0.975,
+          "SpanF0.5": 0.23545166444323612,
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 6,
+          "file_wrong_count": 22,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "rrf_guarded_by_symbol_regex": {
+      "metrics": {
+        "FileRecall@1": 0.8166666666666667,
+        "FileRecall@5": 0.975,
+        "MRR": 0.8793287037037036,
+        "SpanF0.5": 0.23545166444323612,
+        "abstain_rate": 0.0,
+        "candidate_absent_rate": 0.0,
+        "candidate_gold_file_reach@1": 0.8166666666666667,
+        "candidate_gold_file_reach@10": 1.0,
+        "candidate_gold_file_reach@5": 0.975,
+        "candidate_gold_span_reach@1": 0.7666666666666667,
+        "candidate_gold_span_reach@10": 0.9916666666666667,
+        "candidate_gold_span_reach@5": 0.95,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.05,
+        "file_wrong_rate": 0.18333333333333332,
+        "gold_file_present_span_absent_rate": 0.008333333333333333,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 0,
+        "positive_task_count": 120,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "FileRecall@5": 0.975,
+          "SpanF0.5": 0.23545166444323612,
+          "candidate_absent_count": 0,
+          "file_right_span_wrong_count": 6,
+          "file_wrong_count": 22,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "symbol": {
+      "metrics": {
+        "FileRecall@1": 0.8333333333333334,
+        "FileRecall@5": 0.8583333333333333,
+        "MRR": 0.83875,
+        "SpanF0.5": 0.31693019506014986,
+        "abstain_rate": 0.1,
+        "candidate_absent_rate": 0.14166666666666666,
+        "candidate_gold_file_reach@1": 0.8333333333333334,
+        "candidate_gold_file_reach@10": 0.8583333333333333,
+        "candidate_gold_file_reach@5": 0.8583333333333333,
+        "candidate_gold_span_reach@1": 0.8,
+        "candidate_gold_span_reach@10": 0.8583333333333333,
+        "candidate_gold_span_reach@5": 0.85,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.03333333333333333,
+        "file_wrong_rate": 0.06666666666666667,
+        "gold_file_present_span_absent_rate": 0.0,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 0,
+        "positive_task_count": 120,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "FileRecall@5": 0.8583333333333333,
+          "SpanF0.5": 0.31693019506014986,
+          "candidate_absent_count": 17,
+          "file_right_span_wrong_count": 4,
+          "file_wrong_count": 8,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    },
+    "symbol_regex_union": {
+      "metrics": {
+        "FileRecall@1": 0.9,
+        "FileRecall@5": 0.9333333333333333,
+        "MRR": 0.9175066137566138,
+        "SpanF0.5": 0.24362848322649017,
+        "abstain_rate": 0.0,
+        "candidate_absent_rate": 0.016666666666666666,
+        "candidate_gold_file_reach@1": 0.9,
+        "candidate_gold_file_reach@10": 0.9833333333333333,
+        "candidate_gold_file_reach@5": 0.9333333333333333,
+        "candidate_gold_span_reach@1": 0.8583333333333333,
+        "candidate_gold_span_reach@10": 0.975,
+        "candidate_gold_span_reach@5": 0.925,
+        "citation_validity": 1.0,
+        "file_right_span_wrong_rate": 0.041666666666666664,
+        "file_wrong_rate": 0.1,
+        "gold_file_present_span_absent_rate": 0.008333333333333333,
+        "no_gold_false_primary_rate": 0.0,
+        "no_gold_task_count": 0,
+        "positive_task_count": 120,
+        "task_count": 120
+      },
+      "per_bucket": {
+        "label_private_bucket": {
+          "FileRecall@5": 0.9333333333333333,
+          "SpanF0.5": 0.24362848322649017,
+          "candidate_absent_count": 2,
+          "file_right_span_wrong_count": 5,
+          "file_wrong_count": 12,
+          "no_gold_false_primary_count": 0,
+          "no_gold_task_count": 0,
+          "positive_task_count": 120,
+          "task_count": 120
+        }
+      },
+      "status": "ok"
+    }
+  }
+}

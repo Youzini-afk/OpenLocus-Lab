@@ -108,6 +108,8 @@ P21-G3L-R 是 LLM roles 的 structured-output repair 路线。rich-candidate har
 
 P21-G3B 新增 public-safe bucket sampling（`task_bucket` 与 `task_risk_tags`），并确认 global LLM roles 不能跨 mixed buckets 默认启用。在 6-run bucketed smoke 中，LLM roles 能显著降低 PFP，但经常同时杀掉 gold spans。`span_narrow` 仍适合 likely-positive / high-confidence tasks，但不是跨桶默认策略。`filter` 和 `abstain` 只能路由到 negative / dense-false-positive / ambiguous buckets，不能全局默认。
 
+P22/P23 把下一阶段从“继续比较单个通道”推进到 evidence-seeking policy surface。当前冻结了两个本地、无远程调用的决策面：`r20_positive` 用于正例 candidate reach，`r26_guard` 用于 no-gold guard stress。R20 capped positive slice 显示 RRF 仍是 reach base（`Reach@5=0.975`，`SpanReach@5=0.95`），但 symbol 的本地 SpanF0.5 最好（`0.3169`），`symbol_regex_union` 是进入 P25/P30 的 precision/reach 实验基线候选。R26 显示 BM25/RRF 仍会在 no-gold 噪声查询上制造 false primary（`0.2833`），而 symbol/regex/union/guard 会 abstain。因此 P25/P30 必须分开优化：召回保留、false-primary 抑制、EvidenceCore materialization 是三个不同成功层级。
+
 ---
 
 ## 3. 当前研究假设
