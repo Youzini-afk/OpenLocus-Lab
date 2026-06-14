@@ -199,6 +199,8 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 
 第一轮真实 P31-H1 reach smoke 已完成 6 个成功 runs（`Flash/Kimi/GLM × py_flask/js_express`，共 108 个任务、48 个 positive tasks）。所有 runs 都检测到 H1 handoff，且 reach metrics 均可用。candidate baseline 在 K=5 时只覆盖 `24/48` 个 positive tasks 的文件和 span（`GoldFileReach@5=0.5000`、`GoldSpanReach@5=0.5000`），而 `FileRightSpanWrongRate@5=0/24`。这说明本轮 smoke 的第一瓶颈是 candidate absence，而不是文件内 span localization。相同 runs 中 P25 `bucket_routed_v0` 的 false-span 成本仍明显低于 P30-H1/H2（P25 added gold/false `20/46`，H1 `18/87`，H2 `15/90`），但 P31 说明：只调 admission 无法找回缺失的一半 positive tasks。
 
+P31-H2 strategy reach matrix 的重跑说明：下一步更应该修 anchor，而不是再加一个 LLM role。K=5 时，`candidate_baseline` 覆盖 `24/48` 个 positive spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`。`symbol_regex_union` 贡献 `18/48` 个 unique span hits，而 `candidate_baseline + rrf_primary` 和 `candidate_baseline + llm_span_narrow` 都仍停在 `24/48`。因此 `symbol_regex_union` 是高 reach 的 candidate expansion source，但 P30-H3 已经证明它直接 primary admit 不安全。下一步应进入 P33 anchor repair/calibration，以及 P32/P30-H4 在 local-anchor primary admission 前加入 action budget。
+
 ---
 
 ## 3. 当前研究假设

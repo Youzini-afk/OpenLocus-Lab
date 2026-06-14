@@ -243,6 +243,16 @@ reference on the same runs (`20/46` added gold/false) compared with P30-H1
 (`18/87`) and P30-H2 (`15/90`). See
 [`p31-h1-remote-smoke.md`](p31-h1-remote-smoke.md).
 
+The real P31-H2 strategy reach matrix shows `symbol_regex_union` is the main
+candidate-reach lever: at K=5, `candidate_baseline` reaches `24/48` spans,
+`rrf_primary` reaches `21/48`, and `symbol_regex_union` reaches `42/48`, with
+`18/48` unique span hits. Combining `candidate_baseline` with `rrf_primary` or
+`llm_span_narrow` stays at `24/48`; combining with `symbol_regex_union` reaches
+`42/48`. This makes P33 anchor repair/calibration the next candidate-generation
+priority, while P32/P30-H4 must budget `symbol_regex_union` before primary
+admission. See
+[`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

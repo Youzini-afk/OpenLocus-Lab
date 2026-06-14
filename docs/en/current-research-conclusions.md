@@ -278,6 +278,16 @@ bottleneck in this smoke, not within-file span localization. P25
 runs (`20/46` added gold/false vs H1 `18/87`, H2 `15/90`), but P31 shows
 admission tuning alone cannot recover the missing half of positive tasks.
 
+The P31-H2 strategy reach matrix rerun shows why the next repair should target
+anchors, not another LLM role. At K=5, `candidate_baseline` reaches `24/48`
+positive spans, `rrf_primary` reaches `21/48`, and `symbol_regex_union` reaches
+`42/48`. `symbol_regex_union` contributes `18/48` unique span hits, while
+`candidate_baseline + rrf_primary` and `candidate_baseline + llm_span_narrow`
+remain at `24/48`. Therefore `symbol_regex_union` is a high-reach candidate
+expansion source, but P30-H3 already showed it is unsafe when admitted directly
+as primary. The next steps are P33 anchor repair/calibration and P32/P30-H4
+action budgets before local-anchor primary admission.
+
 ---
 
 ## 3. Current Hypotheses

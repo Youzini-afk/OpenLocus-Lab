@@ -234,6 +234,8 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 
 第一轮真实 P31-H1 reach smoke 已完成 6 个成功 runs。所有 runs 都检测到 H1 handoff，且 reach metrics 均可用。K=5 时 candidate baseline 在文件和 span 级别都只覆盖 `24/48` 个 positive tasks（`0.5000`），`FileRightSpanWrongRate@5=0/24`。这说明本轮 smoke 的第一瓶颈是 candidate absence。相同 runs 中 P25 `bucket_routed_v0` 仍是更好的 false-span reference（added gold/false `20/46`），优于 P30-H1（`18/87`）和 P30-H2（`15/90`）。见 [`p31-h1-remote-smoke.md`](p31-h1-remote-smoke.md)。
 
+真实 P31-H2 strategy reach matrix 显示 `symbol_regex_union` 是当前主要 candidate-reach lever：K=5 时，`candidate_baseline` 覆盖 `24/48` 个 spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`，并贡献 `18/48` 个 unique span hits。`candidate_baseline` 与 `rrf_primary` 或 `llm_span_narrow` 组合仍停在 `24/48`；与 `symbol_regex_union` 组合则达到 `42/48`。因此下一步 candidate-generation 侧应优先 P33 anchor repair/calibration，同时 P32/P30-H4 必须在 `symbol_regex_union` primary admission 前加入 action budget。见 [`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md)。
+
 ## Stage status
 
 | Stage | Status | Summary |
