@@ -3,6 +3,8 @@
     "per_task_routing": [
       {
         "admission_v3_action": "admit_symbol_regex_union",
+        "admission_v3_h1_action": "admit_symbol_regex_union",
+        "admission_v3_h1_score": 5,
         "admission_v3_score": 5,
         "repo_id": "py_flask",
         "task_bucket": "exact_symbol_unique",
@@ -15,6 +17,8 @@
       },
       {
         "admission_v3_action": "admit_symbol_regex_union",
+        "admission_v3_h1_action": "admit_symbol_regex_union",
+        "admission_v3_h1_score": 3,
         "admission_v3_score": 3,
         "repo_id": "py_flask",
         "task_bucket": "positive",
@@ -26,6 +30,8 @@
       },
       {
         "admission_v3_action": "admit_symbol_regex_union",
+        "admission_v3_h1_action": "admit_symbol_regex_union",
+        "admission_v3_h1_score": 3,
         "admission_v3_score": 3,
         "repo_id": "js_express",
         "task_bucket": "positive",
@@ -36,6 +42,8 @@
       },
       {
         "admission_v3_action": "admit_rrf_primary",
+        "admission_v3_h1_action": "admit_rrf_primary",
+        "admission_v3_h1_score": 3,
         "admission_v3_score": 3,
         "repo_id": "py_flask",
         "task_bucket": "positive",
@@ -46,7 +54,9 @@
       },
       {
         "admission_v3_action": "admit_llm_span_narrow",
-        "admission_v3_score": 4,
+        "admission_v3_h1_action": "admit_llm_span_narrow",
+        "admission_v3_h1_score": 3,
+        "admission_v3_score": 3,
         "repo_id": "js_express",
         "task_bucket": "positive",
         "task_id": "p30-005",
@@ -56,6 +66,8 @@
       },
       {
         "admission_v3_action": "abstain",
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": 1,
         "admission_v3_score": 1,
         "repo_id": "js_express",
         "task_bucket": "config",
@@ -67,7 +79,9 @@
       },
       {
         "admission_v3_action": "abstain",
-        "admission_v3_score": -6,
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -7,
+        "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "negative",
         "task_id": "p30-007",
@@ -77,7 +91,9 @@
       },
       {
         "admission_v3_action": "abstain",
-        "admission_v3_score": -6,
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -7,
+        "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "negative",
         "task_id": "p30-008",
@@ -87,7 +103,9 @@
       },
       {
         "admission_v3_action": "supporting_only",
-        "admission_v3_score": -5,
+        "admission_v3_h1_action": "supporting_only",
+        "admission_v3_h1_score": -6,
+        "admission_v3_score": -6,
         "repo_id": "py_flask",
         "task_bucket": "dense_quiver_trap",
         "task_id": "p30-009",
@@ -97,7 +115,9 @@
       },
       {
         "admission_v3_action": "supporting_only",
-        "admission_v3_score": -6,
+        "admission_v3_h1_action": "supporting_only",
+        "admission_v3_h1_score": -7,
+        "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "dense_quiver_trap",
         "task_id": "p30-010",
@@ -108,7 +128,9 @@
       },
       {
         "admission_v3_action": "abstain",
-        "admission_v3_score": -5,
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -6,
+        "admission_v3_score": -6,
         "repo_id": "py_flask",
         "task_bucket": "ambiguous",
         "task_id": "p30-011",
@@ -119,7 +141,9 @@
       },
       {
         "admission_v3_action": "abstain",
-        "admission_v3_score": -6,
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -7,
+        "admission_v3_score": -7,
         "repo_id": "js_express",
         "task_bucket": "ambiguous",
         "task_id": "p30-012",
@@ -130,7 +154,9 @@
       },
       {
         "admission_v3_action": "abstain",
-        "admission_v3_score": -5,
+        "admission_v3_h1_action": "abstain",
+        "admission_v3_h1_score": -6,
+        "admission_v3_score": -6,
         "repo_id": "py_flask",
         "task_bucket": "ambiguous",
         "task_id": "p30-013",
@@ -139,8 +165,10 @@
         ]
       },
       {
-        "admission_v3_action": "abstain",
-        "admission_v3_score": 0,
+        "admission_v3_action": "weak_candidate_only",
+        "admission_v3_h1_action": "weak_candidate_only",
+        "admission_v3_h1_score": -1,
+        "admission_v3_score": -1,
         "repo_id": "js_express",
         "task_bucket": "unknown",
         "task_id": "p30-014",
@@ -163,6 +191,8 @@
       "symbol_anchor",
       "regex_anchor",
       "local_anchor",
+      "symbol_regex_agree_file/span",
+      "rrf_anchor_agree_file/span",
       "rrf_backed_by_anchor",
       "query_noise",
       "llm_span_narrow_valid",
@@ -175,16 +205,19 @@
   "candidate_not_fact": true,
   "conclusion": [
     "Self-test-only scaffold evaluated 14 synthetic tasks; this is not quality evidence.",
-    "admission_v3 uses an explainable monotonic scorecard over public task_bucket, task_risk_tags, and route_features; it does not use score_group, has_gold, or gold during routing.",
-    "Baseline SpanF0.5=0.14285714285714285, PFP=0.18571428571428572; admission_v3 SpanF0.5=0.15285714285714286, PFP=0.02.",
+    "admission_v3 uses an explainable monotonic scorecard over pre-SCORE observable task_bucket, task_risk_tags, and route_features; it does not use score_group, has_gold, gold, or outcome metrics during routing.",
+    "Baseline SpanF0.5=0.14285714285714285, PFP=0.18571428571428572; admission_v3 SpanF0.5=0.10142857142857144, PFP=0.042857142857142864.",
+    "admission_v3_h1 (handoff enriched) SpanF0.5=0.1457142857142857, PFP=0.023571428571428573, quality_comparable=True, selected_action_fallback_rate=0.0.",
     "No policy is promotion-ready or default-ready.",
-    "Next: compare admission_v3 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs."
+    "admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; a non-zero fallback rate on legacy admission_v3 preserves the old missing-outcome behavior for comparison.",
+    "Next: compare admission_v3_h1 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs.",
+    "admission_v3 relied on fallback outcomes for 7 action selections; real runs should include measured outcomes for every selected action."
   ],
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-14T10:32:36.412515+00:00",
+  "generated_at": "2026-06-14T11:43:01.440113+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "gold_spans_in_artifact": false,
   "input_paths": [
@@ -199,28 +232,155 @@
   "not_quality_evidence": true,
   "policy_comparison": {
     "admission_v3": {
-      "SpanF0.5": 0.15285714285714286,
-      "abstain_rate": 0.5,
+      "SpanF0.5": 0.10142857142857144,
+      "abstain_rate": 0.42857142857142855,
       "action_rates": {
-        "abstain": 0.5,
+        "abstain": 0.42857142857142855,
         "admit_llm_span_narrow": 0.07142857142857142,
         "admit_rrf_primary": 0.07142857142857142,
         "admit_symbol_regex_union": 0.21428571428571427,
-        "supporting_only": 0.14285714285714285
+        "supporting_only": 0.14285714285714285,
+        "weak_candidate_only": 0.07142857142857142
       },
-      "added_false_span": 3,
+      "added_false_span": 9,
       "added_gold_span": 5,
+      "blocked_by_missing_action_outcomes": true,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.01571428571428571,
-        "delta_added_false_span": -8,
+        "delta_SpanF0.5": -0.06714285714285713,
+        "delta_added_false_span": -2,
         "delta_added_gold_span": -2,
-        "delta_primary_false_positive_rate": -0.03357142857142857
+        "delta_primary_false_positive_rate": -0.010714285714285704
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": 0.010000000000000009,
-        "delta_added_false_span": -33,
+        "delta_SpanF0.5": -0.04142857142857141,
+        "delta_added_false_span": -27,
         "delta_added_gold_span": -5,
-        "delta_primary_false_positive_rate": -0.16571428571428573
+        "delta_primary_false_positive_rate": -0.14285714285714285
+      },
+      "filter_gold_kill_rate": 0.5,
+      "no_gold_false_primary_rate": 0.037500000000000006,
+      "no_gold_task_count": 4,
+      "outcome_fallback": {
+        "fallback_action_counts": {
+          "admit_rrf_primary": 1,
+          "admit_symbol_regex_union": 3,
+          "supporting_only": 2,
+          "weak_candidate_only": 1
+        },
+        "fallback_strategy_counts": {
+          "candidate_baseline": 4,
+          "zero_primary": 3
+        },
+        "missing_action_outcome_count": 7,
+        "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+      },
+      "policy_action_counts": {
+        "abstain": 6,
+        "admit_llm_span_narrow": 1,
+        "admit_rrf_primary": 1,
+        "admit_symbol_regex_union": 3,
+        "supporting_only": 2,
+        "weak_candidate_only": 1
+      },
+      "positive_task_count": 10,
+      "primary_false_positive_rate": 0.042857142857142864,
+      "quality_comparable": false,
+      "score_bands": {
+        "hard_guard": {
+          "SpanF0.5": 0.028571428571428574,
+          "action_counts": {
+            "abstain": 5,
+            "supporting_only": 2
+          },
+          "count": 7,
+          "fraction_positive": 0.42857142857142855,
+          "no_gold_count": 4,
+          "positive_count": 3,
+          "primary_false_positive_rate": 0.021428571428571432
+        },
+        "high_admit": {
+          "SpanF0.5": 0.22400000000000003,
+          "action_counts": {
+            "admit_llm_span_narrow": 1,
+            "admit_rrf_primary": 1,
+            "admit_symbol_regex_union": 3
+          },
+          "count": 5,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 5,
+          "primary_false_positive_rate": 0.09
+        },
+        "medium_admit": {
+          "SpanF0.5": 0.1,
+          "action_counts": {
+            "abstain": 1
+          },
+          "count": 1,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "primary_false_positive_rate": 0.0
+        },
+        "neutral": {
+          "SpanF0.5": 0.0,
+          "action_counts": {
+            "weak_candidate_only": 1
+          },
+          "count": 1,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "primary_false_positive_rate": 0.0
+        }
+      },
+      "selected_action_fallback_rate": 0.5,
+      "selective_risk_proxy": 0.02448979591836735,
+      "success_layers": {
+        "admission_success": {
+          "count": 14,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 10,
+          "rate": 0.7142857142857143
+        },
+        "evidence_success": {
+          "count": 5,
+          "rate": 0.35714285714285715
+        },
+        "model_success": {
+          "count": 9,
+          "rate": 0.6428571428571429
+        }
+      },
+      "task_count": 14
+    },
+    "admission_v3_h1": {
+      "SpanF0.5": 0.1457142857142857,
+      "abstain_rate": 0.42857142857142855,
+      "action_rates": {
+        "abstain": 0.42857142857142855,
+        "admit_llm_span_narrow": 0.07142857142857142,
+        "admit_rrf_primary": 0.07142857142857142,
+        "admit_symbol_regex_union": 0.21428571428571427,
+        "supporting_only": 0.14285714285714285,
+        "weak_candidate_only": 0.07142857142857142
+      },
+      "added_false_span": 4,
+      "added_gold_span": 5,
+      "blocked_by_missing_action_outcomes": false,
+      "delta_vs_bucket_routed_v0": {
+        "delta_SpanF0.5": -0.022857142857142854,
+        "delta_added_false_span": -7,
+        "delta_added_gold_span": -2,
+        "delta_primary_false_positive_rate": -0.029999999999999995
+      },
+      "delta_vs_candidate_baseline": {
+        "delta_SpanF0.5": 0.0028571428571428636,
+        "delta_added_false_span": -32,
+        "delta_added_gold_span": -5,
+        "delta_primary_false_positive_rate": -0.16214285714285714
       },
       "filter_gold_kill_rate": 0.5,
       "no_gold_false_primary_rate": 0.037500000000000006,
@@ -232,14 +392,16 @@
         "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
       },
       "policy_action_counts": {
-        "abstain": 7,
+        "abstain": 6,
         "admit_llm_span_narrow": 1,
         "admit_rrf_primary": 1,
         "admit_symbol_regex_union": 3,
-        "supporting_only": 2
+        "supporting_only": 2,
+        "weak_candidate_only": 1
       },
       "positive_task_count": 10,
-      "primary_false_positive_rate": 0.02,
+      "primary_false_positive_rate": 0.023571428571428573,
+      "quality_comparable": true,
       "score_bands": {
         "hard_guard": {
           "SpanF0.5": 0.028571428571428574,
@@ -278,18 +440,19 @@
           "primary_false_positive_rate": 0.0
         },
         "neutral": {
-          "SpanF0.5": 0.1,
+          "SpanF0.5": 0.0,
           "action_counts": {
-            "abstain": 1
+            "weak_candidate_only": 1
           },
           "count": 1,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
           "positive_count": 1,
-          "primary_false_positive_rate": 0.0
+          "primary_false_positive_rate": 0.05
         }
       },
-      "selective_risk_proxy": 0.01,
+      "selected_action_fallback_rate": 0.0,
+      "selective_risk_proxy": 0.013469387755102041,
       "success_layers": {
         "admission_success": {
           "count": 14,

@@ -10,7 +10,7 @@ Safety constraints
 ------------------
 * No remote model calls; ``external_calls=0``.
 * No EvidenceCore semantics change.
-* Routing uses only RUN-phase public/observable features:
+* Routing uses only pre-SCORE public/observable features:
   ``task_bucket``, ``task_risk_tags``, and public ``route_features``.
   ``score_group``, ``has_gold``, gold spans, private labels, and outcome
   metrics are used only for aggregate scoring after actions are chosen.
@@ -31,7 +31,7 @@ import time
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 # Make standalone invocation from the repo root work without treating eval/ as a package.
 _FILE_DIR = Path(__file__).resolve().parent
@@ -64,6 +64,7 @@ POLICIES = [
     "llm_abstain_filter",
     "bucket_routed_v0",
     "admission_v3",
+    "admission_v3_h1",
 ]
 
 # Mapping from emitted action to the outcome key used for aggregate scoring.
@@ -132,6 +133,10 @@ ROUTE_FEATURE_ALLOWLIST = {
     "symbol_anchor",
     "regex_anchor",
     "local_anchor",
+    "symbol_regex_agree_file",
+    "symbol_regex_agree_span",
+    "rrf_anchor_agree_file",
+    "rrf_anchor_agree_span",
     "rrf_backed_by_anchor",
     "query_noise",
     "llm_span_narrow_valid",
@@ -275,7 +280,11 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
             "exact_unique_symbol_anchor": rf_bool("exact_unique_symbol_anchor"),
             "symbol_anchor": rf_bool("symbol_anchor") or "symbol_anchor" in tags_lower or "exact_symbol" in tags_lower,
             "regex_anchor": rf_bool("regex_anchor") or "regex_anchor" in tags_lower,
-            "local_anchor": rf_bool("local_anchor", rf_bool("candidate_support_exists")),
+            "local_anchor": rf_bool("local_anchor", False),
+            "symbol_regex_agree_file": rf_bool("symbol_regex_agree_file"),
+            "symbol_regex_agree_span": rf_bool("symbol_regex_agree_span"),
+            "rrf_anchor_agree_file": rf_bool("rrf_anchor_agree_file"),
+            "rrf_anchor_agree_span": rf_bool("rrf_anchor_agree_span"),
             "rrf_backed_by_anchor": rf_bool("rrf_backed_by_anchor"),
             "query_noise": rf_float("query_noise"),
             "llm_span_narrow_valid": rf_bool("llm_span_narrow_valid"),
@@ -296,7 +305,7 @@ def _outcome_is_usable(outcome: dict[str, Any]) -> bool:
     return False
 
 
-def _lookup_outcome(task: dict[str, Any], action: str) -> tuple[dict[str, Any], dict[str, Any]]:
+def _lookup_outcome(task: dict[str, Any], action: str, allowed_outcome_keys: set[str] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     """Return (outcome, fallback_info) for *action*.
 
     Primary-admit actions without a usable stored outcome fall back to the
@@ -306,7 +315,12 @@ def _lookup_outcome(task: dict[str, Any], action: str) -> tuple[dict[str, Any], 
     """
     key = ACTION_OUTCOME_MAP.get(action, action)
     outcomes = task["outcomes"]
-    if isinstance(outcomes, dict) and isinstance(outcomes.get(key), dict) and _outcome_is_usable(outcomes[key]):
+    if (
+        (allowed_outcome_keys is None or key in allowed_outcome_keys)
+        and isinstance(outcomes, dict)
+        and isinstance(outcomes.get(key), dict)
+        and _outcome_is_usable(outcomes[key])
+    ):
         return dict(outcomes[key]), {"action": action, "key": key, "missing": False, "fallback_to": None}
     base = outcomes.get("candidate_baseline", {}) if isinstance(outcomes, dict) else {}
     if action in ("supporting_only", "weak_candidate_only", "abstain"):
@@ -445,6 +459,24 @@ def route_admission_v3(task: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+LEGACY_OUTCOME_KEYS = {
+    "candidate_baseline",
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter",
+}
+
+
+def route_admission_v3_h1(task: dict[str, Any]) -> dict[str, Any]:
+    """Handoff-enriched P30 scorecard.
+
+    This intentionally reuses the P30 scorecard, but evaluates it with enriched
+    pre-SCORE route features and local-anchor measured outcomes produced by the
+    P21 handoff.  It is a handoff repair A/B lane, not a new promotion policy.
+    """
+    return route_admission_v3(task)
+
+
 def _avg(vals: list[float]) -> float | None:
     return sum(vals) / len(vals) if vals else None
 
@@ -461,8 +493,13 @@ def _score_band(score: int) -> str:
     return "hard_guard"
 
 
-def aggregate_admission_v3(tasks: list[dict[str, Any]]) -> dict[str, Any]:
-    """Aggregate metrics for the admission_v3 policy."""
+def _aggregate_admission_v3_impl(
+    tasks: list[dict[str, Any]],
+    router: Callable[[dict[str, Any]], dict[str, Any]],
+    *,
+    allowed_outcome_keys: set[str] | None = None,
+) -> dict[str, Any]:
+    """Aggregate metrics for an admission_v3-family policy."""
     if not tasks:
         return {
             "task_count": 0,
@@ -487,7 +524,7 @@ def aggregate_admission_v3(tasks: list[dict[str, Any]]) -> dict[str, Any]:
             },
         }
 
-    routings = [route_admission_v3(t) for t in tasks]
+    routings = [router(t) for t in tasks]
     actions = [r["action"] for r in routings]
 
     task_count = len(tasks)
@@ -523,7 +560,7 @@ def aggregate_admission_v3(tasks: list[dict[str, Any]]) -> dict[str, Any]:
 
     for task, routing in zip(tasks, routings):
         action = routing["action"]
-        outcome, fallback = _lookup_outcome(task, action)
+        outcome, fallback = _lookup_outcome(task, action, allowed_outcome_keys)
         baseline = task["outcomes"]["candidate_baseline"]
 
         if fallback["missing"]:
@@ -671,13 +708,35 @@ def aggregate_admission_v3(tasks: list[dict[str, Any]]) -> dict[str, Any]:
                 "for the actions the model selects."
             ),
         },
+        "quality_comparable": missing_action_outcome_count == 0,
+        "blocked_by_missing_action_outcomes": missing_action_outcome_count > 0,
+        "selected_action_fallback_rate": (
+            missing_action_outcome_count / task_count if task_count else 0.0
+        ),
     }
+
+
+def aggregate_admission_v3(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate legacy admission_v3 metrics.
+
+    Legacy P30 is scored as if only the original P21/P25 outcomes were present,
+    so enriched local-anchor outcomes do not silently erase the old fallback
+    behavior.  This keeps the H1 handoff repair comparison honest.
+    """
+    return _aggregate_admission_v3_impl(tasks, route_admission_v3, allowed_outcome_keys=LEGACY_OUTCOME_KEYS)
+
+
+def aggregate_admission_v3_h1(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate metrics for the P30-H1 handoff-enriched admission policy."""
+    return _aggregate_admission_v3_impl(tasks, route_admission_v3_h1)
 
 
 def compute_policy_metrics(tasks: list[dict[str, Any]], policy: str) -> dict[str, Any]:
     """Return aggregate metrics for one of the compared policies."""
     if policy == "admission_v3":
         return aggregate_admission_v3(tasks)
+    if policy == "admission_v3_h1":
+        return aggregate_admission_v3_h1(tasks)
     # Reuse p25 aggregation for the baseline comparison policies.
     return p25.aggregate_policy(tasks, policy)
 
@@ -814,6 +873,7 @@ def build_report(
         if self_test:
             for task in tasks:
                 routing = route_admission_v3(task)
+                routing_h1 = route_admission_v3_h1(task)
                 per_task_routing.append({
                     "task_id": task["task_id"],
                     "repo_id": task.get("repo_id"),
@@ -821,6 +881,8 @@ def build_report(
                     "task_risk_tags": task.get("task_risk_tags"),
                     "admission_v3_action": routing["action"],
                     "admission_v3_score": routing["score"],
+                    "admission_v3_h1_action": routing_h1["action"],
+                    "admission_v3_h1_score": routing_h1["score"],
                 })
 
     conclusion_lines: list[str] = []
@@ -842,16 +904,26 @@ def build_report(
                 f"P30 admission evaluation scored {baseline['task_count']} real P25 ephemeral records."
             )
         conclusion_lines.append(
-            "admission_v3 uses an explainable monotonic scorecard over public task_bucket, "
-            "task_risk_tags, and route_features; it does not use score_group, has_gold, or gold during routing."
+            "admission_v3 uses an explainable monotonic scorecard over pre-SCORE observable task_bucket, "
+            "task_risk_tags, and route_features; it does not use score_group, has_gold, gold, or outcome metrics during routing."
         )
+        h1 = policy_comparison["admission_v3_h1"]
         conclusion_lines.append(
             f"Baseline SpanF0.5={baseline.get('SpanF0.5')}, PFP={baseline.get('primary_false_positive_rate')}; "
             f"admission_v3 SpanF0.5={admission.get('SpanF0.5')}, PFP={admission.get('primary_false_positive_rate')}."
         )
+        conclusion_lines.append(
+            f"admission_v3_h1 (handoff enriched) SpanF0.5={h1.get('SpanF0.5')}, PFP={h1.get('primary_false_positive_rate')}, "
+            f"quality_comparable={h1.get('quality_comparable')}, "
+            f"selected_action_fallback_rate={h1.get('selected_action_fallback_rate')}."
+        )
         conclusion_lines.append("No policy is promotion-ready or default-ready.")
         conclusion_lines.append(
-            "Next: compare admission_v3 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs."
+            "admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; "
+            "a non-zero fallback rate on legacy admission_v3 preserves the old missing-outcome behavior for comparison."
+        )
+        conclusion_lines.append(
+            "Next: compare admission_v3_h1 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs."
         )
 
     total_route_features_ignored = sum(t.get("_route_features_ignored_count", 0) for t in tasks)
@@ -860,13 +932,21 @@ def build_report(
             f"Ignored {total_route_features_ignored} non-allowlisted route_features keys; routing used allowlisted features only."
         )
 
-    missing_outcomes = policy_comparison.get("admission_v3", {}).get("outcome_fallback", {}).get(
+    missing_outcomes_v3 = policy_comparison.get("admission_v3", {}).get("outcome_fallback", {}).get(
         "missing_action_outcome_count", 0
     )
-    if missing_outcomes:
+    missing_outcomes_h1 = policy_comparison.get("admission_v3_h1", {}).get("outcome_fallback", {}).get(
+        "missing_action_outcome_count", 0
+    )
+    if missing_outcomes_v3:
         conclusion_lines.append(
-            f"admission_v3 relied on fallback outcomes for {missing_outcomes} action selections; "
+            f"admission_v3 relied on fallback outcomes for {missing_outcomes_v3} action selections; "
             "real runs should include measured outcomes for every selected action."
+        )
+    if missing_outcomes_h1:
+        conclusion_lines.append(
+            f"admission_v3_h1 relied on fallback outcomes for {missing_outcomes_h1} action selections; "
+            "H1 handoff records are missing enriched local-anchor outcomes."
         )
 
     report = {
@@ -917,6 +997,8 @@ def build_report(
                 "symbol_anchor",
                 "regex_anchor",
                 "local_anchor",
+                "symbol_regex_agree_file/span",
+                "rrf_anchor_agree_file/span",
                 "rrf_backed_by_anchor",
                 "query_noise",
                 "llm_span_narrow_valid",
@@ -996,6 +1078,11 @@ def build_markdown(report: dict[str, Any]) -> str:
         "actions: abstain, admit_symbol_regex_union, admit_rrf_primary, admit_llm_span_narrow, "
         "apply_llm_filter, supporting_only, weak_candidate_only. |"
     )
+    lines.append(
+        "| admission_v3_h1 | Same scorecard as admission_v3, evaluated against P30-H1 handoff records "
+        "that include pre-SCORE local-anchor features and measured local-anchor outcomes "
+        "(symbol_regex_union, rrf_primary, supporting_only, weak_candidate_only). |"
+    )
     lines.append("")
 
     lines.append("## Aggregate results\n")
@@ -1016,6 +1103,21 @@ def build_markdown(report: dict[str, Any]) -> str:
             f"{fmt(m['no_gold_false_primary_rate'])} | {m['added_gold_span']} | {m['added_false_span']} | "
             f"{fmt(m['filter_gold_kill_rate'])} | {fmt(m['abstain_rate'])} | "
             f"{fmt(m.get('selective_risk_proxy'))} |"
+        )
+    lines.append("")
+
+    lines.append("## Quality comparability\n")
+    lines.append("| Policy | quality_comparable | blocked_by_missing_action_outcomes | selected_action_fallback_rate |")
+    lines.append("|---|---:|---:|---:|")
+    for policy in ("admission_v3", "admission_v3_h1"):
+        m = report["policy_comparison"].get(policy, {})
+        qc = m.get("quality_comparable")
+        blocked = m.get("blocked_by_missing_action_outcomes")
+        rate = m.get("selected_action_fallback_rate")
+        def fmt(x: Any) -> str:
+            return f"{x:.4f}" if isinstance(x, (int, float)) else (str(x) if x is not None else "n/a")
+        lines.append(
+            f"| {policy} | {qc} | {blocked} | {fmt(rate)} |"
         )
     lines.append("")
 
@@ -1054,6 +1156,15 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"| {action} | {counts.get(action, 0)} | {rates.get(action, 'n/a')} |")
     lines.append("")
 
+    lines.append("## admission_v3_h1 action distribution\n")
+    counts_h1 = report["policy_comparison"]["admission_v3_h1"].get("policy_action_counts", {})
+    rates_h1 = report["policy_comparison"]["admission_v3_h1"].get("action_rates", {})
+    lines.append("| Action | Count | Rate |")
+    lines.append("|---:|---:|---:|")
+    for action in sorted(P30_ACTIONS):
+        lines.append(f"| {action} | {counts_h1.get(action, 0)} | {rates_h1.get(action, 'n/a')} |")
+    lines.append("")
+
     lines.append("## Score bands (admission_v3)\n")
     lines.append(
         "Bands are scorecard score ranges, not held-out calibrated probabilities. "
@@ -1074,17 +1185,28 @@ def build_markdown(report: dict[str, Any]) -> str:
 
     lines.append("## Outcome fallback caveat\n")
     fb = report["policy_comparison"]["admission_v3"].get("outcome_fallback", {})
+    fb_h1 = report["policy_comparison"]["admission_v3_h1"].get("outcome_fallback", {})
     lines.append(
         f"- Missing action outcomes for admission_v3: {fb.get('missing_action_outcome_count', 0)}"
     )
     lines.append(
-        f"- Fallback strategy counts: {fb.get('fallback_strategy_counts', {})}"
+        f"- Missing action outcomes for admission_v3_h1: {fb_h1.get('missing_action_outcome_count', 0)}"
+    )
+    lines.append(
+        f"- Fallback strategy counts (admission_v3): {fb.get('fallback_strategy_counts', {})}"
+    )
+    lines.append(
+        f"- Fallback strategy counts (admission_v3_h1): {fb_h1.get('fallback_strategy_counts', {})}"
     )
     lines.append(
         "- If an action selected by admission_v3 has no measured outcome in the input record, "
         "the evaluator falls back to `candidate_baseline` for primary-admit actions or a zero-primary "
         "surrogate for `abstain`/`supporting_only`/`weak_candidate_only`. Real evaluation should use "
         "ephemeral records that include outcomes for every action the model can select."
+    )
+    lines.append(
+        "- admission_v3_h1 is designed to have zero missing outcomes when P21 writes P30-H1 enriched "
+        "handoff records; a non-zero value here indicates the input records lack the required local-anchor outcomes."
     )
     lines.append("")
 
@@ -1095,13 +1217,14 @@ def build_markdown(report: dict[str, Any]) -> str:
 
     if report.get("self_test"):
         lines.append("## Per-task routing (self-test only)\n")
-        lines.append("| task_id | repo_id | task_bucket | task_risk_tags | action | score |")
-        lines.append("|---|---|---|---|---|---|")
+        lines.append("| task_id | repo_id | task_bucket | task_risk_tags | v3_action | v3_score | h1_action | h1_score |")
+        lines.append("|---|---|---|---|---|---|---|---|")
         for row in report["admission_v3"]["per_task_routing"]:
             tags = ", ".join(row.get("task_risk_tags") or [])
             lines.append(
                 f"| {row['task_id']} | {row.get('repo_id') or ''} | {row.get('task_bucket') or ''} | "
-                f"{tags} | {row['admission_v3_action']} | {row['admission_v3_score']} |"
+                f"{tags} | {row['admission_v3_action']} | {row['admission_v3_score']} | "
+                f"{row['admission_v3_h1_action']} | {row['admission_v3_h1_score']} |"
             )
         lines.append("")
 

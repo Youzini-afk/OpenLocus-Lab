@@ -169,27 +169,30 @@ def build_candidate_predictions(args: argparse.Namespace, tasks: list[dict[str, 
         self_test=args.self_test,
     )
     anchor = p21d.run_anchor_predictions(tasks, repo_roots, args.openlocus, args.top_k)
-    dense, dense_statuses, file_filter = p21d.dense_predictions(dense_args, tasks, repo_roots)
+    dense, dense_statuses, file_filter = p21d.dense_predictions(dense_args, tasks, repo_roots)  # type: ignore[arg-type]
     hybrids = p21d.build_hybrids(tasks, anchor, dense, args.top_k, args.anchor_file_k)
     strategy = args.candidate_strategy
+    shared_info = {
+        "dense_statuses": dense_statuses,
+        "remote_file_filter_mode": file_filter.get("mode"),
+        "remote_file_filter_applied": file_filter.get("applied"),
+        "anchor_predictions": anchor,
+        "hybrid_predictions": hybrids,
+    }
     if strategy not in hybrids:
         return [], {
             "requested_candidate_strategy": args.candidate_strategy,
             "actual_candidate_strategy": None,
             "candidate_strategy_available": False,
             "unavailable_reason": "requested_candidate_strategy_unavailable",
-            "dense_statuses": dense_statuses,
-            "remote_file_filter_mode": file_filter.get("mode"),
-            "remote_file_filter_applied": file_filter.get("applied"),
+            **shared_info,
         }
     return hybrids.get(strategy, []), {
         "requested_candidate_strategy": args.candidate_strategy,
         "actual_candidate_strategy": strategy,
         "candidate_strategy_available": True,
         "unavailable_reason": None,
-        "dense_statuses": dense_statuses,
-        "remote_file_filter_mode": file_filter.get("mode"),
-        "remote_file_filter_applied": file_filter.get("applied"),
+        **shared_info,
     }
 
 
@@ -561,18 +564,138 @@ def _p25_tags(values: Any) -> list[str]:
     return out or ["other"]
 
 
-def write_p25_policy_records(path: Path, tasks: list[dict[str, Any]], labels: dict[str, dict[str, Any]], predictions_by_strategy: dict[str, list[dict[str, Any]]], decision_records: list[dict[str, Any]], repo_roots: dict[str, Path], top_k: int) -> None:
+def _p25_outcome_dict(pred: dict[str, Any], label: dict[str, Any], labels: dict[str, dict[str, Any]], repo_roots: dict[str, Path], top_k: int, *, abstained: bool = False) -> dict[str, Any]:
+    tid = pred["task_id"]
+    label_subset = {tid: label} if tid in labels else {}
+    metrics = r32.metrics_for([pred], label_subset, repo_roots, [0])
+    metrics.update(p21e.contribution([pred], label_subset, top_k))
+    return {
+        "file_recall_at_5": metrics.get("FileRecall@5"),
+        "span_f0_5": metrics.get("SpanF0.5"),
+        "primary_false_positive_rate": metrics.get("primary_false_positive_rate"),
+        "no_gold_false_primary_rate": metrics.get("primary_false_positive_rate") if not label.get("gold_spans") else 0.0,
+        "added_gold_span": metrics.get("added_gold_span"),
+        "added_false_span": metrics.get("added_false_span"),
+        "abstained": abstained,
+    }
+
+
+def _span_flags_from_decision(decision: dict[str, Any] | None, candidate_meta: list[dict[str, Any]]) -> tuple[bool, bool]:
+    items = (decision.get("items") or []) if isinstance(decision, dict) else []
+    meta_by_id = {m["candidate_id"]: m for m in candidate_meta}
+    valid = False
+    within = False
+    for item in items:
+        cid = str(item.get("candidate_id") or "")
+        meta = meta_by_id.get(cid)
+        if not meta:
+            continue
+        if item.get("decision") in {"primary", "supporting"}:
+            try:
+                s = int(item.get("start_line") or meta["start_line"])
+                e = int(item.get("end_line") or s)
+                a0 = int(meta.get("allowed_start_line", meta["start_line"]))
+                a1 = int(meta.get("allowed_end_line", meta["end_line"]))
+                if a0 <= s <= e <= a1:
+                    within = True
+                    if (s, e) != (meta["start_line"], meta["end_line"]):
+                        valid = True
+            except (KeyError, TypeError, ValueError):
+                continue
+    return valid, within
+
+
+def _evidence_paths(items: list[dict[str, Any]]) -> set[str]:
+    return {str(ev.get("path") or "") for ev in items if ev.get("path")}
+
+
+def _evidence_overlaps(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    try:
+        return (
+            str(a.get("path") or "") == str(b.get("path") or "")
+            and int(a.get("end_line") or 0) >= int(b.get("start_line") or 0)
+            and int(a.get("start_line") or 0) <= int(b.get("end_line") or 0)
+        )
+    except (TypeError, ValueError):
+        return False
+
+
+def _anchor_agreement_features(rrf_ev: list[dict[str, Any]], symbol_ev: list[dict[str, Any]], regex_ev: list[dict[str, Any]]) -> dict[str, bool]:
+    """Compute RUN-phase local anchor agreement without labels or raw text."""
+    symbol_paths = _evidence_paths(symbol_ev)
+    regex_paths = _evidence_paths(regex_ev)
+    local_anchor_ev = symbol_ev + regex_ev
+    local_anchor_paths = symbol_paths | regex_paths
+    top_rrf = rrf_ev[:1]
+    rrf_anchor_agree_file = bool(top_rrf and local_anchor_paths and str(top_rrf[0].get("path") or "") in local_anchor_paths)
+    rrf_anchor_agree_span = any(_evidence_overlaps(r, a) for r in top_rrf for a in local_anchor_ev)
+    return {
+        "symbol_regex_agree_file": bool(symbol_paths & regex_paths),
+        "symbol_regex_agree_span": any(_evidence_overlaps(s, r) for s in symbol_ev for r in regex_ev),
+        "rrf_anchor_agree_file": rrf_anchor_agree_file,
+        "rrf_anchor_agree_span": rrf_anchor_agree_span,
+        "rrf_backed_by_anchor": rrf_anchor_agree_span or rrf_anchor_agree_file,
+    }
+
+
+def write_p25_policy_records(
+    path: Path,
+    tasks: list[dict[str, Any]],
+    labels: dict[str, dict[str, Any]],
+    predictions_by_strategy: dict[str, list[dict[str, Any]]],
+    decision_records: list[dict[str, Any]],
+    repo_roots: dict[str, Path],
+    top_k: int,
+    candidate_info: dict[str, Any] | None = None,
+) -> None:
     """Write ephemeral per-task score records for P25 same-run handoff."""
     decision_by_task = {str(d.get("task_id")): d for d in decision_records}
     preds_by_strategy_task: dict[str, dict[str, dict[str, Any]]] = {}
     for strategy, preds in predictions_by_strategy.items():
         preds_by_strategy_task[strategy] = {str(p.get("task_id")): p for p in preds}
+
+    anchor_preds = (candidate_info or {}).get("anchor_predictions") or {}
+    anchor_by_task: dict[str, dict[str, dict[str, Any]]] = {}
+    for method, preds in anchor_preds.items():
+        if isinstance(preds, list):
+            anchor_by_task[method] = {str(p.get("task_id")): p for p in preds}
+
     records: list[dict[str, Any]] = []
     for task in tasks:
         tid = str(task.get("test_id") or task.get("task_id"))
         label = labels.get(tid, {})
         tags = _p25_tags(task.get("task_risk_tags"))
         decision = decision_by_task.get(tid, {})
+        candidate_meta = decision.get("candidate_meta") or []
+
+        query = str(task.get("query", ""))
+        noisy = (
+            p20.is_negative_noise_query(query)
+            or p20.is_vague_multi_word_query(query)
+            or p20.is_compound_snake_case_noise(query)
+        )
+
+        rrf_pred = anchor_by_task.get("rrf", {}).get(tid, {})
+        symbol_pred = anchor_by_task.get("symbol", {}).get(tid, {})
+        regex_pred = anchor_by_task.get("regex", {}).get(tid, {})
+        rrf_ev = list(rrf_pred.get("evidence", []) or [])
+        symbol_ev = list(symbol_pred.get("evidence", []) or [])
+        regex_ev = list(regex_pred.get("evidence", []) or [])
+        anchor_features = _anchor_agreement_features(rrf_ev, symbol_ev, regex_ev)
+
+        llm_span_narrow_valid, llm_span_within_candidate = _span_flags_from_decision(
+            decision.get("decision"), candidate_meta
+        )
+        dense_support_present = any(
+            ch.startswith("dense_")
+            for m in candidate_meta
+            for ch in (m.get("channels") or [])
+        )
+        tags_set = set(tags)
+        symbol_anchor = bool(symbol_ev) or "symbol_anchor" in tags_set or "exact_symbol" in tags_set
+        regex_anchor = bool(regex_ev) or "regex_anchor" in tags_set
+        local_anchor = bool(rrf_ev or symbol_ev or regex_ev)
+
         rec: dict[str, Any] = {
             "task_id": tid,
             "repo_id": task.get("repo_id"),
@@ -580,27 +703,63 @@ def write_p25_policy_records(path: Path, tasks: list[dict[str, Any]], labels: di
             "task_risk_tags": tags,
             "score_group": "positive" if label.get("gold_spans") else "no_gold",
             "route_features": {
-                "candidate_count": len(decision.get("candidate_meta", []) or []),
-                "candidate_support_exists": bool(decision.get("candidate_meta")),
-                "unique_symbol_anchor": "unique_symbol" in tags,
+                "candidate_count": len(candidate_meta),
+                "candidate_support_exists": bool(candidate_meta),
+                "unique_symbol_anchor": "unique_symbol" in tags_set,
+                "exact_unique_symbol_anchor": "exact_symbol" in tags_set and "unique_symbol" in tags_set,
+                "symbol_anchor": symbol_anchor,
+                "regex_anchor": regex_anchor,
+                "local_anchor": local_anchor,
+                "symbol_regex_agree_file": anchor_features["symbol_regex_agree_file"],
+                "symbol_regex_agree_span": anchor_features["symbol_regex_agree_span"],
+                "rrf_anchor_agree_file": anchor_features["rrf_anchor_agree_file"],
+                "rrf_anchor_agree_span": anchor_features["rrf_anchor_agree_span"],
+                "rrf_backed_by_anchor": anchor_features["rrf_backed_by_anchor"],
+                "query_noise": 1.0 if noisy else 0.0,
+                "llm_span_narrow_valid": llm_span_narrow_valid,
+                "llm_span_within_candidate": llm_span_within_candidate,
+                "dense_support_present": dense_support_present,
+                "graph_support_present": False,
             },
         }
         for strategy in ["candidate_baseline", "llm_span_narrow", "llm_filter", "llm_abstain_filter"]:
             pred = preds_by_strategy_task.get(strategy, {}).get(tid, {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": []})
-            label_subset = {tid: label} if tid in labels else {}
-            metrics = r32.metrics_for([pred], label_subset, repo_roots, [0])
-            contrib = p21e.contribution([pred], label_subset, top_k)
-            rec[strategy] = {
-                "file_recall_at_5": metrics.get("FileRecall@5"),
-                "span_f0_5": metrics.get("SpanF0.5"),
-                "primary_false_positive_rate": metrics.get("primary_false_positive_rate"),
-                "no_gold_false_primary_rate": metrics.get("primary_false_positive_rate") if not label.get("gold_spans") else 0.0,
-                "added_gold_span": contrib.get("added_gold_span"),
-                "added_false_span": contrib.get("added_false_span"),
-                "abstained": not bool(pred.get("evidence")),
-            }
+            rec[strategy] = _p25_outcome_dict(pred, label, labels, repo_roots, top_k, abstained=not bool(pred.get("evidence")))
+
+        # P30-H1 local anchor outcomes measured after labels are loaded; ephemeral only.
+        symbol_regex_evidence = p21d.rrf_fuse([("symbol", symbol_ev), ("regex", regex_ev)], top_k=top_k)
+        rec["symbol_regex_union"] = _p25_outcome_dict(
+            {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": symbol_regex_evidence, "latency_ms": 0},
+            label, labels, repo_roots, top_k,
+        )
+        rec["rrf_primary"] = _p25_outcome_dict(
+            {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": rrf_ev, "latency_ms": 0},
+            label, labels, repo_roots, top_k,
+        )
+        rec["supporting_only"] = _p25_outcome_dict(
+            {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": [], "latency_ms": 0},
+            label, labels, repo_roots, top_k, abstained=True,
+        )
+        rec["weak_candidate_only"] = _p25_outcome_dict(
+            {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": [], "latency_ms": 0},
+            label, labels, repo_roots, top_k, abstained=True,
+        )
         records.append(rec)
-    payload = {"schema_version": "p25-policy-records-ephemeral-v1", "not_artifact_for_commit": True, "score_phase_gold_group_stored": True, "raw_queries_stored": False, "raw_snippets_stored": False, "raw_prompts_stored": False, "raw_responses_stored": False, "gold_spans_stored": False, "private_label_categories_stored": False, "records": records}
+    payload = {
+        "schema_version": "p25-policy-records-ephemeral-v1",
+        "p30_h1_fields_present": True,
+        "contains_local_anchor_outcomes": True,
+        "p30_h1_route_features_present": True,
+        "not_artifact_for_commit": True,
+        "score_phase_gold_group_stored": True,
+        "raw_queries_stored": False,
+        "raw_snippets_stored": False,
+        "raw_prompts_stored": False,
+        "raw_responses_stored": False,
+        "gold_spans_stored": False,
+        "private_label_categories_stored": False,
+        "records": records,
+    }
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -611,7 +770,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         candidate_preds, candidate_info = build_candidate_predictions(args, tasks, repo_roots)
         cand_by_task = {str(p.get("task_id")): p for p in candidate_preds}
         remote_requested = args.llm_provider == "openai-compatible" and bool(args.allow_remote_llm)
-        remote_enabled, remote_reason = p20.remote_llm_enabled(SimpleNamespace(provider=args.llm_provider, allow_remote=args.allow_remote_llm))
+        remote_enabled, remote_reason = p20.remote_llm_enabled(SimpleNamespace(provider=args.llm_provider, allow_remote=args.allow_remote_llm))  # type: ignore[arg-type]
         if not candidate_info.get("candidate_strategy_available"):
             remote_enabled = False
             remote_reason = candidate_info.get("unavailable_reason") or "candidate_strategy_unavailable"
@@ -683,7 +842,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             payload["primary_promotion_eligible"] = False
         bucket_results = compute_bucket_results(predictions_by_strategy, labels, tasks, repo_roots, args.top_k)
         if args.p25_policy_records_out:
-            write_p25_policy_records(args.p25_policy_records_out, tasks, labels, predictions_by_strategy, decision_records, repo_roots, args.top_k)
+            write_p25_policy_records(
+                args.p25_policy_records_out, tasks, labels, predictions_by_strategy,
+                decision_records, repo_roots, args.top_k, candidate_info=candidate_info,
+            )
+        candidate_info_public = {
+            k: v for k, v in candidate_info.items()
+            if k not in {"anchor_predictions", "hybrid_predictions"}
+        }
         successful_calls = sum(1 for d in call_diags if d.get("call_succeeded"))
         schema_valid = sum(1 for d in call_diags if d.get("schema_valid"))
         fallback_events = [
@@ -725,7 +891,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "llm_disabled_reason": remote_reason,
             "embedding_provider": args.embedding_provider,
             **r32.embedding_model_metadata(args.embedding_provider),
-            "candidate_info": candidate_info,
+            "candidate_info": candidate_info_public,
             "provider_status": provider_status,
             "successful_calls": successful_calls,
             "schema_valid_calls": schema_valid,
