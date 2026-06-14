@@ -106,6 +106,8 @@ P21-G 应跨 embedding 与 LLM model profiles、query buckets、repo types、rol
 
 P21-G3L-R 是 LLM roles 的 structured-output repair 路线。rich-candidate harness 已支持 `prompt_only`、`json_object`、`json_schema_strict`、`tool_call` 四种输出模式，记录 provider-rejection fallback diagnostics，并允许一次不再走 fallback ladder 的 schema repair retry。第一轮 GLM-focused smoke 已跑 4 output modes × 2 repos：`tool_call` 目前是 GLM 最优模式（avg SpanNarrow Δ `+0.0677`，repair success `3/5`），`prompt_only` 应阻断，`json_object` 仍不够，`json_schema_strict` mixed。随后顺序低并发重跑 `tool_call`，去除了 provider HTTP 429 噪声，并把 GLM SpanNarrow avg Δ 提到 `+0.1361`；下一轮 bucketed P21-G3L 应让 GLM 使用 `tool_call`。
 
+P21-G3B 新增 public-safe bucket sampling（`task_bucket` 与 `task_risk_tags`），并确认 global LLM roles 不能跨 mixed buckets 默认启用。在 6-run bucketed smoke 中，LLM roles 能显著降低 PFP，但经常同时杀掉 gold spans。`span_narrow` 仍适合 likely-positive / high-confidence tasks，但不是跨桶默认策略。`filter` 和 `abstain` 只能路由到 negative / dense-false-positive / ambiguous buckets，不能全局默认。
+
 ---
 
 ## 3. 当前研究假设

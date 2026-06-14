@@ -106,6 +106,8 @@ P21-G should compare context atoms and packs across embedding and LLM model prof
 
 P21-G3L-R is now the structured-output repair path for LLM roles. The rich-candidate harness supports `prompt_only`, `json_object`, `json_schema_strict`, and `tool_call` output modes, records provider-rejection fallback diagnostics, and allows one schema repair retry without another fallback ladder. The first GLM-focused smoke ran 4 output modes × 2 repos: `tool_call` is the preferred GLM mode so far (avg SpanNarrow Δ `+0.0677`, repair success `3/5`), `prompt_only` should be blocked, `json_object` remains insufficient, and `json_schema_strict` is mixed. A sequential low-concurrency `tool_call` rerun removed provider HTTP 429 noise and improved GLM SpanNarrow avg Δ to `+0.1361`; use GLM `tool_call` for the next bucketed P21-G3L run.
 
+P21-G3B adds public-safe bucket sampling (`task_bucket` and `task_risk_tags`) and confirms that global LLM roles are unsafe across mixed buckets. In the 6-run bucketed smoke, LLM roles reduced PFP but frequently killed gold spans. `span_narrow` remains useful on likely-positive/high-confidence tasks, but it is not a cross-bucket default. `filter` and `abstain` should be routed only to negative/dense-false-positive/ambiguous buckets, not applied globally.
+
 ---
 
 ## 3. Current Hypotheses
