@@ -253,6 +253,15 @@ priority, while P32/P30-H4 must budget `symbol_regex_union` before primary
 admission. See
 [`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md).
 
+The first real P33 anchor precision smoke completed six successful runs. It
+found no primary-safe observed anchor bucket. The strongest calibration cell
+(`a3_r0_s2`: span agreement, low-risk, RRF-span-backed) keeps the P31-H2 reach
+ceiling (`42/48` positive spans) but has high false cost (`false_per_gold≈8.69`,
+`net_span_value_2x=-786`). `symbol_regex_agree_span` is high-reach but still
+costly (`9/9` positive span reach, `false_per_gold=4.0`); `symbol_regex_disagree`
+and `regex_only` are worse. See
+[`p33-anchor-precision-repair-remote-smoke.md`](p33-anchor-precision-repair-remote-smoke.md).
+
 ## P33 Reach-Preserving Precision Anchor Repair (2026-06-14)
 
 P33 (`eval/p33_anchor_precision_repair.py`) is a deterministic, no-remote,

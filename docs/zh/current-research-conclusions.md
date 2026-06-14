@@ -201,6 +201,8 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 
 P31-H2 strategy reach matrix 的重跑说明：下一步更应该修 anchor，而不是再加一个 LLM role。K=5 时，`candidate_baseline` 覆盖 `24/48` 个 positive spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`。`symbol_regex_union` 贡献 `18/48` 个 unique span hits，而 `candidate_baseline + rrf_primary` 和 `candidate_baseline + llm_span_narrow` 都仍停在 `24/48`。因此 `symbol_regex_union` 是高 reach 的 candidate expansion source，但 P30-H3 已经证明它直接 primary admit 不安全。下一步应进入 P33 anchor repair/calibration，以及 P32/P30-H4 在 local-anchor primary admission 前加入 action budget。
 
+第一轮真实 P33 anchor precision smoke 进一步确认：目前没有任何 observed anchor bucket 可以被视为 primary-safe。最强 calibration cell（`a3_r0_s2`：span agreement、low-risk、RRF-span-backed）覆盖 `42/48` 个 positive spans，但 `false_per_gold≈8.69`、`net_span_value_2x=-786`。`symbol_regex_agree_span` 在其 bucket 内覆盖 `9/9` 个 positives，但仍有 `false_per_gold=4.0`；`symbol_regex_disagree` 覆盖 `27/30`，但 `false_per_gold≈13.44`；`regex_only` 更差（`false_per_gold=22.5`）。因此 P33 保留 P31-H2 的结论：anchors 是主要 reach lever；同时强化 P30-H3 的结论：anchor primary admission 必须被 budget 约束。下一步 P33-B 应修复/校准 symbol 和 regex 子类型；P32/P30-H4 不应在没有 held-out budget validation 前 promote 任何 local-anchor bucket。
+
 ### 2.14 P33 Reach-Preserving Precision Anchor Repair 脚手架已就绪
 
 `eval/p33_anchor_precision_repair.py` 是一个确定性、无远程调用的诊断性脚手架

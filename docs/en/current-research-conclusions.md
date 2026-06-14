@@ -288,6 +288,18 @@ expansion source, but P30-H3 already showed it is unsafe when admitted directly
 as primary. The next steps are P33 anchor repair/calibration and P32/P30-H4
 action budgets before local-anchor primary admission.
 
+The first real P33 anchor precision smoke confirms that no observed anchor
+bucket is primary-safe yet. The strongest calibration cell (`a3_r0_s2`: span
+agreement, low-risk, RRF-span-backed) reaches `42/48` positive spans, but has
+`false_per_gold≈8.69` and `net_span_value_2x=-786`. `symbol_regex_agree_span`
+reaches `9/9` positives in its bucket, but still has `false_per_gold=4.0`;
+`symbol_regex_disagree` reaches `27/30` but has `false_per_gold≈13.44`, and
+`regex_only` is worse (`false_per_gold=22.5`). Therefore P33 preserves the
+P31-H2 conclusion that anchors are the main reach lever, while strengthening
+the P30-H3 conclusion that anchor primary admission must be budgeted. P33-B
+should now repair/calibrate symbol and regex subtypes; P32/P30-H4 should not
+promote any local-anchor bucket without held-out budget validation.
+
 ### 2.14 P33 Reach-Preserving Precision Anchor Repair scaffold is ready
 
 `eval/p33_anchor_precision_repair.py` is a deterministic, no-remote diagnostic

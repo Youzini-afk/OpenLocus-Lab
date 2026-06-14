@@ -236,6 +236,8 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 
 真实 P31-H2 strategy reach matrix 显示 `symbol_regex_union` 是当前主要 candidate-reach lever：K=5 时，`candidate_baseline` 覆盖 `24/48` 个 spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`，并贡献 `18/48` 个 unique span hits。`candidate_baseline` 与 `rrf_primary` 或 `llm_span_narrow` 组合仍停在 `24/48`；与 `symbol_regex_union` 组合则达到 `42/48`。因此下一步 candidate-generation 侧应优先 P33 anchor repair/calibration，同时 P32/P30-H4 必须在 `symbol_regex_union` primary admission 前加入 action budget。见 [`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md)。
 
+第一轮真实 P33 anchor precision smoke 已完成 6 个成功 runs。它没有发现任何 primary-safe observed anchor bucket。最强 calibration cell（`a3_r0_s2`：span agreement、low-risk、RRF-span-backed）保留了 P31-H2 的 reach ceiling（`42/48` positive spans），但 false cost 很高（`false_per_gold≈8.69`、`net_span_value_2x=-786`）。`symbol_regex_agree_span` 仍是高 reach 但高成本（`9/9` positive span reach，`false_per_gold=4.0`）；`symbol_regex_disagree` 和 `regex_only` 更差。见 [`p33-anchor-precision-repair-remote-smoke.md`](p33-anchor-precision-repair-remote-smoke.md)。
+
 ## P33 Reach-Preserving Precision Anchor Repair (2026-06-14)
 
 P33（`eval/p33_anchor_precision_repair.py`）是 P31 之后一个确定性、无远程调用的诊断性工具，
