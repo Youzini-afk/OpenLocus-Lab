@@ -15,6 +15,7 @@ on:
           - p5_llm_stress
           - p20_llm_large
           - p21_embedding_context
+          - p21_dense_hybrid
           - all_smoke
       enable_remote_models:
         description: 'Allow real embedding / LLM providers from production environment'
@@ -122,7 +123,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -165,8 +166,10 @@ jobs:
           if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", repo_id):
               raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
+          if stage == "p21_dense_hybrid" and views == "path_plus_symbol":
+              views = "pack2_evidence_sketch,atom_signature"
           view_list = [view.strip() for view in views.split(",") if view.strip()]
-          allowed_views = p21_allowed_views if stage == "p21_embedding_context" else r32_allowed_views
+          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid"} else r32_allowed_views
           if not view_list or any(view not in allowed_views for view in view_list):
               raise SystemExit("unsupported views/strategies for selected stage")
           views = ",".join(view_list)
@@ -430,6 +433,35 @@ jobs:
           cmd+=(--strategies "$STRATEGIES" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_embedding_context.json --doc docs/real-provider-ci/p21-embedding-context.md)
           "${cmd[@]}"
 
+      - name: P21-G2E constrained/fused dense hybrid
+        if: ${{ inputs.stage == 'p21_dense_hybrid' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
+          OPENLOCUS_EMBEDDING_SEND_DIMENSIONS: ${{ steps.plan.outputs.embedding_send_dimensions }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
+          DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          cmd=(python3 eval/p21_dense_hybrid.py --provider "$PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            cmd+=(--self-test)
+          else
+            cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl" --labels "$RUNNER_TEMP/openlocus-real-provider-work/tasks/labels/ci_labels.jsonl")
+          fi
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            cmd+=(--allow-remote)
+          fi
+          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_dense_hybrid.json --doc docs/real-provider-ci/p21-dense-hybrid.md)
+          "${cmd[@]}"
+
       - name: P20-LS LLM alias/stress harness
         if: ${{ inputs.stage == 'p20_llm_large' || inputs.stage == 'all_smoke' }}
         env:
@@ -511,6 +543,11 @@ jobs:
                   raise SystemExit(f"{json_path} does not explicitly keep promotion_ready=false")
               if data.get("default_should_change") is not False:
                   raise SystemExit(f"{json_path} does not explicitly keep default_should_change=false")
+              if json_path.name == "p21_dense_hybrid.json":
+                  if data.get("provider_status") != "ok":
+                      raise SystemExit(f"{json_path} provider_status is not ok")
+                  if int(data.get("dense_strategy_success_count", 0)) < 1:
+                      raise SystemExit(f"{json_path} has no successful dense strategies")
               stress_dataset = data.get("stress_dataset")
               if isinstance(stress_dataset, dict) and stress_dataset.get("private_labels") not in {None, "not_uploaded_in_ci"}:
                   raise SystemExit(f"{json_path} contains a private label artifact path")
