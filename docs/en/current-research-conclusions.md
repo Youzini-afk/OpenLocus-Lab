@@ -258,6 +258,18 @@ provider fields. Safety flags are locked: `promotion_ready=false`,
 `candidate_not_fact=true`, `remote_calls_by_p31=0`,
 `score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`.
 
+
+The first real P31-H1 reach smoke completed six successful runs
+(`Flash/Kimi/GLM × py_flask/js_express`, 108 total tasks, 48 positive tasks).
+H1 handoff was detected in every run and reach metrics were available in every
+run. Candidate baseline reached only `24/48` positive tasks at both file and
+span level at K=5 (`GoldFileReach@5=0.5000`, `GoldSpanReach@5=0.5000`), while
+`FileRightSpanWrongRate@5=0/24`. This points to candidate absence as the first
+bottleneck in this smoke, not within-file span localization. P25
+`bucket_routed_v0` still had lower false-span cost than P30-H1/H2 on the same
+runs (`20/46` added gold/false vs H1 `18/87`, H2 `15/90`), but P31 shows
+admission tuning alone cannot recover the missing half of positive tasks.
+
 ---
 
 ## 3. Current Hypotheses

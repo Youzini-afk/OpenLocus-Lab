@@ -1,0 +1,344 @@
+{
+  "aggregate_only_public_artifact": true,
+  "aggregate_reach_by_k": {
+    "1": {
+      "CandidateAbsentRate": 0.75,
+      "FileRightSpanWrongRate": 0.25,
+      "GoldFileReach": 0.25,
+      "GoldSpanExactReach": 0.0,
+      "GoldSpanReach": 0.1875,
+      "denominators": {
+        "absent_d": 48,
+        "absent_n": 36,
+        "exact_d": 48,
+        "exact_n": 0,
+        "file_d": 48,
+        "file_n": 12,
+        "frsw_d": 12,
+        "frsw_n": 3,
+        "span_d": 48,
+        "span_n": 9
+      }
+    },
+    "10": {
+      "CandidateAbsentRate": 0.5,
+      "FileRightSpanWrongRate": 0.0,
+      "GoldFileReach": 0.5,
+      "GoldSpanExactReach": 0.0,
+      "GoldSpanReach": 0.5,
+      "denominators": {
+        "absent_d": 48,
+        "absent_n": 24,
+        "exact_d": 48,
+        "exact_n": 0,
+        "file_d": 48,
+        "file_n": 24,
+        "frsw_d": 24,
+        "frsw_n": 0,
+        "span_d": 48,
+        "span_n": 24
+      }
+    },
+    "20": {
+      "CandidateAbsentRate": 0.5,
+      "FileRightSpanWrongRate": 0.0,
+      "GoldFileReach": 0.5,
+      "GoldSpanExactReach": 0.0,
+      "GoldSpanReach": 0.5,
+      "denominators": {
+        "absent_d": 48,
+        "absent_n": 24,
+        "exact_d": 48,
+        "exact_n": 0,
+        "file_d": 48,
+        "file_n": 24,
+        "frsw_d": 24,
+        "frsw_n": 0,
+        "span_d": 48,
+        "span_n": 24
+      }
+    },
+    "3": {
+      "CandidateAbsentRate": 0.5,
+      "FileRightSpanWrongRate": 0.0,
+      "GoldFileReach": 0.5,
+      "GoldSpanExactReach": 0.0,
+      "GoldSpanReach": 0.5,
+      "denominators": {
+        "absent_d": 48,
+        "absent_n": 24,
+        "exact_d": 48,
+        "exact_n": 0,
+        "file_d": 48,
+        "file_n": 24,
+        "frsw_d": 24,
+        "frsw_n": 0,
+        "span_d": 48,
+        "span_n": 24
+      }
+    },
+    "5": {
+      "CandidateAbsentRate": 0.5,
+      "FileRightSpanWrongRate": 0.0,
+      "GoldFileReach": 0.5,
+      "GoldSpanExactReach": 0.0,
+      "GoldSpanReach": 0.5,
+      "denominators": {
+        "absent_d": 48,
+        "absent_n": 24,
+        "exact_d": 48,
+        "exact_n": 0,
+        "file_d": 48,
+        "file_n": 24,
+        "frsw_d": 24,
+        "frsw_n": 0,
+        "span_d": 48,
+        "span_n": 24
+      }
+    }
+  },
+  "by_repo": {
+    "js_express": {
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.428571,
+      "GoldSpanReach@5": 0.428571,
+      "positive_task_count": 21,
+      "runs": 3
+    },
+    "py_flask": {
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.555556,
+      "GoldSpanReach@5": 0.555556,
+      "positive_task_count": 27,
+      "runs": 3
+    }
+  },
+  "candidate_not_fact": true,
+  "conclusion": {
+    "next": "P31-H2 should expose local anchor strategy reach by strategy and P32/H4 should not tune admission before fixing candidate reach ceiling.",
+    "primary_bottleneck": "candidate_absent_at_K5",
+    "summary": "Candidate baseline reaches only 24/48 positive tasks at file/span@5; file-right-span-wrong is 0/24, so this smoke points to candidate generation/reach rather than within-file span localization as the first bottleneck."
+  },
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-14T17:03:24.336136+00:00",
+  "model_miss_given_gold_present_at_5": {
+    "llm_abstain_filter": {
+      "denominator": 24,
+      "numerator": 6,
+      "rate": 0.25
+    },
+    "llm_filter": {
+      "denominator": 24,
+      "numerator": 6,
+      "rate": 0.25
+    },
+    "llm_span_narrow": {
+      "denominator": 24,
+      "numerator": 6,
+      "rate": 0.25
+    },
+    "rrf_primary": {
+      "denominator": 24,
+      "numerator": 3,
+      "rate": 0.125
+    },
+    "symbol_regex_union": {
+      "denominator": 24,
+      "numerator": 0,
+      "rate": 0.0
+    }
+  },
+  "no_gold_task_count_total": 60,
+  "p31_h1_handoff_success_count": 6,
+  "policy_totals_from_same_runs": {
+    "admission_v3_h1": {
+      "added_false_span": 87,
+      "added_gold_span": 18
+    },
+    "admission_v3_h2": {
+      "added_false_span": 90,
+      "added_gold_span": 15
+    },
+    "bucket_routed_v0": {
+      "added_false_span": 46,
+      "added_gold_span": 20
+    }
+  },
+  "positive_task_count_total": 48,
+  "promotion_ready": false,
+  "remote_run_ids": [
+    "27505747950",
+    "27505748397",
+    "27505748934",
+    "27505749395",
+    "27505749809",
+    "27505750274"
+  ],
+  "runs": [
+    {
+      "CandidateAbsentRate@5": 0.444444,
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.555556,
+      "GoldSpanReach@5": 0.555556,
+      "P25_added_gold_false": [
+        6,
+        8
+      ],
+      "P30_H1_added_gold_false": [
+        2,
+        14
+      ],
+      "P30_H2_added_gold_false": [
+        1,
+        15
+      ],
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "no_gold_task_count": 9,
+      "p31_h1_handoff_detected": true,
+      "positive_task_count": 9,
+      "reach_metrics_available": true,
+      "repo": "py_flask",
+      "run_id": "27505747950",
+      "task_count": 18
+    },
+    {
+      "CandidateAbsentRate@5": 0.571429,
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.428571,
+      "GoldSpanReach@5": 0.428571,
+      "P25_added_gold_false": [
+        1,
+        8
+      ],
+      "P30_H1_added_gold_false": [
+        4,
+        15
+      ],
+      "P30_H2_added_gold_false": [
+        4,
+        15
+      ],
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "no_gold_task_count": 11,
+      "p31_h1_handoff_detected": true,
+      "positive_task_count": 7,
+      "reach_metrics_available": true,
+      "repo": "js_express",
+      "run_id": "27505748397",
+      "task_count": 18
+    },
+    {
+      "CandidateAbsentRate@5": 0.444444,
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.555556,
+      "GoldSpanReach@5": 0.555556,
+      "P25_added_gold_false": [
+        5,
+        8
+      ],
+      "P30_H1_added_gold_false": [
+        2,
+        14
+      ],
+      "P30_H2_added_gold_false": [
+        1,
+        15
+      ],
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "no_gold_task_count": 9,
+      "p31_h1_handoff_detected": true,
+      "positive_task_count": 9,
+      "reach_metrics_available": true,
+      "repo": "py_flask",
+      "run_id": "27505748934",
+      "task_count": 18
+    },
+    {
+      "CandidateAbsentRate@5": 0.571429,
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.428571,
+      "GoldSpanReach@5": 0.428571,
+      "P25_added_gold_false": [
+        1,
+        7
+      ],
+      "P30_H1_added_gold_false": [
+        4,
+        15
+      ],
+      "P30_H2_added_gold_false": [
+        4,
+        15
+      ],
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "no_gold_task_count": 11,
+      "p31_h1_handoff_detected": true,
+      "positive_task_count": 7,
+      "reach_metrics_available": true,
+      "repo": "js_express",
+      "run_id": "27505749395",
+      "task_count": 18
+    },
+    {
+      "CandidateAbsentRate@5": 0.444444,
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.555556,
+      "GoldSpanReach@5": 0.555556,
+      "P25_added_gold_false": [
+        6,
+        8
+      ],
+      "P30_H1_added_gold_false": [
+        2,
+        14
+      ],
+      "P30_H2_added_gold_false": [
+        1,
+        15
+      ],
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "no_gold_task_count": 9,
+      "p31_h1_handoff_detected": true,
+      "positive_task_count": 9,
+      "reach_metrics_available": true,
+      "repo": "py_flask",
+      "run_id": "27505749809",
+      "task_count": 18
+    },
+    {
+      "CandidateAbsentRate@5": 0.571429,
+      "FileRightSpanWrongRate@5": 0.0,
+      "GoldFileReach@5": 0.428571,
+      "GoldSpanReach@5": 0.428571,
+      "P25_added_gold_false": [
+        1,
+        7
+      ],
+      "P30_H1_added_gold_false": [
+        4,
+        15
+      ],
+      "P30_H2_added_gold_false": [
+        4,
+        15
+      ],
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "no_gold_task_count": 11,
+      "p31_h1_handoff_detected": true,
+      "positive_task_count": 7,
+      "reach_metrics_available": true,
+      "repo": "js_express",
+      "run_id": "27505750274",
+      "task_count": 18
+    }
+  ],
+  "schema_version": "p31-h1-remote-smoke-summary-v1",
+  "task_count_total": 108
+}

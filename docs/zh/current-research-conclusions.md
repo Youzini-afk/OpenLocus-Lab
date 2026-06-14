@@ -189,6 +189,9 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 `remote_calls_by_p31=0`、`score_phase_only_metrics=true`、
 `aggregate_only_public_artifact=true`。
 
+
+第一轮真实 P31-H1 reach smoke 已完成 6 个成功 runs（`Flash/Kimi/GLM × py_flask/js_express`，共 108 个任务、48 个 positive tasks）。所有 runs 都检测到 H1 handoff，且 reach metrics 均可用。candidate baseline 在 K=5 时只覆盖 `24/48` 个 positive tasks 的文件和 span（`GoldFileReach@5=0.5000`、`GoldSpanReach@5=0.5000`），而 `FileRightSpanWrongRate@5=0/24`。这说明本轮 smoke 的第一瓶颈是 candidate absence，而不是文件内 span localization。相同 runs 中 P25 `bucket_routed_v0` 的 false-span 成本仍明显低于 P30-H1/H2（P25 added gold/false `20/46`，H1 `18/87`，H2 `15/90`），但 P31 说明：只调 admission 无法找回缺失的一半 positive tasks。
+
 ---
 
 ## 3. 当前研究假设

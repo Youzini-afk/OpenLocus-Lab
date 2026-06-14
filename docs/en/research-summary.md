@@ -225,6 +225,16 @@ provider fields. Safety flags are locked: `promotion_ready=false`,
 `score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`. Report:
 [`docs/p31-candidate-reach-ceiling.md`](p31-candidate-reach-ceiling.md).
 
+
+The first real P31-H1 reach smoke completed six successful runs. H1 handoff and
+reach metrics were available in all runs. At K=5, candidate baseline reached
+`24/48` positive tasks at both file and span level (`0.5000`), with
+`FileRightSpanWrongRate@5=0/24`. This indicates candidate absence is the first
+bottleneck on this smoke. P25 `bucket_routed_v0` remained the better false-span
+reference on the same runs (`20/46` added gold/false) compared with P30-H1
+(`18/87`) and P30-H2 (`15/90`). See
+[`p31-h1-remote-smoke.md`](p31-h1-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |
