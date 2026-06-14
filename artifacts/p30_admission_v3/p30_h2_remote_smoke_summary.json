@@ -1,0 +1,621 @@
+{
+  "aggregate": {
+    "admission_v3": {
+      "added_false_span": 18,
+      "added_gold_span": 12,
+      "mean_delta_PFP_vs_baseline": -0.13888888888888887,
+      "mean_delta_SpanF0.5_vs_baseline": -0.03158068783068783,
+      "missing_action_outcome_count": 45,
+      "quality_comparable_all_runs": false
+    },
+    "admission_v3_h1": {
+      "added_false_span": 87,
+      "added_gold_span": 18,
+      "mean_delta_PFP_vs_baseline": -0.13888888888888887,
+      "mean_delta_SpanF0.5_vs_baseline": -0.03456259253360702,
+      "missing_action_outcome_count": 0,
+      "quality_comparable_all_runs": true
+    },
+    "admission_v3_h2": {
+      "added_false_span": 90,
+      "added_gold_span": 15,
+      "mean_delta_PFP_vs_baseline": -0.13888888888888887,
+      "mean_delta_SpanF0.5_vs_baseline": -0.03704275126376575,
+      "missing_action_outcome_count": 0,
+      "quality_comparable_all_runs": true
+    },
+    "bucket_routed_v0": {
+      "added_false_span": 36,
+      "added_gold_span": 16,
+      "mean_delta_PFP_vs_baseline": -0.08333333333333333,
+      "mean_delta_SpanF0.5_vs_baseline": -0.00517773900659663,
+      "missing_action_outcome_count": 0,
+      "quality_comparable_all_runs": null
+    },
+    "candidate_baseline": {
+      "added_false_span": 102,
+      "added_gold_span": 27,
+      "mean_delta_PFP_vs_baseline": 0.0,
+      "mean_delta_SpanF0.5_vs_baseline": 0.0,
+      "missing_action_outcome_count": 0,
+      "quality_comparable_all_runs": null
+    }
+  },
+  "candidate_not_fact": true,
+  "conclusion": {
+    "diagnosis": "Tightening route conditions alone changed action mix but did not reduce false spans because the selected measured outcomes for weak/supporting/filter still carry too many false spans and primary PFP alone hides span-level false cost. The admission objective needs action-specific span-cost modeling, not just primary/no-primary gating.",
+    "h2_measurement": "admission_v3_h2 remained quality-comparable and fallback-free (missing_action_outcome_count=0).",
+    "h2_quality": "H2 did not repair quality: H2 gold/false 15/90 vs H1 18/87 and P25 bucket_routed_v0 16/36; H2 mean SpanF0.5 delta was -0.0370 vs H1 -0.0346 and P25 -0.0052.",
+    "next": "Keep P25 bucket_routed_v0 as the stronger reference. Next P30-H3 should make weak/supporting/filter outcomes non-primary cost-aware, add action-specific false-span budgets, and evaluate span-cost deltas before any primary/supporting admission."
+  },
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "external_calls_by_p30": 0,
+  "generated_at": "2026-06-14T12:49:55.597827+00:00",
+  "gold_spans_in_artifact": false,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "run_count": 6,
+  "run_ids": [
+    "27498973574",
+    "27498974031",
+    "27498973556",
+    "27498973983",
+    "27498973597",
+    "27498974042"
+  ],
+  "runs": [
+    {
+      "admission_v3": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.012077294685990338,
+        "abstain_rate": 0.6666666666666666,
+        "added_false_span": 2,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 7,
+        "policy_action_counts": {
+          "abstain": 4,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 7,
+          "supporting_only": 5
+        },
+        "quality_comparable": false,
+        "selected_action_fallback_rate": 0.3888888888888889
+      },
+      "admission_v3_h1": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.012896825396825398,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 14,
+        "added_gold_span": 2,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "abstain": 4,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 7,
+          "supporting_only": 5
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "admission_v3_h2": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.007936507936507938,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "admit_rrf_primary": 1,
+          "admit_symbol_regex_union": 1,
+          "apply_llm_filter": 9,
+          "supporting_only": 4,
+          "weak_candidate_only": 3
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.11589989531166002,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 8,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "candidate_baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.06366459627329192,
+        "abstain_rate": 0.0,
+        "added_false_span": 13,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "py_flask",
+      "run_id": "27498973574",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.027006172839506175,
+        "abstain_rate": 0.5555555555555556,
+        "added_false_span": 4,
+        "added_gold_span": 3,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 8,
+        "policy_action_counts": {
+          "abstain": 5,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 5,
+          "supporting_only": 6
+        },
+        "quality_comparable": false,
+        "selected_action_fallback_rate": 0.4444444444444444
+      },
+      "admission_v3_h1": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02022283272283272,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "abstain": 5,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 5,
+          "supporting_only": 6
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "admission_v3_h2": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02022283272283272,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 8,
+          "supporting_only": 6,
+          "weak_candidate_only": 2
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 7,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 2
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "candidate_baseline": {
+        "PFP": 0.2222222222222222,
+        "SpanF0.5": 0.038580246913580245,
+        "abstain_rate": 0.0,
+        "added_false_span": 21,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "js_express",
+      "run_id": "27498974031",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.012077294685990338,
+        "abstain_rate": 0.6666666666666666,
+        "added_false_span": 2,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 7,
+        "policy_action_counts": {
+          "abstain": 4,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 7,
+          "supporting_only": 5
+        },
+        "quality_comparable": false,
+        "selected_action_fallback_rate": 0.3888888888888889
+      },
+      "admission_v3_h1": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.012896825396825398,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 14,
+        "added_gold_span": 2,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "abstain": 4,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 7,
+          "supporting_only": 5
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "admission_v3_h2": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.007936507936507938,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "admit_rrf_primary": 1,
+          "admit_symbol_regex_union": 1,
+          "apply_llm_filter": 9,
+          "supporting_only": 4,
+          "weak_candidate_only": 3
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.07995218289335937,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 8,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "candidate_baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.06366459627329192,
+        "abstain_rate": 0.0,
+        "added_false_span": 13,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "py_flask",
+      "run_id": "27498973556",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.027006172839506175,
+        "abstain_rate": 0.5555555555555556,
+        "added_false_span": 4,
+        "added_gold_span": 3,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 8,
+        "policy_action_counts": {
+          "abstain": 5,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 5,
+          "supporting_only": 6
+        },
+        "quality_comparable": false,
+        "selected_action_fallback_rate": 0.4444444444444444
+      },
+      "admission_v3_h1": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02022283272283272,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "abstain": 5,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 5,
+          "supporting_only": 6
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "admission_v3_h2": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02022283272283272,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 8,
+          "supporting_only": 6,
+          "weak_candidate_only": 2
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.5,
+        "added_false_span": 4,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 2
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "candidate_baseline": {
+        "PFP": 0.2222222222222222,
+        "SpanF0.5": 0.038580246913580245,
+        "abstain_rate": 0.0,
+        "added_false_span": 21,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "real_policy_evaluation": true,
+      "repo": "js_express",
+      "run_id": "27498973983",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.012077294685990338,
+        "abstain_rate": 0.6666666666666666,
+        "added_false_span": 2,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 7,
+        "policy_action_counts": {
+          "abstain": 4,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 7,
+          "supporting_only": 5
+        },
+        "quality_comparable": false,
+        "selected_action_fallback_rate": 0.3888888888888889
+      },
+      "admission_v3_h1": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.012896825396825398,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 14,
+        "added_gold_span": 2,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "abstain": 4,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 7,
+          "supporting_only": 5
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "admission_v3_h2": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.007936507936507938,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.4444444444444444,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "admit_rrf_primary": 1,
+          "admit_symbol_regex_union": 1,
+          "apply_llm_filter": 9,
+          "supporting_only": 4,
+          "weak_candidate_only": 3
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.045093795093795096,
+        "abstain_rate": 0.4444444444444444,
+        "added_false_span": 7,
+        "added_gold_span": 3,
+        "filter_gold_kill_rate": 0.1111111111111111,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "candidate_baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.06366459627329192,
+        "abstain_rate": 0.0,
+        "added_false_span": 13,
+        "added_gold_span": 5,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "real_policy_evaluation": true,
+      "repo": "py_flask",
+      "run_id": "27498973597",
+      "status": "ok",
+      "task_count": 18
+    },
+    {
+      "admission_v3": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.027006172839506175,
+        "abstain_rate": 0.5555555555555556,
+        "added_false_span": 4,
+        "added_gold_span": 3,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 8,
+        "policy_action_counts": {
+          "abstain": 5,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 5,
+          "supporting_only": 6
+        },
+        "quality_comparable": false,
+        "selected_action_fallback_rate": 0.4444444444444444
+      },
+      "admission_v3_h1": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02022283272283272,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "abstain": 5,
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 5,
+          "supporting_only": 6
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "admission_v3_h2": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02022283272283272,
+        "abstain_rate": 0.8888888888888888,
+        "added_false_span": 15,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.14285714285714285,
+        "missing_action_outcome_count": 0,
+        "policy_action_counts": {
+          "admit_symbol_regex_union": 2,
+          "apply_llm_filter": 8,
+          "supporting_only": 6,
+          "weak_candidate_only": 2
+        },
+        "quality_comparable": true,
+        "selected_action_fallback_rate": 0.0
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.011574074074074075,
+        "abstain_rate": 0.5,
+        "added_false_span": 2,
+        "added_gold_span": 1,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 2
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "candidate_baseline": {
+        "PFP": 0.2222222222222222,
+        "SpanF0.5": 0.038580246913580245,
+        "abstain_rate": 0.0,
+        "added_false_span": 21,
+        "added_gold_span": 4,
+        "filter_gold_kill_rate": 0.0,
+        "missing_action_outcome_count": null,
+        "policy_action_counts": {
+          "candidate_baseline": 18
+        },
+        "quality_comparable": null,
+        "selected_action_fallback_rate": null
+      },
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "real_policy_evaluation": true,
+      "repo": "js_express",
+      "run_id": "27498974042",
+      "status": "ok",
+      "task_count": 18
+    }
+  ],
+  "schema_version": "p30-h2-remote-smoke-summary-v1",
+  "task_count_total": 108
+}

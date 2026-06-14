@@ -150,6 +150,17 @@ gold/false, mean ΔSpanF0.5 `+0.0020`) than `admission_v3_h1` (`18/87`, mean
 quality: `symbol_regex_union` admission is too broad and needs stricter
 agreement/bucket guards. Report: [`docs/p30-h1-remote-smoke.md`](p30-h1-remote-smoke.md).
 
+P30-H2 tightened local-anchor admission (`symbol_regex_union` requires exact
+unique symbol or span agreement; `rrf_primary` requires RRF/anchor span agreement;
+file-only agreement is downgraded). Six real runs showed H2 remained
+quality-comparable and fallback-free, but did not improve quality: P25
+`bucket_routed_v0` was `16/36` gold/false with mean ΔSpanF0.5 `-0.0052`, H1 was
+`18/87` with `-0.0346`, and H2 was `15/90` with `-0.0370`. The bottleneck is no
+longer only primary admission breadth: weak/supporting/filter actions still carry
+span-level false cost. Next P30 work should add action-specific span-cost budgets
+and non-primary cost accounting before further route tuning. Report:
+[`docs/p30-h2-remote-smoke.md`](p30-h2-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

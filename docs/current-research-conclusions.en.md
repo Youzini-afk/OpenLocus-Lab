@@ -197,6 +197,15 @@ The new conclusion is that missing handoff was masking a scorecard problem:
 `admit_symbol_regex_union` is too broad and admits many false spans. Next P30-H2
 should make local-anchor admission stricter instead of adding more channels.
 
+P30-H2 made local-anchor admission stricter, but this also failed as a quality
+repair. It stayed fallback-free and quality-comparable, but produced `15/90`
+added gold/false versus H1 `18/87` and P25 `bucket_routed_v0` `16/36`; mean
+ΔSpanF0.5 was `-0.0370` for H2 versus `-0.0346` for H1 and `-0.0052` for P25.
+The updated diagnosis is that primary-admission breadth was not the only issue:
+weak/supporting/filter actions still preserve too much span-level false cost.
+Next P30-H3 should model action-specific span cost and false-span budgets before
+more route tuning.
+
 ---
 
 ## 3. Current Hypotheses
@@ -317,7 +326,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
 - P21-G: cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E found useful file/span signal (`pack2_evidence_sketch`, `atom_signature`) but naked dense false spans dominated. P21-G2E found constrained dense has modest supporting value (`dense_atom_signature_rrf_file_constrained`) while dense-only remains diagnostic/non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain need prompt/bucket routing and GLM needs schema repair.
 - P25: bucket-routed LLM role policy evaluator. Deterministic, no-remote, routes by public `task_bucket`/`task_risk_tags`; reduces false primary but also some gold spans; useful as a P30 input, not default.
-- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from pre-SCORE public features, compares baselines plus `admission_v3`/`admission_v3_h1`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. P30-H1 fixed missing outcomes but underperforms P25 `bucket_routed_v0`; the next problem is stricter local-anchor admission, not more channels.
+- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from pre-SCORE public features, compares baselines plus `admission_v3`/`admission_v3_h1`/`admission_v3_h2`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. P30-H1 fixed missing outcomes; P30-H2 stricter local-anchor admission still underperforms P25, so the next problem is action-specific span-cost accounting.
 
 Key detailed reports:
 
@@ -334,6 +343,7 @@ Key detailed reports:
 - `docs/p30-admission-model-v3.md` — P30 Admission Model V3 report.
 - `docs/p30-admission-model-v3-remote-smoke.md` — first P30 real remote smoke.
 - `docs/p30-h1-remote-smoke.md` — P30-H1 enriched handoff real remote smoke.
+- `docs/p30-h2-remote-smoke.md` — P30-H2 stricter local-anchor admission real remote smoke.
 
 ---
 
@@ -351,7 +361,7 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
 9. If LLM query aliases are revisited, test only grounded variants: inventory-selected aliases or aliases derived after seeing top-k local candidate snippets.
 10. Run P21-G rich LLM candidate support: rerank/filter/span-narrow/abstain/inventory_alias over snippet-backed local candidates, record model-averaged and per-model effects, and report quality, latency, token, and cost trade-offs.
-11. P30-H2: tighten local-anchor admission (`symbol_regex_union`/`rrf_primary`) using agreement/bucket/query-noise guards, then rerun against real P25 ephemeral policy records.
+11. P30-H3: add action-specific span-cost accounting and false-span budgets for weak/supporting/filter outcomes before further route tuning.
 
 ---
 
