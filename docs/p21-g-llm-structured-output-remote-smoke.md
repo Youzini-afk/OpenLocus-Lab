@@ -51,3 +51,22 @@ This study compares provider-level structured output modes for `[mk]GLM-5.1` on 
 - `27486262392` — `prompt_only` on `py_flask` status `degraded` errors `8`
 - `27486267106` — `tool_call` on `js_express` status `degraded` errors `4`
 - `27486266480` — `tool_call` on `py_flask` status `degraded` errors `2`
+
+
+## Low-Concurrency Tool Call Rerun
+
+After the 4-mode comparison showed `tool_call` as the best GLM output mode but included provider HTTP 429 events, two `tool_call` runs were repeated sequentially.
+
+| Repo | Run | Schema errors | Repairs | 429 errors | Candidate SpanF0.5 | SpanNarrow SpanF0.5 | SpanNarrow Δ |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| py_flask | 27486409148 | 1 | 2/1 | 0 | 0.25253018003954625 | 0.330024030274233 | 0.07749385023468675 |
+| js_express | 27486473166 | 1 | 2/1 | 0 | 0.21954835766423358 | 0.4142346304193319 | 0.1946862727550983 |
+
+Aggregate:
+
+- schema_error_rate: `0.1`
+- schema_repair_success_rate: `0.5`
+- rate_limit_error_count: `0`
+- llm_span_narrow avg ΔSpanF0.5: `0.13609`
+
+Conclusion: low-concurrency `tool_call` removes the observed 429 noise and strengthens GLM span-narrow signal. Use `tool_call` for GLM in the next bucketed P21-G3L run, but keep all LLM outputs candidate-only and non-default.

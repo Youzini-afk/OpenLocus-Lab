@@ -353,22 +353,94 @@
     "best_span_narrow_avg": "tool_call",
     "json_object_insufficient_for_glm": true,
     "json_schema_strict_mixed": true,
-    "next_step": "Use tool_call as GLM default for P21-G3L-R follow-up, rerun with lower concurrency and bucketed tasks; keep no promotion/default change.",
+    "next_step": "Use GLM tool_call for bucketed P21-G3L follow-up; keep filter/abstain non-default and focus on span_narrow.",
     "notes": [
       "prompt_only failed badly for GLM: 16/20 schema/provider invalid calls and zero useful predictions.",
       "json_object improved over prompt_only but still had 11/20 schema/provider failures and negative span delta.",
       "json_schema_strict reduced schema/provider failures to 7/20 and helped js_express, but hurt py_flask.",
       "tool_call had the best overall span signal and repair behavior: schema_error_rate 0.30, repair_success 3/5, avg \u0394SpanF0.5 +0.0677.",
-      "Several failures are provider_http_429 rate limits, so repeat with lower parallelism before drawing final provider capability conclusions."
+      "Several failures are provider_http_429 rate limits, so repeat with lower parallelism before drawing final provider capability conclusions.",
+      "Low-concurrency tool_call rerun removed provider_http_429 events and improved GLM span_narrow avg delta to +0.1361 across py_flask/js_express."
     ],
     "prompt_only_blocked": true,
+    "tool_call_low_concurrency_confirmed": true,
     "tool_call_preferred_for_glm_next": true
   },
   "default_should_change": false,
   "embedding_model": "Qwen/Qwen3-Embedding-4B",
-  "generated_at": "2026-06-14T02:50:45.840297+00:00",
+  "generated_at": "2026-06-14T02:59:55.757988+00:00",
   "llm_direct_evidence_allowed": false,
   "llm_model": "[mk]GLM-5.1",
+  "low_concurrency_tool_call_rerun": {
+    "fallback_event_count": 4,
+    "latency_ms_p50_avg": 3619.5,
+    "output_mode": "tool_call",
+    "per_repo": {
+      "js_express": {
+        "candidate_baseline_SpanF0.5": 0.21954835766423358,
+        "llm_filter_delta": -0.06204835766423358,
+        "llm_span_narrow_SpanF0.5": 0.4142346304193319,
+        "llm_span_narrow_delta": 0.1946862727550983,
+        "rate_limit_error_count": 0,
+        "run_id": "27486473166",
+        "schema_error_count": 1,
+        "schema_repair_attempted_count": 2,
+        "schema_repair_success_count": 1
+      },
+      "py_flask": {
+        "candidate_baseline_SpanF0.5": 0.25253018003954625,
+        "llm_filter_delta": -0.0268078218897152,
+        "llm_span_narrow_SpanF0.5": 0.330024030274233,
+        "llm_span_narrow_delta": 0.07749385023468675,
+        "rate_limit_error_count": 0,
+        "run_id": "27486409148",
+        "schema_error_count": 1,
+        "schema_repair_attempted_count": 2,
+        "schema_repair_success_count": 1
+      }
+    },
+    "rate_limit_error_count": 0,
+    "repos": [
+      "js_express",
+      "py_flask"
+    ],
+    "run_count": 2,
+    "run_ids": [
+      "27486409148",
+      "27486473166"
+    ],
+    "schema_error_count": 2,
+    "schema_error_rate": 0.1,
+    "schema_repair_attempted_count": 4,
+    "schema_repair_success_count": 2,
+    "schema_repair_success_rate": 0.5,
+    "strategy_results": {
+      "candidate_baseline": {
+        "SpanF0.5_avg": 0.236039,
+        "added_false_span_total": 26,
+        "added_gold_span_total": 19,
+        "delta_SpanF0.5_vs_candidate_avg": null
+      },
+      "llm_abstain_filter": {
+        "SpanF0.5_avg": 0.191611,
+        "added_false_span_total": 11,
+        "added_gold_span_total": 14,
+        "delta_SpanF0.5_vs_candidate_avg": -0.044428
+      },
+      "llm_filter": {
+        "SpanF0.5_avg": 0.191611,
+        "added_false_span_total": 11,
+        "added_gold_span_total": 14,
+        "delta_SpanF0.5_vs_candidate_avg": -0.044428
+      },
+      "llm_span_narrow": {
+        "SpanF0.5_avg": 0.372129,
+        "added_false_span_total": 11,
+        "added_gold_span_total": 14,
+        "delta_SpanF0.5_vs_candidate_avg": 0.13609
+      }
+    }
+  },
   "not_promotion_evidence": true,
   "output_modes": [
     "prompt_only",
