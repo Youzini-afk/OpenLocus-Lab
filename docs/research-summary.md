@@ -58,6 +58,25 @@ local candidates, inventory-grounded aliases, and prompt/context/layout matrices
 secrets, ignored files, provider keys, and private labels/gold answers, but do
 not let context minimization dominate quality.
 
+## P25 Bucket-Routed LLM Role Policy (2026-06-14)
+
+A deterministic P25 policy evaluator (`eval/p25_bucket_policy.py`) is now
+available. The committed report is a sanitized synthetic self-test scaffold
+(`status=self_test_only`, `not_quality_evidence=true`), not a quality result.
+Real P25 evaluation now requires ephemeral SCORE-phase records produced by
+`eval/p21_llm_rich_candidate.py --p25-policy-records-out`; those records stay
+under runner temp and are not uploaded, while P25 uploads aggregate metrics
+only. The evaluator compares five policies: `candidate_baseline`,
+`global_span_narrow`, `global_filter`, `global_abstain_filter`, and
+`bucket_routed_v0`. The bucket-routed policy routes `llm_span_narrow` to
+likely-positive/high-confidence buckets, routes `llm_filter`/`llm_abstain_filter`
+to negative/dense-false-positive/ambiguous buckets using a fixed a-priori
+negative strategy, skips LLM calls when an exact-symbol-plus-unique-anchor signal
+is available, and falls back to the candidate baseline otherwise. Aggregate P21
+summaries and non-ephemeral schemas are rejected with
+`status=insufficient_task_detail`; no policy is promotion-ready or default-ready. See
+[`docs/p25-bucket-routed-policy.md`](p25-bucket-routed-policy.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

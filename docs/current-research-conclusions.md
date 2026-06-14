@@ -27,6 +27,7 @@ below.
 - [P20-LS low-context LLM alias scale-up](p20-llm-large-scale.md)
 - [P21-G cross-model context-injection plan](p21-g-cross-model-context-injection.md)
 - [P22/P23 evidence-seeking policy surface](p22-p23-policy-surface.md)
+- [P25 bucket-routed LLM role policy](p25-bucket-routed-policy.md)
 
 ## Current one-line conclusion
 

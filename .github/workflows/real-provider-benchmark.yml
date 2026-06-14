@@ -529,6 +529,8 @@ jobs:
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
         run: |
           cmd=(python3 eval/p21_llm_rich_candidate.py --embedding-provider "$EMBEDDING_PROVIDER" --llm-provider "$LLM_PROVIDER")
+          P25_RECORDS="$RUNNER_TEMP/p25_policy_records.private.json"
+          trap 'rm -f "$P25_RECORDS"' EXIT
           if [[ "$DATASET" == "self_test" ]]; then
             cmd+=(--self-test)
           else
@@ -537,8 +539,10 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote-embedding --allow-remote-llm)
           fi
-          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
+          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --p25-policy-records-out "$P25_RECORDS" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
           "${cmd[@]}"
+          python3 eval/p25_bucket_policy.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/p25_bucket_policy.json --doc docs/real-provider-ci/p25-bucket-routed-policy.md
+          rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
         if: ${{ inputs.stage == 'p20_llm_large' || inputs.stage == 'all_smoke' }}
@@ -659,6 +663,17 @@ jobs:
                           for idx, value in enumerate(obj):
                               walk(value, prefix + str(idx) + ".")
                   walk(data)
+              if json_path.name == "p25_bucket_policy.json":
+                  if data.get("status") != "ok":
+                      raise SystemExit(f"{json_path} status is not ok")
+                  if data.get("real_policy_evaluation") is not True or data.get("not_quality_evidence") is not False:
+                      raise SystemExit(f"{json_path} is not a real aggregate policy evaluation")
+                  if data.get("external_calls") != 0:
+                      raise SystemExit(f"{json_path} should not make additional external calls")
+                  if data.get("bucket_routed_v0", {}).get("per_task_routing"):
+                      raise SystemExit(f"{json_path} persisted per-task routing")
+                  if data.get("raw_query_stored") is not False or data.get("gold_spans_in_artifact") is not False:
+                      raise SystemExit(f"{json_path} persisted raw query or gold spans")
               stress_dataset = data.get("stress_dataset")
               if isinstance(stress_dataset, dict) and stress_dataset.get("private_labels") not in {None, "not_uploaded_in_ci"}:
                   raise SystemExit(f"{json_path} contains a private label artifact path")

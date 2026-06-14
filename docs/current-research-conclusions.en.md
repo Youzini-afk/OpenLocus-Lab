@@ -110,6 +110,23 @@ P21-G3B adds public-safe bucket sampling (`task_bucket` and `task_risk_tags`) an
 
 P22/P23 shifts the next phase from channel testing to evidence-seeking policy surfaces. The current freeze has two separate local, no-remote decision surfaces: `r20_positive` for positive candidate reach and `r26_guard` for no-gold guard stress. On the capped R20 positive slice, RRF remains the reach base (`Reach@5=0.975`, `SpanReach@5=0.95`), but symbol has the best local SpanF0.5 (`0.3169`), and `symbol_regex_union` is the best precision/reach experimental baseline candidate for P25/P30. On R26, BM25/RRF still create no-gold false primary (`0.2833`), while symbol/regex/union/guard abstain. This confirms P25/P30 must optimize policy surfaces separately: reach preservation, false-primary suppression, and EvidenceCore materialization are distinct success layers.
 
+### 2.11 P25 bucket-routed LLM role policy evaluator is ready
+
+`eval/p25_bucket_policy.py` is a deterministic, no-remote policy evaluator. The
+committed report is a sanitized self-test scaffold (`status=self_test_only`,
+`not_quality_evidence=true`), not quality evidence. Real P25 evaluation now
+requires ephemeral SCORE-phase records from
+`eval/p21_llm_rich_candidate.py --p25-policy-records-out`; those records remain
+under runner temp and are not uploaded, while P25 uploads aggregate metrics only.
+The `bucket_routed_v0` policy routes by allowlisted public `task_bucket`/
+`task_risk_tags`: `llm_span_narrow` for likely-positive/high-confidence buckets,
+fixed a-priori `llm_filter`/`llm_abstain_filter` for negative/
+dense-false-positive/ambiguous buckets, skips LLM for exact-symbol-plus-unique
+anchors, and otherwise falls back to the candidate baseline. Aggregate P21
+summaries and non-ephemeral schemas are rejected with
+`status=insufficient_task_detail`. This provides a scaffold for future P25/P30
+evidence-seeking policy surfaces, not a promotion claim.
+
 ---
 
 ## 3. Current Hypotheses

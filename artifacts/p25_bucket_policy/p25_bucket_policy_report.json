@@ -1,0 +1,341 @@
+{
+  "bucket_routed_v0": {
+    "fixed_negative_strategy": "llm_abstain_filter",
+    "per_task_routing": [
+      {
+        "bucket_routed_v0_action": "llm_span_narrow",
+        "repo_id": "py_flask",
+        "task_bucket": "positive",
+        "task_id": "p25-001",
+        "task_risk_tags": [
+          "high_confidence"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_span_narrow",
+        "repo_id": "py_flask",
+        "task_bucket": "positive",
+        "task_id": "p25-002",
+        "task_risk_tags": [
+          "likely_positive",
+          "route_handler"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "candidate_baseline",
+        "repo_id": "py_flask",
+        "task_bucket": "exact_symbol_unique",
+        "task_id": "p25-003",
+        "task_risk_tags": [
+          "exact_symbol",
+          "unique_symbol"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_span_narrow",
+        "repo_id": "js_express",
+        "task_bucket": "config",
+        "task_id": "p25-004",
+        "task_risk_tags": [
+          "config",
+          "positive"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_abstain_filter",
+        "repo_id": "js_express",
+        "task_bucket": "negative",
+        "task_id": "p25-005",
+        "task_risk_tags": [
+          "negative"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_abstain_filter",
+        "repo_id": "js_express",
+        "task_bucket": "negative",
+        "task_id": "p25-006",
+        "task_risk_tags": [
+          "negative"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_filter",
+        "repo_id": "js_express",
+        "task_bucket": "dense_quiver_trap",
+        "task_id": "p25-007",
+        "task_risk_tags": [
+          "dense_false_positive"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_filter",
+        "repo_id": "js_express",
+        "task_bucket": "dense_quiver_trap",
+        "task_id": "p25-008",
+        "task_risk_tags": [
+          "dense_false_positive",
+          "hard_distractor"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_filter",
+        "repo_id": "py_flask",
+        "task_bucket": "ambiguous",
+        "task_id": "p25-009",
+        "task_risk_tags": [
+          "ambiguous",
+          "weak_candidates"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_filter",
+        "repo_id": "py_flask",
+        "task_bucket": "ambiguous",
+        "task_id": "p25-010",
+        "task_risk_tags": [
+          "ambiguous",
+          "hallucination_risk"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "llm_filter",
+        "repo_id": "py_flask",
+        "task_bucket": "ambiguous",
+        "task_id": "p25-011",
+        "task_risk_tags": [
+          "weak_candidates"
+        ]
+      },
+      {
+        "bucket_routed_v0_action": "candidate_baseline",
+        "repo_id": "js_express",
+        "task_bucket": "unknown",
+        "task_id": "p25-012",
+        "task_risk_tags": [
+          "other"
+        ]
+      }
+    ],
+    "routing_rules": [
+      "exact_symbol + unique symbol/symbol anchor -> candidate_baseline (skip LLM)",
+      "positive/likely_positive/high_confidence/config/route_handler with support -> llm_span_narrow",
+      "negative/dense_false_positive/ambiguous/hallucination_risk/weak_candidates -> fixed filter/abstain",
+      "otherwise -> candidate_baseline"
+    ]
+  },
+  "candidate_not_fact": true,
+  "conclusion": [
+    "Self-test-only scaffold evaluated 12 synthetic tasks; this is not quality evidence.",
+    "Bucket-routed v0 uses a priori negative strategy 'llm_abstain_filter' and routes span_narrow to likely-positive tasks.",
+    "Baseline FileRecall@5=0.525, SpanF0.5=0.115; routed FileRecall@5=0.525, SpanF0.5=0.1225, PFP=0.08333333333333333.",
+    "No policy is promotion-ready or default-ready."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "external_calls": 0,
+  "generated_at": "2026-06-14T09:23:23.494875+00:00",
+  "generated_by": "eval/p25_bucket_policy.py",
+  "gold_spans_in_artifact": false,
+  "input_paths": [
+    "self_test"
+  ],
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_paths": [],
+  "labels_loaded_after_run": true,
+  "llm_direct_evidence_allowed": false,
+  "not_quality_evidence": true,
+  "policy_comparison": {
+    "bucket_routed_v0": {
+      "FileRecall@5": 0.525,
+      "SpanF0.5": 0.1225,
+      "abstain_rate": 0.16666666666666666,
+      "added_false_span": 12,
+      "added_gold_span": 5,
+      "filter_gold_kill_rate": 0.25,
+      "no_gold_false_primary_rate": 0.15,
+      "no_gold_task_count": 4,
+      "policy_action_counts": {
+        "candidate_baseline": 2,
+        "llm_abstain_filter": 2,
+        "llm_filter": 5,
+        "llm_span_narrow": 3
+      },
+      "positive_task_count": 8,
+      "primary_false_positive_rate": 0.08333333333333333,
+      "success_layers": {
+        "admission_success": {
+          "count": 12,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        },
+        "evidence_success": {
+          "count": 6,
+          "rate": 0.5
+        },
+        "model_success": {
+          "count": 10,
+          "rate": 0.8333333333333334
+        }
+      },
+      "task_count": 12
+    },
+    "candidate_baseline": {
+      "FileRecall@5": 0.525,
+      "SpanF0.5": 0.115,
+      "abstain_rate": 0.0,
+      "added_false_span": 45,
+      "added_gold_span": 7,
+      "filter_gold_kill_rate": 0.0,
+      "no_gold_false_primary_rate": 0.5875,
+      "no_gold_task_count": 4,
+      "policy_action_counts": {
+        "candidate_baseline": 12
+      },
+      "positive_task_count": 8,
+      "primary_false_positive_rate": 0.325,
+      "success_layers": {
+        "admission_success": {
+          "count": 12,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        },
+        "evidence_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        },
+        "model_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        }
+      },
+      "task_count": 12
+    },
+    "global_abstain_filter": {
+      "FileRecall@5": 0.525,
+      "SpanF0.5": 0.07,
+      "abstain_rate": 1.0,
+      "added_false_span": 3,
+      "added_gold_span": 0,
+      "filter_gold_kill_rate": 0.875,
+      "no_gold_false_primary_rate": 0.125,
+      "no_gold_task_count": 4,
+      "policy_action_counts": {
+        "llm_abstain_filter": 12
+      },
+      "positive_task_count": 8,
+      "primary_false_positive_rate": 0.049999999999999996,
+      "success_layers": {
+        "admission_success": {
+          "count": 12,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        },
+        "evidence_success": {
+          "count": 1,
+          "rate": 0.08333333333333333
+        },
+        "model_success": {
+          "count": 5,
+          "rate": 0.4166666666666667
+        }
+      },
+      "task_count": 12
+    },
+    "global_filter": {
+      "FileRecall@5": 0.525,
+      "SpanF0.5": 0.085,
+      "abstain_rate": 0.0,
+      "added_false_span": 9,
+      "added_gold_span": 0,
+      "filter_gold_kill_rate": 0.875,
+      "no_gold_false_primary_rate": 0.18750000000000003,
+      "no_gold_task_count": 4,
+      "policy_action_counts": {
+        "llm_filter": 12
+      },
+      "positive_task_count": 8,
+      "primary_false_positive_rate": 0.08333333333333333,
+      "success_layers": {
+        "admission_success": {
+          "count": 12,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        },
+        "evidence_success": {
+          "count": 1,
+          "rate": 0.08333333333333333
+        },
+        "model_success": {
+          "count": 5,
+          "rate": 0.4166666666666667
+        }
+      },
+      "task_count": 12
+    },
+    "global_span_narrow": {
+      "FileRecall@5": 0.525,
+      "SpanF0.5": 0.12416666666666666,
+      "abstain_rate": 0.0,
+      "added_false_span": 33,
+      "added_gold_span": 6,
+      "filter_gold_kill_rate": 0.0,
+      "no_gold_false_primary_rate": 0.475,
+      "no_gold_task_count": 4,
+      "policy_action_counts": {
+        "llm_span_narrow": 12
+      },
+      "positive_task_count": 8,
+      "primary_false_positive_rate": 0.23750000000000002,
+      "success_layers": {
+        "admission_success": {
+          "count": 12,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 8,
+          "rate": 0.6666666666666666
+        },
+        "evidence_success": {
+          "count": 6,
+          "rate": 0.5
+        },
+        "model_success": {
+          "count": 6,
+          "rate": 0.5
+        }
+      },
+      "task_count": 12
+    }
+  },
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "real_policy_evaluation": false,
+  "run_phase_public_only": true,
+  "schema_version": "p25-bucket-policy-v1",
+  "self_test": true,
+  "stage": "P25 bucket-routed LLM role policy evaluator",
+  "status": "self_test_only",
+  "status_reason": null
+}

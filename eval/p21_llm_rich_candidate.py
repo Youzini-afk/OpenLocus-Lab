@@ -491,21 +491,17 @@ def metric_delta(current: dict[str, Any], baseline: dict[str, Any]) -> dict[str,
 
 def task_bucket_names(task: dict[str, Any], label: dict[str, Any]) -> list[str]:
     buckets: set[str] = set()
-    for key in ["source_category", "expected_behavior", "oracle_type"]:
-        value = label.get(key) or task.get(key)
+    for key in ["task_bucket"]:
+        value = task.get(key)
         if value:
             buckets.add(f"{key}:{p20.safe_reason_token(value)}")
-    risk_tags = label.get("risk_tags") or task.get("risk_tags") or []
+    risk_tags = task.get("task_risk_tags") or []
     if isinstance(risk_tags, str):
         risk_tags = [risk_tags]
     for tag in risk_tags:
         if tag:
             buckets.add(f"risk_tag:{p20.safe_reason_token(tag)}")
-    if not label.get("gold_spans"):
-        buckets.add("gold:no_gold")
-    else:
-        buckets.add("gold:has_gold")
-    return sorted(buckets)
+    return sorted(buckets) or ["task_bucket:unknown"]
 
 
 def compute_bucket_results(
@@ -544,6 +540,69 @@ def compute_bucket_results(
                 }
         out[bucket] = {"task_count": len(tids), "strategy_results": strategy_payloads}
     return out
+
+
+P25_PUBLIC_BUCKET_ALLOWLIST = {"positive", "negative", "ambiguous", "hard_distractor", "stale-like", "dense_quiver_trap", "exact_symbol_unique", "config", "route_handler", "other", "unknown"}
+P25_PUBLIC_TAG_ALLOWLIST = {"exact_symbol_match", "exact_symbol", "unique_symbol", "symbol_anchor", "config", "route_handler", "positive", "likely_positive", "high_confidence", "negative", "ambiguous", "hallucination_risk", "same_name_disambiguation", "test_source_confusion", "same_name_symbol", "frontend_backend_confusion", "generated_vendor", "stale_index_like", "stale_index_confusion", "dense_false_positive", "quiver_not_implemented", "hard_distractor", "weak_candidates", "other"}
+
+
+def _p25_bucket(value: Any) -> str:
+    token = str(value or "unknown")
+    return token if token in P25_PUBLIC_BUCKET_ALLOWLIST else "other"
+
+
+def _p25_tags(values: Any) -> list[str]:
+    raw = values if isinstance(values, list) else []
+    out: list[str] = []
+    for value in raw:
+        token = str(value)
+        if token in P25_PUBLIC_TAG_ALLOWLIST and token not in out:
+            out.append(token)
+    return out or ["other"]
+
+
+def write_p25_policy_records(path: Path, tasks: list[dict[str, Any]], labels: dict[str, dict[str, Any]], predictions_by_strategy: dict[str, list[dict[str, Any]]], decision_records: list[dict[str, Any]], repo_roots: dict[str, Path], top_k: int) -> None:
+    """Write ephemeral per-task score records for P25 same-run handoff."""
+    decision_by_task = {str(d.get("task_id")): d for d in decision_records}
+    preds_by_strategy_task: dict[str, dict[str, dict[str, Any]]] = {}
+    for strategy, preds in predictions_by_strategy.items():
+        preds_by_strategy_task[strategy] = {str(p.get("task_id")): p for p in preds}
+    records: list[dict[str, Any]] = []
+    for task in tasks:
+        tid = str(task.get("test_id") or task.get("task_id"))
+        label = labels.get(tid, {})
+        tags = _p25_tags(task.get("task_risk_tags"))
+        decision = decision_by_task.get(tid, {})
+        rec: dict[str, Any] = {
+            "task_id": tid,
+            "repo_id": task.get("repo_id"),
+            "task_bucket": _p25_bucket(task.get("task_bucket")),
+            "task_risk_tags": tags,
+            "score_group": "positive" if label.get("gold_spans") else "no_gold",
+            "route_features": {
+                "candidate_count": len(decision.get("candidate_meta", []) or []),
+                "candidate_support_exists": bool(decision.get("candidate_meta")),
+                "unique_symbol_anchor": "unique_symbol" in tags,
+            },
+        }
+        for strategy in ["candidate_baseline", "llm_span_narrow", "llm_filter", "llm_abstain_filter"]:
+            pred = preds_by_strategy_task.get(strategy, {}).get(tid, {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": []})
+            label_subset = {tid: label} if tid in labels else {}
+            metrics = r32.metrics_for([pred], label_subset, repo_roots, [0])
+            contrib = p21e.contribution([pred], label_subset, top_k)
+            rec[strategy] = {
+                "file_recall_at_5": metrics.get("FileRecall@5"),
+                "span_f0_5": metrics.get("SpanF0.5"),
+                "primary_false_positive_rate": metrics.get("primary_false_positive_rate"),
+                "no_gold_false_primary_rate": metrics.get("primary_false_positive_rate") if not label.get("gold_spans") else 0.0,
+                "added_gold_span": contrib.get("added_gold_span"),
+                "added_false_span": contrib.get("added_false_span"),
+                "abstained": not bool(pred.get("evidence")),
+            }
+        records.append(rec)
+    payload = {"schema_version": "p25-policy-records-ephemeral-v1", "not_artifact_for_commit": True, "score_phase_gold_group_stored": True, "raw_queries_stored": False, "raw_snippets_stored": False, "raw_prompts_stored": False, "raw_responses_stored": False, "gold_spans_stored": False, "private_label_categories_stored": False, "records": records}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
@@ -623,6 +682,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             payload["delta_vs_candidate_baseline"] = {"baseline": True} if strategy == "candidate_baseline" else metric_delta(payload["metrics"], baseline)
             payload["primary_promotion_eligible"] = False
         bucket_results = compute_bucket_results(predictions_by_strategy, labels, tasks, repo_roots, args.top_k)
+        if args.p25_policy_records_out:
+            write_p25_policy_records(args.p25_policy_records_out, tasks, labels, predictions_by_strategy, decision_records, repo_roots, args.top_k)
         successful_calls = sum(1 for d in call_diags if d.get("call_succeeded"))
         schema_valid = sum(1 for d in call_diags if d.get("schema_valid"))
         fallback_events = [
@@ -748,6 +809,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--llm-provider", default="offline_deterministic", choices=["offline_deterministic", "openai-compatible"])
     parser.add_argument("--llm-output-mode", default="json_object", choices=sorted(OUTPUT_MODES))
     parser.add_argument("--schema-repair-retry", action="store_true")
+    parser.add_argument("--p25-policy-records-out", type=Path, help="Ephemeral SCORE-phase records for P25; do not commit/upload.")
     parser.add_argument("--allow-remote-embedding", action="store_true")
     parser.add_argument("--allow-remote-llm", action="store_true")
     parser.add_argument("--dense-strategies", default=p21d.DEFAULT_DENSE_STRATEGIES)
