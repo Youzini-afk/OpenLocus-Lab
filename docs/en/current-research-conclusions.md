@@ -251,6 +251,14 @@ spans (`p31_score_gold`), tagged with `p31_h1_candidate_reach_handoff=true` and
 `rank`, `path`, `start_line`, `end_line`, plus optional `content_sha`, `score`,
 and `channels`; no snippets, raw queries, prompts, responses, or provider fields.
 
+P31-H2 adds a strategy-level reach matrix across `candidate_baseline`,
+`rrf_primary`, `symbol_regex_union`, `llm_span_narrow`, `llm_filter`, and
+`llm_abstain_filter`. It reports reach@K per strategy and, when H1 pools are
+present, aggregate reach by public repo and task bucket, unique reach share,
+pairwise file/span overlap and Jaccard span, marginal gain in both directions,
+and union reach for fixed strategy combinations. Missing strategy pools are
+reported as `availability=missing_pool`, not fake zeros.
+
 Public artifacts are aggregate-only: no per-task rows, raw queries, snippets,
 prompts, responses, candidate paths/spans, gold spans, private labels, or
 provider fields. Safety flags are locked: `promotion_ready=false`,

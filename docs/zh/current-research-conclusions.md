@@ -182,6 +182,13 @@ P31-H1 扩展了 P21 rich-candidate 临时 handoff：临时 records 现在携带
 池内条目仅保留 `rank`、`path`、`start_line`、`end_line`，以及可选的 `content_sha`、
 `score`、`channels`；不含 snippet、原始 query/prompt/response 或 provider 字段。
 
+P31-H2 增加 strategy-level reach matrix，覆盖 `candidate_baseline`、`rrf_primary`、
+`symbol_regex_union`、`llm_span_narrow`、`llm_filter`、`llm_abstain_filter`。
+当 H1 候选池存在时，它按公共 `repo_id` 与 `task_bucket` 聚合 reach@5，
+报告 unique reach share、pairwise file/span overlap 与 Jaccard span、
+双向 marginal gain，以及固定策略组合的并集 reach。缺失的策略池会报告
+`availability=missing_pool`，而不是伪造零值。
+
 公开产物仅限聚合指标：不含 per-task 行、原始 query/snippet/prompt/response、
 candidate paths/spans、gold spans、private labels 或 provider 字段。
 安全标志锁定：`promotion_ready=false`、`default_should_change=false`、

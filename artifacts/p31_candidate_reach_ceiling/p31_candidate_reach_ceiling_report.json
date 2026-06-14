@@ -15,7 +15,7 @@
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-14T16:10:49.622719+00:00",
+  "generated_at": "2026-06-14T17:37:39.883948+00:00",
   "generated_by": "eval/p31_candidate_reach_ceiling.py",
   "gold_span_availability": "available",
   "gold_spans_in_artifact": false,
@@ -63,6 +63,73 @@
       "total_false_spans": 0,
       "total_no_gold_tasks": 0
     },
+    "combination_reach": {
+      "candidate_baseline__plus__llm_span_narrow": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "candidate_baseline__plus__rrf_primary": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "candidate_baseline__plus__symbol_regex_union": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "candidate_baseline__plus__symbol_regex_union__plus__rrf_primary": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "symbol_regex_union__plus__rrf_primary": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      }
+    },
     "evidencecore_reject_rate": {
       "denominator": 0,
       "numerator": 0,
@@ -87,6 +154,60 @@
       "denominator": 3,
       "numerator": 3,
       "rate": 1.0
+    },
+    "marginal_gain": {
+      "baseline_to_rrf": {
+        "availability": "available",
+        "file_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "span_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "baseline_to_symbol": {
+        "availability": "available",
+        "file_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "span_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "rrf_to_baseline": {
+        "availability": "available",
+        "file_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "span_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "symbol_to_baseline": {
+        "availability": "available",
+        "file_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "span_marginal_gain": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      }
     },
     "outcome_only_fallback": {
       "admission_v3": {
@@ -138,6 +259,368 @@
         "file_recall_at_5_rate": 1.0,
         "mean_primary_false_positive_rate": 0.0,
         "mean_span_f0_5": 0.25
+      }
+    },
+    "pairwise_overlap": {
+      "candidate_baseline__vs__llm_abstain_filter": {
+        "availability": "available",
+        "jaccard_span": 0.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "candidate_baseline__vs__llm_filter": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 3,
+          "numerator": 2,
+          "rate": 0.666667
+        },
+        "pair_file_union": {
+          "denominator": 3,
+          "numerator": 2,
+          "rate": 0.666667
+        },
+        "pair_span_intersection": {
+          "denominator": 3,
+          "numerator": 1,
+          "rate": 0.333333
+        },
+        "pair_span_union": {
+          "denominator": 3,
+          "numerator": 1,
+          "rate": 0.333333
+        }
+      },
+      "candidate_baseline__vs__llm_span_narrow": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "candidate_baseline__vs__rrf_primary": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "candidate_baseline__vs__symbol_regex_union": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "llm_filter__vs__llm_abstain_filter": {
+        "availability": "available",
+        "jaccard_span": 0.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "llm_span_narrow__vs__llm_abstain_filter": {
+        "availability": "available",
+        "jaccard_span": 0.0,
+        "pair_file_intersection": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_file_union": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_span_union": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        }
+      },
+      "llm_span_narrow__vs__llm_filter": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "rrf_primary__vs__llm_abstain_filter": {
+        "availability": "available",
+        "jaccard_span": 0.0,
+        "pair_file_intersection": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_file_union": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_span_union": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        }
+      },
+      "rrf_primary__vs__llm_filter": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "rrf_primary__vs__llm_span_narrow": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "rrf_primary__vs__symbol_regex_union": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "symbol_regex_union__vs__llm_abstain_filter": {
+        "availability": "available",
+        "jaccard_span": 0.0,
+        "pair_file_intersection": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_file_union": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "pair_span_union": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        }
+      },
+      "symbol_regex_union__vs__llm_filter": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
+      },
+      "symbol_regex_union__vs__llm_span_narrow": {
+        "availability": "available",
+        "jaccard_span": 1.0,
+        "pair_file_intersection": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_file_union": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "pair_span_intersection": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "pair_span_union": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        }
       }
     },
     "reach": {
@@ -275,6 +758,1092 @@
             "denominator": 3,
             "numerator": 1,
             "rate": 0.333333
+          }
+        }
+      }
+    },
+    "reach_by_repo": {
+      "candidate_baseline": {
+        "js_express": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        },
+        "py_flask": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "llm_abstain_filter": {
+        "js_express": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        },
+        "py_flask": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        }
+      },
+      "llm_filter": {
+        "js_express": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        },
+        "py_flask": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "llm_span_narrow": {
+        "py_flask": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "rrf_primary": {
+        "py_flask": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "symbol_regex_union": {
+        "py_flask": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      }
+    },
+    "reach_by_strategy": {
+      "candidate_baseline": {
+        "availability": "available",
+        "by_k": {
+          "1": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "3": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "5": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "10": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "20": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          }
+        }
+      },
+      "llm_abstain_filter": {
+        "availability": "available",
+        "by_k": {
+          "1": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 0,
+              "numerator": 0,
+              "rate": null
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            }
+          },
+          "3": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 0,
+              "numerator": 0,
+              "rate": null
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            }
+          },
+          "5": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 0,
+              "numerator": 0,
+              "rate": null
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            }
+          },
+          "10": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 0,
+              "numerator": 0,
+              "rate": null
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            }
+          },
+          "20": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 0,
+              "numerator": 0,
+              "rate": null
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            }
+          }
+        }
+      },
+      "llm_filter": {
+        "availability": "available",
+        "by_k": {
+          "1": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "3": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "5": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "10": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          },
+          "20": {
+            "candidate_absent_rate": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 3,
+              "numerator": 2,
+              "rate": 0.666667
+            },
+            "gold_span_exact_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            },
+            "gold_span_reach": {
+              "denominator": 3,
+              "numerator": 1,
+              "rate": 0.333333
+            }
+          }
+        }
+      },
+      "llm_span_narrow": {
+        "availability": "available",
+        "by_k": {
+          "1": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "3": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "5": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "10": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "20": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          }
+        }
+      },
+      "rrf_primary": {
+        "availability": "available",
+        "by_k": {
+          "1": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "3": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "5": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "10": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "20": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          }
+        }
+      },
+      "symbol_regex_union": {
+        "availability": "available",
+        "by_k": {
+          "1": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "3": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "5": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "10": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          },
+          "20": {
+            "candidate_absent_rate": {
+              "denominator": 2,
+              "numerator": 0,
+              "rate": 0.0
+            },
+            "file_right_span_wrong_rate": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_file_reach": {
+              "denominator": 2,
+              "numerator": 2,
+              "rate": 1.0
+            },
+            "gold_span_exact_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            },
+            "gold_span_reach": {
+              "denominator": 2,
+              "numerator": 1,
+              "rate": 0.5
+            }
+          }
+        }
+      }
+    },
+    "reach_by_task_bucket": {
+      "candidate_baseline": {
+        "negative": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        },
+        "positive": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "llm_abstain_filter": {
+        "negative": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        },
+        "positive": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        }
+      },
+      "llm_filter": {
+        "negative": {
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          }
+        },
+        "positive": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "llm_span_narrow": {
+        "positive": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "rrf_primary": {
+        "positive": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
+          }
+        }
+      },
+      "symbol_regex_union": {
+        "positive": {
+          "gold_file_reach": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0
+          },
+          "gold_span_reach": {
+            "denominator": 2,
+            "numerator": 1,
+            "rate": 0.5
           }
         }
       }
@@ -523,6 +2092,152 @@
           "rate": 0.0
         }
       }
+    },
+    "unique_reach": {
+      "candidate_baseline": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 3,
+          "numerator": 2,
+          "rate": 0.666667
+        },
+        "gold_span_reach": {
+          "denominator": 3,
+          "numerator": 1,
+          "rate": 0.333333
+        },
+        "unique_gold_file_reach": {
+          "denominator": 3,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 3,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "llm_abstain_filter": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_file_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": null
+      },
+      "llm_filter": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 3,
+          "numerator": 2,
+          "rate": 0.666667
+        },
+        "gold_span_reach": {
+          "denominator": 3,
+          "numerator": 1,
+          "rate": 0.333333
+        },
+        "unique_gold_file_reach": {
+          "denominator": 3,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 3,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "llm_span_narrow": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_file_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "rrf_primary": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_file_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "symbol_regex_union": {
+        "availability": "available",
+        "gold_file_reach": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0
+        },
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_file_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      }
     }
   },
   "no_gold_task_count": 1,
@@ -530,6 +2245,7 @@
   "outcome_metrics_available": true,
   "p31_h1_handoff_detected": false,
   "p31_h1_handoff_detected_count": 0,
+  "p31_h2_strategy_reach_matrix_available": false,
   "positive_task_count": 4,
   "positive_with_gold_spans_count": 4,
   "positive_without_gold_spans_count": 0,
@@ -543,6 +2259,14 @@
   "raw_snippets_sent_to_provider": false,
   "raw_text_stored": false,
   "reach_metrics_available": true,
+  "reach_strategies": [
+    "candidate_baseline",
+    "rrf_primary",
+    "symbol_regex_union",
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter"
+  ],
   "real_policy_evaluation": false,
   "remote_calls_by_p31": 0,
   "run_phase_public_only": true,
@@ -552,6 +2276,14 @@
   "stage": "P31 Candidate Reach Ceiling Study",
   "status": "self_test_only",
   "status_reason": null,
+  "strategy_availability": {
+    "candidate_baseline": "available",
+    "llm_abstain_filter": "available",
+    "llm_filter": "available",
+    "llm_span_narrow": "available",
+    "rrf_primary": "available",
+    "symbol_regex_union": "available"
+  },
   "task_count": 5,
   "validation": {
     "forbidden_key_scan_ok": true

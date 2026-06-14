@@ -25,6 +25,17 @@ is present, P31 computes real reach metrics; when absent, it falls back to
 outcome-only metrics with `candidate_pool_availability=missing_candidate_pool`
 and `reach_metrics_available=false`.
 
+## P31-H2 strategy reach matrix
+
+> 中文译本待补充。The full Chinese translation is pending.
+
+P31-H2 computes a strategy-level reach matrix across `candidate_baseline`,
+`rrf_primary`, `symbol_regex_union`, `llm_span_narrow`, `llm_filter`, and
+`llm_abstain_filter`. It adds per-strategy reach@K, reach by public repo and
+task bucket, unique reach share, pairwise overlap/Jaccard span, marginal gain,
+and fixed combination union reach. Missing strategy pools are reported as
+`availability=missing_pool`, not zero.
+
 ## Reach metrics by K
 
 | K | GoldFileReach | GoldSpanReach | GoldSpanExactReach | CandidateAbsent | FileRightSpanWrong |

@@ -208,6 +208,14 @@ gold spans are present, it reports `GoldFileReach@K`, `GoldSpanReach@K`,
 `GoldSpanExactReach@K`, `CandidateAbsentRate@K`, and
 `FileRightSpanWrongRate@K` for K=1/3/5/10/20.
 
+P31-H2 adds the strategy reach matrix: per-strategy reach across
+`candidate_baseline`, `rrf_primary`, `symbol_regex_union`, `llm_span_narrow`,
+`llm_filter`, and `llm_abstain_filter`. It also reports reach by public repo and
+task bucket, unique reach share, pairwise file/span overlap and Jaccard span,
+marginal gain in both directions, and union reach for fixed strategy
+combinations. A strategy with missing candidate pool is reported as
+`availability=missing_pool`, not zero.
+
 Additional aggregate diagnostics: `ModelMissGivenGoldPresent@K` compares
 strategies (`llm_span_narrow`, `llm_filter`, `llm_abstain_filter`,
 `symbol_regex_union`, `rrf_primary`, `bucket_routed_v0`, `admission_v3` and H1/H2)

@@ -50,6 +50,14 @@ DEFAULT_OUT = Path("artifacts/p31_candidate_reach_ceiling/p31_candidate_reach_ce
 DEFAULT_DOC = Path("docs/en/p31-candidate-reach-ceiling.md")
 
 K_VALUES = [1, 3, 5, 10, 20]
+REACH_STRATEGIES = [
+    "candidate_baseline",
+    "rrf_primary",
+    "symbol_regex_union",
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter",
+]
 TRANSFORMED_STRATEGIES = [
     "llm_span_narrow",
     "llm_filter",
@@ -132,6 +140,9 @@ SAFETY_FLAG_KEYS = {
     "elapsed_ms",
     "p31_h1_handoff_detected",
     "p31_h1_handoff_detected_count",
+    "p31_h2_strategy_reach_matrix_available",
+    "reach_strategies",
+    "strategy_availability",
     "candidate_pool_availability",
     "candidate_pool_detected_count",
     "gold_span_availability",
@@ -139,6 +150,13 @@ SAFETY_FLAG_KEYS = {
     "positive_without_gold_spans_count",
     "reach_metrics_available",
     "outcome_metrics_available",
+    "reach_by_strategy",
+    "reach_by_repo",
+    "reach_by_task_bucket",
+    "unique_reach",
+    "pairwise_overlap",
+    "marginal_gain",
+    "combination_reach",
     "candidate_pool_detected_count",
     "task_count",
     "positive_task_count",
@@ -427,6 +445,330 @@ def compute_reach_metrics(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     return {"by_k": by_k}
 
 
+def _strategy_has_pool(t: dict[str, Any], strategy: str) -> bool:
+    return strategy in t.get("candidate_pool", {})
+
+
+def _task_evidence_paths(t: dict[str, Any], strategy: str, k: int) -> set[str]:
+    return {str(ev.get("path") or "").lower() for ev in t.get("candidate_pool", {}).get(strategy, [])[:k] if ev.get("path")}
+
+
+def _task_evidence_spans(t: dict[str, Any], strategy: str, k: int) -> set[tuple[str, int, int]]:
+    out: set[tuple[str, int, int]] = set()
+    for ev in t.get("candidate_pool", {}).get(strategy, [])[:k]:
+        try:
+            path = str(ev.get("path") or "").lower()
+            start = int(ev.get("start_line") or ev.get("start") or 0)
+            end = int(ev.get("end_line") or ev.get("end") or start)
+        except (TypeError, ValueError):
+            continue
+        if path:
+            out.add((path, start, end))
+    return out
+
+
+def _gold_span_pairs(label: dict[str, Any]) -> set[tuple[str, int, int]]:
+    out: set[tuple[str, int, int]] = set()
+    for gs in label.get("gold_spans", []):
+        try:
+            path = str(gs.get("path") or gs.get("file") or "").lower()
+            start = int(gs.get("start_line") or gs.get("start") or 0)
+            end = int(gs.get("end_line") or gs.get("end") or start)
+        except (TypeError, ValueError):
+            continue
+        if path:
+            out.add((path, start, end))
+    return out
+
+
+def _gold_files(label: dict[str, Any]) -> set[str]:
+    return label.get("gold_files", set())
+
+
+def is_span_reached_by_any(items: list[dict[str, Any]], label: dict[str, Any]) -> bool:
+    """Whether any evidence item in items overlaps a gold span."""
+    gold_spans = _gold_span_pairs(label)
+    if not gold_spans:
+        return False
+    for ev in items:
+        try:
+            path = str(ev.get("path") or "").lower()
+            start = int(ev.get("start_line") or ev.get("start") or 0)
+            end = int(ev.get("end_line") or ev.get("end") or start)
+        except (TypeError, ValueError):
+            continue
+        for gp, gs, ge in gold_spans:
+            if path == gp and end >= gs and start <= ge:
+                return True
+    return False
+
+
+def is_file_reached(items: list[dict[str, Any]], label: dict[str, Any]) -> bool:
+    gold_files = _gold_files(label)
+    if not gold_files:
+        return False
+    for ev in items:
+        path = str(ev.get("path") or "").lower()
+        if path and path in gold_files:
+            return True
+    return False
+
+
+def compute_reach_by_strategy(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """P31-H2: aggregate reach metrics per strategy and K."""
+    positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans")]
+    by_strategy: dict[str, Any] = {}
+    strategy_availability: dict[str, str] = {}
+    for strategy in REACH_STRATEGIES:
+        has_pool = any(_strategy_has_pool(t, strategy) for t in positive_tasks)
+        if not has_pool:
+            strategy_availability[strategy] = "missing_pool"
+            by_strategy[strategy] = {"availability": "missing_pool"}
+            continue
+        strategy_availability[strategy] = "available"
+        by_k: dict[int, dict[str, Any]] = {}
+        for k in K_VALUES:
+            file_num = span_num = exact_num = absent_num = frsw_num = 0
+            denom = 0
+            for t in positive_tasks:
+                if not _strategy_has_pool(t, strategy):
+                    continue
+                denom += 1
+                items = t.get("candidate_pool", {}).get(strategy, [])[:k]
+                file_reach = is_file_reached(items, t["label"])
+                span_reach = is_span_reached_by_any(items, t["label"])
+                exact_reach = any(
+                    any(_evidence_exact_span(ev, int(gs["start_line"]), int(gs["end_line"])) for gs in t["label"]["gold_spans"])
+                    for ev in items
+                ) if span_reach else False
+                if file_reach:
+                    file_num += 1
+                else:
+                    absent_num += 1
+                if span_reach:
+                    span_num += 1
+                if exact_reach:
+                    exact_num += 1
+                if file_reach and not span_reach:
+                    frsw_num += 1
+            by_k[k] = {
+                "gold_file_reach": {"numerator": file_num, "denominator": denom, "rate": _rate(file_num, denom)},
+                "gold_span_reach": {"numerator": span_num, "denominator": denom, "rate": _rate(span_num, denom)},
+                "gold_span_exact_reach": {"numerator": exact_num, "denominator": denom, "rate": _rate(exact_num, denom)},
+                "candidate_absent_rate": {"numerator": absent_num, "denominator": denom, "rate": _rate(absent_num, denom)},
+                "file_right_span_wrong_rate": {"numerator": frsw_num, "denominator": file_num, "rate": _rate(frsw_num, file_num)},
+            }
+        by_strategy[strategy] = {"availability": "available", "by_k": by_k}
+    return {"by_strategy": by_strategy, "strategy_availability": strategy_availability}
+
+
+def compute_reach_by_group(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """P31-H2: aggregate strategy reach at K=5 by public repo_id and task_bucket."""
+    positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans")]
+    by_repo: dict[str, Any] = {}
+    by_bucket: dict[str, Any] = {}
+    for strategy in REACH_STRATEGIES:
+        repo_groups: dict[str, dict[str, int]] = defaultdict(lambda: {"file_num": 0, "span_num": 0, "denom": 0})
+        bucket_groups: dict[str, dict[str, int]] = defaultdict(lambda: {"file_num": 0, "span_num": 0, "denom": 0})
+        for t in positive_tasks:
+            if not _strategy_has_pool(t, strategy):
+                continue
+            items = t.get("candidate_pool", {}).get(strategy, [])[:5]
+            file_reach = is_file_reached(items, t["label"])
+            span_reach = is_span_reached_by_any(items, t["label"])
+            repo = str(t.get("repo_id") or "unknown")
+            bucket = str(t.get("task_bucket") or "unknown")
+            repo_groups[repo]["denom"] += 1
+            bucket_groups[bucket]["denom"] += 1
+            if file_reach:
+                repo_groups[repo]["file_num"] += 1
+                bucket_groups[bucket]["file_num"] += 1
+            if span_reach:
+                repo_groups[repo]["span_num"] += 1
+                bucket_groups[bucket]["span_num"] += 1
+        by_repo[strategy] = {g: {"gold_file_reach": {"numerator": v["file_num"], "denominator": v["denom"], "rate": _rate(v["file_num"], v["denom"])}, "gold_span_reach": {"numerator": v["span_num"], "denominator": v["denom"], "rate": _rate(v["span_num"], v["denom"])}} for g, v in repo_groups.items()}
+        by_bucket[strategy] = {g: {"gold_file_reach": {"numerator": v["file_num"], "denominator": v["denom"], "rate": _rate(v["file_num"], v["denom"])}, "gold_span_reach": {"numerator": v["span_num"], "denominator": v["denom"], "rate": _rate(v["span_num"], v["denom"])}} for g, v in bucket_groups.items()}
+    return {"by_repo": by_repo, "by_task_bucket": by_bucket}
+
+
+def compute_unique_reach(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """P31-H2: unique reach at K=5 -- spans/files reached by this strategy and no other."""
+    positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans")]
+    k = 5
+    by_strategy: dict[str, Any] = {}
+    for strategy in REACH_STRATEGIES:
+        if not any(_strategy_has_pool(t, strategy) for t in positive_tasks):
+            by_strategy[strategy] = {"availability": "missing_pool"}
+            continue
+        unique_file_num = 0
+        unique_span_num = 0
+        file_num = 0
+        span_num = 0
+        denom = 0
+        for t in positive_tasks:
+            if not _strategy_has_pool(t, strategy):
+                continue
+            other_strategies = [s for s in REACH_STRATEGIES if s != strategy and _strategy_has_pool(t, s)]
+            items = t.get("candidate_pool", {}).get(strategy, [])[:k]
+            other_items: list[dict[str, Any]] = []
+            for s in other_strategies:
+                other_items.extend(t.get("candidate_pool", {}).get(s, [])[:k])
+            denom += 1
+            file_reach = is_file_reached(items, t["label"])
+            span_reach = is_span_reached_by_any(items, t["label"])
+            other_file = is_file_reached(other_items, t["label"])
+            other_span = is_span_reached_by_any(other_items, t["label"])
+            if file_reach:
+                file_num += 1
+                if not other_file:
+                    unique_file_num += 1
+            if span_reach:
+                span_num += 1
+                if not other_span:
+                    unique_span_num += 1
+        by_strategy[strategy] = {
+            "availability": "available",
+            "unique_gold_file_reach": {"numerator": unique_file_num, "denominator": denom, "rate": _rate(unique_file_num, denom)},
+            "unique_gold_span_reach": {"numerator": unique_span_num, "denominator": denom, "rate": _rate(unique_span_num, denom)},
+            "gold_file_reach": {"numerator": file_num, "denominator": denom, "rate": _rate(file_num, denom)},
+            "gold_span_reach": {"numerator": span_num, "denominator": denom, "rate": _rate(span_num, denom)},
+            "unique_span_reach_share": _rate(unique_span_num, span_num) if span_num else None,
+        }
+    return by_strategy
+
+
+def compute_pairwise_overlap(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """P31-H2: pairwise file/span intersection and union at K=5."""
+    positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans")]
+    k = 5
+    pairs = []
+    n = len(REACH_STRATEGIES)
+    for i in range(n):
+        for j in range(i + 1, n):
+            pairs.append((REACH_STRATEGIES[i], REACH_STRATEGIES[j]))
+    result: dict[str, Any] = {}
+    for a, b in pairs:
+        key = f"{a}__vs__{b}"
+        available = any(_strategy_has_pool(t, a) and _strategy_has_pool(t, b) for t in positive_tasks)
+        if not available:
+            result[key] = {"availability": "missing_pool"}
+            continue
+        file_inter = span_inter = file_union = span_union = 0
+        denom = 0
+        for t in positive_tasks:
+            if not (_strategy_has_pool(t, a) and _strategy_has_pool(t, b)):
+                continue
+            denom += 1
+            a_items = t.get("candidate_pool", {}).get(a, [])[:k]
+            b_items = t.get("candidate_pool", {}).get(b, [])[:k]
+            a_file = is_file_reached(a_items, t["label"])
+            b_file = is_file_reached(b_items, t["label"])
+            a_span = is_span_reached_by_any(a_items, t["label"])
+            b_span = is_span_reached_by_any(b_items, t["label"])
+            if a_file and b_file:
+                file_inter += 1
+            if a_span and b_span:
+                span_inter += 1
+            if a_file or b_file:
+                file_union += 1
+            if a_span or b_span:
+                span_union += 1
+        result[key] = {
+            "availability": "available",
+            "pair_file_intersection": {"numerator": file_inter, "denominator": denom, "rate": _rate(file_inter, denom)},
+            "pair_file_union": {"numerator": file_union, "denominator": denom, "rate": _rate(file_union, denom)},
+            "pair_span_intersection": {"numerator": span_inter, "denominator": denom, "rate": _rate(span_inter, denom)},
+            "pair_span_union": {"numerator": span_union, "denominator": denom, "rate": _rate(span_union, denom)},
+            "jaccard_span": _rate(span_inter, span_union),
+        }
+    return result
+
+
+def compute_marginal_gain(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """P31-H2: file/span marginal gain between strategy pairs at K=5.
+
+    Direction "baseline_to_symbol" means: of spans reached by symbol_regex_union,
+    what share is not already reached by candidate_baseline.
+    """
+    positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans")]
+    k = 5
+    directions = [
+        ("candidate_baseline", "symbol_regex_union", "baseline_to_symbol"),
+        ("symbol_regex_union", "candidate_baseline", "symbol_to_baseline"),
+        ("candidate_baseline", "rrf_primary", "baseline_to_rrf"),
+        ("rrf_primary", "candidate_baseline", "rrf_to_baseline"),
+    ]
+    result: dict[str, Any] = {}
+    for a, b, name in directions:
+        available = any(_strategy_has_pool(t, a) and _strategy_has_pool(t, b) for t in positive_tasks)
+        if not available:
+            result[name] = {"availability": "missing_pool"}
+            continue
+        file_gain_num = span_gain_num = denom = 0
+        for t in positive_tasks:
+            if not (_strategy_has_pool(t, a) and _strategy_has_pool(t, b)):
+                continue
+            denom += 1
+            a_items = t.get("candidate_pool", {}).get(a, [])[:k]
+            b_items = t.get("candidate_pool", {}).get(b, [])[:k]
+            a_file = is_file_reached(a_items, t["label"])
+            a_span = is_span_reached_by_any(a_items, t["label"])
+            b_file = is_file_reached(b_items, t["label"])
+            b_span = is_span_reached_by_any(b_items, t["label"])
+            if b_file and not a_file:
+                file_gain_num += 1
+            if b_span and not a_span:
+                span_gain_num += 1
+        result[name] = {
+            "availability": "available",
+            "file_marginal_gain": {"numerator": file_gain_num, "denominator": denom, "rate": _rate(file_gain_num, denom)},
+            "span_marginal_gain": {"numerator": span_gain_num, "denominator": denom, "rate": _rate(span_gain_num, denom)},
+        }
+    return result
+
+
+def _combination_reached(t: dict[str, Any], strategies: list[str], k: int, label: dict[str, Any]) -> tuple[bool, bool]:
+    items: list[dict[str, Any]] = []
+    for s in strategies:
+        items.extend(t.get("candidate_pool", {}).get(s, [])[:k])
+    return is_file_reached(items, label), is_span_reached_by_any(items, label)
+
+
+def compute_combination_reach(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """P31-H2: union reach of strategy combinations at K=5."""
+    positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans")]
+    k = 5
+    combos = {
+        "candidate_baseline__plus__symbol_regex_union": ["candidate_baseline", "symbol_regex_union"],
+        "candidate_baseline__plus__rrf_primary": ["candidate_baseline", "rrf_primary"],
+        "symbol_regex_union__plus__rrf_primary": ["symbol_regex_union", "rrf_primary"],
+        "candidate_baseline__plus__symbol_regex_union__plus__rrf_primary": ["candidate_baseline", "symbol_regex_union", "rrf_primary"],
+        "candidate_baseline__plus__llm_span_narrow": ["candidate_baseline", "llm_span_narrow"],
+    }
+    result: dict[str, Any] = {}
+    for name, strategies in combos.items():
+        available = any(all(_strategy_has_pool(t, s) for s in strategies) for t in positive_tasks)
+        if not available:
+            result[name] = {"availability": "missing_pool"}
+            continue
+        file_num = span_num = denom = 0
+        for t in positive_tasks:
+            if not all(_strategy_has_pool(t, s) for s in strategies):
+                continue
+            denom += 1
+            file_reach, span_reach = _combination_reached(t, strategies, k, t["label"])
+            if file_reach:
+                file_num += 1
+            if span_reach:
+                span_num += 1
+        result[name] = {
+            "availability": "available",
+            "gold_file_reach": {"numerator": file_num, "denominator": denom, "rate": _rate(file_num, denom)},
+            "gold_span_reach": {"numerator": span_num, "denominator": denom, "rate": _rate(span_num, denom)},
+        }
+    return result
+
+
 def compute_strategy_miss_given_gold_present(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     """For transformed strategies, miss rate when both baseline and strategy pools are available."""
     positive_tasks = [t for t in tasks if t["has_gold"] and t.get("has_gold_spans") and t.get("has_candidate_pool")]
@@ -695,6 +1037,66 @@ def validate_report(report: dict[str, Any]) -> list[str]:
             if abs(absent - (1.0 - file_reach)) > 1e-6:
                 errors.append(f"candidate_absent@K={k} must equal 1 - gold_file_reach for positive tasks")
 
+    # P31-H2 strategy reach matrix validations.
+    if report.get("p31_h2_strategy_reach_matrix_available"):
+        by_strategy = metrics.get("reach_by_strategy", {})
+        for strategy in REACH_STRATEGIES:
+            if strategy not in by_strategy:
+                errors.append(f"H2 reach_by_strategy missing {strategy}")
+                continue
+            avail = by_strategy[strategy].get("availability")
+            if avail != "available":
+                errors.append(f"H2 strategy {strategy} availability is {avail}")
+                continue
+            for k in K_VALUES:
+                block = by_strategy[strategy].get("by_k", {}).get(k, {})
+                for metric_name in ["gold_file_reach", "gold_span_reach", "gold_span_exact_reach", "candidate_absent_rate", "file_right_span_wrong_rate"]:
+                    m = block.get(metric_name)
+                    if not isinstance(m, dict):
+                        errors.append(f"H2 {strategy}.{metric_name}@K={k} missing")
+                        continue
+                    r = m.get("rate")
+                    if r is not None and not (0.0 <= r <= 1.0 + 1e-9):
+                        errors.append(f"H2 {strategy}.{metric_name}@K={k} rate out of range: {r}")
+                    if m.get("numerator", 0) > m.get("denominator", 0):
+                        errors.append(f"H2 {strategy}.{metric_name}@K={k} numerator exceeds denominator")
+                # CandidateAbsent = denom - GoldFileReach
+                gr = block.get("gold_file_reach", {}).get("rate")
+                ar = block.get("candidate_absent_rate", {}).get("rate")
+                if gr is not None and ar is not None and abs(ar - (1.0 - gr)) > 1e-6:
+                    errors.append(f"H2 {strategy} candidate_absent@K={k} must equal 1 - gold_file_reach")
+                # FileRightSpanWrong denominator equals GoldFileReach numerator
+                frsw = block.get("file_right_span_wrong_rate", {})
+                gr_num = block.get("gold_file_reach", {}).get("numerator")
+                if frsw.get("denominator") is not None and gr_num is not None and frsw["denominator"] != gr_num:
+                    errors.append(f"H2 {strategy} file_right_span_wrong@K={k} denominator must equal gold_file_reach numerator")
+                # Span reach <= file reach
+                gs_num = block.get("gold_span_reach", {}).get("numerator")
+                if gs_num is not None and gr_num is not None and gs_num > gr_num:
+                    errors.append(f"H2 {strategy} span_reach@K={k} cannot exceed file_reach@K={k}")
+
+        # Unique reach <= strategy reach.
+        unique = metrics.get("unique_reach", {})
+        for strategy in REACH_STRATEGIES:
+            if strategy not in unique or unique[strategy].get("availability") != "available":
+                continue
+            u_sp = unique[strategy].get("unique_gold_span_reach", {}).get("numerator")
+            s_sp = unique[strategy].get("gold_span_reach", {}).get("numerator")
+            if u_sp is not None and s_sp is not None and u_sp > s_sp:
+                errors.append(f"H2 unique span reach for {strategy} cannot exceed strategy span reach")
+
+        # Pairwise intersection <= union, Jaccard in [0,1].
+        for pair_name, pair in metrics.get("pairwise_overlap", {}).items():
+            if pair.get("availability") != "available":
+                continue
+            inter = pair.get("pair_span_intersection", {}).get("numerator")
+            union = pair.get("pair_span_union", {}).get("numerator")
+            if inter is not None and union is not None and inter > union:
+                errors.append(f"H2 pairwise span intersection for {pair_name} cannot exceed union")
+            jac = pair.get("jaccard_span")
+            if jac is not None and not (0.0 <= jac <= 1.0):
+                errors.append(f"H2 pairwise Jaccard for {pair_name} out of range: {jac}")
+
     # No per-task public rows.
     for forbidden in ("tasks", "task_results", "per_task_results", "records", "decision_records"):
         if forbidden in report:
@@ -844,9 +1246,31 @@ def build_report(
 
     reach: dict[str, Any] = {"by_k": {k: {} for k in K_VALUES}}
     strategy_miss: dict[str, Any] = {}
+    reach_by_strategy: dict[str, Any] = {}
+    reach_by_group: dict[str, Any] = {}
+    unique_reach: dict[str, Any] = {}
+    pairwise_overlap: dict[str, Any] = {}
+    marginal_gain: dict[str, Any] = {}
+    combination_reach: dict[str, Any] = {}
     if reach_metrics_available:
         reach = compute_reach_metrics(tasks)
         strategy_miss = compute_strategy_miss_given_gold_present(tasks)
+        h2 = compute_reach_by_strategy(tasks)
+        reach_by_strategy = h2["by_strategy"]
+        strategy_availability = h2["strategy_availability"]
+        reach_by_group = compute_reach_by_group(tasks)
+        unique_reach = compute_unique_reach(tasks)
+        pairwise_overlap = compute_pairwise_overlap(tasks)
+        marginal_gain = compute_marginal_gain(tasks)
+        combination_reach = compute_combination_reach(tasks)
+    else:
+        strategy_availability = {s: "missing_pool" for s in REACH_STRATEGIES}
+
+    p31_h2_strategy_reach_matrix_available = (
+        p31_h1_handoff_detected
+        and reach_metrics_available
+        and all(strategy_availability.get(s) == "available" for s in REACH_STRATEGIES)
+    )
 
     filter_kill = compute_filter_kill_gold_rate(tasks) if outcome_metrics_available else {"numerator": 0, "denominator": 0, "rate": None}
     admission_fp = compute_admission_false_primary_rate(tasks) if outcome_metrics_available else {"numerator": 0, "denominator": 0, "rate": None, "by_strategy": {}}
@@ -938,6 +1362,9 @@ def build_report(
         "positive_with_gold_spans_count": positive_with_gold_spans,
         "positive_without_gold_spans_count": positive_without_gold_spans,
         "reach_metrics_available": reach_metrics_available,
+        "p31_h2_strategy_reach_matrix_available": p31_h2_strategy_reach_matrix_available,
+        "reach_strategies": list(REACH_STRATEGIES),
+        "strategy_availability": strategy_availability,
         "outcome_metrics_available": outcome_metrics_available,
         "elapsed_ms": elapsed_ms,
         "task_count": len(tasks),
@@ -945,6 +1372,13 @@ def build_report(
         "no_gold_task_count": sum(1 for t in tasks if not t["has_gold"]),
         "metrics": {
             "reach": reach,
+            "reach_by_strategy": reach_by_strategy,
+            "reach_by_repo": reach_by_group.get("by_repo", {}),
+            "reach_by_task_bucket": reach_by_group.get("by_task_bucket", {}),
+            "unique_reach": unique_reach,
+            "pairwise_overlap": pairwise_overlap,
+            "marginal_gain": marginal_gain,
+            "combination_reach": combination_reach,
             "strategy_miss_given_gold_present": strategy_miss,
             "filter_kill_gold_rate": filter_kill,
             "admission_false_primary_rate": admission_fp,
@@ -1031,6 +1465,107 @@ def build_markdown(report: dict[str, Any]) -> str:
             f"{fmt_counts(block.get('file_right_span_wrong_rate'))} |"
         )
     lines.append("")
+
+    if report.get("p31_h2_strategy_reach_matrix_available"):
+        lines.append("## P31-H2 strategy reach matrix@5\n")
+        lines.append("| Strategy | GoldFileReach | GoldSpanReach | GoldSpanExactReach | CandidateAbsent | FileRightSpanWrong |")
+        lines.append("|---|---:|---:|---:|---:|---:|")
+        by_strategy = report["metrics"].get("reach_by_strategy", {})
+        for strategy in REACH_STRATEGIES:
+            block = by_strategy.get(strategy, {}).get("by_k", {}).get(5, {})
+            lines.append(
+                f"| {strategy} | {fmt_rate(block.get('gold_file_reach'))} | "
+                f"{fmt_rate(block.get('gold_span_reach'))} | {fmt_rate(block.get('gold_span_exact_reach'))} | "
+                f"{fmt_rate(block.get('candidate_absent_rate'))} | {fmt_rate(block.get('file_right_span_wrong_rate'))} |"
+            )
+        lines.append("")
+
+        lines.append("## Strategy reach numerators/denominators@5\n")
+        lines.append("| Strategy | GoldFile | GoldSpan | GoldSpanExact | CandidateAbsent | FileRightSpanWrong |")
+        lines.append("|---|---:|---:|---:|---:|---:|")
+        for strategy in REACH_STRATEGIES:
+            block = by_strategy.get(strategy, {}).get("by_k", {}).get(5, {})
+            lines.append(
+                f"| {strategy} | {fmt_counts(block.get('gold_file_reach'))} | "
+                f"{fmt_counts(block.get('gold_span_reach'))} | {fmt_counts(block.get('gold_span_exact_reach'))} | "
+                f"{fmt_counts(block.get('candidate_absent_rate'))} | {fmt_counts(block.get('file_right_span_wrong_rate'))} |"
+            )
+        lines.append("")
+
+        lines.append("## Reach by repo@5\n")
+        lines.append("| Repo | Strategy | GoldFileReach | GoldSpanReach |")
+        lines.append("|---|---|---|---:|")
+        by_repo = report["metrics"].get("reach_by_repo", {})
+        for strategy in REACH_STRATEGIES:
+            for repo, block in by_repo.get(strategy, {}).items():
+                lines.append(
+                    f"| {repo} | {strategy} | {fmt_rate(block.get('gold_file_reach'))} | {fmt_rate(block.get('gold_span_reach'))} |"
+                )
+        lines.append("")
+
+        lines.append("## Reach by task bucket@5\n")
+        lines.append("| Bucket | Strategy | GoldFileReach | GoldSpanReach |")
+        lines.append("|---|---|---|---:|")
+        by_bucket = report["metrics"].get("reach_by_task_bucket", {})
+        for strategy in REACH_STRATEGIES:
+            for bucket, block in by_bucket.get(strategy, {}).items():
+                lines.append(
+                    f"| {bucket} | {strategy} | {fmt_rate(block.get('gold_file_reach'))} | {fmt_rate(block.get('gold_span_reach'))} |"
+                )
+        lines.append("")
+
+        lines.append("## Unique reach@5\n")
+        lines.append("| Strategy | UniqueGoldFileReach | UniqueGoldSpanReach | StrategyGoldSpanReach | UniqueShare |")
+        lines.append("|---|---:|---:|---:|---:|")
+        unique = report["metrics"].get("unique_reach", {})
+        for strategy in REACH_STRATEGIES:
+            u = unique.get(strategy, {})
+            if u.get("availability") != "available":
+                lines.append(f"| {strategy} | n/a | n/a | n/a | n/a |")
+                continue
+            lines.append(
+                f"| {strategy} | {fmt_rate(u.get('unique_gold_file_reach'))} | "
+                f"{fmt_rate(u.get('unique_gold_span_reach'))} | {fmt_rate(u.get('gold_span_reach'))} | "
+                f"{u.get('unique_span_reach_share') if u.get('unique_span_reach_share') is not None else 'n/a'} |"
+            )
+        lines.append("")
+
+        lines.append("## Pairwise overlap@5\n")
+        lines.append("| Pair | PairSpanIntersection | PairSpanUnion | JaccardSpan |")
+        lines.append("|---|---:|---:|---:|")
+        for pair_name, pair in report["metrics"].get("pairwise_overlap", {}).items():
+            if pair.get("availability") != "available":
+                lines.append(f"| {pair_name} | n/a | n/a | n/a |")
+                continue
+            lines.append(
+                f"| {pair_name} | {fmt_rate(pair.get('pair_span_intersection'))} | "
+                f"{fmt_rate(pair.get('pair_span_union'))} | {pair.get('jaccard_span') if pair.get('jaccard_span') is not None else 'n/a'} |"
+            )
+        lines.append("")
+
+        lines.append("## Marginal gain@5\n")
+        lines.append("| Direction | SpanMarginalGain | FileMarginalGain |")
+        lines.append("|---|---:|---:|")
+        for direction, mg in report["metrics"].get("marginal_gain", {}).items():
+            if mg.get("availability") != "available":
+                lines.append(f"| {direction} | n/a | n/a |")
+                continue
+            lines.append(
+                f"| {direction} | {fmt_rate(mg.get('span_marginal_gain'))} | {fmt_rate(mg.get('file_marginal_gain'))} |"
+            )
+        lines.append("")
+
+        lines.append("## Combination reach@5\n")
+        lines.append("| Combination | GoldFileReach | GoldSpanReach |")
+        lines.append("|---|---:|---:|")
+        for combo, block in report["metrics"].get("combination_reach", {}).items():
+            if block.get("availability") != "available":
+                lines.append(f"| {combo} | n/a | n/a |")
+                continue
+            lines.append(
+                f"| {combo} | {fmt_rate(block.get('gold_file_reach'))} | {fmt_rate(block.get('gold_span_reach'))} |"
+            )
+        lines.append("")
 
     lines.append("## P31-H1 handoff\n")
     if report.get("p31_h1_handoff_detected"):

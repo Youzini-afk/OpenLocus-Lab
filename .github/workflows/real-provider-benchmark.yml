@@ -778,6 +778,8 @@ jobs:
                   if os.environ.get("STAGE") == "p21_llm_rich":
                       if data.get("p31_h1_handoff_detected") is not True:
                           raise SystemExit(f"{json_path} P31-H1 handoff not detected")
+                      if data.get("p31_h2_strategy_reach_matrix_available") is not True:
+                          raise SystemExit(f"{json_path} P31-H2 strategy reach matrix not available")
                       if data.get("reach_metrics_available") is not True:
                           raise SystemExit(f"{json_path} reach metrics must be available for P21 LLM rich stage")
                       reach5 = data.get("metrics", {}).get("reach", {}).get("by_k", {}).get("5", {})
