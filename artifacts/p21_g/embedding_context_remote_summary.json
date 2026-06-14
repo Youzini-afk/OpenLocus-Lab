@@ -1,0 +1,496 @@
+{
+  "aggregate_by_model": [
+    {
+      "added_false_span": 4384,
+      "added_gold_span": 816,
+      "best_file_strategy": "pack1_metadata",
+      "best_span_strategy": "pack2_evidence_sketch",
+      "embedding_model": "BAAI/bge-m3",
+      "false_to_gold_ratio": 5.372549019607843
+    },
+    {
+      "added_false_span": 4477,
+      "added_gold_span": 723,
+      "best_file_strategy": "atom_signature",
+      "best_span_strategy": "pack2_evidence_sketch",
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false_to_gold_ratio": 6.19225449515906
+    },
+    {
+      "added_false_span": 4486,
+      "added_gold_span": 714,
+      "best_file_strategy": "pack1_metadata",
+      "best_span_strategy": "pack2_evidence_sketch",
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false_to_gold_ratio": 6.282913165266106
+    },
+    {
+      "added_false_span": 4577,
+      "added_gold_span": 623,
+      "best_file_strategy": "atom_signature",
+      "best_span_strategy": "pack2_evidence_sketch",
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false_to_gold_ratio": 7.346709470304976
+    }
+  ],
+  "aggregate_by_model_strategy": [
+    {
+      "avg_FileRecall@5": 0.075,
+      "avg_SpanF0.5": 0.0008752194282327192,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 198,
+      "gold": 2,
+      "strategy": "atom_body_window"
+    },
+    {
+      "avg_FileRecall@5": 0.75,
+      "avg_SpanF0.5": 0.0965492921336559,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 528,
+      "gold": 72,
+      "strategy": "atom_matched_lines"
+    },
+    {
+      "avg_FileRecall@5": 0.9625,
+      "avg_SpanF0.5": 0.10334126678679535,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 707,
+      "gold": 93,
+      "strategy": "atom_path_symbol"
+    },
+    {
+      "avg_FileRecall@5": 0.975,
+      "avg_SpanF0.5": 0.10537632529274289,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 709,
+      "gold": 91,
+      "strategy": "atom_signature"
+    },
+    {
+      "avg_FileRecall@5": 0.9875,
+      "avg_SpanF0.5": 0.11036513559754538,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 702,
+      "gold": 98,
+      "strategy": "pack1_metadata"
+    },
+    {
+      "avg_FileRecall@5": 0.925,
+      "avg_SpanF0.5": 0.13960047592044558,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 600,
+      "gold": 200,
+      "strategy": "pack2_evidence_sketch"
+    },
+    {
+      "avg_FileRecall@5": 0.6375,
+      "avg_SpanF0.5": 0.09340357029677691,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 462,
+      "gold": 138,
+      "strategy": "pack3_local_code"
+    },
+    {
+      "avg_FileRecall@5": 0.625,
+      "avg_SpanF0.5": 0.08268366442003039,
+      "embedding_model": "BAAI/bge-m3",
+      "false": 478,
+      "gold": 122,
+      "strategy": "pack5_contrastive"
+    },
+    {
+      "avg_FileRecall@5": 0.05,
+      "avg_SpanF0.5": 0.0004970178926441351,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 199,
+      "gold": 1,
+      "strategy": "atom_body_window"
+    },
+    {
+      "avg_FileRecall@5": 0.725,
+      "avg_SpanF0.5": 0.09926470588235296,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 527,
+      "gold": 73,
+      "strategy": "atom_matched_lines"
+    },
+    {
+      "avg_FileRecall@5": 0.85,
+      "avg_SpanF0.5": 0.08944792214533845,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 716,
+      "gold": 84,
+      "strategy": "atom_path_symbol"
+    },
+    {
+      "avg_FileRecall@5": 0.975,
+      "avg_SpanF0.5": 0.10322654292465115,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 711,
+      "gold": 89,
+      "strategy": "atom_signature"
+    },
+    {
+      "avg_FileRecall@5": 0.925,
+      "avg_SpanF0.5": 0.10388147100590096,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 704,
+      "gold": 96,
+      "strategy": "pack1_metadata"
+    },
+    {
+      "avg_FileRecall@5": 0.8375,
+      "avg_SpanF0.5": 0.12913317579518868,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 640,
+      "gold": 160,
+      "strategy": "pack2_evidence_sketch"
+    },
+    {
+      "avg_FileRecall@5": 0.625,
+      "avg_SpanF0.5": 0.10038745381597869,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 484,
+      "gold": 116,
+      "strategy": "pack3_local_code"
+    },
+    {
+      "avg_FileRecall@5": 0.6125,
+      "avg_SpanF0.5": 0.08568130363553775,
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "false": 496,
+      "gold": 104,
+      "strategy": "pack5_contrastive"
+    },
+    {
+      "avg_FileRecall@5": 0.05,
+      "avg_SpanF0.5": 0.0005387931034482759,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 199,
+      "gold": 1,
+      "strategy": "atom_body_window"
+    },
+    {
+      "avg_FileRecall@5": 0.65,
+      "avg_SpanF0.5": 0.09336033127403334,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 531,
+      "gold": 69,
+      "strategy": "atom_matched_lines"
+    },
+    {
+      "avg_FileRecall@5": 0.875,
+      "avg_SpanF0.5": 0.08645594006325054,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 719,
+      "gold": 81,
+      "strategy": "atom_path_symbol"
+    },
+    {
+      "avg_FileRecall@5": 0.9375,
+      "avg_SpanF0.5": 0.09987832863893688,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 714,
+      "gold": 86,
+      "strategy": "atom_signature"
+    },
+    {
+      "avg_FileRecall@5": 0.975,
+      "avg_SpanF0.5": 0.09630394516322778,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 708,
+      "gold": 92,
+      "strategy": "pack1_metadata"
+    },
+    {
+      "avg_FileRecall@5": 0.8374999999999999,
+      "avg_SpanF0.5": 0.12661932716470883,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 634,
+      "gold": 166,
+      "strategy": "pack2_evidence_sketch"
+    },
+    {
+      "avg_FileRecall@5": 0.625,
+      "avg_SpanF0.5": 0.09893760528574544,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 482,
+      "gold": 118,
+      "strategy": "pack3_local_code"
+    },
+    {
+      "avg_FileRecall@5": 0.625,
+      "avg_SpanF0.5": 0.07336195135505673,
+      "embedding_model": "Qwen/Qwen3-Embedding-4B",
+      "false": 499,
+      "gold": 101,
+      "strategy": "pack5_contrastive"
+    },
+    {
+      "avg_FileRecall@5": 0.05,
+      "avg_SpanF0.5": 0.0004553734061930784,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 199,
+      "gold": 1,
+      "strategy": "atom_body_window"
+    },
+    {
+      "avg_FileRecall@5": 0.725,
+      "avg_SpanF0.5": 0.09007352941176475,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 534,
+      "gold": 66,
+      "strategy": "atom_matched_lines"
+    },
+    {
+      "avg_FileRecall@5": 0.6125,
+      "avg_SpanF0.5": 0.06726390798901603,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 738,
+      "gold": 62,
+      "strategy": "atom_path_symbol"
+    },
+    {
+      "avg_FileRecall@5": 1.0,
+      "avg_SpanF0.5": 0.10434261435322259,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 710,
+      "gold": 90,
+      "strategy": "atom_signature"
+    },
+    {
+      "avg_FileRecall@5": 0.925,
+      "avg_SpanF0.5": 0.09535270391593526,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 712,
+      "gold": 88,
+      "strategy": "pack1_metadata"
+    },
+    {
+      "avg_FileRecall@5": 0.85,
+      "avg_SpanF0.5": 0.10858744019085453,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 659,
+      "gold": 141,
+      "strategy": "pack2_evidence_sketch"
+    },
+    {
+      "avg_FileRecall@5": 0.625,
+      "avg_SpanF0.5": 0.08260928377846191,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 505,
+      "gold": 95,
+      "strategy": "pack3_local_code"
+    },
+    {
+      "avg_FileRecall@5": 0.575,
+      "avg_SpanF0.5": 0.06212695662343874,
+      "embedding_model": "Qwen/Qwen3-Embedding-8B",
+      "false": 520,
+      "gold": 80,
+      "strategy": "pack5_contrastive"
+    }
+  ],
+  "aggregate_by_repo": [
+    {
+      "added_false_span": 4519,
+      "added_gold_span": 1081,
+      "best_file_strategy": "atom_signature",
+      "best_span_strategy": "pack2_evidence_sketch",
+      "false_to_gold_ratio": 4.180388529139686,
+      "repo_id": "go_gin"
+    },
+    {
+      "added_false_span": 3527,
+      "added_gold_span": 473,
+      "best_file_strategy": "atom_signature",
+      "best_span_strategy": "atom_matched_lines",
+      "false_to_gold_ratio": 7.456659619450317,
+      "repo_id": "js_express"
+    },
+    {
+      "added_false_span": 4184,
+      "added_gold_span": 616,
+      "best_file_strategy": "pack1_metadata",
+      "best_span_strategy": "pack1_metadata",
+      "false_to_gold_ratio": 6.792207792207792,
+      "repo_id": "py_flask"
+    },
+    {
+      "added_false_span": 5694,
+      "added_gold_span": 706,
+      "best_file_strategy": "pack1_metadata",
+      "best_span_strategy": "atom_matched_lines",
+      "false_to_gold_ratio": 8.06515580736544,
+      "repo_id": "rust_ripgrep"
+    }
+  ],
+  "aggregate_by_strategy": [
+    {
+      "avg_FileRecall@5": 0.8624999999999999,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.1259851047677994,
+      "avg_input_chars": 6135.0,
+      "avg_remote_calls": 100.0,
+      "false": 2533,
+      "gold": 667,
+      "n": 16,
+      "strategy": "pack2_evidence_sketch"
+    },
+    {
+      "avg_FileRecall@5": 0.971875,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.10320595280238838,
+      "avg_input_chars": 4141.25,
+      "avg_remote_calls": 100.0,
+      "false": 2844,
+      "gold": 356,
+      "n": 16,
+      "strategy": "atom_signature"
+    },
+    {
+      "avg_FileRecall@5": 0.953125,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.10147581392065234,
+      "avg_input_chars": 5144.5,
+      "avg_remote_calls": 100.0,
+      "false": 2826,
+      "gold": 374,
+      "n": 16,
+      "strategy": "pack1_metadata"
+    },
+    {
+      "avg_FileRecall@5": 0.7125,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.09481196467545173,
+      "avg_input_chars": 6082.5,
+      "avg_remote_calls": 75.0,
+      "false": 2120,
+      "gold": 280,
+      "n": 16,
+      "strategy": "atom_matched_lines"
+    },
+    {
+      "avg_FileRecall@5": 0.628125,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.09383447829424074,
+      "avg_input_chars": 9541.75,
+      "avg_remote_calls": 75.0,
+      "false": 1933,
+      "gold": 467,
+      "n": 16,
+      "strategy": "pack3_local_code"
+    },
+    {
+      "avg_FileRecall@5": 0.825,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.0866272592461001,
+      "avg_input_chars": 5941.75,
+      "avg_remote_calls": 100.0,
+      "false": 2880,
+      "gold": 320,
+      "n": 16,
+      "strategy": "atom_path_symbol"
+    },
+    {
+      "avg_FileRecall@5": 0.609375,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.0759634690085159,
+      "avg_input_chars": 11578.5,
+      "avg_remote_calls": 75.0,
+      "false": 1993,
+      "gold": 407,
+      "n": 16,
+      "strategy": "pack5_contrastive"
+    },
+    {
+      "avg_FileRecall@5": 0.05625,
+      "avg_PFP": 0.0,
+      "avg_SpanF0.5": 0.0005916009576295521,
+      "avg_input_chars": 33259.0,
+      "avg_remote_calls": 25.0,
+      "false": 795,
+      "gold": 5,
+      "n": 16,
+      "strategy": "atom_body_window"
+    }
+  ],
+  "caps": {
+    "max_files_per_repo": 120,
+    "max_records": 80,
+    "max_tasks": 20
+  },
+  "conclusion": {
+    "best_file_strategy_model_averaged": "atom_signature",
+    "best_span_strategy_model_averaged": "pack2_evidence_sketch",
+    "default_should_change": false,
+    "dense_primary_blocked": true,
+    "next_phase": "P21-G2E constrained/fused dense hybrid: symbol/regex/RRF anchors, late fusion, and supporting-only dense; do not expand naked dense primary",
+    "promotion_ready": false,
+    "reason": "all naked dense context strategies add substantially more false spans than gold spans in aggregate",
+    "stable_span_signal": "pack2_evidence_sketch ranked best SpanF0.5 for every embedding model group in this smoke"
+  },
+  "failure_count": 0,
+  "generated_at": "2026-06-14T01:04:50.910956+00:00",
+  "head_sha": "73efd6e8d5fa26a4962087686b82ac1d3806212e",
+  "models": [
+    "BAAI/bge-m3",
+    "Qwen/Qwen3-Embedding-0.6B",
+    "Qwen/Qwen3-Embedding-4B",
+    "Qwen/Qwen3-Embedding-8B"
+  ],
+  "phase": "P21-G1E embedding context atom screening remote smoke",
+  "repo_count": 4,
+  "repos": [
+    "go_gin",
+    "js_express",
+    "py_flask",
+    "rust_ripgrep"
+  ],
+  "run_count": 16,
+  "run_ids": [
+    27484067605,
+    27484068023,
+    27484068355,
+    27484068809,
+    27484069230,
+    27484069616,
+    27484070049,
+    27484070428,
+    27484070768,
+    27484071116,
+    27484071550,
+    27484071905,
+    27484072253,
+    27484072603,
+    27484072988,
+    27484073347
+  ],
+  "safety": {
+    "artifact_privacy_violations": 0,
+    "private_labels_committed": false,
+    "raw_prompt_or_response_stored": false,
+    "raw_snippets_committed": false,
+    "raw_text_stored": false,
+    "remote_file_filter_applied": true
+  },
+  "schema_version": "p21-g1e-embedding-remote-summary-v1",
+  "self_test_run_id": 27475216277,
+  "strategies": [
+    "atom_body_window",
+    "atom_matched_lines",
+    "atom_path_symbol",
+    "atom_signature",
+    "pack1_metadata",
+    "pack2_evidence_sketch",
+    "pack3_local_code",
+    "pack5_contrastive"
+  ],
+  "success_count": 16,
+  "totals": {
+    "added_false_span": 17924,
+    "added_gold_span": 2876,
+    "false_to_gold_ratio": 6.232267037552155,
+    "strategy_rows": 128
+  }
+}
