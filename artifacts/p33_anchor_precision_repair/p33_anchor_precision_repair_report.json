@@ -10,16 +10,14 @@
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-14T18:59:49.179346+00:00",
+  "generated_at": "2026-06-14T19:04:04.301128+00:00",
   "generated_by": "eval/p33_anchor_precision_repair.py",
   "gold_spans_in_artifact": false,
-  "input_paths": [
-    "self_test"
-  ],
+  "input_source_count": 1,
   "input_sources": [
     "self_test"
   ],
-  "insufficient_input_paths": [],
+  "insufficient_input_source_count": 0,
   "labels_loaded_after_run": true,
   "metrics": {
     "baseline_comparison": {
