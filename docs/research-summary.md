@@ -77,6 +77,15 @@ summaries and non-ephemeral schemas are rejected with
 `status=insufficient_task_detail`; no policy is promotion-ready or default-ready. See
 [`docs/p25-bucket-routed-policy.md`](p25-bucket-routed-policy.md).
 
+The first real P25 remote smoke then ran six successful aggregate policy runs
+(`Flash/Kimi/GLM × py_flask/js_express`, 18 bucket-sampled tasks each) via the
+safe P21→P25 ephemeral SCORE handoff. `bucket_routed_v0` strongly reduced false
+spans (`108 -> 28`) and mean PFP (`-0.0926`), while losing some gold spans
+(`24 -> 21`). Mean SpanF0.5 delta was only slightly positive (`+0.0026`) and
+repo/model-dependent. This makes P25 useful as a false-primary reducer component
+for P30 Admission V3, not a default/promotion candidate. Remote summary:
+[`docs/p25-bucket-routed-policy-remote-smoke.md`](p25-bucket-routed-policy-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

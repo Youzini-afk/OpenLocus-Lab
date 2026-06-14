@@ -114,6 +114,8 @@ P22/P23 把下一阶段从“继续比较单个通道”推进到 evidence-seeki
 
 `eval/p25_bucket_policy.py` 是一个确定性、无远程调用的策略评估器。当前提交的报告只是经过净化的 self-test 脚手架（`status=self_test_only`、`not_quality_evidence=true`），不是质量证据。真实 P25 评估现在必须使用 `eval/p21_llm_rich_candidate.py --p25-policy-records-out` 在 SCORE 阶段生成的临时 records；这些 records 留在 runner temp，不上传，P25 只上传聚合指标。`bucket_routed_v0` 只按 allowlisted public `task_bucket`/`task_risk_tags` 路由：`llm_span_narrow` 用于 likely-positive / high-confidence 桶，固定先验的 `llm_filter`/`llm_abstain_filter` 用于 negative / dense-false-positive / ambiguous 桶，exact-symbol + unique-symbol-anchor 任务跳过 LLM，其余回退到 candidate baseline。P21 aggregate summary 和非 ephemeral schema 会被拒绝为 `status=insufficient_task_detail`。这只是 P25/P30 evidence-seeking policy surface 的脚手架，不是 promotion 结论。
 
+第一轮真实 P25 remote smoke 使用这个安全的 P21→P25 ephemeral handoff，完成 6 个成功聚合 runs（`Flash/Kimi/GLM × py_flask/js_express`，每个 run 18 个按 bucket 抽样任务）。`bucket_routed_v0` 显著降低 false spans（`108 -> 28`）和平均 PFP（约 `-0.0926`），但也损失了一些 gold spans（`24 -> 21`）；平均 SpanF0.5 只小幅正向（`+0.0026`），且强依赖 repo/model。因此 P25 适合作为 P30 Admission V3 的 false-primary reducer 组件，而不是 default policy。
+
 ---
 
 ## 3. 当前研究假设

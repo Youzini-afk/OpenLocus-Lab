@@ -127,6 +127,14 @@ summaries and non-ephemeral schemas are rejected with
 `status=insufficient_task_detail`. This provides a scaffold for future P25/P30
 evidence-seeking policy surfaces, not a promotion claim.
 
+The first real P25 remote smoke used this safe P21→P25 ephemeral handoff on six
+successful aggregate runs (`Flash/Kimi/GLM × py_flask/js_express`, 18
+bucket-sampled tasks each). `bucket_routed_v0` reduced added false spans
+`108 -> 28` and mean PFP by about `0.0926`, but also reduced added gold spans
+`24 -> 21`; mean SpanF0.5 delta was only slightly positive (`+0.0026`) and
+repo/model-dependent. Therefore P25 is useful as a false-primary reducer signal
+for P30 Admission V3, not a default policy.
+
 ---
 
 ## 3. Current Hypotheses

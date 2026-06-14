@@ -1,0 +1,206 @@
+{
+  "baseline_added_false_span": 108,
+  "baseline_added_gold_span": 24,
+  "conclusion": {
+    "false_reduction": "bucket_routed_v0 reduced added_false_span 108 -> 28 and mean PFP by about 0.093",
+    "gold_cost": "bucket_routed_v0 also reduced added_gold_span 24 -> 21; policy is conservative and not promotion-ready",
+    "next": "P30 should tune admission thresholds and separate false-reduction mode from positive-span mode.",
+    "span_signal": "mean SpanF0.5 delta is slightly positive but repo/model-dependent"
+  },
+  "default_should_change": false,
+  "excluded_failed_run_ids": [
+    "27494552652"
+  ],
+  "generated_at": "2026-06-14T09:32:41.107403+00:00",
+  "mean_pfp_delta": -0.0925925925925926,
+  "mean_span_delta": 0.002635535339459562,
+  "promotion_ready": false,
+  "remote_run_ids": [
+    "27494552238",
+    "27494653491",
+    "27494553127",
+    "27494553537",
+    "27494553963",
+    "27494554434"
+  ],
+  "routed_added_false_span": 28,
+  "routed_added_gold_span": 21,
+  "runs": [
+    {
+      "baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.07605354741577652,
+        "added_false_span": 9,
+        "added_gold_span": 5
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.0906734304567122,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 8,
+        "added_gold_span": 6,
+        "filter_gold_kill_rate": 0.0,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        }
+      },
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "pfp_delta": 0.0,
+      "repo": "py_flask",
+      "run_id": 27494552238,
+      "span_delta": 0.014619883040935672,
+      "task_count": 18
+    },
+    {
+      "baseline": {
+        "PFP": 0.16666666666666666,
+        "SpanF0.5": 0.03306878306878307,
+        "added_false_span": 27,
+        "added_gold_span": 3
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02314814814814815,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 4,
+        "added_gold_span": 2,
+        "filter_gold_kill_rate": 0.0,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 1
+        }
+      },
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "pfp_delta": -0.16666666666666666,
+      "repo": "js_express",
+      "run_id": 27494653491,
+      "span_delta": -0.009920634920634917,
+      "task_count": 18
+    },
+    {
+      "baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.07351095906083119,
+        "added_false_span": 10,
+        "added_gold_span": 5
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.11589989531166002,
+        "abstain_rate": 0.3888888888888889,
+        "added_false_span": 8,
+        "added_gold_span": 6,
+        "filter_gold_kill_rate": 0.0,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        }
+      },
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "pfp_delta": 0.0,
+      "repo": "py_flask",
+      "run_id": 27494553127,
+      "span_delta": 0.04238893625082883,
+      "task_count": 18
+    },
+    {
+      "baseline": {
+        "PFP": 0.16666666666666666,
+        "SpanF0.5": 0.034722222222222224,
+        "added_false_span": 26,
+        "added_gold_span": 3
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02314814814814815,
+        "abstain_rate": 0.5,
+        "added_false_span": 2,
+        "added_gold_span": 2,
+        "filter_gold_kill_rate": 0.0,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 1
+        }
+      },
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "pfp_delta": -0.16666666666666666,
+      "repo": "js_express",
+      "run_id": 27494553537,
+      "span_delta": -0.011574074074074073,
+      "task_count": 18
+    },
+    {
+      "baseline": {
+        "PFP": 0.05555555555555555,
+        "SpanF0.5": 0.07351095906083119,
+        "added_false_span": 10,
+        "added_gold_span": 5
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.06538413487460712,
+        "abstain_rate": 0.5,
+        "added_false_span": 4,
+        "added_gold_span": 3,
+        "filter_gold_kill_rate": 0.2222222222222222,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 11,
+          "llm_filter": 5,
+          "llm_span_narrow": 1
+        }
+      },
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "pfp_delta": -0.05555555555555555,
+      "repo": "py_flask",
+      "run_id": 27494553963,
+      "span_delta": -0.008126824186224069,
+      "task_count": 18
+    },
+    {
+      "baseline": {
+        "PFP": 0.16666666666666666,
+        "SpanF0.5": 0.034722222222222224,
+        "added_false_span": 26,
+        "added_gold_span": 3
+      },
+      "bucket_routed_v0": {
+        "PFP": 0.0,
+        "SpanF0.5": 0.02314814814814815,
+        "abstain_rate": 0.5,
+        "added_false_span": 2,
+        "added_gold_span": 2,
+        "filter_gold_kill_rate": 0.0,
+        "policy_action_counts": {
+          "candidate_baseline": 1,
+          "llm_abstain_filter": 10,
+          "llm_filter": 6,
+          "llm_span_narrow": 1
+        }
+      },
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "pfp_delta": -0.16666666666666666,
+      "repo": "js_express",
+      "run_id": 27494554434,
+      "span_delta": -0.011574074074074073,
+      "task_count": 18
+    }
+  ],
+  "schema_version": "p25-bucket-policy-remote-summary-v1",
+  "task_count_total": 108
+}
