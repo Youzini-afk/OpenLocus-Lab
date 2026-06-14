@@ -42,6 +42,7 @@ PROMPT_VERSION = "p21-g3l-rich-candidate-v1"
 DEFAULT_CANDIDATE_STRATEGY = "dense_atom_signature_rrf_file_constrained"
 DECISIONS = {"primary", "supporting", "reject"}
 OUTPUT_MODES = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
+BUCKET_PREFIXES = ("source_category", "risk_tag", "expected_behavior", "oracle_type")
 
 
 def candidate_decision_schema() -> dict[str, Any]:
@@ -488,6 +489,63 @@ def metric_delta(current: dict[str, Any], baseline: dict[str, Any]) -> dict[str,
     return p21e.metric_delta(current, baseline)
 
 
+def task_bucket_names(task: dict[str, Any], label: dict[str, Any]) -> list[str]:
+    buckets: set[str] = set()
+    for key in ["source_category", "expected_behavior", "oracle_type"]:
+        value = label.get(key) or task.get(key)
+        if value:
+            buckets.add(f"{key}:{p20.safe_reason_token(value)}")
+    risk_tags = label.get("risk_tags") or task.get("risk_tags") or []
+    if isinstance(risk_tags, str):
+        risk_tags = [risk_tags]
+    for tag in risk_tags:
+        if tag:
+            buckets.add(f"risk_tag:{p20.safe_reason_token(tag)}")
+    if not label.get("gold_spans"):
+        buckets.add("gold:no_gold")
+    else:
+        buckets.add("gold:has_gold")
+    return sorted(buckets)
+
+
+def compute_bucket_results(
+    predictions_by_strategy: dict[str, list[dict[str, Any]]],
+    labels: dict[str, dict[str, Any]],
+    tasks: list[dict[str, Any]],
+    repo_roots: dict[str, Path],
+    top_k: int,
+) -> dict[str, Any]:
+    tasks_by_id = {str(t.get("test_id") or t.get("task_id")): t for t in tasks}
+    bucket_to_task_ids: dict[str, list[str]] = {}
+    for tid, task in tasks_by_id.items():
+        label = labels.get(tid, {})
+        for bucket in task_bucket_names(task, label):
+            bucket_to_task_ids.setdefault(bucket, []).append(tid)
+    out: dict[str, Any] = {}
+    for bucket, tids in sorted(bucket_to_task_ids.items()):
+        if len(tids) < 2:
+            continue
+        tid_set = set(tids)
+        label_subset = {tid: labels[tid] for tid in tid_set if tid in labels}
+        strategy_payloads: dict[str, Any] = {}
+        for strategy, preds in predictions_by_strategy.items():
+            subset = [p for p in preds if str(p.get("task_id")) in tid_set]
+            if not subset:
+                continue
+            metrics = r32.metrics_for(subset, label_subset, repo_roots, [int(p.get("latency_ms", 0)) for p in subset])
+            metrics.update(p21e.contribution(subset, label_subset, top_k))
+            strategy_payloads[strategy] = metrics
+        baseline = strategy_payloads.get("candidate_baseline")
+        if baseline:
+            for strategy, metrics in list(strategy_payloads.items()):
+                strategy_payloads[strategy] = {
+                    "metrics": metrics,
+                    "delta_vs_candidate_baseline": {"baseline": True} if strategy == "candidate_baseline" else metric_delta(metrics, baseline),
+                }
+        out[bucket] = {"task_count": len(tids), "strategy_results": strategy_payloads}
+    return out
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     tmp_ctx, tasks, labels_path, repo_roots = p21e.load_inputs(args)
     try:
@@ -564,6 +622,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for strategy, payload in results.items():
             payload["delta_vs_candidate_baseline"] = {"baseline": True} if strategy == "candidate_baseline" else metric_delta(payload["metrics"], baseline)
             payload["primary_promotion_eligible"] = False
+        bucket_results = compute_bucket_results(predictions_by_strategy, labels, tasks, repo_roots, args.top_k)
         successful_calls = sum(1 for d in call_diags if d.get("call_succeeded"))
         schema_valid = sum(1 for d in call_diags if d.get("schema_valid"))
         fallback_events = [
@@ -627,6 +686,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "default_should_change": False,
             "llm_direct_evidence_allowed": False,
             "strategy_results": results,
+            "bucket_results": bucket_results,
             "call_summary": {
                 "latency_ms_p50": sorted([d.get("latency_ms", 0) for d in call_diags])[len(call_diags)//2] if call_diags else 0,
                 "input_chars_total": sum(int(d.get("input_chars", 0)) for d in call_diags),

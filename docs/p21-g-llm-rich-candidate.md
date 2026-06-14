@@ -6,7 +6,7 @@ LLM sees constrained candidate snippets and may filter, abstain, or narrow spans
 
 - llm_remote_enabled: `False`
 - llm_model: `offline_deterministic`
-- requested_output_mode: `json_object`
+- requested_output_mode: `tool_call`
 - candidate_strategy: `dense_atom_signature_rrf_file_constrained`
 - raw_snippets_sent_to_provider: `False`
 - raw_snippets_committed: `False`
