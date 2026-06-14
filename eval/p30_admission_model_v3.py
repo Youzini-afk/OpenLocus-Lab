@@ -45,6 +45,24 @@ GENERATED_BY = "eval/p30_admission_model_v3.py"
 DEFAULT_OUT = Path("artifacts/p30_admission_v3/p30_admission_v3_report.json")
 DEFAULT_DOC = Path("docs/en/p30-admission-model-v3.md")
 
+H3_SCHEMA_VERSION = "p30-h3-action-span-cost-report-v1"
+DEFAULT_H3_OUT = Path("artifacts/p30_admission_v3/p30_h3_span_cost_report.json")
+DEFAULT_H3_DOC = Path("docs/en/p30-h3-span-cost-accounting.md")
+
+
+def _default_h3_out_for(out_path: Path) -> Path:
+    """Keep H3 beside the selected P30 JSON report unless explicitly set."""
+    if out_path == DEFAULT_OUT:
+        return DEFAULT_H3_OUT
+    return out_path.with_name("p30_h3_span_cost_report.json")
+
+
+def _default_h3_doc_for(doc_path: Path) -> Path:
+    """Keep H3 markdown beside the selected P30 markdown unless explicitly set."""
+    if doc_path == DEFAULT_DOC:
+        return DEFAULT_H3_DOC
+    return doc_path.with_name("p30-h3-span-cost-accounting.md")
+
 # Actions that the admission model is allowed to emit.  They are semantic
 # choices; per-record outcomes are looked up from the task's outcome table.
 P30_ACTIONS = {
@@ -968,6 +986,401 @@ def _delta(a: Any, b: Any) -> float | None:
     return float(a) - float(b)
 
 
+# H3 action-specific span-cost accounting helpers.
+
+def _action_kind(action: str) -> str:
+    if action in {"admit_symbol_regex_union", "admit_rrf_primary", "admit_llm_span_narrow"}:
+        return "primary"
+    if action in {"abstain", "apply_llm_filter", "supporting_only", "weak_candidate_only"}:
+        return "non_primary"
+    return "unclassified"
+
+
+def _action_false_budget(action_kind: str, added_gold: int) -> int:
+    """Diagnostic false-span budget for an action aggregate.
+
+    Accounting-only; not a production cost model. Primary admissions are
+    expected to be at least 1:1 gold:false. Non-primary actions are expected
+    to add zero primary false spans. Unclassified baseline strategies are
+    expected to be net-neutral.
+    """
+    if action_kind == "primary":
+        return added_gold
+    if action_kind == "non_primary":
+        return 0
+    return added_gold
+
+
+def _gather_policy_actions_for_h3(tasks: list[dict[str, Any]], policy: str) -> list[str]:
+    """Return the action selected for each task under *policy*."""
+    if policy == "admission_v3":
+        return [route_admission_v3(t)["action"] for t in tasks]
+    if policy == "admission_v3_h1":
+        return [route_admission_v3_h1(t)["action"] for t in tasks]
+    if policy == "admission_v3_h2":
+        return [route_admission_v3_h2(t)["action"] for t in tasks]
+    return p25.gather_policy_action(tasks, policy)
+
+
+def compute_action_span_cost_accounting(
+    tasks: list[dict[str, Any]],
+    policy: str,
+) -> dict[str, Any]:
+    """Compute deterministic action-specific span-cost accounting for *policy*."""
+    if not tasks:
+        return {
+            "task_count": 0,
+            "positive_task_count": 0,
+            "no_gold_task_count": 0,
+            "primary_false_span_cost": 0,
+            "non_primary_false_span_cost": 0,
+            "unclassified_false_span_cost": 0,
+            "budget_violation_count": 0,
+            "budget_violation_rate": None,
+            "budget_violation_reasons": {},
+            "worst_actions_by_false_cost": [],
+            "worst_actions_by_gold_kill": [],
+            "action_span_cost_table": {},
+        }
+
+    actions = _gather_policy_actions_for_h3(tasks, policy)
+    task_count = len(tasks)
+    positive_count = sum(1 for t in tasks if t.get("has_gold"))
+    no_gold_count = task_count - positive_count
+
+    bins: dict[str, dict[str, Any]] = defaultdict(
+        lambda: {
+            "selected_count": 0,
+            "positive_count": 0,
+            "no_gold_count": 0,
+            "action_added_gold_span": 0,
+            "action_added_false_span": 0,
+            "selected_baseline_added_gold_span": 0,
+            "selected_baseline_added_false_span": 0,
+            "span_f0_5_deltas": [],
+            "pfp_deltas": [],
+            "gold_kill_count": 0,
+            "false_reduction_count": 0,
+        }
+    )
+
+    for task, action in zip(tasks, actions):
+        outcome, _ = _lookup_outcome(task, action)
+        baseline = task["outcomes"]["candidate_baseline"]
+        is_gold = bool(task.get("has_gold"))
+
+        b = bins[action]
+        b["selected_count"] += 1
+        if is_gold:
+            b["positive_count"] += 1
+        else:
+            b["no_gold_count"] += 1
+
+        sf = outcome.get("span_f0_5")
+        baseline_sf = baseline.get("span_f0_5")
+        if sf is not None and baseline_sf is not None:
+            b["span_f0_5_deltas"].append(float(sf) - float(baseline_sf))
+
+        pfp = outcome.get("primary_false_positive_rate")
+        baseline_pfp = baseline.get("primary_false_positive_rate")
+        if pfp is not None and baseline_pfp is not None:
+            b["pfp_deltas"].append(float(pfp) - float(baseline_pfp))
+
+        ag = outcome.get("added_gold_span") or 0
+        af = outcome.get("added_false_span") or 0
+        baseline_ag = baseline.get("added_gold_span") or 0
+        baseline_af = baseline.get("added_false_span") or 0
+        b["action_added_gold_span"] += ag
+        b["action_added_false_span"] += af
+        b["selected_baseline_added_gold_span"] += baseline_ag
+        b["selected_baseline_added_false_span"] += baseline_af
+
+        if is_gold and baseline_ag > 0 and ag == 0:
+            b["gold_kill_count"] += 1
+
+        if not is_gold and baseline_af > af:
+            b["false_reduction_count"] += 1
+
+    action_span_cost_table: dict[str, Any] = {}
+    primary_false_span_cost = 0
+    non_primary_false_span_cost = 0
+    unclassified_false_span_cost = 0
+    budget_violation_count = 0
+    budget_violation_reasons: dict[str, int] = defaultdict(int)
+
+    for action, b in sorted(bins.items()):
+        kind = _action_kind(action)
+        selected_count = b["selected_count"]
+        selected_rate = selected_count / task_count if task_count else None
+        action_added_gold = b["action_added_gold_span"]
+        action_added_false = b["action_added_false_span"]
+
+        budget_limit = _action_false_budget(kind, action_added_gold)
+        budget_violated = action_added_false > budget_limit
+        budget_reason: str | None = None
+        if budget_violated:
+            if kind == "primary":
+                budget_reason = (
+                    f"primary action false cost ({action_added_false}) exceeds gold ({action_added_gold})"
+                )
+            elif kind == "non_primary":
+                budget_reason = (
+                    f"non-primary action has false cost ({action_added_false})"
+                )
+            else:
+                budget_reason = (
+                    f"unclassified action false cost ({action_added_false}) exceeds gold ({action_added_gold})"
+                )
+            budget_violation_count += selected_count
+            budget_violation_reasons[budget_reason] += selected_count
+
+        if kind == "primary":
+            primary_false_span_cost += action_added_false
+        elif kind == "non_primary":
+            non_primary_false_span_cost += action_added_false
+        else:
+            unclassified_false_span_cost += action_added_false
+
+        action_span_cost_table[action] = {
+            "action_kind": kind,
+            "selected_count": selected_count,
+            "selected_rate": selected_rate,
+            "action_added_gold_span": action_added_gold,
+            "action_added_false_span": action_added_false,
+            "false_per_gold": (
+                action_added_false / action_added_gold if action_added_gold else None
+            ),
+            "gold_per_false": (
+                action_added_gold / action_added_false if action_added_false else None
+            ),
+            "net_span_value_1x": action_added_gold - action_added_false,
+            "net_span_value_2x": action_added_gold - (2 * action_added_false),
+            "selected_baseline_added_gold_span": b["selected_baseline_added_gold_span"],
+            "selected_baseline_added_false_span": b["selected_baseline_added_false_span"],
+            "delta_added_gold_span_vs_baseline": action_added_gold - b["selected_baseline_added_gold_span"],
+            "delta_added_false_span_vs_baseline": action_added_false - b["selected_baseline_added_false_span"],
+            "mean_delta_span_f0_5_vs_baseline": _avg(b["span_f0_5_deltas"]),
+            "mean_delta_primary_false_positive_rate_vs_baseline": _avg(b["pfp_deltas"]),
+            "gold_kill_count": b["gold_kill_count"],
+            "gold_kill_rate": (
+                b["gold_kill_count"] / b["positive_count"] if b["positive_count"] else None
+            ),
+            "false_reduction_count": b["false_reduction_count"],
+            "false_reduction_rate": (
+                b["false_reduction_count"] / b["no_gold_count"] if b["no_gold_count"] else None
+            ),
+            "budget_limit": budget_limit,
+            "budget_violated": budget_violated,
+            "budget_violation_reason": budget_reason,
+        }
+
+    worst_actions_by_false_cost = sorted(
+        [
+            {
+                "action": action,
+                "action_kind": info["action_kind"],
+                "selected_count": info["selected_count"],
+                "action_added_false_span": info["action_added_false_span"],
+                "action_added_gold_span": info["action_added_gold_span"],
+                "false_per_gold": info["false_per_gold"],
+            }
+            for action, info in action_span_cost_table.items()
+        ],
+        key=lambda x: x["action_added_false_span"],
+        reverse=True,
+    )[:5]
+
+    worst_actions_by_gold_kill = sorted(
+        [
+            {
+                "action": action,
+                "action_kind": info["action_kind"],
+                "selected_count": info["selected_count"],
+                "gold_kill_count": info["gold_kill_count"],
+                "gold_kill_rate": info["gold_kill_rate"],
+            }
+            for action, info in action_span_cost_table.items()
+        ],
+        key=lambda x: x["gold_kill_count"],
+        reverse=True,
+    )[:5]
+
+    return {
+        "task_count": task_count,
+        "positive_task_count": positive_count,
+        "no_gold_task_count": no_gold_count,
+        "primary_false_span_cost": primary_false_span_cost,
+        "non_primary_false_span_cost": non_primary_false_span_cost,
+        "unclassified_false_span_cost": unclassified_false_span_cost,
+        "budget_violation_count": budget_violation_count,
+        "budget_violation_rate": (
+            budget_violation_count / task_count if task_count else None
+        ),
+        "budget_violation_reasons": dict(budget_violation_reasons),
+        "worst_actions_by_false_cost": worst_actions_by_false_cost,
+        "worst_actions_by_gold_kill": worst_actions_by_gold_kill,
+        "action_span_cost_table": action_span_cost_table,
+    }
+
+
+def build_h3_action_span_cost_report(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build the P30-H3 action-specific span-cost accounting report.
+
+    H3 is accounting-only: it does not change admission routes, EvidenceCore
+    semantics, or default strategies. It derives action-specific false-span cost
+    from existing policies (bucket_routed_v0, admission_v3_h1, admission_v3_h2,
+    and baseline comparison policies) using only aggregate outcome deltas.
+    """
+    policy_costs: dict[str, Any] = {}
+    if tasks:
+        for policy in POLICIES:
+            policy_costs[policy] = compute_action_span_cost_accounting(tasks, policy)
+
+    task_count = len(tasks)
+    positive_count = sum(1 for t in tasks if t.get("has_gold"))
+    return {
+        "schema_version": H3_SCHEMA_VERSION,
+        "generated_at": _now_iso(),
+        "generated_by": GENERATED_BY,
+        "stage": "P30-H3 action-specific span-cost accounting",
+        "score_phase_only_accounting": True,
+        "diagnostic_only": True,
+        "promotion_ready": False,
+        "default_should_change": False,
+        "evidencecore_semantics_changed": False,
+        "candidate_not_fact": True,
+        "external_calls": 0,
+        "run_phase_public_only": True,
+        "labels_loaded_after_run": True,
+        "task_count": task_count,
+        "positive_task_count": positive_count,
+        "no_gold_task_count": task_count - positive_count,
+        "budget_policy": {
+            "primary_false_budget_per_gold": 1.0,
+            "non_primary_false_budget": 0,
+            "unclassified_false_budget_per_gold": 1.0,
+            "note": (
+                "Accounting-only diagnostic budget. Primary admission actions are expected to keep "
+                "added_false_span <= added_gold_span. Non-primary actions are expected to add zero "
+                "false spans. Unclassified baseline strategy actions are expected to be net-neutral."
+            ),
+        },
+        "policy_action_accounting": policy_costs,
+        "conclusion": [
+            "P30-H3 is accounting-only, not a new admission route or policy.",
+            "It derives action-specific span cost from existing policies without changing routes, EvidenceCore semantics, or default strategies.",
+            "Budget violations flag actions whose false-span cost exceeds a diagnostic threshold, not a production cost constraint.",
+            "High non_primary_false_span_cost indicates weak/supporting/filter actions still carry primary false-span risk and need tighter route guards.",
+        ],
+    }
+
+
+def build_h3_markdown(report: dict[str, Any]) -> str:
+    lines: list[str] = []
+    lines.append("# P30-H3 Action-Specific Span-Cost Accounting\n")
+    lines.append(f"- Schema: `{report['schema_version']}`")
+    lines.append(f"- Generated: {report['generated_at']}")
+    lines.append(f"- Tasks: {report['task_count']} (+{report['positive_task_count']} / no_gold {report['no_gold_task_count']})")
+    lines.append(
+        "- Status: `score_phase_only_accounting=true`, `diagnostic_only=true`, "
+        "`promotion_ready=false`, `default_should_change=false`.\n"
+    )
+
+    lines.append("## Budget policy (accounting-only)\n")
+    bp = report["budget_policy"]
+    lines.append(f"- Primary-admit actions: `added_false_span <= added_gold_span` (budget={bp['primary_false_budget_per_gold']} false/gold).")
+    lines.append(f"- Non-primary actions: `added_false_span == {bp['non_primary_false_budget']}`.")
+    lines.append(f"- Unclassified baseline strategies: `added_false_span <= added_gold_span` (budget={bp['unclassified_false_budget_per_gold']} false/gold).")
+    lines.append(f"- {bp['note']}\n")
+
+    lines.append("## Policy-level span-cost summary\n")
+    lines.append(
+        "| Policy | tasks | primary_false_cost | non_primary_false_cost | unclassified_false_cost | "
+        "budget_violations | budget_violation_rate |"
+    )
+    lines.append("|---|---:|---:|---:|---:|---:|---:|")
+    for policy in POLICIES:
+        a = report["policy_action_accounting"].get(policy, {})
+
+        def fmt(x: Any) -> str:
+            return f"{x:.4f}" if isinstance(x, (int, float)) else (str(x) if x is not None else "n/a")
+
+        lines.append(
+            f"| {policy} | {a.get('task_count', 0)} | {a.get('primary_false_span_cost', 0)} | "
+            f"{a.get('non_primary_false_span_cost', 0)} | {a.get('unclassified_false_span_cost', 0)} | "
+            f"{a.get('budget_violation_count', 0)} | {fmt(a.get('budget_violation_rate'))} |"
+        )
+    lines.append("")
+
+    for policy in POLICIES:
+        a = report["policy_action_accounting"].get(policy, {})
+        table = a.get("action_span_cost_table", {})
+        if not table:
+            continue
+        lines.append(f"## Action span-cost table: {policy}\n")
+        lines.append(
+            "| Action | kind | selected | selected_rate | added_gold | added_false | false/gold | gold/false | "
+            "net_1x | net_2x | gold_kill | false_reduction | budget_violated |"
+        )
+        lines.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+
+        def fmt(x: Any) -> str:
+            return f"{x:.4f}" if isinstance(x, (int, float)) else (str(x) if x is not None else "n/a")
+
+        for action, info in sorted(table.items()):
+            lines.append(
+                f"| {action} | {info['action_kind']} | {info['selected_count']} | "
+                f"{fmt(info['selected_rate'])} | {info['action_added_gold_span']} | "
+                f"{info['action_added_false_span']} | {fmt(info['false_per_gold'])} | "
+                f"{fmt(info['gold_per_false'])} | {info['net_span_value_1x']} | "
+                f"{info['net_span_value_2x']} | {info['gold_kill_count']} | "
+                f"{info['false_reduction_count']} | {info['budget_violated']} |"
+            )
+        lines.append("")
+
+        worst_false = a.get("worst_actions_by_false_cost", [])
+        if worst_false:
+            lines.append(f"### Worst actions by false cost: {policy}\n")
+            lines.append("| Action | kind | selected | added_false | added_gold | false/gold |")
+            lines.append("|---|---:|---:|---:|---:|---:|")
+            for row in worst_false:
+                def fmt(x: Any) -> str:
+                    return f"{x:.4f}" if isinstance(x, (int, float)) else (str(x) if x is not None else "n/a")
+                lines.append(
+                    f"| {row['action']} | {row['action_kind']} | {row['selected_count']} | "
+                    f"{row['action_added_false_span']} | {row['action_added_gold_span']} | "
+                    f"{fmt(row['false_per_gold'])} |"
+                )
+            lines.append("")
+
+        worst_kill = a.get("worst_actions_by_gold_kill", [])
+        if worst_kill:
+            lines.append(f"### Worst actions by gold kill: {policy}\n")
+            lines.append("| Action | kind | selected | gold_kill | gold_kill_rate |")
+            lines.append("|---|---:|---:|---:|---:|")
+            for row in worst_kill:
+                def fmt(x: Any) -> str:
+                    return f"{x:.4f}" if isinstance(x, (int, float)) else (str(x) if x is not None else "n/a")
+                lines.append(
+                    f"| {row['action']} | {row['action_kind']} | {row['selected_count']} | "
+                    f"{row['gold_kill_count']} | {fmt(row['gold_kill_rate'])} |"
+                )
+            lines.append("")
+
+    lines.append("## Conclusion\n")
+    for line in report["conclusion"]:
+        lines.append(f"- {line}")
+    lines.append("")
+
+    lines.append("## Safety notes\n")
+    lines.append("- P30-H3 is score-phase accounting over fixed existing policies; it does not route or admit tasks.")
+    lines.append("- No remote model calls are made during H3 accounting.")
+    lines.append("- No raw queries, snippets, prompts, responses, gold spans, private labels, provider keys, or per-task records are emitted.")
+    lines.append("- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `external_calls=0`.")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def _reject_forbidden_keys(obj: Any, path: str = "") -> list[str]:
     violations: list[str] = []
     if isinstance(obj, dict):
@@ -1066,11 +1479,13 @@ def build_report(
 ) -> dict[str, Any]:
     policy_comparison: dict[str, Any] = {}
     per_task_routing: list[dict[str, Any]] = []
+    h3_action_span_cost_accounting: dict[str, Any] = {}
 
     if status in {"ok", "self_test_only"}:
         for policy in POLICIES:
             policy_comparison[policy] = compute_policy_metrics(tasks, policy)
         _add_deltas_and_action_rates(policy_comparison)
+        h3_action_span_cost_accounting = build_h3_action_span_cost_report(tasks)
         if self_test:
             for task in tasks:
                 routing = route_admission_v3(task)
@@ -1204,6 +1619,7 @@ def build_report(
         "route_features_ignored_count": total_route_features_ignored,
         "elapsed_ms": elapsed_ms,
         "policy_comparison": policy_comparison,
+        "h3_action_span_cost_accounting": h3_action_span_cost_accounting,
         "admission_v3": {
             "routing_rules": [
                 "exact_unique_symbol_anchor + low query_noise -> admit_symbol_regex_union",
@@ -1296,6 +1712,14 @@ def validate_report(report: dict[str, Any]) -> list[str]:
             errors.append("self_test must set real_policy_evaluation=false")
         if not report.get("self_test") and report.get("real_policy_evaluation") is not True:
             errors.append("ok real run must set real_policy_evaluation=true")
+    if report.get("status") in {"ok", "self_test_only"}:
+        h3 = report.get("h3_action_span_cost_accounting")
+        if not isinstance(h3, dict):
+            errors.append("missing h3_action_span_cost_accounting section")
+        elif h3.get("schema_version") != H3_SCHEMA_VERSION:
+            errors.append("h3_action_span_cost_accounting schema_version mismatch")
+        elif h3.get("diagnostic_only") is not True:
+            errors.append("h3_action_span_cost_accounting must set diagnostic_only=true")
     errors.extend(_reject_forbidden_keys(report))
     return errors
 
@@ -1540,6 +1964,16 @@ def main() -> int:
     parser.add_argument("--input", nargs="+", type=Path, help="Paths to P25 ephemeral policy record JSON files.")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="Output JSON path.")
     parser.add_argument("--doc", type=Path, default=DEFAULT_DOC, help="Output markdown path.")
+    parser.add_argument(
+        "--h3-out",
+        type=Path,
+        help="Output JSON path for the P30-H3 action span-cost accounting report. Defaults beside --out.",
+    )
+    parser.add_argument(
+        "--h3-doc",
+        type=Path,
+        help="Output markdown path for the P30-H3 action span-cost accounting report. Defaults beside --doc.",
+    )
     args = parser.parse_args()
 
     start = time.monotonic()
@@ -1610,6 +2044,17 @@ def main() -> int:
     md = build_markdown(report)
     args.doc.parent.mkdir(parents=True, exist_ok=True)
     args.doc.write_text(md, encoding="utf-8")
+
+    h3_report = report.get("h3_action_span_cost_accounting")
+    if h3_report:
+        h3_out = args.h3_out or _default_h3_out_for(args.out)
+        h3_doc = args.h3_doc or _default_h3_doc_for(args.doc)
+        h3_out.parent.mkdir(parents=True, exist_ok=True)
+        _write_json(h3_out, h3_report)
+        h3_doc.parent.mkdir(parents=True, exist_ok=True)
+        h3_doc.write_text(build_h3_markdown(h3_report), encoding="utf-8")
+        print(f"P30-H3 span-cost report written to {h3_out}")
+        print(f"P30-H3 span-cost doc written to {h3_doc}")
 
     errors = validate_report(report)
     if errors:

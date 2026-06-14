@@ -203,8 +203,12 @@ added gold/false versus H1 `18/87` and P25 `bucket_routed_v0` `16/36`; mean
 ΔSpanF0.5 was `-0.0370` for H2 versus `-0.0346` for H1 and `-0.0052` for P25.
 The updated diagnosis is that primary-admission breadth was not the only issue:
 weak/supporting/filter actions still preserve too much span-level false cost.
-Next P30-H3 should model action-specific span cost and false-span budgets before
-more route tuning.
+P30-H3 now models action-specific span cost and false-span budgets as a
+score-phase-only, diagnostic accounting layer. It does not change admission
+routes; it derives per-action cost from the existing `bucket_routed_v0`,
+`admission_v3_h1`, `admission_v3_h2`, and baseline comparison policies, and emits
+a dedicated `artifacts/p30_admission_v3/p30_h3_span_cost_report.json` artifact
+with schema `p30-h3-action-span-cost-report-v1`.
 
 ---
 
@@ -326,7 +330,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
 - P21-G: cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E found useful file/span signal (`pack2_evidence_sketch`, `atom_signature`) but naked dense false spans dominated. P21-G2E found constrained dense has modest supporting value (`dense_atom_signature_rrf_file_constrained`) while dense-only remains diagnostic/non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain need prompt/bucket routing and GLM needs schema repair.
 - P25: bucket-routed LLM role policy evaluator. Deterministic, no-remote, routes by public `task_bucket`/`task_risk_tags`; reduces false primary but also some gold spans; useful as a P30 input, not default.
-- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from pre-SCORE public features, compares baselines plus `admission_v3`/`admission_v3_h1`/`admission_v3_h2`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. P30-H1 fixed missing outcomes; P30-H2 stricter local-anchor admission still underperforms P25, so the next problem is action-specific span-cost accounting.
+- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from pre-SCORE public features, compares baselines plus `admission_v3`/`admission_v3_h1`/`admission_v3_h2`, reports score bands/selective risk/deltas, action-specific span-cost accounting (P30-H3), and scans public output for forbidden keys. P30-H1 fixed missing outcomes; P30-H2 stricter local-anchor admission still underperforms P25; P30-H3 now provides diagnostic action-cost accounting without changing routes.
 
 Key detailed reports:
 
@@ -344,6 +348,7 @@ Key detailed reports:
 - `docs/p30-admission-model-v3-remote-smoke.md` — first P30 real remote smoke.
 - `docs/p30-h1-remote-smoke.md` — P30-H1 enriched handoff real remote smoke.
 - `docs/p30-h2-remote-smoke.md` — P30-H2 stricter local-anchor admission real remote smoke.
+- `docs/p30-h3-span-cost-accounting.md` — P30-H3 action-specific span-cost accounting (diagnostic-only, score-phase-only, no route change).
 
 ---
 

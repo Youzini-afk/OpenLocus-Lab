@@ -712,8 +712,40 @@ jobs:
                   if pc["admission_v3_h2"].get("selected_action_fallback_rate") not in {0, 0.0}:
                       raise SystemExit(f"{json_path} H2 selected_action_fallback_rate must be zero")
                   if data.get("admission_v3_h2", {}).get("per_task_routing"):
-                      raise SystemExit(f"{json_path} persisted H2 per-task routing records")
+                       raise SystemExit(f"{json_path} persisted H2 per-task routing records")
+                  # P30-H3 action-specific span-cost accounting completeness gate.
+                  h3 = data.get("h3_action_span_cost_accounting")
+                  if not isinstance(h3, dict):
+                      raise SystemExit(f"{json_path} missing h3_action_span_cost_accounting section")
+                  if h3.get("schema_version") != "p30-h3-action-span-cost-report-v1":
+                      raise SystemExit(f"{json_path} H3 schema_version missing or mismatch")
+                  if h3.get("score_phase_only_accounting") is not True:
+                      raise SystemExit(f"{json_path} H3 must set score_phase_only_accounting=true")
+                  if h3.get("diagnostic_only") is not True:
+                      raise SystemExit(f"{json_path} H3 must set diagnostic_only=true")
+                  if h3.get("promotion_ready") is not False or h3.get("default_should_change") is not False:
+                      raise SystemExit(f"{json_path} H3 must not claim promotion/default change")
+                  h3_pc = h3.get("policy_action_accounting") or {}
+                  for req_h3_policy in ("bucket_routed_v0", "admission_v3_h1", "admission_v3_h2"):
+                      if req_h3_policy not in h3_pc:
+                          raise SystemExit(f"{json_path} missing H3 action accounting for {req_h3_policy}")
+                      h3_policy = h3_pc[req_h3_policy]
+                      if h3_policy.get("budget_violation_count") is None:
+                          raise SystemExit(f"{json_path} H3 {req_h3_policy} missing budget_violation_count")
+                      if h3_policy.get("primary_false_span_cost") is None:
+                          raise SystemExit(f"{json_path} H3 {req_h3_policy} missing primary_false_span_cost")
+                      if h3_policy.get("non_primary_false_span_cost") is None:
+                          raise SystemExit(f"{json_path} H3 {req_h3_policy} missing non_primary_false_span_cost")
+                  h3_path = pathlib.Path("artifacts/real_provider_ci/p30_h3_span_cost_report.json")
+                  if not h3_path.exists():
+                      raise SystemExit(f"{h3_path} missing")
+                  h3_data = json.loads(h3_path.read_text(encoding="utf-8"))
+                  if h3_data.get("schema_version") != "p30-h3-action-span-cost-report-v1":
+                      raise SystemExit(f"{h3_path} schema_version mismatch")
+                  if h3_data.get("diagnostic_only") is not True or h3_data.get("promotion_ready") is not False:
+                      raise SystemExit(f"{h3_path} diagnostic flags incorrect")
                   # Schema/safety check only: real H1/H2 are not required to outperform.
+
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
                       if data.get(flag) is not False:
                           raise SystemExit(f"{json_path} does not keep {flag}=false")

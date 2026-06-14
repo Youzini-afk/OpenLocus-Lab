@@ -161,6 +161,22 @@ span-level false cost. Next P30 work should add action-specific span-cost budget
 and non-primary cost accounting before further route tuning. Report:
 [`docs/p30-h2-remote-smoke.md`](p30-h2-remote-smoke.md).
 
+P30-H3 implemented action-specific span-cost accounting as a score-phase-only,
+diagnostic follow-on. It does not introduce a new admission route or policy; it
+derives per-action cost from existing policies (`bucket_routed_v0`,
+`admission_v3_h1`, `admission_v3_h2`, and baseline comparison policies). H3
+reports, per action, selected count/rate, added gold/false spans, false/gold and
+gold/false ratios, net span value at 1x and 2x weighting, deltas versus baseline,
+mean ΔSpanF0.5 and mean ΔPFP, gold-kill rate and false-reduction rate, and
+budget-violation flags. Policy-level summaries include primary/non-primary/
+unclassified false-span cost, budget violation count/rate/reasons, and worst
+actions by false cost and gold kill. The dedicated artifact is
+`artifacts/p30_admission_v3/p30_h3_span_cost_report.json` with schema
+`p30-h3-action-span-cost-report-v1`, and the doc is
+[`docs/p30-h3-span-cost-accounting.md`](p30-h3-span-cost-accounting.md).
+`promotion_ready=false`, `default_should_change=false`, `diagnostic_only=true`,
+`score_phase_only_accounting=true`.
+
 ## Stage status
 
 | Stage | Status | Summary |
