@@ -139,6 +139,17 @@ admission actions. Conclusion: no promotion; extend the handoff with measured
 rerunning P30. Remote report:
 [`docs/p30-admission-model-v3-remote-smoke.md`](p30-admission-model-v3-remote-smoke.md).
 
+P30-H1 repaired that handoff: P21 now writes ephemeral measured outcomes for
+`symbol_regex_union`, `rrf_primary`, `supporting_only`, and `weak_candidate_only`,
+and only pre-SCORE safe route features; P30 reports `admission_v3_h1` as the same
+scorecard evaluated over enriched handoff records. Six real runs confirmed H1
+fixed measurement fallback (`missing_action_outcome_count=0` for H1), but it did
+not improve quality. P25 `bucket_routed_v0` remained stronger (`20/37`
+gold/false, mean ΔSpanF0.5 `+0.0020`) than `admission_v3_h1` (`18/87`, mean
+ΔSpanF0.5 `-0.0350`). The bottleneck moved from missing handoff to scorecard
+quality: `symbol_regex_union` admission is too broad and needs stricter
+agreement/bucket guards. Report: [`docs/p30-h1-remote-smoke.md`](p30-h1-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

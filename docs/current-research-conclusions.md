@@ -30,6 +30,7 @@ below.
 - [P25 bucket-routed LLM role policy](p25-bucket-routed-policy.md)
 - [P30 Admission Model V3](p30-admission-model-v3.md)
 - [P30 Admission Model V3 remote smoke](p30-admission-model-v3-remote-smoke.md)
+- [P30-H1 enriched handoff remote smoke](p30-h1-remote-smoke.md)
 
 ## Current one-line conclusion
 

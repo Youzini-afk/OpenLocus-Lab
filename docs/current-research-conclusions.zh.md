@@ -150,6 +150,8 @@ P30 不是 promotion candidate。下一步应把它接入真实 P25 ephemeral sm
 
 第一轮真实 P30 remote smoke 已完成 6 个成功 runs（`Flash/Kimi/GLM × py_flask/js_express`，每个 run 18 个按 bucket 抽样任务）。结果确认当前 `admission_v3` 脚手架过于保守：baseline added gold/false 为 `27/102`，P25 `bucket_routed_v0` 为 `19/39`，P30 `admission_v3` 为 `17/41`。P30 匹配了平均 PFP 降幅（`-0.0833`），但平均 SpanF0.5 delta 比 `bucket_routed_v0` 更差（`-0.0102` vs `+0.0010`）。非零 fallback counts 表明当前 ephemeral handoff 还缺少更丰富本地 admission 动作所需的 measured outcomes/features。下一步应扩展 P21/P22 handoff，加入 measured `symbol_regex_union` / `rrf_primary` outcomes 和安全 route features，再重跑 P30。
 
+P30-H1 已实现这个 handoff repair。它作为 measurement repair 成功，但作为 policy improvement 失败。6 个真实 runs 中 `admission_v3_h1` 的 selected-action fallback 为 0，因此比较已经 quality-comparable；但 P25 `bucket_routed_v0` 仍更强：`20/37` added gold/false，平均 ΔSpanF0.5 为 `+0.0020`；P30-H1 为 `18/87`，平均 ΔSpanF0.5 为 `-0.0350`。新的结论是：missing handoff 掩盖了 scorecard 本身的问题，`admit_symbol_regex_union` 太宽，放进了很多 false spans。下一步 P30-H2 应收紧 local-anchor admission，而不是继续加新通道。
+
 ---
 
 ## 3. 当前研究假设
@@ -270,7 +272,7 @@ P30 不是 promotion candidate。下一步应把它接入真实 P25 ephemeral sm
 - P20-LS/P20-LS-A：低上下文/query-only LLM aliases safety-passed 但 quality-failed；direct low-context alias scale-up blocked。
 - P21-G：跨模型 context-injection 阶段，使用 context atoms、context packs、candidate metadata、model profiles、roles、layouts，并记录 latency/cost。P21-G1E 显示 `pack2_evidence_sketch`、`atom_signature` 有 file/span 信号但 naked dense false spans 占主导。P21-G2E 显示 constrained dense 有 modest supporting value（`dense_atom_signature_rrf_file_constrained`），但 dense-only 仍只是 diagnostic/non-primary。P21-G3L 显示 LLM span narrowing 有 promising 但 model/repo-specific 信号；filter/abstain 需要 prompt/bucket routing，GLM 需要 schema repair。
 - P25：bucket-routed LLM role policy 评估器。确定性、无远程、只按公开 `task_bucket`/`task_risk_tags` 路由；能降低 false primary 但也会损失一些 gold span；作为 P30 输入有价值，不是默认策略。
-- P30：Admission Model V3 研究脚手架。确定性可解释评分卡加 hard guard，只从 RUN-phase 公开特征路由，比较多个 baseline 和 `admission_v3`，输出 score bands/selective risk/deltas，并递归扫描公开输出中的禁用键。第一轮真实 smoke 表明当前 `admission_v3` 过于保守，弱于 P25 `bucket_routed_v0`；需要更丰富的 local-anchor handoff 后再重跑。
+- P30：Admission Model V3 研究脚手架。确定性可解释评分卡加 hard guard，只从 pre-SCORE 公开特征路由，比较多个 baseline 和 `admission_v3`/`admission_v3_h1`，输出 score bands/selective risk/deltas，并递归扫描公开输出中的禁用键。P30-H1 修复了 missing outcomes，但仍弱于 P25 `bucket_routed_v0`；下一步问题是收紧 local-anchor admission，而不是继续加新通道。
 
 关键详细报告：
 
@@ -286,6 +288,7 @@ P30 不是 promotion candidate。下一步应把它接入真实 P25 ephemeral sm
 - `docs/p25-bucket-routed-policy.md` — P25 bucket-routed LLM role policy。
 - `docs/p30-admission-model-v3.md` — P30 Admission Model V3 报告。
 - `docs/p30-admission-model-v3-remote-smoke.md` — 第一轮 P30 真实 remote smoke。
+- `docs/p30-h1-remote-smoke.md` — P30-H1 enriched handoff 真实 remote smoke。
 
 ---
 
@@ -303,7 +306,7 @@ P30 不是 promotion candidate。下一步应把它接入真实 P25 ephemeral sm
 8. 继续 QuIVer sharding/prototype，直到有 graph/ANN 后端质量证据再谈 QuIVer quality。
 9. 如果重新研究 LLM query aliases，只测试 grounded variants：从 inventories 中选择 aliases，或在看到 top-k local candidate snippets 后生成 aliases。
 10. 跑 P21-G rich LLM candidate support：在 snippet-backed local candidates 上 rerank/filter/span-narrow/abstain/inventory_alias，记录 model-averaged/per-model effects，并报告质量、latency、token、cost trade-off。
-11. 扩展 P21/P22 handoff，加入 measured local-anchor outcomes（`symbol_regex_union`、`rrf_primary`）和安全 route features，然后重跑 P30。
+11. P30-H2：用 agreement / bucket / query-noise guards 收紧 local-anchor admission（`symbol_regex_union` / `rrf_primary`），然后在真实 P25 ephemeral policy records 上重跑。
 
 ---
 

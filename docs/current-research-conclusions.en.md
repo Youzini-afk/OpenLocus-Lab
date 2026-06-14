@@ -188,6 +188,15 @@ admission actions. Next: extend P21/P22 handoff with measured
 `symbol_regex_union` / `rrf_primary` outcomes and safe route features before
 rerunning P30.
 
+P30-H1 implemented that handoff repair. It succeeded as measurement repair but
+failed as policy improvement. Six real runs produced zero selected-action
+fallback for `admission_v3_h1`, so the comparison is now quality-comparable.
+However, P25 `bucket_routed_v0` remained better: `20/37` added gold/false with
+mean ΔSpanF0.5 `+0.0020`, versus P30-H1 `18/87` with mean ΔSpanF0.5 `-0.0350`.
+The new conclusion is that missing handoff was masking a scorecard problem:
+`admit_symbol_regex_union` is too broad and admits many false spans. Next P30-H2
+should make local-anchor admission stricter instead of adding more channels.
+
 ---
 
 ## 3. Current Hypotheses
@@ -308,7 +317,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P20-LS/P20-LS-A: low-context/query-only LLM aliases safety-passed but quality-failed; direct low-context alias scale-up blocked.
 - P21-G: cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E found useful file/span signal (`pack2_evidence_sketch`, `atom_signature`) but naked dense false spans dominated. P21-G2E found constrained dense has modest supporting value (`dense_atom_signature_rrf_file_constrained`) while dense-only remains diagnostic/non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain need prompt/bucket routing and GLM needs schema repair.
 - P25: bucket-routed LLM role policy evaluator. Deterministic, no-remote, routes by public `task_bucket`/`task_risk_tags`; reduces false primary but also some gold spans; useful as a P30 input, not default.
-- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from RUN-phase public features, compares baselines plus `admission_v3`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. First real smoke shows current `admission_v3` is too conservative and underperforms P25 `bucket_routed_v0`; richer local-anchor handoff is required before rerun.
+- P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from pre-SCORE public features, compares baselines plus `admission_v3`/`admission_v3_h1`, reports score bands/selective risk/deltas, and scans public output for forbidden keys. P30-H1 fixed missing outcomes but underperforms P25 `bucket_routed_v0`; the next problem is stricter local-anchor admission, not more channels.
 
 Key detailed reports:
 
@@ -324,6 +333,7 @@ Key detailed reports:
 - `docs/p25-bucket-routed-policy.md` — P25 bucket-routed LLM role policy.
 - `docs/p30-admission-model-v3.md` — P30 Admission Model V3 report.
 - `docs/p30-admission-model-v3-remote-smoke.md` — first P30 real remote smoke.
+- `docs/p30-h1-remote-smoke.md` — P30-H1 enriched handoff real remote smoke.
 
 ---
 
@@ -341,7 +351,7 @@ The next step is not promotion. It is larger, more granular, more reproducible v
 8. Continue QuIVer sharding/prototype work; do not claim QuIVer quality until graph/ANN backend evidence exists.
 9. If LLM query aliases are revisited, test only grounded variants: inventory-selected aliases or aliases derived after seeing top-k local candidate snippets.
 10. Run P21-G rich LLM candidate support: rerank/filter/span-narrow/abstain/inventory_alias over snippet-backed local candidates, record model-averaged and per-model effects, and report quality, latency, token, and cost trade-offs.
-11. Extend the P21/P22 handoff with measured local-anchor outcomes (`symbol_regex_union`, `rrf_primary`) and safe route features, then rerun P30 against real P25 ephemeral policy records.
+11. P30-H2: tighten local-anchor admission (`symbol_regex_union`/`rrf_primary`) using agreement/bucket/query-noise guards, then rerun against real P25 ephemeral policy records.
 
 ---
 
