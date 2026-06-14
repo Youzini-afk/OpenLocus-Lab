@@ -236,6 +236,34 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 
 真实 P31-H2 strategy reach matrix 显示 `symbol_regex_union` 是当前主要 candidate-reach lever：K=5 时，`candidate_baseline` 覆盖 `24/48` 个 spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`，并贡献 `18/48` 个 unique span hits。`candidate_baseline` 与 `rrf_primary` 或 `llm_span_narrow` 组合仍停在 `24/48`；与 `symbol_regex_union` 组合则达到 `42/48`。因此下一步 candidate-generation 侧应优先 P33 anchor repair/calibration，同时 P32/P30-H4 必须在 `symbol_regex_union` primary admission 前加入 action budget。见 [`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md)。
 
+## P33 Reach-Preserving Precision Anchor Repair (2026-06-14)
+
+P33（`eval/p33_anchor_precision_repair.py`）是 P31 之后一个确定性、无远程调用的诊断性工具，
+用于研究 RUN 阶段可观测的 anchor 信号（symbol、regex、RRF anchor agreement、query noise、
+公共 bucket、risk tags）与候选覆盖及 span cost 之间的关系。它复用与 P31 相同的
+`p25-policy-records-ephemeral-v1` 临时 records，包括 `p31_candidate_pools`、
+`p31_score_gold` 和 `route_features`；labels 只在 RUN 之后加载，并仅用于 SCORE 阶段聚合指标。
+
+anchor taxonomy v1 包括原始 anchor 桶（`exact_unique_symbol`、`unique_symbol`、
+`symbol_only`、`regex_only`、`symbol_regex_agree_span/file`、`symbol_regex_disagree`、
+`rrf_agree_span/file`、`rrf_unbacked`）、公共 bucket/tag 桶、query-noise 等级，
+以及有界组合桶。每个桶报告 task count、reach@5、span cost（added gold/false、false/gold、
+net value）、平均 SpanF0.5、平均 primary false-positive rate，以及 diagnostic class。
+同时输出三维校准矩阵：`anchor_strength` 表示 0=无 anchor、1=仅有 symbol/regex、
+2=文件级 agreement、3=span 级 agreement、4=exact_unique_symbol_span_agreement；
+`rrf_backing_level` 表示 0=无 RRF backing、1=仅文件级、2=span 级（不再使用泛化的
+dense/graph support）。矩阵包含单调性检查，以及 `p33_to_p32_handoff` 的 budget
+candidate buckets（`frozen_policy=false`）。缺失池会报告 `availability=missing_pool`
+或 `not_measured`，而不是零值。
+
+公开产物仅限聚合指标：不含 per-task 行、task IDs、query、snippet、prompt、response、
+route features、candidate paths/spans、gold spans、private labels 或 provider 字段。
+安全标志锁定：`promotion_ready=false`、`default_should_change=false`、
+`evidencecore_semantics_changed=false`、`candidate_not_fact=true`、
+`remote_calls_by_p33=0`、`score_phase_only_metrics=true`、
+`aggregate_only_public_artifact=true`。报告：
+[`docs/p33-anchor-precision-repair.md`](p33-anchor-precision-repair.md)。
+
 ## Stage status
 
 | Stage | Status | Summary |
@@ -289,6 +317,7 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 | P25 Bucket-Routed LLM Role Policy evaluator | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p25_bucket_policy.py` is deterministic and no-remote. It routes by public `task_bucket`/`task_risk_tags` and compares candidate_baseline, global span/filter/abstain, and bucket_routed_v0. Aggregate summaries/non-ephemeral schemas are rejected. First real smoke reduced false spans but also some gold spans; useful as P30 false-primary reducer, not default. Report: `docs/p25-bucket-routed-policy.md`. |
 | P30 Admission Model V3 | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p30_admission_model_v3.py` is deterministic, explainable, no-remote. Routes only from public task_bucket/task_risk_tags/route_features; allowed actions are abstain/admit_symbol_regex_union/admit_rrf_primary/admit_llm_span_narrow/apply_llm_filter/supporting_only/weak_candidate_only. Compares baselines plus admission_v3, reports score bands/selective_risk/deltas, and recursively scans public output for forbidden keys. Not promotion-ready; next step compare to P25 real smoke and P22/P23 guards. Report: `docs/p30-admission-model-v3.md`. |
 | P31 Candidate Reach Ceiling Study | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p31_candidate_reach_ceiling.py` measures whether candidate evidence alone reaches the gold label at K=1/3/5/10/20 before any routing or admission. Deterministic, no-remote, aggregate-only. Falls back to outcome-only metrics when candidate pools are missing, clearly marked `missing_candidate_pool`/`reach_metrics_available=false`. Reports reach@K, span-exact reach, candidate absent rate, file-right-span-wrong rate, strategy miss given gold present, filter/admission diagnostics, and K=5 failure funnel. `promotion_ready=false`, `remote_calls_by_p31=0`. Report: `docs/p31-candidate-reach-ceiling.md`. |
+| P33 Reach-Preserving Precision Anchor Repair | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33_anchor_precision_repair.py` 研究 pre-SCORE anchor 信号与覆盖/span cost 的关系。消费 P21/P31-H1 临时 records，聚合 anchor taxonomy v1、三维校准矩阵和 P32 budget candidate handoff。公开产物仅限聚合指标，不含 per-task 行、route features 或 private 字段。`promotion_ready=false`，`remote_calls_by_p33=0`。报告：`docs/p33-anchor-precision-repair.md`。 |
 
 ## R0/R1 initial findings
 

@@ -201,6 +201,46 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 
 P31-H2 strategy reach matrix 的重跑说明：下一步更应该修 anchor，而不是再加一个 LLM role。K=5 时，`candidate_baseline` 覆盖 `24/48` 个 positive spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`。`symbol_regex_union` 贡献 `18/48` 个 unique span hits，而 `candidate_baseline + rrf_primary` 和 `candidate_baseline + llm_span_narrow` 都仍停在 `24/48`。因此 `symbol_regex_union` 是高 reach 的 candidate expansion source，但 P30-H3 已经证明它直接 primary admit 不安全。下一步应进入 P33 anchor repair/calibration，以及 P32/P30-H4 在 local-anchor primary admission 前加入 action budget。
 
+### 2.14 P33 Reach-Preserving Precision Anchor Repair 脚手架已就绪
+
+`eval/p33_anchor_precision_repair.py` 是一个确定性、无远程调用的诊断性脚手架
+（schema `p33-anchor-precision-repair-report-v1`）。它复用 P31 使用的 P21/P31-H1
+临时 records：需要 `p31_candidate_pools`、`p31_score_gold`、公共
+`task_bucket`/`task_risk_tags` 以及 RUN 阶段可观测的 `route_features`。
+labels 与 gold spans 只在 SCORE 阶段用于聚合指标。当候选池或 gold spans 缺失时，
+P33 报告 `availability=missing_pool`/`not_measured`，而不是伪造零值。
+
+P33 定义了 anchor taxonomy v1，包括 `exact_unique_symbol_anchor`、
+`unique_symbol_anchor`、`symbol_anchor_only`、`regex_anchor_only`、
+`symbol_regex_agree_span`/`agree_file`/`disagree`、
+`rrf_anchor_agree_span`/`agree_file`/`unbacked`、公共桶
+（`positive`/`ambiguous`/`negative`）、风险标签（`hard_distractor`、
+`dense_false_positive`）、query-noise 等级，以及有界组合桶如
+`symbol_regex_agree_span_low_risk`、`rrf_span_backed`、
+`negative_or_ambiguous_with_anchor` 等。每个桶报告 task count、positive/no_gold count、
+`GoldFileReach@5`、`GoldSpanReach@5`、`FileRightSpanWrongRate@5`、span cost 聚合
+（`added_gold_span`、`added_false_span`、`false_per_gold`、`gold_per_false`、
+`net_span_value_1x/2x`）、平均 `SpanF0.5` 与平均 `primary_false_positive_rate`，
+以及 diagnostic class
+（`primary_candidate_safe_observed`、`supporting_only_observed`、
+`needs_budget_guard`、`blocked_high_false_cost`、
+`insufficient_denominator`）。
+
+三维校准矩阵的三个维度为：`anchor_strength`
+（0=无 anchor，1=仅有 symbol/regex，2=文件级 agreement，3=span 级 agreement，
+4=exact_unique_symbol_span_agreement）、`risk_level`
+（0=低风险/positive，1=ambiguous，2=negative/高风险）、`rrf_backing_level`
+（0=无 RRF backing，1=仅文件级，2=span 级），报告同样的聚合诊断并标记单调性异常。
+`p33_to_p32_handoff` 按 diagnostic class 分组 budget candidate buckets，
+并显式设置 `frozen_policy=false`。
+
+公开产物仅限聚合指标：不含 per-task 行、task IDs、原始 query/snippet/prompt/response、
+route features、candidate paths/spans、gold spans、private labels 或 provider 字段。
+安全标志锁定：`promotion_ready=false`、`default_should_change=false`、
+`evidencecore_semantics_changed=false`、`candidate_not_fact=true`、
+`remote_calls_by_p33=0`、`score_phase_only_metrics=true`、
+`aggregate_only_public_artifact=true`。
+
 ---
 
 ## 3. 当前研究假设

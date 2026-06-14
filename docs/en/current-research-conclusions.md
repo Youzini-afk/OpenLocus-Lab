@@ -288,6 +288,47 @@ expansion source, but P30-H3 already showed it is unsafe when admitted directly
 as primary. The next steps are P33 anchor repair/calibration and P32/P30-H4
 action budgets before local-anchor primary admission.
 
+### 2.14 P33 Reach-Preserving Precision Anchor Repair scaffold is ready
+
+`eval/p33_anchor_precision_repair.py` is a deterministic, no-remote diagnostic
+scaffold (schema `p33-anchor-precision-repair-report-v1`). It consumes the same
+P21/P31-H1 ephemeral records that P31 uses: it needs `p31_candidate_pools`,
+`p31_score_gold`, public `task_bucket`/`task_risk_tags`, and pre-SCORE
+`route_features`. Labels and gold spans are used only in the SCORE phase for
+aggregate metrics. When candidate pools or gold spans are missing, P33 reports
+`availability=missing_pool`/`not_measured` rather than fabricating zeros.
+
+P33 defines an anchor taxonomy v1 with buckets such as
+`exact_unique_symbol_anchor`, `unique_symbol_anchor`, `symbol_anchor_only`,
+`regex_anchor_only`, `symbol_regex_agree_span`/`agree_file`/`disagree`,
+`rrf_anchor_agree_span`/`agree_file`/`unbacked`, public buckets
+(`positive`/`ambiguous`/`negative`), risk tags (`hard_distractor`,
+`dense_false_positive`), query-noise levels, and bounded composites like
+`symbol_regex_agree_span_low_risk`, `rrf_span_backed`, and
+`negative_or_ambiguous_with_anchor`. For each bucket it reports task counts,
+positive/no-gold counts, `GoldFileReach@5`, `GoldSpanReach@5`,
+`FileRightSpanWrongRate@5`, span cost aggregates (`added_gold_span`,
+`added_false_span`, `false_per_gold`, `gold_per_false`, `net_span_value_1x/2x`),
+mean `SpanF0.5` and mean `primary_false_positive_rate`, and a diagnostic class
+(`primary_candidate_safe_observed`, `supporting_only_observed`,
+`needs_budget_guard`, `blocked_high_false_cost`, or
+`insufficient_denominator`).
+
+A 3D calibration matrix over `anchor_strength` (0=none, 1=symbol_or_regex_only,
+2=file_agreement, 3=span_agreement, 4=exact_unique_symbol_span_agreement),
+`risk_level` (0=low/positive, 1=ambiguous, 2=negative/high risk), and
+`rrf_backing_level` (0=none, 1=file-only, 2=span) reports the same aggregate
+diagnostics and flags monotonic-sanity violations. A `p33_to_p32_handoff` section
+groups budget candidates by diagnostic class, with `frozen_policy=false`.
+
+Public artifacts are aggregate-only: no per-task rows, task IDs, raw queries,
+snippets, prompts, responses, route features, candidate paths/spans, gold spans,
+private labels, or provider fields. Safety flags are locked:
+`promotion_ready=false`, `default_should_change=false`,
+`evidencecore_semantics_changed=false`, `candidate_not_fact=true`,
+`remote_calls_by_p33=0`, `score_phase_only_metrics=true`,
+`aggregate_only_public_artifact=true`.
+
 ---
 
 ## 3. Current Hypotheses

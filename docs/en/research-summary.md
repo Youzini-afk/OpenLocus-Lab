@@ -253,6 +253,38 @@ priority, while P32/P30-H4 must budget `symbol_regex_union` before primary
 admission. See
 [`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md).
 
+## P33 Reach-Preserving Precision Anchor Repair (2026-06-14)
+
+P33 (`eval/p33_anchor_precision_repair.py`) is a deterministic, no-remote,
+diagnostic-only follow-on to P31. It studies how pre-SCORE anchor signals
+(symbol, regex, RRF anchor agreement, query noise, public bucket, risk tags)
+correlate with candidate reach and span cost. It consumes the same ephemeral
+`p25-policy-records-ephemeral-v1` records as P31, including `p31_candidate_pools`,
+`p31_score_gold`, and `route_features`. Labels are loaded only after RUN and
+used only for aggregate SCORE-phase metrics.
+
+The anchor taxonomy v1 includes primitive anchor buckets (`exact_unique_symbol`,
+`unique_symbol`, `symbol_only`, `regex_only`, `symbol_regex_agree_span/file`,
+`symbol_regex_disagree`, `rrf_agree_span/file`, `rrf_unbacked`), public bucket
+and tag buckets, query-noise levels, and bounded composites. Each bucket reports
+task counts, reach@5, span cost (added gold/false, false/gold, net value),
+mean SpanF0.5, mean primary false-positive rate, and a diagnostic class. A 3D
+calibration matrix over anchor_strength/risk_level/rrf_backing_level is also
+emitted: anchor strength encodes none/symbol_or_regex_only/file_agreement/
+span_agreement/exact_unique_symbol_span_agreement; the backing axis encodes none/
+file-only/span RRF backing rather than dense/graph support. It includes
+monotonic-sanity checks and a `p33_to_p32_handoff` of budget candidates
+(`frozen_policy=false`). Missing pools are reported as `availability=missing_pool`
+or `not_measured`, not zero.
+
+Public artifacts are aggregate-only: no per-task rows, task IDs, queries,
+snippets, prompts, responses, route features, candidate paths/spans, gold spans,
+private labels, or provider fields. Safety flags are locked:
+`promotion_ready=false`, `default_should_change=false`,
+`evidencecore_semantics_changed=false`, `candidate_not_fact=true`,
+`remote_calls_by_p33=0`, `score_phase_only_metrics=true`,
+`aggregate_only_public_artifact=true`. Report: `docs/p33-anchor-precision-repair.md`.
+
 ## Stage status
 
 | Stage | Status | Summary |
@@ -306,6 +338,7 @@ admission. See
 | P25 Bucket-Routed LLM Role Policy evaluator | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p25_bucket_policy.py` is deterministic and no-remote. It routes by public `task_bucket`/`task_risk_tags` and compares candidate_baseline, global span/filter/abstain, and bucket_routed_v0. Aggregate summaries/non-ephemeral schemas are rejected. First real smoke reduced false spans but also some gold spans; useful as P30 false-primary reducer, not default. Report: `docs/p25-bucket-routed-policy.md`. |
 | P30 Admission Model V3 | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p30_admission_model_v3.py` is deterministic, explainable, no-remote. Routes only from public task_bucket/task_risk_tags/route_features; allowed actions are abstain/admit_symbol_regex_union/admit_rrf_primary/admit_llm_span_narrow/apply_llm_filter/supporting_only/weak_candidate_only. Compares baselines plus admission_v3, reports score bands/selective_risk/deltas, and recursively scans public output for forbidden keys. Not promotion-ready; next step compare to P25 real smoke and P22/P23 guards. Report: `docs/p30-admission-model-v3.md`. |
 | P31 Candidate Reach Ceiling Study | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p31_candidate_reach_ceiling.py` measures whether candidate evidence alone reaches the gold label at K=1/3/5/10/20 before any routing or admission. It is deterministic, no-remote, and aggregate-only: no per-task rows, raw queries, snippets, prompts, responses, gold spans, private labels, or provider fields. Inputs are ephemeral P25/P30 records; records without candidate evidence pools fall back to outcome-only metrics with `candidate_pool_availability=missing_candidate_pool` and `reach_metrics_available=false`. Reports `GoldFileReach@K`, `GoldSpanReach@K`, `GoldSpanExactReach@K`, `CandidateAbsentRate@K`, `FileRightSpanWrongRate@K`, `ModelMissGivenGoldPresent@K`, `FilterKillGoldRate`, `AdmissionFalsePrimaryRate`, `AdmissionFalseSpanPerNoGoldTask`, and a K=5 failure funnel. `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `remote_calls_by_p31=0`. Report: `docs/p31-candidate-reach-ceiling.md`. |
+| P33 Reach-Preserving Precision Anchor Repair | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33_anchor_precision_repair.py` studies how pre-SCORE anchor signals correlate with reach and span cost. It consumes ephemeral P21/P31-H1 records and aggregates an anchor taxonomy v1, a 3D calibration matrix, and budget-candidate handoff to P32. Public output is aggregate-only, no per-task rows, route features, or private fields. `promotion_ready=false`, `default_should_change=false`, `candidate_not_fact=true`, `remote_calls_by_p33=0`. Report: `docs/p33-anchor-precision-repair.md`. |
 
 ## R0/R1 initial findings
 

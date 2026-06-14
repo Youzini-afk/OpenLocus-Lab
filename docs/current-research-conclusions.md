@@ -52,6 +52,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p31-candidate-reach-ceiling.md`: [en](en/p31-candidate-reach-ceiling.md) · [zh](zh/p31-candidate-reach-ceiling.md)
 - `p31-h1-remote-smoke.md`: [en](en/p31-h1-remote-smoke.md) · [zh](zh/p31-h1-remote-smoke.md)
 - `p31-h2-strategy-reach-remote-smoke.md`: [en](en/p31-h2-strategy-reach-remote-smoke.md) · [zh](zh/p31-h2-strategy-reach-remote-smoke.md)
+- `p33-anchor-precision-repair.md`: [en](en/p33-anchor-precision-repair.md) · [zh](zh/p33-anchor-precision-repair.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
 - `r17-router-guard.md`: [en](en/r17-router-guard.md) · [zh](zh/r17-router-guard.md)
 - `r18-calibration-sweep.md`: [en](en/r18-calibration-sweep.md) · [zh](zh/r18-calibration-sweep.md)
