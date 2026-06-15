@@ -458,7 +458,13 @@ aggregate counts (`strict_union_re_admit`, `strict_rrf_re_admit`, `hard_guard`,
 `selected_action_fallback_rate`, `false_per_gold`, `net_span_value_2x`, and a
 span-cost summary from P30-H3 accounting. On synthetic self-test it is
 quality-comparable and fallback-free, and fires a small number of strict primary
-opportunities; the real H4B smoke is pending.
+opportunities. The real H4B smoke completed 6 successful provider runs: H4B is
+quality-comparable and fallback-free, and it escapes H4A's all-demotion failure
+(`0/0 -> 24/41` added gold/false). It still does not beat P25
+`bucket_routed_v0` (`25/30` added gold/false, mean SpanF0.5 `0.0683` vs H4B
+`0.0433`), so H4B is a promising research direction but not a promotion
+candidate. The next iteration should tighten strict RRF re-admission or use
+`request_more_context` before primary admission.
 
 ---
 
