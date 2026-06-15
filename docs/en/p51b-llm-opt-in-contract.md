@@ -1,7 +1,7 @@
 # P51-B LLM Opt-In Contract / Dry-Run Payload Validator
 
 - Schema: `p51b-llm-opt-in-contract-v1`
-- Generated: 2026-06-15T21:08:49.773827+00:00
+- Generated: 2026-06-15T21:11:43.508253+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P51-B: 0
