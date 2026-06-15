@@ -15,14 +15,12 @@
   "core_reach_strategies": [
     "candidate_baseline",
     "rrf_primary",
-    "symbol_regex_union",
-    "symbol_primary",
-    "regex_primary"
+    "symbol_regex_union"
   ],
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-15T06:06:05.264689+00:00",
+  "generated_at": "2026-06-15T07:02:35.390355+00:00",
   "generated_by": "eval/p31_candidate_reach_ceiling.py",
   "gold_span_availability": "available",
   "gold_spans_in_artifact": false,
