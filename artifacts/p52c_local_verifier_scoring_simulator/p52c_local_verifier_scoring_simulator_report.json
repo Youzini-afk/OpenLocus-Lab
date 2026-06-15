@@ -1,0 +1,923 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "conclusion": [
+    "Self-test-only diagnostic scoring simulator scored 11 synthetic candidates across 5 tasks; this is not quality evidence.",
+    "P52C scores are deterministic, gold-free diagnostic buckets only. They are not Evidence, do not produce a verifier pass/fail, do not admit candidates, and do not claim default/promotion. Source reads are bounded and aggregate-only when available.",
+    "Score availability: `partial_source_backed`; source-backed scored candidates: 5; metadata-only scored candidates: 4; unavailable: 2."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 1,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T20:46:38.289063+00:00",
+  "generated_by": "eval/p52c_local_verifier_scoring_simulator.py",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "llm_calls_by_p52c": 0,
+  "local_verifier_score_available": false,
+  "materialized_candidate_not_evidence": true,
+  "metrics": {
+    "breakdowns": {
+      "by_agreement_class": {
+        "other": {
+          "candidate_count": 8,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 0.25,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.5,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.25,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.5,
+          "source_backed_count": 2,
+          "source_backed_rate": 0.25,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.25
+        },
+        "single_source": {
+          "candidate_count": 2,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 2,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "span_overlap": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      },
+      "by_candidate_strategy": {
+        "candidate_baseline": {
+          "candidate_count": 10,
+          "diagnostic_score_high_count": 4,
+          "diagnostic_score_high_rate": 0.4,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.4,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.2,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.4,
+          "source_backed_count": 4,
+          "source_backed_rate": 0.4,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.2
+        },
+        "symbol_regex_union": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      },
+      "by_metadata_risk_bucket": {
+        "metadata_high_risk": {
+          "candidate_count": 7,
+          "diagnostic_score_high_count": 3,
+          "diagnostic_score_high_rate": 0.428571,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.571429,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.571429,
+          "source_backed_count": 3,
+          "source_backed_rate": 0.428571,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "metadata_low_risk": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "metadata_medium_risk": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "metadata_unavailable": {
+          "candidate_count": 2,
+          "diagnostic_score_high_count": 0,
+          "diagnostic_score_high_rate": 0.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 1.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 0,
+          "source_backed_rate": 0.0,
+          "unavailable_count": 2,
+          "unavailable_rate": 1.0
+        }
+      },
+      "by_pack_strategy": {
+        "anchor_contrast_pack_v0": {
+          "candidate_count": 10,
+          "diagnostic_score_high_count": 4,
+          "diagnostic_score_high_rate": 0.4,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.4,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.2,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.4,
+          "source_backed_count": 4,
+          "source_backed_rate": 0.4,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.2
+        },
+        "conservative_anchor_pack_v0": {
+          "candidate_count": 10,
+          "diagnostic_score_high_count": 4,
+          "diagnostic_score_high_rate": 0.4,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.4,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.2,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.4,
+          "source_backed_count": 4,
+          "source_backed_rate": 0.4,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.2
+        },
+        "not_in_any_pack": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "topk_flat_pack_v0": {
+          "candidate_count": 10,
+          "diagnostic_score_high_count": 4,
+          "diagnostic_score_high_rate": 0.4,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.4,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.2,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.4,
+          "source_backed_count": 4,
+          "source_backed_rate": 0.4,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.2
+        }
+      },
+      "by_path_kind": {
+        "doc": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 0,
+          "diagnostic_score_high_rate": 0.0,
+          "diagnostic_score_low_count": 1,
+          "diagnostic_score_low_rate": 1.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 1,
+          "metadata_only_rate": 1.0,
+          "source_backed_count": 0,
+          "source_backed_rate": 0.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "source": {
+          "candidate_count": 10,
+          "diagnostic_score_high_count": 5,
+          "diagnostic_score_high_rate": 0.5,
+          "diagnostic_score_low_count": 3,
+          "diagnostic_score_low_rate": 0.3,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.2,
+          "metadata_only_count": 3,
+          "metadata_only_rate": 0.3,
+          "source_backed_count": 5,
+          "source_backed_rate": 0.5,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.2
+        }
+      },
+      "by_public_bucket": {
+        "ambiguous": {
+          "candidate_count": 7,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 0.142857,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.571429,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.285714,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.571429,
+          "source_backed_count": 1,
+          "source_backed_rate": 0.142857,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.285714
+        },
+        "negative": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "positive": {
+          "candidate_count": 3,
+          "diagnostic_score_high_count": 3,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 3,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      },
+      "by_public_risk_tag": {
+        "ambiguous": {
+          "candidate_count": 7,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 0.142857,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.571429,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.285714,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.571429,
+          "source_backed_count": 1,
+          "source_backed_rate": 0.142857,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.285714
+        },
+        "high_confidence": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "negative": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "symbol_anchor": {
+          "candidate_count": 2,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 2,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      },
+      "by_rrf_backing": {
+        "rrf_no": {
+          "candidate_count": 9,
+          "diagnostic_score_high_count": 3,
+          "diagnostic_score_high_rate": 0.333333,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.444444,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.222222,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.444444,
+          "source_backed_count": 3,
+          "source_backed_rate": 0.333333,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.222222
+        },
+        "rrf_yes": {
+          "candidate_count": 2,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 2,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      },
+      "by_source_class": {
+        "other": {
+          "candidate_count": 8,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 0.25,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.5,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.25,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.5,
+          "source_backed_count": 2,
+          "source_backed_rate": 0.25,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.25
+        },
+        "symbol_only": {
+          "candidate_count": 2,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 2,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "symbol_regex_fusion": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      },
+      "by_source_feature_bucket": {
+        "source_feature_high_risk": {
+          "candidate_count": 8,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 0.25,
+          "diagnostic_score_low_count": 4,
+          "diagnostic_score_low_rate": 0.5,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 2,
+          "diagnostic_score_unavailable_rate": 0.25,
+          "metadata_only_count": 4,
+          "metadata_only_rate": 0.5,
+          "source_backed_count": 2,
+          "source_backed_rate": 0.25,
+          "unavailable_count": 2,
+          "unavailable_rate": 0.25
+        },
+        "source_feature_low_risk": {
+          "candidate_count": 1,
+          "diagnostic_score_high_count": 1,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 1,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        },
+        "source_feature_medium_risk": {
+          "candidate_count": 2,
+          "diagnostic_score_high_count": 2,
+          "diagnostic_score_high_rate": 1.0,
+          "diagnostic_score_low_count": 0,
+          "diagnostic_score_low_rate": 0.0,
+          "diagnostic_score_medium_count": 0,
+          "diagnostic_score_medium_rate": 0.0,
+          "diagnostic_score_unavailable_count": 0,
+          "diagnostic_score_unavailable_rate": 0.0,
+          "metadata_only_count": 0,
+          "metadata_only_rate": 0.0,
+          "source_backed_count": 2,
+          "source_backed_rate": 1.0,
+          "unavailable_count": 0,
+          "unavailable_rate": 0.0
+        }
+      }
+    },
+    "diagnostic_score_distribution": {
+      "component_coverage": {
+        "blank_only": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "bounded_span_feature_available": {
+          "availability": "available",
+          "checkable_count": 11,
+          "checkable_rate": 1.0
+        },
+        "code_like_token": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "comment_only": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "digest_mismatch": {
+          "availability": "available",
+          "checkable_count": 11,
+          "checkable_rate": 1.0
+        },
+        "generated_or_vendor_path_kind": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        },
+        "import_only": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "line_range_valid": {
+          "availability": "available",
+          "checkable_count": 11,
+          "checkable_rate": 1.0
+        },
+        "metadata_high_risk": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        },
+        "metadata_low_risk": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        },
+        "metadata_medium_risk": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        },
+        "nonempty_span": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "rrf_backing": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        },
+        "signature_like_heuristic": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "source_feature_high_risk": {
+          "availability": "available",
+          "checkable_count": 11,
+          "checkable_rate": 1.0
+        },
+        "source_feature_unavailable": {
+          "availability": "available",
+          "checkable_count": 11,
+          "checkable_rate": 1.0
+        },
+        "source_read_success": {
+          "availability": "available",
+          "checkable_count": 5,
+          "checkable_rate": 0.454545
+        },
+        "span_over_cap": {
+          "availability": "available",
+          "checkable_count": 11,
+          "checkable_rate": 1.0
+        },
+        "symbol_regex_fusion_span_overlap": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        },
+        "unknown_path_kind": {
+          "availability": "available",
+          "checkable_count": 9,
+          "checkable_rate": 0.818182
+        }
+      },
+      "diagnostic_score_bucket_counts": {
+        "diagnostic_score_high": 5,
+        "diagnostic_score_low": 4,
+        "diagnostic_score_medium": 0,
+        "diagnostic_score_unavailable": 2
+      },
+      "diagnostic_score_bucket_rates": {
+        "diagnostic_score_high": 0.555556,
+        "diagnostic_score_low": 0.444444,
+        "diagnostic_score_medium": 0.0,
+        "diagnostic_score_unavailable": 0.181818
+      },
+      "negative_component_rate_by_component": {
+        "blank_only": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        },
+        "comment_only": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        },
+        "digest_mismatch": {
+          "negative_count": 2,
+          "negative_rate": 0.181818
+        },
+        "generated_or_vendor_path_kind": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        },
+        "import_only": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        },
+        "metadata_high_risk": {
+          "negative_count": 7,
+          "negative_rate": 0.777778
+        },
+        "source_feature_high_risk": {
+          "negative_count": 8,
+          "negative_rate": 0.727273
+        },
+        "source_feature_unavailable": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        },
+        "span_over_cap": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        },
+        "unknown_path_kind": {
+          "negative_count": 0,
+          "negative_rate": 0.0
+        }
+      },
+      "positive_component_rate_by_component": {
+        "bounded_span_feature_available": {
+          "positive_count": 5,
+          "positive_rate": 0.454545
+        },
+        "code_like_token": {
+          "positive_count": 5,
+          "positive_rate": 1.0
+        },
+        "line_range_valid": {
+          "positive_count": 5,
+          "positive_rate": 0.454545
+        },
+        "metadata_low_risk": {
+          "positive_count": 1,
+          "positive_rate": 0.111111
+        },
+        "metadata_medium_risk": {
+          "positive_count": 1,
+          "positive_rate": 0.111111
+        },
+        "nonempty_span": {
+          "positive_count": 5,
+          "positive_rate": 1.0
+        },
+        "rrf_backing": {
+          "positive_count": 2,
+          "positive_rate": 0.222222
+        },
+        "signature_like_heuristic": {
+          "positive_count": 3,
+          "positive_rate": 0.6
+        },
+        "source_read_success": {
+          "positive_count": 5,
+          "positive_rate": 1.0
+        },
+        "symbol_regex_fusion_span_overlap": {
+          "positive_count": 1,
+          "positive_rate": 0.111111
+        }
+      },
+      "score_bin_distribution": {
+        "-2_-1": 4,
+        "0_1": 0,
+        "2_3": 2,
+        "<=-3": 0,
+        ">=4": 3,
+        "unavailable": 2
+      },
+      "score_candidate_denominator": 9
+    },
+    "score_availability": {
+      "bounded_span_feature_candidate_denominator": 5,
+      "candidate_denominator": 11,
+      "metadata_only_candidate_denominator": 4,
+      "p52c_score_availability": "partial_source_backed",
+      "score_candidate_denominator": 9,
+      "score_unavailable_candidate_count": 2,
+      "score_unavailable_candidate_rate": 0.181818,
+      "score_unavailable_reason_counts": {
+        "metadata_unavailable": 2
+      },
+      "score_unavailable_reason_rates": {
+        "metadata_unavailable": 0.181818
+      },
+      "source_backed_score_candidate_denominator": 5,
+      "source_feature_available_count": 5,
+      "source_feature_available_rate": 0.454545,
+      "source_read_attempt_count": 11,
+      "source_read_success_count": 8,
+      "source_read_success_rate": 0.727273
+    },
+    "score_phase_diagnostic_correlation": {
+      "diagnostic_correlation_only": true,
+      "existing_role_delta_by_score_bucket_if_available": {
+        "diagnostic_score_high": 0.02,
+        "diagnostic_score_low": null,
+        "diagnostic_score_medium": null,
+        "diagnostic_score_unavailable": null
+      },
+      "file_right_span_wrong_rate_by_score_bucket": {
+        "diagnostic_score_high": {
+          "count": 2,
+          "rate": 0.4
+        },
+        "diagnostic_score_low": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "diagnostic_score_medium": {
+          "count": 0,
+          "rate": null
+        },
+        "diagnostic_score_unavailable": {
+          "count": 0,
+          "rate": 0.0
+        }
+      },
+      "gold_file_rate_by_score_bucket": {
+        "diagnostic_score_high": {
+          "count": 3,
+          "rate": 0.6
+        },
+        "diagnostic_score_low": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "diagnostic_score_medium": {
+          "count": 0,
+          "rate": null
+        },
+        "diagnostic_score_unavailable": {
+          "count": 0,
+          "rate": 0.0
+        }
+      },
+      "gold_span_rate_by_score_bucket": {
+        "diagnostic_score_high": {
+          "count": 1,
+          "rate": 0.2
+        },
+        "diagnostic_score_low": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "diagnostic_score_medium": {
+          "count": 0,
+          "rate": null
+        },
+        "diagnostic_score_unavailable": {
+          "count": 0,
+          "rate": 0.0
+        }
+      },
+      "no_gold_rate_by_score_bucket": {
+        "diagnostic_score_high": {
+          "count": 2,
+          "rate": 0.4
+        },
+        "diagnostic_score_low": {
+          "count": 4,
+          "rate": 1.0
+        },
+        "diagnostic_score_medium": {
+          "count": 0,
+          "rate": null
+        },
+        "diagnostic_score_unavailable": {
+          "count": 2,
+          "rate": 1.0
+        }
+      },
+      "not_used_for_score_construction": true
+    }
+  },
+  "no_gold_task_count": 2,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 2,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 2,
+  "p48_quality_gate_status": "not_provided",
+  "p48_report_source": "not_provided",
+  "p49_quality_gate_status": "not_provided",
+  "p49_report_source": "not_provided",
+  "p50_quality_gate_status": "not_provided",
+  "p50_report_source": "not_provided",
+  "p52_quality_gate_status": "not_provided",
+  "p52_report_source": "not_provided",
+  "p52a_quality_gate_status": "not_provided",
+  "p52a_report_source": "not_provided",
+  "p52b_quality_gate_status": "not_provided",
+  "p52b_report_source": "not_provided",
+  "positive_task_count": 3,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p52c": false,
+  "provider_keys_in_artifact": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p52c": 0,
+  "schema_version": "p52c-local-verifier-scoring-simulator-v1",
+  "score_not_evidence": true,
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "source_feature_not_evidence": true,
+  "source_reads_attempted_by_p52c": true,
+  "source_reads_bounded_by_p52c": true,
+  "stage": "P52C Diagnostic Local Verifier Scoring Simulator",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 5,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  },
+  "verifier_score_not_admission": true
+}
