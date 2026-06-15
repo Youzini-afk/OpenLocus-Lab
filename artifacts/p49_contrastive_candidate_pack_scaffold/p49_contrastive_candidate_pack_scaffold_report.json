@@ -1,0 +1,438 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "conclusion": [
+    "Self-test-only scaffold built candidate packs for 4 synthetic tasks; this is not quality evidence.",
+    "Pack construction used candidate metadata only (rank, score, channels, subtype axes, path-kind). Gold and outcome costs were used only for explicitly-marked SCORE-phase diagnostics.",
+    "P49 does not call an LLM, does not create evidence, does not admit candidate spans, does not read source files, does not validate content_sha, and does not change defaults.",
+    "P49 does not prove P51 will improve quality.",
+    "topk_flat_pack_v0: pack_build_denominator=3, pack_build_rate=1.0.",
+    "anchor_contrast_pack_v0: pack_build_denominator=3, pack_build_rate=1.0.",
+    "conservative_anchor_pack_v0: pack_build_denominator=3, pack_build_rate=1.0."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T17:26:30.946322+00:00",
+  "generated_by": "eval/p49_contrastive_candidate_pack_scaffold.py",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "llm_calls_by_p49": 0,
+  "metrics": {
+    "by_strategy": {
+      "anchor_contrast_pack_v0": {
+        "breakdowns": {
+          "by_bucket": {
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "positive": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 2,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 2,
+              "task_count": 2
+            }
+          },
+          "by_risk_tag": {
+            "high_confidence": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "symbol_anchor": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            }
+          }
+        },
+        "contrast_metrics": {
+          "anchor_rrf_agreement_rate": 0.666667,
+          "channel_diversity_rate": 0.0,
+          "cross_file_pair_rate": 0.0,
+          "doc_config_pair_rate": 0.0,
+          "hard_distractor_rate": 0.0,
+          "path_kind_diversity_rate": 0.0,
+          "same_file_pair_rate": 0.333333,
+          "source_test_pair_rate": 0.0,
+          "subtype_diversity_rate": 0.0,
+          "symbol_regex_agreement_rate": 0.333333
+        },
+        "pack_build_metrics": {
+          "dedupe_drop_rate": 0.714286,
+          "mean_candidates_per_pack": 1.333333,
+          "mean_line_budget_proxy": 7.333333,
+          "p50_candidates_per_pack": 1.0,
+          "p95_candidates_per_pack": 1.9,
+          "p95_line_budget_proxy": 10.5,
+          "pack_build_denominator": 3,
+          "pack_build_rate": 1.0,
+          "pack_empty_rate": 0.0,
+          "slot_conflict_availability": "unavailable_not_implemented",
+          "slot_conflict_rate": null,
+          "slot_fill_rate_by_slot": {
+            "cross_file_anchor": 0.0,
+            "doc_config_pair": 0.0,
+            "hard_distractor": 0.0,
+            "primary_anchor": 1.0,
+            "rmc_trigger_candidate": 0.0,
+            "rrf_consensus": 0.0,
+            "same_file_contrast": 0.333333,
+            "same_file_neighbor": 0.0,
+            "source_test_pair": 0.0
+          },
+          "slot_overflow_rate": 0.0
+        },
+        "path_kind_distribution": {
+          "source": 4
+        },
+        "provenance_completeness": {
+          "candidate_has_channels_rate": 0.0,
+          "candidate_has_path_kind_rate": 1.0,
+          "candidate_has_rank_rate": 1.0,
+          "candidate_has_score_rate": 0.0,
+          "candidate_has_span_rate": 1.0,
+          "candidate_has_subtype_rate": 0.75,
+          "public_provenance_complete_rate": 0.0
+        },
+        "score_phase_diagnostics": {
+          "file_right_span_wrong_in_pack_rate": 0.5,
+          "gold_file_in_pack_rate": 1.0,
+          "gold_span_in_contrast_slot_rate": 0.0,
+          "gold_span_in_pack_rate": 0.5,
+          "gold_span_in_primary_anchor_rate": 0.5,
+          "no_gold_hard_distractor_rate": 0.0,
+          "no_gold_pack_nonempty_rate": 1.0,
+          "not_used_for_pack_construction": true,
+          "rmc_trigger_pack_rate": 0.666667
+        },
+        "source_class_distribution": {
+          "other": 1,
+          "symbol_only": 2,
+          "symbol_regex_fusion": 1
+        }
+      },
+      "conservative_anchor_pack_v0": {
+        "breakdowns": {
+          "by_bucket": {
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "positive": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 2,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 2,
+              "task_count": 2
+            }
+          },
+          "by_risk_tag": {
+            "high_confidence": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "symbol_anchor": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            }
+          }
+        },
+        "contrast_metrics": {
+          "anchor_rrf_agreement_rate": 0.666667,
+          "channel_diversity_rate": 0.0,
+          "cross_file_pair_rate": 0.0,
+          "doc_config_pair_rate": 0.0,
+          "hard_distractor_rate": 0.0,
+          "path_kind_diversity_rate": 0.0,
+          "same_file_pair_rate": 0.333333,
+          "source_test_pair_rate": 0.0,
+          "subtype_diversity_rate": 0.0,
+          "symbol_regex_agreement_rate": 0.333333
+        },
+        "pack_build_metrics": {
+          "dedupe_drop_rate": 0.714286,
+          "mean_candidates_per_pack": 1.333333,
+          "mean_line_budget_proxy": 7.333333,
+          "p50_candidates_per_pack": 1.0,
+          "p95_candidates_per_pack": 1.9,
+          "p95_line_budget_proxy": 10.5,
+          "pack_build_denominator": 3,
+          "pack_build_rate": 1.0,
+          "pack_empty_rate": 0.0,
+          "slot_conflict_availability": "unavailable_not_implemented",
+          "slot_conflict_rate": null,
+          "slot_fill_rate_by_slot": {
+            "cross_file_anchor": 0.0,
+            "doc_config_pair": 0.0,
+            "hard_distractor": 0.0,
+            "primary_anchor": 1.0,
+            "rmc_trigger_candidate": 0.333333,
+            "rrf_consensus": 0.0,
+            "same_file_contrast": 0.0,
+            "same_file_neighbor": 0.0,
+            "source_test_pair": 0.0
+          },
+          "slot_overflow_rate": 0.0
+        },
+        "path_kind_distribution": {
+          "source": 4
+        },
+        "provenance_completeness": {
+          "candidate_has_channels_rate": 0.0,
+          "candidate_has_path_kind_rate": 1.0,
+          "candidate_has_rank_rate": 1.0,
+          "candidate_has_score_rate": 0.0,
+          "candidate_has_span_rate": 1.0,
+          "candidate_has_subtype_rate": 0.75,
+          "public_provenance_complete_rate": 0.0
+        },
+        "score_phase_diagnostics": {
+          "file_right_span_wrong_in_pack_rate": 0.5,
+          "gold_file_in_pack_rate": 1.0,
+          "gold_span_in_contrast_slot_rate": 0.0,
+          "gold_span_in_pack_rate": 0.5,
+          "gold_span_in_primary_anchor_rate": 0.5,
+          "no_gold_hard_distractor_rate": 0.0,
+          "no_gold_pack_nonempty_rate": 1.0,
+          "not_used_for_pack_construction": true,
+          "rmc_trigger_pack_rate": 0.666667
+        },
+        "source_class_distribution": {
+          "other": 1,
+          "symbol_only": 2,
+          "symbol_regex_fusion": 1
+        }
+      },
+      "topk_flat_pack_v0": {
+        "breakdowns": {
+          "by_bucket": {
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "positive": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 2,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 2,
+              "task_count": 2
+            }
+          },
+          "by_risk_tag": {
+            "high_confidence": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "symbol_anchor": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            }
+          }
+        },
+        "contrast_metrics": {
+          "anchor_rrf_agreement_rate": 0.666667,
+          "channel_diversity_rate": 0.0,
+          "cross_file_pair_rate": 0.0,
+          "doc_config_pair_rate": 0.0,
+          "hard_distractor_rate": 0.0,
+          "path_kind_diversity_rate": 0.0,
+          "same_file_pair_rate": 0.333333,
+          "source_test_pair_rate": 0.0,
+          "subtype_diversity_rate": 0.0,
+          "symbol_regex_agreement_rate": 0.333333
+        },
+        "pack_build_metrics": {
+          "dedupe_drop_rate": 0.714286,
+          "mean_candidates_per_pack": 1.333333,
+          "mean_line_budget_proxy": 7.333333,
+          "p50_candidates_per_pack": 1.0,
+          "p95_candidates_per_pack": 1.9,
+          "p95_line_budget_proxy": 10.5,
+          "pack_build_denominator": 3,
+          "pack_build_rate": 1.0,
+          "pack_empty_rate": 0.0,
+          "slot_conflict_availability": "unavailable_not_implemented",
+          "slot_conflict_rate": null,
+          "slot_fill_rate_by_slot": {
+            "cross_file_anchor": 0.0,
+            "doc_config_pair": 0.0,
+            "hard_distractor": 0.0,
+            "primary_anchor": 0.0,
+            "rmc_trigger_candidate": 0.0,
+            "rrf_consensus": 0.0,
+            "same_file_contrast": 0.0,
+            "same_file_neighbor": 0.0,
+            "source_test_pair": 0.0
+          },
+          "slot_overflow_rate": 0.0
+        },
+        "path_kind_distribution": {
+          "source": 4
+        },
+        "provenance_completeness": {
+          "candidate_has_channels_rate": 0.0,
+          "candidate_has_path_kind_rate": 1.0,
+          "candidate_has_rank_rate": 1.0,
+          "candidate_has_score_rate": 0.0,
+          "candidate_has_span_rate": 1.0,
+          "candidate_has_subtype_rate": 0.75,
+          "public_provenance_complete_rate": 0.0
+        },
+        "score_phase_diagnostics": {
+          "file_right_span_wrong_in_pack_rate": 0.5,
+          "gold_file_in_pack_rate": 1.0,
+          "gold_span_in_contrast_slot_rate": 0.0,
+          "gold_span_in_pack_rate": 0.5,
+          "gold_span_in_primary_anchor_rate": 0.5,
+          "no_gold_hard_distractor_rate": 0.0,
+          "no_gold_pack_nonempty_rate": 1.0,
+          "not_used_for_pack_construction": true,
+          "rmc_trigger_pack_rate": 0.666667
+        },
+        "source_class_distribution": {
+          "other": 1,
+          "symbol_only": 2,
+          "symbol_regex_fusion": 1
+        }
+      }
+    }
+  },
+  "no_gold_task_count": 1,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 2,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 2,
+  "p48_overlay_availability": "not_provided",
+  "p48_quality_gate_status": "not_provided",
+  "p48_report_source": "not_provided",
+  "p50_overlay_availability": "not_provided",
+  "p50_quality_gate_status": "not_provided",
+  "p50_report_source": "not_provided",
+  "pack_not_evidence": true,
+  "pack_strategies": [
+    "topk_flat_pack_v0",
+    "anchor_contrast_pack_v0",
+    "conservative_anchor_pack_v0"
+  ],
+  "positive_task_count": 3,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p49": 0,
+  "schema_version": "p49-contrastive-candidate-pack-scaffold-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "slot_names": [
+    "primary_anchor",
+    "rrf_consensus",
+    "same_file_neighbor",
+    "same_file_contrast",
+    "cross_file_anchor",
+    "source_test_pair",
+    "doc_config_pair",
+    "hard_distractor",
+    "rmc_trigger_candidate"
+  ],
+  "source_reads_attempted_by_p49": false,
+  "stage": "P49 Contrastive Candidate Pack Scaffold",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 4,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
