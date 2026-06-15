@@ -1,0 +1,624 @@
+{
+  "all_h4_available": true,
+  "all_h4_budget_overlay": true,
+  "all_p33b_handoff_detected": true,
+  "candidate_not_fact": true,
+  "conclusion": {
+    "best_reference": "bucket_routed_v0 remains the best quality reference among compared policies.",
+    "h4_quality_result": "H4 is over-conservative: it eliminates primary false spans but also eliminates all added gold spans on this smoke.",
+    "interpretation": "The no-local-anchor-primary budget overlay is a safety lower bound, not a useful retrieval/admission policy.",
+    "next": "P32-H4 should move from all-demotion to budgeted selective re-admission/request-more-context variants, while preserving P33-B subtype budgets and held-out validation."
+  },
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T11:33:05.072866+00:00",
+  "policies": {
+    "admission_v3_h1": {
+      "action_counts": {
+        "abstain": 36,
+        "admit_symbol_regex_union": 18,
+        "apply_llm_filter": 36,
+        "supporting_only": 18
+      },
+      "added_false_span": 48,
+      "added_gold_span": 15,
+      "delta_vs_bucket_routed_v0": {
+        "added_false_span": 14,
+        "added_gold_span": -12,
+        "mean_SpanF0.5": -0.048718835177168504,
+        "mean_primary_false_positive_rate": -0.0462962962962963
+      },
+      "delta_vs_candidate_baseline": {
+        "added_false_span": -141,
+        "added_gold_span": -15,
+        "mean_SpanF0.5": -0.0040345457012123664,
+        "mean_primary_false_positive_rate": -0.1111111111111111
+      },
+      "mean_SpanF0.5": 0.02810846560846561,
+      "mean_primary_false_positive_rate": 0.0,
+      "quality_comparable_all": true,
+      "selected_action_fallback_rate_all_zero": true
+    },
+    "admission_v3_h2": {
+      "action_counts": {
+        "admit_rrf_primary": 9,
+        "admit_symbol_regex_union": 9,
+        "apply_llm_filter": 54,
+        "supporting_only": 15,
+        "weak_candidate_only": 21
+      },
+      "added_false_span": 48,
+      "added_gold_span": 15,
+      "delta_vs_bucket_routed_v0": {
+        "added_false_span": 14,
+        "added_gold_span": -12,
+        "mean_SpanF0.5": -0.048718835177168504,
+        "mean_primary_false_positive_rate": -0.0462962962962963
+      },
+      "delta_vs_candidate_baseline": {
+        "added_false_span": -141,
+        "added_gold_span": -15,
+        "mean_SpanF0.5": -0.0040345457012123664,
+        "mean_primary_false_positive_rate": -0.1111111111111111
+      },
+      "mean_SpanF0.5": 0.02810846560846561,
+      "mean_primary_false_positive_rate": 0.0,
+      "quality_comparable_all": true,
+      "selected_action_fallback_rate_all_zero": true
+    },
+    "admission_v3_h4": {
+      "action_counts": {
+        "apply_llm_filter": 54,
+        "supporting_only": 33,
+        "weak_candidate_only": 21
+      },
+      "added_false_span": 0,
+      "added_gold_span": 0,
+      "delta_vs_bucket_routed_v0": {
+        "added_false_span": -34,
+        "added_gold_span": -27,
+        "mean_SpanF0.5": -0.07682730078563411,
+        "mean_primary_false_positive_rate": -0.0462962962962963
+      },
+      "delta_vs_candidate_baseline": {
+        "added_false_span": -189,
+        "added_gold_span": -30,
+        "mean_SpanF0.5": -0.03214301130967798,
+        "mean_primary_false_positive_rate": -0.1111111111111111
+      },
+      "mean_SpanF0.5": 0.0,
+      "mean_primary_false_positive_rate": 0.0,
+      "quality_comparable_all": true,
+      "selected_action_fallback_rate_all_zero": true
+    },
+    "bucket_routed_v0": {
+      "action_counts": {
+        "candidate_baseline": 3,
+        "llm_abstain_filter": 54,
+        "llm_filter": 36,
+        "llm_span_narrow": 15
+      },
+      "added_false_span": 34,
+      "added_gold_span": 27,
+      "delta_vs_bucket_routed_v0": {
+        "added_false_span": 0,
+        "added_gold_span": 0,
+        "mean_SpanF0.5": 0.0,
+        "mean_primary_false_positive_rate": 0.0
+      },
+      "delta_vs_candidate_baseline": {
+        "added_false_span": -155,
+        "added_gold_span": -3,
+        "mean_SpanF0.5": 0.04468428947595614,
+        "mean_primary_false_positive_rate": -0.0648148148148148
+      },
+      "mean_SpanF0.5": 0.07682730078563411,
+      "mean_primary_false_positive_rate": 0.0462962962962963,
+      "quality_comparable_all": null,
+      "selected_action_fallback_rate_all_zero": true
+    },
+    "candidate_baseline": {
+      "action_counts": {
+        "candidate_baseline": 108
+      },
+      "added_false_span": 189,
+      "added_gold_span": 30,
+      "delta_vs_bucket_routed_v0": {
+        "added_false_span": 155,
+        "added_gold_span": 3,
+        "mean_SpanF0.5": -0.04468428947595614,
+        "mean_primary_false_positive_rate": 0.0648148148148148
+      },
+      "delta_vs_candidate_baseline": {
+        "added_false_span": 0,
+        "added_gold_span": 0,
+        "mean_SpanF0.5": 0.0,
+        "mean_primary_false_positive_rate": 0.0
+      },
+      "mean_SpanF0.5": 0.03214301130967798,
+      "mean_primary_false_positive_rate": 0.1111111111111111,
+      "quality_comparable_all": null,
+      "selected_action_fallback_rate_all_zero": true
+    }
+  },
+  "promotion_ready": false,
+  "remote_calls_by_h4": 0,
+  "run_count": 6,
+  "run_ids": [
+    "27542977766",
+    "27542981300",
+    "27542984556",
+    "27542987887",
+    "27542990941",
+    "27542994147"
+  ],
+  "runs": [
+    {
+      "h4_available": true,
+      "h4_budget_overlay": true,
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "metrics": {
+        "admission_v3_h1": {
+          "SpanF0.5": 0.03306878306878307,
+          "added_false_span": 4,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "abstain": 6,
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 7,
+            "supporting_only": 2
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h2": {
+          "SpanF0.5": 0.03306878306878307,
+          "added_false_span": 4,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 10,
+            "supporting_only": 1,
+            "weak_candidate_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h4": {
+          "SpanF0.5": 0.0,
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "policy_action_counts": {
+            "apply_llm_filter": 10,
+            "supporting_only": 5,
+            "weak_candidate_only": 3
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "bucket_routed_v0": {
+          "SpanF0.5": 0.06635802469135803,
+          "added_false_span": 2,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "llm_abstain_filter": 9,
+            "llm_filter": 6,
+            "llm_span_narrow": 3
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        },
+        "candidate_baseline": {
+          "SpanF0.5": 0.02932098765432099,
+          "added_false_span": 17,
+          "added_gold_span": 4,
+          "policy_action_counts": {
+            "candidate_baseline": 18
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        }
+      },
+      "p33b_handoff_detected": true,
+      "repo": "py_flask",
+      "run_id": "27542977766",
+      "task_count": 18
+    },
+    {
+      "h4_available": true,
+      "h4_budget_overlay": true,
+      "llm_model": "[mk]DeepSeek-V4-Flash",
+      "llm_output_mode": "json_object",
+      "metrics": {
+        "admission_v3_h1": {
+          "SpanF0.5": 0.02314814814814815,
+          "added_false_span": 12,
+          "added_gold_span": 2,
+          "policy_action_counts": {
+            "abstain": 6,
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 5,
+            "supporting_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h2": {
+          "SpanF0.5": 0.02314814814814815,
+          "added_false_span": 12,
+          "added_gold_span": 2,
+          "policy_action_counts": {
+            "admit_rrf_primary": 3,
+            "apply_llm_filter": 8,
+            "supporting_only": 4,
+            "weak_candidate_only": 3
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h4": {
+          "SpanF0.5": 0.0,
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "policy_action_counts": {
+            "apply_llm_filter": 8,
+            "supporting_only": 6,
+            "weak_candidate_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "bucket_routed_v0": {
+          "SpanF0.5": 0.06076388888888889,
+          "added_false_span": 11,
+          "added_gold_span": 6,
+          "policy_action_counts": {
+            "candidate_baseline": 1,
+            "llm_abstain_filter": 9,
+            "llm_filter": 6,
+            "llm_span_narrow": 2
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        },
+        "candidate_baseline": {
+          "SpanF0.5": 0.03496503496503497,
+          "added_false_span": 46,
+          "added_gold_span": 6,
+          "policy_action_counts": {
+            "candidate_baseline": 18
+          },
+          "primary_false_positive_rate": 0.16666666666666666,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        }
+      },
+      "p33b_handoff_detected": true,
+      "repo": "js_express",
+      "run_id": "27542981300",
+      "task_count": 18
+    },
+    {
+      "h4_available": true,
+      "h4_budget_overlay": true,
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "metrics": {
+        "admission_v3_h1": {
+          "SpanF0.5": 0.03306878306878307,
+          "added_false_span": 4,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "abstain": 6,
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 7,
+            "supporting_only": 2
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h2": {
+          "SpanF0.5": 0.03306878306878307,
+          "added_false_span": 4,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 10,
+            "supporting_only": 1,
+            "weak_candidate_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h4": {
+          "SpanF0.5": 0.0,
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "policy_action_counts": {
+            "apply_llm_filter": 10,
+            "supporting_only": 5,
+            "weak_candidate_only": 3
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "bucket_routed_v0": {
+          "SpanF0.5": 0.09876543209876543,
+          "added_false_span": 2,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "llm_abstain_filter": 9,
+            "llm_filter": 6,
+            "llm_span_narrow": 3
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        },
+        "candidate_baseline": {
+          "SpanF0.5": 0.02932098765432099,
+          "added_false_span": 17,
+          "added_gold_span": 4,
+          "policy_action_counts": {
+            "candidate_baseline": 18
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        }
+      },
+      "p33b_handoff_detected": true,
+      "repo": "py_flask",
+      "run_id": "27542984556",
+      "task_count": 18
+    },
+    {
+      "h4_available": true,
+      "h4_budget_overlay": true,
+      "llm_model": "[mk]Kimi-K2.7-Code",
+      "llm_output_mode": "json_object",
+      "metrics": {
+        "admission_v3_h1": {
+          "SpanF0.5": 0.02314814814814815,
+          "added_false_span": 12,
+          "added_gold_span": 2,
+          "policy_action_counts": {
+            "abstain": 6,
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 5,
+            "supporting_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h2": {
+          "SpanF0.5": 0.02314814814814815,
+          "added_false_span": 12,
+          "added_gold_span": 2,
+          "policy_action_counts": {
+            "admit_rrf_primary": 3,
+            "apply_llm_filter": 8,
+            "supporting_only": 4,
+            "weak_candidate_only": 3
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h4": {
+          "SpanF0.5": 0.0,
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "policy_action_counts": {
+            "apply_llm_filter": 8,
+            "supporting_only": 6,
+            "weak_candidate_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "bucket_routed_v0": {
+          "SpanF0.5": 0.05787037037037038,
+          "added_false_span": 5,
+          "added_gold_span": 5,
+          "policy_action_counts": {
+            "candidate_baseline": 1,
+            "llm_abstain_filter": 9,
+            "llm_filter": 6,
+            "llm_span_narrow": 2
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        },
+        "candidate_baseline": {
+          "SpanF0.5": 0.03496503496503497,
+          "added_false_span": 46,
+          "added_gold_span": 6,
+          "policy_action_counts": {
+            "candidate_baseline": 18
+          },
+          "primary_false_positive_rate": 0.16666666666666666,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        }
+      },
+      "p33b_handoff_detected": true,
+      "repo": "js_express",
+      "run_id": "27542987887",
+      "task_count": 18
+    },
+    {
+      "h4_available": true,
+      "h4_budget_overlay": true,
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "metrics": {
+        "admission_v3_h1": {
+          "SpanF0.5": 0.03306878306878307,
+          "added_false_span": 4,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "abstain": 6,
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 7,
+            "supporting_only": 2
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h2": {
+          "SpanF0.5": 0.03306878306878307,
+          "added_false_span": 4,
+          "added_gold_span": 3,
+          "policy_action_counts": {
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 10,
+            "supporting_only": 1,
+            "weak_candidate_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h4": {
+          "SpanF0.5": 0.0,
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "policy_action_counts": {
+            "apply_llm_filter": 10,
+            "supporting_only": 5,
+            "weak_candidate_only": 3
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "bucket_routed_v0": {
+          "SpanF0.5": 0.1164421997755331,
+          "added_false_span": 3,
+          "added_gold_span": 4,
+          "policy_action_counts": {
+            "llm_abstain_filter": 9,
+            "llm_filter": 6,
+            "llm_span_narrow": 3
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        },
+        "candidate_baseline": {
+          "SpanF0.5": 0.02932098765432099,
+          "added_false_span": 17,
+          "added_gold_span": 4,
+          "policy_action_counts": {
+            "candidate_baseline": 18
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        }
+      },
+      "p33b_handoff_detected": true,
+      "repo": "py_flask",
+      "run_id": "27542990941",
+      "task_count": 18
+    },
+    {
+      "h4_available": true,
+      "h4_budget_overlay": true,
+      "llm_model": "[mk]GLM-5.1",
+      "llm_output_mode": "tool_call",
+      "metrics": {
+        "admission_v3_h1": {
+          "SpanF0.5": 0.02314814814814815,
+          "added_false_span": 12,
+          "added_gold_span": 2,
+          "policy_action_counts": {
+            "abstain": 6,
+            "admit_symbol_regex_union": 3,
+            "apply_llm_filter": 5,
+            "supporting_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h2": {
+          "SpanF0.5": 0.02314814814814815,
+          "added_false_span": 12,
+          "added_gold_span": 2,
+          "policy_action_counts": {
+            "admit_rrf_primary": 3,
+            "apply_llm_filter": 8,
+            "supporting_only": 4,
+            "weak_candidate_only": 3
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "admission_v3_h4": {
+          "SpanF0.5": 0.0,
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "policy_action_counts": {
+            "apply_llm_filter": 8,
+            "supporting_only": 6,
+            "weak_candidate_only": 4
+          },
+          "primary_false_positive_rate": 0.0,
+          "quality_comparable": true,
+          "selected_action_fallback_rate": 0.0
+        },
+        "bucket_routed_v0": {
+          "SpanF0.5": 0.06076388888888889,
+          "added_false_span": 11,
+          "added_gold_span": 6,
+          "policy_action_counts": {
+            "candidate_baseline": 1,
+            "llm_abstain_filter": 9,
+            "llm_filter": 6,
+            "llm_span_narrow": 2
+          },
+          "primary_false_positive_rate": 0.05555555555555555,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        },
+        "candidate_baseline": {
+          "SpanF0.5": 0.03496503496503497,
+          "added_false_span": 46,
+          "added_gold_span": 6,
+          "policy_action_counts": {
+            "candidate_baseline": 18
+          },
+          "primary_false_positive_rate": 0.16666666666666666,
+          "quality_comparable": null,
+          "selected_action_fallback_rate": null
+        }
+      },
+      "p33b_handoff_detected": true,
+      "repo": "js_express",
+      "run_id": "27542994147",
+      "task_count": 18
+    }
+  ],
+  "schema_version": "p32-p30-h4-remote-smoke-summary-v1",
+  "task_count_total": 108
+}

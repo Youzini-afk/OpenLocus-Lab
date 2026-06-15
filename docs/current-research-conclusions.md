@@ -50,6 +50,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p30-h3-span-cost-accounting.md`: [en](en/p30-h3-span-cost-accounting.md) · [zh](zh/p30-h3-span-cost-accounting.md)
 - `p30-h3-remote-smoke.md`: [en](en/p30-h3-remote-smoke.md) · [zh](zh/p30-h3-remote-smoke.md)
 - `p32-p30-h4-budget-overlay.md`: [en](en/p32-p30-h4-budget-overlay.md) · [zh](zh/p32-p30-h4-budget-overlay.md)
+- `p32-p30-h4-remote-smoke.md`: [en](en/p32-p30-h4-remote-smoke.md) · [zh](zh/p32-p30-h4-remote-smoke.md)
 - `p31-candidate-reach-ceiling.md`: [en](en/p31-candidate-reach-ceiling.md) · [zh](zh/p31-candidate-reach-ceiling.md)
 - `p31-h1-remote-smoke.md`: [en](en/p31-h1-remote-smoke.md) · [zh](zh/p31-h1-remote-smoke.md)
 - `p31-h2-strategy-reach-remote-smoke.md`: [en](en/p31-h2-strategy-reach-remote-smoke.md) · [zh](zh/p31-h2-strategy-reach-remote-smoke.md)

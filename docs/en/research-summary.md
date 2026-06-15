@@ -339,6 +339,8 @@ Routing rules are conservative: negative/dense/ambiguous tasks are filtered or a
 
 Private handoff fields are copied into the normalized in-memory task but are never emitted into public P30 artifacts. Report flags are locked: `h4_budget_overlay=true`, `promotion_ready=false`, `default_should_change=false`, and, when P33-B records are present, `h4_available=true` / `p33b_handoff_detected=true`. H4 reports `quality_comparable`, `blocked_by_missing_action_outcomes`, and `selected_action_fallback_rate` like H1/H2, and the real-provider CI gate requires H4 to exist and, on `p21_llm_rich` records, to be quality-comparable with zero selected-action fallback. See [`p32-p30-h4-budget-overlay.md`](p32-p30-h4-budget-overlay.md).
 
+The real P30-H4 remote smoke completed 6 successful runs and showed the all-demotion overlay is too conservative: H4 was quality-comparable and fallback-free but produced `0/0` added gold/false spans and mean SpanF0.5 `0.0000`. P25 `bucket_routed_v0` remained the best reference on the same runs (`27/34` added gold/false, mean SpanF0.5 `0.0768`). H4 should therefore evolve toward budgeted selective re-admission or `request_more_context` variants rather than all-demotion. See [`p32-p30-h4-remote-smoke.md`](p32-p30-h4-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |

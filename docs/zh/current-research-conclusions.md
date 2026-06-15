@@ -285,6 +285,8 @@ P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_ove
 
 归一化后的内存任务会携带 P31/P33-B 私有 handoff 字段（`p31_candidate_pools`、`p31_score_gold`、`p33b_anchor_subtypes`、`p33b_anchor_subtypes_schema`）供 SCORE-phase 使用，但这些键不会出现在 P30 公开产物中。报告标志锁定为 `h4_budget_overlay=true`、`promotion_ready=false`、`default_should_change=false`；当存在 P33-B 记录时，`h4_available=true` / `p33b_handoff_detected=true`。H4 与 H1/H2 一样报告 `quality_comparable`、`blocked_by_missing_action_outcomes` 和 `selected_action_fallback_rate`；real-provider CI gate 现在要求 H4 存在，并在 `p21_llm_rich` 真实记录上质量可比且 selected-action fallback 为零。
 
+第一轮真实 P30-H4 remote smoke 完成 6 个成功 runs。它 quality-comparable 且 fallback-free，但过度保守：H4 产生 `0` added gold spans 和 `0` added false spans，mean SpanF0.5 为 `0.0000`。相同 runs 中 P25 `bucket_routed_v0` 仍是最佳 reference（added gold/false `27/34`，mean SpanF0.5 `0.0768`）。因此 H4 是 safety lower bound 和有价值的负结果，不是可部署 admission policy。下一轮 H4 应测试 budgeted selective re-admission 或 `request_more_context`，而不是 all-demotion。
+
 ---
 
 ## 3. 当前研究假设

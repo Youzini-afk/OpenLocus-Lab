@@ -423,6 +423,15 @@ emitted in public P30 artifacts. Report flags are locked to
 requires H4 to exist and, on `p21_llm_rich` records, to be quality-comparable
 with zero selected-action fallback.
 
+The first real P30-H4 remote smoke completed 6 successful runs. It was
+quality-comparable and fallback-free, but it was too conservative: H4 produced
+`0` added gold spans and `0` added false spans, with mean SpanF0.5 `0.0000`.
+P25 `bucket_routed_v0` remains the best reference on the same runs (`27/34`
+added gold/false, mean SpanF0.5 `0.0768`). H4 is therefore a safety lower bound
+and useful negative result, not a deployable admission policy. The next H4
+iteration should test budgeted selective re-admission or `request_more_context`,
+not all-demotion.
+
 ---
 
 ## 3. Current Hypotheses
