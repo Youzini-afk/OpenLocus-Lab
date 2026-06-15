@@ -39,6 +39,11 @@ import p25_bucket_policy as p25
 import p46_candidate_reach_cost_map as p46
 import p47_request_more_context as p47
 
+try:
+    import p48_diagnostic_policy_simulator as p48
+except Exception:  # pragma: no cover
+    p48 = None  # type: ignore[assignment]
+
 SCHEMA_VERSION = "p50-fixed-suite-validation-v1"
 GENERATED_BY = "eval/p50_fixed_suite_validation.py"
 
@@ -72,7 +77,9 @@ P50_SAFETY_FLAG_KEYS = set(p46.SAFETY_FLAG_KEYS) | set(p47.P47_SAFETY_FLAG_KEYS)
     "baseline_policy_delta",
     "p46_carry_forward",
     "p47_carry_forward",
+    "p48_carry_forward",
     "p48_variant_availability",
+    "overlay_lane_summary",
     "p31_h1_handoff_detected",
     "p31_h1_handoff_detected_count",
     "p33b_handoff_detected",
@@ -224,6 +231,7 @@ def _compute_evaluator_config_hash(
     key_strategies: list[str],
     policies: list[str],
     variant_names: list[str],
+    p48_lane_names: list[str],
     settings: dict[str, Any],
 ) -> dict[str, Any]:
     envelope = {
@@ -234,6 +242,7 @@ def _compute_evaluator_config_hash(
         "key_strategies": key_strategies,
         "policies": policies,
         "variant_names": variant_names,
+        "p48_lane_names": p48_lane_names,
         "settings": settings,
     }
     data = _stable_json(envelope)
@@ -486,6 +495,20 @@ def _p47_carry_forward(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _p48_carry_forward(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate carry-forward from the P48 diagnostic policy simulator.
+
+    Exposes only lane availability and aggregate action-count summaries.
+    No per-task data, paths, spans, or private identifiers are carried forward.
+    """
+    if p48 is None:
+        return {
+            "availability": "not_implemented",
+            "p48_schema_version": "p48-diagnostic-policy-simulator-v1",
+        }
+    return p48.compute_p48_carry_forward(tasks)
+
+
 def _compute_quality_gate_status(
     tasks: list[dict[str, Any]],
     suite_composition: dict[str, Any],
@@ -563,8 +586,16 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
         if forbidden in report:
             errors.append(f"public report must not contain {forbidden}")
 
-    if report.get("p48_variant_availability") != "not_implemented":
-        errors.append("p48_variant_availability must be 'not_implemented'")
+    p48_avail = report.get("p48_variant_availability")
+    if p48_avail not in {"not_implemented", "available"}:
+        errors.append("p48_variant_availability must be 'not_implemented' or 'available'")
+
+    if p48_avail == "available":
+        carry = report.get("p48_carry_forward") or {}
+        if carry.get("request_more_context_not_evidence") is not True:
+            errors.append("p48_carry_forward must set request_more_context_not_evidence=true")
+        if carry.get("span_geometry_only_context") is not True:
+            errors.append("p48_carry_forward must set span_geometry_only_context=true")
 
     errors.extend(_reject_forbidden_keys(report))
     return errors
@@ -585,6 +616,7 @@ def build_report(
     key_outcome_cost = _key_strategy_outcome_cost(tasks)
     p46_carry = _p46_carry_forward(tasks)
     p47_carry = _p47_carry_forward(tasks)
+    p48_carry = _p48_carry_forward(tasks)
 
     quality_gate = _compute_quality_gate_status(
         tasks,
@@ -602,6 +634,13 @@ def build_report(
         key_strategies=list(KEY_STRATEGIES),
         policies=["bucket_routed_v0", "admission_v3_h4b"],
         variant_names=list(p47.VARIANTS),
+        p48_lane_names=[
+            "reference_bucket_routed_v0",
+            "reference_admission_v3_h4b",
+            "p48_p25_rmc_overlay_v0",
+            "p48_h4b_rmc_overlay_v0",
+            "p48_conversion_admission_unavailable",
+        ],
         settings={"score_phase_only": True, "aggregate_only": True, "source_reads": False, "remote_calls": False},
     )
 
@@ -623,7 +662,8 @@ def build_report(
 
     conclusion_lines.extend([
         "P50 is an evaluation discipline phase, not a policy improvement phase.",
-        "P48 is explicitly not implemented; no policy promotion is inferred from candidate/span-geometry signals.",
+        f"P48 diagnostic-policy simulator availability: `{p48_carry.get('availability', 'not_implemented')}`; "
+        "P48 carry-forward contains only aggregate overlay lane summaries and does not infer promotion from span-geometry signals.",
         f"Suite manifest hash (sha256): `{manifest_hash['sha256']}`.",
         f"Evaluator config hash (sha256): `{config_hash['sha256']}`.",
         f"Candidate pool availability: `{suite_composition['candidate_pool_availability']}`; gold span availability: `{suite_composition['gold_span_availability']}`.",
@@ -670,7 +710,8 @@ def build_report(
         "key_strategy_outcome_cost": key_outcome_cost,
         "p46_carry_forward": p46_carry,
         "p47_carry_forward": p47_carry,
-        "p48_variant_availability": "not_implemented",
+        "p48_carry_forward": p48_carry,
+        "p48_variant_availability": p48_carry.get("availability", "not_implemented"),
         "p31_h1_handoff_detected": p31_h1_handoff_detected,
         "p31_h1_handoff_detected_count": sum(1 for t in tasks if t.get("has_candidate_pool") and t.get("has_gold_spans")),
         "p33b_handoff_detected": p33b_handoff_detected,
@@ -729,7 +770,7 @@ def build_markdown(report: dict[str, Any]) -> str:
         "- Reports aggregate suite composition, availability, and fallback rates.",
         "- Compares the aggregate span cost of `bucket_routed_v0` and `admission_v3_h4b` route policies.",
         "- Carries forward P46 reach/cost/materialization and P47 span-geometry diagnostics with explicit not-evidence flags.",
-        "- P48 is marked `not_implemented`; no admission policy is promoted from geometry signals.",
+        "- Carries forward P48 diagnostic-policy simulator lane availability and aggregate overlay action-count summaries only; P48 is not evidence, not admission, and not a default.",
         "",
         "## Suite composition\n",
         f"- Input records: {report['suite_composition']['input_record_count']}",
@@ -826,9 +867,25 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append(f"- expanded_candidate_not_evidence: `{p47c['expanded_candidate_not_evidence']}`")
     lines.append("")
 
-    lines.append("## P48 status\n")
+    lines.append("## P48 carry-forward (aggregate only)\n")
+    p48c = report["p48_carry_forward"]
     lines.append(f"- `p48_variant_availability='{report['p48_variant_availability']}'`")
-    lines.append("- P48 admission-policy improvement is intentionally not implemented before P50 gating is established.")
+    lines.append(f"- P48 schema version: `{p48c.get('p48_schema_version', 'n/a')}`")
+    lines.append(f"- request_more_context_not_evidence: `{p48c.get('request_more_context_not_evidence', 'n/a')}`")
+    lines.append(f"- span_geometry_only_context: `{p48c.get('span_geometry_only_context', 'n/a')}`")
+    overlay_summary = p48c.get("overlay_lane_summary", {})
+    for lane in ["p48_p25_rmc_overlay_v0", "p48_h4b_rmc_overlay_v0", "p48_conversion_admission_unavailable"]:
+        block = overlay_summary.get(lane, {})
+        counts = block.get("action_counts", {})
+        count_str = ", ".join(f"{a}={c}" for a, c in sorted(counts.items())) if counts else "n/a"
+        lines.append(
+            f"- {lane}: availability=`{block.get('availability', 'n/a')}`, "
+            f"selected={block.get('selected_count', 'n/a')}, "
+            f"rmc_count={block.get('request_more_context_count', 'n/a')}, "
+            f"demoted_primary={block.get('demoted_primary_count', 'n/a')}, "
+            f"quality_comparable={block.get('quality_comparable', 'n/a')}, "
+            f"actions=[{count_str}]"
+        )
     lines.append("")
 
     lines.append("## Quality gate\n")

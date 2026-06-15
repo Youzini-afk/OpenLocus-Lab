@@ -1,7 +1,7 @@
 # P50 Fixed-Suite Validation / Anti-Overfit Gate
 
 - Schema: `p50-fixed-suite-validation-v1`
-- Generated: 2026-06-15T15:50:50.412441+00:00
+- Generated: 2026-06-15T16:11:08.357678+00:00
 - Status: `self_test_only`
 - Quality gate: `insufficient_fixed_suite`
 - Self-test: True
@@ -21,7 +21,7 @@ It is a deterministic, SCORE-phase-only discipline phase, not a policy improveme
 - Reports aggregate suite composition, availability, and fallback rates.
 - Compares the aggregate span cost of `bucket_routed_v0` and `admission_v3_h4b` route policies.
 - Carries forward P46 reach/cost/materialization and P47 span-geometry diagnostics with explicit not-evidence flags.
-- P48 is marked `not_implemented`; no admission policy is promoted from geometry signals.
+- Carries forward P48 diagnostic-policy simulator lane availability and aggregate overlay action-count summaries only; P48 is not evidence, not admission, and not a default.
 
 ## Suite composition
 
@@ -39,7 +39,7 @@ It is a deterministic, SCORE-phase-only discipline phase, not a policy improveme
 ## Hashes
 
 - Suite manifest sha256: `fd44ed577a7d3e47b8ce656c2e0040c65b05758f0825ae32c13c41085090d98f`
-- Evaluator config sha256: `c638cd5cc1245ab8eb69c748f9173bc93e4cb51e3f8769d18c23d33d6ed435fa`
+- Evaluator config sha256: `45bec88fbf38b39af2e7387c8f6545a36a3faa228ea5a762aa1a4c41db7a8996`
 - Note: This hash covers private per-task identifiers and public metadata. Raw components are not published.
 
 ## Public bucket distribution
@@ -90,10 +90,15 @@ Availability: `missing_or_partial_cost_fields` — delta not computed.
 - span_geometry_only: `True`
 - expanded_candidate_not_evidence: `True`
 
-## P48 status
+## P48 carry-forward (aggregate only)
 
-- `p48_variant_availability='not_implemented'`
-- P48 admission-policy improvement is intentionally not implemented before P50 gating is established.
+- `p48_variant_availability='available'`
+- P48 schema version: `p48-diagnostic-policy-simulator-v1`
+- request_more_context_not_evidence: `True`
+- span_geometry_only_context: `True`
+- p48_p25_rmc_overlay_v0: availability=`partial_missing_cost_fields`, selected=4, rmc_count=1, demoted_primary=1, quality_comparable=False, actions=[llm_abstain_filter=1, llm_filter=1, llm_span_narrow=1, request_more_context=1]
+- p48_h4b_rmc_overlay_v0: availability=`partial_missing_cost_fields`, selected=4, rmc_count=1, demoted_primary=1, quality_comparable=False, actions=[apply_llm_filter=1, request_more_context=1, weak_candidate_only=2]
+- p48_conversion_admission_unavailable: availability=`unavailable_source_read_unavailable`, selected=n/a, rmc_count=n/a, demoted_primary=n/a, quality_comparable=n/a, actions=[n/a]
 
 ## Quality gate
 
@@ -114,9 +119,9 @@ Availability: `missing_or_partial_cost_fields` — delta not computed.
 - bucket_routed_v0 has non-zero outcome/cost fallback
 - admission_v3_h4b has non-zero outcome/cost fallback
 - P50 is an evaluation discipline phase, not a policy improvement phase.
-- P48 is explicitly not implemented; no policy promotion is inferred from candidate/span-geometry signals.
+- P48 diagnostic-policy simulator availability: `available`; P48 carry-forward contains only aggregate overlay lane summaries and does not infer promotion from span-geometry signals.
 - Suite manifest hash (sha256): `fd44ed577a7d3e47b8ce656c2e0040c65b05758f0825ae32c13c41085090d98f`.
-- Evaluator config hash (sha256): `c638cd5cc1245ab8eb69c748f9173bc93e4cb51e3f8769d18c23d33d6ed435fa`.
+- Evaluator config hash (sha256): `45bec88fbf38b39af2e7387c8f6545a36a3faa228ea5a762aa1a4c41db7a8996`.
 - Candidate pool availability: `partial`; gold span availability: `available`.
 - All outputs are aggregate-only; no per-task rows, task IDs, candidate IDs, paths, gold spans, private labels, snippets, prompts, responses, or provider keys are published.
 

@@ -587,6 +587,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P21-G: cross-model context-injection phase using context atoms, context packs, candidate metadata, model profiles, roles, layouts, and latency/cost accounting. P21-G1E found useful file/span signal (`pack2_evidence_sketch`, `atom_signature`) but naked dense false spans dominated. P21-G2E found constrained dense has modest supporting value (`dense_atom_signature_rrf_file_constrained`) while dense-only remains diagnostic/non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain need prompt/bucket routing and GLM needs schema repair.
 - P25: bucket-routed LLM role policy evaluator. Deterministic, no-remote, routes by public `task_bucket`/`task_risk_tags`; reduces false primary but also some gold spans; useful as a P30 input, not default.
 - P30: Admission Model V3 research harness. Deterministic explainable scorecard with hard guards, routes only from pre-SCORE public features, compares baselines plus `admission_v3`/`admission_v3_h1`/`admission_v3_h2`, reports score bands/selective risk/deltas, action-specific span-cost accounting (P30-H3), and scans public output for forbidden keys. P30-H1 fixed missing outcomes; P30-H2 stricter local-anchor admission still underperforms P25; P30-H3 now provides diagnostic action-cost accounting without changing routes.
+- P48: Diagnostic Policy Simulator / Request-More-Context Overlay. Deterministic, SCORE-phase-only route simulator that overlays the P47 span-geometry gate on P25 `bucket_routed_v0` and P30-H4B `admission_v3_h4b`. It counts how many risky candidate-derived primary actions would be replaced by `request_more_context`, reports measured primary cost for existing actions only, and emits geometry-only diagnostics with explicit not-evidence flags. It does not change defaults or EvidenceCore.
 
 Key detailed reports:
 
@@ -606,6 +607,7 @@ Key detailed reports:
 - `docs/p30-h2-remote-smoke.md` — P30-H2 stricter local-anchor admission real remote smoke.
 - `docs/p30-h3-span-cost-accounting.md` — P30-H3 action-specific span-cost accounting (diagnostic-only, score-phase-only, no route change).
 - `docs/p30-h3-remote-smoke.md` — P30-H3 real remote smoke action-cost diagnosis.
+- `docs/en/p48-diagnostic-policy-simulator.md` — P48 diagnostic policy simulator / request-more-context overlay (not evidence, not admission, not default).
 
 ---
 

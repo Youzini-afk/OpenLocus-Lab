@@ -62,6 +62,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p33b-anchor-subtype-remote-smoke.md`: [en](en/p33b-anchor-subtype-remote-smoke.md) · [zh](zh/p33b-anchor-subtype-remote-smoke.md)
 - `p46-candidate-reach-cost-map.md`: [en](en/p46-candidate-reach-cost-map.md) · [zh](zh/p46-candidate-reach-cost-map.md)
 - `p47-request-more-context.md`: [en](en/p47-request-more-context.md) · [zh](zh/p47-request-more-context.md)
+- `p48-diagnostic-policy-simulator.md`: [en](en/p48-diagnostic-policy-simulator.md) · [zh](zh/p48-diagnostic-policy-simulator.md)
 - `p50-fixed-suite-validation.md`: [en](en/p50-fixed-suite-validation.md) · [zh](zh/p50-fixed-suite-validation.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
 - `r17-router-guard.md`: [en](en/r17-router-guard.md) · [zh](zh/r17-router-guard.md)

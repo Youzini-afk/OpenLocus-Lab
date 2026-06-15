@@ -11,7 +11,7 @@
 
 P50 是一个**评估纪律阶段（evaluation discipline phase）**，而不是策略改进阶段。 它把固定的评测集合作为分析单元，检查该集合是否足够健康、稳定，以作为后续策略工作的反过拟合闸门。
 
-P48 准入策略改进在建立此闸门前被有意地**不实现**，从而避免把候选/跨度几何信号过早地变成准入策略。
+P48 在此闸门建立后只作为**诊断性 request-more-context overlay** 被 carry forward；它不构成 evidence 准入、不改变默认策略，也不证明候选已经完成 Evidence 转化。
 
 ## 方法
 
@@ -23,8 +23,8 @@ P48 准入策略改进在建立此闸门前被有意地**不实现**，从而避
    只公布哈希摘要；原始成分保持私有。
 4. 仅报告聚合的集合构成：任务数、仓库数、正例/无金标拆分、公开分桶/风险标签分布和可用性标识。不公布仓库 ID。
 5. 比较来自 P46 聚合助手的 `bucket_routed_v0` 和 `admission_v3_h4b` 路由表。
-6. 以显式的 `not_implemented`/非证据标识 carry forward P46 可达性/成本/物化诊断与 P47 跨度几何诊断。
-7. 将 P48 标记为 `not_implemented`。
+6. carry forward P46 可达性/成本/物化诊断与 P47 跨度几何诊断，并保持其非证据性质。
+7. 当 P48 evaluator 可用时，只 carry forward 其聚合 overlay 摘要；P50 质量闸门不把 P48 lane 纳入通过条件。
 
 ## 输出约定
 
@@ -36,7 +36,7 @@ P48 准入策略改进在建立此闸门前被有意地**不实现**，从而避
 - `source_reads_attempted_by_p50=false`
 - `score_phase_only_metrics=true`
 - `aggregate_only_public_artifact=true`
-- `p48_variant_availability="not_implemented"`
+- `p48_variant_availability="available"` 或 `"not_implemented"`，取决于当前环境是否能导入 P48；两者都不表示默认策略变化。
 
 ## 质量闸门
 

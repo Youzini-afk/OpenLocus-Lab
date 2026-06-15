@@ -26,9 +26,9 @@
     "bucket_routed_v0 has non-zero outcome/cost fallback",
     "admission_v3_h4b has non-zero outcome/cost fallback",
     "P50 is an evaluation discipline phase, not a policy improvement phase.",
-    "P48 is explicitly not implemented; no policy promotion is inferred from candidate/span-geometry signals.",
+    "P48 diagnostic-policy simulator availability: `available`; P48 carry-forward contains only aggregate overlay lane summaries and does not infer promotion from span-geometry signals.",
     "Suite manifest hash (sha256): `fd44ed577a7d3e47b8ce656c2e0040c65b05758f0825ae32c13c41085090d98f`.",
-    "Evaluator config hash (sha256): `c638cd5cc1245ab8eb69c748f9173bc93e4cb51e3f8769d18c23d33d6ed435fa`.",
+    "Evaluator config hash (sha256): `45bec88fbf38b39af2e7387c8f6545a36a3faa228ea5a762aa1a4c41db7a8996`.",
     "Candidate pool availability: `partial`; gold span availability: `available`.",
     "All outputs are aggregate-only; no per-task rows, task IDs, candidate IDs, paths, gold spans, private labels, snippets, prompts, responses, or provider keys are published."
   ],
@@ -36,12 +36,12 @@
   "elapsed_ms": 0,
   "evaluator_config_hash": {
     "algorithm": "sha256+blake2b",
-    "blake2b": "b0e7549019fc8595c3d667296d263a99cbd9acb43825df844b273033e3cb944b1619bf06de52c35dd55364389ac074be2e059c7ede4bbab3b3f07f7f3fc53cb5",
+    "blake2b": "d0dff7b521488ac9194fc57b2c9fce783c42923fdde6659f8b1f3eef93701b0728e1731b3b48594bd30763cb1b77be0aa9ea8e4be226b75f8f2929c34cd5e88e",
     "published_note": "Hash of evaluator configuration. Raw configuration fields are listed only in aggregate summary form.",
-    "sha256": "c638cd5cc1245ab8eb69c748f9173bc93e4cb51e3f8769d18c23d33d6ed435fa"
+    "sha256": "45bec88fbf38b39af2e7387c8f6545a36a3faa228ea5a762aa1a4c41db7a8996"
   },
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-15T15:50:50.412441+00:00",
+  "generated_at": "2026-06-15T16:11:08.357678+00:00",
   "generated_by": "eval/p50_fixed_suite_validation.py",
   "gold_spans_in_artifact": false,
   "input_source_count": 1,
@@ -198,7 +198,44 @@
       "variant_metrics_available": true
     }
   },
-  "p48_variant_availability": "not_implemented",
+  "p48_carry_forward": {
+    "availability": "available",
+    "overlay_lane_summary": {
+      "p48_conversion_admission_unavailable": {
+        "availability": "unavailable_source_read_unavailable",
+        "conversion_admission_simulated": false
+      },
+      "p48_h4b_rmc_overlay_v0": {
+        "action_counts": {
+          "apply_llm_filter": 1,
+          "request_more_context": 1,
+          "weak_candidate_only": 2
+        },
+        "availability": "partial_missing_cost_fields",
+        "demoted_primary_count": 1,
+        "quality_comparable": false,
+        "request_more_context_count": 1,
+        "selected_count": 4
+      },
+      "p48_p25_rmc_overlay_v0": {
+        "action_counts": {
+          "llm_abstain_filter": 1,
+          "llm_filter": 1,
+          "llm_span_narrow": 1,
+          "request_more_context": 1
+        },
+        "availability": "partial_missing_cost_fields",
+        "demoted_primary_count": 1,
+        "quality_comparable": false,
+        "request_more_context_count": 1,
+        "selected_count": 4
+      }
+    },
+    "p48_schema_version": "p48-diagnostic-policy-simulator-v1",
+    "request_more_context_not_evidence": true,
+    "span_geometry_only_context": true
+  },
+  "p48_variant_availability": "available",
   "policy_route_comparison": {
     "by_policy": {
       "admission_v3_h4b": {

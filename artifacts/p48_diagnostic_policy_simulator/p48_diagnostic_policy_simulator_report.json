@@ -1,0 +1,411 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "conclusion": [
+    "Self-test-only scaffold simulated 4 synthetic tasks; this is not quality evidence.",
+    "P48 is SCORE-phase-only. No source files were read and no EvidenceCore semantics were changed.",
+    "`request_more_context` is a span-geometry diagnostic, not evidence, not admission, and not a default.",
+    "P25 overlay: request_more_context_count=1, demoted_primary_count=1, quality_comparable=False.",
+    "H4B overlay: request_more_context_count=1, demoted_primary_count=1, quality_comparable=False.",
+    "P46 materialization availability: source_read_unavailable. P48 conversion/admission lane is unavailable by design.",
+    "No policy is promotion-ready or default-ready."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T16:11:08.308496+00:00",
+  "generated_by": "eval/p48_diagnostic_policy_simulator.py",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "medium_max_width": 50,
+  "medium_window": 10,
+  "no_gold_task_count": 1,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 2,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 2,
+  "p46_materialization_availability": "source_read_unavailable",
+  "p48_default_ready": false,
+  "p48_promotion_ready": false,
+  "p50_gate_source": "not_provided",
+  "p50_quality_gate_status": "not_provided",
+  "positive_task_count": 3,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p48": 0,
+  "request_more_context_geometry": {
+    "p48_h4b_rmc_overlay_v0": {
+      "accept_count": 1,
+      "accept_rate": 1.0,
+      "considered_candidate_count": 1,
+      "expanded_line_budget": 12,
+      "gap_type_distribution": {
+        "adjacent_or_overlap": {
+          "count": 1,
+          "rate": 1.0
+        },
+        "candidate_absent": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "same_file_far": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "same_file_near": {
+          "count": 0,
+          "rate": 0.0
+        }
+      },
+      "geometry_gold_capture_count": 1,
+      "geometry_only": true,
+      "gold_gain_geometry_only": 0,
+      "mean_lines": 12.0,
+      "no_gold_expanded_count": 0,
+      "not_evidence": true,
+      "overfetch_ratio": 1.0,
+      "p95_lines": 12.0,
+      "raw_line_budget": 6,
+      "reject_count": 0,
+      "source_reads_attempted": false
+    },
+    "p48_p25_rmc_overlay_v0": {
+      "accept_count": 1,
+      "accept_rate": 0.5,
+      "considered_candidate_count": 2,
+      "expanded_line_budget": 12,
+      "gap_type_distribution": {
+        "adjacent_or_overlap": {
+          "count": 1,
+          "rate": 1.0
+        },
+        "candidate_absent": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "same_file_far": {
+          "count": 0,
+          "rate": 0.0
+        },
+        "same_file_near": {
+          "count": 0,
+          "rate": 0.0
+        }
+      },
+      "geometry_gold_capture_count": 1,
+      "geometry_only": true,
+      "gold_gain_geometry_only": 0,
+      "mean_lines": 12.0,
+      "no_gold_expanded_count": 0,
+      "not_evidence": true,
+      "overfetch_ratio": 1.0,
+      "p95_lines": 12.0,
+      "raw_line_budget": 6,
+      "reject_count": 1,
+      "source_reads_attempted": false
+    }
+  },
+  "request_more_context_not_evidence": true,
+  "route_simulation": {
+    "calibrated_negative_strategy": "llm_abstain_filter",
+    "p48_conversion_admission_unavailable": {
+      "availability": "unavailable_source_read_unavailable",
+      "conversion_admission_simulated": false,
+      "reason": "P46 materialization remains source_read_unavailable; P48 conversion/admission lane is explicitly unavailable."
+    },
+    "p48_h4b_rmc_overlay_v0": {
+      "action_counts": {
+        "apply_llm_filter": 1,
+        "request_more_context": 1,
+        "weak_candidate_only": 2
+      },
+      "action_span_cost": {
+        "apply_llm_filter": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 1,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "request_more_context": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_cost_fields",
+          "cost_missing_count": 1,
+          "cost_present_count": 0,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 1,
+          "outcome_present_count": 0,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "weak_candidate_only": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_cost_fields",
+          "cost_missing_count": 2,
+          "cost_present_count": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 2,
+          "outcome_present_count": 0,
+          "positive_task_count": 1,
+          "task_count": 2
+        }
+      },
+      "availability": "partial_missing_cost_fields",
+      "cost_fallback_rate": 0.75,
+      "demoted_primary_count": 1,
+      "demoted_primary_rate": 0.25,
+      "measured_primary_cost": {
+        "added_false_span": null,
+        "added_gold_span": null,
+        "availability": "missing_primary_actions",
+        "primary_action_count": 0
+      },
+      "missing_action_cost_count": 3,
+      "missing_action_outcome_count": 3,
+      "outcome_fallback_rate": 0.75,
+      "primary_action_count": 0,
+      "primary_action_rate": 0.0,
+      "quality_comparable": false,
+      "request_more_context_count": 1,
+      "request_more_context_rate": 0.25,
+      "selected_count": 4
+    },
+    "p48_p25_rmc_overlay_v0": {
+      "action_counts": {
+        "llm_abstain_filter": 1,
+        "llm_filter": 1,
+        "llm_span_narrow": 1,
+        "request_more_context": 1
+      },
+      "action_span_cost": {
+        "llm_abstain_filter": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_cost_fields",
+          "cost_missing_count": 1,
+          "cost_present_count": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 0,
+          "task_count": 1
+        },
+        "llm_filter": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 1,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "llm_span_narrow": {
+          "added_false_span": 1,
+          "added_gold_span": 1,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 1,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "request_more_context": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_cost_fields",
+          "cost_missing_count": 1,
+          "cost_present_count": 0,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 1,
+          "outcome_present_count": 0,
+          "positive_task_count": 1,
+          "task_count": 1
+        }
+      },
+      "availability": "partial_missing_cost_fields",
+      "cost_fallback_rate": 0.5,
+      "demoted_primary_count": 1,
+      "demoted_primary_rate": 0.25,
+      "measured_primary_cost": {
+        "added_false_span": 1,
+        "added_gold_span": 1,
+        "availability": "available",
+        "primary_action_count": 1
+      },
+      "missing_action_cost_count": 2,
+      "missing_action_outcome_count": 1,
+      "outcome_fallback_rate": 0.25,
+      "primary_action_count": 1,
+      "primary_action_rate": 0.25,
+      "quality_comparable": false,
+      "request_more_context_count": 1,
+      "request_more_context_rate": 0.25,
+      "selected_count": 4
+    },
+    "reference_admission_v3_h4b": {
+      "action_counts": {
+        "admit_symbol_regex_union": 1,
+        "apply_llm_filter": 1,
+        "weak_candidate_only": 2
+      },
+      "action_span_cost": {
+        "admit_symbol_regex_union": {
+          "added_false_span": 0,
+          "added_gold_span": 1,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 1,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "apply_llm_filter": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 1,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "weak_candidate_only": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_cost_fields",
+          "cost_missing_count": 2,
+          "cost_present_count": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 2,
+          "outcome_present_count": 0,
+          "positive_task_count": 1,
+          "task_count": 2
+        }
+      },
+      "availability": "partial_missing_cost_fields",
+      "cost_fallback_rate": 0.5,
+      "measured_primary_cost": {
+        "added_false_span": 0,
+        "added_gold_span": 1,
+        "availability": "available",
+        "primary_action_count": 1
+      },
+      "missing_action_cost_count": 2,
+      "missing_action_outcome_count": 2,
+      "outcome_fallback_rate": 0.5,
+      "primary_action_count": 1,
+      "primary_action_rate": 0.25,
+      "quality_comparable": false,
+      "request_more_context_count": 0,
+      "request_more_context_rate": 0.0,
+      "selected_count": 4
+    },
+    "reference_bucket_routed_v0": {
+      "action_counts": {
+        "llm_abstain_filter": 1,
+        "llm_filter": 1,
+        "llm_span_narrow": 2
+      },
+      "action_span_cost": {
+        "llm_abstain_filter": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_cost_fields",
+          "cost_missing_count": 1,
+          "cost_present_count": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 0,
+          "task_count": 1
+        },
+        "llm_filter": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 1,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 1,
+          "positive_task_count": 1,
+          "task_count": 1
+        },
+        "llm_span_narrow": {
+          "added_false_span": 2,
+          "added_gold_span": 2,
+          "availability": "available",
+          "cost_missing_count": 0,
+          "cost_present_count": 2,
+          "no_gold_task_count": 0,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 2,
+          "positive_task_count": 2,
+          "task_count": 2
+        }
+      },
+      "availability": "partial_missing_cost_fields",
+      "cost_fallback_rate": 0.25,
+      "measured_primary_cost": {
+        "added_false_span": 2,
+        "added_gold_span": 2,
+        "availability": "available",
+        "primary_action_count": 2
+      },
+      "missing_action_cost_count": 1,
+      "missing_action_outcome_count": 0,
+      "outcome_fallback_rate": 0.0,
+      "primary_action_count": 2,
+      "primary_action_rate": 0.5,
+      "quality_comparable": false,
+      "request_more_context_count": 0,
+      "request_more_context_rate": 0.0,
+      "selected_count": 4
+    }
+  },
+  "schema_version": "p48-diagnostic-policy-simulator-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "small_window": 3,
+  "source_reads_attempted_by_p48": false,
+  "span_geometry_only_context": true,
+  "stage": "P48 Diagnostic Policy Simulator / Request-More-Context Overlay",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 4,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
