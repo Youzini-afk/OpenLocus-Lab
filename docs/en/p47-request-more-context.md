@@ -1,7 +1,7 @@
 # P47 Request-More-Context / Span-Geometry Diagnostic
 
 - Schema: `p47-request-more-context-v1`
-- Generated: 2026-06-15T15:20:59.395483+00:00
+- Generated: 2026-06-15T15:25:12.145075+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P47: 0

@@ -565,6 +565,10 @@ def build_report(
         candidate_pool_availability != "missing_candidate_pool"
         and gold_span_availability != "missing_gold_spans"
     )
+    p31_h1_handoff_detected = bool(
+        tasks and any(t.get("has_candidate_pool") and t.get("has_gold_spans") for t in tasks)
+    )
+    p33b_handoff_detected = bool(tasks and any(t.get("subtypes") for t in tasks))
 
     variant_metrics = compute_variant_map(
         tasks,
@@ -657,6 +661,10 @@ def build_report(
         "candidate_pool_availability": candidate_pool_availability,
         "gold_span_availability": gold_span_availability,
         "reach_metrics_available": reach_metrics_available,
+        "p31_h1_handoff_detected": p31_h1_handoff_detected,
+        "p31_h1_handoff_detected_count": sum(1 for t in tasks if t.get("has_candidate_pool") and t.get("has_gold_spans")),
+        "p33b_handoff_detected": p33b_handoff_detected,
+        "p33b_handoff_detected_count": sum(1 for t in tasks if t.get("subtypes")),
         "variant_metrics_available": variant_metrics.get("variant_metrics_available", False),
         "gap_breakdown_available": gap_breakdown.get("gap_breakdown_available", False),
         "metrics": {"variant_map": variant_metrics, "gap_type_breakdown": gap_breakdown, "hypothetical_upper_bound": hypothetical},
