@@ -277,6 +277,14 @@ provider 字段。安全标志锁定：`promotion_ready=false`、
 
 真实 P33-B subtype smoke（6 个成功 runs，108 个 task observations：36 positive、72 no-gold）在更细粒度上确认了 P33 结论：没有任何 observed subtype bucket 可以 primary-safe。`span_overlap` 是最好的粗粒度 agreement class（`GoldSpanReach=1.0`、`false_per_gold≈1.78`），但在 2x false-span penalty 下仍是 net-negative。`symbol_regex_fusion` 在本轮 smoke 中 subtype span reach 也完整，但 added gold/false 仍为 `24/66`（`false_per_gold=2.75`）。`same_file_only` 更弱（`false_per_gold≈2.18`），`disagree` / `single_source` buckets 被 false-span cost 主导。RRF backing 有帮助，但不足以让 anchor 安全（`rrf_yes false_per_gold≈4.67`）。因此 P33-B subtype bucket 应作为 P32/P30-H4 action budget 输入，而不是 primary admission。
 
+### 2.16 P32 / P30-H4 确定性预算覆盖层已就绪
+
+`eval/p30_admission_model_v3.py` 现已实现 `admission_v3_h4`，即 P32/P30-H4 预算覆盖层策略。H4 是确定性、无远程调用、仅诊断用途的 lane。它从 P21 短暂 handoff 读取私有 P33-B 子类型元数据（`p33b_anchor_subtypes`、`p33b_anchor_subtypes_schema`），结合 RUN-phase 公开特征，测试 budgeted demotion。它不改动 Rust/EvidenceCore 语义、默认 pipeline 策略或任何生产 admission 路由。
+
+P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_overlap` bucket，`false_per_gold≈1.78` 且在 2x false-span penalty 下 net-negative；`disagree` 与 `single_source` 危险；`same_file_only` 更弱。因此 H4 仅基于 subtype 证据不会选择 `admit_symbol_regex_union`、`admit_rrf_primary` 或 `admit_llm_span_narrow`，其动作限定为 `apply_llm_filter`、`supporting_only`、`weak_candidate_only` 和 `abstain`。规则保守：negative/dense/ambiguous 任务过滤或弃权；低危公开 bucket 中 `span_overlap` 若带 RRF backing 则归为 `supporting_only`，否则 `weak_candidate_only`；`same_file_only` 仅在明确 positive bucket 中归为 `weak_candidate_only`；`disagree`/`single_source` 除非公开 bucket 强 positive 且 query noise 低，否则过滤。缺失 subtype 元数据时退化到类 `bucket_routed_v0` 的保守回退。
+
+归一化后的内存任务会携带 P31/P33-B 私有 handoff 字段（`p31_candidate_pools`、`p31_score_gold`、`p33b_anchor_subtypes`、`p33b_anchor_subtypes_schema`）供 SCORE-phase 使用，但这些键不会出现在 P30 公开产物中。报告标志锁定为 `h4_budget_overlay=true`、`promotion_ready=false`、`default_should_change=false`；当存在 P33-B 记录时，`h4_available=true` / `p33b_handoff_detected=true`。H4 与 H1/H2 一样报告 `quality_comparable`、`blocked_by_missing_action_outcomes` 和 `selected_action_fallback_rate`；real-provider CI gate 现在要求 H4 存在，并在 `p21_llm_rich` 真实记录上质量可比且 selected-action fallback 为零。
+
 ---
 
 ## 3. 当前研究假设

@@ -16,10 +16,10 @@
   "diagnostic_only": true,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-14T14:43:40.310517+00:00",
+  "generated_at": "2026-06-15T09:37:50.611108+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "labels_loaded_after_run": true,
-  "no_gold_task_count": 4,
+  "no_gold_task_count": 5,
   "policy_action_accounting": {
     "admission_v3": {
       "action_span_cost_table": {
@@ -30,22 +30,22 @@
           "budget_limit": 0,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -18,
-          "delta_added_gold_span_vs_baseline": -3,
+          "delta_added_false_span_vs_baseline": -26,
+          "delta_added_gold_span_vs_baseline": -5,
           "false_per_gold": null,
-          "false_reduction_count": 3,
+          "false_reduction_count": 4,
           "false_reduction_rate": 1.0,
-          "gold_kill_count": 3,
+          "gold_kill_count": 5,
           "gold_kill_rate": 1.0,
           "gold_per_false": null,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.225,
-          "mean_delta_span_f0_5_vs_baseline": -0.05000000000000001,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.21111111111111114,
+          "mean_delta_span_f0_5_vs_baseline": -0.05555555555555555,
           "net_span_value_1x": 0,
           "net_span_value_2x": 0,
-          "selected_baseline_added_false_span": 18,
-          "selected_baseline_added_gold_span": 3,
-          "selected_count": 6,
-          "selected_rate": 0.42857142857142855
+          "selected_baseline_added_false_span": 26,
+          "selected_baseline_added_gold_span": 5,
+          "selected_count": 9,
+          "selected_rate": 0.47368421052631576
         },
         "admit_llm_span_narrow": {
           "action_added_false_span": 1,
@@ -69,15 +69,15 @@
           "selected_baseline_added_false_span": 2,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "selected_rate": 0.05263157894736842
         },
         "admit_rrf_primary": {
-          "action_added_false_span": 2,
-          "action_added_gold_span": 1,
+          "action_added_false_span": 4,
+          "action_added_gold_span": 2,
           "action_kind": "primary",
-          "budget_limit": 1,
+          "budget_limit": 2,
           "budget_violated": true,
-          "budget_violation_reason": "primary action false cost (2) exceeds gold (1)",
+          "budget_violation_reason": "primary action false cost (4) exceeds gold (2)",
           "delta_added_false_span_vs_baseline": 0,
           "delta_added_gold_span_vs_baseline": 0,
           "false_per_gold": 2.0,
@@ -88,21 +88,21 @@
           "gold_per_false": 0.5,
           "mean_delta_primary_false_positive_rate_vs_baseline": -0.020000000000000004,
           "mean_delta_span_f0_5_vs_baseline": 0.01999999999999999,
-          "net_span_value_1x": -1,
-          "net_span_value_2x": -3,
-          "selected_baseline_added_false_span": 2,
-          "selected_baseline_added_gold_span": 1,
-          "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "net_span_value_1x": -2,
+          "net_span_value_2x": -6,
+          "selected_baseline_added_false_span": 4,
+          "selected_baseline_added_gold_span": 2,
+          "selected_count": 2,
+          "selected_rate": 0.10526315789473684
         },
         "admit_symbol_regex_union": {
           "action_added_false_span": 0,
-          "action_added_gold_span": 3,
+          "action_added_gold_span": 4,
           "action_kind": "primary",
-          "budget_limit": 3,
+          "budget_limit": 4,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -6,
+          "delta_added_false_span_vs_baseline": -8,
           "delta_added_gold_span_vs_baseline": 0,
           "false_per_gold": 0.0,
           "false_reduction_count": 0,
@@ -110,14 +110,14 @@
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
           "gold_per_false": null,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.10000000000000002,
-          "mean_delta_span_f0_5_vs_baseline": 0.20000000000000004,
-          "net_span_value_1x": 3,
-          "net_span_value_2x": 3,
-          "selected_baseline_added_false_span": 6,
-          "selected_baseline_added_gold_span": 3,
-          "selected_count": 3,
-          "selected_rate": 0.21428571428571427
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
+          "mean_delta_span_f0_5_vs_baseline": 0.2,
+          "net_span_value_1x": 4,
+          "net_span_value_2x": 4,
+          "selected_baseline_added_false_span": 8,
+          "selected_baseline_added_gold_span": 4,
+          "selected_count": 4,
+          "selected_rate": 0.21052631578947367
         },
         "supporting_only": {
           "action_added_false_span": 0,
@@ -141,7 +141,7 @@
           "selected_baseline_added_false_span": 6,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 2,
-          "selected_rate": 0.14285714285714285
+          "selected_rate": 0.10526315789473684
         },
         "weak_candidate_only": {
           "action_added_false_span": 1,
@@ -165,29 +165,29 @@
           "selected_baseline_added_false_span": 2,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "selected_rate": 0.05263157894736842
         }
       },
-      "budget_violation_count": 2,
-      "budget_violation_rate": 0.14285714285714285,
+      "budget_violation_count": 3,
+      "budget_violation_rate": 0.15789473684210525,
       "budget_violation_reasons": {
         "non-primary action has false cost (1)": 1,
-        "primary action false cost (2) exceeds gold (1)": 1
+        "primary action false cost (4) exceeds gold (2)": 2
       },
-      "no_gold_task_count": 4,
+      "no_gold_task_count": 5,
       "non_primary_false_span_cost": 1,
-      "positive_task_count": 10,
-      "primary_false_span_cost": 3,
-      "task_count": 14,
+      "positive_task_count": 14,
+      "primary_false_span_cost": 5,
+      "task_count": 19,
       "unclassified_false_span_cost": 0,
       "worst_actions_by_false_cost": [
         {
           "action": "admit_rrf_primary",
-          "action_added_false_span": 2,
-          "action_added_gold_span": 1,
+          "action_added_false_span": 4,
+          "action_added_gold_span": 2,
           "action_kind": "primary",
           "false_per_gold": 2.0,
-          "selected_count": 1
+          "selected_count": 2
         },
         {
           "action": "admit_llm_span_narrow",
@@ -211,24 +211,24 @@
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 6
+          "selected_count": 9
         },
         {
           "action": "admit_symbol_regex_union",
           "action_added_false_span": 0,
-          "action_added_gold_span": 3,
+          "action_added_gold_span": 4,
           "action_kind": "primary",
           "false_per_gold": 0.0,
-          "selected_count": 3
+          "selected_count": 4
         }
       ],
       "worst_actions_by_gold_kill": [
         {
           "action": "abstain",
           "action_kind": "non_primary",
-          "gold_kill_count": 3,
+          "gold_kill_count": 5,
           "gold_kill_rate": 1.0,
-          "selected_count": 6
+          "selected_count": 9
         },
         {
           "action": "supporting_only",
@@ -256,7 +256,7 @@
           "action_kind": "primary",
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "selected_count": 1
+          "selected_count": 2
         }
       ]
     },
@@ -269,22 +269,22 @@
           "budget_limit": 0,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -18,
-          "delta_added_gold_span_vs_baseline": -3,
+          "delta_added_false_span_vs_baseline": -26,
+          "delta_added_gold_span_vs_baseline": -5,
           "false_per_gold": null,
-          "false_reduction_count": 3,
+          "false_reduction_count": 4,
           "false_reduction_rate": 1.0,
-          "gold_kill_count": 3,
+          "gold_kill_count": 5,
           "gold_kill_rate": 1.0,
           "gold_per_false": null,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.225,
-          "mean_delta_span_f0_5_vs_baseline": -0.05000000000000001,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.21111111111111114,
+          "mean_delta_span_f0_5_vs_baseline": -0.05555555555555555,
           "net_span_value_1x": 0,
           "net_span_value_2x": 0,
-          "selected_baseline_added_false_span": 18,
-          "selected_baseline_added_gold_span": 3,
-          "selected_count": 6,
-          "selected_rate": 0.42857142857142855
+          "selected_baseline_added_false_span": 26,
+          "selected_baseline_added_gold_span": 5,
+          "selected_count": 9,
+          "selected_rate": 0.47368421052631576
         },
         "admit_llm_span_narrow": {
           "action_added_false_span": 1,
@@ -308,15 +308,15 @@
           "selected_baseline_added_false_span": 2,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "selected_rate": 0.05263157894736842
         },
         "admit_rrf_primary": {
-          "action_added_false_span": 2,
-          "action_added_gold_span": 1,
+          "action_added_false_span": 4,
+          "action_added_gold_span": 2,
           "action_kind": "primary",
-          "budget_limit": 1,
+          "budget_limit": 2,
           "budget_violated": true,
-          "budget_violation_reason": "primary action false cost (2) exceeds gold (1)",
+          "budget_violation_reason": "primary action false cost (4) exceeds gold (2)",
           "delta_added_false_span_vs_baseline": 0,
           "delta_added_gold_span_vs_baseline": 0,
           "false_per_gold": 2.0,
@@ -327,21 +327,21 @@
           "gold_per_false": 0.5,
           "mean_delta_primary_false_positive_rate_vs_baseline": -0.020000000000000004,
           "mean_delta_span_f0_5_vs_baseline": 0.01999999999999999,
-          "net_span_value_1x": -1,
-          "net_span_value_2x": -3,
-          "selected_baseline_added_false_span": 2,
-          "selected_baseline_added_gold_span": 1,
-          "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "net_span_value_1x": -2,
+          "net_span_value_2x": -6,
+          "selected_baseline_added_false_span": 4,
+          "selected_baseline_added_gold_span": 2,
+          "selected_count": 2,
+          "selected_rate": 0.10526315789473684
         },
         "admit_symbol_regex_union": {
           "action_added_false_span": 0,
-          "action_added_gold_span": 3,
+          "action_added_gold_span": 4,
           "action_kind": "primary",
-          "budget_limit": 3,
+          "budget_limit": 4,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -6,
+          "delta_added_false_span_vs_baseline": -8,
           "delta_added_gold_span_vs_baseline": 0,
           "false_per_gold": 0.0,
           "false_reduction_count": 0,
@@ -349,14 +349,14 @@
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
           "gold_per_false": null,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.10000000000000002,
-          "mean_delta_span_f0_5_vs_baseline": 0.20000000000000004,
-          "net_span_value_1x": 3,
-          "net_span_value_2x": 3,
-          "selected_baseline_added_false_span": 6,
-          "selected_baseline_added_gold_span": 3,
-          "selected_count": 3,
-          "selected_rate": 0.21428571428571427
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
+          "mean_delta_span_f0_5_vs_baseline": 0.2,
+          "net_span_value_1x": 4,
+          "net_span_value_2x": 4,
+          "selected_baseline_added_false_span": 8,
+          "selected_baseline_added_gold_span": 4,
+          "selected_count": 4,
+          "selected_rate": 0.21052631578947367
         },
         "supporting_only": {
           "action_added_false_span": 0,
@@ -380,7 +380,7 @@
           "selected_baseline_added_false_span": 6,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 2,
-          "selected_rate": 0.14285714285714285
+          "selected_rate": 0.10526315789473684
         },
         "weak_candidate_only": {
           "action_added_false_span": 1,
@@ -404,29 +404,29 @@
           "selected_baseline_added_false_span": 2,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "selected_rate": 0.05263157894736842
         }
       },
-      "budget_violation_count": 2,
-      "budget_violation_rate": 0.14285714285714285,
+      "budget_violation_count": 3,
+      "budget_violation_rate": 0.15789473684210525,
       "budget_violation_reasons": {
         "non-primary action has false cost (1)": 1,
-        "primary action false cost (2) exceeds gold (1)": 1
+        "primary action false cost (4) exceeds gold (2)": 2
       },
-      "no_gold_task_count": 4,
+      "no_gold_task_count": 5,
       "non_primary_false_span_cost": 1,
-      "positive_task_count": 10,
-      "primary_false_span_cost": 3,
-      "task_count": 14,
+      "positive_task_count": 14,
+      "primary_false_span_cost": 5,
+      "task_count": 19,
       "unclassified_false_span_cost": 0,
       "worst_actions_by_false_cost": [
         {
           "action": "admit_rrf_primary",
-          "action_added_false_span": 2,
-          "action_added_gold_span": 1,
+          "action_added_false_span": 4,
+          "action_added_gold_span": 2,
           "action_kind": "primary",
           "false_per_gold": 2.0,
-          "selected_count": 1
+          "selected_count": 2
         },
         {
           "action": "admit_llm_span_narrow",
@@ -450,24 +450,24 @@
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 6
+          "selected_count": 9
         },
         {
           "action": "admit_symbol_regex_union",
           "action_added_false_span": 0,
-          "action_added_gold_span": 3,
+          "action_added_gold_span": 4,
           "action_kind": "primary",
           "false_per_gold": 0.0,
-          "selected_count": 3
+          "selected_count": 4
         }
       ],
       "worst_actions_by_gold_kill": [
         {
           "action": "abstain",
           "action_kind": "non_primary",
-          "gold_kill_count": 3,
+          "gold_kill_count": 5,
           "gold_kill_rate": 1.0,
-          "selected_count": 6
+          "selected_count": 9
         },
         {
           "action": "supporting_only",
@@ -495,7 +495,7 @@
           "action_kind": "primary",
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "selected_count": 1
+          "selected_count": 2
         }
       ]
     },
@@ -523,7 +523,7 @@
           "selected_baseline_added_false_span": 4,
           "selected_baseline_added_gold_span": 2,
           "selected_count": 2,
-          "selected_rate": 0.14285714285714285
+          "selected_rate": 0.10526315789473684
         },
         "admit_symbol_regex_union": {
           "action_added_false_span": 0,
@@ -547,31 +547,31 @@
           "selected_baseline_added_false_span": 2,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 1,
-          "selected_rate": 0.07142857142857142
+          "selected_rate": 0.05263157894736842
         },
         "apply_llm_filter": {
-          "action_added_false_span": 3,
+          "action_added_false_span": 4,
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "budget_limit": 0,
           "budget_violated": true,
-          "budget_violation_reason": "non-primary action has false cost (3)",
-          "delta_added_false_span_vs_baseline": -13,
-          "delta_added_gold_span_vs_baseline": -2,
+          "budget_violation_reason": "non-primary action has false cost (4)",
+          "delta_added_false_span_vs_baseline": -18,
+          "delta_added_gold_span_vs_baseline": -3,
           "false_per_gold": null,
-          "false_reduction_count": 3,
+          "false_reduction_count": 4,
           "false_reduction_rate": 1.0,
-          "gold_kill_count": 2,
+          "gold_kill_count": 3,
           "gold_kill_rate": 1.0,
           "gold_per_false": 0.0,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.22000000000000003,
-          "mean_delta_span_f0_5_vs_baseline": -0.03200000000000001,
-          "net_span_value_1x": -3,
-          "net_span_value_2x": -6,
-          "selected_baseline_added_false_span": 16,
-          "selected_baseline_added_gold_span": 2,
-          "selected_count": 5,
-          "selected_rate": 0.35714285714285715
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.21428571428571433,
+          "mean_delta_span_f0_5_vs_baseline": -0.034285714285714294,
+          "net_span_value_1x": -4,
+          "net_span_value_2x": -8,
+          "selected_baseline_added_false_span": 22,
+          "selected_baseline_added_gold_span": 3,
+          "selected_count": 7,
+          "selected_rate": 0.3684210526315789
         },
         "supporting_only": {
           "action_added_false_span": 0,
@@ -595,61 +595,61 @@
           "selected_baseline_added_false_span": 6,
           "selected_baseline_added_gold_span": 1,
           "selected_count": 2,
-          "selected_rate": 0.14285714285714285
+          "selected_rate": 0.10526315789473684
         },
         "weak_candidate_only": {
-          "action_added_false_span": 4,
+          "action_added_false_span": 7,
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "budget_limit": 0,
           "budget_violated": true,
-          "budget_violation_reason": "non-primary action has false cost (4)",
-          "delta_added_false_span_vs_baseline": -4,
-          "delta_added_gold_span_vs_baseline": -4,
+          "budget_violation_reason": "non-primary action has false cost (7)",
+          "delta_added_false_span_vs_baseline": -7,
+          "delta_added_gold_span_vs_baseline": -7,
           "false_per_gold": null,
           "false_reduction_count": 0,
           "false_reduction_rate": null,
-          "gold_kill_count": 4,
+          "gold_kill_count": 7,
           "gold_kill_rate": 1.0,
           "gold_per_false": 0.0,
           "mean_delta_primary_false_positive_rate_vs_baseline": -0.05,
           "mean_delta_span_f0_5_vs_baseline": -0.2,
-          "net_span_value_1x": -4,
-          "net_span_value_2x": -8,
-          "selected_baseline_added_false_span": 8,
-          "selected_baseline_added_gold_span": 4,
-          "selected_count": 4,
-          "selected_rate": 0.2857142857142857
+          "net_span_value_1x": -7,
+          "net_span_value_2x": -14,
+          "selected_baseline_added_false_span": 14,
+          "selected_baseline_added_gold_span": 7,
+          "selected_count": 7,
+          "selected_rate": 0.3684210526315789
         }
       },
-      "budget_violation_count": 9,
-      "budget_violation_rate": 0.6428571428571429,
+      "budget_violation_count": 14,
+      "budget_violation_rate": 0.7368421052631579,
       "budget_violation_reasons": {
-        "non-primary action has false cost (3)": 5,
-        "non-primary action has false cost (4)": 4
+        "non-primary action has false cost (4)": 7,
+        "non-primary action has false cost (7)": 7
       },
-      "no_gold_task_count": 4,
-      "non_primary_false_span_cost": 7,
-      "positive_task_count": 10,
+      "no_gold_task_count": 5,
+      "non_primary_false_span_cost": 11,
+      "positive_task_count": 14,
       "primary_false_span_cost": 0,
-      "task_count": 14,
+      "task_count": 19,
       "unclassified_false_span_cost": 0,
       "worst_actions_by_false_cost": [
         {
           "action": "weak_candidate_only",
+          "action_added_false_span": 7,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "false_per_gold": null,
+          "selected_count": 7
+        },
+        {
+          "action": "apply_llm_filter",
           "action_added_false_span": 4,
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 4
-        },
-        {
-          "action": "apply_llm_filter",
-          "action_added_false_span": 3,
-          "action_added_gold_span": 0,
-          "action_kind": "non_primary",
-          "false_per_gold": null,
-          "selected_count": 5
+          "selected_count": 7
         },
         {
           "action": "abstain",
@@ -680,9 +680,16 @@
         {
           "action": "weak_candidate_only",
           "action_kind": "non_primary",
-          "gold_kill_count": 4,
+          "gold_kill_count": 7,
           "gold_kill_rate": 1.0,
-          "selected_count": 4
+          "selected_count": 7
+        },
+        {
+          "action": "apply_llm_filter",
+          "action_kind": "non_primary",
+          "gold_kill_count": 3,
+          "gold_kill_rate": 1.0,
+          "selected_count": 7
         },
         {
           "action": "abstain",
@@ -690,13 +697,6 @@
           "gold_kill_count": 2,
           "gold_kill_rate": 1.0,
           "selected_count": 2
-        },
-        {
-          "action": "apply_llm_filter",
-          "action_kind": "non_primary",
-          "gold_kill_count": 2,
-          "gold_kill_rate": 1.0,
-          "selected_count": 5
         },
         {
           "action": "supporting_only",
@@ -711,6 +711,143 @@
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
           "selected_count": 1
+        }
+      ]
+    },
+    "admission_v3_h4": {
+      "action_span_cost_table": {
+        "apply_llm_filter": {
+          "action_added_false_span": 4,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "budget_limit": 0,
+          "budget_violated": true,
+          "budget_violation_reason": "non-primary action has false cost (4)",
+          "delta_added_false_span_vs_baseline": -18,
+          "delta_added_gold_span_vs_baseline": -3,
+          "false_per_gold": null,
+          "false_reduction_count": 4,
+          "false_reduction_rate": 1.0,
+          "gold_kill_count": 3,
+          "gold_kill_rate": 1.0,
+          "gold_per_false": 0.0,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.21428571428571433,
+          "mean_delta_span_f0_5_vs_baseline": -0.034285714285714294,
+          "net_span_value_1x": -4,
+          "net_span_value_2x": -8,
+          "selected_baseline_added_false_span": 22,
+          "selected_baseline_added_gold_span": 3,
+          "selected_count": 7,
+          "selected_rate": 0.3684210526315789
+        },
+        "supporting_only": {
+          "action_added_false_span": 0,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "budget_limit": 0,
+          "budget_violated": false,
+          "budget_violation_reason": null,
+          "delta_added_false_span_vs_baseline": -8,
+          "delta_added_gold_span_vs_baseline": -2,
+          "false_per_gold": null,
+          "false_reduction_count": 1,
+          "false_reduction_rate": 1.0,
+          "gold_kill_count": 2,
+          "gold_kill_rate": 1.0,
+          "gold_per_false": null,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.20000000000000004,
+          "mean_delta_span_f0_5_vs_baseline": -0.13333333333333333,
+          "net_span_value_1x": 0,
+          "net_span_value_2x": 0,
+          "selected_baseline_added_false_span": 8,
+          "selected_baseline_added_gold_span": 2,
+          "selected_count": 3,
+          "selected_rate": 0.15789473684210525
+        },
+        "weak_candidate_only": {
+          "action_added_false_span": 9,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "budget_limit": 0,
+          "budget_violated": true,
+          "budget_violation_reason": "non-primary action has false cost (9)",
+          "delta_added_false_span_vs_baseline": -9,
+          "delta_added_gold_span_vs_baseline": -9,
+          "false_per_gold": null,
+          "false_reduction_count": 0,
+          "false_reduction_rate": null,
+          "gold_kill_count": 9,
+          "gold_kill_rate": 1.0,
+          "gold_per_false": 0.0,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.05,
+          "mean_delta_span_f0_5_vs_baseline": -0.2,
+          "net_span_value_1x": -9,
+          "net_span_value_2x": -18,
+          "selected_baseline_added_false_span": 18,
+          "selected_baseline_added_gold_span": 9,
+          "selected_count": 9,
+          "selected_rate": 0.47368421052631576
+        }
+      },
+      "budget_violation_count": 16,
+      "budget_violation_rate": 0.8421052631578947,
+      "budget_violation_reasons": {
+        "non-primary action has false cost (4)": 7,
+        "non-primary action has false cost (9)": 9
+      },
+      "no_gold_task_count": 5,
+      "non_primary_false_span_cost": 13,
+      "positive_task_count": 14,
+      "primary_false_span_cost": 0,
+      "task_count": 19,
+      "unclassified_false_span_cost": 0,
+      "worst_actions_by_false_cost": [
+        {
+          "action": "weak_candidate_only",
+          "action_added_false_span": 9,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "false_per_gold": null,
+          "selected_count": 9
+        },
+        {
+          "action": "apply_llm_filter",
+          "action_added_false_span": 4,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "false_per_gold": null,
+          "selected_count": 7
+        },
+        {
+          "action": "supporting_only",
+          "action_added_false_span": 0,
+          "action_added_gold_span": 0,
+          "action_kind": "non_primary",
+          "false_per_gold": null,
+          "selected_count": 3
+        }
+      ],
+      "worst_actions_by_gold_kill": [
+        {
+          "action": "weak_candidate_only",
+          "action_kind": "non_primary",
+          "gold_kill_count": 9,
+          "gold_kill_rate": 1.0,
+          "selected_count": 9
+        },
+        {
+          "action": "apply_llm_filter",
+          "action_kind": "non_primary",
+          "gold_kill_count": 3,
+          "gold_kill_rate": 1.0,
+          "selected_count": 7
+        },
+        {
+          "action": "supporting_only",
+          "action_kind": "non_primary",
+          "gold_kill_count": 2,
+          "gold_kill_rate": 1.0,
+          "selected_count": 3
         }
       ]
     },
@@ -738,7 +875,7 @@
           "selected_baseline_added_false_span": 4,
           "selected_baseline_added_gold_span": 2,
           "selected_count": 2,
-          "selected_rate": 0.14285714285714285
+          "selected_rate": 0.10526315789473684
         },
         "llm_abstain_filter": {
           "action_added_false_span": 0,
@@ -747,10 +884,10 @@
           "budget_limit": 0,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -8,
+          "delta_added_false_span_vs_baseline": -12,
           "delta_added_gold_span_vs_baseline": 0,
           "false_per_gold": null,
-          "false_reduction_count": 2,
+          "false_reduction_count": 3,
           "false_reduction_rate": 1.0,
           "gold_kill_count": 0,
           "gold_kill_rate": null,
@@ -759,10 +896,10 @@
           "mean_delta_span_f0_5_vs_baseline": 0.0,
           "net_span_value_1x": 0,
           "net_span_value_2x": 0,
-          "selected_baseline_added_false_span": 8,
+          "selected_baseline_added_false_span": 12,
           "selected_baseline_added_gold_span": 0,
-          "selected_count": 2,
-          "selected_rate": 0.14285714285714285
+          "selected_count": 3,
+          "selected_rate": 0.15789473684210525
         },
         "llm_filter": {
           "action_added_false_span": 2,
@@ -771,31 +908,31 @@
           "budget_limit": 0,
           "budget_violated": true,
           "budget_violation_reason": "non-primary action has false cost (2)",
-          "delta_added_false_span_vs_baseline": -12,
-          "delta_added_gold_span_vs_baseline": -3,
+          "delta_added_false_span_vs_baseline": -14,
+          "delta_added_gold_span_vs_baseline": -4,
           "false_per_gold": null,
           "false_reduction_count": 2,
           "false_reduction_rate": 1.0,
-          "gold_kill_count": 3,
+          "gold_kill_count": 4,
           "gold_kill_rate": 1.0,
           "gold_per_false": 0.0,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.18000000000000002,
-          "mean_delta_span_f0_5_vs_baseline": -0.04800000000000001,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.16666666666666666,
+          "mean_delta_span_f0_5_vs_baseline": -0.053333333333333344,
           "net_span_value_1x": -2,
           "net_span_value_2x": -4,
-          "selected_baseline_added_false_span": 14,
-          "selected_baseline_added_gold_span": 3,
-          "selected_count": 5,
-          "selected_rate": 0.35714285714285715
+          "selected_baseline_added_false_span": 16,
+          "selected_baseline_added_gold_span": 4,
+          "selected_count": 6,
+          "selected_rate": 0.3157894736842105
         },
         "llm_span_narrow": {
-          "action_added_false_span": 5,
-          "action_added_gold_span": 5,
+          "action_added_false_span": 8,
+          "action_added_gold_span": 8,
           "action_kind": "primary",
-          "budget_limit": 5,
+          "budget_limit": 8,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -5,
+          "delta_added_false_span_vs_baseline": -8,
           "delta_added_gold_span_vs_baseline": 0,
           "false_per_gold": 1.0,
           "false_reduction_count": 0,
@@ -806,33 +943,33 @@
           "mean_delta_primary_false_positive_rate_vs_baseline": -0.05,
           "mean_delta_span_f0_5_vs_baseline": 0.12,
           "net_span_value_1x": 0,
-          "net_span_value_2x": -5,
-          "selected_baseline_added_false_span": 10,
-          "selected_baseline_added_gold_span": 5,
-          "selected_count": 5,
-          "selected_rate": 0.35714285714285715
+          "net_span_value_2x": -8,
+          "selected_baseline_added_false_span": 16,
+          "selected_baseline_added_gold_span": 8,
+          "selected_count": 8,
+          "selected_rate": 0.42105263157894735
         }
       },
-      "budget_violation_count": 7,
-      "budget_violation_rate": 0.5,
+      "budget_violation_count": 8,
+      "budget_violation_rate": 0.42105263157894735,
       "budget_violation_reasons": {
-        "non-primary action has false cost (2)": 5,
+        "non-primary action has false cost (2)": 6,
         "unclassified action false cost (4) exceeds gold (2)": 2
       },
-      "no_gold_task_count": 4,
+      "no_gold_task_count": 5,
       "non_primary_false_span_cost": 2,
-      "positive_task_count": 10,
-      "primary_false_span_cost": 5,
-      "task_count": 14,
+      "positive_task_count": 14,
+      "primary_false_span_cost": 8,
+      "task_count": 19,
       "unclassified_false_span_cost": 4,
       "worst_actions_by_false_cost": [
         {
           "action": "llm_span_narrow",
-          "action_added_false_span": 5,
-          "action_added_gold_span": 5,
+          "action_added_false_span": 8,
+          "action_added_gold_span": 8,
           "action_kind": "primary",
           "false_per_gold": 1.0,
-          "selected_count": 5
+          "selected_count": 8
         },
         {
           "action": "candidate_baseline",
@@ -848,7 +985,7 @@
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 5
+          "selected_count": 6
         },
         {
           "action": "llm_abstain_filter",
@@ -856,16 +993,16 @@
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 2
+          "selected_count": 3
         }
       ],
       "worst_actions_by_gold_kill": [
         {
           "action": "llm_filter",
           "action_kind": "non_primary",
-          "gold_kill_count": 3,
+          "gold_kill_count": 4,
           "gold_kill_rate": 1.0,
-          "selected_count": 5
+          "selected_count": 6
         },
         {
           "action": "candidate_baseline",
@@ -879,63 +1016,63 @@
           "action_kind": "non_primary",
           "gold_kill_count": 0,
           "gold_kill_rate": null,
-          "selected_count": 2
+          "selected_count": 3
         },
         {
           "action": "llm_span_narrow",
           "action_kind": "primary",
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "selected_count": 5
+          "selected_count": 8
         }
       ]
     },
     "candidate_baseline": {
       "action_span_cost_table": {
         "candidate_baseline": {
-          "action_added_false_span": 36,
-          "action_added_gold_span": 10,
+          "action_added_false_span": 48,
+          "action_added_gold_span": 14,
           "action_kind": "unclassified",
-          "budget_limit": 10,
+          "budget_limit": 14,
           "budget_violated": true,
-          "budget_violation_reason": "unclassified action false cost (36) exceeds gold (10)",
+          "budget_violation_reason": "unclassified action false cost (48) exceeds gold (14)",
           "delta_added_false_span_vs_baseline": 0,
           "delta_added_gold_span_vs_baseline": 0,
-          "false_per_gold": 3.6,
+          "false_per_gold": 3.4285714285714284,
           "false_reduction_count": 0,
           "false_reduction_rate": 0.0,
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "gold_per_false": 0.2777777777777778,
+          "gold_per_false": 0.2916666666666667,
           "mean_delta_primary_false_positive_rate_vs_baseline": 0.0,
           "mean_delta_span_f0_5_vs_baseline": 0.0,
-          "net_span_value_1x": -26,
-          "net_span_value_2x": -62,
-          "selected_baseline_added_false_span": 36,
-          "selected_baseline_added_gold_span": 10,
-          "selected_count": 14,
+          "net_span_value_1x": -34,
+          "net_span_value_2x": -82,
+          "selected_baseline_added_false_span": 48,
+          "selected_baseline_added_gold_span": 14,
+          "selected_count": 19,
           "selected_rate": 1.0
         }
       },
-      "budget_violation_count": 14,
+      "budget_violation_count": 19,
       "budget_violation_rate": 1.0,
       "budget_violation_reasons": {
-        "unclassified action false cost (36) exceeds gold (10)": 14
+        "unclassified action false cost (48) exceeds gold (14)": 19
       },
-      "no_gold_task_count": 4,
+      "no_gold_task_count": 5,
       "non_primary_false_span_cost": 0,
-      "positive_task_count": 10,
+      "positive_task_count": 14,
       "primary_false_span_cost": 0,
-      "task_count": 14,
-      "unclassified_false_span_cost": 36,
+      "task_count": 19,
+      "unclassified_false_span_cost": 48,
       "worst_actions_by_false_cost": [
         {
           "action": "candidate_baseline",
-          "action_added_false_span": 36,
-          "action_added_gold_span": 10,
+          "action_added_false_span": 48,
+          "action_added_gold_span": 14,
           "action_kind": "unclassified",
-          "false_per_gold": 3.6,
-          "selected_count": 14
+          "false_per_gold": 3.4285714285714284,
+          "selected_count": 19
         }
       ],
       "worst_actions_by_gold_kill": [
@@ -944,7 +1081,7 @@
           "action_kind": "unclassified",
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "selected_count": 14
+          "selected_count": 19
         }
       ]
     },
@@ -957,32 +1094,32 @@
           "budget_limit": 0,
           "budget_violated": false,
           "budget_violation_reason": null,
-          "delta_added_false_span_vs_baseline": -36,
-          "delta_added_gold_span_vs_baseline": -10,
+          "delta_added_false_span_vs_baseline": -48,
+          "delta_added_gold_span_vs_baseline": -14,
           "false_per_gold": null,
-          "false_reduction_count": 4,
+          "false_reduction_count": 5,
           "false_reduction_rate": 1.0,
-          "gold_kill_count": 10,
+          "gold_kill_count": 14,
           "gold_kill_rate": 1.0,
           "gold_per_false": null,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.17142857142857146,
-          "mean_delta_span_f0_5_vs_baseline": -0.07142857142857142,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.16578947368421054,
+          "mean_delta_span_f0_5_vs_baseline": -0.0736842105263158,
           "net_span_value_1x": 0,
           "net_span_value_2x": 0,
-          "selected_baseline_added_false_span": 36,
-          "selected_baseline_added_gold_span": 10,
-          "selected_count": 14,
+          "selected_baseline_added_false_span": 48,
+          "selected_baseline_added_gold_span": 14,
+          "selected_count": 19,
           "selected_rate": 1.0
         }
       },
       "budget_violation_count": 0,
       "budget_violation_rate": 0.0,
       "budget_violation_reasons": {},
-      "no_gold_task_count": 4,
+      "no_gold_task_count": 5,
       "non_primary_false_span_cost": 0,
-      "positive_task_count": 10,
+      "positive_task_count": 14,
       "primary_false_span_cost": 0,
-      "task_count": 14,
+      "task_count": 19,
       "unclassified_false_span_cost": 0,
       "worst_actions_by_false_cost": [
         {
@@ -991,123 +1128,123 @@
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 14
+          "selected_count": 19
         }
       ],
       "worst_actions_by_gold_kill": [
         {
           "action": "llm_abstain_filter",
           "action_kind": "non_primary",
-          "gold_kill_count": 10,
+          "gold_kill_count": 14,
           "gold_kill_rate": 1.0,
-          "selected_count": 14
+          "selected_count": 19
         }
       ]
     },
     "llm_filter": {
       "action_span_cost_table": {
         "llm_filter": {
-          "action_added_false_span": 4,
+          "action_added_false_span": 5,
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "budget_limit": 0,
           "budget_violated": true,
-          "budget_violation_reason": "non-primary action has false cost (4)",
-          "delta_added_false_span_vs_baseline": -32,
-          "delta_added_gold_span_vs_baseline": -10,
+          "budget_violation_reason": "non-primary action has false cost (5)",
+          "delta_added_false_span_vs_baseline": -43,
+          "delta_added_gold_span_vs_baseline": -14,
           "false_per_gold": null,
-          "false_reduction_count": 4,
+          "false_reduction_count": 5,
           "false_reduction_rate": 1.0,
-          "gold_kill_count": 10,
+          "gold_kill_count": 14,
           "gold_kill_rate": 1.0,
           "gold_per_false": 0.0,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.15714285714285717,
-          "mean_delta_span_f0_5_vs_baseline": -0.057142857142857155,
-          "net_span_value_1x": -4,
-          "net_span_value_2x": -8,
-          "selected_baseline_added_false_span": 36,
-          "selected_baseline_added_gold_span": 10,
-          "selected_count": 14,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.15263157894736845,
+          "mean_delta_span_f0_5_vs_baseline": -0.05894736842105264,
+          "net_span_value_1x": -5,
+          "net_span_value_2x": -10,
+          "selected_baseline_added_false_span": 48,
+          "selected_baseline_added_gold_span": 14,
+          "selected_count": 19,
           "selected_rate": 1.0
         }
       },
-      "budget_violation_count": 14,
+      "budget_violation_count": 19,
       "budget_violation_rate": 1.0,
       "budget_violation_reasons": {
-        "non-primary action has false cost (4)": 14
+        "non-primary action has false cost (5)": 19
       },
-      "no_gold_task_count": 4,
-      "non_primary_false_span_cost": 4,
-      "positive_task_count": 10,
+      "no_gold_task_count": 5,
+      "non_primary_false_span_cost": 5,
+      "positive_task_count": 14,
       "primary_false_span_cost": 0,
-      "task_count": 14,
+      "task_count": 19,
       "unclassified_false_span_cost": 0,
       "worst_actions_by_false_cost": [
         {
           "action": "llm_filter",
-          "action_added_false_span": 4,
+          "action_added_false_span": 5,
           "action_added_gold_span": 0,
           "action_kind": "non_primary",
           "false_per_gold": null,
-          "selected_count": 14
+          "selected_count": 19
         }
       ],
       "worst_actions_by_gold_kill": [
         {
           "action": "llm_filter",
           "action_kind": "non_primary",
-          "gold_kill_count": 10,
+          "gold_kill_count": 14,
           "gold_kill_rate": 1.0,
-          "selected_count": 14
+          "selected_count": 19
         }
       ]
     },
     "llm_span_narrow": {
       "action_span_cost_table": {
         "llm_span_narrow": {
-          "action_added_false_span": 22,
-          "action_added_gold_span": 10,
+          "action_added_false_span": 29,
+          "action_added_gold_span": 14,
           "action_kind": "primary",
-          "budget_limit": 10,
+          "budget_limit": 14,
           "budget_violated": true,
-          "budget_violation_reason": "primary action false cost (22) exceeds gold (10)",
-          "delta_added_false_span_vs_baseline": -14,
+          "budget_violation_reason": "primary action false cost (29) exceeds gold (14)",
+          "delta_added_false_span_vs_baseline": -19,
           "delta_added_gold_span_vs_baseline": 0,
-          "false_per_gold": 2.2,
-          "false_reduction_count": 4,
+          "false_per_gold": 2.0714285714285716,
+          "false_reduction_count": 5,
           "false_reduction_rate": 1.0,
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "gold_per_false": 0.45454545454545453,
-          "mean_delta_primary_false_positive_rate_vs_baseline": -0.0642857142857143,
-          "mean_delta_span_f0_5_vs_baseline": 0.08571428571428572,
-          "net_span_value_1x": -12,
-          "net_span_value_2x": -34,
-          "selected_baseline_added_false_span": 36,
-          "selected_baseline_added_gold_span": 10,
-          "selected_count": 14,
+          "gold_per_false": 0.4827586206896552,
+          "mean_delta_primary_false_positive_rate_vs_baseline": -0.06315789473684212,
+          "mean_delta_span_f0_5_vs_baseline": 0.08842105263157894,
+          "net_span_value_1x": -15,
+          "net_span_value_2x": -44,
+          "selected_baseline_added_false_span": 48,
+          "selected_baseline_added_gold_span": 14,
+          "selected_count": 19,
           "selected_rate": 1.0
         }
       },
-      "budget_violation_count": 14,
+      "budget_violation_count": 19,
       "budget_violation_rate": 1.0,
       "budget_violation_reasons": {
-        "primary action false cost (22) exceeds gold (10)": 14
+        "primary action false cost (29) exceeds gold (14)": 19
       },
-      "no_gold_task_count": 4,
+      "no_gold_task_count": 5,
       "non_primary_false_span_cost": 0,
-      "positive_task_count": 10,
-      "primary_false_span_cost": 22,
-      "task_count": 14,
+      "positive_task_count": 14,
+      "primary_false_span_cost": 29,
+      "task_count": 19,
       "unclassified_false_span_cost": 0,
       "worst_actions_by_false_cost": [
         {
           "action": "llm_span_narrow",
-          "action_added_false_span": 22,
-          "action_added_gold_span": 10,
+          "action_added_false_span": 29,
+          "action_added_gold_span": 14,
           "action_kind": "primary",
-          "false_per_gold": 2.2,
-          "selected_count": 14
+          "false_per_gold": 2.0714285714285716,
+          "selected_count": 19
         }
       ],
       "worst_actions_by_gold_kill": [
@@ -1116,16 +1253,16 @@
           "action_kind": "primary",
           "gold_kill_count": 0,
           "gold_kill_rate": 0.0,
-          "selected_count": 14
+          "selected_count": 19
         }
       ]
     }
   },
-  "positive_task_count": 10,
+  "positive_task_count": 14,
   "promotion_ready": false,
   "run_phase_public_only": true,
   "schema_version": "p30-h3-action-span-cost-report-v1",
   "score_phase_only_accounting": true,
   "stage": "P30-H3 action-specific span-cost accounting",
-  "task_count": 14
+  "task_count": 19
 }

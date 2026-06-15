@@ -387,6 +387,42 @@ route features, subtype rows, or provider fields. Safety flags are locked:
 `remote_calls_by_p33b=0`, `score_phase_only_metrics=true`,
 `aggregate_only_public_artifact=true`.
 
+### 2.16 P32 / P30-H4 deterministic budget overlay is ready
+
+`eval/p30_admission_model_v3.py` now implements `admission_v3_h4`, a P32/P30-H4
+budget-overlay policy. H4 is deterministic, no-remote, and diagnostic-only. It
+reads private P33-B subtype metadata from the P21 ephemeral handoff
+(`p33b_anchor_subtypes`, `p33b_anchor_subtypes_schema`) and uses it, together
+with RUN-phase public features, to test budgeted demotion. It does not change
+Rust/EvidenceCore semantics, the default pipeline strategy, or any production
+admission route.
+
+P33-B showed that no subtype is primary-safe: even the best `span_overlap`
+bucket has `false_per_gold≈1.78` and negative `net_span_value_2x`, while
+`disagree` and `single_source` are dangerous and `same_file_only` is weaker.
+Consequently H4 never selects `admit_symbol_regex_union`, `admit_rrf_primary`,
+or `admit_llm_span_narrow` from subtype evidence alone. Its actions are limited
+to `apply_llm_filter`, `supporting_only`, `weak_candidate_only`, and `abstain`.
+Rules are conservative: negative/dense/ambiguous tasks are filtered or
+abstained; `span_overlap` in low-risk public buckets becomes `supporting_only`
+when RRF-backed and `weak_candidate_only` otherwise; `same_file_only` becomes
+`weak_candidate_only` only in clearly positive buckets; `disagree`/
+`single_source` are filtered unless the public bucket is strongly positive and
+query noise is low. Missing subtype metadata degrades to a `bucket_routed_v0`-
+like conservative fallback.
+
+The normalized in-memory task carries the private P31/P33-B handoff fields
+(`p31_candidate_pools`, `p31_score_gold`, `p33b_anchor_subtypes`,
+`p33b_anchor_subtypes_schema`) for SCORE-phase use, but these keys are never
+emitted in public P30 artifacts. Report flags are locked to
+`h4_budget_overlay=true`, `promotion_ready=false`,
+`default_should_change=false`, and, when P33-B records are present,
+`h4_available=true` / `p33b_handoff_detected=true`. H4 reports
+`quality_comparable`, `blocked_by_missing_action_outcomes`, and
+`selected_action_fallback_rate` like H1/H2, and the real-provider CI gate now
+requires H4 to exist and, on `p21_llm_rich` records, to be quality-comparable
+with zero selected-action fallback.
+
 ---
 
 ## 3. Current Hypotheses

@@ -26,6 +26,7 @@ real dense embeddings have candidate/file-level signal but are unstable as globa
 P20-LS-A blocks low-context/query-only LLM aliases, not rich-context LLM retrieval.
 P21-G should prioritize cross-model context injection effects, richer code context, quality, latency, and cost.
 Dense/QuIVer/LLM-derived/graph remain supporting/diagnostic/candidate only.
+P32/P30-H4 anchor-subtype budget overlay is now wired into P30; it tests demotion, not primary promotion.
 promotion_ready=false and current_default_should_change=false.
 ```
 
@@ -329,6 +330,14 @@ false-span penalty; `symbol_regex_fusion` is high-reach but costs `24/66` added
 gold/false; `disagree` and `single_source` are dominated by false-span cost.
 These subtype buckets should feed P32/P30-H4 budgets, not primary admission.
 See [`p33b-anchor-subtype-remote-smoke.md`](p33b-anchor-subtype-remote-smoke.md).
+
+## P32 / P30-H4 Budget Overlay (2026-06-15)
+
+`eval/p30_admission_model_v3.py` now includes the `admission_v3_h4` policy, a P32/P30-H4 deterministic budget overlay. H4 consumes only RUN-phase public features (`task_bucket`, `task_risk_tags`, `route_features`) and the private P33-B subtype handoff (`p33b_anchor_subtypes`, `p33b_anchor_subtypes_schema`). It uses P33-B conclusions to test budgeted demotion, not primary promotion.
+
+Routing rules are conservative: negative/dense/ambiguous tasks are filtered or abstained; `span_overlap` in low-risk public buckets becomes `supporting_only` when RRF-backed and `weak_candidate_only` otherwise; `same_file_only` becomes `weak_candidate_only` only in clearly positive buckets; `disagree`/`single_source` are filtered unless the public bucket is strongly positive and query noise is low. Exact/unique-symbol signals are treated as budget-diagnostic non-primary. Missing subtype metadata degrades to a `bucket_routed_v0`-like conservative fallback. H4 never selects `admit_symbol_regex_union`, `admit_rrf_primary`, or `admit_llm_span_narrow` from subtype evidence alone.
+
+Private handoff fields are copied into the normalized in-memory task but are never emitted into public P30 artifacts. Report flags are locked: `h4_budget_overlay=true`, `promotion_ready=false`, `default_should_change=false`, and, when P33-B records are present, `h4_available=true` / `p33b_handoff_detected=true`. H4 reports `quality_comparable`, `blocked_by_missing_action_outcomes`, and `selected_action_fallback_rate` like H1/H2, and the real-provider CI gate requires H4 to exist and, on `p21_llm_rich` records, to be quality-comparable with zero selected-action fallback. See [`p32-p30-h4-budget-overlay.md`](p32-p30-h4-budget-overlay.md).
 
 ## Stage status
 

@@ -8,7 +8,7 @@
 # P30 Admission Model V3 Report
 
 - Schema: `p30-admission-v3-report-v1`
-- Generated: 2026-06-14T12:31:43.849245+00:00
+- Generated: 2026-06-15T09:37:24.229087+00:00
 - Status: `self_test_only`
 - Self-test: True
 - External calls: 0
@@ -25,89 +25,106 @@
 | admission_v3 | Explainable monotonic scorecard with hard guards; actions: abstain, admit_symbol_regex_union, admit_rrf_primary, admit_llm_span_narrow, apply_llm_filter, supporting_only, weak_candidate_only. |
 | admission_v3_h1 | Same scorecard as admission_v3, evaluated against P30-H1 handoff records that include pre-SCORE local-anchor features and measured local-anchor outcomes (symbol_regex_union, rrf_primary, supporting_only, weak_candidate_only). |
 | admission_v3_h2 | Stricter local-anchor policy over the same P30-H1 records; demotes file-only agreement and unanchored LLM spans to weak/supporting/abstain, and requires span-level/exact-unique-symbol agreement for primary admissions. |
+| admission_v3_h4 | P33-B anchor-subtype deterministic budget overlay; demotes all primary-admit candidates based on subtype agreement_class, never promotes from subtype evidence alone, and remains a diagnostic-only non-default lane. |
 
 ## Aggregate results
 
 | Policy | tasks | +tasks | no_gold | SpanF0.5 | PFP | no_gold PFP | added_gold | added_false | filter_kill_rate | abstain_rate | selective_risk |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| candidate_baseline | 14 | 10 | 4 | 0.1429 | 0.1857 | 0.4000 | 10 | 36 | 0.0000 | 0.0000 | n/a |
-| llm_span_narrow | 14 | 10 | 4 | 0.2286 | 0.1214 | 0.3000 | 10 | 22 | 0.0000 | 0.0000 | n/a |
-| llm_filter | 14 | 10 | 4 | 0.0857 | 0.0286 | 0.1000 | 0 | 4 | 1.0000 | 0.0000 | n/a |
-| llm_abstain_filter | 14 | 10 | 4 | 0.0714 | 0.0143 | 0.0500 | 0 | 0 | 1.0000 | 1.0000 | n/a |
-| bucket_routed_v0 | 14 | 10 | 4 | 0.1686 | 0.0536 | 0.0750 | 7 | 11 | 0.3000 | 0.1429 | n/a |
-| admission_v3 | 14 | 10 | 4 | 0.1014 | 0.0429 | 0.0375 | 5 | 9 | 0.5000 | 0.4286 | 0.0245 |
-| admission_v3_h1 | 14 | 10 | 4 | 0.1457 | 0.0236 | 0.0375 | 5 | 4 | 0.5000 | 0.4286 | 0.0135 |
-| admission_v3_h2 | 14 | 10 | 4 | 0.0600 | 0.0357 | 0.0750 | 1 | 7 | 0.9000 | 0.1429 | 0.0306 |
+| candidate_baseline | 19 | 14 | 5 | 0.1474 | 0.1789 | 0.4000 | 14 | 48 | 0.0000 | 0.0000 | n/a |
+| llm_span_narrow | 19 | 14 | 5 | 0.2358 | 0.1158 | 0.3000 | 14 | 29 | 0.0000 | 0.0000 | n/a |
+| llm_filter | 19 | 14 | 5 | 0.0884 | 0.0263 | 0.1000 | 0 | 5 | 1.0000 | 0.0000 | n/a |
+| llm_abstain_filter | 19 | 14 | 5 | 0.0737 | 0.0132 | 0.0500 | 0 | 0 | 1.0000 | 1.0000 | n/a |
+| bucket_routed_v0 | 19 | 14 | 5 | 0.1811 | 0.0500 | 0.0700 | 10 | 14 | 0.2857 | 0.1579 | n/a |
+| admission_v3 | 19 | 14 | 5 | 0.1063 | 0.0447 | 0.0400 | 7 | 13 | 0.5000 | 0.4737 | 0.0235 |
+| admission_v3_h1 | 19 | 14 | 5 | 0.1505 | 0.0242 | 0.0400 | 7 | 6 | 0.5000 | 0.4737 | 0.0127 |
+| admission_v3_h2 | 19 | 14 | 5 | 0.0505 | 0.0395 | 0.0800 | 1 | 11 | 0.9286 | 0.1053 | 0.0353 |
+| admission_v3_h4 | 19 | 14 | 5 | 0.0189 | 0.0447 | 0.0800 | 0 | 13 | 1.0000 | 0.0000 | 0.0447 |
 
 ## Quality comparability
 
 | Policy | quality_comparable | blocked_by_missing_action_outcomes | selected_action_fallback_rate |
 |---|---:|---:|---:|
-| admission_v3 | False | True | 0.5000 |
+| admission_v3 | False | True | 0.4737 |
 | admission_v3_h1 | True | False | 0.0000 |
 | admission_v3_h2 | True | False | 0.0000 |
+| admission_v3_h4 | True | False | 0.0000 |
 
 ## Deltas vs candidate baseline
 
 | Policy | SpanF0.5 | PFP | added_gold | added_false |
 |---|---:|---:|---:|---:|
 | candidate_baseline | 0.0000 | 0.0000 | 0 | 0 |
-| llm_span_narrow | 0.0857 | -0.0643 | 0 | -14 |
-| llm_filter | -0.0571 | -0.1571 | -10 | -32 |
-| llm_abstain_filter | -0.0714 | -0.1714 | -10 | -36 |
-| bucket_routed_v0 | 0.0257 | -0.1321 | -3 | -25 |
-| admission_v3 | -0.0414 | -0.1429 | -5 | -27 |
-| admission_v3_h1 | 0.0029 | -0.1621 | -5 | -32 |
-| admission_v3_h2 | -0.0829 | -0.1500 | -9 | -29 |
+| llm_span_narrow | 0.0884 | -0.0632 | 0 | -19 |
+| llm_filter | -0.0589 | -0.1526 | -14 | -43 |
+| llm_abstain_filter | -0.0737 | -0.1658 | -14 | -48 |
+| bucket_routed_v0 | 0.0337 | -0.1289 | -4 | -34 |
+| admission_v3 | -0.0411 | -0.1342 | -7 | -35 |
+| admission_v3_h1 | 0.0032 | -0.1547 | -7 | -42 |
+| admission_v3_h2 | -0.0968 | -0.1395 | -13 | -37 |
+| admission_v3_h4 | -0.1284 | -0.1342 | -14 | -35 |
 
 ## Deltas vs bucket_routed_v0
 
 | Policy | SpanF0.5 | PFP | added_gold | added_false |
 |---|---:|---:|---:|---:|
-| candidate_baseline | -0.0257 | 0.1321 | 3 | 25 |
-| llm_span_narrow | 0.0600 | 0.0679 | 3 | 11 |
-| llm_filter | -0.0829 | -0.0250 | -7 | -7 |
-| llm_abstain_filter | -0.0971 | -0.0393 | -7 | -11 |
+| candidate_baseline | -0.0337 | 0.1289 | 4 | 34 |
+| llm_span_narrow | 0.0547 | 0.0658 | 4 | 15 |
+| llm_filter | -0.0926 | -0.0237 | -10 | -9 |
+| llm_abstain_filter | -0.1074 | -0.0368 | -10 | -14 |
 | bucket_routed_v0 | 0.0000 | 0.0000 | 0 | 0 |
-| admission_v3 | -0.0671 | -0.0107 | -2 | -2 |
-| admission_v3_h1 | -0.0229 | -0.0300 | -2 | -7 |
-| admission_v3_h2 | -0.1086 | -0.0179 | -6 | -4 |
+| admission_v3 | -0.0747 | -0.0053 | -3 | -1 |
+| admission_v3_h1 | -0.0305 | -0.0258 | -3 | -8 |
+| admission_v3_h2 | -0.1305 | -0.0105 | -9 | -3 |
+| admission_v3_h4 | -0.1621 | -0.0053 | -10 | -1 |
 
 ## admission_v3 action distribution
 
 | Action | Count | Rate |
 |---:|---:|---:|
-| abstain | 6 | 0.42857142857142855 |
-| admit_llm_span_narrow | 1 | 0.07142857142857142 |
-| admit_rrf_primary | 1 | 0.07142857142857142 |
-| admit_symbol_regex_union | 3 | 0.21428571428571427 |
+| abstain | 9 | 0.47368421052631576 |
+| admit_llm_span_narrow | 1 | 0.05263157894736842 |
+| admit_rrf_primary | 2 | 0.10526315789473684 |
+| admit_symbol_regex_union | 4 | 0.21052631578947367 |
 | apply_llm_filter | 0 | n/a |
-| supporting_only | 2 | 0.14285714285714285 |
-| weak_candidate_only | 1 | 0.07142857142857142 |
+| supporting_only | 2 | 0.10526315789473684 |
+| weak_candidate_only | 1 | 0.05263157894736842 |
 
 ## admission_v3_h1 action distribution
 
 | Action | Count | Rate |
 |---:|---:|---:|
-| abstain | 6 | 0.42857142857142855 |
-| admit_llm_span_narrow | 1 | 0.07142857142857142 |
-| admit_rrf_primary | 1 | 0.07142857142857142 |
-| admit_symbol_regex_union | 3 | 0.21428571428571427 |
+| abstain | 9 | 0.47368421052631576 |
+| admit_llm_span_narrow | 1 | 0.05263157894736842 |
+| admit_rrf_primary | 2 | 0.10526315789473684 |
+| admit_symbol_regex_union | 4 | 0.21052631578947367 |
 | apply_llm_filter | 0 | n/a |
-| supporting_only | 2 | 0.14285714285714285 |
-| weak_candidate_only | 1 | 0.07142857142857142 |
+| supporting_only | 2 | 0.10526315789473684 |
+| weak_candidate_only | 1 | 0.05263157894736842 |
 
 ## admission_v3_h2 action distribution
 
 | Action | Count | Rate |
 |---:|---:|---:|
-| abstain | 2 | 0.14285714285714285 |
+| abstain | 2 | 0.10526315789473684 |
 | admit_llm_span_narrow | 0 | n/a |
 | admit_rrf_primary | 0 | n/a |
-| admit_symbol_regex_union | 1 | 0.07142857142857142 |
-| apply_llm_filter | 5 | 0.35714285714285715 |
-| supporting_only | 2 | 0.14285714285714285 |
-| weak_candidate_only | 4 | 0.2857142857142857 |
+| admit_symbol_regex_union | 1 | 0.05263157894736842 |
+| apply_llm_filter | 7 | 0.3684210526315789 |
+| supporting_only | 2 | 0.10526315789473684 |
+| weak_candidate_only | 7 | 0.3684210526315789 |
+
+## admission_v3_h4 action distribution
+
+| Action | Count | Rate |
+|---:|---:|---:|
+| abstain | 0 | n/a |
+| admit_llm_span_narrow | 0 | n/a |
+| admit_rrf_primary | 0 | n/a |
+| admit_symbol_regex_union | 0 | n/a |
+| apply_llm_filter | 7 | 0.3684210526315789 |
+| supporting_only | 3 | 0.15789473684210525 |
+| weak_candidate_only | 9 | 0.47368421052631576 |
 
 ## Score bands (admission_v3)
 
@@ -115,22 +132,25 @@ Bands are scorecard score ranges, not held-out calibrated probabilities. They sh
 
 | Band | count | +count | no_gold | frac_positive | SpanF0.5 | PFP |
 |---|---:|---:|---:|---:|---:|---:|
-| hard_guard | 7 | 3 | 4 | 0.4286 | 0.0286 | 0.0214 |
-| high_admit | 5 | 5 | 0 | 1.0000 | 0.2240 | 0.0900 |
-| medium_admit | 1 | 1 | 0 | 1.0000 | 0.1000 | 0.0000 |
+| hard_guard | 9 | 4 | 5 | 0.4444 | 0.0333 | 0.0222 |
+| high_admit | 7 | 7 | 0 | 1.0000 | 0.2171 | 0.0929 |
+| medium_admit | 2 | 2 | 0 | 1.0000 | 0.1000 | 0.0000 |
 | neutral | 1 | 1 | 0 | 1.0000 | 0.0000 | 0.0000 |
 
 ## Outcome fallback caveat
 
-- Missing action outcomes for admission_v3: 7
+- Missing action outcomes for admission_v3: 9
 - Missing action outcomes for admission_v3_h1: 0
 - Missing action outcomes for admission_v3_h2: 0
-- Fallback strategy counts (admission_v3): {'candidate_baseline': 4, 'zero_primary': 3}
+- Missing action outcomes for admission_v3_h4: 0
+- Fallback strategy counts (admission_v3): {'candidate_baseline': 6, 'zero_primary': 3}
 - Fallback strategy counts (admission_v3_h1): {}
 - Fallback strategy counts (admission_v3_h2): {}
+- Fallback strategy counts (admission_v3_h4): {}
 - If an action selected by admission_v3 has no measured outcome in the input record, the evaluator falls back to `candidate_baseline` for primary-admit actions or a zero-primary surrogate for `abstain`/`supporting_only`/`weak_candidate_only`. Real evaluation should use ephemeral records that include outcomes for every action the model can select.
 - admission_v3_h1 is designed to have zero missing outcomes when P21 writes P30-H1 enriched handoff records; a non-zero value here indicates the input records lack the required local-anchor outcomes.
 - admission_v3_h2 is designed to be fallback-free on P30-H1 records because it selects only from the local-anchor measured outcomes already included in the handoff; a non-zero value here indicates the input records are missing outcomes for actions H2 selects.
+- admission_v3_h4 requires measured outcomes for apply_llm_filter, supporting_only, and weak_candidate_only because it does not select primary-admit actions; a non-zero value here indicates the input P33-B handoff lacks outcomes for H4-selected actions.
 
 ## Routing rules (admission_v3)
 
@@ -156,43 +176,60 @@ Bands are scorecard score ranges, not held-out calibrated probabilities. They sh
 - dense_support_present or graph_support_present -> supporting_only
 - otherwise -> abstain
 
+## Routing rules (admission_v3_h4)
+
+- negative/dense_quiver_trap/hard_distractor or deeply penalized score -> supporting_only if dense/graph support; else apply_llm_filter
+- ambiguous/hallucination_risk bucket or tag -> weak_candidate_only if span_overlap and no negative; supporting_only if span_overlap+RRF and no negative; supporting_only if dense/graph support; else apply_llm_filter
+- exact_unique_symbol_anchor + low query_noise + clear positive bucket -> weak_candidate_only (budget diagnostic); filter otherwise
+- span_overlap best subtype in non-negative/ambiguous bucket -> supporting_only if RRF-backed; weak_candidate_only if low-risk public bucket; else apply_llm_filter
+- same_file_only subtype -> weak_candidate_only in low-risk public bucket; else apply_llm_filter
+- disagree/single_source subtype -> weak_candidate_only only in clearly positive/low-noise public buckets; else apply_llm_filter
+- missing P33-B subtype metadata -> conservative weak_candidate_only/supporting_only/apply_llm_filter fallback comparable to bucket-routed behavior
+- dense/graph support without usable subtype -> supporting_only
+- otherwise -> weak_candidate_only
+
 ## Per-task routing (self-test only)
 
-| task_id | repo_id | task_bucket | task_risk_tags | v3_action | v3_score | h1_action | h1_score | h2_action | h2_score |
-|---|---|---|---|---|---|---|---|---|---|
-| p30-001 | py_flask | exact_symbol_unique | exact_symbol, unique_symbol, high_confidence | admit_symbol_regex_union | 5 | admit_symbol_regex_union | 5 | admit_symbol_regex_union | 5 |
-| p30-002 | py_flask | positive | symbol_anchor, route_handler | admit_symbol_regex_union | 3 | admit_symbol_regex_union | 3 | weak_candidate_only | 3 |
-| p30-003 | js_express | positive | likely_positive | admit_symbol_regex_union | 3 | admit_symbol_regex_union | 3 | weak_candidate_only | 3 |
-| p30-004 | py_flask | positive | high_confidence | admit_rrf_primary | 3 | admit_rrf_primary | 3 | weak_candidate_only | 3 |
-| p30-005 | js_express | positive | likely_positive | admit_llm_span_narrow | 3 | admit_llm_span_narrow | 3 | abstain | 3 |
-| p30-006 | js_express | config | config, positive | abstain | 1 | abstain | 1 | weak_candidate_only | 1 |
-| p30-007 | js_express | negative | negative | abstain | -7 | abstain | -7 | apply_llm_filter | -7 |
-| p30-008 | js_express | negative | negative | abstain | -7 | abstain | -7 | apply_llm_filter | -7 |
-| p30-009 | py_flask | dense_quiver_trap | dense_false_positive | supporting_only | -6 | supporting_only | -6 | supporting_only | -6 |
-| p30-010 | js_express | dense_quiver_trap | dense_false_positive, hard_distractor | supporting_only | -7 | supporting_only | -7 | supporting_only | -7 |
-| p30-011 | py_flask | ambiguous | ambiguous, weak_candidates | abstain | -6 | abstain | -6 | apply_llm_filter | -6 |
-| p30-012 | js_express | ambiguous | ambiguous, hallucination_risk | abstain | -7 | abstain | -7 | apply_llm_filter | -7 |
-| p30-013 | py_flask | ambiguous | weak_candidates | abstain | -6 | abstain | -6 | apply_llm_filter | -6 |
-| p30-014 | js_express | unknown | other | weak_candidate_only | -1 | weak_candidate_only | -1 | abstain | -1 |
+| task_id | repo_id | task_bucket | task_risk_tags | v3_action | v3_score | h1_action | h1_score | h2_action | h2_score | h4_action | h4_score |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| p30-001 | py_flask | exact_symbol_unique | exact_symbol, unique_symbol, high_confidence | admit_symbol_regex_union | 5 | admit_symbol_regex_union | 5 | admit_symbol_regex_union | 5 | weak_candidate_only | 3 |
+| p30-002 | py_flask | positive | symbol_anchor, route_handler | admit_symbol_regex_union | 3 | admit_symbol_regex_union | 3 | weak_candidate_only | 3 | weak_candidate_only | 2 |
+| p30-003 | js_express | positive | likely_positive | admit_symbol_regex_union | 3 | admit_symbol_regex_union | 3 | weak_candidate_only | 3 | weak_candidate_only | 2 |
+| p30-004 | py_flask | positive | high_confidence | admit_rrf_primary | 3 | admit_rrf_primary | 3 | weak_candidate_only | 3 | weak_candidate_only | 1 |
+| p30-005 | js_express | positive | likely_positive | admit_llm_span_narrow | 3 | admit_llm_span_narrow | 3 | abstain | 3 | weak_candidate_only | 0 |
+| p30-006 | js_express | config | config, positive | abstain | 1 | abstain | 1 | weak_candidate_only | 1 | weak_candidate_only | 0 |
+| p30-007 | js_express | negative | negative | abstain | -7 | abstain | -7 | apply_llm_filter | -7 | apply_llm_filter | -8 |
+| p30-008 | js_express | negative | negative | abstain | -7 | abstain | -7 | apply_llm_filter | -7 | apply_llm_filter | -8 |
+| p30-009 | py_flask | dense_quiver_trap | dense_false_positive | supporting_only | -6 | supporting_only | -6 | supporting_only | -6 | supporting_only | -7 |
+| p30-010 | js_express | dense_quiver_trap | dense_false_positive, hard_distractor | supporting_only | -7 | supporting_only | -7 | supporting_only | -7 | supporting_only | -8 |
+| p30-011 | py_flask | ambiguous | ambiguous, weak_candidates | abstain | -6 | abstain | -6 | apply_llm_filter | -6 | apply_llm_filter | -7 |
+| p30-012 | js_express | ambiguous | ambiguous, hallucination_risk | abstain | -7 | abstain | -7 | apply_llm_filter | -7 | apply_llm_filter | -8 |
+| p30-013 | py_flask | ambiguous | weak_candidates | abstain | -6 | abstain | -6 | apply_llm_filter | -6 | apply_llm_filter | -7 |
+| p30-014 | js_express | unknown | other | weak_candidate_only | -1 | weak_candidate_only | -1 | abstain | -1 | weak_candidate_only | -2 |
+| p30-h4-001 | py_flask | positive | high_confidence | admit_symbol_regex_union | 3 | admit_symbol_regex_union | 3 | weak_candidate_only | 3 | weak_candidate_only | 6 |
+| p30-h4-002 | js_express | positive | likely_positive | admit_rrf_primary | 3 | admit_rrf_primary | 3 | weak_candidate_only | 3 | supporting_only | 6 |
+| p30-h4-003 | py_flask | positive | likely_positive | abstain | 2 | abstain | 2 | weak_candidate_only | 2 | weak_candidate_only | 4 |
+| p30-h4-004 | js_express | negative | negative | abstain | -6 | abstain | -6 | apply_llm_filter | -6 | apply_llm_filter | -7 |
+| p30-h4-005 | py_flask | ambiguous | ambiguous | abstain | -5 | abstain | -5 | apply_llm_filter | -5 | apply_llm_filter | -5 |
 
 ## Conclusion
 
-- Self-test-only scaffold evaluated 14 synthetic tasks; this is not quality evidence.
+- Self-test-only scaffold evaluated 19 synthetic tasks; this is not quality evidence.
 - admission_v3 uses an explainable monotonic scorecard over pre-SCORE observable task_bucket, task_risk_tags, and route_features; it does not use score_group, has_gold, gold, or outcome metrics during routing.
-- Baseline SpanF0.5=0.14285714285714285, PFP=0.18571428571428572; admission_v3 SpanF0.5=0.10142857142857144, PFP=0.042857142857142864.
-- admission_v3_h1 (handoff enriched) SpanF0.5=0.1457142857142857, PFP=0.023571428571428573, quality_comparable=True, selected_action_fallback_rate=0.0.
-- admission_v3_h2 (strict local anchor) SpanF0.5=0.060000000000000005, PFP=0.03571428571428571, quality_comparable=True, selected_action_fallback_rate=0.0.
+- Baseline SpanF0.5=0.1473684210526316, PFP=0.17894736842105266; admission_v3 SpanF0.5=0.10631578947368421, PFP=0.044736842105263165.
+- admission_v3_h1 (handoff enriched) SpanF0.5=0.1505263157894737, PFP=0.024210526315789474, quality_comparable=True, selected_action_fallback_rate=0.0.
+- admission_v3_h2 (strict local anchor) SpanF0.5=0.05052631578947368, PFP=0.039473684210526314, quality_comparable=True, selected_action_fallback_rate=0.0.
+- admission_v3_h4 (P33-B budget overlay) SpanF0.5=0.01894736842105263, PFP=0.044736842105263165, quality_comparable=True, selected_action_fallback_rate=0.0.
 - No policy is promotion-ready or default-ready.
 - admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; a non-zero fallback rate on legacy admission_v3 preserves the old missing-outcome behavior for comparison.
 - admission_v3_h2 is a stricter local-anchor policy over the same P30-H1 records; it should be fallback-free whenever enriched local-anchor outcomes are present for every selected action.
 - Next: compare admission_v3_h1 and admission_v3_h2 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs.
-- admission_v3 relied on fallback outcomes for 7 action selections; real runs should include measured outcomes for every selected action.
+- admission_v3 relied on fallback outcomes for 9 action selections; real runs should include measured outcomes for every selected action.
 
 ## Safety notes
 
 - No remote model calls were made during admission evaluation.
-- Routing uses only RUN-phase public task metadata; labels/gold are used only for aggregate scoring after actions are fixed.
+- Routing uses only RUN-phase public task metadata and private P33-B subtype handoff fields; labels/gold are used only for aggregate scoring after actions are fixed, and private handoff fields are never emitted publicly.
 - This report contains only public task metadata, strategy/action names, and aggregate metrics.
-- Raw queries, snippets, prompts, responses, gold spans, private labels, provider keys, and provider fields are not stored.
-- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `external_calls=0`.
-
+- Raw queries, snippets, prompts, responses, gold spans, private labels, provider keys, subtype rows, and provider fields are not stored.
+- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `external_calls=0`, `h4_budget_overlay=true`.

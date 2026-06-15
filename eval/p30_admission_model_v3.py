@@ -84,6 +84,7 @@ POLICIES = [
     "admission_v3",
     "admission_v3_h1",
     "admission_v3_h2",
+    "admission_v3_h4",
 ]
 
 # Mapping from emitted action to the outcome key used for aggregate scoring.
@@ -140,6 +141,13 @@ FORBIDDEN_PUBLIC_KEYS = {
     "provider_key",
     "embedding_api_key",
     "llm_api_key",
+    "p31_candidate_pools",
+    "p31_score_gold",
+    "p33b_anchor_subtypes",
+    "p33b_anchor_subtypes_schema",
+    "candidate_id",
+    "candidate_path",
+    "candidate_span",
 }
 
 # Public RUN-phase route features allowed to influence admission. Any other keys
@@ -284,6 +292,18 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
 
     tags_lower = {t.lower() for t in risk_tags}
 
+    # Private handoff fields from upstream P31 / P33-B scoring only.
+    # They MUST NOT be emitted in any public report or workflow artifact.
+    p31_candidate_pools = raw.get("p31_candidate_pools")
+    p31_score_gold = raw.get("p31_score_gold")
+    p33b_anchor_subtypes = raw.get("p33b_anchor_subtypes")
+    p33b_anchor_subtypes_schema = raw.get("p33b_anchor_subtypes_schema")
+    p33b_handoff_detected = bool(
+        isinstance(p33b_anchor_subtypes, list)
+        and len(p33b_anchor_subtypes) > 0
+        and isinstance(p33b_anchor_subtypes_schema, str)
+    )
+
     return {
         "task_id": tid,
         "repo_id": raw.get("repo_id"),
@@ -313,6 +333,12 @@ def normalize_task(raw: dict[str, Any]) -> dict[str, Any] | None:
         },
         "outcomes": outcomes,
         "_route_features_ignored_count": route_features_ignored,
+        # Private internal-only handoff fields (never emitted publicly).
+        "_p31_candidate_pools": p31_candidate_pools,
+        "_p31_score_gold": p31_score_gold,
+        "_p33b_anchor_subtypes": p33b_anchor_subtypes if isinstance(p33b_anchor_subtypes, list) else [],
+        "_p33b_anchor_subtypes_schema": p33b_anchor_subtypes_schema,
+        "_p33b_handoff_detected": p33b_handoff_detected,
     }
 
 
@@ -684,6 +710,242 @@ def route_admission_v3_h2(task: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _best_subtype_quality(subtypes: list[dict[str, Any]]) -> tuple[dict[str, Any] | None, int]:
+    """Return the highest-quality subtype row and a lexical tie-break rank.
+
+    Quality ordering mirrors the P33-B calibration conclusion: span_overlap
+    dominates same_file_only, which dominates disagree, which dominates
+    single_source.  RRF backing is a secondary tie-breaker.
+    """
+    rank: dict[str, int] = {
+        "span_overlap": 3,
+        "same_file_only": 2,
+        "disagree": 1,
+        "single_source": 0,
+    }
+    best: dict[str, Any] | None = None
+    best_rank = -1
+    for row in subtypes:
+        agr = str(row.get("agreement_class") or "single_source")
+        rrf = bool(row.get("rrf_backing"))
+        rr = rank.get(agr, -1)
+        tie = (rr, 1 if rrf else 0)
+        best_tie = (best_rank, 1 if best and bool(best.get("rrf_backing")) else 0)
+        if rr >= 0 and tie > best_tie:
+            best = row
+            best_rank = rr
+    return best, best_rank
+
+
+def _h4_public_risk_profile(labels_lower: set[str], task_bucket: str) -> dict[str, bool]:
+    """Public RUN-phase risk profile used by H4 to conservatively gate primary admits."""
+    negative = bool(
+        labels_lower & {"negative", "hard_distractor", "dense_false_positive", "dense_quiver_trap"}
+        or task_bucket in {"negative", "hard_distractor", "dense_quiver_trap"}
+    )
+    ambiguous = bool(
+        labels_lower & {"ambiguous", "hallucination_risk"}
+        or task_bucket == "ambiguous"
+    )
+    low_risk_public = bool(
+        task_bucket in {"positive", "likely_positive", "high_confidence", "exact_symbol", "exact_symbol_unique", "config", "route_handler"}
+        or labels_lower & {"high_confidence", "exact_symbol", "exact_symbol_unique"}
+    )
+    return {
+        "negative": negative,
+        "ambiguous": ambiguous,
+        "low_risk_public": low_risk_public and not negative and not ambiguous,
+    }
+
+
+def route_admission_v3_h4(task: dict[str, Any]) -> dict[str, Any]:
+    """P30-H4 deterministic budget overlay (P32/P30-H4 diagnostic).
+
+    H4 consumes only RUN-available public features and the P33-B subtype
+    metadata handed off from P21.  It never uses score_group, has_gold, gold,
+    or outcome metrics during routing.  It is explicitly a demotion/budget
+    diagnostic: it does not promote to primary admission based on local anchor
+    subtype evidence alone, and it does not change Rust / EvidenceCore semantics
+    or the default pipeline strategy.
+    """
+    rf = task["route_features"]
+    labels = bucket_labels(task)
+    labels_lower = {label.lower() for label in labels}
+    qn = float(rf.get("query_noise") or 0.0)
+
+    subtypes = task.get("_p33b_anchor_subtypes") or []
+    h4_available = task.get("_p33b_handoff_detected", False)
+    best_subtype, best_subtype_quality = _best_subtype_quality(subtypes) if subtypes else (None, -1)
+    risk = _h4_public_risk_profile(labels_lower, task["task_bucket"])
+
+    score = 0
+    reasons: list[str] = []
+
+    def add(points: int, reason: str) -> None:
+        nonlocal score
+        score += points
+        if points != 0:
+            reasons.append(f"{reason}({'+' if points > 0 else ''}{points})")
+
+    if h4_available:
+        add(1, "p33b_handoff_available")
+    if best_subtype is not None:
+        agr = str(best_subtype.get("agreement_class") or "single_source")
+        add({"span_overlap": 2, "same_file_only": 1, "disagree": -1, "single_source": -2}.get(agr, -2), f"best_subtype_{agr}")
+        if best_subtype.get("rrf_backing"):
+            add(1, "best_subtype_rrf_backed")
+    else:
+        add(-1, "missing_subtype_metadata")
+
+    if rf.get("exact_unique_symbol_anchor"):
+        add(1, "exact_unique_symbol_anchor")
+    if rf.get("symbol_anchor"):
+        add(1, "symbol_anchor")
+    if rf.get("regex_anchor"):
+        add(1, "regex_anchor")
+    if rf.get("local_anchor"):
+        add(1, "local_anchor")
+
+    if qn > 0.5:
+        add(-2, "high_query_noise")
+    elif qn > 0.25:
+        add(-1, "moderate_query_noise")
+
+    if "dense_false_positive" in labels_lower or "dense_quiver_trap" in labels_lower:
+        add(-3, "dense_false_positive_tag")
+    if "negative" in labels_lower:
+        add(-3, "negative_tag")
+    if "ambiguous" in labels_lower:
+        add(-2, "ambiguous_tag")
+    if "hallucination_risk" in labels_lower:
+        add(-2, "hallucination_risk_tag")
+    if "weak_candidates" in labels_lower:
+        add(-1, "weak_candidates_tag")
+    if "hard_distractor" in labels_lower:
+        add(-1, "hard_distractor_tag")
+
+    if task["task_bucket"] in {"negative", "dense_quiver_trap"}:
+        add(-2, f"bucket_{task['task_bucket']}")
+    elif task["task_bucket"] == "ambiguous":
+        add(-2, "bucket_ambiguous")
+    elif task["task_bucket"] in POSITIVE_BUCKET_NAMES:
+        add(1, f"bucket_{task['task_bucket']}")
+
+    action: str
+    rule: str
+
+    # 1. Hard guards: negative, dense, hard-distractor, or deeply penalized.
+    if (
+        task["task_bucket"] in {"negative", "dense_quiver_trap", "hard_distractor"}
+        or labels_lower & {"negative", "hard_distractor", "dense_false_positive", "dense_quiver_trap"}
+        or score <= -5
+    ):
+        if rf.get("dense_support_present") or rf.get("graph_support_present"):
+            action = "supporting_only"
+            rule = "h4_negative_dense_supporting_only"
+        else:
+            # H4 keeps non-primary only; apply_llm_filter has a measured outcome in
+            # P21 ephemeral records (mapped to the llm_filter strategy by P30).
+            action = "apply_llm_filter"
+            rule = "h4_negative_apply_llm_filter"
+
+    # 2. Ambiguous / hallucination-risk: never primary; prefer filter in public ambiguity.
+    elif risk["ambiguous"]:
+        if best_subtype is not None and best_subtype.get("agreement_class") == "span_overlap" and not risk["negative"]:
+            if best_subtype.get("rrf_backing"):
+                action = "supporting_only"
+                rule = "h4_ambiguous_span_overlap_rrf_supporting"
+            else:
+                action = "weak_candidate_only"
+                rule = "h4_ambiguous_span_overlap_weak_candidate"
+        elif rf.get("dense_support_present") or rf.get("graph_support_present"):
+            action = "supporting_only"
+            rule = "h4_ambiguous_supporting_only"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4_ambiguous_apply_llm_filter"
+
+    # 3. Strong exact/unique-symbol evidence is still treated as diagnostic non-primary.
+    #    The P33-B conclusion is that even the best subtype is not primary-safe.
+    elif (
+        rf.get("exact_unique_symbol_anchor")
+        and not risk["negative"]
+        and not risk["ambiguous"]
+        and qn <= 0.2
+    ):
+        if best_subtype is not None and best_subtype.get("agreement_class") == "span_overlap" and best_subtype.get("rrf_backing"):
+            action = "supporting_only"
+            rule = "h4_exact_unique_span_overlap_rrf_supporting"
+        elif risk["low_risk_public"]:
+            action = "weak_candidate_only"
+            rule = "h4_exact_unique_weak_candidate_bucket_diagnostic"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4_exact_unique_filter_for_uncertain_bucket"
+
+    # 4. Span_overlap best subtype in a non-negative/non-ambiguous bucket.
+    elif best_subtype is not None and best_subtype.get("agreement_class") == "span_overlap" and not risk["negative"]:
+        if best_subtype.get("rrf_backing"):
+            action = "supporting_only"
+            rule = "h4_span_overlap_rrf_supporting"
+        elif risk["low_risk_public"]:
+            action = "weak_candidate_only"
+            rule = "h4_span_overlap_weak_candidate"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4_span_overlap_filter_uncertain_bucket"
+
+    # 5. same_file_only: demote to weak candidate in low risk, filter otherwise.
+    elif best_subtype is not None and best_subtype.get("agreement_class") == "same_file_only":
+        if risk["low_risk_public"] and not risk["ambiguous"]:
+            action = "weak_candidate_only"
+            rule = "h4_same_file_only_weak_candidate"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4_same_file_only_apply_llm_filter"
+
+    # 6. disagree / single_source: too imprecise for demotion; filter or abstain.
+    elif best_subtype is not None and best_subtype.get("agreement_class") in {"disagree", "single_source"}:
+        if risk["low_risk_public"] and qn <= 0.2:
+            action = "weak_candidate_only"
+            rule = "h4_unsafe_subtype_weak_candidate_low_risk"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4_unsafe_subtype_apply_llm_filter"
+
+    # 7. No subtype metadata available: conservative bucket-routed-like fallback.
+    elif not h4_available:
+        if task["task_bucket"] in {"negative", "dense_quiver_trap", "hard_distractor", "ambiguous", "hallucination_risk"}:
+            action = "apply_llm_filter"
+            rule = "h4_missing_subtype_apply_llm_filter"
+        elif rf.get("dense_support_present") or rf.get("graph_support_present"):
+            action = "supporting_only"
+            rule = "h4_missing_subtype_supporting"
+        else:
+            action = "weak_candidate_only"
+            rule = "h4_missing_subtype_weak_candidate_fallback"
+
+    # 8. Dense/graph support without interpretable anchor subtypes.
+    elif rf.get("dense_support_present") or rf.get("graph_support_present"):
+        action = "supporting_only"
+        rule = "h4_dense_graph_supporting_only"
+
+    # 9. Default conservative.
+    else:
+        action = "weak_candidate_only"
+        rule = "h4_fallback_weak_candidate"
+
+    return {
+        "action": action,
+        "score": score,
+        "scorecard_reasons": reasons,
+        "rule": rule,
+        "h4_available": h4_available,
+        "p33b_handoff_detected": h4_available,
+        "h4_budget_overlay": True,
+    }
+
+
 def _avg(vals: list[float]) -> float | None:
     return sum(vals) / len(vals) if vals else None
 
@@ -948,6 +1210,17 @@ def aggregate_admission_v3_h2(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     return _aggregate_admission_v3_impl(tasks, route_admission_v3_h2)
 
 
+def aggregate_admission_v3_h4(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate metrics for the P30-H4 deterministic budget overlay policy.
+
+    H4 is a P32/P30-H4 diagnostic overlay that uses P33-B subtype metadata and
+    RUN-available public features to test budgeted demotion.  It never promotes
+    to primary admission based on subtype evidence alone and does not change
+    EvidenceCore semantics or the default strategy.
+    """
+    return _aggregate_admission_v3_impl(tasks, route_admission_v3_h4)
+
+
 def compute_policy_metrics(tasks: list[dict[str, Any]], policy: str) -> dict[str, Any]:
     """Return aggregate metrics for one of the compared policies."""
     if policy == "admission_v3":
@@ -956,6 +1229,8 @@ def compute_policy_metrics(tasks: list[dict[str, Any]], policy: str) -> dict[str
         return aggregate_admission_v3_h1(tasks)
     if policy == "admission_v3_h2":
         return aggregate_admission_v3_h2(tasks)
+    if policy == "admission_v3_h4":
+        return aggregate_admission_v3_h4(tasks)
     # Reuse p25 aggregation for the baseline comparison policies.
     return p25.aggregate_policy(tasks, policy)
 
@@ -1033,6 +1308,8 @@ def _gather_policy_actions_for_h3(tasks: list[dict[str, Any]], policy: str) -> l
         return [route_admission_v3_h1(t)["action"] for t in tasks]
     if policy == "admission_v3_h2":
         return [route_admission_v3_h2(t)["action"] for t in tasks]
+    if policy == "admission_v3_h4":
+        return [route_admission_v3_h4(t)["action"] for t in tasks]
     return p25.gather_policy_action(tasks, policy)
 
 
@@ -1434,9 +1711,19 @@ def make_self_test_records() -> list[dict[str, Any]]:
         "weak_candidate_only": {"file_recall_at_5": 0.0, "span_f0_5": 0.0, "primary_false_positive_rate": 0.05, "no_gold_false_primary_rate": 0.05, "added_gold_span": 0, "added_false_span": 1},
     }
 
-    def make(task_id: str, repo_id: str, bucket: str, tags: list[str], has_gold: bool, **rf: Any) -> dict[str, Any]:
+    def make(
+        task_id: str,
+        repo_id: str,
+        bucket: str,
+        tags: list[str],
+        has_gold: bool,
+        *,
+        p33b_anchor_subtypes: list[dict[str, Any]] | None = None,
+        p33b_anchor_subtypes_schema: str | None = None,
+        **rf: Any,
+    ) -> dict[str, Any]:
         outcomes = copy.deepcopy(gold_outcomes if has_gold else no_gold_outcomes)
-        return {
+        rec: dict[str, Any] = {
             "task_id": task_id,
             "repo_id": repo_id,
             "task_bucket": bucket,
@@ -1449,6 +1736,11 @@ def make_self_test_records() -> list[dict[str, Any]]:
             },
             "outcomes": outcomes,
         }
+        if p33b_anchor_subtypes is not None:
+            rec["p33b_anchor_subtypes"] = p33b_anchor_subtypes
+        if p33b_anchor_subtypes_schema is not None:
+            rec["p33b_anchor_subtypes_schema"] = p33b_anchor_subtypes_schema
+        return rec
 
     return [
         make("p30-001", "py_flask", "exact_symbol_unique", ["exact_symbol", "unique_symbol", "high_confidence"], True,
@@ -1479,6 +1771,27 @@ def make_self_test_records() -> list[dict[str, Any]]:
              query_noise=0.3),
         make("p30-014", "js_express", "unknown", ["other"], True,
              query_noise=0.5),
+        # P33-B subtype diagnostic rows for P30-H4.
+        make("p30-h4-001", "py_flask", "positive", ["high_confidence"], True,
+             local_anchor=True, symbol_anchor=True, query_noise=0.1,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rrf_backing": False}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4-002", "js_express", "positive", ["likely_positive"], True,
+             local_anchor=True, rrf_backed_by_anchor=True, query_noise=0.1,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rrf_backing": True}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4-003", "py_flask", "positive", ["likely_positive"], True,
+             local_anchor=True, query_noise=0.2,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "regex_only", "agreement_class": "same_file_only", "rrf_backing": False}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4-004", "js_express", "negative", ["negative"], False,
+             query_noise=0.5,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_only", "agreement_class": "single_source", "rrf_backing": False}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4-005", "py_flask", "ambiguous", ["ambiguous"], True,
+             query_noise=0.35,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_only", "agreement_class": "disagree", "rrf_backing": False}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
     ]
 
 
@@ -1505,6 +1818,7 @@ def build_report(
                 routing = route_admission_v3(task)
                 routing_h1 = route_admission_v3_h1(task)
                 routing_h2 = route_admission_v3_h2(task)
+                routing_h4 = route_admission_v3_h4(task)
                 per_task_routing.append({
                     "task_id": task["task_id"],
                     "repo_id": task.get("repo_id"),
@@ -1516,6 +1830,8 @@ def build_report(
                     "admission_v3_h1_score": routing_h1["score"],
                     "admission_v3_h2_action": routing_h2["action"],
                     "admission_v3_h2_score": routing_h2["score"],
+                    "admission_v3_h4_action": routing_h4["action"],
+                    "admission_v3_h4_score": routing_h4["score"],
                 })
 
     conclusion_lines: list[str] = []
@@ -1542,6 +1858,7 @@ def build_report(
         )
         h1 = policy_comparison["admission_v3_h1"]
         h2 = policy_comparison["admission_v3_h2"]
+        h4 = policy_comparison["admission_v3_h4"]
         conclusion_lines.append(
             f"Baseline SpanF0.5={baseline.get('SpanF0.5')}, PFP={baseline.get('primary_false_positive_rate')}; "
             f"admission_v3 SpanF0.5={admission.get('SpanF0.5')}, PFP={admission.get('primary_false_positive_rate')}."
@@ -1555,6 +1872,11 @@ def build_report(
             f"admission_v3_h2 (strict local anchor) SpanF0.5={h2.get('SpanF0.5')}, PFP={h2.get('primary_false_positive_rate')}, "
             f"quality_comparable={h2.get('quality_comparable')}, "
             f"selected_action_fallback_rate={h2.get('selected_action_fallback_rate')}."
+        )
+        conclusion_lines.append(
+            f"admission_v3_h4 (P33-B budget overlay) SpanF0.5={h4.get('SpanF0.5')}, PFP={h4.get('primary_false_positive_rate')}, "
+            f"quality_comparable={h4.get('quality_comparable')}, "
+            f"selected_action_fallback_rate={h4.get('selected_action_fallback_rate')}."
         )
         conclusion_lines.append("No policy is promotion-ready or default-ready.")
         conclusion_lines.append(
@@ -1584,6 +1906,9 @@ def build_report(
     missing_outcomes_h2 = policy_comparison.get("admission_v3_h2", {}).get("outcome_fallback", {}).get(
         "missing_action_outcome_count", 0
     )
+    missing_outcomes_h4 = policy_comparison.get("admission_v3_h4", {}).get("outcome_fallback", {}).get(
+        "missing_action_outcome_count", 0
+    )
     if missing_outcomes_v3:
         conclusion_lines.append(
             f"admission_v3 relied on fallback outcomes for {missing_outcomes_v3} action selections; "
@@ -1598,6 +1923,11 @@ def build_report(
         conclusion_lines.append(
             f"admission_v3_h2 relied on fallback outcomes for {missing_outcomes_h2} action selections; "
             "H2 strict local-anchor routing required outcomes that were not present in the input records."
+        )
+    if missing_outcomes_h4:
+        conclusion_lines.append(
+            f"admission_v3_h4 relied on fallback outcomes for {missing_outcomes_h4} action selections; "
+            "H4 budget overlay requires P33-B measured outcomes for every selected action."
         )
 
     report = {
@@ -1630,6 +1960,9 @@ def build_report(
         "private_labels_committed": False,
         "provider_keys_in_artifact": False,
         "gold_spans_in_artifact": False,
+        "h4_available": any(t.get("_p33b_handoff_detected", False) for t in tasks),
+        "h4_budget_overlay": True,
+        "p33b_handoff_detected": any(t.get("_p33b_handoff_detected", False) for t in tasks),
         "route_features_ignored_count": total_route_features_ignored,
         "elapsed_ms": elapsed_ms,
         "policy_comparison": policy_comparison,
@@ -1695,6 +2028,33 @@ def build_report(
             ],
             "per_task_routing": per_task_routing if self_test else [],
         },
+        "admission_v3_h4": {
+            "routing_rules": [
+                "negative/dense_quiver_trap/hard_distractor or deeply penalized score -> supporting_only if dense/graph support; else apply_llm_filter",
+                "ambiguous/hallucination_risk bucket or tag -> weak_candidate_only if span_overlap and no negative; supporting_only if span_overlap+RRF and no negative; supporting_only if dense/graph support; else apply_llm_filter",
+                "exact_unique_symbol_anchor + low query_noise + clear positive bucket -> weak_candidate_only (budget diagnostic); filter otherwise",
+                "span_overlap best subtype in non-negative/ambiguous bucket -> supporting_only if RRF-backed; weak_candidate_only if low-risk public bucket; else apply_llm_filter",
+                "same_file_only subtype -> weak_candidate_only in low-risk public bucket; else apply_llm_filter",
+                "disagree/single_source subtype -> weak_candidate_only only in clearly positive/low-noise public buckets; else apply_llm_filter",
+                "missing P33-B subtype metadata -> conservative weak_candidate_only/supporting_only/apply_llm_filter fallback comparable to bucket-routed behavior",
+                "dense/graph support without usable subtype -> supporting_only",
+                "otherwise -> weak_candidate_only",
+            ],
+            "scorecard_features": [
+                "p33b_anchor_subtypes (private handoff; not emitted)",
+                "agreement_class: span_overlap / same_file_only / disagree / single_source",
+                "rrf_backing on subtype row",
+                "exact_unique_symbol_anchor",
+                "symbol_anchor",
+                "regex_anchor",
+                "local_anchor",
+                "query_noise",
+                "negative/ambiguous/dense_false_positive/hard_distractor tags and buckets",
+                "dense_support_present",
+                "graph_support_present",
+            ],
+            "per_task_routing": per_task_routing if self_test else [],
+        },
         "conclusion": conclusion_lines,
     }
 
@@ -1719,6 +2079,8 @@ def validate_report(report: dict[str, Any]) -> list[str]:
         errors.append("evidencecore_semantics_changed must be false")
     if report.get("candidate_not_fact") is not True:
         errors.append("candidate_not_fact must be true")
+    if report.get("h4_budget_overlay") is not True:
+        errors.append("h4_budget_overlay must be true")
     if report.get("self_test") and report.get("not_quality_evidence") is not True:
         errors.append("self_test must set not_quality_evidence=true")
     if report.get("status") == "ok":
@@ -1782,6 +2144,11 @@ def build_markdown(report: dict[str, Any]) -> str:
         "demotes file-only agreement and unanchored LLM spans to weak/supporting/abstain, "
         "and requires span-level/exact-unique-symbol agreement for primary admissions. |"
     )
+    lines.append(
+        "| admission_v3_h4 | P33-B anchor-subtype deterministic budget overlay; demotes all primary-admit "
+        "candidates based on subtype agreement_class, never promotes from subtype evidence alone, "
+        "and remains a diagnostic-only non-default lane. |"
+    )
     lines.append("")
 
     lines.append("## Aggregate results\n")
@@ -1808,7 +2175,7 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append("## Quality comparability\n")
     lines.append("| Policy | quality_comparable | blocked_by_missing_action_outcomes | selected_action_fallback_rate |")
     lines.append("|---|---:|---:|---:|")
-    for policy in ("admission_v3", "admission_v3_h1", "admission_v3_h2"):
+    for policy in ("admission_v3", "admission_v3_h1", "admission_v3_h2", "admission_v3_h4"):
         m = report["policy_comparison"].get(policy, {})
         qc = m.get("quality_comparable")
         blocked = m.get("blocked_by_missing_action_outcomes")
@@ -1873,6 +2240,15 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"| {action} | {counts_h2.get(action, 0)} | {rates_h2.get(action, 'n/a')} |")
     lines.append("")
 
+    lines.append("## admission_v3_h4 action distribution\n")
+    counts_h4 = report["policy_comparison"]["admission_v3_h4"].get("policy_action_counts", {})
+    rates_h4 = report["policy_comparison"]["admission_v3_h4"].get("action_rates", {})
+    lines.append("| Action | Count | Rate |")
+    lines.append("|---:|---:|---:|")
+    for action in sorted(P30_ACTIONS):
+        lines.append(f"| {action} | {counts_h4.get(action, 0)} | {rates_h4.get(action, 'n/a')} |")
+    lines.append("")
+
     lines.append("## Score bands (admission_v3)\n")
     lines.append(
         "Bands are scorecard score ranges, not held-out calibrated probabilities. "
@@ -1895,6 +2271,7 @@ def build_markdown(report: dict[str, Any]) -> str:
     fb = report["policy_comparison"]["admission_v3"].get("outcome_fallback", {})
     fb_h1 = report["policy_comparison"]["admission_v3_h1"].get("outcome_fallback", {})
     fb_h2 = report["policy_comparison"]["admission_v3_h2"].get("outcome_fallback", {})
+    fb_h4 = report["policy_comparison"]["admission_v3_h4"].get("outcome_fallback", {})
     lines.append(
         f"- Missing action outcomes for admission_v3: {fb.get('missing_action_outcome_count', 0)}"
     )
@@ -1905,6 +2282,9 @@ def build_markdown(report: dict[str, Any]) -> str:
         f"- Missing action outcomes for admission_v3_h2: {fb_h2.get('missing_action_outcome_count', 0)}"
     )
     lines.append(
+        f"- Missing action outcomes for admission_v3_h4: {fb_h4.get('missing_action_outcome_count', 0)}"
+    )
+    lines.append(
         f"- Fallback strategy counts (admission_v3): {fb.get('fallback_strategy_counts', {})}"
     )
     lines.append(
@@ -1912,6 +2292,9 @@ def build_markdown(report: dict[str, Any]) -> str:
     )
     lines.append(
         f"- Fallback strategy counts (admission_v3_h2): {fb_h2.get('fallback_strategy_counts', {})}"
+    )
+    lines.append(
+        f"- Fallback strategy counts (admission_v3_h4): {fb_h4.get('fallback_strategy_counts', {})}"
     )
     lines.append(
         "- If an action selected by admission_v3 has no measured outcome in the input record, "
@@ -1928,6 +2311,11 @@ def build_markdown(report: dict[str, Any]) -> str:
         "from the local-anchor measured outcomes already included in the handoff; a non-zero value here "
         "indicates the input records are missing outcomes for actions H2 selects."
     )
+    lines.append(
+        "- admission_v3_h4 requires measured outcomes for apply_llm_filter, supporting_only, and "
+        "weak_candidate_only because it does not select primary-admit actions; a non-zero "
+        "value here indicates the input P33-B handoff lacks outcomes for H4-selected actions."
+    )
     lines.append("")
 
     lines.append("## Routing rules (admission_v3)\n")
@@ -1940,20 +2328,26 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"- {rule}")
     lines.append("")
 
+    lines.append("## Routing rules (admission_v3_h4)\n")
+    for rule in report["admission_v3_h4"]["routing_rules"]:
+        lines.append(f"- {rule}")
+    lines.append("")
+
     if report.get("self_test"):
         lines.append("## Per-task routing (self-test only)\n")
         lines.append(
             "| task_id | repo_id | task_bucket | task_risk_tags | "
-            "v3_action | v3_score | h1_action | h1_score | h2_action | h2_score |"
+            "v3_action | v3_score | h1_action | h1_score | h2_action | h2_score | h4_action | h4_score |"
         )
-        lines.append("|---|---|---|---|---|---|---|---|---|---|")
+        lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
         for row in report["admission_v3"]["per_task_routing"]:
             tags = ", ".join(row.get("task_risk_tags") or [])
             lines.append(
                 f"| {row['task_id']} | {row.get('repo_id') or ''} | {row.get('task_bucket') or ''} | "
                 f"{tags} | {row['admission_v3_action']} | {row['admission_v3_score']} | "
                 f"{row['admission_v3_h1_action']} | {row['admission_v3_h1_score']} | "
-                f"{row['admission_v3_h2_action']} | {row['admission_v3_h2_score']} |"
+                f"{row['admission_v3_h2_action']} | {row['admission_v3_h2_score']} | "
+                f"{row['admission_v3_h4_action']} | {row['admission_v3_h4_score']} |"
             )
         lines.append("")
 
@@ -1964,10 +2358,10 @@ def build_markdown(report: dict[str, Any]) -> str:
 
     lines.append("## Safety notes\n")
     lines.append("- No remote model calls were made during admission evaluation.")
-    lines.append("- Routing uses only RUN-phase public task metadata; labels/gold are used only for aggregate scoring after actions are fixed.")
+    lines.append("- Routing uses only RUN-phase public task metadata and private P33-B subtype handoff fields; labels/gold are used only for aggregate scoring after actions are fixed, and private handoff fields are never emitted publicly.")
     lines.append("- This report contains only public task metadata, strategy/action names, and aggregate metrics.")
-    lines.append("- Raw queries, snippets, prompts, responses, gold spans, private labels, provider keys, and provider fields are not stored.")
-    lines.append("- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `external_calls=0`.")
+    lines.append("- Raw queries, snippets, prompts, responses, gold spans, private labels, provider keys, subtype rows, and provider fields are not stored.")
+    lines.append("- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `external_calls=0`, `h4_budget_overlay=true`.")
     lines.append("")
     return "\n".join(lines)
 
