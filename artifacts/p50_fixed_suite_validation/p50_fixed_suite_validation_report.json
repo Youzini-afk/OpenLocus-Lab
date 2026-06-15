@@ -1,0 +1,299 @@
+{
+  "aggregate_only_public_artifact": true,
+  "baseline_policy_delta": {
+    "availability": "missing_or_partial_cost_fields",
+    "by_policy": {
+      "admission_v3_h4b": {
+        "availability": "missing_or_partial_cost_fields",
+        "reason": "Route policy or candidate_baseline span cost is not fully available; delta not computed."
+      },
+      "bucket_routed_v0": {
+        "availability": "missing_or_partial_cost_fields",
+        "reason": "Route policy or candidate_baseline span cost is not fully available; delta not computed."
+      }
+    },
+    "compared_policies": [
+      "bucket_routed_v0",
+      "admission_v3_h4b"
+    ]
+  },
+  "candidate_not_fact": true,
+  "conclusion": [
+    "P50 fixed-suite anti-overfit gate is `insufficient_fixed_suite`; this is a scaffold/health report.",
+    "self_test_only",
+    "status=self_test_only",
+    "task_count=4 < 6",
+    "bucket_routed_v0 has non-zero outcome/cost fallback",
+    "admission_v3_h4b has non-zero outcome/cost fallback",
+    "P50 is an evaluation discipline phase, not a policy improvement phase.",
+    "P48 is explicitly not implemented; no policy promotion is inferred from candidate/span-geometry signals.",
+    "Suite manifest hash (sha256): `fd44ed577a7d3e47b8ce656c2e0040c65b05758f0825ae32c13c41085090d98f`.",
+    "Evaluator config hash (sha256): `c638cd5cc1245ab8eb69c748f9173bc93e4cb51e3f8769d18c23d33d6ed435fa`.",
+    "Candidate pool availability: `partial`; gold span availability: `available`.",
+    "All outputs are aggregate-only; no per-task rows, task IDs, candidate IDs, paths, gold spans, private labels, snippets, prompts, responses, or provider keys are published."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evaluator_config_hash": {
+    "algorithm": "sha256+blake2b",
+    "blake2b": "b0e7549019fc8595c3d667296d263a99cbd9acb43825df844b273033e3cb944b1619bf06de52c35dd55364389ac074be2e059c7ede4bbab3b3f07f7f3fc53cb5",
+    "published_note": "Hash of evaluator configuration. Raw configuration fields are listed only in aggregate summary form.",
+    "sha256": "c638cd5cc1245ab8eb69c748f9173bc93e4cb51e3f8769d18c23d33d6ed435fa"
+  },
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T15:50:50.412441+00:00",
+  "generated_by": "eval/p50_fixed_suite_validation.py",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "key_strategy_outcome_cost": {
+    "by_strategy": {
+      "candidate_baseline": {
+        "added_false_span": 9,
+        "added_gold_span": 3,
+        "availability": "available",
+        "cost_available_count": 4,
+        "cost_missing_count": 0,
+        "false_per_gold": 3.0,
+        "gold_per_false": 0.333333,
+        "mean_no_gold_false_primary_rate": 0.4,
+        "mean_primary_false_positive_rate": 0.205,
+        "mean_span_f0_5": 0.145,
+        "net_span_value_1x": -6,
+        "net_span_value_2x": -15,
+        "no_gold_task_count": 1,
+        "outcome_missing_count": 0,
+        "outcome_present_count": 4,
+        "positive_task_count": 3,
+        "task_count": 4
+      },
+      "llm_span_narrow": {
+        "added_false_span": 2,
+        "added_gold_span": 2,
+        "availability": "available",
+        "cost_available_count": 2,
+        "cost_missing_count": 2,
+        "false_per_gold": 1.0,
+        "gold_per_false": 1.0,
+        "mean_no_gold_false_primary_rate": null,
+        "mean_primary_false_positive_rate": 0.075,
+        "mean_span_f0_5": 0.22,
+        "net_span_value_1x": 0,
+        "net_span_value_2x": -2,
+        "no_gold_task_count": 1,
+        "outcome_missing_count": 2,
+        "outcome_present_count": 2,
+        "positive_task_count": 3,
+        "task_count": 4
+      },
+      "rrf_primary": {
+        "added_false_span": 5,
+        "added_gold_span": 2,
+        "availability": "available",
+        "cost_available_count": 2,
+        "cost_missing_count": 2,
+        "false_per_gold": 2.5,
+        "gold_per_false": 0.4,
+        "mean_no_gold_false_primary_rate": null,
+        "mean_primary_false_positive_rate": 0.115,
+        "mean_span_f0_5": 0.165,
+        "net_span_value_1x": -3,
+        "net_span_value_2x": -8,
+        "no_gold_task_count": 1,
+        "outcome_missing_count": 2,
+        "outcome_present_count": 2,
+        "positive_task_count": 3,
+        "task_count": 4
+      },
+      "symbol_regex_union": {
+        "added_false_span": 1,
+        "added_gold_span": 2,
+        "availability": "available",
+        "cost_available_count": 3,
+        "cost_missing_count": 1,
+        "false_per_gold": 0.5,
+        "gold_per_false": 2.0,
+        "mean_no_gold_false_primary_rate": 0.0,
+        "mean_primary_false_positive_rate": 0.0,
+        "mean_span_f0_5": 0.166667,
+        "net_span_value_1x": 1,
+        "net_span_value_2x": 0,
+        "no_gold_task_count": 1,
+        "outcome_missing_count": 1,
+        "outcome_present_count": 3,
+        "positive_task_count": 3,
+        "task_count": 4
+      }
+    }
+  },
+  "labels_loaded_after_run": true,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 2,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 2,
+  "p46_carry_forward": {
+    "materialization_availability": "source_read_unavailable",
+    "materialization_overall": {
+      "availability": "source_read_unavailable",
+      "candidates_seen": 14,
+      "materialization_rate": null,
+      "materialized_valid": null,
+      "unavailable_reason": "source_read_unavailable"
+    },
+    "p46_schema_version": "p46-candidate-reach-cost-map-v1",
+    "reach_cost_map": {
+      "availability": "available",
+      "candidate_baseline_k5_gold_file_reach_denominator": 2,
+      "reach_metrics_available": true,
+      "strategy_availability": {
+        "candidate_baseline": "available",
+        "llm_abstain_filter": "available",
+        "llm_filter": "available",
+        "llm_span_narrow": "available",
+        "regex_primary": "available",
+        "rrf_primary": "available",
+        "symbol_primary": "available",
+        "symbol_regex_union": "available"
+      }
+    }
+  },
+  "p47_carry_forward": {
+    "expanded_candidate_not_evidence": true,
+    "gap_type_breakdown": {
+      "availability": "available",
+      "gap_breakdown_available": true,
+      "strategy_availability": {
+        "candidate_baseline": "available",
+        "llm_abstain_filter": "missing_positive_pool",
+        "llm_filter": "available",
+        "llm_span_narrow": "available",
+        "regex_primary": "missing_positive_pool",
+        "rrf_primary": "available",
+        "symbol_primary": "available",
+        "symbol_regex_union": "available"
+      }
+    },
+    "hypothetical_upper_bound": {
+      "availability": "available",
+      "k": 5
+    },
+    "p47_schema_version": "p47-request-more-context-v1",
+    "span_geometry_only": true,
+    "variant_map": {
+      "availability": "available",
+      "strategy_availability": {
+        "candidate_baseline": "available",
+        "llm_abstain_filter": "available",
+        "llm_filter": "available",
+        "llm_span_narrow": "available",
+        "regex_primary": "available",
+        "rrf_primary": "available",
+        "symbol_primary": "available",
+        "symbol_regex_union": "available"
+      },
+      "variant_metrics_available": true
+    }
+  },
+  "p48_variant_availability": "not_implemented",
+  "policy_route_comparison": {
+    "by_policy": {
+      "admission_v3_h4b": {
+        "action_distribution": {
+          "admit_symbol_regex_union": 1,
+          "apply_llm_filter": 1,
+          "weak_candidate_only": 2
+        },
+        "availability": "partial_missing_cost_fields",
+        "cost_fallback_rate": 0.5,
+        "outcome_fallback_rate": 0.5,
+        "selected_missing_cost_count": 2,
+        "selected_missing_outcome_count": 2,
+        "selected_task_count": 4,
+        "selected_with_cost_count": 2,
+        "selected_with_outcome_count": 2
+      },
+      "bucket_routed_v0": {
+        "action_distribution": {
+          "llm_abstain_filter": 1,
+          "llm_filter": 1,
+          "llm_span_narrow": 2
+        },
+        "availability": "partial_missing_cost_fields",
+        "cost_fallback_rate": 0.25,
+        "outcome_fallback_rate": 0.0,
+        "selected_missing_cost_count": 1,
+        "selected_missing_outcome_count": 0,
+        "selected_task_count": 4,
+        "selected_with_cost_count": 3,
+        "selected_with_outcome_count": 4
+      }
+    },
+    "compared_policies": [
+      "bucket_routed_v0",
+      "admission_v3_h4b"
+    ]
+  },
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "quality_gate_reasons": [
+    "self_test_only",
+    "status=self_test_only",
+    "task_count=4 < 6",
+    "bucket_routed_v0 has non-zero outcome/cost fallback",
+    "admission_v3_h4b has non-zero outcome/cost fallback"
+  ],
+  "quality_gate_status": "insufficient_fixed_suite",
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "real_evaluation": false,
+  "remote_calls_by_p50": 0,
+  "schema_version": "p50-fixed-suite-validation-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "source_reads_attempted_by_p50": false,
+  "stage": "P50 Fixed-Suite Validation / Anti-Overfit Gate",
+  "status": "self_test_only",
+  "status_reason": null,
+  "suite_composition": {
+    "candidate_pool_availability": "partial",
+    "fallback_outcome_rate": 0.525,
+    "gold_span_availability": "available",
+    "input_record_count": 4,
+    "missing_cost_field_rate": 0.6,
+    "no_gold_task_count": 1,
+    "outcome_availability": "partial",
+    "p33b_subtype_availability": "available",
+    "positive_task_count": 3,
+    "public_bucket_distribution": {
+      "ambiguous": 1,
+      "negative": 1,
+      "positive": 2
+    },
+    "repo_count": 2,
+    "risk_tag_distribution": {
+      "ambiguous": 1,
+      "high_confidence": 1,
+      "negative": 1,
+      "symbol_anchor": 1
+    },
+    "task_count": 4
+  },
+  "suite_manifest_hash": {
+    "algorithm": "sha256+blake2b",
+    "blake2b": "78f98f9afdda828e464a3ce92f26364e63885912f530a5806f3815da225752b19ea15e1b242c38f9eaf860c85af2e559ae00056a65741ec13f28992df97411fd",
+    "published_note": "This hash covers private per-task identifiers and public metadata. Raw components are not published.",
+    "sha256": "fd44ed577a7d3e47b8ce656c2e0040c65b05758f0825ae32c13c41085090d98f"
+  },
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
