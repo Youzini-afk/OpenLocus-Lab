@@ -287,6 +287,14 @@ P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_ove
 
 第一轮真实 P30-H4 remote smoke 完成 6 个成功 runs。它 quality-comparable 且 fallback-free，但过度保守：H4 产生 `0` added gold spans 和 `0` added false spans，mean SpanF0.5 为 `0.0000`。相同 runs 中 P25 `bucket_routed_v0` 仍是最佳 reference（added gold/false `27/34`，mean SpanF0.5 `0.0768`）。因此 H4 是 safety lower bound 和有价值的负结果，不是可部署 admission policy。下一轮 H4 应测试 budgeted selective re-admission 或 `request_more_context`，而不是 all-demotion。
 
+### 2.17 P32 / P30-H4B 选择性 primary re-admission 已就绪
+
+`eval/p30_admission_model_v3.py` 现已同时实现 `admission_v3_h4b`，即 P32/P30-H4B 选择性 primary re-admission 诊断策略。H4B 是确定性、无远程调用、仅诊断用途的 lane。它与 H4 使用相同的私有 P33-B subtype handoff 和 RUN-phase 公开特征，但测试一个极窄的严格合取条件，以判断是否允许 primary-admit 动作。
+
+严格门仅在以下全部满足时才选择 `admit_symbol_regex_union`：最优子类型为 `symbol_regex_fusion` + `span_overlap` + `rrf_backing`；`local_anchor` 和 `symbol_regex_agree_span` 为真；`query_noise <= 0.1`；公开 bucket/tag 属于低危 positive 集合；且 `exact_unique_symbol_anchor` 或 `rrf_anchor_agree_span` 至少一个为真。若同时还有 `rrf_backed_by_anchor` 和 `rrf_anchor_agree_span`，H4B 可选择 `admit_rrf_primary`。其余任务一律 hard-guard 或降级，包括 negative/dense/ambiguous/hallucination/high-noise 及最优子类型为 `regex_only`/`same_file_only`/`disagree`/`single_source` 的情况。
+
+公开产物包含 `h4b_available`、`h4b_budget_overlay=true`、`h4b_selective_readmission=true`、`h4b_primary_opportunity_count` 以及 rule 聚合计数（`strict_union_re_admit`、`strict_rrf_re_admit`、`hard_guard`、`missing_handoff`、`demote_span_overlap`、`demote_same_file`、`filter_dangerous_subtype`）。H4B 还报告 `quality_comparable`、`selected_action_fallback_rate`、`false_per_gold`、`net_span_value_2x` 以及来自 P30-H3 会计的 span-cost summary。合成 self-test 中 H4B 质量可比且 fallback-free，并触发少量严格 primary opportunity；真实 H4B smoke 待进行。
+
 ---
 
 ## 3. 当前研究假设

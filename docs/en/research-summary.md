@@ -27,6 +27,7 @@ P20-LS-A blocks low-context/query-only LLM aliases, not rich-context LLM retriev
 P21-G should prioritize cross-model context injection effects, richer code context, quality, latency, and cost.
 Dense/QuIVer/LLM-derived/graph remain supporting/diagnostic/candidate only.
 P32/P30-H4 anchor-subtype budget overlay is now wired into P30; it tests demotion, not primary promotion.
+P32/P30-H4B selective primary re-admission is now wired into P30; it tests an extremely narrow strict gate and keeps almost all tasks non-primary.
 promotion_ready=false and current_default_should_change=false.
 ```
 
@@ -340,6 +341,14 @@ Routing rules are conservative: negative/dense/ambiguous tasks are filtered or a
 Private handoff fields are copied into the normalized in-memory task but are never emitted into public P30 artifacts. Report flags are locked: `h4_budget_overlay=true`, `promotion_ready=false`, `default_should_change=false`, and, when P33-B records are present, `h4_available=true` / `p33b_handoff_detected=true`. H4 reports `quality_comparable`, `blocked_by_missing_action_outcomes`, and `selected_action_fallback_rate` like H1/H2, and the real-provider CI gate requires H4 to exist and, on `p21_llm_rich` records, to be quality-comparable with zero selected-action fallback. See [`p32-p30-h4-budget-overlay.md`](p32-p30-h4-budget-overlay.md).
 
 The real P30-H4 remote smoke completed 6 successful runs and showed the all-demotion overlay is too conservative: H4 was quality-comparable and fallback-free but produced `0/0` added gold/false spans and mean SpanF0.5 `0.0000`. P25 `bucket_routed_v0` remained the best reference on the same runs (`27/34` added gold/false, mean SpanF0.5 `0.0768`). H4 should therefore evolve toward budgeted selective re-admission or `request_more_context` variants rather than all-demotion. See [`p32-p30-h4-remote-smoke.md`](p32-p30-h4-remote-smoke.md).
+
+## P32 / P30-H4B Selective Re-Admission (2026-06-15)
+
+`eval/p30_admission_model_v3.py` now includes the `admission_v3_h4b` policy, a P32/P30-H4B selective primary re-admission diagnostic. H4B consumes the same RUN-phase public features and private P33-B subtype handoff as H4, but uses an extremely narrow strict conjunction to test whether a tiny subset of tasks can safely be re-admitted as primary. Almost all tasks are hard-guarded or demoted.
+
+The strict gate allows `admit_symbol_regex_union` only when the best subtype is `symbol_regex_fusion` + `span_overlap` + `rrf_backing`, `local_anchor` and `symbol_regex_agree_span` are true, `query_noise <= 0.1`, the public bucket/tag is in a low-risk positive set, and either `exact_unique_symbol_anchor` or `rrf_anchor_agree_span` holds. If `rrf_backed_by_anchor` and `rrf_anchor_agree_span` also hold, H4B may optionally select `admit_rrf_primary`. All negative/dense/ambiguous/hallucination/high-noise cases, missing handoffs, and best subtypes that are `regex_only`, `same_file_only`, `disagree`, or `single_source` are routed to `apply_llm_filter`, `supporting_only`, or `weak_candidate_only`.
+
+Public outputs include `h4b_available`, `h4b_budget_overlay=true`, `h4b_selective_readmission=true`, `h4b_primary_opportunity_count`, per-policy `rule_counts`, `false_per_gold`, `net_span_value_2x`, a `span_cost_summary`, and H1/H2-style quality comparability. On synthetic self-test H4B is quality-comparable and fallback-free, with a small number of strict primary opportunities. The real H4B smoke is pending. See [`p32-p30-h4b-selective-readmission.md`](p32-p30-h4b-selective-readmission.md).
 
 ## Stage status
 

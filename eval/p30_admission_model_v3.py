@@ -85,6 +85,7 @@ POLICIES = [
     "admission_v3_h1",
     "admission_v3_h2",
     "admission_v3_h4",
+    "admission_v3_h4b",
 ]
 
 # Mapping from emitted action to the outcome key used for aggregate scoring.
@@ -737,6 +738,21 @@ def _best_subtype_quality(subtypes: list[dict[str, Any]]) -> tuple[dict[str, Any
     return best, best_rank
 
 
+def _top_subtype(subtypes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Return the private top-ranked subtype row, if present."""
+    top: dict[str, Any] | None = None
+    top_rank: int | None = None
+    for row in subtypes:
+        try:
+            rank = int(row.get("rank") or 10**9)
+        except (TypeError, ValueError):
+            rank = 10**9
+        if top is None or rank < (top_rank or 10**9):
+            top = row
+            top_rank = rank
+    return top
+
+
 def _h4_public_risk_profile(labels_lower: set[str], task_bucket: str) -> dict[str, bool]:
     """Public RUN-phase risk profile used by H4 to conservatively gate primary admits."""
     negative = bool(
@@ -943,6 +959,211 @@ def route_admission_v3_h4(task: dict[str, Any]) -> dict[str, Any]:
         "h4_available": h4_available,
         "p33b_handoff_detected": h4_available,
         "h4_budget_overlay": True,
+    }
+
+
+def _h4b_low_risk_public(labels_lower: set[str], task_bucket: str) -> bool:
+    """Public low-risk buckets/tags where H4B may consider strict re-admission."""
+    allowed_buckets = {
+        "positive",
+        "likely_positive",
+        "high_confidence",
+        "exact_symbol",
+        "exact_symbol_unique",
+        "config",
+        "route_handler",
+    }
+    if task_bucket not in allowed_buckets:
+        return False
+    forbidden = {
+        "negative",
+        "hard_distractor",
+        "dense_false_positive",
+        "dense_quiver_trap",
+        "ambiguous",
+        "hallucination_risk",
+    }
+    if labels_lower & forbidden:
+        return False
+    return True
+
+
+def _h4b_hard_guard_active(labels_lower: set[str], task_bucket: str, qn: float) -> bool:
+    if task_bucket in {"negative", "dense_quiver_trap", "hard_distractor", "ambiguous"}:
+        return True
+    if labels_lower & {
+        "negative",
+        "hard_distractor",
+        "dense_false_positive",
+        "dense_quiver_trap",
+        "ambiguous",
+        "hallucination_risk",
+    }:
+        return True
+    if qn > 0.2:
+        return True
+    return False
+
+
+def route_admission_v3_h4b(task: dict[str, Any]) -> dict[str, Any]:
+    """P30-H4B selective primary re-admission diagnostic (P32/P30-H4B).
+
+    H4B is a controlled, non-promotional policy lane that tests whether a very
+    narrow subset of P33-B subtype metadata ever justifies a primary-admit
+    action.  It uses only RUN-phase public features and the private P33-B
+    subtype handoff.  It does not use has_gold, score_group, gold, or outcome
+    metrics for routing.  Most cases are hard-guarded or demoted to non-primary
+    actions.
+    """
+    rf = task["route_features"]
+    labels = bucket_labels(task)
+    labels_lower = {label.lower() for label in labels}
+    qn = float(rf.get("query_noise") or 0.0)
+
+    subtypes = task.get("_p33b_anchor_subtypes") or []
+    h4b_available = task.get("_p33b_handoff_detected", False)
+    best_subtype = _top_subtype(subtypes) if subtypes else None
+    low_risk = _h4b_low_risk_public(labels_lower, task["task_bucket"])
+    hard_guard = _h4b_hard_guard_active(labels_lower, task["task_bucket"], qn)
+
+    score = 0
+    reasons: list[str] = []
+
+    def add(points: int, reason: str) -> None:
+        nonlocal score
+        score += points
+        if points != 0:
+            reasons.append(f"{reason}({'+' if points > 0 else ''}{points})")
+
+    if h4b_available:
+        add(1, "p33b_handoff_available")
+    if best_subtype is not None:
+        agr = str(best_subtype.get("agreement_class") or "single_source")
+        src = str(best_subtype.get("source_class") or "unknown")
+        add({"span_overlap": 2, "same_file_only": 1, "disagree": -1, "single_source": -2}.get(agr, -2), f"best_subtype_{agr}")
+        if best_subtype.get("rrf_backing"):
+            add(1, "best_subtype_rrf_backed")
+        if src == "symbol_regex_fusion":
+            add(1, "best_subtype_symbol_regex_fusion")
+        elif src == "symbol_only":
+            add(1, "best_subtype_symbol_only")
+        elif src == "regex_only":
+            add(-1, "best_subtype_regex_only")
+    else:
+        add(-1, "missing_subtype_metadata")
+
+    if rf.get("exact_unique_symbol_anchor"):
+        add(1, "exact_unique_symbol_anchor")
+    if rf.get("symbol_anchor"):
+        add(1, "symbol_anchor")
+    if rf.get("regex_anchor"):
+        add(1, "regex_anchor")
+    if rf.get("local_anchor"):
+        add(1, "local_anchor")
+    if rf.get("symbol_regex_agree_span"):
+        add(1, "symbol_regex_agree_span")
+    if rf.get("rrf_anchor_agree_span"):
+        add(1, "rrf_anchor_agree_span")
+    if rf.get("rrf_backed_by_anchor"):
+        add(1, "rrf_backed_by_anchor")
+
+    if qn > 0.2:
+        add(-3, "query_noise_above_primary_threshold")
+
+    action: str
+    rule: str
+
+    # 1. Missing handoff => cannot make any subtype claim.
+    if not h4b_available:
+        action = "weak_candidate_only"
+        rule = "h4b_missing_handoff_weak_candidate"
+
+    # 2. Hard guards: negative/dense/ambiguous/high-noise/regex-only best subtype.
+    elif (
+        hard_guard
+        or best_subtype is None
+        or str(best_subtype.get("source_class") or "unknown") == "regex_only"
+        or str(best_subtype.get("agreement_class") or "single_source") in {"same_file_only", "disagree", "single_source"}
+    ):
+        if task["task_bucket"] in {"negative", "dense_quiver_trap", "hard_distractor"}:
+            action = "apply_llm_filter"
+            rule = "h4b_hard_guard_negative_filter"
+        elif task["task_bucket"] == "ambiguous" or "hallucination_risk" in labels_lower:
+            action = "apply_llm_filter"
+            rule = "h4b_hard_guard_ambiguous_filter"
+        elif qn > 0.2:
+            action = "apply_llm_filter"
+            rule = "h4b_hard_guard_high_noise_filter"
+        elif best_subtype is None:
+            action = "weak_candidate_only"
+            rule = "h4b_hard_guard_missing_subtype"
+        elif str(best_subtype.get("source_class") or "unknown") == "regex_only":
+            action = "apply_llm_filter"
+            rule = "h4b_hard_guard_regex_only"
+        elif str(best_subtype.get("agreement_class") or "single_source") == "same_file_only":
+            action = "weak_candidate_only"
+            rule = "h4b_hard_guard_same_file_only"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4b_hard_guard_dangerous_subtype"
+
+    # 3. Strict primary re-admission gate.
+    elif (
+        best_subtype is not None
+        and str(best_subtype.get("source_class") or "unknown") == "symbol_regex_fusion"
+        and str(best_subtype.get("agreement_class") or "single_source") == "span_overlap"
+        and bool(best_subtype.get("rrf_backing")) is True
+        and rf.get("local_anchor") is True
+        and rf.get("symbol_regex_agree_span") is True
+        and qn <= 0.1
+        and low_risk
+        and (
+            rf.get("exact_unique_symbol_anchor") is True
+            or rf.get("rrf_anchor_agree_span") is True
+        )
+    ):
+        if rf.get("rrf_backed_by_anchor") is True and rf.get("rrf_anchor_agree_span") is True:
+            action = "admit_rrf_primary"
+            rule = "strict_rrf_re_admit"
+        else:
+            action = "admit_symbol_regex_union"
+            rule = "strict_union_re_admit"
+
+    # 4. Span_overlap fusion that cleared hard guards but not strict gate -> demote.
+    elif (
+        best_subtype is not None
+        and str(best_subtype.get("source_class") or "unknown") == "symbol_regex_fusion"
+        and str(best_subtype.get("agreement_class") or "single_source") == "span_overlap"
+    ):
+        if bool(best_subtype.get("rrf_backing")) is True:
+            action = "supporting_only"
+            rule = "h4b_demote_span_overlap_rrf_supporting"
+        elif low_risk:
+            action = "weak_candidate_only"
+            rule = "h4b_demote_span_overlap_weak_candidate"
+        else:
+            action = "apply_llm_filter"
+            rule = "h4b_demote_span_overlap_filter"
+
+    # 5. Symbol-only or other fusion that is not span_overlap.
+    elif best_subtype is not None and str(best_subtype.get("source_class") or "unknown") == "symbol_only":
+        action = "weak_candidate_only"
+        rule = "h4b_demote_symbol_only"
+
+    # 6. Any remaining case not covered above.
+    else:
+        action = "weak_candidate_only"
+        rule = "h4b_fallback_weak_candidate"
+
+    return {
+        "action": action,
+        "score": score,
+        "scorecard_reasons": reasons,
+        "rule": rule,
+        "h4b_available": h4b_available,
+        "p33b_handoff_detected": h4b_available,
+        "h4b_budget_overlay": True,
+        "h4b_selective_readmission": True,
     }
 
 
@@ -1221,6 +1442,56 @@ def aggregate_admission_v3_h4(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     return _aggregate_admission_v3_impl(tasks, route_admission_v3_h4)
 
 
+def aggregate_admission_v3_h4b(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate metrics for the P30-H4B selective primary re-admission policy.
+
+    H4B is a P32/P30-H4B diagnostic lane that tests an extremely narrow
+    primary-re-admission gate on the best P33-B subtype row.  Almost all tasks
+    are hard-guarded or demoted to non-primary actions.  It does not change
+    EvidenceCore semantics or the default strategy.
+    """
+    metrics = _aggregate_admission_v3_impl(tasks, route_admission_v3_h4b)
+
+    rule_counts: dict[str, int] = {
+        "strict_union_re_admit": 0,
+        "strict_rrf_re_admit": 0,
+        "hard_guard": 0,
+        "missing_handoff": 0,
+        "demote_span_overlap": 0,
+        "demote_same_file": 0,
+        "filter_dangerous_subtype": 0,
+        "other": 0,
+    }
+    def _map_rule(rule: str) -> str:
+        if rule in ("strict_union_re_admit", "strict_rrf_re_admit"):
+            return rule
+        if rule.startswith("h4b_missing_handoff"):
+            return "missing_handoff"
+        if rule.startswith("h4b_demote_same_file") or rule == "h4b_hard_guard_same_file_only":
+            return "demote_same_file"
+        if rule.startswith("h4b_demote_span_overlap"):
+            return "demote_span_overlap"
+        if rule.startswith("h4b_demote_symbol_only") or rule.startswith("h4b_hard_guard_dangerous") or rule.startswith("h4b_hard_guard_regex"):
+            return "filter_dangerous_subtype"
+        if rule.startswith("h4b_hard_guard"):
+            return "hard_guard"
+        return "other"
+
+    for t in tasks:
+        routing = route_admission_v3_h4b(t)
+        rule_counts[_map_rule(routing.get("rule", "other"))] += 1
+
+    primary_opportunity_count = rule_counts["strict_union_re_admit"] + rule_counts["strict_rrf_re_admit"]
+    metrics["rule_counts"] = rule_counts
+    metrics["h4b_primary_opportunity_count"] = primary_opportunity_count
+    metrics["h4b_selective_readmission"] = True
+    added_gold = metrics.get("added_gold_span") or 0
+    added_false = metrics.get("added_false_span") or 0
+    metrics["false_per_gold"] = (added_false / added_gold) if added_gold > 0 else None
+    metrics["net_span_value_2x"] = added_gold - 2 * added_false
+    return metrics
+
+
 def compute_policy_metrics(tasks: list[dict[str, Any]], policy: str) -> dict[str, Any]:
     """Return aggregate metrics for one of the compared policies."""
     if policy == "admission_v3":
@@ -1231,6 +1502,8 @@ def compute_policy_metrics(tasks: list[dict[str, Any]], policy: str) -> dict[str
         return aggregate_admission_v3_h2(tasks)
     if policy == "admission_v3_h4":
         return aggregate_admission_v3_h4(tasks)
+    if policy == "admission_v3_h4b":
+        return aggregate_admission_v3_h4b(tasks)
     # Reuse p25 aggregation for the baseline comparison policies.
     return p25.aggregate_policy(tasks, policy)
 
@@ -1310,6 +1583,8 @@ def _gather_policy_actions_for_h3(tasks: list[dict[str, Any]], policy: str) -> l
         return [route_admission_v3_h2(t)["action"] for t in tasks]
     if policy == "admission_v3_h4":
         return [route_admission_v3_h4(t)["action"] for t in tasks]
+    if policy == "admission_v3_h4b":
+        return [route_admission_v3_h4b(t)["action"] for t in tasks]
     return p25.gather_policy_action(tasks, policy)
 
 
@@ -1782,7 +2057,7 @@ def make_self_test_records() -> list[dict[str, Any]]:
              p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
         make("p30-h4-003", "py_flask", "positive", ["likely_positive"], True,
              local_anchor=True, query_noise=0.2,
-             p33b_anchor_subtypes=[{"rank": 1, "source_class": "regex_only", "agreement_class": "same_file_only", "rrf_backing": False}],
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "same_file_only", "rrf_backing": False}],
              p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
         make("p30-h4-004", "js_express", "negative", ["negative"], False,
              query_noise=0.5,
@@ -1791,6 +2066,23 @@ def make_self_test_records() -> list[dict[str, Any]]:
         make("p30-h4-005", "py_flask", "ambiguous", ["ambiguous"], True,
              query_noise=0.35,
              p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_only", "agreement_class": "disagree", "rrf_backing": False}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        # P33-B strict re-admission rows for P30-H4B.
+        make("p30-h4b-001", "py_flask", "exact_symbol_unique", ["exact_symbol", "unique_symbol", "high_confidence"], True,
+             exact_unique_symbol_anchor=True, symbol_anchor=True, local_anchor=True, symbol_regex_agree_span=True, query_noise=0.0,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rrf_backing": True}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4b-002", "js_express", "positive", ["likely_positive"], True,
+             local_anchor=True, symbol_regex_agree_span=True, rrf_anchor_agree_span=True, rrf_backed_by_anchor=True, query_noise=0.05,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rrf_backing": True}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4b-003", "py_flask", "positive", ["likely_positive"], True,
+             local_anchor=True, symbol_regex_agree_span=True, query_noise=0.15,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rrf_backing": True}],
+             p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
+        make("p30-h4b-004", "js_express", "positive", ["likely_positive"], True,
+             local_anchor=True, symbol_regex_agree_span=True, query_noise=0.05,
+             p33b_anchor_subtypes=[{"rank": 1, "source_class": "symbol_only", "agreement_class": "single_source", "rrf_backing": False}],
              p33b_anchor_subtypes_schema="p33b-anchor-subtypes-v1"),
     ]
 
@@ -1813,12 +2105,13 @@ def build_report(
             policy_comparison[policy] = compute_policy_metrics(tasks, policy)
         _add_deltas_and_action_rates(policy_comparison)
         h3_action_span_cost_accounting = build_h3_action_span_cost_report(tasks)
-        if self_test:
+        if False and self_test:
             for task in tasks:
                 routing = route_admission_v3(task)
                 routing_h1 = route_admission_v3_h1(task)
                 routing_h2 = route_admission_v3_h2(task)
                 routing_h4 = route_admission_v3_h4(task)
+                routing_h4b = route_admission_v3_h4b(task)
                 per_task_routing.append({
                     "task_id": task["task_id"],
                     "repo_id": task.get("repo_id"),
@@ -1832,6 +2125,8 @@ def build_report(
                     "admission_v3_h2_score": routing_h2["score"],
                     "admission_v3_h4_action": routing_h4["action"],
                     "admission_v3_h4_score": routing_h4["score"],
+                    "admission_v3_h4b_action": routing_h4b["action"],
+                    "admission_v3_h4b_score": routing_h4b["score"],
                 })
 
     conclusion_lines: list[str] = []
@@ -1878,6 +2173,13 @@ def build_report(
             f"quality_comparable={h4.get('quality_comparable')}, "
             f"selected_action_fallback_rate={h4.get('selected_action_fallback_rate')}."
         )
+        h4b = policy_comparison["admission_v3_h4b"]
+        conclusion_lines.append(
+            f"admission_v3_h4b (P33-B selective re-admission) SpanF0.5={h4b.get('SpanF0.5')}, PFP={h4b.get('primary_false_positive_rate')}, "
+            f"quality_comparable={h4b.get('quality_comparable')}, "
+            f"selected_action_fallback_rate={h4b.get('selected_action_fallback_rate')}, "
+            f"primary_opportunities={h4b.get('h4b_primary_opportunity_count')}."
+        )
         conclusion_lines.append("No policy is promotion-ready or default-ready.")
         conclusion_lines.append(
             "admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; "
@@ -1909,6 +2211,9 @@ def build_report(
     missing_outcomes_h4 = policy_comparison.get("admission_v3_h4", {}).get("outcome_fallback", {}).get(
         "missing_action_outcome_count", 0
     )
+    missing_outcomes_h4b = policy_comparison.get("admission_v3_h4b", {}).get("outcome_fallback", {}).get(
+        "missing_action_outcome_count", 0
+    )
     if missing_outcomes_v3:
         conclusion_lines.append(
             f"admission_v3 relied on fallback outcomes for {missing_outcomes_v3} action selections; "
@@ -1929,6 +2234,24 @@ def build_report(
             f"admission_v3_h4 relied on fallback outcomes for {missing_outcomes_h4} action selections; "
             "H4 budget overlay requires P33-B measured outcomes for every selected action."
         )
+    if missing_outcomes_h4b:
+        conclusion_lines.append(
+            f"admission_v3_h4b relied on fallback outcomes for {missing_outcomes_h4b} action selections; "
+            "H4B selective re-admission requires measured outcomes for every selected action."
+        )
+
+    h4b_acct = h3_action_span_cost_accounting.get("policy_action_accounting", {}).get("admission_v3_h4b", {})
+    h4b_metrics = policy_comparison.get("admission_v3_h4b", {})
+    h4b_span_cost_summary: dict[str, Any] = {}
+    if h4b_acct:
+        h4b_span_cost_summary = {
+            "false_per_gold": h4b_metrics.get("false_per_gold"),
+            "net_span_value_2x": h4b_metrics.get("net_span_value_2x"),
+            "primary_false_span_cost": h4b_acct.get("primary_false_span_cost"),
+            "non_primary_false_span_cost": h4b_acct.get("non_primary_false_span_cost"),
+            "budget_violation_count": h4b_acct.get("budget_violation_count"),
+            "budget_violation_rate": h4b_acct.get("budget_violation_rate"),
+        }
 
     report = {
         "schema_version": SCHEMA_VERSION,
@@ -1963,6 +2286,9 @@ def build_report(
         "h4_available": any(t.get("_p33b_handoff_detected", False) for t in tasks),
         "h4_budget_overlay": True,
         "p33b_handoff_detected": any(t.get("_p33b_handoff_detected", False) for t in tasks),
+        "h4b_available": any(t.get("_p33b_handoff_detected", False) for t in tasks),
+        "h4b_budget_overlay": True,
+        "h4b_selective_readmission": True,
         "route_features_ignored_count": total_route_features_ignored,
         "elapsed_ms": elapsed_ms,
         "policy_comparison": policy_comparison,
@@ -1992,7 +2318,7 @@ def build_report(
                 "dense_support_present",
                 "graph_support_present",
             ],
-            "per_task_routing": per_task_routing,
+            "per_task_routing": [],
         },
         "admission_v3_h2": {
             "routing_rules": [
@@ -2026,7 +2352,7 @@ def build_report(
                 "dense_support_present",
                 "graph_support_present",
             ],
-            "per_task_routing": per_task_routing if self_test else [],
+            "per_task_routing": [],
         },
         "admission_v3_h4": {
             "routing_rules": [
@@ -2053,7 +2379,34 @@ def build_report(
                 "dense_support_present",
                 "graph_support_present",
             ],
-            "per_task_routing": per_task_routing if self_test else [],
+            "per_task_routing": [],
+        },
+        "admission_v3_h4b": {
+            "routing_rules": [
+                "negative/dense_quiver_trap/hard_distractor/ambiguous/hallucination_risk or query_noise>0.2 => non-primary (apply_llm_filter/weak_candidate_only)",
+                "missing P33-B subtype handoff => weak_candidate_only (missing_handoff)",
+                "top subtype regex_only / same_file_only / disagree / single_source => non-primary (hard_guard/demote_same_file/filter_dangerous_subtype)",
+                "strict primary re-admit: top subtype is symbol_regex_fusion + span_overlap + rrf_backing + local_anchor + symbol_regex_agree_span + query_noise<=0.1 + low-risk public bucket/tag + (exact_unique_symbol_anchor or rrf_anchor_agree_span) => admit_symbol_regex_union",
+                "optional strict RRF re-admit: same strict gate + rrf_backed_by_anchor + rrf_anchor_agree_span => admit_rrf_primary",
+                "span_overlap fusion failing strict gate => supporting_only (RRF-backed) or weak_candidate_only/filter",
+                "symbol_only or remaining cases => weak_candidate_only",
+            ],
+            "scorecard_features": [
+                "P33-B private subtype metadata (in-memory only)",
+                "source_class: symbol_regex_fusion / symbol_only / regex_only",
+                "agreement_class: span_overlap / same_file_only / disagree / single_source",
+                "rrf_backing on subtype row",
+                "exact_unique_symbol_anchor",
+                "symbol_anchor",
+                "local_anchor",
+                "symbol_regex_agree_span",
+                "rrf_anchor_agree_span",
+                "rrf_backed_by_anchor",
+                "query_noise",
+                "public task_bucket and task_risk_tags (low-risk positive set)",
+            ],
+            "span_cost_summary": h4b_span_cost_summary,
+            "per_task_routing": [],
         },
         "conclusion": conclusion_lines,
     }
@@ -2081,6 +2434,10 @@ def validate_report(report: dict[str, Any]) -> list[str]:
         errors.append("candidate_not_fact must be true")
     if report.get("h4_budget_overlay") is not True:
         errors.append("h4_budget_overlay must be true")
+    if report.get("h4b_budget_overlay") is not True:
+        errors.append("h4b_budget_overlay must be true")
+    if report.get("h4b_selective_readmission") is not True:
+        errors.append("h4b_selective_readmission must be true")
     if report.get("self_test") and report.get("not_quality_evidence") is not True:
         errors.append("self_test must set not_quality_evidence=true")
     if report.get("status") == "ok":
@@ -2149,6 +2506,11 @@ def build_markdown(report: dict[str, Any]) -> str:
         "candidates based on subtype agreement_class, never promotes from subtype evidence alone, "
         "and remains a diagnostic-only non-default lane. |"
     )
+    lines.append(
+        "| admission_v3_h4b | P33-B selective primary re-admission diagnostic; extremely narrow strict gate "
+        "allows `admit_symbol_regex_union` or `admit_rrf_primary` only when fusion/span/RRF/public-anchor "
+        "conditions all hold; everything else is hard-guarded or demoted to non-primary actions. |"
+    )
     lines.append("")
 
     lines.append("## Aggregate results\n")
@@ -2175,7 +2537,7 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append("## Quality comparability\n")
     lines.append("| Policy | quality_comparable | blocked_by_missing_action_outcomes | selected_action_fallback_rate |")
     lines.append("|---|---:|---:|---:|")
-    for policy in ("admission_v3", "admission_v3_h1", "admission_v3_h2", "admission_v3_h4"):
+    for policy in ("admission_v3", "admission_v3_h1", "admission_v3_h2", "admission_v3_h4", "admission_v3_h4b"):
         m = report["policy_comparison"].get(policy, {})
         qc = m.get("quality_comparable")
         blocked = m.get("blocked_by_missing_action_outcomes")
@@ -2249,6 +2611,25 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"| {action} | {counts_h4.get(action, 0)} | {rates_h4.get(action, 'n/a')} |")
     lines.append("")
 
+    lines.append("## admission_v3_h4b action distribution\n")
+    counts_h4b = report["policy_comparison"]["admission_v3_h4b"].get("policy_action_counts", {})
+    rates_h4b = report["policy_comparison"]["admission_v3_h4b"].get("action_rates", {})
+    lines.append("| Action | Count | Rate |")
+    lines.append("|---:|---:|---:|")
+    for action in sorted(P30_ACTIONS):
+        lines.append(f"| {action} | {counts_h4b.get(action, 0)} | {rates_h4b.get(action, 'n/a')} |")
+    lines.append("")
+    h4b_rule_counts = report["policy_comparison"]["admission_v3_h4b"].get("rule_counts", {})
+    if h4b_rule_counts:
+        lines.append("## admission_v3_h4b rule counts\n")
+        lines.append("| Rule | Count |")
+        lines.append("|---:|---:|")
+        for rule, count in sorted(h4b_rule_counts.items()):
+            lines.append(f"| {rule} | {count} |")
+        h4b_primary_opps = report["policy_comparison"]["admission_v3_h4b"].get("h4b_primary_opportunity_count")
+        lines.append(f"\n- H4B primary opportunities: {h4b_primary_opps}")
+        lines.append("")
+
     lines.append("## Score bands (admission_v3)\n")
     lines.append(
         "Bands are scorecard score ranges, not held-out calibrated probabilities. "
@@ -2284,6 +2665,10 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append(
         f"- Missing action outcomes for admission_v3_h4: {fb_h4.get('missing_action_outcome_count', 0)}"
     )
+    fb_h4b = report["policy_comparison"]["admission_v3_h4b"].get("outcome_fallback", {})
+    lines.append(
+        f"- Missing action outcomes for admission_v3_h4b: {fb_h4b.get('missing_action_outcome_count', 0)}"
+    )
     lines.append(
         f"- Fallback strategy counts (admission_v3): {fb.get('fallback_strategy_counts', {})}"
     )
@@ -2295,6 +2680,9 @@ def build_markdown(report: dict[str, Any]) -> str:
     )
     lines.append(
         f"- Fallback strategy counts (admission_v3_h4): {fb_h4.get('fallback_strategy_counts', {})}"
+    )
+    lines.append(
+        f"- Fallback strategy counts (admission_v3_h4b): {fb_h4b.get('fallback_strategy_counts', {})}"
     )
     lines.append(
         "- If an action selected by admission_v3 has no measured outcome in the input record, "
@@ -2316,6 +2704,11 @@ def build_markdown(report: dict[str, Any]) -> str:
         "weak_candidate_only because it does not select primary-admit actions; a non-zero "
         "value here indicates the input P33-B handoff lacks outcomes for H4-selected actions."
     )
+    lines.append(
+        "- admission_v3_h4b requires measured outcomes for apply_llm_filter, supporting_only, "
+        "weak_candidate_only, admit_symbol_regex_union, and admit_rrf_primary; a non-zero value "
+        "here indicates the input handoff lacks outcomes for H4B-selected actions."
+    )
     lines.append("")
 
     lines.append("## Routing rules (admission_v3)\n")
@@ -2333,13 +2726,18 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"- {rule}")
     lines.append("")
 
-    if report.get("self_test"):
+    lines.append("## Routing rules (admission_v3_h4b)\n")
+    for rule in report["admission_v3_h4b"]["routing_rules"]:
+        lines.append(f"- {rule}")
+    lines.append("")
+
+    if report.get("self_test") and report["admission_v3"].get("per_task_routing"):
         lines.append("## Per-task routing (self-test only)\n")
         lines.append(
             "| task_id | repo_id | task_bucket | task_risk_tags | "
-            "v3_action | v3_score | h1_action | h1_score | h2_action | h2_score | h4_action | h4_score |"
+            "v3_action | v3_score | h1_action | h1_score | h2_action | h2_score | h4_action | h4_score | h4b_action | h4b_score |"
         )
-        lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
+        lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
         for row in report["admission_v3"]["per_task_routing"]:
             tags = ", ".join(row.get("task_risk_tags") or [])
             lines.append(
@@ -2347,7 +2745,8 @@ def build_markdown(report: dict[str, Any]) -> str:
                 f"{tags} | {row['admission_v3_action']} | {row['admission_v3_score']} | "
                 f"{row['admission_v3_h1_action']} | {row['admission_v3_h1_score']} | "
                 f"{row['admission_v3_h2_action']} | {row['admission_v3_h2_score']} | "
-                f"{row['admission_v3_h4_action']} | {row['admission_v3_h4_score']} |"
+                f"{row['admission_v3_h4_action']} | {row['admission_v3_h4_score']} | "
+                f"{row['admission_v3_h4b_action']} | {row['admission_v3_h4b_score']} |"
             )
         lines.append("")
 
@@ -2361,7 +2760,11 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append("- Routing uses only RUN-phase public task metadata and private P33-B subtype handoff fields; labels/gold are used only for aggregate scoring after actions are fixed, and private handoff fields are never emitted publicly.")
     lines.append("- This report contains only public task metadata, strategy/action names, and aggregate metrics.")
     lines.append("- Raw queries, snippets, prompts, responses, gold spans, private labels, provider keys, subtype rows, and provider fields are not stored.")
-    lines.append("- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `external_calls=0`, `h4_budget_overlay=true`.")
+    lines.append(
+        "- `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, "
+        "`candidate_not_fact=true`, `external_calls=0`, `h4_budget_overlay=true`, `h4b_budget_overlay=true`, "
+        "`h4b_selective_readmission=true`."
+    )
     lines.append("")
     return "\n".join(lines)
 

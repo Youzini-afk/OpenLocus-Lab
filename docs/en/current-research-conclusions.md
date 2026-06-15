@@ -432,6 +432,34 @@ and useful negative result, not a deployable admission policy. The next H4
 iteration should test budgeted selective re-admission or `request_more_context`,
 not all-demotion.
 
+### 2.17 P32 / P30-H4B selective primary re-admission is ready
+
+`eval/p30_admission_model_v3.py` now also implements `admission_v3_h4b`, a P32/P30-H4B
+selective primary re-admission diagnostic. H4B is deterministic, no-remote, and
+diagnostic-only. It uses the same private P33-B subtype handoff and RUN-phase
+public features as H4, but tests an extremely narrow strict conjunction for
+primary-admit actions rather than demoting everything.
+
+The strict gate selects `admit_symbol_regex_union` only when the best subtype is
+`symbol_regex_fusion` + `span_overlap` + `rrf_backing`, `local_anchor` and
+`symbol_regex_agree_span` are true, `query_noise <= 0.1`, the public bucket/tag is
+in a low-risk positive set, and either `exact_unique_symbol_anchor` or
+`rrf_anchor_agree_span` holds. If `rrf_backed_by_anchor` and
+`rrf_anchor_agree_span` also hold, H4B may optionally select `admit_rrf_primary`
+instead. All other tasks are hard-guarded or demoted, including negative/dense/
+ambiguous/hallucination/high-noise cases and any best subtype that is
+`regex_only`, `same_file_only`, `disagree`, or `single_source`.
+
+Public outputs include `h4b_available`, `h4b_budget_overlay=true`,
+`h4b_selective_readmission=true`, `h4b_primary_opportunity_count`, and rule
+aggregate counts (`strict_union_re_admit`, `strict_rrf_re_admit`, `hard_guard`,
+`missing_handoff`, `demote_span_overlap`, `demote_same_file`,
+`filter_dangerous_subtype`). H4B also reports `quality_comparable`,
+`selected_action_fallback_rate`, `false_per_gold`, `net_span_value_2x`, and a
+span-cost summary from P30-H3 accounting. On synthetic self-test it is
+quality-comparable and fallback-free, and fires a small number of strict primary
+opportunities; the real H4B smoke is pending.
+
 ---
 
 ## 3. Current Hypotheses

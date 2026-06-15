@@ -1,318 +1,6 @@
 {
   "admission_v3": {
-    "per_task_routing": [
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 5,
-        "admission_v3_h2_action": "admit_symbol_regex_union",
-        "admission_v3_h2_score": 5,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 3,
-        "admission_v3_score": 5,
-        "repo_id": "py_flask",
-        "task_bucket": "exact_symbol_unique",
-        "task_id": "p30-001",
-        "task_risk_tags": [
-          "exact_symbol",
-          "unique_symbol",
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 2,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-002",
-        "task_risk_tags": [
-          "symbol_anchor",
-          "route_handler"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 2,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-003",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_rrf_primary",
-        "admission_v3_h1_action": "admit_rrf_primary",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 1,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-004",
-        "task_risk_tags": [
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_llm_span_narrow",
-        "admission_v3_h1_action": "admit_llm_span_narrow",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "abstain",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 0,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-005",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": 1,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 1,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 0,
-        "admission_v3_score": 1,
-        "repo_id": "js_express",
-        "task_bucket": "config",
-        "task_id": "p30-006",
-        "task_risk_tags": [
-          "config",
-          "positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-007",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-008",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "supporting_only",
-        "admission_v3_h1_action": "supporting_only",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "supporting_only",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "dense_quiver_trap",
-        "task_id": "p30-009",
-        "task_risk_tags": [
-          "dense_false_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "supporting_only",
-        "admission_v3_h1_action": "supporting_only",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "supporting_only",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "dense_quiver_trap",
-        "task_id": "p30-010",
-        "task_risk_tags": [
-          "dense_false_positive",
-          "hard_distractor"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-011",
-        "task_risk_tags": [
-          "ambiguous",
-          "weak_candidates"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-012",
-        "task_risk_tags": [
-          "ambiguous",
-          "hallucination_risk"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-013",
-        "task_risk_tags": [
-          "weak_candidates"
-        ]
-      },
-      {
-        "admission_v3_action": "weak_candidate_only",
-        "admission_v3_h1_action": "weak_candidate_only",
-        "admission_v3_h1_score": -1,
-        "admission_v3_h2_action": "abstain",
-        "admission_v3_h2_score": -1,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": -2,
-        "admission_v3_score": -1,
-        "repo_id": "js_express",
-        "task_bucket": "unknown",
-        "task_id": "p30-014",
-        "task_risk_tags": [
-          "other"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 6,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-001",
-        "task_risk_tags": [
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_rrf_primary",
-        "admission_v3_h1_action": "admit_rrf_primary",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": 6,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-002",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": 2,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 2,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 4,
-        "admission_v3_score": 2,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-003",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-h4-004",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -5,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -5,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -5,
-        "admission_v3_score": -5,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-h4-005",
-        "task_risk_tags": [
-          "ambiguous"
-        ]
-      }
-    ],
+    "per_task_routing": [],
     "routing_rules": [
       "exact_unique_symbol_anchor + low query_noise -> admit_symbol_regex_union",
       "symbol_anchor or regex_anchor + local_anchor + low/moderate query noise -> admit_symbol_regex_union",
@@ -339,319 +27,7 @@
     ]
   },
   "admission_v3_h2": {
-    "per_task_routing": [
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 5,
-        "admission_v3_h2_action": "admit_symbol_regex_union",
-        "admission_v3_h2_score": 5,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 3,
-        "admission_v3_score": 5,
-        "repo_id": "py_flask",
-        "task_bucket": "exact_symbol_unique",
-        "task_id": "p30-001",
-        "task_risk_tags": [
-          "exact_symbol",
-          "unique_symbol",
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 2,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-002",
-        "task_risk_tags": [
-          "symbol_anchor",
-          "route_handler"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 2,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-003",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_rrf_primary",
-        "admission_v3_h1_action": "admit_rrf_primary",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 1,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-004",
-        "task_risk_tags": [
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_llm_span_narrow",
-        "admission_v3_h1_action": "admit_llm_span_narrow",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "abstain",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 0,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-005",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": 1,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 1,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 0,
-        "admission_v3_score": 1,
-        "repo_id": "js_express",
-        "task_bucket": "config",
-        "task_id": "p30-006",
-        "task_risk_tags": [
-          "config",
-          "positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-007",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-008",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "supporting_only",
-        "admission_v3_h1_action": "supporting_only",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "supporting_only",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "dense_quiver_trap",
-        "task_id": "p30-009",
-        "task_risk_tags": [
-          "dense_false_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "supporting_only",
-        "admission_v3_h1_action": "supporting_only",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "supporting_only",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "dense_quiver_trap",
-        "task_id": "p30-010",
-        "task_risk_tags": [
-          "dense_false_positive",
-          "hard_distractor"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-011",
-        "task_risk_tags": [
-          "ambiguous",
-          "weak_candidates"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-012",
-        "task_risk_tags": [
-          "ambiguous",
-          "hallucination_risk"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-013",
-        "task_risk_tags": [
-          "weak_candidates"
-        ]
-      },
-      {
-        "admission_v3_action": "weak_candidate_only",
-        "admission_v3_h1_action": "weak_candidate_only",
-        "admission_v3_h1_score": -1,
-        "admission_v3_h2_action": "abstain",
-        "admission_v3_h2_score": -1,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": -2,
-        "admission_v3_score": -1,
-        "repo_id": "js_express",
-        "task_bucket": "unknown",
-        "task_id": "p30-014",
-        "task_risk_tags": [
-          "other"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 6,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-001",
-        "task_risk_tags": [
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_rrf_primary",
-        "admission_v3_h1_action": "admit_rrf_primary",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": 6,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-002",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": 2,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 2,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 4,
-        "admission_v3_score": 2,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-003",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-h4-004",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -5,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -5,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -5,
-        "admission_v3_score": -5,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-h4-005",
-        "task_risk_tags": [
-          "ambiguous"
-        ]
-      }
-    ],
+    "per_task_routing": [],
     "routing_rules": [
       "negative/dense_quiver_trap/hard_distractor bucket or negative/hard_distractor/dense_false_positive tag -> supporting_only if dense/graph support; else apply_llm_filter",
       "ambiguous/hallucination_risk bucket or tag -> weak_candidate_only if strong span agreement and query_noise <= 0.2; supporting_only if dense/graph support; else apply_llm_filter",
@@ -685,319 +61,7 @@
     ]
   },
   "admission_v3_h4": {
-    "per_task_routing": [
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 5,
-        "admission_v3_h2_action": "admit_symbol_regex_union",
-        "admission_v3_h2_score": 5,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 3,
-        "admission_v3_score": 5,
-        "repo_id": "py_flask",
-        "task_bucket": "exact_symbol_unique",
-        "task_id": "p30-001",
-        "task_risk_tags": [
-          "exact_symbol",
-          "unique_symbol",
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 2,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-002",
-        "task_risk_tags": [
-          "symbol_anchor",
-          "route_handler"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 2,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-003",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_rrf_primary",
-        "admission_v3_h1_action": "admit_rrf_primary",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 1,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-004",
-        "task_risk_tags": [
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_llm_span_narrow",
-        "admission_v3_h1_action": "admit_llm_span_narrow",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "abstain",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 0,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-005",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": 1,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 1,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 0,
-        "admission_v3_score": 1,
-        "repo_id": "js_express",
-        "task_bucket": "config",
-        "task_id": "p30-006",
-        "task_risk_tags": [
-          "config",
-          "positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-007",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-008",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "supporting_only",
-        "admission_v3_h1_action": "supporting_only",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "supporting_only",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "dense_quiver_trap",
-        "task_id": "p30-009",
-        "task_risk_tags": [
-          "dense_false_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "supporting_only",
-        "admission_v3_h1_action": "supporting_only",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "supporting_only",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "dense_quiver_trap",
-        "task_id": "p30-010",
-        "task_risk_tags": [
-          "dense_false_positive",
-          "hard_distractor"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-011",
-        "task_risk_tags": [
-          "ambiguous",
-          "weak_candidates"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -7,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -7,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -8,
-        "admission_v3_score": -7,
-        "repo_id": "js_express",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-012",
-        "task_risk_tags": [
-          "ambiguous",
-          "hallucination_risk"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-013",
-        "task_risk_tags": [
-          "weak_candidates"
-        ]
-      },
-      {
-        "admission_v3_action": "weak_candidate_only",
-        "admission_v3_h1_action": "weak_candidate_only",
-        "admission_v3_h1_score": -1,
-        "admission_v3_h2_action": "abstain",
-        "admission_v3_h2_score": -1,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": -2,
-        "admission_v3_score": -1,
-        "repo_id": "js_express",
-        "task_bucket": "unknown",
-        "task_id": "p30-014",
-        "task_risk_tags": [
-          "other"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_symbol_regex_union",
-        "admission_v3_h1_action": "admit_symbol_regex_union",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 6,
-        "admission_v3_score": 3,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-001",
-        "task_risk_tags": [
-          "high_confidence"
-        ]
-      },
-      {
-        "admission_v3_action": "admit_rrf_primary",
-        "admission_v3_h1_action": "admit_rrf_primary",
-        "admission_v3_h1_score": 3,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 3,
-        "admission_v3_h4_action": "supporting_only",
-        "admission_v3_h4_score": 6,
-        "admission_v3_score": 3,
-        "repo_id": "js_express",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-002",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": 2,
-        "admission_v3_h2_action": "weak_candidate_only",
-        "admission_v3_h2_score": 2,
-        "admission_v3_h4_action": "weak_candidate_only",
-        "admission_v3_h4_score": 4,
-        "admission_v3_score": 2,
-        "repo_id": "py_flask",
-        "task_bucket": "positive",
-        "task_id": "p30-h4-003",
-        "task_risk_tags": [
-          "likely_positive"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -6,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -6,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -7,
-        "admission_v3_score": -6,
-        "repo_id": "js_express",
-        "task_bucket": "negative",
-        "task_id": "p30-h4-004",
-        "task_risk_tags": [
-          "negative"
-        ]
-      },
-      {
-        "admission_v3_action": "abstain",
-        "admission_v3_h1_action": "abstain",
-        "admission_v3_h1_score": -5,
-        "admission_v3_h2_action": "apply_llm_filter",
-        "admission_v3_h2_score": -5,
-        "admission_v3_h4_action": "apply_llm_filter",
-        "admission_v3_h4_score": -5,
-        "admission_v3_score": -5,
-        "repo_id": "py_flask",
-        "task_bucket": "ambiguous",
-        "task_id": "p30-h4-005",
-        "task_risk_tags": [
-          "ambiguous"
-        ]
-      }
-    ],
+    "per_task_routing": [],
     "routing_rules": [
       "negative/dense_quiver_trap/hard_distractor or deeply penalized score -> supporting_only if dense/graph support; else apply_llm_filter",
       "ambiguous/hallucination_risk bucket or tag -> weak_candidate_only if span_overlap and no negative; supporting_only if span_overlap+RRF and no negative; supporting_only if dense/graph support; else apply_llm_filter",
@@ -1023,25 +87,60 @@
       "graph_support_present"
     ]
   },
+  "admission_v3_h4b": {
+    "per_task_routing": [],
+    "routing_rules": [
+      "negative/dense_quiver_trap/hard_distractor/ambiguous/hallucination_risk or query_noise>0.2 => non-primary (apply_llm_filter/weak_candidate_only)",
+      "missing P33-B subtype handoff => weak_candidate_only (missing_handoff)",
+      "top subtype regex_only / same_file_only / disagree / single_source => non-primary (hard_guard/demote_same_file/filter_dangerous_subtype)",
+      "strict primary re-admit: top subtype is symbol_regex_fusion + span_overlap + rrf_backing + local_anchor + symbol_regex_agree_span + query_noise<=0.1 + low-risk public bucket/tag + (exact_unique_symbol_anchor or rrf_anchor_agree_span) => admit_symbol_regex_union",
+      "optional strict RRF re-admit: same strict gate + rrf_backed_by_anchor + rrf_anchor_agree_span => admit_rrf_primary",
+      "span_overlap fusion failing strict gate => supporting_only (RRF-backed) or weak_candidate_only/filter",
+      "symbol_only or remaining cases => weak_candidate_only"
+    ],
+    "scorecard_features": [
+      "P33-B private subtype metadata (in-memory only)",
+      "source_class: symbol_regex_fusion / symbol_only / regex_only",
+      "agreement_class: span_overlap / same_file_only / disagree / single_source",
+      "rrf_backing on subtype row",
+      "exact_unique_symbol_anchor",
+      "symbol_anchor",
+      "local_anchor",
+      "symbol_regex_agree_span",
+      "rrf_anchor_agree_span",
+      "rrf_backed_by_anchor",
+      "query_noise",
+      "public task_bucket and task_risk_tags (low-risk positive set)"
+    ],
+    "span_cost_summary": {
+      "budget_violation_count": 20,
+      "budget_violation_rate": 0.8695652173913043,
+      "false_per_gold": 9.5,
+      "net_span_value_2x": -36,
+      "non_primary_false_span_cost": 17,
+      "primary_false_span_cost": 2
+    }
+  },
   "candidate_not_fact": true,
   "conclusion": [
-    "Self-test-only scaffold evaluated 19 synthetic tasks; this is not quality evidence.",
+    "Self-test-only scaffold evaluated 23 synthetic tasks; this is not quality evidence.",
     "admission_v3 uses an explainable monotonic scorecard over pre-SCORE observable task_bucket, task_risk_tags, and route_features; it does not use score_group, has_gold, gold, or outcome metrics during routing.",
-    "Baseline SpanF0.5=0.1473684210526316, PFP=0.17894736842105266; admission_v3 SpanF0.5=0.10631578947368421, PFP=0.044736842105263165.",
-    "admission_v3_h1 (handoff enriched) SpanF0.5=0.1505263157894737, PFP=0.024210526315789474, quality_comparable=True, selected_action_fallback_rate=0.0.",
-    "admission_v3_h2 (strict local anchor) SpanF0.5=0.05052631578947368, PFP=0.039473684210526314, quality_comparable=True, selected_action_fallback_rate=0.0.",
-    "admission_v3_h4 (P33-B budget overlay) SpanF0.5=0.01894736842105263, PFP=0.044736842105263165, quality_comparable=True, selected_action_fallback_rate=0.0.",
+    "Baseline SpanF0.5=0.1565217391304348, PFP=0.16521739130434784; admission_v3 SpanF0.5=0.11391304347826088, PFP=0.04565217391304348.",
+    "admission_v3_h1 (handoff enriched) SpanF0.5=0.16, PFP=0.02347826086956522, quality_comparable=True, selected_action_fallback_rate=0.0.",
+    "admission_v3_h2 (strict local anchor) SpanF0.5=0.11130434782608696, PFP=0.03260869565217391, quality_comparable=True, selected_action_fallback_rate=0.0.",
+    "admission_v3_h4 (P33-B budget overlay) SpanF0.5=0.015652173913043476, PFP=0.0391304347826087, quality_comparable=True, selected_action_fallback_rate=0.0.",
+    "admission_v3_h4b (P33-B selective re-admission) SpanF0.5=0.03739130434782609, PFP=0.042608695652173914, quality_comparable=True, selected_action_fallback_rate=0.0, primary_opportunities=2.",
     "No policy is promotion-ready or default-ready.",
     "admission_v3_h1 is a handoff-enrichment diagnostic over P30-H1 records with local-anchor measured outcomes; a non-zero fallback rate on legacy admission_v3 preserves the old missing-outcome behavior for comparison.",
     "admission_v3_h2 is a stricter local-anchor policy over the same P30-H1 records; it should be fallback-free whenever enriched local-anchor outcomes are present for every selected action.",
     "Next: compare admission_v3_h1 and admission_v3_h2 to P25 real smoke and P22/P23 guard surfaces in ephemeral remote runs.",
-    "admission_v3 relied on fallback outcomes for 9 action selections; real runs should include measured outcomes for every selected action."
+    "admission_v3 relied on fallback outcomes for 11 action selections; real runs should include measured outcomes for every selected action."
   ],
   "default_should_change": false,
-  "elapsed_ms": 0,
+  "elapsed_ms": 1,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-15T11:22:51.295202+00:00",
+  "generated_at": "2026-06-15T12:01:08.462741+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "gold_spans_in_artifact": false,
   "h3_action_span_cost_accounting": {
@@ -1062,7 +161,7 @@
     "diagnostic_only": true,
     "evidencecore_semantics_changed": false,
     "external_calls": 0,
-    "generated_at": "2026-06-15T11:22:51.294923+00:00",
+    "generated_at": "2026-06-15T12:01:08.462667+00:00",
     "generated_by": "eval/p30_admission_model_v3.py",
     "labels_loaded_after_run": true,
     "no_gold_task_count": 5,
@@ -1076,22 +175,22 @@
             "budget_limit": 0,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -26,
-            "delta_added_gold_span_vs_baseline": -5,
+            "delta_added_false_span_vs_baseline": -30,
+            "delta_added_gold_span_vs_baseline": -7,
             "false_per_gold": null,
             "false_reduction_count": 4,
             "false_reduction_rate": 1.0,
-            "gold_kill_count": 5,
+            "gold_kill_count": 7,
             "gold_kill_rate": 1.0,
             "gold_per_false": null,
-            "mean_delta_primary_false_positive_rate_vs_baseline": -0.21111111111111114,
-            "mean_delta_span_f0_5_vs_baseline": -0.05555555555555555,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.19090909090909092,
+            "mean_delta_span_f0_5_vs_baseline": -0.06363636363636364,
             "net_span_value_1x": 0,
             "net_span_value_2x": 0,
-            "selected_baseline_added_false_span": 26,
-            "selected_baseline_added_gold_span": 5,
-            "selected_count": 9,
-            "selected_rate": 0.47368421052631576
+            "selected_baseline_added_false_span": 30,
+            "selected_baseline_added_gold_span": 7,
+            "selected_count": 11,
+            "selected_rate": 0.4782608695652174
           },
           "admit_llm_span_narrow": {
             "action_added_false_span": 1,
@@ -1115,15 +214,15 @@
             "selected_baseline_added_false_span": 2,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 1,
-            "selected_rate": 0.05263157894736842
+            "selected_rate": 0.043478260869565216
           },
           "admit_rrf_primary": {
-            "action_added_false_span": 4,
-            "action_added_gold_span": 2,
+            "action_added_false_span": 6,
+            "action_added_gold_span": 3,
             "action_kind": "primary",
-            "budget_limit": 2,
+            "budget_limit": 3,
             "budget_violated": true,
-            "budget_violation_reason": "primary action false cost (4) exceeds gold (2)",
+            "budget_violation_reason": "primary action false cost (6) exceeds gold (3)",
             "delta_added_false_span_vs_baseline": 0,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 2.0,
@@ -1134,21 +233,21 @@
             "gold_per_false": 0.5,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.020000000000000004,
             "mean_delta_span_f0_5_vs_baseline": 0.01999999999999999,
-            "net_span_value_1x": -2,
-            "net_span_value_2x": -6,
-            "selected_baseline_added_false_span": 4,
-            "selected_baseline_added_gold_span": 2,
-            "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "net_span_value_1x": -3,
+            "net_span_value_2x": -9,
+            "selected_baseline_added_false_span": 6,
+            "selected_baseline_added_gold_span": 3,
+            "selected_count": 3,
+            "selected_rate": 0.13043478260869565
           },
           "admit_symbol_regex_union": {
             "action_added_false_span": 0,
-            "action_added_gold_span": 4,
+            "action_added_gold_span": 5,
             "action_kind": "primary",
-            "budget_limit": 4,
+            "budget_limit": 5,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -8,
+            "delta_added_false_span_vs_baseline": -10,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 0.0,
             "false_reduction_count": 0,
@@ -1158,12 +257,12 @@
             "gold_per_false": null,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
             "mean_delta_span_f0_5_vs_baseline": 0.2,
-            "net_span_value_1x": 4,
-            "net_span_value_2x": 4,
-            "selected_baseline_added_false_span": 8,
-            "selected_baseline_added_gold_span": 4,
-            "selected_count": 4,
-            "selected_rate": 0.21052631578947367
+            "net_span_value_1x": 5,
+            "net_span_value_2x": 5,
+            "selected_baseline_added_false_span": 10,
+            "selected_baseline_added_gold_span": 5,
+            "selected_count": 5,
+            "selected_rate": 0.21739130434782608
           },
           "supporting_only": {
             "action_added_false_span": 0,
@@ -1187,7 +286,7 @@
             "selected_baseline_added_false_span": 6,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "selected_rate": 0.08695652173913043
           },
           "weak_candidate_only": {
             "action_added_false_span": 1,
@@ -1211,29 +310,29 @@
             "selected_baseline_added_false_span": 2,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 1,
-            "selected_rate": 0.05263157894736842
+            "selected_rate": 0.043478260869565216
           }
         },
-        "budget_violation_count": 3,
-        "budget_violation_rate": 0.15789473684210525,
+        "budget_violation_count": 4,
+        "budget_violation_rate": 0.17391304347826086,
         "budget_violation_reasons": {
           "non-primary action has false cost (1)": 1,
-          "primary action false cost (4) exceeds gold (2)": 2
+          "primary action false cost (6) exceeds gold (3)": 3
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 1,
-        "positive_task_count": 14,
-        "primary_false_span_cost": 5,
-        "task_count": 19,
+        "positive_task_count": 18,
+        "primary_false_span_cost": 7,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
             "action": "admit_rrf_primary",
-            "action_added_false_span": 4,
-            "action_added_gold_span": 2,
+            "action_added_false_span": 6,
+            "action_added_gold_span": 3,
             "action_kind": "primary",
             "false_per_gold": 2.0,
-            "selected_count": 2
+            "selected_count": 3
           },
           {
             "action": "admit_llm_span_narrow",
@@ -1257,24 +356,24 @@
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "false_per_gold": null,
-            "selected_count": 9
+            "selected_count": 11
           },
           {
             "action": "admit_symbol_regex_union",
             "action_added_false_span": 0,
-            "action_added_gold_span": 4,
+            "action_added_gold_span": 5,
             "action_kind": "primary",
             "false_per_gold": 0.0,
-            "selected_count": 4
+            "selected_count": 5
           }
         ],
         "worst_actions_by_gold_kill": [
           {
             "action": "abstain",
             "action_kind": "non_primary",
-            "gold_kill_count": 5,
+            "gold_kill_count": 7,
             "gold_kill_rate": 1.0,
-            "selected_count": 9
+            "selected_count": 11
           },
           {
             "action": "supporting_only",
@@ -1302,7 +401,7 @@
             "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 2
+            "selected_count": 3
           }
         ]
       },
@@ -1315,22 +414,22 @@
             "budget_limit": 0,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -26,
-            "delta_added_gold_span_vs_baseline": -5,
+            "delta_added_false_span_vs_baseline": -30,
+            "delta_added_gold_span_vs_baseline": -7,
             "false_per_gold": null,
             "false_reduction_count": 4,
             "false_reduction_rate": 1.0,
-            "gold_kill_count": 5,
+            "gold_kill_count": 7,
             "gold_kill_rate": 1.0,
             "gold_per_false": null,
-            "mean_delta_primary_false_positive_rate_vs_baseline": -0.21111111111111114,
-            "mean_delta_span_f0_5_vs_baseline": -0.05555555555555555,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.19090909090909092,
+            "mean_delta_span_f0_5_vs_baseline": -0.06363636363636364,
             "net_span_value_1x": 0,
             "net_span_value_2x": 0,
-            "selected_baseline_added_false_span": 26,
-            "selected_baseline_added_gold_span": 5,
-            "selected_count": 9,
-            "selected_rate": 0.47368421052631576
+            "selected_baseline_added_false_span": 30,
+            "selected_baseline_added_gold_span": 7,
+            "selected_count": 11,
+            "selected_rate": 0.4782608695652174
           },
           "admit_llm_span_narrow": {
             "action_added_false_span": 1,
@@ -1354,15 +453,15 @@
             "selected_baseline_added_false_span": 2,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 1,
-            "selected_rate": 0.05263157894736842
+            "selected_rate": 0.043478260869565216
           },
           "admit_rrf_primary": {
-            "action_added_false_span": 4,
-            "action_added_gold_span": 2,
+            "action_added_false_span": 6,
+            "action_added_gold_span": 3,
             "action_kind": "primary",
-            "budget_limit": 2,
+            "budget_limit": 3,
             "budget_violated": true,
-            "budget_violation_reason": "primary action false cost (4) exceeds gold (2)",
+            "budget_violation_reason": "primary action false cost (6) exceeds gold (3)",
             "delta_added_false_span_vs_baseline": 0,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 2.0,
@@ -1373,21 +472,21 @@
             "gold_per_false": 0.5,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.020000000000000004,
             "mean_delta_span_f0_5_vs_baseline": 0.01999999999999999,
-            "net_span_value_1x": -2,
-            "net_span_value_2x": -6,
-            "selected_baseline_added_false_span": 4,
-            "selected_baseline_added_gold_span": 2,
-            "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "net_span_value_1x": -3,
+            "net_span_value_2x": -9,
+            "selected_baseline_added_false_span": 6,
+            "selected_baseline_added_gold_span": 3,
+            "selected_count": 3,
+            "selected_rate": 0.13043478260869565
           },
           "admit_symbol_regex_union": {
             "action_added_false_span": 0,
-            "action_added_gold_span": 4,
+            "action_added_gold_span": 5,
             "action_kind": "primary",
-            "budget_limit": 4,
+            "budget_limit": 5,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -8,
+            "delta_added_false_span_vs_baseline": -10,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 0.0,
             "false_reduction_count": 0,
@@ -1397,12 +496,12 @@
             "gold_per_false": null,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
             "mean_delta_span_f0_5_vs_baseline": 0.2,
-            "net_span_value_1x": 4,
-            "net_span_value_2x": 4,
-            "selected_baseline_added_false_span": 8,
-            "selected_baseline_added_gold_span": 4,
-            "selected_count": 4,
-            "selected_rate": 0.21052631578947367
+            "net_span_value_1x": 5,
+            "net_span_value_2x": 5,
+            "selected_baseline_added_false_span": 10,
+            "selected_baseline_added_gold_span": 5,
+            "selected_count": 5,
+            "selected_rate": 0.21739130434782608
           },
           "supporting_only": {
             "action_added_false_span": 0,
@@ -1426,7 +525,7 @@
             "selected_baseline_added_false_span": 6,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "selected_rate": 0.08695652173913043
           },
           "weak_candidate_only": {
             "action_added_false_span": 1,
@@ -1450,29 +549,29 @@
             "selected_baseline_added_false_span": 2,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 1,
-            "selected_rate": 0.05263157894736842
+            "selected_rate": 0.043478260869565216
           }
         },
-        "budget_violation_count": 3,
-        "budget_violation_rate": 0.15789473684210525,
+        "budget_violation_count": 4,
+        "budget_violation_rate": 0.17391304347826086,
         "budget_violation_reasons": {
           "non-primary action has false cost (1)": 1,
-          "primary action false cost (4) exceeds gold (2)": 2
+          "primary action false cost (6) exceeds gold (3)": 3
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 1,
-        "positive_task_count": 14,
-        "primary_false_span_cost": 5,
-        "task_count": 19,
+        "positive_task_count": 18,
+        "primary_false_span_cost": 7,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
             "action": "admit_rrf_primary",
-            "action_added_false_span": 4,
-            "action_added_gold_span": 2,
+            "action_added_false_span": 6,
+            "action_added_gold_span": 3,
             "action_kind": "primary",
             "false_per_gold": 2.0,
-            "selected_count": 2
+            "selected_count": 3
           },
           {
             "action": "admit_llm_span_narrow",
@@ -1496,24 +595,24 @@
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "false_per_gold": null,
-            "selected_count": 9
+            "selected_count": 11
           },
           {
             "action": "admit_symbol_regex_union",
             "action_added_false_span": 0,
-            "action_added_gold_span": 4,
+            "action_added_gold_span": 5,
             "action_kind": "primary",
             "false_per_gold": 0.0,
-            "selected_count": 4
+            "selected_count": 5
           }
         ],
         "worst_actions_by_gold_kill": [
           {
             "action": "abstain",
             "action_kind": "non_primary",
-            "gold_kill_count": 5,
+            "gold_kill_count": 7,
             "gold_kill_rate": 1.0,
-            "selected_count": 9
+            "selected_count": 11
           },
           {
             "action": "supporting_only",
@@ -1541,7 +640,7 @@
             "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 2
+            "selected_count": 3
           }
         ]
       },
@@ -1569,16 +668,16 @@
             "selected_baseline_added_false_span": 4,
             "selected_baseline_added_gold_span": 2,
             "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "selected_rate": 0.08695652173913043
           },
           "admit_symbol_regex_union": {
             "action_added_false_span": 0,
-            "action_added_gold_span": 1,
+            "action_added_gold_span": 5,
             "action_kind": "primary",
-            "budget_limit": 1,
+            "budget_limit": 5,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -2,
+            "delta_added_false_span_vs_baseline": -10,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 0.0,
             "false_reduction_count": 0,
@@ -1588,12 +687,12 @@
             "gold_per_false": null,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
             "mean_delta_span_f0_5_vs_baseline": 0.2,
-            "net_span_value_1x": 1,
-            "net_span_value_2x": 1,
-            "selected_baseline_added_false_span": 2,
-            "selected_baseline_added_gold_span": 1,
-            "selected_count": 1,
-            "selected_rate": 0.05263157894736842
+            "net_span_value_1x": 5,
+            "net_span_value_2x": 5,
+            "selected_baseline_added_false_span": 10,
+            "selected_baseline_added_gold_span": 5,
+            "selected_count": 5,
+            "selected_rate": 0.21739130434782608
           },
           "apply_llm_filter": {
             "action_added_false_span": 4,
@@ -1617,7 +716,7 @@
             "selected_baseline_added_false_span": 22,
             "selected_baseline_added_gold_span": 3,
             "selected_count": 7,
-            "selected_rate": 0.3684210526315789
+            "selected_rate": 0.30434782608695654
           },
           "supporting_only": {
             "action_added_false_span": 0,
@@ -1641,7 +740,7 @@
             "selected_baseline_added_false_span": 6,
             "selected_baseline_added_gold_span": 1,
             "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "selected_rate": 0.08695652173913043
           },
           "weak_candidate_only": {
             "action_added_false_span": 7,
@@ -1665,20 +764,20 @@
             "selected_baseline_added_false_span": 14,
             "selected_baseline_added_gold_span": 7,
             "selected_count": 7,
-            "selected_rate": 0.3684210526315789
+            "selected_rate": 0.30434782608695654
           }
         },
         "budget_violation_count": 14,
-        "budget_violation_rate": 0.7368421052631579,
+        "budget_violation_rate": 0.6086956521739131,
         "budget_violation_reasons": {
           "non-primary action has false cost (4)": 7,
           "non-primary action has false cost (7)": 7
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 11,
-        "positive_task_count": 14,
+        "positive_task_count": 18,
         "primary_false_span_cost": 0,
-        "task_count": 19,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
@@ -1708,10 +807,10 @@
           {
             "action": "admit_symbol_regex_union",
             "action_added_false_span": 0,
-            "action_added_gold_span": 1,
+            "action_added_gold_span": 5,
             "action_kind": "primary",
             "false_per_gold": 0.0,
-            "selected_count": 1
+            "selected_count": 5
           },
           {
             "action": "supporting_only",
@@ -1756,7 +855,7 @@
             "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 1
+            "selected_count": 5
           }
         ]
       },
@@ -1784,7 +883,7 @@
             "selected_baseline_added_false_span": 22,
             "selected_baseline_added_gold_span": 3,
             "selected_count": 7,
-            "selected_rate": 0.3684210526315789
+            "selected_rate": 0.30434782608695654
           },
           "supporting_only": {
             "action_added_false_span": 0,
@@ -1793,68 +892,68 @@
             "budget_limit": 0,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -8,
-            "delta_added_gold_span_vs_baseline": -2,
+            "delta_added_false_span_vs_baseline": -14,
+            "delta_added_gold_span_vs_baseline": -5,
             "false_per_gold": null,
             "false_reduction_count": 1,
             "false_reduction_rate": 1.0,
-            "gold_kill_count": 2,
+            "gold_kill_count": 5,
             "gold_kill_rate": 1.0,
             "gold_per_false": null,
-            "mean_delta_primary_false_positive_rate_vs_baseline": -0.20000000000000004,
-            "mean_delta_span_f0_5_vs_baseline": -0.13333333333333333,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.15,
+            "mean_delta_span_f0_5_vs_baseline": -0.16666666666666666,
             "net_span_value_1x": 0,
             "net_span_value_2x": 0,
-            "selected_baseline_added_false_span": 8,
-            "selected_baseline_added_gold_span": 2,
-            "selected_count": 3,
-            "selected_rate": 0.15789473684210525
+            "selected_baseline_added_false_span": 14,
+            "selected_baseline_added_gold_span": 5,
+            "selected_count": 6,
+            "selected_rate": 0.2608695652173913
           },
           "weak_candidate_only": {
-            "action_added_false_span": 9,
+            "action_added_false_span": 10,
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "budget_limit": 0,
             "budget_violated": true,
-            "budget_violation_reason": "non-primary action has false cost (9)",
-            "delta_added_false_span_vs_baseline": -9,
-            "delta_added_gold_span_vs_baseline": -9,
+            "budget_violation_reason": "non-primary action has false cost (10)",
+            "delta_added_false_span_vs_baseline": -10,
+            "delta_added_gold_span_vs_baseline": -10,
             "false_per_gold": null,
             "false_reduction_count": 0,
             "false_reduction_rate": null,
-            "gold_kill_count": 9,
+            "gold_kill_count": 10,
             "gold_kill_rate": 1.0,
             "gold_per_false": 0.0,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.05,
             "mean_delta_span_f0_5_vs_baseline": -0.2,
-            "net_span_value_1x": -9,
-            "net_span_value_2x": -18,
-            "selected_baseline_added_false_span": 18,
-            "selected_baseline_added_gold_span": 9,
-            "selected_count": 9,
-            "selected_rate": 0.47368421052631576
+            "net_span_value_1x": -10,
+            "net_span_value_2x": -20,
+            "selected_baseline_added_false_span": 20,
+            "selected_baseline_added_gold_span": 10,
+            "selected_count": 10,
+            "selected_rate": 0.43478260869565216
           }
         },
-        "budget_violation_count": 16,
-        "budget_violation_rate": 0.8421052631578947,
+        "budget_violation_count": 17,
+        "budget_violation_rate": 0.7391304347826086,
         "budget_violation_reasons": {
-          "non-primary action has false cost (4)": 7,
-          "non-primary action has false cost (9)": 9
+          "non-primary action has false cost (10)": 10,
+          "non-primary action has false cost (4)": 7
         },
         "no_gold_task_count": 5,
-        "non_primary_false_span_cost": 13,
-        "positive_task_count": 14,
+        "non_primary_false_span_cost": 14,
+        "positive_task_count": 18,
         "primary_false_span_cost": 0,
-        "task_count": 19,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
             "action": "weak_candidate_only",
-            "action_added_false_span": 9,
+            "action_added_false_span": 10,
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "false_per_gold": null,
-            "selected_count": 9
+            "selected_count": 10
           },
           {
             "action": "apply_llm_filter",
@@ -1870,16 +969,23 @@
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "false_per_gold": null,
-            "selected_count": 3
+            "selected_count": 6
           }
         ],
         "worst_actions_by_gold_kill": [
           {
             "action": "weak_candidate_only",
             "action_kind": "non_primary",
-            "gold_kill_count": 9,
+            "gold_kill_count": 10,
             "gold_kill_rate": 1.0,
-            "selected_count": 9
+            "selected_count": 10
+          },
+          {
+            "action": "supporting_only",
+            "action_kind": "non_primary",
+            "gold_kill_count": 5,
+            "gold_kill_rate": 1.0,
+            "selected_count": 6
           },
           {
             "action": "apply_llm_filter",
@@ -1887,25 +993,234 @@
             "gold_kill_count": 3,
             "gold_kill_rate": 1.0,
             "selected_count": 7
+          }
+        ]
+      },
+      "admission_v3_h4b": {
+        "action_span_cost_table": {
+          "admit_rrf_primary": {
+            "action_added_false_span": 2,
+            "action_added_gold_span": 1,
+            "action_kind": "primary",
+            "budget_limit": 1,
+            "budget_violated": true,
+            "budget_violation_reason": "primary action false cost (2) exceeds gold (1)",
+            "delta_added_false_span_vs_baseline": 0,
+            "delta_added_gold_span_vs_baseline": 0,
+            "false_per_gold": 2.0,
+            "false_reduction_count": 0,
+            "false_reduction_rate": null,
+            "gold_kill_count": 0,
+            "gold_kill_rate": 0.0,
+            "gold_per_false": 0.5,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.020000000000000004,
+            "mean_delta_span_f0_5_vs_baseline": 0.01999999999999999,
+            "net_span_value_1x": -1,
+            "net_span_value_2x": -3,
+            "selected_baseline_added_false_span": 2,
+            "selected_baseline_added_gold_span": 1,
+            "selected_count": 1,
+            "selected_rate": 0.043478260869565216
+          },
+          "admit_symbol_regex_union": {
+            "action_added_false_span": 0,
+            "action_added_gold_span": 1,
+            "action_kind": "primary",
+            "budget_limit": 1,
+            "budget_violated": false,
+            "budget_violation_reason": null,
+            "delta_added_false_span_vs_baseline": -2,
+            "delta_added_gold_span_vs_baseline": 0,
+            "false_per_gold": 0.0,
+            "false_reduction_count": 0,
+            "false_reduction_rate": null,
+            "gold_kill_count": 0,
+            "gold_kill_rate": 0.0,
+            "gold_per_false": null,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
+            "mean_delta_span_f0_5_vs_baseline": 0.2,
+            "net_span_value_1x": 1,
+            "net_span_value_2x": 1,
+            "selected_baseline_added_false_span": 2,
+            "selected_baseline_added_gold_span": 1,
+            "selected_count": 1,
+            "selected_rate": 0.043478260869565216
+          },
+          "apply_llm_filter": {
+            "action_added_false_span": 1,
+            "action_added_gold_span": 0,
+            "action_kind": "non_primary",
+            "budget_limit": 0,
+            "budget_violated": true,
+            "budget_violation_reason": "non-primary action has false cost (1)",
+            "delta_added_false_span_vs_baseline": -7,
+            "delta_added_gold_span_vs_baseline": -2,
+            "false_per_gold": null,
+            "false_reduction_count": 1,
+            "false_reduction_rate": 1.0,
+            "gold_kill_count": 2,
+            "gold_kill_rate": 1.0,
+            "gold_per_false": 0.0,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.16666666666666666,
+            "mean_delta_span_f0_5_vs_baseline": -0.053333333333333344,
+            "net_span_value_1x": -1,
+            "net_span_value_2x": -2,
+            "selected_baseline_added_false_span": 8,
+            "selected_baseline_added_gold_span": 2,
+            "selected_count": 3,
+            "selected_rate": 0.13043478260869565
+          },
+          "supporting_only": {
+            "action_added_false_span": 0,
+            "action_added_gold_span": 0,
+            "action_kind": "non_primary",
+            "budget_limit": 0,
+            "budget_violated": false,
+            "budget_violation_reason": null,
+            "delta_added_false_span_vs_baseline": -4,
+            "delta_added_gold_span_vs_baseline": -2,
+            "false_per_gold": null,
+            "false_reduction_count": 0,
+            "false_reduction_rate": null,
+            "gold_kill_count": 2,
+            "gold_kill_rate": 1.0,
+            "gold_per_false": null,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.1,
+            "mean_delta_span_f0_5_vs_baseline": -0.2,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": 0,
+            "selected_baseline_added_false_span": 4,
+            "selected_baseline_added_gold_span": 2,
+            "selected_count": 2,
+            "selected_rate": 0.08695652173913043
+          },
+          "weak_candidate_only": {
+            "action_added_false_span": 16,
+            "action_added_gold_span": 0,
+            "action_kind": "non_primary",
+            "budget_limit": 0,
+            "budget_violated": true,
+            "budget_violation_reason": "non-primary action has false cost (16)",
+            "delta_added_false_span_vs_baseline": -24,
+            "delta_added_gold_span_vs_baseline": -12,
+            "false_per_gold": null,
+            "false_reduction_count": 4,
+            "false_reduction_rate": 1.0,
+            "gold_kill_count": 12,
+            "gold_kill_rate": 1.0,
+            "gold_per_false": 0.0,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.125,
+            "mean_delta_span_f0_5_vs_baseline": -0.15000000000000002,
+            "net_span_value_1x": -16,
+            "net_span_value_2x": -32,
+            "selected_baseline_added_false_span": 40,
+            "selected_baseline_added_gold_span": 12,
+            "selected_count": 16,
+            "selected_rate": 0.6956521739130435
+          }
+        },
+        "budget_violation_count": 20,
+        "budget_violation_rate": 0.8695652173913043,
+        "budget_violation_reasons": {
+          "non-primary action has false cost (1)": 3,
+          "non-primary action has false cost (16)": 16,
+          "primary action false cost (2) exceeds gold (1)": 1
+        },
+        "no_gold_task_count": 5,
+        "non_primary_false_span_cost": 17,
+        "positive_task_count": 18,
+        "primary_false_span_cost": 2,
+        "task_count": 23,
+        "unclassified_false_span_cost": 0,
+        "worst_actions_by_false_cost": [
+          {
+            "action": "weak_candidate_only",
+            "action_added_false_span": 16,
+            "action_added_gold_span": 0,
+            "action_kind": "non_primary",
+            "false_per_gold": null,
+            "selected_count": 16
+          },
+          {
+            "action": "admit_rrf_primary",
+            "action_added_false_span": 2,
+            "action_added_gold_span": 1,
+            "action_kind": "primary",
+            "false_per_gold": 2.0,
+            "selected_count": 1
+          },
+          {
+            "action": "apply_llm_filter",
+            "action_added_false_span": 1,
+            "action_added_gold_span": 0,
+            "action_kind": "non_primary",
+            "false_per_gold": null,
+            "selected_count": 3
+          },
+          {
+            "action": "admit_symbol_regex_union",
+            "action_added_false_span": 0,
+            "action_added_gold_span": 1,
+            "action_kind": "primary",
+            "false_per_gold": 0.0,
+            "selected_count": 1
+          },
+          {
+            "action": "supporting_only",
+            "action_added_false_span": 0,
+            "action_added_gold_span": 0,
+            "action_kind": "non_primary",
+            "false_per_gold": null,
+            "selected_count": 2
+          }
+        ],
+        "worst_actions_by_gold_kill": [
+          {
+            "action": "weak_candidate_only",
+            "action_kind": "non_primary",
+            "gold_kill_count": 12,
+            "gold_kill_rate": 1.0,
+            "selected_count": 16
+          },
+          {
+            "action": "apply_llm_filter",
+            "action_kind": "non_primary",
+            "gold_kill_count": 2,
+            "gold_kill_rate": 1.0,
+            "selected_count": 3
           },
           {
             "action": "supporting_only",
             "action_kind": "non_primary",
             "gold_kill_count": 2,
             "gold_kill_rate": 1.0,
-            "selected_count": 3
+            "selected_count": 2
+          },
+          {
+            "action": "admit_rrf_primary",
+            "action_kind": "primary",
+            "gold_kill_count": 0,
+            "gold_kill_rate": 0.0,
+            "selected_count": 1
+          },
+          {
+            "action": "admit_symbol_regex_union",
+            "action_kind": "primary",
+            "gold_kill_count": 0,
+            "gold_kill_rate": 0.0,
+            "selected_count": 1
           }
         ]
       },
       "bucket_routed_v0": {
         "action_span_cost_table": {
           "candidate_baseline": {
-            "action_added_false_span": 4,
-            "action_added_gold_span": 2,
+            "action_added_false_span": 6,
+            "action_added_gold_span": 3,
             "action_kind": "unclassified",
-            "budget_limit": 2,
+            "budget_limit": 3,
             "budget_violated": true,
-            "budget_violation_reason": "unclassified action false cost (4) exceeds gold (2)",
+            "budget_violation_reason": "unclassified action false cost (6) exceeds gold (3)",
             "delta_added_false_span_vs_baseline": 0,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 2.0,
@@ -1916,12 +1231,12 @@
             "gold_per_false": 0.5,
             "mean_delta_primary_false_positive_rate_vs_baseline": 0.0,
             "mean_delta_span_f0_5_vs_baseline": 0.0,
-            "net_span_value_1x": -2,
-            "net_span_value_2x": -6,
-            "selected_baseline_added_false_span": 4,
-            "selected_baseline_added_gold_span": 2,
-            "selected_count": 2,
-            "selected_rate": 0.10526315789473684
+            "net_span_value_1x": -3,
+            "net_span_value_2x": -9,
+            "selected_baseline_added_false_span": 6,
+            "selected_baseline_added_gold_span": 3,
+            "selected_count": 3,
+            "selected_rate": 0.13043478260869565
           },
           "llm_abstain_filter": {
             "action_added_false_span": 0,
@@ -1945,7 +1260,7 @@
             "selected_baseline_added_false_span": 12,
             "selected_baseline_added_gold_span": 0,
             "selected_count": 3,
-            "selected_rate": 0.15789473684210525
+            "selected_rate": 0.13043478260869565
           },
           "llm_filter": {
             "action_added_false_span": 2,
@@ -1969,16 +1284,16 @@
             "selected_baseline_added_false_span": 16,
             "selected_baseline_added_gold_span": 4,
             "selected_count": 6,
-            "selected_rate": 0.3157894736842105
+            "selected_rate": 0.2608695652173913
           },
           "llm_span_narrow": {
-            "action_added_false_span": 8,
-            "action_added_gold_span": 8,
+            "action_added_false_span": 11,
+            "action_added_gold_span": 11,
             "action_kind": "primary",
-            "budget_limit": 8,
+            "budget_limit": 11,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -8,
+            "delta_added_false_span_vs_baseline": -11,
             "delta_added_gold_span_vs_baseline": 0,
             "false_per_gold": 1.0,
             "false_reduction_count": 0,
@@ -1987,43 +1302,43 @@
             "gold_kill_rate": 0.0,
             "gold_per_false": 1.0,
             "mean_delta_primary_false_positive_rate_vs_baseline": -0.05,
-            "mean_delta_span_f0_5_vs_baseline": 0.12,
+            "mean_delta_span_f0_5_vs_baseline": 0.11999999999999998,
             "net_span_value_1x": 0,
-            "net_span_value_2x": -8,
-            "selected_baseline_added_false_span": 16,
-            "selected_baseline_added_gold_span": 8,
-            "selected_count": 8,
-            "selected_rate": 0.42105263157894735
+            "net_span_value_2x": -11,
+            "selected_baseline_added_false_span": 22,
+            "selected_baseline_added_gold_span": 11,
+            "selected_count": 11,
+            "selected_rate": 0.4782608695652174
           }
         },
-        "budget_violation_count": 8,
-        "budget_violation_rate": 0.42105263157894735,
+        "budget_violation_count": 9,
+        "budget_violation_rate": 0.391304347826087,
         "budget_violation_reasons": {
           "non-primary action has false cost (2)": 6,
-          "unclassified action false cost (4) exceeds gold (2)": 2
+          "unclassified action false cost (6) exceeds gold (3)": 3
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 2,
-        "positive_task_count": 14,
-        "primary_false_span_cost": 8,
-        "task_count": 19,
-        "unclassified_false_span_cost": 4,
+        "positive_task_count": 18,
+        "primary_false_span_cost": 11,
+        "task_count": 23,
+        "unclassified_false_span_cost": 6,
         "worst_actions_by_false_cost": [
           {
             "action": "llm_span_narrow",
-            "action_added_false_span": 8,
-            "action_added_gold_span": 8,
+            "action_added_false_span": 11,
+            "action_added_gold_span": 11,
             "action_kind": "primary",
             "false_per_gold": 1.0,
-            "selected_count": 8
+            "selected_count": 11
           },
           {
             "action": "candidate_baseline",
-            "action_added_false_span": 4,
-            "action_added_gold_span": 2,
+            "action_added_false_span": 6,
+            "action_added_gold_span": 3,
             "action_kind": "unclassified",
             "false_per_gold": 2.0,
-            "selected_count": 2
+            "selected_count": 3
           },
           {
             "action": "llm_filter",
@@ -2055,7 +1370,7 @@
             "action_kind": "unclassified",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 2
+            "selected_count": 3
           },
           {
             "action": "llm_abstain_filter",
@@ -2069,56 +1384,56 @@
             "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 8
+            "selected_count": 11
           }
         ]
       },
       "candidate_baseline": {
         "action_span_cost_table": {
           "candidate_baseline": {
-            "action_added_false_span": 48,
-            "action_added_gold_span": 14,
+            "action_added_false_span": 56,
+            "action_added_gold_span": 18,
             "action_kind": "unclassified",
-            "budget_limit": 14,
+            "budget_limit": 18,
             "budget_violated": true,
-            "budget_violation_reason": "unclassified action false cost (48) exceeds gold (14)",
+            "budget_violation_reason": "unclassified action false cost (56) exceeds gold (18)",
             "delta_added_false_span_vs_baseline": 0,
             "delta_added_gold_span_vs_baseline": 0,
-            "false_per_gold": 3.4285714285714284,
+            "false_per_gold": 3.111111111111111,
             "false_reduction_count": 0,
             "false_reduction_rate": 0.0,
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "gold_per_false": 0.2916666666666667,
+            "gold_per_false": 0.32142857142857145,
             "mean_delta_primary_false_positive_rate_vs_baseline": 0.0,
             "mean_delta_span_f0_5_vs_baseline": 0.0,
-            "net_span_value_1x": -34,
-            "net_span_value_2x": -82,
-            "selected_baseline_added_false_span": 48,
-            "selected_baseline_added_gold_span": 14,
-            "selected_count": 19,
+            "net_span_value_1x": -38,
+            "net_span_value_2x": -94,
+            "selected_baseline_added_false_span": 56,
+            "selected_baseline_added_gold_span": 18,
+            "selected_count": 23,
             "selected_rate": 1.0
           }
         },
-        "budget_violation_count": 19,
+        "budget_violation_count": 23,
         "budget_violation_rate": 1.0,
         "budget_violation_reasons": {
-          "unclassified action false cost (48) exceeds gold (14)": 19
+          "unclassified action false cost (56) exceeds gold (18)": 23
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 0,
-        "positive_task_count": 14,
+        "positive_task_count": 18,
         "primary_false_span_cost": 0,
-        "task_count": 19,
-        "unclassified_false_span_cost": 48,
+        "task_count": 23,
+        "unclassified_false_span_cost": 56,
         "worst_actions_by_false_cost": [
           {
             "action": "candidate_baseline",
-            "action_added_false_span": 48,
-            "action_added_gold_span": 14,
+            "action_added_false_span": 56,
+            "action_added_gold_span": 18,
             "action_kind": "unclassified",
-            "false_per_gold": 3.4285714285714284,
-            "selected_count": 19
+            "false_per_gold": 3.111111111111111,
+            "selected_count": 23
           }
         ],
         "worst_actions_by_gold_kill": [
@@ -2127,7 +1442,7 @@
             "action_kind": "unclassified",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 19
+            "selected_count": 23
           }
         ]
       },
@@ -2140,21 +1455,21 @@
             "budget_limit": 0,
             "budget_violated": false,
             "budget_violation_reason": null,
-            "delta_added_false_span_vs_baseline": -48,
-            "delta_added_gold_span_vs_baseline": -14,
+            "delta_added_false_span_vs_baseline": -56,
+            "delta_added_gold_span_vs_baseline": -18,
             "false_per_gold": null,
             "false_reduction_count": 5,
             "false_reduction_rate": 1.0,
-            "gold_kill_count": 14,
+            "gold_kill_count": 18,
             "gold_kill_rate": 1.0,
             "gold_per_false": null,
-            "mean_delta_primary_false_positive_rate_vs_baseline": -0.16578947368421054,
-            "mean_delta_span_f0_5_vs_baseline": -0.0736842105263158,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.15434782608695655,
+            "mean_delta_span_f0_5_vs_baseline": -0.0782608695652174,
             "net_span_value_1x": 0,
             "net_span_value_2x": 0,
-            "selected_baseline_added_false_span": 48,
-            "selected_baseline_added_gold_span": 14,
-            "selected_count": 19,
+            "selected_baseline_added_false_span": 56,
+            "selected_baseline_added_gold_span": 18,
+            "selected_count": 23,
             "selected_rate": 1.0
           }
         },
@@ -2163,9 +1478,9 @@
         "budget_violation_reasons": {},
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 0,
-        "positive_task_count": 14,
+        "positive_task_count": 18,
         "primary_false_span_cost": 0,
-        "task_count": 19,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
@@ -2174,16 +1489,16 @@
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "false_per_gold": null,
-            "selected_count": 19
+            "selected_count": 23
           }
         ],
         "worst_actions_by_gold_kill": [
           {
             "action": "llm_abstain_filter",
             "action_kind": "non_primary",
-            "gold_kill_count": 14,
+            "gold_kill_count": 18,
             "gold_kill_rate": 1.0,
-            "selected_count": 19
+            "selected_count": 23
           }
         ]
       },
@@ -2196,34 +1511,34 @@
             "budget_limit": 0,
             "budget_violated": true,
             "budget_violation_reason": "non-primary action has false cost (5)",
-            "delta_added_false_span_vs_baseline": -43,
-            "delta_added_gold_span_vs_baseline": -14,
+            "delta_added_false_span_vs_baseline": -51,
+            "delta_added_gold_span_vs_baseline": -18,
             "false_per_gold": null,
             "false_reduction_count": 5,
             "false_reduction_rate": 1.0,
-            "gold_kill_count": 14,
+            "gold_kill_count": 18,
             "gold_kill_rate": 1.0,
             "gold_per_false": 0.0,
-            "mean_delta_primary_false_positive_rate_vs_baseline": -0.15263157894736845,
-            "mean_delta_span_f0_5_vs_baseline": -0.05894736842105264,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.14347826086956522,
+            "mean_delta_span_f0_5_vs_baseline": -0.06260869565217393,
             "net_span_value_1x": -5,
             "net_span_value_2x": -10,
-            "selected_baseline_added_false_span": 48,
-            "selected_baseline_added_gold_span": 14,
-            "selected_count": 19,
+            "selected_baseline_added_false_span": 56,
+            "selected_baseline_added_gold_span": 18,
+            "selected_count": 23,
             "selected_rate": 1.0
           }
         },
-        "budget_violation_count": 19,
+        "budget_violation_count": 23,
         "budget_violation_rate": 1.0,
         "budget_violation_reasons": {
-          "non-primary action has false cost (5)": 19
+          "non-primary action has false cost (5)": 23
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 5,
-        "positive_task_count": 14,
+        "positive_task_count": 18,
         "primary_false_span_cost": 0,
-        "task_count": 19,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
@@ -2232,65 +1547,65 @@
             "action_added_gold_span": 0,
             "action_kind": "non_primary",
             "false_per_gold": null,
-            "selected_count": 19
+            "selected_count": 23
           }
         ],
         "worst_actions_by_gold_kill": [
           {
             "action": "llm_filter",
             "action_kind": "non_primary",
-            "gold_kill_count": 14,
+            "gold_kill_count": 18,
             "gold_kill_rate": 1.0,
-            "selected_count": 19
+            "selected_count": 23
           }
         ]
       },
       "llm_span_narrow": {
         "action_span_cost_table": {
           "llm_span_narrow": {
-            "action_added_false_span": 29,
-            "action_added_gold_span": 14,
+            "action_added_false_span": 33,
+            "action_added_gold_span": 18,
             "action_kind": "primary",
-            "budget_limit": 14,
+            "budget_limit": 18,
             "budget_violated": true,
-            "budget_violation_reason": "primary action false cost (29) exceeds gold (14)",
-            "delta_added_false_span_vs_baseline": -19,
+            "budget_violation_reason": "primary action false cost (33) exceeds gold (18)",
+            "delta_added_false_span_vs_baseline": -23,
             "delta_added_gold_span_vs_baseline": 0,
-            "false_per_gold": 2.0714285714285716,
+            "false_per_gold": 1.8333333333333333,
             "false_reduction_count": 5,
             "false_reduction_rate": 1.0,
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "gold_per_false": 0.4827586206896552,
-            "mean_delta_primary_false_positive_rate_vs_baseline": -0.06315789473684212,
-            "mean_delta_span_f0_5_vs_baseline": 0.08842105263157894,
+            "gold_per_false": 0.5454545454545454,
+            "mean_delta_primary_false_positive_rate_vs_baseline": -0.06086956521739131,
+            "mean_delta_span_f0_5_vs_baseline": 0.09391304347826088,
             "net_span_value_1x": -15,
-            "net_span_value_2x": -44,
-            "selected_baseline_added_false_span": 48,
-            "selected_baseline_added_gold_span": 14,
-            "selected_count": 19,
+            "net_span_value_2x": -48,
+            "selected_baseline_added_false_span": 56,
+            "selected_baseline_added_gold_span": 18,
+            "selected_count": 23,
             "selected_rate": 1.0
           }
         },
-        "budget_violation_count": 19,
+        "budget_violation_count": 23,
         "budget_violation_rate": 1.0,
         "budget_violation_reasons": {
-          "primary action false cost (29) exceeds gold (14)": 19
+          "primary action false cost (33) exceeds gold (18)": 23
         },
         "no_gold_task_count": 5,
         "non_primary_false_span_cost": 0,
-        "positive_task_count": 14,
-        "primary_false_span_cost": 29,
-        "task_count": 19,
+        "positive_task_count": 18,
+        "primary_false_span_cost": 33,
+        "task_count": 23,
         "unclassified_false_span_cost": 0,
         "worst_actions_by_false_cost": [
           {
             "action": "llm_span_narrow",
-            "action_added_false_span": 29,
-            "action_added_gold_span": 14,
+            "action_added_false_span": 33,
+            "action_added_gold_span": 18,
             "action_kind": "primary",
-            "false_per_gold": 2.0714285714285716,
-            "selected_count": 19
+            "false_per_gold": 1.8333333333333333,
+            "selected_count": 23
           }
         ],
         "worst_actions_by_gold_kill": [
@@ -2299,21 +1614,24 @@
             "action_kind": "primary",
             "gold_kill_count": 0,
             "gold_kill_rate": 0.0,
-            "selected_count": 19
+            "selected_count": 23
           }
         ]
       }
     },
-    "positive_task_count": 14,
+    "positive_task_count": 18,
     "promotion_ready": false,
     "run_phase_public_only": true,
     "schema_version": "p30-h3-action-span-cost-report-v1",
     "score_phase_only_accounting": true,
     "stage": "P30-H3 action-specific span-cost accounting",
-    "task_count": 19
+    "task_count": 23
   },
   "h4_available": true,
   "h4_budget_overlay": true,
+  "h4b_available": true,
+  "h4b_budget_overlay": true,
+  "h4b_selective_readmission": true,
   "input_paths": [
     "self_test"
   ],
@@ -2327,58 +1645,58 @@
   "p33b_handoff_detected": true,
   "policy_comparison": {
     "admission_v3": {
-      "SpanF0.5": 0.10631578947368421,
-      "abstain_rate": 0.47368421052631576,
+      "SpanF0.5": 0.11391304347826088,
+      "abstain_rate": 0.4782608695652174,
       "action_rates": {
-        "abstain": 0.47368421052631576,
-        "admit_llm_span_narrow": 0.05263157894736842,
-        "admit_rrf_primary": 0.10526315789473684,
-        "admit_symbol_regex_union": 0.21052631578947367,
-        "supporting_only": 0.10526315789473684,
-        "weak_candidate_only": 0.05263157894736842
+        "abstain": 0.4782608695652174,
+        "admit_llm_span_narrow": 0.043478260869565216,
+        "admit_rrf_primary": 0.13043478260869565,
+        "admit_symbol_regex_union": 0.21739130434782608,
+        "supporting_only": 0.08695652173913043,
+        "weak_candidate_only": 0.043478260869565216
       },
-      "added_false_span": 13,
-      "added_gold_span": 7,
+      "added_false_span": 17,
+      "added_gold_span": 9,
       "blocked_by_missing_action_outcomes": true,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.07473684210526314,
-        "delta_added_false_span": -1,
-        "delta_added_gold_span": -3,
-        "delta_primary_false_positive_rate": -0.005263157894736838
+        "delta_SpanF0.5": -0.0860869565217391,
+        "delta_added_false_span": -2,
+        "delta_added_gold_span": -5,
+        "delta_primary_false_positive_rate": -0.0065217391304347935
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": -0.04105263157894738,
-        "delta_added_false_span": -35,
-        "delta_added_gold_span": -7,
-        "delta_primary_false_positive_rate": -0.1342105263157895
+        "delta_SpanF0.5": -0.042608695652173914,
+        "delta_added_false_span": -39,
+        "delta_added_gold_span": -9,
+        "delta_primary_false_positive_rate": -0.11956521739130437
       },
       "filter_gold_kill_rate": 0.5,
       "no_gold_false_primary_rate": 0.04,
       "no_gold_task_count": 5,
       "outcome_fallback": {
         "fallback_action_counts": {
-          "admit_rrf_primary": 2,
-          "admit_symbol_regex_union": 4,
+          "admit_rrf_primary": 3,
+          "admit_symbol_regex_union": 5,
           "supporting_only": 2,
           "weak_candidate_only": 1
         },
         "fallback_strategy_counts": {
-          "candidate_baseline": 6,
+          "candidate_baseline": 8,
           "zero_primary": 3
         },
-        "missing_action_outcome_count": 9,
+        "missing_action_outcome_count": 11,
         "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
       },
       "policy_action_counts": {
-        "abstain": 9,
+        "abstain": 11,
         "admit_llm_span_narrow": 1,
-        "admit_rrf_primary": 2,
-        "admit_symbol_regex_union": 4,
+        "admit_rrf_primary": 3,
+        "admit_symbol_regex_union": 5,
         "supporting_only": 2,
         "weak_candidate_only": 1
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.044736842105263165,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.04565217391304348,
       "quality_comparable": false,
       "score_bands": {
         "hard_guard": {
@@ -2394,27 +1712,27 @@
           "primary_false_positive_rate": 0.022222222222222223
         },
         "high_admit": {
-          "SpanF0.5": 0.21714285714285714,
+          "SpanF0.5": 0.21333333333333335,
           "action_counts": {
             "admit_llm_span_narrow": 1,
-            "admit_rrf_primary": 2,
-            "admit_symbol_regex_union": 4
+            "admit_rrf_primary": 3,
+            "admit_symbol_regex_union": 5
           },
-          "count": 7,
+          "count": 9,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
-          "positive_count": 7,
-          "primary_false_positive_rate": 0.09285714285714286
+          "positive_count": 9,
+          "primary_false_positive_rate": 0.09444444444444446
         },
         "medium_admit": {
           "SpanF0.5": 0.1,
           "action_counts": {
-            "abstain": 2
+            "abstain": 4
           },
-          "count": 2,
+          "count": 4,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
-          "positive_count": 2,
+          "positive_count": 4,
           "primary_false_positive_rate": 0.0
         },
         "neutral": {
@@ -2429,53 +1747,53 @@
           "primary_false_positive_rate": 0.0
         }
       },
-      "selected_action_fallback_rate": 0.47368421052631576,
-      "selective_risk_proxy": 0.023545706371191143,
+      "selected_action_fallback_rate": 0.4782608695652174,
+      "selective_risk_proxy": 0.023818525519848772,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
-          "count": 7,
-          "rate": 0.3684210526315789
+          "count": 9,
+          "rate": 0.391304347826087
         },
         "model_success": {
-          "count": 12,
-          "rate": 0.631578947368421
+          "count": 14,
+          "rate": 0.6086956521739131
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "admission_v3_h1": {
-      "SpanF0.5": 0.1505263157894737,
-      "abstain_rate": 0.47368421052631576,
+      "SpanF0.5": 0.16,
+      "abstain_rate": 0.4782608695652174,
       "action_rates": {
-        "abstain": 0.47368421052631576,
-        "admit_llm_span_narrow": 0.05263157894736842,
-        "admit_rrf_primary": 0.10526315789473684,
-        "admit_symbol_regex_union": 0.21052631578947367,
-        "supporting_only": 0.10526315789473684,
-        "weak_candidate_only": 0.05263157894736842
+        "abstain": 0.4782608695652174,
+        "admit_llm_span_narrow": 0.043478260869565216,
+        "admit_rrf_primary": 0.13043478260869565,
+        "admit_symbol_regex_union": 0.21739130434782608,
+        "supporting_only": 0.08695652173913043,
+        "weak_candidate_only": 0.043478260869565216
       },
-      "added_false_span": 6,
-      "added_gold_span": 7,
+      "added_false_span": 8,
+      "added_gold_span": 9,
       "blocked_by_missing_action_outcomes": false,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.03052631578947365,
-        "delta_added_false_span": -8,
-        "delta_added_gold_span": -3,
-        "delta_primary_false_positive_rate": -0.02578947368421053
+        "delta_SpanF0.5": -0.03999999999999998,
+        "delta_added_false_span": -11,
+        "delta_added_gold_span": -5,
+        "delta_primary_false_positive_rate": -0.028695652173913053
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": 0.0031578947368421095,
-        "delta_added_false_span": -42,
-        "delta_added_gold_span": -7,
-        "delta_primary_false_positive_rate": -0.15473684210526317
+        "delta_SpanF0.5": 0.0034782608695652084,
+        "delta_added_false_span": -48,
+        "delta_added_gold_span": -9,
+        "delta_primary_false_positive_rate": -0.14173913043478262
       },
       "filter_gold_kill_rate": 0.5,
       "no_gold_false_primary_rate": 0.04,
@@ -2487,15 +1805,15 @@
         "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
       },
       "policy_action_counts": {
-        "abstain": 9,
+        "abstain": 11,
         "admit_llm_span_narrow": 1,
-        "admit_rrf_primary": 2,
-        "admit_symbol_regex_union": 4,
+        "admit_rrf_primary": 3,
+        "admit_symbol_regex_union": 5,
         "supporting_only": 2,
         "weak_candidate_only": 1
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.024210526315789474,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.02347826086956522,
       "quality_comparable": true,
       "score_bands": {
         "hard_guard": {
@@ -2511,27 +1829,27 @@
           "primary_false_positive_rate": 0.022222222222222223
         },
         "high_admit": {
-          "SpanF0.5": 0.3371428571428572,
+          "SpanF0.5": 0.33111111111111113,
           "action_counts": {
             "admit_llm_span_narrow": 1,
-            "admit_rrf_primary": 2,
-            "admit_symbol_regex_union": 4
+            "admit_rrf_primary": 3,
+            "admit_symbol_regex_union": 5
           },
-          "count": 7,
+          "count": 9,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
-          "positive_count": 7,
-          "primary_false_positive_rate": 0.030000000000000002
+          "positive_count": 9,
+          "primary_false_positive_rate": 0.03222222222222223
         },
         "medium_admit": {
           "SpanF0.5": 0.1,
           "action_counts": {
-            "abstain": 2
+            "abstain": 4
           },
-          "count": 2,
+          "count": 4,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
-          "positive_count": 2,
+          "positive_count": 4,
           "primary_false_positive_rate": 0.0
         },
         "neutral": {
@@ -2547,53 +1865,53 @@
         }
       },
       "selected_action_fallback_rate": 0.0,
-      "selective_risk_proxy": 0.012742382271468147,
+      "selective_risk_proxy": 0.01224952741020794,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
-          "count": 7,
-          "rate": 0.3684210526315789
+          "count": 9,
+          "rate": 0.391304347826087
         },
         "model_success": {
-          "count": 12,
-          "rate": 0.631578947368421
+          "count": 14,
+          "rate": 0.6086956521739131
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "admission_v3_h2": {
-      "SpanF0.5": 0.05052631578947368,
-      "abstain_rate": 0.10526315789473684,
+      "SpanF0.5": 0.11130434782608696,
+      "abstain_rate": 0.08695652173913043,
       "action_rates": {
-        "abstain": 0.10526315789473684,
-        "admit_symbol_regex_union": 0.05263157894736842,
-        "apply_llm_filter": 0.3684210526315789,
-        "supporting_only": 0.10526315789473684,
-        "weak_candidate_only": 0.3684210526315789
+        "abstain": 0.08695652173913043,
+        "admit_symbol_regex_union": 0.21739130434782608,
+        "apply_llm_filter": 0.30434782608695654,
+        "supporting_only": 0.08695652173913043,
+        "weak_candidate_only": 0.30434782608695654
       },
       "added_false_span": 11,
-      "added_gold_span": 1,
+      "added_gold_span": 5,
       "blocked_by_missing_action_outcomes": false,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.13052631578947366,
-        "delta_added_false_span": -3,
+        "delta_SpanF0.5": -0.08869565217391302,
+        "delta_added_false_span": -8,
         "delta_added_gold_span": -9,
-        "delta_primary_false_positive_rate": -0.01052631578947369
+        "delta_primary_false_positive_rate": -0.01956521739130436
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": -0.09684210526315791,
-        "delta_added_false_span": -37,
+        "delta_SpanF0.5": -0.045217391304347834,
+        "delta_added_false_span": -45,
         "delta_added_gold_span": -13,
-        "delta_primary_false_positive_rate": -0.13947368421052636
+        "delta_primary_false_positive_rate": -0.13260869565217392
       },
-      "filter_gold_kill_rate": 0.9285714285714286,
+      "filter_gold_kill_rate": 0.7222222222222222,
       "no_gold_false_primary_rate": 0.08,
       "no_gold_task_count": 5,
       "outcome_fallback": {
@@ -2604,13 +1922,13 @@
       },
       "policy_action_counts": {
         "abstain": 2,
-        "admit_symbol_regex_union": 1,
+        "admit_symbol_regex_union": 5,
         "apply_llm_filter": 7,
         "supporting_only": 2,
         "weak_candidate_only": 7
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.039473684210526314,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.03260869565217391,
       "quality_comparable": true,
       "score_bands": {
         "hard_guard": {
@@ -2626,17 +1944,17 @@
           "primary_false_positive_rate": 0.044444444444444446
         },
         "high_admit": {
-          "SpanF0.5": 0.07142857142857142,
+          "SpanF0.5": 0.19090909090909092,
           "action_counts": {
             "abstain": 1,
-            "admit_symbol_regex_union": 1,
+            "admit_symbol_regex_union": 5,
             "weak_candidate_only": 5
           },
-          "count": 7,
+          "count": 11,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
-          "positive_count": 7,
-          "primary_false_positive_rate": 0.03571428571428571
+          "positive_count": 11,
+          "primary_false_positive_rate": 0.022727272727272728
         },
         "medium_admit": {
           "SpanF0.5": 0.0,
@@ -2662,49 +1980,49 @@
         }
       },
       "selected_action_fallback_rate": 0.0,
-      "selective_risk_proxy": 0.0353185595567867,
+      "selective_risk_proxy": 0.029773156899810964,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
-          "count": 1,
-          "rate": 0.05263157894736842
+          "count": 5,
+          "rate": 0.21739130434782608
         },
         "model_success": {
-          "count": 6,
-          "rate": 0.3157894736842105
+          "count": 10,
+          "rate": 0.43478260869565216
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "admission_v3_h4": {
-      "SpanF0.5": 0.01894736842105263,
+      "SpanF0.5": 0.015652173913043476,
       "abstain_rate": 0.0,
       "action_rates": {
-        "apply_llm_filter": 0.3684210526315789,
-        "supporting_only": 0.15789473684210525,
-        "weak_candidate_only": 0.47368421052631576
+        "apply_llm_filter": 0.30434782608695654,
+        "supporting_only": 0.2608695652173913,
+        "weak_candidate_only": 0.43478260869565216
       },
-      "added_false_span": 13,
+      "added_false_span": 14,
       "added_gold_span": 0,
       "blocked_by_missing_action_outcomes": false,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.16210526315789472,
-        "delta_added_false_span": -1,
-        "delta_added_gold_span": -10,
-        "delta_primary_false_positive_rate": -0.005263157894736838
+        "delta_SpanF0.5": -0.18434782608695652,
+        "delta_added_false_span": -5,
+        "delta_added_gold_span": -14,
+        "delta_primary_false_positive_rate": -0.013043478260869573
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": -0.12842105263157896,
-        "delta_added_false_span": -35,
-        "delta_added_gold_span": -14,
-        "delta_primary_false_positive_rate": -0.1342105263157895
+        "delta_SpanF0.5": -0.14086956521739133,
+        "delta_added_false_span": -42,
+        "delta_added_gold_span": -18,
+        "delta_primary_false_positive_rate": -0.12608695652173915
       },
       "filter_gold_kill_rate": 1.0,
       "no_gold_false_primary_rate": 0.08,
@@ -2717,11 +2035,11 @@
       },
       "policy_action_counts": {
         "apply_llm_filter": 7,
-        "supporting_only": 3,
-        "weak_candidate_only": 9
+        "supporting_only": 6,
+        "weak_candidate_only": 10
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.044736842105263165,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.0391304347826087,
       "quality_comparable": true,
       "score_bands": {
         "hard_guard": {
@@ -2739,25 +2057,25 @@
         "high_admit": {
           "SpanF0.5": 0.0,
           "action_counts": {
-            "supporting_only": 1,
+            "supporting_only": 4,
             "weak_candidate_only": 3
+          },
+          "count": 7,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 7,
+          "primary_false_positive_rate": 0.021428571428571432
+        },
+        "medium_admit": {
+          "SpanF0.5": 0.0,
+          "action_counts": {
+            "weak_candidate_only": 4
           },
           "count": 4,
           "fraction_positive": 1.0,
           "no_gold_count": 0,
           "positive_count": 4,
-          "primary_false_positive_rate": 0.037500000000000006
-        },
-        "medium_admit": {
-          "SpanF0.5": 0.0,
-          "action_counts": {
-            "weak_candidate_only": 3
-          },
-          "count": 3,
-          "fraction_positive": 1.0,
-          "no_gold_count": 0,
-          "positive_count": 3,
-          "primary_false_positive_rate": 0.05000000000000001
+          "primary_false_positive_rate": 0.05
         },
         "neutral": {
           "SpanF0.5": 0.0,
@@ -2783,15 +2101,15 @@
         }
       },
       "selected_action_fallback_rate": 0.0,
-      "selective_risk_proxy": 0.044736842105263165,
+      "selective_risk_proxy": 0.0391304347826087,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
           "count": 0,
@@ -2799,23 +2117,165 @@
         },
         "model_success": {
           "count": 5,
-          "rate": 0.2631578947368421
+          "rate": 0.21739130434782608
         }
       },
-      "task_count": 19
+      "task_count": 23
+    },
+    "admission_v3_h4b": {
+      "SpanF0.5": 0.03739130434782609,
+      "abstain_rate": 0.0,
+      "action_rates": {
+        "admit_rrf_primary": 0.043478260869565216,
+        "admit_symbol_regex_union": 0.043478260869565216,
+        "apply_llm_filter": 0.13043478260869565,
+        "supporting_only": 0.08695652173913043,
+        "weak_candidate_only": 0.6956521739130435
+      },
+      "added_false_span": 19,
+      "added_gold_span": 2,
+      "blocked_by_missing_action_outcomes": false,
+      "delta_vs_bucket_routed_v0": {
+        "delta_SpanF0.5": -0.1626086956521739,
+        "delta_added_false_span": 0,
+        "delta_added_gold_span": -12,
+        "delta_primary_false_positive_rate": -0.009565217391304358
+      },
+      "delta_vs_candidate_baseline": {
+        "delta_SpanF0.5": -0.11913043478260871,
+        "delta_added_false_span": -37,
+        "delta_added_gold_span": -16,
+        "delta_primary_false_positive_rate": -0.12260869565217393
+      },
+      "false_per_gold": 9.5,
+      "filter_gold_kill_rate": 0.8888888888888888,
+      "h4b_primary_opportunity_count": 2,
+      "h4b_selective_readmission": true,
+      "net_span_value_2x": -36,
+      "no_gold_false_primary_rate": 0.06000000000000001,
+      "no_gold_task_count": 5,
+      "outcome_fallback": {
+        "fallback_action_counts": {},
+        "fallback_strategy_counts": {},
+        "missing_action_outcome_count": 0,
+        "note": "admission_v3 actions without a measured outcome in the ephemeral record fall back to candidate_baseline for primary-admit actions or a zero-primary surrogate for abstain/supporting_only/weak_candidate_only. Real evaluation requires ephemeral records that include measured outcomes for the actions the model selects."
+      },
+      "policy_action_counts": {
+        "admit_rrf_primary": 1,
+        "admit_symbol_regex_union": 1,
+        "apply_llm_filter": 3,
+        "supporting_only": 2,
+        "weak_candidate_only": 16
+      },
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.042608695652173914,
+      "quality_comparable": true,
+      "rule_counts": {
+        "demote_same_file": 1,
+        "demote_span_overlap": 3,
+        "filter_dangerous_subtype": 1,
+        "hard_guard": 2,
+        "missing_handoff": 14,
+        "other": 0,
+        "strict_rrf_re_admit": 1,
+        "strict_union_re_admit": 1
+      },
+      "score_bands": {
+        "hard_guard": {
+          "SpanF0.5": 0.0,
+          "action_counts": {
+            "weak_candidate_only": 8
+          },
+          "count": 8,
+          "fraction_positive": 0.5,
+          "no_gold_count": 4,
+          "positive_count": 4,
+          "primary_false_positive_rate": 0.05
+        },
+        "high_admit": {
+          "SpanF0.5": 0.10333333333333333,
+          "action_counts": {
+            "admit_rrf_primary": 1,
+            "admit_symbol_regex_union": 1,
+            "supporting_only": 2,
+            "weak_candidate_only": 2
+          },
+          "count": 6,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 6,
+          "primary_false_positive_rate": 0.03
+        },
+        "medium_admit": {
+          "SpanF0.5": 0.024,
+          "action_counts": {
+            "apply_llm_filter": 1,
+            "weak_candidate_only": 4
+          },
+          "count": 5,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 5,
+          "primary_false_positive_rate": 0.04
+        },
+        "neutral": {
+          "SpanF0.5": 0.0,
+          "action_counts": {
+            "weak_candidate_only": 1
+          },
+          "count": 1,
+          "fraction_positive": 1.0,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "primary_false_positive_rate": 0.05
+        },
+        "penalty": {
+          "SpanF0.5": 0.04,
+          "action_counts": {
+            "apply_llm_filter": 2,
+            "weak_candidate_only": 1
+          },
+          "count": 3,
+          "fraction_positive": 0.6666666666666666,
+          "no_gold_count": 1,
+          "positive_count": 2,
+          "primary_false_positive_rate": 0.05000000000000001
+        }
+      },
+      "selected_action_fallback_rate": 0.0,
+      "selective_risk_proxy": 0.042608695652173914,
+      "success_layers": {
+        "admission_success": {
+          "count": 23,
+          "rate": 1.0
+        },
+        "candidate_success": {
+          "count": 18,
+          "rate": 0.782608695652174
+        },
+        "evidence_success": {
+          "count": 2,
+          "rate": 0.08695652173913043
+        },
+        "model_success": {
+          "count": 3,
+          "rate": 0.13043478260869565
+        }
+      },
+      "task_count": 23
     },
     "bucket_routed_v0": {
-      "FileRecall@5": 0.7368421052631579,
-      "SpanF0.5": 0.18105263157894735,
-      "abstain_rate": 0.15789473684210525,
+      "FileRecall@5": 0.782608695652174,
+      "SpanF0.5": 0.19999999999999998,
+      "abstain_rate": 0.13043478260869565,
       "action_rates": {
-        "candidate_baseline": 0.10526315789473684,
-        "llm_abstain_filter": 0.15789473684210525,
-        "llm_filter": 0.3157894736842105,
-        "llm_span_narrow": 0.42105263157894735
+        "candidate_baseline": 0.13043478260869565,
+        "llm_abstain_filter": 0.13043478260869565,
+        "llm_filter": 0.2608695652173913,
+        "llm_span_narrow": 0.4782608695652174
       },
-      "added_false_span": 14,
-      "added_gold_span": 10,
+      "added_false_span": 19,
+      "added_gold_span": 14,
       "delta_vs_bucket_routed_v0": {
         "delta_SpanF0.5": 0.0,
         "delta_added_false_span": 0,
@@ -2823,56 +2283,56 @@
         "delta_primary_false_positive_rate": 0.0
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": 0.03368421052631576,
-        "delta_added_false_span": -34,
+        "delta_SpanF0.5": 0.04347826086956519,
+        "delta_added_false_span": -37,
         "delta_added_gold_span": -4,
-        "delta_primary_false_positive_rate": -0.12894736842105264
+        "delta_primary_false_positive_rate": -0.11304347826086958
       },
-      "filter_gold_kill_rate": 0.2857142857142857,
+      "filter_gold_kill_rate": 0.2222222222222222,
       "no_gold_false_primary_rate": 0.07,
       "no_gold_task_count": 5,
       "policy_action_counts": {
-        "candidate_baseline": 2,
+        "candidate_baseline": 3,
         "llm_abstain_filter": 3,
         "llm_filter": 6,
-        "llm_span_narrow": 8
+        "llm_span_narrow": 11
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.05,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.05217391304347827,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
-          "count": 10,
-          "rate": 0.5263157894736842
+          "count": 14,
+          "rate": 0.6086956521739131
         },
         "model_success": {
-          "count": 15,
-          "rate": 0.7894736842105263
+          "count": 19,
+          "rate": 0.8260869565217391
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "candidate_baseline": {
-      "FileRecall@5": 0.7368421052631579,
-      "SpanF0.5": 0.1473684210526316,
+      "FileRecall@5": 0.782608695652174,
+      "SpanF0.5": 0.1565217391304348,
       "abstain_rate": 0.0,
       "action_rates": {
         "candidate_baseline": 1.0
       },
-      "added_false_span": 48,
-      "added_gold_span": 14,
+      "added_false_span": 56,
+      "added_gold_span": 18,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.03368421052631576,
-        "delta_added_false_span": 34,
+        "delta_SpanF0.5": -0.04347826086956519,
+        "delta_added_false_span": 37,
         "delta_added_gold_span": 4,
-        "delta_primary_false_positive_rate": 0.12894736842105264
+        "delta_primary_false_positive_rate": 0.11304347826086958
       },
       "delta_vs_candidate_baseline": {
         "delta_SpanF0.5": 0.0,
@@ -2884,33 +2344,33 @@
       "no_gold_false_primary_rate": 0.4,
       "no_gold_task_count": 5,
       "policy_action_counts": {
-        "candidate_baseline": 19
+        "candidate_baseline": 23
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.17894736842105266,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.16521739130434784,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "model_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "llm_abstain_filter": {
-      "FileRecall@5": 0.7368421052631579,
-      "SpanF0.5": 0.0736842105263158,
+      "FileRecall@5": 0.782608695652174,
+      "SpanF0.5": 0.0782608695652174,
       "abstain_rate": 1.0,
       "action_rates": {
         "llm_abstain_filter": 1.0
@@ -2918,33 +2378,33 @@
       "added_false_span": 0,
       "added_gold_span": 0,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.10736842105263156,
-        "delta_added_false_span": -14,
-        "delta_added_gold_span": -10,
-        "delta_primary_false_positive_rate": -0.0368421052631579
+        "delta_SpanF0.5": -0.12173913043478259,
+        "delta_added_false_span": -19,
+        "delta_added_gold_span": -14,
+        "delta_primary_false_positive_rate": -0.04130434782608697
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": -0.0736842105263158,
-        "delta_added_false_span": -48,
-        "delta_added_gold_span": -14,
-        "delta_primary_false_positive_rate": -0.16578947368421054
+        "delta_SpanF0.5": -0.0782608695652174,
+        "delta_added_false_span": -56,
+        "delta_added_gold_span": -18,
+        "delta_primary_false_positive_rate": -0.15434782608695655
       },
       "filter_gold_kill_rate": 1.0,
       "no_gold_false_primary_rate": 0.05,
       "no_gold_task_count": 5,
       "policy_action_counts": {
-        "llm_abstain_filter": 19
+        "llm_abstain_filter": 23
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.013157894736842105,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.010869565217391304,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
           "count": 0,
@@ -2952,14 +2412,14 @@
         },
         "model_success": {
           "count": 5,
-          "rate": 0.2631578947368421
+          "rate": 0.21739130434782608
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "llm_filter": {
-      "FileRecall@5": 0.7368421052631579,
-      "SpanF0.5": 0.08842105263157894,
+      "FileRecall@5": 0.782608695652174,
+      "SpanF0.5": 0.09391304347826088,
       "abstain_rate": 0.0,
       "action_rates": {
         "llm_filter": 1.0
@@ -2967,33 +2427,33 @@
       "added_false_span": 5,
       "added_gold_span": 0,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": -0.09263157894736841,
-        "delta_added_false_span": -9,
-        "delta_added_gold_span": -10,
-        "delta_primary_false_positive_rate": -0.023684210526315794
+        "delta_SpanF0.5": -0.1060869565217391,
+        "delta_added_false_span": -14,
+        "delta_added_gold_span": -14,
+        "delta_primary_false_positive_rate": -0.030434782608695664
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": -0.05894736842105265,
-        "delta_added_false_span": -43,
-        "delta_added_gold_span": -14,
-        "delta_primary_false_positive_rate": -0.15263157894736845
+        "delta_SpanF0.5": -0.06260869565217392,
+        "delta_added_false_span": -51,
+        "delta_added_gold_span": -18,
+        "delta_primary_false_positive_rate": -0.14347826086956522
       },
       "filter_gold_kill_rate": 1.0,
       "no_gold_false_primary_rate": 0.1,
       "no_gold_task_count": 5,
       "policy_action_counts": {
-        "llm_filter": 19
+        "llm_filter": 23
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.02631578947368421,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.021739130434782608,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
           "count": 0,
@@ -3001,59 +2461,59 @@
         },
         "model_success": {
           "count": 5,
-          "rate": 0.2631578947368421
+          "rate": 0.21739130434782608
         }
       },
-      "task_count": 19
+      "task_count": 23
     },
     "llm_span_narrow": {
-      "FileRecall@5": 0.7368421052631579,
-      "SpanF0.5": 0.23578947368421055,
+      "FileRecall@5": 0.782608695652174,
+      "SpanF0.5": 0.2504347826086956,
       "abstain_rate": 0.0,
       "action_rates": {
         "llm_span_narrow": 1.0
       },
-      "added_false_span": 29,
-      "added_gold_span": 14,
+      "added_false_span": 33,
+      "added_gold_span": 18,
       "delta_vs_bucket_routed_v0": {
-        "delta_SpanF0.5": 0.054736842105263195,
-        "delta_added_false_span": 15,
+        "delta_SpanF0.5": 0.05043478260869563,
+        "delta_added_false_span": 14,
         "delta_added_gold_span": 4,
-        "delta_primary_false_positive_rate": 0.06578947368421054
+        "delta_primary_false_positive_rate": 0.052173913043478244
       },
       "delta_vs_candidate_baseline": {
-        "delta_SpanF0.5": 0.08842105263157896,
-        "delta_added_false_span": -19,
+        "delta_SpanF0.5": 0.09391304347826082,
+        "delta_added_false_span": -23,
         "delta_added_gold_span": 0,
-        "delta_primary_false_positive_rate": -0.06315789473684212
+        "delta_primary_false_positive_rate": -0.06086956521739133
       },
       "filter_gold_kill_rate": 0.0,
       "no_gold_false_primary_rate": 0.3,
       "no_gold_task_count": 5,
       "policy_action_counts": {
-        "llm_span_narrow": 19
+        "llm_span_narrow": 23
       },
-      "positive_task_count": 14,
-      "primary_false_positive_rate": 0.11578947368421054,
+      "positive_task_count": 18,
+      "primary_false_positive_rate": 0.10434782608695652,
       "success_layers": {
         "admission_success": {
-          "count": 19,
+          "count": 23,
           "rate": 1.0
         },
         "candidate_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "evidence_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         },
         "model_success": {
-          "count": 14,
-          "rate": 0.7368421052631579
+          "count": 18,
+          "rate": 0.782608695652174
         }
       },
-      "task_count": 19
+      "task_count": 23
     }
   },
   "private_labels_committed": false,
