@@ -2289,6 +2289,7 @@ def build_report(
         "h4b_available": any(t.get("_p33b_handoff_detected", False) for t in tasks),
         "h4b_budget_overlay": True,
         "h4b_selective_readmission": True,
+        "h4b_primary_opportunity_count": h4b_metrics.get("h4b_primary_opportunity_count", 0),
         "route_features_ignored_count": total_route_features_ignored,
         "elapsed_ms": elapsed_ms,
         "policy_comparison": policy_comparison,

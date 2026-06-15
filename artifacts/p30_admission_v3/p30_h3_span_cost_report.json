@@ -16,7 +16,7 @@
   "diagnostic_only": true,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-15T12:01:08.462667+00:00",
+  "generated_at": "2026-06-15T12:06:15.305454+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "labels_loaded_after_run": true,
   "no_gold_task_count": 5,

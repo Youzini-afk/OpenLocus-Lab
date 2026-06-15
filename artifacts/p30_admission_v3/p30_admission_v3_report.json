@@ -140,7 +140,7 @@
   "elapsed_ms": 1,
   "evidencecore_semantics_changed": false,
   "external_calls": 0,
-  "generated_at": "2026-06-15T12:01:08.462741+00:00",
+  "generated_at": "2026-06-15T12:06:15.305533+00:00",
   "generated_by": "eval/p30_admission_model_v3.py",
   "gold_spans_in_artifact": false,
   "h3_action_span_cost_accounting": {
@@ -161,7 +161,7 @@
     "diagnostic_only": true,
     "evidencecore_semantics_changed": false,
     "external_calls": 0,
-    "generated_at": "2026-06-15T12:01:08.462667+00:00",
+    "generated_at": "2026-06-15T12:06:15.305454+00:00",
     "generated_by": "eval/p30_admission_model_v3.py",
     "labels_loaded_after_run": true,
     "no_gold_task_count": 5,
@@ -1631,6 +1631,7 @@
   "h4_budget_overlay": true,
   "h4b_available": true,
   "h4b_budget_overlay": true,
+  "h4b_primary_opportunity_count": 2,
   "h4b_selective_readmission": true,
   "input_paths": [
     "self_test"
