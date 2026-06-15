@@ -1148,65 +1148,65 @@ jobs:
                           raise SystemExit(f"{json_path} must attempt source reads under p21_llm_rich")
                       if data.get("source_reads_bounded_by_p52a") is not True:
                           raise SystemExit(f"{json_path} source reads must be bounded under p21_llm_rich")
-                       sm = data.get("metrics", {}).get("source_materialization_metrics", {})
-                       if (sm.get("candidate_denominator") or 0) <= 0:
-                           raise SystemExit(f"{json_path} source materialization candidate_denominator must be positive under p21_llm_rich")
-               if json_path.name == "p52b_source_backed_local_verifier_feature_matrix_report.json":
-                   if data.get("status") not in {"ok", "self_test_only"}:
-                       raise SystemExit(f"{json_path} status is not ok")
-                   if data.get("remote_calls_by_p52b") != 0:
-                       raise SystemExit(f"{json_path} should not make external calls")
-                   if data.get("llm_calls_by_p52b") != 0:
-                       raise SystemExit(f"{json_path} should not call an LLM")
-                   if data.get("prompt_construction_by_p52b") is not False:
-                       raise SystemExit(f"{json_path} must keep prompt_construction_by_p52b=false")
-                   if data.get("source_reads_attempted_by_p52b") is not True:
-                       raise SystemExit(f"{json_path} must attempt source reads")
-                   if data.get("source_reads_bounded_by_p52b") is not True:
-                       raise SystemExit(f"{json_path} source reads must be bounded")
-                   if data.get("candidate_not_fact") is not True:
-                       raise SystemExit(f"{json_path} must keep candidate_not_fact=true")
-                   if data.get("source_feature_not_evidence") is not True:
-                       raise SystemExit(f"{json_path} must keep source_feature_not_evidence=true")
-                   if data.get("materialized_candidate_not_evidence") is not True:
-                       raise SystemExit(f"{json_path} must keep materialized_candidate_not_evidence=true")
-                   if data.get("verifier_not_evidence") is not True:
-                       raise SystemExit(f"{json_path} must keep verifier_not_evidence=true")
-                   if data.get("local_verifier_features_implemented") is not True:
-                       raise SystemExit(f"{json_path} must keep local_verifier_features_implemented=true")
-                   if data.get("local_verifier_score_available") is not False:
-                       raise SystemExit(f"{json_path} must keep local_verifier_score_available=false")
-                   if data.get("promotion_ready") is not False or data.get("default_should_change") is not False:
-                       raise SystemExit(f"{json_path} must not claim promotion/default change")
-                   if data.get("evidencecore_semantics_changed") is not False:
-                       raise SystemExit(f"{json_path} must not claim EvidenceCore semantics changed")
-                   if data.get("score_phase_only_metrics") is not True:
-                       raise SystemExit(f"{json_path} must set score_phase_only_metrics=true")
-                   if data.get("aggregate_only_public_artifact") is not True:
-                       raise SystemExit(f"{json_path} must set aggregate_only_public_artifact=true")
-                   if data.get("raw_text_stored") is not False or data.get("raw_source_stored") is not False:
-                       raise SystemExit(f"{json_path} persisted raw source/text")
-                   if "tasks" in data or "records" in data or "per_task_results" in data or "decision_records" in data:
-                       raise SystemExit(f"{json_path} contains per-task public rows")
-                   if os.environ.get("STAGE") == "p21_llm_rich":
-                       if data.get("p31_h1_handoff_detected") is not True:
-                           raise SystemExit(f"{json_path} P31-H1 handoff not detected")
-                       if data.get("candidate_pool_availability") == "missing_candidate_pool":
-                           raise SystemExit(f"{json_path} candidate pool is missing under p21_llm_rich")
-                       if data.get("source_reads_attempted_by_p52b") is not True:
-                           raise SystemExit(f"{json_path} must attempt source reads under p21_llm_rich")
-                       if data.get("source_reads_bounded_by_p52b") is not True:
-                           raise SystemExit(f"{json_path} source reads must be bounded under p21_llm_rich")
-                       sm = data.get("metrics", {}).get("source_materialization_metrics", {})
-                       if (sm.get("candidate_denominator") or 0) <= 0:
-                           raise SystemExit(f"{json_path} source materialization candidate_denominator must be positive under p21_llm_rich")
-                       sba = data.get("metrics", {}).get("source_backed_feature_availability", {})
-                       if (sba.get("bounded_span_feature_candidate_denominator") or 0) <= 0:
-                           raise SystemExit(f"{json_path} bounded-span feature candidate denominator must be positive under p21_llm_rich")
-                       sfb = data.get("metrics", {}).get("source_feature_bucket_v0", {})
-                       if (sfb.get("candidate_denominator") or 0) <= 0:
-                           raise SystemExit(f"{json_path} source-feature bucket candidate_denominator must be positive under p21_llm_rich")
-               if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json"}:
+                      sm = data.get("metrics", {}).get("source_materialization_metrics", {})
+                      if (sm.get("candidate_denominator") or 0) <= 0:
+                          raise SystemExit(f"{json_path} source materialization candidate_denominator must be positive under p21_llm_rich")
+              if json_path.name == "p52b_source_backed_local_verifier_feature_matrix_report.json":
+                  if data.get("status") not in {"ok", "self_test_only"}:
+                      raise SystemExit(f"{json_path} status is not ok")
+                  if data.get("remote_calls_by_p52b") != 0:
+                      raise SystemExit(f"{json_path} should not make external calls")
+                  if data.get("llm_calls_by_p52b") != 0:
+                      raise SystemExit(f"{json_path} should not call an LLM")
+                  if data.get("prompt_construction_by_p52b") is not False:
+                      raise SystemExit(f"{json_path} must keep prompt_construction_by_p52b=false")
+                  if data.get("source_reads_attempted_by_p52b") is not True:
+                      raise SystemExit(f"{json_path} must attempt source reads")
+                  if data.get("source_reads_bounded_by_p52b") is not True:
+                      raise SystemExit(f"{json_path} source reads must be bounded")
+                  if data.get("candidate_not_fact") is not True:
+                      raise SystemExit(f"{json_path} must keep candidate_not_fact=true")
+                  if data.get("source_feature_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep source_feature_not_evidence=true")
+                  if data.get("materialized_candidate_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep materialized_candidate_not_evidence=true")
+                  if data.get("verifier_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep verifier_not_evidence=true")
+                  if data.get("local_verifier_features_implemented") is not True:
+                      raise SystemExit(f"{json_path} must keep local_verifier_features_implemented=true")
+                  if data.get("local_verifier_score_available") is not False:
+                      raise SystemExit(f"{json_path} must keep local_verifier_score_available=false")
+                  if data.get("promotion_ready") is not False or data.get("default_should_change") is not False:
+                      raise SystemExit(f"{json_path} must not claim promotion/default change")
+                  if data.get("evidencecore_semantics_changed") is not False:
+                      raise SystemExit(f"{json_path} must not claim EvidenceCore semantics changed")
+                  if data.get("score_phase_only_metrics") is not True:
+                      raise SystemExit(f"{json_path} must set score_phase_only_metrics=true")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must set aggregate_only_public_artifact=true")
+                  if data.get("raw_text_stored") is not False or data.get("raw_source_stored") is not False:
+                      raise SystemExit(f"{json_path} persisted raw source/text")
+                  if "tasks" in data or "records" in data or "per_task_results" in data or "decision_records" in data:
+                      raise SystemExit(f"{json_path} contains per-task public rows")
+                  if os.environ.get("STAGE") == "p21_llm_rich":
+                      if data.get("p31_h1_handoff_detected") is not True:
+                          raise SystemExit(f"{json_path} P31-H1 handoff not detected")
+                      if data.get("candidate_pool_availability") == "missing_candidate_pool":
+                          raise SystemExit(f"{json_path} candidate pool is missing under p21_llm_rich")
+                      if data.get("source_reads_attempted_by_p52b") is not True:
+                          raise SystemExit(f"{json_path} must attempt source reads under p21_llm_rich")
+                      if data.get("source_reads_bounded_by_p52b") is not True:
+                          raise SystemExit(f"{json_path} source reads must be bounded under p21_llm_rich")
+                      sm = data.get("metrics", {}).get("source_materialization_metrics", {})
+                      if (sm.get("candidate_denominator") or 0) <= 0:
+                          raise SystemExit(f"{json_path} source materialization candidate_denominator must be positive under p21_llm_rich")
+                      sba = data.get("metrics", {}).get("source_backed_feature_availability", {})
+                      if (sba.get("bounded_span_feature_candidate_denominator") or 0) <= 0:
+                          raise SystemExit(f"{json_path} bounded-span feature candidate denominator must be positive under p21_llm_rich")
+                      sfb = data.get("metrics", {}).get("source_feature_bucket_v0", {})
+                      if (sfb.get("candidate_denominator") or 0) <= 0:
+                          raise SystemExit(f"{json_path} source-feature bucket candidate_denominator must be positive under p21_llm_rich")
+              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json"}:
 
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
                       if data.get(flag) is not False:
