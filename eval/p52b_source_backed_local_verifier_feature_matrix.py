@@ -1205,19 +1205,6 @@ def build_report(
 
     candidate_denominator = len(outcomes)
     task_denominator = len(normalized_tasks)
-    source_reads_attempted = any(
-        o["source_read_success"]
-        or o["path_invalid"]
-        or o["path_secret"]
-        or o["escape_reject"]
-        or o["missing_file"]
-        or o["file_too_large"]
-        or o["binary_or_decode"]
-        or o["secret_text"]
-        or o["budget_exceeded"]
-        for o in outcomes
-    )
-
     bounded_span_candidates = sum(
         1 for o in outcomes
         if o.get("source_read_success") and o.get("range_valid") and not o.get("span_over_cap")
@@ -1230,8 +1217,11 @@ def build_report(
 
     packs = p52a._compute_strategy_packs(normalized_tasks)
 
+    source_materialization_metrics = p52a._source_materialization_metrics(outcomes, candidate_denominator)
+    source_reads_attempted = (source_materialization_metrics.get("source_read_attempt_count") or 0) > 0
+
     metric_blocks: dict[str, Any] = {
-        "source_materialization_metrics": p52a._source_materialization_metrics(outcomes, candidate_denominator),
+        "source_materialization_metrics": source_materialization_metrics,
         "source_backed_feature_availability": _source_backed_feature_availability(
             candidate_denominator, bounded_span_candidates, feature_candidates
         ),
