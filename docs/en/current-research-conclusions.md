@@ -14,6 +14,10 @@ P52A reads local source files only for bounded aggregate materialization prerequ
 
 P52B reads local source files only for bounded aggregate source-shape heuristic diagnostics and source-feature risk buckets. It computes deterministic source-backed verifier feature diagnostics from bounded spans, using source-shape heuristics only and marking AST/query-dependent features as unavailable. P52B stores no raw source, snippets, digests, paths, or spans. Source-feature buckets are diagnostic only; they are not Evidence and do not admit candidates. P52B does not validate EvidenceCore, does not produce a verifier pass/fail score or a local verifier score, does not prove P51 quality, and does not send source to providers. It does not call an LLM, construct prompts, or make remote calls. See the [P52B detailed report](p52b-source-backed-local-verifier-feature-matrix.md).
 
+## P51 LLM Span Narrow 2.0 / Candidate Filter Diagnostic
+
+P51 first tranche is a deterministic, no-LLM, no-remote, no-prompt-construction diagnostic scaffold. It selects candidate pools for a future span-narrow/filter/abstain phase using aggregate metadata, public task bucket/risk tags, and P49 contrast-pack feasibility only; P47/P48 RMC overlay availability is reported separately. It publishes prompt-blueprint metadata (pack shapes, source-line/context-char budgets, strategy/path-kind/risk-bucket mixes) and never constructs raw prompts. Existing P21 role outcomes are replayed only after selection and only when present; missing outcomes are reported as unavailable. P51 does not create Evidence, validate EvidenceCore, admit candidates, or change defaults. See the [P51 detailed report](p51-llm-span-narrow-2-diagnostic.md).
+
 ---
 
 ## 0. Executive Research Thesis

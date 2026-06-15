@@ -1,0 +1,216 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "conclusion": [
+    "Self-test-only scaffold selected 4 candidates across 7 synthetic tasks; this is not quality evidence.",
+    "Candidate selection used aggregate metadata and public risk tags only. Gold, source text, and raw queries were not used for selection.",
+    "Prompt blueprints are metadata-only shapes, not constructed prompts, and are not sent to any provider.",
+    "Existing P21 LLM role outcomes were replayed only when present; missing outcomes are reported as unavailable.",
+    "P51 does not call an LLM, does not create Evidence, does not validate EvidenceCore, and does not change defaults or promote candidates."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T19:54:53.223998+00:00",
+  "generated_by": "eval/p51_llm_span_narrow_2_diagnostic.py",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": {
+    "p25_policy_records": "ephemeral_v1",
+    "p47_quality_gate_status": "not_provided",
+    "p47_report_source": "not_provided",
+    "p48_overlay_availability": "not_provided",
+    "p48_quality_gate_status": "not_provided",
+    "p48_report_source": "not_provided",
+    "p49_pack_not_evidence": "not_provided",
+    "p49_quality_gate_status": "not_provided",
+    "p49_report_source": "not_provided",
+    "p50_quality_gate_status": "not_provided",
+    "p50_report_source": "not_provided",
+    "p52_quality_gate_status": "not_provided",
+    "p52_report_source": "not_provided",
+    "p52a_quality_gate_status": "not_provided",
+    "p52a_report_source": "not_provided",
+    "p52b_quality_gate_status": "not_provided",
+    "p52b_report_source": "not_provided"
+  },
+  "insufficient_input_source_count": 0,
+  "llm_calls_by_p51": 0,
+  "llm_output_not_evidence": true,
+  "materialized_candidate_not_evidence": true,
+  "metrics": {
+    "candidate_selection": {
+      "candidate_denominator": 10,
+      "metadata_risk_bucket_mix": {
+        "metadata_high_risk_count": 5,
+        "metadata_low_risk_count": 2,
+        "metadata_medium_risk_count": 3,
+        "metadata_unavailable_count": 0
+      },
+      "pack_denominator": 2,
+      "rmc_overlay_available": false,
+      "selected_for_abstain_review_count": 0,
+      "selected_for_abstain_review_rate": 0.0,
+      "selected_for_filter_count": 0,
+      "selected_for_filter_rate": 0.0,
+      "selected_for_span_narrow_count": 4,
+      "selected_for_span_narrow_rate": 0.4,
+      "selection_unavailable_count": 0,
+      "selection_unavailable_rate": 0.0,
+      "skip_reason_counts": {
+        "metadata_high_risk": 5,
+        "missing_candidate_pool": 1,
+        "no_contrast_pack": 1,
+        "selection_unavailable": 0
+      },
+      "skip_reason_rates": {
+        "metadata_high_risk": 0.5,
+        "missing_candidate_pool": 0.1,
+        "no_contrast_pack": 0.1,
+        "selection_unavailable": 0.0
+      },
+      "source_feature_per_candidate_unavailable": true
+    },
+    "existing_role_replay": {
+      "existing_role_output_availability": "partial_existing_role_outputs",
+      "llm_abstain_filter_abstained_rate": 0.75,
+      "llm_filter_false_primary_delta_mean": -0.164,
+      "llm_span_narrow_added_false_delta_mean": -0.666667,
+      "llm_span_narrow_added_gold_delta_mean": 0.0,
+      "llm_span_narrow_delta_span_f0_5_mean": 0.03,
+      "llm_span_narrow_delta_span_f0_5_p95": 0.046999999999999986,
+      "role_output_coverage_rate": 0.285714,
+      "tasks_with_baseline_outcomes_count": 7,
+      "tasks_with_llm_abstain_filter_outcomes_count": 4,
+      "tasks_with_llm_filter_outcomes_count": 6,
+      "tasks_with_llm_span_narrow_outcomes_count": 3
+    },
+    "high_uncertainty_diagnostic": {
+      "existing_role_harmed_count": 0,
+      "existing_role_harmed_rate": 0.0,
+      "existing_role_helped_count": 1,
+      "existing_role_helped_rate": 1.0,
+      "high_uncertainty_candidate_count": 4,
+      "high_uncertainty_candidate_rate": 0.4,
+      "high_uncertainty_tasks_with_existing_role_outputs_count": 1,
+      "high_uncertainty_tasks_with_existing_role_outputs_rate": 0.5
+    },
+    "p51_candidate_selection_v0": {
+      "gold_free_deterministic": true,
+      "source_reads_by_p51": false
+    },
+    "p51_existing_role_replay_v0": {
+      "replayed_roles": [
+        "candidate_baseline",
+        "llm_filter",
+        "llm_span_narrow",
+        "llm_abstain_filter"
+      ],
+      "retrospective_correlation_only": true
+    },
+    "p51_live_opt_in_v0": {
+      "availability": "disabled_first_tranche",
+      "llm_calls_by_p51": 0,
+      "remote_calls_by_p51": 0
+    },
+    "p51_prompt_blueprint_v0": {
+      "prompt_construction_by_p51": false,
+      "raw_prompt_text_available": false
+    },
+    "prompt_blueprint": {
+      "mean_candidates_per_blueprint": 2.0,
+      "mean_context_chars_budget": 440.0,
+      "mean_source_lines_budget": 11.0,
+      "metadata_risk_bucket_mix": {
+        "metadata_high_risk_count": 0,
+        "metadata_low_risk_count": 6,
+        "metadata_medium_risk_count": 6,
+        "metadata_unavailable_count": 0
+      },
+      "p95_candidates_per_blueprint": 2.0,
+      "p95_context_chars_budget": 480.0,
+      "p95_source_lines_budget": 12.0,
+      "pack_strategy_mix": {
+        "anchor_contrast_pack_v0": 2,
+        "conservative_anchor_pack_v0": 2,
+        "topk_flat_pack_v0": 2
+      },
+      "path_kind_mix": {
+        "source": 12
+      },
+      "per_candidate_source_feature_mix_unavailable": true,
+      "prompt_blueprint_availability": "available",
+      "prompt_blueprint_count": 6,
+      "prompt_construction_by_p51": false,
+      "raw_prompt_text_available": false,
+      "source_feature_bucket_mix": {
+        "availability": "unavailable",
+        "reason": "per_candidate_source_feature_mix_unavailable_first_tranche"
+      }
+    },
+    "score_phase_diagnostic_correlation": {
+      "diagnostic_correlation_only": true,
+      "existing_role_added_false_span_delta_mean": -1.0,
+      "existing_role_added_gold_span_delta_mean": 0.0,
+      "existing_role_false_per_gold": null,
+      "file_right_span_wrong_rate_selected": 0.0,
+      "gold_file_rate_selected": 0.5,
+      "gold_span_rate_selected": 0.5,
+      "no_gold_selected_rate": 0.0,
+      "not_used_for_selection": true
+    }
+  },
+  "no_gold_task_count": 2,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 4,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 4,
+  "p47_quality_gate_status": "not_provided",
+  "p47_report_source": "not_provided",
+  "p48_overlay_availability": "not_provided",
+  "p48_quality_gate_status": "not_provided",
+  "p48_report_source": "not_provided",
+  "p49_pack_not_evidence": "not_provided",
+  "p49_quality_gate_status": "not_provided",
+  "p49_report_source": "not_provided",
+  "p50_quality_gate_status": "not_provided",
+  "p50_report_source": "not_provided",
+  "p51_first_tranche_no_live_llm": true,
+  "p52_quality_gate_status": "not_provided",
+  "p52_report_source": "not_provided",
+  "p52a_quality_gate_status": "not_provided",
+  "p52a_report_source": "not_provided",
+  "p52b_quality_gate_status": "not_provided",
+  "p52b_report_source": "not_provided",
+  "positive_task_count": 5,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_blueprint_not_prompt": true,
+  "prompt_construction_by_p51": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p51": 0,
+  "schema_version": "p51-llm-span-narrow-2-diagnostic-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "source_feature_not_evidence": true,
+  "source_reads_attempted_by_p51": false,
+  "stage": "P51 LLM Span Narrow 2.0 / Candidate Filter Diagnostic",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 7,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
