@@ -798,9 +798,11 @@ def validate_predictions_with_rust(
 
         tmp_name: str | None = None
         try:
+            tmp_parent = Path(os.environ.get("RUNNER_TEMP") or tempfile.gettempdir())
+            tmp_parent.mkdir(parents=True, exist_ok=True)
             with tempfile.NamedTemporaryFile(
                 "w", prefix=f"ci-{strategy}-{repo_id}-citations-",
-                suffix=".json", delete=False, dir="/tmp/opencode",
+                suffix=".json", delete=False, dir=tmp_parent,
                 encoding="utf-8",
             ) as tmp:
                 tmp.write(json.dumps(evidence) + "\n")
