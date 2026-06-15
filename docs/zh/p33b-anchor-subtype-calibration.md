@@ -1,4 +1,4 @@
-# P33-B Anchor Subtype Calibration（中文镜像）
+# p33b-anchor-subtype-calibration（中文镜像）
 
 中文译本待补充；以下保留英文原文，确保 docs/en 与 docs/zh 文件级 1:1 镜像。
 
@@ -7,7 +7,7 @@
 # P33-B Anchor Subtype Calibration
 
 - Schema: `p33b-anchor-subtype-calibration-v1`
-- Generated: 2026-06-15T05:26:30.953898+00:00
+- Generated: 2026-06-15T06:06:05.324587+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P33-B: 0

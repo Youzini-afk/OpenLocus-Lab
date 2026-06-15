@@ -60,6 +60,7 @@ REACH_STRATEGIES = [
     "llm_filter",
     "llm_abstain_filter",
 ]
+CORE_REACH_STRATEGIES = ["candidate_baseline", "rrf_primary", "symbol_regex_union", "symbol_primary", "regex_primary"]
 TRANSFORMED_STRATEGIES = [
     "llm_span_narrow",
     "llm_filter",
@@ -143,7 +144,9 @@ SAFETY_FLAG_KEYS = {
     "p31_h1_handoff_detected",
     "p31_h1_handoff_detected_count",
     "p31_h2_strategy_reach_matrix_available",
+    "p31_h2_full_strategy_reach_matrix_available",
     "reach_strategies",
+    "core_reach_strategies",
     "strategy_availability",
     "candidate_pool_availability",
     "candidate_pool_detected_count",
@@ -1042,7 +1045,8 @@ def validate_report(report: dict[str, Any]) -> list[str]:
     # P31-H2 strategy reach matrix validations.
     if report.get("p31_h2_strategy_reach_matrix_available"):
         by_strategy = metrics.get("reach_by_strategy", {})
-        for strategy in REACH_STRATEGIES:
+        required_strategies = REACH_STRATEGIES if report.get("p31_h2_full_strategy_reach_matrix_available") else CORE_REACH_STRATEGIES
+        for strategy in required_strategies:
             if strategy not in by_strategy:
                 errors.append(f"H2 reach_by_strategy missing {strategy}")
                 continue
@@ -1079,7 +1083,7 @@ def validate_report(report: dict[str, Any]) -> list[str]:
 
         # Unique reach <= strategy reach.
         unique = metrics.get("unique_reach", {})
-        for strategy in REACH_STRATEGIES:
+        for strategy in required_strategies:
             if strategy not in unique or unique[strategy].get("availability") != "available":
                 continue
             u_sp = unique[strategy].get("unique_gold_span_reach", {}).get("numerator")
@@ -1271,6 +1275,10 @@ def build_report(
     p31_h2_strategy_reach_matrix_available = (
         p31_h1_handoff_detected
         and reach_metrics_available
+        and all(strategy_availability.get(s) == "available" for s in CORE_REACH_STRATEGIES)
+    )
+    p31_h2_full_strategy_reach_matrix_available = (
+        p31_h2_strategy_reach_matrix_available
         and all(strategy_availability.get(s) == "available" for s in REACH_STRATEGIES)
     )
 
@@ -1365,7 +1373,9 @@ def build_report(
         "positive_without_gold_spans_count": positive_without_gold_spans,
         "reach_metrics_available": reach_metrics_available,
         "p31_h2_strategy_reach_matrix_available": p31_h2_strategy_reach_matrix_available,
+        "p31_h2_full_strategy_reach_matrix_available": p31_h2_full_strategy_reach_matrix_available,
         "reach_strategies": list(REACH_STRATEGIES),
+        "core_reach_strategies": list(CORE_REACH_STRATEGIES),
         "strategy_availability": strategy_availability,
         "outcome_metrics_available": outcome_metrics_available,
         "elapsed_ms": elapsed_ms,

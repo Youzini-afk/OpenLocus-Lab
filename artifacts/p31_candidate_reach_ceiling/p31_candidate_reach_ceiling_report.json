@@ -12,10 +12,17 @@
     "No policy is promotion-ready or default-ready.",
     "Next: run P31 against ephemeral records that include candidate evidence pools and compare reach ceilings across candidate_baseline, transformed strategies, and admission policies."
   ],
+  "core_reach_strategies": [
+    "candidate_baseline",
+    "rrf_primary",
+    "symbol_regex_union",
+    "symbol_primary",
+    "regex_primary"
+  ],
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-14T17:37:39.883948+00:00",
+  "generated_at": "2026-06-15T06:06:05.264689+00:00",
   "generated_by": "eval/p31_candidate_reach_ceiling.py",
   "gold_span_availability": "available",
   "gold_spans_in_artifact": false,
@@ -334,6 +341,9 @@
           "rate": 0.5
         }
       },
+      "candidate_baseline__vs__regex_primary": {
+        "availability": "missing_pool"
+      },
       "candidate_baseline__vs__rrf_primary": {
         "availability": "available",
         "jaccard_span": 1.0,
@@ -357,6 +367,9 @@
           "numerator": 1,
           "rate": 0.5
         }
+      },
+      "candidate_baseline__vs__symbol_primary": {
+        "availability": "missing_pool"
       },
       "candidate_baseline__vs__symbol_regex_union": {
         "availability": "available",
@@ -454,6 +467,15 @@
           "rate": 0.5
         }
       },
+      "regex_primary__vs__llm_abstain_filter": {
+        "availability": "missing_pool"
+      },
+      "regex_primary__vs__llm_filter": {
+        "availability": "missing_pool"
+      },
+      "regex_primary__vs__llm_span_narrow": {
+        "availability": "missing_pool"
+      },
       "rrf_primary__vs__llm_abstain_filter": {
         "availability": "available",
         "jaccard_span": 0.0,
@@ -526,6 +548,12 @@
           "rate": 0.5
         }
       },
+      "rrf_primary__vs__regex_primary": {
+        "availability": "missing_pool"
+      },
+      "rrf_primary__vs__symbol_primary": {
+        "availability": "missing_pool"
+      },
       "rrf_primary__vs__symbol_regex_union": {
         "availability": "available",
         "jaccard_span": 1.0,
@@ -549,6 +577,18 @@
           "numerator": 1,
           "rate": 0.5
         }
+      },
+      "symbol_primary__vs__llm_abstain_filter": {
+        "availability": "missing_pool"
+      },
+      "symbol_primary__vs__llm_filter": {
+        "availability": "missing_pool"
+      },
+      "symbol_primary__vs__llm_span_narrow": {
+        "availability": "missing_pool"
+      },
+      "symbol_primary__vs__regex_primary": {
+        "availability": "missing_pool"
       },
       "symbol_regex_union__vs__llm_abstain_filter": {
         "availability": "available",
@@ -621,6 +661,12 @@
           "numerator": 1,
           "rate": 0.5
         }
+      },
+      "symbol_regex_union__vs__regex_primary": {
+        "availability": "missing_pool"
+      },
+      "symbol_regex_union__vs__symbol_primary": {
+        "availability": "missing_pool"
       }
     },
     "reach": {
@@ -855,6 +901,7 @@
           }
         }
       },
+      "regex_primary": {},
       "rrf_primary": {
         "py_flask": {
           "gold_file_reach": {
@@ -869,6 +916,7 @@
           }
         }
       },
+      "symbol_primary": {},
       "symbol_regex_union": {
         "py_flask": {
           "gold_file_reach": {
@@ -1445,6 +1493,9 @@
           }
         }
       },
+      "regex_primary": {
+        "availability": "missing_pool"
+      },
       "rrf_primary": {
         "availability": "available",
         "by_k": {
@@ -1584,6 +1635,9 @@
             }
           }
         }
+      },
+      "symbol_primary": {
+        "availability": "missing_pool"
       },
       "symbol_regex_union": {
         "availability": "available",
@@ -1819,6 +1873,7 @@
           }
         }
       },
+      "regex_primary": {},
       "rrf_primary": {
         "positive": {
           "gold_file_reach": {
@@ -1833,6 +1888,7 @@
           }
         }
       },
+      "symbol_primary": {},
       "symbol_regex_union": {
         "positive": {
           "gold_file_reach": {
@@ -2190,6 +2246,9 @@
         },
         "unique_span_reach_share": 0.0
       },
+      "regex_primary": {
+        "availability": "missing_pool"
+      },
       "rrf_primary": {
         "availability": "available",
         "gold_file_reach": {
@@ -2213,6 +2272,9 @@
           "rate": 0.0
         },
         "unique_span_reach_share": 0.0
+      },
+      "symbol_primary": {
+        "availability": "missing_pool"
       },
       "symbol_regex_union": {
         "availability": "available",
@@ -2245,6 +2307,7 @@
   "outcome_metrics_available": true,
   "p31_h1_handoff_detected": false,
   "p31_h1_handoff_detected_count": 0,
+  "p31_h2_full_strategy_reach_matrix_available": false,
   "p31_h2_strategy_reach_matrix_available": false,
   "positive_task_count": 4,
   "positive_with_gold_spans_count": 4,
@@ -2263,6 +2326,8 @@
     "candidate_baseline",
     "rrf_primary",
     "symbol_regex_union",
+    "symbol_primary",
+    "regex_primary",
     "llm_span_narrow",
     "llm_filter",
     "llm_abstain_filter"
@@ -2281,7 +2346,9 @@
     "llm_abstain_filter": "available",
     "llm_filter": "available",
     "llm_span_narrow": "available",
+    "regex_primary": "missing_pool",
     "rrf_primary": "available",
+    "symbol_primary": "missing_pool",
     "symbol_regex_union": "available"
   },
   "task_count": 5,

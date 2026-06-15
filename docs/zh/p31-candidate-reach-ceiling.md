@@ -1,40 +1,21 @@
-# P31 Candidate Reach Ceiling Study
+# p31-candidate-reach-ceiling（中文镜像）
 
-> 中文译本待补充。当前文件先作为 `docs/en/p31-candidate-reach-ceiling.md` 的 1:1 中文镜像，保留英文原文以保证内容不丢失和链接可回溯。
+中文译本待补充；以下保留英文原文，确保 docs/en 与 docs/zh 文件级 1:1 镜像。
 
 ## English source / 英文原文
 
 # P31 Candidate Reach Ceiling Study
 
 - Schema: `p31-candidate-reach-ceiling-report-v1`
-- Generated: 2026-06-14T15:52:29.359187+00:00
+- Generated: 2026-06-15T06:06:05.264689+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P31: 0
+- P31-H1 handoff detected: False
 
 - Candidate pool availability: `partial`
 - Reach metrics available: True
-- P31-H1 handoff detected: True
 - Tasks: 5 positive=4 positive_with_gold_spans=4 no_gold=1
-
-## P31-H1 handoff
-
-P31-H1 extends the P21 rich-candidate ephemeral handoff with lightweight
-`p31_candidate_pools` and private SCORE-phase `p31_score_gold`. When the handoff
-is present, P31 computes real reach metrics; when absent, it falls back to
-outcome-only metrics with `candidate_pool_availability=missing_candidate_pool`
-and `reach_metrics_available=false`.
-
-## P31-H2 strategy reach matrix
-
-> 中文译本待补充。The full Chinese translation is pending.
-
-P31-H2 computes a strategy-level reach matrix across `candidate_baseline`,
-`rrf_primary`, `symbol_regex_union`, `llm_span_narrow`, `llm_filter`, and
-`llm_abstain_filter`. It adds per-strategy reach@K, reach by public repo and
-task bucket, unique reach share, pairwise overlap/Jaccard span, marginal gain,
-and fixed combination union reach. Missing strategy pools are reported as
-`availability=missing_pool`, not zero.
 
 ## Reach metrics by K
 
@@ -55,6 +36,10 @@ and fixed combination union reach. Missing strategy pools are reported as
 | 5 | 2/3 | 1/3 | 1/3 | 1/3 | 1/2 |
 | 10 | 2/3 | 1/3 | 1/3 | 1/3 | 1/2 |
 | 20 | 2/3 | 1/3 | 1/3 | 1/3 | 1/2 |
+
+## P31-H1 handoff
+
+P31-H1 ephemeral handoff not detected. Reach metrics require `p31_candidate_pools` and `p31_score_gold` fields produced by `eval/p21_llm_rich_candidate.py --p25-policy-records-out`. When these fields are absent, P31 falls back to outcome-only metrics.
 
 ## Strategy miss given gold present@K=5
 
