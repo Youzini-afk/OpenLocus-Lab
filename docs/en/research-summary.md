@@ -294,6 +294,33 @@ private labels, or provider fields. Safety flags are locked:
 `remote_calls_by_p33=0`, `score_phase_only_metrics=true`,
 `aggregate_only_public_artifact=true`. Report: `docs/p33-anchor-precision-repair.md`.
 
+## P33-B Anchor Subtype Calibration (2026-06-15)
+
+P33-B adds per-candidate anchor subtype metadata to the P21 ephemeral handoff
+(`p33b_anchor_subtypes`, schema `p33b-anchor-subtypes-v1`) so we can measure
+whether the source class (`symbol_only`, `regex_only`, `symbol_regex_fusion`),
+agreement class (`single_source`, `same_file_only`, `span_overlap`, `disagree`),
+and RRF-backing status carry different reach/cost profiles inside the
+`symbol_regex_union` expansion used by P31-H2. The handoff also carries
+`symbol_primary` and `regex_primary` pools for P31 reach studies.
+
+`eval/p33b_anchor_subtype_calibration.py` is deterministic and no-remote. It
+joins subtype rows to union candidates in the SCORE phase, reports bounded
+subtype-bucket diagnostics (GoldFile/SpanReach@5, FRSW, unique span reach,
+span cost with coarse task-level attribution, delta vs candidate_baseline), and
+a 3D calibration matrix over source_strength, match_quality, and risk_level with
+monotonic sanity checks. Missing subtype handoff causes `availability` to report
+the empty/missing reason instead of fake zeros. A `p33b_to_p32_handoff` groups
+budget candidates by diagnostic class with `frozen_policy=false`.
+
+Public artifacts are aggregate-only and explicitly forbid per-task rows, task
+IDs, candidate paths/spans, subtype rows, route features, labels, and provider
+fields. Safety flags are locked: `promotion_ready=false`,
+`default_should_change=false`, `evidencecore_semantics_changed=false`,
+`candidate_not_fact=true`, `remote_calls_by_p33b=0`,
+`score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`.
+Report: `docs/p33b-anchor-subtype-calibration.md`.
+
 ## Stage status
 
 | Stage | Status | Summary |
@@ -347,7 +374,8 @@ private labels, or provider fields. Safety flags are locked:
 | P25 Bucket-Routed LLM Role Policy evaluator | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p25_bucket_policy.py` is deterministic and no-remote. It routes by public `task_bucket`/`task_risk_tags` and compares candidate_baseline, global span/filter/abstain, and bucket_routed_v0. Aggregate summaries/non-ephemeral schemas are rejected. First real smoke reduced false spans but also some gold spans; useful as P30 false-primary reducer, not default. Report: `docs/p25-bucket-routed-policy.md`. |
 | P30 Admission Model V3 | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p30_admission_model_v3.py` is deterministic, explainable, no-remote. Routes only from public task_bucket/task_risk_tags/route_features; allowed actions are abstain/admit_symbol_regex_union/admit_rrf_primary/admit_llm_span_narrow/apply_llm_filter/supporting_only/weak_candidate_only. Compares baselines plus admission_v3, reports score bands/selective_risk/deltas, and recursively scans public output for forbidden keys. Not promotion-ready; next step compare to P25 real smoke and P22/P23 guards. Report: `docs/p30-admission-model-v3.md`. |
 | P31 Candidate Reach Ceiling Study | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p31_candidate_reach_ceiling.py` measures whether candidate evidence alone reaches the gold label at K=1/3/5/10/20 before any routing or admission. It is deterministic, no-remote, and aggregate-only: no per-task rows, raw queries, snippets, prompts, responses, gold spans, private labels, or provider fields. Inputs are ephemeral P25/P30 records; records without candidate evidence pools fall back to outcome-only metrics with `candidate_pool_availability=missing_candidate_pool` and `reach_metrics_available=false`. Reports `GoldFileReach@K`, `GoldSpanReach@K`, `GoldSpanExactReach@K`, `CandidateAbsentRate@K`, `FileRightSpanWrongRate@K`, `ModelMissGivenGoldPresent@K`, `FilterKillGoldRate`, `AdmissionFalsePrimaryRate`, `AdmissionFalseSpanPerNoGoldTask`, and a K=5 failure funnel. `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `remote_calls_by_p31=0`. Report: `docs/p31-candidate-reach-ceiling.md`. |
-| P33 Reach-Preserving Precision Anchor Repair | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33_anchor_precision_repair.py` studies how pre-SCORE anchor signals correlate with reach and span cost. It consumes ephemeral P21/P31-H1 records and aggregates an anchor taxonomy v1, a 3D calibration matrix, and budget-candidate handoff to P32. Public output is aggregate-only, no per-task rows, route features, or private fields. `promotion_ready=false`, `default_should_change=false`, `candidate_not_fact=true`, `remote_calls_by_p33=0`. Report: `docs/p33-anchor-precision-repair.md`. |
+| P33 Reach-Preserving Precision Anchor Anchor Repair | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33_anchor_precision_repair.py` studies how pre-SCORE anchor signals correlate with reach and span cost. It consumes ephemeral P21/P31-H1 records and aggregates an anchor taxonomy v1, a 3D calibration matrix, and budget-candidate handoff to P32. Public output is aggregate-only, no per-task rows, route features, or private fields. `promotion_ready=false`, `default_should_change=false`, `candidate_not_fact=true`, `remote_calls_by_p33=0`. Report: `docs/p33-anchor-precision-repair.md`. |
+| P33-B Anchor Subtype Calibration | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33b_anchor_subtype_calibration.py` consumes the P21/P31-H1 ephemeral handoff extended with per-candidate `p33b_anchor_subtypes` for `symbol_only`/`regex_only`/`symbol_regex_fusion` source classes, agreement classes, rank/size/width bins, and per-candidate `rrf_backing`. It reports subtype-bucket diagnostics, unique subtype span reach, a 3D calibration matrix over source strength / match quality / risk level, and a `p33b_to_p32_handoff` of budget candidates. Public output is aggregate-only, no subtype rows, candidate paths/spans, or private fields. `promotion_ready=false`, `default_should_change=false`, `remote_calls_by_p33b=0`. Report: `docs/p33b-anchor-subtype-calibration.md`. |
 
 ## R0/R1 initial findings
 

@@ -341,6 +341,40 @@ private labels, or provider fields. Safety flags are locked:
 `remote_calls_by_p33=0`, `score_phase_only_metrics=true`,
 `aggregate_only_public_artifact=true`.
 
+### 2.15 P33-B Anchor Subtype Calibration scaffold is ready
+
+`eval/p33b_anchor_subtype_calibration.py` is a deterministic, no-remote diagnostic
+scaffold (schema `p33b-anchor-subtype-calibration-v1`). It extends the P21
+ephemeral handoff with private per-candidate subtype metadata
+(`p33b_anchor_subtypes`, schema `p33b-anchor-subtypes-v1`) describing each
+`symbol_regex_union` candidate as `symbol_only`, `regex_only`, or
+`symbol_regex_fusion`, with agreement classes (`single_source`, `same_file_only`,
+`span_overlap`, `disagree`), `rank_bin`, `candidate_count_bin`,
+`span_width_bin`, and per-candidate `rrf_backing`. The handoff also adds
+`symbol_primary` and `regex_primary` candidate pools for P31 reach studies.
+
+P33-B consumes those ephemeral records, joins private subtype rows to the
+`symbol_regex_union` candidates, and uses `p31_score_gold` and strategy outcomes
+only in the SCORE phase for aggregate metrics. It reports bounded subtype-bucket
+diagnostics: task counts, positive/no-gold counts, `SubtypeGoldFileReach@5`,
+`SubtypeGoldSpanReach@5`, `FileRightSpanWrongRate@5`,
+`UniqueSubtypeSpanReach@5`, span cost aggregates with coarse task-level
+attribution, `delta_vs_candidate_baseline`, and diagnostic classes with minimum
+denominator gating. A 3D calibration matrix over `source_strength` (0=regex_only,
+1=symbol_only, 2=symbol_regex_fusion), `match_quality` (0=disagree,
+1=same_file_only, 2=span_overlap_unbacked, 3=span_overlap_rrf_backed), and
+`risk_level` reports the same diagnostics plus monotonic-sanity checks. A
+`p33b_to_p32_handoff` groups budget candidates by diagnostic class, with
+`frozen_policy=false`.
+
+Public artifacts remain aggregate-only: no per-task rows, task IDs, raw queries,
+snippets, prompts, responses, candidate paths/spans, gold spans, private labels,
+route features, subtype rows, or provider fields. Safety flags are locked:
+`promotion_ready=false`, `default_should_change=false`,
+`evidencecore_semantics_changed=false`, `candidate_not_fact=true`,
+`remote_calls_by_p33b=0`, `score_phase_only_metrics=true`,
+`aggregate_only_public_artifact=true`.
+
 ---
 
 ## 3. Current Hypotheses

@@ -243,6 +243,38 @@ route features、candidate paths/spans、gold spans、private labels 或 provide
 `remote_calls_by_p33=0`、`score_phase_only_metrics=true`、
 `aggregate_only_public_artifact=true`。
 
+### 2.15 P33-B Anchor Subtype Calibration 脚手架已就绪
+
+`eval/p33b_anchor_subtype_calibration.py` 是一个确定性、无远程调用的诊断性脚手架
+（schema `p33b-anchor-subtype-calibration-v1`）。它扩展了 P21 的临时 handoff，
+为每个 `symbol_regex_union` 候选增加了私有 subtype 元数据
+（`p33b_anchor_subtypes`，schema `p33b-anchor-subtypes-v1`），将其分类为
+`symbol_only`、`regex_only`、`symbol_regex_fusion`，并标注 agreement class
+（`single_source`、`same_file_only`、`span_overlap`、`disagree`）、
+`rank_bin`、`candidate_count_bin`、`span_width_bin` 以及 per-candidate
+`rrf_backing`。同时新增 `symbol_primary` 和 `regex_primary` 候选池，供
+P31 覆盖研究使用。
+
+P33-B 消费这些临时 records，将私有 subtype 行与 `symbol_regex_union` 候选对齐，
+仅在 SCORE 阶段使用 `p31_score_gold` 和 strategy outcomes 计算聚合指标。
+它报告有界 subtype bucket 的诊断：task count、positive/no-gold count、
+`SubtypeGoldFileReach@5`、`SubtypeGoldSpanReach@5`、
+`FileRightSpanWrongRate@5`、`UniqueSubtypeSpanReach@5`、span cost 聚合
+（粗粒度 task-level attribution）、`delta_vs_candidate_baseline`，
+以及带最小分母门控的 diagnostic class。三维校准矩阵覆盖
+`source_strength`（0=regex_only，1=symbol_only，2=symbol_regex_fusion）、
+`match_quality`（0=disagree，1=same_file_only，2=span_overlap_unbacked，
+3=span_overlap_rrf_backed）和 `risk_level`，报告同样诊断并标记单调性异常。
+`p33b_to_p32_handoff` 按 diagnostic class 分组 budget candidate buckets，
+并显式设置 `frozen_policy=false`。
+
+公开产物仍仅限聚合指标：不含 per-task 行、task IDs、原始 query/snippet/prompt/response、
+candidate paths/spans、gold spans、private labels、route features、subtype 行或
+provider 字段。安全标志锁定：`promotion_ready=false`、
+`default_should_change=false`、`evidencecore_semantics_changed=false`、
+`candidate_not_fact=true`、`remote_calls_by_p33b=0`、
+`score_phase_only_metrics=true`、`aggregate_only_public_artifact=true`。
+
 ---
 
 ## 3. 当前研究假设

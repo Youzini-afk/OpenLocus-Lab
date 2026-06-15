@@ -320,6 +320,35 @@ route features、candidate paths/spans、gold spans、private labels 或 provide
 | P30 Admission Model V3 | Self-test scaffold ready; real evaluation requires ephemeral P21/P25 handoff | `eval/p30_admission_model_v3.py` is deterministic, explainable, no-remote. Routes only from public task_bucket/task_risk_tags/route_features; allowed actions are abstain/admit_symbol_regex_union/admit_rrf_primary/admit_llm_span_narrow/apply_llm_filter/supporting_only/weak_candidate_only. Compares baselines plus admission_v3, reports score bands/selective_risk/deltas, and recursively scans public output for forbidden keys. Not promotion-ready; next step compare to P25 real smoke and P22/P23 guards. Report: `docs/p30-admission-model-v3.md`. |
 | P31 Candidate Reach Ceiling Study | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p31_candidate_reach_ceiling.py` measures whether candidate evidence alone reaches the gold label at K=1/3/5/10/20 before any routing or admission. Deterministic, no-remote, aggregate-only. Falls back to outcome-only metrics when candidate pools are missing, clearly marked `missing_candidate_pool`/`reach_metrics_available=false`. Reports reach@K, span-exact reach, candidate absent rate, file-right-span-wrong rate, strategy miss given gold present, filter/admission diagnostics, and K=5 failure funnel. `promotion_ready=false`, `remote_calls_by_p31=0`. Report: `docs/p31-candidate-reach-ceiling.md`. |
 | P33 Reach-Preserving Precision Anchor Repair | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33_anchor_precision_repair.py` 研究 pre-SCORE anchor 信号与覆盖/span cost 的关系。消费 P21/P31-H1 临时 records，聚合 anchor taxonomy v1、三维校准矩阵和 P32 budget candidate handoff。公开产物仅限聚合指标，不含 per-task 行、route features 或 private 字段。`promotion_ready=false`，`remote_calls_by_p33=0`。报告：`docs/p33-anchor-precision-repair.md`。 |
+| P33-B Anchor Subtype Calibration | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33b_anchor_subtype_calibration.py` 消费 P21/P33-B 临时 handoff，并聚合 per-candidate anchor subtype 诊断（按 agreement/RRF/risk 分桶的 `symbol_only`、`regex_only`、`symbol_regex_fusion`）以及三维校准矩阵。公开产物仅限聚合指标，不含 per-task 行、route features、subtype rows 或 private 字段。`promotion_ready=false`，`remote_calls_by_p33b=0`。报告：`docs/p33b-anchor-subtype-calibration.md`。 |
+
+## R0/R1 initial findings
+
+## P33-B Anchor Subtype Calibration（2026-06-15）
+
+P33-B 在 P21 临时 handoff 中增加 per-candidate anchor subtype 元数据
+（`p33b_anchor_subtypes`，schema `p33b-anchor-subtypes-v1`），用于测量
+`symbol_only`、`regex_only`、`symbol_regex_fusion` 三种 source class，
+以及 agreement class（`single_source`、`same_file_only`、`span_overlap`、
+`disagree`）和 RRF-backing 状态在 `symbol_regex_union` 扩展内部的
+reach/cost 轮廓。handoff 同时携带 `symbol_primary` 和 `regex_primary`
+pool 供 P31 reach 研究使用。
+
+`eval/p33b_anchor_subtype_calibration.py` 是确定性、无远程调用的。它在 SCORE
+phase 将 subtype 行与 union 候选对齐，报告有限的 subtype-bucket 诊断
+（GoldFile/SpanReach@5、FRSW、unique span reach、粗粒度 task-level span cost
+归因、相对 candidate_baseline 的 delta）以及覆盖 source_strength、
+match_quality、risk_level 的三维校准矩阵与单调性检查。缺少 subtype handoff
+时，`availability` 报告 empty/missing 原因而非伪造零值。
+`p33b_to_p32_handoff` 按 diagnostic class 分组 budget candidates，
+`frozen_policy=false`。
+
+公开产物仅限聚合指标，明确禁止 per-task 行、task ID、candidate paths/spans、
+subtype rows、route features、labels 与 provider 字段。安全标记锁定：
+`promotion_ready=false`、`default_should_change=false`、
+`evidencecore_semantics_changed=false`、`candidate_not_fact=true`、
+`remote_calls_by_p33b=0`、`score_phase_only_metrics=true`、
+`aggregate_only_public_artifact=true`。报告：`docs/p33b-anchor-subtype-calibration.md`。
 
 ## R0/R1 initial findings
 

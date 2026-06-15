@@ -646,11 +646,13 @@ def _p31_lightweight_evidence(items: list[dict[str, Any]]) -> list[dict[str, Any
     """
     out: list[dict[str, Any]] = []
     for rank, ev in enumerate(items, start=1):
+        key = p21d.evidence_key(ev)
         entry: dict[str, Any] = {
             "rank": rank,
             "path": str(ev.get("path") or ""),
             "start_line": ev.get("start_line"),
             "end_line": ev.get("end_line"),
+            "candidate_id": hashlib.sha256(f"{key[0]}:{key[1]}:{key[2]}:{rank}".encode("utf-8")).hexdigest()[:16],
         }
         if ev.get("content_sha"):
             entry["content_sha"] = str(ev["content_sha"])
@@ -660,6 +662,108 @@ def _p31_lightweight_evidence(items: list[dict[str, Any]]) -> list[dict[str, Any
             entry["channels"] = list(ev["channels"])
         out.append(entry)
     return out
+
+
+def _p33b_subtype_rows(
+    symbol_regex_evidence: list[dict[str, Any]],
+    symbol_ev: list[dict[str, Any]],
+    regex_ev: list[dict[str, Any]],
+    rrf_ev: list[dict[str, Any]],
+    route_features: dict[str, Any],
+    top_k: int,
+) -> list[dict[str, Any]]:
+    """Build private anchor subtype rows for P33-B calibration.
+
+    Rows contain only aggregate-able classification metadata; no raw text,
+    queries, snippets, prompts, responses, gold, or provider fields.
+    """
+    symbol_files = {p21d.evidence_key(ev)[0] for ev in symbol_ev if ev.get("path")}
+    regex_files = {p21d.evidence_key(ev)[0] for ev in regex_ev if ev.get("path")}
+    rrf_keys = {p21d.evidence_key(ev) for ev in rrf_ev}
+    rrf_files = {key[0] for key in rrf_keys if key[0]}
+
+    cand_count = int(route_features.get("candidate_count") or 0)
+    if cand_count <= 5:
+        count_bin = "small"
+    elif cand_count <= 15:
+        count_bin = "medium"
+    else:
+        count_bin = "large"
+
+    rows: list[dict[str, Any]] = []
+    for rank, ev in enumerate(symbol_regex_evidence[:top_k], start=1):
+        key = p21d.evidence_key(ev)
+        path = key[0]
+        meta = ev.get("meta") or {}
+        sources = set(meta.get("fusion_sources") or [])
+        if not sources:
+            sources = set(ev.get("channels") or [])
+        if sources == {"symbol"}:
+            source_class = "symbol_only"
+        elif sources == {"regex"}:
+            source_class = "regex_only"
+        elif "symbol" in sources and "regex" in sources:
+            source_class = "symbol_regex_fusion"
+        elif "symbol" in sources:
+            source_class = "symbol_only"
+        elif "regex" in sources:
+            source_class = "regex_only"
+        else:
+            source_class = "other"
+
+        if source_class == "symbol_regex_fusion":
+            agreement_class = "span_overlap"
+        elif source_class == "symbol_only":
+            if not regex_ev:
+                agreement_class = "single_source"
+            elif any(_evidence_overlaps(ev, other) for other in regex_ev):
+                agreement_class = "span_overlap"
+            elif path in regex_files:
+                agreement_class = "same_file_only"
+            else:
+                agreement_class = "disagree"
+        elif source_class == "regex_only":
+            if not symbol_ev:
+                agreement_class = "single_source"
+            elif any(_evidence_overlaps(ev, other) for other in symbol_ev):
+                agreement_class = "span_overlap"
+            elif path in symbol_files:
+                agreement_class = "same_file_only"
+            else:
+                agreement_class = "disagree"
+        else:
+            agreement_class = "single_source"
+
+        rrf_backing = key in rrf_keys
+
+        if rank <= 3:
+            rank_bin = "top3"
+        elif rank <= 5:
+            rank_bin = "top5"
+        else:
+            rank_bin = "top10"
+
+        start_line = int(key[1] or 0)
+        end_line = int(key[2] or 0)
+        width = max(0, end_line - start_line + 1)
+        if width <= 1:
+            width_bin = "point"
+        elif width <= 10:
+            width_bin = "short"
+        else:
+            width_bin = "long"
+
+        rows.append({
+            "candidate_id": hashlib.sha256(f"{key[0]}:{key[1]}:{key[2]}:{rank}".encode("utf-8")).hexdigest()[:16],
+            "rank": rank,
+            "source_class": source_class,
+            "agreement_class": agreement_class,
+            "rank_bin": rank_bin,
+            "candidate_count_bin": count_bin,
+            "span_width_bin": width_bin,
+            "rrf_backing": rrf_backing,
+        })
+    return rows
 
 
 def _p31_score_gold(label: dict[str, Any]) -> dict[str, Any]:
@@ -785,6 +889,15 @@ def write_p25_policy_records(
             {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": rrf_ev, "latency_ms": 0},
             label, labels, repo_roots, top_k,
         )
+        # P33-B: primary symbol/regex outcomes for subtype calibration; ephemeral only.
+        rec["symbol_primary"] = _p25_outcome_dict(
+            {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": symbol_ev, "latency_ms": 0},
+            label, labels, repo_roots, top_k,
+        )
+        rec["regex_primary"] = _p25_outcome_dict(
+            {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": regex_ev, "latency_ms": 0},
+            label, labels, repo_roots, top_k,
+        )
         rec["supporting_only"] = _p25_outcome_dict(
             {"task_id": tid, "repo_id": task.get("repo_id"), "evidence": [], "latency_ms": 0},
             label, labels, repo_roots, top_k, abstained=True,
@@ -802,8 +915,17 @@ def write_p25_policy_records(
             p31_pools[strategy] = _p31_lightweight_evidence(list(pred.get("evidence", []) or [])[:top_k])
         p31_pools["symbol_regex_union"] = _p31_lightweight_evidence(symbol_regex_evidence[:top_k])
         p31_pools["rrf_primary"] = _p31_lightweight_evidence(rrf_ev[:top_k])
+        p31_pools["symbol_primary"] = _p31_lightweight_evidence(symbol_ev[:top_k])
+        p31_pools["regex_primary"] = _p31_lightweight_evidence(regex_ev[:top_k])
         rec["p31_candidate_pools"] = p31_pools
         rec["p31_score_gold"] = _p31_score_gold(label)
+
+        # P33-B: private anchor subtype metadata for subtype calibration; ephemeral only.
+        rec["p33b_anchor_subtypes"] = _p33b_subtype_rows(
+            symbol_regex_evidence, symbol_ev, regex_ev, rrf_ev, rec["route_features"], top_k
+        )
+        rec["p33b_anchor_subtypes_schema"] = "p33b-anchor-subtypes-v1"
+        rec["p33b_anchor_subtype_handoff"] = True
 
         records.append(rec)
     payload = {

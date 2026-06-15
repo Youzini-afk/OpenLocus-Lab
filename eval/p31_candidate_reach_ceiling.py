@@ -54,6 +54,8 @@ REACH_STRATEGIES = [
     "candidate_baseline",
     "rrf_primary",
     "symbol_regex_union",
+    "symbol_primary",
+    "regex_primary",
     "llm_span_narrow",
     "llm_filter",
     "llm_abstain_filter",

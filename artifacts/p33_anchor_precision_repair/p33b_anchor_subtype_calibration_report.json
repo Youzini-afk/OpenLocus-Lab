@@ -1,0 +1,1102 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "conclusion": [
+    "Self-test-only scaffold evaluated 5 synthetic tasks; not quality evidence.",
+    "P33-B handoff detected; 5/96 subtype buckets have sufficient data. Diagnostics are aggregate-only, coarse task-level attribution, and do not prescribe policy.",
+    "No Rust core, EvidenceCore, default strategy, or remote change is made by P33-B.",
+    "P33-B is SCORE-phase-only; labels are loaded after RUN."
+  ],
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T05:26:30.953898+00:00",
+  "generated_by": "eval/p33b_anchor_subtype_calibration.py",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "input_summary": {
+    "p31_h1_handoff_detected": true,
+    "p33b_handoff_detected": true,
+    "record_count": 5
+  },
+  "insufficient_input_source_count": 0,
+  "labels_loaded_after_run": true,
+  "metrics": {
+    "bucket_taxonomy": {
+      "other__disagree__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__disagree__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__disagree__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__disagree__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__disagree__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__disagree__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__same_file_only__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__same_file_only__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__same_file_only__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__same_file_only__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__same_file_only__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__same_file_only__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__single_source__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__single_source__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__single_source__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__single_source__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__single_source__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__single_source__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__span_overlap__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__span_overlap__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__span_overlap__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__span_overlap__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__span_overlap__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "other__span_overlap__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__disagree__rrf_no__r0": {
+        "added_false_span": 2,
+        "added_gold_span": 1,
+        "agreement_class": "disagree",
+        "availability": "available",
+        "coarse_task_level_attribution": true,
+        "delta_vs_candidate_baseline": {
+          "baseline_gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach_diff": -1.0,
+          "gold_span_reach_diff": -1.0
+        },
+        "diagnostic_class": "insufficient_denominator",
+        "false_per_gold": 2.0,
+        "file_right_span_wrong_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "gold_file_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "gold_per_false": 0.5,
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "matched_candidate_task_count": 1,
+        "mean_primary_false_positive_rate": 0.08,
+        "mean_span_f0_5": 0.28,
+        "missing_candidate_join_count": 0,
+        "net_span_value_1x": -1,
+        "net_span_value_2x": -3,
+        "no_gold_count": 0,
+        "positive_count": 1,
+        "risk_level": 0,
+        "rrf_backing": false,
+        "source_class": "regex_only",
+        "subtype_join_availability": "available",
+        "task_count": 1,
+        "unique_subtype_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "regex_only__disagree__rrf_no__r1": {
+        "added_false_span": 0,
+        "added_gold_span": 0,
+        "agreement_class": "disagree",
+        "availability": "available",
+        "coarse_task_level_attribution": true,
+        "delta_vs_candidate_baseline": {
+          "baseline_gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach_diff": 0.0,
+          "gold_span_reach_diff": 0.0
+        },
+        "diagnostic_class": "insufficient_denominator",
+        "false_per_gold": null,
+        "file_right_span_wrong_rate": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "gold_file_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "gold_per_false": null,
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "matched_candidate_task_count": 1,
+        "mean_primary_false_positive_rate": 0.0,
+        "mean_span_f0_5": 0.0,
+        "missing_candidate_join_count": 0,
+        "net_span_value_1x": 0,
+        "net_span_value_2x": 0,
+        "no_gold_count": 0,
+        "positive_count": 1,
+        "risk_level": 1,
+        "rrf_backing": false,
+        "source_class": "regex_only",
+        "subtype_join_availability": "available",
+        "task_count": 1,
+        "unique_subtype_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "regex_only__disagree__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__disagree__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__disagree__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__disagree__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__same_file_only__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__same_file_only__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__same_file_only__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__same_file_only__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__same_file_only__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__same_file_only__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__single_source__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__single_source__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__single_source__rrf_no__r2": {
+        "added_false_span": 5,
+        "added_gold_span": 0,
+        "agreement_class": "single_source",
+        "availability": "not_measured",
+        "coarse_task_level_attribution": true,
+        "delta_vs_candidate_baseline": {
+          "baseline_gold_file_reach": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null
+          },
+          "gold_file_reach_diff": null,
+          "gold_span_reach_diff": null
+        },
+        "diagnostic_class": "insufficient_denominator",
+        "false_per_gold": null,
+        "file_right_span_wrong_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "gold_file_reach": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "gold_per_false": 0.0,
+        "gold_span_reach": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        },
+        "matched_candidate_task_count": 0,
+        "mean_primary_false_positive_rate": 0.5,
+        "mean_span_f0_5": 0.0,
+        "missing_candidate_join_count": 0,
+        "net_span_value_1x": -5,
+        "net_span_value_2x": -10,
+        "no_gold_count": 1,
+        "positive_count": 0,
+        "risk_level": 2,
+        "rrf_backing": false,
+        "source_class": "regex_only",
+        "subtype_join_availability": "available",
+        "task_count": 1,
+        "unique_subtype_span_reach": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null
+        }
+      },
+      "regex_only__single_source__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__single_source__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__single_source__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__span_overlap__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__span_overlap__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__span_overlap__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__span_overlap__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__span_overlap__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "regex_only__span_overlap__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__disagree__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__disagree__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__disagree__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__disagree__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__disagree__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__disagree__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__same_file_only__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__same_file_only__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__same_file_only__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__same_file_only__rrf_yes__r0": {
+        "added_false_span": 2,
+        "added_gold_span": 1,
+        "agreement_class": "same_file_only",
+        "availability": "available",
+        "coarse_task_level_attribution": true,
+        "delta_vs_candidate_baseline": {
+          "baseline_gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach_diff": 0.0,
+          "gold_span_reach_diff": 0.0
+        },
+        "diagnostic_class": "insufficient_denominator",
+        "false_per_gold": 2.0,
+        "file_right_span_wrong_rate": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "gold_file_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "gold_per_false": 0.5,
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "matched_candidate_task_count": 1,
+        "mean_primary_false_positive_rate": 0.08,
+        "mean_span_f0_5": 0.28,
+        "missing_candidate_join_count": 0,
+        "net_span_value_1x": -1,
+        "net_span_value_2x": -3,
+        "no_gold_count": 0,
+        "positive_count": 1,
+        "risk_level": 0,
+        "rrf_backing": true,
+        "source_class": "symbol_only",
+        "subtype_join_availability": "available",
+        "task_count": 1,
+        "unique_subtype_span_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        }
+      },
+      "symbol_only__same_file_only__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__same_file_only__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__single_source__rrf_no__r0": {
+        "added_false_span": 2,
+        "added_gold_span": 0,
+        "agreement_class": "single_source",
+        "availability": "available",
+        "coarse_task_level_attribution": true,
+        "delta_vs_candidate_baseline": {
+          "baseline_gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach_diff": 0.0,
+          "gold_span_reach_diff": 0.0
+        },
+        "diagnostic_class": "insufficient_denominator",
+        "false_per_gold": null,
+        "file_right_span_wrong_rate": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "gold_file_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "gold_per_false": 0.0,
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "matched_candidate_task_count": 1,
+        "mean_primary_false_positive_rate": 0.2,
+        "mean_span_f0_5": 0.1,
+        "missing_candidate_join_count": 0,
+        "net_span_value_1x": -2,
+        "net_span_value_2x": -4,
+        "no_gold_count": 0,
+        "positive_count": 1,
+        "risk_level": 0,
+        "rrf_backing": false,
+        "source_class": "symbol_only",
+        "subtype_join_availability": "available",
+        "task_count": 1,
+        "unique_subtype_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        }
+      },
+      "symbol_only__single_source__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__single_source__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__single_source__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__single_source__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__single_source__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__span_overlap__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__span_overlap__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__span_overlap__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__span_overlap__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__span_overlap__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_only__span_overlap__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__disagree__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__disagree__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__disagree__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__disagree__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__disagree__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__disagree__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__same_file_only__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__same_file_only__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__same_file_only__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__same_file_only__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__same_file_only__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__same_file_only__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__single_source__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__single_source__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__single_source__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__single_source__rrf_yes__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__single_source__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__single_source__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__span_overlap__rrf_no__r0": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__span_overlap__rrf_no__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__span_overlap__rrf_no__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__span_overlap__rrf_yes__r0": {
+        "added_false_span": 0,
+        "added_gold_span": 1,
+        "agreement_class": "span_overlap",
+        "availability": "available",
+        "coarse_task_level_attribution": true,
+        "delta_vs_candidate_baseline": {
+          "baseline_gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach_diff": 0.0,
+          "gold_span_reach_diff": 0.0
+        },
+        "diagnostic_class": "insufficient_denominator",
+        "false_per_gold": 0.0,
+        "file_right_span_wrong_rate": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "gold_file_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "gold_per_false": null,
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "matched_candidate_task_count": 1,
+        "mean_primary_false_positive_rate": 0.0,
+        "mean_span_f0_5": 0.3,
+        "missing_candidate_join_count": 0,
+        "net_span_value_1x": 1,
+        "net_span_value_2x": 1,
+        "no_gold_count": 0,
+        "positive_count": 1,
+        "risk_level": 0,
+        "rrf_backing": true,
+        "source_class": "symbol_regex_fusion",
+        "subtype_join_availability": "available",
+        "task_count": 1,
+        "unique_subtype_span_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        }
+      },
+      "symbol_regex_fusion__span_overlap__rrf_yes__r1": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      },
+      "symbol_regex_fusion__span_overlap__rrf_yes__r2": {
+        "availability": "missing_bucket",
+        "task_count": 0
+      }
+    },
+    "calibration_matrix": {
+      "cells": {
+        "s0_m0_r0": {
+          "added_false_span": 2,
+          "added_gold_span": 1,
+          "availability": "available",
+          "coarse_task_level_attribution": true,
+          "diagnostic_class": "insufficient_denominator",
+          "false_per_gold": 2.0,
+          "file_right_span_wrong_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null
+          },
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_per_false": 0.5,
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "match_quality": 0,
+          "matched_candidate_task_count": 1,
+          "mean_primary_false_positive_rate": 0.08,
+          "mean_span_f0_5": 0.28,
+          "missing_candidate_join_count": 0,
+          "net_span_value_1x": -1,
+          "net_span_value_2x": -3,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "risk_level": 0,
+          "source_strength": 0,
+          "subtype_join_availability": "available",
+          "task_count": 1
+        },
+        "s0_m0_r1": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "coarse_task_level_attribution": true,
+          "diagnostic_class": "insufficient_denominator",
+          "false_per_gold": null,
+          "file_right_span_wrong_rate": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_per_false": null,
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "match_quality": 0,
+          "matched_candidate_task_count": 1,
+          "mean_primary_false_positive_rate": 0.0,
+          "mean_span_f0_5": 0.0,
+          "missing_candidate_join_count": 0,
+          "net_span_value_1x": 0,
+          "net_span_value_2x": 0,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "risk_level": 1,
+          "source_strength": 0,
+          "subtype_join_availability": "available",
+          "task_count": 1
+        },
+        "s0_m0_r2": {
+          "added_false_span": 5,
+          "added_gold_span": 0,
+          "availability": "not_measured",
+          "coarse_task_level_attribution": true,
+          "diagnostic_class": "insufficient_denominator",
+          "false_per_gold": null,
+          "file_right_span_wrong_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null
+          },
+          "gold_file_reach": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null
+          },
+          "gold_per_false": 0.0,
+          "gold_span_reach": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null
+          },
+          "match_quality": 0,
+          "matched_candidate_task_count": 0,
+          "mean_primary_false_positive_rate": 0.5,
+          "mean_span_f0_5": 0.0,
+          "missing_candidate_join_count": 0,
+          "net_span_value_1x": -5,
+          "net_span_value_2x": -10,
+          "no_gold_count": 1,
+          "positive_count": 0,
+          "risk_level": 2,
+          "source_strength": 0,
+          "subtype_join_availability": "available",
+          "task_count": 1
+        },
+        "s0_m1_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m1_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m1_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m2_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m2_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m2_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m3_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m3_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s0_m3_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m0_r0": {
+          "added_false_span": 2,
+          "added_gold_span": 0,
+          "availability": "available",
+          "coarse_task_level_attribution": true,
+          "diagnostic_class": "insufficient_denominator",
+          "false_per_gold": null,
+          "file_right_span_wrong_rate": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_per_false": 0.0,
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "match_quality": 0,
+          "matched_candidate_task_count": 1,
+          "mean_primary_false_positive_rate": 0.2,
+          "mean_span_f0_5": 0.1,
+          "missing_candidate_join_count": 0,
+          "net_span_value_1x": -2,
+          "net_span_value_2x": -4,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "risk_level": 0,
+          "source_strength": 1,
+          "subtype_join_availability": "available",
+          "task_count": 1
+        },
+        "s1_m0_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m0_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m1_r0": {
+          "added_false_span": 2,
+          "added_gold_span": 1,
+          "availability": "available",
+          "coarse_task_level_attribution": true,
+          "diagnostic_class": "insufficient_denominator",
+          "false_per_gold": 2.0,
+          "file_right_span_wrong_rate": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_per_false": 0.5,
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "match_quality": 1,
+          "matched_candidate_task_count": 1,
+          "mean_primary_false_positive_rate": 0.08,
+          "mean_span_f0_5": 0.28,
+          "missing_candidate_join_count": 0,
+          "net_span_value_1x": -1,
+          "net_span_value_2x": -3,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "risk_level": 0,
+          "source_strength": 1,
+          "subtype_join_availability": "available",
+          "task_count": 1
+        },
+        "s1_m1_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m1_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m2_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m2_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m2_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m3_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m3_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s1_m3_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m0_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m0_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m0_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m1_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m1_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m1_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m2_r0": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m2_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m2_r2": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m3_r0": {
+          "added_false_span": 0,
+          "added_gold_span": 1,
+          "availability": "available",
+          "coarse_task_level_attribution": true,
+          "diagnostic_class": "insufficient_denominator",
+          "false_per_gold": 0.0,
+          "file_right_span_wrong_rate": {
+            "denominator": 1,
+            "numerator": 0,
+            "rate": 0.0
+          },
+          "gold_file_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "gold_per_false": null,
+          "gold_span_reach": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0
+          },
+          "match_quality": 3,
+          "matched_candidate_task_count": 1,
+          "mean_primary_false_positive_rate": 0.0,
+          "mean_span_f0_5": 0.3,
+          "missing_candidate_join_count": 0,
+          "net_span_value_1x": 1,
+          "net_span_value_2x": 1,
+          "no_gold_count": 0,
+          "positive_count": 1,
+          "risk_level": 0,
+          "source_strength": 2,
+          "subtype_join_availability": "available",
+          "task_count": 1
+        },
+        "s2_m3_r1": {
+          "availability": "empty",
+          "task_count": 0
+        },
+        "s2_m3_r2": {
+          "availability": "empty",
+          "task_count": 0
+        }
+      },
+      "monotonic_sanity": {
+        "file_reach_non_increasing_with_risk": [
+          "s0_m0: r0->r1"
+        ],
+        "span_reach_non_increasing_with_risk": []
+      }
+    },
+    "p33b_to_p32_handoff": {
+      "budget_candidate_buckets": {
+        "blocked_high_false_cost": [],
+        "budget_candidate_observed": [],
+        "needs_budget_guard": [
+          "regex_only__disagree__rrf_no__r0",
+          "regex_only__disagree__rrf_no__r1",
+          "symbol_only__same_file_only__rrf_yes__r0",
+          "symbol_only__single_source__rrf_no__r0",
+          "symbol_regex_fusion__span_overlap__rrf_yes__r0"
+        ],
+        "supporting_only_observed": []
+      },
+      "frozen_policy": false
+    }
+  },
+  "no_gold_task_count": 1,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 5,
+  "p33b_available": true,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 5,
+  "p33b_handoff_schema_version": "p33b-anchor-subtypes-v1",
+  "p33b_input_available": true,
+  "positive_task_count": 4,
+  "positive_with_pools_count": 4,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "real_evaluation": false,
+  "remote_calls_by_p33b": 0,
+  "run_phase_public_only": true,
+  "schema_version": "p33b-anchor-subtype-calibration-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "stage": "P33-B Anchor Subtype Calibration",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 5,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
