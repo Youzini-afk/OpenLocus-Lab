@@ -266,6 +266,18 @@ provider fields. Safety flags are locked: `promotion_ready=false`,
 `candidate_not_fact=true`, `remote_calls_by_p31=0`,
 `score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`.
 
+The real P33-B subtype smoke (6 successful runs, 108 task observations: 36
+positive and 72 no-gold) confirms the P33 result at finer granularity: no
+observed subtype bucket is primary-safe. `span_overlap` is the best coarse
+agreement class (`GoldSpanReach=1.0`, `false_per_gold≈1.78`) but remains
+net-negative under a 2x false-span penalty. `symbol_regex_fusion` also has
+perfect subtype span reach in this smoke but still costs `24/66` added
+gold/false (`false_per_gold=2.75`). `same_file_only` is weaker
+(`false_per_gold≈2.18`), and `disagree` / `single_source` buckets are dominated
+by false-span cost. RRF backing helps but does not make anchors safe
+(`rrf_yes false_per_gold≈4.67`). P33-B subtype buckets should therefore feed
+P32/P30-H4 action budgets, not primary admission.
+
 
 The first real P31-H1 reach smoke completed six successful runs
 (`Flash/Kimi/GLM × py_flask/js_express`, 108 total tasks, 48 positive tasks).

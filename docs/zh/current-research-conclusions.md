@@ -275,6 +275,8 @@ provider 字段。安全标志锁定：`promotion_ready=false`、
 `candidate_not_fact=true`、`remote_calls_by_p33b=0`、
 `score_phase_only_metrics=true`、`aggregate_only_public_artifact=true`。
 
+真实 P33-B subtype smoke（6 个成功 runs，108 个 task observations：36 positive、72 no-gold）在更细粒度上确认了 P33 结论：没有任何 observed subtype bucket 可以 primary-safe。`span_overlap` 是最好的粗粒度 agreement class（`GoldSpanReach=1.0`、`false_per_gold≈1.78`），但在 2x false-span penalty 下仍是 net-negative。`symbol_regex_fusion` 在本轮 smoke 中 subtype span reach 也完整，但 added gold/false 仍为 `24/66`（`false_per_gold=2.75`）。`same_file_only` 更弱（`false_per_gold≈2.18`），`disagree` / `single_source` buckets 被 false-span cost 主导。RRF backing 有帮助，但不足以让 anchor 安全（`rrf_yes false_per_gold≈4.67`）。因此 P33-B subtype bucket 应作为 P32/P30-H4 action budget 输入，而不是 primary admission。
+
 ---
 
 ## 3. 当前研究假设

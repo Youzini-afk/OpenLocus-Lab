@@ -321,6 +321,15 @@ fields. Safety flags are locked: `promotion_ready=false`,
 `score_phase_only_metrics=true`, `aggregate_only_public_artifact=true`.
 Report: `docs/p33b-anchor-subtype-calibration.md`.
 
+The real P33-B subtype smoke completed 6 successful runs (108 task observations,
+36 positive, 72 no-gold). It confirms that finer subtype splits still do not
+produce a primary-safe bucket. `span_overlap` is the best coarse agreement class
+(`false_per_gold≈1.78`, `GoldSpanReach=1.0`) but remains net-negative under a 2x
+false-span penalty; `symbol_regex_fusion` is high-reach but costs `24/66` added
+gold/false; `disagree` and `single_source` are dominated by false-span cost.
+These subtype buckets should feed P32/P30-H4 budgets, not primary admission.
+See [`p33b-anchor-subtype-remote-smoke.md`](p33b-anchor-subtype-remote-smoke.md).
+
 ## Stage status
 
 | Stage | Status | Summary |
