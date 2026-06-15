@@ -1,7 +1,7 @@
 # P30-H3 Action-Specific Span-Cost Accounting
 
 - Schema: `p30-h3-action-span-cost-report-v1`
-- Generated: 2026-06-15T09:37:50.611108+00:00
+- Generated: 2026-06-15T11:22:51.294923+00:00
 - Tasks: 19 (+14 / no_gold 5)
 - Status: `score_phase_only_accounting=true`, `diagnostic_only=true`, `promotion_ready=false`, `default_should_change=false`.
 

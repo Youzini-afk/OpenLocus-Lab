@@ -2041,7 +2041,7 @@ def build_report(
                 "otherwise -> weak_candidate_only",
             ],
             "scorecard_features": [
-                "p33b_anchor_subtypes (private handoff; not emitted)",
+                "P33-B private subtype metadata (in-memory only)",
                 "agreement_class: span_overlap / same_file_only / disagree / single_source",
                 "rrf_backing on subtype row",
                 "exact_unique_symbol_anchor",
