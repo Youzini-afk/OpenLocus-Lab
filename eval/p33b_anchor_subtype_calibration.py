@@ -236,7 +236,7 @@ def is_span_reached_by_any(items: list[dict[str, Any]], label: dict[str, Any]) -
         start = int(it.get("start_line") or 0)
         end = int(it.get("end_line") or 0)
         for gs in label.get("gold_spans", []):
-            if path == gs["path"] and start <= gs["start_line"] and end >= gs["end_line"]:
+            if path == gs["path"] and end >= gs["start_line"] and start <= gs["end_line"]:
                 return True
     return False
 
@@ -363,7 +363,7 @@ def _reached_spans(items: list[dict[str, Any]], label: dict[str, Any]) -> set[tu
         start = int(it.get("start_line") or 0)
         end = int(it.get("end_line") or 0)
         for gs in label.get("gold_spans", []):
-            if path == gs["path"] and start <= gs["start_line"] and end >= gs["end_line"]:
+            if path == gs["path"] and end >= gs["start_line"] and start <= gs["end_line"]:
                 reached.add((gs["path"], gs["start_line"], gs["end_line"]))
     return reached
 

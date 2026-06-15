@@ -9,7 +9,7 @@
   ],
   "default_should_change": false,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-15T06:06:05.324587+00:00",
+  "generated_at": "2026-06-15T08:59:26.550003+00:00",
   "generated_by": "eval/p33b_anchor_subtype_calibration.py",
   "gold_spans_in_artifact": false,
   "input_source_count": 1,

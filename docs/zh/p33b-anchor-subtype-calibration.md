@@ -7,7 +7,7 @@
 # P33-B Anchor Subtype Calibration
 
 - Schema: `p33b-anchor-subtype-calibration-v1`
-- Generated: 2026-06-15T06:06:05.324587+00:00
+- Generated: 2026-06-15T08:59:26.550003+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P33-B: 0
