@@ -65,6 +65,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p48-diagnostic-policy-simulator.md`: [en](en/p48-diagnostic-policy-simulator.md) · [zh](zh/p48-diagnostic-policy-simulator.md)
 - `p49-contrastive-candidate-pack-scaffold.md`: [en](en/p49-contrastive-candidate-pack-scaffold.md) · [zh](zh/p49-contrastive-candidate-pack-scaffold.md)
 - `p50-fixed-suite-validation.md`: [en](en/p50-fixed-suite-validation.md) · [zh](zh/p50-fixed-suite-validation.md)
+- `p52-metadata-local-verifier-scaffold.md`: [en](en/p52-metadata-local-verifier-scaffold.md) · [zh](zh/p52-metadata-local-verifier-scaffold.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
 - `r17-router-guard.md`: [en](en/r17-router-guard.md) · [zh](zh/r17-router-guard.md)
 - `r18-calibration-sweep.md`: [en](en/r18-calibration-sweep.md) · [zh](zh/r18-calibration-sweep.md)
