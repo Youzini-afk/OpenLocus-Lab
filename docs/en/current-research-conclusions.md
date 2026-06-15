@@ -10,6 +10,10 @@ Status: Research summary, not a promotion request.
 
 P52A reads local source files only for bounded aggregate materialization prerequisite diagnostics. It stores no raw source, snippets, digests, paths, or spans. Source read is not Evidence, and materialized candidate is not Evidence. P52A does not validate EvidenceCore and does not produce verifier pass/fail or default/promotion claims. See the [P52A detailed report](p52a-source-materialization-prerequisite.md).
 
+## P52B Source-Backed Local Verifier Feature Matrix
+
+P52B reads local source files only for bounded aggregate source-shape heuristic diagnostics and source-feature risk buckets. It computes deterministic source-backed verifier feature diagnostics from bounded spans, using source-shape heuristics only and marking AST/query-dependent features as unavailable. P52B stores no raw source, snippets, digests, paths, or spans. Source-feature buckets are diagnostic only; they are not Evidence and do not admit candidates. P52B does not validate EvidenceCore, does not produce a verifier pass/fail score or a local verifier score, does not prove P51 quality, and does not send source to providers. It does not call an LLM, construct prompts, or make remote calls. See the [P52B detailed report](p52b-source-backed-local-verifier-feature-matrix.md).
+
 ---
 
 ## 0. Executive Research Thesis
@@ -594,6 +598,7 @@ The detailed phase reports are preserved. This section is an index, not a replac
 - P48: Diagnostic Policy Simulator / Request-More-Context Overlay. Deterministic, SCORE-phase-only route simulator that overlays the P47 span-geometry gate on P25 `bucket_routed_v0` and P30-H4B `admission_v3_h4b`. It counts how many risky candidate-derived primary actions would be replaced by `request_more_context`, reports measured primary cost for existing actions only, and emits geometry-only diagnostics with explicit not-evidence flags. It does not change defaults or EvidenceCore.
 - P49: Contrastive Candidate Pack Scaffold. Deterministic, SCORE-phase-only pack-shape diagnostic that builds candidate packs from candidate metadata only (rank, score, channels, subtype axes, path-kind). It reports aggregate pack-build, contrast, provenance-completeness, and SCORE-phase diagnostics per public task bucket and risk tag. It does not call an LLM, does not create evidence, does not admit spans, does not read source files, does not validate content_sha, and does not change defaults or EvidenceCore.
 - P52: Metadata-Only Local Verifier Scaffold. Deterministic, SCORE-phase-only feature-availability and candidate-risk-bucket inventory that runs before any source-read or LLM span-narrow phase. It consumes the same ephemeral P25-policy records as P46/P49, classifies candidates into metadata-risk buckets using only public metadata, and reports aggregate availability/checkability/risk diagnostics by pack strategy, public bucket, and risk tag. It does not verify source text, does not read files, does not call an LLM, does not construct prompts, does not validate EvidenceCore, does not produce evidence, does not produce a verifier pass/fail score, and does not prove P51/P53 quality. See `docs/en/p52-metadata-local-verifier-scaffold.md`.
+- P52B: Source-Backed Local Verifier Feature Matrix. Deterministic, SCORE-phase-only source-shape feature diagnostics computed from bounded local source reads. It consumes the same ephemeral P25-policy records and the P52A materialization outcome, extracts source-shape heuristics from bounded candidate spans, classifies candidates into source-feature risk buckets, and reports aggregate diagnostics by pack strategy and safe public dimensions. It does not produce evidence, does not produce a verifier pass/fail or local-verifier score, does not admit candidates, does not change defaults, does not prove P51 quality, and does not send source to providers. See `docs/en/p52b-source-backed-local-verifier-feature-matrix.md`.
 
 Key detailed reports:
 
@@ -616,6 +621,7 @@ Key detailed reports:
 - `docs/en/p48-diagnostic-policy-simulator.md` — P48 diagnostic policy simulator / request-more-context overlay (not evidence, not admission, not default).
 - `docs/en/p49-contrastive-candidate-pack-scaffold.md` — P49 contrastive candidate pack scaffold (not evidence, not admission, not default, metadata-only pack construction).
 - `docs/en/p52-metadata-local-verifier-scaffold.md` — P52 metadata-only local verifier scaffold (not evidence, not admission, not default, source/query features unavailable, candidate-risk diagnostics only).
+- `docs/en/p52b-source-backed-local-verifier-feature-matrix.md` — P52B source-backed local verifier feature matrix (not evidence, not admission, not default, source-shape heuristic diagnostics only, AST/query features unavailable).
 
 ---
 
