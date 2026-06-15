@@ -60,6 +60,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p33-anchor-precision-repair-remote-smoke.md`: [en](en/p33-anchor-precision-repair-remote-smoke.md) · [zh](zh/p33-anchor-precision-repair-remote-smoke.md)
 - `p33b-anchor-subtype-calibration.md`: [en](en/p33b-anchor-subtype-calibration.md) · [zh](zh/p33b-anchor-subtype-calibration.md)
 - `p33b-anchor-subtype-remote-smoke.md`: [en](en/p33b-anchor-subtype-remote-smoke.md) · [zh](zh/p33b-anchor-subtype-remote-smoke.md)
+- `p46-candidate-reach-cost-map.md`: [en](en/p46-candidate-reach-cost-map.md) · [zh](zh/p46-candidate-reach-cost-map.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
 - `r17-router-guard.md`: [en](en/r17-router-guard.md) · [zh](zh/r17-router-guard.md)
 - `r18-calibration-sweep.md`: [en](en/r18-calibration-sweep.md) · [zh](zh/r18-calibration-sweep.md)

@@ -1,0 +1,3050 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "conclusion": [
+    "Self-test-only scaffold evaluated 4 synthetic tasks; this is not quality evidence.",
+    "P46 is SCORE-phase-only. Candidate pools and private gold spans were used only for aggregate metrics after RUN.",
+    "Baseline@5 GoldFileReach=1.0, GoldSpanReach=0.5, CandidateAbsentRate=0.0, FileRightSpanWrongRate=0.5.",
+    "Materialization diagnostics: source_read_unavailable. Source-file materialization validation is currently not wired by default; P46 reports source_read_unavailable unless the ephemeral record explicitly carries a private checkout root.",
+    "Outcome cost map available for 8 strategies.",
+    "P33-B subtype breakdowns cover 2 tasks.",
+    "No policy is promotion-ready or default-ready.",
+    "Next: P47/P48 should consume this aggregate map to test evidence-materialization gates and budget-aware admission thresholds."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T14:07:08.090388+00:00",
+  "generated_by": "eval/p46_candidate_reach_cost_map.py",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "labels_loaded_after_run": true,
+  "materialization_availability": "source_read_unavailable",
+  "metrics": {
+    "materialization_diagnostics": {
+      "by_strategy": {
+        "candidate_baseline": {
+          "availability": "source_read_unavailable",
+          "candidates_seen": 4,
+          "materialization_rate": null,
+          "materialized_valid": 0,
+          "rejected_invalid_path": 0,
+          "rejected_invalid_range": 0,
+          "rejected_missing_file": 0,
+          "rejected_other": 0,
+          "rejected_stale_sha_content_sha_mismatch": 0
+        },
+        "llm_abstain_filter": {
+          "availability": "missing_pool"
+        },
+        "llm_filter": {
+          "availability": "source_read_unavailable",
+          "candidates_seen": 2,
+          "materialization_rate": null,
+          "materialized_valid": 0,
+          "rejected_invalid_path": 0,
+          "rejected_invalid_range": 0,
+          "rejected_missing_file": 0,
+          "rejected_other": 0,
+          "rejected_stale_sha_content_sha_mismatch": 0
+        },
+        "llm_span_narrow": {
+          "availability": "source_read_unavailable",
+          "candidates_seen": 2,
+          "materialization_rate": null,
+          "materialized_valid": 0,
+          "rejected_invalid_path": 0,
+          "rejected_invalid_range": 0,
+          "rejected_missing_file": 0,
+          "rejected_other": 0,
+          "rejected_stale_sha_content_sha_mismatch": 0
+        },
+        "regex_primary": {
+          "availability": "missing_pool"
+        },
+        "rrf_primary": {
+          "availability": "source_read_unavailable",
+          "candidates_seen": 2,
+          "materialization_rate": null,
+          "materialized_valid": 0,
+          "rejected_invalid_path": 0,
+          "rejected_invalid_range": 0,
+          "rejected_missing_file": 0,
+          "rejected_other": 0,
+          "rejected_stale_sha_content_sha_mismatch": 0
+        },
+        "symbol_primary": {
+          "availability": "source_read_unavailable",
+          "candidates_seen": 1,
+          "materialization_rate": null,
+          "materialized_valid": 0,
+          "rejected_invalid_path": 0,
+          "rejected_invalid_range": 0,
+          "rejected_missing_file": 0,
+          "rejected_other": 0,
+          "rejected_stale_sha_content_sha_mismatch": 0
+        },
+        "symbol_regex_union": {
+          "availability": "source_read_unavailable",
+          "candidates_seen": 3,
+          "materialization_rate": null,
+          "materialized_valid": 0,
+          "rejected_invalid_path": 0,
+          "rejected_invalid_range": 0,
+          "rejected_missing_file": 0,
+          "rejected_other": 0,
+          "rejected_stale_sha_content_sha_mismatch": 0
+        }
+      },
+      "materialization_availability": "source_read_unavailable",
+      "overall": {
+        "availability": "source_read_unavailable",
+        "candidates_seen": 14,
+        "materialization_rate": null,
+        "materialized_valid": 0,
+        "note": "Source-file materialization validation is currently not wired by default. P46 reports source_read_unavailable unless the ephemeral record explicitly carries a private checkout root.",
+        "rejected_invalid_path": 0,
+        "rejected_invalid_range": 0,
+        "rejected_missing_file": 0,
+        "rejected_other": 0,
+        "rejected_stale_sha_content_sha_mismatch": 0
+      }
+    },
+    "outcome_cost_map": {
+      "by_strategy": {
+        "candidate_baseline": {
+          "added_false_span": 9,
+          "added_gold_span": 3,
+          "availability": "available",
+          "cost_available_count": 4,
+          "cost_missing_count": 0,
+          "false_per_gold": 3.0,
+          "gold_per_false": 0.333333,
+          "mean_no_gold_false_primary_rate": 0.4,
+          "mean_primary_false_positive_rate": 0.205,
+          "mean_span_f0_5": 0.145,
+          "net_span_value_1x": -6,
+          "net_span_value_2x": -15,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 4,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "llm_abstain_filter": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "available",
+          "cost_available_count": 0,
+          "cost_missing_count": 4,
+          "false_per_gold": null,
+          "gold_per_false": null,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": null,
+          "mean_span_f0_5": null,
+          "net_span_value_1x": null,
+          "net_span_value_2x": null,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 2,
+          "outcome_present_count": 2,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "llm_filter": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "cost_available_count": 3,
+          "cost_missing_count": 1,
+          "false_per_gold": null,
+          "gold_per_false": null,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": 0.0,
+          "mean_span_f0_5": 0.066667,
+          "net_span_value_1x": 0,
+          "net_span_value_2x": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 0,
+          "outcome_present_count": 4,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "llm_span_narrow": {
+          "added_false_span": 2,
+          "added_gold_span": 2,
+          "availability": "available",
+          "cost_available_count": 2,
+          "cost_missing_count": 2,
+          "false_per_gold": 1.0,
+          "gold_per_false": 1.0,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": 0.075,
+          "mean_span_f0_5": 0.22,
+          "net_span_value_1x": 0,
+          "net_span_value_2x": -2,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 2,
+          "outcome_present_count": 2,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "regex_primary": {
+          "added_false_span": 0,
+          "added_gold_span": 0,
+          "availability": "available",
+          "cost_available_count": 1,
+          "cost_missing_count": 3,
+          "false_per_gold": null,
+          "gold_per_false": null,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": 0.0,
+          "mean_span_f0_5": 0.0,
+          "net_span_value_1x": 0,
+          "net_span_value_2x": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 3,
+          "outcome_present_count": 1,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "rrf_primary": {
+          "added_false_span": 5,
+          "added_gold_span": 2,
+          "availability": "available",
+          "cost_available_count": 2,
+          "cost_missing_count": 2,
+          "false_per_gold": 2.5,
+          "gold_per_false": 0.4,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": 0.115,
+          "mean_span_f0_5": 0.165,
+          "net_span_value_1x": -3,
+          "net_span_value_2x": -8,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 2,
+          "outcome_present_count": 2,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "supporting_only": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_outcomes",
+          "cost_available_count": 0,
+          "cost_missing_count": 4,
+          "false_per_gold": null,
+          "gold_per_false": null,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": null,
+          "mean_span_f0_5": null,
+          "net_span_value_1x": null,
+          "net_span_value_2x": null,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 4,
+          "outcome_present_count": 0,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "symbol_primary": {
+          "added_false_span": 0,
+          "added_gold_span": 1,
+          "availability": "available",
+          "cost_available_count": 1,
+          "cost_missing_count": 3,
+          "false_per_gold": 0.0,
+          "gold_per_false": null,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": 0.05,
+          "mean_span_f0_5": 0.25,
+          "net_span_value_1x": 1,
+          "net_span_value_2x": 1,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 3,
+          "outcome_present_count": 1,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "symbol_regex_union": {
+          "added_false_span": 1,
+          "added_gold_span": 2,
+          "availability": "available",
+          "cost_available_count": 3,
+          "cost_missing_count": 1,
+          "false_per_gold": 0.5,
+          "gold_per_false": 2.0,
+          "mean_no_gold_false_primary_rate": 0.0,
+          "mean_primary_false_positive_rate": 0.0,
+          "mean_span_f0_5": 0.166667,
+          "net_span_value_1x": 1,
+          "net_span_value_2x": 0,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 1,
+          "outcome_present_count": 3,
+          "positive_task_count": 3,
+          "task_count": 4
+        },
+        "weak_candidate_only": {
+          "added_false_span": null,
+          "added_gold_span": null,
+          "availability": "missing_outcomes",
+          "cost_available_count": 0,
+          "cost_missing_count": 4,
+          "false_per_gold": null,
+          "gold_per_false": null,
+          "mean_no_gold_false_primary_rate": null,
+          "mean_primary_false_positive_rate": null,
+          "mean_span_f0_5": null,
+          "net_span_value_1x": null,
+          "net_span_value_2x": null,
+          "no_gold_task_count": 1,
+          "outcome_missing_count": 4,
+          "outcome_present_count": 0,
+          "positive_task_count": 3,
+          "task_count": 4
+        }
+      },
+      "outcome_metrics_available": true
+    },
+    "policy_routes": {
+      "admission_v3_h4b": {
+        "action_counts": {
+          "admit_symbol_regex_union": 1,
+          "apply_llm_filter": 1,
+          "weak_candidate_only": 2
+        },
+        "action_span_cost": {
+          "admit_symbol_regex_union": {
+            "added_false_span": 0,
+            "added_gold_span": 1,
+            "availability": "available",
+            "cost_missing_count": 0,
+            "cost_present_count": 1,
+            "false_per_gold": 0.0,
+            "gold_per_false": null,
+            "net_span_value_1x": 1,
+            "net_span_value_2x": 1,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "apply_llm_filter": {
+            "added_false_span": 0,
+            "added_gold_span": 0,
+            "availability": "available",
+            "cost_missing_count": 0,
+            "cost_present_count": 1,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": 0,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "weak_candidate_only": {
+            "added_false_span": null,
+            "added_gold_span": null,
+            "availability": "missing_cost_fields",
+            "cost_missing_count": 2,
+            "cost_present_count": 0,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "net_span_value_1x": null,
+            "net_span_value_2x": null,
+            "no_gold_task_count": 1,
+            "outcome_missing_count": 2,
+            "outcome_present_count": 0,
+            "positive_task_count": 1,
+            "task_count": 2
+          }
+        },
+        "availability": "partial_missing_cost_fields",
+        "cost_fallback_rate": 0.5,
+        "outcome_fallback_rate": 0.5,
+        "selected_missing_cost_count": 2,
+        "selected_missing_outcome_count": 2,
+        "selected_task_count": 4,
+        "selected_with_cost_count": 2,
+        "selected_with_outcome_count": 2
+      },
+      "bucket_routed_v0": {
+        "action_counts": {
+          "llm_abstain_filter": 1,
+          "llm_filter": 1,
+          "llm_span_narrow": 2
+        },
+        "action_span_cost": {
+          "llm_abstain_filter": {
+            "added_false_span": null,
+            "added_gold_span": null,
+            "availability": "missing_cost_fields",
+            "cost_missing_count": 1,
+            "cost_present_count": 0,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "net_span_value_1x": null,
+            "net_span_value_2x": null,
+            "no_gold_task_count": 1,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 0,
+            "task_count": 1
+          },
+          "llm_filter": {
+            "added_false_span": 0,
+            "added_gold_span": 0,
+            "availability": "available",
+            "cost_missing_count": 0,
+            "cost_present_count": 1,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": 0,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "llm_span_narrow": {
+            "added_false_span": 2,
+            "added_gold_span": 2,
+            "availability": "available",
+            "cost_missing_count": 0,
+            "cost_present_count": 2,
+            "false_per_gold": 1.0,
+            "gold_per_false": 1.0,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": -2,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 2,
+            "positive_task_count": 2,
+            "task_count": 2
+          }
+        },
+        "availability": "partial_missing_cost_fields",
+        "cost_fallback_rate": 0.25,
+        "fixed_negative_strategy": "llm_abstain_filter",
+        "outcome_fallback_rate": 0.0,
+        "selected_missing_cost_count": 1,
+        "selected_missing_outcome_count": 0,
+        "selected_task_count": 4,
+        "selected_with_cost_count": 3,
+        "selected_with_outcome_count": 4
+      }
+    },
+    "public_bucket_breakdowns": {
+      "by_risk_tag": {
+        "ambiguous": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": null,
+            "added_gold_span": null,
+            "availability": "missing_outcomes",
+            "cost_available_count": 0,
+            "cost_missing_count": 1,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": null,
+            "mean_span_f0_5": null,
+            "net_span_value_1x": null,
+            "net_span_value_2x": null,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 1,
+            "outcome_present_count": 0,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "positive_task_count": 1,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            }
+          },
+          "task_count": 1
+        },
+        "high_confidence": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": 0,
+            "added_gold_span": 1,
+            "availability": "available",
+            "cost_available_count": 1,
+            "cost_missing_count": 0,
+            "false_per_gold": 0.0,
+            "gold_per_false": null,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.35,
+            "net_span_value_1x": 1,
+            "net_span_value_2x": 1,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "positive_task_count": 1,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              }
+            }
+          },
+          "task_count": 1
+        },
+        "negative": {
+          "no_gold_task_count": 1,
+          "outcome_cost": {
+            "added_false_span": 0,
+            "added_gold_span": 0,
+            "availability": "available",
+            "cost_available_count": 1,
+            "cost_missing_count": 0,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "mean_no_gold_false_primary_rate": 0.0,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.0,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": 0,
+            "no_gold_task_count": 1,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 0,
+            "task_count": 1
+          },
+          "positive_task_count": 0,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            }
+          },
+          "task_count": 1
+        },
+        "symbol_anchor": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": 1,
+            "added_gold_span": 1,
+            "availability": "available",
+            "cost_available_count": 1,
+            "cost_missing_count": 0,
+            "false_per_gold": 1.0,
+            "gold_per_false": 1.0,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.15,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": -1,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "positive_task_count": 1,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          },
+          "task_count": 1
+        }
+      },
+      "by_task_bucket": {
+        "ambiguous": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": null,
+            "added_gold_span": null,
+            "availability": "missing_outcomes",
+            "cost_available_count": 0,
+            "cost_missing_count": 1,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": null,
+            "mean_span_f0_5": null,
+            "net_span_value_1x": null,
+            "net_span_value_2x": null,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 1,
+            "outcome_present_count": 0,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "positive_task_count": 1,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            }
+          },
+          "task_count": 1
+        },
+        "negative": {
+          "no_gold_task_count": 1,
+          "outcome_cost": {
+            "added_false_span": 0,
+            "added_gold_span": 0,
+            "availability": "available",
+            "cost_available_count": 1,
+            "cost_missing_count": 0,
+            "false_per_gold": null,
+            "gold_per_false": null,
+            "mean_no_gold_false_primary_rate": 0.0,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.0,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": 0,
+            "no_gold_task_count": 1,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 0,
+            "task_count": 1
+          },
+          "positive_task_count": 0,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_span_reach": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              }
+            }
+          },
+          "task_count": 1
+        },
+        "positive": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": 1,
+            "added_gold_span": 2,
+            "availability": "available",
+            "cost_available_count": 2,
+            "cost_missing_count": 0,
+            "false_per_gold": 0.5,
+            "gold_per_false": 2.0,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.25,
+            "net_span_value_1x": 1,
+            "net_span_value_2x": 0,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 2,
+            "positive_task_count": 2,
+            "task_count": 2
+          },
+          "positive_task_count": 2,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              }
+            }
+          },
+          "task_count": 2
+        }
+      }
+    },
+    "reach_cost_map": {
+      "by_strategy": {
+        "candidate_baseline": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "llm_abstain_filter": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "llm_filter": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "llm_span_narrow": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "regex_primary": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 0,
+                "numerator": 0,
+                "rate": null
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "rrf_primary": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "symbol_primary": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "unique_gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        },
+        "symbol_regex_union": {
+          "availability": "available",
+          "by_k": {
+            "1": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "3": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "5": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "10": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "20": {
+              "candidate_absent_rate": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "gold_file_reach": {
+                "denominator": 2,
+                "numerator": 2,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 2,
+                "numerator": 1,
+                "rate": 0.5
+              },
+              "unique_gold_span_reach": {
+                "denominator": 2,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          }
+        }
+      },
+      "reach_metrics_available": true,
+      "strategy_availability": {
+        "candidate_baseline": "available",
+        "llm_abstain_filter": "available",
+        "llm_filter": "available",
+        "llm_span_narrow": "available",
+        "regex_primary": "available",
+        "rrf_primary": "available",
+        "symbol_primary": "available",
+        "symbol_regex_union": "available"
+      }
+    },
+    "subtype_breakdowns": {
+      "availability": "available",
+      "by_axis": {
+        "agreement_class": {
+          "single_source": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 1,
+              "added_gold_span": 1,
+              "availability": "available",
+              "cost_available_count": 1,
+              "cost_missing_count": 0,
+              "false_per_gold": 1.0,
+              "gold_per_false": 1.0,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.15,
+              "net_span_value_1x": 0,
+              "net_span_value_2x": -1,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 1,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "positive_task_count": 1,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                }
+              }
+            },
+            "task_count": 1
+          },
+          "span_overlap": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 0,
+              "added_gold_span": 1,
+              "availability": "available",
+              "cost_available_count": 1,
+              "cost_missing_count": 0,
+              "false_per_gold": 0.0,
+              "gold_per_false": null,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.35,
+              "net_span_value_1x": 1,
+              "net_span_value_2x": 1,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 1,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "positive_task_count": 1,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                }
+              }
+            },
+            "task_count": 1
+          }
+        },
+        "candidate_count_bin": {
+          "small": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 1,
+              "added_gold_span": 2,
+              "availability": "available",
+              "cost_available_count": 2,
+              "cost_missing_count": 0,
+              "false_per_gold": 0.5,
+              "gold_per_false": 2.0,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.25,
+              "net_span_value_1x": 1,
+              "net_span_value_2x": 0,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 2,
+              "positive_task_count": 2,
+              "task_count": 2
+            },
+            "positive_task_count": 2,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 2,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                },
+                "gold_file_reach": {
+                  "denominator": 2,
+                  "numerator": 2,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 2,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                },
+                "gold_file_reach": {
+                  "denominator": 2,
+                  "numerator": 2,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                }
+              }
+            },
+            "task_count": 2
+          }
+        },
+        "rank_bin": {
+          "top3": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 1,
+              "added_gold_span": 2,
+              "availability": "available",
+              "cost_available_count": 2,
+              "cost_missing_count": 0,
+              "false_per_gold": 0.5,
+              "gold_per_false": 2.0,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.25,
+              "net_span_value_1x": 1,
+              "net_span_value_2x": 0,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 2,
+              "positive_task_count": 2,
+              "task_count": 2
+            },
+            "positive_task_count": 2,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 2,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                },
+                "gold_file_reach": {
+                  "denominator": 2,
+                  "numerator": 2,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 2,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                },
+                "gold_file_reach": {
+                  "denominator": 2,
+                  "numerator": 2,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                }
+              }
+            },
+            "task_count": 2
+          }
+        },
+        "rrf_backing": {
+          "rrf_no": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 1,
+              "added_gold_span": 1,
+              "availability": "available",
+              "cost_available_count": 1,
+              "cost_missing_count": 0,
+              "false_per_gold": 1.0,
+              "gold_per_false": 1.0,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.15,
+              "net_span_value_1x": 0,
+              "net_span_value_2x": -1,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 1,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "positive_task_count": 1,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                }
+              }
+            },
+            "task_count": 1
+          },
+          "rrf_yes": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 0,
+              "added_gold_span": 1,
+              "availability": "available",
+              "cost_available_count": 1,
+              "cost_missing_count": 0,
+              "false_per_gold": 0.0,
+              "gold_per_false": null,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.35,
+              "net_span_value_1x": 1,
+              "net_span_value_2x": 1,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 1,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "positive_task_count": 1,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                }
+              }
+            },
+            "task_count": 1
+          }
+        },
+        "source_class": {
+          "symbol_only": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 1,
+              "added_gold_span": 1,
+              "availability": "available",
+              "cost_available_count": 1,
+              "cost_missing_count": 0,
+              "false_per_gold": 1.0,
+              "gold_per_false": 1.0,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.15,
+              "net_span_value_1x": 0,
+              "net_span_value_2x": -1,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 1,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "positive_task_count": 1,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                }
+              }
+            },
+            "task_count": 1
+          },
+          "symbol_regex_fusion": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 0,
+              "added_gold_span": 1,
+              "availability": "available",
+              "cost_available_count": 1,
+              "cost_missing_count": 0,
+              "false_per_gold": 0.0,
+              "gold_per_false": null,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.35,
+              "net_span_value_1x": 1,
+              "net_span_value_2x": 1,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 1,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "positive_task_count": 1,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 1,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "gold_file_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 1,
+                  "numerator": 1,
+                  "rate": 1.0
+                }
+              }
+            },
+            "task_count": 1
+          }
+        },
+        "span_width_bin": {
+          "short": {
+            "no_gold_task_count": 0,
+            "outcome_cost": {
+              "added_false_span": 1,
+              "added_gold_span": 2,
+              "availability": "available",
+              "cost_available_count": 2,
+              "cost_missing_count": 0,
+              "false_per_gold": 0.5,
+              "gold_per_false": 2.0,
+              "mean_no_gold_false_primary_rate": null,
+              "mean_primary_false_positive_rate": 0.0,
+              "mean_span_f0_5": 0.25,
+              "net_span_value_1x": 1,
+              "net_span_value_2x": 0,
+              "no_gold_task_count": 0,
+              "outcome_missing_count": 0,
+              "outcome_present_count": 2,
+              "positive_task_count": 2,
+              "task_count": 2
+            },
+            "positive_task_count": 2,
+            "reach_at_5": {
+              "candidate_baseline": {
+                "candidate_absent_rate": {
+                  "denominator": 2,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                },
+                "gold_file_reach": {
+                  "denominator": 2,
+                  "numerator": 2,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                }
+              },
+              "symbol_regex_union": {
+                "candidate_absent_rate": {
+                  "denominator": 2,
+                  "numerator": 0,
+                  "rate": 0.0
+                },
+                "file_right_span_wrong_rate": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                },
+                "gold_file_reach": {
+                  "denominator": 2,
+                  "numerator": 2,
+                  "rate": 1.0
+                },
+                "gold_span_reach": {
+                  "denominator": 2,
+                  "numerator": 1,
+                  "rate": 0.5
+                }
+              }
+            },
+            "task_count": 2
+          }
+        }
+      },
+      "by_subtype_combination": {
+        "symbol_only__single_source__rrf_no": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": 1,
+            "added_gold_span": 1,
+            "availability": "available",
+            "cost_available_count": 1,
+            "cost_missing_count": 0,
+            "false_per_gold": 1.0,
+            "gold_per_false": 1.0,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.15,
+            "net_span_value_1x": 0,
+            "net_span_value_2x": -1,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "positive_task_count": 1,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              }
+            }
+          },
+          "task_count": 1
+        },
+        "symbol_regex_fusion__span_overlap__rrf_yes": {
+          "no_gold_task_count": 0,
+          "outcome_cost": {
+            "added_false_span": 0,
+            "added_gold_span": 1,
+            "availability": "available",
+            "cost_available_count": 1,
+            "cost_missing_count": 0,
+            "false_per_gold": 0.0,
+            "gold_per_false": null,
+            "mean_no_gold_false_primary_rate": null,
+            "mean_primary_false_positive_rate": 0.0,
+            "mean_span_f0_5": 0.35,
+            "net_span_value_1x": 1,
+            "net_span_value_2x": 1,
+            "no_gold_task_count": 0,
+            "outcome_missing_count": 0,
+            "outcome_present_count": 1,
+            "positive_task_count": 1,
+            "task_count": 1
+          },
+          "positive_task_count": 1,
+          "reach_at_5": {
+            "candidate_baseline": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              }
+            },
+            "symbol_regex_union": {
+              "candidate_absent_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "file_right_span_wrong_rate": {
+                "denominator": 1,
+                "numerator": 0,
+                "rate": 0.0
+              },
+              "gold_file_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              },
+              "gold_span_reach": {
+                "denominator": 1,
+                "numerator": 1,
+                "rate": 1.0
+              }
+            }
+          },
+          "task_count": 1
+        }
+      },
+      "task_count_with_subtypes": 2
+    },
+    "unique_reach": {
+      "candidate_baseline": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "llm_abstain_filter": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": null
+      },
+      "llm_filter": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "llm_span_narrow": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "regex_primary": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": null
+      },
+      "rrf_primary": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "symbol_primary": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0
+        },
+        "unique_gold_span_reach": {
+          "denominator": 1,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      },
+      "symbol_regex_union": {
+        "availability": "available",
+        "gold_span_reach": {
+          "denominator": 2,
+          "numerator": 1,
+          "rate": 0.5
+        },
+        "unique_gold_span_reach": {
+          "denominator": 2,
+          "numerator": 0,
+          "rate": 0.0
+        },
+        "unique_span_reach_share": 0.0
+      }
+    }
+  },
+  "no_gold_task_count": 1,
+  "not_quality_evidence": true,
+  "outcome_metrics_available": true,
+  "outcome_strategies": [
+    "candidate_baseline",
+    "rrf_primary",
+    "symbol_primary",
+    "regex_primary",
+    "symbol_regex_union",
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter",
+    "supporting_only",
+    "weak_candidate_only"
+  ],
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 2,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 2,
+  "p33b_handoff_schema_version": "p33b-anchor-subtypes-v1",
+  "policy_route_availability": false,
+  "positive_task_count": 3,
+  "positive_with_gold_spans_count": 3,
+  "positive_with_pools_count": 2,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "provider_keys_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "reach_strategies": [
+    "candidate_baseline",
+    "rrf_primary",
+    "symbol_primary",
+    "regex_primary",
+    "symbol_regex_union",
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter"
+  ],
+  "real_evaluation": false,
+  "remote_calls_by_p46": 0,
+  "run_phase_public_only": true,
+  "schema_version": "p46-candidate-reach-cost-map-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "stage": "P46 Candidate Reach \u00d7 Cost / Candidate-to-Evidence Materialization Gate",
+  "status": "self_test_only",
+  "status_reason": null,
+  "subtype_breakdown_availability": "available",
+  "task_count": 4,
+  "transformed_strategies": [
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter",
+    "symbol_regex_union",
+    "rrf_primary",
+    "bucket_routed_v0",
+    "admission_v3_h4b"
+  ],
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
