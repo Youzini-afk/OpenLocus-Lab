@@ -1,0 +1,459 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "partial",
+  "conclusion": [
+    "Self-test-only materialization prerequisite diagnosed 11 synthetic candidates across 5 tasks; this is not quality evidence.",
+    "P52A reads local source files only for bounded aggregate materialization diagnostics. Raw source text, snippets, digests, paths, and spans are not stored.",
+    "Source read is not Evidence; materialized candidate is not Evidence; P52A does not validate EvidenceCore and does not produce verifier pass/fail or default/promotion claims.",
+    "Source-read availability: `partial`; materialization prerequisite availability: `partial`."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 1,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-15T18:38:59.288011+00:00",
+  "generated_by": "eval/p52a_source_materialization_prerequisite.py",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "llm_calls_by_p52a": 0,
+  "materialization_prerequisite_availability": "partial",
+  "materialized_candidate_not_evidence": true,
+  "metrics": {
+    "breakdowns": {
+      "by_agreement_class": {
+        "other": {
+          "candidate_count": 8,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.25,
+          "source_read_success_rate": 0.625
+        },
+        "single_source": {
+          "candidate_count": 2,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        },
+        "span_overlap": {
+          "candidate_count": 1,
+          "digest_match_rate": 1.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        }
+      },
+      "by_candidate_strategy": {
+        "candidate_baseline": {
+          "candidate_count": 10,
+          "digest_match_rate": 0.1,
+          "range_valid_rate": 0.4,
+          "source_read_success_rate": 0.7
+        },
+        "symbol_regex_union": {
+          "candidate_count": 1,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        }
+      },
+      "by_language": {
+        "python": {
+          "candidate_count": 8,
+          "digest_match_rate": 0.125,
+          "range_valid_rate": 0.625,
+          "source_read_success_rate": 1.0
+        },
+        "unknown": {
+          "candidate_count": 3,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.0,
+          "source_read_success_rate": 0.0
+        }
+      },
+      "by_path_kind": {
+        "doc": {
+          "candidate_count": 1,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.0,
+          "source_read_success_rate": 0.0
+        },
+        "source": {
+          "candidate_count": 10,
+          "digest_match_rate": 0.1,
+          "range_valid_rate": 0.5,
+          "source_read_success_rate": 0.8
+        }
+      },
+      "by_public_bucket": {
+        "ambiguous": {
+          "candidate_count": 7,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.142857,
+          "source_read_success_rate": 0.571429
+        },
+        "negative": {
+          "candidate_count": 1,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        },
+        "positive": {
+          "candidate_count": 3,
+          "digest_match_rate": 0.333333,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        }
+      },
+      "by_public_risk_tag": {
+        "ambiguous": {
+          "candidate_count": 7,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.142857,
+          "source_read_success_rate": 0.571429
+        },
+        "high_confidence": {
+          "candidate_count": 1,
+          "digest_match_rate": 1.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        },
+        "negative": {
+          "candidate_count": 1,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        },
+        "symbol_anchor": {
+          "candidate_count": 2,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        }
+      },
+      "by_rrf_backing": {
+        "rrf_no": {
+          "candidate_count": 9,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.333333,
+          "source_read_success_rate": 0.666667
+        },
+        "rrf_yes": {
+          "candidate_count": 2,
+          "digest_match_rate": 0.5,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        }
+      },
+      "by_source_class": {
+        "other": {
+          "candidate_count": 8,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 0.25,
+          "source_read_success_rate": 0.625
+        },
+        "symbol_only": {
+          "candidate_count": 2,
+          "digest_match_rate": 0.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        },
+        "symbol_regex_fusion": {
+          "candidate_count": 1,
+          "digest_match_rate": 1.0,
+          "range_valid_rate": 1.0,
+          "source_read_success_rate": 1.0
+        }
+      }
+    },
+    "pack_materialization_metrics": {
+      "by_pack_strategy": {
+        "anchor_contrast_pack_v0": {
+          "pack_denominator": 4,
+          "packs_requiring_source_for_comment_or_signature_count": 3,
+          "packs_requiring_source_for_comment_or_signature_rate": 0.75,
+          "packs_with_all_candidates_resolved_count": 3,
+          "packs_with_all_candidates_resolved_rate": 0.75,
+          "packs_with_any_invalid_range_count": 1,
+          "packs_with_any_invalid_range_rate": 0.25,
+          "packs_with_any_stale_digest_count": 1,
+          "packs_with_any_stale_digest_rate": 0.25,
+          "packs_with_materialization_prerequisite_available_count": 2,
+          "packs_with_materialization_prerequisite_available_rate": 0.5
+        },
+        "conservative_anchor_pack_v0": {
+          "pack_denominator": 4,
+          "packs_requiring_source_for_comment_or_signature_count": 3,
+          "packs_requiring_source_for_comment_or_signature_rate": 0.75,
+          "packs_with_all_candidates_resolved_count": 3,
+          "packs_with_all_candidates_resolved_rate": 0.75,
+          "packs_with_any_invalid_range_count": 1,
+          "packs_with_any_invalid_range_rate": 0.25,
+          "packs_with_any_stale_digest_count": 1,
+          "packs_with_any_stale_digest_rate": 0.25,
+          "packs_with_materialization_prerequisite_available_count": 2,
+          "packs_with_materialization_prerequisite_available_rate": 0.5
+        },
+        "topk_flat_pack_v0": {
+          "pack_denominator": 4,
+          "packs_requiring_source_for_comment_or_signature_count": 3,
+          "packs_requiring_source_for_comment_or_signature_rate": 0.75,
+          "packs_with_all_candidates_resolved_count": 3,
+          "packs_with_all_candidates_resolved_rate": 0.75,
+          "packs_with_any_invalid_range_count": 1,
+          "packs_with_any_invalid_range_rate": 0.25,
+          "packs_with_any_stale_digest_count": 1,
+          "packs_with_any_stale_digest_rate": 0.25,
+          "packs_with_materialization_prerequisite_available_count": 2,
+          "packs_with_materialization_prerequisite_available_rate": 0.5
+        }
+      },
+      "task_wide": {
+        "pack_denominator": 12,
+        "packs_requiring_source_for_comment_or_signature_count": 9,
+        "packs_requiring_source_for_comment_or_signature_rate": 0.75,
+        "packs_with_all_candidates_resolved_count": 9,
+        "packs_with_all_candidates_resolved_rate": 0.75,
+        "packs_with_any_invalid_range_count": 3,
+        "packs_with_any_invalid_range_rate": 0.25,
+        "packs_with_any_stale_digest_count": 3,
+        "packs_with_any_stale_digest_rate": 0.25,
+        "packs_with_materialization_prerequisite_available_count": 6,
+        "packs_with_materialization_prerequisite_available_rate": 0.5
+      }
+    },
+    "score_phase_diagnostic_correlation": {
+      "file_right_span_wrong_when_range_valid_count": 2,
+      "file_right_span_wrong_when_range_valid_rate": 0.666667,
+      "gold_file_readable_count": 2,
+      "gold_file_readable_rate": 0.666667,
+      "gold_span_materialization_prerequisite_count": 1,
+      "gold_span_materialization_prerequisite_rate": 0.333333,
+      "gold_span_range_valid_count": 1,
+      "gold_span_range_valid_rate": 0.333333,
+      "no_gold_range_valid_candidate_count": 2,
+      "no_gold_range_valid_candidate_rate": 1.0,
+      "no_gold_readable_candidate_count": 2,
+      "no_gold_readable_candidate_rate": 1.0,
+      "not_used_for_materialization_decision": true
+    },
+    "source_materialization_metrics": {
+      "candidate_binary_or_decode_reject_count": 0,
+      "candidate_binary_or_decode_reject_rate": 0.0,
+      "candidate_denominator": 11,
+      "candidate_digest_match_count": 1,
+      "candidate_digest_match_rate": 0.090909,
+      "candidate_digest_mismatch_count": 2,
+      "candidate_digest_mismatch_rate": 0.181818,
+      "candidate_digest_present_count": 3,
+      "candidate_digest_present_rate": 0.272727,
+      "candidate_digest_semantics": "diagnostic_only_not_evidencecore_validation",
+      "candidate_digest_unavailable_count": 8,
+      "candidate_digest_unavailable_rate": 0.727273,
+      "candidate_file_escape_reject_count": 0,
+      "candidate_file_escape_reject_rate": 0.0,
+      "candidate_file_too_large_count": 0,
+      "candidate_file_too_large_rate": 0.0,
+      "candidate_invalid_path_count": 2,
+      "candidate_invalid_path_rate": 0.181818,
+      "candidate_missing_file_count": 1,
+      "candidate_missing_file_rate": 0.090909,
+      "candidate_path_resolved_to_file_count": 8,
+      "candidate_path_resolved_to_file_rate": 0.727273,
+      "candidate_secret_reject_count": 1,
+      "candidate_secret_reject_rate": 0.090909,
+      "content_digest_computable_count": 3,
+      "content_digest_computable_rate": 0.272727,
+      "file_line_count_computable_count": 8,
+      "file_line_count_computable_rate": 0.727273,
+      "line_range_clamped_availability": "not_performed_no_silent_clamp",
+      "line_range_clamped_count": null,
+      "line_range_invalid_end_count": 0,
+      "line_range_invalid_end_rate": 0.0,
+      "line_range_invalid_start_count": 1,
+      "line_range_invalid_start_rate": 0.090909,
+      "line_range_out_of_bounds_count": 1,
+      "line_range_out_of_bounds_rate": 0.090909,
+      "line_range_present_count": 8,
+      "line_range_present_rate": 0.727273,
+      "line_range_reversed_count": 1,
+      "line_range_reversed_rate": 0.090909,
+      "line_range_valid_count": 5,
+      "line_range_valid_rate": 0.454545,
+      "repo_resolution_rate": 0.727273,
+      "source_read_attempt_count": 11,
+      "source_read_budget_exceeded_count": 0,
+      "source_read_budget_exceeded_rate": 0.0,
+      "source_read_success_count": 8,
+      "source_read_success_rate": 0.727273,
+      "source_root_unavailable_count": 0,
+      "source_root_unavailable_rate": 0.0,
+      "span_width_after_read_mean": 5.4,
+      "span_width_after_read_p95": 6.0,
+      "span_width_over_cap_count": 0,
+      "span_width_over_cap_rate": 0.0
+    },
+    "source_required_verifier_availability": {
+      "ast_node_kind": {
+        "availability": "unavailable_ast_parser_not_wired",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "comment_only_flag": {
+        "availability": "partial_heuristic_line_prefix_only",
+        "checkable_count": 5,
+        "checkable_rate": 0.454545,
+        "heuristic_positive_count": 0,
+        "heuristic_positive_rate": 0.0
+      },
+      "content_digest_verified": {
+        "availability": "available_if_candidate_digest_present",
+        "checkable_count": 3,
+        "checkable_rate": 0.272727,
+        "match_count": 1,
+        "match_rate": 0.090909,
+        "mismatch_count": 2,
+        "mismatch_rate": 0.181818
+      },
+      "exact_identifier_in_span": {
+        "availability": "unavailable_raw_query_not_public",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "identifier_density": {
+        "availability": "unavailable_parser_not_wired",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "import_only_flag": {
+        "availability": "unavailable_parser_not_wired",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "intent_identifier_match": {
+        "availability": "unavailable_raw_query_not_public",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "line_range_verified_against_current_file": {
+        "availability": "available",
+        "checkable_count": 5,
+        "checkable_rate": 0.454545
+      },
+      "query_terms_in_span": {
+        "availability": "unavailable_raw_query_not_public",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "signature_like_line_heuristic": {
+        "availability": "partial_heuristic_regex_only",
+        "checkable_count": 5,
+        "checkable_rate": 0.454545,
+        "heuristic_positive_count": 3,
+        "heuristic_positive_rate": 0.272727
+      },
+      "signature_match": {
+        "availability": "unavailable_parser_not_wired",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "source_text_span_width_verified": {
+        "availability": "available",
+        "checkable_count": 5,
+        "checkable_rate": 0.454545
+      },
+      "term_density": {
+        "availability": "unavailable_raw_query_not_public",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      },
+      "test_assertion_context": {
+        "availability": "unavailable_parser_not_wired",
+        "checkable_count": null,
+        "checkable_rate": null,
+        "null_count": 11,
+        "null_rate": 1.0,
+        "value": null
+      }
+    }
+  },
+  "no_gold_task_count": 2,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 2,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 2,
+  "p48_quality_gate_status": "not_provided",
+  "p48_report_source": "not_provided",
+  "p49_quality_gate_status": "not_provided",
+  "p49_report_source": "not_provided",
+  "p50_quality_gate_status": "not_provided",
+  "p50_report_source": "not_provided",
+  "p52_quality_gate_status": "not_provided",
+  "p52_report_source": "not_provided",
+  "positive_task_count": 3,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p52a": false,
+  "provider_keys_in_artifact": false,
+  "raw_candidate_paths_in_artifact": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_queries_in_artifact": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p52a": 0,
+  "repo_lock_source": "provided",
+  "repo_resolution_availability": "available",
+  "schema_version": "p52a-source-materialization-prerequisite-v1",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "source_read_availability": "partial",
+  "source_read_not_evidence": true,
+  "source_reads_attempted_by_p52a": true,
+  "source_reads_bounded_by_p52a": true,
+  "source_root_availability": "provided",
+  "source_root_source": "provided",
+  "stage": "P52A Source Materialization / Local Verifier Prerequisite",
+  "status": "self_test_only",
+  "status_reason": null,
+  "task_count": 5,
+  "validation": {
+    "forbidden_key_scan_ok": true
+  },
+  "verifier_not_evidence": true
+}

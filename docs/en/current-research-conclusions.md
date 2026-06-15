@@ -6,6 +6,10 @@ Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large
 
 Status: Research summary, not a promotion request.
 
+## P52A Source Materialization / Local Verifier Prerequisite
+
+P52A reads local source files only for bounded aggregate materialization prerequisite diagnostics. It stores no raw source, snippets, digests, paths, or spans. Source read is not Evidence, and materialized candidate is not Evidence. P52A does not validate EvidenceCore and does not produce verifier pass/fail or default/promotion claims. See the [P52A detailed report](p52a-source-materialization-prerequisite.md).
+
 ---
 
 ## 0. Executive Research Thesis
