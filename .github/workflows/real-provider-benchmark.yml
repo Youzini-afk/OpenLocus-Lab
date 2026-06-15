@@ -570,6 +570,8 @@ jobs:
              python3 eval/p52c_local_verifier_scoring_simulator.py --input "$P25_RECORDS" --repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --out artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --doc docs/real-provider-ci/p52c-local-verifier-scoring-simulator.md
              # P51 LLM Span Narrow 2.0 / Candidate Filter Diagnostic: deterministic first-tranche scaffold, no LLM calls.
              python3 eval/p51_llm_span_narrow_2_diagnostic.py --input "$P25_RECORDS" --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --out artifacts/real_provider_ci/p51_llm_span_narrow_2_diagnostic_report.json --doc docs/real-provider-ci/p51-llm-span-narrow-2-diagnostic.md
+             # P51-B LLM Opt-In Contract / Dry-Run Payload Validator: deterministic opt-in contract and schema dry-run, no provider calls.
+             python3 eval/p51b_llm_opt_in_contract.py --input "$P25_RECORDS" --p51-report artifacts/real_provider_ci/p51_llm_span_narrow_2_diagnostic_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --out artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --doc docs/real-provider-ci/p51b-llm-opt-in-contract.md
              rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
@@ -1303,7 +1305,61 @@ jobs:
                       er = data.get("metrics", {}).get("existing_role_replay", {})
                       if (pb.get("prompt_blueprint_count") or 0) <= 0 and er.get("existing_role_output_availability") != "available":
                           raise SystemExit(f"{json_path} must produce prompt blueprints or available existing role outputs under p21_llm_rich")
-              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json"}:
+              if json_path.name == "p51b_llm_opt_in_contract_report.json":
+                  if data.get("status") not in {"ok", "self_test_only"}:
+                      raise SystemExit(f"{json_path} status is not ok")
+                  if data.get("remote_calls_by_p51b") != 0:
+                      raise SystemExit(f"{json_path} should not make external calls")
+                  if data.get("llm_calls_by_p51b") != 0:
+                      raise SystemExit(f"{json_path} should not call an LLM")
+                  if data.get("remote_requests_by_p51b") != 0:
+                      raise SystemExit(f"{json_path} should not send remote requests")
+                  if data.get("prompt_construction_by_p51b") is not False:
+                      raise SystemExit(f"{json_path} must keep prompt_construction_by_p51b=false")
+                  if data.get("dry_run_payload_validation_only") is not True:
+                      raise SystemExit(f"{json_path} must keep dry_run_payload_validation_only=true")
+                  if data.get("p51b_live_calls_disabled") is not True:
+                      raise SystemExit(f"{json_path} must keep p51b_live_calls_disabled=true")
+                  if data.get("candidate_not_fact") is not True:
+                      raise SystemExit(f"{json_path} must keep candidate_not_fact=true")
+                  if data.get("llm_output_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep llm_output_not_evidence=true")
+                  if data.get("contract_not_quality_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep contract_not_quality_evidence=true")
+                  if data.get("promotion_ready") is not False or data.get("default_should_change") is not False:
+                      raise SystemExit(f"{json_path} must not claim promotion/default change")
+                  if data.get("evidencecore_semantics_changed") is not False:
+                      raise SystemExit(f"{json_path} must not claim EvidenceCore semantics changed")
+                  if data.get("score_phase_only_metrics") is not True:
+                      raise SystemExit(f"{json_path} must set score_phase_only_metrics=true")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must set aggregate_only_public_artifact=true")
+                  if "tasks" in data or "records" in data or "per_task_results" in data or "decision_records" in data:
+                      raise SystemExit(f"{json_path} contains per-task public rows")
+                  cs = data.get("metrics", {}).get("eligibility", {})
+                  if (cs.get("candidate_denominator") or 0) <= 0:
+                      raise SystemExit(f"{json_path} eligibility candidate_denominator must be positive")
+                  pb = data.get("metrics", {}).get("request_envelope_blueprint", {})
+                  if (pb.get("request_envelope_blueprint_count") or 0) <= 0:
+                      raise SystemExit(f"{json_path} request_envelope_blueprint_count must be positive")
+                  rs = data.get("metrics", {}).get("role_output_schema_validation", {})
+                  if rs.get("role_output_schema_valid_rate") != 1.0:
+                      raise SystemExit(f"{json_path} role_output_schema_valid_rate must equal 1.0")
+                  if (rs.get("role_output_schema_invalid_reject_count") or 0) <= 0:
+                      raise SystemExit(f"{json_path} role_output_schema_invalid_reject_count must be positive")
+                  if os.environ.get("STAGE") == "p21_llm_rich":
+                      if data.get("candidate_pool_availability") == "missing_candidate_pool":
+                          raise SystemExit(f"{json_path} candidate pool is missing under p21_llm_rich")
+                      if os.environ.get("DATASET") == "ci_smoke":
+                          p52c_avail = data.get("p52c_score_availability") or "not_provided"
+                          if p52c_avail in {"available_source_backed", "partial_source_backed"}:
+                              if data.get("source_backed_live_eligibility_available") is not True:
+                                  raise SystemExit(f"{json_path} source_backed_live_eligibility_available must be true when P52C source-backed availability is present")
+                          else:
+                              non_source_backed = {"partial_metadata_only", "unavailable_missing_candidate_pool", "unavailable_missing_upstream_contract"}
+                              if cs.get("eligibility_availability") not in non_source_backed:
+                                  raise SystemExit(f"{json_path} eligibility_availability must be a non-source-backed enum when P52C source-backed availability is absent")
+              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json"}:
 
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
                       if data.get(flag) is not False:

@@ -22,6 +22,11 @@ P52C is a deterministic, gold-free diagnostic scoring simulator over P52B/P52A/P
 
 P51 first tranche is a deterministic, no-LLM, no-remote, no-prompt-construction diagnostic scaffold. It selects candidate pools for a future span-narrow/filter/abstain phase using aggregate metadata, public task bucket/risk tags, and P49 contrast-pack feasibility only; P47/P48 RMC overlay availability is reported separately. It publishes prompt-blueprint metadata (pack shapes, source-line/context-char budgets, strategy/path-kind/risk-bucket mixes) and never constructs raw prompts. Existing P21 role outcomes are replayed only after selection and only when present; missing outcomes are reported as unavailable. P51 does not create Evidence, validate EvidenceCore, admit candidates, or change defaults. See the [P51 detailed report](p51-llm-span-narrow-2-diagnostic.md).
 
+## P51-B LLM Opt-In Contract / Dry-Run Payload Validator
+
+P51-B defines and dry-validates a future live LLM opt-in contract without provider calls, prompt construction, or persistent raw payloads.
+ It computes aggregate eligibility and request-envelope blueprint metadata from P51 selection, P49 candidate metadata, and P52C source-backed availability, and validates synthetic role-output schemas fail-closed (`not_evidence=true`, role enum, no unknown fields, bounded candidate ref/line delta). Public artifacts contain no prompts, responses, snippets, source text, queries, paths, spans, digests, providers, models, or keys. `remote_calls_by_p51b=0`, `llm_calls_by_p51b=0`, `provider_requests_by_p51b=0`, `prompt_construction_by_p51b=false`, `dry_run_payload_validation_only=true`. It is not Evidence, not quality evidence, and not a live/default/promotion gate. See the [P51-B detailed report](p51b-llm-opt-in-contract.md).
+
 ---
 
 ## 0. Executive Research Thesis
