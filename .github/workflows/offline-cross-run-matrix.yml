@@ -1,0 +1,52 @@
+name: P63 Offline Cross-Run Matrix Collector v0
+
+on:
+  workflow_dispatch:
+    inputs:
+      slice_root_dir:
+        description: "Optional local parent directory of already-downloaded slice artifact directories (absolute or repo-relative)."
+        required: false
+        default: ""
+      self_test:
+        description: "Run deterministic self-test only (no external inputs)."
+        required: false
+        default: "true"
+
+permissions:
+  contents: read
+
+jobs:
+  p63-offline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile P63
+        run: python3 -m py_compile eval/p63_cross_run_slice_collector.py
+
+      - name: Run P63 self-test
+        if: ${{ github.event.inputs.self_test == 'true' || github.event.inputs.slice_root_dir == '' }}
+        run: python3 eval/p63_cross_run_slice_collector.py --self-test
+
+      - name: Run P63 on local slice directory (if provided)
+        if: ${{ github.event.inputs.slice_root_dir != '' }}
+        run: |
+          ROOT="${{ github.event.inputs.slice_root_dir }}"
+          # Reject absolute paths outside the workspace; only repo-relative or /tmp are allowed.
+          case "$ROOT" in
+            /*)
+              if [ "$ROOT" != "/tmp" ] && [ "${ROOT#/tmp/}" = "$ROOT" ]; then
+                echo "Only repo-relative paths or /tmp subdirectories are allowed for local slice root."
+                exit 1
+              fi
+              ;;
+          esac
+          python3 eval/p63_cross_run_slice_collector.py --slice-root-dir "$ROOT"

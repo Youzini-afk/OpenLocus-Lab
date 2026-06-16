@@ -39,6 +39,7 @@ P46 reach/cost map
 -> P60 RMC policy v2 v0 comparison matrix
 -> P61 pre-spend gate v0
 -> P62 generalization matrix aggregator v0
+-> P63 cross-run slice collector / matrix runner v0
 ```
 
 Key current conclusions:
@@ -56,6 +57,7 @@ P59 adds a deterministic pre-spend diagnostic that rebuilds P49 packs and measur
 P60 adds a deterministic RMC policy comparison matrix that selects only the next diagnostic action; it reports aggregate routing counts and SCORE-phase gold-reach/false-cost diagnostics, but is not evidence, not admission, and does not select a winner or recommend a default.
 P61 adds a deterministic aggregate-only pre-spend readiness gate that reports whether a future P51-C live LLM micro-run is worth considering; it is not authorization, not Evidence, and not default/promotion/live readiness.
 P62 adds a deterministic aggregate-only generalization matrix aggregator that combines sanitized multi-slice aggregate report sets; it deduplicates identical signatures internally, publishes only counts, and is not quality evidence, not repo/dataset identity proof, and not default/promotion/live readiness.
+P63 adds a deterministic offline aggregate-only cross-run slice collector and orchestrator that validates local artifact directories and runs P62 -> P57 -> P61; it does not fetch artifacts, call providers, or expose identities, and is not a fetcher, not quality evidence, not provider spend authorization, not repo/dataset diversity proof, and not default/promotion/live readiness.
 promotion_ready=false and default_should_change=false.
 EvidenceCore semantics are unchanged.
 ```
@@ -66,6 +68,7 @@ Recent validation completed after P52C/P51-B/P61:
 local deterministic regression: passed
 p61 self_test: passed
 p62 self_test: passed
+p63 self_test: passed
 p21_llm_rich self_test CI: 27601393249 green
 p21_llm_rich ci_smoke CI: 27601488191 green
 p21_llm_rich ci_smoke repo_id=js_express: 27601639934 green
@@ -81,6 +84,7 @@ Current detailed reports added in this phase:
 
 - [`p61-pre-spend-gate.md`](p61-pre-spend-gate.md)
 - [`p62-generalization-matrix-aggregator.md`](p62-generalization-matrix-aggregator.md)
+- [`p63-cross-run-slice-collector.md`](p63-cross-run-slice-collector.md)
 - [`p60-rmc-policy-v2.md`](p60-rmc-policy-v2.md)
 - [`p59-contrastive-pack-coverage-counterfactual.md`](p59-contrastive-pack-coverage-counterfactual.md)
 - [`p58-source-backed-verifier-calibration.md`](p58-source-backed-verifier-calibration.md)
