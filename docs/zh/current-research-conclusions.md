@@ -1,6 +1,6 @@
 # OpenLocus 当前研究结论
 
-日期：2026-06-13
+日期：2026-06-16
 
 范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试、P20-LS/P20-LS-A 低上下文 LLM query-alias 结果，以及 P21-G 跨模型上下文注入研究转向。
 

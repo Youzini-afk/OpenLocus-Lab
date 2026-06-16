@@ -12,6 +12,72 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## Current status update — 2026-06-16
+
+OpenLocus is now in the **Candidate-to-Evidence Conversion** phase. The current
+research question is no longer which retrieval channel is globally strongest;
+it is how to convert high-reach, high-false-cost candidate pools into low
+false-cost, citation-valid Evidence without weakening `EvidenceCore`.
+
+The latest completed chain is:
+
+```text
+P46 reach/cost map
+-> P47 request_more_context geometry diagnostic
+-> P50 fixed-suite / anti-overfit gate
+-> P48 request_more_context overlay simulator
+-> P49 contrastive candidate pack scaffold
+-> P52 metadata-only local verifier scaffold
+-> P52A source materialization prerequisite
+-> P52B source-backed local verifier feature matrix
+-> P51 deterministic LLM span-narrow scaffold
+-> P52C diagnostic local-verifier scoring simulator
+-> P51-B LLM opt-in contract / dry-run payload validator
+```
+
+Key current conclusions:
+
+```text
+P25 bucket_routed_v0 remains the strongest reference policy.
+symbol_regex_union remains the main candidate-reach lever, not a primary admission rule.
+request_more_context is now a first-class diagnostic action, not Evidence.
+P52A/P52B establish bounded local source materialization and source-shape diagnostics.
+P52C adds fixed gold-free diagnostic score buckets, not verifier pass/fail.
+P51/P51-B define future LLM span-narrow/filter entry points, but still no live LLM calls.
+promotion_ready=false and default_should_change=false.
+EvidenceCore semantics are unchanged.
+```
+
+Recent validation completed after P52C/P51-B:
+
+```text
+local deterministic regression: passed
+p21_llm_rich self_test CI: 27601393249 green
+p21_llm_rich ci_smoke CI: 27601488191 green
+p21_llm_rich ci_smoke repo_id=js_express: 27601639934 green
+```
+
+The validation covered the deterministic P52C/P51-B self-tests, docs i18n mirror,
+workflow Python heredoc compilation, diff checks, artifact privacy gates,
+self-test no-source-root behavior, default `ci_smoke` source-backed behavior, and
+a small `js_express` cross-repo slice. It did **not** run the full nightly/weekly
+matrix, full repo-language generalization, or a live P51-C LLM opt-in call.
+
+Current detailed reports added in this phase:
+
+- [`p52c-local-verifier-scoring-simulator.md`](p52c-local-verifier-scoring-simulator.md)
+- [`p51b-llm-opt-in-contract.md`](p51b-llm-opt-in-contract.md)
+- [`p51-llm-span-narrow-2-diagnostic.md`](p51-llm-span-narrow-2-diagnostic.md)
+- [`p52b-source-backed-local-verifier-feature-matrix.md`](p52b-source-backed-local-verifier-feature-matrix.md)
+- [`p52a-source-materialization-prerequisite.md`](p52a-source-materialization-prerequisite.md)
+
+Recommended next step: prefer P57/P50-generalization before opening a true
+P51-C live LLM micro-run. The current scaffolds are mechanically green, but they
+remain diagnostic-only and should be pressured on more repo/language slices
+before any live-call expansion or policy claim.
+
+---
+
 ## Current status update — 2026-06-13
 
 The research program has moved beyond the original local-only benchmark stages

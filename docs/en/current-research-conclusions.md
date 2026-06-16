@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions
 
-Date: 2026-06-13
+Date: 2026-06-16
 
 Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, P20-LS/P20-LS-A low-context LLM query-alias results, and the P21-G cross-model context-injection pivot.
 
@@ -25,7 +25,7 @@ P51 first tranche is a deterministic, no-LLM, no-remote, no-prompt-construction 
 ## P51-B LLM Opt-In Contract / Dry-Run Payload Validator
 
 P51-B defines and dry-validates a future live LLM opt-in contract without provider calls, prompt construction, or persistent raw payloads.
- It computes aggregate eligibility and request-envelope blueprint metadata from P51 selection, P49 candidate metadata, and P52C source-backed availability, and validates synthetic role-output schemas fail-closed (`not_evidence=true`, role enum, no unknown fields, bounded candidate ref/line delta). Public artifacts contain no prompts, responses, snippets, source text, queries, paths, spans, digests, providers, models, or keys. `remote_calls_by_p51b=0`, `llm_calls_by_p51b=0`, `provider_requests_by_p51b=0`, `prompt_construction_by_p51b=false`, `dry_run_payload_validation_only=true`. It is not Evidence, not quality evidence, and not a live/default/promotion gate. See the [P51-B detailed report](p51b-llm-opt-in-contract.md).
+ It computes aggregate eligibility and request-envelope blueprint metadata from P51 selection, P49 candidate metadata, and P52C source-backed availability, and validates synthetic role-output schemas fail-closed (`not_evidence=true`, role enum, no unknown fields, bounded candidate ref/line delta). Public artifacts contain no prompts, responses, snippets, source text, queries, paths, spans, digests, providers, models, or keys. `remote_calls_by_p51b=0`, `llm_calls_by_p51b=0`, `remote_requests_by_p51b=0`, `prompt_construction_by_p51b=false`, `dry_run_payload_validation_only=true`. It is not Evidence, not quality evidence, and not a live/default/promotion gate. See the [P51-B detailed report](p51b-llm-opt-in-contract.md).
 
 ---
 
