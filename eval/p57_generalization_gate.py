@@ -608,13 +608,35 @@ def _slice_task_counts(slice_map: dict[str, dict[str, Any] | None]) -> dict[str,
     counts: list[int] = []
     positives: list[int] = []
     no_golds: list[int] = []
+
+    def report_task_counts(data: dict[str, Any]) -> tuple[int | None, int | None, int | None]:
+        """Return aggregate task counts without reading private task/label data.
+
+        Most phases publish top-level task counts. P50 predates that convention
+        and publishes the same aggregate counts under `suite_composition`; keep
+        accepting that sanitized aggregate shape so cross-run matrices do not
+        collapse only because a required health gate reports counts one level
+        down.
+        """
+        tc = _as_int(data.get("task_count"))
+        pc = _as_int(data.get("positive_task_count"))
+        ng = _as_int(data.get("no_gold_task_count"))
+        if tc is not None:
+            return tc, pc, ng
+        suite = data.get("suite_composition")
+        if isinstance(suite, dict):
+            return (
+                _as_int(suite.get("task_count")),
+                _as_int(suite.get("positive_task_count")),
+                _as_int(suite.get("no_gold_task_count")),
+            )
+        return None, None, None
+
     for phase in REQUIRED_PHASES:
         data = slice_map.get(phase)
         if not data or data.get("_invalid_json"):
             return {"task_count": None, "positive_task_count": None, "no_gold_task_count": None}
-        tc = _as_int(data.get("task_count"))
-        pc = _as_int(data.get("positive_task_count"))
-        ng = _as_int(data.get("no_gold_task_count"))
+        tc, pc, ng = report_task_counts(data)
         if tc is None or tc <= 0:
             return {"task_count": None, "positive_task_count": None, "no_gold_task_count": None}
         counts.append(tc)
@@ -1038,7 +1060,7 @@ def build_markdown(report: dict[str, Any]) -> str:
         "## Methodology",
         "",
         "- Accept upstream aggregate report paths (P46, P47, P48, P49, P50, P52, P52A, P52B, P52C, optional P51, required P51B).",
-        "- Read only top-level aggregate fields (status, task_count, safety flags).",
+        "- Read only sanitized aggregate fields (status, top-level task counts/safety flags, plus P50's aggregate `suite_composition` count fallback).",
         "- Verify upstream safety flags: no promotion/default claims, `candidate_not_fact=true`, aggregate-only artifacts, remote/LLM counters at zero for deterministic phases, and bounded source reads only for P52A/B/C.",
         "- Require at least 4 non-self-test slices with all required reports and at least 6 tasks per slice, plus both positive and no-gold coverage.",
         "- For the current single-slice/self-test workflow, report `insufficient_matrix` by design.",

@@ -1,7 +1,7 @@
 # P57 Generalization Gate v0
 
 - Schema: `p57-generalization-gate-v0`
-- Generated: 2026-06-16T08:22:07.509650+00:00
+- Generated: 2026-06-16T18:05:10.764255+00:00
 - Status: `insufficient_matrix`
 - Self-test: True
 - Remote calls by P57: 0
@@ -22,7 +22,7 @@ It consumes only aggregate upstream JSON and emits only aggregate counts and sta
 ## Methodology
 
 - Accept upstream aggregate report paths (P46, P47, P48, P49, P50, P52, P52A, P52B, P52C, optional P51, required P51B).
-- Read only top-level aggregate fields (status, task_count, safety flags).
+- Read only sanitized aggregate fields (status, top-level task counts/safety flags, plus P50's aggregate `suite_composition` count fallback).
 - Verify upstream safety flags: no promotion/default claims, `candidate_not_fact=true`, aggregate-only artifacts, remote/LLM counters at zero for deterministic phases, and bounded source reads only for P52A/B/C.
 - Require at least 4 non-self-test slices with all required reports and at least 6 tasks per slice, plus both positive and no-gold coverage.
 - For the current single-slice/self-test workflow, report `insufficient_matrix` by design.
