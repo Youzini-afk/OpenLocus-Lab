@@ -572,6 +572,8 @@ jobs:
              python3 eval/p51_llm_span_narrow_2_diagnostic.py --input "$P25_RECORDS" --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --out artifacts/real_provider_ci/p51_llm_span_narrow_2_diagnostic_report.json --doc docs/real-provider-ci/p51-llm-span-narrow-2-diagnostic.md
              # P51-B LLM Opt-In Contract / Dry-Run Payload Validator: deterministic opt-in contract and schema dry-run, no provider calls.
              python3 eval/p51b_llm_opt_in_contract.py --input "$P25_RECORDS" --p51-report artifacts/real_provider_ci/p51_llm_span_narrow_2_diagnostic_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --out artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --doc docs/real-provider-ci/p51b-llm-opt-in-contract.md
+             # P57 Generalization Gate v0: deterministic aggregate-only diagnostic readiness gate.
+             python3 eval/p57_generalization_gate.py --p46-report artifacts/real_provider_ci/p46_candidate_reach_cost_map_report.json --p47-report artifacts/real_provider_ci/p47_request_more_context_report.json --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --p51-report artifacts/real_provider_ci/p51_llm_span_narrow_2_diagnostic_report.json --p51b-report artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --out artifacts/real_provider_ci/p57_generalization_gate_report.json --doc docs/real-provider-ci/p57-generalization-gate.md
              rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
@@ -1359,7 +1361,41 @@ jobs:
                               non_source_backed = {"partial_metadata_only", "unavailable_missing_candidate_pool", "unavailable_missing_upstream_contract"}
                               if cs.get("eligibility_availability") not in non_source_backed:
                                   raise SystemExit(f"{json_path} eligibility_availability must be a non-source-backed enum when P52C source-backed availability is absent")
-              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json"}:
+              if json_path.name == "p57_generalization_gate_report.json":
+                  if data.get("status") not in {"blocked_safety", "insufficient_matrix", "diagnostic_matrix_complete", "diagnostic_matrix_unstable"}:
+                      raise SystemExit(f"{json_path} status not in allowed P57 enum")
+                  for flag in ["remote_calls_by_p57", "llm_calls_by_p57"]:
+                      if data.get(flag) != 0:
+                          raise SystemExit(f"{json_path} {flag} must be 0")
+                  for flag in ["source_reads_attempted_by_p57", "prompt_construction_by_p57"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} {flag} must be false")
+                  for flag in ["promotion_ready", "default_should_change", "evidencecore_semantics_changed"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} {flag} must be false")
+                  for flag in ["not_quality_evidence", "candidate_not_fact", "score_phase_only_metrics", "aggregate_only_public_artifact"]:
+                      if data.get(flag) is not True:
+                          raise SystemExit(f"{json_path} {flag} must be true")
+                  if data.get("schema_version") != "p57-generalization-gate-v0":
+                      raise SystemExit(f"{json_path} schema_version mismatch")
+                  p57_banned = {
+                      "task_id", "candidate_id", "repo_id", "dataset", "path", "start_line", "end_line", "span",
+                      "content_sha", "digest", "hash", "gold", "gold_spans", "private_label", "query", "snippet",
+                      "prompt", "response", "provider", "model", "base_url", "api_key", "repo_lock", "source_root",
+                      "tasks", "records", "per_task_results", "per_candidate_results", "per_slice_rows",
+                  }
+                  def p57_walk(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              if key in p57_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
+                              p57_walk(value, prefix + key + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              p57_walk(value, prefix + str(idx) + ".")
+                  p57_walk(data)
+              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p57_generalization_gate_report.json"}:
+
 
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
                       if data.get(flag) is not False:

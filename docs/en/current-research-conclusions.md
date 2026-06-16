@@ -27,6 +27,10 @@ P51 first tranche is a deterministic, no-LLM, no-remote, no-prompt-construction 
 P51-B defines and dry-validates a future live LLM opt-in contract without provider calls, prompt construction, or persistent raw payloads.
  It computes aggregate eligibility and request-envelope blueprint metadata from P51 selection, P49 candidate metadata, and P52C source-backed availability, and validates synthetic role-output schemas fail-closed (`not_evidence=true`, role enum, no unknown fields, bounded candidate ref/line delta). Public artifacts contain no prompts, responses, snippets, source text, queries, paths, spans, digests, providers, models, or keys. `remote_calls_by_p51b=0`, `llm_calls_by_p51b=0`, `remote_requests_by_p51b=0`, `prompt_construction_by_p51b=false`, `dry_run_payload_validation_only=true`. It is not Evidence, not quality evidence, and not a live/default/promotion gate. See the [P51-B detailed report](p51b-llm-opt-in-contract.md).
 
+## P57 Generalization Gate v0
+
+P57 is a deterministic, no-live-LLM, no-provider aggregate-only generalization-readiness gate that runs after P51B. It consumes only existing aggregate report JSON (P46, P47, P48, P49, P50, P52, P52A, P52B, P52C, optional P51, required P51B) and verifies upstream safety flags, completeness, and availability. It does not read source files, candidate pools, prompts, responses, or provider configs, and it publishes no paths, identifiers, spans, digests, or keys. For single-slice/self-test runs P57 reports `insufficient_matrix` by design; it is not quality evidence, not a promotion/default gate, and not live-readiness evidence. See the [P57 detailed report](p57-generalization-gate.md).
+
 ---
 
 ## 0. Executive Research Thesis

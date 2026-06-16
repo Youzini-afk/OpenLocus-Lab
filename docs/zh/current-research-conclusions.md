@@ -6,6 +6,10 @@
 
 状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
 
+## P57 泛化门控 v0
+
+P57 是一个确定性的、无线上 LLM/无 provider 的聚合级泛化就绪门控，运行于 P51B 之后。它只消费现有聚合报告 JSON（P46/P47/P48/P49/P50/P52/P52A/P52B/P52C、可选 P51、必须 P51B），校验上游安全标志、完整性与可用性。P57 不读取源文件、候选池、提示词、响应或 provider 配置，也不在公开产物中发布路径、标识符、区间、摘要或密钥。对于单 slice/self-test 运行，P57 按设计报告 `insufficient_matrix`；它不是质量证据，不是 promotion/默认门控，也不是线上就绪证据。详见 [P57 报告](p57-generalization-gate.md)。
+
 ---
 
 ## 0. 核心研究判断

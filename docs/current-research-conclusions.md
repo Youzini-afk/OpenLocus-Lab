@@ -71,6 +71,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p52c-local-verifier-scoring-simulator.md`: [en](en/p52c-local-verifier-scoring-simulator.md) · [zh](zh/p52c-local-verifier-scoring-simulator.md)
 - `p51-llm-span-narrow-2-diagnostic.md`: [en](en/p51-llm-span-narrow-2-diagnostic.md) · [zh](zh/p51-llm-span-narrow-2-diagnostic.md)
 - `p51b-llm-opt-in-contract.md`: [en](en/p51b-llm-opt-in-contract.md) · [zh](zh/p51b-llm-opt-in-contract.md)
+- `p57-generalization-gate.md`: [en](en/p57-generalization-gate.md) · [zh](zh/p57-generalization-gate.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
 - `r17-router-guard.md`: [en](en/r17-router-guard.md) · [zh](zh/r17-router-guard.md)
 - `r18-calibration-sweep.md`: [en](en/r18-calibration-sweep.md) · [zh](zh/r18-calibration-sweep.md)
