@@ -35,6 +35,10 @@ P57 is a deterministic, no-live-LLM, no-provider aggregate-only generalization-r
 
 P58 is a deterministic, no-live-LLM, no-provider aggregate-only calibration report that runs after P57. It consumes only the existing aggregate JSON from P48, P52C, P51B, and P57 (and optionally P52B/P52A/P49) and turns upstream availability/distributions into coarse planning/action-hint buckets. It is not a verifier, not admission, not Evidence, not default/promotion, and not live readiness. It does not read source files, candidate pools, tasks, prompts, responses, repo locks, or provider configs, and it emits only aggregate counts, rates, and calibration buckets. See the [P58 detailed report](p58-source-backed-verifier-calibration.md).
 
+## P59 Contrastive Pack Coverage & Counterfactual Study v0
+
+P59 is a deterministic, no-live-LLM, no-provider, aggregate-only pre-spend diagnostic that runs after P58. It rebuilds P49 contrastive candidate packs in memory from the same ephemeral P25 records and measures whether the frozen packs contain the prerequisite contrastive information a later LLM role would need, before any LLM spend. It is not a quality evaluator, not admission, not Evidence, not default/promotion, and not live readiness. Pack construction is gold-free and uses only candidate metadata; private labels are loaded only after packs are frozen, inside the explicitly-marked `score_phase_gold_coverage` block. It does not read source files, construct prompts, or call providers. See the [P59 detailed report](p59-contrastive-pack-coverage-counterfactual.md).
+
 ---
 
 ## 0. Executive Research Thesis

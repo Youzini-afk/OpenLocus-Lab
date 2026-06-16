@@ -33,6 +33,9 @@ P46 reach/cost map
 -> P51 deterministic LLM span-narrow scaffold
 -> P52C diagnostic local-verifier scoring simulator
 -> P51-B LLM opt-in contract / dry-run payload validator
+-> P57 generalization gate
+-> P58 source-backed verifier calibration
+-> P59 contrastive pack coverage & counterfactual study
 ```
 
 Key current conclusions:
@@ -44,7 +47,9 @@ request_more_context is now a first-class diagnostic action, not Evidence.
 P52A/P52B establish bounded local source materialization and source-shape diagnostics.
 P52C adds fixed gold-free diagnostic score buckets, not verifier pass/fail.
 P51/P51-B define future LLM span-narrow/filter entry points, but still no live LLM calls.
+P57 adds a deterministic aggregate-only generalization-readiness gate after P51-B.
 P58 adds aggregate source-backed verifier calibration as deterministic planning-hint buckets; it is not a verifier pass/fail, not admission, not Evidence, and not default/promotion/live readiness.
+P59 adds a deterministic pre-spend diagnostic that rebuilds P49 packs and measures whether they contain the prerequisite contrastive information a later LLM role would need; it is not a quality evaluator, not admission, not Evidence, and not default/promotion/live readiness.
 promotion_ready=false and default_should_change=false.
 EvidenceCore semantics are unchanged.
 ```
@@ -72,6 +77,7 @@ Current detailed reports added in this phase:
 - [`p52b-source-backed-local-verifier-feature-matrix.md`](p52b-source-backed-local-verifier-feature-matrix.md)
 - [`p52a-source-materialization-prerequisite.md`](p52a-source-materialization-prerequisite.md)
 - [`p58-source-backed-verifier-calibration.md`](p58-source-backed-verifier-calibration.md)
+- [`p59-contrastive-pack-coverage-counterfactual.md`](p59-contrastive-pack-coverage-counterfactual.md)
 
 Recommended next step: prefer P57/P50-generalization before opening a true
 P51-C live LLM micro-run. The current scaffolds are mechanically green, but they

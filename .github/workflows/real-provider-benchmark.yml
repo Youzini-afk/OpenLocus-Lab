@@ -575,7 +575,8 @@ jobs:
              # P57 Generalization Gate v0: deterministic aggregate-only diagnostic readiness gate.
              python3 eval/p57_generalization_gate.py --p46-report artifacts/real_provider_ci/p46_candidate_reach_cost_map_report.json --p47-report artifacts/real_provider_ci/p47_request_more_context_report.json --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --p52-report artifacts/real_provider_ci/p52_metadata_local_verifier_scaffold_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --p51-report artifacts/real_provider_ci/p51_llm_span_narrow_2_diagnostic_report.json --p51b-report artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --out artifacts/real_provider_ci/p57_generalization_gate_report.json --doc docs/real-provider-ci/p57-generalization-gate.md
              # P58 Source-Backed Verifier Calibration v0: aggregate-only planning/action-hint calibration.
-             python3 eval/p58_source_backed_verifier_calibration.py --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --p51b-report artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --p57-report artifacts/real_provider_ci/p57_generalization_gate_report.json --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52a-report artifacts/real_provider_ci/p52a_source_materialization_prerequisite_report.json --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --out artifacts/real_provider_ci/p58_source_backed_verifier_calibration_report.json --doc docs/real-provider-ci/p58-source-backed-verifier-calibration.md
+             # P59 Contrastive Pack Coverage & Counterfactual Study v0: deterministic pack-coverage precondition diagnostic.
+             python3 eval/p59_contrastive_pack_coverage_counterfactual.py --input "$P25_RECORDS" --p49-report artifacts/real_provider_ci/p49_contrastive_candidate_pack_scaffold_report.json --p52b-report artifacts/real_provider_ci/p52b_source_backed_local_verifier_feature_matrix_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --out artifacts/real_provider_ci/p59_contrastive_pack_coverage_counterfactual_report.json --doc docs/real-provider-ci/p59-contrastive-pack-coverage-counterfactual.md
              rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
@@ -1396,6 +1397,66 @@ jobs:
                           for idx, value in enumerate(obj):
                               p57_walk(value, prefix + str(idx) + ".")
                   p57_walk(data)
+              if json_path.name == "p59_contrastive_pack_coverage_counterfactual_report.json":
+                  allowed_p59_status = {"blocked_safety", "insufficient_records", "diagnostic_coverage_partial", "diagnostic_coverage_available", "self_test_only"}
+                  if data.get("status") not in allowed_p59_status:
+                      raise SystemExit(f"{json_path} status not in allowed P59 enum")
+                  for flag in ["remote_calls_by_p59", "llm_calls_by_p59"]:
+                      if data.get(flag) != 0:
+                          raise SystemExit(f"{json_path} {flag} must be 0")
+                  for flag in ["provider_config_read_by_p59", "prompt_construction_by_p59", "source_reads_attempted_by_p59"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} {flag} must be false")
+                  for flag in ["promotion_ready", "default_should_change", "evidencecore_semantics_changed", "gold_used_for_pack_construction"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} {flag} must be false")
+                  for flag in ["not_quality_evidence", "candidate_not_fact", "pack_not_evidence", "coverage_not_quality_evidence", "counterfactual_not_quality_claim", "run_phase_gold_free", "labels_loaded_after_pack_build", "score_phase_only_metrics", "aggregate_only_public_artifact"]:
+                      if data.get(flag) is not True:
+                          raise SystemExit(f"{json_path} {flag} must be true")
+                  for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "raw_source_stored", "raw_paths_in_artifact", "raw_line_ranges_in_artifact", "raw_digests_in_artifact", "provider_keys_in_artifact", "gold_spans_in_artifact", "private_labels_committed"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} {flag} must be false")
+                  if data.get("schema_version") != "p59-contrastive-pack-coverage-counterfactual-v0":
+                      raise SystemExit(f"{json_path} schema_version mismatch")
+                  if "tasks" in data or "records" in data or "per_task_results" in data or "decision_records" in data:
+                      raise SystemExit(f"{json_path} contains per-task public rows")
+                  p59_banned = {
+                      "task_id", "candidate_id", "repo_id", "dataset", "path", "start_line", "end_line", "span",
+                      "content_sha", "digest", "hash", "gold", "gold_spans", "private_label", "query", "snippet",
+                      "prompt", "response", "provider", "model", "base_url", "api_key", "repo_lock", "source_root",
+                      "tasks", "records", "per_task_results", "per_candidate_results", "per_slice_rows",
+                      "candidate_pool", "raw_candidates", "candidates", "pack_items", "evidence", "Evidence",
+                  }
+                  def p59_walk(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              if key in p59_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
+                              p59_walk(value, prefix + key + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              p59_walk(value, prefix + str(idx) + ".")
+                  p59_walk(data)
+                  by_strategy = data.get("metrics", {}).get("by_strategy", {})
+                  if not any(
+                      (by_strategy.get(s, {}).get("denominators", {}).get("pack_build_denominator") or 0) > 0
+                      for s in ("topk_flat_pack_v0", "anchor_contrast_pack_v0", "conservative_anchor_pack_v0")
+                  ):
+                      raise SystemExit(f"{json_path} has no pack strategy with a positive denominator")
+                  for strategy, block in by_strategy.items():
+                      cf = block.get("counterfactual_actionability", {})
+                      denom = cf.get("span_narrow_counterfactual_denominator")
+                      present = cf.get("span_narrow_gold_candidate_present_count")
+                      impossible = cf.get("span_narrow_impossible_without_gold_candidate_count")
+                      if isinstance(denom, int) and isinstance(present, int) and isinstance(impossible, int):
+                          if present + impossible != denom:
+                              raise SystemExit(f"{json_path} {strategy} span_narrow counts do not sum to denominator")
+                      fdenom = cf.get("filter_counterfactual_denominator")
+                      f_present = cf.get("filter_hard_distractor_present_count")
+                      f_missing = cf.get("filter_rejection_contrast_missing_count")
+                      if isinstance(fdenom, int) and isinstance(f_present, int) and isinstance(f_missing, int):
+                          if f_present + f_missing != fdenom:
+                              raise SystemExit(f"{json_path} {strategy} filter counts do not sum to denominator")
               if json_path.name == "p58_source_backed_verifier_calibration_report.json":
                   allowed_p58_status = {"blocked_safety", "insufficient_upstream", "diagnostic_calibration_unavailable", "diagnostic_calibration_partial", "diagnostic_calibration_available", "self_test_only"}
                   if data.get("status") not in allowed_p58_status:
@@ -1439,7 +1500,7 @@ jobs:
                           for idx, value in enumerate(obj):
                               p58_walk(value, prefix + str(idx) + ".")
                   p58_walk(data)
-              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p57_generalization_gate_report.json", "p58_source_backed_verifier_calibration_report.json"}:
+              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p57_generalization_gate_report.json", "p58_source_backed_verifier_calibration_report.json", "p59_contrastive_pack_coverage_counterfactual_report.json"}:
 
 
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:

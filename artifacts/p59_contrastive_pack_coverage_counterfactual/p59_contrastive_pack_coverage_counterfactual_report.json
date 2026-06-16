@@ -1,0 +1,654 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "available",
+  "conclusion": [
+    "Self-test-only deterministic pack coverage diagnostic rebuilt P49 packs for 8 synthetic tasks; this is not quality evidence.",
+    "Pack construction was gold-free and used only candidate metadata; labels were loaded only after packs were frozen.",
+    "P59 does not call an LLM, does not create evidence, does not admit candidate spans, does not read source files, does not validate content_sha, and does not change defaults.",
+    "P59 reports only aggregate preconditions for later LLM spend; it does not claim that packs are high-quality or that an LLM will succeed.",
+    "topk_flat_pack_v0: pack_build_denominator=8, pack_nonempty_count=8.",
+    "anchor_contrast_pack_v0: pack_build_denominator=8, pack_nonempty_count=8.",
+    "conservative_anchor_pack_v0: pack_build_denominator=8, pack_nonempty_count=8."
+  ],
+  "counterfactual_not_quality_claim": true,
+  "coverage_not_quality_evidence": true,
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-16T11:50:18.918247+00:00",
+  "generated_by": "p59_contrastive_pack_coverage_counterfactual",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "gold_used_for_pack_construction": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "labels_loaded_after_pack_build": true,
+  "llm_calls_by_p59": 0,
+  "metrics": {
+    "by_strategy": {
+      "anchor_contrast_pack_v0": {
+        "breakdowns": {
+          "by_pack_strategy": {
+            "anchor_contrast_pack_v0": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 8,
+              "pack_with_hard_distractor_count": 2,
+              "pack_with_hard_distractor_rate": 0.25,
+              "positive_task_count": 7,
+              "task_count": 8
+            }
+          },
+          "by_public_bucket": {
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 1.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "positive": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 7,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 0.142857,
+              "positive_task_count": 7,
+              "task_count": 7
+            }
+          },
+          "by_public_risk_tag": {
+            "config": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "high_confidence": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 3,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 0.333333,
+              "positive_task_count": 3,
+              "task_count": 3
+            },
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 1.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "symbol_anchor": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 2,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 2,
+              "task_count": 2
+            },
+            "weak_candidates": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            }
+          }
+        },
+        "contrastive_information_coverage": {
+          "channel_diverse_pack_count": 0,
+          "channel_diverse_pack_rate": 0.0,
+          "cross_file_competitor_pack_count": 7,
+          "cross_file_competitor_pack_rate": 0.875,
+          "docs_source_competitor_pack_count": 1,
+          "docs_source_competitor_pack_rate": 0.125,
+          "hard_distractor_pack_count": 2,
+          "hard_distractor_pack_rate": 0.25,
+          "path_kind_diverse_pack_count": 4,
+          "path_kind_diverse_pack_rate": 0.5,
+          "same_file_competitor_pack_count": 1,
+          "same_file_competitor_pack_rate": 0.125,
+          "source_test_competitor_pack_count": 1,
+          "source_test_competitor_pack_rate": 0.125,
+          "subtype_diverse_pack_count": 0,
+          "subtype_diverse_pack_rate": 0.0
+        },
+        "counterfactual_actionability": {
+          "filter_counterfactual_denominator": 8,
+          "filter_hard_distractor_present_count": 2,
+          "filter_hard_distractor_present_rate": 0.25,
+          "filter_rejection_contrast_missing_count": 6,
+          "filter_rejection_contrast_missing_rate": 0.75,
+          "filter_requires_hard_distractor": true,
+          "joint_span_narrow_and_filter_preconditions_count": 1,
+          "joint_span_narrow_and_filter_preconditions_rate": 0.142857,
+          "llm_spend_actionability_bucket": "blocked_missing_hard_distractor",
+          "precondition_only_not_quality_claim": true,
+          "span_narrow_counterfactual_denominator": 7,
+          "span_narrow_gold_candidate_present_count": 6,
+          "span_narrow_gold_candidate_present_rate": 0.857143,
+          "span_narrow_impossible_without_gold_candidate_count": 1,
+          "span_narrow_impossible_without_gold_candidate_rate": 0.142857,
+          "span_narrow_requires_gold_candidate": true
+        },
+        "denominators": {
+          "candidate_pool_task_denominator": 8,
+          "no_gold_pack_denominator": 1,
+          "no_gold_task_count": 1,
+          "pack_build_denominator": 8,
+          "pack_nonempty_count": 8,
+          "pack_nonempty_rate": 1.0,
+          "positive_task_count": 7,
+          "positive_with_gold_span_denominator": 7,
+          "task_count": 8
+        },
+        "path_kind_flag_coverage": {
+          "candidate_has_config_flag_rate": 0.0,
+          "candidate_has_doc_flag_rate": 0.058824,
+          "candidate_has_source_flag_rate": 0.764706,
+          "candidate_has_test_flag_rate": 0.058824,
+          "pack_has_config_candidate_rate": 0.0,
+          "pack_has_doc_candidate_rate": 0.125,
+          "pack_has_source_candidate_rate": 1.0,
+          "pack_has_test_candidate_rate": 0.125
+        },
+        "provenance_completeness": {
+          "candidate_has_channels_count": 15,
+          "candidate_has_channels_rate": 0.882353,
+          "candidate_has_path_kind_count": 17,
+          "candidate_has_path_kind_rate": 1.0,
+          "candidate_has_rank_count": 17,
+          "candidate_has_rank_rate": 1.0,
+          "candidate_has_score_count": 15,
+          "candidate_has_score_rate": 0.882353,
+          "candidate_has_span_count": 17,
+          "candidate_has_span_rate": 1.0,
+          "public_provenance_complete_count": 15,
+          "public_provenance_complete_rate": 0.882353,
+          "selected_candidate_denominator": 17
+        },
+        "score_phase_gold_coverage": {
+          "file_right_span_wrong_count": 1,
+          "file_right_span_wrong_rate": 0.142857,
+          "gold_candidate_coverage_count": 6,
+          "gold_candidate_coverage_rate": 0.857143,
+          "gold_candidate_in_contrast_slot_count": 0,
+          "gold_candidate_in_contrast_slot_rate": 0.0,
+          "gold_candidate_in_primary_anchor_count": 6,
+          "gold_candidate_in_primary_anchor_rate": 0.857143,
+          "gold_file_coverage_count": 7,
+          "gold_file_coverage_rate": 1.0,
+          "gold_span_overlap_coverage_count": 6,
+          "gold_span_overlap_coverage_rate": 0.857143,
+          "not_used_for_pack_construction": true
+        },
+        "source_backed_shape_metadata_coverage": {
+          "candidate_has_source_backed_shape_metadata_rate": 0.352941,
+          "pack_has_source_backed_shape_metadata_rate": 0.75,
+          "source_backed_shape_metadata_availability": "partial",
+          "source_backed_shape_not_verified_by_p59": true
+        },
+        "subtype_shape_metadata_coverage": {
+          "candidate_has_agreement_class_rate": 0.352941,
+          "candidate_has_candidate_count_bin_rate": 0.352941,
+          "candidate_has_rank_bin_rate": 0.352941,
+          "candidate_has_rrf_backing_rate": 0.352941,
+          "candidate_has_source_class_rate": 0.352941,
+          "candidate_has_span_width_bin_rate": 0.352941,
+          "candidate_has_subtype_rate": 0.352941,
+          "subtype_shape_complete_rate": 0.352941
+        }
+      },
+      "conservative_anchor_pack_v0": {
+        "breakdowns": {
+          "by_pack_strategy": {
+            "conservative_anchor_pack_v0": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 8,
+              "pack_with_hard_distractor_count": 2,
+              "pack_with_hard_distractor_rate": 0.25,
+              "positive_task_count": 7,
+              "task_count": 8
+            }
+          },
+          "by_public_bucket": {
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 1.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "positive": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 7,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 0.142857,
+              "positive_task_count": 7,
+              "task_count": 7
+            }
+          },
+          "by_public_risk_tag": {
+            "config": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "high_confidence": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 3,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 0.333333,
+              "positive_task_count": 3,
+              "task_count": 3
+            },
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 1.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "symbol_anchor": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 2,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 2,
+              "task_count": 2
+            },
+            "weak_candidates": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            }
+          }
+        },
+        "contrastive_information_coverage": {
+          "channel_diverse_pack_count": 0,
+          "channel_diverse_pack_rate": 0.0,
+          "cross_file_competitor_pack_count": 7,
+          "cross_file_competitor_pack_rate": 0.875,
+          "docs_source_competitor_pack_count": 1,
+          "docs_source_competitor_pack_rate": 0.125,
+          "hard_distractor_pack_count": 2,
+          "hard_distractor_pack_rate": 0.25,
+          "path_kind_diverse_pack_count": 4,
+          "path_kind_diverse_pack_rate": 0.5,
+          "same_file_competitor_pack_count": 1,
+          "same_file_competitor_pack_rate": 0.125,
+          "source_test_competitor_pack_count": 1,
+          "source_test_competitor_pack_rate": 0.125,
+          "subtype_diverse_pack_count": 0,
+          "subtype_diverse_pack_rate": 0.0
+        },
+        "counterfactual_actionability": {
+          "filter_counterfactual_denominator": 8,
+          "filter_hard_distractor_present_count": 2,
+          "filter_hard_distractor_present_rate": 0.25,
+          "filter_rejection_contrast_missing_count": 6,
+          "filter_rejection_contrast_missing_rate": 0.75,
+          "filter_requires_hard_distractor": true,
+          "joint_span_narrow_and_filter_preconditions_count": 1,
+          "joint_span_narrow_and_filter_preconditions_rate": 0.142857,
+          "llm_spend_actionability_bucket": "blocked_missing_hard_distractor",
+          "precondition_only_not_quality_claim": true,
+          "span_narrow_counterfactual_denominator": 7,
+          "span_narrow_gold_candidate_present_count": 6,
+          "span_narrow_gold_candidate_present_rate": 0.857143,
+          "span_narrow_impossible_without_gold_candidate_count": 1,
+          "span_narrow_impossible_without_gold_candidate_rate": 0.142857,
+          "span_narrow_requires_gold_candidate": true
+        },
+        "denominators": {
+          "candidate_pool_task_denominator": 8,
+          "no_gold_pack_denominator": 1,
+          "no_gold_task_count": 1,
+          "pack_build_denominator": 8,
+          "pack_nonempty_count": 8,
+          "pack_nonempty_rate": 1.0,
+          "positive_task_count": 7,
+          "positive_with_gold_span_denominator": 7,
+          "task_count": 8
+        },
+        "path_kind_flag_coverage": {
+          "candidate_has_config_flag_rate": 0.0,
+          "candidate_has_doc_flag_rate": 0.058824,
+          "candidate_has_source_flag_rate": 0.764706,
+          "candidate_has_test_flag_rate": 0.058824,
+          "pack_has_config_candidate_rate": 0.0,
+          "pack_has_doc_candidate_rate": 0.125,
+          "pack_has_source_candidate_rate": 1.0,
+          "pack_has_test_candidate_rate": 0.125
+        },
+        "provenance_completeness": {
+          "candidate_has_channels_count": 15,
+          "candidate_has_channels_rate": 0.882353,
+          "candidate_has_path_kind_count": 17,
+          "candidate_has_path_kind_rate": 1.0,
+          "candidate_has_rank_count": 17,
+          "candidate_has_rank_rate": 1.0,
+          "candidate_has_score_count": 15,
+          "candidate_has_score_rate": 0.882353,
+          "candidate_has_span_count": 17,
+          "candidate_has_span_rate": 1.0,
+          "public_provenance_complete_count": 15,
+          "public_provenance_complete_rate": 0.882353,
+          "selected_candidate_denominator": 17
+        },
+        "score_phase_gold_coverage": {
+          "file_right_span_wrong_count": 1,
+          "file_right_span_wrong_rate": 0.142857,
+          "gold_candidate_coverage_count": 6,
+          "gold_candidate_coverage_rate": 0.857143,
+          "gold_candidate_in_contrast_slot_count": 0,
+          "gold_candidate_in_contrast_slot_rate": 0.0,
+          "gold_candidate_in_primary_anchor_count": 6,
+          "gold_candidate_in_primary_anchor_rate": 0.857143,
+          "gold_file_coverage_count": 7,
+          "gold_file_coverage_rate": 1.0,
+          "gold_span_overlap_coverage_count": 6,
+          "gold_span_overlap_coverage_rate": 0.857143,
+          "not_used_for_pack_construction": true
+        },
+        "source_backed_shape_metadata_coverage": {
+          "candidate_has_source_backed_shape_metadata_rate": 0.352941,
+          "pack_has_source_backed_shape_metadata_rate": 0.75,
+          "source_backed_shape_metadata_availability": "partial",
+          "source_backed_shape_not_verified_by_p59": true
+        },
+        "subtype_shape_metadata_coverage": {
+          "candidate_has_agreement_class_rate": 0.352941,
+          "candidate_has_candidate_count_bin_rate": 0.352941,
+          "candidate_has_rank_bin_rate": 0.352941,
+          "candidate_has_rrf_backing_rate": 0.352941,
+          "candidate_has_source_class_rate": 0.352941,
+          "candidate_has_span_width_bin_rate": 0.352941,
+          "candidate_has_subtype_rate": 0.352941,
+          "subtype_shape_complete_rate": 0.352941
+        }
+      },
+      "topk_flat_pack_v0": {
+        "breakdowns": {
+          "by_pack_strategy": {
+            "topk_flat_pack_v0": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 8,
+              "pack_with_hard_distractor_count": 2,
+              "pack_with_hard_distractor_rate": 0.25,
+              "positive_task_count": 7,
+              "task_count": 8
+            }
+          },
+          "by_public_bucket": {
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 1.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "positive": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 7,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 0.142857,
+              "positive_task_count": 7,
+              "task_count": 7
+            }
+          },
+          "by_public_risk_tag": {
+            "config": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            },
+            "high_confidence": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 3,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 0.333333,
+              "positive_task_count": 3,
+              "task_count": 3
+            },
+            "negative": {
+              "no_gold_task_count": 1,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 1,
+              "pack_with_hard_distractor_rate": 1.0,
+              "positive_task_count": 0,
+              "task_count": 1
+            },
+            "symbol_anchor": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 2,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 2,
+              "task_count": 2
+            },
+            "weak_candidates": {
+              "no_gold_task_count": 0,
+              "pack_nonempty_count": 1,
+              "pack_nonempty_rate": 1.0,
+              "pack_with_hard_distractor_count": 0,
+              "pack_with_hard_distractor_rate": 0.0,
+              "positive_task_count": 1,
+              "task_count": 1
+            }
+          }
+        },
+        "contrastive_information_coverage": {
+          "channel_diverse_pack_count": 0,
+          "channel_diverse_pack_rate": 0.0,
+          "cross_file_competitor_pack_count": 7,
+          "cross_file_competitor_pack_rate": 0.875,
+          "docs_source_competitor_pack_count": 1,
+          "docs_source_competitor_pack_rate": 0.125,
+          "hard_distractor_pack_count": 2,
+          "hard_distractor_pack_rate": 0.25,
+          "path_kind_diverse_pack_count": 4,
+          "path_kind_diverse_pack_rate": 0.5,
+          "same_file_competitor_pack_count": 1,
+          "same_file_competitor_pack_rate": 0.125,
+          "source_test_competitor_pack_count": 1,
+          "source_test_competitor_pack_rate": 0.125,
+          "subtype_diverse_pack_count": 0,
+          "subtype_diverse_pack_rate": 0.0
+        },
+        "counterfactual_actionability": {
+          "filter_counterfactual_denominator": 8,
+          "filter_hard_distractor_present_count": 2,
+          "filter_hard_distractor_present_rate": 0.25,
+          "filter_rejection_contrast_missing_count": 6,
+          "filter_rejection_contrast_missing_rate": 0.75,
+          "filter_requires_hard_distractor": true,
+          "joint_span_narrow_and_filter_preconditions_count": 1,
+          "joint_span_narrow_and_filter_preconditions_rate": 0.142857,
+          "llm_spend_actionability_bucket": "blocked_missing_hard_distractor",
+          "precondition_only_not_quality_claim": true,
+          "span_narrow_counterfactual_denominator": 7,
+          "span_narrow_gold_candidate_present_count": 6,
+          "span_narrow_gold_candidate_present_rate": 0.857143,
+          "span_narrow_impossible_without_gold_candidate_count": 1,
+          "span_narrow_impossible_without_gold_candidate_rate": 0.142857,
+          "span_narrow_requires_gold_candidate": true
+        },
+        "denominators": {
+          "candidate_pool_task_denominator": 8,
+          "no_gold_pack_denominator": 1,
+          "no_gold_task_count": 1,
+          "pack_build_denominator": 8,
+          "pack_nonempty_count": 8,
+          "pack_nonempty_rate": 1.0,
+          "positive_task_count": 7,
+          "positive_with_gold_span_denominator": 7,
+          "task_count": 8
+        },
+        "path_kind_flag_coverage": {
+          "candidate_has_config_flag_rate": 0.0,
+          "candidate_has_doc_flag_rate": 0.058824,
+          "candidate_has_source_flag_rate": 0.764706,
+          "candidate_has_test_flag_rate": 0.058824,
+          "pack_has_config_candidate_rate": 0.0,
+          "pack_has_doc_candidate_rate": 0.125,
+          "pack_has_source_candidate_rate": 1.0,
+          "pack_has_test_candidate_rate": 0.125
+        },
+        "provenance_completeness": {
+          "candidate_has_channels_count": 15,
+          "candidate_has_channels_rate": 0.882353,
+          "candidate_has_path_kind_count": 17,
+          "candidate_has_path_kind_rate": 1.0,
+          "candidate_has_rank_count": 17,
+          "candidate_has_rank_rate": 1.0,
+          "candidate_has_score_count": 15,
+          "candidate_has_score_rate": 0.882353,
+          "candidate_has_span_count": 17,
+          "candidate_has_span_rate": 1.0,
+          "public_provenance_complete_count": 15,
+          "public_provenance_complete_rate": 0.882353,
+          "selected_candidate_denominator": 17
+        },
+        "score_phase_gold_coverage": {
+          "file_right_span_wrong_count": 1,
+          "file_right_span_wrong_rate": 0.142857,
+          "gold_candidate_coverage_count": 6,
+          "gold_candidate_coverage_rate": 0.857143,
+          "gold_candidate_in_contrast_slot_count": 0,
+          "gold_candidate_in_contrast_slot_rate": 0.0,
+          "gold_candidate_in_primary_anchor_count": 6,
+          "gold_candidate_in_primary_anchor_rate": 0.857143,
+          "gold_file_coverage_count": 7,
+          "gold_file_coverage_rate": 1.0,
+          "gold_span_overlap_coverage_count": 6,
+          "gold_span_overlap_coverage_rate": 0.857143,
+          "not_used_for_pack_construction": true
+        },
+        "source_backed_shape_metadata_coverage": {
+          "candidate_has_source_backed_shape_metadata_rate": 0.352941,
+          "pack_has_source_backed_shape_metadata_rate": 0.75,
+          "source_backed_shape_metadata_availability": "partial",
+          "source_backed_shape_not_verified_by_p59": true
+        },
+        "subtype_shape_metadata_coverage": {
+          "candidate_has_agreement_class_rate": 0.352941,
+          "candidate_has_candidate_count_bin_rate": 0.352941,
+          "candidate_has_rank_bin_rate": 0.352941,
+          "candidate_has_rrf_backing_rate": 0.352941,
+          "candidate_has_source_class_rate": 0.352941,
+          "candidate_has_span_width_bin_rate": 0.352941,
+          "candidate_has_subtype_rate": 0.352941,
+          "subtype_shape_complete_rate": 0.352941
+        }
+      }
+    }
+  },
+  "no_gold_task_count": 1,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 7,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 6,
+  "pack_not_evidence": true,
+  "pack_strategies": [
+    "topk_flat_pack_v0",
+    "anchor_contrast_pack_v0",
+    "conservative_anchor_pack_v0"
+  ],
+  "positive_task_count": 7,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p59": false,
+  "provider_config_read_by_p59": false,
+  "provider_keys_in_artifact": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p59": 0,
+  "run_phase_gold_free": true,
+  "schema_version": "p59-contrastive-pack-coverage-counterfactual-v0",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "slot_names": [
+    "primary_anchor",
+    "rrf_consensus",
+    "same_file_neighbor",
+    "same_file_contrast",
+    "cross_file_anchor",
+    "source_test_pair",
+    "doc_config_pair",
+    "hard_distractor",
+    "rmc_trigger_candidate"
+  ],
+  "source_reads_attempted_by_p59": false,
+  "stage": "P59 Contrastive Pack Coverage & Counterfactual Study v0",
+  "status": "self_test_only",
+  "status_reason": "Self-test-only deterministic pack coverage diagnostic; not quality evidence.",
+  "task_count": 8,
+  "upstream_carry_forward": {
+    "p48_report_source": "not_provided",
+    "p48_status": "not_provided",
+    "p49_report_source": "not_provided",
+    "p49_status": "not_provided",
+    "p50_report_source": "not_provided",
+    "p50_status": "not_provided",
+    "p52b_report_source": "not_provided",
+    "p52b_status": "not_provided",
+    "p52c_report_source": "not_provided",
+    "p52c_status": "not_provided"
+  },
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}
