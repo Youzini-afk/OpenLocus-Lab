@@ -1330,7 +1330,7 @@ def build_markdown(report: dict[str, Any]) -> str:
         f"- Redaction required rate: {_fmt_scalar(p51c['redaction_required_rate'])}",
         f"- Diagnostic only: {p51c['diagnostic_only']}",
         f"- Not live readiness: {p51c['not_live_readiness']}",
-        f"- Not provider authorization: {p51c['not_provider_authorization']}",
+        f"- Not provider authorization flag set: {p51c['not_provider_authorization']}",
         "",
     ])
 

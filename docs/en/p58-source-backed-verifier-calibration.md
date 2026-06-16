@@ -1,7 +1,7 @@
 # P58 Source-Backed Verifier Calibration v0
 
 - Schema: `p58-source-backed-verifier-calibration-v0`
-- Generated: 2026-06-16T08:58:05.080461+00:00
+- Generated: 2026-06-16T11:04:55.122222+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P58: 0
@@ -130,7 +130,7 @@ No source files, candidate pools, prompts, responses, provider configs, or per-c
 - Redaction required rate: 0.2000
 - Diagnostic only: True
 - Not live readiness: True
-- Not provider authorization: True
+- Not provider authorization flag set: True
 
 ## Blockers
 
