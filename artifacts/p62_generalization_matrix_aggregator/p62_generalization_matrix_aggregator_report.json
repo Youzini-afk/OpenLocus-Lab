@@ -1,0 +1,171 @@
+{
+  "aggregate_only_public_artifact": true,
+  "blockers": [
+    "provided_input_count=0 < required 4.",
+    "eligible_distinct_slice_count=0 < required 4."
+  ],
+  "candidate_not_fact": true,
+  "conclusion": [
+    "P62 Generalization Matrix Aggregator v0 is a deterministic, aggregate-only diagnostic that combines sanitized per-slice aggregate report sets.",
+    "P62 does not read source files, gold labels, private labels, ephemeral records, candidate pools, prompts, responses, or provider configs.",
+    "P62 does not call providers, construct prompts, admit Evidence, change defaults, or authorize spend.",
+    "P62 reports only aggregate counts and internally-deduplicated sanitized signatures; it does not publish repo identities, datasets, paths, digests, or signatures.",
+    "P62 does not claim that multiple distinct repositories, dataset diversity, proven generalization, research-quality findings, promotion readiness, default change, or provider spend authorization have been established.",
+    "This self-test exercised the distinctness-dedupe, missing-report, unsafe-slice, and insufficient-input paths with synthetic aggregate reports.",
+    "Generalization blocker(s): 2.",
+    "Current status: self_test_only. Distinct sanitized aggregate report sets observed: 0; eligible distinct slices included: 0."
+  ],
+  "default_should_change": false,
+  "distinctness": {
+    "distinctness_claim": "content_distinct_sanitized_aggregate_report_sets_only_not_repo_or_dataset_identity",
+    "identity_fields_published": false,
+    "identity_fields_used": false,
+    "signature_values_published": false
+  },
+  "elapsed_ms": 2,
+  "evidencecore_semantics_changed": false,
+  "generalization_matrix": {
+    "cross_slice_dispersion": {
+      "iqr": null,
+      "max": null,
+      "median": null,
+      "min": null,
+      "n": 0
+    },
+    "included_generalization_slice_count": 0,
+    "observed_repo_count": "not_collected_publicly",
+    "observed_slice_count": 0,
+    "per_stage_status_summary": {
+      "p51b": {
+        "acceptable_rate": null,
+        "blocked_safety_rate": null,
+        "self_test_rate": null,
+        "unstable_rate": null
+      },
+      "p57": {
+        "acceptable_rate": null,
+        "blocked_safety_rate": null,
+        "self_test_rate": null,
+        "unstable_rate": null
+      },
+      "p58": {
+        "acceptable_rate": null,
+        "blocked_safety_rate": null,
+        "self_test_rate": null,
+        "unstable_rate": null
+      },
+      "p59": {
+        "acceptable_rate": null,
+        "blocked_safety_rate": null,
+        "self_test_rate": null,
+        "unstable_rate": null
+      },
+      "p60": {
+        "acceptable_rate": null,
+        "blocked_safety_rate": null,
+        "self_test_rate": null,
+        "unstable_rate": null
+      }
+    },
+    "readiness_status": "self_test_only",
+    "required_slice_count": 4
+  },
+  "generated_at": "2026-06-16T16:32:59.249411+00:00",
+  "generated_by": "p62_generalization_matrix_aggregator",
+  "gold_spans_in_artifact": false,
+  "gold_used_by_p62": false,
+  "input_summary": {
+    "blocked_safety_input_count": 0,
+    "content_distinct_input_count": 0,
+    "duplicate_input_count": 0,
+    "eligible_distinct_slice_count": 0,
+    "exact_duplicate_inputs_rejected_count": 0,
+    "invalid_json_input_count": 0,
+    "matrix_requirement_summary": "self_test_only",
+    "missing_required_report_input_count": 0,
+    "provided_input_count": 0,
+    "readable_input_count": 0,
+    "required_distinct_slice_count": 4,
+    "required_report_set_complete_input_count": 0,
+    "safe_input_count": 0,
+    "self_test_input_count": 0
+  },
+  "llm_calls_by_p62": 0,
+  "not_quality_evidence": true,
+  "p57_consumption_contract": {
+    "do_not_substitute_as_p57_report_without_validation": true,
+    "p57_input_matrix_entry_count": 0,
+    "p57_input_matrix_excluded_slice_count": 0,
+    "p57_input_matrix_written": false,
+    "p57_may_consume_this_report": true,
+    "p57_slice_count_field_source": "eligible_distinct_slice_count",
+    "requires_explicit_p57_support": false
+  },
+  "precondition_report_only": true,
+  "private_labels_committed": false,
+  "private_labels_loaded_by_p62": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p62": false,
+  "provider_config_read_by_p62": false,
+  "provider_keys_in_artifact": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "remote_calls_by_p62": 0,
+  "remote_requests_by_p62": 0,
+  "schema_version": "p62-generalization-matrix-aggregator-v0",
+  "self_test": true,
+  "source_reads_attempted_by_p62": false,
+  "stage": "P62 Generalization Matrix Aggregator v0",
+  "status": "self_test_only",
+  "status_reason": "provided_input_count=0 < required 4.; eligible_distinct_slice_count=0 < required 4.",
+  "upstream_safety_gate": {
+    "blocker_count": 0,
+    "by_phase": {
+      "p51b": {
+        "report_present": false,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "not_provided"
+      },
+      "p57": {
+        "report_present": false,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "not_provided"
+      },
+      "p58": {
+        "report_present": false,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "not_provided"
+      },
+      "p59": {
+        "report_present": false,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "not_provided"
+      },
+      "p60": {
+        "report_present": false,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "not_provided"
+      }
+    },
+    "checked_count": 0,
+    "warning_count": 0
+  },
+  "validation": {
+    "forbidden_key_scan_ok": true
+  },
+  "warnings": []
+}

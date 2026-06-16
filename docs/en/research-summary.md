@@ -38,6 +38,7 @@ P46 reach/cost map
 -> P59 contrastive pack coverage & counterfactual study
 -> P60 RMC policy v2 v0 comparison matrix
 -> P61 pre-spend gate v0
+-> P62 generalization matrix aggregator v0
 ```
 
 Key current conclusions:
@@ -54,6 +55,7 @@ P58 adds aggregate source-backed verifier calibration as deterministic planning-
 P59 adds a deterministic pre-spend diagnostic that rebuilds P49 packs and measures whether they contain the prerequisite contrastive information a later LLM role would need; it is not a quality evaluator, not admission, not Evidence, and not default/promotion/live readiness.
 P60 adds a deterministic RMC policy comparison matrix that selects only the next diagnostic action; it reports aggregate routing counts and SCORE-phase gold-reach/false-cost diagnostics, but is not evidence, not admission, and does not select a winner or recommend a default.
 P61 adds a deterministic aggregate-only pre-spend readiness gate that reports whether a future P51-C live LLM micro-run is worth considering; it is not authorization, not Evidence, and not default/promotion/live readiness.
+P62 adds a deterministic aggregate-only generalization matrix aggregator that combines sanitized multi-slice aggregate report sets; it deduplicates identical signatures internally, publishes only counts, and is not quality evidence, not repo/dataset identity proof, and not default/promotion/live readiness.
 promotion_ready=false and default_should_change=false.
 EvidenceCore semantics are unchanged.
 ```
@@ -63,12 +65,13 @@ Recent validation completed after P52C/P51-B/P61:
 ```text
 local deterministic regression: passed
 p61 self_test: passed
+p62 self_test: passed
 p21_llm_rich self_test CI: 27601393249 green
 p21_llm_rich ci_smoke CI: 27601488191 green
 p21_llm_rich ci_smoke repo_id=js_express: 27601639934 green
 ```
 
-The validation covered the deterministic P52C/P51-B/P61 self-tests, docs i18n mirror,
+The validation covered the deterministic P52C/P51-B/P61/P62 self-tests, docs i18n mirror,
 workflow Python heredoc compilation, diff checks, artifact privacy gates,
 self-test no-source-root behavior, default `ci_smoke` source-backed behavior, and
 a small `js_express` cross-repo slice. It did **not** run the full nightly/weekly
@@ -77,6 +80,7 @@ matrix, full repo-language generalization, or a live P51-C LLM opt-in call.
 Current detailed reports added in this phase:
 
 - [`p61-pre-spend-gate.md`](p61-pre-spend-gate.md)
+- [`p62-generalization-matrix-aggregator.md`](p62-generalization-matrix-aggregator.md)
 - [`p60-rmc-policy-v2.md`](p60-rmc-policy-v2.md)
 - [`p59-contrastive-pack-coverage-counterfactual.md`](p59-contrastive-pack-coverage-counterfactual.md)
 - [`p58-source-backed-verifier-calibration.md`](p58-source-backed-verifier-calibration.md)
