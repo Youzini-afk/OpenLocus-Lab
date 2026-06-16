@@ -31,6 +31,10 @@ P51-B defines and dry-validates a future live LLM opt-in contract without provid
 
 P57 is a deterministic, no-live-LLM, no-provider aggregate-only generalization-readiness gate that runs after P51B. It consumes only existing aggregate report JSON (P46, P47, P48, P49, P50, P52, P52A, P52B, P52C, optional P51, required P51B) and verifies upstream safety flags, completeness, and availability. It does not read source files, candidate pools, prompts, responses, or provider configs, and it publishes no paths, identifiers, spans, digests, or keys. For single-slice/self-test runs P57 reports `insufficient_matrix` by design; it is not quality evidence, not a promotion/default gate, and not live-readiness evidence. See the [P57 detailed report](p57-generalization-gate.md).
 
+## P58 Source-Backed Verifier Calibration v0
+
+P58 is a deterministic, no-live-LLM, no-provider aggregate-only calibration report that runs after P57. It consumes only the existing aggregate JSON from P48, P52C, P51B, and P57 (and optionally P52B/P52A/P49) and turns upstream availability/distributions into coarse planning/action-hint buckets. It is not a verifier, not admission, not Evidence, not default/promotion, and not live readiness. It does not read source files, candidate pools, tasks, prompts, responses, repo locks, or provider configs, and it emits only aggregate counts, rates, and calibration buckets. See the [P58 detailed report](p58-source-backed-verifier-calibration.md).
+
 ---
 
 ## 0. Executive Research Thesis

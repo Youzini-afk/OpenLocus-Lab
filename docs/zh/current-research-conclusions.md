@@ -10,6 +10,10 @@
 
 P57 是一个确定性的、无线上 LLM/无 provider 的聚合级泛化就绪门控，运行于 P51B 之后。它只消费现有聚合报告 JSON（P46/P47/P48/P49/P50/P52/P52A/P52B/P52C、可选 P51、必须 P51B），校验上游安全标志、完整性与可用性。P57 不读取源文件、候选池、提示词、响应或 provider 配置，也不在公开产物中发布路径、标识符、区间、摘要或密钥。对于单 slice/self-test 运行，P57 按设计报告 `insufficient_matrix`；它不是质量证据，不是 promotion/默认门控，也不是线上就绪证据。详见 [P57 报告](p57-generalization-gate.md)。
 
+## P58 Source-Backed Verifier Calibration v0
+
+P58 是一个确定性的、无线上 LLM/无 provider 的聚合级校准报告，运行于 P57 之后。它只消费 P48、P52C、P51B、P57（可选 P52B/P52A/P49）的聚合 JSON 报告，把上游的可用性与分布转成粗粒度的规划/行动提示桶。P58 不是 verifier、不是 admission、不是 Evidence、不是默认/promotion、不是线上就绪证据。它不读取源文件、候选池、任务、提示词、响应、repo lock 或 provider 配置，只输出聚合计数、比例与校准桶。详见 [P58 报告](p58-source-backed-verifier-calibration.md)。
+
 ---
 
 ## 0. 核心研究判断

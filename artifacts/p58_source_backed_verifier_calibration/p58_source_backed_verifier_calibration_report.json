@@ -1,0 +1,190 @@
+{
+  "action_hints_not_admission": true,
+  "aggregate_only_public_artifact": true,
+  "blockers": [],
+  "calibration_denominators": {
+    "calibration_denominator_available": "available",
+    "p48_request_more_context_count": 20,
+    "p48_selected_count": 100,
+    "p51b_candidate_denominator": 100,
+    "p51b_eligible_candidate_count": 40,
+    "p52c_candidate_denominator": 100,
+    "p52c_score_candidate_denominator": 95
+  },
+  "calibration_not_evidence": true,
+  "candidate_not_fact": true,
+  "conclusion": [
+    "P58 Source-Backed Verifier Calibration v0 is a deterministic, aggregate-only planning-hint report.",
+    "P58 does not read source files, candidate pools, prompts, responses, provider configs, or per-candidate rows.",
+    "P58 does not call LLMs, providers, or networks, and does not construct prompts.",
+    "P58 is not quality evidence, not a verifier pass/fail, not Evidence, not admission, and not default/promotion/live readiness.",
+    "This self-test exercised the calibration paths with synthetic upstream aggregate reports.",
+    "Calibration warning(s): 1.",
+    "Current status: self_test_only. Source-backed coverage bucket: source_backed_available; request-more-context hint: medium; local-verifier priority hint: high; P51-C eligibility hint: p51c_planning_source_backed."
+  ],
+  "default_should_change": false,
+  "elapsed_ms": 1,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-16T08:58:05.080461+00:00",
+  "generated_by": "p58_source_backed_verifier_calibration",
+  "gold_spans_in_artifact": false,
+  "input_summary": {
+    "invalid_json_count": 0,
+    "optional_present_count": 3,
+    "optional_reports": [
+      "p52b",
+      "p52a",
+      "p49"
+    ],
+    "required_missing": [],
+    "required_present_count": 4,
+    "required_reports": [
+      "p48",
+      "p52c",
+      "p51b",
+      "p57"
+    ],
+    "upstream_status_by_phase": {
+      "p48": "self_test_only",
+      "p49": "self_test_only",
+      "p51b": "self_test_only",
+      "p52a": "self_test_only",
+      "p52b": "self_test_only",
+      "p52c": "self_test_only",
+      "p57": "insufficient_matrix"
+    }
+  },
+  "llm_calls_by_p58": 0,
+  "local_verifier_priority_calibration": {
+    "component_coverage_available": true,
+    "diagnostic_only": true,
+    "diagnostic_score_distribution_available": true,
+    "hint_bucket": "high",
+    "not_admission": true,
+    "not_verifier_pass_fail": true,
+    "source_backed_coverage_bucket": "source_backed_available"
+  },
+  "not_quality_evidence": true,
+  "p51c_eligibility_calibration": {
+    "budget_violation_rate": 0.1,
+    "diagnostic_only": true,
+    "eligibility_availability": "available_source_backed",
+    "eligible_candidate_rate": 0.4,
+    "hint_bucket": "p51c_planning_source_backed",
+    "not_live_readiness": true,
+    "not_provider_authorization": true,
+    "redaction_required_rate": 0.2,
+    "request_envelope_blueprint_count": 10,
+    "source_backed_live_eligibility_available": true
+  },
+  "p52c_bucket_carry_forward": {
+    "diagnostic_score_high_rate": 0.2,
+    "diagnostic_score_low_rate": 0.2,
+    "diagnostic_score_medium_rate": 0.505263,
+    "diagnostic_score_unavailable_rate": 0.1,
+    "p52c_distribution_not_pass_fail": true,
+    "score_bucket_distribution_available": true
+  },
+  "p52c_score_not_evidence": true,
+  "p52c_score_not_pass_fail": true,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p58": false,
+  "provider_config_read_by_p58": false,
+  "provider_keys_in_artifact": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "real_evaluation": false,
+  "remote_calls_by_p58": 0,
+  "remote_requests_by_p58": 0,
+  "request_more_context_calibration": {
+    "calibration_basis": "aggregate_p48_p52c",
+    "demoted_primary_rate": 0.1,
+    "diagnostic_only": true,
+    "hint_bucket": "medium",
+    "not_admission": true,
+    "p52c_low_or_unavailable_rate": 0.3,
+    "request_more_context_rate": 0.2
+  },
+  "schema_version": "p58-source-backed-verifier-calibration-v0",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "source_backed_coverage": {
+    "metadata_only_candidate_denominator": 35,
+    "p52c_score_availability": "available_source_backed",
+    "score_unavailable_candidate_rate": 0.05,
+    "source_backed_coverage_bucket": "source_backed_available",
+    "source_backed_not_verification": true,
+    "source_backed_score_candidate_denominator": 60
+  },
+  "source_backed_not_verification": true,
+  "source_reads_attempted_by_p58": false,
+  "stage": "P58 Source-Backed Verifier Calibration v0",
+  "status": "self_test_only",
+  "status_reason": "Self-test-only aggregate calibration; not quality evidence.",
+  "upstream_safety_summary": {
+    "by_phase": {
+      "p48": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "self_test_only"
+      },
+      "p49": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "self_test_only"
+      },
+      "p51b": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "self_test_only"
+      },
+      "p52a": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "self_test_only"
+      },
+      "p52b": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "self_test_only"
+      },
+      "p52c": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "self_test_only"
+      },
+      "p57": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "insufficient_matrix"
+      }
+    },
+    "checked_phase_count": 7,
+    "p57_insufficient_matrix_acceptable": true,
+    "safety_blocker_count": 0,
+    "safety_warning_count": 0
+  },
+  "validation": {
+    "forbidden_key_scan_ok": true
+  },
+  "warnings": [
+    "P57 reports insufficient_matrix; this is acceptable for P58 calibration."
+  ]
+}

@@ -44,6 +44,7 @@ request_more_context is now a first-class diagnostic action, not Evidence.
 P52A/P52B establish bounded local source materialization and source-shape diagnostics.
 P52C adds fixed gold-free diagnostic score buckets, not verifier pass/fail.
 P51/P51-B define future LLM span-narrow/filter entry points, but still no live LLM calls.
+P58 adds aggregate source-backed verifier calibration as deterministic planning-hint buckets; it is not a verifier pass/fail, not admission, not Evidence, and not default/promotion/live readiness.
 promotion_ready=false and default_should_change=false.
 EvidenceCore semantics are unchanged.
 ```
@@ -70,6 +71,7 @@ Current detailed reports added in this phase:
 - [`p51-llm-span-narrow-2-diagnostic.md`](p51-llm-span-narrow-2-diagnostic.md)
 - [`p52b-source-backed-local-verifier-feature-matrix.md`](p52b-source-backed-local-verifier-feature-matrix.md)
 - [`p52a-source-materialization-prerequisite.md`](p52a-source-materialization-prerequisite.md)
+- [`p58-source-backed-verifier-calibration.md`](p58-source-backed-verifier-calibration.md)
 
 Recommended next step: prefer P57/P50-generalization before opening a true
 P51-C live LLM micro-run. The current scaffolds are mechanically green, but they
@@ -471,6 +473,7 @@ Public outputs include `h4b_available`, `h4b_budget_overlay=true`, `h4b_selectiv
 | P31 Candidate Reach Ceiling Study | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p31_candidate_reach_ceiling.py` measures whether candidate evidence alone reaches the gold label at K=1/3/5/10/20 before any routing or admission. It is deterministic, no-remote, and aggregate-only: no per-task rows, raw queries, snippets, prompts, responses, gold spans, private labels, or provider fields. Inputs are ephemeral P25/P30 records; records without candidate evidence pools fall back to outcome-only metrics with `candidate_pool_availability=missing_candidate_pool` and `reach_metrics_available=false`. Reports `GoldFileReach@K`, `GoldSpanReach@K`, `GoldSpanExactReach@K`, `CandidateAbsentRate@K`, `FileRightSpanWrongRate@K`, `ModelMissGivenGoldPresent@K`, `FilterKillGoldRate`, `AdmissionFalsePrimaryRate`, `AdmissionFalseSpanPerNoGoldTask`, and a K=5 failure funnel. `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `candidate_not_fact=true`, `remote_calls_by_p31=0`. Report: `docs/p31-candidate-reach-ceiling.md`. |
 | P33 Reach-Preserving Precision Anchor Anchor Repair | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33_anchor_precision_repair.py` studies how pre-SCORE anchor signals correlate with reach and span cost. It consumes ephemeral P21/P31-H1 records and aggregates an anchor taxonomy v1, a 3D calibration matrix, and budget-candidate handoff to P32. Public output is aggregate-only, no per-task rows, route features, or private fields. `promotion_ready=false`, `default_should_change=false`, `candidate_not_fact=true`, `remote_calls_by_p33=0`. Report: `docs/p33-anchor-precision-repair.md`. |
 | P33-B Anchor Subtype Calibration | Scaffold ready; diagnostic-only, SCORE-phase-only | `eval/p33b_anchor_subtype_calibration.py` consumes the P21/P31-H1 ephemeral handoff extended with per-candidate `p33b_anchor_subtypes` for `symbol_only`/`regex_only`/`symbol_regex_fusion` source classes, agreement classes, rank/size/width bins, and per-candidate `rrf_backing`. It reports subtype-bucket diagnostics, unique subtype span reach, a 3D calibration matrix over source strength / match quality / risk level, and a `p33b_to_p32_handoff` of budget candidates. Public output is aggregate-only, no subtype rows, candidate paths/spans, or private fields. `promotion_ready=false`, `default_should_change=false`, `remote_calls_by_p33b=0`. Report: `docs/p33b-anchor-subtype-calibration.md`. |
+| P58 Source-Backed Verifier Calibration | Self-test scaffold ready; aggregate-only planning hints | `eval/p58_source_backed_verifier_calibration.py` is deterministic, no-remote, and consumes only aggregate upstream JSON (P48, P52C, P51B, P57, optional P52B/P52A/P49). It emits coarse planning/action-hint buckets (`request_more_context`, `local_verifier_priority`, `p51c_eligibility`) and is not a verifier, admission, Evidence, or default/promotion/live-readiness signal. `promotion_ready=false`, `default_should_change=false`, `candidate_not_fact=true`, `remote_calls_by_p58=0`. Report: `docs/p58-source-backed-verifier-calibration.md`. |
 
 ## R0/R1 initial findings
 
