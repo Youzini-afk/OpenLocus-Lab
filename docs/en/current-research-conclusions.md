@@ -39,6 +39,10 @@ P58 is a deterministic, no-live-LLM, no-provider aggregate-only calibration repo
 
 P59 is a deterministic, no-live-LLM, no-provider, aggregate-only pre-spend diagnostic that runs after P58. It rebuilds P49 contrastive candidate packs in memory from the same ephemeral P25 records and measures whether the frozen packs contain the prerequisite contrastive information a later LLM role would need, before any LLM spend. It is not a quality evaluator, not admission, not Evidence, not default/promotion, and not live readiness. Pack construction is gold-free and uses only candidate metadata; private labels are loaded only after packs are frozen, inside the explicitly-marked `score_phase_gold_coverage` block. It does not read source files, construct prompts, or call providers. See the [P59 detailed report](p59-contrastive-pack-coverage-counterfactual.md).
 
+## P60 RMC Policy v2 v0
+
+P60 is a deterministic, no-live-LLM, no-provider, aggregate-only diagnostic policy COMPARISON layer that advances `request_more_context` (RMC) from P47/P48 geometry/overlay into a comparable policy matrix. For the same frozen candidate/task inputs, each policy selects only the NEXT diagnostic action; P60 reports aggregate routing counts plus SCORE-phase gold reach / false cost diagnostics and labeled cost/latency ESTIMATES. RMC is not evidence, not admission, and not a default; P60 declares no winner and recommends no default. RUN-phase selection is gold-free; labels are loaded only after all selections are frozen. See the [P60 detailed report](p60-rmc-policy-v2.md).
+
 ---
 
 ## 0. Executive Research Thesis

@@ -1,0 +1,813 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "candidate_pool_availability": "available",
+  "comparison_frame": {
+    "comparison_denominator_aligned": true,
+    "no_default_recommendation": true,
+    "no_winner_selected": true,
+    "policy_comparison_not_ranking": true,
+    "same_input_records_for_all_policies": true
+  },
+  "conclusion": [
+    "Self-test-only deterministic RMC policy matrix evaluated 8 synthetic tasks; this is not quality evidence.",
+    "Policy selection was gold-free and used only public task metadata, route features, and candidate metadata; labels were loaded only after selections were frozen.",
+    "P60 does not call an LLM, does not create evidence, does not admit candidates, does not read source files, and does not recommend a default policy and declares no winner.",
+    "P60 reports only aggregate next-action routing rates and SCORE-phase reach/false-cost diagnostics; all policies are treated as diagnostic alternatives, not promotion candidates.",
+    "baseline_p25_bucket_routed_v0: rmc_candidate_count=16 next_actions={'filter': 4, 'contrastive_pack': 9, 'p51c_span_narrow': 1, 'weak_candidate_only': 2, 'local_verifier': 0}.",
+    "h4b_selective_readmission: rmc_candidate_count=16 next_actions={'filter': 6, 'contrastive_pack': 3, 'p51c_span_narrow': 0, 'weak_candidate_only': 7, 'local_verifier': 0}.",
+    "rmc_all_uncertain: rmc_candidate_count=16 next_actions={'filter': 0, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 16}.",
+    "rmc_high_diagnostic_only: rmc_candidate_count=14 next_actions={'filter': 6, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 8}.",
+    "rmc_span_overlap_only: rmc_candidate_count=14 next_actions={'filter': 7, 'contrastive_pack': 0, 'p51c_span_narrow': 7, 'weak_candidate_only': 0, 'local_verifier': 0}.",
+    "rmc_symbol_regex_fusion_only: rmc_candidate_count=14 next_actions={'filter': 10, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 4}.",
+    "rmc_high_score_plus_contrast_pack: rmc_candidate_count=14 next_actions={'filter': 12, 'contrastive_pack': 2, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 0}.",
+    "rmc_high_score_plus_source_backed_verifier: rmc_candidate_count=14 next_actions={'filter': 6, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 8}."
+  ],
+  "cost_latency_measurements_taken_by_p60": false,
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidencecore_semantics_changed": false,
+  "expected_cost_latency_are_estimates": true,
+  "generated_at": "2026-06-16T12:23:03.308127+00:00",
+  "generated_by": "p60_rmc_policy_v2",
+  "gold_span_availability": "available",
+  "gold_spans_in_artifact": false,
+  "gold_used_for_policy_selection": false,
+  "input_source_count": 1,
+  "input_sources": [
+    "self_test"
+  ],
+  "insufficient_input_source_count": 0,
+  "labels_loaded_after_policy_selection": true,
+  "llm_calls_by_p60": 0,
+  "metrics": {
+    "by_policy": {
+      "baseline_p25_bucket_routed_v0": {
+        "availability": "available",
+        "candidate_denominator": 16,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 5,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 2,
+          "false_cost_rate": 0.666667,
+          "false_per_gold_reached": 0.4,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.1875,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.5,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.3125,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 9,
+          "filter": 4,
+          "local_verifier": 0,
+          "p51c_span_narrow": 1,
+          "weak_candidate_only": 2
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.5625,
+          "filter": 0.25,
+          "local_verifier": 0.0,
+          "p51c_span_narrow": 0.0625,
+          "weak_candidate_only": 0.125
+        },
+        "policy_family": "reference",
+        "policy_name": "baseline_p25_bucket_routed_v0",
+        "rmc_candidate_count": 16,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 8,
+        "rmc_task_rate": 1.0,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 5,
+          "eligible_rate": 0.3125,
+          "ineligible_count": 11,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "h4b_selective_readmission": {
+        "availability": "available",
+        "candidate_denominator": 16,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 6,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 3,
+          "false_cost_rate": 1.0,
+          "false_per_gold_reached": 0.6,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.1875,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.5,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.3125,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 3,
+          "filter": 6,
+          "local_verifier": 0,
+          "p51c_span_narrow": 0,
+          "weak_candidate_only": 7
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.1875,
+          "filter": 0.375,
+          "local_verifier": 0.0,
+          "p51c_span_narrow": 0.0,
+          "weak_candidate_only": 0.4375
+        },
+        "policy_family": "reference",
+        "policy_name": "h4b_selective_readmission",
+        "rmc_candidate_count": 16,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 8,
+        "rmc_task_rate": 1.0,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 6,
+          "eligible_rate": 0.375,
+          "ineligible_count": 10,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "rmc_all_uncertain": {
+        "availability": "available",
+        "candidate_denominator": 16,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 0,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 0,
+          "false_cost_rate": 0.0,
+          "false_per_gold_reached": 0.0,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.1875,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.5,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.3125,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 0,
+          "filter": 0,
+          "local_verifier": 16,
+          "p51c_span_narrow": 0,
+          "weak_candidate_only": 0
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.0,
+          "filter": 0.0,
+          "local_verifier": 1.0,
+          "p51c_span_narrow": 0.0,
+          "weak_candidate_only": 0.0
+        },
+        "policy_family": "rmc",
+        "policy_name": "rmc_all_uncertain",
+        "rmc_candidate_count": 16,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 8,
+        "rmc_task_rate": 1.0,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 0,
+          "eligible_rate": 0.0,
+          "ineligible_count": 16,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "rmc_high_diagnostic_only": {
+        "availability": "available",
+        "candidate_denominator": 14,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 6,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 2,
+          "false_cost_rate": 0.666667,
+          "false_per_gold_reached": 0.4,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.214286,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.571429,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.357143,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 0,
+          "filter": 6,
+          "local_verifier": 8,
+          "p51c_span_narrow": 0,
+          "weak_candidate_only": 0
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.0,
+          "filter": 0.428571,
+          "local_verifier": 0.571429,
+          "p51c_span_narrow": 0.0,
+          "weak_candidate_only": 0.0
+        },
+        "policy_family": "rmc",
+        "policy_name": "rmc_high_diagnostic_only",
+        "rmc_candidate_count": 14,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 7,
+        "rmc_task_rate": 0.875,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 6,
+          "eligible_rate": 0.428571,
+          "ineligible_count": 8,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "rmc_high_score_plus_contrast_pack": {
+        "availability": "available",
+        "candidate_denominator": 14,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 12,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 3,
+          "false_cost_rate": 1.0,
+          "false_per_gold_reached": 0.6,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.214286,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.571429,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.357143,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 2,
+          "filter": 12,
+          "local_verifier": 0,
+          "p51c_span_narrow": 0,
+          "weak_candidate_only": 0
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.142857,
+          "filter": 0.857143,
+          "local_verifier": 0.0,
+          "p51c_span_narrow": 0.0,
+          "weak_candidate_only": 0.0
+        },
+        "policy_family": "rmc",
+        "policy_name": "rmc_high_score_plus_contrast_pack",
+        "rmc_candidate_count": 14,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 7,
+        "rmc_task_rate": 0.875,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 12,
+          "eligible_rate": 0.857143,
+          "ineligible_count": 2,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "rmc_high_score_plus_source_backed_verifier": {
+        "availability": "available",
+        "candidate_denominator": 14,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 6,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 2,
+          "false_cost_rate": 0.666667,
+          "false_per_gold_reached": 0.4,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.214286,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.571429,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.357143,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 0,
+          "filter": 6,
+          "local_verifier": 8,
+          "p51c_span_narrow": 0,
+          "weak_candidate_only": 0
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.0,
+          "filter": 0.428571,
+          "local_verifier": 0.571429,
+          "p51c_span_narrow": 0.0,
+          "weak_candidate_only": 0.0
+        },
+        "policy_family": "rmc",
+        "policy_name": "rmc_high_score_plus_source_backed_verifier",
+        "rmc_candidate_count": 14,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 7,
+        "rmc_task_rate": 0.875,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 6,
+          "eligible_rate": 0.428571,
+          "ineligible_count": 8,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "rmc_span_overlap_only": {
+        "availability": "available",
+        "candidate_denominator": 14,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 14,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 3,
+          "false_cost_rate": 1.0,
+          "false_per_gold_reached": 0.6,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.214286,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.571429,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.357143,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 0,
+          "filter": 7,
+          "local_verifier": 0,
+          "p51c_span_narrow": 7,
+          "weak_candidate_only": 0
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.0,
+          "filter": 0.5,
+          "local_verifier": 0.0,
+          "p51c_span_narrow": 0.5,
+          "weak_candidate_only": 0.0
+        },
+        "policy_family": "rmc",
+        "policy_name": "rmc_span_overlap_only",
+        "rmc_candidate_count": 14,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 7,
+        "rmc_task_rate": 0.875,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 14,
+          "eligible_rate": 1.0,
+          "ineligible_count": 0,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      },
+      "rmc_symbol_regex_fusion_only": {
+        "availability": "available",
+        "candidate_denominator": 14,
+        "expected_provider_spend_estimates": {
+          "estimate_only_not_measurement": true,
+          "estimate_parameter_profile": "p60_default_v0",
+          "estimated_cost_usd": null,
+          "estimated_latency_ms": null,
+          "estimated_provider_calls": 10,
+          "per_next_action_estimates": {
+            "contrastive_pack": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "filter": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "local_verifier": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            },
+            "p51c_span_narrow": {
+              "estimated_cost_usd": null,
+              "estimated_latency_ms": null,
+              "estimated_provider_calls": 1
+            },
+            "weak_candidate_only": {
+              "estimated_cost_usd": 0.0,
+              "estimated_latency_ms": 0,
+              "estimated_provider_calls": 0
+            }
+          },
+          "provider_calls_by_p60": 0
+        },
+        "false_cost_diagnostics": {
+          "false_cost_count": 2,
+          "false_cost_rate": 0.666667,
+          "false_per_gold_reached": 0.4,
+          "no_gold_task_denominator": 3,
+          "not_used_for_policy_selection": true,
+          "rmc_on_no_gold_count": 3,
+          "rmc_on_no_gold_rate": 1.0,
+          "score_phase_only": true
+        },
+        "gold_reach_diagnostics": {
+          "file_right_span_wrong_count": 3,
+          "file_right_span_wrong_rate": 0.214286,
+          "gold_file_reach_count": 8,
+          "gold_file_reach_rate": 0.571429,
+          "gold_span_overlap_reach_count": 5,
+          "gold_span_overlap_reach_rate": 0.357143,
+          "not_used_for_policy_selection": true,
+          "positive_task_denominator": 5,
+          "score_phase_only": true
+        },
+        "next_action_counts": {
+          "contrastive_pack": 0,
+          "filter": 10,
+          "local_verifier": 4,
+          "p51c_span_narrow": 0,
+          "weak_candidate_only": 0
+        },
+        "next_action_rates": {
+          "contrastive_pack": 0.0,
+          "filter": 0.714286,
+          "local_verifier": 0.285714,
+          "p51c_span_narrow": 0.0,
+          "weak_candidate_only": 0.0
+        },
+        "policy_family": "rmc",
+        "policy_name": "rmc_symbol_regex_fusion_only",
+        "rmc_candidate_count": 14,
+        "rmc_candidate_rate": 1.0,
+        "rmc_task_count": 7,
+        "rmc_task_rate": 0.875,
+        "rmc_to_llm_eligibility": {
+          "eligibility_not_authorization": true,
+          "eligibility_source": "p60_rmc_policy_v2_aggregate_only",
+          "eligible_count": 10,
+          "eligible_rate": 0.714286,
+          "ineligible_count": 4,
+          "missing_contract_count": 0
+        },
+        "task_denominator": 8
+      }
+    }
+  },
+  "no_gold_task_count": 3,
+  "not_quality_evidence": true,
+  "p31_h1_handoff_detected": true,
+  "p31_h1_handoff_detected_count": 5,
+  "p33b_handoff_detected": true,
+  "p33b_handoff_detected_count": 7,
+  "policy_comparison_not_ranking": true,
+  "positive_task_count": 5,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p60": false,
+  "provider_config_read_by_p60": false,
+  "provider_keys_in_artifact": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "reach_metrics_available": true,
+  "real_evaluation": false,
+  "remote_calls_by_p60": 0,
+  "rmc_next_action_only": true,
+  "rmc_not_admission": true,
+  "rmc_not_evidence": true,
+  "run_phase_gold_free": true,
+  "schema_version": "p60-rmc-policy-v2-v0",
+  "score_phase_only_metrics": true,
+  "self_test": true,
+  "source_reads_attempted_by_p60": false,
+  "stage": "P60 RMC Policy v2 v0",
+  "status": "self_test_only",
+  "status_reason": "Self-test-only deterministic RMC policy comparison matrix; not quality evidence.",
+  "task_count": 8,
+  "upstream_carry_forward": {
+    "p48_report_source": "not_provided",
+    "p48_status": "not_provided",
+    "p50_report_source": "not_provided",
+    "p50_status": "not_provided",
+    "p51b_report_source": "not_provided",
+    "p51b_status": "not_provided",
+    "p58_report_source": "not_provided",
+    "p58_status": "not_provided",
+    "p59_report_source": "not_provided",
+    "p59_status": "not_provided"
+  },
+  "validation": {
+    "forbidden_key_scan_ok": true
+  }
+}

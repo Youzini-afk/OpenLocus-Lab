@@ -43,6 +43,7 @@ P46 reach/cost map
 -> P57 generalization gate
 -> P58 source-backed verifier calibration
 -> P59 contrastive pack coverage & counterfactual study
+-> P60 RMC policy v2 v0 comparison matrix
 ```
 
 Key current conclusions:
@@ -57,6 +58,7 @@ P51/P51-B define future LLM span-narrow/filter entry points, but still no live L
 P57 adds a deterministic aggregate-only generalization-readiness gate after P51-B.
 P58 adds aggregate source-backed verifier calibration as deterministic planning-hint buckets; it is not a verifier pass/fail, not admission, not Evidence, and not default/promotion/live readiness.
 P59 adds a deterministic pre-spend diagnostic that rebuilds P49 packs and measures whether they contain the prerequisite contrastive information a later LLM role would need; it is not a quality evaluator, not admission, not Evidence, and not default/promotion/live readiness.
+P60 adds a deterministic RMC policy comparison matrix that selects only the next diagnostic action; it reports aggregate routing counts and SCORE-phase gold-reach/false-cost diagnostics, but is not evidence, not admission, and does not select a winner or recommend a default.
 promotion_ready=false and default_should_change=false.
 EvidenceCore semantics are unchanged.
 ```
@@ -78,6 +80,7 @@ matrix, full repo-language generalization, or a live P51-C LLM opt-in call.
 
 Current detailed reports added in this phase:
 
+- [`p60-rmc-policy-v2.md`](p60-rmc-policy-v2.md)
 - [`p52c-local-verifier-scoring-simulator.md`](p52c-local-verifier-scoring-simulator.md)
 - [`p51b-llm-opt-in-contract.md`](p51b-llm-opt-in-contract.md)
 - [`p51-llm-span-narrow-2-diagnostic.md`](p51-llm-span-narrow-2-diagnostic.md)
