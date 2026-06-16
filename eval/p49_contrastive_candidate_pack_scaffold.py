@@ -43,6 +43,8 @@ import p46_candidate_reach_cost_map as p46
 SCHEMA_VERSION = "p49-contrastive-candidate-pack-scaffold-v1"
 GENERATED_BY = "eval/p49_contrastive_candidate_pack_scaffold.py"
 
+METADATA_HARD_DISTRACTOR_PROXY_VERSION = "metadata_hard_distractor_proxy_v1"
+
 DEFAULT_OUT = Path("artifacts/p49_contrastive_candidate_pack_scaffold/p49_contrastive_candidate_pack_scaffold_report.json")
 DEFAULT_DOC = Path("docs/en/p49-contrastive-candidate-pack-scaffold.md")
 
@@ -203,6 +205,14 @@ P49_SAFETY_FLAG_KEYS = {
     "contrast_metrics",
     "provenance_completeness",
     "score_phase_diagnostics",
+    "hard_distractor_repair_coverage",
+    "metadata_hard_distractor_proxy_definition_version",
+    "proxy_pack_count",
+    "proxy_pack_rate",
+    "available_count",
+    "slot_fill_count",
+    "slot_fill_rate",
+    "overflow_blocked_count",
     "availability",
     "task_count",
     "positive_task_count",
@@ -439,13 +449,14 @@ def _overlaps(a: dict[str, Any], b: dict[str, Any]) -> bool:
     return a["_path"] == b["_path"] and a["_end"] >= b["_start"] - 1 and a["_start"] <= b["_end"] + 1
 
 
-def _build_topk_flat_pack_v0(candidates: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_topk_flat_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None) -> dict[str, Any]:
     selected = candidates[:MAX_CANDIDATES_PER_PACK]
     return {
         "selected": selected,
         "slots_filled": set(),
         "slots_overflow": len(candidates) > MAX_CANDIDATES_PER_PACK,
         "line_budget_proxy": _pack_line_budget_proxy(selected),
+        "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
     }
 
 
@@ -465,9 +476,9 @@ def _select_next(
     return None
 
 
-def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None) -> dict[str, Any]:
     if not candidates:
-        return {"selected": [], "slots_filled": set(), "slots_overflow": False, "line_budget_proxy": 0}
+        return {"selected": [], "slots_filled": set(), "slots_overflow": False, "line_budget_proxy": 0, "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION}
     anchor = candidates[0]
     selected = [anchor]
     slots_filled: set[str] = {"primary_anchor"}
@@ -492,6 +503,21 @@ def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]]) -> dict[str
     if c:
         selected.append(c)
         slots_filled.add("cross_file_anchor")
+
+    # Hard distractor (limited to one) using metadata-only proxy.
+    c = _select_next(
+        candidates,
+        selected,
+        lambda x: _is_metadata_hard_distractor_proxy_v1(x, anchor, task),
+    )
+    hard_count = sum(
+        1
+        for x in selected
+        if _is_metadata_hard_distractor_proxy_v1(x, anchor, task)
+    )
+    if c and hard_count < MAX_HARD_DISTRACTORS and len(selected) < MAX_CANDIDATES_PER_PACK:
+        selected.append(c)
+        slots_filled.add("hard_distractor")
 
     # Same-file contrast (non-overlapping).
     if same_file_count < MAX_SAME_FILE_CANDIDATES:
@@ -528,13 +554,6 @@ def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]]) -> dict[str
             selected.append(c)
             slots_filled.add("doc_config_pair")
 
-    # Hard distractor (limited to one).
-    c = _select_next(candidates, selected, lambda x: x.get("path_kind") in {"generated_or_vendor", "unknown"} and not _has_affinity(x, anchor))
-    hard_count = sum(1 for x in selected if x.get("path_kind") in {"generated_or_vendor", "unknown"})
-    if c and hard_count < MAX_HARD_DISTRACTORS and len(selected) < MAX_CANDIDATES_PER_PACK:
-        selected.append(c)
-        slots_filled.add("hard_distractor")
-
     # RMC trigger candidate.
     c = _select_next(candidates, selected, _is_rmc_trigger)
     if c and len(selected) < MAX_CANDIDATES_PER_PACK:
@@ -555,12 +574,13 @@ def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]]) -> dict[str
         "slots_filled": slots_filled,
         "slots_overflow": overflow,
         "line_budget_proxy": _pack_line_budget_proxy(selected),
+        "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
     }
 
 
-def _build_conservative_anchor_pack_v0(candidates: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_conservative_anchor_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None) -> dict[str, Any]:
     if not candidates:
-        return {"selected": [], "slots_filled": set(), "slots_overflow": False, "line_budget_proxy": 0}
+        return {"selected": [], "slots_filled": set(), "slots_overflow": False, "line_budget_proxy": 0, "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION}
     anchor = candidates[0]
     selected = [anchor]
     slots_filled: set[str] = {"primary_anchor"}
@@ -583,6 +603,21 @@ def _build_conservative_anchor_pack_v0(candidates: list[dict[str, Any]]) -> dict
         selected.append(c)
         slots_filled.add("cross_file_anchor")
 
+    # Conservative anchor also adds a metadata-only hard-distractor slot when available.
+    c = _select_next(
+        candidates,
+        selected,
+        lambda x: _is_metadata_hard_distractor_proxy_v1(x, anchor, task),
+    )
+    hard_count = sum(
+        1
+        for x in selected
+        if _is_metadata_hard_distractor_proxy_v1(x, anchor, task)
+    )
+    if c and hard_count < MAX_HARD_DISTRACTORS and len(selected) < MAX_CANDIDATES_PER_PACK:
+        selected.append(c)
+        slots_filled.add("hard_distractor")
+
     c = _select_next(candidates, selected, _is_rmc_trigger)
     if c and len(selected) < MAX_CANDIDATES_PER_PACK:
         selected.append(c)
@@ -601,11 +636,125 @@ def _build_conservative_anchor_pack_v0(candidates: list[dict[str, Any]]) -> dict
         "slots_filled": slots_filled,
         "slots_overflow": overflow,
         "line_budget_proxy": _pack_line_budget_proxy(selected),
+        "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
     }
 
 
 def _has_affinity(cand: dict[str, Any], anchor: dict[str, Any]) -> bool:
     return cand.get("path_kind") == anchor.get("path_kind")
+
+
+def _is_metadata_hard_distractor_proxy_v1(
+    cand: dict[str, Any],
+    anchor: dict[str, Any],
+    task: dict[str, Any] | None,
+) -> bool:
+    """Metadata-only RUN proxy for a hard distractor.
+
+    This proxy never uses labels, gold, outcomes, query/source text, or
+    provider outputs.  It uses only candidate metadata and public task risk tags
+    already present in the ephemeral P25/P46 normalized record:
+
+    * rank/score closeness (a plausible wrong alternative near the top)
+    * channels/provenance (disagreement with anchor channel set)
+    * P33B subtype source/agreement class (different source class or disagree)
+    * RRF backing (non-RRF competitor or RRF-backing mismatch)
+    * path_kind contrast (source/test/doc/config, not just unknown/generated)
+    * span width bin contrast (different geometry class)
+    * same-file non-overlapping or cross-file competitor shape
+    * public task_bucket / task_risk_tags context
+
+    Strong affinity signals (same file+overlap, same path_kind, same source
+    class, shared channels, both RRF-backed) reduce the chance that a candidate
+    is a distractor.  A candidate needs at least two weak contrast signals to
+    be considered a plausible hard distractor, and unknown/generated path_kind
+    is only one weak signal among several, not the whole definition.
+    """
+    if cand.get("_id") == anchor.get("_id"):
+        return False
+
+    c_subtype = cand.get("subtype") or {}
+    a_subtype = anchor.get("subtype") or {}
+    c_channels = set(cand.get("channels", []))
+    a_channels = set(anchor.get("channels", []))
+
+    # Strong affinity signals (negative evidence for distractor status).
+    affinity = 0
+    if cand.get("_path") == anchor.get("_path") and _overlaps(cand, anchor):
+        affinity += 1
+    if cand.get("path_kind") == anchor.get("path_kind"):
+        affinity += 1
+    c_src = c_subtype.get("source_class") if isinstance(c_subtype, dict) else None
+    a_src = a_subtype.get("source_class") if isinstance(a_subtype, dict) else None
+    if c_src and a_src and c_src == a_src:
+        affinity += 1
+    if c_channels and a_channels and c_channels & a_channels:
+        affinity += 1
+    if _has_rrf_backing(cand) and _has_rrf_backing(anchor):
+        affinity += 1
+
+    # Too much affinity to be a plausible distractor.
+    if affinity >= 3:
+        return False
+
+    signals = 0
+
+    # Rank/score closeness: plausible wrong alternative near the top.
+    c_rank = cand.get("rank")
+    a_rank = anchor.get("rank")
+    if isinstance(c_rank, int) and isinstance(a_rank, int):
+        if abs(c_rank - a_rank) <= 2 or c_rank <= 3:
+            signals += 1
+    c_score = cand.get("score")
+    a_score = anchor.get("score")
+    if isinstance(c_score, (int, float)) and isinstance(a_score, (int, float)):
+        if abs(c_score - a_score) <= 0.15:
+            signals += 1
+
+    # Path-kind contrast (source/test/doc/config, not only unknown/generated).
+    if cand.get("path_kind") != anchor.get("path_kind"):
+        signals += 1
+
+    # Channel/provenance disagreement.
+    if c_channels and a_channels and not (c_channels & a_channels):
+        signals += 1
+
+    # P33B subtype source/agreement disagreement.
+    if c_src and a_src and c_src != a_src:
+        signals += 1
+    c_agr = c_subtype.get("agreement_class") if isinstance(c_subtype, dict) else None
+    a_agr = a_subtype.get("agreement_class") if isinstance(a_subtype, dict) else None
+    if c_agr == "disagree" or a_agr == "disagree":
+        signals += 1
+
+    # RRF backing contrast (non-RRF competitor or RRF mismatch).
+    if _has_rrf_backing(cand) != _has_rrf_backing(anchor):
+        signals += 1
+
+    # Span width geometry contrast.
+    c_span = c_subtype.get("span_width_bin") if isinstance(c_subtype, dict) else None
+    a_span = a_subtype.get("span_width_bin") if isinstance(a_subtype, dict) else None
+    if c_span and a_span and c_span != a_span:
+        signals += 1
+
+    # Same-file non-overlapping or cross-file competitor shape.
+    if cand.get("_path") != anchor.get("_path"):
+        signals += 1
+    elif not _overlaps(cand, anchor):
+        signals += 1
+
+    # Public task risk context (aggregate-only, no task ID leakage).
+    if task:
+        risk_tags = {str(t).lower() for t in task.get("task_risk_tags", [])}
+        if risk_tags & {"high_confidence", "config", "negative", "weak_candidates", "ambiguous"}:
+            signals += 1
+
+    # Unknown/generated path_kind is one weak signal, not the whole definition.
+    if cand.get("path_kind") in {"generated_or_vendor", "unknown"}:
+        signals += 1
+
+    # Require at least two weak signals to avoid inflation by a single axis.
+    return signals >= 2
 
 
 def _has_rrf_backing(cand: dict[str, Any]) -> bool:
@@ -624,13 +773,13 @@ def _has_symbol_regex_agreement(cand: dict[str, Any]) -> bool:
     return str(st.get("source_class")) == "symbol_regex_fusion"
 
 
-def _build_pack(candidates: list[dict[str, Any]], strategy: str) -> dict[str, Any]:
+def _build_pack(candidates: list[dict[str, Any]], strategy: str, task: dict[str, Any] | None) -> dict[str, Any]:
     if strategy == "topk_flat_pack_v0":
-        return _build_topk_flat_pack_v0(candidates)
+        return _build_topk_flat_pack_v0(candidates, task)
     if strategy == "anchor_contrast_pack_v0":
-        return _build_anchor_contrast_pack_v0(candidates)
+        return _build_anchor_contrast_pack_v0(candidates, task)
     if strategy == "conservative_anchor_pack_v0":
-        return _build_conservative_anchor_pack_v0(candidates)
+        return _build_conservative_anchor_pack_v0(candidates, task)
     raise ValueError(f"unknown pack strategy: {strategy}")
 
 
@@ -660,7 +809,7 @@ def _compute_task_pack(task: dict[str, Any], strategy: str) -> dict[str, Any]:
         for items in pools.values():
             if isinstance(items, list):
                 raw_count += len(items)
-    pack = _build_pack(candidates, strategy)
+    pack = _build_pack(candidates, strategy, task)
     return {
         "candidates": candidates,
         "raw_candidate_count": raw_count,
@@ -671,6 +820,7 @@ def _compute_task_pack(task: dict[str, Any], strategy: str) -> dict[str, Any]:
         "slots_overflow": pack["slots_overflow"],
         "line_budget_proxy": pack["line_budget_proxy"],
         "has_candidates": bool(candidates),
+        "metadata_hard_distractor_proxy_version": pack.get("metadata_hard_distractor_proxy_version"),
     }
 
 
@@ -699,6 +849,12 @@ def _compute_strategy_metrics(
     subtype_diversity_count = 0
     path_kind_diversity_count = 0
     channel_diversity_count = 0
+
+    # Hard-distractor repair coverage (metadata-only proxy, RUN phase).
+    proxy_hard_distractor_pack_count = 0
+    proxy_hard_distractor_available_count = 0
+    hard_distractor_slot_fill_count = 0
+    hard_distractor_overflow_blocked_count = 0
 
     selected_candidate_count = 0
     candidate_with_score_count = 0
@@ -792,6 +948,28 @@ def _compute_strategy_metrics(
         # Pack-shape contrast diagnostics.
         anchor = selected[0]
         other_kinds = {c.get("path_kind") for c in selected if c["_id"] != anchor["_id"]}
+
+        # Hard-distractor repair coverage (metadata-only proxy, RUN phase).
+        proxy_available = 0
+        if pack.get("candidates"):
+            proxy_available = sum(
+                1
+                for c in pack["candidates"]
+                if c["_id"] != anchor["_id"] and _is_metadata_hard_distractor_proxy_v1(c, anchor, task)
+            )
+        if proxy_available > 0:
+            proxy_hard_distractor_available_count += 1
+        if any(
+            _is_metadata_hard_distractor_proxy_v1(c, anchor, task)
+            for c in selected
+            if c["_id"] != anchor["_id"]
+        ):
+            proxy_hard_distractor_pack_count += 1
+        if "hard_distractor" in pack["slots_filled"]:
+            hard_distractor_slot_fill_count += 1
+        elif proxy_available > 0 and len(selected) >= MAX_CANDIDATES_PER_PACK:
+            hard_distractor_overflow_blocked_count += 1
+
         if any(c["_path"] == anchor["_path"] and c["_id"] != anchor["_id"] for c in selected):
             same_file_pair_count += 1
         if any(c["_path"] != anchor["_path"] for c in selected):
@@ -941,11 +1119,22 @@ def _compute_strategy_metrics(
             counts["pack_with_hard_distractor_count"], counts["pack_nonempty_count"]
         )
 
+    hard_distractor_repair_coverage = {
+        "metadata_hard_distractor_proxy_definition_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
+        "proxy_pack_count": proxy_hard_distractor_pack_count,
+        "proxy_pack_rate": _rate(proxy_hard_distractor_pack_count, nonempty),
+        "available_count": proxy_hard_distractor_available_count,
+        "slot_fill_count": hard_distractor_slot_fill_count,
+        "slot_fill_rate": _rate(hard_distractor_slot_fill_count, nonempty),
+        "overflow_blocked_count": hard_distractor_overflow_blocked_count,
+    }
+
     return {
         "pack_build_metrics": _nullify_missing(pack_build_metrics),
         "contrast_metrics": _nullify_missing(contrast_metrics),
         "provenance_completeness": _nullify_missing(provenance_completeness),
         "score_phase_diagnostics": _nullify_missing(score_phase_diagnostics),
+        "hard_distractor_repair_coverage": _nullify_missing(hard_distractor_repair_coverage),
         "path_kind_distribution": dict(path_kind_dist),
         "source_class_distribution": dict(source_class_dist),
         "breakdowns": {
@@ -953,6 +1142,8 @@ def _compute_strategy_metrics(
             "by_risk_tag": dict(by_risk_tag),
         },
     }
+
+
 
 
 def _nullify_missing(obj: dict[str, Any]) -> dict[str, Any]:
@@ -1034,6 +1225,9 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
     for flag, expected in expected_flags.items():
         if report.get(flag) is not expected:
             errors.append(f"{flag} must be {expected}")
+
+    if report.get("metadata_hard_distractor_proxy_definition_version") != METADATA_HARD_DISTRACTOR_PROXY_VERSION:
+        errors.append("metadata_hard_distractor_proxy_definition_version missing or wrong")
 
     if report.get("self_test") and report.get("not_quality_evidence") is not True:
         errors.append("self_test must set not_quality_evidence=true")
@@ -1184,6 +1378,7 @@ def build_report(
         "p31_h1_handoff_detected_count": p31_h1_handoff_detected_count,
         "p33b_handoff_detected": p33b_handoff_detected,
         "p33b_handoff_detected_count": p33b_handoff_detected_count,
+        "metadata_hard_distractor_proxy_definition_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
         **p50_meta,
         **p48_meta,
         "metrics": {"by_strategy": by_strategy},
@@ -1204,6 +1399,7 @@ def build_markdown(report: dict[str, Any]) -> str:
         f"- Generated: {report['generated_at']}",
         f"- Status: `{report['status']}`",
         f"- Self-test: {report['self_test']}",
+        f"- Hard-distractor proxy: `{report.get('metadata_hard_distractor_proxy_definition_version')}`",
         f"- Remote calls by P49: {report['remote_calls_by_p49']}",
         f"- LLM calls by P49: {report['llm_calls_by_p49']}",
         f"- Source reads by P49: {report['source_reads_attempted_by_p49']}",
@@ -1230,6 +1426,7 @@ def build_markdown(report: dict[str, Any]) -> str:
         "- Deduplicate candidates by path/span/strategy-affinity privately; never publish identifiers.",
         "- Build three deterministic pack shapes per task: top-k flat, anchor-contrast, and conservative-anchor.",
         "- Pack construction uses metadata only and never gold/outcome/cost signals.",
+        "- The `hard_distractor` slot is filled using a metadata-only RUN proxy (`metadata_hard_distractor_proxy_v1`). The proxy is defined over candidate rank, score, path-kind contrast, channel/provenance disagreement, P33B subtype source/agreement class, RRF backing, span-width geometry, same-file/cross-file competitor shape, and public task-bucket/risk tags. Labels, gold, and source text are never used.",
         "- After packs are built, compute SCORE-phase diagnostics using gold spans and outcome costs; these are clearly marked "
         "`not_used_for_pack_construction=true`.",
         "- Output is aggregate-only: counts, rates, and distributions by pack strategy, public task bucket, and public risk tag.",
@@ -1291,7 +1488,22 @@ def build_markdown(report: dict[str, Any]) -> str:
         )
     lines.append("")
 
+    lines.append("## Hard-distractor repair coverage (metadata-only proxy)\n")
+    lines.append(
+        "| Strategy | ProxyPackCount | ProxyPackRate | AvailableCount | SlotFillCount | SlotFillRate | OverflowBlocked | Definition |"
+    )
+    lines.append("|---|---:|---:|---:|---:|---:|---:|---|")
+    for strategy in PACK_STRATEGIES:
+        m = report["metrics"]["by_strategy"][strategy]["hard_distractor_repair_coverage"]
+        lines.append(
+            f"| {strategy} | {m['proxy_pack_count']} | {_fmt_scalar(m['proxy_pack_rate'])} | "
+            f"{m['available_count']} | {m['slot_fill_count']} | {_fmt_scalar(m['slot_fill_rate'])} | "
+            f"{m['overflow_blocked_count']} | `{m['metadata_hard_distractor_proxy_definition_version']}` |"
+        )
+    lines.append("")
+
     lines.append("## SCORE-phase diagnostics (not used for pack construction)\n")
+
     lines.append(
         "| Strategy | GoldFileInPack | GoldSpanInPack | GoldSpanInAnchor | GoldSpanInContrast | "
         "FileRightSpanWrong | NoGoldPackNonempty | NoGoldHardDistractor | RMCTriggerPack |"
@@ -1313,6 +1525,37 @@ def build_markdown(report: dict[str, Any]) -> str:
         lines.append(f"- {line}")
     lines.append("")
     return "\n".join(lines)
+
+
+def _assert_self_test_invariants(report: dict[str, Any]) -> None:
+    """Self-test assertions: hard-distractor proxy coverage and privacy."""
+    assert report["task_count"] >= 3, "self-test should cover at least 3 tasks"
+    by_strategy = report["metrics"]["by_strategy"]
+    for strategy in PACK_STRATEGIES:
+        m = by_strategy[strategy]
+        assert m["pack_build_metrics"]["pack_build_denominator"] > 0, f"{strategy}: pack_build_denominator must be positive"
+        h = m["hard_distractor_repair_coverage"]
+        assert h["metadata_hard_distractor_proxy_definition_version"] == METADATA_HARD_DISTRACTOR_PROXY_VERSION, f"{strategy}: definition version mismatch"
+        assert h["available_count"] >= 0, f"{strategy}: available_count must be non-negative"
+        assert h["proxy_pack_count"] <= h["available_count"], f"{strategy}: proxy_pack_count cannot exceed available_count"
+        assert h["slot_fill_count"] <= h["proxy_pack_count"], f"{strategy}: slot_fill_count cannot exceed proxy_pack_count"
+        assert h["overflow_blocked_count"] >= 0, f"{strategy}: overflow_blocked_count must be non-negative"
+
+    # At least one strategy must have a proxy hard-distractor available.
+    assert any(
+        by_strategy[s]["hard_distractor_repair_coverage"]["available_count"] > 0
+        for s in PACK_STRATEGIES
+    ), "self-test must include at least one task where a proxy hard-distractor is available"
+
+    # At least one strategy must fill the hard-distractor slot.
+    assert any(
+        by_strategy[s]["hard_distractor_repair_coverage"]["slot_fill_count"] > 0
+        for s in PACK_STRATEGIES
+    ), "self-test must include at least one hard-distractor slot fill"
+
+    # Privacy: no forbidden keys in public report.
+    violations = _reject_forbidden_keys(report)
+    assert not violations, f"self-test public report leaked forbidden keys: {violations[:5]}"
 
 
 def _fmt_scalar(x: Any) -> str:
@@ -1379,6 +1622,9 @@ def main() -> int:
         p50_report_path=args.p50_report,
         p48_report_path=args.p48_report,
     )
+
+    if args.self_test:
+        _assert_self_test_invariants(report)
 
     _write_json(args.out, report)
     md = build_markdown(report)

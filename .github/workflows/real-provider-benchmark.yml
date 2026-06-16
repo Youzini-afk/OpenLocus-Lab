@@ -1422,6 +1422,10 @@ jobs:
                   for flag in ["not_quality_evidence", "candidate_not_fact", "pack_not_evidence", "coverage_not_quality_evidence", "counterfactual_not_quality_claim", "run_phase_gold_free", "labels_loaded_after_pack_build", "score_phase_only_metrics", "aggregate_only_public_artifact"]:
                       if data.get(flag) is not True:
                           raise SystemExit(f"{json_path} {flag} must be true")
+                  if data.get("hard_distractor_labels_not_used_for_pack_construction") is not True:
+                      raise SystemExit(f"{json_path} hard_distractor labels must be SCORE-phase only")
+                  if data.get("metadata_hard_distractor_proxy_definition_version") != "metadata_hard_distractor_proxy_v1":
+                      raise SystemExit(f"{json_path} metadata hard-distractor proxy definition mismatch")
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "raw_source_stored", "raw_paths_in_artifact", "raw_line_ranges_in_artifact", "raw_digests_in_artifact", "provider_keys_in_artifact", "gold_spans_in_artifact", "private_labels_committed"]:
                       if data.get(flag) is not False:
                           raise SystemExit(f"{json_path} {flag} must be false")
@@ -1453,7 +1457,33 @@ jobs:
                   ):
                       raise SystemExit(f"{json_path} has no pack strategy with a positive denominator")
                   for strategy, block in by_strategy.items():
+                      repair = block.get("hard_distractor_repair_coverage", {})
+                      if repair.get("metadata_hard_distractor_proxy_definition_version") != "metadata_hard_distractor_proxy_v1":
+                          raise SystemExit(f"{json_path} {strategy} repair definition mismatch")
+                      proxy_count = repair.get("proxy_pack_count")
+                      available_count = repair.get("available_count")
+                      slot_fill_count = repair.get("slot_fill_count")
+                      overflow_count = repair.get("overflow_blocked_count")
+                      if not all(isinstance(x, int) for x in (proxy_count, available_count, slot_fill_count, overflow_count)):
+                          raise SystemExit(f"{json_path} {strategy} repair coverage counts must be integers")
+                      if proxy_count > available_count:
+                          raise SystemExit(f"{json_path} {strategy} proxy pack count exceeds available count")
+                      if slot_fill_count > proxy_count:
+                          raise SystemExit(f"{json_path} {strategy} slot fill count exceeds proxy pack count")
+                      if overflow_count > available_count:
+                          raise SystemExit(f"{json_path} {strategy} overflow count exceeds available count")
+                      score_hd = block.get("score_phase_hard_distractor_coverage", {})
+                      if score_hd.get("not_used_for_pack_construction") is not True:
+                          raise SystemExit(f"{json_path} {strategy} score-phase hard-distractor coverage must be SCORE-only")
+                      hd_denom = score_hd.get("denominator")
+                      hd_present = score_hd.get("hard_distractor_present_count")
+                      hd_missing = score_hd.get("hard_distractor_missing_count")
+                      if not all(isinstance(x, int) for x in (hd_denom, hd_present, hd_missing)):
+                          raise SystemExit(f"{json_path} {strategy} hard-distractor label counts must be integers")
+                      if hd_present + hd_missing != hd_denom:
+                          raise SystemExit(f"{json_path} {strategy} hard-distractor label counts do not sum to denominator")
                       cf = block.get("counterfactual_actionability", {})
+                      thresholds = block.get("actionability_thresholds", {})
                       denom = cf.get("span_narrow_counterfactual_denominator")
                       present = cf.get("span_narrow_gold_candidate_present_count")
                       impossible = cf.get("span_narrow_impossible_without_gold_candidate_count")
@@ -1466,6 +1496,21 @@ jobs:
                       if isinstance(fdenom, int) and isinstance(f_present, int) and isinstance(f_missing, int):
                           if f_present + f_missing != fdenom:
                               raise SystemExit(f"{json_path} {strategy} filter counts do not sum to denominator")
+                      if cf.get("llm_spend_actionability_bucket") == "actionable":
+                          min_span = thresholds.get("span_narrow_threshold_denominator")
+                          min_filter = thresholds.get("filter_threshold_denominator")
+                          min_span_rate = thresholds.get("min_span_narrow_gold_present_rate")
+                          min_filter_rate = thresholds.get("min_filter_hard_distractor_present_rate")
+                          span_rate = cf.get("span_narrow_gold_candidate_present_rate")
+                          filter_rate = cf.get("filter_hard_distractor_present_rate")
+                          if not all(isinstance(x, int) and x > 0 for x in (denom, fdenom, min_span, min_filter)):
+                              raise SystemExit(f"{json_path} {strategy} actionable bucket requires positive denominators")
+                          if denom < min_span or fdenom < min_filter:
+                              raise SystemExit(f"{json_path} {strategy} actionable bucket below minimum denominators")
+                          if not all(isinstance(x, (int, float)) for x in (span_rate, filter_rate, min_span_rate, min_filter_rate)):
+                              raise SystemExit(f"{json_path} {strategy} actionable bucket missing rates")
+                          if span_rate < min_span_rate or filter_rate < min_filter_rate:
+                              raise SystemExit(f"{json_path} {strategy} actionable bucket below coverage thresholds")
               if json_path.name == "p60_rmc_policy_v2_report.json":
                   allowed_p60_status = {"blocked_safety", "insufficient_records", "diagnostic_policy_matrix_partial", "diagnostic_policy_matrix_available", "self_test_only"}
                   if data.get("status") not in allowed_p60_status:

@@ -51,6 +51,10 @@ SCHEMA_VERSION = "p59-contrastive-pack-coverage-counterfactual-v0"
 GENERATED_BY = "p59_contrastive_pack_coverage_counterfactual"
 STAGE = "P59 Contrastive Pack Coverage & Counterfactual Study v0"
 
+METADATA_HARD_DISTRACTOR_PROXY_VERSION = p49.METADATA_HARD_DISTRACTOR_PROXY_VERSION
+MIN_SPAN_NARROW_GOLD_PRESENT_RATE = 0.5
+MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE = 0.5
+
 DEFAULT_OUT = Path("artifacts/p59_contrastive_pack_coverage_counterfactual/p59_contrastive_pack_coverage_counterfactual_report.json")
 DEFAULT_DOC = Path("docs/en/p59-contrastive-pack-coverage-counterfactual.md")
 
@@ -141,6 +145,8 @@ P59_SAFETY_FLAG_KEYS = {
     "run_phase_gold_free",
     "gold_used_for_pack_construction",
     "labels_loaded_after_pack_build",
+    "hard_distractor_labels_not_used_for_pack_construction",
+    "metadata_hard_distractor_proxy_definition_version",
     "raw_prompts_stored",
     "raw_query_stored",
     "raw_responses_stored",
@@ -182,6 +188,9 @@ P59_SAFETY_FLAG_KEYS = {
     "subtype_shape_metadata_coverage",
     "source_backed_shape_metadata_coverage",
     "score_phase_gold_coverage",
+    "hard_distractor_repair_coverage",
+    "score_phase_hard_distractor_coverage",
+    "actionability_thresholds",
     "counterfactual_actionability",
     "breakdowns",
     "by_public_bucket",
@@ -282,6 +291,26 @@ P59_SAFETY_FLAG_KEYS = {
     "joint_span_narrow_and_filter_preconditions_count",
     "joint_span_narrow_and_filter_preconditions_rate",
     "llm_spend_actionability_bucket",
+    # hard-distractor repair coverage keys
+    "metadata_hard_distractor_proxy_definition_version",
+    "proxy_pack_count",
+    "proxy_pack_rate",
+    "available_count",
+    "slot_fill_count",
+    "slot_fill_rate",
+    "overflow_blocked_count",
+    # score-phase hard-distractor coverage keys
+    "coverage_availability",
+    "denominator",
+    "hard_distractor_present_count",
+    "hard_distractor_present_rate",
+    "hard_distractor_missing_count",
+    "hard_distractor_missing_rate",
+    # actionability thresholds
+    "min_span_narrow_gold_present_rate",
+    "min_filter_hard_distractor_present_rate",
+    "span_narrow_threshold_denominator",
+    "filter_threshold_denominator",
     # breakdown helper keys
     "pack_with_hard_distractor_count",
     "pack_with_hard_distractor_rate",
@@ -464,12 +493,14 @@ def _build_frozen_packs(
         packs: list[dict[str, Any]] = []
         for task in construction_tasks:
             candidates = p49._normalize_candidates(task)
-            pack = p49._build_pack(candidates, strategy)
+            pack = p49._build_pack(candidates, strategy, task)
             packs.append({
                 "selected": pack["selected"],
+                "slots_filled": pack["slots_filled"],
                 "has_candidates": bool(candidates),
                 "bucket": task.get("task_bucket", "unknown"),
                 "risk_tags": task.get("task_risk_tags") or ["other"],
+                "task": task,
             })
         frozen[strategy] = packs
     return frozen
@@ -492,8 +523,14 @@ def _pack_has_doc_source(selected: list[dict[str, Any]]) -> bool:
     return "doc" in kinds and "source" in kinds
 
 
-def _pack_has_hard_distractor(selected: list[dict[str, Any]]) -> bool:
-    return any(c.get("path_kind") in {"generated_or_vendor", "unknown"} for c in selected)
+def _pack_has_hard_distractor(selected: list[dict[str, Any]], task: dict[str, Any] | None = None) -> bool:
+    if not selected:
+        return False
+    anchor = selected[0]
+    return any(
+        c["_id"] != anchor["_id"] and p49._is_metadata_hard_distractor_proxy_v1(c, anchor, task)
+        for c in selected
+    )
 
 
 def _pack_has_cross_file(selected: list[dict[str, Any]]) -> bool:
@@ -668,6 +705,16 @@ def _compute_strategy_metrics(
     filter_hard_present = 0
     joint_preconditions = 0
 
+    # Hard-distractor repair coverage (RUN phase, metadata-only proxy).
+    proxy_hard_distractor_pack_count = 0
+    proxy_hard_distractor_available_count = 0
+    hard_distractor_slot_fill_count = 0
+    hard_distractor_overflow_blocked_count = 0
+
+    # SCORE-phase hard-distractor coverage (label-backed denominator only).
+    score_phase_hard_distractor_denom = 0
+    score_phase_hard_distractor_present = 0
+
     # Breakdown helpers.
     by_bucket: dict[str, dict[str, Any]] = defaultdict(
         lambda: {
@@ -695,6 +742,7 @@ def _compute_strategy_metrics(
         nonempty = bool(selected)
         bucket = pack.get("bucket", "unknown")
         risk_tags = pack.get("risk_tags") or ["other"]
+        task = pack.get("task")
 
         bb = by_bucket[bucket]
         bb["task_count"] += 1
@@ -704,7 +752,7 @@ def _compute_strategy_metrics(
             bb["no_gold_task_count"] += 1
         if nonempty:
             bb["pack_nonempty_count"] += 1
-        if _pack_has_hard_distractor(selected):
+        if _pack_has_hard_distractor(selected, task):
             bb["pack_with_hard_distractor_count"] += 1
 
         for tag in risk_tags:
@@ -716,13 +764,13 @@ def _compute_strategy_metrics(
                 bt["no_gold_task_count"] += 1
             if nonempty:
                 bt["pack_nonempty_count"] += 1
-            if _pack_has_hard_distractor(selected):
+            if _pack_has_hard_distractor(selected, task):
                 bt["pack_with_hard_distractor_count"] += 1
 
         if nonempty:
             if _pack_has_same_file_competitor(selected):
                 same_file += 1
-            if _pack_has_hard_distractor(selected):
+            if _pack_has_hard_distractor(selected, task):
                 hard_dist += 1
             if _pack_has_source_test(selected):
                 source_test += 1
@@ -736,6 +784,27 @@ def _compute_strategy_metrics(
                 channel_diverse += 1
             if _pack_has_subtype_diversity(selected):
                 subtype_diverse += 1
+
+            # Hard-distractor repair coverage (RUN phase, metadata-only proxy).
+            candidates = p49._normalize_candidates(task) if task else []
+            anchor = selected[0]
+            proxy_available = sum(
+                1
+                for c in candidates
+                if c["_id"] != anchor["_id"] and p49._is_metadata_hard_distractor_proxy_v1(c, anchor, task)
+            ) if candidates else 0
+            if proxy_available > 0:
+                proxy_hard_distractor_available_count += 1
+            if any(
+                p49._is_metadata_hard_distractor_proxy_v1(c, anchor, task)
+                for c in selected
+                if c["_id"] != anchor["_id"]
+            ):
+                proxy_hard_distractor_pack_count += 1
+            if "hard_distractor" in pack.get("slots_filled", set()):
+                hard_distractor_slot_fill_count += 1
+            elif proxy_available > 0 and len(selected) >= p49.MAX_CANDIDATES_PER_PACK:
+                hard_distractor_overflow_blocked_count += 1
 
             # Path-kind pack flags.
             kinds = {c.get("path_kind") for c in selected}
@@ -823,13 +892,19 @@ def _compute_strategy_metrics(
             span_narrow_denom += 1
             if gold_span_hit:
                 span_narrow_gold_present += 1
-            if gold_span_hit and _pack_has_hard_distractor(selected):
+            if gold_span_hit and _pack_has_hard_distractor(selected, task):
                 joint_preconditions += 1
+
+            # SCORE-phase hard-distractor coverage (label-backed denominator only).
+            score_phase_hard_distractor_denom += 1
+            if _pack_has_hard_distractor(selected, task):
+                score_phase_hard_distractor_present += 1
 
         # Filter counterfactual denominator is tasks with a built pack.
         filter_denom += 1
-        if _pack_has_hard_distractor(selected):
+        if _pack_has_hard_distractor(selected, task):
             filter_hard_present += 1
+
 
     # Source-backed shape metadata availability.
     if selected_candidate_count == 0:
@@ -921,19 +996,48 @@ def _compute_strategy_metrics(
         "file_right_span_wrong_rate": _rate(file_right_span_wrong, positive_with_gold_span_denominator),
     }
 
+    hard_distractor_repair_coverage = {
+        "metadata_hard_distractor_proxy_definition_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
+        "proxy_pack_count": proxy_hard_distractor_pack_count,
+        "proxy_pack_rate": _rate(proxy_hard_distractor_pack_count, pack_nonempty_count),
+        "available_count": proxy_hard_distractor_available_count,
+        "slot_fill_count": hard_distractor_slot_fill_count,
+        "slot_fill_rate": _rate(hard_distractor_slot_fill_count, pack_nonempty_count),
+        "overflow_blocked_count": hard_distractor_overflow_blocked_count,
+    }
+
+    score_phase_hard_distractor_coverage = {
+        "not_used_for_pack_construction": True,
+        "coverage_availability": "available" if score_phase_hard_distractor_denom > 0 else "unavailable",
+        "denominator": score_phase_hard_distractor_denom,
+        "hard_distractor_present_count": score_phase_hard_distractor_present,
+        "hard_distractor_present_rate": _rate(score_phase_hard_distractor_present, score_phase_hard_distractor_denom),
+        "hard_distractor_missing_count": score_phase_hard_distractor_denom - score_phase_hard_distractor_present,
+        "hard_distractor_missing_rate": _rate(
+            score_phase_hard_distractor_denom - score_phase_hard_distractor_present, score_phase_hard_distractor_denom
+        ),
+    }
+
+    actionability_thresholds = {
+        "min_span_narrow_gold_present_rate": MIN_SPAN_NARROW_GOLD_PRESENT_RATE,
+        "min_filter_hard_distractor_present_rate": MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE,
+        "span_narrow_threshold_denominator": span_narrow_denom,
+        "filter_threshold_denominator": filter_denom,
+    }
+
     span_narrow_impossible = span_narrow_denom - span_narrow_gold_present
     filter_missing = filter_denom - filter_hard_present
 
     if span_narrow_denom > 0 and filter_denom > 0:
         gold_present_rate = span_narrow_gold_present / span_narrow_denom
         hard_present_rate = filter_hard_present / filter_denom
-        if gold_present_rate >= 0.5 and hard_present_rate >= 0.5:
+        if gold_present_rate >= MIN_SPAN_NARROW_GOLD_PRESENT_RATE and hard_present_rate >= MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE:
             actionability_bucket = "actionable"
-        elif gold_present_rate < 0.5 and hard_present_rate < 0.5:
+        elif gold_present_rate < MIN_SPAN_NARROW_GOLD_PRESENT_RATE and hard_present_rate < MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE:
             actionability_bucket = "blocked_missing_both"
-        elif gold_present_rate < 0.5:
+        elif gold_present_rate < MIN_SPAN_NARROW_GOLD_PRESENT_RATE:
             actionability_bucket = "blocked_missing_gold_candidate"
-        elif hard_present_rate < 0.5:
+        elif hard_present_rate < MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE:
             actionability_bucket = "blocked_missing_hard_distractor"
         else:
             actionability_bucket = "partial"
@@ -990,6 +1094,9 @@ def _compute_strategy_metrics(
         "subtype_shape_metadata_coverage": _nullify_missing(subtype_shape),
         "source_backed_shape_metadata_coverage": _nullify_missing(source_backed_shape),
         "score_phase_gold_coverage": _nullify_missing(score_gold),
+        "hard_distractor_repair_coverage": _nullify_missing(hard_distractor_repair_coverage),
+        "score_phase_hard_distractor_coverage": _nullify_missing(score_phase_hard_distractor_coverage),
+        "actionability_thresholds": _nullify_missing(actionability_thresholds),
         "counterfactual_actionability": _nullify_missing(counterfactual),
         "breakdowns": {
             "by_public_bucket": dict(by_bucket),
@@ -1047,6 +1154,7 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
         "run_phase_gold_free": True,
         "gold_used_for_pack_construction": False,
         "labels_loaded_after_pack_build": True,
+        "hard_distractor_labels_not_used_for_pack_construction": True,
         "raw_prompts_stored": False,
         "raw_query_stored": False,
         "raw_responses_stored": False,
@@ -1065,6 +1173,9 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
     for flag, expected in expected_true.items():
         if report.get(flag) is not expected:
             errors.append(f"{flag} must be {expected}")
+
+    if report.get("metadata_hard_distractor_proxy_definition_version") != METADATA_HARD_DISTRACTOR_PROXY_VERSION:
+        errors.append("metadata_hard_distractor_proxy_definition_version missing or wrong")
 
     # No top-level per-task rows.
     for forbidden in ("tasks", "records", "per_task_results", "decision_records"):
@@ -1117,6 +1228,54 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
         if isinstance(fdenom, int) and isinstance(f_present, int) and isinstance(f_missing, int):
             if f_present + f_missing != fdenom:
                 errors.append(f"{strategy} filter counts do not sum to denominator")
+
+        # Hard-distractor repair coverage count conservation.
+        hd = block.get("hard_distractor_repair_coverage", {})
+        avail = hd.get("available_count")
+        proxy_pack = hd.get("proxy_pack_count")
+        slot_fill = hd.get("slot_fill_count")
+        overflow = hd.get("overflow_blocked_count")
+        if isinstance(avail, int) and isinstance(proxy_pack, int) and isinstance(slot_fill, int) and isinstance(overflow, int):
+            if proxy_pack > avail:
+                errors.append(f"{strategy} proxy_pack_count cannot exceed available_count")
+            if slot_fill > proxy_pack:
+                errors.append(f"{strategy} slot_fill_count cannot exceed proxy_pack_count")
+            if overflow > avail:
+                errors.append(f"{strategy} overflow_blocked_count cannot exceed available_count")
+        if hd.get("metadata_hard_distractor_proxy_definition_version") != METADATA_HARD_DISTRACTOR_PROXY_VERSION:
+            errors.append(f"{strategy} missing metadata_hard_distractor_proxy_definition_version")
+
+        # Score-phase hard-distractor coverage count conservation.
+        sc = block.get("score_phase_hard_distractor_coverage", {})
+        sc_denom = sc.get("denominator")
+        sc_present = sc.get("hard_distractor_present_count")
+        sc_missing = sc.get("hard_distractor_missing_count")
+        if isinstance(sc_denom, int) and isinstance(sc_present, int) and isinstance(sc_missing, int):
+            if sc_present + sc_missing != sc_denom:
+                errors.append(f"{strategy} score_phase_hard_distractor counts do not sum to denominator")
+        if sc.get("not_used_for_pack_construction") is not True:
+            errors.append(f"{strategy} score_phase_hard_distractor_coverage must be not_used_for_pack_construction")
+
+        # Actionability thresholds and denominator recording.
+        thresholds = block.get("actionability_thresholds", {})
+        if thresholds.get("min_span_narrow_gold_present_rate") != MIN_SPAN_NARROW_GOLD_PRESENT_RATE:
+            errors.append(f"{strategy} min_span_narrow_gold_present_rate mismatch")
+        if thresholds.get("min_filter_hard_distractor_present_rate") != MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE:
+            errors.append(f"{strategy} min_filter_hard_distractor_present_rate mismatch")
+        if thresholds.get("span_narrow_threshold_denominator") != denom:
+            errors.append(f"{strategy} span_narrow_threshold_denominator must equal counterfactual denominator")
+        if thresholds.get("filter_threshold_denominator") != fdenom:
+            errors.append(f"{strategy} filter_threshold_denominator must equal counterfactual denominator")
+
+        # If actionable, threshold/denominator consistency and definition version present.
+        bucket = cf.get("llm_spend_actionability_bucket")
+        if bucket == "actionable":
+            if thresholds.get("span_narrow_threshold_denominator", 0) <= 0:
+                errors.append(f"{strategy} actionable but span_narrow_threshold_denominator is not positive")
+            if thresholds.get("filter_threshold_denominator", 0) <= 0:
+                errors.append(f"{strategy} actionable but filter_threshold_denominator is not positive")
+            if hd.get("metadata_hard_distractor_proxy_definition_version") != METADATA_HARD_DISTRACTOR_PROXY_VERSION:
+                errors.append(f"{strategy} actionable but metadata_hard_distractor_proxy_definition_version missing")
 
     return errors
 
@@ -1258,6 +1417,8 @@ def build_report(
         "run_phase_gold_free": True,
         "gold_used_for_pack_construction": False,
         "labels_loaded_after_pack_build": True,
+        "hard_distractor_labels_not_used_for_pack_construction": True,
+        "metadata_hard_distractor_proxy_definition_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION,
         "raw_prompts_stored": False,
         "raw_query_stored": False,
         "raw_responses_stored": False,
@@ -1314,6 +1475,8 @@ def build_markdown(report: dict[str, Any]) -> str:
         f"- Generated: {report['generated_at']}",
         f"- Status: `{report['status']}`",
         f"- Self-test: {report['self_test']}",
+        f"- Hard-distractor proxy: `{report.get('metadata_hard_distractor_proxy_definition_version')}`",
+        f"- Hard-distractor labels not used for pack construction: {report.get('hard_distractor_labels_not_used_for_pack_construction')}",
         f"- Remote calls by P59: {report['remote_calls_by_p59']}",
         f"- LLM calls by P59: {report['llm_calls_by_p59']}",
         f"- Provider config read by P59: {report['provider_config_read_by_p59']}",
@@ -1339,6 +1502,9 @@ def build_markdown(report: dict[str, Any]) -> str:
         "- Load `p25-policy-records-ephemeral-v1` records (or deterministic self-test records).",
         "- Rebuild P49 packs deterministically using candidate metadata only; no gold/labels are used during pack construction.",
         "- Measure gold-free contrastive coverage: same-file competitors, hard distractors, source/test pairs, doc/source pairs, cross-file competitors, path-kind/channel/subtype diversity.",
+        "- Hard-distractor coverage uses the P49 metadata-only RUN proxy (`metadata_hard_distractor_proxy_v1`). The proxy uses candidate rank, score, path-kind, channel, subtype, RRF backing, span-width, and public task-bucket/risk tags; labels, gold, and source text are never used.",
+        "- Report RUN-phase `hard_distractor_repair_coverage` (proxy-based) and SCORE-phase `score_phase_hard_distractor_coverage` (label-backed denominator, `not_used_for_pack_construction=true`).",
+        "- Record `actionability_thresholds` with the minimum rates and actual denominators used by the P61-compatible `llm_spend_actionability_bucket` enum.",
         "- After packs are frozen, load labels only for the explicitly-marked SCORE-phase coverage and counterfactual diagnostics.",
         "- Output is aggregate-only: counts, rates, and coverage breakdowns by public task bucket, public risk tag, and pack strategy.",
         "",
@@ -1374,18 +1540,48 @@ def build_markdown(report: dict[str, Any]) -> str:
         )
     lines.append("")
 
+    lines.append("## Hard-distractor repair coverage (RUN phase, metadata-only proxy)\n")
+    lines.append(
+        "| Strategy | ProxyPackCount | ProxyPackRate | AvailableCount | SlotFillCount | SlotFillRate | OverflowBlocked | Definition |"
+    )
+    lines.append("|---|---:|---:|---:|---:|---:|---:|---|")
+    for strategy in PACK_STRATEGIES:
+        m = report["metrics"]["by_strategy"][strategy]["hard_distractor_repair_coverage"]
+        lines.append(
+            f"| {strategy} | {m['proxy_pack_count']} | {_fmt_scalar(m['proxy_pack_rate'])} | "
+            f"{m['available_count']} | {m['slot_fill_count']} | {_fmt_scalar(m['slot_fill_rate'])} | "
+            f"{m['overflow_blocked_count']} | `{m['metadata_hard_distractor_proxy_definition_version']}` |"
+        )
+    lines.append("")
+
+    lines.append("## SCORE-phase hard-distractor coverage (label-backed, not used for pack construction)\n")
+    lines.append(
+        "| Strategy | Availability | Denominator | PresentCount | PresentRate | MissingCount | MissingRate |"
+    )
+    lines.append("|---|---|---:|---:|---:|---:|---:|")
+    for strategy in PACK_STRATEGIES:
+        m = report["metrics"]["by_strategy"][strategy]["score_phase_hard_distractor_coverage"]
+        lines.append(
+            f"| {strategy} | {m['coverage_availability']} | {m['denominator']} | "
+            f"{m['hard_distractor_present_count']} | {_fmt_scalar(m['hard_distractor_present_rate'])} | "
+            f"{m['hard_distractor_missing_count']} | {_fmt_scalar(m['hard_distractor_missing_rate'])} |"
+        )
+    lines.append("")
+
     lines.append("## Counterfactual actionability\n")
     lines.append(
-        "| Strategy | SpanNarrowDenom | GoldPresent | Impossible | FilterDenom | HardPresent | MissingContrast | Joint | Actionability |"
+        "| Strategy | SpanNarrowDenom | GoldPresent | Impossible | FilterDenom | HardPresent | MissingContrast | Joint | MinGoldRate | MinHardRate | Actionability |"
     )
-    lines.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
+    lines.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
     for strategy in PACK_STRATEGIES:
         m = report["metrics"]["by_strategy"][strategy]["counterfactual_actionability"]
+        t = report["metrics"]["by_strategy"][strategy]["actionability_thresholds"]
         lines.append(
             f"| {strategy} | {m['span_narrow_counterfactual_denominator']} | "
             f"{m['span_narrow_gold_candidate_present_count']} | {m['span_narrow_impossible_without_gold_candidate_count']} | "
             f"{m['filter_counterfactual_denominator']} | {m['filter_hard_distractor_present_count']} | "
             f"{m['filter_rejection_contrast_missing_count']} | {m['joint_span_narrow_and_filter_preconditions_count']} | "
+            f"{t['min_span_narrow_gold_present_rate']} | {t['min_filter_hard_distractor_present_rate']} | "
             f"`{m['llm_spend_actionability_bucket']}` |"
         )
     lines.append("")
@@ -1477,22 +1673,25 @@ def make_self_test_records() -> list[dict[str, Any]]:
         "p33b_anchor_subtypes_schema": "p33b-anchor-subtypes-v1",
     })
 
-    # 3. Pack with gold candidate but no hard distractor.
+    # 3. Pack with gold candidate but no hard distractor (strong affinity peers only).
     tasks.append({
         "task_id": "p59-st-003",
         "repo_id": "py_flask",
         "task_bucket": "positive",
-        "task_risk_tags": ["high_confidence"],
+        "task_risk_tags": ["symbol_anchor"],
         "score_group": "positive",
         "route_features": {"candidate_count": 2, "candidate_support_exists": True},
         "p31_candidate_pools": {
             "candidate_baseline": pool([
                 ("src/app.py", 10, 15, "source", None),
-                ("src/other.py", 20, 25, "source", None),
+                ("src/app.py", 12, 17, "source", None),
             ]),
         },
         "p31_score_gold": gold("src/app.py", 10, 15),
-        "p33b_anchor_subtypes": subtypes(["cid_1"]),
+        "p33b_anchor_subtypes": [
+            {"candidate_id": "cid_1", "rank": 1, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rank_bin": "top3", "candidate_count_bin": "small", "span_width_bin": "short", "rrf_backing": True},
+            {"candidate_id": "cid_2", "rank": 2, "source_class": "symbol_regex_fusion", "agreement_class": "span_overlap", "rank_bin": "top3", "candidate_count_bin": "small", "span_width_bin": "short", "rrf_backing": True},
+        ],
         "p33b_anchor_subtypes_schema": "p33b-anchor-subtypes-v1",
     })
 
@@ -1595,11 +1794,13 @@ def make_self_test_records() -> list[dict[str, Any]]:
 
 
 def _assert_self_test_invariants(report: dict[str, Any]) -> None:
-    """Self-test assertions: counterfactual arithmetic and expected bucket transitions."""
+    """Self-test assertions: counterfactual arithmetic, hard-distractor proxy coverage, and privacy."""
     # Overall task counts.
     assert report["task_count"] >= 8, "self-test should cover at least 8 tasks"
     assert report["positive_task_count"] >= 7, "self-test should include positive tasks"
     assert report["no_gold_task_count"] >= 1, "self-test should include a no-gold task"
+    assert report["metadata_hard_distractor_proxy_definition_version"] == METADATA_HARD_DISTRACTOR_PROXY_VERSION
+    assert report["hard_distractor_labels_not_used_for_pack_construction"] is True
 
     # At least one strategy must show expected contrasts.
     by_strategy = report["metrics"]["by_strategy"]
@@ -1626,10 +1827,31 @@ def _assert_self_test_invariants(report: dict[str, Any]) -> None:
         if cf["filter_rejection_contrast_missing_count"] > 0:
             any_missing_contrast = True
 
-    # Synthetic data must exercise the regression buckets: at least one strategy
-    # must have a positive task whose frozen pack lacks any gold-overlapping
-    # candidate, and at least one strategy must have a frozen pack lacking a
-    # hard distractor.
+        # Hard-distractor repair coverage invariants.
+        hd = m["hard_distractor_repair_coverage"]
+        assert hd["metadata_hard_distractor_proxy_definition_version"] == METADATA_HARD_DISTRACTOR_PROXY_VERSION
+        assert hd["available_count"] >= 0
+        assert hd["proxy_pack_count"] <= hd["available_count"]
+        assert hd["slot_fill_count"] <= hd["proxy_pack_count"]
+        assert hd["overflow_blocked_count"] >= 0
+
+        # Score-phase hard-distractor coverage invariants.
+        sc = m["score_phase_hard_distractor_coverage"]
+        assert sc["not_used_for_pack_construction"] is True
+        if sc["denominator"] > 0:
+            assert sc["hard_distractor_present_count"] + sc["hard_distractor_missing_count"] == sc["denominator"]
+            assert sc["coverage_availability"] == "available"
+        else:
+            assert sc["coverage_availability"] == "unavailable"
+
+        # Actionability thresholds must match the recorded threshold block.
+        thresholds = m["actionability_thresholds"]
+        assert thresholds["min_span_narrow_gold_present_rate"] == MIN_SPAN_NARROW_GOLD_PRESENT_RATE
+        assert thresholds["min_filter_hard_distractor_present_rate"] == MIN_FILTER_HARD_DISTRACTOR_PRESENT_RATE
+        assert thresholds["span_narrow_threshold_denominator"] == cf["span_narrow_counterfactual_denominator"]
+        assert thresholds["filter_threshold_denominator"] == cf["filter_counterfactual_denominator"]
+
+    # Synthetic data must exercise the regression buckets.
     assert any_impossible, "self-test must include at least one positive task whose pack lacks a gold-overlapping candidate"
     assert any_missing_contrast, "self-test must include at least one task whose pack lacks a hard distractor"
 
@@ -1649,6 +1871,153 @@ def _assert_self_test_invariants(report: dict[str, Any]) -> None:
     # Source-backed shape availability should be partial (some tasks have subtype metadata, one does not).
     sbs = by_strategy["anchor_contrast_pack_v0"]["source_backed_shape_metadata_coverage"]
     assert sbs["source_backed_shape_metadata_availability"] == "partial", "self-test should show partial source-backed shape metadata"
+
+    # Privacy: no forbidden keys in public report.
+    violations = _reject_forbidden_keys(report)
+    assert not violations, f"self-test public report leaked forbidden keys: {violations[:5]}"
+
+
+def _test_label_change_invariance() -> None:
+    """Same candidate metadata with changed labels -> identical frozen packs and RUN metrics."""
+    tasks = make_self_test_records()
+    construction_tasks = _build_construction_tasks(tasks)
+    labels_a = _extract_labels(tasks)
+    # Build a second label set where all gold spans are shifted; labels do not
+    # affect RUN-phase pack construction.
+    labels_b = [
+        {
+            "has_gold": lab.get("has_gold"),
+            "has_gold_spans": lab.get("has_gold_spans"),
+            "label": {
+                "gold_files": {"shifted_file.py"},
+                "gold_spans": [{"path": "shifted_file.py", "start_line": 1, "end_line": 2}],
+            },
+        }
+        for lab in labels_a
+    ]
+    frozen_a = _build_frozen_packs(construction_tasks)
+    frozen_b = _build_frozen_packs(construction_tasks)
+    assert frozen_a == frozen_b, "frozen packs must be identical regardless of labels"
+    for strategy in PACK_STRATEGIES:
+        run_metrics_a = _compute_strategy_metrics(frozen_a[strategy], labels_a, strategy)
+        run_metrics_b = _compute_strategy_metrics(frozen_b[strategy], labels_b, strategy)
+        # RUN metrics (hard_distractor_repair_coverage) are label-free.
+        assert (
+            run_metrics_a["hard_distractor_repair_coverage"] == run_metrics_b["hard_distractor_repair_coverage"]
+        ), f"{strategy}: RUN hard-distractor repair metrics must not change with labels"
+
+
+def _test_actionability_boundary() -> None:
+    """Exercise actionable, blocked, and small-N actionability buckets."""
+    def build_pack_metadata(has_gold_span: bool, has_hard_distractor: bool) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        task: dict[str, Any] = {
+            "task_id": "boundary",
+            "repo_id": "test",
+            "task_bucket": "positive",
+            "task_risk_tags": [],
+            "score_group": "positive",
+            "route_features": {"candidate_count": 2, "candidate_support_exists": True},
+            "p31_candidate_pools": {
+                "candidate_baseline": [
+                    {
+                        "rank": 1,
+                        "path": "src/a.py",
+                        "start_line": 10,
+                        "end_line": 15,
+                        "candidate_id": "cid_1",
+                        "score": 0.9,
+                        "channels": ["candidate_baseline"],
+                        "path_kind": "source",
+                    },
+                    {
+                        "rank": 2,
+                        "path": "src/b.py" if has_hard_distractor else "src/a.py",
+                        "start_line": 20 if has_hard_distractor else 12,
+                        "end_line": 25 if has_hard_distractor else 17,
+                        "candidate_id": "cid_2",
+                        "score": 0.8,
+                        "channels": ["candidate_baseline"],
+                        "path_kind": "test" if has_hard_distractor else "source",
+                    },
+                ],
+            },
+            "p31_score_gold": {
+                "has_gold": True,
+                "gold_spans": [{"path": "src/a.py", "start_line": 10, "end_line": 15}] if has_gold_span else [],
+            },
+            "p33b_anchor_subtypes": [],
+            "p33b_anchor_subtypes_schema": "p33b-anchor-subtypes-v1",
+        }
+        return [task], []
+
+    # Actionable: both gold span and hard distractor present.
+    tasks, _ = build_pack_metadata(has_gold_span=True, has_hard_distractor=True)
+    ct = _build_construction_tasks(tasks)
+    labels = _extract_labels(tasks)
+    frozen = _build_frozen_packs(ct)
+    m = _compute_strategy_metrics(frozen["anchor_contrast_pack_v0"], labels, "anchor_contrast_pack_v0")
+    assert m["counterfactual_actionability"]["llm_spend_actionability_bucket"] == "actionable", "expected actionable"
+
+    # Blocked: gold span present but no hard distractor.
+    tasks, _ = build_pack_metadata(has_gold_span=True, has_hard_distractor=False)
+    ct = _build_construction_tasks(tasks)
+    labels = _extract_labels(tasks)
+    frozen = _build_frozen_packs(ct)
+    m = _compute_strategy_metrics(frozen["anchor_contrast_pack_v0"], labels, "anchor_contrast_pack_v0")
+    assert m["counterfactual_actionability"]["llm_spend_actionability_bucket"] == "blocked_missing_hard_distractor"
+
+    # Insufficient denominator when no gold span is available.
+    tasks, _ = build_pack_metadata(has_gold_span=False, has_hard_distractor=False)
+    ct = _build_construction_tasks(tasks)
+    labels = _extract_labels(tasks)
+    frozen = _build_frozen_packs(ct)
+    m = _compute_strategy_metrics(frozen["anchor_contrast_pack_v0"], labels, "anchor_contrast_pack_v0")
+    bucket = m["counterfactual_actionability"]["llm_spend_actionability_bucket"]
+    assert bucket == "insufficient_denominator" or bucket.startswith("blocked")
+
+    # Small-N / insufficient denominator.
+    ct = _build_construction_tasks([])
+    labels = _extract_labels([])
+    frozen = _build_frozen_packs(ct)
+    m = _compute_strategy_metrics(frozen["anchor_contrast_pack_v0"], labels, "anchor_contrast_pack_v0")
+    assert m["counterfactual_actionability"]["llm_spend_actionability_bucket"] == "insufficient_denominator"
+
+
+def _test_privacy_negative() -> None:
+    """A public report with a banned key must fail validation."""
+    report = build_report(
+        [], [], self_test=True, elapsed_ms=1, input_source_count=1, insufficient_input_source_count=0, optional_reports={}
+    )
+    report["tasks"] = [{"id": "leak"}]
+    errors = validate_public_report(report)
+    assert any("tasks" in e for e in errors), "validation should reject a report containing top-level 'tasks'"
+
+
+def _test_count_conservation() -> None:
+    """Numerators and denominators must conserve for hard-distractor repair coverage."""
+    tasks = make_self_test_records()
+    construction_tasks = _build_construction_tasks(tasks)
+    labels = _extract_labels(tasks)
+    frozen = _build_frozen_packs(construction_tasks)
+    for strategy in PACK_STRATEGIES:
+        m = _compute_strategy_metrics(frozen[strategy], labels, strategy)
+        hd = m["hard_distractor_repair_coverage"]
+        assert hd["proxy_pack_count"] <= hd["available_count"]
+        assert hd["slot_fill_count"] <= hd["proxy_pack_count"]
+        sc = m["score_phase_hard_distractor_coverage"]
+        if sc["denominator"] > 0:
+            assert sc["hard_distractor_present_count"] + sc["hard_distractor_missing_count"] == sc["denominator"]
+        cf = m["counterfactual_actionability"]
+        assert cf["span_narrow_gold_candidate_present_count"] + cf["span_narrow_impossible_without_gold_candidate_count"] == cf["span_narrow_counterfactual_denominator"]
+        assert cf["filter_hard_distractor_present_count"] + cf["filter_rejection_contrast_missing_count"] == cf["filter_counterfactual_denominator"]
+
+
+def _run_self_test_boundary_checks() -> None:
+    """Run additional boundary/contract tests during self-test mode."""
+    _test_label_change_invariance()
+    _test_actionability_boundary()
+    _test_privacy_negative()
+    _test_count_conservation()
 
 
 def main() -> int:
@@ -1726,6 +2095,7 @@ def main() -> int:
 
     if args.self_test:
         _assert_self_test_invariants(report)
+        _run_self_test_boundary_checks()
 
     _write_json(args.out, report)
     md = build_markdown(report)

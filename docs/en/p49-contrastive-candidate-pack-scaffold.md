@@ -1,9 +1,10 @@
 # P49 Contrastive Candidate Pack Scaffold
 
 - Schema: `p49-contrastive-candidate-pack-scaffold-v1`
-- Generated: 2026-06-15T17:26:30.946322+00:00
+- Generated: 2026-06-16T18:53:47.248408+00:00
 - Status: `self_test_only`
 - Self-test: True
+- Hard-distractor proxy: `metadata_hard_distractor_proxy_v1`
 - Remote calls by P49: 0
 - LLM calls by P49: 0
 - Source reads by P49: False
@@ -25,6 +26,7 @@ P49 builds deterministic candidate-pack shapes from candidate metadata only and 
 - Deduplicate candidates by path/span/strategy-affinity privately; never publish identifiers.
 - Build three deterministic pack shapes per task: top-k flat, anchor-contrast, and conservative-anchor.
 - Pack construction uses metadata only and never gold/outcome/cost signals.
+- The `hard_distractor` slot is filled using a metadata-only RUN proxy (`metadata_hard_distractor_proxy_v1`). The proxy is defined over candidate rank, score, path-kind contrast, channel/provenance disagreement, P33B subtype source/agreement class, RRF backing, span-width geometry, same-file/cross-file competitor shape, and public task-bucket/risk tags. Labels, gold, and source text are never used.
 - After packs are built, compute SCORE-phase diagnostics using gold spans and outcome costs; these are clearly marked `not_used_for_pack_construction=true`.
 - Output is aggregate-only: counts, rates, and distributions by pack strategy, public task bucket, and public risk tag.
 
@@ -62,6 +64,14 @@ P49 builds deterministic candidate-pack shapes from candidate metadata only and 
 | topk_flat_pack_v0 | 0.0000 | 0.0000 | 0.7500 | 1.0000 | 1.0000 | 1.0000 | 0.0000 |
 | anchor_contrast_pack_v0 | 0.0000 | 0.0000 | 0.7500 | 1.0000 | 1.0000 | 1.0000 | 0.0000 |
 | conservative_anchor_pack_v0 | 0.0000 | 0.0000 | 0.7500 | 1.0000 | 1.0000 | 1.0000 | 0.0000 |
+
+## Hard-distractor repair coverage (metadata-only proxy)
+
+| Strategy | ProxyPackCount | ProxyPackRate | AvailableCount | SlotFillCount | SlotFillRate | OverflowBlocked | Definition |
+|---|---:|---:|---:|---:|---:|---:|---|
+| topk_flat_pack_v0 | 1 | 0.3333 | 1 | 0 | 0.0000 | 0 | `metadata_hard_distractor_proxy_v1` |
+| anchor_contrast_pack_v0 | 1 | 0.3333 | 1 | 1 | 0.3333 | 0 | `metadata_hard_distractor_proxy_v1` |
+| conservative_anchor_pack_v0 | 1 | 0.3333 | 1 | 1 | 0.3333 | 0 | `metadata_hard_distractor_proxy_v1` |
 
 ## SCORE-phase diagnostics (not used for pack construction)
 

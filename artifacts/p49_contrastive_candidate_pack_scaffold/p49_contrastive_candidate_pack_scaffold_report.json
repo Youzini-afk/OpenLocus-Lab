@@ -14,7 +14,7 @@
   "default_should_change": false,
   "elapsed_ms": 0,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-15T17:26:30.946322+00:00",
+  "generated_at": "2026-06-16T18:53:47.248408+00:00",
   "generated_by": "eval/p49_contrastive_candidate_pack_scaffold.py",
   "gold_span_availability": "available",
   "gold_spans_in_artifact": false,
@@ -24,6 +24,7 @@
   ],
   "insufficient_input_source_count": 0,
   "llm_calls_by_p49": 0,
+  "metadata_hard_distractor_proxy_definition_version": "metadata_hard_distractor_proxy_v1",
   "metrics": {
     "by_strategy": {
       "anchor_contrast_pack_v0": {
@@ -90,6 +91,15 @@
           "subtype_diversity_rate": 0.0,
           "symbol_regex_agreement_rate": 0.333333
         },
+        "hard_distractor_repair_coverage": {
+          "available_count": 1,
+          "metadata_hard_distractor_proxy_definition_version": "metadata_hard_distractor_proxy_v1",
+          "overflow_blocked_count": 0,
+          "proxy_pack_count": 1,
+          "proxy_pack_rate": 0.333333,
+          "slot_fill_count": 1,
+          "slot_fill_rate": 0.333333
+        },
         "pack_build_metrics": {
           "dedupe_drop_rate": 0.714286,
           "mean_candidates_per_pack": 1.333333,
@@ -105,11 +115,11 @@
           "slot_fill_rate_by_slot": {
             "cross_file_anchor": 0.0,
             "doc_config_pair": 0.0,
-            "hard_distractor": 0.0,
+            "hard_distractor": 0.333333,
             "primary_anchor": 1.0,
             "rmc_trigger_candidate": 0.0,
             "rrf_consensus": 0.0,
-            "same_file_contrast": 0.333333,
+            "same_file_contrast": 0.0,
             "same_file_neighbor": 0.0,
             "source_test_pair": 0.0
           },
@@ -208,6 +218,15 @@
           "subtype_diversity_rate": 0.0,
           "symbol_regex_agreement_rate": 0.333333
         },
+        "hard_distractor_repair_coverage": {
+          "available_count": 1,
+          "metadata_hard_distractor_proxy_definition_version": "metadata_hard_distractor_proxy_v1",
+          "overflow_blocked_count": 0,
+          "proxy_pack_count": 1,
+          "proxy_pack_rate": 0.333333,
+          "slot_fill_count": 1,
+          "slot_fill_rate": 0.333333
+        },
         "pack_build_metrics": {
           "dedupe_drop_rate": 0.714286,
           "mean_candidates_per_pack": 1.333333,
@@ -223,9 +242,9 @@
           "slot_fill_rate_by_slot": {
             "cross_file_anchor": 0.0,
             "doc_config_pair": 0.0,
-            "hard_distractor": 0.0,
+            "hard_distractor": 0.333333,
             "primary_anchor": 1.0,
-            "rmc_trigger_candidate": 0.333333,
+            "rmc_trigger_candidate": 0.0,
             "rrf_consensus": 0.0,
             "same_file_contrast": 0.0,
             "same_file_neighbor": 0.0,
@@ -325,6 +344,15 @@
           "source_test_pair_rate": 0.0,
           "subtype_diversity_rate": 0.0,
           "symbol_regex_agreement_rate": 0.333333
+        },
+        "hard_distractor_repair_coverage": {
+          "available_count": 1,
+          "metadata_hard_distractor_proxy_definition_version": "metadata_hard_distractor_proxy_v1",
+          "overflow_blocked_count": 0,
+          "proxy_pack_count": 1,
+          "proxy_pack_rate": 0.333333,
+          "slot_fill_count": 0,
+          "slot_fill_rate": 0.0
         },
         "pack_build_metrics": {
           "dedupe_drop_rate": 0.714286,
