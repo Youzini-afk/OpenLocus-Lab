@@ -1,7 +1,7 @@
 # P60 RMC Policy v2 v0
 
 - Schema: `p60-rmc-policy-v2-v0`
-- Generated: 2026-06-16T12:23:03.308127+00:00
+- Generated: 2026-06-16T12:33:16.879249+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P60: 0
@@ -81,11 +81,11 @@ P60 advances the `request_more_context` (RMC) diagnostic from P47/P48 geometry/o
 - Policy selection was gold-free and used only public task metadata, route features, and candidate metadata; labels were loaded only after selections were frozen.
 - P60 does not call an LLM, does not create evidence, does not admit candidates, does not read source files, and does not recommend a default policy and declares no winner.
 - P60 reports only aggregate next-action routing rates and SCORE-phase reach/false-cost diagnostics; all policies are treated as diagnostic alternatives, not promotion candidates.
-- baseline_p25_bucket_routed_v0: rmc_candidate_count=16 next_actions={'filter': 4, 'contrastive_pack': 9, 'p51c_span_narrow': 1, 'weak_candidate_only': 2, 'local_verifier': 0}.
-- h4b_selective_readmission: rmc_candidate_count=16 next_actions={'filter': 6, 'contrastive_pack': 3, 'p51c_span_narrow': 0, 'weak_candidate_only': 7, 'local_verifier': 0}.
-- rmc_all_uncertain: rmc_candidate_count=16 next_actions={'filter': 0, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 16}.
-- rmc_high_diagnostic_only: rmc_candidate_count=14 next_actions={'filter': 6, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 8}.
-- rmc_span_overlap_only: rmc_candidate_count=14 next_actions={'filter': 7, 'contrastive_pack': 0, 'p51c_span_narrow': 7, 'weak_candidate_only': 0, 'local_verifier': 0}.
-- rmc_symbol_regex_fusion_only: rmc_candidate_count=14 next_actions={'filter': 10, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 4}.
-- rmc_high_score_plus_contrast_pack: rmc_candidate_count=14 next_actions={'filter': 12, 'contrastive_pack': 2, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 0}.
-- rmc_high_score_plus_source_backed_verifier: rmc_candidate_count=14 next_actions={'filter': 6, 'contrastive_pack': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'local_verifier': 8}.
+- baseline_p25_bucket_routed_v0: rmc_candidate_count=16 next_actions={'contrastive_pack': 9, 'local_verifier': 0, 'p51c_span_narrow': 1, 'weak_candidate_only': 2, 'filter': 4}.
+- h4b_selective_readmission: rmc_candidate_count=16 next_actions={'contrastive_pack': 3, 'local_verifier': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 7, 'filter': 6}.
+- rmc_all_uncertain: rmc_candidate_count=16 next_actions={'contrastive_pack': 0, 'local_verifier': 16, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'filter': 0}.
+- rmc_high_diagnostic_only: rmc_candidate_count=14 next_actions={'contrastive_pack': 0, 'local_verifier': 8, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'filter': 6}.
+- rmc_span_overlap_only: rmc_candidate_count=14 next_actions={'contrastive_pack': 0, 'local_verifier': 0, 'p51c_span_narrow': 7, 'weak_candidate_only': 0, 'filter': 7}.
+- rmc_symbol_regex_fusion_only: rmc_candidate_count=14 next_actions={'contrastive_pack': 0, 'local_verifier': 4, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'filter': 10}.
+- rmc_high_score_plus_contrast_pack: rmc_candidate_count=14 next_actions={'contrastive_pack': 2, 'local_verifier': 0, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'filter': 12}.
+- rmc_high_score_plus_source_backed_verifier: rmc_candidate_count=14 next_actions={'contrastive_pack': 0, 'local_verifier': 8, 'p51c_span_narrow': 0, 'weak_candidate_only': 0, 'filter': 6}.

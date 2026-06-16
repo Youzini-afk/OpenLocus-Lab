@@ -886,7 +886,6 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
 
     expected = {
         "not_quality_evidence": True,
-        "real_evaluation": False,
         "promotion_ready": False,
         "default_should_change": False,
         "evidencecore_semantics_changed": False,
@@ -925,6 +924,10 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
     for flag, value in expected.items():
         if report.get(flag) is not value:
             errors.append(f"{flag} must be {value}")
+
+    expected_real_eval = bool(report.get("status") == "diagnostic_policy_matrix_available" and not report.get("self_test"))
+    if report.get("real_evaluation") is not expected_real_eval:
+        errors.append("real_evaluation must reflect status==diagnostic_policy_matrix_available and not self_test")
 
     comparison = report.get("comparison_frame", {})
     for key, value in {
