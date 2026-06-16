@@ -55,6 +55,8 @@ P62 is a deterministic, no-live-LLM, no-provider, aggregate-only generalization 
 
 P63 is a deterministic, offline, no-provider, no-live-LLM, aggregate-only cross-run slice collector and orchestrator that runs after P62. It accepts only already-downloaded local per-run artifact directories, validates that each directory contains only the allowlisted aggregate report JSON files, builds a P62 slice manifest, and then runs P62 -> P57 -> P61 offline. P63 does not fetch artifacts from a network, call providers, construct prompts, read source files, tasks, candidates, prompts, responses, traces, or ephemeral records, and it does not expose run, repo, dataset, or directory identity. It is not a fetcher, not quality evidence, not provider spend authorization, not repo or dataset diversity proof, and not a promotion/default gate or live-readiness authorization. P63 emits only aggregate counts and status enums; any future live provider run requires a separate workflow_dispatch or human decision. See the [P63 detailed report](p63-cross-run-slice-collector.md).
 
+The first real cross-run dry-run used four successful `ci_smoke` runs with `max_tasks=6` and `round_robin_public_buckets` (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`). P63 accepted all four sanitized slice directories, P62 reported four distinct eligible slices, and P57 reached `diagnostic_matrix_complete` over 24 aggregate tasks (`positive=9`, `no_gold=15`). P61 still blocked with `blocked_missing_actionability` because P59 reported `blocked_missing_hard_distractor`. Therefore live P51-C remains closed: the next research step is to repair contrastive-pack hard-distractor/actionability coverage, not to spend provider calls.
+
 ---
 
 ## 0. Executive Research Thesis

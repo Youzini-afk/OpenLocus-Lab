@@ -81,6 +81,30 @@ p21_llm_rich ci_smoke CI: 27601488191 green
 p21_llm_rich ci_smoke repo_id=js_express: 27601639934 green
 ```
 
+Real cross-run P63 dry-run update:
+
+```text
+manual P63 cross-run collection over four ci_smoke max_tasks=6 round_robin_public_buckets runs:
+  py_flask      27637929480 green
+  js_express    27637930877 green
+  go_gin        27637932300 green
+  rust_ripgrep  27637933749 green
+
+P63 accepted sanitized slice dirs: 4/4
+P62 distinct eligible slices: 4
+P57 status: diagnostic_matrix_complete
+P57 observed task aggregate: 24 tasks, positive=9, no_gold=15
+P61 status: blocked_missing_actionability
+P61 blocker: P59 actionability bucket = blocked_missing_hard_distractor
+```
+
+This is the first real cross-run matrix where the deterministic P62 -> P57 ->
+P61 chain moved beyond the single-slice `insufficient_matrix` condition. It does
+**not** authorize live LLM spend. The result is a sharper blocker: P51-C should
+remain closed until P59/P49 contrastive-pack construction can reliably include
+hard distractors/actionability information for the candidate pools routed toward
+LLM span-narrow/filter.
+
 The validation covered the deterministic P52C/P51-B/P61/P62 self-tests, docs i18n mirror,
 workflow Python heredoc compilation, diff checks, artifact privacy gates,
 self-test no-source-root behavior, default `ci_smoke` source-backed behavior, and
@@ -99,10 +123,11 @@ Current detailed reports added in this phase:
 - [`p52b-source-backed-local-verifier-feature-matrix.md`](p52b-source-backed-local-verifier-feature-matrix.md)
 - [`p52a-source-materialization-prerequisite.md`](p52a-source-materialization-prerequisite.md)
 
-Recommended next step: prefer P61 pre-spend gate evaluation before opening a true
-P51-C live LLM micro-run. The current scaffolds are mechanically green, but they
-remain diagnostic-only and should be pressured on more repo/language slices
-before any live-call expansion or policy claim.
+Recommended next step: repair P59/P49 hard-distractor and actionability coverage
+before opening a true P51-C live LLM micro-run. The cross-run matrix is now
+mechanically actionable enough for P57, but P61 correctly blocks live spend
+because contrastive packs still lack the hard-distractor coverage required for a
+safe filter/span-narrow micro-run.
 
 ---
 
