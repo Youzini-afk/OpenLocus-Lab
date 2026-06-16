@@ -773,7 +773,7 @@ def _has_symbol_regex_agreement(cand: dict[str, Any]) -> bool:
     return str(st.get("source_class")) == "symbol_regex_fusion"
 
 
-def _build_pack(candidates: list[dict[str, Any]], strategy: str, task: dict[str, Any] | None) -> dict[str, Any]:
+def _build_pack(candidates: list[dict[str, Any]], strategy: str, task: dict[str, Any] | None = None) -> dict[str, Any]:
     if strategy == "topk_flat_pack_v0":
         return _build_topk_flat_pack_v0(candidates, task)
     if strategy == "anchor_contrast_pack_v0":

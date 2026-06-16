@@ -1,7 +1,7 @@
 # P49 Contrastive Candidate Pack Scaffold
 
 - Schema: `p49-contrastive-candidate-pack-scaffold-v1`
-- Generated: 2026-06-16T18:53:47.248408+00:00
+- Generated: 2026-06-16T18:59:24.015930+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Hard-distractor proxy: `metadata_hard_distractor_proxy_v1`
