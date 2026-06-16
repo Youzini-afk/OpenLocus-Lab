@@ -449,7 +449,7 @@ def _overlaps(a: dict[str, Any], b: dict[str, Any]) -> bool:
     return a["_path"] == b["_path"] and a["_end"] >= b["_start"] - 1 and a["_start"] <= b["_end"] + 1
 
 
-def _build_topk_flat_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None) -> dict[str, Any]:
+def _build_topk_flat_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None = None) -> dict[str, Any]:
     selected = candidates[:MAX_CANDIDATES_PER_PACK]
     return {
         "selected": selected,
@@ -476,7 +476,7 @@ def _select_next(
     return None
 
 
-def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None) -> dict[str, Any]:
+def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None = None) -> dict[str, Any]:
     if not candidates:
         return {"selected": [], "slots_filled": set(), "slots_overflow": False, "line_budget_proxy": 0, "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION}
     anchor = candidates[0]
@@ -578,7 +578,7 @@ def _build_anchor_contrast_pack_v0(candidates: list[dict[str, Any]], task: dict[
     }
 
 
-def _build_conservative_anchor_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None) -> dict[str, Any]:
+def _build_conservative_anchor_pack_v0(candidates: list[dict[str, Any]], task: dict[str, Any] | None = None) -> dict[str, Any]:
     if not candidates:
         return {"selected": [], "slots_filled": set(), "slots_overflow": False, "line_budget_proxy": 0, "metadata_hard_distractor_proxy_version": METADATA_HARD_DISTRACTOR_PROXY_VERSION}
     anchor = candidates[0]

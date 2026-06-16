@@ -1,7 +1,7 @@
 # P59 Contrastive Pack Coverage & Counterfactual Study v0
 
 - Schema: `p59-contrastive-pack-coverage-counterfactual-v0`
-- Generated: 2026-06-16T18:59:24.265035+00:00
+- Generated: 2026-06-16T19:02:19.610470+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Hard-distractor proxy: `metadata_hard_distractor_proxy_v1`
