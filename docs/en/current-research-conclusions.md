@@ -41,7 +41,11 @@ P59 is a deterministic, no-live-LLM, no-provider, aggregate-only pre-spend diagn
 
 ## P60 RMC Policy v2 v0
 
-P60 is a deterministic, no-live-LLM, no-provider, aggregate-only diagnostic policy COMPARISON layer that advances `request_more_context` (RMC) from P47/P48 geometry/overlay into a comparable policy matrix. For the same frozen candidate/task inputs, each policy selects only the NEXT diagnostic action; P60 reports aggregate routing counts plus SCORE-phase gold reach / false cost diagnostics and labeled cost/latency ESTIMATES. RMC is not evidence, not admission, and not a default; P60 declares no winner and recommends no default. RUN-phase selection is gold-free; labels are loaded only after all selections are frozen. See the [P60 detailed report](p60-rmc-policy-v2.md).
+P60 is a deterministic, no-live-LLM, no-provider, aggregate-only diagnostic policy COMPARISON layer that advances `request_more_context` (RMC) from P47/P48 geometry/overlay into a comparable policy matrix. For the same frozen candidate/task inputs, each policy selects only the NEXT diagnostic action; P60 reports aggregate routing counts plus SCORE-phase gold reach / false cost diagnostics and labeled cost/latency ESTIMATES. RMC is not evidence/admission/default. P60 declares NO winner and recommends NO default. See the [P60 detailed report](p60-rmc-policy-v2.md).
+
+## P61 Pre-Spend Gate v0
+
+P61 is a deterministic, no-live-LLM, no-provider, aggregate-only pre-spend readiness gate that runs after P60. It consumes only existing aggregate reports (P57, P58, P59, P60, P51-B required; P52C optional) and emits a precondition-readiness decision about whether a future P51-C live LLM micro-run is worth considering. P61 does not call providers, construct prompts, read source/ephemeral records, admit Evidence, change defaults, promote, or authorize provider spend. It only reports preconditions; opening a live run remains a separate explicit workflow_dispatch or human decision. For single-slice/self-test runs, P61 reports `insufficient_inputs` or `self_test_only` by design. It is not quality evidence, not a promotion/default gate, and not live-readiness authorization. See the [P61 detailed report](p61-pre-spend-gate.md).
 
 ---
 

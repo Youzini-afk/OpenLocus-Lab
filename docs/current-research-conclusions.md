@@ -75,6 +75,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p58-source-backed-verifier-calibration.md`: [en](en/p58-source-backed-verifier-calibration.md) · [zh](zh/p58-source-backed-verifier-calibration.md)
 - `p59-contrastive-pack-coverage-counterfactual.md`: [en](en/p59-contrastive-pack-coverage-counterfactual.md) · [zh](zh/p59-contrastive-pack-coverage-counterfactual.md)
 - `p60-rmc-policy-v2.md`: [en](en/p60-rmc-policy-v2.md) · [zh](zh/p60-rmc-policy-v2.md)
+- `p61-pre-spend-gate.md`: [en](en/p61-pre-spend-gate.md) · [zh](zh/p61-pre-spend-gate.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
 - `r17-router-guard.md`: [en](en/r17-router-guard.md) · [zh](zh/r17-router-guard.md)
 - `r18-calibration-sweep.md`: [en](en/r18-calibration-sweep.md) · [zh](zh/r18-calibration-sweep.md)

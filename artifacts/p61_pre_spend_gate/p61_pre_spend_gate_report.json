@@ -1,0 +1,161 @@
+{
+  "aggregate_only_public_artifact": true,
+  "blockers": [],
+  "candidate_not_fact": true,
+  "conclusion": [
+    "P61 Pre-Spend Gate v0 is a deterministic, aggregate-only precondition-readiness report.",
+    "P61 does not call providers, does not construct prompts, and does not read source or ephemeral records.",
+    "P61 is not quality evidence, not Evidence, not authorization, not promotion, and not live-readiness.",
+    "A future P51-C live LLM micro-run remains a separate explicit workflow_dispatch or human decision.",
+    "This self-test exercised the precondition-readiness paths with synthetic upstream aggregate reports.",
+    "Current status: self_test_only. P61 recommends no provider spend and no live LLM calls without a separate explicit decision."
+  ],
+  "decision_inputs": {
+    "p51b_budget_violation_absent": true,
+    "p51b_contract_precondition_met": true,
+    "p51b_eligibility_is_precondition_only": true,
+    "p51b_redaction_required_absent": true,
+    "p51b_schema_validation_precondition_met": true,
+    "p52c_optional_present": true,
+    "p52c_optional_score_availability": "not_provided",
+    "p57_matrix_complete": true,
+    "p57_required_slice_count_met": true,
+    "p58_calibration_available": true,
+    "p59_actionability_bucket": "actionable",
+    "p59_actionability_precondition_met": true,
+    "p60_llm_eligible_route_available": true,
+    "p60_p51c_route_available": true,
+    "p60_policy_count_with_llm_eligible_route": 1,
+    "p60_policy_count_with_p51c_route": 1,
+    "p60_routing_is_precondition_only": true
+  },
+  "default_should_change": false,
+  "elapsed_ms": 0,
+  "evidence_admission_performed": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-16T13:33:55.636892+00:00",
+  "generated_by": "p61_pre_spend_gate",
+  "gold_spans_in_artifact": false,
+  "gold_used_by_p61": false,
+  "input_summary": {
+    "invalid_json_count": 0,
+    "optional_present_count": 1,
+    "optional_reports": [
+      "p52c"
+    ],
+    "required_missing": [],
+    "required_present_count": 5,
+    "required_reports": [
+      "p57",
+      "p58",
+      "p59",
+      "p60",
+      "p51b"
+    ],
+    "upstream_status_by_phase": {
+      "p51b": "ok",
+      "p52c": "ok",
+      "p57": "diagnostic_matrix_complete",
+      "p58": "diagnostic_calibration_available",
+      "p59": "diagnostic_coverage_available",
+      "p60": "diagnostic_policy_matrix_available"
+    }
+  },
+  "llm_calls_by_p61": 0,
+  "micro_run_not_authorized": true,
+  "not_quality_evidence": true,
+  "p61_uses_no_score_phase": true,
+  "precondition_report_only": true,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "prompt_construction_by_p61": false,
+  "provider_config_read_by_p61": false,
+  "provider_keys_in_artifact": false,
+  "provider_spend_authorized": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_query_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_sent_to_provider": false,
+  "raw_snippets_stored": false,
+  "raw_source_stored": false,
+  "raw_text_stored": false,
+  "readiness_decision": {
+    "decision": "self_test_only",
+    "decision_is_authorization": false,
+    "provider_spend_authorized": false,
+    "reasons": [
+      "self_test_only"
+    ],
+    "requires_separate_human_or_workflow_dispatch": true
+  },
+  "remote_calls_by_p61": 0,
+  "remote_requests_by_p61": 0,
+  "schema_version": "p61-pre-spend-gate-v0",
+  "self_test": true,
+  "source_reads_attempted_by_p61": false,
+  "stage": "P61 Pre-Spend Gate v0",
+  "status": "self_test_only",
+  "status_reason": "Self-test-only aggregate precondition readiness; not quality evidence and not authorization.",
+  "upstream_safety_summary": {
+    "by_phase": {
+      "p51b": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "ok"
+      },
+      "p52c": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "ok"
+      },
+      "p57": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "diagnostic_matrix_complete"
+      },
+      "p58": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "diagnostic_calibration_available"
+      },
+      "p59": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "diagnostic_coverage_available"
+      },
+      "p60": {
+        "report_present": true,
+        "safety_blocker": false,
+        "safety_warnings": [],
+        "status": "diagnostic_policy_matrix_available"
+      }
+    },
+    "checked_phase_count": 6,
+    "safety_blocker_count": 0,
+    "safety_warning_count": 0
+  },
+  "upstream_status_summary": {
+    "collapsed_status_by_phase": {
+      "p51b": "ok",
+      "p52c": "ok",
+      "p57": "diagnostic_matrix_complete",
+      "p58": "diagnostic_calibration_available",
+      "p59": "diagnostic_coverage_available",
+      "p60": "diagnostic_policy_matrix_available"
+    }
+  },
+  "validation": {
+    "forbidden_key_scan_ok": true
+  },
+  "warnings": [],
+  "workflow_dispatch_required_for_live_run": true
+}
