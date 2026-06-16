@@ -392,6 +392,36 @@ def _is_path_or_secret_value(value: Any, prefix: str = "") -> list[str]:
     return violations
 
 
+def _is_upstream_private_value(value: Any, prefix: str = "") -> list[str]:
+    """Detect clear private values in upstream aggregate reports.
+
+    Upstream aggregate reports may legitimately contain hash-policy fields or
+    stage-name text with slashes (for example "P52A/P52B"). P63 must reject
+    obvious private values (absolute paths, URLs, API keys/provider secrets)
+    while allowing existing sanitized aggregate diagnostics to be consumed.
+    P63's own public report still uses the stricter value scanner.
+    """
+    violations: list[str] = []
+    if isinstance(value, dict):
+        for key, val in value.items():
+            violations.extend(_is_upstream_private_value(val, prefix + str(key) + "."))
+    elif isinstance(value, list):
+        for idx, val in enumerate(value):
+            violations.extend(_is_upstream_private_value(val, prefix + str(idx) + "."))
+    elif isinstance(value, str):
+        text = value.strip()
+        if len(text) > 1:
+            if text.startswith("/") or text.startswith("\\"):
+                violations.append(prefix + " looks like an absolute path")
+            elif "://" in text:
+                violations.append(prefix + " looks like a URL")
+            elif re.search(r"sk-[A-Za-z0-9_-]{20,}", text):
+                violations.append(prefix + " looks like an API key")
+            elif re.search(r"(?i)(api_key|api_token|base_url|provider_key|endpoint|authorization\s*[:=])", text):
+                violations.append(prefix + " looks like a provider secret pattern")
+    return violations
+
+
 def _reject_forbidden_keys(obj: Any, prefix: str = "") -> list[str]:
     violations: list[str] = []
     if isinstance(obj, dict):
@@ -422,7 +452,7 @@ def _check_report_safety(data: dict[str, Any]) -> tuple[bool, str]:
 
     # P63 accepts only aggregate public reports. Even allowlisted filenames must
     # not contain private/per-row structures or leak identifiers/paths/providers.
-    if _reject_forbidden_keys(data) or _is_path_or_secret_value(data):
+    if _reject_forbidden_keys(data) or _is_upstream_private_value(data):
         return False, "aggregate_contract_violation"
 
     if data.get("self_test") is True:

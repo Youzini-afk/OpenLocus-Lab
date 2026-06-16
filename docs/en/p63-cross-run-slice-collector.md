@@ -1,7 +1,7 @@
 # P63 Cross-Run Slice Collector / Matrix Runner v0
 
 - Schema: `p63-cross-run-slice-collector-v0`
-- Generated: 2026-06-16T17:28:02.846662+00:00
+- Generated: 2026-06-16T17:51:01.831948+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P63: 0
