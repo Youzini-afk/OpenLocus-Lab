@@ -1,7 +1,7 @@
 # P51-B LLM Opt-In Contract / Dry-Run Payload Validator
 
 - Schema: `p51b-llm-opt-in-contract-v1`
-- Generated: 2026-06-15T21:21:31.040832+00:00
+- Generated: 2026-06-16T19:29:52.206722+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P51-B: 0
@@ -85,6 +85,9 @@ P51-B defines a future live LLM opt-in contract and validates dry-run payload sc
 - P95 context-char budget: 800.0000
 - Max budget violation count/rate: 0 / 0.0000
 - Redaction required count/rate: 3 / 1.0000
+- Redaction policy status: `required_defined_satisfied`
+- Redaction policy precondition satisfied: True
+- Runtime redaction still required by P51-C: True
 - Secret-scan availability: `aggregate_metadata_only`
 - Request-envelope-not-prompt: `True`
 - Raw request envelopes stored: `False`

@@ -1356,6 +1356,22 @@ jobs:
                   pb = data.get("metrics", {}).get("request_envelope_blueprint", {})
                   if (pb.get("request_envelope_blueprint_count") or 0) <= 0:
                       raise SystemExit(f"{json_path} request_envelope_blueprint_count must be positive")
+                  allowed_redaction_status = {"not_required", "required_defined_satisfied", "required_missing_policy", "required_policy_unsatisfied", "unknown"}
+                  redaction_status = pb.get("redaction_policy_status")
+                  if pb.get("redaction_policy_contract_version") != "p51b-redaction-policy-precondition-v1":
+                      raise SystemExit(f"{json_path} redaction policy contract version mismatch")
+                  if redaction_status not in allowed_redaction_status:
+                      raise SystemExit(f"{json_path} redaction policy status invalid")
+                  if pb.get("redaction_policy_precondition_only") is not True:
+                      raise SystemExit(f"{json_path} redaction policy must be precondition-only")
+                  if pb.get("runtime_redaction_still_required_by_p51c") is not True:
+                      raise SystemExit(f"{json_path} must state runtime redaction remains required by P51-C")
+                  if redaction_status == "not_required":
+                      if pb.get("redaction_policy_required") is not False or pb.get("redaction_policy_defined") is not True or pb.get("redaction_policy_precondition_satisfied") is not True:
+                          raise SystemExit(f"{json_path} not_required redaction policy fields inconsistent")
+                  if redaction_status == "required_defined_satisfied":
+                      if pb.get("redaction_policy_required") is not True or pb.get("redaction_policy_defined") is not True or pb.get("redaction_policy_precondition_satisfied") is not True:
+                          raise SystemExit(f"{json_path} required_defined_satisfied redaction policy fields inconsistent")
                   rs = data.get("metrics", {}).get("role_output_schema_validation", {})
                   if rs.get("role_output_schema_valid_rate") != 1.0:
                       raise SystemExit(f"{json_path} role_output_schema_valid_rate must equal 1.0")
@@ -1617,6 +1633,16 @@ jobs:
                           for idx, value in enumerate(obj):
                               p61_walk(value, prefix + str(idx) + ".")
                   p61_walk(data)
+                  di = data.get("decision_inputs") or {}
+                  if di.get("p51b_redaction_policy_status") not in {"not_required", "required_defined_satisfied", "required_missing_policy", "required_policy_unsatisfied", "unknown", "missing"}:
+                      raise SystemExit(f"{json_path} P51-B redaction policy status invalid")
+                  if data.get("status") == "micro_run_preconditions_met":
+                      if di.get("p51b_redaction_policy_precondition_met") is not True:
+                          raise SystemExit(f"{json_path} preconditions_met requires P51-B redaction policy precondition")
+                      if di.get("p51b_redaction_policy_consistent") is not True:
+                          raise SystemExit(f"{json_path} preconditions_met requires P51-B redaction policy consistency")
+                      if di.get("p51b_runtime_redaction_still_required_by_p51c") is not True:
+                          raise SystemExit(f"{json_path} preconditions_met must keep runtime redaction required by P51-C")
 
               if json_path.name == "p62_generalization_matrix_aggregator_report.json":
                   allowed_p62_status = {"self_test_only", "insufficient_matrix_inputs", "diagnostic_matrix_unstable", "diagnostic_matrix_complete", "blocked_safety"}

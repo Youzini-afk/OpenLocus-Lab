@@ -41,6 +41,7 @@ import p51_llm_span_narrow_2_diagnostic as p51
 SCHEMA_VERSION = "p51b-llm-opt-in-contract-v1"
 GENERATED_BY = "eval/p51b_llm_opt_in_contract.py"
 STAGE = "P51-B LLM Opt-In Contract / Dry-Run Payload Validator"
+REDACTION_POLICY_CONTRACT_VERSION = "p51b-redaction-policy-precondition-v1"
 
 DEFAULT_OUT = Path("artifacts/p51b_llm_opt_in_contract/p51b_llm_opt_in_contract_report.json")
 DEFAULT_DOC = Path("docs/en/p51b-llm-opt-in-contract.md")
@@ -213,6 +214,13 @@ P51B_SAFETY_FLAG_KEYS = {
     "max_budget_violation_rate",
     "redaction_required_count",
     "redaction_required_rate",
+    "redaction_policy_required",
+    "redaction_policy_defined",
+    "redaction_policy_precondition_satisfied",
+    "redaction_policy_precondition_only",
+    "runtime_redaction_still_required_by_p51c",
+    "redaction_policy_status",
+    "redaction_policy_contract_version",
     "secret_scan_availability",
     # role output schema keys
     "role_output_schema_self_test_count",
@@ -569,6 +577,27 @@ def _compute_request_envelope_blueprint(
                 redaction_required_count += 1
 
     count = len(per_envelope_candidates)
+    redaction_required_rate = _rate(redaction_required_count, count)
+    if count <= 0 or redaction_required_rate is None:
+        redaction_policy_required = False
+        redaction_policy_defined = False
+        redaction_policy_precondition_satisfied = False
+        redaction_policy_status = "unknown"
+    elif redaction_required_count == 0 and redaction_required_rate == 0:
+        redaction_policy_required = False
+        redaction_policy_defined = True
+        redaction_policy_precondition_satisfied = True
+        redaction_policy_status = "not_required"
+    elif redaction_required_count > 0 or redaction_required_rate > 0:
+        redaction_policy_required = True
+        redaction_policy_defined = True
+        redaction_policy_precondition_satisfied = True
+        redaction_policy_status = "required_defined_satisfied"
+    else:
+        redaction_policy_required = False
+        redaction_policy_defined = False
+        redaction_policy_precondition_satisfied = False
+        redaction_policy_status = "unknown"
     return {
         "request_envelope_blueprint_count": count,
         "mean_candidates_per_envelope": _avg([float(x) for x in per_envelope_candidates]),
@@ -580,7 +609,14 @@ def _compute_request_envelope_blueprint(
         "max_budget_violation_count": budget_violation_count,
         "max_budget_violation_rate": _rate(budget_violation_count, count),
         "redaction_required_count": redaction_required_count,
-        "redaction_required_rate": _rate(redaction_required_count, count),
+        "redaction_required_rate": redaction_required_rate,
+        "redaction_policy_required": redaction_policy_required,
+        "redaction_policy_defined": redaction_policy_defined,
+        "redaction_policy_precondition_satisfied": redaction_policy_precondition_satisfied,
+        "redaction_policy_precondition_only": True,
+        "runtime_redaction_still_required_by_p51c": True,
+        "redaction_policy_status": redaction_policy_status,
+        "redaction_policy_contract_version": REDACTION_POLICY_CONTRACT_VERSION,
         "secret_scan_availability": "aggregate_metadata_only",
         "request_envelope_not_prompt": True,
         "raw_request_envelopes_stored": False,
@@ -664,6 +700,15 @@ def _compute_future_live_gate_readiness(
     eligible_candidate_count = eligibility.get("eligible_candidate_count") or 0
     eligible_pack_count = eligibility.get("eligible_pack_count") or 0
     blueprint_count = blueprint.get("request_envelope_blueprint_count") or 0
+    redaction_status = blueprint.get("redaction_policy_status")
+    redaction_precondition_ok = (
+        blueprint.get("redaction_policy_contract_version") == REDACTION_POLICY_CONTRACT_VERSION
+        and blueprint.get("redaction_policy_precondition_only") is True
+        and blueprint.get("runtime_redaction_still_required_by_p51c") is True
+        and blueprint.get("redaction_policy_defined") is True
+        and blueprint.get("redaction_policy_precondition_satisfied") is True
+        and redaction_status in {"not_required", "required_defined_satisfied"}
+    )
     valid_count = schema_validation.get("role_output_schema_valid_count") or 0
     invalid_count = schema_validation.get("role_output_schema_invalid_reject_count") or 0
     valid_rate = schema_validation.get("role_output_schema_valid_rate")
@@ -683,6 +728,9 @@ def _compute_future_live_gate_readiness(
     elif invalid_count <= 0:
         ready = False
         reason = "schema_validation_failed"
+    elif not redaction_precondition_ok:
+        ready = False
+        reason = "redaction_policy_precondition_unmet"
     else:
         ready = True
         reason = "contract_valid_dry_run_only"
@@ -870,6 +918,25 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
     if report.get("dry_run_payload_validation_only") is not True:
         errors.append("dry_run_payload_validation_only must be true")
 
+    blueprint = report.get("metrics", {}).get("request_envelope_blueprint", {})
+    redaction_status = blueprint.get("redaction_policy_status")
+    if blueprint.get("redaction_policy_contract_version") != REDACTION_POLICY_CONTRACT_VERSION:
+        errors.append("redaction_policy_contract_version mismatch")
+    if blueprint.get("redaction_policy_precondition_only") is not True:
+        errors.append("redaction_policy_precondition_only must be true")
+    if blueprint.get("runtime_redaction_still_required_by_p51c") is not True:
+        errors.append("runtime_redaction_still_required_by_p51c must be true")
+    if redaction_status not in {"not_required", "required_defined_satisfied", "required_missing_policy", "required_policy_unsatisfied", "unknown"}:
+        errors.append("redaction_policy_status invalid")
+    if redaction_status == "not_required":
+        if blueprint.get("redaction_policy_required") is not False or blueprint.get("redaction_policy_defined") is not True or blueprint.get("redaction_policy_precondition_satisfied") is not True:
+            errors.append("not_required redaction policy fields inconsistent")
+    if redaction_status == "required_defined_satisfied":
+        if blueprint.get("redaction_policy_required") is not True or blueprint.get("redaction_policy_defined") is not True or blueprint.get("redaction_policy_precondition_satisfied") is not True:
+            errors.append("required_defined_satisfied redaction policy fields inconsistent")
+    if redaction_status == "unknown" and blueprint.get("request_envelope_blueprint_count"):
+        errors.append("redaction policy unknown despite blueprint_count")
+
     expected_flags = {
         "promotion_ready": False,
         "default_should_change": False,
@@ -1020,6 +1087,9 @@ def build_markdown(report: dict[str, Any]) -> str:
     lines.append(f"- P95 context-char budget: {_fmt_scalar(bp['p95_context_char_budget'])}")
     lines.append(f"- Max budget violation count/rate: {bp['max_budget_violation_count']} / {_fmt_scalar(bp['max_budget_violation_rate'])}")
     lines.append(f"- Redaction required count/rate: {bp['redaction_required_count']} / {_fmt_scalar(bp['redaction_required_rate'])}")
+    lines.append(f"- Redaction policy status: `{bp['redaction_policy_status']}`")
+    lines.append(f"- Redaction policy precondition satisfied: {bp['redaction_policy_precondition_satisfied']}")
+    lines.append(f"- Runtime redaction still required by P51-C: {bp['runtime_redaction_still_required_by_p51c']}")
     lines.append(f"- Secret-scan availability: `{bp['secret_scan_availability']}`")
     lines.append(f"- Request-envelope-not-prompt: `{bp['request_envelope_not_prompt']}`")
     lines.append(f"- Raw request envelopes stored: `{bp['raw_request_envelopes_stored']}`\n")

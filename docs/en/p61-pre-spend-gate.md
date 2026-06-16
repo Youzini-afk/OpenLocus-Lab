@@ -1,7 +1,7 @@
 # P61 Pre-Spend Gate v0
 
 - Schema: `p61-pre-spend-gate-v0`
-- Generated: 2026-06-16T13:33:55.636892+00:00
+- Generated: 2026-06-16T19:29:52.251992+00:00
 - Status: `self_test_only`
 - Self-test: True
 - Remote calls by P61: 0
@@ -22,7 +22,7 @@ No source files, candidate pools, ephemeral records, prompts, responses, provide
 - Optional upstream report: P52C.
 - Collapse upstream statuses to an allowlisted safe enum.
 - Verify upstream safety flags: promotion/default false, `candidate_not_fact=true`, aggregate-only true, remote/LLM/prompt counters zero, source reads not attempted.
-- Apply deterministic readiness gates: P57 generalization complete and slice count >= 4, P58 calibration available, P59 actionable, P60 precondition-only routing with a P51-C or LLM-eligible route, P51-B contract ready with source-backed eligibility and zero budget/redaction violations.
+- Apply deterministic readiness gates: P57 generalization complete and slice count >= 4, P58 calibration available, P59 actionable, P60 precondition-only routing with a P51-C or LLM-eligible route, P51-B contract ready with source-backed eligibility, zero budget violations, and a redaction-policy precondition satisfied when redaction is required.
 - Emit a `readiness_decision` that explicitly states it is not authorization and requires a separate workflow_dispatch or human decision.
 
 ## Safety notes
@@ -82,7 +82,11 @@ No source files, candidate pools, ephemeral records, prompts, responses, provide
 - P51-B contract precondition met: True
 - P51-B eligibility is precondition-only: True
 - P51-B budget violation absent: True
-- P51-B redaction required absent: True
+- P51-B redaction required absent: False
+- P51-B redaction policy status: `required_defined_satisfied`
+- P51-B redaction policy consistent: True
+- P51-B redaction policy precondition met: True
+- P51-B runtime redaction still required by P51-C: True
 - P51-B schema validation precondition met: True
 - P52C optional score availability: `not_provided`
 - P52C optional present: True

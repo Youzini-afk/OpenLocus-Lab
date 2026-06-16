@@ -230,6 +230,10 @@ P61_SAFETY_FLAG_KEYS = {
     "p51b_eligibility_is_precondition_only",
     "p51b_budget_violation_absent",
     "p51b_redaction_required_absent",
+    "p51b_redaction_policy_precondition_met",
+    "p51b_redaction_policy_consistent",
+    "p51b_redaction_policy_status",
+    "p51b_runtime_redaction_still_required_by_p51c",
     "p51b_schema_validation_precondition_met",
     "p52c_optional_score_availability",
     "p52c_optional_present",
@@ -749,7 +753,34 @@ def _p51b_contract_readiness(reports: dict[str, dict[str, Any] | None]) -> dict[
     blueprint = metrics.get("request_envelope_blueprint") or {}
     blueprint_count = _as_int(blueprint.get("request_envelope_blueprint_count"))
     budget_violation_rate = _as_float(blueprint.get("max_budget_violation_rate"))
+    redaction_count = _as_int(blueprint.get("redaction_required_count"))
     redaction_rate = _as_float(blueprint.get("redaction_required_rate"))
+    redaction_status = blueprint.get("redaction_policy_status")
+    redaction_required_flag = blueprint.get("redaction_policy_required")
+    redaction_policy_consistent = False
+    if redaction_status == "not_required":
+        redaction_policy_consistent = (
+            redaction_required_flag is False
+            and redaction_count == 0
+            and redaction_rate == 0.0
+        )
+    elif redaction_status == "required_defined_satisfied":
+        redaction_policy_consistent = (
+            redaction_required_flag is True
+            and redaction_count is not None
+            and redaction_count > 0
+            and redaction_rate is not None
+            and redaction_rate > 0.0
+        )
+    redaction_policy_met = bool(
+        blueprint.get("redaction_policy_contract_version") == "p51b-redaction-policy-precondition-v1"
+        and blueprint.get("redaction_policy_precondition_only") is True
+        and blueprint.get("runtime_redaction_still_required_by_p51c") is True
+        and blueprint.get("redaction_policy_defined") is True
+        and blueprint.get("redaction_policy_precondition_satisfied") is True
+        and redaction_status in {"not_required", "required_defined_satisfied"}
+        and redaction_policy_consistent
+    )
 
     schema = metrics.get("role_output_schema_validation") or {}
     valid_rate = _as_float(schema.get("role_output_schema_valid_rate"))
@@ -781,6 +812,10 @@ def _p51b_contract_readiness(reports: dict[str, dict[str, Any] | None]) -> dict[
         "p51b_role_output_schema_valid_rate": valid_rate,
         "p51b_budget_violation_absent": budget_violation_absent,
         "p51b_redaction_required_absent": redaction_absent,
+        "p51b_redaction_policy_precondition_met": redaction_policy_met,
+        "p51b_redaction_policy_consistent": redaction_policy_consistent,
+        "p51b_redaction_policy_status": redaction_status if isinstance(redaction_status, str) else "missing",
+        "p51b_runtime_redaction_still_required_by_p51c": bool(blueprint.get("runtime_redaction_still_required_by_p51c")),
         "p51b_schema_validation_precondition_met": valid_rate == 1.0,
     }
 
@@ -835,6 +870,10 @@ def compute_status(reports: dict[str, dict[str, Any] | None]) -> tuple[str, list
             "p51b_eligibility_is_precondition_only": True,
             "p51b_budget_violation_absent": False,
             "p51b_redaction_required_absent": False,
+            "p51b_redaction_policy_precondition_met": False,
+            "p51b_redaction_policy_consistent": False,
+            "p51b_redaction_policy_status": "missing",
+            "p51b_runtime_redaction_still_required_by_p51c": False,
             "p51b_schema_validation_precondition_met": False,
         })
         inputs.update(_p52c_optional_summary(reports))
@@ -944,8 +983,8 @@ def compute_status(reports: dict[str, dict[str, Any] | None]) -> tuple[str, list
         reasons.append("p51b_contract_precondition_unmet")
     if not p51b["p51b_budget_violation_absent"]:
         reasons.append("p51b_budget_violation")
-    if not p51b["p51b_redaction_required_absent"]:
-        reasons.append("p51b_redaction_required")
+    if not p51b["p51b_redaction_policy_precondition_met"]:
+        reasons.append("p51b_redaction_policy_precondition_unmet")
     if not p51b["p51b_schema_validation_precondition_met"]:
         reasons.append("p51b_schema_validation_failed")
     if reasons:
@@ -1010,6 +1049,10 @@ def _build_decision_inputs(reports: dict[str, dict[str, Any] | None], safety_sum
         "p51b_eligibility_is_precondition_only": p51b["p51b_eligibility_is_precondition_only"],
         "p51b_budget_violation_absent": p51b["p51b_budget_violation_absent"],
         "p51b_redaction_required_absent": p51b["p51b_redaction_required_absent"],
+        "p51b_redaction_policy_precondition_met": p51b["p51b_redaction_policy_precondition_met"],
+        "p51b_redaction_policy_consistent": p51b["p51b_redaction_policy_consistent"],
+        "p51b_redaction_policy_status": p51b["p51b_redaction_policy_status"],
+        "p51b_runtime_redaction_still_required_by_p51c": p51b["p51b_runtime_redaction_still_required_by_p51c"],
         "p51b_schema_validation_precondition_met": p51b["p51b_schema_validation_precondition_met"],
         "p52c_optional_score_availability": p52c_summary["p52c_optional_score_availability"],
         "p52c_optional_present": p52c_summary["p52c_optional_present"],
@@ -1402,7 +1445,15 @@ def _make_actionable_set() -> dict[str, dict[str, Any] | None]:
         "request_envelope_blueprint": {
             "request_envelope_blueprint_count": 3,
             "max_budget_violation_rate": 0.0,
-            "redaction_required_rate": 0.0,
+            "redaction_required_count": 1,
+            "redaction_required_rate": 0.5,
+            "redaction_policy_contract_version": "p51b-redaction-policy-precondition-v1",
+            "redaction_policy_required": True,
+            "redaction_policy_defined": True,
+            "redaction_policy_precondition_satisfied": True,
+            "redaction_policy_precondition_only": True,
+            "runtime_redaction_still_required_by_p51c": True,
+            "redaction_policy_status": "required_defined_satisfied",
         },
         "role_output_schema_validation": {
             "role_output_schema_valid_rate": 1.0,
@@ -1454,6 +1505,32 @@ def _make_missing_safety_flag() -> dict[str, dict[str, Any] | None]:
     return reports
 
 
+def _make_missing_p51b_redaction_policy() -> dict[str, dict[str, Any] | None]:
+    reports = _make_actionable_set()
+    blueprint = reports["p51b"]["metrics"]["request_envelope_blueprint"]
+    for key in [
+        "redaction_policy_contract_version",
+        "redaction_policy_required",
+        "redaction_policy_defined",
+        "redaction_policy_precondition_satisfied",
+        "redaction_policy_precondition_only",
+        "runtime_redaction_still_required_by_p51c",
+        "redaction_policy_status",
+    ]:
+        blueprint.pop(key, None)
+    return reports
+
+
+def _make_malformed_p51b_redaction_policy() -> dict[str, dict[str, Any] | None]:
+    reports = _make_actionable_set()
+    blueprint = reports["p51b"]["metrics"]["request_envelope_blueprint"]
+    blueprint["redaction_required_count"] = 2
+    blueprint["redaction_required_rate"] = 0.5
+    blueprint["redaction_policy_required"] = False
+    blueprint["redaction_policy_status"] = "not_required"
+    return reports
+
+
 def _fmt_scalar(x: Any) -> str:
     if isinstance(x, float):
         return f"{x:.4f}"
@@ -1492,7 +1569,7 @@ def build_markdown(report: dict[str, Any]) -> str:
         "- Optional upstream report: P52C.",
         "- Collapse upstream statuses to an allowlisted safe enum.",
         "- Verify upstream safety flags: promotion/default false, `candidate_not_fact=true`, aggregate-only true, remote/LLM/prompt counters zero, source reads not attempted.",
-        "- Apply deterministic readiness gates: P57 generalization complete and slice count >= 4, P58 calibration available, P59 actionable, P60 precondition-only routing with a P51-C or LLM-eligible route, P51-B contract ready with source-backed eligibility and zero budget/redaction violations.",
+        "- Apply deterministic readiness gates: P57 generalization complete and slice count >= 4, P58 calibration available, P59 actionable, P60 precondition-only routing with a P51-C or LLM-eligible route, P51-B contract ready with source-backed eligibility, zero budget violations, and a redaction-policy precondition satisfied when redaction is required.",
         "- Emit a `readiness_decision` that explicitly states it is not authorization and requires a separate workflow_dispatch or human decision.",
         "",
         "## Safety notes",
@@ -1561,6 +1638,10 @@ def build_markdown(report: dict[str, Any]) -> str:
         f"- P51-B eligibility is precondition-only: {di['p51b_eligibility_is_precondition_only']}",
         f"- P51-B budget violation absent: {di['p51b_budget_violation_absent']}",
         f"- P51-B redaction required absent: {di['p51b_redaction_required_absent']}",
+        f"- P51-B redaction policy status: `{di['p51b_redaction_policy_status']}`",
+        f"- P51-B redaction policy consistent: {di['p51b_redaction_policy_consistent']}",
+        f"- P51-B redaction policy precondition met: {di['p51b_redaction_policy_precondition_met']}",
+        f"- P51-B runtime redaction still required by P51-C: {di['p51b_runtime_redaction_still_required_by_p51c']}",
         f"- P51-B schema validation precondition met: {di['p51b_schema_validation_precondition_met']}",
         f"- P52C optional score availability: `{di['p52c_optional_score_availability']}`",
         f"- P52C optional present: {di['p52c_optional_present']}",
@@ -1678,6 +1759,26 @@ def main() -> int:
             raise RuntimeError(f"P61 self-test missing required safety flag did not return blocked_safety: {status_f}, {reasons_f}")
         if not any("upstream_safety_blocker:p57" in r for r in reasons_f):
             raise RuntimeError("P61 self-test missing required safety flag missing expected reason")
+
+        # g) P51-B redaction policy contract is required when redaction may be needed.
+        missing_redaction = _make_missing_p51b_redaction_policy()
+        status_g, reasons_g, inputs_g = compute_status(missing_redaction)
+        if status_g != "blocked_missing_actionability":
+            raise RuntimeError(f"P61 self-test missing P51-B redaction policy did not block actionability: {status_g}, {reasons_g}")
+        if not any("p51b_redaction_policy_precondition_unmet" in r for r in reasons_g):
+            raise RuntimeError("P61 self-test missing P51-B redaction policy missing expected reason")
+        if inputs_g.get("p51b_redaction_policy_precondition_met") is not False:
+            raise RuntimeError("P61 self-test missing P51-B redaction policy should set precondition false")
+
+        # h) Malformed P51-B redaction metadata must fail closed.
+        malformed_redaction = _make_malformed_p51b_redaction_policy()
+        status_h, reasons_h, inputs_h = compute_status(malformed_redaction)
+        if status_h != "blocked_missing_actionability":
+            raise RuntimeError(f"P61 self-test malformed P51-B redaction policy did not block actionability: {status_h}, {reasons_h}")
+        if inputs_h.get("p51b_redaction_policy_consistent") is not False:
+            raise RuntimeError("P61 self-test malformed P51-B redaction policy should set consistency false")
+        if not any("p51b_redaction_policy_precondition_unmet" in r for r in reasons_h):
+            raise RuntimeError("P61 self-test malformed P51-B redaction policy missing expected reason")
 
     else:
         reports = _load_reports_from_args(args)
