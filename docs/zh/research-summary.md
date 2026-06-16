@@ -65,6 +65,8 @@ P60 adds a deterministic RMC policy comparison matrix that selects only the next
 P61 adds a deterministic aggregate-only pre-spend readiness gate that reports whether a future P51-C live LLM micro-run is worth considering; it is not authorization, not Evidence, and not default/promotion/live readiness.
 P62 adds a deterministic aggregate-only generalization matrix aggregator that combines sanitized multi-slice aggregate report sets; it deduplicates identical signatures internally, publishes only counts, and is not quality evidence, not repo/dataset identity proof, and not default/promotion/live readiness.
 P63 adds a deterministic offline aggregate-only cross-run slice collector and orchestrator that validates local artifact directories and runs P62 -> P57 -> P61; it does not fetch artifacts, call providers, or expose identities, and is not a fetcher, not quality evidence, not provider spend authorization, not repo/dataset diversity proof, and not default/promotion/live readiness.
+P59B repairs the P59 hard-distractor/actionability precondition with a gold-free metadata_hard_distractor_proxy_v1; it does not relax P61 and does not use labels to construct packs.
+P51-B now includes an explicit redaction-policy precondition, allowing P61 to distinguish "redaction is required and satisfied" from "redaction is missing" without constructing prompts or payloads.
 promotion_ready=false and default_should_change=false.
 EvidenceCore semantics are unchanged.
 ```
@@ -81,10 +83,10 @@ p21_llm_rich ci_smoke CI: 27601488191 green
 p21_llm_rich ci_smoke repo_id=js_express: 27601639934 green
 ```
 
-Real cross-run P63 dry-run update:
+Real cross-run P63 dry-run progression:
 
 ```text
-manual P63 cross-run collection over four ci_smoke max_tasks=6 round_robin_public_buckets runs:
+initial manual P63 cross-run collection over four ci_smoke max_tasks=6 round_robin_public_buckets runs:
   py_flask      27637929480 green
   js_express    27637930877 green
   go_gin        27637932300 green
@@ -96,14 +98,29 @@ P57 status: diagnostic_matrix_complete
 P57 observed task aggregate: 24 tasks, positive=9, no_gold=15
 P61 status: blocked_missing_actionability
 P61 blocker: P59 actionability bucket = blocked_missing_hard_distractor
+
+after P59B hard-distractor proxy repair and P51-B redaction-precondition repair,
+manual P63 cross-run collection over four fresh ci_smoke max_tasks=6 round_robin_public_buckets runs:
+  py_flask      27643271948 green
+  js_express    27643273360 green
+  go_gin        27643274763 green
+  rust_ripgrep  27643276402 green
+
+P63 accepted sanitized slice dirs: 4/4
+P62 distinct eligible slices: 4
+P57 status: diagnostic_matrix_complete
+P61 status: micro_run_preconditions_met
+P61 reason: all_required_preconditions_present
+P51-B redaction policy status: required_defined_satisfied
 ```
 
-This is the first real cross-run matrix where the deterministic P62 -> P57 ->
-P61 chain moved beyond the single-slice `insufficient_matrix` condition. It does
-**not** authorize live LLM spend. The result is a sharper blocker: P51-C should
-remain closed until P59/P49 contrastive-pack construction can reliably include
-hard distractors/actionability information for the candidate pools routed toward
-LLM span-narrow/filter.
+The first matrix proved that P62 -> P57 -> P61 could move beyond the single-slice
+`insufficient_matrix` condition and exposed a concrete P59 hard-distractor
+blocker. P59B repaired that blocker with a gold-free metadata hard-distractor
+proxy, and the subsequent matrix reached `micro_run_preconditions_met`. This
+still **does not** authorize live LLM spend: it is only a precondition signal.
+Opening P51-C remains a separate explicit workflow/human decision with its own
+provider-spend controls, prompt/payload privacy gates, and small micro-run plan.
 
 The validation covered the deterministic P52C/P51-B/P61/P62 self-tests, docs i18n mirror,
 workflow Python heredoc compilation, diff checks, artifact privacy gates,
@@ -123,11 +140,11 @@ Current detailed reports added in this phase:
 - [`p52b-source-backed-local-verifier-feature-matrix.md`](p52b-source-backed-local-verifier-feature-matrix.md)
 - [`p52a-source-materialization-prerequisite.md`](p52a-source-materialization-prerequisite.md)
 
-Recommended next step: repair P59/P49 hard-distractor and actionability coverage
-before opening a true P51-C live LLM micro-run. The cross-run matrix is now
-mechanically actionable enough for P57, but P61 correctly blocks live spend
-because contrastive packs still lack the hard-distractor coverage required for a
-safe filter/span-narrow micro-run.
+Recommended next step: design the smallest possible P51-C live LLM micro-run
+plan, but keep it closed until an explicit workflow_dispatch/human decision is
+made. The pre-spend gate now reports that deterministic prerequisites are met on
+the four-slice round-robin matrix, yet this remains precondition-only evidence,
+not quality evidence, provider-spend authorization, or a default/promotion claim.
 
 ---
 
