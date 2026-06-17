@@ -356,6 +356,7 @@ def validate_report(report: dict[str, Any]) -> None:
     if report.get("status") not in {
         "ok",
         "self_test_only",
+        "not_quality_interpretable",
         "blocked_insufficient_repos",
         "blocked_mixed_model_mode_pack",
         "blocked_task_set_mismatch",
