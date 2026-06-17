@@ -38,6 +38,12 @@ stage: b6b_combined_policy_search
 All records are paired per repo inside `$RUNNER_TEMP`; only the aggregate B6B
 report and markdown doc are uploaded.
 
+Live workflow run:
+
+```text
+b6b_combined_policy_search: 27689938744 success
+```
+
 ## Rule grammar
 
 The search space is intentionally small and identical to B6-lite:
@@ -99,6 +105,46 @@ matrix and evaluating on held-out repos, it separates policy selection from the
 repo where the policy is scored.  Because the public artifact remains
 aggregate-only and leave-one-repo-out still observes only the four public CI
 smoke repos, the results are not claims of model-robust policy performance.
+
+The live run found two lower-false-cost policy families worth investigating:
+
+```text
+ambiguous_query_weak_only_default_use_p25_action:
+  total added gold: 7
+  total added false: 5
+  mean false/gold: 0.667
+  mean SpanF0.5: 0.0845
+  mean PFP: 0.0
+  total LLM actions: 12
+  mean delta vs P25: same gold, -0.75 false per fold, +1.5 net span value
+
+negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action:
+  total added gold: 4
+  total added false: 1
+  mean false/gold: 0.25
+  mean SpanF0.5: 0.0584
+  mean PFP: 0.0
+  total LLM actions: 4
+  mean delta vs P25: -0.75 gold, -1.75 false per fold, +2.75 net span value
+```
+
+P25 remains a strong reference:
+
+```text
+p25_bucket_routed_v0_plain:
+  total added gold: 7
+  total added false: 8
+  mean false/gold: 1.167
+  mean SpanF0.5: 0.0845
+  mean PFP: 0.0833
+  total LLM actions: 24
+```
+
+The first searched policy roughly preserves P25's held-out gold/SpanF0.5 while
+reducing false spans and PFP in this four-repo smoke matrix.  The second searched
+policy is a conservative low-false-cost candidate, but loses too much gold to be
+a deep-quality default.  Neither is ready for adoption; both need a fresh
+validation run on more repos and a model-robust check.
 
 B6B does not change defaults, does not admit Evidence, and does not promote a
 policy.

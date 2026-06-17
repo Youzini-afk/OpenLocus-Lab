@@ -62,6 +62,10 @@ B3 使用同一个 workflow job 内的两个 P21 live pack layout 比较 P25 buc
 
 B6-lite 在 paired `topk_plain_v0` 与 `hard_distractor_contrast_v0` P21 ephemeral records 上运行 bounded rule search。在四 repo Kimi tool-call smoke matrix 中，它发现了低 false-cost 的候选路由，但还不是稳健 policy。`ambiguous_query_weak_only_default_use_p25_action` 观察到与 P25 相同的 added gold，同时少一个 false span、PFP 更低，但它只在一个 repo 的 Pareto frontier 上出现，并且仍使用 12 个 LLM actions。`negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action` false cost 很低且 net span value 为正，但 gold/SpanF0.5 更低。B6-lite 因此指向带真实 leave-one-repo-out 的 combined-matrix B6B search，而不是 default change。详见 [B6-lite 详细报告](b6-lite-interpretable-policy-search.md)。
 
+## B6B Combined-Matrix Interpretable Policy Search
+
+B6B 合并四个 public repo slices 的 paired P21 records，并执行真正的 split-before-search leave-one-repo-out：在三个 repo slices 上训练小型可解释 grammar，冻结 Pareto policies，再在 held-out slice 上评估。Live run `27689938744` 找到了低 false-cost 的候选策略，但仍没有 default policy。`ambiguous_query_weak_only_default_use_p25_action` 在聚合上保留了接近 P25 的 held-out gold/SpanF0.5，同时降低 false spans（7 gold / 5 false，对比 P25 的 7 / 8）和观察到的 PFP（0.0 对比 0.0833）。`negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action` false 更低（4 gold / 1 false），但 gold 损失太多，不适合作为 deep-quality 默认。B6B 仍然只是 diagnostic-only，需要更多 repo/model 的 fresh validation。详见 [B6B 详细报告](b6b-combined-policy-search.md)。
+
 ## B4/B9 模型稳健证据转换
 
 B4/B9 将 `algorithm_spec`（模型无关的策略定义）与 `model_adapter`（模型 + 输出模式的健康状态）分离，并重编码 B1、B1C、B2、B3 的 live quality 聚合结果。它仅聚合、不是门控、不是仅前置条件阶段、不改变 `EvidenceCore`。`span_narrow_topk_plain_v0` 只在两个 matched Kimi adapter delta 上呈现 `low_n_directional_signal`；GLM-5.2 json_schema_strict 因没有 matched baseline delta，只能作为 secondary observed cross-family validation。固定 RMC 变体（`rmc_hybrid_v0`、`rmc_llm_pack_routed_v0`、`rmc_local_conservative_v0`）均为 `not_supported`。Qwen adapter 受 rate-limit 噪声影响，应排除在质量聚合之外。详见 [B4/B9 详细报告](b4-b9-model-robust-evidence-conversion.md)。

@@ -253,6 +253,26 @@ therefore supports a B6B combined-matrix search with proper leave-one-repo-out;
 it does not justify a default change. See
 [`b6-lite-interpretable-policy-search.md`](b6-lite-interpretable-policy-search.md).
 
+B6B combined-matrix policy search:
+
+```text
+run: 27689938744 green
+matrix: 4 public repo slices x 6 tasks
+claim: leave_one_repo_diagnostic_only
+```
+
+B6B trained the same small interpretable grammar on three repo slices and scored
+the frozen policies on the held-out slice, then aggregated only public counts.
+It found two lower-false-cost families worth follow-up. The strongest P25-like
+candidate, `ambiguous_query_weak_only_default_use_p25_action`, preserved P25's
+held-out added gold/SpanF0.5 in aggregate while reducing false spans (7 gold / 5
+false vs P25's 7 / 8) and PFP (0.0 vs 0.0833). The conservative
+`negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action`
+reduced false further (4 gold / 1 false) but lost too much gold for deep-quality
+use. Neither is a default; both require a fresh validation run on more repos and
+model-robust checks. See
+[`b6b-combined-policy-search.md`](b6b-combined-policy-search.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text
