@@ -17,6 +17,7 @@ on:
           - p21_embedding_context
           - p21_dense_hybrid
           - p21_llm_rich
+          - p51c_planner
           - all_smoke
       enable_remote_models:
         description: 'Allow real embedding / LLM providers from production environment'
@@ -87,6 +88,39 @@ on:
         description: 'P5 stress task cap'
         required: false
         default: '24'
+      p51c_live_opt_in:
+        description: 'P51-C0 explicit opt-in flag (planner-only; no provider calls from this gate)'
+        required: false
+        default: false
+        type: boolean
+      p51c_ack_not_evidence:
+        description: 'P51-C0 acknowledgement string; must be I_UNDERSTAND_P51C_NOT_EVIDENCE for planner_ready'
+        required: false
+        default: ''
+      p51c_max_remote_calls_total:
+        description: 'P51-C0 planned max remote calls total (cap 1)'
+        required: false
+        default: '1'
+      p51c_max_request_chars:
+        description: 'P51-C0 planned max request chars (cap 16000)'
+        required: false
+        default: '16000'
+      p51c_max_output_chars:
+        description: 'P51-C0 planned max output chars (cap 4000)'
+        required: false
+        default: '4000'
+      p51c_max_candidates_per_request:
+        description: 'P51-C0 planned max candidates per request (cap 6)'
+        required: false
+        default: '6'
+      p51c_max_total_lines_per_request:
+        description: 'P51-C0 planned max total lines per request (cap 360)'
+        required: false
+        default: '360'
+      p51c_timeout_seconds:
+        description: 'P51-C0 planned timeout seconds (cap 60)'
+        required: false
+        default: '60'
 
 permissions:
   contents: read
@@ -131,6 +165,14 @@ jobs:
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
           INPUT_MAX_FILES_PER_REPO: ${{ inputs.max_files_per_repo }}
           INPUT_MAX_STRESS_TASKS: ${{ inputs.max_stress_tasks }}
+          INPUT_P51C_LIVE_OPT_IN: ${{ inputs.p51c_live_opt_in }}
+          INPUT_P51C_ACK_NOT_EVIDENCE: ${{ inputs.p51c_ack_not_evidence }}
+          INPUT_P51C_MAX_REMOTE_CALLS_TOTAL: ${{ inputs.p51c_max_remote_calls_total }}
+          INPUT_P51C_MAX_REQUEST_CHARS: ${{ inputs.p51c_max_request_chars }}
+          INPUT_P51C_MAX_OUTPUT_CHARS: ${{ inputs.p51c_max_output_chars }}
+          INPUT_P51C_MAX_CANDIDATES_PER_REQUEST: ${{ inputs.p51c_max_candidates_per_request }}
+          INPUT_P51C_MAX_TOTAL_LINES_PER_REQUEST: ${{ inputs.p51c_max_total_lines_per_request }}
+          INPUT_P51C_TIMEOUT_SECONDS: ${{ inputs.p51c_timeout_seconds }}
           VAR_EMBEDDING_PROVIDER: ${{ vars.OPENLOCUS_EMBEDDING_PROVIDER }}
           VAR_EMBEDDING_MODEL: ${{ vars.OPENLOCUS_EMBEDDING_MODEL }}
           VAR_EMBEDDING_DIMENSIONS: ${{ vars.OPENLOCUS_EMBEDDING_DIMENSIONS }}
@@ -144,7 +186,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "p51c_planner", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -181,18 +223,32 @@ jobs:
           stage = getenv("INPUT_STAGE", "all_smoke")
           if stage not in allowed_stages:
               raise SystemExit(f"unsupported stage: {stage}")
+          if stage == "p51c_planner":
+              # Planner-only stage: never allow remote calls, no provider config required.
+              remote_enabled = False
+              p51c_max_remote_calls_total = positive_int("INPUT_P51C_MAX_REMOTE_CALLS_TOTAL", 1)
+              if p51c_max_remote_calls_total != 1:
+                  raise SystemExit("INPUT_P51C_MAX_REMOTE_CALLS_TOTAL must equal 1")
+              positive_int("INPUT_P51C_MAX_REQUEST_CHARS", 16000)
+              positive_int("INPUT_P51C_MAX_OUTPUT_CHARS", 4000)
+              positive_int("INPUT_P51C_MAX_CANDIDATES_PER_REQUEST", 6)
+              positive_int("INPUT_P51C_MAX_TOTAL_LINES_PER_REQUEST", 360)
+              positive_int("INPUT_P51C_TIMEOUT_SECONDS", 60)
           remote_enabled = getenv("INPUT_ENABLE_REMOTE", "false").lower() == "true"
           dataset = getenv("INPUT_DATASET", "self_test")
+          if stage == "p51c_planner":
+              remote_enabled = False
+              # Planner-only stage never injects provider secrets; dataset remains the explicit user input.
           if dataset not in allowed_datasets:
               raise SystemExit(f"unsupported dataset: {dataset}")
           repo_id = getenv("INPUT_REPO_ID", "py_flask")
           if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", repo_id):
               raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
-          if stage in {"p21_dense_hybrid", "p21_llm_rich"} and views == "path_plus_symbol":
+          if stage in {"p21_dense_hybrid", "p21_llm_rich", "p51c_planner"} and views == "path_plus_symbol":
               views = "pack2_evidence_sketch,atom_signature"
           view_list = [view.strip() for view in views.split(",") if view.strip()]
-          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich"} else r32_allowed_views
+          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "p51c_planner"} else r32_allowed_views
           if not view_list or any(view not in allowed_views for view in view_list):
               raise SystemExit("unsupported views/strategies for selected stage")
           views = ",".join(view_list)
@@ -265,28 +321,47 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for key, value in outputs.items():
                   f.write(f"{key}={value}\n")
-          plan = {
-              "schema_version": "real-provider-ci-plan-v1",
-              "stage": stage,
-              "dataset": dataset,
-              "repo_id": repo_id,
-              "remote_enabled": remote_enabled,
-              "embedding_provider": embedding_provider,
-              "embedding_model": embedding_model,
-              "embedding_dimensions": embedding_dimensions,
-              "embedding_send_dimensions": embedding_send_dimensions,
-              "llm_provider": llm_provider,
-              "llm_model": llm_model,
-              "llm_output_mode": llm_output_mode,
-              "views": views,
-              "max_tasks": max_tasks,
-              "max_records": max_records,
-              "max_files_per_repo": max_files_per_repo,
-              "max_stress_tasks": max_stress_tasks,
-              "provider_url_or_key_committed": False,
-              "promotion_ready": False,
-              "default_should_change": False,
-          }
+          if stage == "p51c_planner":
+              plan = {
+                  "schema_version": "p51c-planner-ci-plan-v1",
+                  "stage": stage,
+                  "dataset": dataset,
+                  "repo_scope": "public_ci_smoke_allowlist" if dataset == "ci_smoke" else "self_test_or_not_applicable",
+                  "remote_enabled": False,
+                  "planner_only": True,
+                  "llm_output_mode": llm_output_mode,
+                  "views": views,
+                  "max_tasks": max_tasks,
+                  "max_records": max_records,
+                  "max_files_per_repo": max_files_per_repo,
+                  "max_stress_tasks": max_stress_tasks,
+                  "provider_url_or_key_committed": False,
+                  "promotion_ready": False,
+                  "default_should_change": False,
+              }
+          else:
+              plan = {
+                  "schema_version": "real-provider-ci-plan-v1",
+                  "stage": stage,
+                  "dataset": dataset,
+                  "repo_id": repo_id,
+                  "remote_enabled": remote_enabled,
+                  "embedding_provider": embedding_provider,
+                  "embedding_model": embedding_model,
+                  "embedding_dimensions": embedding_dimensions,
+                  "embedding_send_dimensions": embedding_send_dimensions,
+                  "llm_provider": llm_provider,
+                  "llm_model": llm_model,
+                  "llm_output_mode": llm_output_mode,
+                  "views": views,
+                  "max_tasks": max_tasks,
+                  "max_records": max_records,
+                  "max_files_per_repo": max_files_per_repo,
+                  "max_stress_tasks": max_stress_tasks,
+                  "provider_url_or_key_committed": False,
+                  "promotion_ready": False,
+                  "default_should_change": False,
+              }
           Path("artifacts/real_provider_ci/plan.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n", encoding="utf-8")
           PY
 
@@ -505,7 +580,7 @@ jobs:
           "${cmd[@]}"
 
       - name: P21-G3L LLM rich candidate pilot
-        if: ${{ inputs.stage == 'p21_llm_rich' }}
+        if: ${{ inputs.stage == 'p21_llm_rich' || inputs.stage == 'p51c_planner' }}
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
           OPENLOCUS_LLM_WORKFLOW_DISPATCH: ${{ steps.plan.outputs.allow_remote }}
@@ -609,6 +684,46 @@ jobs:
             cmd+=(--allow-remote)
           fi
           cmd+=(--max-tasks "$MAX_TASKS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p20_llm_large_report.json --alias-out artifacts/real_provider_ci/p20_llm_aliases.jsonl --stress-tasks-out artifacts/real_provider_ci/p20_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p20_llm_stress_labels.private.jsonl" --doc docs/real-provider-ci/p20-llm-large-scale.md)
+          "${cmd[@]}"
+
+      - name: P51-C0 live micro-run planner self-test
+        if: ${{ inputs.stage == 'p51c_planner' }}
+        run: |
+          python3 eval/p51c_live_micro_run_planner.py --self-test
+
+      - name: P51-C0 live micro-run planner gate
+        if: ${{ inputs.stage == 'p51c_planner' }}
+        env:
+          P51C_LIVE_OPT_IN: ${{ inputs.p51c_live_opt_in }}
+          P51C_ACK_NOT_EVIDENCE: ${{ inputs.p51c_ack_not_evidence }}
+          DATASET: ${{ inputs.dataset }}
+          REPO_ID: ${{ inputs.repo_id }}
+          MAX_REMOTE_CALLS_TOTAL: ${{ inputs.p51c_max_remote_calls_total }}
+          MAX_REQUEST_CHARS: ${{ inputs.p51c_max_request_chars }}
+          MAX_OUTPUT_CHARS: ${{ inputs.p51c_max_output_chars }}
+          MAX_CANDIDATES_PER_REQUEST: ${{ inputs.p51c_max_candidates_per_request }}
+          MAX_TOTAL_LINES_PER_REQUEST: ${{ inputs.p51c_max_total_lines_per_request }}
+          TIMEOUT_SECONDS: ${{ inputs.p51c_timeout_seconds }}
+          LLM_OUTPUT_MODE: ${{ inputs.llm_output_mode }}
+        run: |
+          cmd=(python3 eval/p51c_live_micro_run_planner.py \
+            --p61-report artifacts/real_provider_ci/p61_pre_spend_gate_report.json \
+            --p51b-report artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json \
+            --out artifacts/real_provider_ci/p51c_live_micro_run_planner_report.json \
+            --doc docs/real-provider-ci/p51c-live-micro-run-planner.md \
+            --ack-not-evidence "$P51C_ACK_NOT_EVIDENCE" \
+            --dataset "$DATASET" \
+            --repo-id "$REPO_ID" \
+            --max-remote-calls-total "$MAX_REMOTE_CALLS_TOTAL" \
+            --max-request-chars "$MAX_REQUEST_CHARS" \
+            --max-output-chars "$MAX_OUTPUT_CHARS" \
+            --max-candidates-per-request "$MAX_CANDIDATES_PER_REQUEST" \
+            --max-total-lines-per-request "$MAX_TOTAL_LINES_PER_REQUEST" \
+            --timeout-seconds "$TIMEOUT_SECONDS" \
+            --llm-output-mode "$LLM_OUTPUT_MODE")
+          if [[ "$P51C_LIVE_OPT_IN" == "true" ]]; then
+            cmd+=(--p51c-live-opt-in)
+          fi
           "${cmd[@]}"
 
       - name: Validate artifacts and privacy gates
@@ -1641,8 +1756,50 @@ jobs:
                           raise SystemExit(f"{json_path} preconditions_met requires P51-B redaction policy precondition")
                       if di.get("p51b_redaction_policy_consistent") is not True:
                           raise SystemExit(f"{json_path} preconditions_met requires P51-B redaction policy consistency")
-                      if di.get("p51b_runtime_redaction_still_required_by_p51c") is not True:
-                          raise SystemExit(f"{json_path} preconditions_met must keep runtime redaction required by P51-C")
+                  if di.get("p51b_runtime_redaction_still_required_by_p51c") is not True:
+                      raise SystemExit(f"{json_path} preconditions_met must keep runtime redaction required by P51-C")
+
+              if json_path.name == "p51c_live_micro_run_planner_report.json":
+                  allowed_p51c_status = {"self_test_only", "planner_ready", "blocked_missing_opt_in", "blocked_preconditions", "blocked_privacy", "blocked_budget", "blocked_schema_contract", "blocked_provider_config", "blocked_safety"}
+                  if data.get("status") not in allowed_p51c_status:
+                      raise SystemExit(f"{json_path} status not in allowed P51-C0 enum")
+                  for flag in ["remote_calls_by_p51c", "llm_calls_by_p51c", "remote_requests_by_p51c"]:
+                      if data.get(flag) != 0:
+                          raise SystemExit(f"{json_path} {flag} must be 0")
+                  for flag in ["prompt_construction_by_p51c", "provider_spend_authorized", "live_run_authorized", "evidence_admission_performed", "promotion_ready", "default_should_change", "evidencecore_semantics_changed", "raw_request_envelopes_stored", "raw_prompts_stored", "raw_responses_stored", "raw_snippets_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_query_stored", "raw_text_stored", "raw_source_stored", "raw_paths_in_artifact", "raw_line_ranges_in_artifact", "raw_digests_in_artifact", "provider_keys_in_artifact", "private_labels_committed", "gold_spans_in_artifact"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} {flag} must be false")
+                  for flag in ["not_quality_evidence", "planner_only", "p51c_live_calls_disabled", "candidate_not_fact", "llm_output_not_evidence", "aggregate_only_public_artifact"]:
+                      if data.get(flag) is not True:
+                          raise SystemExit(f"{json_path} {flag} must be true")
+                  if data.get("schema_version") != "p51c-live-micro-run-planner-v0":
+                      raise SystemExit(f"{json_path} schema_version mismatch")
+                  if "tasks" in data or "records" in data or "per_task_results" in data or "per_candidate_results" in data or "decision_records" in data:
+                      raise SystemExit(f"{json_path} contains per-task public rows")
+                  pc = data.get("planner_config") or {}
+                  if "repo_id" in pc:
+                      raise SystemExit(f"{json_path} planner_config exposes raw repo_id")
+                  p51c_banned = {
+                      "task_id", "candidate_id", "repo_id", "path", "start_line", "end_line", "span",
+                      "content_sha", "digest", "hash", "gold", "gold_spans", "private_label", "query", "snippet",
+                      "prompt", "response", "provider", "model", "base_url", "api_key", "repo_lock", "source_root",
+                      "tasks", "records", "per_task_results", "per_candidate_results", "per_slice_rows",
+                      "candidate_pool", "raw_candidates", "pack_items", "winner", "best_policy",
+                      "recommended_policy", "promotable_policy", "default_policy", "promotion_decision",
+                      "default_decision", "admission_decision", "evidence_valid", "request_envelope",
+                      "raw_request_envelope", "raw_request_envelopes",
+                      # dataset is intentionally published as a coarse planner config flag.
+                  }
+                  def p51c_walk(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              if key in p51c_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
+                              p51c_walk(value, prefix + key + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              p51c_walk(value, prefix + str(idx) + ".")
+                  p51c_walk(data)
 
               if json_path.name == "p62_generalization_matrix_aggregator_report.json":
                   allowed_p62_status = {"self_test_only", "insufficient_matrix_inputs", "diagnostic_matrix_unstable", "diagnostic_matrix_complete", "blocked_safety"}
@@ -1730,7 +1887,7 @@ jobs:
                           for idx, value in enumerate(obj):
                               p58_walk(value, prefix + str(idx) + ".")
                   p58_walk(data)
-              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p57_generalization_gate_report.json", "p58_source_backed_verifier_calibration_report.json", "p59_contrastive_pack_coverage_counterfactual_report.json", "p60_rmc_policy_v2_report.json", "p61_pre_spend_gate_report.json", "p62_generalization_matrix_aggregator_report.json"}:
+              if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p51c_live_micro_run_planner_report.json", "p57_generalization_gate_report.json", "p58_source_backed_verifier_calibration_report.json", "p59_contrastive_pack_coverage_counterfactual_report.json", "p60_rmc_policy_v2_report.json", "p61_pre_spend_gate_report.json", "p62_generalization_matrix_aggregator_report.json"}:
 
 
                   for flag in ["raw_prompts_stored", "raw_query_stored", "raw_responses_stored", "raw_snippets_committed", "raw_snippets_sent_to_provider", "raw_text_stored", "private_labels_committed", "provider_keys_in_artifact", "gold_spans_in_artifact"]:
@@ -1779,6 +1936,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
+        if: ${{ inputs.stage != 'p51c_planner' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
@@ -1789,6 +1947,37 @@ jobs:
             artifacts/real_provider_ci/p20_llm_aliases.jsonl
             artifacts/real_provider_ci/p20_llm_stress_public.jsonl
             docs/real-provider-ci/*.md
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !**/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload P51-C0 planner artifacts
+        if: ${{ inputs.stage == 'p51c_planner' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/plan.json
+            artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json
+            artifacts/real_provider_ci/p51c_live_micro_run_planner_report.json
+            artifacts/real_provider_ci/p57_generalization_gate_report.json
+            artifacts/real_provider_ci/p58_source_backed_verifier_calibration_report.json
+            artifacts/real_provider_ci/p59_contrastive_pack_coverage_counterfactual_report.json
+            artifacts/real_provider_ci/p60_rmc_policy_v2_report.json
+            artifacts/real_provider_ci/p61_pre_spend_gate_report.json
+            docs/real-provider-ci/p51b-llm-opt-in-contract.md
+            docs/real-provider-ci/p51c-live-micro-run-planner.md
+            docs/real-provider-ci/p57-generalization-gate.md
+            docs/real-provider-ci/p58-source-backed-verifier-calibration.md
+            docs/real-provider-ci/p59-contrastive-pack-coverage-counterfactual.md
+            docs/real-provider-ci/p60-rmc-policy-v2.md
+            docs/real-provider-ci/p61-pre-spend-gate.md
             !artifacts/real_provider_ci/**/labels/**
             !artifacts/real_provider_ci/**/corpus/**
             !artifacts/real_provider_ci/*label*
