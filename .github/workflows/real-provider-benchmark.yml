@@ -17,6 +17,7 @@ on:
           - p21_embedding_context
           - p21_dense_hybrid
           - p21_llm_rich
+          - b3_rmc_quality
           - p51c_planner
           - all_smoke
       enable_remote_models:
@@ -205,7 +206,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "p51c_planner", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "p51c_planner", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -272,10 +273,10 @@ jobs:
           if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", repo_id):
               raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
-          if stage in {"p21_dense_hybrid", "p21_llm_rich", "p51c_planner"} and views == "path_plus_symbol":
+          if stage in {"p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "p51c_planner"} and views == "path_plus_symbol":
               views = "pack2_evidence_sketch,atom_signature"
           view_list = [view.strip() for view in views.split(",") if view.strip()]
-          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "p51c_planner"} else r32_allowed_views
+          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "p51c_planner"} else r32_allowed_views
           if not view_list or any(view not in allowed_views for view in view_list):
               raise SystemExit("unsupported views/strategies for selected stage")
           views = ",".join(view_list)
@@ -294,7 +295,7 @@ jobs:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
-              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "all_smoke"}
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
               if not embedding_provider:
                   raise SystemExit("unsupported embedding provider variable")
@@ -724,6 +725,48 @@ jobs:
           cmd+=(--max-tasks "$MAX_TASKS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p20_llm_large_report.json --alias-out artifacts/real_provider_ci/p20_llm_aliases.jsonl --stress-tasks-out artifacts/real_provider_ci/p20_llm_stress_public.jsonl --stress-labels-out "$RUNNER_TEMP/p20_llm_stress_labels.private.jsonl" --doc docs/real-provider-ci/p20-llm-large-scale.md)
           "${cmd[@]}"
 
+      - name: B3 Request-More-Context quality experiment
+        if: ${{ inputs.stage == 'b3_rmc_quality' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_LLM_WORKFLOW_DISPATCH: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
+          OPENLOCUS_EMBEDDING_SEND_DIMENSIONS: ${{ steps.plan.outputs.embedding_send_dimensions }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          OPENLOCUS_LLM_MODEL: ${{ steps.plan.outputs.llm_model }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+          EMBEDDING_PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          LLM_PROVIDER: ${{ steps.plan.outputs.llm_provider }}
+          LLM_OUTPUT_MODE: ${{ steps.plan.outputs.llm_output_mode }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
+          DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          TASK_SAMPLE_MODE: ${{ steps.plan.outputs.task_sample_mode }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          base_cmd=(python3 eval/p21_llm_rich_candidate.py --embedding-provider "$EMBEDDING_PROVIDER" --llm-provider "$LLM_PROVIDER")
+          if [[ "$DATASET" == "self_test" ]]; then
+            base_cmd+=(--self-test)
+          else
+            base_cmd+=(--repo-lock "$RUNNER_TEMP/openlocus-real-provider-work/repo-lock.json" --tasks "$RUNNER_TEMP/openlocus-real-provider-work/tasks/tasks/ci_tasks.jsonl" --labels "$RUNNER_TEMP/openlocus-real-provider-work/tasks/labels/ci_labels.jsonl")
+          fi
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            base_cmd+=(--allow-remote-embedding --allow-remote-llm)
+          fi
+          plain_records="$RUNNER_TEMP/b3_p25_plain.private.json"
+          hard_records="$RUNNER_TEMP/b3_p25_hard.private.json"
+          plain_summary="$RUNNER_TEMP/b3_plain_p21.json"
+          hard_summary="$RUNNER_TEMP/b3_hard_p21.json"
+          trap 'rm -f "$plain_records" "$hard_records" "$plain_summary" "$hard_summary" "$RUNNER_TEMP/b3_plain_p21.md" "$RUNNER_TEMP/b3_hard_p21.md"' EXIT
+          "${base_cmd[@]}" --dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --pack-layout topk_plain_v0 --schema-repair-retry --p25-policy-records-out "$plain_records" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out "$plain_summary" --doc "$RUNNER_TEMP/b3_plain_p21.md"
+          "${base_cmd[@]}" --dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --pack-layout hard_distractor_contrast_v0 --schema-repair-retry --p25-policy-records-out "$hard_records" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out "$hard_summary" --doc "$RUNNER_TEMP/b3_hard_p21.md"
+          python3 eval/b3_rmc_quality_experiment.py --plain-records "$plain_records" --hard-records "$hard_records" --plain-summary "$plain_summary" --hard-summary "$hard_summary" --out artifacts/real_provider_ci/b3_rmc_quality_experiment_report.json --doc docs/real-provider-ci/b3-rmc-quality-experiment.md
+
       - name: P51-C0 live micro-run planner self-test
         if: ${{ inputs.stage == 'p51c_planner' }}
         run: |
@@ -880,6 +923,44 @@ jobs:
                       raise SystemExit(f"{json_path} persisted per-task routing")
                   if data.get("raw_query_stored") is not False or data.get("gold_spans_in_artifact") is not False:
                       raise SystemExit(f"{json_path} persisted raw query or gold spans")
+              if json_path.name == "b3_rmc_quality_experiment_report.json":
+                  if data.get("schema_version") != "b3-rmc-quality-experiment-v0":
+                      raise SystemExit(f"{json_path} schema version mismatch")
+                  if data.get("status") not in {"ok", "self_test_only"}:
+                      raise SystemExit(f"{json_path} status invalid")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must be aggregate-only")
+                  if data.get("not_evidence") is not True or data.get("llm_output_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep LLM output non-evidence")
+                  for flag in ["task_ids_in_artifact", "candidate_ids_in_artifact", "raw_prompts_stored", "raw_responses_stored", "raw_snippets_stored", "raw_snippets_committed", "raw_paths_in_artifact", "raw_line_ranges_in_artifact", "raw_digests_in_artifact", "private_labels_committed", "gold_spans_in_artifact"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} does not keep {flag}=false")
+                  if data.get("status") == "ok":
+                      if data.get("same_task_set") is not True:
+                          raise SystemExit(f"{json_path} did not compare same task set")
+                      expected = {"p25_bucket_routed_v0_plain", "rmc_local_conservative_v0", "rmc_llm_pack_routed_v0", "rmc_hybrid_v0"}
+                      treatments = data.get("treatments") or {}
+                      if set(treatments) != expected:
+                          raise SystemExit(f"{json_path} missing expected treatments")
+                      for name, metrics in treatments.items():
+                          tc = metrics.get("task_count")
+                          if not isinstance(tc, int) or tc <= 0:
+                              raise SystemExit(f"{json_path} {name} has invalid task_count")
+                          if sum((metrics.get("action_counts") or {}).values()) != tc:
+                              raise SystemExit(f"{json_path} {name} action counts do not sum")
+                          if metrics.get("provider_call_estimate_not_measured") is not True:
+                              raise SystemExit(f"{json_path} {name} provider call estimate must be labeled")
+                  b3_banned = {"task_id", "candidate_id", "repo_id", "query", "path", "start_line", "end_line", "line_range", "content_sha", "digest", "snippet", "prompt", "response", "raw_response", "gold_spans", "label", "labels", "private_labels", "decision_records", "candidate_meta"}
+                  def walk_b3(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              if key in b3_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
+                              walk_b3(value, prefix + key + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              walk_b3(value, prefix + str(idx) + ".")
+                  walk_b3(data)
               if json_path.name == "p30_admission_v3_report.json":
                   if data.get("status") != "ok":
                       raise SystemExit(f"{json_path} status is not ok")
@@ -1978,7 +2059,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
-        if: ${{ inputs.stage != 'p51c_planner' }}
+        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
@@ -1997,6 +2078,25 @@ jobs:
             !docs/real-provider-ci/*label*
             !docs/real-provider-ci/*private*
           if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload B3 RMC quality artifacts
+        if: ${{ inputs.stage == 'b3_rmc_quality' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/plan.json
+            artifacts/real_provider_ci/b3_rmc_quality_experiment_report.json
+            docs/real-provider-ci/b3-rmc-quality-experiment.md
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !**/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+          if-no-files-found: error
           retention-days: 14
 
       - name: Upload P51-C0 planner artifacts
