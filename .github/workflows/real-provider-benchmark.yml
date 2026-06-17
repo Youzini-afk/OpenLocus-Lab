@@ -121,6 +121,14 @@ on:
         description: 'P51-C0 planned timeout seconds (cap 60)'
         required: false
         default: '60'
+      p51c_llm_output_mode:
+        description: 'P51-C0 planned strict LLM output mode (planner-only)'
+        required: false
+        default: 'json_schema_strict'
+        type: choice
+        options:
+          - json_schema_strict
+          - tool_call
 
 permissions:
   contents: read
@@ -704,7 +712,7 @@ jobs:
           MAX_CANDIDATES_PER_REQUEST: ${{ inputs.p51c_max_candidates_per_request }}
           MAX_TOTAL_LINES_PER_REQUEST: ${{ inputs.p51c_max_total_lines_per_request }}
           TIMEOUT_SECONDS: ${{ inputs.p51c_timeout_seconds }}
-          LLM_OUTPUT_MODE: ${{ inputs.llm_output_mode }}
+          LLM_OUTPUT_MODE: ${{ inputs.p51c_llm_output_mode }}
         run: |
           cmd=(python3 eval/p51c_live_micro_run_planner.py \
             --p61-report artifacts/real_provider_ci/p61_pre_spend_gate_report.json \
