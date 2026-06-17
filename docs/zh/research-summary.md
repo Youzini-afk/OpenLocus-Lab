@@ -302,6 +302,24 @@ lost too much gold for the deep-quality path. B6C supports a balanced-policy
 hypothesis, not a default change. See
 [`b6c-frozen-policy-validation.md`](b6c-frozen-policy-validation.md).
 
+B6E expanded frozen-policy validation reused the same evaluator and frozen policy
+spec on a larger fresh task matrix:
+
+```text
+run: 27717886432 green
+matrix: 4 public repo slices x 12 tasks = 48 comparable tasks
+model: [mk]Kimi-K2.7-Code tool_call
+claim: frozen_policy_fresh_validation
+search_performed: false
+```
+
+The main balanced-policy candidate again preserved P25's added gold and mean
+SpanF0.5 while reducing false spans (13 gold / 14 false vs P25's 13 / 17),
+removing observed PFP, and reducing estimated LLM actions (31 vs 47). This
+strengthens the B6C balanced-policy hypothesis within the same four-repo public
+universe. It is not repo-generalization, not cross-model validation, and not a
+default change.
+
 B6D cross-adapter frozen-policy validation:
 
 ```text

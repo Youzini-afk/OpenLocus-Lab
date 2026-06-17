@@ -126,3 +126,44 @@ not a replacement for P25.
 B6C is still low-n and single-model. The next validation should add more repo
 slices and at least one secondary model adapter such as GLM-5.2
 `json_schema_strict` before any default or promotion discussion.
+
+## B6E expanded fresh validation result
+
+B6E reuses the same B6C evaluator and frozen policy spec, but expands the fresh
+task matrix from 24 to 48 comparable tasks. It does not search, retune, or change
+the frozen policies.
+
+Run:
+
+```text
+workflow run: 27717886432
+stage: b6c_frozen_policy_validation
+dataset: ci_smoke
+tasks: 4 public repo slices x 12 round-robin public-bucket tasks = 48
+model: [mk]Kimi-K2.7-Code
+output mode: tool_call
+claim_level: frozen_policy_fresh_validation
+status: ok
+```
+
+The freshness contract was present and valid, the frozen spec hash matched, and
+`policy_search_performed=false`.
+
+| Policy | Added gold | Added false | False/gold | Mean SpanF0.5 | Mean PFP | LLM actions | Net span value 2x |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `p25_bucket_routed_v0_plain` | 13 | 17 | 1.308 | 0.0638 | 0.0417 | 47 | -21 |
+| `ambiguous_query_weak_only_default_use_p25_action` | 13 | 14 | 1.077 | 0.0638 | 0.0000 | 31 | -15 |
+| `negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action` | 6 | 4 | 0.667 | 0.0367 | 0.0000 | 7 | -2 |
+
+Interpretation:
+
+* The main balanced-policy candidate preserved P25's added gold and mean
+  SpanF0.5 on the larger fresh matrix.
+* It reduced false spans from 17 to 14, removed observed PFP, and reduced
+  estimated LLM actions from 47 to 31.
+* The conservative candidate again reduced false cost sharply, but killed too
+  much gold for the deep-quality path.
+
+B6E strengthens the balanced-policy hypothesis within the same four-repo public
+universe. It is **not** repo-generalization, not cross-model validation, and not a
+default/promotion result.
