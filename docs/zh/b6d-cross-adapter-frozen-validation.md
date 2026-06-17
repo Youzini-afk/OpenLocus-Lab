@@ -105,5 +105,39 @@ default change. It is a diagnostic-only cross-adapter follow-on to B6C.
 
 ## Live cross-adapter result
 
-Live results are recorded by workflow run ID; this committed file remains a
-self-test protocol check until a live run is published.
+The first live B6D run completed successfully:
+
+```text
+run: 27716082836
+status: not_quality_interpretable
+claim_level: cross_adapter_smoke_only
+model_adapter: glm_5_2_json_schema_strict
+quality_interpretable: false
+direction_consistency: not_determinable
+included_repo_count: 4
+comparable_task_count: 24
+schema_valid_rate: 0.75
+infra_failure_rate: 0.25
+call_summary:
+  total_calls: 48
+  successful_calls: 36
+  schema_valid_calls: 36
+  schema_error_count: 12
+  infra_failure_count: 12
+  fallback_used_count: 0
+```
+
+B6D therefore did **not** determine whether the B6C frozen policy direction
+transfers to the GLM adapter. The run is still useful: it shows the GLM-5.2
+adapter path completed and uploaded an aggregate report, but its schema/infra
+health was below the quality-interpretability threshold (`schema_valid_rate >=
+0.95` and `infra_failure_rate <= 0.05`). Policy-family quality metrics are kept
+null under this status.
+
+This should be interpreted as adapter-health evidence, not a negative quality
+judgement about the frozen policy.
+
+Output mode is treated as an adapter/profile configuration parameter. The use of
+`json_schema_strict` here means "current GLM adapter health check uses this mode";
+it is not an OpenLocus algorithm claim that JSON-schema output is universally
+better than tool calls or prompt-only output.

@@ -302,6 +302,24 @@ lost too much gold for the deep-quality path. B6C supports a balanced-policy
 hypothesis, not a default change. See
 [`b6c-frozen-policy-validation.md`](b6c-frozen-policy-validation.md).
 
+B6D cross-adapter frozen-policy validation:
+
+```text
+run: 27716082836 green
+adapter: GLM-5.2 json_schema_strict
+status: not_quality_interpretable
+schema_valid_rate: 0.75
+infra_failure_rate: 0.25
+direction_consistency: not_determinable
+```
+
+B6D completed successfully as a workflow and aggregate-report path, but it did
+not produce quality-interpretable cross-adapter evidence. The GLM adapter health
+was below threshold, so policy-family quality metrics remain null and no claim is
+made about whether the B6C frozen policy transfers to GLM. Output mode is treated
+as an adapter/profile configuration, not as a universal algorithm variable. See
+[`b6d-cross-adapter-frozen-validation.md`](b6d-cross-adapter-frozen-validation.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text
