@@ -1,0 +1,1587 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "leave_one_repo_diagnostic_only",
+  "comparability": {
+    "hard_pack_layout": "hard_distractor_contrast_v0",
+    "leave_one_repo_out": true,
+    "model": "[mk]Kimi-K2.7-Code",
+    "output_mode": "tool_call",
+    "plain_pack_layout": "topk_plain_v0",
+    "same_model_observed": true,
+    "same_model_required": true,
+    "same_output_mode_required": true,
+    "same_pack_layout_required": true,
+    "same_task_set_within_repo_observed": true,
+    "same_task_set_within_repo_required": true
+  },
+  "comparable_task_count": 48,
+  "default_should_change": false,
+  "diagnostic_policy_search": true,
+  "evidencecore_semantics_changed": false,
+  "fold_count": 4,
+  "generated_at": "2026-06-17T12:37:01.652734+00:00",
+  "generated_by": "b6b_combined_policy_search",
+  "gold_spans_in_artifact": false,
+  "included_repo_count": 4,
+  "live_quality_experiment": false,
+  "llm_output_not_evidence": true,
+  "manifest_record_count": 4,
+  "not_evidence": true,
+  "pareto_frontier": {
+    "frontier": [
+      "ambiguous_query_weak_only_default_use_p25_action",
+      "exact_unique_baseline_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_ambiguous_query_weak_only_default_candidate_baseline",
+      "exact_unique_baseline_ambiguous_query_weak_only_default_use_p25_action",
+      "exact_unique_baseline_default_candidate_baseline",
+      "exact_unique_baseline_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_weak_only_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_weak_only_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "p25_bucket_routed_v0_plain",
+      "rmc_hybrid_v0",
+      "rmc_llm_pack_routed_v0",
+      "rmc_local_conservative_v0"
+    ],
+    "frontier_size": 22,
+    "non_dominated_observed": [
+      "ambiguous_query_weak_only_default_use_p25_action",
+      "exact_unique_baseline_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_ambiguous_query_weak_only_default_candidate_baseline",
+      "exact_unique_baseline_ambiguous_query_weak_only_default_use_p25_action",
+      "exact_unique_baseline_default_candidate_baseline",
+      "exact_unique_baseline_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_weak_only_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_ambiguous_query_weak_only_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "exact_unique_baseline_positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "exact_unique_baseline_positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "p25_bucket_routed_v0_plain",
+      "rmc_hybrid_v0",
+      "rmc_llm_pack_routed_v0",
+      "rmc_local_conservative_v0"
+    ],
+    "policies_dominated_by_p25": 0
+  },
+  "policy_families": {
+    "ambiguous_query_weak_only_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 10.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -2.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.025,
+      "mean_delta_mean_span_f05_vs_p25": -0.0016666666666666635,
+      "mean_delta_net_span_value_2x_vs_p25": 4.0,
+      "mean_effective_llm_action_count": 7.0,
+      "mean_false_per_gold": 2.0,
+      "mean_mean_primary_false_positive_rate": 0.05833333333333333,
+      "mean_mean_span_f05": 0.12083333333333333,
+      "mean_net_span_value_2x": -15.0,
+      "mean_no_gold_false_primary_rate": 0.1125,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 40,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 28,
+      "total_net_span_value_2x": -60,
+      "worst_added_false_span": 10.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -2.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.025,
+      "worst_delta_mean_span_f05_vs_p25": -0.0016666666666666635,
+      "worst_delta_net_span_value_2x_vs_p25": 4.0,
+      "worst_effective_llm_action_count": 7.0,
+      "worst_false_per_gold": 2.0,
+      "worst_mean_primary_false_positive_rate": 0.05833333333333333,
+      "worst_mean_span_f05": 0.12083333333333333,
+      "worst_net_span_value_2x": -15.0,
+      "worst_no_gold_false_primary_rate": 0.1125
+    },
+    "exact_unique_baseline_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 12.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": 0.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": 0.0,
+      "mean_delta_mean_span_f05_vs_p25": 0.0,
+      "mean_delta_net_span_value_2x_vs_p25": 0.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 2.4,
+      "mean_mean_primary_false_positive_rate": 0.08333333333333333,
+      "mean_mean_span_f05": 0.1225,
+      "mean_net_span_value_2x": -19.0,
+      "mean_no_gold_false_primary_rate": 0.15,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 48,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -76,
+      "worst_added_false_span": 12.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": 0.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": 0.0,
+      "worst_delta_mean_span_f05_vs_p25": 0.0,
+      "worst_delta_net_span_value_2x_vs_p25": 0.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 2.4,
+      "worst_mean_primary_false_positive_rate": 0.08333333333333333,
+      "worst_mean_span_f05": 0.1225,
+      "worst_net_span_value_2x": -19.0,
+      "worst_no_gold_false_primary_rate": 0.15
+    },
+    "exact_unique_baseline_ambiguous_query_weak_only_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 33.0,
+      "mean_added_gold_span": 6.0,
+      "mean_delta_added_false_span_vs_p25": 21.0,
+      "mean_delta_added_gold_span_vs_p25": 1.0,
+      "mean_delta_mean_pfp_vs_p25": 0.15000000000000002,
+      "mean_delta_mean_span_f05_vs_p25": -0.011666666666666659,
+      "mean_delta_net_span_value_2x_vs_p25": -41.0,
+      "mean_effective_llm_action_count": 0.0,
+      "mean_false_per_gold": 5.5,
+      "mean_mean_primary_false_positive_rate": 0.23333333333333336,
+      "mean_mean_span_f05": 0.11083333333333334,
+      "mean_net_span_value_2x": -60.0,
+      "mean_no_gold_false_primary_rate": 0.45,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 132,
+      "total_added_gold_span": 24,
+      "total_effective_llm_action_count": 0,
+      "total_net_span_value_2x": -240,
+      "worst_added_false_span": 33.0,
+      "worst_added_gold_span": 6.0,
+      "worst_delta_added_false_span_vs_p25": 21.0,
+      "worst_delta_added_gold_span_vs_p25": 1.0,
+      "worst_delta_mean_pfp_vs_p25": 0.15000000000000002,
+      "worst_delta_mean_span_f05_vs_p25": -0.011666666666666659,
+      "worst_delta_net_span_value_2x_vs_p25": -41.0,
+      "worst_effective_llm_action_count": 0.0,
+      "worst_false_per_gold": 5.5,
+      "worst_mean_primary_false_positive_rate": 0.23333333333333336,
+      "worst_mean_span_f05": 0.11083333333333334,
+      "worst_net_span_value_2x": -60.0,
+      "worst_no_gold_false_primary_rate": 0.45
+    },
+    "exact_unique_baseline_ambiguous_query_weak_only_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 10.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -2.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.025,
+      "mean_delta_mean_span_f05_vs_p25": -0.0016666666666666635,
+      "mean_delta_net_span_value_2x_vs_p25": 4.0,
+      "mean_effective_llm_action_count": 7.0,
+      "mean_false_per_gold": 2.0,
+      "mean_mean_primary_false_positive_rate": 0.05833333333333333,
+      "mean_mean_span_f05": 0.12083333333333333,
+      "mean_net_span_value_2x": -15.0,
+      "mean_no_gold_false_primary_rate": 0.1125,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 40,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 28,
+      "total_net_span_value_2x": -60,
+      "worst_added_false_span": 10.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -2.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.025,
+      "worst_delta_mean_span_f05_vs_p25": -0.0016666666666666635,
+      "worst_delta_net_span_value_2x_vs_p25": 4.0,
+      "worst_effective_llm_action_count": 7.0,
+      "worst_false_per_gold": 2.0,
+      "worst_mean_primary_false_positive_rate": 0.05833333333333333,
+      "worst_mean_span_f05": 0.12083333333333333,
+      "worst_net_span_value_2x": -15.0,
+      "worst_no_gold_false_primary_rate": 0.1125
+    },
+    "exact_unique_baseline_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 45.0,
+      "mean_added_gold_span": 7.0,
+      "mean_delta_added_false_span_vs_p25": 33.0,
+      "mean_delta_added_gold_span_vs_p25": 2.0,
+      "mean_delta_mean_pfp_vs_p25": 0.2416666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.007499999999999993,
+      "mean_delta_net_span_value_2x_vs_p25": -64.0,
+      "mean_effective_llm_action_count": 0.0,
+      "mean_false_per_gold": 6.428571428571429,
+      "mean_mean_primary_false_positive_rate": 0.325,
+      "mean_mean_span_f05": 0.115,
+      "mean_net_span_value_2x": -83.0,
+      "mean_no_gold_false_primary_rate": 0.5875,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 180,
+      "total_added_gold_span": 28,
+      "total_effective_llm_action_count": 0,
+      "total_net_span_value_2x": -332,
+      "worst_added_false_span": 45.0,
+      "worst_added_gold_span": 7.0,
+      "worst_delta_added_false_span_vs_p25": 33.0,
+      "worst_delta_added_gold_span_vs_p25": 2.0,
+      "worst_delta_mean_pfp_vs_p25": 0.2416666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.007499999999999993,
+      "worst_delta_net_span_value_2x_vs_p25": -64.0,
+      "worst_effective_llm_action_count": 0.0,
+      "worst_false_per_gold": 6.428571428571429,
+      "worst_mean_primary_false_positive_rate": 0.325,
+      "worst_mean_span_f05": 0.115,
+      "worst_net_span_value_2x": -83.0,
+      "worst_no_gold_false_primary_rate": 0.5875
+    },
+    "exact_unique_baseline_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 8.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -4.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "mean_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "mean_delta_net_span_value_2x_vs_p25": 8.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 1.6,
+      "mean_mean_primary_false_positive_rate": 0.0625,
+      "mean_mean_span_f05": 0.11833333333333335,
+      "mean_net_span_value_2x": -11.0,
+      "mean_no_gold_false_primary_rate": 0.125,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 32,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -44,
+      "worst_added_false_span": 8.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -4.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "worst_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "worst_delta_net_span_value_2x_vs_p25": 8.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 1.6,
+      "worst_mean_primary_false_positive_rate": 0.0625,
+      "worst_mean_span_f05": 0.11833333333333335,
+      "worst_net_span_value_2x": -11.0,
+      "worst_no_gold_false_primary_rate": 0.125
+    },
+    "exact_unique_baseline_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 5.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -7.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "mean_delta_net_span_value_2x_vs_p25": 14.0,
+      "mean_effective_llm_action_count": 3.0,
+      "mean_false_per_gold": 1.0,
+      "mean_mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_mean_span_f05": 0.11666666666666668,
+      "mean_net_span_value_2x": -5.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 20,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 12,
+      "total_net_span_value_2x": -20,
+      "worst_added_false_span": 5.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -7.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "worst_delta_net_span_value_2x_vs_p25": 14.0,
+      "worst_effective_llm_action_count": 3.0,
+      "worst_false_per_gold": 1.0,
+      "worst_mean_primary_false_positive_rate": 0.016666666666666666,
+      "worst_mean_span_f05": 0.11666666666666668,
+      "worst_net_span_value_2x": -5.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    },
+    "exact_unique_baseline_positive_span_narrow_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 31.0,
+      "mean_added_gold_span": 6.0,
+      "mean_delta_added_false_span_vs_p25": 19.0,
+      "mean_delta_added_gold_span_vs_p25": 1.0,
+      "mean_delta_mean_pfp_vs_p25": 0.14999999999999997,
+      "mean_delta_mean_span_f05_vs_p25": 0.005833333333333329,
+      "mean_delta_net_span_value_2x_vs_p25": -37.0,
+      "mean_effective_llm_action_count": 6.0,
+      "mean_false_per_gold": 5.166666666666667,
+      "mean_mean_primary_false_positive_rate": 0.2333333333333333,
+      "mean_mean_span_f05": 0.12833333333333333,
+      "mean_net_span_value_2x": -56.0,
+      "mean_no_gold_false_primary_rate": 0.4875,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 124,
+      "total_added_gold_span": 24,
+      "total_effective_llm_action_count": 24,
+      "total_net_span_value_2x": -224,
+      "worst_added_false_span": 31.0,
+      "worst_added_gold_span": 6.0,
+      "worst_delta_added_false_span_vs_p25": 19.0,
+      "worst_delta_added_gold_span_vs_p25": 1.0,
+      "worst_delta_mean_pfp_vs_p25": 0.14999999999999997,
+      "worst_delta_mean_span_f05_vs_p25": 0.005833333333333329,
+      "worst_delta_net_span_value_2x_vs_p25": -37.0,
+      "worst_effective_llm_action_count": 6.0,
+      "worst_false_per_gold": 5.166666666666667,
+      "worst_mean_primary_false_positive_rate": 0.2333333333333333,
+      "worst_mean_span_f05": 0.12833333333333333,
+      "worst_net_span_value_2x": -56.0,
+      "worst_no_gold_false_primary_rate": 0.4875
+    },
+    "exact_unique_baseline_positive_span_narrow_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 12.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": 0.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": 0.0,
+      "mean_delta_mean_span_f05_vs_p25": 0.0,
+      "mean_delta_net_span_value_2x_vs_p25": 0.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 2.4,
+      "mean_mean_primary_false_positive_rate": 0.08333333333333333,
+      "mean_mean_span_f05": 0.1225,
+      "mean_net_span_value_2x": -19.0,
+      "mean_no_gold_false_primary_rate": 0.15,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 48,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -76,
+      "worst_added_false_span": 12.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": 0.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": 0.0,
+      "worst_delta_mean_span_f05_vs_p25": 0.0,
+      "worst_delta_net_span_value_2x_vs_p25": 0.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 2.4,
+      "worst_mean_primary_false_positive_rate": 0.08333333333333333,
+      "worst_mean_span_f05": 0.1225,
+      "worst_net_span_value_2x": -19.0,
+      "worst_no_gold_false_primary_rate": 0.15
+    },
+    "exact_unique_baseline_positive_span_narrow_ambiguous_query_weak_only_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 29.0,
+      "mean_added_gold_span": 6.0,
+      "mean_delta_added_false_span_vs_p25": 17.0,
+      "mean_delta_added_gold_span_vs_p25": 1.0,
+      "mean_delta_mean_pfp_vs_p25": 0.125,
+      "mean_delta_mean_span_f05_vs_p25": 0.00416666666666668,
+      "mean_delta_net_span_value_2x_vs_p25": -33.0,
+      "mean_effective_llm_action_count": 3.0,
+      "mean_false_per_gold": 4.833333333333333,
+      "mean_mean_primary_false_positive_rate": 0.20833333333333334,
+      "mean_mean_span_f05": 0.12666666666666668,
+      "mean_net_span_value_2x": -52.0,
+      "mean_no_gold_false_primary_rate": 0.45,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 116,
+      "total_added_gold_span": 24,
+      "total_effective_llm_action_count": 12,
+      "total_net_span_value_2x": -208,
+      "worst_added_false_span": 29.0,
+      "worst_added_gold_span": 6.0,
+      "worst_delta_added_false_span_vs_p25": 17.0,
+      "worst_delta_added_gold_span_vs_p25": 1.0,
+      "worst_delta_mean_pfp_vs_p25": 0.125,
+      "worst_delta_mean_span_f05_vs_p25": 0.00416666666666668,
+      "worst_delta_net_span_value_2x_vs_p25": -33.0,
+      "worst_effective_llm_action_count": 3.0,
+      "worst_false_per_gold": 4.833333333333333,
+      "worst_mean_primary_false_positive_rate": 0.20833333333333334,
+      "worst_mean_span_f05": 0.12666666666666668,
+      "worst_net_span_value_2x": -52.0,
+      "worst_no_gold_false_primary_rate": 0.45
+    },
+    "exact_unique_baseline_positive_span_narrow_ambiguous_query_weak_only_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 10.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -2.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.025,
+      "mean_delta_mean_span_f05_vs_p25": -0.0016666666666666635,
+      "mean_delta_net_span_value_2x_vs_p25": 4.0,
+      "mean_effective_llm_action_count": 7.0,
+      "mean_false_per_gold": 2.0,
+      "mean_mean_primary_false_positive_rate": 0.05833333333333333,
+      "mean_mean_span_f05": 0.12083333333333333,
+      "mean_net_span_value_2x": -15.0,
+      "mean_no_gold_false_primary_rate": 0.1125,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 40,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 28,
+      "total_net_span_value_2x": -60,
+      "worst_added_false_span": 10.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -2.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.025,
+      "worst_delta_mean_span_f05_vs_p25": -0.0016666666666666635,
+      "worst_delta_net_span_value_2x_vs_p25": 4.0,
+      "worst_effective_llm_action_count": 7.0,
+      "worst_false_per_gold": 2.0,
+      "worst_mean_primary_false_positive_rate": 0.05833333333333333,
+      "worst_mean_span_f05": 0.12083333333333333,
+      "worst_net_span_value_2x": -15.0,
+      "worst_no_gold_false_primary_rate": 0.1125
+    },
+    "exact_unique_baseline_positive_span_narrow_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 41.0,
+      "mean_added_gold_span": 7.0,
+      "mean_delta_added_false_span_vs_p25": 29.0,
+      "mean_delta_added_gold_span_vs_p25": 2.0,
+      "mean_delta_mean_pfp_vs_p25": 0.21666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": 0.008333333333333331,
+      "mean_delta_net_span_value_2x_vs_p25": -56.0,
+      "mean_effective_llm_action_count": 3.0,
+      "mean_false_per_gold": 5.857142857142857,
+      "mean_mean_primary_false_positive_rate": 0.3,
+      "mean_mean_span_f05": 0.13083333333333333,
+      "mean_net_span_value_2x": -75.0,
+      "mean_no_gold_false_primary_rate": 0.5875,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 164,
+      "total_added_gold_span": 28,
+      "total_effective_llm_action_count": 12,
+      "total_net_span_value_2x": -300,
+      "worst_added_false_span": 41.0,
+      "worst_added_gold_span": 7.0,
+      "worst_delta_added_false_span_vs_p25": 29.0,
+      "worst_delta_added_gold_span_vs_p25": 2.0,
+      "worst_delta_mean_pfp_vs_p25": 0.21666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": 0.008333333333333331,
+      "worst_delta_net_span_value_2x_vs_p25": -56.0,
+      "worst_effective_llm_action_count": 3.0,
+      "worst_false_per_gold": 5.857142857142857,
+      "worst_mean_primary_false_positive_rate": 0.3,
+      "worst_mean_span_f05": 0.13083333333333333,
+      "worst_net_span_value_2x": -75.0,
+      "worst_no_gold_false_primary_rate": 0.5875
+    },
+    "exact_unique_baseline_positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 8.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -4.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "mean_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "mean_delta_net_span_value_2x_vs_p25": 8.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 1.6,
+      "mean_mean_primary_false_positive_rate": 0.0625,
+      "mean_mean_span_f05": 0.11833333333333335,
+      "mean_net_span_value_2x": -11.0,
+      "mean_no_gold_false_primary_rate": 0.125,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 32,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -44,
+      "worst_added_false_span": 8.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -4.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "worst_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "worst_delta_net_span_value_2x_vs_p25": 8.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 1.6,
+      "worst_mean_primary_false_positive_rate": 0.0625,
+      "worst_mean_span_f05": 0.11833333333333335,
+      "worst_net_span_value_2x": -11.0,
+      "worst_no_gold_false_primary_rate": 0.125
+    },
+    "exact_unique_baseline_positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 8.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -4.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "mean_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "mean_delta_net_span_value_2x_vs_p25": 8.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 1.6,
+      "mean_mean_primary_false_positive_rate": 0.0625,
+      "mean_mean_span_f05": 0.11833333333333335,
+      "mean_net_span_value_2x": -11.0,
+      "mean_no_gold_false_primary_rate": 0.125,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 32,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -44,
+      "worst_added_false_span": 8.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -4.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "worst_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "worst_delta_net_span_value_2x_vs_p25": 8.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 1.6,
+      "worst_mean_primary_false_positive_rate": 0.0625,
+      "worst_mean_span_f05": 0.11833333333333335,
+      "worst_net_span_value_2x": -11.0,
+      "worst_no_gold_false_primary_rate": 0.125
+    },
+    "exact_unique_baseline_positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 5.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -7.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "mean_delta_net_span_value_2x_vs_p25": 14.0,
+      "mean_effective_llm_action_count": 3.0,
+      "mean_false_per_gold": 1.0,
+      "mean_mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_mean_span_f05": 0.11666666666666668,
+      "mean_net_span_value_2x": -5.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 20,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 12,
+      "total_net_span_value_2x": -20,
+      "worst_added_false_span": 5.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -7.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "worst_delta_net_span_value_2x_vs_p25": 14.0,
+      "worst_effective_llm_action_count": 3.0,
+      "worst_false_per_gold": 1.0,
+      "worst_mean_primary_false_positive_rate": 0.016666666666666666,
+      "worst_mean_span_f05": 0.11666666666666668,
+      "worst_net_span_value_2x": -5.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    },
+    "exact_unique_baseline_positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 5.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -7.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "mean_delta_net_span_value_2x_vs_p25": 14.0,
+      "mean_effective_llm_action_count": 3.0,
+      "mean_false_per_gold": 1.0,
+      "mean_mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_mean_span_f05": 0.11666666666666668,
+      "mean_net_span_value_2x": -5.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "exact_unique_baseline",
+          "predicates": [
+            "exact_symbol",
+            "unique_symbol"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 20,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 12,
+      "total_net_span_value_2x": -20,
+      "worst_added_false_span": 5.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -7.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "worst_delta_net_span_value_2x_vs_p25": 14.0,
+      "worst_effective_llm_action_count": 3.0,
+      "worst_false_per_gold": 1.0,
+      "worst_mean_primary_false_positive_rate": 0.016666666666666666,
+      "worst_mean_span_f05": 0.11666666666666668,
+      "worst_net_span_value_2x": -5.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    },
+    "negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 8.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -4.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "mean_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "mean_delta_net_span_value_2x_vs_p25": 8.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 1.6,
+      "mean_mean_primary_false_positive_rate": 0.0625,
+      "mean_mean_span_f05": 0.11833333333333335,
+      "mean_net_span_value_2x": -11.0,
+      "mean_no_gold_false_primary_rate": 0.125,
+      "policy_rules": [
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 32,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -44,
+      "worst_added_false_span": 8.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -4.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.02083333333333333,
+      "worst_delta_mean_span_f05_vs_p25": -0.004166666666666652,
+      "worst_delta_net_span_value_2x_vs_p25": 8.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 1.6,
+      "worst_mean_primary_false_positive_rate": 0.0625,
+      "worst_mean_span_f05": 0.11833333333333335,
+      "worst_net_span_value_2x": -11.0,
+      "worst_no_gold_false_primary_rate": 0.125
+    },
+    "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 5.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -7.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "mean_delta_net_span_value_2x_vs_p25": 14.0,
+      "mean_effective_llm_action_count": 3.0,
+      "mean_false_per_gold": 1.0,
+      "mean_mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_mean_span_f05": 0.11666666666666668,
+      "mean_net_span_value_2x": -5.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "searched",
+      "task_count": 48,
+      "total_added_false_span": 20,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 12,
+      "total_net_span_value_2x": -20,
+      "worst_added_false_span": 5.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -7.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "worst_delta_net_span_value_2x_vs_p25": 14.0,
+      "worst_effective_llm_action_count": 3.0,
+      "worst_false_per_gold": 1.0,
+      "worst_mean_primary_false_positive_rate": 0.016666666666666666,
+      "worst_mean_span_f05": 0.11666666666666668,
+      "worst_net_span_value_2x": -5.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    },
+    "p25_bucket_routed_v0_plain": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 12.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": 0.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": 0.0,
+      "mean_delta_mean_span_f05_vs_p25": 0.0,
+      "mean_delta_net_span_value_2x_vs_p25": 0.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 2.4,
+      "mean_mean_primary_false_positive_rate": 0.08333333333333333,
+      "mean_mean_span_f05": 0.1225,
+      "mean_net_span_value_2x": -19.0,
+      "mean_no_gold_false_primary_rate": 0.15,
+      "policy_rules": [
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "p25_reference_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "baseline",
+      "task_count": 48,
+      "total_added_false_span": 48,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -76,
+      "worst_added_false_span": 12.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": 0.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": 0.0,
+      "worst_delta_mean_span_f05_vs_p25": 0.0,
+      "worst_delta_net_span_value_2x_vs_p25": 0.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 2.4,
+      "worst_mean_primary_false_positive_rate": 0.08333333333333333,
+      "worst_mean_span_f05": 0.1225,
+      "worst_net_span_value_2x": -19.0,
+      "worst_no_gold_false_primary_rate": 0.15
+    },
+    "rmc_hybrid_v0": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 5.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -7.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "mean_delta_net_span_value_2x_vs_p25": 14.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 1.0,
+      "mean_mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_mean_span_f05": 0.11666666666666668,
+      "mean_net_span_value_2x": -5.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "rmc_hybrid_exact",
+          "predicates": [
+            "exact_unique"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "rmc_hybrid_unsupported",
+          "predicates": [
+            "no_support"
+          ]
+        },
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "rmc_hybrid_hard",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "rmc_hybrid_positive",
+          "predicates": [
+            "positive_like"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "rmc_hybrid_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "baseline",
+      "task_count": 48,
+      "total_added_false_span": 20,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -20,
+      "worst_added_false_span": 5.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -7.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "worst_delta_net_span_value_2x_vs_p25": 14.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 1.0,
+      "worst_mean_primary_false_positive_rate": 0.016666666666666666,
+      "worst_mean_span_f05": 0.11666666666666668,
+      "worst_net_span_value_2x": -5.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    },
+    "rmc_llm_pack_routed_v0": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 5.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -7.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "mean_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "mean_delta_net_span_value_2x_vs_p25": 14.0,
+      "mean_effective_llm_action_count": 10.0,
+      "mean_false_per_gold": 1.0,
+      "mean_mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_mean_span_f05": 0.11666666666666668,
+      "mean_net_span_value_2x": -5.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "rmc_pack_exact",
+          "predicates": [
+            "exact_unique"
+          ]
+        },
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "rmc_pack_hard",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "rmc_pack_positive",
+          "predicates": [
+            "positive_like",
+            "support_exists"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "rmc_pack_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "baseline",
+      "task_count": 48,
+      "total_added_false_span": 20,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 40,
+      "total_net_span_value_2x": -20,
+      "worst_added_false_span": 5.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -7.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.06666666666666667,
+      "worst_delta_mean_span_f05_vs_p25": -0.005833333333333315,
+      "worst_delta_net_span_value_2x_vs_p25": 14.0,
+      "worst_effective_llm_action_count": 10.0,
+      "worst_false_per_gold": 1.0,
+      "worst_mean_primary_false_positive_rate": 0.016666666666666666,
+      "worst_mean_span_f05": 0.11666666666666668,
+      "worst_net_span_value_2x": -5.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    },
+    "rmc_local_conservative_v0": {
+      "fold_appearances": 4,
+      "mean_added_false_span": 9.0,
+      "mean_added_gold_span": 5.0,
+      "mean_delta_added_false_span_vs_p25": -3.0,
+      "mean_delta_added_gold_span_vs_p25": 0.0,
+      "mean_delta_mean_pfp_vs_p25": -0.041666666666666664,
+      "mean_delta_mean_span_f05_vs_p25": -0.021666666666666667,
+      "mean_delta_net_span_value_2x_vs_p25": 6.0,
+      "mean_effective_llm_action_count": 0.0,
+      "mean_false_per_gold": 1.8,
+      "mean_mean_primary_false_positive_rate": 0.041666666666666664,
+      "mean_mean_span_f05": 0.10083333333333333,
+      "mean_net_span_value_2x": -13.0,
+      "mean_no_gold_false_primary_rate": 0.0,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "rmc_local_hard",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "rmc_local_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "source": "baseline",
+      "task_count": 48,
+      "total_added_false_span": 36,
+      "total_added_gold_span": 20,
+      "total_effective_llm_action_count": 0,
+      "total_net_span_value_2x": -52,
+      "worst_added_false_span": 9.0,
+      "worst_added_gold_span": 5.0,
+      "worst_delta_added_false_span_vs_p25": -3.0,
+      "worst_delta_added_gold_span_vs_p25": 0.0,
+      "worst_delta_mean_pfp_vs_p25": -0.041666666666666664,
+      "worst_delta_mean_span_f05_vs_p25": -0.021666666666666667,
+      "worst_delta_net_span_value_2x_vs_p25": 6.0,
+      "worst_effective_llm_action_count": 0.0,
+      "worst_false_per_gold": 1.8,
+      "worst_mean_primary_false_positive_rate": 0.041666666666666664,
+      "worst_mean_span_f05": 0.10083333333333333,
+      "worst_net_span_value_2x": -13.0,
+      "worst_no_gold_false_primary_rate": 0.0
+    }
+  },
+  "policy_search_not_admission": true,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "public_per_repo_rows": false,
+  "public_per_task_rows": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "remote_calls_by_policy_search": 0,
+  "repo_ids_in_artifact": false,
+  "routing_invariance": {
+    "changed_policy_count": 0,
+    "changed_policy_examples": [],
+    "score_fields_removed_or_flipped": true,
+    "selected_actions_invariant": true
+  },
+  "schema_version": "b6b-combined-policy-search-v0",
+  "search_accounting": {
+    "frontier_appearances_total": 80,
+    "frontier_size_max": 20,
+    "frontier_size_min": 20,
+    "max_candidate_policy_count": 42,
+    "mean_candidate_policy_count": 42.0,
+    "mean_rules_pruned_by_min_support": 0.0,
+    "mean_selected_policy_count": 22.0,
+    "min_candidate_policy_count": 42,
+    "policies_dominated_by_p25_total": 4,
+    "rules_considered_per_fold": 4,
+    "total_rules_considered_across_folds": 16
+  },
+  "searched_family_count": 18,
+  "self_test": true,
+  "status": "self_test_only",
+  "task_ids_in_artifact": false
+}
