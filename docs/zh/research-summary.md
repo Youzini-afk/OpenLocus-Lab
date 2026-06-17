@@ -282,6 +282,26 @@ use. Neither is a default; both require a fresh validation run on more repos and
 model-robust checks. See
 [`b6b-combined-policy-search.md`](b6b-combined-policy-search.md).
 
+B6C frozen-policy fresh validation:
+
+```text
+run: 27706742419 green
+matrix: 4 public repo slices x 6 tasks
+model: [mk]Kimi-K2.7-Code tool_call
+claim: frozen_policy_fresh_validation
+search_performed: false
+```
+
+B6C froze the two B6B candidate policies before evaluation and validated them on
+fresh paired records. The main policy candidate,
+`ambiguous_query_weak_only_default_use_p25_action`, preserved P25's added gold
+and mean SpanF0.5 while reducing false spans (8 gold / 5 false vs P25's 8 / 6),
+removing observed PFP, and halving effective LLM actions (12 vs 24). The
+conservative candidate reached 5 gold / 1 false with positive net span value but
+lost too much gold for the deep-quality path. B6C supports a balanced-policy
+hypothesis, not a default change. See
+[`b6c-frozen-policy-validation.md`](b6c-frozen-policy-validation.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text
