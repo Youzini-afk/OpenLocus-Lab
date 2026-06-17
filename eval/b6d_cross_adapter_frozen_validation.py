@@ -974,6 +974,35 @@ def _self_test_low_schema_valid_rate_blocks_quality() -> None:
     print("self-test low schema_valid_rate blocks quality_interpretable: ok")
 
 
+def _self_test_live_low_schema_valid_rate_is_non_interpretable() -> None:
+    """A real (non-self-test) noisy GLM adapter run must report, not crash."""
+    tmp = Path("/tmp/opencode/b6d-test-live-low-schema")
+    tmp.mkdir(parents=True, exist_ok=True)
+    manifest_path, _repo_pairs = _write_self_test_manifest(tmp, healthy_call_summary=False)
+    manifest_path.write_text(
+        json.dumps(
+            _with_valid_freshness_contract(
+                json.loads(manifest_path.read_text(encoding="utf-8"))
+            )
+        ),
+        encoding="utf-8",
+    )
+    args = argparse.Namespace(
+        paired_records_manifest=manifest_path,
+        out=tmp / "out.json",
+        doc=tmp / "out.md",
+        self_test=False,
+        mark_self_test=False,
+    )
+    report = build_report(args)
+    assert report["status"] == "not_quality_interpretable", report["status"]
+    assert report["quality_interpretable"] is False, report
+    assert report["direction_consistency"] == "not_determinable", report
+    assert (report.get("call_summary_aggregate") or {}).get("infra_failure_count") is not None
+    validate_report(report)
+    print("self-test live low schema_valid_rate reports not_quality_interpretable: ok")
+
+
 def _self_test_insufficient_repos() -> None:
     tmp = Path("/tmp/opencode/b6d-test-insufficient")
     tmp.mkdir(parents=True, exist_ok=True)
@@ -1025,6 +1054,7 @@ def run_self_tests() -> dict[str, Any]:
     _self_test_wrong_adapter_kimi_blocked()
     _self_test_missing_freshness_contract_blocks()
     _self_test_low_schema_valid_rate_blocks_quality()
+    _self_test_live_low_schema_valid_rate_is_non_interpretable()
     _self_test_insufficient_repos()
     print("all b6d self-tests passed")
 
