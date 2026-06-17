@@ -463,6 +463,15 @@ def validate_report(report: dict[str, Any]) -> None:
         if "winner" in report or "default_recommendation" in report:
             raise ValueError("report must not declare a winner or default recommendation")
 
+    if report.get("status") == "not_quality_interpretable":
+        if report.get("quality_interpretable") is not False:
+            raise ValueError("not_quality_interpretable requires quality_interpretable=false")
+        if report.get("direction_consistency") != "not_determinable":
+            raise ValueError("not_quality_interpretable must not claim direction consistency")
+        call_agg = report.get("call_summary_aggregate") or {}
+        if call_agg.get("infra_failure_count") is None:
+            raise ValueError("not_quality_interpretable must include infra_failure_count")
+
 
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     self_test = bool(args.self_test or getattr(args, "mark_self_test", False))
@@ -570,7 +579,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "forbidden_public_key_scan_clean": True,
     }
 
-    report = _base_report("self_test_only" if self_test else "ok", self_test)
+    output_status = "self_test_only" if self_test else (
+        "ok" if quality_interpretable else "not_quality_interpretable"
+    )
+    report = _base_report(output_status, self_test)
     report.update(
         {
             "included_repo_count": len(repo_pairs),

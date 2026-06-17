@@ -1410,7 +1410,7 @@ jobs:
               if json_path.name == "b6b_combined_policy_search_report.json":
                   if data.get("schema_version") != "b6b-combined-policy-search-v0":
                       raise SystemExit(f"{json_path} schema version mismatch")
-                  if data.get("status") not in {"ok", "self_test_only", "blocked_insufficient_repos", "blocked_mixed_model_mode_pack", "blocked_task_set_mismatch", "blocked_freshness_contract"}:
+                  if data.get("status") not in {"ok", "self_test_only", "not_quality_interpretable", "blocked_insufficient_repos", "blocked_mixed_model_mode_pack", "blocked_task_set_mismatch", "blocked_freshness_contract"}:
                       raise SystemExit(f"{json_path} status invalid")
                   if data.get("aggregate_only_public_artifact") is not True:
                       raise SystemExit(f"{json_path} must be aggregate-only")
@@ -1593,6 +1593,13 @@ jobs:
                       raise SystemExit(f"{json_path} direction_consistency invalid")
                   if data.get("quality_interpretable") is True and data.get("direction_consistency") == "not_determinable":
                       raise SystemExit(f"{json_path} quality_interpretable=true must not yield not_determinable direction")
+                  if data.get("status") == "not_quality_interpretable":
+                      if data.get("quality_interpretable") is not False:
+                          raise SystemExit(f"{json_path} not_quality_interpretable must keep quality_interpretable=false")
+                      if data.get("direction_consistency") != "not_determinable":
+                          raise SystemExit(f"{json_path} not_quality_interpretable must not claim direction consistency")
+                      if (data.get("call_summary_aggregate") or {}).get("infra_failure_count") is None:
+                          raise SystemExit(f"{json_path} not_quality_interpretable must publish aggregate infra_failure_count")
                   if data.get("status") == "ok":
                       if data.get("included_repo_count", 0) < 1:
                           raise SystemExit(f"{json_path} included_repo_count invalid")
