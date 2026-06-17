@@ -26,6 +26,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 
 - `AGENTS.md`: [en](en/AGENTS.md) · [zh](zh/AGENTS.md)
 - `b1-live-llm-rich-candidate-run.md`: [en](en/b1-live-llm-rich-candidate-run.md) · [zh](zh/b1-live-llm-rich-candidate-run.md)
+- `b2-contrastive-pack-quality-experiment.md`: [en](en/b2-contrastive-pack-quality-experiment.md) · [zh](zh/b2-contrastive-pack-quality-experiment.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)

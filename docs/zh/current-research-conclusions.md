@@ -46,6 +46,10 @@ P63 是一个确定性的、离线、无 provider、无线上 LLM、仅聚合的
 
 B1 是 pre-spend gates 之后的第一个 Breakthrough Sprint 真实质量实验。它使用现有 P21 rich-candidate harness 与 P25 scorer，在四个 public repos（`py_flask`、`js_express`、`go_gin`、`rust_ripgrep`）上每个 repo 跑 6 个 round-robin public-bucket tasks。`[mk]Kimi-K2.7-Code` 分别以 `tool_call` 与 `json_schema_strict` 两种模式运行。8 个 runs 全部成功并通过 privacy gates。最强结果是 `tool_call` 模式下的 `llm_span_narrow`：24 个 tasks 上，added gold 从 8 增到 9，added false spans 从 43 降到 5，mean SpanF0.5 从 0.1099 提升到 0.2849，mean primary false-positive rate 从 0.1250 降到 0.0625。`json_schema_strict` 也保持 schema-stable，但更慢且留下更多 false spans。B1 显示 rich candidate span narrowing 有真实质量信号，但它不是 Evidence、不是 promotion，也不是默认策略变更。详见 [B1 详细报告](b1-live-llm-rich-candidate-run.md)。
 
+## B2 Contrastive Pack Quality Experiment
+
+B2 在 P21 live rich-candidate harness 中加入 `--pack-layout`，并在同一个四 repo、每 repo 6 task 的矩阵上比较四种 live pack 结构：`topk_plain_v0`、`topk_scores_provenance_v0`、`contrastive_competitor_v0`、`hard_distractor_contrast_v0`。16 个 tool-call runs 全部成功。主要结论是：contrastive structure 并不是自动更好。对 `llm_span_narrow` 来说，`topk_plain_v0` 保持了最低 PFP（`0.0625`），同时有 9 个 added gold 和 6 个 added false spans。`hard_distractor_contrast_v0` 把 false spans 从 6 降到 5，但杀掉两个 gold spans，并把 mean PFP 翻倍到 `0.1250`。`topk_scores_provenance_v0` 的 mean SpanF0.5 最高（`0.2829`），但 false spans 和 latency 都更高。因此 hard-distractor contrast 应该只选择性路由到 filter/no-gold/hard-distractor cases，而不是作为通用 span-narrow pack。详见 [B2 详细报告](b2-contrastive-pack-quality-experiment.md)。
+
 ---
 
 ## 0. 核心研究判断

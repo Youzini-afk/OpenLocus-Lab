@@ -179,6 +179,31 @@ should test request_more_context as a quality-improving strategy using the B1
 span-narrow/filter signal. B1 is positive but small; it justifies targeted
 expansion, not promotion/default changes.
 
+Breakthrough Sprint B2 contrastive-pack quality experiment:
+
+```text
+layouts:
+  topk_plain_v0
+  topk_scores_provenance_v0
+  contrastive_competitor_v0
+  hard_distractor_contrast_v0
+
+matrix:
+  4 repos x 6 tasks x 4 layouts = 96 live tasks
+  model: [mk]Kimi-K2.7-Code
+  output: tool_call
+```
+
+B2 showed that contrastive structure is not automatically better. For
+`llm_span_narrow`, `topk_plain_v0` kept the best PFP (`0.0625`) and full gold
+retention (`9` added gold, `6` added false). `hard_distractor_contrast_v0`
+reduced false spans from `6` to `5`, but killed two gold spans and doubled mean
+PFP to `0.1250`. `topk_scores_provenance_v0` had the highest mean SpanF0.5
+(`0.2829`) but increased false spans and latency. The immediate conclusion is to
+route contrastive/hard-distractor packs selectively to filter/no-gold/hard-
+distractor buckets, not to use them as a universal span-narrow pack. See
+[`b2-contrastive-pack-quality-experiment.md`](b2-contrastive-pack-quality-experiment.md).
+
 ---
 
 ## Current status update — 2026-06-13

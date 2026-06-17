@@ -67,6 +67,10 @@ P59B then repaired the hard-distractor/actionability precondition using a gold-f
 
 B1 is the first Breakthrough Sprint live quality experiment after the pre-spend gates. It used the existing P21 rich-candidate harness and P25 scorer on four public repos (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`) with six round-robin public-bucket tasks per repo. `[mk]Kimi-K2.7-Code` was run in both `tool_call` and `json_schema_strict` modes. All eight runs succeeded and passed privacy gates. The strongest result was `llm_span_narrow` in `tool_call` mode: across 24 tasks, added gold rose from 8 to 9, added false spans fell from 43 to 5, mean SpanF0.5 improved from 0.1099 to 0.2849, and mean primary false-positive rate fell from 0.1250 to 0.0625. `json_schema_strict` remained schema-stable but was slower and left more false spans. B1 shows real quality signal for rich candidate span narrowing, but it is not Evidence, not promotion, and not a default change. See the [B1 detailed report](b1-live-llm-rich-candidate-run.md).
 
+## B2 Contrastive Pack Quality Experiment
+
+B2 extends the P21 live rich-candidate harness with `--pack-layout` and compares four live pack structures over the same four-repo, six-task matrix: `topk_plain_v0`, `topk_scores_provenance_v0`, `contrastive_competitor_v0`, and `hard_distractor_contrast_v0`. All 16 tool-call runs succeeded. The main result is nuanced: contrastive structure is not automatically better. For `llm_span_narrow`, `topk_plain_v0` kept the best PFP (`0.0625`) with 9 added gold and 6 added false spans. `hard_distractor_contrast_v0` reduced false spans from 6 to 5 but killed two gold spans and doubled mean PFP to `0.1250`. `topk_scores_provenance_v0` had the highest mean SpanF0.5 (`0.2829`) but increased false spans and latency. Therefore hard-distractor contrast should be routed selectively to filter/no-gold/hard-distractor cases, not used as a universal span-narrow pack. See the [B2 detailed report](b2-contrastive-pack-quality-experiment.md).
+
 ---
 
 ## 0. Executive Research Thesis
