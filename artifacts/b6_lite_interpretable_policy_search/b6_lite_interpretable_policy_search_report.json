@@ -1,0 +1,2000 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "observed_low_n_diagnostic_only",
+  "comparability": {
+    "hard_pack_layout": "hard_distractor_contrast_v0",
+    "plain_pack_layout": "topk_plain_v0",
+    "same_model_required": true,
+    "same_task_set_observed": true,
+    "same_task_set_required": true
+  },
+  "comparable_task_count": 12,
+  "default_should_change": false,
+  "diagnostic_policy_search": true,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-17T11:45:33.429769+00:00",
+  "generated_by": "b6_lite_interpretable_policy_search",
+  "gold_spans_in_artifact": false,
+  "live_quality_experiment": false,
+  "llm_output_not_evidence": true,
+  "no_gold_task_count": 4,
+  "not_evidence": true,
+  "overfit_diagnostics": {
+    "leave_one_bucket_out": {
+      "available_bucket_count": 7,
+      "bucket_fold_count": 7,
+      "leave_one_bucket_unavailable_reason": null,
+      "mean_rank_delta": 0.5291005291005291
+    },
+    "leave_one_repo_out": {
+      "available_repo_count": 2,
+      "leave_one_repo_unavailable_reason": null,
+      "mean_rank_delta": 2.2962962962962963,
+      "repo_fold_count": 2
+    }
+  },
+  "pareto_frontier": {
+    "frontier": [
+      "ambiguous_query_weak_only_default_candidate_baseline",
+      "ambiguous_query_weak_only_default_use_p25_action",
+      "default_candidate_baseline",
+      "negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "p25_bucket_routed_v0_plain",
+      "positive_span_narrow_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "positive_span_narrow_ambiguous_query_weak_only_default_candidate_baseline",
+      "positive_span_narrow_default_candidate_baseline",
+      "rmc_local_conservative_v0"
+    ],
+    "frontier_size": 10,
+    "non_dominated_observed": [
+      "ambiguous_query_weak_only_default_candidate_baseline",
+      "ambiguous_query_weak_only_default_use_p25_action",
+      "default_candidate_baseline",
+      "negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action",
+      "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "p25_bucket_routed_v0_plain",
+      "positive_span_narrow_ambiguous_query_use_p25_action_default_candidate_baseline",
+      "positive_span_narrow_ambiguous_query_weak_only_default_candidate_baseline",
+      "positive_span_narrow_default_candidate_baseline",
+      "rmc_local_conservative_v0"
+    ],
+    "policies_dominated_by_p25": 1
+  },
+  "policies": {
+    "ambiguous_query_abstain_filter_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 3,
+        "candidate_baseline": 9,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.25,
+        "candidate_baseline": 0.75,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 33,
+      "added_gold_span": 6,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 3,
+      "effective_llm_action_rate": 0.25,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 5.5,
+      "false_reduction_vs_p25": -21,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.24583333333333335,
+      "mean_span_f05": 0.11083333333333334,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -60,
+      "no_gold_false_primary_rate": 0.47500000000000003,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "ambiguous_query_abstain_filter",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 3,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "ambiguous_query_abstain_filter_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 3,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 9,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.25,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.75,
+        "weak_only": 0.0
+      },
+      "added_false_span": 10,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 10,
+      "effective_llm_action_rate": 0.8333333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 2.0,
+      "false_reduction_vs_p25": 2,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.07083333333333333,
+      "mean_span_f05": 0.12083333333333333,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -15,
+      "no_gold_false_primary_rate": 0.1375,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "ambiguous_query_abstain_filter",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 10,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 9,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 3,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.75,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.25,
+        "weak_only": 0.0
+      },
+      "added_false_span": 35,
+      "added_gold_span": 6,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 3,
+      "effective_llm_action_rate": 0.25,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 5.833333333333333,
+      "false_reduction_vs_p25": -23,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.25833333333333336,
+      "mean_span_f05": 0.1125,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -64,
+      "no_gold_false_primary_rate": 0.4875,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 3,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "ambiguous_query_weak_only_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 9,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 0,
+        "weak_only": 3
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.75,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.0,
+        "weak_only": 0.25
+      },
+      "added_false_span": 33,
+      "added_gold_span": 6,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 0,
+      "effective_llm_action_rate": 0.0,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 3,
+      "false_per_gold": 5.5,
+      "false_reduction_vs_p25": -21,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.23333333333333336,
+      "mean_span_f05": 0.11083333333333334,
+      "missing_action_outcome_count": 3,
+      "net_span_value_2x": -60,
+      "no_gold_false_primary_rate": 0.45,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 0,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "low_cost_low_return",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "ambiguous_query_weak_only_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 9,
+        "weak_only": 3
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.75,
+        "weak_only": 0.25
+      },
+      "added_false_span": 10,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 7,
+      "effective_llm_action_rate": 0.5833333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 3,
+      "false_per_gold": 2.0,
+      "false_reduction_vs_p25": 2,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.05833333333333333,
+      "mean_span_f05": 0.12083333333333333,
+      "missing_action_outcome_count": 3,
+      "net_span_value_2x": -15,
+      "no_gold_false_primary_rate": 0.1125,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 7,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 12,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 1.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 45,
+      "added_gold_span": 7,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 0,
+      "effective_llm_action_rate": 0.0,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 6.428571428571429,
+      "false_reduction_vs_p25": -33,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.325,
+      "mean_span_f05": 0.115,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -83,
+      "no_gold_false_primary_rate": 0.5875,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 0,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "low_cost_low_return",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "negative_abstain_filter_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 7,
+        "candidate_baseline": 5,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.5833333333333334,
+        "candidate_baseline": 0.4166666666666667,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 12,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 7,
+      "effective_llm_action_rate": 0.5833333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 2.4,
+      "false_reduction_vs_p25": 0,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.08750000000000001,
+      "mean_span_f05": 0.1025,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -19,
+      "no_gold_false_primary_rate": 0.125,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 7,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 7,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 5,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.5833333333333334,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.4166666666666667,
+        "weak_only": 0.0
+      },
+      "added_false_span": 8,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 10,
+      "effective_llm_action_rate": 0.8333333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.6,
+      "false_reduction_vs_p25": 4,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.0625,
+      "mean_span_f05": 0.11833333333333335,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -11,
+      "no_gold_false_primary_rate": 0.125,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 10,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "negative_hard_distractor_filter_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 5,
+        "hard_distractor_filter": 7,
+        "plain_span_narrow": 0,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.4166666666666667,
+        "hard_distractor_filter": 0.5833333333333334,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 9,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 7,
+      "effective_llm_action_rate": 0.5833333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.8,
+      "false_reduction_vs_p25": 3,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.041666666666666664,
+      "mean_span_f05": 0.10083333333333333,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -13,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "negative_hard_distractor_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 7,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "negative_hard_distractor_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 7,
+        "plain_span_narrow": 0,
+        "use_p25_action": 5,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.5833333333333334,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.4166666666666667,
+        "weak_only": 0.0
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 10,
+      "effective_llm_action_rate": 0.8333333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11666666666666668,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "negative_hard_distractor_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 10,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 5,
+        "weak_only": 7
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.4166666666666667,
+        "weak_only": 0.5833333333333334
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 3,
+      "effective_llm_action_rate": 0.25,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 7,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11666666666666668,
+      "missing_action_outcome_count": 7,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 3,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "p25_bucket_routed_v0_plain": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 12,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 1.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 12,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 10,
+      "effective_llm_action_rate": 0.8333333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 2.4,
+      "false_reduction_vs_p25": 0,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.08333333333333333,
+      "mean_span_f05": 0.1225,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -19,
+      "no_gold_false_primary_rate": 0.15,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "p25_reference_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 10,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "baseline",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_ambiguous_query_abstain_filter_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 3,
+        "candidate_baseline": 5,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.25,
+        "candidate_baseline": 0.4166666666666667,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 29,
+      "added_gold_span": 6,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 7,
+      "effective_llm_action_rate": 0.5833333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 4.833333333333333,
+      "false_reduction_vs_p25": -17,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.22083333333333333,
+      "mean_span_f05": 0.12416666666666666,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -52,
+      "no_gold_false_primary_rate": 0.47500000000000003,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "ambiguous_query_abstain_filter",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 7,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_ambiguous_query_abstain_filter_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 3,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 5,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.25,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.4166666666666667,
+        "weak_only": 0.0
+      },
+      "added_false_span": 10,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 11,
+      "effective_llm_action_rate": 0.9166666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 2.0,
+      "false_reduction_vs_p25": 2,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.07083333333333333,
+      "mean_span_f05": 0.11833333333333333,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -15,
+      "no_gold_false_primary_rate": 0.1375,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "ambiguous_query_abstain_filter",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 11,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 5,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 3,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.4166666666666667,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.25,
+        "weak_only": 0.0
+      },
+      "added_false_span": 31,
+      "added_gold_span": 6,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 7,
+      "effective_llm_action_rate": 0.5833333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 5.166666666666667,
+      "false_reduction_vs_p25": -19,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.2333333333333333,
+      "mean_span_f05": 0.12583333333333332,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -56,
+      "no_gold_false_primary_rate": 0.4875,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 7,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 8,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.6666666666666666,
+        "weak_only": 0.0
+      },
+      "added_false_span": 12,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": true,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 11,
+      "effective_llm_action_rate": 0.9166666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 2.4,
+      "false_reduction_vs_p25": 0,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.08333333333333333,
+      "mean_span_f05": 0.12,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -19,
+      "no_gold_false_primary_rate": 0.15,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 11,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_ambiguous_query_weak_only_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 5,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 0,
+        "weak_only": 3
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.4166666666666667,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.0,
+        "weak_only": 0.25
+      },
+      "added_false_span": 29,
+      "added_gold_span": 6,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 4,
+      "effective_llm_action_rate": 0.3333333333333333,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 3,
+      "false_per_gold": 4.833333333333333,
+      "false_reduction_vs_p25": -17,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.20833333333333334,
+      "mean_span_f05": 0.12416666666666666,
+      "missing_action_outcome_count": 3,
+      "net_span_value_2x": -52,
+      "no_gold_false_primary_rate": 0.45,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 4,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_ambiguous_query_weak_only_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 5,
+        "weak_only": 3
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.4166666666666667,
+        "weak_only": 0.25
+      },
+      "added_false_span": 10,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 8,
+      "effective_llm_action_rate": 0.6666666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 3,
+      "false_per_gold": 2.0,
+      "false_reduction_vs_p25": 2,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.05833333333333333,
+      "mean_span_f05": 0.11833333333333333,
+      "missing_action_outcome_count": 3,
+      "net_span_value_2x": -15,
+      "no_gold_false_primary_rate": 0.1125,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 8,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 8,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.6666666666666666,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 41,
+      "added_gold_span": 7,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 4,
+      "effective_llm_action_rate": 0.3333333333333333,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 5.857142857142857,
+      "false_reduction_vs_p25": -29,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.3,
+      "mean_span_f05": 0.12833333333333333,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -75,
+      "no_gold_false_primary_rate": 0.5875,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 4,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 7,
+        "candidate_baseline": 1,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.5833333333333334,
+        "candidate_baseline": 0.08333333333333333,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 8,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 11,
+      "effective_llm_action_rate": 0.9166666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.6,
+      "false_reduction_vs_p25": 4,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.0625,
+      "mean_span_f05": 0.11583333333333334,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -11,
+      "no_gold_false_primary_rate": 0.125,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 11,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_negative_abstain_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 7,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 1,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.5833333333333334,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.08333333333333333,
+        "weak_only": 0.0
+      },
+      "added_false_span": 8,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 11,
+      "effective_llm_action_rate": 0.9166666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.6,
+      "false_reduction_vs_p25": 4,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.0625,
+      "mean_span_f05": 0.11583333333333334,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -11,
+      "no_gold_false_primary_rate": 0.125,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "abstain_filter",
+          "is_default": false,
+          "name": "negative_abstain_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 11,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_negative_hard_distractor_filter_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 1,
+        "hard_distractor_filter": 7,
+        "plain_span_narrow": 4,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.08333333333333333,
+        "hard_distractor_filter": 0.5833333333333334,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 11,
+      "effective_llm_action_rate": 0.9166666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11416666666666668,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "negative_hard_distractor_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 11,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_negative_hard_distractor_filter_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 7,
+        "plain_span_narrow": 4,
+        "use_p25_action": 1,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.5833333333333334,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.08333333333333333,
+        "weak_only": 0.0
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 11,
+      "effective_llm_action_rate": 0.9166666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11416666666666668,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "negative_hard_distractor_filter",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 11,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_candidate_baseline": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 1,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 0,
+        "weak_only": 7
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.08333333333333333,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.0,
+        "weak_only": 0.5833333333333334
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 4,
+      "effective_llm_action_rate": 0.3333333333333333,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 7,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11416666666666668,
+      "missing_action_outcome_count": 7,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "default_baseline",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 4,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "positive_span_narrow_negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 4,
+        "use_p25_action": 1,
+        "weak_only": 7
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.3333333333333333,
+        "use_p25_action": 0.08333333333333333,
+        "weak_only": 0.5833333333333334
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 4,
+      "effective_llm_action_rate": 0.3333333333333333,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 7,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11416666666666668,
+      "missing_action_outcome_count": 7,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "positive_span_narrow",
+          "predicates": [
+            "bucket_in_positive_set",
+            "candidate_support_exists"
+          ]
+        },
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 4,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "searched",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "rmc_llm_pack_routed_v0": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 2,
+        "hard_distractor_filter": 7,
+        "plain_span_narrow": 3,
+        "use_p25_action": 0,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.16666666666666666,
+        "hard_distractor_filter": 0.5833333333333334,
+        "plain_span_narrow": 0.25,
+        "use_p25_action": 0.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 5,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 10,
+      "effective_llm_action_rate": 0.8333333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11666666666666668,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -5,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": false,
+      "policy_rules": [
+        {
+          "action": "candidate_baseline",
+          "is_default": false,
+          "name": "rmc_pack_exact",
+          "predicates": [
+            "exact_unique"
+          ]
+        },
+        {
+          "action": "hard_distractor_filter",
+          "is_default": false,
+          "name": "rmc_pack_hard",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "plain_span_narrow",
+          "is_default": false,
+          "name": "rmc_pack_positive",
+          "predicates": [
+            "positive_like",
+            "support_exists"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "rmc_pack_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 10,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "higher_span_value_tends_to_raise_false_or_cost",
+      "source": "baseline",
+      "task_count": 12,
+      "unstable_low_n": true
+    },
+    "rmc_local_conservative_v0": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 5,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 0,
+        "weak_only": 7
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.4166666666666667,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.0,
+        "weak_only": 0.5833333333333334
+      },
+      "added_false_span": 9,
+      "added_gold_span": 5,
+      "comparable_task_count": 12,
+      "dominated_by_p25": false,
+      "duplicate_action_signature_policies": [],
+      "effective_llm_action_count": 0,
+      "effective_llm_action_rate": 0.0,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 7,
+      "false_per_gold": 1.8,
+      "false_reduction_vs_p25": 3,
+      "gold_kill_vs_p25": 0,
+      "insufficient_support": false,
+      "mean_primary_false_positive_rate": 0.041666666666666664,
+      "mean_span_f05": 0.10083333333333333,
+      "missing_action_outcome_count": 7,
+      "net_span_value_2x": -13,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 4,
+      "non_dominated_observed": true,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "rmc_local_hard",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "candidate_baseline",
+          "is_default": true,
+          "name": "rmc_local_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 8,
+      "provider_call_estimate": 0,
+      "provider_call_estimate_not_measured": true,
+      "quality_cost_tradeoff": "low_cost_low_return",
+      "source": "baseline",
+      "task_count": 12,
+      "unstable_low_n": true
+    }
+  },
+  "policy_search_not_admission": true,
+  "positive_task_count": 8,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "public_per_task_rows": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "remote_calls_by_policy_search": 0,
+  "repo_ids_in_artifact": false,
+  "routing_invariance": {
+    "changed_policy_count": 0,
+    "changed_policy_examples": [],
+    "score_fields_removed_or_flipped": true,
+    "selected_actions_invariant": true
+  },
+  "same_task_set": true,
+  "schema_version": "b6-lite-interpretable-policy-search-v0",
+  "search_accounting": {
+    "candidate_policy_count": 24,
+    "frontier_size": 10,
+    "policies_dominated_by_p25": 1,
+    "rules_considered": 4,
+    "rules_pruned_by_min_support": 1
+  },
+  "self_test": true,
+  "status": "self_test_only",
+  "task_count": 12,
+  "task_ids_in_artifact": false
+}
