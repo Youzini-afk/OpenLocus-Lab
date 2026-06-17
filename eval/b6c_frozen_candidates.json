@@ -1,0 +1,63 @@
+{
+  "schema_version": "b6c-frozen-candidates-v0",
+  "frozen_spec_sha256": "51f0efd837759c96d4849c8e6023633a2595c4ba376231ea6edb08dc2cb8176e",
+  "frozen_policy_search_performed": false,
+  "description": "Frozen candidates from B6B combined-matrix policy search, held for fresh validation only. No search or selection is performed by B6C.",
+  "candidate_predicates_allowlist": [
+    "ambiguous_or_query_noise",
+    "hard_distractor_like",
+    "always_true"
+  ],
+  "candidate_actions_allowlist": [
+    "use_p25_action",
+    "candidate_baseline",
+    "plain_span_narrow",
+    "hard_distractor_filter",
+    "abstain_filter",
+    "weak_only"
+  ],
+  "candidates": [
+    {
+      "name": "ambiguous_query_weak_only_default_use_p25_action",
+      "source": "frozen",
+      "rules": [
+        {
+          "name": "ambiguous_query_weak_only",
+          "predicates": ["ambiguous_or_query_noise"],
+          "action": "weak_only",
+          "is_default": false
+        },
+        {
+          "name": "default_use_p25",
+          "predicates": ["always_true"],
+          "action": "use_p25_action",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "name": "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+      "source": "frozen",
+      "rules": [
+        {
+          "name": "negative_weak_only",
+          "predicates": ["hard_distractor_like"],
+          "action": "weak_only",
+          "is_default": false
+        },
+        {
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": ["ambiguous_or_query_noise"],
+          "action": "use_p25_action",
+          "is_default": false
+        },
+        {
+          "name": "default_use_p25",
+          "predicates": ["always_true"],
+          "action": "use_p25_action",
+          "is_default": true
+        }
+      ]
+    }
+  ]
+}

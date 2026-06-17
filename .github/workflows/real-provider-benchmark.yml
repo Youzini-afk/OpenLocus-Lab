@@ -20,6 +20,7 @@ on:
           - b3_rmc_quality
           - b6_lite_policy_search
           - b6b_combined_policy_search
+          - b6c_frozen_policy_validation
           - p51c_planner
           - all_smoke
       enable_remote_models:
@@ -204,11 +205,14 @@ jobs:
         run: |
           python3 - <<'PY'
           import json
+          import sys
+          sys.path.insert(0, "eval")
+          import b6c_frozen_policy_validation as b6c
           import os
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "p51c_planner", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "p51c_planner", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -275,10 +279,10 @@ jobs:
           if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", repo_id):
               raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
-          if stage in {"p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "p51c_planner"} and views == "path_plus_symbol":
+          if stage in {"p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "p51c_planner"} and views == "path_plus_symbol":
               views = "pack2_evidence_sketch,atom_signature"
           view_list = [view.strip() for view in views.split(",") if view.strip()]
-          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "p51c_planner"} else r32_allowed_views
+          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "p51c_planner"} else r32_allowed_views
           if not view_list or any(view not in allowed_views for view in view_list):
               raise SystemExit("unsupported views/strategies for selected stage")
           views = ",".join(view_list)
@@ -287,7 +291,7 @@ jobs:
           max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 3000)
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
           llm_output_mode = getenv("INPUT_LLM_OUTPUT_MODE", "json_object")
-          if stage == "b6b_combined_policy_search":
+          if stage in {"b6b_combined_policy_search", "b6c_frozen_policy_validation"}:
               llm_output_mode = "tool_call"
           if llm_output_mode not in allowed_llm_output_modes:
               raise SystemExit(f"unsupported llm_output_mode: {llm_output_mode}")
@@ -299,7 +303,7 @@ jobs:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
-              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "all_smoke"}
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
               if not embedding_provider:
                   raise SystemExit("unsupported embedding provider variable")
@@ -913,6 +917,117 @@ jobs:
           fi
           "${b6b_args[@]}"
 
+      - name: B6C frozen-policy fresh validation
+        if: ${{ inputs.stage == 'b6c_frozen_policy_validation' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_LLM_WORKFLOW_DISPATCH: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_EMBEDDING_MODEL: ${{ steps.plan.outputs.embedding_model }}
+          OPENLOCUS_EMBEDDING_DIMENSIONS: ${{ steps.plan.outputs.embedding_dimensions }}
+          OPENLOCUS_EMBEDDING_SEND_DIMENSIONS: ${{ steps.plan.outputs.embedding_send_dimensions }}
+          OPENLOCUS_EMBEDDING_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_BASE_URL || '' }}
+          OPENLOCUS_EMBEDDING_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_EMBEDDING_API_KEY || '' }}
+          OPENLOCUS_LLM_MODEL: ${{ steps.plan.outputs.llm_model }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+          EMBEDDING_PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
+          LLM_PROVIDER: ${{ steps.plan.outputs.llm_provider }}
+          LLM_OUTPUT_MODE: ${{ steps.plan.outputs.llm_output_mode }}
+          DATASET: ${{ steps.plan.outputs.dataset }}
+          DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
+          MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
+          TASK_SAMPLE_MODE: ${{ steps.plan.outputs.task_sample_mode }}
+          MAX_RECORDS: ${{ steps.plan.outputs.max_records }}
+          MAX_FILES_PER_REPO: ${{ steps.plan.outputs.max_files_per_repo }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+        run: |
+          set -euo pipefail
+          if [[ "$OPENLOCUS_LLM_MODEL" != "[mk]Kimi-K2.7-Code" ]]; then
+            echo "B6C frozen policy validation v0 requires [mk]Kimi-K2.7-Code before any P21 call" >&2
+            exit 1
+          fi
+          if [[ "$LLM_OUTPUT_MODE" != "tool_call" ]]; then
+            echo "B6C frozen policy validation v0 requires tool_call output mode before any P21 call" >&2
+            exit 1
+          fi
+          base_cmd=(python3 eval/p21_llm_rich_candidate.py --embedding-provider "$EMBEDDING_PROVIDER" --llm-provider "$LLM_PROVIDER")
+          if [[ "$ALLOW_REMOTE" == "1" ]]; then
+            base_cmd+=(--allow-remote-embedding --allow-remote-llm)
+          fi
+          b6c_root="$RUNNER_TEMP/b6c_frozen_policy_validation"
+          rm -rf "$b6c_root"
+          mkdir -p "$b6c_root"
+          manifest_records_jsonl="$b6c_root/manifest_records.jsonl"
+          : > "$manifest_records_jsonl"
+          for repo_id in py_flask js_express go_gin rust_ripgrep; do
+            repo_work="$b6c_root/$repo_id"
+            mkdir -p "$repo_work/corpus" "$repo_work/tasks"
+            if [[ "$DATASET" == "self_test" ]]; then
+              repo_cmd=("${base_cmd[@]}" --self-test)
+            else
+              python3 eval/ci_clone_and_lock_repo.py \
+                --manifest eval/ci_repos/openlocus-ci-repos-v1.yaml \
+                --repo-id "$repo_id" \
+                --out-root "$repo_work/corpus" \
+                --lock-out "$repo_work/repo-lock.json" \
+                --max-indexed-bytes 3000000
+              gen_max_tasks="$MAX_TASKS"
+              if [[ "$TASK_SAMPLE_MODE" == "round_robin_public_buckets" ]]; then
+                gen_max_tasks=$(( MAX_TASKS * 8 ))
+                if [[ "$gen_max_tasks" -lt 80 ]]; then gen_max_tasks=80; fi
+                if [[ "$gen_max_tasks" -gt 100 ]]; then gen_max_tasks=100; fi
+              fi
+              python3 eval/ci_generate_tasks.py \
+                --repo-lock "$repo_work/repo-lock.json" \
+                --out-dir "$repo_work/tasks" \
+                --max-tasks-per-repo "$gen_max_tasks" \
+                --max-files-per-repo "$MAX_FILES_PER_REPO"
+              repo_cmd=("${base_cmd[@]}" --repo-lock "$repo_work/repo-lock.json" --tasks "$repo_work/tasks/tasks/ci_tasks.jsonl" --labels "$repo_work/tasks/labels/ci_labels.jsonl")
+            fi
+            repo_plain="$repo_work/plain.private.json"
+            repo_hard="$repo_work/hard.private.json"
+            repo_plain_summary="$repo_work/plain_summary.private.json"
+            repo_hard_summary="$repo_work/hard_summary.private.json"
+            "${repo_cmd[@]}" --dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --pack-layout topk_plain_v0 --schema-repair-retry --p25-policy-records-out "$repo_plain" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out "$repo_plain_summary" --doc "$repo_work/plain.md"
+            "${repo_cmd[@]}" --dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --pack-layout hard_distractor_contrast_v0 --schema-repair-retry --p25-policy-records-out "$repo_hard" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out "$repo_hard_summary" --doc "$repo_work/hard.md"
+            printf '%s\n' \
+              "{\"repo_id\":\"$repo_id\",\"model\":\"$OPENLOCUS_LLM_MODEL\",\"output_mode\":\"$LLM_OUTPUT_MODE\",\"plain_pack_layout\":\"topk_plain_v0\",\"hard_pack_layout\":\"hard_distractor_contrast_v0\",\"plain_records_path\":\"$repo_plain\",\"hard_records_path\":\"$repo_hard\"}" \
+              >> "$manifest_records_jsonl"
+          done
+          manifest_path="$b6c_root/b6c_paired_records_manifest.private.json"
+          python3 - <<PY
+          import json
+          import sys
+          sys.path.insert(0, "eval")
+          import b6c_frozen_policy_validation as b6c
+          records = []
+          with open("$manifest_records_jsonl", "r", encoding="utf-8") as f:
+              for line in f:
+                  line = line.strip()
+                  if line:
+                      records.append(json.loads(line))
+          manifest = {
+              "schema_version": "b6b-paired-records-manifest-v0",
+              "not_artifact_for_commit": True,
+              "b6c_fresh_validation_contract": {
+                  "schema_version": "b6c-fresh-validation-contract-v0",
+                  "frozen_spec_sha256": b6c.EXPECTED_FROZEN_SPEC_SHA256,
+                  "policy_search_performed_for_b6c": False,
+                  "fresh_records_generated_after_freeze": True,
+                  "no_b6c_result_driven_retuning": True,
+                  "record_paths_private_runner_temp_only": True,
+              },
+              "records": records,
+          }
+          with open("$manifest_path", "w", encoding="utf-8") as f:
+              json.dump(manifest, f, indent=2)
+          PY
+          b6c_args=(python3 eval/b6c_frozen_policy_validation.py --paired-records-manifest "$manifest_path" --out artifacts/real_provider_ci/b6c_frozen_policy_validation_report.json --doc docs/real-provider-ci/b6c-frozen-policy-validation.md)
+          if [[ "$DATASET" == "self_test" ]]; then
+            b6c_args+=(--mark-self-test)
+          fi
+          "${b6c_args[@]}"
+
       - name: P51-C0 live micro-run planner self-test
         if: ${{ inputs.stage == 'p51c_planner' }}
         run: |
@@ -1175,7 +1290,7 @@ jobs:
               if json_path.name == "b6b_combined_policy_search_report.json":
                   if data.get("schema_version") != "b6b-combined-policy-search-v0":
                       raise SystemExit(f"{json_path} schema version mismatch")
-                  if data.get("status") not in {"ok", "self_test_only", "blocked_insufficient_repos", "blocked_mixed_model_mode_pack", "blocked_task_set_mismatch"}:
+                  if data.get("status") not in {"ok", "self_test_only", "blocked_insufficient_repos", "blocked_mixed_model_mode_pack", "blocked_task_set_mismatch", "blocked_freshness_contract"}:
                       raise SystemExit(f"{json_path} status invalid")
                   if data.get("aggregate_only_public_artifact") is not True:
                       raise SystemExit(f"{json_path} must be aggregate-only")
@@ -1238,6 +1353,92 @@ jobs:
                       for token in ["task_id", "candidate_id", "repo_id", "content_sha", "decision_records", "candidate_meta", "score_group"]:
                           if token in text:
                               raise SystemExit(f"{b6b_doc} contains banned token {token}")
+              if json_path.name == "b6c_frozen_policy_validation_report.json":
+                  if data.get("schema_version") != "b6c-frozen-policy-validation-v0":
+                      raise SystemExit(f"{json_path} schema version mismatch")
+                  if data.get("status") not in {"ok", "self_test_only", "blocked_insufficient_repos", "blocked_mixed_model_mode_pack", "blocked_task_set_mismatch", "blocked_freshness_contract"}:
+                      raise SystemExit(f"{json_path} status invalid")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must be aggregate-only")
+                  if data.get("not_evidence") is not True or data.get("llm_output_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep LLM output non-evidence")
+                  if data.get("candidate_not_fact") is not True:
+                      raise SystemExit(f"{json_path} must keep candidate_not_fact=true")
+                  if data.get("policy_search_not_admission") is not True:
+                      raise SystemExit(f"{json_path} must keep policy_search_not_admission=true")
+                  if data.get("diagnostic_policy_search") is not True:
+                      raise SystemExit(f"{json_path} must keep diagnostic_policy_search=true")
+                  if data.get("frozen_policy_validation") is not True:
+                      raise SystemExit(f"{json_path} must keep frozen_policy_validation=true")
+                  expected_claim = {
+                      "ok": "frozen_policy_fresh_validation",
+                      "self_test_only": "self_test_synthetic_protocol_check",
+                      "blocked_insufficient_repos": "fresh_validation_blocked_precondition",
+                      "blocked_mixed_model_mode_pack": "fresh_validation_blocked_precondition",
+                      "blocked_task_set_mismatch": "fresh_validation_blocked_precondition",
+                      "blocked_freshness_contract": "fresh_validation_blocked_precondition",
+                  }.get(data.get("status"))
+                  if data.get("claim_level") != expected_claim:
+                      raise SystemExit(f"{json_path} claim_level invalid for status")
+                  if data.get("policy_search_performed") is not False:
+                      raise SystemExit(f"{json_path} policy_search_performed must be false")
+                  for flag in ["task_ids_in_artifact", "candidate_ids_in_artifact", "repo_ids_in_artifact", "raw_prompts_stored", "raw_responses_stored", "raw_snippets_stored", "raw_snippets_committed", "raw_paths_in_artifact", "raw_line_ranges_in_artifact", "raw_digests_in_artifact", "private_labels_committed", "gold_spans_in_artifact", "public_per_task_rows", "public_per_repo_rows", "evidencecore_semantics_changed"]:
+                      if data.get(flag) is not False:
+                          raise SystemExit(f"{json_path} does not keep {flag}=false")
+                  if data.get("remote_calls_by_policy_search") != 0:
+                      raise SystemExit(f"{json_path} remote_calls_by_policy_search must be 0")
+                  if data.get("status") == "ok":
+                      if data.get("included_repo_count", 0) < 1:
+                          raise SystemExit(f"{json_path} included_repo_count invalid")
+                      if data.get("comparable_task_count", 0) < 1:
+                          raise SystemExit(f"{json_path} comparable_task_count invalid")
+                      frozen_names = {
+                          "ambiguous_query_weak_only_default_use_p25_action",
+                          "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action",
+                      }
+                      if set(data.get("frozen_policy_names") or []) != frozen_names:
+                          raise SystemExit(f"{json_path} frozen_policy_names invalid")
+                      if data.get("frozen_policy_count") != 2:
+                          raise SystemExit(f"{json_path} frozen_policy_count invalid")
+                      families = data.get("policy_families") or {}
+                      if "p25_bucket_routed_v0_plain" not in families:
+                          raise SystemExit(f"{json_path} missing P25 baseline")
+                      integrity = data.get("frozen_manifest_integrity") or {}
+                      for key in ["manifest_schema_version_ok", "record_required_fields_present", "model_mode_pack_uniform", "allowed_model_mode_pack", "task_sets_matched", "paired_records_loadable", "forbidden_public_key_scan_clean"]:
+                          if integrity.get(key) is not True:
+                              raise SystemExit(f"{json_path} frozen_manifest_integrity.{key} invalid")
+                      if "winner" in data or "default_recommendation" in data:
+                          raise SystemExit(f"{json_path} must not declare a winner/default recommendation")
+                      inv = data.get("routing_invariance") or {}
+                      if inv.get("selected_actions_invariant") is not True:
+                          raise SystemExit(f"{json_path} routing uses SCORE/gold fields")
+                      for name, metrics in families.items():
+                          tc = metrics.get("task_count")
+                          if not isinstance(tc, int) or tc <= 0:
+                              raise SystemExit(f"{json_path} {name} has invalid task_count")
+                          if sum((metrics.get("action_counts") or {}).values()) != tc:
+                              raise SystemExit(f"{json_path} {name} action counts do not sum")
+                          if "policy_rules" not in metrics:
+                              raise SystemExit(f"{json_path} {name} missing policy_rules")
+                  b6c_banned = {"task_id", "test_id", "candidate_id", "repo_id", "query", "path", "start_line", "end_line", "line_range", "content_sha", "digest", "snippet", "prompt", "response", "raw_response", "gold_spans", "label", "labels", "private_labels", "decision_records", "candidate_meta", "score_group", "raw_query", "provider_key", "api_token", "api_secret", "base_url", "api_key"}
+                  def walk_b6c(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              if key in b6c_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key}")
+                              walk_b6c(value, prefix + key + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              walk_b6c(value, prefix + str(idx) + ".")
+                  walk_b6c(data)
+                  b6c_doc = pathlib.Path("docs/real-provider-ci/b6c-frozen-policy-validation.md")
+                  if b6c_doc.exists():
+                      text = b6c_doc.read_text(encoding="utf-8")
+                      if re.search(r"(api_key|base_url|authorization)\s*[:=]", text, re.I):
+                          raise SystemExit(f"{b6c_doc} contains secret-like text")
+                      for token in ["task_id", "candidate_id", "repo_id", "content_sha", "decision_records", "candidate_meta", "score_group"]:
+                          if token in text:
+                              raise SystemExit(f"{b6c_doc} contains banned token {token}")
               if json_path.name == "p30_admission_v3_report.json":
                   if data.get("status") != "ok":
                       raise SystemExit(f"{json_path} status is not ok")
@@ -2336,7 +2537,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
-        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' }}
+        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
@@ -2403,6 +2604,24 @@ jobs:
           path: |
             artifacts/real_provider_ci/b6b_combined_policy_search_report.json
             docs/real-provider-ci/b6b-combined-policy-search.md
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !**/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload B6C frozen-policy validation artifacts
+        if: ${{ inputs.stage == 'b6c_frozen_policy_validation' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/b6c_frozen_policy_validation_report.json
+            docs/real-provider-ci/b6c-frozen-policy-validation.md
             !artifacts/real_provider_ci/**/labels/**
             !artifacts/real_provider_ci/**/corpus/**
             !artifacts/real_provider_ci/*label*

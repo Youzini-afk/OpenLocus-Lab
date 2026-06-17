@@ -66,6 +66,10 @@ B6-lite 在 paired `topk_plain_v0` 与 `hard_distractor_contrast_v0` P21 ephemer
 
 B6B 合并四个 public repo slices 的 paired P21 records，并执行真正的 split-before-search leave-one-repo-out：在三个 repo slices 上训练小型可解释 grammar，冻结 Pareto policies，再在 held-out slice 上评估。Live run `27689938744` 找到了低 false-cost 的候选策略，但仍没有 default policy。`ambiguous_query_weak_only_default_use_p25_action` 在聚合上保留了接近 P25 的 held-out gold/SpanF0.5，同时降低 false spans（7 gold / 5 false，对比 P25 的 7 / 8）和观察到的 PFP（0.0 对比 0.0833）。`negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action` false 更低（4 gold / 1 false），但 gold 损失太多，不适合作为 deep-quality 默认。B6B 仍然只是 diagnostic-only，需要更多 repo/model 的 fresh validation。详见 [B6B 详细报告](b6b-combined-policy-search.md)。
 
+## B6C Frozen-Policy Validation Protocol
+
+B6C 冻结 B6B 识别出的两个候选策略，并定义它们与固定 P25 bucket-routed baseline 的 fresh-validation 协议。B6C 不执行搜索、规则生成或 winner 选择；冻结策略文件会做 exact-spec/hash 校验，非 self-test 运行还必须提供 `b6c_fresh_validation_contract`，证明 records 是在冻结后生成且没有根据 B6C 结果回调。当前提交的 artifact 只是 self-test protocol check（`claim_level=self_test_synthetic_protocol_check`），不是已完成的 fresh validation。真正 live B6C 运行必须产出 `claim_level=frozen_policy_fresh_validation` 后，才可作为 fresh validation evidence 使用。公开报告仍只输出聚合数据，不暴露 repo/task/candidate 标识或原始内容。B6C 是 diagnostic-only，不是 promotion gate。详见 [B6C 详细报告](b6c-frozen-policy-validation.md)。
+
 ## B4/B9 模型稳健证据转换
 
 B4/B9 将 `algorithm_spec`（模型无关的策略定义）与 `model_adapter`（模型 + 输出模式的健康状态）分离，并重编码 B1、B1C、B2、B3 的 live quality 聚合结果。它仅聚合、不是门控、不是仅前置条件阶段、不改变 `EvidenceCore`。`span_narrow_topk_plain_v0` 只在两个 matched Kimi adapter delta 上呈现 `low_n_directional_signal`；GLM-5.2 json_schema_strict 因没有 matched baseline delta，只能作为 secondary observed cross-family validation。固定 RMC 变体（`rmc_hybrid_v0`、`rmc_llm_pack_routed_v0`、`rmc_local_conservative_v0`）均为 `not_supported`。Qwen adapter 受 rate-limit 噪声影响，应排除在质量聚合之外。详见 [B4/B9 详细报告](b4-b9-model-robust-evidence-conversion.md)。
