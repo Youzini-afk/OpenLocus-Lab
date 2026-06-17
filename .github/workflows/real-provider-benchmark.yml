@@ -207,7 +207,7 @@ jobs:
           import re
           from pathlib import Path
 
-           allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "p51c_planner", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "p51c_planner", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -296,7 +296,7 @@ jobs:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
-               llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "all_smoke"}
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
               if not embedding_provider:
                   raise SystemExit("unsupported embedding provider variable")

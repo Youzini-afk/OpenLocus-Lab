@@ -14,7 +14,7 @@
   "default_should_change": false,
   "diagnostic_policy_search": true,
   "evidencecore_semantics_changed": false,
-  "generated_at": "2026-06-17T11:45:33.429769+00:00",
+  "generated_at": "2026-06-17T11:52:05.744978+00:00",
   "generated_by": "b6_lite_interpretable_policy_search",
   "gold_spans_in_artifact": false,
   "live_quality_experiment": false,
