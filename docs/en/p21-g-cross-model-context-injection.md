@@ -360,8 +360,9 @@ Default enabled LLM roster:
 |---|---|---|---|
 | `deepseek_v4_flash_small_fast` | `[mk]DeepSeek-V4-Flash` | small/fast long-context | cheap first-pass filter, abstain, inventory alias, latency baseline |
 | `kimi_k2_7_code` | `[mk]Kimi-K2.7-Code` | code | primary code rerank/filter/span-narrow model |
+| `qwen3_6_27b_code_balanced` | `[mk]Qwen3.6-27B` | code/balanced | mid-size Qwen span-narrow/filter/rerank comparison model |
 | `deepseek_v4_pro_long_context` | `[mk]DeepSeek-V4-Pro` | long-context/text-strong | Pack5/Pack6, hard distractors, long-layout tests |
-| `glm_5_1_reasoning_code` | `[mk]GLM-5.1` | reasoning/code-strong | expensive review/ablation model, cross-family validation |
+| `glm_5_2_reasoning_code` | `[mk]GLM-5.2` | reasoning/code-strong | expensive review/ablation model, cross-family validation |
 
 The autonomous policy is smoke first, then medium only for promising profiles:
 
@@ -372,7 +373,7 @@ max_workflow_runs_per_batch: 20
 stop if added_false_span >= 3× added_gold_span, PFP increases, schema violation >5%, or repeated provider/rate-limit failures occur
 ```
 
-Example dry-run plan for the default LLM roster. This creates 16 workflow runs: four LLM profiles across four repos, staying under the default batch cap of 20.
+Example dry-run plan for the default LLM roster. This creates 20 workflow runs: five LLM profiles across four repos, staying at the default batch cap of 20.
 
 ```bash
 python3 eval/p21_multimodel_plan.py \
@@ -385,7 +386,7 @@ python3 eval/p21_multimodel_plan.py \
   --print-commands
 ```
 
-Run embedding model sweeps separately (`--mode embedding`) so each batch also stays under 20 workflow runs. Embedding sweeps now default to the `p21_embedding_context` workflow stage and compare P21-G1E context strategies. A combined `--mode both` over four repos currently creates 32 runs and will not execute unless explicitly allowed with `--allow-large-batch`.
+Run embedding model sweeps separately (`--mode embedding`) so each batch also stays under 20 workflow runs. Embedding sweeps now default to the `p21_embedding_context` workflow stage and compare P21-G1E context strategies. A combined `--mode both` over four repos currently creates 36 runs and will not execute unless explicitly allowed with `--allow-large-batch`.
 
 To add provider-specific LLMs without committing private provider config:
 

@@ -78,6 +78,20 @@
       "notes": "1.1T-class strongest coding profile in the current roster. P20-LS-A low-context alias mode failed on this model; reuse as the primary code model for grounded context-injection roles."
     },
     {
+      "profile_id": "qwen3_6_27b_code_balanced",
+      "model_id": "[mk]Qwen3.6-27B",
+      "family": "code_balanced",
+      "enabled_by_default": true,
+      "provider": "OPENLOCUS_LLM_PROVIDER",
+      "roles_planned": ["rerank", "filter", "span_narrow", "abstain"],
+      "effective_context_bucket": "medium_long",
+      "advertised_context_tokens": 128000,
+      "approx_decode_tokens_per_second": 180,
+      "cost_class": "medium",
+      "latency_class": "balanced",
+      "notes": "New mid-size Qwen code/reasoning profile added for Breakthrough Sprint cross-model breadth. Use for live rich-candidate span_narrow/filter/rerank comparisons against Kimi, GLM, and DeepSeek."
+    },
+    {
       "profile_id": "deepseek_v4_pro_long_context",
       "model_id": "[mk]DeepSeek-V4-Pro",
       "family": "long_context",
@@ -92,8 +106,8 @@
       "notes": "1.8T-class strongest text/long-context profile. Use for Pack5/Pack6, long-layout tests, hard distractor contrast, and leave-one-family-out validation."
     },
     {
-      "profile_id": "glm_5_1_reasoning_code",
-      "model_id": "[mk]GLM-5.1",
+      "profile_id": "glm_5_2_reasoning_code",
+      "model_id": "[mk]GLM-5.2",
       "family": "reasoning_code_strong",
       "enabled_by_default": true,
       "provider": "OPENLOCUS_LLM_PROVIDER",
@@ -103,7 +117,7 @@
       "approx_decode_tokens_per_second": 130,
       "cost_class": "high",
       "latency_class": "balanced_slow",
-      "notes": "700B-class strong coding/reasoning profile. Use as the strong review/ablation model and as a contrast against Kimi code and DeepSeek long-context behavior."
+      "notes": "Updated GLM reasoning/code profile for the active roster. Use as the strong review/ablation model and as a contrast against Kimi code, Qwen, and DeepSeek long-context behavior."
     }
   ],
   "embedding_profiles": [

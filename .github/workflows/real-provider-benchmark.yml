@@ -221,6 +221,13 @@ jobs:
               "Qwen/Qwen3-Embedding-0.6B": {"dimensions": 1024, "send_dimensions": "1"},
               "BAAI/bge-m3": {"dimensions": 1024, "send_dimensions": "0"},
           }
+          allowed_llm_models = {
+              "[mk]DeepSeek-V4-Flash",
+              "[mk]DeepSeek-V4-Pro",
+              "[mk]Kimi-K2.7-Code",
+              "[mk]Qwen3.6-27B",
+              "[mk]GLM-5.2",
+          }
           allowed_llm_output_modes = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
           allowed_pack_layouts = {"topk_plain_v0", "topk_scores_provenance_v0", "contrastive_competitor_v0", "hard_distractor_contrast_v0"}
           allowed_task_sample_modes = {"prefix", "round_robin_public_buckets"}
@@ -309,8 +316,12 @@ jobs:
                       raise SystemExit("missing OPENLOCUS_LLM_MODEL variable")
                   if not re.fullmatch(r"[A-Za-z0-9_./:@+\-\[\] ]{1,160}", llm_model):
                       raise SystemExit("llm_model contains unsupported characters")
+                  if llm_model not in allowed_llm_models:
+                      raise SystemExit(f"unsupported llm model: {llm_model}")
               else:
                   llm_model = getenv("INPUT_LLM_MODEL").strip() or "unused"
+                  if llm_model != "unused" and llm_model not in allowed_llm_models:
+                      raise SystemExit(f"unsupported llm model: {llm_model}")
           else:
               embedding_provider = "local_token_hash"
               llm_provider = "offline_deterministic"
