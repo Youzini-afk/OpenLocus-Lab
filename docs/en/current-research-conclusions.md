@@ -75,6 +75,10 @@ B2 extends the P21 live rich-candidate harness with `--pack-layout` and compares
 
 B1C reran B1's `topk_plain_v0` rich-candidate matrix across the updated active LLM roster. Kimi-K2.7-Code tool_call remains the reference configuration: 24/24 schema-valid calls, zero fallback, 9 added gold, 5 added false, mean SpanF0.5 0.2825, and mean PFP 0.0625. GLM-5.2 is viable under `json_schema_strict` (23/24 schema-valid, 7 added gold, 7 added false, mean SpanF0.5 0.2192) but tool_call remains noisy. Qwen3.6-27B broadens 27B dense model coverage, but both output modes hit rate-limit/fallback noise; treat the current Qwen run as plumbing/rate-limit evidence, not quality evidence. See the [B1C detailed report](b1c-cross-model-rich-candidate-rerun.md).
 
+## B3 Request-More-Context Quality Experiment
+
+B3 compared P25 bucket routing against fixed request-more-context treatments using two live P21 pack layouts in each job: `topk_plain_v0` for span narrowing and `hard_distractor_contrast_v0` for filter routing. The first fixed RMC policies did not beat P25. P25 reached 8 added gold / 7 added false, mean SpanF0.5 0.0890, and mean PFP 0.0417. Both LLM-routed RMC variants reached 7 added gold / 8 added false, mean SpanF0.5 0.0820, and mean PFP 0.0833. The local conservative route avoided PFP but collapsed recall. B3 therefore points to interpretable policy search or narrower bucket-specific routing repair rather than fixed global RMC rules. See the [B3 detailed report](b3-rmc-quality-experiment.md).
+
 ---
 
 ## 0. Executive Research Thesis

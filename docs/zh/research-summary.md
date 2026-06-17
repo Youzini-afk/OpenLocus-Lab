@@ -222,6 +222,25 @@ adds 27B dense model coverage, but both output modes hit rate-limit/fallback
 noise, so this run is plumbing/rate-limit evidence rather than quality evidence.
 See [`b1c-cross-model-rich-candidate-rerun.md`](b1c-cross-model-rich-candidate-rerun.md).
 
+Breakthrough Sprint B3 request-more-context quality experiment:
+
+```text
+matrix:
+  4 repos x 6 tasks
+  model: [mk]Kimi-K2.7-Code
+  output: tool_call
+  treatments: P25, RMC-local, RMC-LLM, RMC-hybrid
+```
+
+B3 was a high-value negative result. Fixed RMC routing did not beat P25. P25
+over the plain pack reached 8 added gold / 7 added false, mean SpanF0.5 0.0890,
+and mean PFP 0.0417. Both `rmc_llm_pack_routed_v0` and `rmc_hybrid_v0` reached 7
+added gold / 8 added false, mean SpanF0.5 0.0820, and mean PFP 0.0833.
+`rmc_local_conservative_v0` avoided PFP but collapsed recall (4 gold / 18 false,
+mean SpanF0.5 0.0226). The algorithmic conclusion is that RMC needs searched or
+bucket-specific routing; fixed rules are too crude. See
+[`b3-rmc-quality-experiment.md`](b3-rmc-quality-experiment.md).
+
 ---
 
 ## Current status update — 2026-06-13
