@@ -204,6 +204,24 @@ route contrastive/hard-distractor packs selectively to filter/no-gold/hard-
 distractor buckets, not to use them as a universal span-narrow pack. See
 [`b2-contrastive-pack-quality-experiment.md`](b2-contrastive-pack-quality-experiment.md).
 
+Breakthrough Sprint B1C cross-model rerun:
+
+```text
+matrix:
+  4 repos x 6 tasks x topk_plain_v0
+  Kimi-K2.7-Code tool_call
+  Qwen3.6-27B tool_call + json_schema_strict
+  GLM-5.2 tool_call + json_schema_strict
+```
+
+Kimi tool_call remains the primary reference: 24/24 schema-valid calls, zero
+fallbacks, 9 added gold, 5 added false, mean SpanF0.5 0.2825, mean PFP 0.0625.
+GLM-5.2 is viable under `json_schema_strict` (23/24 schema-valid, 7 added gold,
+7 added false, mean SpanF0.5 0.2192) but tool_call remains noisy. Qwen3.6-27B
+adds 27B dense model coverage, but both output modes hit rate-limit/fallback
+noise, so this run is plumbing/rate-limit evidence rather than quality evidence.
+See [`b1c-cross-model-rich-candidate-rerun.md`](b1c-cross-model-rich-candidate-rerun.md).
+
 ---
 
 ## Current status update — 2026-06-13

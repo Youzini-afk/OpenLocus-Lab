@@ -71,6 +71,10 @@ B1 is the first Breakthrough Sprint live quality experiment after the pre-spend 
 
 B2 extends the P21 live rich-candidate harness with `--pack-layout` and compares four live pack structures over the same four-repo, six-task matrix: `topk_plain_v0`, `topk_scores_provenance_v0`, `contrastive_competitor_v0`, and `hard_distractor_contrast_v0`. All 16 tool-call runs succeeded. The main result is nuanced: contrastive structure is not automatically better. For `llm_span_narrow`, `topk_plain_v0` kept the best PFP (`0.0625`) with 9 added gold and 6 added false spans. `hard_distractor_contrast_v0` reduced false spans from 6 to 5 but killed two gold spans and doubled mean PFP to `0.1250`. `topk_scores_provenance_v0` had the highest mean SpanF0.5 (`0.2829`) but increased false spans and latency. Therefore hard-distractor contrast should be routed selectively to filter/no-gold/hard-distractor cases, not used as a universal span-narrow pack. See the [B2 detailed report](b2-contrastive-pack-quality-experiment.md).
 
+## B1C Cross-Model Rich Candidate Rerun
+
+B1C reran B1's `topk_plain_v0` rich-candidate matrix across the updated active LLM roster. Kimi-K2.7-Code tool_call remains the reference configuration: 24/24 schema-valid calls, zero fallback, 9 added gold, 5 added false, mean SpanF0.5 0.2825, and mean PFP 0.0625. GLM-5.2 is viable under `json_schema_strict` (23/24 schema-valid, 7 added gold, 7 added false, mean SpanF0.5 0.2192) but tool_call remains noisy. Qwen3.6-27B broadens 27B dense model coverage, but both output modes hit rate-limit/fallback noise; treat the current Qwen run as plumbing/rate-limit evidence, not quality evidence. See the [B1C detailed report](b1c-cross-model-rich-candidate-rerun.md).
+
 ---
 
 ## 0. Executive Research Thesis

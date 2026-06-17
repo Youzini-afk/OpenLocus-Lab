@@ -50,6 +50,10 @@ B1 是 pre-spend gates 之后的第一个 Breakthrough Sprint 真实质量实验
 
 B2 在 P21 live rich-candidate harness 中加入 `--pack-layout`，并在同一个四 repo、每 repo 6 task 的矩阵上比较四种 live pack 结构：`topk_plain_v0`、`topk_scores_provenance_v0`、`contrastive_competitor_v0`、`hard_distractor_contrast_v0`。16 个 tool-call runs 全部成功。主要结论是：contrastive structure 并不是自动更好。对 `llm_span_narrow` 来说，`topk_plain_v0` 保持了最低 PFP（`0.0625`），同时有 9 个 added gold 和 6 个 added false spans。`hard_distractor_contrast_v0` 把 false spans 从 6 降到 5，但杀掉两个 gold spans，并把 mean PFP 翻倍到 `0.1250`。`topk_scores_provenance_v0` 的 mean SpanF0.5 最高（`0.2829`），但 false spans 和 latency 都更高。因此 hard-distractor contrast 应该只选择性路由到 filter/no-gold/hard-distractor cases，而不是作为通用 span-narrow pack。详见 [B2 详细报告](b2-contrastive-pack-quality-experiment.md)。
 
+## B1C Cross-Model Rich Candidate Rerun
+
+B1C 在更新后的 active LLM roster 上重跑 B1 的 `topk_plain_v0` rich-candidate 矩阵。Kimi-K2.7-Code tool_call 仍是 reference 配置：24/24 schema-valid calls、0 fallback、9 added gold、5 added false、mean SpanF0.5 0.2825、mean PFP 0.0625。GLM-5.2 在 `json_schema_strict` 下可用（23/24 schema-valid、7 added gold、7 added false、mean SpanF0.5 0.2192），但 tool_call 仍然 noisy。Qwen3.6-27B 扩展了 27B dense 小模型覆盖，但两种输出模式都有明显 rate-limit/fallback 噪声；当前 Qwen 结果应视为 plumbing/rate-limit evidence，而不是质量证据。详见 [B1C 详细报告](b1c-cross-model-rich-candidate-rerun.md)。
+
 ---
 
 ## 0. 核心研究判断
