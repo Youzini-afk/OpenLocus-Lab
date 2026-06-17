@@ -108,6 +108,38 @@ P61 reason: all_required_preconditions_present
 P51-B redaction policy status: required_defined_satisfied
 ```
 
+Breakthrough Sprint B1 live LLM rich-candidate run:
+
+```text
+matrix:
+  repos: py_flask, js_express, go_gin, rust_ripgrep
+  tasks: 6 per repo, 24 total per output mode
+  model: [mk]Kimi-K2.7-Code
+  stage: p21_llm_rich
+
+tool_call runs:
+  py_flask      27674929320 green
+  js_express    27674930653 green
+  go_gin        27674932153 green
+  rust_ripgrep  27674933629 green
+
+json_schema_strict runs:
+  py_flask      27675200878 green
+  js_express    27675202356 green
+  go_gin        27675203807 green
+  rust_ripgrep  27675205460 green
+```
+
+The strongest B1 result is `llm_span_narrow` in tool-call mode: over 24 tasks it
+increased added gold from 8 to 9, reduced added false spans from 43 to 5,
+improved mean SpanF0.5 from 0.1099 to 0.2849, and reduced mean primary false
+positive rate from 0.1250 to 0.0625. The same model under `json_schema_strict`
+was schema-stable but slower and left more false spans (`8` vs `5` for
+`llm_span_narrow`). This is the first post-gate live quality result showing that
+rich candidate LLM span narrowing can convert high-noise candidate pools into
+substantially lower-false-cost spans. It is not Evidence, not promotion, and not
+a default change. See [`b1-live-llm-rich-candidate-run.md`](b1-live-llm-rich-candidate-run.md).
+
 The first matrix proved that P62 -> P57 -> P61 could move beyond the single-slice
 `insufficient_matrix` condition and exposed a concrete P59 hard-distractor
 blocker. P59B repaired that blocker with a gold-free metadata hard-distractor
@@ -132,11 +164,11 @@ Current detailed reports added in this phase:
 - [`p58-source-backed-verifier-calibration.md`](p58-source-backed-verifier-calibration.md)
 - [`p59-contrastive-pack-coverage-counterfactual.md`](p59-contrastive-pack-coverage-counterfactual.md)
 
-Recommended next step: design the smallest possible P51-C live LLM micro-run
-plan, but keep it closed until an explicit workflow_dispatch/human decision is
-made. The pre-spend gate now reports that deterministic prerequisites are met on
-the four-slice round-robin matrix, yet this remains precondition-only evidence,
-not quality evidence, provider-spend authorization, or a default/promotion claim.
+Recommended next step: proceed to B2/B3, not more precondition scaffolding. B2
+should compare contrastive pack variants with real LLM quality metrics, and B3
+should test request_more_context as a quality-improving strategy using the B1
+span-narrow/filter signal. B1 is positive but small; it justifies targeted
+expansion, not promotion/default changes.
 
 ---
 

@@ -1,6 +1,6 @@
 # OpenLocus 当前研究结论
 
-日期：2026-06-16
+日期：2026-06-17
 
 范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试、P20-LS/P20-LS-A 低上下文 LLM query-alias 结果，以及 P21-G 跨模型上下文注入研究转向。
 
@@ -41,6 +41,10 @@ P63 是一个确定性的、离线、无 provider、无线上 LLM、仅聚合的
 第一次真实 cross-run dry-run 使用了四个成功的 `ci_smoke` 运行，并设置 `max_tasks=6` 与 `round_robin_public_buckets`（`py_flask`、`js_express`、`go_gin`、`rust_ripgrep`）。P63 接受了 4/4 个清理后的 slice 目录，P62 报告 4 个 distinct eligible slices，P57 在 24 个聚合任务上达到 `diagnostic_matrix_complete`（`positive=9`、`no_gold=15`）。P61 最初以 `blocked_missing_actionability` 阻断，因为 P59 报告 `blocked_missing_hard_distractor`。
 
 随后 P59B 用 gold-free 的 `metadata_hard_distractor_proxy_v1` 修复 hard-distractor/actionability 前置条件，并加入更严格 workflow gate；它没有放宽 P61，也没有用 labels 构造 pack。P51-B 随后加入 redaction-policy precondition，让 P61 能在不构造 prompt/payload 的情况下区分 `required_defined_satisfied` 与缺失 redaction policy。第二轮四 slice round-robin dry-run（`py_flask` 27643271948、`js_express` 27643273360、`go_gin` 27643274763、`rust_ripgrep` 27643276402）达到 `P61 status=micro_run_preconditions_met`，reason 为 `all_required_preconditions_present`。这仍然只是前置条件信号：它不授权 live LLM 支出、不改变默认策略、不 promotion，也不改变 EvidenceCore。真正的 P51-C live micro-run 仍需要单独显式 workflow_dispatch 或人工决策。
+
+## B1 Live LLM Rich Candidate Run
+
+B1 是 pre-spend gates 之后的第一个 Breakthrough Sprint 真实质量实验。它使用现有 P21 rich-candidate harness 与 P25 scorer，在四个 public repos（`py_flask`、`js_express`、`go_gin`、`rust_ripgrep`）上每个 repo 跑 6 个 round-robin public-bucket tasks。`[mk]Kimi-K2.7-Code` 分别以 `tool_call` 与 `json_schema_strict` 两种模式运行。8 个 runs 全部成功并通过 privacy gates。最强结果是 `tool_call` 模式下的 `llm_span_narrow`：24 个 tasks 上，added gold 从 8 增到 9，added false spans 从 43 降到 5，mean SpanF0.5 从 0.1099 提升到 0.2849，mean primary false-positive rate 从 0.1250 降到 0.0625。`json_schema_strict` 也保持 schema-stable，但更慢且留下更多 false spans。B1 显示 rich candidate span narrowing 有真实质量信号，但它不是 Evidence、不是 promotion，也不是默认策略变更。详见 [B1 详细报告](b1-live-llm-rich-candidate-run.md)。
 
 ---
 

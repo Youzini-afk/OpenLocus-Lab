@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions
 
-Date: 2026-06-16
+Date: 2026-06-17
 
 Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, P20-LS/P20-LS-A low-context LLM query-alias results, and the P21-G cross-model context-injection pivot.
 
@@ -62,6 +62,10 @@ P63 is a deterministic, offline, no-provider, no-live-LLM, aggregate-only cross-
 The first real cross-run dry-run used four successful `ci_smoke` runs with `max_tasks=6` and `round_robin_public_buckets` (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`). P63 accepted all four sanitized slice directories, P62 reported four distinct eligible slices, and P57 reached `diagnostic_matrix_complete` over 24 aggregate tasks (`positive=9`, `no_gold=15`). P61 initially blocked with `blocked_missing_actionability` because P59 reported `blocked_missing_hard_distractor`.
 
 P59B then repaired the hard-distractor/actionability precondition using a gold-free `metadata_hard_distractor_proxy_v1` and stricter workflow gates; it did not relax P61 and did not use labels to construct packs. P51-B then added a redaction-policy precondition so P61 can distinguish `required_defined_satisfied` from missing redaction policy without constructing prompts or payloads. A second four-slice round-robin dry-run (`py_flask` 27643271948, `js_express` 27643273360, `go_gin` 27643274763, `rust_ripgrep` 27643276402) reached `P61 status=micro_run_preconditions_met` with reason `all_required_preconditions_present`. This is still only a precondition signal: it does not authorize live LLM spend, does not change defaults, does not promote any policy, and does not alter EvidenceCore. A true P51-C live micro-run remains a separate explicit workflow_dispatch or human decision.
+
+## B1 Live LLM Rich Candidate Run
+
+B1 is the first Breakthrough Sprint live quality experiment after the pre-spend gates. It used the existing P21 rich-candidate harness and P25 scorer on four public repos (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`) with six round-robin public-bucket tasks per repo. `[mk]Kimi-K2.7-Code` was run in both `tool_call` and `json_schema_strict` modes. All eight runs succeeded and passed privacy gates. The strongest result was `llm_span_narrow` in `tool_call` mode: across 24 tasks, added gold rose from 8 to 9, added false spans fell from 43 to 5, mean SpanF0.5 improved from 0.1099 to 0.2849, and mean primary false-positive rate fell from 0.1250 to 0.0625. `json_schema_strict` remained schema-stable but was slower and left more false spans. B1 shows real quality signal for rich candidate span narrowing, but it is not Evidence, not promotion, and not a default change. See the [B1 detailed report](b1-live-llm-rich-candidate-run.md).
 
 ---
 

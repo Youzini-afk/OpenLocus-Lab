@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date: 2026-06-16
+Date: 2026-06-17
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -25,6 +25,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 ## Report mirror index / 报告镜像索引
 
 - `AGENTS.md`: [en](en/AGENTS.md) · [zh](zh/AGENTS.md)
+- `b1-live-llm-rich-candidate-run.md`: [en](en/b1-live-llm-rich-candidate-run.md) · [zh](zh/b1-live-llm-rich-candidate-run.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
