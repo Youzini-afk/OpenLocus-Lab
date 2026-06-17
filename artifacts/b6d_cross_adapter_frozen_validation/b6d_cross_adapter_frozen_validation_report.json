@@ -1,0 +1,267 @@
+{
+  "aggregate_only_public_artifact": true,
+  "call_summary_aggregate": {
+    "fallback_used_count": 0,
+    "infra_failure_count": 0,
+    "schema_error_count": 0,
+    "schema_valid_calls": 96,
+    "successful_calls": 96,
+    "summaries_seen": 8,
+    "total_calls": 96
+  },
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "cross_adapter_smoke_only",
+  "comparability": {
+    "cross_adapter_smoke": true,
+    "fresh_aggregate_evaluation": false,
+    "hard_pack_layout": "hard_distractor_contrast_v0",
+    "model": "[mk]GLM-5.2",
+    "model_adapter": "glm_5_2_json_schema_strict",
+    "output_mode": "json_schema_strict",
+    "plain_pack_layout": "topk_plain_v0",
+    "reference_adapter_for_frozen_policies": "b6c_kimi_k2_7_code_tool_call",
+    "same_model_observed": true,
+    "same_model_required": true,
+    "same_output_mode_required": true,
+    "same_pack_layout_required": true,
+    "same_task_set_within_repo_observed": true,
+    "same_task_set_within_repo_required": true,
+    "search_performed": false
+  },
+  "comparable_task_count": 48,
+  "cross_adapter_smoke": true,
+  "default_should_change": false,
+  "diagnostic_policy_search": true,
+  "direction_consistency": "consistent_with_kimi",
+  "evidencecore_semantics_changed": false,
+  "frozen_manifest_integrity": {
+    "allowed_model_mode_pack": true,
+    "forbidden_public_key_scan_clean": true,
+    "freshness_contract_present": false,
+    "freshness_contract_valid": true,
+    "frozen_spec_hash_matched": true,
+    "manifest_schema_version_ok": true,
+    "model_mode_pack_uniform": true,
+    "paired_records_loadable": true,
+    "record_required_fields_present": true,
+    "task_sets_matched": true
+  },
+  "frozen_policy_count": 2,
+  "frozen_policy_names": [
+    "ambiguous_query_weak_only_default_use_p25_action",
+    "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action"
+  ],
+  "frozen_policy_validation": true,
+  "generated_at": "2026-06-17T18:22:30.335316+00:00",
+  "generated_by": "b6d_cross_adapter_frozen_validation",
+  "gold_spans_in_artifact": false,
+  "included_repo_count": 4,
+  "infra_failure_rate": 0.0,
+  "live_quality_experiment": false,
+  "llm_output_not_evidence": true,
+  "manifest_record_count": 4,
+  "model_adapter": "glm_5_2_json_schema_strict",
+  "not_evidence": true,
+  "policy_families": {
+    "ambiguous_query_weak_only_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 36,
+        "weak_only": 12
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.75,
+        "weak_only": 0.25
+      },
+      "added_false_span": 40,
+      "added_gold_span": 20,
+      "comparable_task_count": 48,
+      "effective_llm_action_count": 28,
+      "effective_llm_action_rate": 0.5833333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 12,
+      "false_per_gold": 2.0,
+      "false_reduction_vs_p25": 8,
+      "gold_kill_vs_p25": 0,
+      "mean_primary_false_positive_rate": 0.05833333333333333,
+      "mean_span_f05": 0.12083333333333333,
+      "missing_action_outcome_count": 12,
+      "net_span_value_2x": -60,
+      "no_gold_false_primary_rate": 0.1125,
+      "no_gold_task_count": 16,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 32,
+      "provider_call_estimate": 28,
+      "provider_call_estimate_not_measured": true,
+      "source": "frozen",
+      "task_count": 48
+    },
+    "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 20,
+        "weak_only": 28
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.4166666666666667,
+        "weak_only": 0.5833333333333334
+      },
+      "added_false_span": 20,
+      "added_gold_span": 20,
+      "comparable_task_count": 48,
+      "effective_llm_action_count": 12,
+      "effective_llm_action_rate": 0.25,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 28,
+      "false_per_gold": 1.0,
+      "false_reduction_vs_p25": 28,
+      "gold_kill_vs_p25": 0,
+      "mean_primary_false_positive_rate": 0.016666666666666666,
+      "mean_span_f05": 0.11666666666666668,
+      "missing_action_outcome_count": 28,
+      "net_span_value_2x": -20,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 16,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 32,
+      "provider_call_estimate": 12,
+      "provider_call_estimate_not_measured": true,
+      "source": "frozen",
+      "task_count": 48
+    },
+    "p25_bucket_routed_v0_plain": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 48,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 1.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 48,
+      "added_gold_span": 20,
+      "comparable_task_count": 48,
+      "effective_llm_action_count": 40,
+      "effective_llm_action_rate": 0.8333333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 2.4,
+      "false_reduction_vs_p25": 0,
+      "gold_kill_vs_p25": 0,
+      "mean_primary_false_positive_rate": 0.08333333333333333,
+      "mean_span_f05": 0.1225,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -76,
+      "no_gold_false_primary_rate": 0.15,
+      "no_gold_task_count": 16,
+      "policy_rules": [
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "p25_reference_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 32,
+      "provider_call_estimate": 40,
+      "provider_call_estimate_not_measured": true,
+      "source": "baseline",
+      "task_count": 48
+    }
+  },
+  "policy_search_not_admission": true,
+  "policy_search_performed": false,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "public_per_repo_rows": false,
+  "public_per_task_rows": false,
+  "quality_interpretable": true,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "remote_calls_by_policy_search": 0,
+  "repo_ids_in_artifact": false,
+  "routing_invariance": {
+    "changed_policy_count": 0,
+    "changed_policy_examples": [],
+    "score_fields_removed_or_flipped": true,
+    "selected_actions_invariant": true
+  },
+  "sample_freshness_protocol": "self_test_synthetic_sample_not_cross_adapter_validation",
+  "schema_valid_rate": 1.0,
+  "schema_version": "b6d-cross-adapter-frozen-validation-v0",
+  "self_test": true,
+  "status": "self_test_only",
+  "task_ids_in_artifact": false
+}
