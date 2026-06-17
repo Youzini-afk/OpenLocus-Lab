@@ -287,6 +287,8 @@ jobs:
           max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 3000)
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
           llm_output_mode = getenv("INPUT_LLM_OUTPUT_MODE", "json_object")
+          if stage == "b6b_combined_policy_search":
+              llm_output_mode = "tool_call"
           if llm_output_mode not in allowed_llm_output_modes:
               raise SystemExit(f"unsupported llm_output_mode: {llm_output_mode}")
           pack_layout = getenv("INPUT_PACK_LAYOUT", "topk_plain_v0")
