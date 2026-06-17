@@ -38,6 +38,7 @@ P46 reach/cost map
 -> P59 contrastive pack coverage & counterfactual study
 -> P60 RMC policy v2 v0 comparison matrix
 -> P61 pre-spend gate v0
+-> P51-C0 live LLM micro-run planner / explicit opt-in gate
 -> P62 generalization matrix aggregator v0
 -> P63 cross-run slice collector / matrix runner v0
 ```

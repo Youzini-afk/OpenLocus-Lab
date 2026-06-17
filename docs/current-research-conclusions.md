@@ -76,6 +76,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `p59-contrastive-pack-coverage-counterfactual.md`: [en](en/p59-contrastive-pack-coverage-counterfactual.md) · [zh](zh/p59-contrastive-pack-coverage-counterfactual.md)
 - `p60-rmc-policy-v2.md`: [en](en/p60-rmc-policy-v2.md) · [zh](zh/p60-rmc-policy-v2.md)
 - `p61-pre-spend-gate.md`: [en](en/p61-pre-spend-gate.md) · [zh](zh/p61-pre-spend-gate.md)
+- `p51c-live-micro-run-planner.md`: [en](en/p51c-live-micro-run-planner.md) · [zh](zh/p51c-live-micro-run-planner.md)
 - p62-generalization-matrix-aggregator.md: [en](en/p62-generalization-matrix-aggregator.md) · [zh](zh/p62-generalization-matrix-aggregator.md)
 - p63-cross-run-slice-collector.md: [en](en/p63-cross-run-slice-collector.md) · [zh](zh/p63-cross-run-slice-collector.md)
 - `r16-quality-bakeoff.md`: [en](en/r16-quality-bakeoff.md) · [zh](zh/r16-quality-bakeoff.md)
