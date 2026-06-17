@@ -64,6 +64,16 @@ on:
           - json_object
           - json_schema_strict
           - tool_call
+      pack_layout:
+        description: 'P21-G3L candidate pack layout for the LLM rich candidate step'
+        required: false
+        default: 'topk_plain_v0'
+        type: choice
+        options:
+          - topk_plain_v0
+          - topk_scores_provenance_v0
+          - contrastive_competitor_v0
+          - hard_distractor_contrast_v0
       max_tasks:
         description: 'Task/query cap for smoke runs'
         required: false
@@ -168,6 +178,7 @@ jobs:
           INPUT_EMBEDDING_MODEL: ${{ inputs.embedding_model }}
           INPUT_LLM_MODEL: ${{ inputs.llm_model }}
           INPUT_LLM_OUTPUT_MODE: ${{ inputs.llm_output_mode }}
+          INPUT_PACK_LAYOUT: ${{ inputs.pack_layout }}
           INPUT_MAX_TASKS: ${{ inputs.max_tasks }}
           INPUT_TASK_SAMPLE_MODE: ${{ inputs.task_sample_mode }}
           INPUT_MAX_RECORDS: ${{ inputs.max_records }}
@@ -211,6 +222,7 @@ jobs:
               "BAAI/bge-m3": {"dimensions": 1024, "send_dimensions": "0"},
           }
           allowed_llm_output_modes = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
+          allowed_pack_layouts = {"topk_plain_v0", "topk_scores_provenance_v0", "contrastive_competitor_v0", "hard_distractor_contrast_v0"}
           allowed_task_sample_modes = {"prefix", "round_robin_public_buckets"}
 
           def getenv(name: str, default: str = "") -> str:
@@ -267,6 +279,9 @@ jobs:
           llm_output_mode = getenv("INPUT_LLM_OUTPUT_MODE", "json_object")
           if llm_output_mode not in allowed_llm_output_modes:
               raise SystemExit(f"unsupported llm_output_mode: {llm_output_mode}")
+          pack_layout = getenv("INPUT_PACK_LAYOUT", "topk_plain_v0")
+          if pack_layout not in allowed_pack_layouts:
+              raise SystemExit(f"unsupported pack_layout: {pack_layout}")
           task_sample_mode = getenv("INPUT_TASK_SAMPLE_MODE", "prefix")
           if task_sample_mode not in allowed_task_sample_modes:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
@@ -323,6 +338,7 @@ jobs:
               "llm_provider": llm_provider,
               "llm_model": llm_model,
               "llm_output_mode": llm_output_mode,
+              "pack_layout": pack_layout,
               "task_sample_mode": task_sample_mode,
               "allow_remote": "1" if remote_enabled else "0",
           }
@@ -338,6 +354,7 @@ jobs:
                   "remote_enabled": False,
                   "planner_only": True,
                   "llm_output_mode": llm_output_mode,
+                  "pack_layout": pack_layout,
                   "views": views,
                   "max_tasks": max_tasks,
                   "max_records": max_records,
@@ -361,6 +378,7 @@ jobs:
                   "llm_provider": llm_provider,
                   "llm_model": llm_model,
                   "llm_output_mode": llm_output_mode,
+                  "pack_layout": pack_layout,
                   "views": views,
                   "max_tasks": max_tasks,
                   "max_records": max_records,
@@ -603,6 +621,7 @@ jobs:
           EMBEDDING_PROVIDER: ${{ steps.plan.outputs.embedding_provider }}
           LLM_PROVIDER: ${{ steps.plan.outputs.llm_provider }}
           LLM_OUTPUT_MODE: ${{ steps.plan.outputs.llm_output_mode }}
+          PACK_LAYOUT: ${{ steps.plan.outputs.pack_layout }}
           DATASET: ${{ steps.plan.outputs.dataset }}
           DENSE_STRATEGIES: ${{ steps.plan.outputs.views }}
           MAX_TASKS: ${{ steps.plan.outputs.max_tasks }}
@@ -622,7 +641,7 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             cmd+=(--allow-remote-embedding --allow-remote-llm)
           fi
-          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --schema-repair-retry --p25-policy-records-out "$P25_RECORDS" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
+          cmd+=(--dense-strategies "$DENSE_STRATEGIES" --task-sample-mode "$TASK_SAMPLE_MODE" --llm-output-mode "$LLM_OUTPUT_MODE" --pack-layout "$PACK_LAYOUT" --schema-repair-retry --p25-policy-records-out "$P25_RECORDS" --max-tasks "$MAX_TASKS" --max-files-per-repo "$MAX_FILES_PER_REPO" --max-records-per-repo "$MAX_RECORDS" --openlocus target/debug/openlocus --out artifacts/real_provider_ci/p21_llm_rich_candidate.json --doc docs/real-provider-ci/p21-llm-rich-candidate.md)
           "${cmd[@]}"
           python3 eval/p25_bucket_policy.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/p25_bucket_policy.json --doc docs/real-provider-ci/p25-bucket-routed-policy.md
           # P30 Admission Model V3: local aggregate-only follow-on using the same ephemeral records.
@@ -815,16 +834,20 @@ jobs:
                           raise SystemExit(f"{json_path} packed no candidates for remote LLM")
                   if data.get("raw_prompts_stored") is not False or data.get("raw_responses_stored") is not False:
                       raise SystemExit(f"{json_path} persisted raw LLM payloads")
-                  for flag in ["raw_snippets_committed", "raw_text_stored", "raw_query_stored", "private_labels_committed"]:
+                  for flag in ["raw_snippets_committed", "raw_text_stored", "raw_query_stored", "private_labels_committed", "raw_paths_in_artifact", "raw_line_ranges_in_artifact", "raw_digests_in_artifact", "decision_records_in_artifact", "candidate_meta_in_artifact"]:
                       if data.get(flag) is not False:
                           raise SystemExit(f"{json_path} does not keep {flag}=false")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must be aggregate-only public artifact")
+                  if data.get("decision_records") is not None or data.get("candidate_meta") is not None:
+                      raise SystemExit(f"{json_path} persisted per-task/per-candidate records")
+                  if data.get("decision_summary", {}).get("decision_records_persisted") is not False:
+                      raise SystemExit(f"{json_path} decision summary must not persist records")
+                  if data.get("decision_summary", {}).get("candidate_meta_persisted") is not False:
+                      raise SystemExit(f"{json_path} decision summary must not persist candidate metadata")
                   if data.get("labels_loaded_after_run") is not True or data.get("run_phase_public_only") is not True:
                       raise SystemExit(f"{json_path} violates RUN/SCORE or public-run invariant")
-                  # P21 public diagnostics may include sanitized task IDs in
-                  # aggregate decision records. Keep this legacy scan scoped to
-                  # raw/private payloads; stricter aggregate-only scans run on
-                  # P25/P30/P31 reports below.
-                  banned_keys = {"snippet", "prompt", "prompts", "response", "responses", "query", "gold", "gold_spans", "private_labels", "label_path", "p31_candidate_pools", "p31_score_gold"}
+                  banned_keys = {"snippet", "snippet_sha", "prompt", "prompts", "response", "responses", "query", "gold", "gold_spans", "private_labels", "label_path", "p31_candidate_pools", "p31_score_gold", "decision_records", "candidate_meta", "path", "start_line", "end_line", "allowed_start_line", "allowed_end_line", "content_sha", "task_id", "candidate_id"}
                   def walk(obj, prefix=""):
                       if isinstance(obj, dict):
                           for key, value in obj.items():

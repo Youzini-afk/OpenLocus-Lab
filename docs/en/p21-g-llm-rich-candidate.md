@@ -6,8 +6,10 @@ LLM sees constrained candidate snippets and may filter, abstain, or narrow spans
 
 - llm_remote_enabled: `False`
 - llm_model: `offline_deterministic`
-- requested_output_mode: `tool_call`
+- requested_output_mode: `json_object`
 - candidate_strategy: `dense_atom_signature_rrf_file_constrained`
+- pack_layout: `hard_distractor_contrast_v0`
+- pack_layout_not_evidence: `True`
 - raw_snippets_sent_to_provider: `False`
 - raw_snippets_committed: `False`
 - raw_prompts_stored: `False`
@@ -36,5 +38,31 @@ LLM sees constrained candidate snippets and may filter, abstain, or narrow spans
   "fallback_event_count": 0,
   "fallback_events": [],
   "packed_candidates_total": 1
+}
+```
+
+
+## Pack Layout Metrics
+
+```json
+{
+  "tasks_with_packed_candidates": 1,
+  "candidates_packed_total": 1,
+  "path_kind_counts": {
+    "source": 1
+  },
+  "flag_counts": {
+    "source_code": 1,
+    "test_code": 0,
+    "doc_ish": 0,
+    "generated_or_vendor": 0
+  },
+  "slot_counts": {
+    "primary": 1
+  },
+  "hard_distractor_proxy_count": 0,
+  "hard_distractor_proxy_rate": 0.0,
+  "competitor_slot_count": 0,
+  "competitor_slot_rate": 0.0
 }
 ```

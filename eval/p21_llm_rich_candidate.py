@@ -43,6 +43,13 @@ DEFAULT_CANDIDATE_STRATEGY = "dense_atom_signature_rrf_file_constrained"
 DECISIONS = {"primary", "supporting", "reject"}
 OUTPUT_MODES = {"prompt_only", "json_object", "json_schema_strict", "tool_call"}
 BUCKET_PREFIXES = ("source_category", "risk_tag", "expected_behavior", "oracle_type")
+PACK_LAYOUTS = {
+    "topk_plain_v0",
+    "topk_scores_provenance_v0",
+    "contrastive_competitor_v0",
+    "hard_distractor_contrast_v0",
+}
+DEFAULT_PACK_LAYOUT = "topk_plain_v0"
 
 
 def candidate_decision_schema() -> dict[str, Any]:
@@ -122,6 +129,182 @@ def write_json(path: Path, obj: Any) -> None:
 
 def sha_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _path_kind(path: str) -> str:
+    """Infer a coarse path-kind from a relative path string using only public metadata."""
+    p = str(path or "").lower().replace("\\", "/")
+    parts = [part for part in p.split("/") if part]
+    filename = parts[-1] if parts else ""
+    if any(part in {"node_modules", "vendor", ".git", "generated", "gen", "dist", "build"} for part in parts):
+        return "generated_or_vendor"
+    if (
+        any(part in {"test", "tests", "testing", "__tests__"} for part in parts)
+        or filename.startswith(("test_", "tests_"))
+        or any(filename.endswith(suffix) for suffix in ("_test.py", "_spec.js", ".test.ts", ".spec.ts", ".test.js", ".spec.js"))
+    ):
+        return "test"
+    if filename.endswith((".md", ".rst", ".txt", ".markdown")) or any(part in {"docs", "doc", "documentation"} for part in parts):
+        return "doc"
+    if (
+        filename.startswith(("config", "setup", "pyproject", "package", "tsconfig", "webpack", "dockerfile", "makefile", ".github"))
+        or any(part in {"config", "configs", "conf", "ci"} for part in parts)
+    ):
+        return "config"
+    return "source"
+
+
+def _path_kind_flags(path: str) -> dict[str, bool]:
+    kind = _path_kind(path)
+    return {
+        "source_code": kind in {"source", "config"},
+        "test_code": kind == "test",
+        "doc_ish": kind == "doc",
+        "generated_or_vendor": kind == "generated_or_vendor",
+    }
+
+
+def _span_overlaps(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    try:
+        return (
+            int(a.get("end_line") or 0) >= int(b.get("start_line") or 0)
+            and int(a.get("start_line") or 0) <= int(b.get("end_line") or 0)
+        )
+    except (TypeError, ValueError):
+        return False
+
+
+def _is_hard_distractor_proxy(cand: dict[str, Any], anchor: dict[str, Any], rank: int, task: dict[str, Any]) -> bool:
+    """Gold-free RUN proxy for a hard distractor using only public metadata.
+
+    Never uses labels, gold, SCORE outcomes, raw query/source text, or provider
+    outputs.  The proxy needs at least two weak contrast signals versus the
+    primary anchor to flag a candidate as a plausible distractor.
+    """
+    if rank == 1:
+        return False
+    signals = 0
+
+    # Rank/score closeness: plausible wrong alternative near the top.
+    if rank <= 3 or abs(rank - 1) <= 2:
+        signals += 1
+    c_score = cand.get("score")
+    a_score = anchor.get("score")
+    if isinstance(c_score, (int, float)) and isinstance(a_score, (int, float)) and abs(c_score - a_score) <= 0.15:
+        signals += 1
+
+    # Same-file non-overlapping or cross-file competitor shape.
+    if str(cand.get("path") or "") != str(anchor.get("path") or ""):
+        signals += 1
+    elif not _span_overlaps(cand, anchor):
+        signals += 1
+
+    # Path-kind contrast (source/test/doc/config/generated).
+    c_kind = cand.get("path_kind", "unknown")
+    a_kind = anchor.get("path_kind", "unknown")
+    if c_kind != a_kind:
+        signals += 1
+    if c_kind in {"test", "doc", "config", "generated_or_vendor"}:
+        signals += 1
+
+    # Channel/provenance disagreement.
+    c_channels = set(cand.get("channels", []))
+    a_channels = set(anchor.get("channels", []))
+    if c_channels and a_channels and not (c_channels & a_channels):
+        signals += 1
+
+    # Public task risk context (aggregate-only tags already in the task).
+    risk_tags = {str(t).lower() for t in task.get("task_risk_tags", [])}
+    if risk_tags & {"high_confidence", "config", "negative", "weak_candidates", "ambiguous"}:
+        signals += 1
+
+    return signals >= 2
+
+
+def _slot_label(
+    layout: str,
+    cand: dict[str, Any],
+    anchor: dict[str, Any],
+    rank: int,
+    task: dict[str, Any],
+) -> list[str]:
+    """Return public, gold-free slot labels for a packed candidate."""
+    if layout == "topk_plain_v0":
+        return []
+    if layout == "topk_scores_provenance_v0":
+        return ["ranked"]
+
+    is_primary = rank == 1
+    labels: list[str] = []
+    if is_primary:
+        labels.append("primary")
+        if layout in {"contrastive_competitor_v0", "hard_distractor_contrast_v0"}:
+            return labels
+
+    c_path = str(cand.get("path") or "")
+    a_path = str(anchor.get("path") or "")
+    if c_path == a_path:
+        labels.append("same_file")
+    else:
+        labels.append("cross_file")
+
+    c_kind = cand.get("path_kind", "unknown")
+    a_kind = anchor.get("path_kind", "unknown")
+    if c_kind != a_kind:
+        labels.append(f"path_kind_contrast:{c_kind}_vs_{a_kind}")
+    if c_kind == "test":
+        labels.append("test_contrast")
+    elif c_kind == "doc":
+        labels.append("doc_contrast")
+    elif c_kind == "config":
+        labels.append("config_contrast")
+
+    c_channels = set(cand.get("channels", []))
+    a_channels = set(anchor.get("channels", []))
+    if c_channels and a_channels and not (c_channels & a_channels):
+        labels.append("channel_disagree")
+
+    if layout == "hard_distractor_contrast_v0" and _is_hard_distractor_proxy(cand, anchor, rank, task):
+        labels.append("hard_distractor_proxy")
+
+    return labels
+
+
+def _format_candidate_prompt(layout: str, cand: dict[str, Any]) -> str:
+    """Format one candidate block for the provider prompt."""
+    base = (
+        f"candidate_id={cand['candidate_id']} path={cand['path']} "
+        f"lines={cand['start_line']}-{cand['end_line']}"
+    )
+    if layout == "topk_plain_v0":
+        return f"{base}\n{cand['snippet']}"
+
+    extras: list[str] = []
+    rank = cand.get("rank")
+    if rank is not None:
+        extras.append(f"rank={rank}")
+    score = cand.get("score")
+    if score is not None:
+        extras.append(f"score={score}")
+    extras.append(f"path_kind={cand.get('path_kind', 'unknown')}")
+    flags = {k for k, v in (_path_kind_flags(cand['path']) or {}).items() if v}
+    if flags:
+        extras.append(f"path_kind_flags={sorted(flags)}")
+    channels = cand.get("channels")
+    if channels:
+        extras.append(f"channels={list(channels)}")
+    source_views = cand.get("source_views")
+    if source_views:
+        extras.append(f"source_views={list(source_views)}")
+    slot_label = cand.get("slot_label")
+    if slot_label:
+        extras.append(f"slot_labels={list(slot_label)}")
+
+    if layout == "topk_scores_provenance_v0":
+        return f"{base} {' '.join(extras)}\n{cand['snippet']}"
+
+    # Contrastive and hard-distractor layouts keep slot labels together.
+    return f"{base} {' '.join(extras)}\n{cand['snippet']}"
 
 
 def safe_line_window(repo_root: Path, ev: dict[str, Any], window: int) -> tuple[str, str | None, int, int]:
@@ -205,12 +388,13 @@ def pack_candidates(
     window: int,
     allow_self_test: bool,
     require_filter_applied: bool,
+    pack_layout: str,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     repo_id = task["repo_id"]
     repo_root = repo_roots[repo_id]
     file_filter = p21e.remote_file_filter({repo_id: repo_root}, allow_self_test=allow_self_test)
     if require_filter_applied and not file_filter.get("applied"):
-        return [], [], {"skipped": {"remote_file_filter_not_applied": 1}, "remote_file_filter_applied": False, "packed_count": 0}
+        return [], [], {"skipped": {"remote_file_filter_not_applied": 1}, "remote_file_filter_applied": False, "packed_count": 0, "pack_layout": pack_layout, "pack_layout_metrics": None}
     tracked_paths = (file_filter.get("tracked_files_by_repo") or {}).get(repo_id)
     packed: list[dict[str, Any]] = []
     candidate_meta: list[dict[str, Any]] = []
@@ -251,7 +435,178 @@ def pack_candidates(
         })
         if len(packed) >= max_candidates:
             break
-    return packed, candidate_meta, {"skipped": skipped, "remote_file_filter_applied": file_filter.get("applied"), "packed_count": len(packed)}
+
+    # Apply public, gold-free layout metadata to packed candidates only.
+    # This metadata is never persisted outside the transient provider prompt.
+    anchor = packed[0] if packed else {}
+    for rank, cand in enumerate(packed, start=1):
+        cand["rank"] = rank
+        cand["path_kind"] = _path_kind(cand["path"])
+        cand["slot_label"] = _slot_label(pack_layout, cand, anchor, rank, task)
+
+    layout_metrics = _compute_pack_layout_metrics(pack_layout, packed, task)
+    return (
+        packed,
+        candidate_meta,
+        {
+            "skipped": skipped,
+            "remote_file_filter_applied": file_filter.get("applied"),
+            "packed_count": len(packed),
+            "pack_layout": pack_layout,
+            "pack_layout_metrics": layout_metrics,
+        },
+    )
+
+
+def _compute_pack_layout_metrics(layout: str, packed: list[dict[str, Any]], task: dict[str, Any]) -> dict[str, Any] | None:
+    """Aggregate, gold-free metrics about the packed candidate layout."""
+    if not packed:
+        return None
+    total = len(packed)
+    path_kind_counts: dict[str, int] = {}
+    flag_counts: dict[str, int] = {"source_code": 0, "test_code": 0, "doc_ish": 0, "generated_or_vendor": 0}
+    slot_counts: dict[str, int] = {}
+    hard_distractor_count = 0
+    competitor_slot_count = 0
+    anchor = packed[0]
+    for rank, cand in enumerate(packed, start=1):
+        kind = _path_kind(cand["path"])
+        path_kind_counts[kind] = path_kind_counts.get(kind, 0) + 1
+        for flag, present in _path_kind_flags(cand["path"]).items():
+            if present:
+                flag_counts[flag] = flag_counts.get(flag, 0) + 1
+        labels = _slot_label(layout, cand, anchor, rank, task)
+        for label in labels:
+            slot_counts[label] = slot_counts.get(label, 0) + 1
+        if "hard_distractor_proxy" in labels:
+            hard_distractor_count += 1
+        if layout in {"contrastive_competitor_v0", "hard_distractor_contrast_v0"} and rank > 1:
+            # Any non-primary slot label counts as a competitor slot.
+            non_primary = [label for label in labels if label != "primary"]
+            if non_primary:
+                competitor_slot_count += 1
+
+    return {
+        "candidates_packed": total,
+        "path_kind_counts": path_kind_counts,
+        "flag_counts": flag_counts,
+        "slot_counts": slot_counts,
+        "hard_distractor_proxy_count": hard_distractor_count,
+        "hard_distractor_proxy_rate": round(hard_distractor_count / total, 6) if total else 0.0,
+        "competitor_slot_count": competitor_slot_count,
+        "competitor_slot_rate": round(competitor_slot_count / total, 6) if total else 0.0,
+    }
+
+
+def _merge_int_counts(target: dict[str, int], source: dict[str, int]) -> None:
+    for key, value in source.items():
+        target[key] = target.get(key, 0) + value
+
+
+def aggregate_pack_layout_metrics(pack_diags: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate per-task pack layout metrics into RUN-phase public totals."""
+    per_task = [d.get("pack_layout_metrics") for d in pack_diags if isinstance(d.get("pack_layout_metrics"), dict)]
+    total_candidates = sum((m or {}).get("candidates_packed", 0) for m in per_task)
+    path_kind_counts: dict[str, int] = {}
+    flag_counts: dict[str, int] = {}
+    slot_counts: dict[str, int] = {}
+    hard_distractor_count = 0
+    competitor_slot_count = 0
+    for m in per_task:
+        if not m:
+            continue
+        _merge_int_counts(path_kind_counts, m.get("path_kind_counts") or {})
+        _merge_int_counts(flag_counts, m.get("flag_counts") or {})
+        _merge_int_counts(slot_counts, m.get("slot_counts") or {})
+        hard_distractor_count += m.get("hard_distractor_proxy_count", 0)
+        competitor_slot_count += m.get("competitor_slot_count", 0)
+    return {
+        "tasks_with_packed_candidates": len(per_task),
+        "candidates_packed_total": total_candidates,
+        "path_kind_counts": path_kind_counts,
+        "flag_counts": flag_counts,
+        "slot_counts": slot_counts,
+        "hard_distractor_proxy_count": hard_distractor_count,
+        "hard_distractor_proxy_rate": round(hard_distractor_count / total_candidates, 6) if total_candidates else 0.0,
+        "competitor_slot_count": competitor_slot_count,
+        "competitor_slot_rate": round(competitor_slot_count / total_candidates, 6) if total_candidates else 0.0,
+    }
+
+
+def aggregate_decision_records(decision_records: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate transient per-task decisions for the public report.
+
+    Full decision records contain candidate IDs, paths, ranges, and digests and
+    are allowed only in the ephemeral P25 handoff.  The uploaded P21 report must
+    remain aggregate-only.
+    """
+    decision_counts: dict[str, int] = {"primary": 0, "supporting": 0, "reject": 0}
+    answerable_count = 0
+    tasks_with_candidates = 0
+    candidate_count_total = 0
+    selected_item_count_total = 0
+    for record in decision_records:
+        candidate_count = int(record.get("candidate_count") or 0)
+        candidate_count_total += candidate_count
+        if candidate_count > 0:
+            tasks_with_candidates += 1
+        decision = record.get("decision") or {}
+        if isinstance(decision, dict) and decision.get("answerable") is True:
+            answerable_count += 1
+        items = decision.get("items") if isinstance(decision, dict) else []
+        if not isinstance(items, list):
+            continue
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            token = str(item.get("decision") or "")
+            if token in decision_counts:
+                decision_counts[token] += 1
+                selected_item_count_total += 1
+    total_tasks = len(decision_records)
+    return {
+        "task_count": total_tasks,
+        "tasks_with_candidates": tasks_with_candidates,
+        "answerable_count": answerable_count,
+        "answerable_rate": round(answerable_count / total_tasks, 6) if total_tasks else 0.0,
+        "candidate_count_total": candidate_count_total,
+        "selected_item_count_total": selected_item_count_total,
+        "decision_counts": decision_counts,
+        "decision_records_persisted": False,
+        "candidate_meta_persisted": False,
+    }
+
+
+def aggregate_fallback_events(fallback_events: list[dict[str, Any]]) -> dict[str, Any]:
+    mode_counts: dict[str, int] = {}
+    error_counts: dict[str, int] = {}
+    repair_attempted_count = 0
+    repair_success_count = 0
+    for event in fallback_events:
+        mode = str(event.get("actual_output_mode") or event.get("requested_output_mode") or "unknown")
+        mode_counts[mode] = mode_counts.get(mode, 0) + 1
+        if event.get("schema_repair_attempted"):
+            repair_attempted_count += 1
+        if event.get("schema_repair_success"):
+            repair_success_count += 1
+        for err in event.get("fallback_errors") or []:
+            if not isinstance(err, dict):
+                continue
+            key = str(p20.safe_reason_token(err.get("reason") or err.get("error_type") or err.get("provider_code") or "unknown") or "unknown")
+            error_counts[key] = error_counts.get(key, 0) + 1
+        for err in event.get("schema_repair_fallback_errors") or []:
+            if not isinstance(err, dict):
+                continue
+            key = str(p20.safe_reason_token(err.get("reason") or err.get("error_type") or err.get("provider_code") or "unknown") or "unknown")
+            error_counts[key] = error_counts.get(key, 0) + 1
+    return {
+        "fallback_event_count": len(fallback_events),
+        "mode_counts": mode_counts,
+        "error_counts": error_counts,
+        "schema_repair_attempted_count": repair_attempted_count,
+        "schema_repair_success_count": repair_success_count,
+        "per_task_fallback_events_persisted": False,
+    }
 
 
 def local_decision(task: dict[str, Any], packed: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -344,19 +699,23 @@ def post_chat_completion_structured(messages: list[dict[str, str]], temperature:
     raise last_error
 
 
-def remote_decision(task: dict[str, Any], packed: list[dict[str, Any]], output_mode: str, *, allow_fallback: bool = True) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+def remote_decision(task: dict[str, Any], packed: list[dict[str, Any]], output_mode: str, *, pack_layout: str = DEFAULT_PACK_LAYOUT, allow_fallback: bool = True) -> tuple[dict[str, Any] | None, dict[str, Any]]:
     model_id = os.environ.get("OPENLOCUS_LLM_MODEL", "unknown")
-    candidates_text = []
-    for cand in packed:
-        candidates_text.append(
-            f"candidate_id={cand['candidate_id']} path={cand['path']} lines={cand['start_line']}-{cand['end_line']} "
-            f"channels={cand.get('channels')} source_views={cand.get('source_views')}\n{cand['snippet']}"
-        )
+    candidates_text = [_format_candidate_prompt(pack_layout, cand) for cand in packed]
+    layout_note = ""
+    if pack_layout == "contrastive_competitor_v0":
+        layout_note = "\n\nCandidate slot labels (primary/same_file/cross_file/path_kind_contrast/etc.) are metadata-only hints; they are not Evidence and do not indicate correctness."
+    elif pack_layout == "hard_distractor_contrast_v0":
+        layout_note = "\n\nA hard_distractor_proxy slot label marks a plausible distractor inferred from public metadata only; it is not a label, not gold, and not Evidence."
+    elif pack_layout == "topk_scores_provenance_v0":
+        layout_note = "\n\nRank/score/channel/source_view metadata is provenance only; it does not indicate correctness."
     user_content = (
         f"repo_id={task.get('repo_id')} task_id={task.get('test_id') or task.get('task_id')}\n"
         f"query={task.get('query')!r}\n\n"
         "Candidates are source snippets from current public/opt-in code after filtering. "
-        "Choose only from candidate_id values shown. Do not invent paths or identifiers.\n\n"
+        "Choose only from candidate_id values shown. Do not invent paths or identifiers."
+        + layout_note
+        + "\n\n"
         + "\n\n---\n\n".join(candidates_text)
         + "\n\nRespond as JSON: {\"not_evidence\": true, \"candidate_not_fact\": true, "
         "\"answerable\": true|false, \"items\": [{\"candidate_id\": \"C1\", \"decision\": \"primary|supporting|reject\", "
@@ -967,13 +1326,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for task in tasks:
             tid = str(task.get("test_id") or task.get("task_id"))
             baseline_pred = cand_by_task.get(tid, {"task_id": tid, "repo_id": task["repo_id"], "evidence": []})
-            packed, candidate_meta, pack_diag = pack_candidates(task, baseline_pred, repo_roots, max_candidates=args.max_candidates, window=args.snippet_window, allow_self_test=args.self_test, require_filter_applied=bool(remote_enabled))
+            packed, candidate_meta, pack_diag = pack_candidates(task, baseline_pred, repo_roots, max_candidates=args.max_candidates, window=args.snippet_window, allow_self_test=args.self_test, require_filter_applied=bool(remote_enabled), pack_layout=args.pack_layout)
             pack_diags.append({"task_id": tid, **pack_diag})
             if not packed:
                 parsed, call_diag = local_decision(task, packed)
                 call_diag["disabled_reason"] = "no_packed_candidates"
             elif remote_enabled:
-                parsed, call_diag = remote_decision(task, packed, args.llm_output_mode)
+                parsed, call_diag = remote_decision(task, packed, args.llm_output_mode, pack_layout=args.pack_layout)
             else:
                 parsed, call_diag = local_decision(task, packed)
                 call_diag["disabled_reason"] = remote_reason
@@ -988,7 +1347,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                     + ". Re-output only valid JSON/tool arguments for the same candidates. Do not add explanation."
                 )
                 repair_mode = str(call_diag.get("actual_output_mode") or args.llm_output_mode)
-                repaired, repair_call_diag = remote_decision(repair_task, packed, repair_mode, allow_fallback=False)
+                repaired, repair_call_diag = remote_decision(repair_task, packed, repair_mode, pack_layout=args.pack_layout, allow_fallback=False)
                 repaired_decision, repaired_schema_diag = validate_decision(repaired, packed)
                 repair_diag.update({
                     "schema_repair_call_succeeded": repair_call_diag.get("call_succeeded"),
@@ -1091,7 +1450,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "raw_prompts_stored": False,
             "raw_responses_stored": False,
             "raw_snippets_committed": False,
+            "raw_paths_in_artifact": False,
+            "raw_line_ranges_in_artifact": False,
+            "raw_digests_in_artifact": False,
+            "decision_records_in_artifact": False,
+            "candidate_meta_in_artifact": False,
             "private_labels_committed": False,
+            "aggregate_only_public_artifact": True,
             "run_phase_public_only": True,
             "labels_loaded_after_run": True,
             "candidate_not_fact": True,
@@ -1099,6 +1464,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "promotion_ready": False,
             "default_should_change": False,
             "llm_direct_evidence_allowed": False,
+            "pack_layout": args.pack_layout,
+            "pack_layout_not_evidence": True,
+            "pack_layout_metrics": aggregate_pack_layout_metrics(pack_diags),
+            "decision_summary": aggregate_decision_records(decision_records),
             "strategy_results": results,
             "bucket_results": bucket_results,
             "call_summary": {
@@ -1110,10 +1479,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 "actual_output_modes": sorted({str(d.get("actual_output_mode")) for d in call_diags if d.get("actual_output_mode")}),
                 "fallback_used_count": sum(1 for d in call_diags if d.get("fallback_used")),
                 "fallback_event_count": len(fallback_events),
-                "fallback_events": fallback_events,
+                "fallback_events": aggregate_fallback_events(fallback_events),
                 "packed_candidates_total": sum(d.get("packed_count", 0) for d in pack_diags),
             },
-            "decision_records": decision_records,
         }
     finally:
         if tmp_ctx is not None:
@@ -1132,9 +1500,12 @@ def write_doc(report: dict[str, Any], path: Path) -> None:
         f"- llm_model: `{report.get('llm_model')}`",
         f"- requested_output_mode: `{report.get('requested_output_mode')}`",
         f"- candidate_strategy: `{report.get('candidate_strategy')}`",
+        f"- pack_layout: `{report.get('pack_layout')}`",
+        f"- pack_layout_not_evidence: `{report.get('pack_layout_not_evidence')}`",
         f"- raw_snippets_sent_to_provider: `{report.get('raw_snippets_sent_to_provider')}`",
         f"- raw_snippets_committed: `{report.get('raw_snippets_committed')}`",
         f"- raw_prompts_stored: `{report.get('raw_prompts_stored')}`",
+        f"- aggregate_only_public_artifact: `{report.get('aggregate_only_public_artifact')}`",
         f"- promotion_ready: `{report.get('promotion_ready')}`",
         "",
         "## Results",
@@ -1147,6 +1518,8 @@ def write_doc(report: dict[str, Any], path: Path) -> None:
         delta = payload.get("delta_vs_candidate_baseline", {})
         lines.append(f"| {strategy} | {metrics.get('FileRecall@5')} | {metrics.get('SpanF0.5')} | {metrics.get('primary_false_positive_rate')} | {metrics.get('added_gold_span')} | {metrics.get('added_false_span')} | {delta.get('SpanF0.5')} |")
     lines += ["", "## Call Summary", "", f"```json\n{json.dumps(report.get('call_summary', {}), indent=2)}\n```", ""]
+    lines += ["", "## Decision Summary", "", f"```json\n{json.dumps(report.get('decision_summary', {}), indent=2)}\n```", ""]
+    lines += ["", "## Pack Layout Metrics", "", f"```json\n{json.dumps(report.get('pack_layout_metrics', {}), indent=2)}\n```", ""]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -1160,6 +1533,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--embedding-provider", default="local_token_hash", choices=["local_token_hash", "openai-compatible"])
     parser.add_argument("--llm-provider", default="offline_deterministic", choices=["offline_deterministic", "openai-compatible"])
     parser.add_argument("--llm-output-mode", default="json_object", choices=sorted(OUTPUT_MODES))
+    parser.add_argument("--pack-layout", default=DEFAULT_PACK_LAYOUT, choices=sorted(PACK_LAYOUTS))
     parser.add_argument("--schema-repair-retry", action="store_true")
     parser.add_argument("--p25-policy-records-out", type=Path, help="Ephemeral SCORE-phase records for P25; do not commit/upload.")
     parser.add_argument("--allow-remote-embedding", action="store_true")
@@ -1183,6 +1557,14 @@ def main(argv: list[str] | None = None) -> None:
     report = run(args)
     write_json(args.out, report)
     write_doc(report, args.doc)
+    if args.self_test:
+        assert report.get("pack_layout") == args.pack_layout
+        assert isinstance(report.get("pack_layout_metrics"), dict)
+        assert report["pack_layout_metrics"].get("candidates_packed_total") is not None
+        assert report.get("decision_records") is None
+        assert report.get("decision_records_in_artifact") is False
+        assert report.get("candidate_meta_in_artifact") is False
+        print("self-test pack layout assertions ok")
     print(f"Wrote {args.out}")
     print(f"Wrote {args.doc}")
 
