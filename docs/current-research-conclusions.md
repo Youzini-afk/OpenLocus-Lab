@@ -29,6 +29,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b1c-cross-model-rich-candidate-rerun.md`: [en](en/b1c-cross-model-rich-candidate-rerun.md) · [zh](zh/b1c-cross-model-rich-candidate-rerun.md)
 - `b2-contrastive-pack-quality-experiment.md`: [en](en/b2-contrastive-pack-quality-experiment.md) · [zh](zh/b2-contrastive-pack-quality-experiment.md)
 - `b3-rmc-quality-experiment.md`: [en](en/b3-rmc-quality-experiment.md) · [zh](zh/b3-rmc-quality-experiment.md)
+- `b4-b9-model-robust-evidence-conversion.md`: [en](en/b4-b9-model-robust-evidence-conversion.md) · [zh](zh/b4-b9-model-robust-evidence-conversion.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)

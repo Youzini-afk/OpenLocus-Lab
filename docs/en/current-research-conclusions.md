@@ -79,6 +79,10 @@ B1C reran B1's `topk_plain_v0` rich-candidate matrix across the updated active L
 
 B3 compared P25 bucket routing against fixed request-more-context treatments using two live P21 pack layouts in each job: `topk_plain_v0` for span narrowing and `hard_distractor_contrast_v0` for filter routing. The first fixed RMC policies did not beat P25. P25 reached 8 added gold / 7 added false, mean SpanF0.5 0.0890, and mean PFP 0.0417. Both LLM-routed RMC variants reached 7 added gold / 8 added false, mean SpanF0.5 0.0820, and mean PFP 0.0833. The local conservative route avoided PFP but collapsed recall. B3 therefore points to interpretable policy search or narrower bucket-specific routing repair rather than fixed global RMC rules. See the [B3 detailed report](b3-rmc-quality-experiment.md).
 
+## B4/B9 Model-Robust Evidence Conversion
+
+B4/B9 separates `algorithm_spec` (model-independent strategy definitions) from `model_adapter` (model + output-mode health) and re-encodes the live quality cells from B1, B1C, B2 and B3. It is aggregate-only, not a gate, not a precondition-only stage, and does not change `EvidenceCore`. `span_narrow_topk_plain_v0` shows a `low_n_directional_signal` on the two matched Kimi adapter deltas; GLM-5.2 json_schema_strict is secondary observed cross-family validation only because no matched baseline delta is available. Fixed RMC variants (`rmc_hybrid_v0`, `rmc_llm_pack_routed_v0`, `rmc_local_conservative_v0`) are `not_supported`. Qwen adapters are degraded by rate-limit noise and excluded from the quality aggregate. See the [B4/B9 detailed report](b4-b9-model-robust-evidence-conversion.md).
+
 ---
 
 ## 0. Executive Research Thesis

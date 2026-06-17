@@ -232,6 +232,25 @@ mean SpanF0.5 0.0226). The algorithmic conclusion is that RMC needs searched or
 bucket-specific routing; fixed rules are too crude. See
 [`b3-rmc-quality-experiment.md`](b3-rmc-quality-experiment.md).
 
+B4/B9 model-robust evidence conversion digest:
+
+```text
+inputs:
+  B1, B1C, B2, B3 live aggregate quality cells
+outputs:
+  algorithm_spec vs model_adapter separation
+  matched-baseline treatment deltas where available
+  low-n claim levels, not universal algorithm claims
+```
+
+B4/B9 deliberately prevents the Kimi result from becoming the OpenLocus
+algorithm. `span_narrow_topk_plain_v0` is only a `low_n_directional_signal` on
+the two matched Kimi adapter deltas; GLM-5.2 json_schema_strict is secondary
+observed cross-family validation because no matched baseline delta is available.
+Qwen adapters are excluded from quality aggregation due to rate-limit/fallback
+noise. Fixed RMC variants remain `not_supported`. See
+[`b4-b9-model-robust-evidence-conversion.md`](b4-b9-model-robust-evidence-conversion.md).
+
 ---
 
 ## Current status update — 2026-06-13

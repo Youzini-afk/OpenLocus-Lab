@@ -1,0 +1,1547 @@
+{
+  "aggregate_cells": [
+    {
+      "added_false_span": 43,
+      "added_gold_span": 8,
+      "algorithm_spec_id": "candidate_baseline_topk_plain_v0",
+      "experiment_id": "b1",
+      "false_per_gold": 5.375,
+      "input_chars": 34024,
+      "latency_p50_ms": 2310,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.1099,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "baseline",
+      "run_ids": [
+        27674929320,
+        27674930653,
+        27674932153,
+        27674933629
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 5,
+      "added_gold_span": 9,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b1",
+      "false_per_gold": 0.556,
+      "input_chars": 34024,
+      "latency_p50_ms": 2310,
+      "mean_pfp": 0.0625,
+      "mean_span_f05": 0.2849,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27674929320,
+        27674930653,
+        27674932153,
+        27674933629
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 7,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b1",
+      "false_per_gold": 1.0,
+      "input_chars": 34024,
+      "latency_p50_ms": 2310,
+      "mean_pfp": 0.0625,
+      "mean_span_f05": 0.1884,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27674929320,
+        27674930653,
+        27674932153,
+        27674933629
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 6,
+      "added_gold_span": 8,
+      "algorithm_spec_id": "p25_bucket_routed_v0_plain",
+      "experiment_id": "b1",
+      "false_per_gold": 0.75,
+      "input_chars": 34024,
+      "latency_p50_ms": 2310,
+      "mean_pfp": 0.0417,
+      "mean_span_f05": 0.1139,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "policy",
+      "run_ids": [
+        27674929320,
+        27674930653,
+        27674932153,
+        27674933629
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 44,
+      "added_gold_span": 8,
+      "algorithm_spec_id": "candidate_baseline_topk_plain_v0",
+      "experiment_id": "b1",
+      "false_per_gold": 5.5,
+      "input_chars": 34714,
+      "latency_p50_ms": 3529,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.1099,
+      "model_adapter_id": "kimi_k2_7_code_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "baseline",
+      "run_ids": [
+        27675200878,
+        27675202356,
+        27675203807,
+        27675205460
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 8,
+      "added_gold_span": 9,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b1",
+      "false_per_gold": 0.889,
+      "input_chars": 34714,
+      "latency_p50_ms": 3529,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.2829,
+      "model_adapter_id": "kimi_k2_7_code_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27675200878,
+        27675202356,
+        27675203807,
+        27675205460
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 10,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b1",
+      "false_per_gold": 1.429,
+      "input_chars": 34714,
+      "latency_p50_ms": 3529,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.1884,
+      "model_adapter_id": "kimi_k2_7_code_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27675200878,
+        27675202356,
+        27675203807,
+        27675205460
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 9,
+      "added_gold_span": 8,
+      "algorithm_spec_id": "p25_bucket_routed_v0_plain",
+      "experiment_id": "b1",
+      "false_per_gold": 1.125,
+      "input_chars": 34714,
+      "latency_p50_ms": 3529,
+      "mean_pfp": 0.0833,
+      "mean_span_f05": 0.0914,
+      "model_adapter_id": "kimi_k2_7_code_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "policy",
+      "run_ids": [
+        27675200878,
+        27675202356,
+        27675203807,
+        27675205460
+      ],
+      "source_report": "docs/en/b1-live-llm-rich-candidate-run.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 1,
+      "added_gold_span": 2,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": 0.5,
+      "input_chars": 31011,
+      "latency_p50_ms": 3006,
+      "mean_pfp": 0.0,
+      "mean_span_f05": 0.0482,
+      "model_adapter_id": "qwen3_6_27b_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27679321065,
+        27679322323,
+        27679323715,
+        27679325182
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 16
+    },
+    {
+      "added_false_span": 1,
+      "added_gold_span": 2,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": 0.5,
+      "input_chars": 31011,
+      "latency_p50_ms": 3006,
+      "mean_pfp": 0.0,
+      "mean_span_f05": null,
+      "model_adapter_id": "qwen3_6_27b_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27679321065,
+        27679322323,
+        27679323715,
+        27679325182
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 16
+    },
+    {
+      "added_false_span": 0,
+      "added_gold_span": 0,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": null,
+      "input_chars": 30893,
+      "latency_p50_ms": 43478,
+      "mean_pfp": 0.0,
+      "mean_span_f05": 0.0,
+      "model_adapter_id": "qwen3_6_27b_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27679882877,
+        27679884241,
+        27679886001,
+        27679887698
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 15
+    },
+    {
+      "added_false_span": 0,
+      "added_gold_span": 0,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": null,
+      "input_chars": 30893,
+      "latency_p50_ms": 43478,
+      "mean_pfp": 0.0,
+      "mean_span_f05": null,
+      "model_adapter_id": "qwen3_6_27b_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27679882877,
+        27679884241,
+        27679886001,
+        27679887698
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 15
+    },
+    {
+      "added_false_span": 0,
+      "added_gold_span": 0,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": null,
+      "input_chars": 31580,
+      "latency_p50_ms": 2166,
+      "mean_pfp": 0.0,
+      "mean_span_f05": 0.0,
+      "model_adapter_id": "glm_5_2_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27679326330,
+        27679327829,
+        27679329334,
+        27679330585
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 13
+    },
+    {
+      "added_false_span": 0,
+      "added_gold_span": 0,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": null,
+      "input_chars": 31580,
+      "latency_p50_ms": 2166,
+      "mean_pfp": 0.0,
+      "mean_span_f05": null,
+      "model_adapter_id": "glm_5_2_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27679326330,
+        27679327829,
+        27679329334,
+        27679330585
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 13
+    },
+    {
+      "added_false_span": 7,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": 1.0,
+      "input_chars": 30922,
+      "latency_p50_ms": 2575,
+      "mean_pfp": 0.0625,
+      "mean_span_f05": 0.2192,
+      "model_adapter_id": "glm_5_2_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27679889143,
+        27679890671,
+        27679892076,
+        27679893465
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 9,
+      "added_gold_span": 5,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b1c",
+      "false_per_gold": 1.8,
+      "input_chars": 30922,
+      "latency_p50_ms": 2575,
+      "mean_pfp": 0.0625,
+      "mean_span_f05": null,
+      "model_adapter_id": "glm_5_2_json_schema_strict",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27679889143,
+        27679890671,
+        27679892076,
+        27679893465
+      ],
+      "source_report": "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 6,
+      "added_gold_span": 9,
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 0.667,
+      "input_chars": 31484,
+      "latency_p50_ms": 3642,
+      "mean_pfp": 0.0625,
+      "mean_span_f05": 0.2691,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27676829411,
+        27676830935,
+        27676832373,
+        27676833797
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 8,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 1.143,
+      "input_chars": 31484,
+      "latency_p50_ms": 3642,
+      "mean_pfp": 0.0625,
+      "mean_span_f05": 0.1751,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter",
+      "run_ids": [
+        27676829411,
+        27676830935,
+        27676832373,
+        27676833797
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 7,
+      "added_gold_span": 9,
+      "algorithm_spec_id": "span_narrow_topk_scores_provenance_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 0.778,
+      "input_chars": 39120,
+      "latency_p50_ms": 5547,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.2829,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_scores_provenance_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27677245697,
+        27677246972,
+        27677248171,
+        27677249614
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 9,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "filter_topk_scores_provenance_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 1.286,
+      "input_chars": 39120,
+      "latency_p50_ms": 5547,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.1884,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_scores_provenance_v0",
+      "role": "filter",
+      "run_ids": [
+        27677245697,
+        27677246972,
+        27677248171,
+        27677249614
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 8,
+      "added_gold_span": 9,
+      "algorithm_spec_id": "span_narrow_contrastive_competitor_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 0.889,
+      "input_chars": 40144,
+      "latency_p50_ms": 2824,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.2694,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "contrastive_competitor_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27677251043,
+        27677252254,
+        27677253878,
+        27677255224
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 10,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "filter_contrastive_competitor_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 1.429,
+      "input_chars": 40144,
+      "latency_p50_ms": 2824,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.1751,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "contrastive_competitor_v0",
+      "role": "filter",
+      "run_ids": [
+        27677251043,
+        27677252254,
+        27677253878,
+        27677255224
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 5,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "span_narrow_hard_distractor_contrast_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 0.714,
+      "input_chars": 41494,
+      "latency_p50_ms": 3074,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.282,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "hard_distractor_contrast_v0",
+      "role": "span_narrow",
+      "run_ids": [
+        27676835457,
+        27676837060,
+        27676838404,
+        27676839848
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 7,
+      "added_gold_span": 5,
+      "algorithm_spec_id": "filter_hard_distractor_contrast_v0",
+      "experiment_id": "b2",
+      "false_per_gold": 1.4,
+      "input_chars": 41494,
+      "latency_p50_ms": 3074,
+      "mean_pfp": 0.125,
+      "mean_span_f05": 0.188,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "hard_distractor_contrast_v0",
+      "role": "filter",
+      "run_ids": [
+        27676835457,
+        27676837060,
+        27676838404,
+        27676839848
+      ],
+      "source_report": "docs/en/b2-contrastive-pack-quality-experiment.md",
+      "task_count": 24
+    },
+    {
+      "added_false_span": 7,
+      "added_gold_span": 8,
+      "algorithm_spec_id": "p25_bucket_routed_v0_plain",
+      "experiment_id": "b3",
+      "false_per_gold": 0.875,
+      "input_chars": null,
+      "latency_p50_ms": null,
+      "mean_pfp": 0.0417,
+      "mean_span_f05": 0.089,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0+hard_distractor_contrast_v0",
+      "role": "policy",
+      "run_ids": [
+        27682471959,
+        27682473463,
+        27682474976,
+        27682476342
+      ],
+      "source_report": "docs/en/b3-rmc-quality-experiment.md",
+      "task_count": 12
+    },
+    {
+      "added_false_span": 8,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "rmc_hybrid_v0",
+      "experiment_id": "b3",
+      "false_per_gold": 1.143,
+      "input_chars": null,
+      "latency_p50_ms": null,
+      "mean_pfp": 0.0833,
+      "mean_span_f05": 0.082,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0+hard_distractor_contrast_v0",
+      "role": "policy",
+      "run_ids": [
+        27682471959,
+        27682473463,
+        27682474976,
+        27682476342
+      ],
+      "source_report": "docs/en/b3-rmc-quality-experiment.md",
+      "task_count": 12
+    },
+    {
+      "added_false_span": 8,
+      "added_gold_span": 7,
+      "algorithm_spec_id": "rmc_llm_pack_routed_v0",
+      "experiment_id": "b3",
+      "false_per_gold": 1.143,
+      "input_chars": null,
+      "latency_p50_ms": null,
+      "mean_pfp": 0.0833,
+      "mean_span_f05": 0.082,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "topk_plain_v0+hard_distractor_contrast_v0",
+      "role": "policy",
+      "run_ids": [
+        27682471959,
+        27682473463,
+        27682474976,
+        27682476342
+      ],
+      "source_report": "docs/en/b3-rmc-quality-experiment.md",
+      "task_count": 12
+    },
+    {
+      "added_false_span": 18,
+      "added_gold_span": 4,
+      "algorithm_spec_id": "rmc_local_conservative_v0",
+      "experiment_id": "b3",
+      "false_per_gold": 4.5,
+      "input_chars": null,
+      "latency_p50_ms": null,
+      "mean_pfp": 0.0,
+      "mean_span_f05": 0.0226,
+      "model_adapter_id": "kimi_k2_7_code_tool_call",
+      "pack_layout": "n/a",
+      "role": "policy",
+      "run_ids": [
+        27682471959,
+        27682473463,
+        27682474976,
+        27682476342
+      ],
+      "source_report": "docs/en/b3-rmc-quality-experiment.md",
+      "task_count": 12
+    }
+  ],
+  "aggregate_only_public_artifact": true,
+  "algorithm_specs": {
+    "candidate_baseline_topk_plain_v0": {
+      "algorithm_spec_id": "candidate_baseline_topk_plain_v0",
+      "description": "Top-k candidate baseline without LLM span narrowing or filtering.",
+      "name": "Candidate baseline over topk_plain_v0",
+      "pack_layout": "topk_plain_v0",
+      "role": "baseline"
+    },
+    "filter_contrastive_competitor_v0": {
+      "algorithm_spec_id": "filter_contrastive_competitor_v0",
+      "description": "LLM filter with competitor slots.",
+      "name": "Filter over contrastive_competitor_v0",
+      "pack_layout": "contrastive_competitor_v0",
+      "role": "filter"
+    },
+    "filter_hard_distractor_contrast_v0": {
+      "algorithm_spec_id": "filter_hard_distractor_contrast_v0",
+      "description": "LLM filter with hard-distractor proxies.",
+      "name": "Filter over hard_distractor_contrast_v0",
+      "pack_layout": "hard_distractor_contrast_v0",
+      "role": "filter"
+    },
+    "filter_topk_plain_v0": {
+      "algorithm_spec_id": "filter_topk_plain_v0",
+      "description": "LLM filter over ordinary top-k bounded snippets.",
+      "name": "Filter over topk_plain_v0",
+      "pack_layout": "topk_plain_v0",
+      "role": "filter"
+    },
+    "filter_topk_scores_provenance_v0": {
+      "algorithm_spec_id": "filter_topk_scores_provenance_v0",
+      "description": "LLM filter with retrieval score/provenance metadata.",
+      "name": "Filter over topk_scores_provenance_v0",
+      "pack_layout": "topk_scores_provenance_v0",
+      "role": "filter"
+    },
+    "p25_bucket_routed_v0_plain": {
+      "algorithm_spec_id": "p25_bucket_routed_v0_plain",
+      "description": "Existing P25 bucket-routed policy that chooses span_narrow, filter, or candidate baseline from public task/risk buckets.",
+      "name": "P25 bucket_routed_v0 over topk_plain_v0",
+      "pack_layout": "topk_plain_v0",
+      "role": "policy"
+    },
+    "rmc_hybrid_v0": {
+      "algorithm_spec_id": "rmc_hybrid_v0",
+      "description": "Fixed RMC policy: weak for unsupported cases, plain span narrow for positive supported cases, hard-distractor filter for no-gold/hard cases.",
+      "name": "RMC hybrid v0",
+      "pack_layout": "topk_plain_v0+hard_distractor_contrast_v0",
+      "role": "policy"
+    },
+    "rmc_llm_pack_routed_v0": {
+      "algorithm_spec_id": "rmc_llm_pack_routed_v0",
+      "description": "Fixed RMC policy: plain span narrow for positives, hard-distractor filter for no-gold/hard/ambiguous cases.",
+      "name": "RMC LLM pack routed v0",
+      "pack_layout": "topk_plain_v0+hard_distractor_contrast_v0",
+      "role": "policy"
+    },
+    "rmc_local_conservative_v0": {
+      "algorithm_spec_id": "rmc_local_conservative_v0",
+      "description": "Fixed RMC policy: suppress negative/hard/no-gold/ambiguous cases to weak candidate only with no extra LLM call.",
+      "name": "RMC local conservative v0",
+      "pack_layout": "n/a",
+      "role": "policy"
+    },
+    "span_narrow_contrastive_competitor_v0": {
+      "algorithm_spec_id": "span_narrow_contrastive_competitor_v0",
+      "description": "LLM span narrowing with competitor slots but no hard-distractor proxies.",
+      "name": "Span narrow over contrastive_competitor_v0",
+      "pack_layout": "contrastive_competitor_v0",
+      "role": "span_narrow"
+    },
+    "span_narrow_hard_distractor_contrast_v0": {
+      "algorithm_spec_id": "span_narrow_hard_distractor_contrast_v0",
+      "description": "LLM span narrowing with metadata-selected hard-distractor proxies.",
+      "name": "Span narrow over hard_distractor_contrast_v0",
+      "pack_layout": "hard_distractor_contrast_v0",
+      "role": "span_narrow"
+    },
+    "span_narrow_topk_plain_v0": {
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "description": "LLM span narrowing with ordinary top-k bounded snippets.",
+      "name": "Span narrow over topk_plain_v0",
+      "pack_layout": "topk_plain_v0",
+      "role": "span_narrow"
+    },
+    "span_narrow_topk_scores_provenance_v0": {
+      "algorithm_spec_id": "span_narrow_topk_scores_provenance_v0",
+      "description": "LLM span narrowing with retrieval score/provenance/channel metadata.",
+      "name": "Span narrow over topk_scores_provenance_v0",
+      "pack_layout": "topk_scores_provenance_v0",
+      "role": "span_narrow"
+    }
+  },
+  "candidate_ids_in_report": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "generated_at": "2026-06-17T11:25:00.608236+00:00",
+  "generated_by": "b4_b9_model_robust_evidence_conversion",
+  "llm_direct_evidence_allowed": false,
+  "llm_output_not_evidence": true,
+  "model_adapters": {
+    "glm_5_2_json_schema_strict": {
+      "adapter_id": "glm_5_2_json_schema_strict",
+      "cost_class": "high",
+      "family": "reasoning_code_strong",
+      "health": "secondary_cross_family_validation",
+      "latency_class": "balanced_slow",
+      "model_id": "[mk]GLM-5.2",
+      "notes": "Viable for controlled cross-family comparison, but weaker than Kimi tool_call.",
+      "output_mode": "json_schema_strict",
+      "parent_profile_id": "glm_5_2_reasoning_code",
+      "quality_interpretable": true
+    },
+    "glm_5_2_tool_call": {
+      "adapter_id": "glm_5_2_tool_call",
+      "cost_class": "high",
+      "family": "reasoning_code_strong",
+      "health": "degraded_bad_response",
+      "latency_class": "balanced_slow",
+      "model_id": "[mk]GLM-5.2",
+      "notes": "Tool-call mode produced bad-response-status-code noise; not suitable for quality aggregate.",
+      "output_mode": "tool_call",
+      "parent_profile_id": "glm_5_2_reasoning_code",
+      "quality_interpretable": false
+    },
+    "kimi_k2_7_code_json_schema_strict": {
+      "adapter_id": "kimi_k2_7_code_json_schema_strict",
+      "cost_class": "medium_or_high",
+      "family": "code",
+      "health": "healthy_but_slower_and_weaker",
+      "latency_class": "fast_for_size",
+      "model_id": "[mk]Kimi-K2.7-Code",
+      "notes": "Schema-stable but slower and leaves more false spans than tool_call.",
+      "output_mode": "json_schema_strict",
+      "parent_profile_id": "kimi_k2_7_code",
+      "quality_interpretable": true
+    },
+    "kimi_k2_7_code_tool_call": {
+      "adapter_id": "kimi_k2_7_code_tool_call",
+      "cost_class": "medium_or_high",
+      "family": "code",
+      "health": "healthy_primary_reference",
+      "latency_class": "fast_for_size",
+      "model_id": "[mk]Kimi-K2.7-Code",
+      "notes": "Primary Breakthrough Sprint reference: full schema stability, low fallback, strong span-narrow signal.",
+      "output_mode": "tool_call",
+      "parent_profile_id": "kimi_k2_7_code",
+      "quality_interpretable": true
+    },
+    "qwen3_6_27b_json_schema_strict": {
+      "adapter_id": "qwen3_6_27b_json_schema_strict",
+      "cost_class": "medium",
+      "family": "code_balanced",
+      "health": "degraded_rate_limit",
+      "latency_class": "balanced",
+      "model_id": "[mk]Qwen3.6-27B",
+      "notes": "Severe rate-limit/fallback noise and very high latency; not quality-interpretable.",
+      "output_mode": "json_schema_strict",
+      "parent_profile_id": "qwen3_6_27b_code_balanced",
+      "quality_interpretable": false
+    },
+    "qwen3_6_27b_tool_call": {
+      "adapter_id": "qwen3_6_27b_tool_call",
+      "cost_class": "medium",
+      "family": "code_balanced",
+      "health": "degraded_rate_limit",
+      "latency_class": "balanced",
+      "model_id": "[mk]Qwen3.6-27B",
+      "notes": "Both Qwen output modes hit substantial rate-limit/fallback noise; do not include in quality aggregate until lower-concurrency fix.",
+      "output_mode": "tool_call",
+      "parent_profile_id": "qwen3_6_27b_code_balanced",
+      "quality_interpretable": false
+    }
+  },
+  "not_evidence": true,
+  "promotion_ready": false,
+  "raw_digests_in_report": false,
+  "raw_line_ranges_in_report": false,
+  "raw_paths_in_report": false,
+  "raw_prompts_in_report": false,
+  "raw_responses_in_report": false,
+  "raw_snippets_in_report": false,
+  "recommendations": [
+    {
+      "algorithm_spec_id": "span_narrow_topk_plain_v0",
+      "claim_level": "low_n_directional_signal",
+      "recommendation": "Positive on matched aggregate cells, but not general: verify on a broader public corpus and held-out models before any default change.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "algorithm_spec_id": "span_narrow_hard_distractor_contrast_v0",
+      "claim_level": "not_supported",
+      "recommendation": "Not globally supported as a span-narrow pack; route hard-distractor contrast only to selective filter/no-gold cases after repair.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "algorithm_spec_id": "filter_hard_distractor_contrast_v0",
+      "claim_level": "not_supported",
+      "recommendation": "Hard-distractor filter lost gold in this bounded sample; do not adopt globally without repair.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "algorithm_spec_id": "span_narrow_topk_scores_provenance_v0",
+      "claim_level": "fragile_signal",
+      "recommendation": "Fragile trade-off: higher SpanF0.5 but more false spans, higher PFP, and higher latency. Use selectively, not as default.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "algorithm_spec_id": "rmc_hybrid_v0",
+      "claim_level": "not_supported",
+      "recommendation": "Fixed RMC hybrid did not beat P25; needs interpretable policy search or narrower bucket-specific routing.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "algorithm_spec_id": "rmc_llm_pack_routed_v0",
+      "claim_level": "not_supported",
+      "recommendation": "Fixed RMC LLM routing did not beat P25; needs searched routing.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "algorithm_spec_id": "rmc_local_conservative_v0",
+      "claim_level": "not_supported",
+      "recommendation": "Local conservative route avoided false positives but collapsed recall.",
+      "target_type": "algorithm_spec"
+    },
+    {
+      "claim_level": "not_supported",
+      "model_adapter_id": "qwen3_6_27b_tool_call",
+      "recommendation": "Adapter degraded/rate-limit; exclude from quality aggregation until a lower-concurrency fix is validated.",
+      "target_type": "model_adapter"
+    },
+    {
+      "claim_level": "not_supported",
+      "model_adapter_id": "qwen3_6_27b_json_schema_strict",
+      "recommendation": "Adapter degraded/rate-limit; exclude from quality aggregation until a lower-concurrency fix is validated.",
+      "target_type": "model_adapter"
+    },
+    {
+      "claim_level": "observed_only",
+      "model_adapter_id": "glm_5_2_json_schema_strict",
+      "recommendation": "Usable as secondary cross-family validation; do not use as primary reference.",
+      "target_type": "model_adapter"
+    }
+  ],
+  "robustness_summary": {
+    "algorithm_claim_levels": {
+      "filter_contrastive_competitor_v0": "fragile_signal",
+      "filter_hard_distractor_contrast_v0": "not_supported",
+      "filter_topk_plain_v0": "observed_only",
+      "filter_topk_scores_provenance_v0": "fragile_signal",
+      "p25_bucket_routed_v0_plain": "observed_only",
+      "rmc_hybrid_v0": "not_supported",
+      "rmc_llm_pack_routed_v0": "not_supported",
+      "rmc_local_conservative_v0": "not_supported",
+      "span_narrow_contrastive_competitor_v0": "fragile_signal",
+      "span_narrow_hard_distractor_contrast_v0": "not_supported",
+      "span_narrow_topk_plain_v0": "low_n_directional_signal",
+      "span_narrow_topk_scores_provenance_v0": "fragile_signal"
+    },
+    "effect_status_by_algorithm": {
+      "filter_contrastive_competitor_v0": "single_adapter_caution",
+      "filter_hard_distractor_contrast_v0": "low_n_fragile_signal",
+      "filter_topk_plain_v0": "low_n_directional_signal",
+      "filter_topk_scores_provenance_v0": "low_n_fragile_signal",
+      "p25_bucket_routed_v0_plain": "negative_or_flat",
+      "rmc_hybrid_v0": "single_adapter_caution",
+      "rmc_llm_pack_routed_v0": "single_adapter_caution",
+      "rmc_local_conservative_v0": "single_adapter_caution",
+      "span_narrow_contrastive_competitor_v0": "low_n_fragile_signal",
+      "span_narrow_hard_distractor_contrast_v0": "low_n_fragile_signal",
+      "span_narrow_topk_plain_v0": "low_n_directional_signal",
+      "span_narrow_topk_scores_provenance_v0": "low_n_fragile_signal"
+    },
+    "leave_one_model_status": {
+      "filter_contrastive_competitor_v0": "insufficient_model_overlap",
+      "filter_hard_distractor_contrast_v0": "insufficient_model_overlap",
+      "filter_topk_plain_v0": "leave_one_positive_low_n",
+      "filter_topk_scores_provenance_v0": "insufficient_model_overlap",
+      "p25_bucket_routed_v0_plain": "leave_one_non_positive",
+      "rmc_hybrid_v0": "insufficient_model_overlap",
+      "rmc_llm_pack_routed_v0": "insufficient_model_overlap",
+      "rmc_local_conservative_v0": "insufficient_model_overlap",
+      "span_narrow_contrastive_competitor_v0": "insufficient_model_overlap",
+      "span_narrow_hard_distractor_contrast_v0": "insufficient_model_overlap",
+      "span_narrow_topk_plain_v0": "leave_one_positive_low_n",
+      "span_narrow_topk_scores_provenance_v0": "insufficient_model_overlap"
+    },
+    "model_averaged_treatment_effects": [
+      {
+        "algorithm_spec_id": "span_narrow_topk_plain_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": 0.175,
+          "leave_one_delta_min": 0.173,
+          "max_delta_span_f05": 0.175,
+          "min_delta_span_f05": 0.173
+        },
+        "effect_status": "low_n_directional_signal",
+        "model_adapter_count": 2,
+        "model_averaged_delta_span_f05": 0.174,
+        "per_model_delta": {
+          "glm_5_2_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::glm_5_2_json_schema_strict",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": 0.2192
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": 0.2192,
+            "quality_interpretable": true
+          },
+          "glm_5_2_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::glm_5_2_tool_call",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": 0.0
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": 0.0,
+            "quality_interpretable": false
+          },
+          "kimi_k2_7_code_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1099,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1::kimi_k2_7_code_json_schema_strict",
+                "experiment_id": "b1",
+                "matched_baseline": true,
+                "mean_span_f05": 0.2829
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.173,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.2829,
+            "quality_interpretable": true
+          },
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1099,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1::kimi_k2_7_code_tool_call",
+                "experiment_id": "b1",
+                "matched_baseline": true,
+                "mean_span_f05": 0.2849
+              },
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": null,
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": false,
+                "mean_span_f05": 0.2691
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.175,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.277,
+            "quality_interpretable": true
+          },
+          "qwen3_6_27b_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::qwen3_6_27b_json_schema_strict",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": 0.0
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": 0.0,
+            "quality_interpretable": false
+          },
+          "qwen3_6_27b_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::qwen3_6_27b_tool_call",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": 0.0482
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": 0.0482,
+            "quality_interpretable": false
+          }
+        },
+        "role": "span_narrow"
+      },
+      {
+        "algorithm_spec_id": "filter_topk_plain_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": 0.0785,
+          "leave_one_delta_min": 0.0785,
+          "max_delta_span_f05": 0.0785,
+          "min_delta_span_f05": 0.0785
+        },
+        "effect_status": "low_n_directional_signal",
+        "model_adapter_count": 2,
+        "model_averaged_delta_span_f05": 0.0785,
+        "per_model_delta": {
+          "glm_5_2_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::glm_5_2_json_schema_strict",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": null
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": null,
+            "quality_interpretable": true
+          },
+          "glm_5_2_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::glm_5_2_tool_call",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": null
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": null,
+            "quality_interpretable": false
+          },
+          "kimi_k2_7_code_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1099,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1::kimi_k2_7_code_json_schema_strict",
+                "experiment_id": "b1",
+                "matched_baseline": true,
+                "mean_span_f05": 0.1884
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0785,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.1884,
+            "quality_interpretable": true
+          },
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1099,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1::kimi_k2_7_code_tool_call",
+                "experiment_id": "b1",
+                "matched_baseline": true,
+                "mean_span_f05": 0.1884
+              },
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": null,
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": false,
+                "mean_span_f05": 0.1751
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0785,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.1818,
+            "quality_interpretable": true
+          },
+          "qwen3_6_27b_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::qwen3_6_27b_json_schema_strict",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": null
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": null,
+            "quality_interpretable": false
+          },
+          "qwen3_6_27b_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+                "comparison_group_id": "b1c::qwen3_6_27b_tool_call",
+                "experiment_id": "b1c",
+                "matched_baseline": false,
+                "mean_span_f05": null
+              }
+            ],
+            "delta_span_f05_vs_baseline": null,
+            "matched_delta_count": 0,
+            "mean_span_f05": null,
+            "quality_interpretable": false
+          }
+        },
+        "role": "filter"
+      },
+      {
+        "algorithm_spec_id": "p25_bucket_routed_v0_plain",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "p25_bucket_routed_v0_plain",
+        "effect_range_by_model": {
+          "leave_one_delta_max": 0.0,
+          "leave_one_delta_min": 0.0,
+          "max_delta_span_f05": 0.0,
+          "min_delta_span_f05": 0.0
+        },
+        "effect_status": "negative_or_flat",
+        "model_adapter_count": 2,
+        "model_averaged_delta_span_f05": 0.0,
+        "per_model_delta": {
+          "kimi_k2_7_code_json_schema_strict": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.0914,
+                "baseline_spec_id": "p25_bucket_routed_v0_plain",
+                "comparison_group_id": "b1::kimi_k2_7_code_json_schema_strict",
+                "experiment_id": "b1",
+                "matched_baseline": true,
+                "mean_span_f05": 0.0914
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.0914,
+            "quality_interpretable": true
+          },
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1139,
+                "baseline_spec_id": "p25_bucket_routed_v0_plain",
+                "comparison_group_id": "b1::kimi_k2_7_code_tool_call",
+                "experiment_id": "b1",
+                "matched_baseline": true,
+                "mean_span_f05": 0.1139
+              },
+              {
+                "baseline_mean_span_f05": null,
+                "baseline_spec_id": null,
+                "comparison_group_id": "b3::kimi_k2_7_code_tool_call",
+                "experiment_id": "b3",
+                "matched_baseline": false,
+                "mean_span_f05": 0.089
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.1014,
+            "quality_interpretable": true
+          }
+        },
+        "role": "policy"
+      },
+      {
+        "algorithm_spec_id": "span_narrow_topk_scores_provenance_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": 0.0138,
+          "min_delta_span_f05": 0.0138
+        },
+        "effect_status": "low_n_fragile_signal",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": 0.0138,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.2691,
+                "baseline_spec_id": "span_narrow_topk_plain_v0",
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": true,
+                "mean_span_f05": 0.2829
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0138,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.2829,
+            "quality_interpretable": true
+          }
+        },
+        "role": "span_narrow"
+      },
+      {
+        "algorithm_spec_id": "filter_topk_scores_provenance_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": 0.0133,
+          "min_delta_span_f05": 0.0133
+        },
+        "effect_status": "low_n_fragile_signal",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": 0.0133,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1751,
+                "baseline_spec_id": "filter_topk_plain_v0",
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": true,
+                "mean_span_f05": 0.1884
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0133,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.1884,
+            "quality_interpretable": true
+          }
+        },
+        "role": "filter"
+      },
+      {
+        "algorithm_spec_id": "span_narrow_contrastive_competitor_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": 0.0003,
+          "min_delta_span_f05": 0.0003
+        },
+        "effect_status": "low_n_fragile_signal",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": 0.0003,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.2691,
+                "baseline_spec_id": "span_narrow_topk_plain_v0",
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": true,
+                "mean_span_f05": 0.2694
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0003,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.2694,
+            "quality_interpretable": true
+          }
+        },
+        "role": "span_narrow"
+      },
+      {
+        "algorithm_spec_id": "filter_contrastive_competitor_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": 0.0,
+          "min_delta_span_f05": 0.0
+        },
+        "effect_status": "single_adapter_caution",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": 0.0,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1751,
+                "baseline_spec_id": "filter_topk_plain_v0",
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": true,
+                "mean_span_f05": 0.1751
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.1751,
+            "quality_interpretable": true
+          }
+        },
+        "role": "filter"
+      },
+      {
+        "algorithm_spec_id": "span_narrow_hard_distractor_contrast_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": 0.0129,
+          "min_delta_span_f05": 0.0129
+        },
+        "effect_status": "low_n_fragile_signal",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": 0.0129,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.2691,
+                "baseline_spec_id": "span_narrow_topk_plain_v0",
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": true,
+                "mean_span_f05": 0.282
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0129,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.282,
+            "quality_interpretable": true
+          }
+        },
+        "role": "span_narrow"
+      },
+      {
+        "algorithm_spec_id": "filter_hard_distractor_contrast_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "candidate_baseline_topk_plain_v0",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": 0.0129,
+          "min_delta_span_f05": 0.0129
+        },
+        "effect_status": "low_n_fragile_signal",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": 0.0129,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.1751,
+                "baseline_spec_id": "filter_topk_plain_v0",
+                "comparison_group_id": "b2::kimi_k2_7_code_tool_call",
+                "experiment_id": "b2",
+                "matched_baseline": true,
+                "mean_span_f05": 0.188
+              }
+            ],
+            "delta_span_f05_vs_baseline": 0.0129,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.188,
+            "quality_interpretable": true
+          }
+        },
+        "role": "filter"
+      },
+      {
+        "algorithm_spec_id": "rmc_hybrid_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "p25_bucket_routed_v0_plain",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": -0.007,
+          "min_delta_span_f05": -0.007
+        },
+        "effect_status": "single_adapter_caution",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": -0.007,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.089,
+                "baseline_spec_id": "p25_bucket_routed_v0_plain",
+                "comparison_group_id": "b3::kimi_k2_7_code_tool_call",
+                "experiment_id": "b3",
+                "matched_baseline": true,
+                "mean_span_f05": 0.082
+              }
+            ],
+            "delta_span_f05_vs_baseline": -0.007,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.082,
+            "quality_interpretable": true
+          }
+        },
+        "role": "policy"
+      },
+      {
+        "algorithm_spec_id": "rmc_llm_pack_routed_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "p25_bucket_routed_v0_plain",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": -0.007,
+          "min_delta_span_f05": -0.007
+        },
+        "effect_status": "single_adapter_caution",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": -0.007,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.089,
+                "baseline_spec_id": "p25_bucket_routed_v0_plain",
+                "comparison_group_id": "b3::kimi_k2_7_code_tool_call",
+                "experiment_id": "b3",
+                "matched_baseline": true,
+                "mean_span_f05": 0.082
+              }
+            ],
+            "delta_span_f05_vs_baseline": -0.007,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.082,
+            "quality_interpretable": true
+          }
+        },
+        "role": "policy"
+      },
+      {
+        "algorithm_spec_id": "rmc_local_conservative_v0",
+        "baseline_matching": "comparison_group_id",
+        "baseline_spec_id": "p25_bucket_routed_v0_plain",
+        "effect_range_by_model": {
+          "leave_one_delta_max": null,
+          "leave_one_delta_min": null,
+          "max_delta_span_f05": -0.0664,
+          "min_delta_span_f05": -0.0664
+        },
+        "effect_status": "single_adapter_caution",
+        "model_adapter_count": 1,
+        "model_averaged_delta_span_f05": -0.0664,
+        "per_model_delta": {
+          "kimi_k2_7_code_tool_call": {
+            "cells": [
+              {
+                "baseline_mean_span_f05": 0.089,
+                "baseline_spec_id": "p25_bucket_routed_v0_plain",
+                "comparison_group_id": "b3::kimi_k2_7_code_tool_call",
+                "experiment_id": "b3",
+                "matched_baseline": true,
+                "mean_span_f05": 0.0226
+              }
+            ],
+            "delta_span_f05_vs_baseline": -0.0664,
+            "matched_delta_count": 1,
+            "mean_span_f05": 0.0226,
+            "quality_interpretable": true
+          }
+        },
+        "role": "policy"
+      }
+    ],
+    "model_effect_variance_status": {
+      "filter_contrastive_competitor_v0": "insufficient_model_overlap",
+      "filter_hard_distractor_contrast_v0": "insufficient_model_overlap",
+      "filter_topk_plain_v0": "low",
+      "filter_topk_scores_provenance_v0": "insufficient_model_overlap",
+      "p25_bucket_routed_v0_plain": "low",
+      "rmc_hybrid_v0": "insufficient_model_overlap",
+      "rmc_llm_pack_routed_v0": "insufficient_model_overlap",
+      "rmc_local_conservative_v0": "insufficient_model_overlap",
+      "span_narrow_contrastive_competitor_v0": "insufficient_model_overlap",
+      "span_narrow_hard_distractor_contrast_v0": "insufficient_model_overlap",
+      "span_narrow_topk_plain_v0": "low",
+      "span_narrow_topk_scores_provenance_v0": "insufficient_model_overlap"
+    },
+    "repo_variance_status": {
+      "filter_contrastive_competitor_v0": "unavailable_aggregate_only",
+      "filter_hard_distractor_contrast_v0": "unavailable_aggregate_only",
+      "filter_topk_plain_v0": "unavailable_aggregate_only",
+      "filter_topk_scores_provenance_v0": "unavailable_aggregate_only",
+      "p25_bucket_routed_v0_plain": "unavailable_aggregate_only",
+      "rmc_hybrid_v0": "unavailable_aggregate_only",
+      "rmc_llm_pack_routed_v0": "unavailable_aggregate_only",
+      "rmc_local_conservative_v0": "unavailable_aggregate_only",
+      "span_narrow_contrastive_competitor_v0": "unavailable_aggregate_only",
+      "span_narrow_hard_distractor_contrast_v0": "unavailable_aggregate_only",
+      "span_narrow_topk_plain_v0": "unavailable_aggregate_only",
+      "span_narrow_topk_scores_provenance_v0": "unavailable_aggregate_only"
+    }
+  },
+  "schema_version": "b4-b9-model-robust-evidence-conversion-v0",
+  "self_test": true,
+  "source_reports": [
+    "artifacts/b3_rmc_quality_experiment/b3_rmc_quality_experiment_report.json",
+    "docs/en/b1-live-llm-rich-candidate-run.md",
+    "docs/en/b1c-cross-model-rich-candidate-rerun.md",
+    "docs/en/b2-contrastive-pack-quality-experiment.md",
+    "docs/en/b3-rmc-quality-experiment.md",
+    "eval/p21_model_profiles.json"
+  ],
+  "status": "self_test_only",
+  "task_ids_in_report": false
+}
