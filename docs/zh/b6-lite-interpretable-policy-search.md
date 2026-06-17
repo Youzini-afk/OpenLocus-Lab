@@ -22,10 +22,28 @@ baselines, and a bounded set of automatically generated rule-based policies.  It
 reports a Pareto frontier over quality, cost, and failure dimensions, not a
 single winning policy.
 
-## Status
+## Live run matrix
 
-Self-tested scaffold ready; real paired P21 ephemeral records will be populated
-by the `b6_lite_policy_search` workflow stage.
+```text
+repos: py_flask, js_express, go_gin, rust_ripgrep
+dataset: ci_smoke
+tasks per repo: 6
+task_sample_mode: round_robin_public_buckets
+model: [mk]Kimi-K2.7-Code
+output mode: tool_call
+stage: b6_lite_policy_search
+```
+
+Run IDs:
+
+```text
+py_flask      27687069200
+js_express    27687070596
+go_gin        27687071794
+rust_ripgrep  27687073224
+```
+
+All four runs completed successfully and passed artifact privacy gates.
 
 ## Rule grammar
 
@@ -66,16 +84,58 @@ Safety invariants are explicit: `promotion_ready=false`,
 `remote_calls_by_policy_search=0`, and no task/repo/candidate/path/snippet/prompt/response/gold
 content in the artifact.
 
-## Interpretation so far
+## Aggregate observations across the four live runs
 
-The self-test scaffold produces a deterministic frontier and demonstrates that
-the evaluator can:
+The following table aggregates policies that appeared in the per-repo reports or
+were key baselines. These are observed smoke results, not model-robust policy
+claims.
 
-1. load paired P21 ephemeral records,
-2. evaluate P25 and B3-style baselines,
-3. enumerate a bounded rule grammar,
-4. compute Pareto dominance,
-5. report aggregate overfit diagnostics,
-6. keep the public artifact free of per-task identifiers.
+| Policy | Repos observed | Frontier appearances | Gold | False | False/gold | Mean SpanF0.5 avg | Mean PFP avg | LLM actions | Net span value 2x |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `p25_bucket_routed_v0_plain` | 4 | 0 | 8 | 7 | 0.875 | 0.0890 | 0.0417 | 24 | -6 |
+| `rmc_hybrid_v0` | 4 | 1 | 8 | 7 | 0.875 | 0.0890 | 0.0833 | 11 | -6 |
+| `rmc_llm_pack_routed_v0` | 4 | 0 | 8 | 7 | 0.875 | 0.0890 | 0.0833 | 24 | -6 |
+| `ambiguous_query_weak_only_default_use_p25_action` | 4 | 1 | 8 | 6 | 0.750 | 0.0890 | 0.0000 | 12 | -4 |
+| `negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action` | 4 | 3 | 5 | 2 | 0.400 | 0.0629 | 0.0000 | 4 | 1 |
+| `rmc_local_conservative_v0` | 4 | 4 | 4 | 18 | 4.500 | 0.0226 | 0.0000 | 0 | -32 |
+| `default_candidate_baseline` | 4 | 1 | 8 | 43 | 5.375 | 0.0469 | 0.0833 | 0 | -78 |
 
-Real-provider runs are required before any quality conclusion can be drawn.
+Two searched policies are worth follow-up, but neither is ready as a default:
+
+```text
+ambiguous_query_weak_only_default_use_p25_action:
+  Same observed added gold as P25, one fewer false span, lower observed PFP, but
+  it appeared on the frontier in only one repo and still uses 12 LLM actions.
+
+negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action:
+  Very low false cost and positive net span value, but lower gold/SpanF0.5; it is
+  a candidate for a conservative fast/balanced policy, not a deep quality policy.
+```
+
+The leave-one-bucket rank deltas were non-zero in every repo (roughly `0.08` to
+`0.75`), and leave-one-repo-out was unavailable inside each single-repo workflow
+run. Therefore B6-lite provides candidate routing hypotheses, not robust policy
+selection.
+
+## Interpretation
+
+B6-lite confirms the B3 lesson: fixed global RMC is too crude, but the searched
+grammar can discover lower-false-cost routing patterns. The best observed
+searched candidates mostly keep P25 for uncertain cases and weaken/avoid routes
+that B3 showed were too aggressive. This suggests the next version should train
+and validate across a combined multi-repo matrix rather than selecting per-repo
+frontiers independently.
+
+The next step should be either:
+
+```text
+B6B combined-matrix policy search:
+  merge the four repo reports/ephemeral records into a single offline search and
+  compute leave-one-repo-out properly; or
+
+B7 atom ablation:
+  break pack layouts into atoms and search over atom/role/bucket combinations.
+```
+
+B6-lite does not change defaults, does not admit Evidence, and does not promote a
+policy.

@@ -241,6 +241,27 @@ mean SpanF0.5 0.0226). The algorithmic conclusion is that RMC needs searched or
 bucket-specific routing; fixed rules are too crude. See
 [`b3-rmc-quality-experiment.md`](b3-rmc-quality-experiment.md).
 
+Breakthrough Sprint B6-lite interpretable policy search:
+
+```text
+matrix:
+  4 repos x 6 tasks
+  model: [mk]Kimi-K2.7-Code
+  stage: b6_lite_policy_search
+```
+
+B6-lite searched a small rule grammar over paired plain/hard-distractor P21
+records. It found lower-false-cost hypotheses, but not robust policies. The best
+aggregate searched candidate with P25-like gold was
+`ambiguous_query_weak_only_default_use_p25_action` (8 gold / 6 false / PFP 0.0),
+but it appeared on the frontier in only one repo and still used 12 LLM actions.
+The conservative
+`negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action`
+achieved 5 gold / 2 false and positive net span value, but lower SpanF0.5. B6
+therefore supports a B6B combined-matrix search with proper leave-one-repo-out;
+it does not justify a default change. See
+[`b6-lite-interpretable-policy-search.md`](b6-lite-interpretable-policy-search.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text
