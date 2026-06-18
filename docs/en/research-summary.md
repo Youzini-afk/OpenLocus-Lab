@@ -662,6 +662,53 @@ replay computation deferred to a later task). B12 is mechanism decomposition,
 `default_should_change=false`, `evidencecore_semantics_changed=false`. See
 [`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md).
 
+B13 distributionally robust policy search:
+
+```text
+algorithm_spec_id: b13_dro_policy_search_v0
+claim_level: distributionally_robust_policy_search_v0
+replay_and_search_only: true (no live LLM calls inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: true (B13 IS policy search; results NOT promoted)
+quality_strategy_tuned: false
+algorithm_spec_has_no_model_names: true (B13 special invariant)
+```
+
+B13 is the **distributionally robust policy search** phase that follows B12.
+The goal is to find a policy with 6-10 rules, using only runtime-observable
+features, that optimizes **worst-group utility** (not the average) or
+`CVaR_20%`, validated via rotating leave-one-model-family-out. The rule
+grammar is restricted to `route_features` only
+(`query_noise`, `candidate_support_exists`, `local_anchor`,
+`rrf_backed_by_anchor`, `candidate_count`, `symbol_regex_agree_file`,
+`symbol_regex_agree_span`, `rrf_anchor_agree_file`, `rrf_anchor_agree_span`,
+`dense_support_present`): **NO** benchmark-private labels (`task_bucket`,
+`task_risk_tags`), **NO** score-private fields (`has_gold`, `score_group`,
+`outcome_metrics`), and **NO** raw model names in `algorithm_spec` (B13 uses
+`model_profile` capabilities like `supports_reliable_span_narrow`,
+`cost_class`, `latency_class`; the spec emits abstract `family_slots`
+`family_a`/`family_b`/`family_c`/`family_d` instead of "Kimi"/"Qwen"/
+"DeepSeek"). Allowed actions are LLM-free: `weak_only`, `use_p25_action`,
+`use_local_baseline`. The optimization objective is
+`RobustUtility = SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency`
+with `λ=1.0`, `μ=0.1`, `ν=0.1`, and `CVaR α=0.20`. The search method is bounded
+grid + greedy refinement (pure Python; no numpy/sklearn/scipy), capped at
+`MAX_RULES=10` and `MAX_SEARCH_ITERATIONS=1000`. Validation uses 3 rotating
+leave-one-model-family-out rotations (`loo_family_a`, `loo_family_b`,
+`loo_family_c_and_d`); all 3 must pass (worst-group `RobustUtility` within
+±0.02 of B10's or strictly better). B13 IS policy search, so
+`policy_search_performed=true`, but results are NOT promoted
+(`promotion_ready=false`, `default_should_change=false`). B13 needs P21
+records from B11 live runs (4 model families × 8 repos); the `--input` path is
+a stub (verdict `not_implemented`; real search deferred). B13 results feed
+into B14 (uncertainty calibration) and B16 (downstream agent evaluation) as
+research candidates only. B13 is the last "immediate priority" item in the
+B10-B19 Breakthrough Sprint; the remaining items (B14-B19) are second priority
+or parallel tracks. See
+[`b13-distributionally-robust-policy-search.md`](b13-distributionally-robust-policy-search.md).
+
 ---
 
 ## Current status update — 2026-06-13

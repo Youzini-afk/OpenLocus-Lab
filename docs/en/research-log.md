@@ -2404,3 +2404,27 @@ Draft B12 preregistration plan: mechanism decomposition via 5 ablation variants 
 ### Caveats
 - B12 ablation runs (if needed) require workflow_dispatch + enable_remote_models=true.
 - B12 does NOT prove promotion; `promotion_ready=false`, `default_should_change=false`.
+
+## 2026-06-18 — B13 Distributionally Robust Policy Search Planning
+
+### Objective
+Draft B13 preregistration plan: distributionally robust policy search that optimizes worst-group utility (not average), using only runtime-observable features, validated via rotating leave-one-model-family-out.
+
+### Implementation notes
+- Rule grammar: 6-10 rules, each using only runtime route_features (query_noise, candidate_support_exists, local_anchor, rrf_backed_by_anchor, candidate_count, etc.). No benchmark-private labels, no score-private fields, no model names in algorithm_spec.
+- Optimization objective: maximize worst-group utility OR CVaR_20%. RobustUtility = SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency (λ=1.0, μ=0.1, ν=0.1).
+- Validation: rotating leave-one-model-family-out (Kimi+Qwen→DeepSeek, Kimi+DeepSeek→Qwen, Qwen+DeepSeek→Kimi). All 3 rotations must pass.
+- B13 evaluator skeleton at `eval/b13_dro_policy_search.py` (~1100 lines, 10 self-test checks, spec sha256 stable).
+- --input is a stub (verdict=not_implemented); full search deferred.
+- Special invariant: `algorithm_spec_has_no_model_names=true` (verify no model names in spec).
+
+### Findings
+- B13 plan is frozen before any search runs.
+- B13 requires P21 records from B11 live runs (4 model families × 8 repos).
+- B13 is policy search, so `policy_search_performed=true`; but results are NOT promoted (`promotion_ready=false`, `default_should_change=false`).
+- B13 is the last "immediate priority" item in B10-B19 Breakthrough Sprint.
+
+### Caveats
+- B13 search requires P21 records (from B11 live runs or CI ephemeral).
+- B13 does NOT prove promotion; results are research candidates only.
+- After B13, remaining items (B14-B19) are second priority or parallel tracks.

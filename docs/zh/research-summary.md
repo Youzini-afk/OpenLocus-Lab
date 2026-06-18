@@ -648,6 +648,52 @@ decomposition，**不是** promotion step：`promotion_ready=false`、
 `default_should_change=false`、`evidencecore_semantics_changed=false`。详见
 [`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md)。
 
+B13 distributionally robust policy search：
+
+```text
+algorithm_spec_id: b13_dro_policy_search_v0
+claim_level: distributionally_robust_policy_search_v0
+replay_and_search_only: true (evaluator 不产生 live LLM calls)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: true (B13 是 policy search；结果不被 promoted)
+quality_strategy_tuned: false
+algorithm_spec_has_no_model_names: true (B13 special invariant)
+```
+
+B13 是继 B12 之后的 **distributionally robust policy search** 阶段。目标是
+找到一个含 6-10 条 rules 的 policy，仅使用 runtime-observable features，优化
+**worst-group utility**（而非平均值）或 `CVaR_20%`，并通过 rotating
+leave-one-model-family-out 验证。Rule grammar 仅限于 `route_features`
+（`query_noise`、`candidate_support_exists`、`local_anchor`、
+`rrf_backed_by_anchor`、`candidate_count`、`symbol_regex_agree_file`、
+`symbol_regex_agree_span`、`rrf_anchor_agree_file`、`rrf_anchor_agree_span`、
+`dense_support_present`）：**禁止** benchmark-private labels（`task_bucket`、
+`task_risk_tags`），**禁止** score-private fields（`has_gold`、`score_group`、
+`outcome_metrics`），且 `algorithm_spec` 中**禁止** 原始 model names（B13 使用
+`model_profile` capabilities，如 `supports_reliable_span_narrow`、`cost_class`、
+`latency_class`；spec 中以抽象 `family_slots` `family_a`/`family_b`/
+`family_c`/`family_d` 代替 "Kimi"/"Qwen"/"DeepSeek"）。Allowed actions 为
+LLM-free：`weak_only`、`use_p25_action`、`use_local_baseline`。Optimization
+objective 为
+`RobustUtility = SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency`，
+其中 `λ=1.0`、`μ=0.1`、`ν=0.1`，`CVaR α=0.20`。Search method 为 bounded grid +
+greedy refinement（pure Python；不使用 numpy/sklearn/scipy），上限
+`MAX_RULES=10` 与 `MAX_SEARCH_ITERATIONS=1000`。Validation 使用 3 个 rotating
+leave-one-model-family-out rotations（`loo_family_a`、`loo_family_b`、
+`loo_family_c_and_d`）；全部 3 个必须通过（worst-group `RobustUtility` 在 B10
+的 ±0.02 以内或严格更优）。B13 **是** policy search，故
+`policy_search_performed=true`，但结果**不**被 promoted
+（`promotion_ready=false`、`default_should_change=false`）。B13 需要 B11 live
+runs 的 P21 records（4 model families × 8 repos）；`--input` 路径为 stub
+（verdict `not_implemented`；真实 search 延后）。B13 结果作为 research
+candidates 仅输入 B14（uncertainty calibration）与 B16（downstream agent
+evaluation）。B13 是 B10-B19 Breakthrough Sprint 中最后一个 "immediate
+priority" item；其余 items（B14-B19）为 second priority 或 parallel tracks。
+详见
+[`b13-distributionally-robust-policy-search.md`](b13-distributionally-robust-policy-search.md)。
+
 ---
 
 ## Current status update — 2026-06-13

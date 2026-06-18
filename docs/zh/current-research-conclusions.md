@@ -122,6 +122,10 @@ B11 是冻结的 balanced policy `balanced_policy_v1_benchmark_routed` 在 2026-
 
 B12 是继 B11 之后的 mechanism-decomposition 阶段。它通过 5 个 ablation variants（A full balanced、B deterministic LLM reduction、C ambiguous weak_only only[按构造 ≡A]、D P25 default、E random LLM reduction）与 4 个 predeclared hypotheses（H1 ambiguous routing、H2 LLM call reduction、H3 P25 fallback sufficiency、H4 model-specific）分解**为什么**冻结的 balanced policy `balanced_policy_v1_benchmark_routed`（B10）有效（若 B11 证实其泛化）。B12 为 replay-only（每条 P21 record 已含 per-strategy outcomes，故每个 variant 通过选取对应 per-strategy outcome 计算；evaluator 不产生 live LLM calls）。Predeclared support/refute criteria 在 `gold_span`/`span_f0_5` delta 上使用显式 thresholds（"≈" 在 ±0.02 内，">" 严格大于 0.02；H4 使用 0.05 的最坏 model-family spread）。B12 是 mechanism decomposition，**不是** promotion step：`promotion_ready=false`、`default_should_change=false`、`evidencecore_semantics_changed=false`、`policy_search_performed=false`、`quality_strategy_tuned=false`。`--input` 路径为 stub（verdict `not_implemented`；真实 per-record replay 延后）。详见 [B12 详细报告](b12-mechanism-decomposition.md)。
 
+## B13 Distributionally Robust Policy Search
+
+B13 是继 B12 之后的 distributionally-robust policy-search 阶段。它搜索一个含 6-10 条 rules 的 policy，仅使用 runtime-observable `route_features`（无 benchmark-private labels、无 score-private fields、`algorithm_spec` 中无原始 model names），优化 worst-group utility 或 `CVaR_20%`，并通过 3 个 rotating leave-one-model-family-out rotations 验证。Allowed actions 为 LLM-free（`weak_only`、`use_p25_action`、`use_local_baseline`）；search method 为 bounded grid + greedy refinement（pure Python）。B13 **是** policy search（`policy_search_performed=true`），但其结果**不**被 promoted（`promotion_ready=false`、`default_should_change=false`、`evidencecore_semantics_changed=false`）；它们是 research candidates，输入 B14（uncertainty calibration）与 B16（downstream agent evaluation）。`--input` 路径为 stub（verdict `not_implemented`）；B13 需要 B11 live runs 的 P21 records。B13 是 B10-B19 Breakthrough Sprint 中最后一个 "immediate priority" item。详见 [B13 详细报告](b13-distributionally-robust-policy-search.md)。
+
 ---
 
 ## 0. 核心研究判断

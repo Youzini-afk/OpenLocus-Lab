@@ -38,6 +38,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b10b-runtime-shadow-replay.md`: [en](en/b10b-runtime-shadow-replay.md) · [zh](zh/b10b-runtime-shadow-replay.md)
 - `b11-prospective-blind-validation.md`: [en](en/b11-prospective-blind-validation.md) · [zh](zh/b11-prospective-blind-validation.md)
 - `b12-mechanism-decomposition.md`: [en](en/b12-mechanism-decomposition.md) · [zh](zh/b12-mechanism-decomposition.md)
+- `b13-distributionally-robust-policy-search.md`: [en](en/b13-distributionally-robust-policy-search.md) · [zh](zh/b13-distributionally-robust-policy-search.md)
 - `b8-lite-medium-matrix-combiner.md`: [en](en/b8-lite-medium-matrix-combiner.md) · [zh](zh/b8-lite-medium-matrix-combiner.md)
 - `b9a-adapter-health-report.md`: [en](en/b9a-adapter-health-report.md) · [zh](zh/b9a-adapter-health-report.md)
 - `b9b-qwen-low-volume-quality-follow-up.md`: [en](en/b9b-qwen-low-volume-quality-follow-up.md) · [zh](zh/b9b-qwen-low-volume-quality-follow-up.md)
