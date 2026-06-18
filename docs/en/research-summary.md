@@ -1165,13 +1165,127 @@ evaluation cannot be done from public aggregates alone: it requires
 paired live downstream agent runs, per-run agent event logs,
 per-run patches/diffs, per-run test execution results, per-run solve
 labels, per-run first-file-before-first-edit events, per-run
-wrong-file-edit annotations, per-run tool-call/token/latency/cost
-rows, per-run isolated fresh workspace proof, per-run randomized arm
-order, and a task oracle/hidden-test manifest, none of which are
-present in current public artifacts. B11 `partial_with_failure` and
-B12/B13/B14/B15 no-go or screen-only statuses are carried forward
-unchanged. See
-[`b16-downstream-agent-evaluation.md`](b16-downstream-agent-evaluation.md).
+ wrong-file-edit annotations, per-run tool-call/token/latency/cost
+ rows, per-run isolated fresh workspace proof, per-run randomized arm
+ order, and a task oracle/hidden-test manifest, none of which are
+ present in current public artifacts. B11 `partial_with_failure` and
+ B12/B13/B14/B15 no-go or screen-only statuses are carried forward
+ unchanged. See
+ [`b16-downstream-agent-evaluation.md`](b16-downstream-agent-evaluation.md).
+
+B17 QuIVer systems track:
+
+```text
+algorithm_spec_id: b17_quiver_systems_track_v0
+claim_level: quiver_systems_track_v0
+replay_and_validation_only: true (no live LLM calls and no live ANN backend bakeoff inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+retrieval_policy_changed: false
+backend_quality_promoted: false
+stage_is_quiver_systems_track: true (B17 stage IS quiver systems track)
+quiver_graph_implemented: false (skeleton performs no QuIVer or Vamana graph implementation)
+ann_backend_bakeoff_performed: false (skeleton performs no ANN backend bakeoff)
+candidate_set_equivalence_validated: false (skeleton validates no candidate-set equivalence)
+metrics_evaluated: false (skeleton; no fake ANN metrics from diagnostics)
+new_provider_calls: 0
+all_stages_pass: false
+stages_evaluated: false
+stages_defined: true
+stage_count: 4
+winner_declared: false
+no_fake_ann_metrics_from_diagnostics: true
+```
+
+B17 is the **QuIVer systems track** phase that follows B16. The goal
+is a **frozen, preregistered backend bakeoff** comparing ANN backend
+candidates on backend systems metrics (latency, memory, build time,
+update cost, index size) **under a frozen candidate-quality policy**
+so backend quality cannot be silently relaxed when comparing systems
+numbers. B17 is a **bounded planning / diagnostic phase**, NOT
+QuIVer production backend, NOT ANN quality promotion, NOT default
+change, NOT EvidenceCore semantics change. Candidate backends are
+FROZEN into reference (`flat_f32_reference`), candidate
+(`hnsw_candidate`, `bq_topk_f32_rerank_candidate`,
+`quiver_vamana_prototype` — the QuIVer/Vamana graph backend end goal,
+**unimplemented**), and optional-store
+(`tdb_vector_candidate`, store/backend candidate only, NOT an
+Evidence source, excluded by default). Candidate-set equivalence
+constraints are FROZEN (`candidate_set_overlap_at_k` ≥ 0.90 at
+K=[10,50,100], `gold_retention_delta` tolerance 0.05,
+`primary_false_positive_delta` guard 0.05, `span_f0_5_delta`
+tolerance 0.05, `citation_validity` = 1.0,
+`stale_evidencecore_rejection_required`,
+`no_default_expansion_required`). Hard gates (FROZEN):
+`quiver_graph_implementation_gate`, `backend_parity_gate`,
+`candidate_set_equivalence_gate`,
+`evidencecore_materialization_gate`, `stale_citation_gate`,
+`privacy_gate`, `promotion_false_gate`. Metric registry (FROZEN, 11
+names): `candidate_set_overlap_at_k`, `gold_retention_delta`,
+`span_f0_5_delta`, `primary_false_positive_delta`, `p50_latency`,
+`p95_latency`, `hot_memory`, `build_time`, `update_cost`,
+`index_size`, `recall_tolerance_violation_count` — every metric
+requires per-backend systems bakeoff inputs (index build records,
+search latency records, hot memory records, index size records,
+update cost records, candidate-set-at-K records, gold retention
+records, span F0.5 records, PFP records, citation validity records,
+stale rejection records, EvidenceCore rejection records, recall
+tolerance violation records, randomized run order proof, isolated
+index workspace proof, shared frozen candidate-quality manifest);
+none can be computed from the existing R33/R34/R36/R24 diagnostics.
+B17 IS the quiver-systems-track *stage*
+(`stage_is_quiver_systems_track=true`), but the shipped skeleton
+performs NO ANN backend bakeoff
+(`ann_backend_bakeoff_performed=false`), NO candidate-set
+equivalence validation
+(`candidate_set_equivalence_validated=false`), NO QuIVer/Vamana
+graph implementation (`quiver_graph_implemented=false`), and NO
+backend quality promotion (`backend_quality_promoted=false`); the
+synthetic-fixture / `--input` stub report sets
+`promotion_ready=false`, `default_should_change=false`,
+`evidencecore_semantics_changed=false`,
+`retrieval_policy_changed=false`, `metrics_evaluated=false`,
+`new_provider_calls=0`, `no_fake_ann_metrics_from_diagnostics=true`
+so the public artifact cannot be misread as an empirical B17 systems
+bakeoff result. **CRITICAL**: the skeleton MUST NOT compute fake
+candidate_set_overlap_at_k / gold_retention_delta / span_f0_5_delta
+/ primary_false_positive_delta / p50_latency / p95_latency /
+hot_memory / build_time / update_cost / index_size /
+recall_tolerance_violation_count metrics from the existing
+R33/R34/R36/R24 diagnostics; the synthetic fixture validates only
+metric NAMES and gates (no per-backend systems bakeoff inputs, no
+computed metric values). Synthetic / stub reports emit only stage
+*definitions* (no per-stage `passes=true` / `candidate_set_overlap_at_k`
+/ `gold_retention_delta` / `p50_latency` / `hot_memory` /
+`build_time` / `index_size`); the skeleton verdict framework emits
+only `insufficient_data` (synthetic fixture) or `not_implemented`
+(ci_ephemeral_records stub) — `success` / `failure` / `partial` are
+reserved for a future empirical
+`ann_backend_bakeoff_performed=true` /
+`candidate_set_equivalence_validated=true` /
+`quiver_graph_implemented=true` path that is NOT present in this
+skeleton. The `--self-test` is read-only (compares in-memory expected
+artifacts to on-disk artifacts, fails on drift, does not mutate
+checked-in artifacts); `--regenerate-artifacts` is the only path
+that mutates checked-in artifacts; `--input` stub requires explicit
+`--out` and refuses to write ANY path inside
+`artifacts/b17_quiver_systems_track/`. The bounded public-systems
+diagnostic carry-forward / no-go screen
+(`eval/b17_public_systems_diagnostic_screen.py`) reads the published
+R33 readiness + R34/R36 anchor-proto + real-provider P3/P4 quiver
+diagnostics + optional R24 QuIVer/TDB/dense probe and emits
+`verdict=no_go_quiver_graph_missing` (or
+`diagnostic_carry_forward_only`) under
+`artifacts/b17_quiver_systems_track/`; it never claims QuIVer
+implementation, never computes an ANN metric from diagnostics, never
+promotes a backend, never changes retrieval policy, and never
+declares a winner. The existing R33/R34/R36/R24 diagnostics are
+**diagnostic-only carry-forward** — they are NOT quality proof and
+NOT promotion evidence; they do NOT implement a QuIVer/Vamana graph
+backend, do NOT contain an HNSW run, and do NOT contain a
+candidate-set equivalence matrix across backends. See
+[`b17-quiver-systems-track.md`](b17-quiver-systems-track.md).
 
 ---
 
