@@ -161,3 +161,45 @@ Interpretation:
 B6E strengthens the balanced-policy hypothesis within the same four-repo public
 universe. It is **not** repo-generalization, not cross-model validation, and not a
 default/promotion result.
+
+## B6F repo-generalization smoke result
+
+B6F reuses the same B6C evaluator and frozen policy spec on a different set of
+four public repo slices. It exists to test whether the B6C/B6E balanced-policy
+hypothesis survives a new repo universe without changing the frozen rules.
+
+Run:
+
+```text
+workflow run: 27735809672
+stage: b6f_repo_generalization_validation
+dataset: ci_smoke
+tasks: 4 new public repo slices x 12 round-robin public-bucket tasks = 48
+model: [mk]Kimi-K2.7-Code
+output mode: tool_call
+claim_level: frozen_policy_fresh_validation
+status: ok
+```
+
+The freshness contract was present and valid, the frozen spec hash matched, and
+`policy_search_performed=false`. Public artifacts still do not expose repo IDs;
+this is reported as a repo-generalization smoke over four distinct public slices.
+
+| Policy | Added gold | Added false | False/gold | Mean SpanF0.5 | Mean PFP | LLM actions | Net span value 2x |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `p25_bucket_routed_v0_plain` | 8 | 24 | 3.000 | 0.0295 | 0.0417 | 47 | -40 |
+| `ambiguous_query_weak_only_default_use_p25_action` | 8 | 20 | 2.500 | 0.0295 | 0.0000 | 31 | -32 |
+| `negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action` | 6 | 9 | 1.500 | 0.0226 | 0.0000 | 6 | -12 |
+
+Interpretation:
+
+* The main balanced-policy candidate again preserved P25's added gold and mean
+  SpanF0.5.
+* It reduced false spans from 24 to 20, removed observed PFP, and reduced
+  estimated LLM actions from 47 to 31.
+* The conservative candidate again reduced false cost more aggressively but lost
+  gold.
+
+B6F is the first repo-generalization smoke supporting the balanced-policy
+hypothesis. It is still single-model and low-n; it is **not** a default change or
+promotion result.

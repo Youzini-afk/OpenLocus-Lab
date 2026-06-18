@@ -74,6 +74,8 @@ B6C 冻结 B6B 识别出的两个候选策略，并定义它们与固定 P25 buc
 
 B6E 把同一冻结策略验证扩大到 48 个 comparable tasks（`27717886432`，四个 public repo slices × 12 个 round-robin tasks）。主 balanced-policy candidate 再次保留了 P25 的 added gold 和 mean SpanF0.5，同时把 false spans 从 17 降到 14，移除了 observed PFP，并把 estimated LLM actions 从 47 降到 31。这增强了同一四仓 public universe 内的 balanced-policy hypothesis，但仍然是单模型结果，不是 repo-generalization，也不是 default change。
 
+B6F 在另一组四个 public repo slices 上复用同一冻结策略（`27735809672`，4 × 12 tasks）。主 balanced-policy candidate 再次保留 P25 的 added gold 和 mean SpanF0.5，同时把 false spans 从 24 降到 20、移除 observed PFP、并把 estimated LLM actions 从 47 降到 31。这是第一个支持该 balanced-policy hypothesis 的 repo-generalization smoke；但它仍然是单模型、低样本，不是 default/promotion。
+
 ## B6D Cross-Adapter Frozen-Policy Validation
 
 B6D 在不改变冻结策略、不重新搜索的前提下，测试 B6C 的冻结策略方向在另一个 model adapter 下是否 quality-interpretable。第一次 live B6D run（`27716082836`）成功完成，但报告 `status=not_quality_interpretable`：GLM-5.2 `json_schema_strict` 的 `schema_valid_rate=0.75`、`infra_failure_rate=0.25`，低于 adapter-health 阈值。因此 direction consistency 是 `not_determinable`，policy-family quality metrics 保持 null。这是 adapter-health evidence，不是对冻结策略的负面质量结论。Output mode 被视为 model-adapter 配置参数，而不是 OpenLocus 算法变量。详见 [B6D 详细报告](b6d-cross-adapter-frozen-validation.md)。

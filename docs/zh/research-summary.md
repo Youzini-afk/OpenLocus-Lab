@@ -320,6 +320,23 @@ strengthens the B6C balanced-policy hypothesis within the same four-repo public
 universe. It is not repo-generalization, not cross-model validation, and not a
 default change.
 
+B6F repo-generalization smoke reused the same frozen policy spec on a different
+set of four public repo slices:
+
+```text
+run: 27735809672 green
+matrix: 4 new public repo slices x 12 tasks = 48 comparable tasks
+model: [mk]Kimi-K2.7-Code tool_call
+claim: frozen_policy_fresh_validation
+search_performed: false
+```
+
+The main balanced-policy candidate again preserved P25's added gold and mean
+SpanF0.5 while reducing false spans (8 gold / 20 false vs P25's 8 / 24),
+removing observed PFP, and reducing estimated LLM actions (31 vs 47). This is the
+first repo-generalization smoke supporting the balanced-policy hypothesis. It is
+still single-model and low-n.
+
 B6D cross-adapter frozen-policy validation:
 
 ```text
