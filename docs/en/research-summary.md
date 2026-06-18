@@ -381,6 +381,25 @@ quality-interpretable thresholds (`schema_valid_rate=0.833`,
 `infra_failure_rate=0.333`). GLM tool-call and Qwen tool-call remain too noisy
 for critical-path validation. See [`b9a-adapter-health-report.md`](b9a-adapter-health-report.md).
 
+B9B Qwen low-volume quality follow-up:
+
+```text
+model: [mk]Qwen3.6-27B
+adapter: json_schema_strict
+matrix: 4 public repo slices x 6 tasks
+execution: sequential jobs
+schema_valid_rate: 1.0
+infra_failure_rate: 0.0
+```
+
+Qwen json_schema_strict produced quality-interpretable live rich-candidate
+results under the low-volume sequential discipline. `llm_span_narrow` reached 7
+added gold / 4 added false, false_per_gold 0.571, mean SpanF0.5 0.2831, and mean
+PFP 0.0625. This promotes Qwen from plumbing-only to a secondary
+quality-interpretable adapter candidate for cautious low-volume follow-up, but it
+is not a default model or output-mode leaderboard result. See
+[`b9b-qwen-low-volume-quality-follow-up.md`](b9b-qwen-low-volume-quality-follow-up.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text
