@@ -458,6 +458,43 @@ but the original B4/B9 aggregate remains unchanged. Fixed RMC variants remain
 `not_supported`. See
 [`b4-b9-model-robust-evidence-conversion.md`](b4-b9-model-robust-evidence-conversion.md).
 
+B10 runtime feature audit + balanced policy v1 freeze:
+
+```text
+algorithm_spec_id: balanced_policy_v1_benchmark_routed
+claim_level: benchmark_routed_algorithm_spec_only
+source frozen candidate: ambiguous_query_weak_only_default_use_p25_action
+frozen spec hash matched: true
+runtime_clean: false
+runtime_feature_only_mode_supported: false
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+model_adapter / output_mode / provider credentials: excluded adapter layer
+```
+
+B10 freezes the B6C main balanced candidate as the algorithm spec
+`balanced_policy_v1_benchmark_routed` and audits the provenance of every routing
+feature the spec reads. `ambiguous_or_query_noise` is `_ambiguous_like or
+_query_noise`: `_ambiguous_like` reads benchmark public labels
+`task_bucket`/`task_risk_tags`, `_query_noise` reads the deterministic runtime
+feature `route_features.query_noise`. The default `use_p25_action` delegates to
+`p25.route_bucket_routed_v0` and inherits P25 route_features
+(`candidate_count`, `candidate_support_exists`). P25 exact/unique short-circuiting
+is currently driven by bucket labels rather than a runtime `unique_symbol_anchor`
+route-feature read.
+`runtime_clean=false` because the `_ambiguous_like` branch needs
+`task_bucket`/`task_risk_tags`, so a runtime-feature-only mode would never fire
+the `ambiguous_query_weak_only` rule. Routing uses no score-private fields
+(`score_private_dependencies_for_routing=[]`); `has_gold`/`score_group`/
+`outcome_metrics` are aggregate-scoring only. This is a benchmark-routed
+research algorithm spec only — not a runtime-feature-only policy, not a default
+change, not a promotion. The next step is `balanced_policy_v1_runtime_shadow`:
+replace the ambiguous bucket/tag branch with pure runtime features
+(`query_noise`, `candidate_support_exists`, anchor disagreement) and run an
+action-agreement replay against this spec. See
+[`b10-runtime-feature-audit.md`](b10-runtime-feature-audit.md).
+
 ---
 
 ## Current status update — 2026-06-13

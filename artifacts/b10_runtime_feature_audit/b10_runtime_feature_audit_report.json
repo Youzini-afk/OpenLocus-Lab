@@ -1,0 +1,132 @@
+{
+  "schema_version": "b10-runtime-feature-audit-report-v0",
+  "generated_by": "b10_runtime_feature_audit",
+  "generated_at": "2026-06-18T00:00:00+00:00",
+  "claim_level": "benchmark_routed_algorithm_spec_only",
+  "not_evidence": true,
+  "candidate_not_fact": true,
+  "llm_output_not_evidence": true,
+  "promotion_ready": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "aggregate_only_public_artifact": true,
+  "self_test": true,
+  "status": "self_test_only",
+  "algorithm_spec_id": "balanced_policy_v1_benchmark_routed",
+  "algorithm_spec_path": "artifacts/b10_runtime_feature_audit/balanced_policy_v1_benchmark_routed.algorithm.json",
+  "frozen_source_candidate": "ambiguous_query_weak_only_default_use_p25_action",
+  "frozen_spec_hash_matched": true,
+  "frozen_candidates_file": "eval/b6c_frozen_candidates.json",
+  "frozen_policy_search_performed": false,
+  "policy_search_performed": false,
+  "runtime_clean": false,
+  "runtime_feature_only_mode_supported": false,
+  "runtime_feature_only_mode_failure_reason": "ambiguous_or_query_noise predicate includes _ambiguous_like, which reads benchmark public labels task_bucket/task_risk_tags; a runtime-feature-only policy without those labels cannot evaluate the predicate",
+  "provenance": {
+    "frozen_candidate": "ambiguous_query_weak_only_default_use_p25_action",
+    "frozen_in": "B6C (eval/b6c_frozen_candidates.json)",
+    "frozen_by": "B6B combined-matrix policy search (leave_one_repo_diagnostic_only)",
+    "validated_by": ["B6C fresh validation run 27706742419", "B6E expanded run 27717886432", "B6F repo-generalization run 27735809672", "B9C Qwen secondary-adapter run 27744695226"],
+    "predicate_sources": {
+      "ambiguous_or_query_noise": "eval/b6_lite_interpretable_policy_search.py::_noisy_or_ambiguous",
+      "always_true": "eval/b6c_frozen_policy_validation.py::PREDICATE_MAP[always_true]"
+    },
+    "action_sources": {
+      "weak_only": "eval/b6_lite_interpretable_policy_search.py::_resolve_outcome (weak_candidate_only)",
+      "use_p25_action": "eval/p25_bucket_policy.py::route_bucket_routed_v0"
+    }
+  },
+  "rule_order_verified": true,
+  "rules": [
+    {
+      "name": "ambiguous_query_weak_only",
+      "predicates": ["ambiguous_or_query_noise"],
+      "action": "weak_only",
+      "is_default": false
+    },
+    {
+      "name": "default_use_p25",
+      "predicates": ["always_true"],
+      "action": "use_p25_action",
+      "is_default": true
+    }
+  ],
+  "predicate_verification": {
+    "ambiguous_or_query_noise": {
+      "resolved_to": "_noisy_or_ambiguous = _ambiguous_like or _query_noise",
+      "ambiguous_like_depends_on": ["task_bucket", "task_risk_tags"],
+      "query_noise_depends_on": ["route_features.query_noise"],
+      "uses_score_private_fields": false,
+      "uses_runtime_features_only": false,
+      "uses_benchmark_public_labels": true
+    },
+    "always_true": {
+      "resolved_to": "lambda _t: True",
+      "depends_on": [],
+      "uses_score_private_fields": false,
+      "uses_runtime_features_only": true,
+      "uses_benchmark_public_labels": false
+    }
+  },
+  "action_verification": {
+    "weak_only": {
+      "provider_call_required": false,
+      "uses_score_private_fields_for_routing": false
+    },
+    "use_p25_action": {
+      "provider_call_required": "conditional",
+      "delegates_to": "eval/p25_bucket_policy.py::route_bucket_routed_v0",
+      "uses_score_private_fields_for_routing": false,
+      "inherited_route_features": [
+        "route_features.candidate_count",
+        "route_features.candidate_support_exists"
+      ],
+      "inherited_benchmark_labels": ["task_bucket", "task_risk_tags"]
+    }
+  },
+  "benchmark_public_dependencies": ["task_bucket", "task_risk_tags"],
+  "deterministic_runtime_dependencies": [
+    "route_features.query_noise",
+    "always_true",
+    "route_features.candidate_count",
+    "route_features.candidate_support_exists"
+  ],
+  "score_private_dependencies_for_routing": [],
+  "score_private_used_for_aggregate_scoring": ["has_gold", "score_group", "outcome_metrics"],
+  "forbidden_public_key_scan_clean": true,
+  "forbidden_public_key_categories_absent": [
+    "task identifier",
+    "repository identifier",
+    "candidate identifier",
+    "file path",
+    "line span",
+    "source snippet",
+    "prompt text",
+    "response text",
+    "gold answer spans",
+    "provider credentials",
+    "provider endpoint",
+    "provider secret",
+    "content hash digest"
+  ],
+  "excluded_adapter_layer": {
+    "model_adapter_excluded": true,
+    "output_mode_excluded": true,
+    "provider_credentials_excluded": true,
+    "provider_endpoints_excluded": true,
+    "provider_secrets_excluded": true
+  },
+  "self_test_checks": {
+    "frozen_spec_hash_matched": true,
+    "rule_order_matched": true,
+    "predicates_matched": true,
+    "actions_matched": true,
+    "runtime_feature_only_mode_would_fail": true,
+    "runtime_clean_is_false": true,
+    "no_forbidden_public_keys": true,
+    "score_private_not_used_for_routing": true,
+    "aggregate_only": true
+  },
+  "next_step": "balanced_policy_v1_runtime_shadow",
+  "next_step_description": "Replace the ambiguous bucket/tag branch of ambiguous_or_query_noise with pure runtime features (query_noise, candidate_support_exists, anchor disagreement) and run an action-agreement replay against this benchmark-routed spec. Goal: a runtime-feature-only balanced policy. This is NOT this spec, NOT a default change, NOT a promotion, and does NOT change EvidenceCore."
+}

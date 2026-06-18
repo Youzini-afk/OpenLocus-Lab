@@ -1,0 +1,127 @@
+{
+  "schema_version": "b10-algorithm-spec-v0",
+  "generated_by": "b10_runtime_feature_audit",
+  "generated_at": "2026-06-18T00:00:00+00:00",
+  "algorithm_spec_id": "balanced_policy_v1_benchmark_routed",
+  "spec_kind": "algorithm_spec",
+  "claim_level": "benchmark_routed_algorithm_spec_only",
+  "not_evidence": true,
+  "candidate_not_fact": true,
+  "llm_output_not_evidence": true,
+  "promotion_ready": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "runtime_clean": false,
+  "runtime_feature_only_mode_supported": false,
+  "runtime_feature_only_mode_failure_reason": "policy predicates depend on benchmark public labels task_bucket/task_risk_tags (via _ambiguous_like); a runtime-feature-only policy without those labels cannot evaluate ambiguous_or_query_noise",
+  "policy_search_performed": false,
+  "frozen_policy_search": true,
+  "source_frozen_candidate": "ambiguous_query_weak_only_default_use_p25_action",
+  "source_frozen_candidates_file": "eval/b6c_frozen_candidates.json",
+  "frozen_spec_hash_matched": true,
+  "description": "Benchmark-routed research algorithm spec freezing the B6C main balanced candidate. Routes ambiguous_or_query_noise tasks to weak_only, otherwise falls back to the P25 bucket-routed default action. It is NOT a runtime-feature-only policy, NOT a default change, and NOT a promotion candidate; it requires benchmark public labels task_bucket/task_risk_tags plus deterministic runtime route_features.",
+  "rules": [
+    {
+      "name": "ambiguous_query_weak_only",
+      "predicates": ["ambiguous_or_query_noise"],
+      "action": "weak_only",
+      "is_default": false
+    },
+    {
+      "name": "default_use_p25",
+      "predicates": ["always_true"],
+      "action": "use_p25_action",
+      "is_default": true
+    }
+  ],
+  "predicate_semantics": {
+    "ambiguous_or_query_noise": {
+      "source": "eval/b6_lite_interpretable_policy_search.py::_noisy_or_ambiguous",
+      "definition": "_ambiguous_like(task) or _query_noise(task)",
+      "components": {
+        "_ambiguous_like": {
+          "source": "eval/b6_lite_interpretable_policy_search.py::_ambiguous_like",
+          "definition": "bool(bucket_labels(task) & {\"ambiguous\",\"hallucination_risk\",\"weak_candidates\"})",
+          "depends_on": ["task_bucket", "task_risk_tags"],
+          "dependency_class": "benchmark_public"
+        },
+        "_query_noise": {
+          "source": "eval/b6_lite_interpretable_policy_search.py::_query_noise",
+          "definition": "bool(float((task.route_features or {}).get('query_noise')) > 0)",
+          "depends_on": ["route_features.query_noise"],
+          "dependency_class": "deterministic_runtime"
+        }
+      }
+    },
+    "always_true": {
+      "source": "eval/b6c_frozen_policy_validation.py::PREDICATE_MAP",
+      "definition": "lambda _t: True",
+      "depends_on": [],
+      "dependency_class": "deterministic_runtime"
+    }
+  },
+  "action_semantics": {
+    "weak_only": {
+      "resolves_to": "plain.outcomes.weak_candidate_only",
+      "provider_call_required": false,
+      "notes": "selects weak candidate only outcome; no LLM call"
+    },
+    "use_p25_action": {
+      "resolves_to": "p25.route_bucket_routed_v0(task, p25.choose_negative_strategy([task]))",
+      "source": "eval/p25_bucket_policy.py::route_bucket_routed_v0",
+      "provider_call_required": "conditional",
+      "notes": "delegates to P25 bucket-routed baseline; may resolve to candidate_baseline (skip LLM), llm_span_narrow, llm_filter, or llm_abstain_filter depending on bucket and anchor signals",
+      "inherited_runtime_dependencies": [
+        "route_features.candidate_count",
+        "route_features.candidate_support_exists"
+      ],
+      "inherited_benchmark_dependencies": [
+        "task_bucket",
+        "task_risk_tags"
+      ]
+    }
+  },
+  "benchmark_public_dependencies": [
+    "task_bucket",
+    "task_risk_tags"
+  ],
+  "deterministic_runtime_dependencies": [
+    "route_features.query_noise",
+    "always_true",
+    "route_features.candidate_count",
+    "route_features.candidate_support_exists"
+  ],
+  "score_private_dependencies_for_routing": [],
+  "score_private_used_for_aggregate_scoring": [
+    "has_gold",
+    "score_group",
+    "outcome_metrics"
+  ],
+  "aggregate_only_public_artifact": true,
+  "excluded_adapter_layer": {
+    "model_adapter_excluded": true,
+    "output_mode_excluded": true,
+    "provider_credentials_excluded": true,
+    "provider_endpoints_excluded": true,
+    "provider_secrets_excluded": true,
+    "explanation": "model adapter, output mode, provider credentials, provider endpoint, and provider secrets are NOT part of this algorithm spec; they are an excluded adapter layer (see b4-b9-model-robust-evidence-conversion.md). Output mode is treated as a model-adapter configuration parameter, not an OpenLocus algorithm variable."
+  },
+  "forbidden_public_key_scan_clean": true,
+  "forbidden_public_key_categories_absent": [
+    "task identifier",
+    "repository identifier",
+    "candidate identifier",
+    "file path",
+    "line span",
+    "source snippet",
+    "prompt text",
+    "response text",
+    "gold answer spans",
+    "provider credentials",
+    "provider endpoint",
+    "provider secret",
+    "content hash digest"
+  ],
+  "next_step": "balanced_policy_v1_runtime_shadow",
+  "next_step_description": "Replace the ambiguous bucket/tag branch of ambiguous_or_query_noise with pure runtime features (query_noise, candidate_support_exists, anchor disagreement) and run an action-agreement replay against this benchmark-routed spec. This is the path to a runtime-feature-only balanced policy; it is NOT this spec."
+}

@@ -467,6 +467,38 @@ but the original B4/B9 aggregate remains unchanged. Fixed RMC variants remain
 `not_supported`. See
 [`b4-b9-model-robust-evidence-conversion.md`](b4-b9-model-robust-evidence-conversion.md).
 
+B10 运行期特征审计 + balanced policy v1 冻结：
+
+```text
+algorithm_spec_id: balanced_policy_v1_benchmark_routed
+claim_level: benchmark_routed_algorithm_spec_only
+source frozen candidate: ambiguous_query_weak_only_default_use_p25_action
+frozen spec hash matched: true
+runtime_clean: false
+runtime_feature_only_mode_supported: false
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+model_adapter / output_mode / provider 凭证: 被排除的 adapter 层
+```
+
+B10 把 B6C 主 balanced candidate 冻结为 algorithm spec
+`balanced_policy_v1_benchmark_routed`，并审计该 spec 实际读取的每一条 routing feature 的
+provenance。`ambiguous_or_query_noise` 即 `_ambiguous_like or _query_noise`：
+`_ambiguous_like` 读取 benchmark 公开标签 `task_bucket`/`task_risk_tags`，`_query_noise`
+读取确定性 runtime feature `route_features.query_noise`。默认 `use_p25_action` 委托给
+`p25.route_bucket_routed_v0`，继承 P25 route_features（`candidate_count`、
+`candidate_support_exists`）。P25 exact/unique 短路当前由 bucket labels 驱动，而不是读取
+runtime `unique_symbol_anchor` route feature。`runtime_clean=false`，因为
+`_ambiguous_like` 分支依赖 `task_bucket`/`task_risk_tags`，runtime-feature-only 模式下
+`ambiguous_query_weak_only` 规则永不触发。路由不使用任何 score-private 字段
+（`score_private_dependencies_for_routing=[]`）；`has_gold`/`score_group`/`outcome_metrics`
+仅用于聚合打分。这是 benchmark-routed 研究 algorithm spec only——不是 runtime-feature-only
+policy、不是 default 变更、不是 promotion。下一步是 `balanced_policy_v1_runtime_shadow`：
+用纯 runtime features（`query_noise`、`candidate_support_exists`、anchor disagreement）
+替换 ambiguous bucket/tag 分支，并对该 spec 做 action-agreement replay。详见
+[`b10-runtime-feature-audit.md`](b10-runtime-feature-audit.md)。
+
 ---
 
 ## Current status update — 2026-06-13
