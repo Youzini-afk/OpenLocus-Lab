@@ -1,0 +1,204 @@
+{
+  "aggregate_only_public_artifact": true,
+  "allowed_verdicts": [
+    "no_go_public_aggregate_only",
+    "insufficient_data_public_aggregate_only"
+  ],
+  "baseline_for_deltas": "p25",
+  "calibrated_model_claim": false,
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "bounded_public_aggregate_feasibility_screen_of_b11_b12_b13_aggregates",
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "framing": {
+    "calibrated_model_claim_claimed": false,
+    "default_readiness_claimed": false,
+    "empirical_uncertainty_calibration_claimed": false,
+    "is_full_b14_uncertainty_calibration": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "future_ephemeral_record_b14_calibration",
+    "runtime_clean_general_algorithm_claimed": false,
+    "signal_strength": "bounded_public_aggregate_feasibility_screen_only",
+    "uncertainty_score_found_claimed": false,
+    "winner_declared_claimed": false
+  },
+  "full_b14_possible_from_public_artifacts": false,
+  "gates_defined": true,
+  "generated_at": "2026-06-18T19:30:37.946131+00:00",
+  "generated_by": "b14_public_aggregate_feasibility_screen",
+  "gold_spans_in_artifact": false,
+  "input_b11_schema": "b11-prospective-matrix-aggregate-report-v0",
+  "input_b11_summary": {
+    "b10b_pending_due_denominator": true,
+    "b10b_runtime_shadow_verdict": "empirical_replay_support_pending",
+    "b11_aggregate_verdict": "partial_with_failure",
+    "b11_aggregate_verdict_reason": "mixed_results_with_failure_threshold_exceeded_on_at_least_one_slice",
+    "b11_baseline_for_deltas": "p25",
+    "b11_deltas_balanced_v1_vs_p25": {
+      "gold_span": -0.002604,
+      "model_calls": -0.354167,
+      "span_f0_5": -0.001899
+    },
+    "b11_policy_under_validation": "balanced_v1",
+    "b11_public_model_family_count": 4,
+    "b11_public_repo_slice_count": 8,
+    "b11_record_count_total": 384,
+    "b11_run_count": 32
+  },
+  "input_b12_screen_schema": "b12-public-aggregate-mechanism-screen-v0",
+  "input_b12_summary": {
+    "H1_ambiguous_routing": {
+      "screen_status": "inconclusive_unavailable_ablation_controls"
+    },
+    "H2_llm_call_reduction": {
+      "screen_status": "reduced_calls_observed_causal_mechanism_inconclusive"
+    },
+    "H3_p25_fallback_sufficiency": {
+      "screen_status": "aggregate_primary_parity_supported_consistent_with_h3"
+    },
+    "H4_model_specific": {
+      "screen_status": "family_gold_spread_not_supported_model_repo_interaction_inconclusive"
+    },
+    "b12_full_replay_possible_from_public_artifact": false,
+    "b12_recommended_next_step": "future_ephemeral_record_b12_replay_or_b13_with_caution"
+  },
+  "input_b13_feas_schema": "b13-public-aggregate-feasibility-screen-v0",
+  "input_b13_summary": {
+    "b13_feasibility_verdict": "no_go_public_aggregate_only",
+    "b13_full_b13_possible_from_public_artifacts": false,
+    "b13_missing_inputs_for_real_b13_count": 7,
+    "b13_policy_found": false,
+    "b13_recommended_next_step": "future_ephemeral_record_b13_replay",
+    "b13_rotations_evaluated": false,
+    "b13_winner_declared": false
+  },
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": true,
+    "all_inputs_baseline_for_deltas_p25": true,
+    "all_inputs_candidate_not_fact": true,
+    "all_inputs_default_should_change_false": true,
+    "all_inputs_evidencecore_semantics_changed_false": true,
+    "all_inputs_new_provider_calls_zero": true,
+    "all_inputs_policy_search_performed_false": true,
+    "all_inputs_policy_under_validation_balanced_v1": true,
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_quality_strategy_tuned_false": true,
+    "b13_input_full_b13_possible_false": true,
+    "b13_input_verdict_is_no_go_or_insufficient": true,
+    "forbidden_public_key_scan_clean": true
+  },
+  "is_full_b14_uncertainty_calibration": false,
+  "llm_output_not_evidence": true,
+  "metrics_defined": true,
+  "metrics_evaluated": false,
+  "missing_inputs_for_real_b14": [
+    {
+      "description": "real B14 needs a per-record uncertainty score (or the raw signals to compute one) for every record; the public B11 aggregate publishes only weighted means and deltas, not per-record uncertainty scores",
+      "gap_id": "no_per_record_uncertainty_scores_in_public_artifact"
+    },
+    {
+      "description": "real B14 needs a per-record binary outcome (was the selected span correct) as the calibration target; the public B11 aggregate publishes only aggregate gold_span counts, not per-record binary outcomes",
+      "gap_id": "no_per_record_outcomes_in_public_artifact"
+    },
+    {
+      "description": "real B14 cross_model_disagreement signals require paired per-record outputs from two or more model families on the SAME record; the public aggregate publishes only per-family rollup deltas, not paired per-record outputs",
+      "gap_id": "no_paired_cross_model_outputs_in_public_artifact"
+    },
+    {
+      "description": "real B14 model_output_structure signals need schema-repair per-call rows (schema_valid, llm_span_narrow_valid, llm_span_within_candidate); the public aggregate does not publish per-call schema-repair rows",
+      "gap_id": "no_schema_repair_per_call_rows_in_public_artifact"
+    },
+    {
+      "description": "real B14 local_candidate_signals need candidate score distributions, entropy, and top1-top2 score gap per record; the public aggregate publishes only candidate_count rollups, not per-record score distributions or entropy",
+      "gap_id": "no_candidate_score_distributions_or_entropy_in_public_artifact"
+    },
+    {
+      "description": "real B14 must split per-record inputs into a stratified calibration and test split by (model_family, repo); the public aggregate does not expose per-record membership, so no calibration or test split can be constructed",
+      "gap_id": "no_calibration_test_split_in_public_artifact"
+    },
+    {
+      "description": "real B14 ECE requires per-record (uncertainty, outcome) pairs binned into 15 equal-width bins over [0,1]; the public aggregate has no per-record pairs, so no ECE bins can be formed and no ECE can be computed",
+      "gap_id": "no_ece_bins_in_public_artifact"
+    },
+    {
+      "description": "real B14 selective_risk and pfp_at_fixed_coverage require per-record pairs ranked by uncertainty at fixed coverage levels; the public aggregate has no per-record pairs, so no fixed-coverage thresholds can be applied",
+      "gap_id": "no_fixed_coverage_thresholds_applicable_in_public_artifact"
+    }
+  ],
+  "new_provider_calls": 0,
+  "no_fake_metrics_from_aggregate_means": true,
+  "not_evidence": true,
+  "per_record_inputs_available": false,
+  "policy_search_performed": false,
+  "policy_under_analysis": "balanced_v1",
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "quality_strategy_tuned": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "recommended_next_step": {
+    "next_step_authorizes_calibrated_model_claim": false,
+    "next_step_authorizes_default_change": false,
+    "next_step_authorizes_empirical_uncertainty_calibration": false,
+    "next_step_authorizes_promotion": false,
+    "next_step_authorizes_runtime_clean_algorithm": false,
+    "primary": "future_ephemeral_record_b14_calibration",
+    "reason": "Run real B14 against ephemeral per-record inputs (uncertainty scores, binary outcomes, paired cross-model outputs, schema-repair rows, candidate score distributions) once available; only that path can perform empirical calibration.",
+    "secondary": "future_ephemeral_record_b13_replay_first"
+  },
+  "rotations_evaluated": false,
+  "run_ids_in_artifact": false,
+  "safety_invariants": {
+    "aggregate_only_public_artifact": true,
+    "default_should_change_false": true,
+    "no_calibrated_model_claim": true,
+    "no_empirical_uncertainty_calibration": true,
+    "no_evidencecore_semantics_change": true,
+    "no_fake_metrics_from_aggregate_means": true,
+    "no_live_llm_calls_by_screen": true,
+    "no_policy_promotion": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_rotations_evaluated": true,
+    "no_run_ids_emitted": true,
+    "no_threshold_tuning": true,
+    "no_uncertainty_score_found": true,
+    "no_winner_declared": true,
+    "promotion_ready_false": true
+  },
+  "schema_version": "b14-public-aggregate-feasibility-screen-v0",
+  "self_test": false,
+  "source_artifact_public_note": "already-published aggregate-only public B11 matrix aggregate, B12 public aggregate screen, and B13 public aggregate feasibility reports; no raw records, paths, prompts, responses, snippets, or private labels read by the screen",
+  "stage_is_uncertainty_calibration": true,
+  "task_ids_in_artifact": false,
+  "testability": {
+    "full_b14_possible_from_public_artifacts": false,
+    "missing_inputs_for_full_b14": [
+      "no_per_record_uncertainty_scores_in_public_artifact",
+      "no_per_record_outcomes_in_public_artifact",
+      "no_paired_cross_model_outputs_in_public_artifact",
+      "no_schema_repair_per_call_rows_in_public_artifact",
+      "no_candidate_score_distributions_or_entropy_in_public_artifact",
+      "no_calibration_test_split_in_public_artifact",
+      "no_ece_bins_in_public_artifact",
+      "no_fixed_coverage_thresholds_applicable_in_public_artifact"
+    ],
+    "note": "Real B14 cannot be replayed from the current public B11, B12, and B13 aggregates. The listed missing inputs are the specific per-record fields required. Only this bounded feasibility or no-go screen is publishable until ephemeral records arrive."
+  },
+  "uncertainty_calibration_performed": false,
+  "uncertainty_score_found": false,
+  "verdict": "no_go_public_aggregate_only",
+  "verdict_reason": "public B11, B12, B13 aggregates lack per-record inputs for real B14 calibration. No empirical B14 calibration; no ECE, risk-coverage, selective risk, or PFP-at-coverage computed; B11 verdict ('partial_with_failure') NOT authorizing promotion.",
+  "winner_declared": false
+}

@@ -835,7 +835,7 @@ verdict framework emits only `insufficient_data` (synthetic fixture) or
 `partial` are reserved for a future empirical `policy_search_performed=true`
 path that is NOT present in this skeleton. The `--self-test` is read-only
 (compares in-memory expected artifacts to on-disk artifacts, fails on drift;
-writes nothing); `--regenerate-artifacts` is the only mutating path. B13
+does not mutate checked-in artifacts); `--regenerate-artifacts` is the only path that mutates checked-in artifacts. B13
 needs P21
 records from B11 live runs (4 model families × 8 repos); the `--input` path
 is a stub (verdict `not_implemented`; real search deferred). The bounded
@@ -851,6 +851,85 @@ research candidates only. B13 is the last "immediate priority" item in the
 B10-B19 Breakthrough Sprint; the remaining items (B14-B19) are second priority
 or parallel tracks. See
 [`b13-distributionally-robust-policy-search.md`](b13-distributionally-robust-policy-search.md).
+
+B14 uncertainty calibration:
+
+```text
+algorithm_spec_id: b14_uncertainty_calibration_v0
+claim_level: uncertainty_calibration_v0
+replay_and_calibration_only: true (no live LLM calls inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+stage_is_uncertainty_calibration: true (B14 stage IS uncertainty calibration)
+uncertainty_calibration_performed: false (skeleton performs no empirical calibration)
+calibrated_model_claim: false (no model is claimed to be calibrated)
+per_record_inputs_available: false (skeleton; no real per-record inputs)
+policy_search_performed: false
+quality_strategy_tuned: false
+metrics_evaluated: false (skeleton; no fake metric values from aggregate means)
+no_fake_metrics_from_aggregate_means: true
+algorithm_spec_has_no_model_names: true (B14 special invariant)
+```
+
+B14 is the **uncertainty calibration** phase that follows B13. The goal is
+**model-independent uncertainty calibration** for the balanced-policy
+candidate: produce an uncertainty score per record (never calibrated to a
+specific model name) from local candidate signals, model output structure,
+and cross-model disagreement, then evaluate that score with risk-coverage,
+selective risk, ECE, and PFP-at-fixed-coverage metrics, with worst-group
+reporting and rotating leave-one-model-family-out validation. The signal
+families are restricted to **NO** benchmark-private labels (`task_bucket`,
+`task_risk_tags`), **NO** score-private fields (`has_gold`, `score_group`,
+`outcome_metrics`), and **NO** raw model names in `algorithm_spec` (B14 uses
+abstract `family_slots` `family_a`/`family_b`/`family_c`/`family_d`). The
+frozen coverage levels are `[0.50, 0.70, 0.90, 0.95, 0.99]`; the ECE bin
+definition is 15 equal-width bins over `[0, 1]`; the split protocol is
+stratified by (model_family, repo) with `calibration_fraction=0.50` /
+`test_fraction=0.50` (recalibration on the calibration split only; the test
+split is held out and reported once). Predeclared success/partial/failure
+criteria use explicit thresholds on ECE on the test split (≤ 0.05),
+selective risk at coverage=0.90 (≤ 0.10), worst-group selective risk at
+coverage=0.90 (≤ 0.15), and a 0.02 approx-equality / strictly-greater
+rotation threshold, plus a `CVaR_20%` worst-group tail average. B14 IS the
+uncertainty-calibration *stage*
+(`stage_is_uncertainty_calibration=true`), but the shipped skeleton performs
+NO empirical uncertainty calibration
+(`uncertainty_calibration_performed=false`); the synthetic / stub report
+sets `calibrated_model_claim=false`, `per_record_inputs_available=false`,
+`uncertainty_score_found=false`, `rotations_evaluated=false`,
+`rotations_defined=true`, `rotation_count=3`, `winner_declared=false`,
+`metrics_evaluated=false`, `no_fake_metrics_from_aggregate_means=true` so
+the public artifact cannot be misread as an empirical B14 calibration.
+**CRITICAL**: the skeleton MUST NOT compute fake ECE / risk-coverage /
+selective-risk / PFP-at-coverage metrics from aggregate means; the
+synthetic fixture validates only metric NAMES and gates (no per-record
+(uncertainty, outcome) pairs, no computed metric values). Synthetic / stub
+reports emit only rotation *definitions* (no per-rotation `passes=true` /
+`test_ece` / `test_selective_risk` / `test_risk_coverage_curve` /
+`test_pfp_at_fixed_coverage` / `delta_vs_reference`); the skeleton verdict
+framework emits only `insufficient_data` (synthetic fixture) or
+`not_implemented` (ci_ephemeral_records stub) — `success` / `failure` /
+`partial` are reserved for a future empirical
+`uncertainty_calibration_performed=true` path that is NOT present in this
+skeleton. The `--self-test` is read-only (compares in-memory expected
+artifacts to on-disk artifacts, fails on drift, does not mutate checked-in artifacts);
+`--regenerate-artifacts` is the only path that mutates checked-in artifacts. The bounded
+public-aggregate feasibility / no-go screen
+(`eval/b14_public_aggregate_feasibility_screen.py`) reads the published B11
+aggregate + B12 public screen + B13 public feasibility and emits
+`verdict=no_go_public_aggregate_only` (or
+`insufficient_data_public_aggregate_only`) under
+`artifacts/b14_uncertainty_calibration/`; it never claims empirical
+calibration, never computes a metric, never selects an uncertainty score,
+and never declares a winner. Real B14 calibration cannot be done from
+public aggregates alone: it requires per-record uncertainty scores,
+per-record binary outcomes, paired cross-model outputs, schema-repair
+per-call rows, and candidate score distributions, none of which are present
+in current public artifacts. B14 results feed into B16 (downstream agent
+evaluation) and future selective-abstention policy work as research
+candidates only. See
+[`b14-uncertainty-calibration.md`](b14-uncertainty-calibration.md).
 
 ---
 

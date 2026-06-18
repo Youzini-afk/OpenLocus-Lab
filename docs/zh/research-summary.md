@@ -815,7 +815,7 @@ per-rotation 的 `passes=true` / `test_worst_group_utility` /
 （ci_ephemeral_records stub）——`success` / `failure` / `partial` 保留给未来
 `policy_search_performed=true` 的 empirical 路径，该路径在当前 skeleton 中
 **不**存在。`--self-test` 为只读（将内存中期望 artifacts 与 on-disk artifacts
-比对，drift 即失败；不写入任何内容）；`--regenerate-artifacts` 为唯一的
+比对，drift 即失败；不修改 checked-in artifacts）；`--regenerate-artifacts` 为唯一会修改 checked-in artifacts 的
 mutating 路径。结果**不**被 promoted（`promotion_ready=false`、
 `default_should_change=false`）。B13 需要 B11 live
 runs 的 P21 records（4 model families × 8 repos）；`--input` 路径为 stub
@@ -830,6 +830,77 @@ candidates 输入 B14（uncertainty calibration）与 B16（downstream agent
 evaluation）。B13 是 B10-B19 Breakthrough Sprint 中最后一个 "immediate
 priority" item；其余 items（B14-B19）为 second priority 或 parallel tracks。详见
 [`b13-distributionally-robust-policy-search.md`](b13-distributionally-robust-policy-search.md)。
+
+B14 uncertainty calibration：
+
+```text
+algorithm_spec_id: b14_uncertainty_calibration_v0
+claim_level: uncertainty_calibration_v0
+replay_and_calibration_only: true（evaluator 内无 live LLM calls）
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+stage_is_uncertainty_calibration: true（B14 stage 即为 uncertainty calibration）
+uncertainty_calibration_performed: false（skeleton 不执行 empirical calibration）
+calibrated_model_claim: false（不声称任何 model 被 calibrated）
+per_record_inputs_available: false（skeleton；无真实 per-record inputs）
+policy_search_performed: false
+quality_strategy_tuned: false
+metrics_evaluated: false（skeleton；不从 aggregate means 伪造 metric values）
+no_fake_metrics_from_aggregate_means: true
+algorithm_spec_has_no_model_names: true（B14 special invariant）
+```
+
+B14 是继 B13 之后的 **uncertainty calibration** 阶段。目标是针对 balanced-
+policy candidate 进行 **model-independent uncertainty calibration**：从 local
+candidate signals、model output structure 与 cross-model disagreement 构建每条
+记录的 uncertainty score（绝不针对特定 model name 进行校准），再用 risk-
+coverage、selective risk、ECE 与 PFP-at-fixed-coverage 指标评估该 score，并
+附 worst-group 报告与 rotating leave-one-model-family-out 验证。signal
+families 受限：**无** benchmark-private labels（`task_bucket`、
+`task_risk_tags`）、**无** score-private fields（`has_gold`、`score_group`、
+`outcome_metrics`）、**无**原始 model names 在 `algorithm_spec` 中（B14 使用
+抽象 `family_slots` `family_a`/`family_b`/`family_c`/`family_d`）。frozen
+coverage levels 为 `[0.50, 0.70, 0.90, 0.95, 0.99]`；ECE bin 定义为 `[0, 1]`
+上 15 个 equal-width bins；split protocol 按 (model_family, repo) 分层，
+`calibration_fraction=0.50` / `test_fraction=0.50`（recalibration 仅在
+calibration split 上；test split held out 并仅报告一次）。predeclared
+success/partial/failure criteria 使用 test split 上 ECE（≤ 0.05）、coverage=0.90
+处 selective risk（≤ 0.10）、coverage=0.90 处 worst-group selective risk
+（≤ 0.15）与 0.02 approx-equality / strictly-greater rotation threshold，并
+附 `CVaR_20%` worst-group tail average。B14 **是** uncertainty-calibration
+*stage*（`stage_is_uncertainty_calibration=true`），但当前 skeleton **不**执行
+任何 empirical uncertainty calibration
+（`uncertainty_calibration_performed=false`）；synthetic / stub 报告设置
+`calibrated_model_claim=false`、`per_record_inputs_available=false`、
+`uncertainty_score_found=false`、`rotations_evaluated=false`、
+`rotations_defined=true`、`rotation_count=3`、`winner_declared=false`、
+`metrics_evaluated=false`、`no_fake_metrics_from_aggregate_means=true`，使该
+公共 artifact 不会被误读为 empirical B14 calibration。**CRITICAL**：skeleton
+**绝不可**从 aggregate means 计算伪造的 ECE / risk-coverage / selective-risk /
+PFP-at-coverage 指标；synthetic fixture 仅验证 metric NAMES 与 gates（无
+per-record (uncertainty, outcome) pairs，无 computed metric values）。synthetic
+/ stub 报告仅发出 rotation *定义*（无 per-rotation 的 `passes=true` /
+`test_ece` / `test_selective_risk` / `test_risk_coverage_curve` /
+`test_pfp_at_fixed_coverage` / `delta_vs_reference`）；skeleton verdict 框架仅
+发出 `insufficient_data`（synthetic fixture）或 `not_implemented`
+（ci_ephemeral_records stub）——`success` / `failure` / `partial` 保留给未来
+`uncertainty_calibration_performed=true` 的 empirical 路径，该路径在当前
+skeleton 中**不**存在。`--self-test` 为只读（将内存中期望 artifacts 与
+on-disk artifacts 比对，drift 即失败，不写入）；`--regenerate-artifacts` 为
+唯一会修改 checked-in artifacts 的路径。`--input` stub 要求显式 `--out`，并拒绝写入 checked-in B14 report。bounded public-aggregate feasibility / no-go screen
+（`eval/b14_public_aggregate_feasibility_screen.py`）读取已发布的 B11
+aggregate + B12 public screen + B13 public feasibility，在
+`artifacts/b14_uncertainty_calibration/` 下发出
+`verdict=no_go_public_aggregate_only`（或
+`insufficient_data_public_aggregate_only`）；它从不声称 empirical
+calibration，从不计算 metric，从不选择 uncertainty score，也从不声明 winner。
+真实的 B14 calibration 无法仅凭公共 aggregates 完成：它需要 per-record
+uncertainty scores、per-record binary outcomes、paired cross-model outputs、
+schema-repair per-call rows 与 candidate score distributions，这些在当前公共
+artifacts 中均不存在。B14 结果作为 research candidates 仅输入 B16（downstream
+agent evaluation）与未来 selective-abstention policy 工作。详见
+[`b14-uncertainty-calibration.md`](b14-uncertainty-calibration.md)。
 
 ---
 
