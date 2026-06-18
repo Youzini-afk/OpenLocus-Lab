@@ -21,6 +21,7 @@ on:
           - b6_lite_policy_search
           - b6b_combined_policy_search
           - b6c_frozen_policy_validation
+          - b6f_repo_generalization_validation
           - b6d_cross_adapter_frozen_validation
           - p51c_planner
           - all_smoke
@@ -213,7 +214,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -280,10 +281,10 @@ jobs:
           if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", repo_id):
               raise SystemExit("repo_id must match [A-Za-z0-9_-]{1,64}")
           views = getenv("INPUT_VIEWS", "path_plus_symbol")
-          if stage in {"p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner"} and views == "path_plus_symbol":
+          if stage in {"p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner"} and views == "path_plus_symbol":
               views = "pack2_evidence_sketch,atom_signature"
           view_list = [view.strip() for view in views.split(",") if view.strip()]
-          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner"} else r32_allowed_views
+          allowed_views = p21_allowed_views if stage in {"p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner"} else r32_allowed_views
           if not view_list or any(view not in allowed_views for view in view_list):
               raise SystemExit("unsupported views/strategies for selected stage")
           views = ",".join(view_list)
@@ -292,7 +293,7 @@ jobs:
           max_files_per_repo = positive_int("INPUT_MAX_FILES_PER_REPO", 3000)
           max_stress_tasks = positive_int("INPUT_MAX_STRESS_TASKS", 100)
           llm_output_mode = getenv("INPUT_LLM_OUTPUT_MODE", "json_object")
-          if stage in {"b6b_combined_policy_search", "b6c_frozen_policy_validation"}:
+          if stage in {"b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation"}:
               llm_output_mode = "tool_call"
           if stage == "b6d_cross_adapter_frozen_validation":
               llm_output_mode = "json_schema_strict"
@@ -306,7 +307,7 @@ jobs:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
-              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6d_cross_adapter_frozen_validation", "all_smoke"}
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
               if not embedding_provider:
                   raise SystemExit("unsupported embedding provider variable")
@@ -924,8 +925,8 @@ jobs:
           fi
           "${b6b_args[@]}"
 
-      - name: B6C frozen-policy fresh validation
-        if: ${{ inputs.stage == 'b6c_frozen_policy_validation' }}
+      - name: B6C/B6F frozen-policy fresh validation
+        if: ${{ inputs.stage == 'b6c_frozen_policy_validation' || inputs.stage == 'b6f_repo_generalization_validation' }}
         env:
           OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
           OPENLOCUS_LLM_WORKFLOW_DISPATCH: ${{ steps.plan.outputs.allow_remote }}
@@ -961,12 +962,22 @@ jobs:
           if [[ "$ALLOW_REMOTE" == "1" ]]; then
             base_cmd+=(--allow-remote-embedding --allow-remote-llm)
           fi
-          b6c_root="$RUNNER_TEMP/b6c_frozen_policy_validation"
+          if [[ "${{ inputs.stage }}" == "b6f_repo_generalization_validation" ]]; then
+            repo_set="go_cobra py_httpx js_axios rust_mdbook"
+            out_json="artifacts/real_provider_ci/b6f_repo_generalization_validation_report.json"
+            out_doc="docs/real-provider-ci/b6f-repo-generalization-validation.md"
+            b6c_root="$RUNNER_TEMP/b6f_repo_generalization_validation"
+          else
+            repo_set="py_flask js_express go_gin rust_ripgrep"
+            out_json="artifacts/real_provider_ci/b6c_frozen_policy_validation_report.json"
+            out_doc="docs/real-provider-ci/b6c-frozen-policy-validation.md"
+            b6c_root="$RUNNER_TEMP/b6c_frozen_policy_validation"
+          fi
           rm -rf "$b6c_root"
           mkdir -p "$b6c_root"
           manifest_records_jsonl="$b6c_root/manifest_records.jsonl"
           : > "$manifest_records_jsonl"
-          for repo_id in py_flask js_express go_gin rust_ripgrep; do
+          for repo_id in $repo_set; do
             repo_work="$b6c_root/$repo_id"
             mkdir -p "$repo_work/corpus" "$repo_work/tasks"
             if [[ "$DATASET" == "self_test" ]]; then
@@ -1029,7 +1040,7 @@ jobs:
           with open("$manifest_path", "w", encoding="utf-8") as f:
               json.dump(manifest, f, indent=2)
           PY
-          b6c_args=(python3 eval/b6c_frozen_policy_validation.py --paired-records-manifest "$manifest_path" --out artifacts/real_provider_ci/b6c_frozen_policy_validation_report.json --doc docs/real-provider-ci/b6c-frozen-policy-validation.md)
+          b6c_args=(python3 eval/b6c_frozen_policy_validation.py --paired-records-manifest "$manifest_path" --out "$out_json" --doc "$out_doc")
           if [[ "$DATASET" == "self_test" ]]; then
             b6c_args+=(--mark-self-test)
           fi
@@ -1473,7 +1484,7 @@ jobs:
                       for token in ["task_id", "candidate_id", "repo_id", "content_sha", "decision_records", "candidate_meta", "score_group"]:
                           if token in text:
                               raise SystemExit(f"{b6b_doc} contains banned token {token}")
-              if json_path.name == "b6c_frozen_policy_validation_report.json":
+              if json_path.name in {"b6c_frozen_policy_validation_report.json", "b6f_repo_generalization_validation_report.json"}:
                   if data.get("schema_version") != "b6c-frozen-policy-validation-v0":
                       raise SystemExit(f"{json_path} schema version mismatch")
                   if data.get("status") not in {"ok", "self_test_only", "not_quality_interpretable", "blocked_insufficient_repos", "blocked_mixed_model_mode_pack", "blocked_task_set_mismatch", "blocked_freshness_contract"}:
@@ -1551,7 +1562,7 @@ jobs:
                           for idx, value in enumerate(obj):
                               walk_b6c(value, prefix + str(idx) + ".")
                   walk_b6c(data)
-                  b6c_doc = pathlib.Path("docs/real-provider-ci/b6c-frozen-policy-validation.md")
+                  b6c_doc = pathlib.Path("docs/real-provider-ci/b6f-repo-generalization-validation.md" if json_path.name.startswith("b6f_") else "docs/real-provider-ci/b6c-frozen-policy-validation.md")
                   if b6c_doc.exists():
                       text = b6c_doc.read_text(encoding="utf-8")
                       if re.search(r"(api_key|base_url|authorization)\s*[:=]", text, re.I):
@@ -2754,7 +2765,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
-        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' }}
+        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
@@ -2839,6 +2850,24 @@ jobs:
           path: |
             artifacts/real_provider_ci/b6c_frozen_policy_validation_report.json
             docs/real-provider-ci/b6c-frozen-policy-validation.md
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !**/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload B6F repo-generalization validation artifacts
+        if: ${{ inputs.stage == 'b6f_repo_generalization_validation' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/b6f_repo_generalization_validation_report.json
+            docs/real-provider-ci/b6f-repo-generalization-validation.md
             !artifacts/real_provider_ci/**/labels/**
             !artifacts/real_provider_ci/**/corpus/**
             !artifacts/real_provider_ci/*label*
