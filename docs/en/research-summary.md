@@ -931,6 +931,125 @@ evaluation) and future selective-abstention policy work as research
 candidates only. See
 [`b14-uncertainty-calibration.md`](b14-uncertainty-calibration.md).
 
+B15 context pack policy:
+
+```text
+algorithm_spec_id: b15_context_pack_policy_v0
+claim_level: context_pack_policy_v0
+replay_and_validation_only: true (no live LLM calls inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+stage_is_context_pack_policy: true (B15 stage IS context pack policy)
+pack_policy_learned: false (skeleton performs no PackPolicy learning)
+atom_ablation_performed: false (skeleton performs no empirical atom ablation)
+per_record_inputs_available: false (skeleton; no real per-record inputs)
+policy_search_performed: false
+quality_strategy_tuned: false
+new_provider_calls: 0
+candidate_policy_frozen: false
+stages_evaluated: false
+stages_defined: true
+stage_count: 4
+winner_declared: false
+metrics_evaluated: false (skeleton; no fake atom-effect values from aggregate means)
+no_fake_atom_effects_from_aggregate_means: true
+algorithm_spec_has_no_model_names: true (B15 special invariant)
+```
+
+B15 is the **context pack policy** phase that follows B14. The goal is a
+**frozen, preregistered PackPolicy** mapping
+`(role, runtime_state, model_profile)` to a deterministic **atom set**
+(the pack-layout atoms a context pack should expose), validated
+against per-record pack-atom flags + per-record outcomes + role +
+runtime_state + model_profile + group membership from B11/B13 live
+runs. B15 is a **bounded planning / feasibility phase**, NOT an
+empirical atom-level ablation. Roles are FROZEN (`span_narrow`,
+`filter_reject`, `request_more_context`, `source_test_disambiguation`);
+the atom registry is FROZEN (`signature`, `matched_lines`,
+`raw_snippet`, `neighbor_context`, `scores`, `provenance`,
+`hard_distractor`, `same_file_competitor`, `path_kind_flag`); the
+runtime_state contract is label-free and model-name-free; the
+model_profile abstraction uses abstract capability slots
+(`profile_slot_a`..`profile_slot_d`) + capability descriptors only —
+**NO** raw model names in `algorithm_spec` (B15 uses abstract
+`abstract_profile_slots`, never `kimi`/`qwen`/`deepseek`/`glm`). The
+experimental structure is FROZEN into 4 stages: `no_llm_feasibility` →
+`fractional_factorial_live_atom_screen` (resolution-IV fraction over
+the atom registry, no full 2^9 factorial) → `freeze_candidate_policy`
+→ `fresh_validation` (stratified by `(model_family, repo, role)` with
+`atom_screen_fraction=0.50` / `fresh_validation_fraction=0.50`, held
+out and reported once). Hard gates (FROZEN): `privacy_gate`,
+`leakage_gate`, `adapter_health_gate`,
+`randomization_balance_gate`, `denominator_gate` (min 30 per cell),
+`token_budget_gate`, `promotion_false_gate`. Metric registry (FROZEN,
+9 names): `atom_effect_per_atom`, `role_pack_outcome`,
+`runtime_state_pack_outcome`, `model_profile_pack_outcome`,
+`worst_group_pack_outcome`, `cvar_20_pack_outcome`,
+`token_budget_parity`, `denominator_per_atom_role_model`,
+`randomization_balance_per_arm` — every metric requires per-record
+(atom_flag, outcome, role, runtime_state, model_profile) tuples;
+none can be computed from aggregate means. Predeclared
+success/partial/failure criteria use explicit thresholds on
+fresh-validation-split per-role pack-outcome improvement (≥ 0.02),
+worst-group pack-outcome regression (≤ 0.15), denominator
+(≥ 30 per cell), randomization balance (≤ 0.05 imbalance),
+token-budget match tolerance (0.10), plus a `CVaR_20%` worst-group
+tail average. B15 IS the context-pack-policy *stage*
+(`stage_is_context_pack_policy=true`), but the shipped skeleton
+performs NO empirical PackPolicy learning (`pack_policy_learned=false`)
+and NO empirical atom ablation (`atom_ablation_performed=false`); the
+synthetic / stub report sets `per_record_inputs_available=false`,
+`candidate_policy_frozen=false`, `stages_evaluated=false`,
+`stages_defined=true`, `stage_count=4`, `winner_declared=false`,
+`metrics_evaluated=false`, `no_fake_atom_effects_from_aggregate_means=true`
+so the public artifact cannot be misread as an empirical B15
+PackPolicy result. **CRITICAL**: the skeleton MUST NOT compute fake
+atom-effect / role-pack-outcome / worst-group-pack-outcome metrics
+from aggregate means; the synthetic fixture validates only metric
+NAMES and gates (no per-record (atom_flag, outcome) pairs, no
+computed metric values). Synthetic / stub reports emit only stage
+*definitions* (no per-stage `passes=true` /
+`atom_effect_per_atom` / `role_pack_outcome` /
+`worst_group_pack_outcome`); the skeleton verdict framework emits
+only `insufficient_data` (synthetic fixture) or `not_implemented`
+(ci_ephemeral_records stub) — `success` / `failure` / `partial` are
+reserved for a future empirical `atom_ablation_performed=true` /
+`pack_policy_learned=true` path that is NOT present in this
+skeleton. The `--self-test` is read-only (compares in-memory expected
+artifacts to on-disk artifacts, fails on drift, does not mutate
+checked-in artifacts); `--regenerate-artifacts` is the only path that
+mutates checked-in artifacts; `--input` stub requires explicit
+`--out` and refuses to write the canonical checked-in B15 report. The
+bounded public-aggregate prior / no-go screen
+(`eval/b15_public_aggregate_prior_screen.py`) reads the published B2
+contrastive-pack experiment (existence only), the B14 public-
+aggregate feasibility report, and — when present — the B4-B9 / P21-G /
+P49 public aggregates, and emits
+`verdict=prior_screen_only` (or `no_go_public_aggregate_only` when B2
+is missing) under `artifacts/b15_context_pack_policy/`; it never
+claims empirical PackPolicy learning, never computes an atom-effect
+metric, never freezes a candidate policy, and never declares a winner.
+The published B2 contrastive-pack experiment is a single-model,
+low-N (24 tasks per layout), aggregate-only pack-layout comparison;
+it is usable ONLY as a
+`low_n_single_model_aggregate_directional_prior`
+(`b2_prior_usable=true`,
+`b2_prior_claim_level=low_n_single_model_aggregate_directional_prior`),
+NOT as atom-level causality, role-specific PackPolicy, calibrated
+policy, cross-model robustness, a hard-distractor general rule, a
+scores/provenance general win, a default change, a promotion, or an
+EvidenceCore change. Real B15 PackPolicy validation cannot be done
+from public aggregates alone: it requires per-record pack atom flags,
+per-record outcomes, role-specific paired outputs, model_profile
+paired blocks, group membership, randomized atom assignment,
+randomization balance stats, denominator-by-atom/role/model cells,
+and token-budget-matched controls, none of which are present in
+current public artifacts. B15 results feed into B16 (downstream agent
+evaluation) and future context-pack routing work as research
+candidates only. See
+[`b15-context-pack-policy.md`](b15-context-pack-policy.md).
+
 ---
 
 ## Current status update — 2026-06-13

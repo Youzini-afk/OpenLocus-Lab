@@ -1,0 +1,280 @@
+{
+  "aggregate_only_public_artifact": true,
+  "allowed_verdicts": [
+    "no_go_public_aggregate_only",
+    "prior_screen_only"
+  ],
+  "atom_ablation_performed": false,
+  "atom_level_inference_possible": false,
+  "b2_prior_claim_level": "low_n_single_model_aggregate_directional_prior",
+  "b2_prior_usable": true,
+  "baseline_for_deltas": "p25",
+  "calibration_possible": false,
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "candidate_policy_frozen": false,
+  "claim_level": "bounded_public_aggregate_prior_screen_of_b2_b14_and_optional_aggregates",
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "framing": {
+    "atom_ablation_claimed": false,
+    "atom_level_causality_claimed": false,
+    "calibrated_policy_claimed": false,
+    "candidate_policy_frozen_claimed": false,
+    "cross_model_robustness_claimed": false,
+    "default_readiness_claimed": false,
+    "empirical_pack_policy_learning_claimed": false,
+    "evidencecore_change_claimed": false,
+    "hard_distractor_general_rule_claimed": false,
+    "is_full_b15_pack_policy_validation": false,
+    "pack_policy_promotion_claimed": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "future_ephemeral_record_b15_pack_policy_validation",
+    "role_specific_policy_claimed": false,
+    "runtime_clean_general_algorithm_claimed": false,
+    "scores_provenance_general_win_claimed": false,
+    "signal_strength": "bounded_public_aggregate_prior_screen_only",
+    "winner_declared_claimed": false
+  },
+  "full_b15_possible_from_public_artifacts": false,
+  "gates_defined": true,
+  "generated_at": "2026-06-18T19:56:04.007435+00:00",
+  "generated_by": "b15_public_aggregate_prior_screen",
+  "gold_spans_in_artifact": false,
+  "input_b14_feas_schema": "b14-public-aggregate-feasibility-screen-v0",
+  "input_b14_summary": {
+    "b14_calibrated_model_claim": false,
+    "b14_feasibility_verdict": "no_go_public_aggregate_only",
+    "b14_full_b14_possible_from_public_artifacts": false,
+    "b14_metrics_evaluated": false,
+    "b14_missing_inputs_for_real_b14_count": 8,
+    "b14_per_record_inputs_available": false,
+    "b14_recommended_next_step": "future_ephemeral_record_b14_calibration",
+    "b14_rotations_evaluated": false,
+    "b14_uncertainty_calibration_performed": false,
+    "b14_uncertainty_score_found": false
+  },
+  "input_b2_summary": {
+    "available": true,
+    "claim_level": "low_n_single_model_aggregate_directional_prior",
+    "usable_as_atom_causality": false,
+    "usable_as_calibrated_policy": false,
+    "usable_as_cross_model_robustness": false,
+    "usable_as_default_change": false,
+    "usable_as_evidencecore_change": false,
+    "usable_as_hard_distractor_general_rule": false,
+    "usable_as_promotion": false,
+    "usable_as_role_specific_policy": false,
+    "usable_as_scores_provenance_general_win": false
+  },
+  "input_b4_b9_schema": "b4-b9-model-robust-evidence-conversion-v0",
+  "input_b4_b9_summary": {
+    "aggregate_only_public_artifact": true,
+    "available": true,
+    "candidate_not_fact": null,
+    "default_should_change": false,
+    "evidencecore_semantics_changed": false,
+    "new_provider_calls": null,
+    "policy_search_performed": null,
+    "promotion_ready": false,
+    "quality_strategy_tuned": null,
+    "schema_version": "b4-b9-model-robust-evidence-conversion-v0"
+  },
+  "input_p21_g_embed_schema": "p21-g1e-embedding-context-v1",
+  "input_p21_g_embed_summary": {
+    "aggregate_only_public_artifact": null,
+    "available": true,
+    "candidate_not_fact": true,
+    "default_should_change": false,
+    "evidencecore_semantics_changed": false,
+    "new_provider_calls": null,
+    "policy_search_performed": null,
+    "promotion_ready": false,
+    "quality_strategy_tuned": null,
+    "schema_version": "p21-g1e-embedding-context-v1"
+  },
+  "input_p49_scaffold_schema": "p49-contrastive-candidate-pack-scaffold-v1",
+  "input_p49_summary": {
+    "aggregate_only_public_artifact": true,
+    "available": true,
+    "candidate_not_fact": true,
+    "default_should_change": false,
+    "evidencecore_semantics_changed": false,
+    "new_provider_calls": null,
+    "policy_search_performed": null,
+    "promotion_ready": false,
+    "quality_strategy_tuned": null,
+    "schema_version": "p49-contrastive-candidate-pack-scaffold-v1"
+  },
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": false,
+    "all_inputs_aggregate_only_public_artifact_reasons": [
+      "p21_g_embed has aggregate_only_public_artifact=None (expected True)"
+    ],
+    "all_inputs_candidate_not_fact": false,
+    "all_inputs_candidate_not_fact_reasons": [
+      "b4_b9 has candidate_not_fact=None (expected True)"
+    ],
+    "all_inputs_default_should_change_false": true,
+    "all_inputs_evidencecore_semantics_changed_false": true,
+    "all_inputs_new_provider_calls_zero": false,
+    "all_inputs_new_provider_calls_zero_reasons": [
+      "b4_b9 has new_provider_calls=None (expected 0)",
+      "p21_g_embed has new_provider_calls=None (expected 0)",
+      "p49 has new_provider_calls=None (expected 0)"
+    ],
+    "all_inputs_policy_search_performed_false": false,
+    "all_inputs_policy_search_performed_false_reasons": [
+      "b4_b9 has policy_search_performed=None (expected False)",
+      "p21_g_embed has policy_search_performed=None (expected False)",
+      "p49 has policy_search_performed=None (expected False)"
+    ],
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_quality_strategy_tuned_false": false,
+    "all_inputs_quality_strategy_tuned_false_reasons": [
+      "b4_b9 has quality_strategy_tuned=None (expected False)",
+      "p21_g_embed has quality_strategy_tuned=None (expected False)",
+      "p49 has quality_strategy_tuned=None (expected False)"
+    ],
+    "b14_input_full_b14_possible_false": true,
+    "b14_input_verdict_is_no_go_or_insufficient": true,
+    "forbidden_public_key_scan_clean": true,
+    "optional_inputs_guarded_when_missing": true
+  },
+  "is_full_b15_pack_policy_validation": false,
+  "llm_output_not_evidence": true,
+  "metrics_defined": true,
+  "metrics_evaluated": false,
+  "missing_inputs_for_real_b15": [
+    {
+      "description": "real B15 needs per-record pack atom flags (which atoms were present in the pack sent to the model) for every record; the public B2 + B14 + B4-B9 + P21-G + P49 aggregates publish only aggregate counters, not per-record atom flags",
+      "gap_id": "no_per_record_pack_atom_flags_in_public_artifact"
+    },
+    {
+      "description": "real B15 needs a per-record binary outcome (was the selected span / candidate correct) as the validation target; the public aggregates publish only aggregate gold span counts, not per-record binary outcomes",
+      "gap_id": "no_per_record_outcomes_in_public_artifact"
+    },
+    {
+      "description": "real B15 PackPolicy is role-indexed (span_narrow, filter_reject, request_more_context, source_test_disambiguation); the public aggregates do not publish role-specific paired outputs for the same record",
+      "gap_id": "no_role_specific_paired_outputs_in_public_artifact"
+    },
+    {
+      "description": "real B15 model_profile abstraction requires paired blocks of the same record answered under different abstract capability profiles; the public aggregates publish only per-family rollups, not paired capability-profile blocks",
+      "gap_id": "no_model_profile_paired_blocks_in_public_artifact"
+    },
+    {
+      "description": "real B15 atom-effect estimation requires randomized atom on or off assignment per record; the public aggregates have no randomized atom assignment, so no causal atom effect can be estimated",
+      "gap_id": "no_randomized_atom_assignment_in_public_artifact"
+    },
+    {
+      "description": "real B15 randomization-balance gate requires per-arm covariate balance stats; the public aggregates publish no randomization balance stats",
+      "gap_id": "no_randomization_balance_stats_in_public_artifact"
+    },
+    {
+      "description": "real B15 denominator gate requires denominator counts per (atom, role, model_profile) cell; the public aggregates publish no such denominators, so no small-denominator guard is possible",
+      "gap_id": "no_denominator_by_atom_role_model_in_public_artifact"
+    },
+    {
+      "description": "real B15 token-budget gate requires token-budget-matched control packs; the public aggregates publish no matched controls, so atom effects cannot be deconfounded from pack size",
+      "gap_id": "no_token_budget_matched_controls_in_public_artifact"
+    },
+    {
+      "description": "real B15 must split per-record inputs into an atom-screen split and a fresh-validation split stratified by (model_family, repo, role); the public aggregates do not expose per-record membership, so no validation split can be constructed",
+      "gap_id": "no_fresh_validation_split_in_public_artifact"
+    },
+    {
+      "description": "real B15 PackPolicy is indexed by runtime_state per record (candidate pool shape, score distribution, schema-repair state); the public aggregates publish no per-record runtime_state, so no per-record PackPolicy row can be formed",
+      "gap_id": "no_runtime_state_per_record_in_public_artifact"
+    },
+    {
+      "description": "real B15 worst-group reporting requires group membership for worst-group split (model_family x repo x role); the public aggregates publish no per-record group membership, so no worst-group split can be constructed",
+      "gap_id": "no_group_membership_for_worst_group_split_in_public_artifact"
+    }
+  ],
+  "new_live_runs_required": true,
+  "new_provider_calls": 0,
+  "no_fake_atom_effects_from_aggregate_means": true,
+  "not_evidence": true,
+  "pack_policy_learned": false,
+  "pack_policy_promotion_declared": false,
+  "per_record_inputs_available": false,
+  "policy_search_performed": false,
+  "policy_under_analysis": "balanced_v1",
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "quality_strategy_tuned": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "recommended_next_step": {
+    "next_step_authorizes_atom_ablation": false,
+    "next_step_authorizes_default_change": false,
+    "next_step_authorizes_empirical_pack_policy_validation": false,
+    "next_step_authorizes_pack_policy_promotion": false,
+    "next_step_authorizes_promotion": false,
+    "next_step_authorizes_runtime_clean_algorithm": false,
+    "primary": "future_ephemeral_record_b15_pack_policy_validation",
+    "reason": "Run real B15 against ephemeral per-record inputs (pack atom flags, outcomes, role paired outputs, model_profile paired blocks, randomized atom assignment, denominator cells, token-budget controls) when available; that path performs empirical validation",
+    "secondary": "future_ephemeral_record_b14_calibration_first"
+  },
+  "role_specific_policy_possible": false,
+  "run_ids_in_artifact": false,
+  "safety_invariants": {
+    "aggregate_only_public_artifact": true,
+    "atom_level_inference_possible_false": true,
+    "b2_prior_usable_only_as_directional_prior": true,
+    "calibration_possible_false": true,
+    "default_should_change_false": true,
+    "new_live_runs_required_true": true,
+    "no_atom_ablation": true,
+    "no_candidate_policy_frozen": true,
+    "no_empirical_pack_policy_learning": true,
+    "no_evidencecore_semantics_change": true,
+    "no_fake_atom_effects_from_aggregate_means": true,
+    "no_live_llm_calls_by_screen": true,
+    "no_pack_policy_promotion": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_run_ids_emitted": true,
+    "no_stages_evaluated": true,
+    "no_threshold_tuning": true,
+    "no_winner_declared": true,
+    "promotion_ready_false": true,
+    "role_specific_policy_possible_false": true
+  },
+  "schema_version": "b15-public-aggregate-prior-screen-v0",
+  "self_test": false,
+  "source_artifact_public_note": "already-published aggregate-only public B2 contrastive-pack experiment doc (existence only) and B14 public aggregate feasibility report; no raw records, paths, prompts, responses, snippets, or private labels read by the screen",
+  "stage_is_context_pack_policy": true,
+  "stages_evaluated": false,
+  "task_ids_in_artifact": false,
+  "testability": {
+    "full_b15_possible_from_public_artifacts": false,
+    "missing_inputs_for_full_b15": [
+      "no_per_record_pack_atom_flags_in_public_artifact",
+      "no_per_record_outcomes_in_public_artifact",
+      "no_role_specific_paired_outputs_in_public_artifact",
+      "no_model_profile_paired_blocks_in_public_artifact",
+      "no_randomized_atom_assignment_in_public_artifact",
+      "no_randomization_balance_stats_in_public_artifact",
+      "no_denominator_by_atom_role_model_in_public_artifact",
+      "no_token_budget_matched_controls_in_public_artifact",
+      "no_fresh_validation_split_in_public_artifact",
+      "no_runtime_state_per_record_in_public_artifact",
+      "no_group_membership_for_worst_group_split_in_public_artifact"
+    ],
+    "note": "Real B15 cannot be replayed from the current public B2 + B14 + B4-B9 + P21-G + P49 aggregates. The listed missing inputs are the specific per-record fields required. Only this bounded prior or no-go screen is publishable until ephemeral records arrive."
+  },
+  "verdict": "prior_screen_only",
+  "verdict_reason": "B2 is low_n_single_model_aggregate_directional_prior only; public aggregates lack per-record pack atom flags, outcomes, and randomized atom assignment. No empirical B15 PackPolicy learning; no atom ablation; B14 'no_go_public_aggregate_only' not promoting",
+  "winner_declared": false
+}
