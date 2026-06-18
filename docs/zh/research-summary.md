@@ -409,6 +409,23 @@ quality-interpretable adapter candidate for cautious low-volume follow-up, but i
 is not a default model or output-mode leaderboard result. See
 [`b9b-qwen-low-volume-quality-follow-up.md`](b9b-qwen-low-volume-quality-follow-up.md).
 
+B9C Qwen frozen-policy validation:
+
+```text
+run: 27744695226 green
+adapter: Qwen3.6-27B json_schema_strict
+status: ok
+quality_interpretable: true
+direction_consistency: consistent_with_kimi
+```
+
+B9C reused the B6C frozen balanced policy under the health-stable Qwen adapter.
+The balanced policy preserved P25's added gold and mean SpanF0.5 while reducing
+false spans from 5 to 4, removing observed PFP, and cutting estimated LLM actions
+from 24 to 12. This is a low-n smoke, but it is the first secondary-adapter
+support for the balanced-policy direction. See
+[`b9c-qwen-frozen-policy-validation.md`](b9c-qwen-frozen-policy-validation.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text

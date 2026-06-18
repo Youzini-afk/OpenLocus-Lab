@@ -92,6 +92,10 @@ B9A 用 sequential small live runs 筛查 GLM-5.2 和 Qwen3.6-27B adapter profil
 
 B9B 在 Qwen3.6-27B 已通过 health screen 的 `json_schema_strict` adapter 下，顺序运行低流量 P21 rich-candidate jobs。该 adapter 继续保持健康（`schema_valid_rate=1.0`，`infra_failure_rate=0.0`），并产出 quality-interpretable 的 span-narrow 信号：7 added gold / 4 added false，false_per_gold 0.571，mean SpanF0.5 0.2831，mean PFP 0.0625。因此在这个 adapter profile 下，Qwen 不应再只被视为 plumbing/rate-limit evidence；但这仍是小规模单 adapter follow-up，不是 default model，也不是 output-mode leaderboard 结果。详见 [B9B 详细报告](b9b-qwen-low-volume-quality-follow-up.md)。
 
+## B9C Qwen Frozen-Policy Validation
+
+B9C 在 Qwen3.6-27B `json_schema_strict` adapter 下验证 B6C 冻结 balanced policy。Run `27744695226` 成功完成，且 `quality_interpretable=true`、`direction_consistency=consistent_with_kimi`。Balanced frozen policy 保留了 P25 的 6 个 added gold 和 mean SpanF0.5，同时把 false spans 从 5 降到 4，移除 observed PFP，并把 estimated LLM actions 从 24 降到 12。这是 balanced-policy direction 的第一个 secondary-adapter 支持，但仍是 low-n smoke，不是 default/promotion 结果。详见 [B9C 详细报告](b9c-qwen-frozen-policy-validation.md)。
+
 ## B4/B9 模型稳健证据转换
 
 B4/B9 将 `algorithm_spec`（模型无关的策略定义）与 `model_adapter`（模型 + 输出模式的健康状态）分离，并重编码 B1、B1C、B2、B3 的 live quality 聚合结果。它仅聚合、不是门控、不是仅前置条件阶段、不改变 `EvidenceCore`。`span_narrow_topk_plain_v0` 只在两个 matched Kimi adapter delta 上呈现 `low_n_directional_signal`；GLM-5.2 json_schema_strict 因没有 matched baseline delta，只能作为 secondary observed cross-family validation。固定 RMC 变体（`rmc_hybrid_v0`、`rmc_llm_pack_routed_v0`、`rmc_local_conservative_v0`）均为 `not_supported`。Qwen adapter 受 rate-limit 噪声影响，应排除在质量聚合之外。详见 [B4/B9 详细报告](b4-b9-model-robust-evidence-conversion.md)。

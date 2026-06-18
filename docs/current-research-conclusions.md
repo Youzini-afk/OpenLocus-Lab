@@ -37,6 +37,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b8-lite-medium-matrix-combiner.md`: [en](en/b8-lite-medium-matrix-combiner.md) · [zh](zh/b8-lite-medium-matrix-combiner.md)
 - `b9a-adapter-health-report.md`: [en](en/b9a-adapter-health-report.md) · [zh](zh/b9a-adapter-health-report.md)
 - `b9b-qwen-low-volume-quality-follow-up.md`: [en](en/b9b-qwen-low-volume-quality-follow-up.md) · [zh](zh/b9b-qwen-low-volume-quality-follow-up.md)
+- `b9c-qwen-frozen-policy-validation.md`: [en](en/b9c-qwen-frozen-policy-validation.md) · [zh](zh/b9c-qwen-frozen-policy-validation.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
