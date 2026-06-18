@@ -2456,3 +2456,38 @@ Produce a bounded, aggregate-only rollup of the finished B11 official integrated
 - No promotion, no default change, no EvidenceCore semantics change (`promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `policy_search_performed=false`, `quality_strategy_tuned=false`, `new_provider_calls=0`).
 - The Kimi `py_fastapi` failure slice and the B10B denominator-pending predicate are open issues for B12 (mechanism decomposition).
 - Aggregate-only; no raw records, paths, prompts, responses, snippets, or private labels were read by the combiner.
+
+## 2026-06-18 — B12 Public Aggregate Mechanism Screen
+
+### Objective
+
+Produce a bounded, public-aggregate **mechanism screen** (NOT a full B12 per-record replay) for H1-H4 from the already-published B11 aggregate report, after the explorer/oracle found that full B12 replay is impossible from the current public artifacts.
+
+### Implementation notes
+
+- New screen script `eval/b12_public_aggregate_screen.py` (pure Python; reuses `b6_lite_interpretable_policy_search._walk_forbidden` for the public-output forbidden-key scan; `--self-test` synthetic-fixture mode + input-validation block checks + H3 parity-break check + H4 spread-supported branch check).
+- New aggregate artifact `artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json` (schema `b12-public-aggregate-mechanism-screen-v0`).
+- The screen reads only `artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json` (the already-published B11 aggregate); no raw records, paths, prompts, responses, snippets, or private labels are read or emitted.
+- The screen applies the SAME frozen numeric gates as full B12 (±0.02 approx-equality on `gold_span`/`span_f0_5`; 0.05 H4 model-family spread threshold) but to aggregate deltas only, since per-record ablation deltas are unavailable publicly.
+- Emits **per-hypothesis screen statuses**, never a single global `supported` verdict; preserves all safety fields verbatim (`aggregate_only_public_artifact=true`, `candidate_not_fact=true`, `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `policy_search_performed=false`, `quality_strategy_tuned=false`, `new_provider_calls=0`).
+
+### Findings
+
+- H1 ambiguous routing: `inconclusive_unavailable_ablation_controls` — public aggregate lacks per-record route decisions, ambiguous subset, variants B/E; does NOT claim H1 support.
+- H2 LLM call reduction: `reduced_calls_observed_causal_mechanism_inconclusive` — `Δmodel_calls -0.354167` so reduced calls are observed descriptively, but without variant E the causal mechanism cannot be attributed; does NOT claim H2 causal support.
+- H3 P25 fallback sufficiency: `aggregate_primary_parity_supported_consistent_with_h3` — `Δgold_span -0.002604` and `ΔSpanF0.5 -0.001899` both within ±0.02; consistent with H3 at the aggregate primary-parity level, but NOT a full H3 supported verdict (per-record fallback sufficiency cannot be concluded from aggregate deltas alone).
+- H4 model-specific: `family_gold_spread_not_supported_model_repo_interaction_inconclusive` — per-family gold_span delta spread `0.010417` (deepseek_flash 0.0, deepseek_pro 0.0, kimi -0.010417, qwen 0.0) at or below the 0.05 family-level threshold; NOT supported under the predeclared family-level gold-span spread criterion; NOT a full H4 refutation because the Kimi `py_fastapi` failure slice leaves model×repo interaction inconclusive without per-record data.
+
+### Testability gaps (why full B12 is not possible from the public artifact)
+
+- `no_per_record_route_decisions_in_public_artifact` — only policy-level route-decision counts are published; per-record ambiguous vs P25 decisions are absent.
+- `no_ambiguous_subset_membership_in_public_artifact` — the public aggregate does not identify which records fell into the ambiguous subset, so variants B/C/E cannot be reconstructed by subset selection.
+- `no_deterministic_call_reduction_variant_B_in_public_artifact` — variant B is not a published policy in the B11 matrix, so H1 A>B and H2 routing-vs-reduction comparisons cannot be made.
+- `no_random_call_reduction_variant_E_in_public_artifact` — variant E is not published; without E the H2 A≈E criterion cannot be evaluated.
+- `no_weak_candidate_only_outcomes_in_public_artifact` — `weak_candidate_only` per-strategy outcomes are not in the public aggregate, so the routing-rule contribution cannot be isolated.
+
+### Caveats
+
+- The screen is NOT a full B12 mechanism decomposition. It does NOT claim H1 support, does NOT claim H2 causal support, does NOT claim full H4 refutation (only the family-level gold-span spread criterion is not supported), and does NOT claim H3 fully supported (only aggregate primary parity).
+- No promotion, no default change, no runtime-clean general algorithm claim, no EvidenceCore semantics change (`promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `policy_search_performed=false`, `quality_strategy_tuned=false`, `new_provider_calls=0`).
+- Recommended next step: future ephemeral-record B12 replay (preferred), or B13 distributionally robust policy search with caution. B13 must not be treated as authorized by a B12 supported verdict.

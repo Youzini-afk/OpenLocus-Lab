@@ -1,0 +1,207 @@
+{
+  "aggregate_only_public_artifact": true,
+  "baseline_for_deltas": "p25",
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "bounded_public_aggregate_mechanism_screen_of_b11_aggregate",
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "framing": {
+    "default_readiness_claimed": false,
+    "is_full_b12_mechanism_decomposition": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "future_ephemeral_record_b12_replay_or_b13_with_caution",
+    "runtime_clean_general_algorithm_claimed": false,
+    "signal_strength": "bounded_public_aggregate_screen_only"
+  },
+  "full_b12_replay_possible_from_public_artifact": false,
+  "generated_at": "2026-06-18T18:51:37.099002+00:00",
+  "generated_by": "b12_public_aggregate_screen",
+  "gold_spans_in_artifact": false,
+  "hypotheses": [
+    "H1_ambiguous_routing",
+    "H2_llm_call_reduction",
+    "H3_p25_fallback_sufficiency",
+    "H4_model_specific"
+  ],
+  "hypothesis_results": {
+    "H1_ambiguous_routing": {
+      "blocking_testability_gaps": [
+        "no_per_record_route_decisions_in_public_artifact",
+        "no_ambiguous_subset_membership_in_public_artifact",
+        "no_deterministic_call_reduction_variant_B_in_public_artifact",
+        "no_random_call_reduction_variant_E_in_public_artifact",
+        "no_weak_candidate_only_outcomes_in_public_artifact"
+      ],
+      "h1_refutation_claimed": false,
+      "h1_support_claimed": false,
+      "hypothesis": "H1_ambiguous_routing",
+      "screen_status": "inconclusive_unavailable_ablation_controls",
+      "screen_status_reason": "full B12 H1 per-record criteria (A greater than D, E, B on gold_span and span_f0_5) need route decisions, ambiguous subset, and variants B and E; none are in the public B11 aggregate. Screen does NOT claim H1 support."
+    },
+    "H2_llm_call_reduction": {
+      "blocking_testability_gaps": [
+        "no_deterministic_call_reduction_variant_B_in_public_artifact",
+        "no_random_call_reduction_variant_E_in_public_artifact",
+        "no_per_record_route_decisions_in_public_artifact"
+      ],
+      "h2_causal_support_claimed": false,
+      "h2_support_claimed": false,
+      "hypothesis": "H2_llm_call_reduction",
+      "model_calls_delta_balanced_v1_vs_p25": -0.354167,
+      "reduced_calls_observed": true,
+      "screen_status": "reduced_calls_observed_causal_mechanism_inconclusive",
+      "screen_status_reason": "balanced_v1 vs P25 model_calls delta is negative, so reduced_calls_observed holds descriptively. But H2 causal claim (A approx E and A greater than D) cannot be evaluated without variant E. Screen does NOT claim H2 causal support."
+    },
+    "H3_p25_fallback_sufficiency": {
+      "aggregate_primary_parity_supported": true,
+      "approx_equal_threshold": 0.02,
+      "blocking_testability_gaps": [
+        "no_per_record_route_decisions_in_public_artifact",
+        "no_ambiguous_subset_membership_in_public_artifact",
+        "no_weak_candidate_only_outcomes_in_public_artifact"
+      ],
+      "gold_span_delta_balanced_v1_vs_p25": -0.002604,
+      "h3_refutation_claimed": false,
+      "h3_support_claimed": false,
+      "hypothesis": "H3_p25_fallback_sufficiency",
+      "screen_status": "aggregate_primary_parity_supported_consistent_with_h3",
+      "screen_status_reason": "balanced_v1 vs P25 gold_span and span_f0_5 deltas are within the approx-equality threshold, consistent with H3 at the AGGREGATE primary-parity level. NOT a full H3 verdict: per-record fallback sufficiency cannot be concluded from aggregate deltas alone.",
+      "span_f0_5_delta_balanced_v1_vs_p25": -0.001899
+    },
+    "H4_model_specific": {
+      "blocking_testability_gaps": [
+        "no_per_record_route_decisions_in_public_artifact",
+        "no_ambiguous_subset_membership_in_public_artifact",
+        "no_weak_candidate_only_outcomes_in_public_artifact"
+      ],
+      "family_gold_span_delta_spread": {
+        "max_delta": 0.0,
+        "min_delta": -0.010417,
+        "per_model_family": {
+          "deepseek_flash": 0.0,
+          "deepseek_pro": 0.0,
+          "kimi": -0.010417,
+          "qwen": 0.0
+        },
+        "spread": 0.010417
+      },
+      "family_level_gold_spread_not_supported": true,
+      "family_level_gold_spread_supported": false,
+      "h4_full_refutation_claimed": false,
+      "h4_support_claimed": false,
+      "hypothesis": "H4_model_specific",
+      "kimi_py_fastapi_failure_slice_present": true,
+      "model_repo_interaction_inconclusive": true,
+      "screen_status": "family_gold_spread_not_supported_model_repo_interaction_inconclusive",
+      "screen_status_reason": "per-family gold_span delta spread is at or below the family-level threshold, so H4 is NOT supported under the gold-span criterion. NOT a full H4 refutation: Kimi py_fastapi failure leaves model x repo interaction inconclusive without per-record data.",
+      "spread_threshold": 0.05
+    }
+  },
+  "input_b11_schema_version": "b11-prospective-matrix-aggregate-report-v0",
+  "input_b11_summary": {
+    "aggregate_verdict": "partial_with_failure",
+    "aggregate_verdict_reason": "mixed_results_with_failure_threshold_exceeded_on_at_least_one_slice",
+    "b10b_pending_due_denominator": true,
+    "b10b_runtime_shadow_verdict": "empirical_replay_support_pending",
+    "baseline_for_deltas": "p25",
+    "policy_under_validation": "balanced_v1",
+    "public_model_family_count": 4,
+    "public_repo_slice_count": 8,
+    "record_count_total": 384,
+    "run_count": 32
+  },
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": true,
+    "all_inputs_baseline_for_deltas_p25": true,
+    "all_inputs_candidate_not_fact": true,
+    "all_inputs_default_should_change_false": true,
+    "all_inputs_evidencecore_semantics_changed_false": true,
+    "all_inputs_new_provider_calls_zero": true,
+    "all_inputs_policy_search_performed_false": true,
+    "all_inputs_policy_under_validation_balanced_v1": true,
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_quality_strategy_tuned_false": true,
+    "forbidden_public_key_scan_clean": true
+  },
+  "is_full_b12_mechanism_decomposition": false,
+  "llm_output_not_evidence": true,
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "per_hypothesis_status_only_no_global_supported_verdict": true,
+  "policy_search_performed": false,
+  "policy_under_analysis": "balanced_v1",
+  "predeclared_criteria": {
+    "approx_equal_threshold": 0.02,
+    "h4_model_family_spread_threshold": 0.05
+  },
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "quality_strategy_tuned": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "recommended_next_step": {
+    "next_step_authorizes_default_change": false,
+    "next_step_authorizes_promotion": false,
+    "next_step_authorizes_runtime_clean_algorithm": false,
+    "primary": "future_ephemeral_record_b12_replay",
+    "reason": "Either run full B12 against ephemeral P21 records from B11 live runs once available, or proceed cautiously to B13 distributionally robust policy search understanding that balanced_v1 gains have NOT been causally decomposed.",
+    "secondary": "b13_robust_policy_search_with_caution"
+  },
+  "run_ids_in_artifact": false,
+  "safety_invariants": {
+    "aggregate_only_public_artifact": true,
+    "default_should_change_false": true,
+    "no_evidencecore_semantics_change": true,
+    "no_global_supported_verdict_emitted": true,
+    "no_live_llm_calls_by_screen": true,
+    "no_policy_search": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_run_ids_emitted": true,
+    "no_threshold_tuning": true,
+    "per_hypothesis_screen_status_only": true,
+    "promotion_ready_false": true
+  },
+  "schema_version": "b12-public-aggregate-mechanism-screen-v0",
+  "self_test": false,
+  "source_artifact_public_note": "already-published aggregate-only public B11 matrix aggregate report; no raw records, paths, prompts, responses, snippets, or private labels read by the screen",
+  "task_ids_in_artifact": false,
+  "testability": {
+    "full_b12_possible_from_public_artifact": false,
+    "missing_controls_for_full_b12": [
+      {
+        "description": "public B11 aggregate reports route-decision counts only at the policy level; per-record ambiguous-vs-p25 decisions are absent, so H1 A greater than B, E, D per-record criteria cannot evaluate",
+        "gap_id": "no_per_record_route_decisions_in_public_artifact"
+      },
+      {
+        "description": "the public aggregate does not identify which records fell into the ambiguous subset, so ablation variants B, C, E cannot be reconstructed by subset selection",
+        "gap_id": "no_ambiguous_subset_membership_in_public_artifact"
+      },
+      {
+        "description": "variant B (P25 for all but skip LLM for ambiguous tasks via candidate_baseline) is not a published policy in the B11 matrix, so H1 A greater than B and H2 routing-vs-reduction comparisons cannot be made",
+        "gap_id": "no_deterministic_call_reduction_variant_B_in_public_artifact"
+      },
+      {
+        "description": "variant E (P25 for all but randomly skip the same number of LLM calls as A) is not published; without E the H2 A approx E criterion cannot be evaluated, so H2 causal mechanism remains inconclusive even though reduced_calls_observed holds",
+        "gap_id": "no_random_call_reduction_variant_E_in_public_artifact"
+      },
+      {
+        "description": "weak_candidate_only per-strategy outcomes (the substrate the ambiguous-routing rule selects) are not in the public aggregate, so the routing-rule contribution cannot be isolated",
+        "gap_id": "no_weak_candidate_only_outcomes_in_public_artifact"
+      }
+    ],
+    "note": "Full B12 mechanism decomposition cannot be replayed from the current public B11 aggregate. The listed controls are the specific missing inputs. Until available via future ephemeral-record B12 replay, only this bounded aggregate screen is publishable."
+  },
+  "winner_declared": false
+}

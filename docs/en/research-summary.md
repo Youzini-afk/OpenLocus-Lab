@@ -730,6 +730,58 @@ replay computation deferred to a later task). B12 is mechanism decomposition,
 `default_should_change=false`, `evidencecore_semantics_changed=false`. See
 [`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md).
 
+B12 public aggregate mechanism screen (2026-06-18):
+
+```text
+schema_version: b12-public-aggregate-mechanism-screen-v0
+claim_level: bounded_public_aggregate_mechanism_screen_of_b11_aggregate
+is_full_b12_mechanism_decomposition: false
+full_b12_possible_from_public_artifact: false
+per_hypothesis_status_only_no_global_supported_verdict: true
+aggregate_only_public_artifact: true
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+new_provider_calls: 0
+```
+
+A bounded **public-aggregate mechanism screen** was added
+(`eval/b12_public_aggregate_screen.py` →
+`artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json`).
+This is **NOT** a full B12 per-record replay. The explorer/oracle finding is
+that full B12 replay is impossible from the current public B11 aggregate:
+it lacks per-record route decisions, ambiguous-subset membership,
+deterministic call-reduction variant B, random call-reduction variant E, and
+`weak_candidate_only` per-strategy outcomes. The screen therefore emits
+**per-hypothesis screen statuses**, never a single global `supported` verdict,
+and applies the SAME frozen numeric gates (±0.02 approx-equality, 0.05 H4
+family-spread) to the B11 aggregate deltas only. It reads only the already-
+published B11 aggregate report; no raw records, paths, prompts, responses,
+snippets, or private labels are read or emitted.
+
+Per-hypothesis screen results from the B11 official matrix aggregate (32 runs
+/ 384 records): **H1** `inconclusive_unavailable_ablation_controls` (no
+per-record route decisions, no ambiguous subset, no variants B/E; does NOT
+claim H1 support). **H2** `reduced_calls_observed_causal_mechanism_inconclusive`
+(`Δmodel_calls -0.354167` so reduced calls are observed descriptively, but
+without variant E the causal mechanism cannot be attributed; does NOT claim
+H2 causal support). **H3** `aggregate_primary_parity_supported_consistent_with_h3`
+(`Δgold_span -0.002604` and `ΔSpanF0.5 -0.001899` both within ±0.02; consistent
+with H3 at the aggregate level but NOT a full H3 supported verdict — per-record
+fallback sufficiency cannot be concluded from aggregate deltas alone). **H4**
+`family_gold_spread_not_supported_model_repo_interaction_inconclusive`
+(per-family gold_span delta spread `0.010417` — deepseek_flash 0.0,
+deepseek_pro 0.0, kimi -0.010417, qwen 0.0 — at or below the 0.05 family-level
+threshold, so H4 is NOT supported under the predeclared family-level gold-span
+spread criterion; NOT a full H4 refutation because the Kimi `py_fastapi`
+failure slice leaves model×repo interaction inconclusive without per-record
+data). Recommended next step: future ephemeral-record B12 replay, or B13 robust
+policy search **with caution** (B13 must not be treated as authorized by a B12
+supported verdict). See
+[`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md).
+
 B13 distributionally robust policy search:
 
 ```text

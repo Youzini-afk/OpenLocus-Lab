@@ -714,6 +714,55 @@ decomposition，**不是** promotion step：`promotion_ready=false`、
 `default_should_change=false`、`evidencecore_semantics_changed=false`。详见
 [`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md)。
 
+B12 public aggregate mechanism screen（2026-06-18）：
+
+```text
+schema_version: b12-public-aggregate-mechanism-screen-v0
+claim_level: bounded_public_aggregate_mechanism_screen_of_b11_aggregate
+is_full_b12_mechanism_decomposition: false
+full_b12_possible_from_public_artifact: false
+per_hypothesis_status_only_no_global_supported_verdict: true
+aggregate_only_public_artifact: true
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+new_provider_calls: 0
+```
+
+新增一个有界的 **public-aggregate mechanism screen**（`eval/b12_public_aggregate_screen.py`
+→ `artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json`）。
+这**不是**完整的 B12 per-record replay。explorer/oracle 的结论是：从当前的 public
+B11 aggregate 无法完成 full B12 replay —— 它缺少 per-record route decisions、
+ambiguous-subset membership、deterministic call-reduction variant B、random
+call-reduction variant E 以及 `weak_candidate_only` per-strategy outcomes。该
+screen 因此发出**逐 hypothesis 的 screen status**，从不发出单一全局 `supported`
+verdict，并对 B11 aggregate deltas 应用**相同的**冻结数值门槛（±0.02
+approx-equality、0.05 H4 family-spread）。它只读取已发布的 B11 aggregate
+报告；不读取或发布任何 raw records、paths、prompts、responses、snippets 或
+private labels。
+
+B11 official matrix aggregate（32 runs / 384 records）的逐 hypothesis screen
+结果：**H1** `inconclusive_unavailable_ablation_controls`（无 per-record route
+decisions、无 ambiguous subset、无 variants B/E；**不**声称 H1 support）。
+**H2** `reduced_calls_observed_causal_mechanism_inconclusive`（`Δmodel_calls
+-0.354167`，描述性观察到 reduced calls，但缺少 variant E 无法归因 causal
+mechanism；**不**声称 H2 causal support）。**H3**
+`aggregate_primary_parity_supported_consistent_with_h3`（`Δgold_span -0.002604`
+与 `ΔSpanF0.5 -0.001899` 均在 ±0.02 内；与 H3 在 aggregate 层面一致，但**不是**
+完整的 H3 supported verdict —— 从 aggregate deltas 无法得出 per-record fallback
+sufficiency 结论）。**H4**
+`family_gold_spread_not_supported_model_repo_interaction_inconclusive`（per-family
+gold_span delta spread `0.010417` —— deepseek_flash 0.0、deepseek_pro 0.0、
+kimi -0.010417、qwen 0.0 —— at or below 0.05 family-level threshold，因此 H4 在
+predeclared family-level gold-span spread criterion 下 **not supported**；**不是**
+完整的 H4 refutation，因为 Kimi `py_fastapi` failure slice 在无 per-record 数据时
+使 model×repo interaction 仍 inconclusive）。建议下一步：future ephemeral-record
+B12 replay，或 B13 robust policy search **谨慎进行**（B13 不得被视为由 B12
+supported verdict 授权）。详见
+[`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md)。
+
 B13 distributionally robust policy search：
 
 ```text
