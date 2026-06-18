@@ -2248,3 +2248,80 @@ A comprehensive strategy matrix across base (regex/bm25/symbol/rrf), composite/g
 - graph_basic is deterministic depth=1, not precise call/type graph.
 - QuIVer/TDB unavailable; no fabricated numeric quality.
 - Fresh run only; no skip-run support.
+
+## 2026-06-18 — B10B Runtime-Shadow Replay (Ambiguous Branch Only)
+
+### Objective
+
+B10B is the next step after the B10 freeze of
+`balanced_policy_v1_benchmark_routed`. It validates a predeclared
+runtime-feature-only shadow predicate that approximates the ambiguous branch of
+the frozen benchmark-routed spec on the same records via action-agreement
+replay only. There are no new model runs, no new default policy, no policy
+search, no tuning, and no promotion. The goal is to test whether runtime
+`route_features` alone (`query_noise`, `candidate_support_exists`,
+`local_anchor`, `rrf_backed_by_anchor`) can shadow the ambiguous branch that
+the frozen spec currently drives off benchmark public labels
+(`task_bucket`/`task_risk_tags`).
+
+### Implementation notes
+
+- Parallel reconnaissance: @explorer mapped the 16-key `route_features` space
+  and identified 4 clean shadow features (`query_noise`,
+  `candidate_support_exists`, `local_anchor`, `rrf_backed_by_anchor`);
+  @librarian confirmed the methodology as "offline shadow-policy conformance
+  replay" (not full OPE — no propensities, no counterfactual weighting);
+  @oracle strategic review found 4 blockers in the original implementation.
+- @fixer strengthened the evaluator (1163 → ~1820 lines): added
+  `outcome_metrics` to the leakage mutation test, predeclared acceptance gates
+  (10 gates), stratified agreement metrics (`target_weak_only_recall`,
+  `target_use_p25_specificity`, `shadow_weak_only_precision`,
+  `label_driven_ambiguous_recall_qn0`, `query_noise_only_recall_qn1`),
+  silent-failure checks (`all_shadow_ambiguous`,
+  `all_shadow_non_ambiguous`, `base_rate_only_suspected`,
+  `no_silent_failure`), Cohen's kappa (direct implementation, no
+  numpy/sklearn), outcome-equivalence audit on the disagreement subset (4
+  partitions), verdict framework (`runtime_shadow_ambiguous_supported` +
+  `support_claim` + `support_claim_reason`), `replay_source` parameter
+  (`synthetic_fixture` vs `ci_ephemeral_records`), and a CLI `--records`
+  option for CI integration.
+- @oracle final review found 1 remaining concern: the denominator was treated
+  as an escape clause (OR) instead of a hard gate (AND). @fixer fixed:
+  `label_driven_ambiguous_min_denominator=10` is now a HARD gate; an
+  insufficient denominator yields verdict `False` with
+  `support_claim="empirical_replay_support_pending"` and
+  `support_claim_reason="insufficient_label_driven_denominator"`.
+- Final spec sha256:
+  `c201eb709dc0112c2bb91db33917c6d20ea48582924821a2bda7950709e754ba`.
+- All 10 self-test checks PASS.
+
+### Findings
+
+- B10B is now a mechanics-validated scaffold: the evaluator, leakage guard,
+  verdict framework, and all 10 predeclared gates work correctly.
+- Current verdict on the synthetic fixture:
+  `runtime_shadow_ambiguous_supported=false`,
+  `support_claim="mechanics_only_synthetic_fixture"`,
+  `support_claim_reason="synthetic_fixture_only"`,
+  `replay_source="synthetic_fixture"`.
+- No real CI ephemeral records exist on disk (P21 ephemeral records are written
+  to `$RUNNER_TEMP` and not committed; P21 public JSON is aggregate-only after
+  the B2 privacy repair).
+- Therefore B10B cannot make any empirical support claim yet. Empirical
+  validation requires either CI integration (run `--records` against
+  `$RUNNER_TEMP/p25-policy-records-ephemeral-v1/*.json` before cleanup) or B11
+  prospective runs.
+
+### Caveats
+
+- B10B is ambiguous-branch runtime-shadow only; it does **not** prove a
+  runtime-clean balanced policy.
+- The default `use_p25_action` still delegates to the P25 benchmark-routed
+  behavior.
+- No live LLM calls (`runtime_calls_by_replay=0`, `model_calls_by_replay=0`).
+- No default change, no promotion, no `EvidenceCore` semantic change.
+- B11 should be framed as "exploratory prospective stress test", not
+  "supported validation", until B10B runs on real CI records and passes the
+  predeclared gates.
+- The shadow predicate is FROZEN; no tuning during B11. Any predicate change
+  should start a new frozen spec/version.

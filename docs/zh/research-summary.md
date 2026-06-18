@@ -499,6 +499,59 @@ policy、不是 default 变更、不是 promotion。下一步是 `balanced_polic
 替换 ambiguous bucket/tag 分支，并对该 spec 做 action-agreement replay。详见
 [`b10-runtime-feature-audit.md`](b10-runtime-feature-audit.md)。
 
+B10B runtime-shadow replay（仅 ambiguous 分支）：
+
+```text
+algorithm_spec_id: balanced_policy_v1_runtime_shadow_ambiguous_branch
+claim_level: ambiguous_branch_runtime_shadow_only
+full_runtime_clean_policy: false
+ambiguous_branch_runtime_shadow_only: true
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+runtime_calls_by_replay: 0
+model_calls_by_replay: 0
+replay_source: synthetic_fixture
+runtime_shadow_ambiguous_supported: false
+support_claim: mechanics_only_synthetic_fixture
+support_claim_reason: synthetic_fixture_only
+```
+
+B10B 是 B10 冻结之后的下一步。它不跑模型、不搜索、不调整策略质量、不默认化。它只测试
+一个固定预先声明的、仅依赖 runtime feature 的 shadow predicate，能否在同批记录上复现
+冻结 `balanced_policy_v1_benchmark_routed` 的 **ambiguous 分支**动作。shadow predicate
+只读取 runtime `route_features`（`query_noise`、`candidate_support_exists`、
+`local_anchor`、`rrf_backed_by_anchor`），绝不读取 `task_bucket`/`task_risk_tags`/
+`has_gold`/`score_group`/outcome metrics；`runtime_shadow_ambiguous = query_noise OR
+(candidate_support_exists AND anchor_disagreement_proxy)`，其中
+`anchor_disagreement_proxy = local_anchor AND NOT rrf_backed_by_anchor`。如果任意所需
+runtime feature 缺失，该记录被标记为 missing，shadow action 不会被静默默认为 false；若
+所有记录均缺失所需 feature，状态为 `insufficient_runtime_features`。强化后的 evaluator 还
+携带：10 个 predeclared acceptance gates（其中
+`label_driven_ambiguous_min_denominator: 10` 是 HARD gate，**不是** escape clause）、
+分层 agreement metrics（`target_weak_only_recall`、`target_use_p25_specificity`、
+`shadow_weak_only_precision`、`label_driven_ambiguous_recall_qn0`、
+`query_noise_only_recall_qn1`）、silent-failure 检查（`all_shadow_ambiguous`、
+`all_shadow_non_ambiguous`、`base_rate_only_suspected`、`no_silent_failure`）、直接实现的
+Cohen's kappa（不依赖 numpy/sklearn）、不一致子集上的 4 分区 outcome-equivalence 审计
+（`outcome_audit`，仅审计 —— outcome 绝不回馈到路由）、verdict 框架
+（`runtime_shadow_ambiguous_supported` + `support_claim` + `support_claim_reason`）、
+`replay_source` 参数（`synthetic_fixture` vs `ci_ephemeral_records`），以及用于 CI 集成的
+CLI `--records <path>` 模式。leakage guard 现在除了修改
+`task_bucket`/`task_risk_tags`/`has_gold`/`score_group` 之外，还会修改 `outcome_metrics`。
+公开 report 仅聚合，不含任何禁用公开键或原始 path/digest/provider 字符串。**B10B 不证明
+runtime-clean balanced policy**；在 synthetic fixture 上的当前 verdict 为
+`runtime_shadow_ambiguous_supported=false`、
+`support_claim="mechanics_only_synthetic_fixture"`、
+`replay_source="synthetic_fixture"` —— 即 **mechanics-validated scaffold、empirical
+validation 待补**，而非 empirical-support claim。默认 `use_p25_action` 仍委托给 P25
+benchmark-routed 行为，因此这只是仅 ambiguous 分支的 runtime-shadow。B11 应被 framing 为
+**exploratory prospective stress test**，**不是** “supported validation”，直到 B10B 在
+真实 CI ephemeral 记录上运行且通过所有 predeclared gate。详见
+[`b10b-runtime-shadow-replay.md`](b10b-runtime-shadow-replay.md)。
+
 ---
 
 ## Current status update — 2026-06-13

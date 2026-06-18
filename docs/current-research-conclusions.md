@@ -35,6 +35,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b6c-frozen-policy-validation.md`: [en](en/b6c-frozen-policy-validation.md) · [zh](zh/b6c-frozen-policy-validation.md)
 - `b6d-cross-adapter-frozen-validation.md`: [en](en/b6d-cross-adapter-frozen-validation.md) · [zh](zh/b6d-cross-adapter-frozen-validation.md)
 - `b10-runtime-feature-audit.md`: [en](en/b10-runtime-feature-audit.md) · [zh](zh/b10-runtime-feature-audit.md)
+- `b10b-runtime-shadow-replay.md`: [en](en/b10b-runtime-shadow-replay.md) · [zh](zh/b10b-runtime-shadow-replay.md)
 - `b8-lite-medium-matrix-combiner.md`: [en](en/b8-lite-medium-matrix-combiner.md) · [zh](zh/b8-lite-medium-matrix-combiner.md)
 - `b9a-adapter-health-report.md`: [en](en/b9a-adapter-health-report.md) · [zh](zh/b9a-adapter-health-report.md)
 - `b9b-qwen-low-volume-quality-follow-up.md`: [en](en/b9b-qwen-low-volume-quality-follow-up.md) · [zh](zh/b9b-qwen-low-volume-quality-follow-up.md)

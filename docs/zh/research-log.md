@@ -2256,3 +2256,67 @@ A comprehensive strategy matrix across base (regex/bm25/symbol/rrf), composite/g
 - QuIVer/TDB unavailable; no fabricated numeric quality.
 - Fresh run only; no skip-run support.
 
+## 2026-06-18 — B10B Runtime-Shadow Replay（仅 ambiguous 分支）
+
+### Objective
+
+B10B 是 B10 冻结 `balanced_policy_v1_benchmark_routed` 之后的下一步。它通过仅
+action-agreement replay 验证一个预先声明的、仅依赖 runtime feature 的 shadow predicate，
+该 predicate 在同批记录上近似冻结 benchmark-routed spec 的 ambiguous 分支。没有新的模型
+runs、没有新的 default policy、没有 policy search、没有调参、没有 promotion。目标是测试
+仅靠 runtime `route_features`（`query_noise`、`candidate_support_exists`、
+`local_anchor`、`rrf_backed_by_anchor`）能否 shadow 当前由 benchmark 公开标签
+（`task_bucket`/`task_risk_tags`）驱动的 ambiguous 分支。
+
+### Implementation notes
+
+- 并行侦察：@explorer 映射了 16-key `route_features` 空间，识别出 4 个干净的 shadow
+  features（`query_noise`、`candidate_support_exists`、`local_anchor`、
+  `rrf_backed_by_anchor`）；@librarian 确认方法论为 “offline shadow-policy conformance
+  replay”（不是完整 OPE —— 无 propensities、无 counterfactual 加权）；@oracle 战略评审在原
+  实现中发现了 4 个 blocker。
+- @fixer 强化了 evaluator（1163 → 约 1820 行）：在 leakage mutation 测试中加入
+  `outcome_metrics`、predeclared acceptance gates（10 个 gate）、分层 agreement metrics
+  （`target_weak_only_recall`、`target_use_p25_specificity`、`shadow_weak_only_precision`、
+  `label_driven_ambiguous_recall_qn0`、`query_noise_only_recall_qn1`）、silent-failure
+  检查（`all_shadow_ambiguous`、`all_shadow_non_ambiguous`、`base_rate_only_suspected`、
+  `no_silent_failure`）、Cohen's kappa（直接实现，不依赖 numpy/sklearn）、不一致子集上的
+  outcome-equivalence 审计（4 个分区）、verdict 框架
+  （`runtime_shadow_ambiguous_supported` + `support_claim` + `support_claim_reason`）、
+  `replay_source` 参数（`synthetic_fixture` vs `ci_ephemeral_records`），以及用于 CI 集成
+  的 CLI `--records` 选项。
+- @oracle 最终评审发现 1 个遗留问题：denominator 被当作 escape clause（OR）而非 hard gate
+  （AND）处理。@fixer 已修复：`label_driven_ambiguous_min_denominator=10` 现为 HARD gate；
+  denominator 不足时 verdict 为 `False`，
+  `support_claim="empirical_replay_support_pending"`，
+  `support_claim_reason="insufficient_label_driven_denominator"`。
+- 最终 spec sha256：
+  `c201eb709dc0112c2bb91db33917c6d20ea48582924821a2bda7950709e754ba`。
+- 10 项 self-test 检查全部 PASS。
+
+### Findings
+
+- B10B 现已是 mechanics-validated scaffold：evaluator、leakage guard、verdict 框架，以及
+  全部 10 个 predeclared gate 均工作正确。
+- 在 synthetic fixture 上的当前 verdict：
+  `runtime_shadow_ambiguous_supported=false`、
+  `support_claim="mechanics_only_synthetic_fixture"`、
+  `support_claim_reason="synthetic_fixture_only"`、
+  `replay_source="synthetic_fixture"`。
+- 磁盘上不存在真实 CI ephemeral 记录（P21 ephemeral 记录写入 `$RUNNER_TEMP` 且不提交；
+  P21 public JSON 在 B2 隐私修复后仅聚合）。
+- 因此 B10B 暂时无法做出任何 empirical support claim。empirical validation 需要或为
+  CI 集成（在清理前对 `$RUNNER_TEMP/p25-policy-records-ephemeral-v1/*.json` 运行
+  `--records`），或为 B11 prospective runs。
+
+### Caveats
+
+- B10B 仅是 ambiguous 分支 runtime-shadow；**不**证明 runtime-clean balanced policy。
+- 默认 `use_p25_action` 仍委托给 P25 benchmark-routed 行为。
+- 无 live LLM 调用（`runtime_calls_by_replay=0`、`model_calls_by_replay=0`）。
+- 无 default 变更、无 promotion、无 `EvidenceCore` 语义变更。
+- B11 应被 framing 为 “exploratory prospective stress test”，**不是** “supported
+  validation”，直到 B10B 在真实 CI 记录上运行并通过 predeclared gate。
+- shadow predicate 已 FROZEN；B11 期间不调参。任何 predicate 变更都应启动新的冻结
+  spec/version。
+

@@ -495,6 +495,68 @@ replace the ambiguous bucket/tag branch with pure runtime features
 action-agreement replay against this spec. See
 [`b10-runtime-feature-audit.md`](b10-runtime-feature-audit.md).
 
+B10B runtime-shadow replay (ambiguous branch only):
+
+```text
+algorithm_spec_id: balanced_policy_v1_runtime_shadow_ambiguous_branch
+claim_level: ambiguous_branch_runtime_shadow_only
+full_runtime_clean_policy: false
+ambiguous_branch_runtime_shadow_only: true
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+runtime_calls_by_replay: 0
+model_calls_by_replay: 0
+replay_source: synthetic_fixture
+runtime_shadow_ambiguous_supported: false
+support_claim: mechanics_only_synthetic_fixture
+support_claim_reason: synthetic_fixture_only
+```
+
+B10B is the next step after the B10 freeze. It does not run any model, does not
+search, does not tune policy quality, and does not defaultize. It only tests
+whether a fixed predeclared runtime-feature-only shadow predicate can
+reproduce the **ambiguous branch** of the frozen
+`balanced_policy_v1_benchmark_routed` action on the same records. The shadow
+predicate reads only runtime `route_features` (`query_noise`,
+`candidate_support_exists`, `local_anchor`, `rrf_backed_by_anchor`) and never
+reads `task_bucket`/`task_risk_tags`/`has_gold`/`score_group`/outcome metrics;
+`runtime_shadow_ambiguous = query_noise OR (candidate_support_exists AND
+anchor_disagreement_proxy)` where `anchor_disagreement_proxy = local_anchor
+AND NOT rrf_backed_by_anchor`. If any required runtime feature is missing, the
+record is marked missing and the shadow action is NOT silently defaulted to
+false; if all records are missing features, the status is
+`insufficient_runtime_features`. The strengthened evaluator also carries: 10
+predeclared acceptance gates (including
+`label_driven_ambiguous_min_denominator: 10` as a HARD gate, not an escape
+clause), stratified agreement metrics (`target_weak_only_recall`,
+`target_use_p25_specificity`, `shadow_weak_only_precision`,
+`label_driven_ambiguous_recall_qn0`, `query_noise_only_recall_qn1`),
+silent-failure checks (`all_shadow_ambiguous`, `all_shadow_non_ambiguous`,
+`base_rate_only_suspected`, `no_silent_failure`), a direct Cohen's kappa
+implementation (no numpy/sklearn), a 4-partition outcome-equivalence audit on
+the disagreement subset (`outcome_audit`, audit-only — outcomes never feed
+back into routing), a verdict framework
+(`runtime_shadow_ambiguous_supported` + `support_claim` +
+`support_claim_reason`), a `replay_source` parameter
+(`synthetic_fixture` vs `ci_ephemeral_records`), and a CLI `--records <path>`
+mode for CI integration. The leakage guard now mutates `outcome_metrics` in
+addition to `task_bucket`/`task_risk_tags`/`has_gold`/`score_group`. The
+public report is aggregate-only and emits no forbidden public keys or raw
+path/digest/provider strings. **B10B does NOT prove a runtime-clean balanced
+policy** and the current verdict on the synthetic fixture is
+`runtime_shadow_ambiguous_supported=false`,
+`support_claim="mechanics_only_synthetic_fixture"`,
+`replay_source="synthetic_fixture"` — i.e. a **mechanics-validated scaffold
+with empirical validation pending**, not an empirical-support claim. The
+default `use_p25_action` still delegates to P25 benchmark-routed behavior, so
+this is ambiguous-branch runtime-shadow only. B11 should be framed as
+**exploratory prospective stress test**, not "supported validation", until
+B10B runs on real CI ephemeral records and passes every predeclared gate. See
+[`b10b-runtime-shadow-replay.md`](b10b-runtime-shadow-replay.md).
+
 ---
 
 ## Current status update — 2026-06-13
