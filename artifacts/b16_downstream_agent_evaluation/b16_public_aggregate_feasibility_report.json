@@ -1,0 +1,292 @@
+{
+  "agent_behavior_metrics_evaluated": false,
+  "aggregate_only_public_artifact": true,
+  "allowed_verdicts": [
+    "no_go_public_aggregate_only",
+    "insufficient_data_public_aggregate_only"
+  ],
+  "baseline_for_deltas": "p25",
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "bounded_public_aggregate_feasibility_screen_of_b11_b12_b13_b14_b15_aggregates",
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "downstream_agent_runs_performed": false,
+  "evidencecore_semantics_changed": false,
+  "framing": {
+    "agent_behavior_metrics_claimed": false,
+    "b15_pack_policy_implies_agent_improvements_claimed": false,
+    "candidate_retrieval_variant_frozen_claimed": false,
+    "default_readiness_claimed": false,
+    "downstream_agent_runs_claimed": false,
+    "empirical_downstream_agent_evaluation_claimed": false,
+    "is_full_b16_downstream_agent_evaluation": false,
+    "patch_execution_claimed": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "future_ephemeral_record_b16_downstream_agent_evaluation",
+    "retrieval_improvements_imply_agent_improvements_claimed": false,
+    "retrieval_variant_promotion_claimed": false,
+    "runtime_clean_general_algorithm_claimed": false,
+    "signal_strength": "bounded_public_aggregate_feasibility_screen_only",
+    "solve_rate_claimed": false,
+    "winner_declared_claimed": false
+  },
+  "full_b16_possible_from_public_artifacts": false,
+  "gates_defined": true,
+  "generated_at": "2026-06-18T20:15:48.523288+00:00",
+  "generated_by": "b16_public_aggregate_feasibility_screen",
+  "gold_spans_in_artifact": false,
+  "input_b11_schema": "b11-prospective-matrix-aggregate-report-v0",
+  "input_b11_summary": {
+    "b10b_pending_due_denominator": true,
+    "b10b_runtime_shadow_verdict": "empirical_replay_support_pending",
+    "b11_aggregate_verdict": "partial_with_failure",
+    "b11_aggregate_verdict_reason": "mixed_results_with_failure_threshold_exceeded_on_at_least_one_slice",
+    "b11_baseline_for_deltas": "p25",
+    "b11_deltas_balanced_v1_vs_p25": {
+      "gold_span": -0.002604,
+      "model_calls": -0.354167,
+      "span_f0_5": -0.001899
+    },
+    "b11_policy_under_validation": "balanced_v1",
+    "b11_public_model_family_count": 4,
+    "b11_public_repo_slice_count": 8,
+    "b11_record_count_total": 384,
+    "b11_run_count": 32
+  },
+  "input_b12_screen_schema": "b12-public-aggregate-mechanism-screen-v0",
+  "input_b12_summary": {
+    "H1_ambiguous_routing": {
+      "screen_status": "inconclusive_unavailable_ablation_controls"
+    },
+    "H2_llm_call_reduction": {
+      "screen_status": "reduced_calls_observed_causal_mechanism_inconclusive"
+    },
+    "H3_p25_fallback_sufficiency": {
+      "screen_status": "aggregate_primary_parity_supported_consistent_with_h3"
+    },
+    "H4_model_specific": {
+      "screen_status": "family_gold_spread_not_supported_model_repo_interaction_inconclusive"
+    },
+    "b12_full_replay_possible_from_public_artifact": false,
+    "b12_recommended_next_step": "future_ephemeral_record_b12_replay_or_b13_with_caution"
+  },
+  "input_b13_feas_schema": "b13-public-aggregate-feasibility-screen-v0",
+  "input_b13_summary": {
+    "b13_feasibility_verdict": "no_go_public_aggregate_only",
+    "b13_full_b13_possible_from_public_artifacts": false,
+    "b13_missing_inputs_for_real_b13_count": 7,
+    "b13_policy_found": false,
+    "b13_recommended_next_step": "future_ephemeral_record_b13_replay",
+    "b13_rotations_evaluated": false,
+    "b13_winner_declared": false
+  },
+  "input_b14_feas_schema": "b14-public-aggregate-feasibility-screen-v0",
+  "input_b14_summary": {
+    "b14_calibrated_model_claim": false,
+    "b14_feasibility_verdict": "no_go_public_aggregate_only",
+    "b14_full_b14_possible_from_public_artifacts": false,
+    "b14_metrics_evaluated": false,
+    "b14_missing_inputs_for_real_b14_count": 8,
+    "b14_per_record_inputs_available": false,
+    "b14_recommended_next_step": "future_ephemeral_record_b14_calibration",
+    "b14_rotations_evaluated": false,
+    "b14_uncertainty_calibration_performed": false,
+    "b14_uncertainty_score_found": false
+  },
+  "input_b15_prior_schema": "b15-public-aggregate-prior-screen-v0",
+  "input_b15_summary": {
+    "b15_atom_ablation_performed": false,
+    "b15_atom_level_inference_possible": false,
+    "b15_b2_prior_claim_level": "low_n_single_model_aggregate_directional_prior",
+    "b15_b2_prior_usable": true,
+    "b15_calibration_possible": false,
+    "b15_candidate_policy_frozen": false,
+    "b15_full_b15_possible_from_public_artifacts": false,
+    "b15_missing_inputs_for_real_b15_count": 11,
+    "b15_new_live_runs_required": true,
+    "b15_pack_policy_learned": false,
+    "b15_per_record_inputs_available": false,
+    "b15_prior_verdict": "prior_screen_only",
+    "b15_role_specific_policy_possible": false,
+    "b15_stages_evaluated": false,
+    "b15_winner_declared": false
+  },
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": true,
+    "all_inputs_candidate_not_fact": true,
+    "all_inputs_default_should_change_false": true,
+    "all_inputs_evidencecore_semantics_changed_false": true,
+    "all_inputs_new_provider_calls_zero": true,
+    "all_inputs_policy_search_performed_false": true,
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_quality_strategy_tuned_false": true,
+    "b11_aggregate_verdict_is_partial_with_failure": true,
+    "b12_full_replay_possible_false": true,
+    "b13_input_full_b13_possible_false": true,
+    "b13_input_verdict_is_no_go_or_insufficient": true,
+    "b14_input_full_b14_possible_false": true,
+    "b14_input_verdict_is_no_go_or_insufficient": true,
+    "b15_input_atom_ablation_performed_false": true,
+    "b15_input_full_b15_possible_false": true,
+    "b15_input_pack_policy_learned_false": true,
+    "b15_input_verdict_is_no_go_or_prior_screen_only": true,
+    "forbidden_public_key_scan_clean": true
+  },
+  "is_full_b16_downstream_agent_evaluation": false,
+  "llm_output_not_evidence": true,
+  "metrics_defined": true,
+  "metrics_evaluated": false,
+  "missing_inputs_for_real_b16": [
+    {
+      "description": "real B16 needs paired live downstream agent runs of the same task under two arms; the public B11 B12 B13 B14 B15 aggregates publish only retrieval context research with no downstream agent runs",
+      "gap_id": "no_live_paired_agent_runs_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run agent event logs capturing tool calls and first-file-before-edit timing; the public aggregates contain no agent event logs",
+      "gap_id": "no_agent_event_logs_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run patches or diffs the agent produced to verify the edit landed in the right file; the public aggregates contain no patches or diffs",
+      "gap_id": "no_patches_or_diffs_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run test execution results to label whether the agent solved the task; the public aggregates contain no test execution results",
+      "gap_id": "no_test_execution_results_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run solve labels as the primary outcome target; the public aggregates publish only retrieval gold span counts, not downstream solve labels",
+      "gap_id": "no_solve_labels_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs the first-file-before-first-edit event per run to measure correct-file-before-first-edit; the public aggregates contain no first-file-before-first-edit events",
+      "gap_id": "no_first_file_before_first_edit_event_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run wrong-file-edit annotations to measure wrong-file-edits; the public aggregates contain no wrong-file-edit annotations",
+      "gap_id": "no_wrong_file_edit_annotations_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run tool-call token latency cost rows; the public aggregates publish no per-run tool-call token latency or cost rows",
+      "gap_id": "no_tool_calls_tokens_latency_cost_per_run_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs randomized arm order per task to deconfound arm from run order; the public aggregates contain no randomized arm order",
+      "gap_id": "no_randomized_arm_order_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs per-run isolated fresh workspace proof so runs do not leak state; the public aggregates contain no isolated fresh workspace proof",
+      "gap_id": "no_isolated_workspace_proof_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs a task oracle or hidden-test manifest to label solve and tests-pass; the public aggregates contain no task oracle or hidden-test manifest",
+      "gap_id": "no_task_oracle_or_hidden_test_manifest_in_public_artifact"
+    },
+    {
+      "description": "real B16 needs operational parity proof that arms share the same budget tools prompt except the retrieval variant with no cross-run memory; the public aggregates contain no operational parity proof",
+      "gap_id": "no_operational_parity_proof_in_public_artifact"
+    }
+  ],
+  "new_provider_calls": 0,
+  "no_fake_downstream_metrics_from_retrieval_aggregates": true,
+  "not_evidence": true,
+  "patch_execution_performed": false,
+  "per_record_inputs_available": false,
+  "policy_search_performed": false,
+  "policy_under_analysis": "balanced_v1",
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "quality_strategy_tuned": false,
+  "raw_agent_event_logs_stored": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_patches_diffs_stored": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "raw_solve_labels_stored": false,
+  "raw_test_results_stored": false,
+  "recommended_next_step": {
+    "next_step_authorizes_default_change": false,
+    "next_step_authorizes_downstream_agent_runs": false,
+    "next_step_authorizes_empirical_downstream_agent_evaluation": false,
+    "next_step_authorizes_patch_execution": false,
+    "next_step_authorizes_promotion": false,
+    "next_step_authorizes_retrieval_variant_promotion": false,
+    "next_step_authorizes_runtime_clean_algorithm": false,
+    "next_step_authorizes_solve_rate_evaluation": false,
+    "primary": "future_ephemeral_record_b16_downstream_agent_evaluation",
+    "reason": "Run B16 against ephemeral per-run paired agent outputs (event logs, patches, test results, solve labels, first-file events, wrong-file annotations, tool-call token latency cost rows, isolated workspace proof, randomized arm order, task oracle manifest)",
+    "secondary": "future_ephemeral_record_b15_pack_policy_validation_first"
+  },
+  "retrieval_variant_promoted": false,
+  "retrieval_variant_promotion_declared": false,
+  "run_ids_in_artifact": false,
+  "safety_invariants": {
+    "agent_behavior_metrics_evaluated_false": true,
+    "aggregate_only_public_artifact": true,
+    "b15_pack_policy_does_not_imply_agent_improvements": true,
+    "default_should_change_false": true,
+    "downstream_agent_runs_performed_false": true,
+    "evidencecore_semantics_changed_false": true,
+    "no_agent_behavior_metrics_evaluation": true,
+    "no_agent_event_logs": true,
+    "no_candidate_retrieval_variant_frozen": true,
+    "no_evidencecore_semantics_change": true,
+    "no_fake_downstream_metrics_from_retrieval_aggregates": true,
+    "no_live_downstream_agent_runs": true,
+    "no_live_llm_calls_by_screen": true,
+    "no_patch_execution": true,
+    "no_patches_or_diffs": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_retrieval_variant_promotion": true,
+    "no_run_ids_emitted": true,
+    "no_solve_labels": true,
+    "no_solve_rate_evaluation": true,
+    "no_stages_evaluated": true,
+    "no_test_execution_results": true,
+    "no_threshold_tuning": true,
+    "no_winner_declared": true,
+    "patch_execution_performed_false": true,
+    "per_record_inputs_available_false": true,
+    "promotion_ready_false": true,
+    "retrieval_improvements_do_not_imply_agent_improvements": true,
+    "retrieval_variant_promoted_false": true,
+    "solve_rate_evaluated_false": true,
+    "stage_is_downstream_agent_evaluation": true
+  },
+  "schema_version": "b16-public-aggregate-feasibility-screen-v0",
+  "self_test": false,
+  "solve_rate_evaluated": false,
+  "source_artifact_public_note": "already-published aggregate-only public B11 B12 B13 B14 B15 reports; no raw records, paths, prompts, responses, snippets, diffs, patches, test results, solve labels, agent event logs, or private labels read by the screen",
+  "stage_is_downstream_agent_evaluation": true,
+  "task_ids_in_artifact": false,
+  "testability": {
+    "full_b16_possible_from_public_artifacts": false,
+    "missing_inputs_for_full_b16": [
+      "no_live_paired_agent_runs_in_public_artifact",
+      "no_agent_event_logs_in_public_artifact",
+      "no_patches_or_diffs_in_public_artifact",
+      "no_test_execution_results_in_public_artifact",
+      "no_solve_labels_in_public_artifact",
+      "no_first_file_before_first_edit_event_in_public_artifact",
+      "no_wrong_file_edit_annotations_in_public_artifact",
+      "no_tool_calls_tokens_latency_cost_per_run_in_public_artifact",
+      "no_randomized_arm_order_in_public_artifact",
+      "no_isolated_workspace_proof_in_public_artifact",
+      "no_task_oracle_or_hidden_test_manifest_in_public_artifact",
+      "no_operational_parity_proof_in_public_artifact"
+    ],
+    "note": "Real B16 cannot be replayed from the public B11 B12 B13 B14 B15 aggregates. The listed missing inputs are the per-run fields required. The public aggregates are retrieval context research only; they do NOT prove downstream agent value."
+  },
+  "verdict": "no_go_public_aggregate_only",
+  "verdict_reason": "public B11 B12 B13 B14 B15 aggregates are retrieval context research only; they lack per-run paired agent outputs for real B16. No empirical B16 runs; no solve rate computed; B11 verdict 'partial_with_failure' NOT authorizing downstream value.",
+  "winner_declared": false
+}

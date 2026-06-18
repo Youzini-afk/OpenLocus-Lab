@@ -1006,6 +1006,36 @@ controls，这些在当前公共 artifacts 中均不存在。B15 结果作为 re
 candidates 输入 B16（downstream agent evaluation）与未来 context-pack routing
 工作。详见 [`b15-context-pack-policy.md`](b15-context-pack-policy.md)。
 
+B16 downstream coding-agent evaluation：
+
+```text
+algorithm_spec_id: b16_downstream_agent_evaluation_v0
+claim_level: downstream_agent_evaluation_v0
+replay_and_validation_only: true (no live LLM calls and no live downstream agent runs inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+retrieval_variant_promoted: false
+stage_is_downstream_agent_evaluation: true（B16 stage IS downstream agent evaluation）
+downstream_agent_runs_performed: false（skeleton 不执行 live agent runs）
+patch_execution_performed: false（skeleton 不执行 patch execution）
+agent_behavior_metrics_evaluated: false（skeleton 不评估 agent behavior metrics）
+solve_rate_evaluated: false（skeleton 不评估 solve rate）
+per_record_inputs_available: false（skeleton；无真实 per-run inputs）
+policy_search_performed: false
+quality_strategy_tuned: false
+new_provider_calls: 0
+candidate_retrieval_variant_frozen: false
+stages_evaluated: false
+stages_defined: true
+stage_count: 4
+winner_declared: false
+metrics_evaluated: false（skeleton；无 fake solve-rate 或 downstream metrics from retrieval aggregates）
+no_fake_downstream_metrics_from_retrieval_aggregates: true
+```
+
+B16 是继 B15 之后的 **downstream coding-agent evaluation** 阶段。目标是产出一个 **frozen、preregistered 的 paired within-task randomized controlled trial**，衡量 candidate retrieval/context variant 是否能改进下游 coding agent（而非仅 retrieval aggregates），基于真实、paired、isolated-workspace 的 agent runs。B16 是一个 **bounded planning / feasibility 阶段**，**不是** live downstream agent evaluation。Arms 为 FROZEN 的 primary（`control_current_retrieval_v0`、`balanced_v1_retrieval_candidate`）、exploratory（`candidate_pack_policy_v0`，仅当真实 B15 candidate 存在时才包含 —— B15 skeleton 不产出 candidate，故此 arm 默认 EXCLUDED）与 debugging-only（`gold_context_ceiling`，从不 promoted）。Task types 为 FROZEN（`bug_localization`、`small_code_edit`、`test_selection`、`multi_file_feature`、`refactor_impact`）。paired RCT 强制 paired within-task randomization、isolated fresh workspace per run、randomized arm order、除 retrieval/context variant 外相同的 budget/tools/prompt，以及 no cross-run memory。Hard gates（FROZEN）：`feasibility_gate`、`denominator_gate`（每 (task_type, arm) cell 最小 30）、`leakage_gate`、`operational_parity_gate`（token-budget match tolerance 0.10、latency match tolerance 0.15、除 retrieval variant 外相同 tools/budget/prompt、isolated fresh workspace、randomized arm order、no cross-run memory）、`privacy_gate`、`promotion_false_gate`。Metric registry（FROZEN，8 个 names）：`solve_rate`、`correct_file_before_first_edit`、`wrong_file_edits`、`tool_calls_before_first_edit`、`context_tokens`、`tests_pass`、`latency`、`cost` —— 每个 metric 都需要 per-run paired agent outputs（event logs、patches/diffs、test execution results、solve labels、first-file-before-first-edit events、wrong-file-edit annotations、tool-call/token/latency/cost rows、isolated workspace proof、randomized arm order、task oracle/hidden-test manifest）；**没有** metric 可从 retrieval aggregates 计算。Predeclared success/partial/failure criteria 使用 fresh-validation split 上 solve-rate 提升的显式 thresholds（≥ 0.02）、correct-file-before-first-edit 提升（≥ 0.02）、wrong-file-edits 回归（≤ 0.15）、denominator（≥ 30 per cell）、randomization balance（≤ 0.05 imbalance）、operational parity（token-budget 0.10、latency 0.15）、cost reported per arm，加上 `CVaR_20%` worst-group tail average。B16 **是** downstream-agent-evaluation *stage*（`stage_is_downstream_agent_evaluation=true`），但当前 skeleton 不执行任何 live downstream agent runs（`downstream_agent_runs_performed=false`）、不执行 patch execution（`patch_execution_performed=false`）、不评估 agent-behavior metrics（`agent_behavior_metrics_evaluated=false`），也不评估 solve rate（`solve_rate_evaluated=false`）；synthetic / stub 报告设置 `per_record_inputs_available=false`、`candidate_retrieval_variant_frozen=false`、`stages_evaluated=false`、`stages_defined=true`、`stage_count=4`、`winner_declared=false`、`metrics_evaluated=false`、`no_fake_downstream_metrics_from_retrieval_aggregates=true`，使该公共 artifact 不会被误读为 empirical B16 downstream agent 结果。**CRITICAL**：skeleton **绝不可**从 retrieval aggregates 计算伪造的 solve-rate / correct-file-before-first-edit / wrong-file-edits / tool-call / token / latency / cost 指标；synthetic fixture 仅验证 metric NAMES 与 gates（无 per-run paired agent outputs，无 computed metric values）。synthetic / stub 报告仅发出 stage *定义*（无 per-stage 的 `passes=true` / `solve_rate` / `correct_file_before_first_edit` / `wrong_file_edits`）；skeleton verdict 框架仅发出 `insufficient_data`（synthetic fixture）或 `not_implemented`（ci_ephemeral_records stub）——`success` / `failure` / `partial` 保留给未来 `downstream_agent_runs_performed=true` / `solve_rate_evaluated=true` 的 empirical 路径，该路径在当前 skeleton 中**不**存在。`--self-test` 为只读（将内存中期望 artifacts 与 on-disk artifacts 比对，drift 即失败，不修改 checked-in artifacts）；`--regenerate-artifacts` 为唯一会修改 checked-in artifacts 的路径；`--input` stub 要求显式 `--out`，并拒绝写入 `artifacts/b16_downstream_agent_evaluation/` 内的任何路径。bounded public-aggregate feasibility / no-go screen（`eval/b16_public_aggregate_feasibility_screen.py`）读取已发布的 B11 matrix + B12 + B13 + B14 + B15 公共 screens，并在 `artifacts/b16_downstream_agent_evaluation/` 下发出 `verdict=no_go_public_aggregate_only`（或 `insufficient_data_public_aggregate_only`）；它从不声称 downstream agent value，从不从 retrieval aggregates 计算 downstream metric，从不 freeze candidate retrieval variant，从不 promote retrieval variant，也从不声明 winner。B10-B15 retrieval/context candidate research 是 retrieval research；它**不**证明 downstream coding-agent value。Retrieval improvements **不是** downstream agent improvements；B15 PackPolicy **不是** downstream agent improvement。真实 B16 downstream agent evaluation 无法仅凭公共 aggregates 完成：它需要 paired live downstream agent runs、per-run agent event logs、per-run patches/diffs、per-run test execution results、per-run solve labels、per-run first-file-before-first-edit events、per-run wrong-file-edit annotations、per-run tool-call/token/latency/cost rows、per-run isolated fresh workspace proof、per-run randomized arm order 与 task oracle/hidden-test manifest，这些在当前公共 artifacts 中均不存在。B11 `partial_with_failure` 与 B12/B13/B14/B15 no-go 或 screen-only statuses 原样 carry forward。详见 [`b16-downstream-agent-evaluation.md`](b16-downstream-agent-evaluation.md)。
+
 ---
 
 ## Current status update — 2026-06-13

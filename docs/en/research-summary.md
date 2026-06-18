@@ -1050,6 +1050,129 @@ evaluation) and future context-pack routing work as research
 candidates only. See
 [`b15-context-pack-policy.md`](b15-context-pack-policy.md).
 
+B16 downstream coding-agent evaluation:
+
+```text
+algorithm_spec_id: b16_downstream_agent_evaluation_v0
+claim_level: downstream_agent_evaluation_v0
+replay_and_validation_only: true (no live LLM calls and no live downstream agent runs inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+retrieval_variant_promoted: false
+stage_is_downstream_agent_evaluation: true (B16 stage IS downstream agent evaluation)
+downstream_agent_runs_performed: false (skeleton performs no live agent runs)
+patch_execution_performed: false (skeleton performs no patch execution)
+agent_behavior_metrics_evaluated: false (skeleton evaluates no agent behavior metrics)
+solve_rate_evaluated: false (skeleton evaluates no solve rate)
+per_record_inputs_available: false (skeleton; no real per-run inputs)
+policy_search_performed: false
+quality_strategy_tuned: false
+new_provider_calls: 0
+candidate_retrieval_variant_frozen: false
+stages_evaluated: false
+stages_defined: true
+stage_count: 4
+winner_declared: false
+metrics_evaluated: false (skeleton; no fake solve-rate or downstream metrics from retrieval aggregates)
+no_fake_downstream_metrics_from_retrieval_aggregates: true
+```
+
+B16 is the **downstream coding-agent evaluation** phase that follows
+B15. The goal is a **frozen, preregistered paired within-task
+randomized controlled trial** that measures whether a candidate
+retrieval/context variant improves a downstream coding agent (not
+just retrieval aggregates) on real, paired, isolated-workspace agent
+runs. B16 is a **bounded planning / feasibility phase**, NOT live
+downstream agent evaluation. Arms are FROZEN into primary
+(`control_current_retrieval_v0`, `balanced_v1_retrieval_candidate`),
+exploratory (`candidate_pack_policy_v0`, only included if a real B15
+candidate exists — the B15 skeleton does NOT produce one, so this arm
+is EXCLUDED by default), and debugging-only (`gold_context_ceiling`,
+never promoted). Task types are FROZEN (`bug_localization`,
+`small_code_edit`, `test_selection`, `multi_file_feature`,
+`refactor_impact`). The paired RCT enforces paired within-task
+randomization, isolated fresh workspace per run, randomized arm
+order, same budget/tools/prompt except the retrieval/context variant,
+and no cross-run memory. Hard gates (FROZEN): `feasibility_gate`,
+`denominator_gate` (min 30 per (task_type, arm) cell),
+`leakage_gate`, `operational_parity_gate` (token-budget match
+tolerance 0.10, latency match tolerance 0.15, same tools/budget/prompt
+except retrieval variant, isolated fresh workspace, randomized arm
+order, no cross-run memory), `privacy_gate`, `promotion_false_gate`.
+Metric registry (FROZEN, 8 names): `solve_rate`,
+`correct_file_before_first_edit`, `wrong_file_edits`,
+`tool_calls_before_first_edit`, `context_tokens`, `tests_pass`,
+`latency`, `cost` — every metric requires per-run paired agent
+outputs (event logs, patches/diffs, test execution results, solve
+labels, first-file-before-first-edit events, wrong-file-edit
+annotations, tool-call/token/latency/cost rows, isolated workspace
+proof, randomized arm order, task oracle/hidden-test manifest); none
+can be computed from retrieval aggregates. Predeclared
+success/partial/failure criteria use explicit thresholds on
+fresh-validation-split solve-rate improvement (≥ 0.02),
+correct-file-before-first-edit improvement (≥ 0.02),
+wrong-file-edits regression (≤ 0.15), denominator (≥ 30 per cell),
+randomization balance (≤ 0.05 imbalance), operational parity
+(token-budget 0.10, latency 0.15), cost reported per arm, plus a
+`CVaR_20%` worst-group tail average. B16 IS the downstream-agent-
+evaluation *stage*
+(`stage_is_downstream_agent_evaluation=true`), but the shipped
+skeleton performs NO live downstream agent runs
+(`downstream_agent_runs_performed=false`), NO patch execution
+(`patch_execution_performed=false`), NO agent-behavior metrics
+evaluation (`agent_behavior_metrics_evaluated=false`), and NO
+solve-rate evaluation (`solve_rate_evaluated=false`); the
+synthetic / stub report sets `per_record_inputs_available=false`,
+`candidate_retrieval_variant_frozen=false`,
+`stages_evaluated=false`, `stages_defined=true`, `stage_count=4`,
+`winner_declared=false`, `metrics_evaluated=false`,
+`no_fake_downstream_metrics_from_retrieval_aggregates=true` so the
+public artifact cannot be misread as an empirical B16 downstream
+agent result. **CRITICAL**: the skeleton MUST NOT compute fake
+solve-rate / correct-file-before-first-edit / wrong-file-edits /
+tool-call / token / latency / cost metrics from retrieval aggregates;
+the synthetic fixture validates only metric NAMES and gates (no
+per-run paired agent outputs, no computed metric values). Synthetic
+/ stub reports emit only stage *definitions* (no per-stage
+`passes=true` / `solve_rate` / `correct_file_before_first_edit` /
+`wrong_file_edits`); the skeleton verdict framework emits only
+`insufficient_data` (synthetic fixture) or `not_implemented`
+(ci_ephemeral_records stub) — `success` / `failure` / `partial` are
+reserved for a future empirical
+`downstream_agent_runs_performed=true` /
+`solve_rate_evaluated=true` path that is NOT present in this
+skeleton. The `--self-test` is read-only (compares in-memory expected
+artifacts to on-disk artifacts, fails on drift, does not mutate
+checked-in artifacts); `--regenerate-artifacts` is the only path that
+mutates checked-in artifacts; `--input` stub requires explicit
+`--out` and refuses to write ANY path inside
+`artifacts/b16_downstream_agent_evaluation/`. The bounded
+public-aggregate feasibility / no-go screen
+(`eval/b16_public_aggregate_feasibility_screen.py`) reads the
+published B11 matrix + B12 + B13 + B14 + B15 public screens and
+emits `verdict=no_go_public_aggregate_only` (or
+`insufficient_data_public_aggregate_only`) under
+`artifacts/b16_downstream_agent_evaluation/`; it never claims
+downstream agent value, never computes a downstream metric from
+retrieval aggregates, never freezes a candidate retrieval variant,
+never promotes a retrieval variant, and never declares a winner.
+The B10-B15 retrieval/context candidate research is retrieval
+research; it does NOT prove downstream coding-agent value. Retrieval
+improvements are NOT downstream agent improvements; B15 PackPolicy
+is NOT a downstream agent improvement. Real B16 downstream agent
+evaluation cannot be done from public aggregates alone: it requires
+paired live downstream agent runs, per-run agent event logs,
+per-run patches/diffs, per-run test execution results, per-run solve
+labels, per-run first-file-before-first-edit events, per-run
+wrong-file-edit annotations, per-run tool-call/token/latency/cost
+rows, per-run isolated fresh workspace proof, per-run randomized arm
+order, and a task oracle/hidden-test manifest, none of which are
+present in current public artifacts. B11 `partial_with_failure` and
+B12/B13/B14/B15 no-go or screen-only statuses are carried forward
+unchanged. See
+[`b16-downstream-agent-evaluation.md`](b16-downstream-agent-evaluation.md).
+
 ---
 
 ## Current status update — 2026-06-13
