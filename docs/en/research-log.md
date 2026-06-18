@@ -2414,20 +2414,115 @@ Draft B13 preregistration plan: distributionally robust policy search that optim
 - Rule grammar: 6-10 rules, each using only runtime route_features (query_noise, candidate_support_exists, local_anchor, rrf_backed_by_anchor, candidate_count, etc.). No benchmark-private labels, no score-private fields, no model names in algorithm_spec.
 - Optimization objective: maximize worst-group utility OR CVaR_20%. RobustUtility = SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency (λ=1.0, μ=0.1, ν=0.1).
 - Validation: rotating leave-one-model-family-out (Kimi+Qwen→DeepSeek, Kimi+DeepSeek→Qwen, Qwen+DeepSeek→Kimi). All 3 rotations must pass.
-- B13 evaluator skeleton at `eval/b13_dro_policy_search.py` (~1100 lines, 10 self-test checks, spec sha256 stable).
+- B13 evaluator skeleton at `eval/b13_dro_policy_search.py` (~2300 lines, 9 read-only self-test checks, spec sha256 stable). `--self-test` is read-only (compares in-memory expected artifacts to on-disk artifacts, fails on drift, writes nothing); `--regenerate-artifacts` is the only mutating path.
 - --input is a stub (verdict=not_implemented); full search deferred.
 - Special invariant: `algorithm_spec_has_no_model_names=true` (verify no model names in spec).
+- Skeleton verdict framework emits only `insufficient_data` (synthetic fixture) or `not_implemented` (ci_ephemeral_records stub); `success` / `failure` / `partial` are reserved for a future empirical `policy_search_performed=true` path that is NOT present in this skeleton.
+- Synthetic / stub reports emit only rotation *definitions* (`rotations_defined=true`, `rotation_count=3`, `rotations_evaluated=false`); they never emit per-rotation `passes=true` / `all_rotations_pass=true` / `test_worst_group_utility` / `delta_vs_b10_reference` as if empirical. Top-level `policy_found=false`, `rotations_evaluated=false`, `winner_declared=false` are always present.
 
 ### Findings
 - B13 plan is frozen before any search runs.
 - B13 requires P21 records from B11 live runs (4 model families × 8 repos).
-- B13 is policy search, so `policy_search_performed=true`; but results are NOT promoted (`promotion_ready=false`, `default_should_change=false`).
+- B13 is the policy-search stage (`stage_is_policy_search=true`), but the
+  shipped skeleton performs NO empirical policy search
+  (`empirical_policy_search_performed=false`); the synthetic / stub report
+  sets `policy_search_performed=false`, `policy_found=false`,
+  `rotations_evaluated=false`, `winner_declared=false` so the public
+  artifact cannot be misread as an empirical B13 run. No empirical
+  per-rotation passes / utilities / deltas are emitted. Results are NOT
+  promoted (`promotion_ready=false`, `default_should_change=false`).
 - B13 is the last "immediate priority" item in B10-B19 Breakthrough Sprint.
 
 ### Caveats
 - B13 search requires P21 records (from B11 live runs or CI ephemeral).
 - B13 does NOT prove promotion; results are research candidates only.
 - After B13, remaining items (B14-B19) are second priority or parallel tracks.
+
+## 2026-06-18 — B13 Public-Aggregate Feasibility / No-Go Screen
+
+### Objective
+
+Produce a bounded, public-aggregate **feasibility / no-go screen** (NOT real
+B13 distributionally robust policy search) for B13 from the already-published
+B11 aggregate and B12 public-aggregate screen, after the explorer/oracle
+finding that real B13 cannot be performed from public aggregates alone.
+
+### Implementation notes
+
+- New screen script `eval/b13_public_aggregate_feasibility_screen.py` (pure
+  Python; reuses `b6_lite_interpretable_policy_search._walk_forbidden` for the
+  public-output forbidden-key scan; `--self-test` synthetic-fixture mode +
+  input-validation block checks + insufficient-data branch check + forbidden
+  scan check).
+- New aggregate artifact
+  `artifacts/b13_dro_policy_search/b13_public_aggregate_feasibility_report.json`
+  (schema `b13-public-aggregate-feasibility-screen-v0`).
+- The screen reads only `artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json`
+  and `artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json`
+  (already-published public aggregates); no raw records, paths, prompts,
+  responses, snippets, or private labels are read or emitted.
+- Hardened B13 skeleton claim fields: `eval/b13_dro_policy_search.py` now
+  distinguishes `stage_is_policy_search=true` (B13 stage IS policy search)
+  from `empirical_policy_search_performed=false` (no empirical search
+  performed by skeleton); the synthetic / stub report sets
+  `policy_search_performed=false`, `policy_found=false`,
+  `rotations_evaluated=false`, `winner_declared=false` so the public
+  artifact cannot be misread as an empirical B13 search. Synthetic / stub
+  reports emit only rotation *definitions* (`rotations_defined=true`,
+  `rotation_count=3`, `rotations_evaluated=false`); they never emit
+  per-rotation `passes=true` / `all_rotations_pass=true` /
+  `test_worst_group_utility` / `delta_vs_b10_reference` as if empirical.
+  The skeleton verdict framework emits only `insufficient_data` (synthetic
+  fixture) or `not_implemented` (ci_ephemeral_records stub); `success` /
+  `failure` / `partial` are reserved for a future empirical
+  `policy_search_performed=true` path that is NOT present in this skeleton.
+  `--self-test` is read-only (compares in-memory expected artifacts to
+  on-disk artifacts, fails on drift, writes nothing);
+  `--regenerate-artifacts` is the only mutating path.
+  `verify_algorithm_spec`, `verify_report`, `_print_summary`, and
+  `run_self_test` updated accordingly.
+
+### Findings
+
+- B13 verdict from the public aggregate screen: `no_go_public_aggregate_only`
+  (B11 has 384 records; the public aggregate is sufficient to produce a
+  feasibility read, but real B13 search is not possible from public
+  aggregates alone).
+- `empirical_policy_search_performed=false`, `policy_search_performed=false`,
+  `policy_found=false`, `rotations_evaluated=false`,
+  `full_b13_possible_from_public_artifacts=false`.
+- Missing inputs that block real B13 from the public artifacts:
+  `no_per_record_route_features_in_public_artifact`,
+  `no_per_record_action_eligibility_in_public_artifact`,
+  `no_per_strategy_outcomes_in_public_artifact`,
+  `no_weak_candidate_only_public_outcomes_in_public_artifact`,
+  `no_group_membership_for_train_test_rotations_in_public_artifact`,
+  `no_held_out_family_evaluation_in_public_artifact`,
+  `no_candidate_rule_coverage_in_public_artifact`.
+- B11 mixed/partial verdict (`partial_with_failure`) and B12 public-aggregate
+  screen statuses carried forward unchanged; they do NOT authorize
+  promotion, default change, or a runtime-clean general algorithm.
+- Descriptive overall-mean penalty index from already-published fixed strategies
+  (P25 / balanced_v1) included under
+  `descriptive_fixed_strategy_proxy_not_policy_search=true`; it is strictly
+  descriptive, NOT the B13 RobustUtility, NOT worst-group/CVaR/rotation-
+  validated, NOT valid for policy selection or strategy ranking; never
+  selects a new rule, never declares a winner.
+
+### Caveats
+
+- The screen is NOT real B13 distributionally robust policy search. It does
+  NOT claim empirical policy search, does NOT select a rule, does NOT
+  declare a winner.
+- No promotion, no default change, no runtime-clean general algorithm claim,
+  no EvidenceCore semantics change (`promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `policy_search_performed=false`, `quality_strategy_tuned=false`,
+  `new_provider_calls=0`).
+- Recommended next step: future ephemeral-record B13 replay (the only path
+  that can perform empirical distributionally robust policy search), or
+  first ephemeral-record B12 replay to causally decompose the balanced
+  policy. The public aggregate alone is insufficient for either.
 
 ## 2026-06-18 — B11 Official Integrated Matrix Aggregate Report
 

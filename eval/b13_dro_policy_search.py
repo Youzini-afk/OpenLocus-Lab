@@ -11,13 +11,18 @@ each candidate rule's per-record outcome can be computed by selecting the
 appropriate per-strategy outcome from existing records. No live LLM calls are
 made by this evaluator.
 
-IMPORTANT: This is a preregistration. The rule grammar, optimization objective,
-search constraints, validation methodology, and success/failure criteria are
-FROZEN before any B13 search runs. No retuning is allowed after B13 search runs
+Important claim boundary: B13 IS the policy-search *stage*
+(`stage_is_policy_search=true`), but this skeleton performs NO empirical
+policy search. Self-test / `--input` reports set
+`empirical_policy_search_performed=false` AND `policy_search_performed=false`
+so the synthetic / stub report cannot be mistaken for an empirical B13 run.
+The frozen rule grammar, optimization objective, search constraints,
+validation methodology, and success/failure criteria are FROZEN before any
+real B13 search runs; no retuning is allowed after real B13 search runs
 begin.
 
-Important claim boundary: B13 IS policy search, but its results are NOT
-promoted. Even if B13 finds a policy that improves worst-group utility,
+Important claim boundary: B13 results are NOT promoted. Even if a future
+empirical B13 run finds a policy that improves worst-group utility,
 ``promotion_ready=false``, ``default_should_change=false``, and
 ``EvidenceCore`` semantics are unchanged. B13 results are research candidates
 only: they inform B14 (uncertainty calibration) and B16 (downstream agent
@@ -28,16 +33,34 @@ Aggregate-only public artifacts: no task/repo/candidate/path/span/snippet/
 prompt/response/gold/provider keys and no raw path/digest/provider strings.
 
 This file currently ships a SKELETON: the ``--self-test`` path verifies the
-rule-grammar, search-mechanics stub, and leave-one-out rotation mechanics
-against a synthetic fixture, while ``--input <path>`` is a stub
+rule-grammar, search-mechanics stub, and leave-one-out rotation *definitions*
+against a synthetic fixture (read-only: it builds the expected algorithm spec
++ report in memory and compares them to the on-disk artifacts, failing on
+drift; it does NOT write to disk). ``--input <path>`` is a stub
 (``verdict="not_implemented"``) awaiting the full P21-record replay + search
-computation in a later task. No live LLM calls are made by this evaluator.
+computation in a later task. The ONLY mutating path is
+``--regenerate-artifacts``, which (re)writes the on-disk algorithm spec +
+synthetic-fixture report from the current build functions. In all paths:
+``policy_search_performed=false`` and
+``empirical_policy_search_performed=false`` so the synthetic / stub report
+cannot be misread as an empirical B13 search. Synthetic / stub reports emit
+only rotation *definitions* (``rotations_defined=true``,
+``rotation_count=3``, ``rotations_evaluated=false``); they never emit
+per-rotation ``passes=true``, ``all_rotations_pass=true``,
+``test_worst_group_utility``, or ``delta_vs_b10_reference`` as if empirical.
+Top-level ``policy_found=false``, ``rotations_evaluated=false``,
+``winner_declared=false`` are always present. No live LLM calls are made by
+this evaluator.
+
+For a bounded public-aggregate feasibility/no-go screen that does NOT claim
+empirical policy search, see
+``eval/b13_public_aggregate_feasibility_screen.py``.
 
 Run::
 
     python3 eval/b13_dro_policy_search.py --self-test
+    python3 eval/b13_dro_policy_search.py --regenerate-artifacts
     python3 eval/b13_dro_policy_search.py --input path/to/p21_outputs.json
-    python3 eval/b13_dro_policy_search.py --self-test --out /tmp/b13_report.json
 """
 
 from __future__ import annotations
@@ -283,12 +306,24 @@ FROZEN_ARTIFACTS = (
 )
 
 ALLOWED_REPLAY_SOURCES = ("synthetic_fixture", "ci_ephemeral_records")
+# Skeleton verdicts. Until a real empirical B13 replay/search path exists
+# (an explicit ``empirical_policy_search_performed=true`` path, which is NOT
+# present in this skeleton), ``_evaluate_search`` may only emit
+# ``insufficient_data`` (synthetic fixture) or ``not_implemented``
+# (ci_ephemeral_records stub). The success / failure / partial verdicts are
+# reserved for future empirical B13 and are deliberately removed from the
+# skeleton's allowed set so a stub report cannot accidentally carry them.
 ALLOWED_VERDICTS = (
+    "insufficient_data",
+    "not_implemented",
+)
+# Empirical verdicts reserved for the future real B13 search path. Listed
+# here for documentation only; the skeleton never emits them and
+# ``ALLOWED_VERDICTS`` above does not include them.
+EMPIRICAL_VERDICTS_RESERVED_FOR_FUTURE_B13 = (
     "success",
     "failure",
     "partial",
-    "insufficient_data",
-    "not_implemented",
 )
 
 # ---------------------------------------------------------------------------
@@ -897,58 +932,43 @@ def _evaluate_leave_one_out_rotations(
     per_action: dict[str, Any],
     replay_source: str,
 ) -> dict[str, Any]:
-    """Evaluate the 3 leave-one-model-family-out rotations.
+    """Emit the 3 leave-one-model-family-out rotation *definitions* only.
 
-    For the stub, each rotation's "test_family" worst-group utility is
-    approximated by the worst-group utility computed on the synthetic fixture
-    restricted to that family. The real rotation evaluation (train on 2
-    families, test on the held-out one) is deferred to ``--input``.
+    The skeleton performs NO empirical rotation evaluation. To avoid
+    surfacing synthetic per-rotation ``passes=true`` /
+    ``test_worst_group_utility`` / ``delta_vs_b10_reference`` values that
+    could be misread as empirical results, this function emits only:
+
+    - ``rotations_defined``: True
+    - ``rotation_count``: 3
+    - ``rotations_evaluated``: False (no empirical evaluation performed)
+    - ``rotations``: a list of rotation *definitions* (rotation_id +
+      train_families + test_family + test_subfamilies), with NO
+      ``passes`` / ``test_worst_group_utility`` / ``delta_vs_b10_reference``
+      fields.
+
+    A future real empirical B13 path (with
+    ``empirical_policy_search_performed=true``) would replace this with
+    actual train/test split evaluation; that path is NOT present in this
+    skeleton.
     """
-    rotations: dict[str, Any] = {}
-    delta_threshold = PREDECLARED_CRITERIA["worst_group_delta_threshold"]
-    ref_action = "use_p25_action"
+    rotations_list: list[dict[str, Any]] = []
     for rot in LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS:
-        rot_id = rot["rotation_id"]
-        test_family = rot["test_family"]
-        # For deepseek rotation, test_family is "deepseek"; aggregate the two
-        # deepseek subfamilies' worst-group utility.
-        test_families: tuple[str, ...]
-        if "test_subfamilies" in rot:
-            test_families = tuple(rot["test_subfamilies"])
-        else:
-            test_families = (test_family,)
-        # Compute per-family utilities on the test set (reference action).
-        per_family = per_action[ref_action]["per_model_family"]
-        utilities: list[float] = []
-        for fam in test_families:
-            if fam in per_family:
-                m = per_family[fam]
-                span = m["span_f0_5"]
-                pfp = m["primary_false_positive_rate"]
-                norm_cost = m["model_calls"] / 10.0
-                norm_latency = m["model_calls"] / 10.0
-                utilities.append(
-                    span
-                    - ROBUST_UTILITY_LAMBDA * pfp
-                    - ROBUST_UTILITY_MU * norm_cost
-                    - ROBUST_UTILITY_NU * norm_latency
-                )
-        test_worst_group = round(min(utilities), 6) if utilities else 0.0
-        # Stub: reference test_worst_group compared to itself (delta=0), so the
-        # rotation "passes" by construction (within ±threshold). Real
-        # evaluation compares the searched policy against B10's worst-group.
-        delta = 0.0
-        passes = abs(delta) <= delta_threshold
-        rotations[rot_id] = {
-            "train_families": list(rot["train_families"]),
-            "test_family": test_family,
-            "test_worst_group_utility": test_worst_group,
-            "delta_vs_b10_reference": delta,
-            "delta_threshold": delta_threshold,
-            "passes": passes,
-            "stub": True,  # real train/test split deferred to --input
-        }
-    return rotations
+        rotations_list.append(
+            {
+                "rotation_id": rot["rotation_id"],
+                "train_families": list(rot["train_families"]),
+                "test_family": rot["test_family"],
+                "test_subfamilies": list(rot.get("test_subfamilies", ())),
+                "evaluated": False,  # skeleton: no empirical evaluation
+            }
+        )
+    return {
+        "rotations_defined": True,
+        "rotation_count": len(LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS),
+        "rotations_evaluated": False,
+        "rotations": rotations_list,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -960,45 +980,60 @@ def _evaluate_search(
     per_action: dict[str, Any],
     replay_source: str,
 ) -> tuple[dict[str, Any], str, str]:
-    """Apply the predeclared search criteria.
+    """Apply the predeclared search criteria (skeleton-safe).
 
-    Returns ``(search_results, verdict, verdict_reason)``. A synthetic-fixture
-    replay_source always yields ``insufficient_data`` regardless of how the
-    criteria evaluate, because synthetic fixtures cannot confer empirical
-    support (mirrors B10B/B11/B12's safety stance).
+    Returns ``(search_results, verdict, verdict_reason)``.
+
+    Until a real empirical B13 replay/search path exists (an explicit
+    ``empirical_policy_search_performed=true`` path, which is NOT present in
+    this skeleton), this function NEVER emits ``success`` / ``failure`` /
+    ``partial``. Those verdicts are reserved for future empirical B13 and
+    are deliberately excluded from ``ALLOWED_VERDICTS``.
+
+    Skeleton behavior:
+    - ``synthetic_fixture`` → verdict ``insufficient_data``
+    - ``ci_ephemeral_records`` → verdict ``not_implemented`` (the
+      ``--input`` path overrides this anyway, but the default is safe)
+
+    The search_results block surfaces only mechanics-stub info and the
+    rotation *definitions* (no empirical per-rotation passes / utilities /
+    deltas). ``all_rotations_pass`` is emitted as ``False`` (no rotations
+    were empirically evaluated) and ``rotations_evaluated=False`` /
+    ``policy_found=False`` / ``winner_declared=False`` are surfaced so a
+    reader cannot mistake the skeleton for an empirical B13 run.
     """
     search_stub = _run_search_stub(per_action, replay_source)
-    rotations = _evaluate_leave_one_out_rotations(per_action, replay_source)
-    all_rotations_pass = all(
-        r.get("passes") is True for r in rotations.values()
+    rotations_block = _evaluate_leave_one_out_rotations(
+        per_action, replay_source
     )
     search_results: dict[str, Any] = {
         "search_stub": search_stub,
-        "leave_one_out_rotations": rotations,
-        "all_rotations_pass": all_rotations_pass,
+        "leave_one_out_rotations": rotations_block,
+        # Skeleton: no empirical rotation evaluation happened, so the
+        # all-rotations-pass flag is False by construction.
+        "all_rotations_pass": False,
+        "rotations_evaluated": False,
+        "policy_found": False,
+        "winner_declared": False,
     }
     if replay_source == "synthetic_fixture":
         return (
             search_results,
             "insufficient_data",
-            "synthetic_fixture_only_no_empirical_support; B13 search "
-            "(or P21-record replay) required for any success, failure, or "
-            "partial verdict",
+            "synthetic_fixture_only_no_empirical_support; no empirical "
+            "B13 search or rotation evaluation performed; success, "
+            "failure, or partial verdicts require a future empirical "
+            "policy_search_performed=true path",
         )
-    # For ci_ephemeral_records the real search is not yet implemented; we
-    # surface the stub results but flag the verdict as not_implemented (the
-    # --input path overrides this to not_implemented in _build_not_implemented_report).
-    n_passing = sum(1 for r in rotations.values() if r.get("passes"))
-    if all_rotations_pass and search_stub["worst_group_utility_reference"] > 0:
-        verdict = "success"
-        reason = "all_rotations_pass_and_worst_group_utility_improved"
-    elif n_passing == 0:
-        verdict = "failure"
-        reason = "no_rotation_passes"
-    else:
-        verdict = "partial"
-        reason = f"partial_rotation_pass: {n_passing}/{len(rotations)}"
-    return search_results, verdict, reason
+    # ci_ephemeral_records: real search is not yet implemented.
+    return (
+        search_results,
+        "not_implemented",
+        "ci_ephemeral_records_replay_not_implemented; no empirical B13 "
+        "search or rotation evaluation performed; success, failure, or "
+        "partial verdicts require a future empirical "
+        "policy_search_performed=true path",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1041,9 +1076,14 @@ def build_algorithm_spec() -> dict[str, Any]:
         "promotion_ready": False,
         "default_should_change": False,
         "evidencecore_semantics_changed": False,
-        # NOTE: B13 IS policy search, so policy_search_performed=true. But the
-        # results are NOT promoted (promotion_ready=false, default_should_change=false).
-        "policy_search_performed": True,
+        # The algorithm_spec DEFINES the B13 policy-search stage (so
+        # stage_is_policy_search=true), but no empirical B13 search has been
+        # performed by this skeleton (empirical_policy_search_performed=false).
+        # The synthetic / stub report sets policy_search_performed=false so
+        # the public artifact cannot be misread as an empirical B13 run.
+        "stage_is_policy_search": True,
+        "empirical_policy_search_performed": False,
+        "policy_search_performed": False,
         "quality_strategy_tuned": False,
         "aggregate_only_public_artifact": True,
         "algorithm_spec_has_no_model_names": True,
@@ -1196,7 +1236,22 @@ def build_report(
         "promotion_ready": False,
         "default_should_change": False,
         "evidencecore_semantics_changed": False,
-        "policy_search_performed": True,
+        # B13 defines the policy-search STAGE (stage_is_policy_search=true),
+        # but this skeleton performs NO empirical policy search
+        # (empirical_policy_search_performed=false). The report flag
+        # policy_search_performed=false so the synthetic / stub report cannot
+        # be misread as an empirical B13 search.
+        "stage_is_policy_search": True,
+        "empirical_policy_search_performed": False,
+        "policy_search_performed": False,
+        # Skeleton: no empirical policy was found, no rotations were
+        # evaluated, no winner was declared. These top-level flags make the
+        # skeleton stance unambiguous and mirror the search_results sub-block.
+        "policy_found": False,
+        "rotations_evaluated": False,
+        "rotations_defined": True,
+        "rotation_count": len(LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS),
+        "winner_declared": False,
         "quality_strategy_tuned": False,
         "runtime_calls_by_replay": 0,
         "model_calls_by_replay": 0,
@@ -1293,9 +1348,24 @@ def verify_algorithm_spec(spec: dict[str, Any], expected_hash: str) -> None:
         raise ValueError("algorithm spec default_should_change must be false")
     if spec.get("evidencecore_semantics_changed") is not False:
         raise ValueError("algorithm spec evidencecore_semantics_changed must be false")
-    # B13 IS policy search, so policy_search_performed must be True.
-    if spec.get("policy_search_performed") is not True:
-        raise ValueError("algorithm spec policy_search_performed must be true (B13)")
+    # B13 DEFINES the policy-search stage (stage_is_policy_search=true), but
+    # no empirical B13 search is performed by this skeleton
+    # (empirical_policy_search_performed=false). The skeleton report sets
+    # policy_search_performed=false to avoid overclaiming empirical search.
+    if spec.get("stage_is_policy_search") is not True:
+        raise ValueError(
+            "algorithm spec stage_is_policy_search must be true (B13 stage)"
+        )
+    if spec.get("empirical_policy_search_performed") is not False:
+        raise ValueError(
+            "algorithm spec empirical_policy_search_performed must be false "
+            "(no empirical search performed by skeleton)"
+        )
+    if spec.get("policy_search_performed") is not False:
+        raise ValueError(
+            "algorithm spec policy_search_performed must be false (skeleton; "
+            "use stage_is_policy_search=true to mark the stage)"
+        )
     if spec.get("quality_strategy_tuned") is not False:
         raise ValueError("algorithm spec quality_strategy_tuned must be false")
     if spec.get("aggregate_only_public_artifact") is not True:
@@ -1392,8 +1462,41 @@ def verify_report(report: dict[str, Any]) -> None:
         raise ValueError("report default_should_change must be false")
     if report.get("evidencecore_semantics_changed") is not False:
         raise ValueError("report evidencecore_semantics_changed must be false")
-    if report.get("policy_search_performed") is not True:
-        raise ValueError("report policy_search_performed must be true (B13)")
+    # B13 DEFINES the policy-search stage (stage_is_policy_search=true), but
+    # this skeleton performs NO empirical policy search
+    # (empirical_policy_search_performed=false). The report flag
+    # policy_search_performed=false so synthetic / stub reports cannot be
+    # misread as empirical B13 search results.
+    if report.get("stage_is_policy_search") is not True:
+        raise ValueError(
+            "report stage_is_policy_search must be true (B13 stage)"
+        )
+    if report.get("empirical_policy_search_performed") is not False:
+        raise ValueError(
+            "report empirical_policy_search_performed must be false "
+            "(no empirical search performed by skeleton)"
+        )
+    if report.get("policy_search_performed") is not False:
+        raise ValueError(
+            "report policy_search_performed must be false (skeleton; "
+            "use stage_is_policy_search=true to mark the stage)"
+        )
+    # Skeleton: no empirical policy found, no rotations evaluated, no winner.
+    if report.get("policy_found") is not False:
+        raise ValueError("report policy_found must be false (skeleton)")
+    if report.get("rotations_evaluated") is not False:
+        raise ValueError(
+            "report rotations_evaluated must be false (skeleton; no "
+            "empirical rotation evaluation performed)"
+        )
+    if report.get("rotations_defined") is not True:
+        raise ValueError("report rotations_defined must be true (3 rotations)")
+    if report.get("rotation_count") != len(LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS):
+        raise ValueError(
+            "report rotation_count must equal the number of frozen rotations"
+        )
+    if report.get("winner_declared") is not False:
+        raise ValueError("report winner_declared must be false (skeleton)")
     if report.get("quality_strategy_tuned") is not False:
         raise ValueError("report quality_strategy_tuned must be false")
     if report.get("runtime_calls_by_replay") != 0:
@@ -1446,15 +1549,75 @@ def verify_report(report: dict[str, Any]) -> None:
     ):
         if key not in report:
             raise ValueError(f"report missing required section: {key}")
-    # Search results substructure.
+    # Search results substructure. The skeleton emits only mechanics-stub
+    # info + rotation definitions; no empirical per-rotation passes /
+    # test_worst_group_utility / delta_vs_b10_reference values.
     sr = report.get("search_results") or {}
     for key in (
         "search_stub",
         "leave_one_out_rotations",
         "all_rotations_pass",
+        "rotations_evaluated",
+        "policy_found",
+        "winner_declared",
     ):
         if key not in sr:
             raise ValueError(f"search_results missing required section: {key}")
+    if sr.get("all_rotations_pass") is not False:
+        raise ValueError(
+            "search_results.all_rotations_pass must be false (skeleton; no "
+            "empirical rotation evaluation performed)"
+        )
+    if sr.get("rotations_evaluated") is not False:
+        raise ValueError(
+            "search_results.rotations_evaluated must be false (skeleton)"
+        )
+    if sr.get("policy_found") is not False:
+        raise ValueError("search_results.policy_found must be false (skeleton)")
+    if sr.get("winner_declared") is not False:
+        raise ValueError(
+            "search_results.winner_declared must be false (skeleton)"
+        )
+    # leave_one_out_rotations must be a definitions-only block (no empirical
+    # per-rotation passes / test_worst_group_utility / delta_vs_b10_reference).
+    rots = sr.get("leave_one_out_rotations") or {}
+    if rots.get("rotations_defined") is not True:
+        raise ValueError(
+            "search_results.leave_one_out_rotations.rotations_defined "
+            "must be true"
+        )
+    if rots.get("rotation_count") != len(LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS):
+        raise ValueError(
+            "search_results.leave_one_out_rotations.rotation_count mismatch"
+        )
+    if rots.get("rotations_evaluated") is not False:
+        raise ValueError(
+            "search_results.leave_one_out_rotations.rotations_evaluated "
+            "must be false (skeleton)"
+        )
+    rot_list = rots.get("rotations")
+    if not isinstance(rot_list, list) or len(rot_list) != len(
+        LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS
+    ):
+        raise ValueError(
+            "search_results.leave_one_out_rotations.rotations must be a "
+            "list of 3 rotation definitions"
+        )
+    for r in rot_list:
+        if r.get("evaluated") is not False:
+            raise ValueError(
+                "rotation definitions must have evaluated=false (skeleton)"
+            )
+        for forbidden_key in (
+            "passes",
+            "test_worst_group_utility",
+            "delta_vs_b10_reference",
+        ):
+            if forbidden_key in r:
+                raise ValueError(
+                    f"rotation definition must not carry empirical field "
+                    f"{forbidden_key!r} (skeleton)"
+                )
     # Safety invariant flags.
     si = report.get("safety_invariants") or {}
     for flag in (
@@ -1781,13 +1944,27 @@ def _self_test_leave_one_out_rotations_defined() -> None:
         assert "train_families" not in r, "spec rotation must not expose real names"
         assert "test_family" not in r, "spec rotation must not expose real names"
     # Evaluate the rotations on the synthetic fixture (evaluator-side, real
-    # family names are fine here — they never enter the spec).
+    # family names are fine here — they never enter the spec). The skeleton
+    # emits definitions only; no empirical per-rotation passes /
+    # test_worst_group_utility / delta_vs_b10_reference values.
     per_action = _build_synthetic_fixture()
-    rotations = _evaluate_leave_one_out_rotations(per_action, "synthetic_fixture")
-    assert set(rotations.keys()) == rot_ids, rotations.keys()
-    for r in rotations.values():
-        assert "passes" in r
-        assert "test_worst_group_utility" in r
+    rotations_block = _evaluate_leave_one_out_rotations(
+        per_action, "synthetic_fixture"
+    )
+    assert rotations_block["rotations_defined"] is True
+    assert rotations_block["rotation_count"] == 3
+    assert rotations_block["rotations_evaluated"] is False
+    rot_ids_back = {r["rotation_id"] for r in rotations_block["rotations"]}
+    assert rot_ids_back == rot_ids, rot_ids_back
+    for r in rotations_block["rotations"]:
+        assert r.get("evaluated") is False
+        # Skeleton must NOT carry empirical per-rotation fields.
+        for forbidden_key in (
+            "passes",
+            "test_worst_group_utility",
+            "delta_vs_b10_reference",
+        ):
+            assert forbidden_key not in r, (forbidden_key, r)
 
 
 def _self_test_input_stub_not_implemented(tmp_path: Path) -> None:
@@ -1817,9 +1994,61 @@ def _self_test_reference_specs() -> None:
     assert refs.get("b12_mechanism_decomposition_v0") is True, refs
 
 
-def _self_test_artifacts_regenerated() -> None:
-    """Regenerate the on-disk algorithm spec + synthetic-fixture report from
-    the current build functions."""
+def _self_test_artifacts_match_in_memory() -> None:
+    """Read-only drift check: build the expected algorithm spec + report in
+    memory and compare them to the on-disk artifacts. Fails on drift. Does
+    NOT write anything to disk (self-test is read-only). Use
+    ``--regenerate-artifacts`` to (re)write the on-disk artifacts.
+    """
+    # Expected algorithm spec (in memory).
+    expected_spec = build_algorithm_spec()
+    expected_spec_hash = _sha256_json(expected_spec)
+
+    on_disk_spec = _load_json(ALGORITHM_SPEC_PATH)
+    on_disk_spec_hash = _sha256_json(on_disk_spec)
+    if on_disk_spec_hash != expected_spec_hash:
+        raise ValueError(
+            "on-disk algorithm spec drifted from build_algorithm_spec() "
+            f"output: on_disk={on_disk_spec_hash!r} "
+            f"expected={expected_spec_hash!r}; run "
+            "`python3 eval/b13_dro_policy_search.py --regenerate-artifacts` "
+            "to refresh the on-disk artifacts"
+        )
+    # Validate the on-disk spec in its own right.
+    verify_algorithm_spec(on_disk_spec, on_disk_spec_hash)
+    if on_disk_spec != expected_spec:
+        raise ValueError(
+            "on-disk algorithm spec content drifted from "
+            "build_algorithm_spec() output (same hash but content differs; "
+            "this should be impossible)"
+        )
+
+    # Expected report (in memory).
+    per_action = _build_synthetic_fixture()
+    expected_report = build_report(
+        per_action, self_test=True, replay_source="synthetic_fixture"
+    )
+
+    on_disk_report = _load_json(REPORT_PATH)
+    if on_disk_report != expected_report:
+        raise ValueError(
+            "on-disk b13_dro_policy_search_report.json drifted from the "
+            "in-memory build_report() output; run "
+            "`python3 eval/b13_dro_policy_search.py --regenerate-artifacts` "
+            "to refresh the on-disk artifacts"
+        )
+    # Validate the on-disk report in its own right.
+    verify_report(on_disk_report)
+
+
+def regenerate_artifacts() -> None:
+    """Regenerate the on-disk algorithm spec + synthetic-fixture report so the
+    artifact pin matches the in-code build functions. Mirrors the B10/B10B/
+    B11/B12 freeze-write style: deterministic output, canonical JSON.
+
+    This is the ONLY mutating path. ``--self-test`` is read-only and uses
+    ``_self_test_artifacts_match_in_memory`` to detect drift.
+    """
     spec = build_algorithm_spec()
     _write_json(ALGORITHM_SPEC_PATH, spec)
     per_action = _build_synthetic_fixture()
@@ -1827,28 +2056,6 @@ def _self_test_artifacts_regenerated() -> None:
         per_action, self_test=True, replay_source="synthetic_fixture"
     )
     _write_json(REPORT_PATH, report)
-
-
-def _self_test_on_disk_artifacts_validated() -> None:
-    """Validate the on-disk algorithm spec + report."""
-    spec = _load_json(ALGORITHM_SPEC_PATH)
-    spec_hash = _sha256_json(spec)
-    verify_algorithm_spec(spec, spec_hash)
-    assert spec == build_algorithm_spec(), (
-        "on-disk algorithm spec does not match build_algorithm_spec() output"
-    )
-    spec_again = _load_json(ALGORITHM_SPEC_PATH)
-    assert _sha256_json(spec_again) == spec_hash, "algorithm spec hash not stable"
-
-    on_disk_report = _load_json(REPORT_PATH)
-    verify_report(on_disk_report)
-
-
-def _regenerate_artifacts() -> None:
-    """Regenerate the on-disk algorithm spec + synthetic-fixture report so the
-    artifact pin matches the in-code build functions. Mirrors the B10/B10B/B11/
-    B12 freeze-write style: deterministic output, canonical JSON."""
-    _self_test_artifacts_regenerated()
 
 
 def run_self_test() -> dict[str, Any]:
@@ -1880,11 +2087,10 @@ def run_self_test() -> dict[str, Any]:
     # 8. B10/B10B/B11/B12 reference specs present.
     _self_test_reference_specs()
 
-    # 9. Regenerate on-disk artifacts from the current build functions.
-    _regenerate_artifacts()
-
-    # 10. Validate the on-disk algorithm spec + report.
-    _self_test_on_disk_artifacts_validated()
+    # 9. Read-only drift check: build expected algorithm spec + report in
+    #    memory and compare to on-disk artifacts. Fails on drift. Does NOT
+    #    write anything to disk; use --regenerate-artifacts to refresh.
+    _self_test_artifacts_match_in_memory()
 
     spec = build_algorithm_spec()
     spec_hash = _sha256_json(spec)
@@ -1898,7 +2104,14 @@ def run_self_test() -> dict[str, Any]:
         "promotion_ready": False,
         "default_should_change": False,
         "evidencecore_semantics_changed": False,
-        "policy_search_performed": True,
+        "stage_is_policy_search": True,
+        "empirical_policy_search_performed": False,
+        "policy_search_performed": False,
+        "policy_found": False,
+        "rotations_evaluated": False,
+        "rotations_defined": True,
+        "rotation_count": len(LEAVE_ONE_MODEL_FAMILY_OUT_ROTATIONS),
+        "winner_declared": False,
         "quality_strategy_tuned": False,
         "runtime_calls_by_replay": 0,
         "model_calls_by_replay": 0,
@@ -1915,8 +2128,7 @@ def run_self_test() -> dict[str, Any]:
             "leave_one_out_rotations_defined": True,
             "input_stub_not_implemented": True,
             "reference_specs_pinned": True,
-            "artifacts_regenerated": True,
-            "on_disk_artifacts_validated": True,
+            "artifacts_match_in_memory": True,
         },
     }
 
@@ -1931,7 +2143,21 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--self-test",
         action="store_true",
-        help="run the B13 self-test (synthetic fixture; verifies mechanics)",
+        help=(
+            "run the B13 self-test (read-only; synthetic fixture; verifies "
+            "mechanics; compares in-memory expected artifacts to on-disk "
+            "artifacts and fails on drift; does NOT write to disk)"
+        ),
+    )
+    parser.add_argument(
+        "--regenerate-artifacts",
+        action="store_true",
+        help=(
+            "explicitly (re)write the on-disk algorithm spec + "
+            "synthetic-fixture report artifacts from the current build "
+            "functions. This is the ONLY mutating path; --self-test is "
+            "read-only."
+        ),
     )
     parser.add_argument(
         "--input",
@@ -1956,12 +2182,22 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if argv is None:
         argv = sys.argv[1:]
     args = parser.parse_args(argv)
-    if not args.self_test and not args.input:
+    if not args.self_test and not args.input and not args.regenerate_artifacts:
         parser.error(
-            "B13 requires either --self-test or --input <path> in this skeleton"
+            "B13 requires --self-test, --regenerate-artifacts, or "
+            "--input <path> in this skeleton"
         )
-    if args.self_test and args.input:
-        parser.error("--self-test and --input are mutually exclusive")
+    # Mutually exclusive: --self-test is read-only, --regenerate-artifacts is
+    # the only mutating path, --input writes a report. No two may combine.
+    selected = sum(
+        1 for flag in (args.self_test, args.regenerate_artifacts, bool(args.input))
+        if flag
+    )
+    if selected > 1:
+        parser.error(
+            "--self-test, --regenerate-artifacts, and --input are mutually "
+            "exclusive"
+        )
     return args
 
 
@@ -1988,7 +2224,16 @@ def _print_summary(report: dict[str, Any]) -> None:
         "promotion_ready": report["promotion_ready"],
         "default_should_change": report["default_should_change"],
         "evidencecore_semantics_changed": report["evidencecore_semantics_changed"],
+        "stage_is_policy_search": report["stage_is_policy_search"],
+        "empirical_policy_search_performed": report[
+            "empirical_policy_search_performed"
+        ],
         "policy_search_performed": report["policy_search_performed"],
+        "policy_found": report["policy_found"],
+        "rotations_evaluated": report["rotations_evaluated"],
+        "rotations_defined": report["rotations_defined"],
+        "rotation_count": report["rotation_count"],
+        "winner_declared": report["winner_declared"],
         "quality_strategy_tuned": report["quality_strategy_tuned"],
         "runtime_calls_by_replay": report["runtime_calls_by_replay"],
         "model_calls_by_replay": report["model_calls_by_replay"],
@@ -2007,7 +2252,29 @@ def main(argv: list[str] | None = None) -> int:
     if args.self_test:
         result = run_self_test()
         print(json.dumps(result, indent=2, sort_keys=True))
-        print("B13 self-test: PASS", file=sys.stderr)
+        print("B13 self-test: PASS (read-only; no artifacts written)", file=sys.stderr)
+        return 0
+    if args.regenerate_artifacts:
+        regenerate_artifacts()
+        summary = {
+            "algorithm_spec_id": ALGORITHM_SPEC_ID,
+            "algorithm_spec_path": str(ALGORITHM_SPEC_PATH),
+            "report_path": str(REPORT_PATH),
+            "regenerated": True,
+            "self_test": True,
+            "replay_source": "synthetic_fixture",
+            "verdict": "insufficient_data",
+            "policy_search_performed": False,
+            "empirical_policy_search_performed": False,
+            "policy_found": False,
+            "rotations_evaluated": False,
+            "winner_declared": False,
+        }
+        print(json.dumps(summary, indent=2, sort_keys=True))
+        print(
+            f"B13 artifacts regenerated: {ALGORITHM_SPEC_PATH} + {REPORT_PATH}",
+            file=sys.stderr,
+        )
         return 0
     if args.input:
         input_meta = _load_p21_input(args.input)
@@ -2018,7 +2285,10 @@ def main(argv: list[str] | None = None) -> int:
         _print_summary(report)
         print(f"B13 report written to {out_path}", file=sys.stderr)
         return 0
-    print("B13 requires --self-test or --input", file=sys.stderr)
+    print(
+        "B13 requires --self-test, --regenerate-artifacts, or --input",
+        file=sys.stderr,
+    )
     return 2
 
 

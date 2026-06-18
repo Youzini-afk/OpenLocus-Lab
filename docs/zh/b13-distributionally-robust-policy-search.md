@@ -7,13 +7,29 @@ search** 阶段。目标是找到一个含 6-10 条 rules 的 policy，仅使用
 runtime-observable features，优化 **worst-group utility**（而非平均值），并通过
 rotating leave-one-model-family-out 进行验证。
 
-> **重要 claim 边界。** B13 **是** policy search，但其结果**不**被 promote。即使
-> B13 找到一个能改进 worst-group utility 的 policy，`promotion_ready=false`、
-> `default_should_change=false`，且 `EvidenceCore` 语义不变。B13 结果仅是 research
-> candidates：它们指导 B14（uncertainty calibration）与 B16（downstream agent
-> evaluation），但 B13 不授权任何 default change、任何 policy promotion、或任何
-> EvidenceCore 修改。B13 是 B10-B19 Breakthrough Sprint 中最后一个 "immediate
-> priority" item；其余 items（B14-B19）为 second priority 或 parallel tracks。
+> **重要 claim 边界。** B13 **是** policy-search *stage*
+> （`stage_is_policy_search=true`），但当前 skeleton **不**执行任何 empirical
+> policy search（`empirical_policy_search_performed=false`）。synthetic-fixture /
+> `--input` stub 报告设置 `policy_search_performed=false`，使该公共 artifact
+> 不会被误读为 empirical B13 run。即使未来 empirical B13 search 运行，其结果也
+> **不**被 promoted。`promotion_ready=false`、`default_should_change=false`，
+> 且 `EvidenceCore` 语义不变。B13 结果仅是 research candidates：它们指导 B14
+> （uncertainty calibration）与 B16（downstream agent evaluation），但 B13 不授权
+> 任何 default change、任何 policy promotion、或任何 EvidenceCore 修改。B13 是
+> B10-B19 Breakthrough Sprint 中最后一个 "immediate priority" item；其余 items
+> （B14-B19）为 second priority 或 parallel tracks。
+
+> **重要 public-aggregate 边界。** 真实的 B13 distributionally robust policy
+> search 需要私有 / ephemeral 的 per-record P21 records（含 `route_features` +
+> per-strategy outcomes + group membership）以及 rotating
+> leave-one-model-family-out 的 train/test 划分。这些在公共 B11 aggregate 与 B12
+> public-aggregate screen 中均不存在，因此仅凭公共 aggregates 无法进行真实的
+> B13 search。位于 `eval/b13_public_aggregate_feasibility_screen.py` 的 bounded
+> public-aggregate feasibility / no-go screen 读取已发布的 B11 与 B12 artifacts，
+> 在 `artifacts/b13_dro_policy_search/` 下发出
+> `no_go_public_aggregate_only`（或当 B11 aggregate 无记录时
+> `insufficient_data_public_aggregate_only`）feasibility 报告。该 screen 从不
+> 声称 empirical policy search，从不选择 rule，也从不声明 winner。
 
 ## Preregistration declaration
 
@@ -219,13 +235,22 @@ calls。
 promotion_ready=false
 default_should_change=false
 evidencecore_semantics_changed=false
-policy_search_performed=true (B13 是 policy search；结果不被 promoted)
+stage_is_policy_search=true（B13 stage 即 policy search）
+empirical_policy_search_performed=false（skeleton 不执行 empirical search）
+policy_search_performed=false（synthetic/stub 报告；用 stage_is_policy_search=true
+                              标注 stage）
 quality_strategy_tuned=false
-runtime_calls_by_replay=0 (replay 不产生新 live calls)
-model_calls_by_replay=0 (replay 不产生新 LLM calls)
+runtime_calls_by_replay=0（replay 不产生新 live calls）
+model_calls_by_replay=0（replay 不产生新 LLM calls）
 aggregate_only_public_artifact=true
-algorithm_spec_has_no_model_names=true (B13 special invariant)
+algorithm_spec_has_no_model_names=true（B13 special invariant）
 ```
+
+synthetic / stub 报告中的 `policy_search_performed=false` 是有意为之：它防止
+该公共 artifact 被误读为 empirical B13 search。`stage_is_policy_search=true`
+承担 stage 定义（B13 *是* policy-search stage）；
+`empirical_policy_search_performed=false` 明确表示 skeleton 未执行 empirical
+search。
 
 ## What B13 does NOT prove
 
@@ -238,15 +263,33 @@ algorithm_spec_has_no_model_names=true (B13 special invariant)
 - B13 的 `--input` 路径为 stub（`verdict="not_implemented"`）；完整 search
   计算延后到后续任务。
 
-## Self-test
+## Self-test（只读）与显式 artifact 重新生成
 
 ```bash
 python3 eval/b13_dro_policy_search.py --self-test
+python3 eval/b13_dro_policy_search.py --regenerate-artifacts
+python3 eval/b13_public_aggregate_feasibility_screen.py --self-test
 ```
 
-在不进行 live runs 的情况下验证 report aggregator mechanics（仅 synthetic
-fixture；`replay_source="synthetic_fixture"`；verdict `insufficient_data`）。
-self-test 运行 10 个 checks：
+`eval/b13_dro_policy_search.py --self-test` 运行为**只读**：在不进行 live
+runs 的情况下验证 report aggregator mechanics（仅 synthetic fixture；
+`replay_source="synthetic_fixture"`；verdict `insufficient_data`），并将内存中
+期望的 algorithm spec + report 与 on-disk artifacts 比对，**drift 即失败**。
+它**不**向磁盘写入任何内容。它发出 `stage_is_policy_search=true`、
+`empirical_policy_search_performed=false`、
+`policy_search_performed=false`，以及顶层 `policy_found=false`、
+`rotations_evaluated=false`、`rotations_defined=true`、`rotation_count=3`、
+`winner_declared=false`，使 synthetic-fixture 报告明确**不是** empirical B13
+search。synthetic / stub 报告仅发出 rotation *定义*
+（`rotations_defined=true`、`rotation_count=3`、`rotations_evaluated=false`）；
+它们**从不**发出 per-rotation 的 `passes=true`、`all_rotations_pass=true`、
+`test_worst_group_utility` 或 `delta_vs_b10_reference` 仿佛是 empirical 的。
+skeleton verdict 框架仅发出 `insufficient_data`（synthetic fixture）或
+`not_implemented`（ci_ephemeral_records stub）；`success` / `failure` /
+`partial` 保留给未来 `policy_search_performed=true` 的 empirical 路径，该路径
+在当前 skeleton 中**不**存在。
+
+只读 self-test 运行 9 个 checks：
 
 1. `forbidden_scan` —— forbidden public keys/values 扫描（含 algorithm spec 上的
    原始 model-name 扫描）
@@ -255,18 +298,45 @@ self-test 运行 10 个 checks：
 4. `rule_grammar_valid` —— rule grammar（仅允许 features + actions）
 5. `search_mechanics_stub` —— bounded-grid + greedy-refinement mechanics stub
 6. `leave_one_out_rotations_defined` —— 3 个 leave-one-model-family-out
-   rotations
+   rotations（仅定义；无 empirical per-rotation passes / utilities / deltas）
 7. `input_stub_not_implemented` —— `--input` stub 返回 `not_implemented`
 8. `reference_specs_pinned` —— B10/B10B/B11/B12 reference specs 在磁盘上存在
-9. `artifacts_regenerated` —— 从 build functions 重新生成 on-disk artifacts
-10. `on_disk_artifacts_validated` —— 验证 on-disk spec + report
+9. `artifacts_match_in_memory` —— 只读 drift 检查：内存中期望 spec + report
+   匹配 on-disk artifacts
+
+`python3 eval/b13_dro_policy_search.py --regenerate-artifacts` 是唯一的
+mutating 路径：它从当前 build functions（重新）写入 on-disk algorithm spec +
+synthetic-fixture report。mutating 后，重新运行 `--self-test` 以确认 on-disk
+artifacts 现已匹配内存中期望对象（无 drift）。
+
+`eval/b13_public_aggregate_feasibility_screen.py --self-test` 针对一个合成的
+最小 B11 + B12 fixture 验证 bounded public-aggregate feasibility / no-go
+screen。它发出 `verdict=no_go_public_aggregate_only`（或当 B11 aggregate 无记录
+时为 `insufficient_data_public_aggregate_only`），并设置
+`policy_search_performed=false`、`empirical_policy_search_performed=false`、
+`policy_found=false`、`rotations_evaluated=false`。运行 4 个 checks：
+`happy_path`、`input_validation_blocks`、`insufficient_data_branch`、
+`forbidden_scan`。
 
 ## Artifacts
 
 - `artifacts/b13_dro_policy_search/b13_dro_policy_search.algorithm.json`
-  （frozen spec；deterministic，stable sha256）
+  （frozen spec；deterministic，stable sha256；仅通过
+  `--regenerate-artifacts` 重新生成）
 - `artifacts/b13_dro_policy_search/b13_dro_policy_search_report.json`
-  （synthetic-fixture self-test report，verdict `insufficient_data`）
+  （synthetic-fixture self-test 报告，verdict `insufficient_data`；
+  `policy_search_performed=false`、
+  `empirical_policy_search_performed=false`、
+  `stage_is_policy_search=true`、`policy_found=false`、
+  `rotations_evaluated=false`、`rotations_defined=true`、
+  `rotation_count=3`、`winner_declared=false`；无 empirical per-rotation
+  passes / utilities / deltas）
+- `artifacts/b13_dro_policy_search/b13_public_aggregate_feasibility_report.json`
+  （bounded public-aggregate feasibility / no-go screen 报告；
+  `verdict=no_go_public_aggregate_only` 或
+  `insufficient_data_public_aggregate_only`；`policy_found=false`、
+  `rotations_evaluated=false`、
+  `full_b13_possible_from_public_artifacts=false`）
 
 ## What's autonomous vs. needs user action
 
@@ -274,8 +344,22 @@ self-test 运行 10 个 checks：
 
 - B13 plan 文档（本文件）
 - B13 CI workflow 定义（新 stage `b13_dro_policy_search`）
-- B13 report aggregator skeleton（`eval/b13_dro_policy_search.py`）+ self-test
+- B13 report aggregator skeleton（`eval/b13_dro_policy_search.py`）+
+  只读 `--self-test`（将内存中期望 artifacts 与 on-disk artifacts 比对，drift
+  即失败）与显式 `--regenerate-artifacts` mutating 路径（发出
+  `stage_is_policy_search=true`、
+  `empirical_policy_search_performed=false`、
+  `policy_search_performed=false`、`policy_found=false`、
+  `rotations_evaluated=false`、`rotations_defined=true`、`rotation_count=3`、
+  `winner_declared=false`；无 empirical per-rotation passes / utilities /
+  deltas）
 - B13 frozen algorithm spec + synthetic-fixture report artifacts
+- B13 bounded public-aggregate feasibility / no-go screen
+  （`eval/b13_public_aggregate_feasibility_screen.py`）+ self-test +
+  `artifacts/b13_dro_policy_search/b13_public_aggregate_feasibility_report.json`
+  （读取已发布的 B11 aggregate + B12 public screen；发出
+  `no_go_public_aggregate_only` / `insufficient_data_public_aggregate_only`；
+  从不声称 empirical policy search、从不选择 rule、从不声明 winner）
 
 ### Needs P21 records
 

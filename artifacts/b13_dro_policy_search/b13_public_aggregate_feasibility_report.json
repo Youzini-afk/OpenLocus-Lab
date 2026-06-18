@@ -1,0 +1,219 @@
+{
+  "aggregate_only_public_artifact": true,
+  "allowed_verdicts": [
+    "no_go_public_aggregate_only",
+    "insufficient_data_public_aggregate_only"
+  ],
+  "baseline_for_deltas": "p25",
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "bounded_public_aggregate_feasibility_screen_of_b11_b12_aggregates",
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "descriptive_fixed_strategy_proxy": {
+    "balanced_v1_vs_p25_delta": {
+      "gold_span": -0.002604,
+      "model_calls": -0.354167,
+      "span_f0_5": -0.001899
+    },
+    "declares_winner": false,
+    "fixed_strategy_indices_in_publication_order_not_ranked": [
+      {
+        "descriptive_overall_mean_penalty_index_not_for_ranking": 0.024538,
+        "model_calls": 0.958333,
+        "primary_false_positive_rate": 0.020833,
+        "span_f0_5": 0.064538,
+        "strategy": "p25"
+      },
+      {
+        "descriptive_overall_mean_penalty_index_not_for_ranking": 0.050556,
+        "model_calls": 0.604167,
+        "primary_false_positive_rate": 0.0,
+        "span_f0_5": 0.062639,
+        "strategy": "balanced_v1"
+      }
+    ],
+    "interpretation_note": "Descriptive overall-mean penalty index of published B11 fixed strategies. NOT B13 RobustUtility, NOT worst-group or CVaR, NOT rotation-validated. NOT valid for policy selection or ranking. NOT a B13 search result; no rule selected; no winner declared.",
+    "is_overall_mean_only": true,
+    "is_policy_search": false,
+    "normalized_cost_proxy": "model_calls over 10.0",
+    "normalized_latency_proxy": "model_calls over 10.0",
+    "not_cvar": true,
+    "not_rotation_validated": true,
+    "not_worst_group": true,
+    "penalty_lambda": 1.0,
+    "penalty_mu": 0.1,
+    "penalty_nu": 0.1,
+    "ranks_strategies_for_selection": false,
+    "selects_new_rules": false,
+    "uses_only_published_fixed_strategies": true,
+    "valid_for_policy_selection": false,
+    "valid_for_strategy_ranking": false
+  },
+  "descriptive_fixed_strategy_proxy_not_policy_search": true,
+  "empirical_policy_search_performed": false,
+  "evidencecore_semantics_changed": false,
+  "framing": {
+    "default_readiness_claimed": false,
+    "empirical_policy_search_claimed": false,
+    "is_full_b13_distributionally_robust_policy_search": false,
+    "policy_found_claimed": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "future_ephemeral_record_b13_replay_or_b12_replay",
+    "runtime_clean_general_algorithm_claimed": false,
+    "signal_strength": "bounded_public_aggregate_feasibility_screen_only",
+    "winner_declared_claimed": false
+  },
+  "full_b13_possible_from_public_artifacts": false,
+  "generated_at": "2026-06-18T19:11:06.715368+00:00",
+  "generated_by": "b13_public_aggregate_feasibility_screen",
+  "gold_spans_in_artifact": false,
+  "input_b11_schema": "b11-prospective-matrix-aggregate-report-v0",
+  "input_b11_summary": {
+    "b10b_pending_due_denominator": true,
+    "b10b_runtime_shadow_verdict": "empirical_replay_support_pending",
+    "b11_aggregate_verdict": "partial_with_failure",
+    "b11_aggregate_verdict_reason": "mixed_results_with_failure_threshold_exceeded_on_at_least_one_slice",
+    "b11_baseline_for_deltas": "p25",
+    "b11_deltas_balanced_v1_vs_p25": {
+      "gold_span": -0.002604,
+      "model_calls": -0.354167,
+      "span_f0_5": -0.001899
+    },
+    "b11_policy_under_validation": "balanced_v1",
+    "b11_public_model_family_count": 4,
+    "b11_public_repo_slice_count": 8,
+    "b11_record_count_total": 384,
+    "b11_run_count": 32
+  },
+  "input_b12_screen_schema": "b12-public-aggregate-mechanism-screen-v0",
+  "input_b12_summary": {
+    "H1_ambiguous_routing": {
+      "screen_status": "inconclusive_unavailable_ablation_controls"
+    },
+    "H2_llm_call_reduction": {
+      "screen_status": "reduced_calls_observed_causal_mechanism_inconclusive"
+    },
+    "H3_p25_fallback_sufficiency": {
+      "screen_status": "aggregate_primary_parity_supported_consistent_with_h3"
+    },
+    "H4_model_specific": {
+      "screen_status": "family_gold_spread_not_supported_model_repo_interaction_inconclusive"
+    },
+    "b12_full_replay_possible_from_public_artifact": false,
+    "b12_recommended_next_step": "future_ephemeral_record_b12_replay_or_b13_with_caution"
+  },
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": true,
+    "all_inputs_baseline_for_deltas_p25": true,
+    "all_inputs_candidate_not_fact": true,
+    "all_inputs_default_should_change_false": true,
+    "all_inputs_evidencecore_semantics_changed_false": true,
+    "all_inputs_new_provider_calls_zero": true,
+    "all_inputs_policy_search_performed_false": true,
+    "all_inputs_policy_under_validation_balanced_v1": true,
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_quality_strategy_tuned_false": true,
+    "forbidden_public_key_scan_clean": true
+  },
+  "is_full_b13_distributionally_robust_policy_search": false,
+  "llm_output_not_evidence": true,
+  "missing_inputs_for_real_b13": [
+    {
+      "description": "real B13 candidate rules predicate on per-record route_features (query_noise, candidate_support_exists, local_anchor, etc.); the public B11 aggregate emits only policy-level route-decision counts, not per-record features",
+      "gap_id": "no_per_record_route_features_in_public_artifact"
+    },
+    {
+      "description": "B13 candidate actions (weak_only, use_p25_action, use_local_baseline) must be applied per-record against the eligible action set; the public aggregate does not publish per-record action eligibility, so candidate rules cannot be evaluated record-by-record",
+      "gap_id": "no_per_record_action_eligibility_in_public_artifact"
+    },
+    {
+      "description": "real B13 replay selects per-strategy outcomes per record (each P21 record contains per-strategy outcomes); the public B11 aggregate publishes only weighted means and deltas, not per-strategy per-record outcomes",
+      "gap_id": "no_per_strategy_outcomes_in_public_artifact"
+    },
+    {
+      "description": "the weak_candidate_only per-strategy outcomes (the substrate the ambiguous-routing rule selects) are not in the public aggregate, so candidate weak_only rules cannot be replayed",
+      "gap_id": "no_weak_candidate_only_public_outcomes_in_public_artifact"
+    },
+    {
+      "description": "B13 rotating leave-one-model-family-out needs per-record group membership (which model family and repo each record belongs to) to build train and test splits; the public aggregate only emits per-family rollup deltas, not per-record group membership",
+      "gap_id": "no_group_membership_for_train_test_rotations_in_public_artifact"
+    },
+    {
+      "description": "B13 must evaluate candidate policies on a held-out model family via replay; the public aggregate does not expose per-record outcomes on the held-out family, so held-out evaluation is impossible",
+      "gap_id": "no_held_out_family_evaluation_in_public_artifact"
+    },
+    {
+      "description": "real B13 search enumerates 6-10 rule policies and measures candidate rule coverage on the P21 record set; the public aggregate does not expose per-record coverage of any candidate rule, so search cannot be replayed",
+      "gap_id": "no_candidate_rule_coverage_in_public_artifact"
+    }
+  ],
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "policy_found": false,
+  "policy_search_performed": false,
+  "policy_under_analysis": "balanced_v1",
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "quality_strategy_tuned": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "recommended_next_step": {
+    "next_step_authorizes_default_change": false,
+    "next_step_authorizes_empirical_policy_search": false,
+    "next_step_authorizes_promotion": false,
+    "next_step_authorizes_runtime_clean_algorithm": false,
+    "primary": "future_ephemeral_record_b13_replay",
+    "reason": "Run real B13 against ephemeral P21 records from B11 live runs once available (the only path that can perform empirical distributionally robust policy search), or first run full B12 on the same records. The public aggregate alone is insufficient for either.",
+    "secondary": "future_ephemeral_record_b12_replay"
+  },
+  "rotations_evaluated": false,
+  "run_ids_in_artifact": false,
+  "safety_invariants": {
+    "aggregate_only_public_artifact": true,
+    "default_should_change_false": true,
+    "descriptive_proxy_only_not_policy_search": true,
+    "no_empirical_policy_search": true,
+    "no_evidencecore_semantics_change": true,
+    "no_live_llm_calls_by_screen": true,
+    "no_policy_found": true,
+    "no_policy_promotion": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_rotations_evaluated": true,
+    "no_run_ids_emitted": true,
+    "no_threshold_tuning": true,
+    "no_winner_declared": true,
+    "promotion_ready_false": true
+  },
+  "schema_version": "b13-public-aggregate-feasibility-screen-v0",
+  "self_test": false,
+  "source_artifact_public_note": "already-published aggregate-only public B11 matrix aggregate and B12 public aggregate screen reports; no raw records, paths, prompts, responses, snippets, or private labels read by the screen",
+  "stage_is_policy_search": true,
+  "task_ids_in_artifact": false,
+  "testability": {
+    "full_b13_possible_from_public_artifacts": false,
+    "missing_inputs_for_full_b13": [
+      "no_per_record_route_features_in_public_artifact",
+      "no_per_record_action_eligibility_in_public_artifact",
+      "no_per_strategy_outcomes_in_public_artifact",
+      "no_weak_candidate_only_public_outcomes_in_public_artifact",
+      "no_group_membership_for_train_test_rotations_in_public_artifact",
+      "no_held_out_family_evaluation_in_public_artifact",
+      "no_candidate_rule_coverage_in_public_artifact"
+    ],
+    "note": "Real B13 policy search cannot be replayed from the current public B11 and B12 aggregates. The listed missing inputs are the specific per-record fields required. Only this bounded feasibility or no-go screen is publishable until ephemeral records arrive."
+  },
+  "verdict": "no_go_public_aggregate_only",
+  "verdict_reason": "public B11 and B12 aggregates lack per-record inputs for real B13 policy search. No empirical B13 search; B11 verdict ('partial_with_failure') and B12 public-aggregate screen statuses carried forward, NOT authorizing promotion or default change.",
+  "winner_declared": false
+}

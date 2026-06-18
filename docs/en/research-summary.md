@@ -791,7 +791,10 @@ replay_and_search_only: true (no live LLM calls inside evaluator)
 promotion_ready: false
 default_should_change: false
 evidencecore_semantics_changed: false
-policy_search_performed: true (B13 IS policy search; results NOT promoted)
+stage_is_policy_search: true (B13 stage IS policy search)
+empirical_policy_search_performed: false (skeleton performs no empirical search)
+policy_search_performed: false (synthetic/stub report; use stage_is_policy_search
+                               =true to mark the stage)
 quality_strategy_tuned: false
 algorithm_spec_has_no_model_names: true (B13 special invariant)
 ```
@@ -818,11 +821,31 @@ grid + greedy refinement (pure Python; no numpy/sklearn/scipy), capped at
 `MAX_RULES=10` and `MAX_SEARCH_ITERATIONS=1000`. Validation uses 3 rotating
 leave-one-model-family-out rotations (`loo_family_a`, `loo_family_b`,
 `loo_family_c_and_d`); all 3 must pass (worst-group `RobustUtility` within
-±0.02 of B10's or strictly better). B13 IS policy search, so
-`policy_search_performed=true`, but results are NOT promoted
-(`promotion_ready=false`, `default_should_change=false`). B13 needs P21
-records from B11 live runs (4 model families × 8 repos); the `--input` path is
-a stub (verdict `not_implemented`; real search deferred). B13 results feed
+±0.02 of B10's or strictly better). B13 IS the policy-search *stage*
+(`stage_is_policy_search=true`), but the shipped skeleton performs NO
+empirical policy search (`empirical_policy_search_performed=false`) and the
+synthetic / stub report sets `policy_search_performed=false`,
+`policy_found=false`, `rotations_evaluated=false`, `rotations_defined=true`,
+`rotation_count=3`, `winner_declared=false` so the public artifact cannot
+be misread as an empirical B13 run; synthetic / stub reports emit only
+rotation *definitions* (no per-rotation `passes=true` /
+`test_worst_group_utility` / `delta_vs_b10_reference`), and the skeleton
+verdict framework emits only `insufficient_data` (synthetic fixture) or
+`not_implemented` (ci_ephemeral_records stub) — `success` / `failure` /
+`partial` are reserved for a future empirical `policy_search_performed=true`
+path that is NOT present in this skeleton. The `--self-test` is read-only
+(compares in-memory expected artifacts to on-disk artifacts, fails on drift;
+writes nothing); `--regenerate-artifacts` is the only mutating path. B13
+needs P21
+records from B11 live runs (4 model families × 8 repos); the `--input` path
+is a stub (verdict `not_implemented`; real search deferred). The bounded
+public-aggregate feasibility / no-go screen
+(`eval/b13_public_aggregate_feasibility_screen.py`) reads the published B11
+aggregate + B12 public screen and emits
+`verdict=no_go_public_aggregate_only` (or
+`insufficient_data_public_aggregate_only`) under
+`artifacts/b13_dro_policy_search/`; it never claims empirical policy search,
+never selects a rule, never declares a winner. B13 results feed
 into B14 (uncertainty calibration) and B16 (downstream agent evaluation) as
 research candidates only. B13 is the last "immediate priority" item in the
 B10-B19 Breakthrough Sprint; the remaining items (B14-B19) are second priority
