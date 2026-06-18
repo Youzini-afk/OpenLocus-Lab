@@ -331,10 +331,11 @@ jobs:
                       raise SystemExit("llm_model contains unsupported characters")
                   if llm_model not in allowed_llm_models:
                       raise SystemExit(f"unsupported llm model: {llm_model}")
-                  # B6D cross-adapter smoke is locked to [mk]GLM-5.2; any other
-                  # adapter would invalidate the cross-adapter claim.
-                  if stage == "b6d_cross_adapter_frozen_validation" and llm_model != "[mk]GLM-5.2":
-                      raise SystemExit("b6d_cross_adapter_frozen_validation requires llm_model=[mk]GLM-5.2")
+                  # B6D cross-adapter smoke is locked to explicitly supported
+                  # adapter profiles. Output mode remains an adapter parameter,
+                  # not an algorithm variable.
+                  if stage == "b6d_cross_adapter_frozen_validation" and llm_model not in {"[mk]GLM-5.2", "[mk]Qwen3.6-27B"}:
+                      raise SystemExit("b6d_cross_adapter_frozen_validation requires llm_model=[mk]GLM-5.2 or [mk]Qwen3.6-27B")
               else:
                   llm_model = getenv("INPUT_LLM_MODEL").strip() or "unused"
                   if llm_model != "unused" and llm_model not in allowed_llm_models:
@@ -1071,8 +1072,12 @@ jobs:
           ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
         run: |
           set -euo pipefail
-          if [[ "$OPENLOCUS_LLM_MODEL" != "[mk]GLM-5.2" ]]; then
-            echo "B6D cross-adapter frozen validation v0 requires [mk]GLM-5.2 before any P21 call" >&2
+          if [[ "$OPENLOCUS_LLM_MODEL" == "[mk]GLM-5.2" ]]; then
+            b6d_adapter_id="glm_5_2_json_schema_strict"
+          elif [[ "$OPENLOCUS_LLM_MODEL" == "[mk]Qwen3.6-27B" ]]; then
+            b6d_adapter_id="qwen3_6_27b_json_schema_strict"
+          else
+            echo "B6D cross-adapter frozen validation requires a supported adapter model before any P21 call" >&2
             exit 1
           fi
           if [[ "$LLM_OUTPUT_MODE" != "json_schema_strict" ]]; then
@@ -1129,6 +1134,7 @@ jobs:
           import sys
           sys.path.insert(0, "eval")
           import b6d_cross_adapter_frozen_validation as b6d
+          b6d.configure_adapter("$b6d_adapter_id")
           records = []
           with open("$manifest_records_jsonl", "r", encoding="utf-8") as f:
               for line in f:
@@ -1141,6 +1147,7 @@ jobs:
               "b6d_fresh_validation_contract": {
                   "schema_version": b6d.B6D_CONTRACT_VERSION,
                   "frozen_spec_sha256": b6d.EXPECTED_FROZEN_SPEC_SHA256,
+                  "model_adapter": b6d.MODEL_ADAPTER,
                   "model": b6d.ALLOWED_MODEL,
                   "output_mode": b6d.ALLOWED_OUTPUT_MODE,
                   "policy_search_performed_for_b6d": False,
@@ -1153,7 +1160,7 @@ jobs:
           with open("$manifest_path", "w", encoding="utf-8") as f:
               json.dump(manifest, f, indent=2)
           PY
-          b6d_args=(python3 eval/b6d_cross_adapter_frozen_validation.py --paired-records-manifest "$manifest_path" --out artifacts/real_provider_ci/b6d_cross_adapter_frozen_validation_report.json --doc docs/real-provider-ci/b6d-cross-adapter-frozen-validation.md)
+          b6d_args=(python3 eval/b6d_cross_adapter_frozen_validation.py --adapter-id "$b6d_adapter_id" --paired-records-manifest "$manifest_path" --out artifacts/real_provider_ci/b6d_cross_adapter_frozen_validation_report.json --doc docs/real-provider-ci/b6d-cross-adapter-frozen-validation.md)
           if [[ "$DATASET" == "self_test" ]]; then
             b6d_args+=(--mark-self-test)
           fi
@@ -1589,8 +1596,8 @@ jobs:
                       raise SystemExit(f"{json_path} must keep frozen_policy_validation=true")
                   if data.get("cross_adapter_smoke") is not True:
                       raise SystemExit(f"{json_path} must keep cross_adapter_smoke=true")
-                  if data.get("model_adapter") != "glm_5_2_json_schema_strict":
-                      raise SystemExit(f"{json_path} model_adapter must be glm_5_2_json_schema_strict")
+                  if data.get("model_adapter") not in {"glm_5_2_json_schema_strict", "qwen3_6_27b_json_schema_strict"}:
+                      raise SystemExit(f"{json_path} model_adapter must be an approved cross-adapter profile")
                   if data.get("claim_level") != "cross_adapter_smoke_only":
                       raise SystemExit(f"{json_path} claim_level must be cross_adapter_smoke_only (never model_robust or fresh_validation)")
                   if data.get("policy_search_performed") is not False:

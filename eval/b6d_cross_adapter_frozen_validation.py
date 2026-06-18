@@ -2,7 +2,8 @@
 """B6D cross-adapter frozen-policy validation.
 
 B6D validates the same two policies frozen by B6B and reused by B6C, but on a
-DIFFERENT model adapter: ``[mk]GLM-5.2`` with ``json_schema_strict`` output mode.
+DIFFERENT model adapter such as ``[mk]GLM-5.2`` or ``[mk]Qwen3.6-27B`` with a
+fixed adapter output contract.
 It performs **no** policy search, rule generation, or winner selection, and it is
 explicitly a cross-adapter smoke check, not a fresh validation or model-robust
 claim. The public artifact is aggregate-only and never emits repo IDs, task IDs,
@@ -10,7 +11,7 @@ candidate IDs, paths, spans, digests, snippets, prompts, responses, labels, or
 gold spans.
 
 B6D reuses B6C's frozen candidate loading and policy evaluation logic, but
-parameterizes the allowed adapter and adds GLM-specific noise / infra handling
+parameterizes the allowed adapter and adds adapter noise / infra handling
 through the P21 ``call_summary`` schema-valid and infra-failure rates.
 
 Routing uses only public RUN-phase fields: ``task_bucket``, ``task_risk_tags``,
@@ -42,16 +43,28 @@ DEFAULT_OUT = Path(
 )
 DEFAULT_DOC = Path("docs/real-provider-ci/b6d-cross-adapter-frozen-validation.md")
 
-B6D_CONTRACT_VERSION = "b6d-cross-adapter-frozen-validation-contract-v0"
+B6D_CONTRACT_VERSION = "b6d-cross-adapter-frozen-validation-contract-v1"
 
-# B6D is a cross-adapter smoke check on GLM-5.2 + json_schema_strict only.
-ALLOWED_MODEL = "[mk]GLM-5.2"
-ALLOWED_OUTPUT_MODE = "json_schema_strict"
+ADAPTER_PROFILES = {
+    "glm_5_2_json_schema_strict": {
+        "model": "[mk]GLM-5.2",
+        "output_mode": "json_schema_strict",
+    },
+    "qwen3_6_27b_json_schema_strict": {
+        "model": "[mk]Qwen3.6-27B",
+        "output_mode": "json_schema_strict",
+    },
+}
+DEFAULT_ADAPTER_ID = "glm_5_2_json_schema_strict"
+
+ALLOWED_MODEL = ADAPTER_PROFILES[DEFAULT_ADAPTER_ID]["model"]
+ALLOWED_OUTPUT_MODE = ADAPTER_PROFILES[DEFAULT_ADAPTER_ID]["output_mode"]
 ALLOWED_PLAIN_PACK_LAYOUT = "topk_plain_v0"
 ALLOWED_HARD_PACK_LAYOUT = "hard_distractor_contrast_v0"
 
 ALLOWED_ADAPTERS = {
-    (ALLOWED_MODEL, ALLOWED_OUTPUT_MODE),
+    (profile["model"], profile["output_mode"])
+    for profile in ADAPTER_PROFILES.values()
 }
 
 # Reuse the B6B/B6C frozen policy spec exactly. B6D must not introduce a new
@@ -61,14 +74,14 @@ EXPECTED_FROZEN_SPEC_SHA256 = b6c.EXPECTED_FROZEN_SPEC_SHA256
 EXPECTED_FROZEN_NAMES = b6c.EXPECTED_FROZEN_NAMES
 
 # Sanitized adapter identifier for the public report.
-MODEL_ADAPTER = "glm_5_2_json_schema_strict"
+MODEL_ADAPTER = DEFAULT_ADAPTER_ID
 
 # Quality thresholds for an interpretable cross-adapter smoke.
 SCHEMA_VALID_RATE_MIN = 0.95
 INFRA_FAILURE_RATE_MAX = 0.05
 
 # Manifest record keys. B6D extends the B6B manifest with the P21 summary paths
-# so the evaluator can read the GLM call_summary without persisting private
+# so the evaluator can read adapter call_summary data without persisting private
 # per-task call diagnostics.
 B6D_MANIFEST_RECORD_KEYS = tuple(
     list(b6c.MANIFEST_RECORD_KEYS) + ["plain_summary_path", "hard_summary_path"]
@@ -82,6 +95,17 @@ B6D_MANIFEST_RECORD_KEYS = tuple(
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def configure_adapter(adapter_id: str) -> None:
+    """Set the module-level adapter profile used by validation helpers."""
+    if adapter_id not in ADAPTER_PROFILES:
+        raise ValueError(f"unsupported adapter_id: {adapter_id}")
+    global ALLOWED_MODEL, ALLOWED_OUTPUT_MODE, MODEL_ADAPTER
+    profile = ADAPTER_PROFILES[adapter_id]
+    ALLOWED_MODEL = str(profile["model"])
+    ALLOWED_OUTPUT_MODE = str(profile["output_mode"])
+    MODEL_ADAPTER = adapter_id
 
 
 def _write_json(path: Path, obj: Any) -> None:
@@ -144,7 +168,7 @@ def _validate_manifest_records(
     """Return (status_block_reason_or_None, loaded_repo_plain_hard_pairs).
 
     Mirrors b6b._validate_manifest_records but enforces the B6D adapter:
-    ``[mk]GLM-5.2`` / ``json_schema_strict`` and the same pack layouts used by
+    the configured cross-adapter model/output mode and the same pack layouts used by
     B6B/B6C.
     """
     if len(records) < b6b.REQUIRED_REPO_COUNT:
@@ -202,6 +226,7 @@ def _freshness_contract(manifest: dict[str, Any]) -> dict[str, Any]:
         and contract.get("fresh_records_generated_after_freeze") is True
         and contract.get("no_b6d_result_driven_retuning") is True
         and contract.get("record_paths_private_runner_temp_only") is True
+        and contract.get("model_adapter") == MODEL_ADAPTER
         and contract.get("model") == ALLOWED_MODEL
         and contract.get("output_mode") == ALLOWED_OUTPUT_MODE
     )
@@ -210,6 +235,7 @@ def _freshness_contract(manifest: dict[str, Any]) -> dict[str, Any]:
         "valid": valid,
         "schema_version_ok": contract.get("schema_version") == B6D_CONTRACT_VERSION,
         "frozen_spec_hash_matched": contract.get("frozen_spec_sha256") == EXPECTED_FROZEN_SPEC_SHA256,
+        "model_adapter_matched": contract.get("model_adapter") == MODEL_ADAPTER,
         "model_matched": contract.get("model") == ALLOWED_MODEL,
         "output_mode_matched": contract.get("output_mode") == ALLOWED_OUTPUT_MODE,
         "policy_search_performed_for_b6d": contract.get("policy_search_performed_for_b6d"),
@@ -224,6 +250,7 @@ def _with_valid_freshness_contract(manifest: dict[str, Any]) -> dict[str, Any]:
     out["b6d_fresh_validation_contract"] = {
         "schema_version": B6D_CONTRACT_VERSION,
         "frozen_spec_sha256": EXPECTED_FROZEN_SPEC_SHA256,
+        "model_adapter": MODEL_ADAPTER,
         "model": ALLOWED_MODEL,
         "output_mode": ALLOWED_OUTPUT_MODE,
         "policy_search_performed_for_b6d": False,
@@ -235,14 +262,14 @@ def _with_valid_freshness_contract(manifest: dict[str, Any]) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# P21 call_summary aggregation (GLM-specific noise / infra handling)
+# P21 call_summary aggregation (adapter noise / infra handling)
 # ---------------------------------------------------------------------------
 
 
 def _aggregate_call_summaries(
     records: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """Aggregate the GLM P21 call_summary across all manifest records.
+    """Aggregate P21 call_summary across all manifest records.
 
     Returns counts that back ``schema_valid_rate`` and
     ``infra_failure_rate``.  ``infra_failure_rate`` counts calls that did not
@@ -315,12 +342,12 @@ def _direction_consistency(
     metrics_by_name: dict[str, dict[str, Any]],
     quality_interpretable: bool,
 ) -> str:
-    """Compare GLM effect direction with the B6C (Kimi) frozen-policy direction.
+    """Compare adapter effect direction with the B6C (Kimi) frozen-policy direction.
 
     B6C froze policies that were selected to reduce false spans versus P25. A
     cross-adapter smoke is "consistent_with_kimi" only if every frozen policy
-    still produces ``false_reduction_vs_p25 >= 0`` on the GLM adapter. If the
-    GLM data is not interpretable, direction is not determinable.
+    still produces ``false_reduction_vs_p25 >= 0`` on the configured adapter. If
+    adapter data is not interpretable, direction is not determinable.
     """
     if not quality_interpretable:
         return "not_determinable"
@@ -407,7 +434,7 @@ def validate_report(report: dict[str, Any]) -> None:
     if report.get("claim_level") != "cross_adapter_smoke_only":
         raise ValueError("claim_level must be cross_adapter_smoke_only")
     if report.get("model_adapter") != MODEL_ADAPTER:
-        raise ValueError("model_adapter must be glm_5_2_json_schema_strict")
+        raise ValueError(f"model_adapter must be {MODEL_ADAPTER}")
 
     violations = b6lite._walk_forbidden(report)
     if violations:
@@ -505,6 +532,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                         "freshness_contract_present": freshness.get("present") is True,
                         "freshness_contract_valid": False,
                         "frozen_spec_hash_matched": freshness.get("frozen_spec_hash_matched") is True,
+                        "model_adapter_matched": freshness.get("model_adapter_matched") is True,
                         "forbidden_public_key_scan_clean": True,
                         "block_reason": "blocked_freshness_contract",
                     },
@@ -538,6 +566,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                         "freshness_contract_present": freshness.get("present") is True,
                         "freshness_contract_valid": bool(args.mark_self_test) or freshness.get("valid") is True,
                         "frozen_spec_hash_matched": bool(args.mark_self_test) or freshness.get("frozen_spec_hash_matched") is True,
+                        "model_adapter_matched": bool(args.mark_self_test) or freshness.get("model_adapter_matched") is True,
                         "forbidden_public_key_scan_clean": True,
                         "block_reason": block_status,
                     },
@@ -565,7 +594,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
     routing_invariance = b6lite._routing_invariance_check(policies, all_plain)
 
-    # Aggregate GLM P21 call summaries for the noise / infra quality gate.
+    # Aggregate P21 call summaries for the adapter noise / infra quality gate.
     call_agg = _aggregate_call_summaries(records)
     quality_interpretable = _quality_interpretable(call_agg)
     direction_consistency = _direction_consistency(metrics_by_name, quality_interpretable)
@@ -592,7 +621,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "sample_freshness_protocol": (
                 "self_test_synthetic_sample_not_cross_adapter_validation"
                 if self_test
-                else "b6d_fresh_validation_contract_checked; policies frozen before evaluation; no search on fresh records; glm_5_2_json_schema_strict adapter"
+                else f"b6d_fresh_validation_contract_checked; policies frozen before evaluation; no search on fresh records; {MODEL_ADAPTER} adapter"
             ),
             "frozen_manifest_integrity": integrity,
             "frozen_policy_count": len(frozen_policies),
@@ -637,6 +666,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     report["frozen_manifest_integrity"]["freshness_contract_present"] = freshness.get("present") is True
     report["frozen_manifest_integrity"]["freshness_contract_valid"] = bool(self_test) or freshness.get("valid") is True
     report["frozen_manifest_integrity"]["frozen_spec_hash_matched"] = bool(self_test) or freshness.get("frozen_spec_hash_matched") is True
+    report["frozen_manifest_integrity"]["model_adapter_matched"] = bool(self_test) or freshness.get("model_adapter_matched") is True
     if report_violations:
         report["frozen_manifest_integrity"]["forbidden_public_key_violations"] = report_violations[:5]
 
@@ -665,7 +695,7 @@ def _write_markdown(report: dict[str, Any], path: Path) -> None:
     lines.append("")
     lines.append(
         "B6D re-evaluates the two policies frozen by B6B (and reused by B6C) on a "
-        "DIFFERENT model adapter: `[mk]GLM-5.2` with `json_schema_strict` output "
+        f"DIFFERENT model adapter: `{ALLOWED_MODEL}` with `{ALLOWED_OUTPUT_MODE}` output "
         "mode. No search, rule generation, or winner selection is performed. "
         "B6D is a cross-adapter smoke check, not a fresh validation or "
         "model-robust claim. The public artifact is aggregate-only; per-task / "
@@ -697,7 +727,7 @@ def _write_markdown(report: dict[str, Any], path: Path) -> None:
     lines.append("")
 
     call_agg = report.get("call_summary_aggregate") or {}
-    lines.append("## GLM P21 call summary aggregate")
+    lines.append("## Adapter P21 call summary aggregate")
     lines.append(f"- summaries_seen: {call_agg.get('summaries_seen')}")
     lines.append(f"- total_calls: {call_agg.get('total_calls')}")
     lines.append(f"- successful_calls: {call_agg.get('successful_calls')}")
@@ -816,7 +846,7 @@ def _write_self_test_manifest(
     *,
     healthy_call_summary: bool = True,
 ) -> tuple[Path, list[tuple[str, list[dict[str, Any]], list[dict[str, Any]]]]]:
-    """Build a synthetic GLM-5.2/json_schema_strict manifest + summaries."""
+    """Build a synthetic configured-adapter manifest + summaries."""
     if tmp is None:
         tmp = Path("/tmp/opencode/b6d-combined-self-test")
     tmp.mkdir(parents=True, exist_ok=True)
@@ -833,7 +863,7 @@ def _write_self_test_manifest(
         hard_norm = b6lite._load_records(hard_path)
         repo_pairs.append((repo_id, plain_norm, hard_norm))
 
-        # Synthetic P21 summaries for the GLM adapter.
+        # Synthetic P21 summaries for the configured adapter.
         plain_summary = tmp / repo_id / "plain_summary.json"
         hard_summary = tmp / repo_id / "hard_summary.json"
         tasks_n = len(plain_norm)
@@ -879,7 +909,7 @@ def _self_test_frozen_policies_present() -> dict[str, Any]:
 
 
 def _self_test_wrong_adapter_kimi_blocked() -> None:
-    """Kimi/tool_call records must be rejected by the GLM adapter gate."""
+    """Kimi/tool_call records must be rejected by the configured adapter gate."""
     tmp = Path("/tmp/opencode/b6d-test-kimi-adapter")
     tmp.mkdir(parents=True, exist_ok=True)
     base_tasks = b6b.p25.make_self_test_tasks()
@@ -975,7 +1005,7 @@ def _self_test_low_schema_valid_rate_blocks_quality() -> None:
 
 
 def _self_test_live_low_schema_valid_rate_is_non_interpretable() -> None:
-    """A real (non-self-test) noisy GLM adapter run must report, not crash."""
+    """A real (non-self-test) noisy adapter run must report, not crash."""
     tmp = Path("/tmp/opencode/b6d-test-live-low-schema")
     tmp.mkdir(parents=True, exist_ok=True)
     manifest_path, _repo_pairs = _write_self_test_manifest(tmp, healthy_call_summary=False)
@@ -1107,6 +1137,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--paired-records-manifest", type=Path)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--doc", type=Path, default=DEFAULT_DOC)
+    parser.add_argument(
+        "--adapter-id",
+        choices=sorted(ADAPTER_PROFILES),
+        default=DEFAULT_ADAPTER_ID,
+        help="Cross-adapter profile to validate.",
+    )
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument(
         "--mark-self-test",
@@ -1121,6 +1157,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    configure_adapter(args.adapter_id)
     if args.self_test:
         run_self_tests()
     report = build_report(args)
