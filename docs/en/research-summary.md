@@ -328,6 +328,22 @@ removing observed PFP, and reducing estimated LLM actions (31 vs 47). This is th
 first repo-generalization smoke supporting the balanced-policy hypothesis. It is
 still single-model and low-n.
 
+B8-lite medium-matrix aggregate rollup:
+
+```text
+sources: B6E 27717886432 + B6F 27735809672
+scope: 8 public repo slices, 96 comparable tasks
+new provider calls: 0
+policy search performed: false
+```
+
+The derived rollup keeps the frozen-policy trend intact: the main balanced
+candidate matches P25's added gold and weighted mean SpanF0.5 while reducing
+false spans from 41 to 34, eliminating observed PFP, and reducing estimated LLM
+actions from 94 to 62. This strengthens the balanced-policy candidate, but it is
+a derived single-model aggregate, not a new live validation run or default
+change. See [`b8-lite-medium-matrix-combiner.md`](b8-lite-medium-matrix-combiner.md).
+
 B6D cross-adapter frozen-policy validation:
 
 ```text

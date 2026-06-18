@@ -34,6 +34,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b6b-combined-policy-search.md`: [en](en/b6b-combined-policy-search.md) · [zh](zh/b6b-combined-policy-search.md)
 - `b6c-frozen-policy-validation.md`: [en](en/b6c-frozen-policy-validation.md) · [zh](zh/b6c-frozen-policy-validation.md)
 - `b6d-cross-adapter-frozen-validation.md`: [en](en/b6d-cross-adapter-frozen-validation.md) · [zh](zh/b6d-cross-adapter-frozen-validation.md)
+- `b8-lite-medium-matrix-combiner.md`: [en](en/b8-lite-medium-matrix-combiner.md) · [zh](zh/b8-lite-medium-matrix-combiner.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)

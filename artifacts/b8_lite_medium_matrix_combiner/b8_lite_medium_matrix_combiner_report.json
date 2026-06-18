@@ -1,0 +1,265 @@
+{
+  "aggregate_only_public_artifact": true,
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "derived_aggregate_of_frozen_policy_validations",
+  "comparability": {
+    "derived_aggregate_rollup": true,
+    "fresh_aggregate_evaluation": false,
+    "hard_pack_layout": "hard_distractor_contrast_v0",
+    "model": "[mk]Kimi-K2.7-Code",
+    "output_mode": "tool_call",
+    "plain_pack_layout": "topk_plain_v0",
+    "same_model_observed": true,
+    "same_model_required": true,
+    "same_output_mode_required": true,
+    "same_pack_layout_required": true,
+    "same_task_set_within_repo_observed": true,
+    "same_task_set_within_repo_required": true,
+    "search_performed": false,
+    "single_model_only": true
+  },
+  "comparable_task_count": 96,
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "derived_aggregate_rollup": true,
+  "diagnostic_policy_search": true,
+  "evidencecore_semantics_changed": false,
+  "frozen_manifest_integrity": {
+    "allowed_model_mode_pack": true,
+    "cross_report_spec_consistent": true,
+    "forbidden_public_key_scan_clean": true,
+    "freshness_contract_valid": true,
+    "frozen_spec_hash_matched": true,
+    "input_contract_valid": true,
+    "manifest_schema_version_ok": true,
+    "model_mode_pack_uniform": true,
+    "paired_records_loadable": true,
+    "private_disjointness_verified": true,
+    "record_required_fields_present": true,
+    "task_sets_matched": true
+  },
+  "frozen_policy_count": 2,
+  "frozen_policy_names": [
+    "ambiguous_query_weak_only_default_use_p25_action",
+    "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action"
+  ],
+  "frozen_policy_validation": true,
+  "generated_at": "2026-06-18T05:24:27.033181+00:00",
+  "generated_by": "b8_lite_medium_matrix_combiner",
+  "gold_spans_in_artifact": false,
+  "included_source_report_count": 2,
+  "live_quality_experiment": false,
+  "llm_output_not_evidence": true,
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "policy_families": {
+    "ambiguous_query_weak_only_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 64,
+        "weak_only": 32
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.666667,
+        "weak_only": 0.333333
+      },
+      "added_false_span": 34,
+      "added_gold_span": 21,
+      "comparable_task_count": 96,
+      "effective_llm_action_count": 62,
+      "effective_llm_action_rate": 0.6458333333333334,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.619047619047619,
+      "false_reduction_vs_p25": 7,
+      "gold_kill_vs_p25": 0,
+      "mean_primary_false_positive_rate": 0.0,
+      "mean_span_f05": 0.04666673026048026,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -47,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 59,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "ambiguous_query_weak_only",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 37,
+      "provider_call_estimate": 62,
+      "provider_call_estimate_not_measured": true,
+      "source": "frozen",
+      "task_count": 96
+    },
+    "negative_weak_only_ambiguous_query_use_p25_action_default_use_p25_action": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 15,
+        "weak_only": 81
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 0.15625,
+        "weak_only": 0.84375
+      },
+      "added_false_span": 13,
+      "added_gold_span": 12,
+      "comparable_task_count": 96,
+      "effective_llm_action_count": 13,
+      "effective_llm_action_rate": 0.13541666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.0833333333333333,
+      "false_reduction_vs_p25": 28,
+      "gold_kill_vs_p25": 6,
+      "mean_primary_false_positive_rate": 0.0,
+      "mean_span_f05": 0.029631139982702486,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -14,
+      "no_gold_false_primary_rate": 0.0,
+      "no_gold_task_count": 59,
+      "policy_rules": [
+        {
+          "action": "weak_only",
+          "is_default": false,
+          "name": "negative_weak_only",
+          "predicates": [
+            "hard_distractor_like"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": false,
+          "name": "ambiguous_query_use_p25_action",
+          "predicates": [
+            "ambiguous_or_query_noise"
+          ]
+        },
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "default_use_p25",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 37,
+      "provider_call_estimate": 13,
+      "provider_call_estimate_not_measured": true,
+      "source": "frozen",
+      "task_count": 96
+    },
+    "p25_bucket_routed_v0_plain": {
+      "action_counts": {
+        "abstain_filter": 0,
+        "candidate_baseline": 0,
+        "hard_distractor_filter": 0,
+        "plain_span_narrow": 0,
+        "use_p25_action": 96,
+        "weak_only": 0
+      },
+      "action_rates": {
+        "abstain_filter": 0.0,
+        "candidate_baseline": 0.0,
+        "hard_distractor_filter": 0.0,
+        "plain_span_narrow": 0.0,
+        "use_p25_action": 1.0,
+        "weak_only": 0.0
+      },
+      "added_false_span": 41,
+      "added_gold_span": 21,
+      "comparable_task_count": 96,
+      "effective_llm_action_count": 94,
+      "effective_llm_action_rate": 0.9791666666666666,
+      "excluded_task_count": 0,
+      "fallback_to_baseline_count": 0,
+      "false_per_gold": 1.9523809523809523,
+      "false_reduction_vs_p25": 0,
+      "gold_kill_vs_p25": 0,
+      "mean_primary_false_positive_rate": 0.041666666666666664,
+      "mean_span_f05": 0.04666673026048026,
+      "missing_action_outcome_count": 0,
+      "net_span_value_2x": -61,
+      "no_gold_false_primary_rate": 0.06779661016949153,
+      "no_gold_task_count": 59,
+      "policy_rules": [
+        {
+          "action": "use_p25_action",
+          "is_default": true,
+          "name": "p25_reference_default",
+          "predicates": [
+            "always_true"
+          ]
+        }
+      ],
+      "positive_task_count": 37,
+      "provider_call_estimate": 94,
+      "provider_call_estimate_not_measured": true,
+      "source": "baseline",
+      "task_count": 96
+    }
+  },
+  "policy_search_not_admission": true,
+  "policy_search_performed": false,
+  "private_disjointness_verified": true,
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "public_per_repo_rows": false,
+  "public_per_task_rows": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "remote_calls_by_policy_search": 0,
+  "repo_ids_in_artifact": false,
+  "repo_names_in_artifact": false,
+  "repo_set_hash_in_artifact": false,
+  "routing_invariance": {
+    "changed_policy_count": 0,
+    "changed_policy_examples": [],
+    "selected_actions_invariant": true
+  },
+  "sample_freshness_protocol": "b8_lite_derived_aggregate_of_frozen_policy_validations; new_provider_calls=0; not a new validation run; not promotion or default; single model",
+  "schema_version": "b8-lite-medium-matrix-combiner-v0",
+  "self_test": false,
+  "single_model_only": true,
+  "source_run_ids": [
+    "27717886432",
+    "27735809672"
+  ],
+  "status": "ok",
+  "task_ids_in_artifact": false,
+  "total_task_count": 96,
+  "winner_declared": false
+}

@@ -97,6 +97,10 @@ B6E expanded the same frozen-policy validation to 48 comparable tasks (`27717886
 
 B6F reused the same frozen-policy validation on a different set of four public repo slices (`27735809672`, 4 × 12 tasks). The main balanced-policy candidate again preserved P25's added gold and mean SpanF0.5 while reducing false spans from 24 to 20, removing observed PFP, and reducing estimated LLM actions from 47 to 31. This is the first repo-generalization smoke supporting the balanced-policy hypothesis, but remains single-model, low-n, and not a default/promotion result.
 
+## B8-lite Medium Matrix Combiner
+
+B8-lite combines the B6E and B6F frozen-policy validation reports into a derived 96-task aggregate over eight public repo slices. It performs no new provider calls, no policy search, and no per-task/per-repo reads. The main balanced-policy candidate matches P25's 21 added gold and weighted mean SpanF0.5 while reducing false spans from 41 to 34, removing observed PFP, and reducing estimated LLM actions from 94 to 62. This strengthens the single-model balanced-policy hypothesis, but remains a derived aggregate rollup, not a new live validation run or default change. See the [B8-lite detailed report](b8-lite-medium-matrix-combiner.md).
+
 ## B6D Cross-Adapter Frozen-Policy Validation
 
 B6D tests whether the B6C frozen-policy direction is quality-interpretable under a different model adapter, without changing the frozen policy or searching again. The first live B6D run (`27716082836`) completed successfully but reported `status=not_quality_interpretable`: GLM-5.2 `json_schema_strict` had `schema_valid_rate=0.75` and `infra_failure_rate=0.25`, below the adapter-health threshold. Direction consistency is therefore `not_determinable`, and policy-family quality metrics remain null. This is adapter-health evidence, not a negative quality conclusion about the frozen policy. Output mode is treated as a model-adapter configuration parameter, not an OpenLocus algorithm variable. See the [B6D detailed report](b6d-cross-adapter-frozen-validation.md).
