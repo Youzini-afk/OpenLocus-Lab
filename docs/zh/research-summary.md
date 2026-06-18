@@ -371,6 +371,25 @@ made about whether the B6C frozen policy transfers to GLM. Output mode is treate
 as an adapter/profile configuration, not as a universal algorithm variable. See
 [`b6d-cross-adapter-frozen-validation.md`](b6d-cross-adapter-frozen-validation.md).
 
+B9A adapter-health screen:
+
+```text
+matrix:
+  GLM-5.2 and Qwen3.6-27B
+  tool_call and json_schema_strict adapter profiles
+  2 public repo slices per adapter profile
+  max_tasks=6, sequentially triggered jobs
+```
+
+B9A is not a quality leaderboard. It treats output mode as a model-adapter
+configuration parameter and reports only adapter health. Qwen3.6-27B
+`json_schema_strict` passed the small health screen (`schema_valid_rate=1.0`,
+`infra_failure_rate=0.0`) and is a candidate for cautious low-volume follow-up.
+GLM-5.2 `json_schema_strict` improved over tool-call behavior but remained below
+quality-interpretable thresholds (`schema_valid_rate=0.833`,
+`infra_failure_rate=0.333`). GLM tool-call and Qwen tool-call remain too noisy
+for critical-path validation. See [`b9a-adapter-health-report.md`](b9a-adapter-health-report.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text

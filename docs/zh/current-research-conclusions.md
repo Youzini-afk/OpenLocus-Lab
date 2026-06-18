@@ -84,6 +84,10 @@ B8-lite combines the B6E and B6F frozen-policy validation reports into a derived
 
 B6D 在不改变冻结策略、不重新搜索的前提下，测试 B6C 的冻结策略方向在另一个 model adapter 下是否 quality-interpretable。第一次 live B6D run（`27716082836`）成功完成，但报告 `status=not_quality_interpretable`：GLM-5.2 `json_schema_strict` 的 `schema_valid_rate=0.75`、`infra_failure_rate=0.25`，低于 adapter-health 阈值。因此 direction consistency 是 `not_determinable`，policy-family quality metrics 保持 null。这是 adapter-health evidence，不是对冻结策略的负面质量结论。Output mode 被视为 model-adapter 配置参数，而不是 OpenLocus 算法变量。详见 [B6D 详细报告](b6d-cross-adapter-frozen-validation.md)。
 
+## B9A Adapter Health Repair Screen
+
+B9A 用 sequential small live runs 筛查 GLM-5.2 和 Qwen3.6-27B adapter profiles。它不是 quality leaderboard，并且把 output mode 当作 model-adapter 配置参数。Qwen3.6-27B `json_schema_strict` 通过了这轮小型 health screen（`schema_valid_rate=1.0`，`infra_failure_rate=0.0`），可以用于谨慎的低流量后续验证。GLM-5.2 `json_schema_strict` 相比 tool-call 行为有所改善，但仍低于 quality-interpretable 阈值（`schema_valid_rate=0.833`，`infra_failure_rate=0.333`）。GLM tool-call 和 Qwen tool-call 仍然太 noisy，不适合关键路径验证。详见 [B9A 详细报告](b9a-adapter-health-report.md)。
+
 ## B4/B9 模型稳健证据转换
 
 B4/B9 将 `algorithm_spec`（模型无关的策略定义）与 `model_adapter`（模型 + 输出模式的健康状态）分离，并重编码 B1、B1C、B2、B3 的 live quality 聚合结果。它仅聚合、不是门控、不是仅前置条件阶段、不改变 `EvidenceCore`。`span_narrow_topk_plain_v0` 只在两个 matched Kimi adapter delta 上呈现 `low_n_directional_signal`；GLM-5.2 json_schema_strict 因没有 matched baseline delta，只能作为 secondary observed cross-family validation。固定 RMC 变体（`rmc_hybrid_v0`、`rmc_llm_pack_routed_v0`、`rmc_local_conservative_v0`）均为 `not_supported`。Qwen adapter 受 rate-limit 噪声影响，应排除在质量聚合之外。详见 [B4/B9 详细报告](b4-b9-model-robust-evidence-conversion.md)。

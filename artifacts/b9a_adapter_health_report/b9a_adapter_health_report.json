@@ -1,0 +1,142 @@
+{
+  "adapter_health_thresholds": {
+    "quality_interpretable_infra_failure_rate_max": 0.05,
+    "quality_interpretable_schema_valid_rate_min": 0.95
+  },
+  "adapter_results": {
+    "glm_5_2_json_schema_strict": {
+      "candidate_meta_in_artifact": false,
+      "decision_records_in_artifact": false,
+      "error_counts": {
+        "unknown": 2
+      },
+      "fallback_event_count": 2,
+      "fallback_mode_counts": {
+        "json_schema_strict": 2
+      },
+      "fallback_used_count": 0,
+      "health_status": "not_quality_interpretable_adapter_health",
+      "infra_failure_count": 4,
+      "infra_failure_rate": 0.333333,
+      "latency_ms_p50_mean": 1748.0,
+      "model_id": "[mk]GLM-5.2",
+      "output_mode": "json_schema_strict",
+      "repo_slice_count": 2,
+      "run_ids_public": [
+        "27739713629",
+        "27739804587"
+      ],
+      "schema_error_count": 2,
+      "schema_valid_calls": 10,
+      "schema_valid_rate": 0.833333,
+      "successful_calls": 10,
+      "total_calls": 12
+    },
+    "glm_5_2_tool_call": {
+      "candidate_meta_in_artifact": false,
+      "decision_records_in_artifact": false,
+      "error_counts": {
+        "500": 1,
+        "unknown": 1
+      },
+      "fallback_event_count": 6,
+      "fallback_mode_counts": {
+        "tool_call": 6
+      },
+      "fallback_used_count": 0,
+      "health_status": "not_quality_interpretable_adapter_health",
+      "infra_failure_count": 12,
+      "infra_failure_rate": 0.75,
+      "latency_ms_p50_mean": 1698.0,
+      "model_id": "[mk]GLM-5.2",
+      "output_mode": "tool_call",
+      "repo_slice_count": 2,
+      "run_ids_public": [
+        "27739512626",
+        "27739600049"
+      ],
+      "schema_error_count": 6,
+      "schema_valid_calls": 6,
+      "schema_valid_rate": 0.375,
+      "successful_calls": 10,
+      "total_calls": 16
+    },
+    "qwen3_6_27b_json_schema_strict": {
+      "candidate_meta_in_artifact": false,
+      "decision_records_in_artifact": false,
+      "error_counts": {},
+      "fallback_event_count": 0,
+      "fallback_mode_counts": {},
+      "fallback_used_count": 0,
+      "health_status": "quality_interpretable_health_pass",
+      "infra_failure_count": 0,
+      "infra_failure_rate": 0.0,
+      "latency_ms_p50_mean": 4698.5,
+      "model_id": "[mk]Qwen3.6-27B",
+      "output_mode": "json_schema_strict",
+      "repo_slice_count": 2,
+      "run_ids_public": [
+        "27740156561",
+        "27740270136"
+      ],
+      "schema_error_count": 0,
+      "schema_valid_calls": 12,
+      "schema_valid_rate": 1.0,
+      "successful_calls": 12,
+      "total_calls": 12
+    },
+    "qwen3_6_27b_tool_call": {
+      "candidate_meta_in_artifact": false,
+      "decision_records_in_artifact": false,
+      "error_counts": {
+        "unknown": 3
+      },
+      "fallback_event_count": 3,
+      "fallback_mode_counts": {
+        "tool_call": 3
+      },
+      "fallback_used_count": 0,
+      "health_status": "not_quality_interpretable_adapter_health",
+      "infra_failure_count": 6,
+      "infra_failure_rate": 0.5,
+      "latency_ms_p50_mean": 5394.0,
+      "model_id": "[mk]Qwen3.6-27B",
+      "output_mode": "tool_call",
+      "repo_slice_count": 2,
+      "run_ids_public": [
+        "27739892593",
+        "27740025107"
+      ],
+      "schema_error_count": 3,
+      "schema_valid_calls": 9,
+      "schema_valid_rate": 0.75,
+      "successful_calls": 9,
+      "total_calls": 12
+    }
+  },
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "new_provider_calls_in_report_generation": 0,
+  "not_quality_leaderboard": true,
+  "output_mode_is_adapter_config": true,
+  "practical_recommendations": {
+    "glm_5_2_json_schema_strict": "not quality-interpretable in this small screen; improve schema/infra health before quality claims",
+    "glm_5_2_tool_call": "not quality-interpretable; do not use on critical path",
+    "qwen3_6_27b_json_schema_strict": "health pass on small sequential screen; candidate for cautious low-volume quality follow-up",
+    "qwen3_6_27b_tool_call": "not quality-interpretable in this small screen; tool-call adapter still noisier than schema profile"
+  },
+  "promotion_ready": false,
+  "provider_calls_performed_by_b9a": 0,
+  "provider_keys_in_artifact": false,
+  "quality_metrics_excluded": true,
+  "raw_prompts_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_stored": false,
+  "run_matrix": {
+    "max_tasks_per_run": 6,
+    "repo_slice_count_per_adapter": 2,
+    "task_sample_mode": "round_robin_public_buckets"
+  },
+  "schema_version": "b9a-adapter-health-report-v0",
+  "status": "ok"
+}
