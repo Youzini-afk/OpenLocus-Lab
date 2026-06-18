@@ -426,6 +426,27 @@ from 24 to 12. This is a low-n smoke, but it is the first secondary-adapter
 support for the balanced-policy direction. See
 [`b9c-qwen-frozen-policy-validation.md`](b9c-qwen-frozen-policy-validation.md).
 
+B9D DeepSeek/GLM participation screen:
+
+```text
+DeepSeek-V4-Flash tool_call/json_schema_strict:
+  schema_valid_rate=1.0, infra_failure_rate=0.0
+  span_narrow: 4 gold / 3 false on 12 tasks
+
+DeepSeek-V4-Pro tool_call/json_schema_strict:
+  schema_valid_rate=1.0, infra_failure_rate=0.0
+  span_narrow: 2 gold / 1 false on 12 tasks
+
+GLM-5.2:
+  still noisy from B9A/B6D; keep opt-in exploratory only
+```
+
+B9D is not a model leaderboard. It gives participation recommendations:
+DeepSeek Flash/Pro are healthy enough for future exploratory involvement, GLM
+remains supported but not critical-path, Qwen json_schema_strict remains the best
+current secondary validation adapter, and Kimi tool_call remains the primary
+reference. See [`b9d-deepseek-glm-participation-screen.md`](b9d-deepseek-glm-participation-screen.md).
+
 B4/B9 model-robust evidence conversion digest:
 
 ```text
@@ -441,8 +462,9 @@ B4/B9 deliberately prevents the Kimi result from becoming the OpenLocus
 algorithm. `span_narrow_topk_plain_v0` is only a `low_n_directional_signal` on
 the two matched Kimi adapter deltas; GLM-5.2 json_schema_strict is secondary
 observed cross-family validation because no matched baseline delta is available.
-Qwen adapters are excluded from quality aggregation due to rate-limit/fallback
-noise. Fixed RMC variants remain `not_supported`. See
+B9B/B9C later upgrade Qwen json_schema_strict to secondary low-volume support,
+but the original B4/B9 aggregate remains unchanged. Fixed RMC variants remain
+`not_supported`. See
 [`b4-b9-model-robust-evidence-conversion.md`](b4-b9-model-robust-evidence-conversion.md).
 
 ---

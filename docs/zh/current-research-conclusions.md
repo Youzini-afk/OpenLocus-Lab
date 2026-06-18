@@ -96,6 +96,10 @@ B9B 在 Qwen3.6-27B 已通过 health screen 的 `json_schema_strict` adapter 下
 
 B9C 在 Qwen3.6-27B `json_schema_strict` adapter 下验证 B6C 冻结 balanced policy。Run `27744695226` 成功完成，且 `quality_interpretable=true`、`direction_consistency=consistent_with_kimi`。Balanced frozen policy 保留了 P25 的 6 个 added gold 和 mean SpanF0.5，同时把 false spans 从 5 降到 4，移除 observed PFP，并把 estimated LLM actions 从 24 降到 12。这是 balanced-policy direction 的第一个 secondary-adapter 支持，但仍是 low-n smoke，不是 default/promotion 结果。详见 [B9C 详细报告](b9c-qwen-frozen-policy-validation.md)。
 
+## B9D DeepSeek / GLM Participation Screen
+
+B9D 检查 DeepSeek 和 GLM adapters 是否能参与后续实验，同时避免把 adapter noise 变成研究主线。DeepSeek-V4-Flash 和 DeepSeek-V4-Pro 都在 `tool_call` 与 `json_schema_strict` 下完成了小型 sequential screen，`schema_valid_rate=1.0` 且 `infra_failure_rate=0.0`。Flash 的 span-narrow 更偏 recall（12 tasks 上 4 gold / 3 false），Pro 更保守（2 gold / 1 false）。GLM-5.2 基于 B9A/B6D 仍属于 supported but noisy，应保持 opt-in/exploratory，不进 critical path。这是 participation recommendation，不是 model leaderboard。详见 [B9D 详细报告](b9d-deepseek-glm-participation-screen.md)。
+
 ## B4/B9 模型稳健证据转换
 
 B4/B9 将 `algorithm_spec`（模型无关的策略定义）与 `model_adapter`（模型 + 输出模式的健康状态）分离，并重编码 B1、B1C、B2、B3 的 live quality 聚合结果。它仅聚合、不是门控、不是仅前置条件阶段、不改变 `EvidenceCore`。`span_narrow_topk_plain_v0` 只在两个 matched Kimi adapter delta 上呈现 `low_n_directional_signal`；GLM-5.2 json_schema_strict 因没有 matched baseline delta，只能作为 secondary observed cross-family validation。固定 RMC 变体（`rmc_hybrid_v0`、`rmc_llm_pack_routed_v0`、`rmc_local_conservative_v0`）均为 `not_supported`。Qwen adapter 受 rate-limit 噪声影响，应排除在质量聚合之外。详见 [B4/B9 详细报告](b4-b9-model-robust-evidence-conversion.md)。
