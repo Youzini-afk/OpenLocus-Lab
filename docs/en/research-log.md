@@ -2325,3 +2325,61 @@ the frozen spec currently drives off benchmark public labels
   predeclared gates.
 - The shadow predicate is FROZEN; no tuning during B11. Any predicate change
   should start a new frozen spec/version.
+
+## 2026-06-18 — B10B Runtime-Shadow Replay CI Integration
+
+### Objective
+
+Integrate B10B into the CI workflow so it runs against real P21 ephemeral records, turning the mechanics-validated scaffold into an empirically-validated one on the next P21 CI run.
+
+### Implementation notes
+
+- Made `eval/b10b_runtime_shadow_replay.py --records` accept either a JSON array (legacy) or a P21 payload object (with `records` field). Format detected by top-level type.
+- Added `_extract_outcome_metrics(record, target_action_value)` helper that resolves outcome_audit data from P21 per-strategy dicts: `weak_candidate_only` when target=weak_only, `candidate_baseline` when target=use_p25_action. Extracts only the four `OUTCOME_AUDIT_NUMERIC_FIELDS` (`added_gold_span`, `added_false_span`, `span_f0_5`, `primary_false_positive_rate`) into a new in-memory dict. Record is never mutated. Shadow predicate still never reads outcome_metrics (audit-only).
+- Added `--out <path>` CLI option for CI output path.
+- Added CI step in `.github/workflows/real-provider-benchmark.yml` (P21-G3L step, after P62, before `rm -f "$P25_RECORDS"` cleanup): `if [[ -f "$P25_RECORDS" ]]; then python3 eval/b10b_runtime_shadow_replay.py --records "$P25_RECORDS" --out artifacts/real_provider_ci/b10b_runtime_shadow_replay_report.json; fi`. Verdict=False is a valid result (not a CI failure); only file/parse errors fail.
+- Spec hash unchanged: `c201eb709dc0112c2bb91db33917c6d20ea48582924821a2bda7950709e754ba` (no spec changes; outcome extraction is audit-only).
+- Local P21 payload fixture test passed: `replay_source="ci_ephemeral_records"`, `outcome_audit_status="ok"` with 4 records across all 4 partitions, verdict=False with `insufficient_label_driven_denominator` (expected for small sample).
+- Self-test still passes (10 checks).
+
+### Findings
+
+- B10B is now wired into CI. The next P21 CI run (triggered via workflow_dispatch with enable_remote_models=true) will produce real empirical B10B data.
+- If B10B passes all 10 predeclared gates on real records, it upgrades from "mechanics-validated scaffold" to "empirically-supported".
+- If B10B fails gates, B11 prospective validation still proceeds (B10B is ambiguous-branch shadow only; B11 tests the benchmark-routed policy).
+
+### Caveats
+
+- B10B CI integration is non-blocking initially (verdict=False is a valid result).
+- Real empirical validation requires the next P21 CI run, which needs workflow_dispatch + enable_remote_models=true.
+- No new live LLM calls from B10B itself (replay-only).
+
+## 2026-06-18 — B11 Prospective Blind Validation Planning
+
+### Objective
+
+Draft the B11 preregistration plan: a prospective validation of the frozen balanced policy `balanced_policy_v1_benchmark_routed` on new repos/tasks generated after the 2026-06-18 policy freeze, with no retuning of policies, thresholds, or success criteria.
+
+### Implementation notes
+
+- Parallel reconnaissance: @explorer identified 8 repos already used in B6B/B6C/B6E/B6F/B8-lite (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`, `go_cobra`, `py_httpx`, `js_axios`, `rust_mdbook`) and mapped available new repos from `eval/ci_repos/openlocus-ci-repos-v1.yaml`. @librarian researched prospective validation methodology (preregistration, worst-group metrics, CVaR, leave-one-out, live LLM eval best practices). @oracle strategic plan returned empty (proceeded with own analysis).
+- Selected 8 new repos for minimum viable B11: `py_fastapi`, `py_pytest`, `ts_vite`, `ts_hono`, `go_chi`, `go_prometheus`, `rust_deno`, `java_spring_petclinic` (5 languages: Python, TypeScript, Go, Rust, Java).
+- Confirmed 4 model families from `eval/p21_model_profiles.json`: Kimi-K2.7-Code (tool_call, reference), Qwen3.6-27B (json_schema_strict, secondary), DeepSeek-V4-Flash (json_schema_strict, recall), DeepSeek-V4-Pro (json_schema_strict, conservative). GLM-5.2 excluded (noisy per B9A/B6D).
+- Confirmed 4 policies: Local baseline (no LLM), P25 `bucket_routed_v0`, Balanced v1 `balanced_policy_v1_benchmark_routed`, Conservative `rmc_local_conservative_v0`.
+- Predeclared success/failure/partial criteria with explicit thresholds (Δgold_span, ΔSpanF0.5, ΔPFP, Δfalse_spans, ΔLLM_calls; overall + worst-group).
+- Defined RobustUtility = min_group(SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency) with λ=1.0, μ=0.1, ν=0.1.
+- B10B integration: B10B --records runs in CI after each B11 run (already wired in commit 2cbdd0c), giving B10B first empirical validation.
+- Wrote B11 preregistration plan at `docs/en/b11-prospective-blind-validation.md` (325 lines).
+
+### Findings
+
+- B11 plan is now frozen before any prospective live runs. No retuning of policies, thresholds, or success criteria after live runs begin.
+- B11 is framed as "exploratory prospective stress test" (per @oracle B10B review): B10B hasn't run on real CI records yet, so the runtime-shadow predicate is not empirically supported. B11 tests the benchmark-routed balanced policy, not the runtime-shadow predicate.
+- Minimum viable B11 (8 repos, ~120 tasks, 4 models) is feasible autonomously for infrastructure setup; live runs require workflow_dispatch + enable_remote_models=true.
+
+### Caveats
+
+- B11 plan is a preregistration; any post-hoc analysis must be labeled exploratory.
+- Live LLM runs require user workflow_dispatch trigger.
+- B11 does NOT prove promotion readiness; `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`.
+- B11 evaluator skeleton (`eval/b11_prospective_validation.py`) and CI workflow stage are next steps (separate tasks).

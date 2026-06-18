@@ -557,6 +557,60 @@ this is ambiguous-branch runtime-shadow only. B11 should be framed as
 B10B runs on real CI ephemeral records and passes every predeclared gate. See
 [`b10b-runtime-shadow-replay.md`](b10b-runtime-shadow-replay.md).
 
+B11 prospective blind validation:
+
+```text
+algorithm_spec_id: balanced_policy_v1_benchmark_routed (frozen, B10)
+claim_level: prospective_validation_preregistration
+new_repos_new_tasks_after_freeze: true
+retuning_after_live_runs: false (forbidden by preregistration)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+live_llm_runs_require_workflow_dispatch: true
+```
+
+B11 is the first true **prospective** validation of the frozen balanced policy
+`balanced_policy_v1_benchmark_routed`. Prior validation (B6C/B6E/B6F/B8-lite/B9C)
+shared the same task generation and research universe; B11 uses new repos and
+tasks generated after the 2026-06-18 policy freeze, with no retuning of policies,
+thresholds, or success criteria. The preregistration freezes artifacts (the B10
+spec, the B10B shadow predicate, `rmc_local_conservative_v0`,
+`p25.route_bucket_routed_v0`, the B10B 10 gates and verdict framework) and all
+success/failure/partial criteria **before** any live runs; any post-hoc analysis
+must be labeled exploratory.
+
+Scope is split into a minimum viable first round (8 repos, 5 languages, ~120
+tasks, 4 models, 4-6 hours CI per model family) and a full round if promising
+(12-16 repos, 300-500 tasks). The minimum viable 8 repos are `py_fastapi`,
+`py_pytest`, `ts_vite`, `ts_hono`, `go_chi`, `go_prometheus`, `rust_deno`,
+`java_spring_petclinic` — all new, none used in B6B/B6C/B6E/B6F/B8-lite.
+
+B11 covers 4 model families: Kimi (`[mk]Kimi-K2.7-Code`, `tool_call`, reference),
+Qwen (`[mk]Qwen3.6-27B`, `json_schema_strict`, secondary), DeepSeek Flash
+(`[mk]DeepSeek-V4-Flash`, `json_schema_strict`, recall), and DeepSeek Pro
+(`[mk]DeepSeek-V4-Pro`, `json_schema_strict`, conservative). GLM-5.2 is excluded
+as noisy per B9A/B6D. Output mode is a model-adapter configuration parameter,
+not an OpenLocus algorithm variable. 4 policies are compared: Local baseline
+(no LLM), P25 `p25.route_bucket_routed_v0`, Balanced v1
+`balanced_policy_v1_benchmark_routed`, and Conservative
+`rmc_local_conservative_v0`.
+
+Predeclared success/failure/partial criteria use explicit overall and worst-group
+thresholds on `Δgold_span`, `ΔSpanF0.5`, `ΔPFP`, `Δfalse_spans`, and `ΔLLM_calls`
+(Balanced v1 vs P25), plus a `RobustUtility` =
+`min_group(SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency)` aggregate
+with `λ=1.0`, `μ=0.1`, `ν=0.1`. B10B integration: B10B `--records` runs in CI
+after each B11 run (already wired in commit `2cbdd0c`), giving B10B its first
+empirical validation (`replay_source="ci_ephemeral_records"`). B11 is a
+prospective stress test, not a promotion step: even on success,
+`promotion_ready=false`. The plan, CI workflow definition, and report-aggregator
+skeleton are autonomous; actual live LLM runs require a user
+`workflow_dispatch` trigger with `enable_remote_models=true`. See
+[`b11-prospective-blind-validation.md`](b11-prospective-blind-validation.md).
+
 ---
 
 ## Current status update — 2026-06-13
