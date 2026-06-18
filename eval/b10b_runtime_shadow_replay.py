@@ -400,6 +400,58 @@ def _outcome_metrics_usable(om: Any) -> bool:
     return True
 
 
+# Per-strategy keys in a P21/P25 ephemeral record that store outcome dicts.
+# The outcome_audit reads these ONLY AFTER the target/shadow actions are
+# chosen; the shadow predicate NEVER reads them (audit-only).
+_P21_STRATEGY_KEYS = ("weak_candidate_only", "candidate_baseline")
+
+
+def _extract_outcome_metrics(record: dict[str, Any], target_action_value: str) -> Any:
+    """Return a usable outcome_metrics dict for the outcome-equivalence
+    audit, or None if no usable outcome data is available.
+
+    Resolution order (audit-only; the shadow predicate never reads outcomes):
+
+    1. ``record["outcome_metrics"]`` exists and is usable (synthetic-fixture
+       format, or any record carrying a top-level outcome_metrics dict with
+       all four numeric audit fields). Use it directly.
+    2. Else if P21 ephemeral per-strategy dicts are present:
+       - If ``record["weak_candidate_only"]`` is present AND
+         ``target_action == "weak_only"``, extract the audit fields from
+         ``record["weak_candidate_only"]``.
+       - Else if ``record["candidate_baseline"]`` is present AND
+         ``target_action == "use_p25_action"``, extract the audit fields from
+         ``record["candidate_baseline"]``.
+       The extraction builds a NEW dict in memory (it does NOT mutate the
+       record) containing only the four OUTCOME_AUDIT_NUMERIC_FIELDS.
+    3. Else, return None (record has no outcome data for the audit; the
+       outcome_audit will mark the partition as ``no_outcome_data`` if no
+       record contributes).
+
+    The P21 per-strategy dicts store additional non-numeric fields (e.g.
+    ``abstained``, ``file_recall_at_5``); only the four numeric audit
+    fields are extracted, and only when all four are present and numeric.
+    """
+    om = record.get("outcome_metrics")
+    if _outcome_metrics_usable(om):
+        return om
+    if target_action_value == "weak_only":
+        strategy_dict = record.get("weak_candidate_only")
+    elif target_action_value == "use_p25_action":
+        strategy_dict = record.get("candidate_baseline")
+    else:
+        strategy_dict = None
+    if isinstance(strategy_dict, dict):
+        extracted: dict[str, Any] = {}
+        for field in OUTCOME_AUDIT_NUMERIC_FIELDS:
+            value = strategy_dict.get(field)
+            if not _is_number(value):
+                return None
+            extracted[field] = value
+        return extracted
+    return None
+
+
 def _mean(values: list[float]) -> float:
     if not values:
         return 0.0
@@ -504,9 +556,13 @@ def replay(records: list[dict[str, Any]]) -> dict[str, Any]:
                 if s_act == "weak_only":
                     label_driven_qn0_shadow_weak += 1
 
-        # Outcome audit partition assignment (audit-only).
-        om = rec.get("outcome_metrics")
-        if _outcome_metrics_usable(om):
+        # Outcome audit partition assignment (audit-only). Outcomes are computed AFTER
+        # actions are chosen — scoring outputs, NEVER routing inputs.
+        # Resolution: top-level outcome_metrics (synthetic) OR P21 per-strategy
+        # dict keyed by the chosen target_action (weak_candidate_only /
+        # candidate_baseline). Built in memory; the record is never mutated.
+        om = _extract_outcome_metrics(rec, t_act)
+        if om is not None and _outcome_metrics_usable(om):
             if t_act == "weak_only" and s_act == "use_p25_action":
                 outcome_partitions["target_weak_shadow_use_p25"].append(om)  # type: ignore[arg-type]
             elif t_act == "use_p25_action" and s_act == "weak_only":
@@ -1188,7 +1244,18 @@ def _make_record(
     local_anchor: bool | None = False,
     rrf_backed_by_anchor: bool | None = True,
     outcome_metrics: dict[str, Any] | None = None,
+    p21_strategies: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
+    """Build a synthetic p25-policy-record-like record for self-tests.
+
+    ``outcome_metrics`` carries the synthetic-fixture top-level outcome dict
+    (used by the legacy outcome_audit path). ``p21_strategies`` carries P21
+    ephemeral per-strategy outcome dicts (``weak_candidate_only``,
+    ``candidate_baseline``, etc.) — when present AND ``outcome_metrics`` is
+    None, the outcome_audit will extract audit fields from the strategy dict
+    matching the chosen target_action. At most one of ``outcome_metrics`` and
+    ``p21_strategies`` should be populated.
+    """
     if task_risk_tags is None:
         task_risk_tags = []
     route_features: dict[str, Any] = {}
@@ -1200,23 +1267,31 @@ def _make_record(
         route_features["local_anchor"] = local_anchor
     if rrf_backed_by_anchor is not None:
         route_features["rrf_backed_by_anchor"] = rrf_backed_by_anchor
-    return {
+    rec: dict[str, Any] = {
         "task_id": f"t-{id(task_bucket)}-{id(tuple(task_risk_tags))}",
         "repo_id": "synthetic",
         "task_bucket": task_bucket,
         "task_risk_tags": list(task_risk_tags),
         "has_gold": has_gold,
         "score_group": score_group,
-        "outcome_metrics": outcome_metrics
-        if outcome_metrics is not None
-        else {
+        "route_features": route_features,
+    }
+    if outcome_metrics is not None:
+        rec["outcome_metrics"] = outcome_metrics
+    elif p21_strategies is not None:
+        # P21 ephemeral format: per-strategy outcome dicts, no top-level
+        # outcome_metrics field. The outcome_audit extracts audit fields from
+        # the strategy dict matching the chosen target_action.
+        for strategy_name, strategy_payload in p21_strategies.items():
+            rec[strategy_name] = strategy_payload
+    else:
+        rec["outcome_metrics"] = {
             "added_gold_span": 999,
             "added_false_span": 999,
             "span_f0_5": 0.0,
             "primary_false_positive_rate": 1.0,
-        },
-        "route_features": route_features,
-    }
+        }
+    return rec
 
 
 def _self_test_perfect_agreement() -> None:
@@ -1828,8 +1903,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=None,
         help=(
-            "path to a JSON array of p25-policy-record-like records; runs the "
-            "replay in ci_ephemeral_records mode and writes the report artifact"
+            "path to a JSON array of p25-policy-record-like records OR a JSON "
+            "object with a 'records' field (P21/P25 ephemeral payload format); "
+            "runs the replay in ci_ephemeral_records mode and writes the "
+            "report artifact"
+        ),
+    )
+    parser.add_argument(
+        "--out",
+        type=str,
+        default=None,
+        help=(
+            "path to write the report artifact; defaults to the canonical "
+            "b10b_runtime_shadow_replay_report.json artifact path"
         ),
     )
     if argv is None:
@@ -1845,14 +1931,41 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def _load_records(path: str) -> list[dict[str, Any]]:
+    """Load records from a JSON file.
+
+    Accepts either:
+    - A JSON array of record objects (legacy/synthetic-fixture format).
+    - A JSON object with a ``records`` field (P21/P25 ephemeral payload
+      format, schema_version ``p25-policy-records-ephemeral-v1``).
+
+    Detects the format by checking whether the top-level JSON value is a
+    list (array) or dict (object).
+    """
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"records file not found: {path}")
     data = json.loads(p.read_text(encoding="utf-8"))
-    if not isinstance(data, list):
-        raise ValueError(f"records file must contain a JSON array, got {type(data).__name__}")
+    if isinstance(data, list):
+        items = data
+    elif isinstance(data, dict):
+        if "records" not in data:
+            raise ValueError(
+                "records file is a JSON object but has no 'records' field "
+                "(expected P21/P25 ephemeral payload format with a 'records' "
+                "array); refusing to silently treat as zero records"
+            )
+        items = data["records"]
+        if not isinstance(items, list):
+            raise ValueError(
+                f"'records' field must be a JSON array, got {type(items).__name__}"
+            )
+    else:
+        raise ValueError(
+            f"records file must contain a JSON array or object, got "
+            f"{type(data).__name__}"
+        )
     records: list[dict[str, Any]] = []
-    for item in data:
+    for item in items:
         if not isinstance(item, dict):
             raise ValueError("each record must be a JSON object")
         records.append(item)
@@ -1900,9 +2013,10 @@ def main(argv: list[str] | None = None) -> int:
             records, self_test=False, replay_source="ci_ephemeral_records"
         )
         verify_report(report)
-        _write_json(REPORT_PATH, report)
+        out_path = Path(args.out) if args.out else REPORT_PATH
+        _write_json(out_path, report)
         _print_summary(report)
-        print("B10B replay report written", file=sys.stderr)
+        print(f"B10B replay report written to {out_path}", file=sys.stderr)
         return 0
     print("B10B requires --self-test or --records", file=sys.stderr)
     return 2

@@ -713,9 +713,14 @@ jobs:
              python3 eval/p60_rmc_policy_v2.py --input "$P25_RECORDS" --p48-report artifacts/real_provider_ci/p48_diagnostic_policy_simulator_report.json --p59-report artifacts/real_provider_ci/p59_contrastive_pack_coverage_counterfactual_report.json --p58-report artifacts/real_provider_ci/p58_source_backed_verifier_calibration_report.json --p51b-report artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --p50-report artifacts/real_provider_ci/p50_fixed_suite_validation_report.json --out artifacts/real_provider_ci/p60_rmc_policy_v2_report.json --doc docs/real-provider-ci/p60-rmc-policy-v2.md
              # P61 Pre-Spend Gate v0: deterministic aggregate-only readiness gate; runs after P60 on aggregate reports only.
              python3 eval/p61_pre_spend_gate.py --p57-report artifacts/real_provider_ci/p57_generalization_gate_report.json --p58-report artifacts/real_provider_ci/p58_source_backed_verifier_calibration_report.json --p59-report artifacts/real_provider_ci/p59_contrastive_pack_coverage_counterfactual_report.json --p60-report artifacts/real_provider_ci/p60_rmc_policy_v2_report.json --p51b-report artifacts/real_provider_ci/p51b_llm_opt_in_contract_report.json --p52c-report artifacts/real_provider_ci/p52c_local_verifier_scoring_simulator_report.json --out artifacts/real_provider_ci/p61_pre_spend_gate_report.json --doc docs/real-provider-ci/p61-pre-spend-gate.md
-              # P62 Generalization Matrix Aggregator v0: deterministic aggregate-only self-test; do NOT run on a single slice in CI.
-              python3 eval/p62_generalization_matrix_aggregator.py --self-test --out artifacts/real_provider_ci/p62_generalization_matrix_aggregator_report.json --doc docs/real-provider-ci/p62-generalization-matrix-aggregator.md --p57-input-matrix-out "$RUNNER_TEMP/p62_p57_input_matrix.json"
-              rm -f "$P25_RECORDS"
+               # P62 Generalization Matrix Aggregator v0: deterministic aggregate-only self-test; do NOT run on a single slice in CI.
+               python3 eval/p62_generalization_matrix_aggregator.py --self-test --out artifacts/real_provider_ci/p62_generalization_matrix_aggregator_report.json --doc docs/real-provider-ci/p62-generalization-matrix-aggregator.md --p57-input-matrix-out "$RUNNER_TEMP/p62_p57_input_matrix.json"
+               # B10B Runtime-Shadow Replay: action-agreement replay against the ephemeral P25 records.
+               # Verdict=False is a valid result (not a CI failure); only file/parse errors fail.
+               if [[ -f "$P25_RECORDS" ]]; then
+                 python3 eval/b10b_runtime_shadow_replay.py --records "$P25_RECORDS" --out artifacts/real_provider_ci/b10b_runtime_shadow_replay_report.json
+               fi
+               rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
         if: ${{ inputs.stage == 'p20_llm_large' || inputs.stage == 'all_smoke' }}
