@@ -2310,8 +2310,37 @@ jobs:
                   if (cs.get("candidate_denominator") or 0) <= 0:
                       raise SystemExit(f"{json_path} eligibility candidate_denominator must be positive")
                   pb = data.get("metrics", {}).get("request_envelope_blueprint", {})
-                  if (pb.get("request_envelope_blueprint_count") or 0) <= 0:
-                      raise SystemExit(f"{json_path} request_envelope_blueprint_count must be positive")
+                  # Small canary samples (e.g. p21_llm_rich max_tasks=3) may yield zero
+                  # eligible source-backed live candidates/envelopes. P51-B only requires
+                  # a positive request_envelope_blueprint_count when the report declares
+                  # any signal of usable live-gate material: future live gate ready,
+                  # source-backed eligibility available, or any eligible
+                  # candidates/packs. When all of those are absent (aggregate
+                  # insufficiency / empty-eligibility state, with the live gate not
+                  # ready and zero eligible candidates AND zero eligible packs), a zero
+                  # blueprint count is permitted and reflects the empty eligibility
+                  # rather than a contract violation. All privacy/safety checks above
+                  # (raw fields, provider keys, prompts, snippets, paths, labels, etc.)
+                  # remain strict in all cases; this only relaxes the positive-count
+                  # precondition conditionally. See task #p51b-blueprint-zero-elig.
+                  gate = data.get("metrics", {}).get("future_live_gate_readiness", {})
+                  _blueprint_count = (pb.get("request_envelope_blueprint_count") or 0)
+                  _eligible_candidates = (cs.get("eligible_candidate_count") or 0)
+                  _eligible_packs = (cs.get("eligible_pack_count") or 0)
+                  _gate_ready = bool(gate.get("p51b_live_gate_ready"))
+                  _source_backed = bool(cs.get("source_backed_live_eligibility_available"))
+                  _blueprint_required = (
+                      _gate_ready
+                      or _source_backed
+                      or _eligible_candidates > 0
+                      or _eligible_packs > 0
+                  )
+                  if _blueprint_required and _blueprint_count <= 0:
+                      raise SystemExit(
+                          f"{json_path} request_envelope_blueprint_count must be positive when "
+                          f"live gate is ready, source-backed eligibility is available, or "
+                          f"eligible candidates/packs are present"
+                      )
                   allowed_redaction_status = {"not_required", "required_defined_satisfied", "required_missing_policy", "required_policy_unsatisfied", "unknown"}
                   redaction_status = pb.get("redaction_policy_status")
                   if pb.get("redaction_policy_contract_version") != "p51b-redaction-policy-precondition-v1":
