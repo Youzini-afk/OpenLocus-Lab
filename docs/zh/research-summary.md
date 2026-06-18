@@ -603,6 +603,51 @@ report-aggregator skeleton 可自主完成；实际 live LLM runs 需要用户 `
 触发且 `enable_remote_models=true`。详见
 [`b11-prospective-blind-validation.md`](b11-prospective-blind-validation.md)。
 
+B12 mechanism decomposition：
+
+```text
+algorithm_spec_id: b12_mechanism_decomposition_v0
+claim_level: mechanism_decomposition_v0
+replay_only: true（evaluator 内无 live LLM calls）
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+```
+
+B12 是继 B11 之后的 **mechanism decomposition** 阶段。目标是通过 5 个 ablation
+variants 与 4 个 predeclared hypotheses 理解**为什么**冻结的 balanced policy
+`balanced_policy_v1_benchmark_routed`（B10）有效（若 B11 证实其泛化）。5 个
+ablation variants 为：**A**（full balanced；`ambiguous→weak_only, else P25`）、
+**B**（deterministic LLM reduction；P25 for all 但对 ambiguous tasks 跳过 LLM）、
+**C**（ambiguous weak_only only；按构造 ≡A，因 balanced policy 只有一条 routing
+rule）、**D**（P25 default only；baseline）、**E**（random LLM reduction；P25 for all
+但随机跳过与 A 同样数量的 LLM calls）。4 个 hypotheses 为：**H1**（ambiguous
+routing —— 增益来自 `ambiguous→weak_only` rule）、**H2**（LLM call reduction ——
+增益来自任何 LLM-call reduction）、**H3**（P25 fallback sufficiency —— routing rule
+无益）、**H4**（model-specific —— effect sizes 在 model families 间显著变化）。A≡C
+equivalence 在前向显式声明（**不是** post-hoc 发现）：balanced policy 只有一条
+routing rule，因此 A 与 C 产生相同 per-record outcome，在每个 hypothesis test 中
+Variant C 都合并入 A。
+
+B12 为 replay-only：每条 P21 record 已含 per-strategy outcomes，故每个 ablation
+variant 通过从现有 records 选取对应 per-strategy outcome 即可计算。B12 evaluator
+不产生新 LLM calls。若 P21 records 不可用，B12 需要新的 live ablation runs
+（`workflow_dispatch` + `enable_remote_models=true`）。Predeclared support/refute
+criteria 在 `gold_span` 与 `span_f0_5` delta 上使用显式 thresholds："≈" 表示
+±0.02 以内，">" 表示严格大于 0.02；H4 在 `A - D` `gold_span` delta 上使用 0.05 的
+最坏 model-family spread threshold。B12 verdict 框架发出
+`supported`/`refuted`/`partial`/`insufficient_data`/`not_implemented` 之一。
+evaluator skeleton 包含 10 个 self-test 检查（forbidden-scan、spec-hash 稳定性、
+synthetic-fixture metrics 含 A≡C equivalence、hypothesis evaluation stub、
+`--input` stub `not_implemented`、B10/B10B/B11 reference-spec pin check、on-disk
+artifact 重生成与验证、ablation-variants 定义、hypotheses 定义），`--input` 路径
+为 stub（真实 per-record replay 计算延后到后续任务）。B12 是 mechanism
+decomposition，**不是** promotion step：`promotion_ready=false`、
+`default_should_change=false`、`evidencecore_semantics_changed=false`。详见
+[`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md)。
+
 ---
 
 ## Current status update — 2026-06-13

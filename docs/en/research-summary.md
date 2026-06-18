@@ -611,6 +611,57 @@ skeleton are autonomous; actual live LLM runs require a user
 `workflow_dispatch` trigger with `enable_remote_models=true`. See
 [`b11-prospective-blind-validation.md`](b11-prospective-blind-validation.md).
 
+B12 mechanism decomposition:
+
+```text
+algorithm_spec_id: b12_mechanism_decomposition_v0
+claim_level: mechanism_decomposition_v0
+replay_only: true (no live LLM calls inside evaluator)
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+```
+
+B12 is the **mechanism decomposition** phase that follows B11. The goal is to
+understand **WHY** the frozen balanced policy
+`balanced_policy_v1_benchmark_routed` (B10) works (if B11 confirms it
+generalizes), via 5 ablation variants and 4 predeclared hypotheses. The 5
+ablation variants are: **A** (full balanced; `ambiguous→weak_only, else P25`),
+**B** (deterministic LLM reduction; P25 for all but skip LLM for ambiguous
+tasks), **C** (ambiguous weak_only only; ≡A by construction since the balanced
+policy has only one routing rule), **D** (P25 default only; baseline), and
+**E** (random LLM reduction; P25 for all but randomly skip the same number of
+LLM calls as A). The 4 hypotheses are: **H1** (ambiguous routing — gains come
+from the `ambiguous→weak_only` rule), **H2** (LLM call reduction — gains come
+from any LLM-call reduction), **H3** (P25 fallback sufficiency — the routing
+rule doesn't help), **H4** (model-specific — effect sizes vary across model
+families). The A≡C equivalence is declared explicitly up-front (not a post-hoc
+discovery): the balanced policy has only one routing rule, so A and C produce
+identical per-record outcomes, and Variant C is collapsed into A in every
+hypothesis test.
+
+B12 is replay-only: each P21 record contains per-strategy outcomes, so each
+ablation variant is computed by selecting the appropriate per-strategy outcome
+from existing records. No live LLM calls are made by the B12 evaluator. If P21
+records are not available, B12 needs new live ablation runs
+(`workflow_dispatch` + `enable_remote_models=true`). Predeclared
+support/refute criteria use explicit thresholds on `gold_span` and
+`span_f0_5` deltas: "≈" means within ±0.02, ">" means strictly greater than
+0.02; H4 uses a worst-case model-family spread threshold of 0.05 on the
+`A - D` `gold_span` delta. The B12 verdict framework emits one of
+`supported`/`refuted`/`partial`/`insufficient_data`/`not_implemented`. The
+evaluator skeleton ships 10 self-test checks (forbidden-scan, spec-hash
+stability, synthetic-fixture metrics incl. A≡C equivalence, hypothesis
+evaluation stub, `--input` stub `not_implemented`, B10/B10B/B11 reference-spec
+pin check, on-disk artifact regeneration + validation, ablation-variants
+defined, hypotheses defined) and the `--input` path is a stub (real per-record
+replay computation deferred to a later task). B12 is mechanism decomposition,
+**not** a promotion step: `promotion_ready=false`,
+`default_should_change=false`, `evidencecore_semantics_changed=false`. See
+[`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md).
+
 ---
 
 ## Current status update — 2026-06-13

@@ -2383,3 +2383,24 @@ Draft the B11 preregistration plan: a prospective validation of the frozen balan
 - Live LLM runs require user workflow_dispatch trigger.
 - B11 does NOT prove promotion readiness; `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`.
 - B11 evaluator skeleton (`eval/b11_prospective_validation.py`) and CI workflow stage are next steps (separate tasks).
+
+## 2026-06-18 — B12 Mechanism Decomposition Planning
+
+### Objective
+Draft B12 preregistration plan: mechanism decomposition via 5 ablation variants (A-E) and 4 hypotheses (H1-H4) to understand WHY the balanced policy works.
+
+### Implementation notes
+- Defined 5 ablation variants: A (full balanced), B (deterministic LLM reduction), C (ambiguous weak_only only, ≡A), D (P25 default), E (random LLM reduction).
+- Defined 4 hypotheses: H1 (ambiguous routing), H2 (LLM call reduction), H3 (P25 fallback sufficiency), H4 (model-specific).
+- Methodology: replay-based (if P21 records available) OR live ablation runs.
+- B12 evaluator skeleton at `eval/b12_mechanism_decomposition.py` (~900 lines, 10 self-test checks, spec sha256 stable).
+- --input is a stub (verdict=not_implemented); full ablation computation deferred.
+
+### Findings
+- B12 plan is frozen before any ablation runs.
+- B12 can be done as replay if P21 records available (from B11 live runs or CI ephemeral).
+- A≡C (both are "ambiguous→weak_only, else P25") since the balanced policy only has one routing rule.
+
+### Caveats
+- B12 ablation runs (if needed) require workflow_dispatch + enable_remote_models=true.
+- B12 does NOT prove promotion; `promotion_ready=false`, `default_should_change=false`.

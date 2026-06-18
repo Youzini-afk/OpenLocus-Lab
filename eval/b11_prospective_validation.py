@@ -25,10 +25,13 @@ distributionally robust policy search).
 Aggregate-only public artifacts: no task/repo/candidate/path/span/snippet/
 prompt/response/gold/provider keys and no raw path/digest/provider strings.
 
-This file currently ships a SKELETON: the ``--self-test`` path verifies the
-aggregation mechanics against a synthetic fixture, while ``--input <path>``
-is a stub (``verdict="not_implemented"``) awaiting the full P21-output metric
-computation in a later task. No live LLM calls are made by this evaluator.
+This file ships the full ``--input`` evaluator: the ``--self-test`` path
+verifies the aggregation mechanics against a synthetic fixture, while
+``--input <path>`` loads P21 ephemeral records, routes each through the four
+frozen policies, computes per-policy aggregate metrics (overall mean, worst-
+group, bootstrap CIs, leave-one-out, RobustUtility, deltas vs P25), and emits
+a verdict against the FROZEN predeclared criteria. No live LLM calls are made
+by this evaluator.
 
 Run::
 
@@ -49,6 +52,13 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+_EVAL_DIR = Path(__file__).resolve().parent
+if str(_EVAL_DIR) not in sys.path:
+    sys.path.insert(0, str(_EVAL_DIR))
+
+import p25_bucket_policy as p25_bucket_policy  # noqa: E402
+import b6_lite_interpretable_policy_search as b6_lite  # noqa: E402
+
 ARTIFACT_DIR = REPO_ROOT / "artifacts" / "b11_prospective_validation"
 REPORT_PATH = (
     ARTIFACT_DIR / "b11_prospective_validation_report.json"
@@ -302,6 +312,447 @@ def _max_abs_floor(pct: float, abs_floor: float, baseline: float) -> float:
 
 
 # ---------------------------------------------------------------------------
+# P21 record loading + normalization (--input mode)
+# ---------------------------------------------------------------------------
+
+# Per-strategy outcome keys that P21 ephemeral records carry. We only need a
+# subset for B11 routing (Local / P25 / Balanced v1 / Conservative all map to
+# one of these).
+_P21_STRATEGY_KEYS = (
+    "candidate_baseline",
+    "llm_span_narrow",
+    "llm_filter",
+    "llm_abstain_filter",
+    "weak_candidate_only",
+    "supporting_only",
+    "symbol_regex_union",
+    "rrf_primary",
+    "symbol_primary",
+    "regex_primary",
+)
+
+# Strategies that cost one provider LLM call per task (per-record proxy). All
+# other strategies (candidate_baseline, weak_candidate_only, supporting_only,
+# symbol_regex_union, rrf_primary, symbol_primary, regex_primary) cost zero.
+_LLM_STRATEGIES = frozenset(
+    {"llm_span_narrow", "llm_filter", "llm_abstain_filter"}
+)
+
+# File-name prefixes -> model family. Falls back to "unknown" when no prefix
+# matches (single-file inputs without a model-hinting filename).
+_MODEL_FAMILY_PREFIXES = (
+    ("deepseek_flash", "deepseek_flash"),
+    ("deepseek_pro", "deepseek_pro"),
+    ("deepseek", "deepseek_pro"),
+    ("kimi", "kimi"),
+    ("qwen", "qwen"),
+)
+
+# repo_id prefix -> language label.
+_REPO_LANG_PREFIXES = (
+    ("py_", "Python"),
+    ("ts_", "TypeScript"),
+    ("js_", "JavaScript"),
+    ("go_", "Go"),
+    ("rust_", "Rust"),
+    ("java_", "Java"),
+    ("rb_", "Ruby"),
+    ("cpp_", "Cpp"),
+    ("c_", "C"),
+)
+
+
+def _derive_model_family(filename: str) -> str:
+    stem = Path(filename).stem.lower()
+    for prefix, family in _MODEL_FAMILY_PREFIXES:
+        if stem.startswith(prefix) or prefix in stem.split("_"):
+            return family
+    return "unknown"
+
+
+def _derive_language(repo_id: str | None) -> str:
+    rid = str(repo_id or "").lower()
+    for prefix, lang in _REPO_LANG_PREFIXES:
+        if rid.startswith(prefix):
+            return lang
+    return "unknown"
+
+
+def _as_float(value: Any) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _as_int(value: Any) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _extract_outcome_dict(raw: dict[str, Any], name: str) -> dict[str, Any]:
+    """Pull a per-strategy outcome dict from a P21 record (handles nested
+    ``outcomes``/``strategies`` containers)."""
+    src = raw.get(name)
+    if isinstance(src, dict):
+        return src
+    for key in ("strategies", "outcomes", "strategy_results", "results", "metrics"):
+        container = raw.get(key) or {}
+        if isinstance(container, dict) and isinstance(container.get(name), dict):
+            return container[name]
+    return {}
+
+
+def _normalize_p21_record(
+    raw: dict[str, Any], model_family: str
+) -> dict[str, Any] | None:
+    """Extract public B11-relevant fields + per-strategy outcomes from a P21
+    ephemeral record. Never retains raw task_id/repo_id paths/snippets/gold
+    spans/private labels — only the public routing fields and scalar metrics
+    needed for aggregation.
+    """
+    tid = raw.get("task_id") or raw.get("test_id")
+    if not tid:
+        return None
+    repo_id = raw.get("repo_id")
+    task_bucket = p25_bucket_policy.sanitize_public_bucket(
+        raw.get("task_bucket", "unknown")
+    )
+    risk_tags = raw.get("task_risk_tags") or []
+    if isinstance(risk_tags, str):
+        risk_tags = [risk_tags]
+    if not isinstance(risk_tags, list):
+        risk_tags = []
+    risk_tags = p25_bucket_policy.sanitize_public_tags(risk_tags)
+    score_group = raw.get("score_group")
+    if score_group == "positive":
+        has_gold = True
+    elif score_group == "no_gold":
+        has_gold = False
+    else:
+        has_gold = bool(raw.get("has_gold", False))
+    route_features_raw = raw.get("route_features")
+    route_features = (
+        dict(route_features_raw) if isinstance(route_features_raw, dict) else {}
+    )
+
+    outcomes: dict[str, dict[str, Any]] = {}
+    for strat in _P21_STRATEGY_KEYS:
+        src = _extract_outcome_dict(raw, strat)
+        outcomes[strat] = {
+            "span_f0_5": _as_float(src.get("span_f0_5")),
+            "added_gold_span": _as_int(src.get("added_gold_span")),
+            "added_false_span": _as_int(src.get("added_false_span")),
+            "primary_false_positive_rate": _as_float(
+                src.get("primary_false_positive_rate")
+            ),
+        }
+
+    return {
+        # task_id / repo_id are kept IN MEMORY only for grouping; they are
+        # never emitted in the public report (aggregate-only invariant).
+        "task_id": tid,
+        "repo_id": repo_id,
+        "model_family": model_family,
+        "language": _derive_language(repo_id),
+        "task_bucket": task_bucket,
+        "task_risk_tags": risk_tags,
+        "has_gold": has_gold,
+        "route_features": route_features,
+        "outcomes": outcomes,
+    }
+
+
+def _load_p21_records(path: str) -> list[dict[str, Any]]:
+    """Load and normalize P21 records from a JSON file or a directory of JSON
+    files. Each loaded record is annotated with ``model_family`` derived from
+    its source filename. Returns the in-memory normalized record list (never
+    emitted directly — only aggregate metrics derived from it are public).
+    """
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"--input path not found: {path}")
+    records: list[dict[str, Any]] = []
+    if p.is_dir():
+        files = sorted(p.glob("*.json"))
+        if not files:
+            raise ValueError(f"--input directory has no .json files: {path}")
+        for f in files:
+            family = _derive_model_family(f.name)
+            data = json.loads(f.read_text(encoding="utf-8"))
+            recs = data.get("records") if isinstance(data, dict) else None
+            if recs is None and isinstance(data, list):
+                recs = data
+            if not isinstance(recs, list):
+                continue
+            for raw in recs:
+                if not isinstance(raw, dict):
+                    continue
+                norm = _normalize_p21_record(raw, family)
+                if norm is not None:
+                    records.append(norm)
+    else:
+        family = _derive_model_family(p.name)
+        data = json.loads(p.read_text(encoding="utf-8"))
+        recs = data.get("records") if isinstance(data, dict) else None
+        if recs is None and isinstance(data, list):
+            recs = data
+        if not isinstance(recs, list):
+            recs = []
+        for raw in recs:
+            if not isinstance(raw, dict):
+                continue
+            norm = _normalize_p21_record(raw, family)
+            if norm is not None:
+                records.append(norm)
+    return records
+
+
+def _strategy_for_local_baseline(_record: dict[str, Any]) -> str:
+    return "candidate_baseline"
+
+
+def _strategy_for_p25(record: dict[str, Any]) -> str:
+    """P25 ``route_bucket_routed_v0`` action -> strategy key."""
+    action = p25_bucket_policy.route_bucket_routed_v0(
+        record, p25_bucket_policy.choose_negative_strategy([record])
+    )
+    # P25 returns one of: candidate_baseline, llm_span_narrow, llm_filter,
+    # llm_abstain_filter. All four are valid P21 strategy keys directly.
+    if action in _P21_STRATEGY_KEYS:
+        return action
+    return "candidate_baseline"
+
+
+def _strategy_for_balanced_v1(record: dict[str, Any]) -> str:
+    """Balanced v1 (``balanced_policy_v1_benchmark_routed``): rule 1 routes
+    ``ambiguous_or_query_noise`` to ``weak_only`` (-> weak_candidate_only);
+    rule 2 (default) delegates to P25."""
+    if b6_lite._noisy_or_ambiguous(record):
+        return "weak_candidate_only"
+    return _strategy_for_p25(record)
+
+
+def _strategy_for_conservative(record: dict[str, Any]) -> str:
+    """Conservative (``rmc_local_conservative_v0``): hard-distractor-like ->
+    weak_only (-> weak_candidate_only); default -> candidate_baseline. No LLM
+    calls."""
+    if b6_lite._hard_distractor_like(record):
+        return "weak_candidate_only"
+    return "candidate_baseline"
+
+
+_POLICY_STRATEGY_FNS = {
+    "local_baseline": _strategy_for_local_baseline,
+    "p25": _strategy_for_p25,
+    "balanced_v1": _strategy_for_balanced_v1,
+    "conservative": _strategy_for_conservative,
+}
+
+
+def _record_metric_cell(
+    record: dict[str, Any], strategy: str
+) -> dict[str, float]:
+    """Extract the 5 B11 metrics for one record under one strategy. ``gold_span``
+    / ``false_span`` are mean-aggregated per-record values (the per-record
+    ``added_gold_span`` / ``added_false_span`` counts); ``model_calls`` is 1 for
+    LLM strategies, 0 otherwise (per-record proxy).
+    """
+    outcome = record["outcomes"].get(strategy) or record["outcomes"].get(
+        "candidate_baseline"
+    )
+    return {
+        "span_f0_5": float(outcome.get("span_f0_5", 0.0)),
+        "gold_span": float(outcome.get("added_gold_span", 0)),
+        "false_span": float(outcome.get("added_false_span", 0)),
+        "primary_false_positive_rate": float(
+            outcome.get("primary_false_positive_rate", 0.0)
+        ),
+        "model_calls": 1.0 if strategy in _LLM_STRATEGIES else 0.0,
+    }
+
+
+def _group_metrics(
+    cells: list[dict[str, float]],
+) -> dict[str, float]:
+    """Aggregate a list of per-record metric cells into the mean-per-metric
+    summary used by per_repo / per_model_family / per_language / per_task_bucket
+    / overall_mean. Mirrors the synthetic-fixture mean semantics so the frozen
+    predeclared criteria (calibrated against means) remain consistent."""
+    if not cells:
+        return {m: 0.0 for m in METRIC_NAMES}
+    return {m: round(_mean([c[m] for c in cells]), 6) for m in METRIC_NAMES}
+
+
+def _build_per_policy_from_records(
+    records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Compute the per-policy metrics dict (same shape as
+    ``_build_synthetic_fixture``) from real P21 records. For each policy and
+    each record, the strategy is resolved via the policy's routing function and
+    the per-strategy outcome metrics are extracted and aggregated by repo,
+    model_family, language, task_bucket, and overall."""
+    out: dict[str, Any] = {}
+    for policy in POLICIES:
+        strategy_fn = _POLICY_STRATEGY_FNS[policy]
+        per_repo_cells: dict[str, list[dict[str, float]]] = {}
+        per_model_cells: dict[str, list[dict[str, float]]] = {}
+        per_language_cells: dict[str, list[dict[str, float]]] = {}
+        per_bucket_cells: dict[str, list[dict[str, float]]] = {}
+        all_cells: list[dict[str, float]] = []
+        for record in records:
+            strategy = strategy_fn(record)
+            cell = _record_metric_cell(record, strategy)
+            repo = str(record.get("repo_id") or "unknown")
+            model = str(record.get("model_family") or "unknown")
+            lang = str(record.get("language") or "unknown")
+            bucket = str(record.get("task_bucket") or "unknown")
+            per_repo_cells.setdefault(repo, []).append(cell)
+            per_model_cells.setdefault(model, []).append(cell)
+            per_language_cells.setdefault(lang, []).append(cell)
+            per_bucket_cells.setdefault(bucket, []).append(cell)
+            all_cells.append(cell)
+        out[policy] = {
+            "per_repo": {k: _group_metrics(v) for k, v in per_repo_cells.items()},
+            "per_model_family": {
+                k: _group_metrics(v) for k, v in per_model_cells.items()
+            },
+            "per_language": {
+                k: _group_metrics(v) for k, v in per_language_cells.items()
+            },
+            "per_task_bucket": {
+                k: _group_metrics(v) for k, v in per_bucket_cells.items()
+            },
+            "overall_mean": _group_metrics(all_cells),
+            "n_records": len(all_cells),
+        }
+    return out
+
+
+def _worst_group_by_dimension(
+    per_policy: dict[str, Any], policy: str, dimension: str
+) -> dict[str, float]:
+    """For each metric, return the worst (min for span_f0_5/gold_span, max for
+    false_span/PFP/model_calls) value across the groups of ``dimension``."""
+    pol = per_policy[policy]
+    groups = pol.get(dimension) or {}
+    worst: dict[str, float] = {}
+    for metric in METRIC_NAMES:
+        vals = [g[metric] for g in groups.values() if metric in g]
+        if metric in ("span_f0_5", "gold_span"):
+            worst[metric] = round(min(vals), 6) if vals else 0.0
+        else:
+            worst[metric] = round(max(vals), 6) if vals else 0.0
+    return worst
+
+
+def _compute_all_deltas_vs_p25(
+    per_policy: dict[str, Any],
+) -> dict[str, dict[str, float]]:
+    """For each policy, compute ``policy_metric - p25_metric`` per metric
+    (positive = improvement). Returns ``{policy: {metric: delta}}``."""
+    p25 = per_policy[BASELINE_FOR_DELTAS]["overall_mean"]
+    out: dict[str, dict[str, float]] = {}
+    for policy in POLICIES:
+        pol = per_policy[policy]["overall_mean"]
+        out[policy] = {m: round(pol[m] - p25[m], 6) for m in METRIC_NAMES}
+    return out
+
+
+def _evaluate_verdict(
+    per_policy: dict[str, Any],
+    overall_mean: dict[str, float],
+    worst_group: dict[str, dict[str, float]],
+    deltas_vs_p25: dict[str, float],
+) -> tuple[str, str]:
+    """Apply the FROZEN predeclared success/failure/partial criteria to the
+    policy under validation (Balanced v1) against the P25 baseline.
+
+    ``deltas_vs_p25`` is the ``balanced_v1 - p25`` overall-mean delta dict for
+    the policy under validation. ``worst_group`` carries the worst-group metric
+    summaries (repo / model_family / language / task_bucket) but the frozen
+    criteria only consult the repo worst-group deltas (computed here via
+    ``_compute_worst_group_deltas``). Returns ``(verdict, verdict_reason)``.
+    """
+    deltas = deltas_vs_p25
+    worst_deltas = _compute_worst_group_deltas(per_policy)
+    p25_gold = per_policy[BASELINE_FOR_DELTAS]["overall_mean"]["gold_span"]
+
+    # Failure (any one triggers failure).
+    fail_gold = deltas["gold_span"] < _max_abs_floor(
+        PREDECLARED_CRITERIA["failure_max_gold_delta_pct"],
+        PREDECLARED_CRITERIA["failure_max_gold_delta_abs"],
+        p25_gold,
+    )
+    fail_spanf = deltas["span_f0_5"] < PREDECLARED_CRITERIA[
+        "failure_max_spanf05_delta"
+    ]
+    fail_wg_gold = worst_deltas["repo"]["gold_span"] < _max_abs_floor(
+        PREDECLARED_CRITERIA["failure_worst_group_max_gold_delta_pct"],
+        PREDECLARED_CRITERIA["failure_worst_group_max_gold_delta_abs"],
+        p25_gold,
+    )
+    fail_wg_spanf = worst_deltas["repo"]["span_f0_5"] < PREDECLARED_CRITERIA[
+        "failure_worst_group_max_spanf05_delta"
+    ]
+    fail_map = {
+        "failure_gold_delta": fail_gold,
+        "failure_spanf05_delta": fail_spanf,
+        "failure_worst_group_gold_delta": fail_wg_gold,
+        "failure_worst_group_spanf05_delta": fail_wg_spanf,
+    }
+    if any(fail_map.values()):
+        failed = [k for k, v in fail_map.items() if v]
+        return (
+            "failure",
+            "failure_threshold_exceeded: " + ",".join(failed),
+        )
+
+    # Success (all must hold).
+    succ_gold = deltas["gold_span"] >= _max_abs_floor(
+        PREDECLARED_CRITERIA["success_max_gold_delta_vs_p25_pct"],
+        PREDECLARED_CRITERIA["success_max_gold_delta_abs"],
+        p25_gold,
+    )
+    succ_spanf = deltas["span_f0_5"] >= PREDECLARED_CRITERIA[
+        "success_max_spanf05_delta_vs_p25"
+    ]
+    succ_false = deltas["false_span"] < PREDECLARED_CRITERIA[
+        "success_max_false_spans_delta_vs_p25"
+    ]
+    succ_pfp = deltas["primary_false_positive_rate"] <= PREDECLARED_CRITERIA[
+        "success_max_pfp_delta_vs_p25"
+    ]
+    succ_calls = deltas["model_calls"] < PREDECLARED_CRITERIA[
+        "success_max_llm_calls_delta_vs_p25"
+    ]
+    succ_wg_gold = worst_deltas["repo"]["gold_span"] >= _max_abs_floor(
+        PREDECLARED_CRITERIA["worst_group_max_gold_delta_pct"],
+        PREDECLARED_CRITERIA["worst_group_max_gold_delta_abs"],
+        p25_gold,
+    )
+    succ_wg_spanf = worst_deltas["repo"]["span_f0_5"] >= PREDECLARED_CRITERIA[
+        "worst_group_max_spanf05_delta"
+    ]
+    succ_wg_pfp = worst_deltas["repo"]["primary_false_positive_rate"] <= (
+        PREDECLARED_CRITERIA["worst_group_max_pfp_delta"]
+    )
+    if all([
+        succ_gold, succ_spanf, succ_false, succ_pfp, succ_calls,
+        succ_wg_gold, succ_wg_spanf, succ_wg_pfp,
+    ]):
+        return ("success", "all_predeclared_success_criteria_met")
+
+    return (
+        "partial",
+        "mixed_results_no_failure_threshold_exceeded; consider B12 mechanism "
+        "decomposition to identify which conditions drive the mixed results",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Synthetic fixture (self-test only)
 # ---------------------------------------------------------------------------
 
@@ -424,13 +875,10 @@ def _worst_group_by_repo(
 ) -> dict[str, dict[str, float]]:
     """For each metric, return the min (worst) value across repos."""
     pol = per_policy[policy]
+    repo_means = pol.get("per_repo") or {}
     worst: dict[str, float] = {}
     for metric in METRIC_NAMES:
-        vals = [
-            pol["per_repo"][repo][metric]
-            for repo in MINIMUM_VIABLE_REPOS
-            if repo in pol["per_repo"]
-        ]
+        vals = [g[metric] for g in repo_means.values() if metric in g]
         # "Worst" = lowest SpanF0.5/gold, highest false_span/PFP/model_calls.
         if metric in ("span_f0_5", "gold_span"):
             worst[metric] = round(min(vals), 6) if vals else 0.0
@@ -443,13 +891,10 @@ def _worst_group_by_model_family(
     per_policy: dict[str, Any], policy: str
 ) -> dict[str, dict[str, float]]:
     pol = per_policy[policy]
+    model_means = pol.get("per_model_family") or {}
     worst: dict[str, float] = {}
     for metric in METRIC_NAMES:
-        vals = [
-            pol["per_model_family"][m][metric]
-            for m in MODEL_FAMILIES
-            if m in pol["per_model_family"]
-        ]
+        vals = [g[metric] for g in model_means.values() if metric in g]
         if metric in ("span_f0_5", "gold_span"):
             worst[metric] = round(min(vals), 6) if vals else 0.0
         else:
@@ -601,7 +1046,8 @@ def _evaluate_criteria(
     Returns ``(verdict, verdict_reason)``. A synthetic-fixture replay_source
     always yields ``insufficient_data`` regardless of how the criteria evaluate,
     because synthetic fixtures cannot confer empirical support (mirrors B10B's
-    safety stance).
+    safety stance). For ``ci_ephemeral_records``, the real FROZEN criteria are
+    applied via ``_evaluate_verdict``.
     """
     # Synthetic fixture => never an empirical verdict.
     if replay_source == "synthetic_fixture":
@@ -610,83 +1056,12 @@ def _evaluate_criteria(
             "synthetic_fixture_only_no_empirical_support; B11 live runs "
             "required for any success, failure, or partial verdict",
         )
-
-    # Compute deltas vs P25.
+    overall_mean = _aggregate_overall(per_policy)
+    worst_repo = _worst_group_by_repo(per_policy, POLICY_UNDER_VALIDATION)
+    worst_model = _worst_group_by_model_family(per_policy, POLICY_UNDER_VALIDATION)
+    worst_group = {**worst_repo, **worst_model}
     deltas = _compute_deltas_vs_p25(per_policy)
-    worst_deltas = _compute_worst_group_deltas(per_policy)
-    p25_gold = per_policy[BASELINE_FOR_DELTAS]["overall_mean"]["gold_span"]
-
-    # Failure (any one triggers failure).
-    fail_gold = deltas["gold_span"] < _max_abs_floor(
-        PREDECLARED_CRITERIA["failure_max_gold_delta_pct"],
-        PREDECLARED_CRITERIA["failure_max_gold_delta_abs"],
-        p25_gold,
-    )
-    fail_spanf = deltas["span_f0_5"] < PREDECLARED_CRITERIA[
-        "failure_max_spanf05_delta"
-    ]
-    fail_wg_gold = worst_deltas["repo"]["gold_span"] < _max_abs_floor(
-        PREDECLARED_CRITERIA["failure_worst_group_max_gold_delta_pct"],
-        PREDECLARED_CRITERIA["failure_worst_group_max_gold_delta_abs"],
-        p25_gold,
-    )
-    fail_wg_spanf = worst_deltas["repo"]["span_f0_5"] < PREDECLARED_CRITERIA[
-        "failure_worst_group_max_spanf05_delta"
-    ]
-    fail_map = {
-        "failure_gold_delta": fail_gold,
-        "failure_spanf05_delta": fail_spanf,
-        "failure_worst_group_gold_delta": fail_wg_gold,
-        "failure_worst_group_spanf05_delta": fail_wg_spanf,
-    }
-    if any(fail_map.values()):
-        failed = [k for k, v in fail_map.items() if v]
-        return (
-            "failure",
-            "failure_threshold_exceeded: " + ",".join(failed),
-        )
-
-    # Success (all must hold).
-    succ_gold = deltas["gold_span"] >= _max_abs_floor(
-        PREDECLARED_CRITERIA["success_max_gold_delta_vs_p25_pct"],
-        PREDECLARED_CRITERIA["success_max_gold_delta_abs"],
-        p25_gold,
-    )
-    succ_spanf = deltas["span_f0_5"] >= PREDECLARED_CRITERIA[
-        "success_max_spanf05_delta_vs_p25"
-    ]
-    succ_false = deltas["false_span"] < PREDECLARED_CRITERIA[
-        "success_max_false_spans_delta_vs_p25"
-    ]
-    succ_pfp = deltas["primary_false_positive_rate"] <= PREDECLARED_CRITERIA[
-        "success_max_pfp_delta_vs_p25"
-    ]
-    succ_calls = deltas["model_calls"] < PREDECLARED_CRITERIA[
-        "success_max_llm_calls_delta_vs_p25"
-    ]
-    succ_wg_gold = worst_deltas["repo"]["gold_span"] >= _max_abs_floor(
-        PREDECLARED_CRITERIA["worst_group_max_gold_delta_pct"],
-        PREDECLARED_CRITERIA["worst_group_max_gold_delta_abs"],
-        p25_gold,
-    )
-    succ_wg_spanf = worst_deltas["repo"]["span_f0_5"] >= PREDECLARED_CRITERIA[
-        "worst_group_max_spanf05_delta"
-    ]
-    succ_wg_pfp = worst_deltas["repo"]["primary_false_positive_rate"] <= (
-        PREDECLARED_CRITERIA["worst_group_max_pfp_delta"]
-    )
-    if all([
-        succ_gold, succ_spanf, succ_false, succ_pfp, succ_calls,
-        succ_wg_gold, succ_wg_spanf, succ_wg_pfp,
-    ]):
-        return ("success", "all_predeclared_success_criteria_met")
-
-    # Neither success nor failure.
-    return (
-        "partial",
-        "mixed_results_no_failure_threshold_exceeded; consider B12 mechanism "
-        "decomposition to identify which conditions drive the mixed results",
-    )
+    return _evaluate_verdict(per_policy, overall_mean, worst_group, deltas)
 
 
 # ---------------------------------------------------------------------------
@@ -803,7 +1178,18 @@ def build_report(
     overall_mean = _aggregate_overall(per_policy)
     worst_repo = _worst_group_by_repo(per_policy, POLICY_UNDER_VALIDATION)
     worst_model = _worst_group_by_model_family(per_policy, POLICY_UNDER_VALIDATION)
-    worst_group = {**worst_repo, **worst_model}
+    worst_lang = _worst_group_by_dimension(
+        per_policy, POLICY_UNDER_VALIDATION, "per_language"
+    )
+    worst_bucket = _worst_group_by_dimension(
+        per_policy, POLICY_UNDER_VALIDATION, "per_task_bucket"
+    )
+    worst_group = {
+        **worst_repo,
+        **worst_model,
+        "language": worst_lang,
+        "task_bucket": worst_bucket,
+    }
     bootstrap_ci = _bootstrap_ci(per_policy, POLICY_UNDER_VALIDATION)
     loo_repo = _leave_one_repo_out(per_policy, POLICY_UNDER_VALIDATION)
     loo_model = _leave_one_model_family_out(per_policy, POLICY_UNDER_VALIDATION)
@@ -814,6 +1200,7 @@ def build_report(
         nu=PREDECLARED_CRITERIA["robust_utility_nu"],
     )
     deltas = _compute_deltas_vs_p25(per_policy)
+    deltas_all = _compute_all_deltas_vs_p25(per_policy)
     worst_deltas = _compute_worst_group_deltas(per_policy)
 
     verdict, verdict_reason = _evaluate_criteria(per_policy, replay_source)
@@ -856,6 +1243,7 @@ def build_report(
         "leave_one_repo_out": loo_repo,
         "leave_one_model_family_out": loo_model,
         "deltas_vs_baseline": deltas,
+        "deltas_vs_p25": deltas_all,
         "worst_group_deltas_vs_baseline": worst_deltas,
         "robust_utility": robust_utility,
         "verdict": verdict,
@@ -1033,15 +1421,17 @@ def verify_report(report: dict[str, Any]) -> None:
 
 
 # ---------------------------------------------------------------------------
-# --input (stub): load P21 outputs without computing metrics
+# --input: load P21 outputs, compute per-policy metrics, emit verdict
 # ---------------------------------------------------------------------------
 
 
 def _load_p21_input(path: str) -> dict[str, Any]:
-    """Load a P21 outputs JSON file (or directory of JSON files) and return a
-    minimal metadata payload. The full per-policy metric computation is
-    deferred to a later task; for now we only verify the input is valid JSON
-    and surface its top-level shape (without leaking any forbidden keys).
+    """Load a P21 outputs JSON file (or directory of JSON files), normalize
+    each record, and annotate it with ``model_family`` (derived from the source
+    filename). Returns a metadata dict carrying the normalized ``records`` list
+    plus ``source_kind`` / ``n_files`` / ``n_records`` counts. The records are
+    kept IN MEMORY only; the public report never emits raw task_ids/repo_ids/
+    spans/snippets (aggregate-only invariant).
     """
     p = Path(path)
     if not p.exists():
@@ -1050,74 +1440,70 @@ def _load_p21_input(path: str) -> dict[str, Any]:
         files = sorted(p.glob("*.json"))
         if not files:
             raise ValueError(f"--input directory has no .json files: {path}")
-        loaded: list[dict[str, Any]] = []
-        for f in files:
-            data = json.loads(f.read_text(encoding="utf-8"))
-            if isinstance(data, dict):
-                loaded.append(data)
-            elif isinstance(data, list):
-                loaded.extend(x for x in data if isinstance(x, dict))
-            else:
-                raise ValueError(
-                    f"--input file {f.name} must contain a JSON array or object"
-                )
-        return {
-            "source_kind": "directory",
-            "n_files": len(files),
-            "n_records": len(loaded),
-        }
-    data = json.loads(p.read_text(encoding="utf-8"))
-    if isinstance(data, list):
-        return {
-            "source_kind": "file_array",
-            "n_files": 1,
-            "n_records": len(data),
-        }
-    if isinstance(data, dict):
-        records = data.get("records")
-        n_records = len(records) if isinstance(records, list) else 0
-        return {
-            "source_kind": "file_object",
-            "n_files": 1,
-            "n_records": n_records,
-        }
-    raise ValueError(
-        f"--input file must contain a JSON array or object, got {type(data).__name__}"
-    )
+        source_kind = "directory"
+        n_files = len(files)
+    else:
+        source_kind = "file_object"
+        n_files = 1
+    records = _load_p21_records(path)
+    return {
+        "source_kind": source_kind,
+        "n_files": n_files,
+        "n_records": len(records),
+        "records": records,
+    }
 
 
-def _build_not_implemented_report(input_meta: dict[str, Any]) -> dict[str, Any]:
-    """Build a stub report for ``--input`` mode.
+def _build_input_report(input_meta: dict[str, Any]) -> dict[str, Any]:
+    """Build a real B11 report from P21 ``--input`` records.
 
-    Real per-policy metric computation (reading P21 outputs, computing
-    bootstrap CIs against the predeclared criteria, etc.) is deferred to a
-    later task. For now we emit a well-formed report with
-    ``verdict="not_implemented"`` and an explanatory reason, while still
-    passing all safety-invariant checks.
+    Computes per-policy metrics (Local / P25 / Balanced v1 / Conservative)
+    by routing each record through the policy's strategy selector, extracting
+    the per-strategy outcome metrics, and aggregating overall / per-repo /
+    per-model-family / per-language / per-task-bucket. Bootstrap CIs,
+    leave-one-out, RobustUtility, deltas vs P25, and the FROZEN predeclared
+    verdict are all computed from the real records. No live LLM calls.
     """
-    spec = build_algorithm_spec()
-    spec_hash = _sha256_json(spec)
-    # Reuse the synthetic fixture so the report has the right SHAPE; the
-    # verdict is overridden below to "not_implemented".
-    per_policy = _build_synthetic_fixture()
+    records = input_meta.get("records") or []
+    if not records:
+        # No usable records -> emit insufficient_data (cannot apply criteria
+        # to an empty replay set). Still a well-formed report.
+        per_policy = _build_synthetic_fixture()
+        report = build_report(
+            per_policy, self_test=False, replay_source="ci_ephemeral_records"
+        )
+        report["verdict"] = "insufficient_data"
+        report["verdict_reason"] = (
+            "no usable P21 records loaded from --input; cannot apply "
+            "predeclared criteria to an empty replay set"
+        )
+        report["input_meta"] = {
+            "source_kind": input_meta.get("source_kind"),
+            "n_files": input_meta.get("n_files"),
+            "n_records": 0,
+        }
+        hits = _recursive_key_scan(report)
+        if hits:
+            raise ValueError(
+                f"forbidden public keys/values in input report: {hits!r}"
+            )
+        return report
+
+    per_policy = _build_per_policy_from_records(records)
     report = build_report(
         per_policy, self_test=False, replay_source="ci_ephemeral_records"
     )
-    # Override the verdict to signal that no real metric computation happened.
-    report["verdict"] = "not_implemented"
-    report["verdict_reason"] = (
-        "real-input metric computation deferred to later task; "
-        f"input_meta={input_meta}"
-    )
-    # Re-stamp the spec hash fields (defensive: build_report already sets these).
-    report["algorithm_spec_sha256_matched"] = True
-    report["algorithm_spec_sha256_stable"] = (spec_hash == _sha256_json(spec))
-    # Re-scan forbidden keys after the override (input_meta may include only
-    # safe scalar fields by construction).
+    # Surface the (safe, scalar) input metadata. ``records`` itself is NEVER
+    # emitted (aggregate-only invariant).
+    report["input_meta"] = {
+        "source_kind": input_meta.get("source_kind"),
+        "n_files": input_meta.get("n_files"),
+        "n_records": input_meta.get("n_records"),
+    }
     hits = _recursive_key_scan(report)
     if hits:
         raise ValueError(
-            f"forbidden public keys/values in not-implemented report: {hits!r}"
+            f"forbidden public keys/values in input report: {hits!r}"
         )
     return report
 
@@ -1231,21 +1617,85 @@ def _self_test_verdict_synthetic_fixture_insufficient() -> None:
     assert "synthetic_fixture_only" in report["verdict_reason"]
 
 
-def _self_test_input_stub_not_implemented(tmp_path: Path) -> None:
-    """--input mode must emit verdict='not_implemented' without doing any real
-    metric computation."""
-    p = tmp_path / "p21_stub.json"
-    p.write_text(
-        json.dumps({"records": [{"policy": "balanced_v1"}]}), encoding="utf-8"
-    )
+def _self_test_input_full_mode(tmp_path: Path) -> None:
+    """--input mode must load P21 records, compute per-policy metrics, and
+    emit a real verdict (NOT ``not_implemented``) against the FROZEN criteria."""
+    # Build a small synthetic P21 payload (4 records, 2 repos, 2 buckets).
+    records = []
+    for idx, (repo, bucket, tags, has_gold) in enumerate([
+        ("py_fastapi", "positive", ["high_confidence"], True),
+        ("py_fastapi", "ambiguous", ["ambiguous", "weak_candidates"], True),
+        ("ts_vite", "negative", ["no_gold", "negative"], False),
+        ("ts_vite", "hard_distractor", ["hard_distractor", "dense_false_positive"], True),
+    ]):
+        rec = {
+            "task_id": f"b11-selftest-{idx:03d}",
+            "repo_id": repo,
+            "task_bucket": bucket,
+            "task_risk_tags": tags,
+            "score_group": "positive" if has_gold else "no_gold",
+            "route_features": {
+                "candidate_count": 3,
+                "candidate_support_exists": True,
+                "unique_symbol_anchor": False,
+                "query_noise": 1.0 if bucket == "ambiguous" else 0.0,
+                "local_anchor": True,
+                "rrf_backed_by_anchor": True,
+            },
+        }
+        for strat in (
+            "candidate_baseline", "llm_span_narrow", "llm_filter",
+            "llm_abstain_filter", "weak_candidate_only", "supporting_only",
+        ):
+            rec[strat] = {
+                "span_f0_5": 0.30 + 0.01 * idx,
+                "added_gold_span": 1 if has_gold else 0,
+                "added_false_span": 2 - (idx % 2),
+                "primary_false_positive_rate": 0.10 + 0.01 * idx,
+            }
+        records.append(rec)
+    payload = {
+        "schema_version": "p25-policy-records-ephemeral-v1",
+        "records": records,
+    }
+    p = tmp_path / "kimi_b11_selftest.json"
+    p.write_text(json.dumps(payload), encoding="utf-8")
     meta = _load_p21_input(str(p))
     assert meta["source_kind"] == "file_object"
-    assert meta["n_records"] == 1
-    report = _build_not_implemented_report(meta)
+    assert meta["n_records"] == 4
+    assert meta["n_files"] == 1
+    assert len(meta["records"]) == 4
+    # model_family derived from filename prefix "kimi".
+    assert all(r["model_family"] == "kimi" for r in meta["records"]), (
+        [r["model_family"] for r in meta["records"]]
+    )
+    report = _build_input_report(meta)
     verify_report(report)
     assert report["replay_source"] == "ci_ephemeral_records"
-    assert report["verdict"] == "not_implemented"
-    assert "deferred" in report["verdict_reason"]
+    assert report["verdict"] != "not_implemented", report["verdict"]
+    assert report["verdict"] in ("success", "failure", "partial", "insufficient_data")
+    assert "per_policy_metrics" in report
+    for policy in POLICIES:
+        assert policy in report["per_policy_metrics"], policy
+        pol = report["per_policy_metrics"][policy]
+        assert "per_repo" in pol and "per_model_family" in pol
+        assert "per_language" in pol and "per_task_bucket" in pol
+        assert "overall_mean" in pol and "n_records" in pol
+    assert "worst_group" in report
+    assert "repo" in report["worst_group"]
+    assert "model_family" in report["worst_group"]
+    assert "language" in report["worst_group"]
+    assert "task_bucket" in report["worst_group"]
+    assert "bootstrap_ci_95" in report
+    assert "leave_one_repo_out" in report
+    assert "leave_one_model_family_out" in report
+    assert "robust_utility" in report
+    assert "deltas_vs_p25" in report
+    for policy in POLICIES:
+        assert policy in report["deltas_vs_p25"]
+    # Aggregate-only invariant: no forbidden keys leaked.
+    hits = _recursive_key_scan(report)
+    assert hits == [], hits
 
 
 def _self_test_reference_specs() -> None:
@@ -1291,9 +1741,9 @@ def run_self_test() -> dict[str, Any]:
     # 6. Synthetic fixture => insufficient_data verdict.
     _self_test_verdict_synthetic_fixture_insufficient()
 
-    # 7. --input stub => not_implemented verdict.
+    # 7. --input full mode: real per-policy metrics + verdict.
     with tempfile.TemporaryDirectory() as tmp:
-        _self_test_input_stub_not_implemented(Path(tmp))
+        _self_test_input_full_mode(Path(tmp))
 
     # 8. B10/B10B reference specs present.
     _self_test_reference_specs()
@@ -1337,7 +1787,7 @@ def run_self_test() -> dict[str, Any]:
             "bootstrap_ci": True,
             "leave_one_out": True,
             "verdict_synthetic_fixture_insufficient": True,
-            "input_stub_not_implemented": True,
+            "input_full_mode": True,
             "reference_specs_pinned": True,
             "artifacts_regenerated": True,
             "on_disk_artifacts_validated": True,
@@ -1363,9 +1813,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help=(
             "path to a JSON file or directory of JSON files containing P21 "
-            "outputs (model x repo runs). Currently a STUB: emits "
-            "verdict='not_implemented'; full metric computation deferred to a "
-            "later task."
+            "outputs (model x repo runs). Loads records, routes each through "
+            "the 4 policies (Local / P25 / Balanced v1 / Conservative), "
+            "computes per-policy aggregate metrics, bootstrap CIs, "
+            "leave-one-out, RobustUtility, deltas vs P25, and emits a verdict "
+            "against the FROZEN predeclared criteria."
         ),
     )
     parser.add_argument(
@@ -1420,7 +1872,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.input:
         input_meta = _load_p21_input(args.input)
-        report = _build_not_implemented_report(input_meta)
+        report = _build_input_report(input_meta)
         verify_report(report)
         out_path = Path(args.out) if args.out else REPORT_PATH
         _write_json(out_path, report)
