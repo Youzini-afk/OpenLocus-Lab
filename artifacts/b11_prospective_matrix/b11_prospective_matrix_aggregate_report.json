@@ -1,0 +1,288 @@
+{
+  "aggregate_only_public_artifact": true,
+  "aggregate_verdict": "partial_with_failure",
+  "aggregate_verdict_reason": "mixed_results_with_failure_threshold_exceeded_on_at_least_one_slice",
+  "b10b_runtime_shadow_summary": {
+    "b10b_report_count": 32,
+    "label_driven_ambiguous_denominator_max": 3,
+    "label_driven_ambiguous_denominator_min": 3,
+    "label_driven_ambiguous_min_denominator_gate": 10,
+    "pending_due_denominator": true,
+    "runtime_shadow_ambiguous_supported_all_false": true,
+    "runtime_shadow_ambiguous_supported_any": false,
+    "support_claim_counts": {
+      "empirical_replay_support_pending": 32
+    },
+    "verdict": "empirical_replay_support_pending",
+    "verdict_reason": "all B10B reports have runtime_shadow_ambiguous_supported=false, support_claim=empirical_replay_support_pending, and label_driven_ambiguous_denominator_max < label_driven_ambiguous_min_denominator_gate"
+  },
+  "baseline_for_deltas": "p25",
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "claim_level": "derived_aggregate_of_b11_prospective_validation_reports",
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "deltas_balanced_v1_vs_p25": {
+    "false_span": -0.054688,
+    "gold_span": -0.002604,
+    "model_calls": -0.354167,
+    "primary_false_positive_rate": -0.020833,
+    "span_f0_5": -0.001899
+  },
+  "derived_aggregate_rollup": true,
+  "evidencecore_semantics_changed": false,
+  "failure_slices_sanitized": [
+    {
+      "model_family": "kimi",
+      "repo_slice_id": "py_fastapi",
+      "verdict_reason": "failure_threshold_exceeded: failure_spanf05_delta"
+    }
+  ],
+  "framing": {
+    "b10b_runtime_shadow_status": "empirical_replay_support_pending_due_denominator",
+    "default_readiness_claimed": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "B12_mechanism_decomposition",
+    "signal_strength": "algorithm_candidate_strengthened_not_proven"
+  },
+  "generated_at": "2026-06-18T18:35:40.210172+00:00",
+  "generated_by": "b11_matrix_combiner",
+  "gold_spans_in_artifact": false,
+  "input_b10b_schema_version": "b10b-runtime-shadow-replay-report-v0",
+  "input_b11_schema_version": "b11-prospective-validation-report-v0",
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": true,
+    "all_inputs_candidate_not_fact": true,
+    "all_inputs_policy_search_performed_false": true,
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_quality_strategy_tuned_false": true,
+    "forbidden_public_key_scan_clean": true,
+    "frozen_reference_specs_pinned_on_disk": true
+  },
+  "llm_output_not_evidence": true,
+  "metric_names": [
+    "gold_span",
+    "false_span",
+    "span_f0_5",
+    "primary_false_positive_rate",
+    "model_calls"
+  ],
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "overall_weighted_means": {
+    "balanced_v1": {
+      "false_span": 0.182292,
+      "gold_span": 0.244792,
+      "model_calls": 0.604167,
+      "primary_false_positive_rate": 0.0,
+      "span_f0_5": 0.062639
+    },
+    "conservative": {
+      "false_span": 0.236979,
+      "gold_span": 0.125,
+      "model_calls": 0.0,
+      "primary_false_positive_rate": 0.0,
+      "span_f0_5": 0.023611
+    },
+    "local_baseline": {
+      "false_span": 1.203125,
+      "gold_span": 0.377604,
+      "model_calls": 0.0,
+      "primary_false_positive_rate": 0.083333,
+      "span_f0_5": 0.062197
+    },
+    "p25": {
+      "false_span": 0.236979,
+      "gold_span": 0.247396,
+      "model_calls": 0.958333,
+      "primary_false_positive_rate": 0.020833,
+      "span_f0_5": 0.064538
+    }
+  },
+  "per_model_family": {
+    "deepseek_flash": {
+      "balanced_v1_overall_mean": {
+        "false_span": 0.25,
+        "gold_span": 0.333333,
+        "model_calls": 0.604167,
+        "primary_false_positive_rate": 0.0,
+        "span_f0_5": 0.086486
+      },
+      "delta_balanced_v1_vs_p25": {
+        "false_span": -0.052083,
+        "gold_span": 0.0,
+        "model_calls": -0.354166,
+        "primary_false_positive_rate": -0.010417,
+        "span_f0_5": 0.0
+      },
+      "p25_overall_mean": {
+        "false_span": 0.302083,
+        "gold_span": 0.333333,
+        "model_calls": 0.958333,
+        "primary_false_positive_rate": 0.010417,
+        "span_f0_5": 0.086486
+      },
+      "record_count": 96,
+      "run_count": 8,
+      "verdict_counts": {
+        "partial": 6,
+        "success": 2
+      }
+    },
+    "deepseek_pro": {
+      "balanced_v1_overall_mean": {
+        "false_span": 0.197917,
+        "gold_span": 0.3125,
+        "model_calls": 0.604167,
+        "primary_false_positive_rate": 0.0,
+        "span_f0_5": 0.087722
+      },
+      "delta_balanced_v1_vs_p25": {
+        "false_span": -0.083333,
+        "gold_span": 0.0,
+        "model_calls": -0.354166,
+        "primary_false_positive_rate": -0.03125,
+        "span_f0_5": 0.0
+      },
+      "p25_overall_mean": {
+        "false_span": 0.28125,
+        "gold_span": 0.3125,
+        "model_calls": 0.958333,
+        "primary_false_positive_rate": 0.03125,
+        "span_f0_5": 0.087722
+      },
+      "record_count": 96,
+      "run_count": 8,
+      "verdict_counts": {
+        "partial": 5,
+        "success": 3
+      }
+    },
+    "kimi": {
+      "balanced_v1_overall_mean": {
+        "false_span": 0.260416,
+        "gold_span": 0.291667,
+        "model_calls": 0.604167,
+        "primary_false_positive_rate": 0.0,
+        "span_f0_5": 0.066801
+      },
+      "delta_balanced_v1_vs_p25": {
+        "false_span": -0.072917,
+        "gold_span": -0.010417,
+        "model_calls": -0.354166,
+        "primary_false_positive_rate": -0.03125,
+        "span_f0_5": -0.007596
+      },
+      "p25_overall_mean": {
+        "false_span": 0.333333,
+        "gold_span": 0.302083,
+        "model_calls": 0.958333,
+        "primary_false_positive_rate": 0.03125,
+        "span_f0_5": 0.074396
+      },
+      "record_count": 96,
+      "run_count": 8,
+      "verdict_counts": {
+        "failure": 1,
+        "partial": 5,
+        "success": 2
+      }
+    },
+    "qwen": {
+      "balanced_v1_overall_mean": {
+        "false_span": 0.020833,
+        "gold_span": 0.041667,
+        "model_calls": 0.604167,
+        "primary_false_positive_rate": 0.0,
+        "span_f0_5": 0.009549
+      },
+      "delta_balanced_v1_vs_p25": {
+        "false_span": -0.010417,
+        "gold_span": 0.0,
+        "model_calls": -0.354166,
+        "primary_false_positive_rate": -0.010417,
+        "span_f0_5": 0.0
+      },
+      "p25_overall_mean": {
+        "false_span": 0.03125,
+        "gold_span": 0.041667,
+        "model_calls": 0.958333,
+        "primary_false_positive_rate": 0.010417,
+        "span_f0_5": 0.009549
+      },
+      "record_count": 96,
+      "run_count": 8,
+      "verdict_counts": {
+        "partial": 7,
+        "success": 1
+      }
+    }
+  },
+  "policies": [
+    "local_baseline",
+    "p25",
+    "balanced_v1",
+    "conservative"
+  ],
+  "policy_search_performed": false,
+  "policy_under_validation": "balanced_v1",
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "public_model_family_count": 4,
+  "public_model_family_names": [
+    "deepseek_flash",
+    "deepseek_pro",
+    "kimi",
+    "qwen"
+  ],
+  "public_repo_slice_count": 8,
+  "public_repo_slice_ids": [
+    "go_chi",
+    "go_prometheus",
+    "java_spring_petclinic",
+    "py_fastapi",
+    "py_pytest",
+    "rust_deno",
+    "ts_hono",
+    "ts_vite"
+  ],
+  "public_repo_slice_ids_in_artifact": true,
+  "quality_strategy_tuned": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "record_count_total": 384,
+  "run_count": 32,
+  "run_ids_in_artifact": false,
+  "safety_invariants": {
+    "aggregate_only_public_artifact": true,
+    "default_should_change_false": true,
+    "no_evidencecore_semantics_change": true,
+    "no_live_llm_calls_by_combiner": true,
+    "no_policy_search": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_run_ids_emitted": true,
+    "no_threshold_tuning": true,
+    "promotion_ready_false": true
+  },
+  "schema_version": "b11-prospective-matrix-aggregate-report-v0",
+  "self_test": false,
+  "source_artifacts_dir_public_note": "already-downloaded aggregate-only public B11 and B10B artifacts; no raw records, paths, prompts, responses, snippets, or labels read",
+  "status": "ok",
+  "task_ids_in_artifact": false,
+  "verdict_counts": {
+    "failure": 1,
+    "partial": 23,
+    "success": 8
+  },
+  "winner_declared": false
+}

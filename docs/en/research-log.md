@@ -2428,3 +2428,31 @@ Draft B13 preregistration plan: distributionally robust policy search that optim
 - B13 search requires P21 records (from B11 live runs or CI ephemeral).
 - B13 does NOT prove promotion; results are research candidates only.
 - After B13, remaining items (B14-B19) are second priority or parallel tracks.
+
+## 2026-06-18 — B11 Official Integrated Matrix Aggregate Report
+
+### Objective
+
+Produce a bounded, aggregate-only rollup of the finished B11 official integrated matrix from the already-downloaded public B11/B10B aggregate artifacts, without reading any raw records, paths, prompts, responses, snippets, or private labels.
+
+### Implementation notes
+
+- Inputs: 32 run directories under `/tmp/b11_official_integrated_artifacts`, each containing `artifacts/real_provider_ci/b11_prospective_validation_report.json` and `b10b_runtime_shadow_replay_report.json`. The matrix finished 32/32 after retrying two transient `provider_status` failures.
+- New combiner script `eval/b11_matrix_combiner.py` (pure Python; reuses `b6_lite_interpretable_policy_search._walk_forbidden` for the public-output forbidden-key scan; `--self-test` synthetic-fixture mode + empty-input block check).
+- New aggregate artifact `artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json` (schema `b11-prospective-matrix-aggregate-report-v0`).
+- Combiner refuses any run directory name that is not a public B11 repo slice + public model display name + run-id triple; emits only sanitized counts, public repo slice IDs (`py_fastapi`, `py_pytest`, `ts_vite`, `ts_hono`, `go_chi`, `go_prometheus`, `rust_deno`, `java_spring_petclinic`), public model-family names (`kimi`, `qwen`, `deepseek_flash`, `deepseek_pro`), weighted means, deltas, and verdict counts. No run IDs are emitted.
+
+### Findings
+
+- 32 runs, 384 records. Verdict counts: success 8, partial 23, failure 1.
+- Overall weighted means across 384 records (`local_baseline` / `p25` / `balanced_v1` / `conservative`): `gold_span 0.377604 / 0.247396 / 0.244792 / 0.125000`; `false_span 1.203125 / 0.236979 / 0.182292 / 0.236979`; `span_f0_5 0.062197 / 0.064538 / 0.062639 / 0.023611`; `PFP 0.083333 / 0.020833 / 0.0 / 0.0`; `model_calls 0.0 / 0.958333 / 0.604167 / 0.0`.
+- Balanced v1 vs P25 deltas: `Δgold_span -0.002604`, `Δfalse_span -0.054688`, `ΔSpanF0.5 -0.001899`, `ΔPFP -0.020833`, `Δmodel_calls -0.354167`. Balanced v1 preserved near-parity SpanF0.5/gold vs P25 while reducing false spans, PFP, and model calls on average.
+- Per model family (balanced_v1 vs P25, 96 records each): `deepseek_flash` partial 6 / success 2; `deepseek_pro` partial 5 / success 3; `kimi` partial 5 / success 2 / failure 1 (a `py_fastapi` slice exceeded `failure_spanf05_delta`); `qwen` partial 7 / success 1.
+- B10B: 32/32 reports, `runtime_shadow_ambiguous_supported=false` on all, `support_claim="empirical_replay_support_pending"` (reason `insufficient_label_driven_denominator`; max `label_driven_ambiguous_denominator_qn0=3` vs the 10-record hard gate). B10B runtime-shadow predicate remains empirical-pending.
+
+### Caveats
+
+- B11 is mixed/partial. The result strengthens the algorithm-candidate signal but does NOT prove a runtime-clean general algorithm.
+- No promotion, no default change, no EvidenceCore semantics change (`promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`, `policy_search_performed=false`, `quality_strategy_tuned=false`, `new_provider_calls=0`).
+- The Kimi `py_fastapi` failure slice and the B10B denominator-pending predicate are open issues for B12 (mechanism decomposition).
+- Aggregate-only; no raw records, paths, prompts, responses, snippets, or private labels were read by the combiner.

@@ -603,6 +603,72 @@ report-aggregator skeleton 可自主完成；实际 live LLM runs 需要用户 `
 触发且 `enable_remote_models=true`。详见
 [`b11-prospective-blind-validation.md`](b11-prospective-blind-validation.md)。
 
+B11 official integrated matrix 结果（2026-06-18）：
+
+```text
+algorithm_spec_id: balanced_policy_v1_benchmark_routed（冻结，B10）
+claim_level: derived_aggregate_of_b11_prospective_validation_reports
+matrix_status: 32/32 runs 完成（两次 transient provider_status 已重试）
+record_count_total: 384
+verdict_counts: {success: 8, partial: 23, failure: 1}
+aggregate_verdict: partial_with_failure
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+quality_strategy_tuned: false
+new_provider_calls_by_combiner: 0
+aggregate_only_public_artifact: true
+```
+
+B11 official integrated matrix 在 8 个 public repo slice（`py_fastapi`、
+`py_pytest`、`ts_vite`、`ts_hono`、`go_chi`、`go_prometheus`、`rust_deno`、
+`java_spring_petclinic`）与 4 个 model family（`kimi`、`qwen`、
+`deepseek_flash`、`deepseek_pro`）上完成 32/32 runs。两次 transient
+`provider_status` 失败已重试；本聚合只滚动合并已下载的 aggregate-only public
+B11/B10B artifacts（不读取任何 raw records、paths、prompts、responses、snippets
+或 private labels）。
+
+384 条记录的 overall weighted means
+（`local_baseline` / `p25` / `balanced_v1` / `conservative`）：
+
+```text
+gold_span   : 0.377604 / 0.247396 / 0.244792 / 0.125000
+false_span  : 1.203125 / 0.236979 / 0.182292 / 0.236979
+span_f0_5   : 0.062197 / 0.064538 / 0.062639 / 0.023611
+PFP         : 0.083333 / 0.020833 / 0.000000 / 0.000000
+model_calls : 0.0      / 0.958333 / 0.604167 / 0.000000
+```
+
+balanced_v1 相对 P25 的 overall deltas：`Δgold_span -0.002604`、
+`Δfalse_span -0.054688`、`ΔSpanF0.5 -0.001899`、`ΔPFP -0.020833`、
+`Δmodel_calls -0.354167`。即 balanced_v1 在保持与 P25 近乎一致的
+`SpanF0.5`/`gold_span` 的同时，减少了 false spans、PFP 与 model calls。
+按 model family（balanced_v1 vs P25，每个 family 96 条记录加权）：
+`deepseek_flash` partial 6 / success 2（`Δfalse_span -0.052083`、
+`ΔPFP -0.010417`）、`deepseek_pro` partial 5 / success 3（`Δfalse_span
+-0.083333`、`ΔPFP -0.031250`）、`kimi` partial 5 / success 2 / failure 1
+（`Δgold_span -0.010417`、`ΔSpanF0.5 -0.007595`、`Δfalse_span -0.072917`、
+`ΔPFP -0.031250`）、`qwen` partial 7 / success 1（`Δfalse_span -0.010417`、
+`ΔPFP -0.010417`）。唯一失败为 Kimi `py_fastapi` slice，其
+`failure_spanf05_delta` 阈值被超出。B10B runtime-shadow replay 在每次 B11 run
+之后运行（32/32 报告）；所有 run 的 `runtime_shadow_ambiguous_supported` 均
+为 `false`，`support_claim="empirical_replay_support_pending"`，原因为
+`insufficient_label_driven_denominator`（观测到的最大
+`label_driven_ambiguous_denominator_qn0=3`，远低于 10 条记录的 hard gate），
+因此 B10B predicate 仍为 empirical-pending，**不是** runtime-clean general
+algorithm 的证明。
+
+Framing：B11 为 **mixed/partial**。该结果加强了 algorithm-candidate 信号
+（balanced_v1 平均上保持近乎一致的 SpanF0.5/gold，同时减少 false spans、PFP
+与 model calls），但**并未**证明一个 runtime-clean 的 general algorithm。无
+promotion、无 default change、无 EvidenceCore semantics 变化。建议下一步：B12
+mechanism decomposition，以识别哪些条件驱动 Kimi 失败与 mixed partials。聚合
+artifact：
+`artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json`
+（由 `eval/b11_matrix_combiner.py` 生成）。详见
+[`b11-prospective-blind-validation.md`](b11-prospective-blind-validation.md)。
+
 B12 mechanism decomposition：
 
 ```text
