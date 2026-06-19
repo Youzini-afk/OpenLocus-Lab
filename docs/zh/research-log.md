@@ -2718,3 +2718,31 @@ Add the B18 OOD / temporal evaluation **preregistration + evaluator skeleton + b
 - No promotion、no default change、no retrieval-policy change、no backend quality promotion、no OOD / temporal evaluation、no policy search、no quality strategy tuning、no EvidenceCore semantics change、no metrics evaluated（`promotion_ready=false`、`default_should_change=false`、`evidencecore_semantics_changed=false`、`retrieval_policy_changed=false`、`backend_quality_promoted=false`、`stage_is_ood_temporal_evaluation=true`、`ood_temporal_evaluation_performed=false`、`metrics_evaluated=false`、`policy_search_performed=false`、`quality_strategy_tuned=false`、`real_ood_temporal_supported=false`、`new_provider_calls=0`）。
 - 现有 B11 / R15 / R20 / R26 aggregates 是 aggregate-only / metadata-only carry-forward —— 它们**不**是 OOD / temporal proof，**不**是 promotion evidence；它们**不**包含 per-record records、time axis、commit chronology、per-repo-per-language cells、model_family x repo matrix、adversarial holdout outcomes 或 temporal holdout outcomes；R15 / R20 / R26 repo locks 是 synthetic / static snapshots，无真实 commit chronology 或 time axis。
 - Recommended next step：未来带真实 time axis 与 commit chronology per repo 的 prospective per-record data collection，加上 per-repo / per-language / per-model-family cells 与 adversarial 和 temporal holdout memberships，在 frozen no-retuning protocol 下，然后运行 B18 OOD / temporal evaluation。仅靠 public aggregates 是不够的。
+
+## 2026-06-19 — B19 理论综合（Model-Robust Selective Evidence Conversion）
+
+### Objective
+
+撰写 B10-B18 Breakthrough Sprint 的 **理论综合**，作为候选算法概念 **Model-Robust Selective Evidence Conversion** 的论文式算法报告。这是 synthesis-only：**不**运行 provider，**不**修改 retrieval / default / `EvidenceCore`，**不**声明 promotion。综合 B10 / B10B / B11 / B12 / B13 / B14 / B15 / B16 / B17 / B18；在 B10-B18 之外**不**引入任何新 metrics 与新 claim。
+
+### Implementation notes
+
+- 新综合文档 `docs/en/b19-theoretical-synthesis.md` 与 `docs/zh/b19-theoretical-synthesis.md`（算法概念；输入；输出/动作；核心原则；问题陈述；算法草稿/伪代码；证据边界；策略学习循环；adapter 边界；评估协议；综合证据 B10-B18；当前 empirical 证据；no-go gaps；promotion blockers；下一步研究计划；结论）。明确 B19 是 synthesis-only，所有 no-promotion 标志均为 false。
+- 新 evaluator `eval/b19_theoretical_synthesis.py`（pure Python）：frozen `build_report`；只读 `--self-test`（将内存中期望报告与 on-disk artifact 比对，drift 即失败，**不**修改 checked-in artifacts）；`--regenerate-artifacts` 是**唯一**修改 checked-in artifacts 的路径（重写 canonical report 并重跑 self-test）；`--input` 是一个 `not_implemented` stub，因为 B19 是 synthesis-only（要求 `--out`，拒绝写入 `artifacts/b19_theoretical_synthesis/` 内的任何路径）。
+- 新 aggregate artifact `artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json`（schema `b19-theoretical-synthesis-report-v0`，claim level `theoretical_synthesis_of_b10_through_b18`），由 `--regenerate-artifacts` 生成。
+- B19 专用的 forbidden scan 复用共享的 `b6_lite_interpretable_policy_search.FORBIDDEN_PUBLIC_KEYS` 集合与一个 digest-like value 检查（`[A-Fa-f0-9]{32,}`），但**不**应用共享 helper 的 `>256 chars = long_string` 规则，因为综合本身就是有意为之的长 prose。报告自身的 `report_content_sha256` drift-guard self-hash 按键名白名单豁免。
+- drift guard（`report_content_sha256`）作为 SHA-256 嵌入，覆盖报告内容的 canonical sorted-keys JSON（排除 `generated_at` 与 `report_content_sha256` 自身）。self-test 重新计算并断言相等。
+
+### Findings
+
+- B19 verdict：synthesis-only；B10-B18 的 evidence boundary 原样 carry forward。唯一逐字 carry forward 的 empirical 数字是 B11 official integrated matrix deltas（balanced_v1 vs p25）：`Δgold_span -0.002604`、`ΔSpanF0.5 -0.001899`、`Δfalse_span -0.054688`、`ΔPFP -0.020833`、`Δmodel_calls -0.354167`。self-test 逐字节断言它们与 `artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json` 一致。
+- 所有 no-promotion 标志为 false：`promotion_ready=false`、`default_should_change=false`、`evidencecore_semantics_changed=false`、`runtime_clean_policy_supported=false`、`downstream_agent_value_proven=false`、`ood_temporal_supported=false`、`quiver_systems_supported=false`、`is_new_experiment=false`、`ran_providers=false`、`changed_retrieval_default_evidencecore=false`。
+- Safety invariants 保持：`aggregate_only_public_artifact=true`、`candidate_not_fact=true`、`not_evidence=true`、`llm_output_not_evidence=true`、`new_provider_calls=0`、`forbidden_public_scan_clean=true`、`report_drift_guarded=true`、`docs_links_exist=true`、`synthesized_source_artifacts_pinned=true`、`no_fake_metrics_beyond_b10_b18=true`。
+- self-test 验证：所有 10 个 required formal sections 存在且非空；所有 no-promotion flags 字面为 False；B11 deltas 存在且精确（与源 artifact 交叉核对）；所有 10 个 synthesized source artifacts 在磁盘上存在；B19 docs links 存在（en + zh）；forbidden public scan 干净；report content hash drift guard 匹配。
+
+### Caveats
+
+- B19 **不**是新实验，**不**是 promotion，**不**是 default change，**不**是 `EvidenceCore` semantics change，**不**是 runtime-clean policy claim，**不**是 downstream-agent value claim，**不**是 OOD/temporal claim，**不**是 QuIVer systems claim。
+- 本综合原样 carry forward B12 / B13 / B14 / B15 / B16 / B17 / B18 的 no-go / screen-only / prior-screen 状态。B11 `partial_with_failure` 原样 carry forward。B10 `runtime_clean=false` 与 B10B `runtime_shadow_ambiguous_supported=false` 原样 carry forward。
+- 公共 artifact 中无 raw records / paths / spans / snippets / prompts / responses / gold labels / `content_sha` / provider keys / api keys。drift-guard self-hash 是唯一的 digest-like value，按键名白名单豁免。
+- Recommended next step：B19 next-research-program 列表（runtime-clean B10B predicate、per-record mechanism / DRO / calibration / pack-policy / downstream-agent / QuIVer / OOD-temporal 数据收集），然后是一个单独的 promotion preregistration。综合本身**绝不**授权 promotion。

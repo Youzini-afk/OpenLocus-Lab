@@ -1093,6 +1093,49 @@ B17 是继 B16 之后的 **QuIVer systems track** 阶段。目标是产出一个
 
  B18 是继 B17 之后的 **OOD（out-of-distribution）/ temporal evaluation** 阶段。目标是产出一个 **frozen、preregistered 的 OOD / temporal evaluation**，在 **no-retuning protocol** 下（no policy search、no quality strategy tuning、no retrieval policy change、no EvidenceCore semantics change、no default change、no promotion）跨五个 FROZEN split axes——`temporal_split`、`repo_split`、`language_split`、`model_family_split`、`adversarial_split`——评估 retrieval / candidate / Evidence pipeline，使 in-distribution average 不会被误读为 OOD / temporal generalization。B18 是一个 **bounded preregistration + public-aggregate no-go screen 阶段**，**不是** 真正的 OOD / temporal evaluation，**不是** policy search，**不是** quality strategy tuning，**不是** default change，**不是** EvidenceCore semantics change，**不是** promotion。Split axes 为 FROZEN（`temporal_split`、`repo_split`、`language_split`、`model_family_split`、`adversarial_split`）。No-retuning protocol 为 FROZEN（`no_retuning_protocol=true`、`no_policy_search=true`、`no_quality_strategy_tuning=true`、`no_retrieval_policy_change=true`、`no_evidencecore_semantics_change=true`、`no_default_change=true`、`no_promotion=true`）。Hard gates（FROZEN）：`per_record_data_gate`、`time_axis_gate`、`commit_chronology_gate`、`no_retuning_gate`、`adversarial_holdout_gate`、`temporal_holdout_gate`、`evidencecore_materialization_gate`、`stale_citation_gate`、`privacy_gate`、`promotion_false_gate`。Metric registry（FROZEN，13 个 names）：`ood_generalization_gap`、`temporal_holdout_delta`、`repo_holdout_metric`、`language_holdout_metric`、`model_family_holdout_metric`、`adversarial_robustness_score`、`worst_group_metric`、`cvar_tail_metric`、`per_cell_denominator`、`temporal_split_integrity`、`no_retuning_proof_metric`、`citation_validity`、`stale_evidencecore_rejection_rate` —— 每个 metric 都需要 per-record OOD / temporal inputs（per-record records、per-record time index、per-record commit chronology、per-record repo / language / model_family axes、per-record task category、per-record adversarial holdout membership、per-record temporal holdout membership、per-record outcome label、per-record citation validity、per-record stale rejection、per-record EvidenceCore rejection、per-record randomized run order proof、per-record no-retuning proof、shared frozen evaluation protocol manifest）；**没有** metric 可从 B11 aggregate means 或 R15 / R20 / R26 repo locks 计算。B18 **是** ood-temporal-evaluation *stage*（`stage_is_ood_temporal_evaluation=true`），但当前 skeleton 不执行真正的 OOD / temporal evaluation（`ood_temporal_evaluation_performed=false`）、不做 metrics evaluation（`metrics_evaluated=false`）、不做 policy search（`policy_search_performed=false`）、不做 quality strategy tuning（`quality_strategy_tuned=false`）、不 promote（`promotion_ready=false`）；synthetic-fixture / `--input` stub 报告设置 `promotion_ready=false`、`default_should_change=false`、`evidencecore_semantics_changed=false`、`retrieval_policy_changed=false`、`metrics_evaluated=false`、`new_provider_calls=0`、`no_fake_ood_metrics_from_aggregate_means=true`，使该公共 artifact 不会被误读为 empirical B18 OOD / temporal 结果。**CRITICAL**：skeleton **绝不可**从现有 B11 aggregate means 或 R15 / R20 / R26 repo locks 计算伪造的 ood_generalization_gap / temporal_holdout_delta / repo_holdout_metric / language_holdout_metric / model_family_holdout_metric / adversarial_robustness_score / worst_group_metric / cvar_tail_metric / per_cell_denominator / temporal_split_integrity / no_retuning_proof_metric / citation_validity / stale_evidencecore_rejection_rate 指标；B11 aggregate 仅带 public model-family means + repo slice list + sanitized failure slices，但 **无** per-record、per-time-index、per-repo-per-language cell、model_family x repo matrix、adversarial holdout outcome、temporal holdout outcome，且 R15 / R20 / R26 repo locks 是 synthetic / static snapshots，无真实 commit chronology 或 time axis。synthetic / stub 报告仅发出 stage *定义*（无 per-stage 的 `passes=true` / `ood_generalization_gap` / `temporal_holdout_delta` / `worst_group_metric` / `cvar_tail_metric` / `per_cell_denominator`）；skeleton verdict 框架仅发出 `insufficient_data`（synthetic fixture）或 `not_implemented`（ci_ephemeral_records stub）——`success` / `failure` / `partial` 保留给未来 `ood_temporal_evaluation_performed=true` / `metrics_evaluated=true` 的 empirical 路径，该路径在当前 skeleton 中**不**存在。`--self-test` 为只读（将内存中期望 artifacts 与 on-disk artifacts 比对，drift 即失败，不修改 checked-in artifacts）；`--regenerate-artifacts` 为唯一会修改 checked-in artifacts 的路径；`--input` stub 要求显式 `--out`，并拒绝写入 `artifacts/b18_ood_temporal_evaluation/` 内的任何路径。bounded public-aggregate no-go screen（`--public-screen --out <path>`，亦从 `--regenerate-artifacts` 运行）读取已发布的 B11 prospective matrix aggregate report 以及可选的 R15 / R20 / R26 repos.lock.jsonl 文件与 dataset manifests，并在 `artifacts/b18_ood_temporal_evaluation/` 下发出 `verdict=no_go_public_aggregate_only`（或 `public_aggregate_carry_forward_only`）；它从不声称 OOD / temporal evaluation，从不从 aggregate means 计算 OOD / temporal metric，从不 promote retrieval variant，从不修改 retrieval policy，也从不声明 winner。现有 B11 / R15 / R20 / R26 aggregates 是 **aggregate-only / metadata-only carry-forward** —— 它们**不**是 OOD / temporal proof，**不**是 promotion evidence；它们**不**包含 per-record records、time axis、commit chronology、per-repo-per-language cells、model_family x repo matrix、adversarial holdout outcomes 或 temporal holdout outcomes。详见 [`b18-ood-temporal-evaluation.md`](b18-ood-temporal-evaluation.md)。
 
+B19 理论综合（Model-Robust Selective Evidence Conversion）：
+
+```text
+algorithm_concept: Model-Robust Selective Evidence Conversion
+schema_version: b19-theoretical-synthesis-report-v0
+claim_level: theoretical_synthesis_of_b10_through_b18
+is_synthesis_only: true
+is_new_experiment: false
+ran_providers: false
+new_provider_calls: 0
+changed_retrieval_default_evidencecore: false
+aggregate_only_public_artifact: true
+synthesized_stages: B10, B10B, B11, B12, B13, B14, B15, B16, B17, B18
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+runtime_clean_policy_supported: false
+downstream_agent_value_proven: false
+ood_temporal_supported: false
+quiver_systems_supported: false
+forbidden_public_scan_clean: true
+report_drift_guarded: true
+```
+
+B19 是 B10-B18 Breakthrough Sprint 的 **理论综合**。它是 **仅综合**：**不**运行任何 provider，**不**修改 retrieval / default / EvidenceCore，**不**声明 promotion。它把 B10 / B10B / B11 / B12 / B13 / B14 / B15 / B16 / B17 / B18 综合成一份关于候选算法概念 **Model-Robust Selective Evidence Conversion** 的论文式算法报告 —— 一个 model-robust、runtime-clean、evidence-gated 的策略，通过把 recall 与 admission 解耦、选择性路由 LLM 角色、并在跨 model adapter 上优化 worst-group utility，将高召回 / 高错误代价的本地候选池选择性地转换为 current-source `EvidenceCore` spans。
+
+输入：query、local candidate pool、runtime-observable uncertainty、model capability profile、latency/cost budget。输出/动作：local-only、weak/supporting、LLM span-narrow、LLM filter、abstain、request-more-context，然后 `EvidenceCore` 物化。核心原则：recall/admission 解耦；LLM 角色选择性路由；算法/model-adapter 分离；仅运行期可观测特征（用于 runtime-clean 策略）；worst-group / 跨模型鲁棒优化；候选必须物化进 current-source `EvidenceCore`。正式章节覆盖问题陈述、算法草稿/伪代码、证据边界、策略学习循环、adapter 边界、评估协议、当前 empirical 证据、no-go gaps、promotion blockers 与下一步研究计划。
+
+逐字 carry forward（在 B10-B18 之外**无**新 claim）：
+
+- **B10** —— `balanced_policy_v1_benchmark_routed` 是 benchmark-routed，**不**是 runtime-clean（`runtime_clean=false`）。
+- **B10B** —— mechanics-validated 的 runtime-shadow scaffold + CI 集成；empirical support pending（在所有 B11 runs 中 label-driven denominator < 10）。
+- **B11** —— official integrated matrix 32/32、384 records、aggregate verdict `partial_with_failure`；balanced_v1 vs p25 deltas：`Δgold_span -0.002604`、`ΔSpanF0.5 -0.001899`、`Δfalse_span -0.054688`、`ΔPFP -0.020833`、`Δmodel_calls -0.354167`。加强了 algorithm-candidate signal，但**不** promotion。
+- **B12** —— public aggregate 无法识别机制；需要 per-record strategy/action outcomes。
+- **B13** —— public aggregate 无法运行真实 DRO search；需要 per-record group/action outcomes。
+- **B14** —— 无法从 public aggregates 校准 uncertainty；需要 per-record/model-output 结构。
+- **B15** —— 无法从 public aggregates 学习 Context Pack Policy；当前价值仅是 preregistration/prior screen。
+- **B16** —— downstream agent value 未被证明；需要固定 agent harness 与 patch/test outcomes。
+- **B17** —— QuIVer systems track no-go：QuIVer graph/vector backend 缺失；仅 systems 的未来 track。
+- **B18** —— OOD/temporal 从 public aggregate 是 no-go；需要 per-record temporal/repo/language/model/adversarial axes。
+
+B19 公共 artifact（`artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json`，schema `b19-theoretical-synthesis-report-v0`）是 aggregate-only，运行一个 B19 专用的 forbidden-key scan（干净），嵌入一个 self-hash drift guard，并逐字节 carry forward B11 deltas。`eval/b19_theoretical_synthesis.py` 的 `--self-test` 验证 required sections、所有 no-promotion flags 为 false、B11 deltas 精确、forbidden scan 干净、docs links 存在、drift guard 匹配。无伪造 metrics；在 B10-B18 之外无新 claim。详见 [`b19-theoretical-synthesis.md`](b19-theoretical-synthesis.md)。
+
 ---
 
 ## Current status update — 2026-06-13

@@ -1410,6 +1410,92 @@ candidate-set equivalence matrix across backends. See
  temporal holdout outcomes. See
  [`b18-ood-temporal-evaluation.md`](b18-ood-temporal-evaluation.md).
 
+B19 theoretical synthesis (Model-Robust Selective Evidence Conversion):
+
+```text
+algorithm_concept: Model-Robust Selective Evidence Conversion
+schema_version: b19-theoretical-synthesis-report-v0
+claim_level: theoretical_synthesis_of_b10_through_b18
+is_synthesis_only: true
+is_new_experiment: false
+ran_providers: false
+new_provider_calls: 0
+changed_retrieval_default_evidencecore: false
+aggregate_only_public_artifact: true
+synthesized_stages: B10, B10B, B11, B12, B13, B14, B15, B16, B17, B18
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+runtime_clean_policy_supported: false
+downstream_agent_value_proven: false
+ood_temporal_supported: false
+quiver_systems_supported: false
+forbidden_public_scan_clean: true
+report_drift_guarded: true
+```
+
+B19 is the **theoretical synthesis** of the B10-B18 Breakthrough Sprint. It
+is **synthesis-only**: it does NOT run any provider, does NOT change
+retrieval / default / EvidenceCore, and does NOT claim promotion. It
+synthesizes B10 / B10B / B11 / B12 / B13 / B14 / B15 / B16 / B17 / B18
+into a single paper-style algorithm report for the candidate algorithm
+concept **Model-Robust Selective Evidence Conversion** — a model-robust,
+runtime-clean, evidence-gated policy that selectively converts high-
+reach / high-false-cost local candidate pools into current-source
+`EvidenceCore` spans by decoupling recall from admission, routing LLM
+roles selectively, and optimizing worst-group utility across model
+adapters.
+
+Inputs: query, local candidate pool, runtime-observable uncertainty,
+model capability profile, latency/cost budget. Outputs/actions:
+local-only, weak/supporting, LLM span-narrow, LLM filter, abstain,
+request-more-context, then `EvidenceCore` materialization. Core
+principles: recall/admission decoupling; LLM role-selective routing;
+algorithm/model-adapter separation; runtime-observable features only
+(for a runtime-clean policy); worst-group / cross-model robust
+optimization; candidate must materialize into current-source
+`EvidenceCore`. Formal sections cover problem statement, algorithm
+sketch/pseudocode, evidence boundary, policy-learning loop, adapter
+boundary, evaluation protocol, current empirical evidence, no-go gaps,
+promotion blockers, and next research program.
+
+Carried forward verbatim (NO new claims beyond B10-B18):
+
+- **B10** — `balanced_policy_v1_benchmark_routed` was benchmark-routed,
+  not runtime-clean (`runtime_clean=false`).
+- **B10B** — mechanics-validated runtime-shadow scaffold + CI
+  integration; empirical support pending (label-driven denominator < 10
+  in all B11 runs).
+- **B11** — official integrated matrix 32/32, 384 records, aggregate
+  verdict `partial_with_failure`; balanced_v1 vs p25 deltas:
+  `Δgold_span -0.002604`, `ΔSpanF0.5 -0.001899`, `Δfalse_span -0.054688`,
+  `ΔPFP -0.020833`, `Δmodel_calls -0.354167`. Strengthens algorithm-
+  candidate signal but NO promotion.
+- **B12** — public aggregate cannot identify mechanism; needs per-record
+  strategy/action outcomes.
+- **B13** — public aggregate cannot run real DRO search; needs per-record
+  group/action outcomes.
+- **B14** — cannot calibrate uncertainty from public aggregates; needs
+  per-record/model-output structure.
+- **B15** — cannot learn Context Pack Policy from public aggregates;
+  current value is preregistration/prior screen.
+- **B16** — downstream agent value unproven; needs fixed agent harness
+  with patch/test outcomes.
+- **B17** — QuIVer systems track no-go: QuIVer graph/vector backend
+  missing; systems-only future track.
+- **B18** — OOD/temporal no-go from public aggregate; needs per-record
+  temporal/repo/language/model/adversarial axes.
+
+The B19 public artifact
+(`artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json`,
+schema `b19-theoretical-synthesis-report-v0`) is aggregate-only, runs a
+B19-specific forbidden-key scan (clean), embeds a self-hash drift guard,
+and carries the B11 deltas byte-for-byte. `eval/b19_theoretical_synthesis.py`
+`--self-test` verifies required sections, all no-promotion flags false,
+B11 deltas exact, forbidden scan clean, docs links exist, and drift
+guard matched. No fake metrics; no new claims beyond B10-B18. See
+[`b19-theoretical-synthesis.md`](b19-theoretical-synthesis.md).
+
 ---
 
 ## Current status update — 2026-06-13

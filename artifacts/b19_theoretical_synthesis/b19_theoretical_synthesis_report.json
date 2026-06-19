@@ -1,0 +1,322 @@
+{
+  "aggregate_only_public_artifact": true,
+  "algorithm_concept": "Model-Robust Selective Evidence Conversion",
+  "algorithm_concept_block": {
+    "action_terminal_constraint": "Every selected action must terminate in a current-source EvidenceCore materialization (path + start_line + end_line + content_sha + score + why + channels) or in an explicit abstain / request-more-context signal. No action may emit a candidate, LLM output, or supporting view as Evidence.",
+    "algorithm_concept": "Model-Robust Selective Evidence Conversion",
+    "core_principles": [
+      "recall_admission_decoupling",
+      "llm_role_selective_routing",
+      "algorithm_model_adapter_separation",
+      "runtime_observable_features_only_for_runtime_clean_policy",
+      "worst_group_and_cross_model_robust_optimization",
+      "candidate_must_materialize_into_current_source_evidencecore"
+    ],
+    "inputs": [
+      "query",
+      "local_candidate_pool",
+      "runtime_observable_uncertainty",
+      "model_capability_profile",
+      "latency_cost_budget"
+    ],
+    "one_line": "A model-robust, runtime-clean, evidence-gated policy that selectively converts high-reach / high-false-cost local candidate pools into current-source EvidenceCore spans by decoupling recall from admission, routing LLM roles selectively, and optimizing worst-group utility across model adapters.",
+    "outputs_actions": [
+      "local_only",
+      "weak_or_supporting",
+      "llm_span_narrow",
+      "llm_filter",
+      "abstain",
+      "request_more_context",
+      "evidencecore_materialization"
+    ]
+  },
+  "ann_backend_bakeoff_performed": false,
+  "atom_ablation_performed": false,
+  "b11_deltas_balanced_v1_vs_p25": {
+    "false_span": -0.054688,
+    "gold_span": -0.002604,
+    "model_calls": -0.354167,
+    "primary_false_positive_rate": -0.020833,
+    "span_f0_5": -0.001899
+  },
+  "backend_quality_promoted": false,
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "changed_retrieval_default_evidencecore": false,
+  "claim_level": "theoretical_synthesis_of_b10_through_b18",
+  "default_should_change": false,
+  "docs_links_exist": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "forbidden_public_scan_clean": true,
+  "formal_sections": {
+    "adapter_boundary": "algorithm_spec is model-independent: it references only runtime-observable route_features and abstract model_profile capability slots (cost_class, latency_class, supports_reliable_span_narrow, family_slots). model_adapter (model identity + output mode + provider credentials / endpoints / secrets) is an EXCLUDED adapter layer, not part of the algorithm spec. Output mode (tool_call / json_schema_strict) is a model-adapter configuration parameter, not an OpenLocus algorithm variable. A noisy adapter cannot become a quality conclusion about the algorithm, and an algorithm-quality claim cannot be smuggled in as an adapter leaderboard.",
+    "algorithm_sketch_pseudocode": "function CONVERT(query, local_candidate_pool, runtime_uncertainty,\n                 model_profile, latency_cost_budget):\n    # 1. RUN-phase routing uses ONLY runtime-observable features.\n    feats = observe_runtime_features(local_candidate_pool, query)\n    if not feats.all_present:\n        return ACTION_REQUEST_MORE_CONTEXT\n    # 2. Recall / admission decoupling: reach comes from local\n    #    candidates; admission is a separate decision.\n    recall_pool = local_candidate_pool\n    # 3. Worst-group / cross-model robust action selection.\n    action = robust_select(\n        features=feats,\n        uncertainty=runtime_uncertainty,\n        model_profile=model_profile,\n        budget=latency_cost_budget,\n        objective=RobustUtility_worst_group,\n        adapter=model_adapter,  # NOT part of algorithm_spec\n    )\n    # 4. LLM role is SELECTIVE: span_narrow / filter only when the\n    #    runtime predicate fires and budget permits.\n    if action in {LLM_SPAN_NARROW, LLM_FILTER}:\n        llm_view = model_adapter.call(action, recall_pool, budget)\n        llm_view.not_evidence = True\n    # 5. Candidate must materialize into current-source EvidenceCore.\n    evidence = materialize_current_source_evidencecore(action, recall_pool, llm_view)\n    if evidence is None:\n        return ACTION_ABSTAIN or ACTION_REQUEST_MORE_CONTEXT\n    return evidence  # EvidenceCore: path, start_line, end_line,\n                     # content_sha, score, why, channels",
+    "current_empirical_evidence": {
+      "aggregate_verdict": "partial_with_failure",
+      "b10b_runtime_shadow_status": "empirical_replay_support_pending_due_denominator",
+      "deltas_balanced_v1_vs_p25": {
+        "false_span": -0.054688,
+        "gold_span": -0.002604,
+        "model_calls": -0.354167,
+        "primary_false_positive_rate": -0.020833,
+        "span_f0_5": -0.001899
+      },
+      "strongest_signal": "B11 official integrated matrix (32/32, 384 records): balanced_v1 vs p25 deltas preserve near-parity SpanF0.5 / gold_span while reducing false_span, PFP, and model_calls on average.",
+      "summary": "The current empirical evidence strengthens the algorithm-candidate signal but does NOT prove a runtime-clean general algorithm. The B10B runtime-shadow predicate is empirical-pending (label-driven denominator < 10 in all B11 runs). B11 is mixed / partial; one Kimi py_fastapi slice exceeded the failure_spanf05_delta threshold.",
+      "verdict_counts": {
+        "failure": 1,
+        "partial": 23,
+        "success": 8
+      }
+    },
+    "evaluation_protocol": "Prospective, preregistered, no-retuning validation. Success / partial / failure criteria are frozen BEFORE any live runs on explicit overall and worst-group thresholds (delta gold_span, delta SpanF0.5, delta PFP, delta false_spans, delta LLM_calls) plus a worst-group RobustUtility = min_group(SpanF0.5 - lambda*PFP - mu*normalized_cost - nu*normalized_latency). Validation uses rotating leave-one-model-family-out rotations and stratified fresh-validation splits. Per-record replay is the evidence boundary for mechanism (B12), DRO (B13), calibration (B14), pack policy (B15), downstream agent value (B16), QuIVer systems (B17), and OOD / temporal (B18). Public artifacts are aggregate-only; per-record records stay under runner temp.",
+    "evidence_boundary": "Every selected action terminates in a current-source EvidenceCore materialization (path + start_line + end_line + content_sha + score + why + channels) or in an explicit abstain / request-more-context signal. LLM outputs are not_evidence=true candidate/supporting channels only; they can narrow, filter, or disambiguate, but they can never become Evidence, never produce gold labels, never produce citation verdicts, and never produce promotion verdicts. The current-source read is the final fact authority; stale / mismatched content_sha candidates are rejected.",
+    "next_research_program": [
+      "Replace the benchmark-routed ambiguous branch with pure runtime features (query_noise, candidate_support_exists, anchor disagreement) and run B10B on real CI ephemeral records until the 10-record hard gate passes.",
+      "Collect per-record route / action / group outcomes so B12 mechanism decomposition and B13 DRO search can run for real.",
+      "Collect per-record (uncertainty, binary outcome) pairs so B14 can calibrate a model-independent uncertainty score.",
+      "Collect per-record pack atom flags + role + runtime_state + model_profile so B15 can learn a frozen PackPolicy.",
+      "Stand up a fixed downstream agent harness with isolated fresh workspaces, randomized arm order, and patch/test outcome capture so B16 can prove (or refute) downstream value.",
+      "Implement a QuIVer / Vamana graph backend and a shared frozen candidate-quality manifest so B17 can run a real systems bakeoff.",
+      "Collect per-record temporal / repo / language / model_family / adversarial axes with a real time axis and commit chronology so B18 can run a real OOD / temporal evaluation under the no-retuning protocol.",
+      "Only after the above, open a separate promotion preregistration; the synthesis itself never authorizes promotion."
+    ],
+    "no_go_gaps": [
+      {
+        "gap": "public aggregate cannot identify mechanism",
+        "missing": [
+          "per_record_route_decisions",
+          "ambiguous_subset_membership",
+          "deterministic_call_reduction_variant_B",
+          "random_call_reduction_variant_E",
+          "weak_candidate_only_per_strategy_outcomes"
+        ],
+        "stage": "B12"
+      },
+      {
+        "gap": "public aggregate cannot run real DRO search",
+        "missing": [
+          "per_record_group_outcomes",
+          "per_record_action_outcomes",
+          "rotating_leave_one_model_family_out_rotations_over_per_record_records"
+        ],
+        "stage": "B13"
+      },
+      {
+        "gap": "cannot calibrate uncertainty from public aggregates",
+        "missing": [
+          "per_record_uncertainty_scores",
+          "per_record_binary_outcomes",
+          "paired_cross_model_outputs",
+          "schema_repair_per_call_rows",
+          "candidate_score_distributions"
+        ],
+        "stage": "B14"
+      },
+      {
+        "gap": "cannot learn Context Pack Policy from public aggregates",
+        "missing": [
+          "per_record_pack_atom_flags",
+          "per_record_outcomes",
+          "role_specific_paired_outputs",
+          "model_profile_paired_blocks",
+          "randomized_atom_assignment",
+          "randomization_balance_stats",
+          "token_budget_matched_controls"
+        ],
+        "stage": "B15"
+      },
+      {
+        "gap": "downstream agent value unproven",
+        "missing": [
+          "paired_live_downstream_agent_runs",
+          "per_run_patches_or_diffs",
+          "test_execution_results",
+          "solve_labels",
+          "first_file_before_first_edit_events",
+          "wrong_file_edit_annotations",
+          "tool_calls_tokens_latency_cost_per_run",
+          "isolated_workspace_proof",
+          "randomized_arm_order",
+          "task_oracle_or_hidden_test_manifest"
+        ],
+        "stage": "B16"
+      },
+      {
+        "gap": "QuIVer systems track no-go: graph / vector backend missing",
+        "missing": [
+          "quiver_or_vamana_graph_backend_implementation",
+          "hnsw_backend_run",
+          "candidate_set_equivalence_matrix_across_backends",
+          "shared_frozen_candidate_quality_manifest"
+        ],
+        "stage": "B17"
+      },
+      {
+        "gap": "OOD / temporal no-go from public aggregate",
+        "missing": [
+          "per_record_records",
+          "time_axis",
+          "commit_chronology",
+          "per_repo_per_language_cells",
+          "model_family_x_repo_matrix",
+          "adversarial_holdout_outcomes",
+          "temporal_holdout_outcomes"
+        ],
+        "stage": "B18"
+      }
+    ],
+    "policy_learning_loop": "The loop is: freeze an algorithm_spec that uses only runtime-observable features -> run a preregistered prospective validation with no retuning (B11) -> decompose mechanism via per-record replay (B12, needs per-record data) -> search a worst-group / cross-model robust policy (B13, needs per-record group/action outcomes) -> calibrate a model-independent uncertainty score (B14, needs per-record (uncertainty, outcome) pairs) -> learn a frozen PackPolicy from per-record atom effects (B15, needs per-record atom flags) -> evaluate downstream agent value (B16, needs paired agent runs) -> evaluate OOD / temporal generalization (B18, needs per-record time axis). Every loop iteration that lacks the required per-record inputs emits a no-go / prior-screen / insufficient_data verdict and does NOT auto-promote. Promotion is a separate, future, evidence-gated decision; it is never the output of the loop itself.",
+    "problem_statement": "Local candidate pools (RRF, symbol/regex, dense) reach the gold file/span often but carry high false-span and primary-false-positive cost. A single global LLM pass is unsafe across mixed task buckets, and a benchmark-routed policy cannot be promoted because it depends on labels unavailable at runtime. The problem is to convert high-reach / high-false-cost candidates into low-false-cost, citation-valid EvidenceCore spans without weakening the evidence contract, without making any one model's behavior the OpenLocus algorithm, and without mistaking an in-distribution average for cross-model / OOD / temporal generalization.",
+    "promotion_blockers": [
+      "B10 runtime_clean=false: the frozen balanced_policy_v1 is benchmark-routed, not runtime-clean.",
+      "B10B runtime_shadow_ambiguous_supported=false on all B11 runs (label-driven denominator < 10 hard gate).",
+      "B11 aggregate_verdict=partial_with_failure (one Kimi py_fastapi slice exceeded failure_spanf05_delta).",
+      "B12/B13/B14/B15/B16/B17/B18 are public-aggregate no-go or screen-only; none authorizes promotion.",
+      "No per-record mechanism, DRO, calibration, pack-policy, downstream-agent, QuIVer, or OOD/temporal evidence exists in any current public artifact.",
+      "Promotion is a separate future evidence-gated decision; the B10-B18 sprint does NOT produce it."
+    ]
+  },
+  "generated_at": "2026-06-19T05:41:01.211474+00:00",
+  "generated_by": "b19_theoretical_synthesis",
+  "gold_spans_in_artifact": false,
+  "is_new_experiment": false,
+  "is_synthesis_only": true,
+  "llm_output_not_evidence": true,
+  "metrics_evaluated": false,
+  "new_provider_calls": 0,
+  "new_provider_calls_zero": true,
+  "no_fake_metrics_beyond_b10_b18": true,
+  "not_evidence": true,
+  "ood_temporal_evaluation_performed": false,
+  "ood_temporal_supported": false,
+  "pack_policy_learned": false,
+  "policy_search_performed": false,
+  "private_labels_committed": false,
+  "promotion_ready": false,
+  "quality_strategy_tuned": false,
+  "quiver_graph_implemented": false,
+  "quiver_systems_supported": false,
+  "ran_providers": false,
+  "raw_digests_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "repo_ids_in_artifact": false,
+  "report_content_sha256": "26b4db57bdb3b3c652cf62b265d7ce59cc7a07c9cad195269d1d655575263958",
+  "report_drift_guarded": true,
+  "required_docs_basenames": [
+    "b19-theoretical-synthesis.md"
+  ],
+  "retrieval_policy_changed": false,
+  "run_ids_in_artifact": false,
+  "runtime_clean_policy_supported": false,
+  "schema_version": "b19-theoretical-synthesis-report-v0",
+  "synthesized_evidence": {
+    "B10": {
+      "claim_level": "benchmark_routed_algorithm_spec_only",
+      "finding": "balanced_policy_v1_benchmark_routed was benchmark-routed, not runtime-clean. The _ambiguous_like branch reads the benchmark public labels task_bucket / task_risk_tags, so a runtime-feature-only mode would never fire the ambiguous_query_weak_only rule. runtime_clean=false, runtime_feature_only_mode_supported=false.",
+      "promotion_ready": false,
+      "stage": "runtime_feature_audit_and_balanced_policy_v1_freeze"
+    },
+    "B10B": {
+      "claim_level": "ambiguous_branch_runtime_shadow_only",
+      "finding": "Provided a mechanics-validated runtime-shadow scaffold and CI integration. Empirical support is pending because the label-driven ambiguous denominator stayed below the 10-record hard gate in all B11 runs (max observed label_driven_ambiguous_denominator_qn0=3). Verdict on the synthetic fixture: mechanics_only_synthetic_fixture; on CI records: empirical_replay_support_pending.",
+      "promotion_ready": false,
+      "stage": "runtime_shadow_replay_ambiguous_branch_only"
+    },
+    "B11": {
+      "aggregate_verdict": "partial_with_failure",
+      "b10b_runtime_shadow_status": "empirical_replay_support_pending_due_denominator",
+      "claim_level": "derived_aggregate_of_b11_prospective_validation_reports",
+      "deltas_balanced_v1_vs_p25": {
+        "false_span": -0.054688,
+        "gold_span": -0.002604,
+        "model_calls": -0.354167,
+        "primary_false_positive_rate": -0.020833,
+        "span_f0_5": -0.001899
+      },
+      "finding": "Official integrated matrix: 32/32 final cells, 384 records, aggregate verdict partial_with_failure (success 8 / partial 23 / failure 1). Balanced v1 vs P25 deltas preserve near-parity SpanF0.5 / gold_span while reducing false_span, PFP, and model_calls. Strengthens the algorithm-candidate signal but is NOT promotion.",
+      "promotion_ready": false,
+      "stage": "prospective_blind_validation_official_integrated_matrix"
+    },
+    "B12": {
+      "claim_level": "bounded_public_aggregate_mechanism_screen_of_b11_aggregate",
+      "finding": "The public aggregate cannot identify mechanism. Full B12 per-record replay is impossible from the public B11 aggregate: it lacks per-record route decisions, ambiguous-subset membership, deterministic call-reduction variant B, random call-reduction variant E, and weak_candidate_only per-strategy outcomes. Emits per-hypothesis screen statuses only, never a single global supported verdict.",
+      "promotion_ready": false,
+      "stage": "mechanism_decomposition_public_aggregate_screen"
+    },
+    "B13": {
+      "claim_level": "bounded_public_aggregate_feasibility_screen_of_b11_b12_aggregates",
+      "finding": "The public aggregate cannot run real DRO search. Real B13 requires per-record group / action outcomes and rotating leave-one-model-family-out rotations over per-record records, none of which are present in the public B11 aggregate. verdict=no_go_public_aggregate_only.",
+      "promotion_ready": false,
+      "stage": "distributionally_robust_policy_search_public_aggregate_screen",
+      "verdict": "no_go_public_aggregate_only"
+    },
+    "B14": {
+      "claim_level": "bounded_public_aggregate_feasibility_screen_of_b11_b12_b13_aggregates",
+      "finding": "Cannot calibrate uncertainty from public aggregates. Real B14 requires per-record uncertainty scores, per-record binary outcomes, paired cross-model outputs, schema-repair per-call rows, and candidate score distributions. The public B11 aggregate carries only weighted means. verdict=no_go_public_aggregate_only.",
+      "promotion_ready": false,
+      "stage": "uncertainty_calibration_public_aggregate_feasibility_screen",
+      "verdict": "no_go_public_aggregate_only"
+    },
+    "B15": {
+      "claim_level": "bounded_public_aggregate_prior_screen_of_b2_b14_and_optional_aggregates",
+      "finding": "Cannot learn a Context Pack Policy from public aggregates. Real B15 requires per-record pack atom flags, per-record outcomes, role-specific paired outputs, model_profile paired blocks, randomized atom assignment, balance stats, and token-budget-matched controls. The current value of B15 is preregistration / prior screen only (B2 usable only as a low_n_single_model_aggregate_directional_prior).",
+      "promotion_ready": false,
+      "stage": "context_pack_policy_public_aggregate_prior_screen",
+      "verdict": "prior_screen_only"
+    },
+    "B16": {
+      "claim_level": "bounded_public_aggregate_feasibility_screen_of_b11_b12_b13_b14_b15_aggregates",
+      "finding": "Downstream agent value is unproven. Real B16 requires paired live downstream agent runs, per-run patches/diffs, test execution results, solve labels, first-file-before-first-edit events, wrong-file-edit annotations, tool-call/token/latency/cost rows, isolated workspace proof, randomized arm order, and a task oracle/hidden-test manifest. Retrieval improvements are NOT downstream agent improvements. verdict=no_go_public_aggregate_only.",
+      "promotion_ready": false,
+      "stage": "downstream_agent_evaluation_public_aggregate_feasibility_screen",
+      "verdict": "no_go_public_aggregate_only"
+    },
+    "B17": {
+      "claim_level": "bounded_public_systems_diagnostic_carry_forward_screen_of_r33_r34_r36_real_p3_p4_r24",
+      "finding": "QuIVer systems track is no-go because the QuIVer graph / vector backend is missing. The existing R33 / R34 / R36 / R24 and real-provider P3 / P4 diagnostics are diagnostic-only carry-forward: they do NOT implement a QuIVer / Vamana graph backend, do NOT contain an HNSW run, and do NOT contain a candidate-set equivalence matrix across backends. This is a systems-only future track. verdict=no_go_quiver_graph_missing.",
+      "promotion_ready": false,
+      "stage": "quiver_systems_track_public_systems_diagnostic_screen",
+      "verdict": "no_go_quiver_graph_missing"
+    },
+    "B18": {
+      "claim_level": "bounded_public_aggregate_no_go_screen_of_b11_r15_r20_r26",
+      "finding": "OOD / temporal evaluation is no-go from the public aggregate. Real B18 requires per-record temporal / repo / language / model_family / adversarial axes with a real time axis and commit chronology. The public B11 aggregate carries only weighted means and a sanitized failure slice list; the R15 / R20 / R26 repo locks are synthetic static snapshots. verdict=no_go_public_aggregate_only.",
+      "promotion_ready": false,
+      "stage": "ood_temporal_evaluation_public_aggregate_no_go_screen",
+      "verdict": "no_go_public_aggregate_only"
+    }
+  },
+  "synthesized_source_artifacts_pinned": true,
+  "synthesized_source_spec_ids": [
+    "b10_balanced_policy_v1_benchmark_routed_spec",
+    "b10b_runtime_shadow_replay_report",
+    "b11_prospective_matrix_aggregate_report",
+    "b12_public_aggregate_mechanism_screen_report",
+    "b13_public_aggregate_feasibility_report",
+    "b14_public_aggregate_feasibility_report",
+    "b15_public_aggregate_prior_screen_report",
+    "b16_public_aggregate_feasibility_report",
+    "b17_public_systems_diagnostic_screen_report",
+    "b18_public_ood_temporal_screen_report"
+  ],
+  "synthesized_stages": [
+    "B10",
+    "B10B",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17",
+    "B18"
+  ],
+  "task_ids_in_artifact": false,
+  "uncertainty_calibration_performed": false,
+  "winner_declared": false
+}
