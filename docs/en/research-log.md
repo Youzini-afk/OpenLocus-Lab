@@ -2784,3 +2784,103 @@ Verify the new C1 private-record adapter and B12 real `--input` replay path agai
 
 - This is a canary-level result only: one repo, one model family, 12 records. It does NOT prove the B12 mechanism globally and does NOT promote, default-change, or make balanced_v1 runtime-clean.
 - The next step is a full B12 matrix over the B11 repo/model cells, then aggregate the B12 reports before making mechanism claims.
+
+## 2026-06-19 — C2/B12 Official Matrix Aggregate Combiner
+
+### Objective
+
+Implement the C2/B12 official matrix aggregate combiner: a bounded derived
+aggregate rollup that combines the per-run `b12-mechanism-decomposition-report-v0`
+public aggregate reports from a finished C2/B12 official integrated matrix run
+into a single aggregate-only public artifact. This is aggregate-only; it does
+NOT run providers, does NOT run policy search, does NOT promote, does NOT change
+defaults, and does NOT alter `EvidenceCore` semantics.
+
+### Implementation notes
+
+- New evaluator `eval/b12_matrix_combiner.py` (pure Python). CLI: `--self-test`
+  (synthetic 3-cell + 1-exclusion fixture, validates schema/safety/weighted
+  means/forbidden scan/verdict); `--artifacts-dir <path>` (recursively discover
+  `b12_mechanism_decomposition_report.json` under it, parsing run_id from the
+  `real-provider-p21_llm_rich-<run_id>` path component); optional `--manifest
+  <path>` (enforces `included`/`excluded` counts and reconciles every discovered
+  report run_id to a manifest included cell); `--out <path>` default
+  `artifacts/b12_mechanism_decomposition/b12_matrix_aggregate_report.json`.
+- Output schema: `b12-mechanism-matrix-aggregate-report-v0`. Aggregate-only
+  public: NO run IDs, task IDs, raw repo IDs, paths/spans/content_sha/prompts/
+  responses/snippets/provider URLs/keys. Public repo slice IDs and model-family
+  names are re-published only as slice IDs from the manifest, never as run IDs.
+- Per-input validation: schema version `b12-mechanism-decomposition-report-v0`,
+  `aggregate_only_public_artifact=true`, `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `replay_source == ci_ephemeral_records`, no forbidden public keys/values
+  (reuses `b6_lite_interpretable_policy_search._walk_forbidden`),
+  `complete_records > 0` and `incomplete_record_count == 0` for included cells.
+- Aggregates over the 28 analyzable cells: `cell_count_target=32`,
+  `analyzable_cell_count=28`, `excluded_cell_count=4`; `record_count_total`;
+  `coverage_exclusions` (by public repo slice + model family + reason, no run
+  ids); `verdict_counts` over per-run B12 verdicts; `hypothesis_status_counts`
+  for H1/H2/H3/H4; record-weighted mean deltas vs D/E/B for `gold_span`,
+  `span_f0_5`, `false_span`, `primary_false_positive_rate`, `model_calls`
+  (weighted by `complete_records`), plus a record-weighted mean robust utility
+  of A; `replay_count_totals` for `balanced_branch_count`,
+  `p25_llm_eligible_count`, `actual_call_avoided_count`,
+  `random_selected_count`; conservative `mechanism_summary`.
+
+### Findings — run reconciliation
+
+- Target matrix: 32 cells (8 public repo slices × 4 public model families).
+- Analyzable: 28 cells (all 4 model families on 7 of 8 repo slices —
+  `py_fastapi`, `py_pytest`, `ts_hono`, `go_chi`, `go_prometheus`, `rust_deno`,
+  `java_spring_petclinic`).
+- Excluded: 4 cells, all `ts_vite` × {kimi, qwen, deepseek_flash,
+  deepseek_pro}, with `status=coverage_insufficient_no_remote_llm_snippet`.
+  These cells failed the old P21 privacy gate because they did not exercise
+  remote LLM snippets even at `max_tasks=24`. They are treated as
+  coverage-insufficient, NOT as B12 mechanism failures.
+- Transient Cargo failures occurred during the matrix run and were retried
+  successfully (two `ts_hono × deepseek_pro` and `java_spring_petclinic ×
+  deepseek_flash` retries succeeded with `source=
+  retry_success_replacing_transient_failure`). No promotion, default, or
+  runtime-clean claim was made on the back of these retries.
+
+### Findings — key metrics from the generated aggregate
+
+- `record_count_total=336` (12 complete records per cell).
+- `verdict_counts={"partial": 28}`.
+- `hypothesis_status_counts`: H1 `supported: 3 / refuted: 25`; H2
+  `supported: 8 / refuted: 20`; H3 `supported: 28`; H4 `insufficient_data: 28`
+  (every cell is a single-model-family slice, so H4 needs multi-model
+  aggregation across cells; H4 insufficient_data does NOT block the H1-H3
+  verdict by design).
+- Record-weighted A (full balanced) deltas vs D (P25 default): `Δgold_span 0.0`,
+  `ΔSpanF0.5 0.0`, `Δfalse_span -0.029762`, `ΔPFP -0.014881`,
+  `Δmodel_calls -0.333333`; vs E (random call reduction): `Δgold_span -0.044643`,
+  `ΔSpanF0.5 0.001569`, `Δfalse_span -0.592262`, `ΔPFP -0.026786`,
+  `Δmodel_calls 0.0`; vs B (deterministic call reduction): `Δgold_span 0.0`,
+  `ΔSpanF0.5 0.0`, `Δfalse_span -0.130952`, `ΔPFP -0.035714`, `Δmodel_calls 0.0`.
+- `weighted_mean_robust_utility_a = 0.054155`.
+- `replay_count_totals`: `balanced_branch_count=112`,
+  `p25_llm_eligible_count=324`, `actual_call_avoided_count=112`,
+  `random_selected_count=112`.
+- `aggregate_verdict = partial_with_coverage_exclusions`.
+
+### Caveats
+
+- This is an aggregate of per-cell B12 reports, NOT a promotion step, NOT a
+  default change, NOT a runtime-clean general algorithm claim, NOT an
+  `EvidenceCore` semantics change. `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `policy_search_performed=false`, `runtime_clean_policy_supported=false`,
+  `new_provider_calls=0`, `candidate_not_fact=true`.
+- The 4 `ts_vite` exclusions are coverage gaps (no remote LLM snippets), NOT
+  B12 mechanism failures. Mechanism claims are scoped to the 28 analyzable
+  cells only.
+- A global `supported` verdict is never emitted by policy: with coverage
+  exclusions present the verdict is `partial_with_coverage_exclusions`; even
+  at 32/32 it would remain `partial` (do not overclaim H1/H2/H3).
+- H2 causal attribution is limited by the single frozen E seed per cell
+  (`e_random_seed=20260618`); seed-averaging is deferred.
+- Recommended next step: B13 distributionally robust policy search WITH CAUTION
+  (B13 must not be treated as authorized by a B12 supported verdict), or a
+  future B12 matrix rerun that closes the `ts_vite` coverage gap.

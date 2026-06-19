@@ -724,6 +724,49 @@ records complete，`balanced_branch_count=4`、`p25_llm_eligible_count=10`、
 `insufficient_data`）。这只是 canary-level evidence；完整 B12 matrix over B11
 repo/model cells 仍是下一步。
 
+C2/B12 official matrix aggregate（2026-06-19）：
+
+```text
+schema_version: b12-mechanism-matrix-aggregate-report-v0
+claim_level: derived_aggregate_of_b12_mechanism_decomposition_reports
+aggregate_only_public_artifact: true
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+runtime_clean_policy_supported: false
+new_provider_calls: 0
+candidate_not_fact: true
+cell_count_target: 32
+analyzable_cell_count: 28
+excluded_cell_count: 4
+aggregate_verdict: partial_with_coverage_exclusions
+```
+
+**C2/B12 official matrix aggregate** 把 28 个 analyzable 的 per-run
+`b12-mechanism-decomposition-report-v0` 公共 aggregate 报告（每个 included
+repo×model cell 一份）合并为一份 derived aggregate（`eval/b12_matrix_combiner.py`
+→ `artifacts/b12_mechanism_decomposition/b12_matrix_aggregate_report.json`）。它
+是有界的：只读取已下载的 aggregate-only 公共 B12 报告，不进行 provider calls、不进行
+policy search、不进行 threshold tuning。覆盖：`28/32` cells analyzable，`4` 个
+`ts_vite` cells 因 `coverage_insufficient_no_remote_llm_snippet` 被排除（即使
+`max_tasks=24` 也未 exercise remote LLM snippets；这是覆盖缺口，**不是** B12 mechanism
+failure）。Records：共 `336`（每 cell `12`）。Verdict counts：`partial: 28`。Hypothesis
+status counts：H1 `supported: 3 / refuted: 25`、H2 `supported: 8 / refuted: 20`、H3
+`supported: 28`、H4 `insufficient_data: 28`（每个 cell 都是 single-model-family slice，
+故 H4 需跨 cell 的 multi-model aggregation；H4 insufficient_data **不**阻断 H1-H3 verdict）。
+Record-weighted A（full balanced）deltas vs D（P25 default）：`Δgold_span 0.0`、
+`ΔSpanF0.5 0.0`、`Δfalse_span -0.029762`、`ΔPFP -0.014881`、`Δmodel_calls -0.333333`；
+vs E（random call reduction）：`Δgold_span -0.044643`、`ΔSpanF0.5 0.001569`、
+`Δfalse_span -0.592262`、`ΔPFP -0.026786`、`Δmodel_calls 0.0`；vs B（deterministic call
+reduction）：`Δgold_span 0.0`、`ΔSpanF0.5 0.0`、`Δfalse_span -0.130952`、`ΔPFP -0.035714`、
+`Δmodel_calls 0.0`。Weighted mean robust utility (A)：`0.054155`。Replay count totals：
+`balanced_branch_count=112`、`p25_llm_eligible_count=324`、
+`actual_call_avoided_count=112`、`random_selected_count=112`。Overall verdict：
+`partial_with_coverage_exclusions` —— **不是**全局 `supported` verdict，**不** promotion、
+**不** default change、**不** runtime-clean general algorithm claim。详见
+[`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md)。
+
 B12 public aggregate mechanism screen（2026-06-18）：
 
 ```text

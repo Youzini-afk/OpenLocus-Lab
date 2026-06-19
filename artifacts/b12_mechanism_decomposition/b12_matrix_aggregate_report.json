@@ -1,0 +1,282 @@
+{
+  "ablation_variant_under_analysis": "A_full_balanced",
+  "aggregate_only_public_artifact": true,
+  "aggregate_verdict": "partial_with_coverage_exclusions",
+  "aggregate_verdict_reason": "28/32 cells analyzable; 4 cell(s) excluded for coverage insufficiency (coverage_insufficient_no_remote_llm_snippet); not a global supported verdict",
+  "analyzable_cell_count": 28,
+  "baseline_for_deltas": "p25",
+  "candidate_ids_in_artifact": false,
+  "candidate_not_fact": true,
+  "cell_count_target": 32,
+  "claim_level": "derived_aggregate_of_b12_mechanism_decomposition_reports",
+  "coverage_exclusions": [
+    {
+      "model_family": "kimi",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    },
+    {
+      "model_family": "qwen",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    },
+    {
+      "model_family": "deepseek_flash",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    },
+    {
+      "model_family": "deepseek_pro",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    }
+  ],
+  "coverage_exclusions_summary": [
+    {
+      "count": 1,
+      "model_family": "deepseek_flash",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    },
+    {
+      "count": 1,
+      "model_family": "deepseek_pro",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    },
+    {
+      "count": 1,
+      "model_family": "kimi",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    },
+    {
+      "count": 1,
+      "model_family": "qwen",
+      "reason": "coverage_insufficient_no_remote_llm_snippet",
+      "repo_slice_id": "ts_vite"
+    }
+  ],
+  "default_recommendation_declared": false,
+  "default_should_change": false,
+  "derived_aggregate_rollup": true,
+  "evidencecore_semantics_changed": false,
+  "excluded_cell_count": 4,
+  "framing": {
+    "default_readiness_claimed": false,
+    "promotion_readiness_claimed": false,
+    "recommended_next_step": "B13_with_caution_or_ts_vite_rerun",
+    "runtime_clean_general_algorithm_claimed": false,
+    "signal_strength": "mechanism_decomposition_partial_with_coverage_exclusions"
+  },
+  "generated_at": "2026-06-19T11:32:35.538014+00:00",
+  "generated_by": "b12_matrix_combiner",
+  "gold_spans_in_artifact": false,
+  "hypotheses": [
+    "H1_ambiguous_routing",
+    "H2_llm_call_reduction",
+    "H3_p25_fallback_sufficiency",
+    "H4_model_specific"
+  ],
+  "hypothesis_status_counts": {
+    "H1_ambiguous_routing": {
+      "refuted": 25,
+      "supported": 3
+    },
+    "H2_llm_call_reduction": {
+      "refuted": 20,
+      "supported": 8
+    },
+    "H3_p25_fallback_sufficiency": {
+      "supported": 28
+    },
+    "H4_model_specific": {
+      "insufficient_data": 28
+    }
+  },
+  "input_b12_schema_version": "b12-mechanism-decomposition-report-v0",
+  "integrity": {
+    "all_inputs_aggregate_only_public_artifact": true,
+    "all_inputs_complete_records_positive": true,
+    "all_inputs_default_should_change_false": true,
+    "all_inputs_evidencecore_semantics_changed_false": true,
+    "all_inputs_forbidden_public_scan_clean": true,
+    "all_inputs_incomplete_record_count_zero": true,
+    "all_inputs_promotion_ready_false": true,
+    "all_inputs_replay_source_ci_ephemeral_records": true,
+    "exclusion_identity_validated": true,
+    "forbidden_public_key_scan_clean": true,
+    "manifest_reconciled": true,
+    "manifest_report_labels_validated": true,
+    "official_matrix_shape_validated": true
+  },
+  "llm_output_not_evidence": true,
+  "mechanism_summary": {
+    "claim_boundary": "B12 mechanism decomposition aggregate; NOT a promotion step, NOT a runtime-clean general algorithm claim, NOT a default change, NOT an EvidenceCore semantics change",
+    "coverage_note": "4 ts_vite cell(s) excluded as coverage_insufficient_no_remote_llm_snippet; these failed the old P21 privacy gate (no remote LLM snippets even at max_tasks=24) and are NOT B12 mechanism failures. Mechanism claims are scoped to the analyzable cells only.",
+    "h1_interpretation": "ambiguous-routing H1 supported on 3/28 analyzable cells; mixed support \u2014 do NOT read as a global H1 supported verdict",
+    "h2_interpretation": "llm-call-reduction H2 supported on 8/28 analyzable cells; mixed support \u2014 single frozen E seed per cell, causal attribution remains limited",
+    "h3_interpretation": "p25-fallback-sufficiency H3 supported on 28/28 analyzable cells (all analyzable cells) \u2014 consistent with primary-quality parity vs D, but NOT a global supported verdict because of the coverage exclusions",
+    "h4_interpretation": "model-specific H4 insufficient_data on 28/28 analyzable cells (every cell is a single-model-family slice, so H4 needs multi-model aggregation across cells; H4 insufficient_data does NOT block H1-H3)",
+    "recommended_next_step": "B13 distributionally robust policy search WITH CAUTION (B13 must not be treated as authorized by a B12 supported verdict); or a future B12 matrix rerun that closes the ts_vite coverage gap",
+    "weighted_a_vs_d_summary": {
+      "false_span_delta": -0.029762,
+      "gold_span_delta": 0.0,
+      "model_calls_delta": -0.333333,
+      "primary_false_positive_rate_delta": -0.014881,
+      "span_f0_5_delta": 0.0
+    },
+    "weighted_mean_robust_utility_a": 0.054155
+  },
+  "metric_names": [
+    "gold_span",
+    "span_f0_5",
+    "false_span",
+    "primary_false_positive_rate",
+    "model_calls"
+  ],
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "per_model_family": {
+    "deepseek_flash": {
+      "cell_count": 7,
+      "record_count": 84,
+      "verdict_counts": {
+        "partial": 7
+      }
+    },
+    "deepseek_pro": {
+      "cell_count": 7,
+      "record_count": 84,
+      "verdict_counts": {
+        "partial": 7
+      }
+    },
+    "kimi": {
+      "cell_count": 7,
+      "record_count": 84,
+      "verdict_counts": {
+        "partial": 7
+      }
+    },
+    "qwen": {
+      "cell_count": 7,
+      "record_count": 84,
+      "verdict_counts": {
+        "partial": 7
+      }
+    }
+  },
+  "per_repo_slice": {
+    "go_chi": {
+      "record_count": 48
+    },
+    "go_prometheus": {
+      "record_count": 48
+    },
+    "java_spring_petclinic": {
+      "record_count": 48
+    },
+    "py_fastapi": {
+      "record_count": 48
+    },
+    "py_pytest": {
+      "record_count": 48
+    },
+    "rust_deno": {
+      "record_count": 48
+    },
+    "ts_hono": {
+      "record_count": 48
+    }
+  },
+  "policy_search_performed": false,
+  "policy_under_analysis": "balanced_v1",
+  "private_labels_committed": false,
+  "promotion_declared": false,
+  "promotion_ready": false,
+  "public_model_family_count": 4,
+  "public_model_family_names": [
+    "deepseek_flash",
+    "deepseek_pro",
+    "kimi",
+    "qwen"
+  ],
+  "public_repo_slice_count": 7,
+  "public_repo_slice_ids": [
+    "go_chi",
+    "go_prometheus",
+    "java_spring_petclinic",
+    "py_fastapi",
+    "py_pytest",
+    "rust_deno",
+    "ts_hono"
+  ],
+  "public_repo_slice_ids_in_artifact": true,
+  "quality_strategy_tuned": false,
+  "raw_digests_in_artifact": false,
+  "raw_line_ranges_in_artifact": false,
+  "raw_paths_in_artifact": false,
+  "raw_prompts_stored": false,
+  "raw_repo_ids_in_artifact": false,
+  "raw_responses_stored": false,
+  "raw_snippets_committed": false,
+  "raw_snippets_stored": false,
+  "record_count_total": 336,
+  "replay_count_totals": {
+    "actual_call_avoided_count": 112,
+    "balanced_branch_count": 112,
+    "p25_llm_eligible_count": 324,
+    "random_selected_count": 112
+  },
+  "run_count": 28,
+  "run_ids_in_artifact": false,
+  "runtime_clean_policy_supported": false,
+  "safety_invariants": {
+    "aggregate_only_public_artifact": true,
+    "default_should_change_false": true,
+    "evidencecore_semantics_changed_false": true,
+    "no_live_llm_calls_by_combiner": true,
+    "no_policy_search": true,
+    "no_private_labels": true,
+    "no_prompts_or_responses": true,
+    "no_raw_paths_or_digests": true,
+    "no_raw_records_read": true,
+    "no_run_ids_emitted": true,
+    "no_threshold_tuning": true,
+    "policy_search_performed_false": true,
+    "promotion_ready_false": true,
+    "runtime_clean_policy_supported_false": true
+  },
+  "schema_version": "b12-mechanism-matrix-aggregate-report-v0",
+  "self_test": false,
+  "source_artifacts_dir_public_note": "already-downloaded aggregate-only public B12 mechanism decomposition reports; no raw records, paths, prompts, responses, snippets, or labels read",
+  "status": "ok",
+  "task_ids_in_artifact": false,
+  "verdict_counts": {
+    "partial": 28
+  },
+  "weighted_mean_deltas_vs_b": {
+    "false_span": -0.130952,
+    "gold_span": 0.0,
+    "model_calls": 0.0,
+    "primary_false_positive_rate": -0.035714,
+    "span_f0_5": 0.0
+  },
+  "weighted_mean_deltas_vs_d": {
+    "false_span": -0.029762,
+    "gold_span": 0.0,
+    "model_calls": -0.333333,
+    "primary_false_positive_rate": -0.014881,
+    "span_f0_5": 0.0
+  },
+  "weighted_mean_deltas_vs_e": {
+    "false_span": -0.592262,
+    "gold_span": -0.044643,
+    "model_calls": 0.0,
+    "primary_false_positive_rate": -0.026786,
+    "span_f0_5": 0.001569
+  },
+  "weighted_mean_robust_utility_a": 0.054155,
+  "winner_declared": false
+}

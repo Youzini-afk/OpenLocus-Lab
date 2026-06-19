@@ -2770,3 +2770,91 @@ Add the B18 OOD / temporal evaluation **preregistration + evaluator skeleton + b
 
 - 这只是 canary-level result：一个 repo、一个 model family、12 records。它**不**证明 B12 mechanism 全局成立，也**不** promotion、**不** default-change、**不**使 balanced_v1 runtime-clean。
 - 下一步是对 B11 repo/model cells 跑完整 B12 matrix，然后聚合 B12 reports，再做机制 claim。
+
+## 2026-06-19 — C2/B12 Official Matrix Aggregate Combiner
+
+### Objective
+
+实现 C2/B12 official matrix aggregate combiner：一个有界的 derived aggregate
+rollup，把一次已完成的 C2/B12 official integrated matrix run 产生的 per-run
+`b12-mechanism-decomposition-report-v0` 公共 aggregate 报告合并为一份
+aggregate-only public artifact。它是 aggregate-only；**不**运行 providers、**不**运行
+policy search、**不** promotion、**不**修改 defaults、**不**修改 `EvidenceCore` 语义。
+
+### Implementation notes
+
+- 新增 evaluator `eval/b12_matrix_combiner.py`（纯 Python）。CLI：`--self-test`
+  （synthetic 3-cell + 1-exclusion fixture，校验 schema/safety/weighted means/
+  forbidden scan/verdict）；`--artifacts-dir <path>`（递归发现其下的
+  `b12_mechanism_decomposition_report.json`，从 `real-provider-p21_llm_rich-<run_id>`
+  路径组件解析 run_id）；可选 `--manifest <path>`（强制 `included`/`excluded` 计数，
+  并把每个已发现报告的 run_id 对账到 manifest 的 included cell）；`--out <path>` 默认
+  `artifacts/b12_mechanism_decomposition/b12_matrix_aggregate_report.json`。
+- 输出 schema：`b12-mechanism-matrix-aggregate-report-v0`。Aggregate-only public：**无**
+  run IDs、task IDs、raw repo IDs、paths/spans/content_sha/prompts/responses/snippets/
+  provider URLs/keys。公共 repo slice IDs 与 model-family 名仅作为 manifest 中的 slice IDs
+  再发布，绝不作为 run IDs。
+- 逐输入校验：schema version `b12-mechanism-decomposition-report-v0`、
+  `aggregate_only_public_artifact=true`、`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`、
+  `replay_source == ci_ephemeral_records`、无 forbidden public keys/values
+  （复用 `b6_lite_interpretable_policy_search._walk_forbidden`）、included cell 的
+  `complete_records > 0` 且 `incomplete_record_count == 0`。
+- 在 28 个 analyzable cells 上聚合：`cell_count_target=32`、`analyzable_cell_count=28`、
+  `excluded_cell_count=4`；`record_count_total`；`coverage_exclusions`（按公共 repo slice +
+  model family + reason，无 run ids）；基于 per-run B12 verdict 的 `verdict_counts`；
+  H1/H2/H3/H4 的 `hypothesis_status_counts`；对 `gold_span`、`span_f0_5`、`false_span`、
+  `primary_false_positive_rate`、`model_calls` 计算相对 D/E/B 的 record-weighted 均值 delta
+  （以 `complete_records` 为权重），外加 A 的 record-weighted 均值 robust utility；
+  `replay_count_totals` 覆盖 `balanced_branch_count`、`p25_llm_eligible_count`、
+  `actual_call_avoided_count`、`random_selected_count`；保守的 `mechanism_summary`。
+
+### Findings — run reconciliation
+
+- 目标 matrix：32 cells（8 个公共 repo slice × 4 个公共 model family）。
+- Analyzable：28 cells（8 个 repo slice 中 7 个 slice 的全部 4 个 model family ——
+  `py_fastapi`、`py_pytest`、`ts_hono`、`go_chi`、`go_prometheus`、`rust_deno`、
+  `java_spring_petclinic`）。
+- Excluded：4 cells，全部为 `ts_vite` × {kimi, qwen, deepseek_flash, deepseek_pro}，
+  `status=coverage_insufficient_no_remote_llm_snippet`。这些 cells 即使 `max_tasks=24`
+  也未 exercise remote LLM snippets，故被旧 P21 privacy gate 拒绝。它们被视为
+  coverage-insufficient，**不**视为 B12 mechanism failure。
+- Matrix run 期间出现 transient Cargo failures，已成功重试（两次 `ts_hono × deepseek_pro`
+  与 `java_spring_petclinic × deepseek_flash` 重试成功，`source=
+  retry_success_replacing_transient_failure`）。**未**基于这些重试做任何 promotion、
+  default 或 runtime-clean 声明。
+
+### Findings — 生成 aggregate 的关键指标
+
+- `record_count_total=336`（每 cell 12 条 complete records）。
+- `verdict_counts={"partial": 28}`。
+- `hypothesis_status_counts`：H1 `supported: 3 / refuted: 25`；H2
+  `supported: 8 / refuted: 20`；H3 `supported: 28`；H4 `insufficient_data: 28`
+  （每个 cell 都是 single-model-family slice，故 H4 需跨 cell 的 multi-model
+  aggregation；按设计 H4 insufficient_data **不**阻断 H1-H3 verdict）。
+- Record-weighted A（full balanced）deltas vs D（P25 default）：`Δgold_span 0.0`、
+  `ΔSpanF0.5 0.0`、`Δfalse_span -0.029762`、`ΔPFP -0.014881`、`Δmodel_calls -0.333333`；
+  vs E（random call reduction）：`Δgold_span -0.044643`、`ΔSpanF0.5 0.001569`、
+  `Δfalse_span -0.592262`、`ΔPFP -0.026786`、`Δmodel_calls 0.0`；vs B（deterministic
+  call reduction）：`Δgold_span 0.0`、`ΔSpanF0.5 0.0`、`Δfalse_span -0.130952`、
+  `ΔPFP -0.035714`、`Δmodel_calls 0.0`。
+- `weighted_mean_robust_utility_a = 0.054155`。
+- `replay_count_totals`：`balanced_branch_count=112`、`p25_llm_eligible_count=324`、
+  `actual_call_avoided_count=112`、`random_selected_count=112`。
+- `aggregate_verdict = partial_with_coverage_exclusions`。
+
+### Caveats
+
+- 这是 per-cell B12 报告的 aggregate，**不**是 promotion step、**不**是 default change、
+  **不**是 runtime-clean general algorithm claim、**不**是 `EvidenceCore` semantics change。
+  `promotion_ready=false`、`default_should_change=false`、
+  `evidencecore_semantics_changed=false`、`policy_search_performed=false`、
+  `runtime_clean_policy_supported=false`、`new_provider_calls=0`、`candidate_not_fact=true`。
+- 4 个 `ts_vite` 排除是覆盖缺口（无 remote LLM snippets），**不**是 B12 mechanism failure。
+  机制 claim 仅限定在 28 个 analyzable cells 上。
+- 按策略从不发出全局 `supported` verdict：存在覆盖排除时 verdict 为
+  `partial_with_coverage_exclusions`；即使 32/32 也仍为 `partial`（不过度声称 H1/H2/H3）。
+- H2 因果归因受限于每 cell 单一冻结 E seed（`e_random_seed=20260618`）；seed-averaging
+  暂缓。
+- 建议下一步：B13 distributionally robust policy search **需谨慎**（B13 绝不可被当作被
+  B12 supported verdict 授权），或未来重跑 B12 matrix 以闭合 `ts_vite` 覆盖缺口。

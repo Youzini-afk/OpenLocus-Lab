@@ -741,6 +741,54 @@ records and emits only an aggregate public report. The B12 report used
 because this is a single-model-family slice). This is canary-level evidence
 only; the full B12 matrix over B11 repo/model cells remains the next step.
 
+C2/B12 official matrix aggregate (2026-06-19):
+
+```text
+schema_version: b12-mechanism-matrix-aggregate-report-v0
+claim_level: derived_aggregate_of_b12_mechanism_decomposition_reports
+aggregate_only_public_artifact: true
+promotion_ready: false
+default_should_change: false
+evidencecore_semantics_changed: false
+policy_search_performed: false
+runtime_clean_policy_supported: false
+new_provider_calls: 0
+candidate_not_fact: true
+cell_count_target: 32
+analyzable_cell_count: 28
+excluded_cell_count: 4
+aggregate_verdict: partial_with_coverage_exclusions
+```
+
+The **C2/B12 official matrix aggregate** combines the 28 analyzable per-run
+`b12-mechanism-decomposition-report-v0` public aggregate reports (one per
+included repo×model cell) into a single derived aggregate
+(`eval/b12_matrix_combiner.py` →
+`artifacts/b12_mechanism_decomposition/b12_matrix_aggregate_report.json`). It
+is bounded: it reads only already-downloaded aggregate-only public B12
+reports, performs no provider calls, no policy search, and no threshold
+tuning. Coverage: `28/32` cells analyzable, `4` `ts_vite` cells excluded as
+`coverage_insufficient_no_remote_llm_snippet` (they did not exercise remote
+LLM snippets even at `max_tasks=24`; these are coverage gaps, NOT B12
+mechanism failures). Records: `336` total (`12` per cell). Verdict counts:
+`partial: 28`. Hypothesis status counts: H1 `supported: 3 / refuted: 25`, H2
+`supported: 8 / refuted: 20`, H3 `supported: 28`, H4 `insufficient_data: 28`
+(every cell is a single-model-family slice, so H4 needs multi-model
+aggregation across cells; H4 insufficient_data does NOT block the H1-H3
+verdict). Record-weighted A (full balanced) deltas vs D (P25 default):
+`Δgold_span 0.0`, `ΔSpanF0.5 0.0`, `Δfalse_span -0.029762`,
+`ΔPFP -0.014881`, `Δmodel_calls -0.333333`; vs E (random call reduction):
+`Δgold_span -0.044643`, `ΔSpanF0.5 0.001569`, `Δfalse_span -0.592262`,
+`ΔPFP -0.026786`, `Δmodel_calls 0.0`; vs B (deterministic call reduction):
+`Δgold_span 0.0`, `ΔSpanF0.5 0.0`, `Δfalse_span -0.130952`,
+`ΔPFP -0.035714`, `Δmodel_calls 0.0`. Weighted mean robust utility (A):
+`0.054155`. Replay count totals: `balanced_branch_count=112`,
+`p25_llm_eligible_count=324`, `actual_call_avoided_count=112`,
+`random_selected_count=112`. Overall verdict:
+`partial_with_coverage_exclusions` — NOT a global `supported` verdict, NOT a
+promotion, NOT a default change, NOT a runtime-clean general algorithm claim.
+See [`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md).
+
 B12 public aggregate mechanism screen (2026-06-18):
 
 ```text
