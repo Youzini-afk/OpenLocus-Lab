@@ -740,6 +740,19 @@ jobs:
                 if [[ -f "$P25_RECORDS" ]]; then
                   python3 eval/b12_mechanism_decomposition.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/b12_mechanism_decomposition_report.json
                 fi
+                # C3 Budgeted Evidence Acquisition v0: replay-only policy experiment
+                # over the SAME ephemeral $P25_RECORDS via the C1 private-records
+                # adapter, before they are deleted below. Per-cell C3 emits
+                # sufficient stats only and NO winner (diagnostic-rank-only);
+                # candidate selection is deferred to the matrix combiner. A
+                # scientific no-result (status coverage_insufficient /
+                # insufficient_data) is a VALID result and must NOT fail CI;
+                # only file/parse/privacy/schema failures fail (the validator
+                # block below enforces promotion_ready=false / default_should_change=false
+                # and the generic aggregate-only scans).
+                if [[ -f "$P25_RECORDS" ]]; then
+                  python3 eval/c3_budgeted_evidence_acquisition.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/c3_budgeted_evidence_acquisition_report.json
+                fi
                 rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
@@ -2955,6 +2968,101 @@ jobs:
                   b12_walk(data)
                   if b12_leaks:
                       raise SystemExit(f"{json_path} forbidden public values leaked: {b12_leaks[:5]}")
+              if json_path.name == "c3_budgeted_evidence_acquisition_report.json":
+                  # C3 Budgeted Evidence Acquisition v0: per-cell C3 emits
+                  # sufficient stats only and NO winner (diagnostic-rank-only).
+                  # Candidate selection is deferred to the matrix combiner.
+                  if data.get("schema_version") != "c3-budgeted-evidence-acquisition-report-v0":
+                      raise SystemExit(f"{json_path} schema_version mismatch")
+                  if data.get("generated_by") != "c3_budgeted_evidence_acquisition":
+                      raise SystemExit(f"{json_path} generated_by mismatch")
+                  if data.get("algorithm_spec_id") != "c3_budgeted_evidence_acquisition_v0":
+                      raise SystemExit(f"{json_path} algorithm_spec_id mismatch")
+                  if data.get("claim_level") != "budgeted_replay_policy_experiment_v0":
+                      raise SystemExit(f"{json_path} claim_level mismatch")
+                  if data.get("status") not in {"ok_cell_stats", "coverage_insufficient", "insufficient_data", "privacy_or_schema_blocked"}:
+                      raise SystemExit(f"{json_path} status not in allowed enum")
+                  if data.get("action_set") != ["candidate_baseline", "weak_candidate_only", "llm_span_narrow", "llm_filter", "llm_abstain_filter"]:
+                      raise SystemExit(f"{json_path} action_set mismatch")
+                  expected_candidate_policy_ids = ["local_only", "weak_on_noise_else_local", "span_narrow_on_anchor_else_local", "filter_on_noise_else_span_narrow_on_anchor_else_local", "abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local", "weak_on_disagreement_span_on_anchor_else_local"]
+                  if data.get("candidate_policy_ids") != expected_candidate_policy_ids:
+                      raise SystemExit(f"{json_path} candidate_policy_ids mismatch")
+                  baselines = data.get("baselines") or {}
+                  for bid in ("p25", "balanced_v1"):
+                      b = baselines.get(bid) or {}
+                      if b.get("runtime_clean_candidate_policy") is not False:
+                          raise SystemExit(f"{json_path} baselines.{bid}.runtime_clean_candidate_policy must be false")
+                      if b.get("benchmark_label_taint") is not True:
+                          raise SystemExit(f"{json_path} baselines.{bid}.benchmark_label_taint must be true")
+                      if b.get("is_candidate_policy") is not False:
+                          raise SystemExit(f"{json_path} baselines.{bid}.is_candidate_policy must be false")
+                  if data.get("winner_declared") is not False:
+                      raise SystemExit(f"{json_path} winner_declared must be false (no per-cell winner)")
+                  if data.get("cell_diagnostic_rank_only") is not True:
+                      raise SystemExit(f"{json_path} cell_diagnostic_rank_only must be true")
+                  if data.get("candidate_selection_deferred_to_matrix_combiner") is not True:
+                      raise SystemExit(f"{json_path} candidate_selection_deferred_to_matrix_combiner must be true")
+                  if data.get("runtime_clean_policy_inputs_only") is not True:
+                      raise SystemExit(f"{json_path} runtime_clean_policy_inputs_only must be true")
+                  if data.get("selected_actions_invariant_under_private_field_permutation") is not True:
+                      raise SystemExit(f"{json_path} selected_actions_invariant_under_private_field_permutation must be true")
+                  if data.get("remote_calls_by_c3") != 0:
+                      raise SystemExit(f"{json_path} remote_calls_by_c3 must be 0")
+                  if data.get("model_calls_by_replay") != 0:
+                      raise SystemExit(f"{json_path} model_calls_by_replay must be 0")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must be aggregate-only")
+                  if data.get("promotion_ready") is not False:
+                      raise SystemExit(f"{json_path} promotion_ready must be false")
+                  if data.get("default_should_change") is not False:
+                      raise SystemExit(f"{json_path} default_should_change must be false")
+                  if data.get("evidencecore_semantics_changed") is not False:
+                      raise SystemExit(f"{json_path} evidencecore_semantics_changed must be false")
+                  # CI --input report must be a real empirical replay experiment.
+                  if data.get("empirical_algorithm_experiment_performed") is not True:
+                      raise SystemExit(f"{json_path} empirical_algorithm_experiment_performed must be true for CI input report")
+                  if data.get("policy_search_or_enumeration_performed") is not True:
+                      raise SystemExit(f"{json_path} policy_search_or_enumeration_performed must be true for CI input report")
+                  if data.get("replay_only") is not True:
+                      raise SystemExit(f"{json_path} replay_only must be true")
+                  # Required aggregate sections.
+                  for section in ["per_policy", "baselines", "deltas", "diagnostic_rank_only", "feature_presence_counts", "safety_invariants", "objective_constants"]:
+                      if section not in data:
+                          raise SystemExit(f"{json_path} missing required section {section}")
+                  # Recursive forbidden key/value scan (C3-specific banned keys,
+                  # including all evaluator forbidden keys plus label/hash/digest/
+                  # task_bucket). Safe metric names like added_false_span /
+                  # primary_false_positive_rate / added_gold_span are exact-match
+                  # only and remain allowed.
+                  c3_banned = {"task_id", "test_id", "repo_id", "run_id", "private_record_hash", "record_hash", "source_ordinal", "candidate_id", "path", "span", "content_sha", "query", "raw_query", "snippet", "prompt", "response", "provider_key", "api_key", "base_url", "score_group", "has_gold", "outcomes", "strategy_results", "p31_score_gold", "p31_candidate_pools", "p33b_anchor_subtypes", "task_risk_tags", "route_features", "private_label", "private_labels", "label", "labels", "gold_spans", "hash", "digest", "task_bucket"}
+                  import re as _re_c3
+                  _c3_value_res = [
+                      _re_c3.compile(r"\b(?:sha_?(?:1|256)?|content_?sha)\b[\s:=]+[A-Fa-f0-9]{40,}", _re_c3.I),
+                      _re_c3.compile(r"https?://", _re_c3.I),
+                      _re_c3.compile(r"\b(?:api[_-]?key|base[_-]?url|api[_-]?secret|api[_-]?token)\b\s*[:=]\s*\S", _re_c3.I),
+                      _re_c3.compile(r"\b[A-Fa-f0-9]{64}\b"),
+                      _re_c3.compile(r"/"),
+                  ]
+                  c3_leaks = []
+                  def c3_walk(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              key_str = str(key)
+                              if key_str in c3_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key_str}")
+                              c3_walk(value, prefix + key_str + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              c3_walk(value, prefix + str(idx) + ".")
+                      elif isinstance(obj, str):
+                          if len(obj) > 512:
+                              c3_leaks.append(f"{prefix}:long_string")
+                          for p in _c3_value_res:
+                              if p.search(obj):
+                                  c3_leaks.append(f"{prefix}:forbidden_value")
+                  c3_walk(data)
+                  if c3_leaks:
+                      raise SystemExit(f"{json_path} forbidden public values leaked: {c3_leaks[:5]}")
               if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p51c_live_micro_run_planner_report.json", "p57_generalization_gate_report.json", "p58_source_backed_verifier_calibration_report.json", "p59_contrastive_pack_coverage_counterfactual_report.json", "p60_rmc_policy_v2_report.json", "p61_pre_spend_gate_report.json", "p62_generalization_matrix_aggregator_report.json"}:
 
 

@@ -2884,3 +2884,124 @@ defaults, and does NOT alter `EvidenceCore` semantics.
 - Recommended next step: B13 distributionally robust policy search WITH CAUTION
   (B13 must not be treated as authorized by a B12 supported verdict), or a
   future B12 matrix rerun that closes the `ts_vite` coverage gap.
+
+## 2026-06-19 — C3 Budgeted Evidence Acquisition v0 (Replay Evaluator)
+
+### Objective
+
+Implement C3 Budgeted Evidence Acquisition v0 as a real replay policy
+experiment over the C1 private-records adapter, not a skeleton. C3 replays a
+frozen interpretable candidate policy set (each a function of a runtime-clean
+`route_features` dict only) against P21 per-strategy outcomes, computes a
+budgeted evidence utility, and compares candidate policies to the P25 and
+balanced_v1 baselines under a common-complete denominator.
+
+### Implementation
+
+- New evaluator `eval/c3_budgeted_evidence_acquisition.py` (pure Python; uses
+  `eval/c1_private_records.py`). Modes: `--self-test` (synthetic fixture
+  only, no empirical claim), `--regenerate-artifacts` (canonical synthetic
+  spec + self-test report), `--input <path>` (real aggregate-only replay
+  report; `replay_source="ci_ephemeral_records"`).
+- New frozen algorithm spec
+  `artifacts/c3_budgeted_evidence_acquisition/c3_budgeted_evidence_acquisition.algorithm.json`
+  (deterministic, stable sha256
+  `9c1b0842e030c95d1e54cd2bfe97b0bdf39335560172de8e25d3677ff8e5e8d2`).
+- New synthetic self-test report
+  `artifacts/c3_budgeted_evidence_acquisition/c3_budgeted_evidence_acquisition_report.json`.
+- New docs `docs/en/c3-budgeted-evidence-acquisition.md` and
+  `docs/zh/c3-budgeted-evidence-acquisition.md`.
+- CI workflow integration in `.github/workflows/real-provider-benchmark.yml`:
+  after B12 consumes `$P25_RECORDS` and before `rm -f "$P25_RECORDS"`, C3
+  runs `python3 eval/c3_budgeted_evidence_acquisition.py --input "$P25_RECORDS"
+  --out artifacts/real_provider_ci/c3_budgeted_evidence_acquisition_report.json`.
+  Per-cell C3 emits sufficient stats only and no winner.
+
+### Frozen design (no outcome tuning)
+
+- Allowed runtime features (frozen allowlist of 10): `query_noise`,
+  `candidate_support_exists`, `local_anchor`, `rrf_backed_by_anchor`,
+  `candidate_count`, `symbol_regex_agree_file`, `symbol_regex_agree_span`,
+  `rrf_anchor_agree_file`, `rrf_anchor_agree_span`, `dense_support_present`.
+  Absent features are treated as false / 0; only aggregate
+  `feature_presence_counts` are emitted (the raw `route_features` dict is a
+  forbidden public key).
+- Allowed candidate actions (frozen): `candidate_baseline`,
+  `weak_candidate_only`, `llm_span_narrow`, `llm_filter`,
+  `llm_abstain_filter`. P25 and balanced_v1 are NOT candidate actions; they
+  are baselines only and marked `runtime_clean_candidate_policy=false`,
+  `benchmark_label_taint=true`.
+- Frozen candidate policy set (6, interpretable, NOT outcome-derived):
+  `local_only`, `weak_on_noise_else_local`,
+  `span_narrow_on_anchor_else_local`,
+  `filter_on_noise_else_span_narrow_on_anchor_else_local`,
+  `abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local`,
+  `weak_on_disagreement_span_on_anchor_else_local`.
+- Objective constants: `lambda=1.0`, `mu=1.0`, `cost_weight=0.1`.
+  `utility = span_f0_5 - lambda*added_false_span -
+  mu*primary_false_positive_rate - cost_weight*model_calls`.
+- Coverage: common-complete denominator across all candidate policies and
+  baselines; a record is excluded if any selected action outcome is missing.
+  `complete_records==0` => `status=coverage_insufficient`. Per-cell report
+  declares NO winner: `winner_declared=false`,
+  `cell_diagnostic_rank_only=true`,
+  `candidate_selection_deferred_to_matrix_combiner=true`.
+
+### Runtime-clean hard rule
+
+Candidate policies receive ONLY a projected `route_features` dict, never a
+`PrivateRecord`, and never read `task_bucket` / `task_risk_tags` / `has_gold`
+/ `score_group` / `outcomes` / `task_id` / `repo_id` / `model_family` /
+`language` / private hashes. The evaluator verifies routing invariance via a
+real PrivateRecord-field scrub test (scrubbed copy with every non-
+`route_features` field replaced with sentinel/permuted values guaranteed to
+differ from the original) and surfaces
+`selected_actions_invariant_under_private_field_permutation=true`
+and `runtime_clean_policy_inputs_only=true`.
+
+### Safety invariants
+
+- `empirical_algorithm_experiment_performed=true` and
+  `policy_search_or_enumeration_performed=true` only under `--input` on real
+  records (synthetic self-test sets both false).
+- `replay_only=true`, `remote_calls_by_c3=0`, `model_calls_by_replay=0`,
+  `promotion_ready=false`, `default_should_change=false`,
+  `evidencecore_semantics_changed=false`,
+  `aggregate_only_public_artifact=true`.
+- Forbidden public keys scan rejects `task_id` / `repo_id` / `run_id` /
+  `private_record_hash` / `route_features` / `outcomes` / `p31_score_gold` /
+  `p31_candidate_pools` / `p33b_anchor_subtypes` / `task_risk_tags` / `path`
+  / `span` / `content_sha` / `query` / `raw_query` / `snippet` / `prompt`
+  / `response` / `provider_key` / `api_key` / `base_url` / `score_group`
+  / `has_gold` / `strategy_results` / `source_ordinal` / `candidate_id` /
+  `record_hash` / `test_id` / `private_label` / `private_labels` / `label`
+  / `labels` / `gold_spans` / `hash` / `digest` / `task_bucket`. The scan is
+  exact-match on key names, so safe metric names like `added_false_span` /
+  `primary_false_positive_rate` / `added_gold_span` remain allowed. Aggregate
+  `model_family` / `language` counts are emitted; `task_bucket` counts are
+  omitted for v0.
+
+### Self-test
+
+`python3 eval/c3_budgeted_evidence_acquisition.py --self-test` passes (11
+checks: forbidden scan, spec hash stable, action/feature allowlists frozen,
+objective constants frozen, runtime-clean invariance (real PrivateRecord-
+field scrub test), P25/balanced not candidate policies, synthetic-fixture
+mechanics, `--input` full mode on a synthetic C1 payload, missing-outcome =>
+`coverage_insufficient`, no per-cell winner, on-disk artifacts match in-memory
+build (drift detection), docs paths exist). The self-test is strictly
+read-only and MUST NOT mutate checked-in artifacts; use
+`--regenerate-artifacts` to update canonical artifacts.
+
+### Caveats
+
+- C3 is a budgeted replay policy experiment, NOT a promotion step, NOT a
+  default change, NOT an `EvidenceCore` semantics change, NOT a
+  runtime-clean general algorithm proof. `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`.
+- Per-cell C3 declares NO winner; candidate selection is deferred to the
+  matrix combiner. The diagnostic rank is ordering-only, not a claim.
+- Synthetic self-test fixtures confer no empirical support; only `--input`
+  on real P21 records sets `empirical_algorithm_experiment_performed=true`.
+- The frozen candidate policy set is an enumeration, not a tuned search; no
+  threshold or policy is tuned from outcomes.

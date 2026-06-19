@@ -2858,3 +2858,116 @@ policy search、**不** promotion、**不**修改 defaults、**不**修改 `Evid
   暂缓。
 - 建议下一步：B13 distributionally robust policy search **需谨慎**（B13 绝不可被当作被
   B12 supported verdict 授权），或未来重跑 B12 matrix 以闭合 `ts_vite` 覆盖缺口。
+
+## 2026-06-19 — C3 Budgeted Evidence Acquisition v0（Replay Evaluator）
+
+### Objective
+
+将 C3 Budgeted Evidence Acquisition v0 实现为基于 C1 私有记录适配器的真实
+replay policy 实验，而非 skeleton。C3 把一个冻结的、可解释的候选策略集合
+（每个策略只是一个 runtime-clean `route_features` 字典的纯函数）replay 到
+P21 的 per-strategy outcomes 上，计算 budgeted evidence utility，并在
+common-complete 分母下将候选策略与 P25 和 balanced_v1 两个 baseline 比较。
+
+### Implementation
+
+- 新 evaluator `eval/c3_budgeted_evidence_acquisition.py`（纯 Python；使用
+  `eval/c1_private_records.py`）。模式：`--self-test`（仅 synthetic fixture，
+  无 empirical claim）、`--regenerate-artifacts`（canonical synthetic spec +
+  self-test 报告）、`--input <path>`（真实 aggregate-only replay 报告；
+  `replay_source="ci_ephemeral_records"`）。
+- 新冻结 algorithm spec
+  `artifacts/c3_budgeted_evidence_acquisition/c3_budgeted_evidence_acquisition.algorithm.json`
+  （确定性、稳定 sha256
+  `9c1b0842e030c95d1e54cd2bfe97b0bdf39335560172de8e25d3677ff8e5e8d2`）。
+- 新 synthetic self-test 报告
+  `artifacts/c3_budgeted_evidence_acquisition/c3_budgeted_evidence_acquisition_report.json`。
+- 新文档 `docs/en/c3-budgeted-evidence-acquisition.md` 和
+  `docs/zh/c3-budgeted-evidence-acquisition.md`。
+- CI workflow 集成于 `.github/workflows/real-provider-benchmark.yml`：在 B12
+  消费 `$P25_RECORDS` 之后、`rm -f "$P25_RECORDS"` 之前，C3 运行
+  `python3 eval/c3_budgeted_evidence_acquisition.py --input "$P25_RECORDS"
+  --out artifacts/real_provider_ci/c3_budgeted_evidence_acquisition_report.json`。
+  per-cell C3 只输出充分统计信息且不声明 winner。
+
+### Frozen design（不从 outcome 调参）
+
+- 允许的 runtime features（冻结 allowlist，共 10 个）：`query_noise`、
+  `candidate_support_exists`、`local_anchor`、`rrf_backed_by_anchor`、
+  `candidate_count`、`symbol_regex_agree_file`、`symbol_regex_agree_span`、
+  `rrf_anchor_agree_file`、`rrf_anchor_agree_span`、`dense_support_present`。
+  缺失 feature 视为 false / 0；只输出 aggregate `feature_presence_counts`
+  （raw `route_features` 字典是 forbidden public key）。
+- 允许的 candidate actions（冻结）：`candidate_baseline`、
+  `weak_candidate_only`、`llm_span_narrow`、`llm_filter`、
+  `llm_abstain_filter`。P25 和 balanced_v1 **不**是 candidate actions；它们
+  只作 baseline，标记 `runtime_clean_candidate_policy=false`、
+  `benchmark_label_taint=true`。
+- 冻结候选策略集合（6 个，可解释，**不**从 outcome 派生）：`local_only`、
+  `weak_on_noise_else_local`、`span_narrow_on_anchor_else_local`、
+  `filter_on_noise_else_span_narrow_on_anchor_else_local`、
+  `abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local`、
+  `weak_on_disagreement_span_on_anchor_else_local`。
+- Objective 常量：`lambda=1.0`、`mu=1.0`、`cost_weight=0.1`。
+  `utility = span_f0_5 - lambda*added_false_span -
+  mu*primary_false_positive_rate - cost_weight*model_calls`。
+- 覆盖：所有候选策略和 baseline 使用 common-complete 分母；若任一所选 action
+  outcome 缺失则排除该记录。`complete_records==0` =>
+  `status=coverage_insufficient`。per-cell 报告**不**声明 winner：
+  `winner_declared=false`、`cell_diagnostic_rank_only=true`、
+  `candidate_selection_deferred_to_matrix_combiner=true`。
+
+### Runtime-clean 硬规则
+
+候选策略**只**接收投影后的 `route_features` 字典，**绝不**接收
+`PrivateRecord`，**绝不**读取 `task_bucket` / `task_risk_tags` / `has_gold`
+/ `score_group` / `outcomes` / `task_id` / `repo_id` / `model_family` /
+`language` / 私有 hash。evaluator 通过**真实的 PrivateRecord 字段 scrub 测试**
+验证 routing invariance（scrubbed 副本中每个非 `route_features` 字段被替换为
+保证与原始值不同的 sentinel/permuted 值），并暴露
+`selected_actions_invariant_under_private_field_permutation=true` 和
+`runtime_clean_policy_inputs_only=true`。
+
+### Safety invariants
+
+- `empirical_algorithm_experiment_performed=true` 和
+  `policy_search_or_enumeration_performed=true` 仅在真实记录的 `--input`
+  下为 true（synthetic self-test 两者皆 false）。
+- `replay_only=true`、`remote_calls_by_c3=0`、`model_calls_by_replay=0`、
+  `promotion_ready=false`、`default_should_change=false`、
+  `evidencecore_semantics_changed=false`、
+  `aggregate_only_public_artifact=true`。
+- Forbidden public keys 扫描拒绝 `task_id` / `repo_id` / `run_id` /
+  `private_record_hash` / `route_features` / `outcomes` / `p31_score_gold` /
+  `p31_candidate_pools` / `p33b_anchor_subtypes` / `task_risk_tags` / `path`
+  / `span` / `content_sha` / `query` / `raw_query` / `snippet` / `prompt`
+  / `response` / `provider_key` / `api_key` / `base_url` / `score_group`
+  / `has_gold` / `strategy_results` / `source_ordinal` / `candidate_id` /
+  `record_hash` / `test_id` / `private_label` / `private_labels` / `label`
+  / `labels` / `gold_spans` / `hash` / `digest` / `task_bucket`。扫描对 key 名
+  为精确匹配，因此安全的 metric 名如 `added_false_span` /
+  `primary_false_positive_rate` / `added_gold_span` 仍然允许。aggregate
+  `model_family` / `language` 计数允许；v0 省略 `task_bucket` 计数。
+
+### Self-test
+
+`python3 eval/c3_budgeted_evidence_acquisition.py --self-test` 通过（11 项
+检查：forbidden 扫描、spec hash 稳定、action/feature allowlist 冻结、
+objective 常量冻结、runtime-clean invariance（真实 PrivateRecord 字段 scrub
+测试）、P25/balanced 非 candidate policy、synthetic-fixture mechanics、
+synthetic C1 payload 的 `--input` 完整模式、missing-outcome =>
+`coverage_insufficient`、无 per-cell winner、磁盘 artifact 与内存构建一致
+（drift 检测）、docs 路径存在）。self-test 严格只读，**绝不**修改 checked-in
+artifact；使用 `--regenerate-artifacts` 更新 canonical artifact。
+
+### Caveats
+
+- C3 是 budgeted replay policy 实验，**不**是 promotion step、**不**是
+  default change、**不**是 `EvidenceCore` 语义变更、**不**是 runtime-clean
+  general algorithm 证明。`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`。
+- per-cell C3 **不**声明 winner；候选选择推迟到 matrix combiner。诊断 rank
+  仅为排序，不是 claim。
+- synthetic self-test fixture 不赋予任何 empirical support；只有真实 P21
+  记录的 `--input` 才设置 `empirical_algorithm_experiment_performed=true`。
+- 冻结候选策略集合是枚举，不是调参搜索；不从 outcomes 调参阈值或策略。
