@@ -12,7 +12,8 @@ C1 私有记录适配器（`eval/c1_private_records.py`）的**真实 replay pol
 > **重要的 claim 边界。** C3 是 budgeted replay policy 实验，**不**是 promotion
 > step。per-cell 公开报告是 **diagnostic-rank-only**：它只输出充分的 aggregate
 > 统计信息和按 utility 的候选策略诊断排序，但**绝不**声明 winner。per-cell
-> 候选选择被推迟到 matrix combiner。`promotion_ready=false`、
+> 候选选择被推迟到 matrix aggregate combiner，而该 combiner 本身只产生诊断
+> rank，并将选择推迟到未来的 preregistered matrix。`promotion_ready=false`、
 > `default_should_change=false`，`EvidenceCore` 语义不变。
 
 ## Runtime-clean 硬规则
@@ -232,6 +233,82 @@ artifact。synthetic fixture 不赋予任何 empirical support。
 - `artifacts/real_provider_ci/c3_budgeted_evidence_acquisition_report.json`
   （CI ephemeral-records replay 报告；scientific status 是有效的 CI 结果，
   可能是 `ok_cell_stats` / `coverage_insufficient` / `insufficient_data`）
+- `artifacts/c3_budgeted_evidence_acquisition/c3_matrix_aggregate_report.json`
+  （官方 C3 matrix aggregate 汇总：28 个可分析 per-cell 报告 + 4 个 `ts_vite`
+  coverage exclusion；见下方“Matrix combiner”）
+
+## Matrix combiner
+
+`eval/c3_matrix_combiner.py` 是**有界的派生 aggregate 汇总**，将已下载的
+per-cell `c3-budgeted-evidence-acquisition-report-v0` 公开 artifact 合并为一个
+`c3-budgeted-evidence-acquisition-matrix-report-v0` aggregate。它只读取已公开的
+per-cell 报告和 32 个规划 cell 的扁平 manifest；**不**读取 raw records、paths、
+prompts、responses、snippets、hashes 或 labels。
+`remote_calls_by_combiner=0`、`model_calls_by_combiner=0`。
+
+### 声明边界（matrix aggregate）
+
+matrix aggregate **仅用于 diagnostic-rank**。它：
+
+- **不**声明 winner（`winner_declared=false`）；
+- **不**选择任何候选策略（每个 policy `candidate_selected=false`）；
+- 将候选选择推迟到**未来的 preregistered matrix**
+  （`candidate_selection_deferred_to_future_preregistered_matrix=true`）；
+- **不**声明 promotion（`promotion_ready=false`）、default 变更
+  （`default_should_change=false`）、`EvidenceCore` 语义变更
+  （`evidencecore_semantics_changed=false`），也**不**声明 runtime-clean 通用
+  算法；
+- **不**执行 policy 搜索、调参或基于 outcomes 的阈值重调。
+
+`diagnostic_rank_only_global` 字段是候选策略按 aggregate mean `utility` 降序的
+排序结果。它**仅是排序**，**不可**解读为 winner/freeze/default/promotion。
+diagnostic 排名第一的策略**并不**是被选中的策略。
+
+### 官方 matrix 结果（2026-06-19）
+
+基于 28 个可分析 cell（336 complete records）+ 4 个 `ts_vite` coverage exclusion
+（`coverage_insufficient_no_remote_llm_snippet`）的官方 C3 matrix aggregate：
+
+- `status=matrix_aggregate_ok_with_exclusions`；`planned_cells=32`、
+  `included_cells=28`、`coverage_excluded_cells=4`、`complete_records=336`。
+- `diagnostic_rank_only_global[0]=weak_on_disagreement_span_on_anchor_else_local`
+  （mean `utility=-0.167791`、mean `model_calls=0.511905`）；其后：
+  `abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local`
+  （`utility=-0.199933`）、`span_narrow_on_anchor_else_local`
+  （`utility=-0.268981`）、`filter_on_noise_else_span_narrow_on_anchor_else_local`
+  （`utility=-0.270171`）、`weak_on_noise_else_local`（`utility=-1.578684`）、
+  `local_only`（`utility=-1.638208`）。**未声明任何 winner。**
+- baselines（record 加权均值）：`p25` mean `utility=-0.227093`
+  （mean `model_calls=0.964286`）；`balanced_v1` mean `utility=-0.146141`
+  （mean `model_calls=0.630953`）。
+- diagnostic 排名第一相对 `p25` 的 delta：
+  `weak_on_disagreement_span_on_anchor_else_local`
+  （`Δutility=+0.059303`、`Δmodel_calls=-0.452381`）。
+- 此结果**仅是 diagnostic**。它**不**是 promotion、**不**是 default 变更、
+  **不**是 `EvidenceCore` 语义变更、**不**是 runtime-clean 通用算法声明。选择推迟
+  到未来的 preregistered matrix；`ts_vite` coverage 缺口（4 cell）仍然存在。
+
+### 公开输出契约（matrix aggregate）
+
+matrix aggregate 只再发布公开字段：**无** run IDs、task IDs、raw repo IDs、
+paths、spans、content hashes、prompts、responses、snippets 或 provider 值。公开
+repo slice ID（如 `py_fastapi`、`ts_vite`）与公开 model family 名（如 `kimi`、
+`deepseek_pro`）以 `repo_slice_id` / `model_family` 形式发布（由 manifest 的
+`repo_id` 改名而来），与 B11/B12 aggregate 约定一致。coverage exclusion 按
+`(repo_slice_id, model_family, reason)` 计数汇总——**无** run ID。artifact
+manifest summary 仅含计数（**无** sha256 摘要），以避免在公开 forbidden-value
+扫描中出现 hash 形态的值。
+
+### Matrix self-test
+
+```bash
+python3 eval/c3_matrix_combiner.py --self-test
+```
+
+self-test 验证：合成 2-cell + 1-exclusion matrix 能正确汇总（加权均值、deltas、
+baseline 汇总）；exclusion 被正确计数；缺失的预期 included 报告会硬失败（除非
+manifest 标记为 coverage-insufficient）；输出无 forbidden keys 且无 run IDs；未声明
+任何 winner，也未选择任何候选策略。
 
 ## C3 不证明什么
 
@@ -239,6 +316,7 @@ artifact。synthetic fixture 不赋予任何 empirical support。
 - C3 **不**改变任何 default。
 - C3 **不**改变 `EvidenceCore` 语义。
 - C3 **不**从 outcomes 调参候选策略（集合是冻结的）。
-- C3 **不**声明 per-cell winner；选择推迟到 matrix combiner。
+- C3 **不**声明 per-cell winner；选择推迟到 matrix aggregate combiner，而该
+  combiner 本身只产生诊断 rank，并将选择推迟到未来的 preregistered matrix。
 - C3 的 `--input` replay 是真实的，但其输出仅是 diagnostic-rank-only。不跟随任何
   promotion / default change。

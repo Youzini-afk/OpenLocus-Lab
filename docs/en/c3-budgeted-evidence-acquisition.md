@@ -14,8 +14,10 @@ balanced_v1) under a common-complete denominator.
 > a promotion step. The per-cell public report is **diagnostic-rank-only**: it
 > emits sufficient aggregate statistics and a diagnostic ordering of candidate
 > policies by utility, but it MUST NOT declare a winner. Per-cell candidate
-> selection is deferred to the matrix combiner. `promotion_ready=false`,
-> `default_should_change=false`, `EvidenceCore` semantics unchanged.
+> selection is deferred to the matrix aggregate combiner, which itself only
+> produces a diagnostic rank and defers selection to a future preregistered
+> matrix. `promotion_ready=false`, `default_should_change=false`,
+> `EvidenceCore` semantics unchanged.
 
 ## Runtime-clean hard rule
 
@@ -243,6 +245,89 @@ canonical artifacts. Synthetic fixtures confer no empirical support.
 - `artifacts/real_provider_ci/c3_budgeted_evidence_acquisition_report.json`
   (CI ephemeral-records replay report; scientific status is a valid CI outcome,
   may be `ok_cell_stats` / `coverage_insufficient` / `insufficient_data`)
+- `artifacts/c3_budgeted_evidence_acquisition/c3_matrix_aggregate_report.json`
+  (official C3 matrix aggregate rollup of the 28 analyzable per-cell reports +
+  4 `ts_vite` coverage exclusions; see "Matrix combiner" below)
+
+## Matrix combiner
+
+`eval/c3_matrix_combiner.py` is the **bounded derived aggregate rollup** that
+combines the already-downloaded per-cell
+`c3-budgeted-evidence-acquisition-report-v0` public artifacts into one
+`c3-budgeted-evidence-acquisition-matrix-report-v0` aggregate. It reads only
+the already-published per-cell reports and the flat-list manifest of the 32
+planned cells; no raw records, paths, prompts, responses, snippets, hashes,
+or labels are read. `remote_calls_by_combiner=0`, `model_calls_by_combiner=0`.
+
+### Claim boundary (matrix aggregate)
+
+The matrix aggregate is **diagnostic-rank-only**. It:
+
+- declares NO winner (`winner_declared=false`);
+- selects NO candidate policy (`candidate_selected=false` for every policy);
+- defers candidate selection to a **future preregistered matrix**
+  (`candidate_selection_deferred_to_future_preregistered_matrix=true`);
+- claims NO promotion (`promotion_ready=false`), NO default change
+  (`default_should_change=false`), NO `EvidenceCore` semantics change
+  (`evidencecore_semantics_changed=false`), and NO runtime-clean general
+  algorithm claim;
+- performs NO policy search, tuning, or threshold retuning from outcomes.
+
+The `diagnostic_rank_only_global` field is a candidate-policy ordering by
+descending aggregate mean `utility`. It is ordering-only and MUST NOT be read
+as a winner/freeze/default/promotion. The top-ranked diagnostic policy is
+**not** a selected policy.
+
+### Official matrix result (2026-06-19)
+
+The official C3 matrix aggregate over the 28 analyzable cells (336 complete
+records) plus 4 `ts_vite` coverage exclusions
+(`coverage_insufficient_no_remote_llm_snippet`) is:
+
+- `status=matrix_aggregate_ok_with_exclusions`; `planned_cells=32`,
+  `included_cells=28`, `coverage_excluded_cells=4`, `complete_records=336`.
+- `diagnostic_rank_only_global[0]=weak_on_disagreement_span_on_anchor_else_local`
+  (mean `utility=-0.167791`, mean `model_calls=0.511905`); next:
+  `abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local`
+  (`utility=-0.199933`), `span_narrow_on_anchor_else_local`
+  (`utility=-0.268981`),
+  `filter_on_noise_else_span_narrow_on_anchor_else_local`
+  (`utility=-0.270171`), `weak_on_noise_else_local` (`utility=-1.578684`),
+  `local_only` (`utility=-1.638208`). **No winner is declared.**
+- Baselines (record-weighted means): `p25` mean `utility=-0.227093` (mean
+  `model_calls=0.964286`); `balanced_v1` mean `utility=-0.146141` (mean
+  `model_calls=0.630953`).
+- Top diagnostic delta vs `p25`:
+  `weak_on_disagreement_span_on_anchor_else_local`
+  (`Δutility=+0.059303`, `Δmodel_calls=-0.452381`).
+- This result is **diagnostic only**. It is not a promotion, not a default
+  change, not an `EvidenceCore` semantics change, and not a runtime-clean
+  general algorithm claim. Selection is deferred to a future preregistered
+  matrix; the `ts_vite` coverage gap (4 cells) remains open.
+
+### Public-output contract (matrix aggregate)
+
+The matrix aggregate re-publishes only public fields: no run IDs, task IDs,
+raw repo IDs, paths, spans, content hashes, prompts, responses, snippets, or
+provider values. Public repo slice IDs (e.g. `py_fastapi`, `ts_vite`) and
+public model-family names (e.g. `kimi`, `deepseek_pro`) are emitted as
+`repo_slice_id` / `model_family` (renamed from the manifest's `repo_id`),
+matching the B11/B12 aggregate convention. Coverage exclusions are summarized
+by `(repo_slice_id, model_family, reason)` counts only — no run IDs. The
+artifact manifest summary is count-only (no sha256 digests) to avoid
+hash-shaped values under the public forbidden-value scan.
+
+### Matrix self-test
+
+```bash
+python3 eval/c3_matrix_combiner.py --self-test
+```
+
+The self-test verifies: a synthetic 2-cell + 1-exclusion matrix aggregates
+correctly (weighted means, deltas, baseline rollups); exclusions are counted;
+a missing expected included report hard-fails (unless the manifest marks it
+coverage-insufficient); the output has no forbidden keys and no run IDs; no
+winner is declared and no candidate is selected.
 
 ## What C3 does NOT prove
 
@@ -251,6 +336,7 @@ canonical artifacts. Synthetic fixtures confer no empirical support.
 - C3 does NOT change `EvidenceCore` semantics.
 - C3 does NOT tune candidate policies from outcomes (the set is frozen).
 - C3 does NOT declare a per-cell winner; selection is deferred to the matrix
-  combiner.
+  aggregate combiner, which itself only produces a diagnostic rank and defers
+  selection to a future preregistered matrix.
 - C3's `--input` replay is real, but its output is diagnostic-rank-only. No
   promotion / no default change follows.

@@ -2971,3 +2971,129 @@ artifact；使用 `--regenerate-artifacts` 更新 canonical artifact。
 - synthetic self-test fixture 不赋予任何 empirical support；只有真实 P21
   记录的 `--input` 才设置 `empirical_algorithm_experiment_performed=true`。
 - 冻结候选策略集合是枚举，不是调参搜索；不从 outcomes 调参阈值或策略。
+
+## 2026-06-19 — C3 Budgeted Evidence Acquisition Matrix Combiner
+
+### 目标
+
+为 C3 官方 matrix 构建 committed aggregate-only combiner，仿照
+`eval/b12_matrix_combiner.py`，但限定于 C3 budgeted evidence acquisition 的
+per-cell 报告。将 28 个可分析 per-cell `c3-budgeted-evidence-acquisition-report-v0`
+artifact 加上 4 个 `ts_vite` coverage exclusion 合并为单个派生 aggregate，输出仅
+diagnostic-rank，**不**声明 winner/selection/promotion/default。
+
+### 实现
+
+- 新 combiner `eval/c3_matrix_combiner.py`（纯 Python；导入
+  `eval/b6_lite_interpretable_policy_search.py` 以复用 `_walk_forbidden`
+  公开输出扫描）。模式：`--self-test`（合成 2-cell + 1-exclusion fixture，无
+  私有记录），以及真实 combine（`--artifacts-dir` + `--manifest` + `--out`）。
+- 输入：per-run artifact 位于
+  `<run_id>/real-provider-p21_llm_rich-<run_id>/artifacts/real_provider_ci/c3_budgeted_evidence_acquisition_report.json`，
+  以及 32 个规划 cell 的扁平 manifest（4 个 `ts_vite` cell 为
+  `status=planned_exclusion_coverage_insufficient` 且 `run_id=null`，作为 coverage
+  exclusion 计入；28 个 cell 有真实 run_id）。
+- 新 artifact
+  `artifacts/c3_budgeted_evidence_acquisition/c3_matrix_aggregate_report.json`
+  （canonical C3 matrix aggregate；`generated_by=c3_matrix_combiner`、
+  `schema_version=c3-budgeted-evidence-acquisition-matrix-report-v0`、
+  `claim_level=budgeted_matrix_aggregate_public_v0`）。
+- 更新文档 `docs/en/c3-budgeted-evidence-acquisition.md` 与
+  `docs/zh/c3-budgeted-evidence-acquisition.md`，新增“Matrix combiner”章节。
+
+### per-cell 校验（每个 included 报告都强制执行）
+
+每个 included C3 per-cell 报告都校验：
+`schema_version=c3-budgeted-evidence-acquisition-report-v0`、
+`generated_by=c3_budgeted_evidence_acquisition`、
+`replay_source=ci_ephemeral_records`、
+`empirical_algorithm_experiment_performed=true`、`winner_declared=false`、
+`cell_diagnostic_rank_only=true`、
+`candidate_selection_deferred_to_matrix_combiner=true`、
+`runtime_clean_policy_inputs_only=true`、
+`selected_actions_invariant_under_private_field_permutation=true`、
+`promotion_ready/default_should_change/evidencecore_semantics_changed=false`、
+`remote_calls_by_c3=0`、`model_calls_by_replay=0`、
+`aggregate_only_public_artifact=true`、per-cell safety invariant
+`forbidden_public_keys_scanned=true` 与
+`no_raw_path_digest_provider_strings=true`、`complete_records>0`、
+`incomplete_record_count==0`，以及与 C3 spec 逐字节匹配的冻结
+`candidate_policy_ids` / `action_set`。共享 `_walk_forbidden` 扫描在每个输入上
+重跑。任何预期的 included run 若缺失报告则硬失败，除非 manifest 标记其为
+coverage-insufficient。
+
+### 汇总机制
+
+- `planned_cells=32`、`included_cells=28`、`coverage_excluded_cells=4`、
+  `total_records` / `complete_records` = 336 / 336（跨 cell 求和）。
+- `per_candidate_policy`：对 6 个冻结候选策略 id，按 `complete_records` 加权的每个
+  安全 metric（`span_f0_5`、`added_gold_span`、`added_false_span`、
+  `primary_false_positive_rate`、`model_calls`、`utility`）的均值，以及 sum 汇总。
+- `baseline_aggregates`（`p25`、`balanced_v1`，同样加权）。
+- `deltas_vs_p25` 与 `deltas_vs_balanced_v1`：per-cell per-policy delta 的记录
+  加权均值。
+- `diagnostic_rank_only_global`：候选策略按 aggregate mean `utility` 降序排序；
+  `winner_declared=false`、
+  `candidate_selection_deferred_to_future_preregistered_matrix=true`、每个策略
+  `candidate_selected=false`。仅排序——无 winner、无 freeze、无选择。
+- `runtime_feature_coverage`：跨 cell 的 `feature_presence_counts` 求和。
+- `coverage_exclusion_summary` / `coverage_exclusion_reason_counts`：按
+  `(repo_slice_id, model_family, reason)` 计数；无 run ID。
+- `artifact_manifest_summary`：仅计数（无 sha256 摘要，以避免在公开
+  forbidden-value 扫描中出现 hash 形态的值）。
+
+### 官方 matrix 结果（28 可分析 + 4 排除）
+
+- `status=matrix_aggregate_ok_with_exclusions`。
+- `diagnostic_rank_only_global[0]=weak_on_disagreement_span_on_anchor_else_local`
+  （mean `utility=-0.167791`、mean `model_calls=0.511905`）；其后：
+  `abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local`
+  （`utility=-0.199933`）、`span_narrow_on_anchor_else_local`
+  （`utility=-0.268981`）、`filter_on_noise_else_span_narrow_on_anchor_else_local`
+  （`utility=-0.270171`）、`weak_on_noise_else_local`（`utility=-1.578684`）、
+  `local_only`（`utility=-1.638208`）。**未声明任何 winner。**
+- baselines：`p25` mean `utility=-0.227093`（mean `model_calls=0.964286`）；
+  `balanced_v1` mean `utility=-0.146141`（mean `model_calls=0.630953`）。
+- diagnostic 排名第一相对 `p25` 的 delta：
+  `weak_on_disagreement_span_on_anchor_else_local`
+  （`Δutility=+0.059303`、`Δmodel_calls=-0.452381`）。
+- `runtime_feature_coverage`：`local_anchor=280`、
+  `rrf_backed_by_anchor=172`、`rrf_anchor_agree_file=172`、
+  `rrf_anchor_agree_span=172`、`candidate_count=123`、
+  `candidate_support_exists=123`、`dense_support_present=123`、
+  `symbol_regex_agree_file=56`、`symbol_regex_agree_span=56`、`query_noise=28`。
+
+### 安全不变量（matrix aggregate）
+
+- `aggregate_only_public_artifact=true`、`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`、
+  `runtime_clean_candidate_evaluated=true`、`winner_declared=false`、
+  所有策略 `candidate_selected=false`、
+  `candidate_selection_deferred_to_future_preregistered_matrix=true`、
+  `remote_calls_by_combiner=0`、`model_calls_by_combiner=0`、
+  `no_run_ids_emitted=true`、`no_task_ids_in_artifact=true`、
+  `no_paths_spans_hashes_snippets_prompts_responses=true`、
+  `no_forbidden_public_keys=true`、
+  `no_raw_path_digest_provider_strings=true`。最终输出上运行共享
+  `_walk_forbidden` 扫描（`integrity.forbidden_public_key_scan_clean=true`）。
+
+### self-test
+
+`python3 eval/c3_matrix_combiner.py --self-test` 通过（5 项：含加权均值/delta/
+baseline 汇总 + diagnostic rank + coverage exclusion 计数 + no-winner/
+no-selection 的 happy path；forbidden-key 注入拒绝；缺失报告硬失败；无 manifest
+真实路径 fail-closed；空输入阻断）。self-test 严格只读且仅用合成 fixture；不赋予
+任何 empirical support。
+
+### 注意事项
+
+- C3 matrix aggregate **仅 diagnostic-rank**。它**不**是 promotion 步骤、**不**是
+  default 变更、**不**是 `EvidenceCore` 语义变更、**不**是 runtime-clean 通用算法
+  证明、**不**是候选选择。
+- `diagnostic_rank_only_global` 仅为排序；排名第一的策略**并不**是被选中的策略。
+  选择推迟到未来的 preregistered matrix。
+- 4 个 `ts_vite` coverage exclusion
+  （`coverage_insufficient_no_remote_llm_snippet`）仍是未闭合的 coverage 缺口；
+  它们**不**是 C3 机制失败。
+- 公开 repo slice ID 与 model family 名以 `repo_slice_id` / `model_family` 发布
+  （与 B11/B12 一致），而非 raw `repo_id`；coverage exclusion 不含 run ID。

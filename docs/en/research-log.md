@@ -3005,3 +3005,142 @@ read-only and MUST NOT mutate checked-in artifacts; use
   on real P21 records sets `empirical_algorithm_experiment_performed=true`.
 - The frozen candidate policy set is an enumeration, not a tuned search; no
   threshold or policy is tuned from outcomes.
+
+## 2026-06-19 — C3 Budgeted Evidence Acquisition Matrix Combiner
+
+### Objective
+
+Build the committed aggregate-only combiner for the C3 official matrix,
+mirroring `eval/b12_matrix_combiner.py` but scoped to C3 budgeted evidence
+acquisition per-cell reports. Combine the 28 analyzable per-cell
+`c3-budgeted-evidence-acquisition-report-v0` artifacts plus 4 `ts_vite`
+coverage exclusions into a single derived aggregate with diagnostic-rank-only
+output and no winner/selection/promotion/default claim.
+
+### Implementation
+
+- New combiner `eval/c3_matrix_combiner.py` (pure Python; imports
+  `eval/b6_lite_interpretable_policy_search.py` for the shared
+  `_walk_forbidden` public-output scan). Modes: `--self-test` (synthetic 2-cell
+  + 1-exclusion fixture, no private records), and the real combine
+  (`--artifacts-dir` + `--manifest` + `--out`).
+- Inputs: per-run artifacts containing
+  `c3_budgeted_evidence_acquisition_report.json` under
+  `<run_id>/real-provider-p21_llm_rich-<run_id>/artifacts/real_provider_ci/`,
+  and the flat-list manifest of the 32 planned cells (4 `ts_vite` cells are
+  `status=planned_exclusion_coverage_insufficient` with `run_id=null` and are
+  included as coverage exclusions; 28 cells have real run_ids).
+- New artifact
+  `artifacts/c3_budgeted_evidence_acquisition/c3_matrix_aggregate_report.json`
+  (canonical C3 matrix aggregate; `generated_by=c3_matrix_combiner`,
+  `schema_version=c3-budgeted-evidence-acquisition-matrix-report-v0`,
+  `claim_level=budgeted_matrix_aggregate_public_v0`).
+- Updated docs `docs/en/c3-budgeted-evidence-acquisition.md` and
+  `docs/zh/c3-budgeted-evidence-acquisition.md` with a "Matrix combiner"
+  section.
+
+### Per-cell validation (enforced on every included report)
+
+Every included C3 per-cell report is verified to satisfy:
+`schema_version=c3-budgeted-evidence-acquisition-report-v0`,
+`generated_by=c3_budgeted_evidence_acquisition`,
+`replay_source=ci_ephemeral_records`,
+`empirical_algorithm_experiment_performed=true`, `winner_declared=false`,
+`cell_diagnostic_rank_only=true`,
+`candidate_selection_deferred_to_matrix_combiner=true`,
+`runtime_clean_policy_inputs_only=true`,
+`selected_actions_invariant_under_private_field_permutation=true`,
+`promotion_ready/default_should_change/evidencecore_semantics_changed=false`,
+`remote_calls_by_c3=0`, `model_calls_by_replay=0`,
+`aggregate_only_public_artifact=true`, the per-cell safety invariants
+`forbidden_public_keys_scanned=true` and
+`no_raw_path_digest_provider_strings=true`, `complete_records>0`,
+`incomplete_record_count==0`, and byte-exact frozen
+`candidate_policy_ids` / `action_set` matching the C3 spec. The shared
+`_walk_forbidden` scan is re-run on every input. Any expected included run
+missing a report hard-fails unless the manifest marks it
+coverage-insufficient.
+
+### Aggregate mechanics
+
+- `planned_cells=32`, `included_cells=28`, `coverage_excluded_cells=4`,
+  `total_records` / `complete_records` = 336 / 336 (sum across cells).
+- `per_candidate_policy`: for each of the 6 frozen candidate policy ids,
+  record-weighted mean (`complete_records` weight) of each safe metric
+  (`span_f0_5`, `added_gold_span`, `added_false_span`,
+  `primary_false_positive_rate`, `model_calls`, `utility`) plus sum totals.
+- `baseline_aggregates` for `p25` and `balanced_v1` (same weighting).
+- `deltas_vs_p25` and `deltas_vs_balanced_v1`: record-weighted mean of the
+  per-cell per-policy deltas for each safe metric.
+- `diagnostic_rank_only_global`: candidate policies sorted by descending
+  aggregate mean `utility`; `winner_declared=false`,
+  `candidate_selection_deferred_to_future_preregistered_matrix=true`,
+  `candidate_selected=false` for every policy. Ordering only — no winner,
+  no freeze, no selection.
+- `runtime_feature_coverage`: sum of `feature_presence_counts` across cells.
+- `coverage_exclusion_summary` / `coverage_exclusion_reason_counts`: counts
+  by `(repo_slice_id, model_family, reason)`; no run IDs.
+- `artifact_manifest_summary`: count-only (no sha256 digests, to avoid
+  hash-shaped values under the public forbidden-value scan).
+
+### Official matrix result (28 analyzable + 4 excluded)
+
+- `status=matrix_aggregate_ok_with_exclusions`.
+- `diagnostic_rank_only_global[0]=weak_on_disagreement_span_on_anchor_else_local`
+  (mean `utility=-0.167791`, mean `model_calls=0.511905`); followed by
+  `abstain_filter_on_disagreement_else_span_narrow_on_anchor_else_local`
+  (`utility=-0.199933`), `span_narrow_on_anchor_else_local`
+  (`utility=-0.268981`),
+  `filter_on_noise_else_span_narrow_on_anchor_else_local`
+  (`utility=-0.270171`), `weak_on_noise_else_local` (`utility=-1.578684`),
+  `local_only` (`utility=-1.638208`). **No winner declared.**
+- Baselines: `p25` mean `utility=-0.227093` (mean `model_calls=0.964286`);
+  `balanced_v1` mean `utility=-0.146141` (mean `model_calls=0.630953`).
+- Top diagnostic delta vs `p25`:
+  `weak_on_disagreement_span_on_anchor_else_local`
+  (`Δutility=+0.059303`, `Δmodel_calls=-0.452381`).
+- `runtime_feature_coverage`: `local_anchor=280`,
+  `rrf_backed_by_anchor=172`, `rrf_anchor_agree_file=172`,
+  `rrf_anchor_agree_span=172`, `candidate_count=123`,
+  `candidate_support_exists=123`, `dense_support_present=123`,
+  `symbol_regex_agree_file=56`, `symbol_regex_agree_span=56`,
+  `query_noise=28`.
+
+### Safety invariants (matrix aggregate)
+
+- `aggregate_only_public_artifact=true`, `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_candidate_evaluated=true`, `winner_declared=false`,
+  `candidate_selected=false` (all policies),
+  `candidate_selection_deferred_to_future_preregistered_matrix=true`,
+  `remote_calls_by_combiner=0`, `model_calls_by_combiner=0`,
+  `no_run_ids_emitted=true`, `no_task_ids_in_artifact=true`,
+  `no_paths_spans_hashes_snippets_prompts_responses=true`,
+  `no_forbidden_public_keys=true`,
+  `no_raw_path_digest_provider_strings=true`. The shared
+  `_walk_forbidden` scan is run on the final output (`integrity.
+  forbidden_public_key_scan_clean=true`).
+
+### Self-test
+
+`python3 eval/c3_matrix_combiner.py --self-test` passes (5 checks: happy
+path with weighted-mean/delta/baseline rollups + diagnostic rank + coverage
+exclusion counts + no-winner/no-selection; forbidden-key injection rejection;
+missing-report hard-fail; no-manifest real-path fail-closed; empty-input
+block). The self-test is strictly read-only and uses synthetic fixtures
+only; it confers no empirical support.
+
+### Caveats
+
+- The C3 matrix aggregate is **diagnostic-rank-only**. It is NOT a promotion
+  step, NOT a default change, NOT an `EvidenceCore` semantics change, NOT a
+  runtime-clean general algorithm proof, and NOT a candidate selection.
+- `diagnostic_rank_only_global` is ordering only; the top-ranked policy is
+  NOT a selected policy. Selection is deferred to a future preregistered
+  matrix.
+- The 4 `ts_vite` coverage exclusions
+  (`coverage_insufficient_no_remote_llm_snippet`) remain an open coverage
+  gap; they are NOT C3 mechanism failures.
+- Public repo slice IDs and model-family names are emitted as `repo_slice_id`
+  / `model_family` (matching B11/B12), not as raw `repo_id`; coverage
+  exclusions carry no run IDs.
