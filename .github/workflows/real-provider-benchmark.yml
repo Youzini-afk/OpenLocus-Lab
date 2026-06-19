@@ -730,6 +730,16 @@ jobs:
                 if [[ -f "$P25_RECORDS" ]]; then
                   python3 eval/b11_prospective_validation.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/b11_prospective_validation_report.json
                 fi
+                # B12 Mechanism Decomposition: per-variant replay (A-E) over the
+                # SAME ephemeral $P25_RECORDS via the C1 private-records adapter,
+                # before they are deleted below. A scientific no-result (verdict
+                # insufficient_data / refuted / partial) is a VALID result and
+                # must NOT fail CI; only file/parse/privacy/schema failures fail
+                # (the validator block below enforces this). Public output is
+                # aggregate-only: no task_id/repo_id/path/span/per-record hash.
+                if [[ -f "$P25_RECORDS" ]]; then
+                  python3 eval/b12_mechanism_decomposition.py --input "$P25_RECORDS" --out artifacts/real_provider_ci/b12_mechanism_decomposition_report.json
+                fi
                 rm -f "$P25_RECORDS"
 
       - name: P20-LS LLM alias/stress harness
@@ -2846,6 +2856,105 @@ jobs:
                   b11_walk(data)
                   if b11_leaks:
                       raise SystemExit(f"{json_path} forbidden public values leaked: {b11_leaks[:5]}")
+              if json_path.name == "b12_mechanism_decomposition_report.json":
+                  if data.get("schema_version") != "b12-mechanism-decomposition-report-v0":
+                      raise SystemExit(f"{json_path} schema_version mismatch")
+                  if data.get("generated_by") != "b12_mechanism_decomposition":
+                      raise SystemExit(f"{json_path} generated_by mismatch")
+                  if data.get("algorithm_spec_id") != "b12_mechanism_decomposition_v0":
+                      raise SystemExit(f"{json_path} algorithm_spec_id mismatch")
+                  if data.get("algorithm_spec_sha256_matched") is not True:
+                      raise SystemExit(f"{json_path} algorithm_spec_sha256_matched must be true")
+                  if data.get("algorithm_spec_sha256_stable") is not True:
+                      raise SystemExit(f"{json_path} algorithm_spec_sha256_stable must be true")
+                  if data.get("claim_level") != "mechanism_decomposition_v0":
+                      raise SystemExit(f"{json_path} claim_level mismatch")
+                  if data.get("aggregate_only_public_artifact") is not True:
+                      raise SystemExit(f"{json_path} must be aggregate-only")
+                  if data.get("not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep not_evidence=true")
+                  if data.get("candidate_not_fact") is not True:
+                      raise SystemExit(f"{json_path} must keep candidate_not_fact=true")
+                  if data.get("llm_output_not_evidence") is not True:
+                      raise SystemExit(f"{json_path} must keep llm_output_not_evidence=true")
+                  # No promotion / no default change: B12 is mechanism decomposition,
+                  # never a promotion step, regardless of verdict.
+                  if data.get("promotion_ready") is not False:
+                      raise SystemExit(f"{json_path} promotion_ready must be false")
+                  if data.get("default_should_change") is not False:
+                      raise SystemExit(f"{json_path} default_should_change must be false")
+                  if data.get("evidencecore_semantics_changed") is not False:
+                      raise SystemExit(f"{json_path} evidencecore_semantics_changed must be false")
+                  if data.get("policy_search_performed") is not False:
+                      raise SystemExit(f"{json_path} policy_search_performed must be false")
+                  if data.get("quality_strategy_tuned") is not False:
+                      raise SystemExit(f"{json_path} quality_strategy_tuned must be false")
+                  if data.get("runtime_calls_by_replay") != 0:
+                      raise SystemExit(f"{json_path} runtime_calls_by_replay must be 0")
+                  if data.get("model_calls_by_replay") != 0:
+                      raise SystemExit(f"{json_path} model_calls_by_replay must be 0")
+                  if data.get("replay_source") not in {"synthetic_fixture", "ci_ephemeral_records"}:
+                      raise SystemExit(f"{json_path} replay_source invalid")
+                  # Verdict enum is intentionally permissive: scientific no-result
+                  # (insufficient_data / refuted / partial / supported) is a VALID
+                  # outcome and must NOT fail CI. Only mechanical/privacy/schema
+                  # failures fail (caught by the checks above and the scan below).
+                  if data.get("verdict") not in {"supported", "refuted", "partial", "insufficient_data", "not_implemented"}:
+                      raise SystemExit(f"{json_path} verdict not in allowed enum")
+                  if not isinstance(data.get("verdict_reason"), str) or not data["verdict_reason"]:
+                      raise SystemExit(f"{json_path} verdict_reason must be a non-empty string")
+                  if data.get("policy_under_analysis") != "balanced_v1":
+                      raise SystemExit(f"{json_path} policy_under_analysis mismatch")
+                  if data.get("baseline_for_deltas") != "p25":
+                      raise SystemExit(f"{json_path} baseline_for_deltas mismatch")
+                  # Required aggregate sections + count reporting.
+                  for section in ["per_variant_metrics", "overall_mean", "worst_group", "bootstrap_ci_95", "robust_utility", "variant_deltas_vs_d", "variant_deltas_vs_e", "variant_deltas_vs_b", "variant_deltas_vs_c_equivalence_check", "hypothesis_results", "predeclared_criteria", "frozen_artifacts", "safety_invariants", "replay_counts"]:
+                      if section not in data:
+                          raise SystemExit(f"{json_path} missing required section {section}")
+                  rc = data.get("replay_counts") or {}
+                  for field in ["total_records", "complete_records", "incomplete_record_count", "missing_required_outcome_count", "balanced_branch_count", "p25_llm_eligible_count", "actual_call_avoided_count", "random_selected_count"]:
+                      if not isinstance(rc.get(field), int):
+                          raise SystemExit(f"{json_path} replay_counts.{field} must be an int")
+                  if rc.get("complete_records", 0) < 0 or rc.get("complete_records", 0) > rc.get("total_records", 0):
+                      raise SystemExit(f"{json_path} replay_counts complete_records invalid")
+                  si = data.get("safety_invariants") or {}
+                  for flag in ["no_live_llm_calls", "no_policy_search", "no_threshold_tuning", "no_evidencecore_semantics_change", "promotion_ready_false", "default_should_change_false", "aggregate_only_public_artifact", "forbidden_public_keys_scanned", "no_raw_path_digest_provider_strings", "runtime_calls_by_replay_zero", "model_calls_by_replay_zero", "replay_only_no_live_ablation_runs_in_evaluator"]:
+                      if si.get(flag) is not True:
+                          raise SystemExit(f"{json_path} safety_invariants.{flag} must be true")
+                  # Aggregate-only invariant: recursively scan for forbidden public keys
+                  # and conservative leaked-value patterns (raw paths, 64-hex digests,
+                  # URLs, credential assignments). Mirrors B12's own _recursive_key_scan.
+                  # Private per-record hashes (private_record_hash) and P31/P33 blocks
+                  # must NEVER appear in the public B12 report.
+                  b12_banned = {"task_id", "test_id", "repo_id", "candidate_id", "path", "candidate_path", "span", "snippet", "prompt", "response", "raw_response", "gold_spans", "label", "labels", "private_labels", "provider_key", "base_url", "api_key", "api_token", "api_secret", "content_sha", "digest", "start_line", "end_line", "line_range", "private_record_hash", "p31_candidate_pools", "p31_score_gold", "p33b_anchor_subtypes", "raw_query", "raw_snippet", "raw_prompt", "route_features"}
+                  import re as _re_b12
+                  _b12_value_res = [
+                      _re_b12.compile(r"\b(?:sha_?(?:1|256)?|content_?sha)\b[\s:=]+[A-Fa-f0-9]{40,}", _re_b12.I),
+                      _re_b12.compile(r"https?://", _re_b12.I),
+                      _re_b12.compile(r"\b(?:api[_-]?key|base[_-]?url|api[_-]?secret|api[_-]?token)\b\s*[:=]\s*\S", _re_b12.I),
+                      _re_b12.compile(r"\b[A-Fa-f0-9]{64}\b"),
+                      _re_b12.compile(r"/"),
+                  ]
+                  b12_leaks = []
+                  def b12_walk(obj, prefix=""):
+                      if isinstance(obj, dict):
+                          for key, value in obj.items():
+                              key_str = str(key)
+                              if key_str in b12_banned:
+                                  raise SystemExit(f"{json_path} persisted banned key {prefix + key_str}")
+                              b12_walk(value, prefix + key_str + ".")
+                      elif isinstance(obj, list):
+                          for idx, value in enumerate(obj):
+                              b12_walk(value, prefix + str(idx) + ".")
+                      elif isinstance(obj, str):
+                          if len(obj) > 512:
+                              b12_leaks.append(f"{prefix}:long_string")
+                          for p in _b12_value_res:
+                              if p.search(obj):
+                                  b12_leaks.append(f"{prefix}:forbidden_value")
+                  b12_walk(data)
+                  if b12_leaks:
+                      raise SystemExit(f"{json_path} forbidden public values leaked: {b12_leaks[:5]}")
               if json_path.name in {"p25_bucket_policy.json", "p30_admission_v3_report.json", "p31_candidate_reach_ceiling_report.json", "p33_anchor_precision_repair_report.json", "p33b_anchor_subtype_calibration_report.json", "p46_candidate_reach_cost_map_report.json", "p47_request_more_context_report.json", "p48_diagnostic_policy_simulator_report.json", "p49_contrastive_candidate_pack_scaffold_report.json", "p50_fixed_suite_validation_report.json", "p52_metadata_local_verifier_scaffold_report.json", "p52a_source_materialization_prerequisite_report.json", "p52b_source_backed_local_verifier_feature_matrix_report.json", "p52c_local_verifier_scoring_simulator_report.json", "p51_llm_span_narrow_2_diagnostic_report.json", "p51b_llm_opt_in_contract_report.json", "p51c_live_micro_run_planner_report.json", "p57_generalization_gate_report.json", "p58_source_backed_verifier_calibration_report.json", "p59_contrastive_pack_coverage_counterfactual_report.json", "p60_rmc_policy_v2_report.json", "p61_pre_spend_gate_report.json", "p62_generalization_matrix_aggregator_report.json"}:
 
 

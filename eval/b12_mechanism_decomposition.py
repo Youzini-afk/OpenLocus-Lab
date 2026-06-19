@@ -23,19 +23,30 @@ reduction, P25 fallback sufficiency, or model-specific behaviour) drives the
 balanced policy's gains, which informs B13 (distributionally robust policy
 search).
 
-Aggregate-only public artifacts: no task/repo/candidate/path/span/snippet/
-prompt/response/gold/provider keys and no raw path/digest/provider strings.
+C1 adapter: B12 consumes private P21 v1 records via the shared
+``eval/c1_private_records.py`` adapter (three-category taint model:
+runtime-clean route_features, benchmark route labels, score/outcome/private
+fields). The adapter never writes public artifacts; B12 derives aggregate-only
+public metrics from it and runs its own forbidden-key scan.
 
-This file currently ships a SKELETON: the ``--self-test`` path verifies the
-ablation-variant definitions and hypothesis-evaluation mechanics against a
-synthetic fixture, while ``--input <path>`` is a stub (``verdict="not_implemented"``)
-awaiting the full P21-record replay computation in a later task. No live LLM
-calls are made by this evaluator.
+Aggregate-only public artifacts: no task/repo/candidate/path/span/snippet/
+prompt/response/gold/provider keys and no raw path/digest/provider strings. No
+per-record hash is emitted; ``actual_call_avoided_set`` /
+``balanced_branch_set`` / ``p25_llm_subset`` are reported as COUNTS only.
+
+``--input`` mode loads private P21 v1 records via the C1 adapter and produces
+a real aggregate-only report (per-variant replay over the 5 ablation variants,
+count reporting, and the FROZEN predeclared hypothesis criteria). Scientific
+verdicts (``supported`` / ``refuted`` / ``partial`` / ``insufficient_data``)
+return exit 0; mechanical/privacy/schema errors return nonzero. The
+``--self-test`` path verifies the ablation-variant definitions and
+hypothesis-evaluation mechanics against a synthetic fixture (still
+``insufficient_data`` because synthetic fixtures confer no empirical support).
 
 Run::
 
     python3 eval/b12_mechanism_decomposition.py --self-test
-    python3 eval/b12_mechanism_decomposition.py --input path/to/p21_outputs.json
+    python3 eval/b12_mechanism_decomposition.py --input path/to/p25_policy_records.private.json
     python3 eval/b12_mechanism_decomposition.py --self-test --out /tmp/b12_report.json
 """
 
@@ -49,6 +60,8 @@ import re
 import sys
 from pathlib import Path
 from typing import Any
+
+import c1_private_records as c1
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTIFACT_DIR = REPO_ROOT / "artifacts" / "b12_mechanism_decomposition"
@@ -143,40 +156,62 @@ HYPOTHESES = (
 # Predeclared criteria (FROZEN before any ablation runs)
 # ---------------------------------------------------------------------------
 #
-# All deltas are computed at the overall-mean level on gold_span and span_f0_5
-# (the primary quality metrics). "≈" means within ±0.02 (absolute), and ">"
-# means strictly greater by more than 0.02 (so a delta of exactly +0.02 is
-# treated as "≈", not ">"). "Significant model-family variation" for H4 is
-# predeclared as a worst-case spread > 0.05 across model families on the
+# Revised (C1) to align with the actual expected balanced_v1 mechanism: the
+# balanced policy is expected to PRESERVE gold/span vs D approximately (NOT
+# increase gold/span), REDUCE false spans / PFP / model calls vs D, and
+# OUTPERFORM B/E on false/PFP/RobustUtility enough to support targeted
+# ambiguous routing. A is NOT required to increase gold/span.
+#
+# All deltas are computed at the overall-mean level. "≈" means within
+# ±approx_equal_threshold (absolute); for primary-quality metrics (gold_span,
+# span_f0_5) this is the "preserve" test. A "strict reduction" on a metric M
+# means (variant - comparator) < -strictly_greater_threshold (A is strictly
+# lower/better than the comparator on a lower-is-better metric). A "strict
+# improvement" on RobustUtility means (A - comparator) > strictly_greater_threshold.
+# "Significant model-family variation" for H4 is predeclared as a worst-case
+# spread > h4_model_family_spread_threshold across model families on the
 # A-minus-D gold_span delta.
 #
 PREDECLARED_CRITERIA: dict[str, Any] = {
-    # Approximate-equality threshold for "≈" (absolute, on gold_span and span_f0_5)
+    # Approximate-equality threshold for "≈" (absolute, on gold_span / span_f0_5).
     "approx_equal_threshold": 0.02,
-    # Strictly-greater threshold for ">" (absolute, on gold_span and span_f0_5)
+    # Strictly-greater threshold for ">" / strict reduction (absolute).
     "strictly_greater_threshold": 0.02,
     # H4 model-specific: worst-case spread across model families on (A - D)
-    # gold_span delta above which the variation is "significant"
+    # gold_span delta above which the variation is "significant".
     "h4_model_family_spread_threshold": 0.05,
-    # H1 support thresholds (gold_span and span_f0_5 deltas, A vs comparator)
-    "h1_a_greater_than_d_gold": 0.02,
-    "h1_a_greater_than_d_spanf05": 0.02,
-    "h1_a_greater_than_e_gold": 0.02,
-    "h1_a_greater_than_e_spanf05": 0.02,
-    "h1_a_greater_than_b_gold": 0.02,
-    "h1_a_greater_than_b_spanf05": 0.02,
-    # H2 support thresholds (A ≈ E and A > D)
+    # H1 (ambiguous routing) — revised: A preserves quality vs D, reduces
+    # false/PFP/model_calls vs D, and outperforms B/E on false/PFP/RobustUtility.
+    # A is NOT required to increase gold/span.
+    "h1_a_approx_d_gold": 0.02,         # A ≈ D on gold (preserve)
+    "h1_a_approx_d_spanf05": 0.02,      # A ≈ D on span_f0_5 (preserve)
+    "h1_a_reduces_d_false_span": 0.02,  # A < D on false_span by > threshold
+    "h1_a_reduces_d_pfp": 0.02,         # A < D on PFP by > threshold
+    "h1_a_reduces_d_model_calls": 0.02, # A < D on model_calls by > threshold
+    "h1_a_beats_b_false_span": 0.02,    # A < B on false_span by > threshold
+    "h1_a_beats_b_pfp": 0.02,           # A < B on PFP by > threshold
+    "h1_a_beats_e_false_span": 0.02,    # A < E on false_span by > threshold
+    "h1_a_beats_e_pfp": 0.02,           # A < E on PFP by > threshold
+    "h1_a_beats_b_robust_utility": 0.02, # RU(A) > RU(B) by > threshold
+    "h1_a_beats_e_robust_utility": 0.02, # RU(A) > RU(E) by > threshold
+    # H2 (LLM call reduction) — revised: gains come from generic call reduction.
+    # Supported if A ≈ E on quality AND false/PFP (random reduction matches the
+    # routing rule) AND A reduces model_calls vs D.
     "h2_a_approx_e_gold": 0.02,
     "h2_a_approx_e_spanf05": 0.02,
-    "h2_a_greater_than_d_gold": 0.02,
-    "h2_a_greater_than_d_spanf05": 0.02,
-    # H3 support thresholds (D ≈ A on gold and span_f0_5)
+    "h2_a_approx_e_false_span": 0.02,
+    "h2_a_approx_e_pfp": 0.02,
+    "h2_a_reduces_d_model_calls": 0.02,
+    # H3 (P25 fallback sufficiency) — revised: routing rule doesn't help; P25
+    # default alone is sufficient on primary quality.
     "h3_d_approx_a_gold": 0.02,
     "h3_d_approx_a_spanf05": 0.02,
-    # RobustUtility parameters (mirrors B11)
+    # RobustUtility parameters (mirrors B11).
     "robust_utility_lambda": 1.0,  # PFP weight
     "robust_utility_mu": 0.1,  # normalized_cost weight
     "robust_utility_nu": 0.1,  # normalized_latency weight
+    # Frozen seed for the E (random call-reduction) variant.
+    "e_random_seed": 20260618,
 }
 
 # ---------------------------------------------------------------------------
@@ -628,7 +663,7 @@ def _compute_robust_utility(
     mu: float,
     nu: float,
 ) -> float:
-    """Stub RobustUtility = min_group(SpanF0.5 - λ*PFP - μ*norm_cost - ν*norm_latency).
+    """RobustUtility = min_group(SpanF0.5 - λ*PFP - μ*norm_cost - ν*norm_latency).
 
     For the skeleton we approximate ``normalized_cost`` and ``normalized_latency``
     by ``model_calls / 10`` (so they stay in roughly [0, 1]). The min is taken
@@ -647,6 +682,16 @@ def _compute_robust_utility(
     return round(min(utilities), 6)
 
 
+def _strict_reduction(delta: float, threshold: float) -> bool:
+    """A strict reduction on a lower-is-better metric: (A - comparator) < -threshold."""
+    return delta < -threshold
+
+
+def _strict_improvement(delta: float, threshold: float) -> bool:
+    """A strict improvement on a higher-is-better metric: (A - comparator) > threshold."""
+    return delta > threshold
+
+
 # ---------------------------------------------------------------------------
 # Hypothesis evaluation (predeclared criteria)
 # ---------------------------------------------------------------------------
@@ -658,14 +703,33 @@ def _evaluate_hypotheses(
 ) -> tuple[dict[str, dict[str, Any]], str, str]:
     """Apply the predeclared hypothesis criteria to the computed variant metrics.
 
-    Returns ``(hypothesis_results, verdict, verdict_reason)``. A
-    synthetic-fixture replay_source always yields ``insufficient_data``
-    regardless of how the criteria evaluate, because synthetic fixtures cannot
-    confer empirical support (mirrors B10B/B11's safety stance).
+    Returns ``(hypothesis_results, verdict, verdict_reason)``.
+
+    Synthetic-fixture safety: when ``replay_source == "synthetic_fixture"``,
+    every hypothesis result is forced to ``supported=false`` with
+    ``status="synthetic_only"`` and the raw criterion booleans are exposed
+    ONLY under the clearly-named non-claim field
+    ``criterion_matched_on_synthetic_fixture``. The verdict is always
+    ``insufficient_data`` because synthetic fixtures cannot confer empirical
+    support (mirrors B10B/B11's safety stance).
+
+    H4 insufficient_data semantics: H4 is ``status="insufficient_data"`` when
+    fewer than two known model families are present. H4 insufficient_data
+    does NOT block the H1-H3 mechanism verdict — the overall verdict is
+    computed over H1-H3 only when H4 is insufficient_data. Callers can read
+    ``h4_insufficient_data_blocks_overall_verdict=false`` /
+    ``h1_h3_verdict_independent_of_h4=true`` to confirm this policy.
+
+    Revised (C1) H1-H3 criteria: A is NOT required to increase gold/span.
+    H1 (ambiguous routing) is supported if A PRESERVES gold/span vs D, REDUCES
+    false/PFP/model_calls vs D, and OUTPERFORMS B/E on false/PFP/RobustUtility.
     """
     approx = PREDECLARED_CRITERIA["approx_equal_threshold"]
     gt = PREDECLARED_CRITERIA["strictly_greater_threshold"]
     h4_spread = PREDECLARED_CRITERIA["h4_model_family_spread_threshold"]
+    ru_lambda = PREDECLARED_CRITERIA["robust_utility_lambda"]
+    ru_mu = PREDECLARED_CRITERIA["robust_utility_mu"]
+    ru_nu = PREDECLARED_CRITERIA["robust_utility_nu"]
 
     # Deltas: A vs D, A vs E, A vs B, A vs (D on model families).
     a_vs_d = _compute_variant_deltas(per_variant, "A_full_balanced", "D_p25_default")
@@ -676,36 +740,53 @@ def _evaluate_hypotheses(
         per_variant, "A_full_balanced", "D_p25_default", "gold_span"
     )
 
-    # H1 (ambiguous routing): supported if A > D (gold/SpanF0.5) AND A > E
-    # (gold/SpanF0.5) AND A > B (gold/SpanF0.5).
-    h1_a_gt_d = (
-        _strictly_greater(a_vs_d["gold_span"], 0.0, gt)
-        and _strictly_greater(a_vs_d["span_f0_5"], 0.0, gt)
-    )
-    h1_a_gt_e = (
-        _strictly_greater(a_vs_e["gold_span"], 0.0, gt)
-        and _strictly_greater(a_vs_e["span_f0_5"], 0.0, gt)
-    )
-    h1_a_gt_b = (
-        _strictly_greater(a_vs_b["gold_span"], 0.0, gt)
-        and _strictly_greater(a_vs_b["span_f0_5"], 0.0, gt)
-    )
-    h1_supported = h1_a_gt_d and h1_a_gt_e and h1_a_gt_b
+    ru_a = _compute_robust_utility(per_variant, "A_full_balanced", ru_lambda, ru_mu, ru_nu)
+    ru_b = _compute_robust_utility(per_variant, "B_deterministic_llm_reduction", ru_lambda, ru_mu, ru_nu)
+    ru_e = _compute_robust_utility(per_variant, "E_random_llm_reduction", ru_lambda, ru_mu, ru_nu)
+    ru_deltas = {
+        "a_vs_b": round(ru_a - ru_b, 6),
+        "a_vs_e": round(ru_a - ru_e, 6),
+    }
 
-    # H2 (LLM call reduction): supported if A ≈ E (gold/SpanF0.5 within ±0.02)
-    # AND A > D.
+    # H1 (ambiguous routing): A preserves gold/span vs D, reduces
+    # false/PFP/model_calls vs D, and outperforms B/E on false/PFP/RobustUtility.
+    h1_preserves_d = (
+        _approx_equal(a_vs_d["gold_span"], 0.0, approx)
+        and _approx_equal(a_vs_d["span_f0_5"], 0.0, approx)
+    )
+    h1_reduces_d = (
+        _strict_reduction(a_vs_d["false_span"], gt)
+        and _strict_reduction(a_vs_d["primary_false_positive_rate"], gt)
+        and _strict_reduction(a_vs_d["model_calls"], gt)
+    )
+    h1_beats_b = (
+        _strict_reduction(a_vs_b["false_span"], gt)
+        and _strict_reduction(a_vs_b["primary_false_positive_rate"], gt)
+        and _strict_improvement(ru_deltas["a_vs_b"], gt)
+    )
+    h1_beats_e = (
+        _strict_reduction(a_vs_e["false_span"], gt)
+        and _strict_reduction(a_vs_e["primary_false_positive_rate"], gt)
+        and _strict_improvement(ru_deltas["a_vs_e"], gt)
+    )
+    h1_supported = (
+        h1_preserves_d and h1_reduces_d and h1_beats_b and h1_beats_e
+    )
+
+    # H2 (LLM call reduction): gains come from generic call reduction. Supported
+    # if A ≈ E on quality AND false/PFP (random reduction matches the routing
+    # rule) AND A reduces model_calls vs D.
     h2_a_approx_e = (
         _approx_equal(a_vs_e["gold_span"], 0.0, approx)
         and _approx_equal(a_vs_e["span_f0_5"], 0.0, approx)
+        and _approx_equal(a_vs_e["false_span"], 0.0, approx)
+        and _approx_equal(a_vs_e["primary_false_positive_rate"], 0.0, approx)
     )
-    h2_a_gt_d = (
-        _strictly_greater(a_vs_d["gold_span"], 0.0, gt)
-        and _strictly_greater(a_vs_d["span_f0_5"], 0.0, gt)
-    )
-    h2_supported = h2_a_approx_e and h2_a_gt_d
+    h2_a_reduces_d_calls = _strict_reduction(a_vs_d["model_calls"], gt)
+    h2_supported = h2_a_approx_e and h2_a_reduces_d_calls
 
-    # H3 (P25 fallback sufficiency): supported if D ≈ A (gold/SpanF0.5 within
-    # ±0.02) — meaning the ambiguous->weak_only rule doesn't help.
+    # H3 (P25 fallback sufficiency): the ambiguous->weak_only rule doesn't help;
+    # P25 default alone is sufficient on primary quality.
     h3_d_approx_a = (
         _approx_equal(a_vs_d["gold_span"], 0.0, approx)
         and _approx_equal(a_vs_d["span_f0_5"], 0.0, approx)
@@ -713,40 +794,100 @@ def _evaluate_hypotheses(
     h3_supported = h3_d_approx_a
 
     # H4 (model-specific): supported if effect sizes vary significantly across
-    # model families (worst-case spread > 0.05 on A-D gold_span delta).
-    h4_supported = a_d_gold_spread["spread"] > h4_spread
+    # model families (worst-case spread > threshold on A-D gold_span delta).
+    h4_spread_supported = a_d_gold_spread["spread"] > h4_spread
+
+    # Known model families (excluding "unknown"). H4 needs >= 2 to evaluate.
+    known_families = [
+        f for f in (per_variant.get("A_full_balanced", {}).get("per_model_family", {}) or {})
+        if f != "unknown"
+    ]
+    h4_insufficient_data = len(known_families) < 2
+    if h4_insufficient_data:
+        h4_status = "insufficient_data"
+        h4_supported = False
+        h4_reason = (
+            "insufficient_data: fewer than two known model families "
+            f"(known={known_families})"
+        )
+    else:
+        h4_status = "supported" if h4_spread_supported else "refuted"
+        h4_supported = h4_spread_supported
+        h4_reason = (
+            "spread_exceeds_threshold" if h4_spread_supported
+            else "spread_at_or_below_threshold"
+        )
+
+    is_synthetic = (replay_source == "synthetic_fixture")
+
+    def _h_block(
+        name: str, supported: bool, status: str, criterion_fields: dict[str, Any],
+        reason: str = "",
+    ) -> dict[str, Any]:
+        block: dict[str, Any] = {
+            # ``supported`` is the empirical claim. On a synthetic fixture this
+            # is ALWAYS forced to False (synthetic fixtures cannot confer
+            # empirical support); the raw criterion booleans are exposed
+            # ONLY under ``criterion_matched_on_synthetic_fixture`` so the
+            # report never reads as an empirical supported=true.
+            "supported": False if is_synthetic else supported,
+            "status": "synthetic_only" if is_synthetic else status,
+        }
+        if reason:
+            block["reason"] = reason
+        if is_synthetic:
+            block["criterion_matched_on_synthetic_fixture"] = {
+                k: v for k, v in criterion_fields.items()
+                if k.startswith("a_") or k in {"spread_threshold"}
+            }
+        else:
+            block.update(criterion_fields)
+        return block
 
     hypothesis_results: dict[str, dict[str, Any]] = {
-        "H1_ambiguous_routing": {
-            "supported": h1_supported,
-            "a_greater_than_d": h1_a_gt_d,
-            "a_greater_than_e": h1_a_gt_e,
-            "a_greater_than_b": h1_a_gt_b,
-            "a_vs_d_delta": a_vs_d,
-            "a_vs_e_delta": a_vs_e,
-            "a_vs_b_delta": a_vs_b,
-        },
-        "H2_llm_call_reduction": {
-            "supported": h2_supported,
-            "a_approx_e": h2_a_approx_e,
-            "a_greater_than_d": h2_a_gt_d,
-            "a_vs_e_delta": a_vs_e,
-            "a_vs_d_delta": a_vs_d,
-        },
-        "H3_p25_fallback_sufficiency": {
-            "supported": h3_supported,
-            "d_approx_a": h3_d_approx_a,
-            "a_vs_d_delta": a_vs_d,
-        },
-        "H4_model_specific": {
-            "supported": h4_supported,
-            "a_d_gold_span_model_family_spread": a_d_gold_spread,
-            "spread_threshold": h4_spread,
-        },
+        "H1_ambiguous_routing": _h_block(
+            "H1", h1_supported, "supported" if h1_supported else "refuted",
+            {
+                "a_preserves_d": h1_preserves_d,
+                "a_reduces_d": h1_reduces_d,
+                "a_beats_b": h1_beats_b,
+                "a_beats_e": h1_beats_e,
+                "a_vs_d_delta": a_vs_d,
+                "a_vs_e_delta": a_vs_e,
+                "a_vs_b_delta": a_vs_b,
+                "robust_utility_deltas": ru_deltas,
+            },
+        ),
+        "H2_llm_call_reduction": _h_block(
+            "H2", h2_supported, "supported" if h2_supported else "refuted",
+            {
+                "a_approx_e": h2_a_approx_e,
+                "a_reduces_d_calls": h2_a_reduces_d_calls,
+                "a_vs_e_delta": a_vs_e,
+                "a_vs_d_delta": a_vs_d,
+            },
+        ),
+        "H3_p25_fallback_sufficiency": _h_block(
+            "H3", h3_supported, "supported" if h3_supported else "refuted",
+            {
+                "d_approx_a": h3_d_approx_a,
+                "a_vs_d_delta": a_vs_d,
+            },
+        ),
+        "H4_model_specific": _h_block(
+            "H4", h4_supported, h4_status,
+            {
+                "a_d_gold_span_model_family_spread": a_d_gold_spread,
+                "spread_threshold": h4_spread,
+                "known_model_family_count": len(known_families),
+                "h4_insufficient_data": h4_insufficient_data,
+            },
+            reason=h4_reason,
+        ),
     }
 
     # Synthetic fixture => never an empirical verdict.
-    if replay_source == "synthetic_fixture":
+    if is_synthetic:
         return (
             hypothesis_results,
             "insufficient_data",
@@ -755,21 +896,36 @@ def _evaluate_hypotheses(
             "refuted, or partial verdict",
         )
 
-    n_supported = sum(
-        1 for h in hypothesis_results.values() if h["supported"]
-    )
-    if n_supported == 0:
+    # H1-H3 verdict is computed INDEPENDENTLY of H4. When H4 is
+    # insufficient_data, the overall verdict reflects H1-H3 only; H4
+    # insufficient_data does NOT block the H1-H3 mechanism verdict.
+    h1_h3 = {
+        k: v for k, v in hypothesis_results.items() if k != "H4_model_specific"
+    }
+    n_supported_h1_h3 = sum(1 for h in h1_h3.values() if h["supported"])
+    n_h1_h3 = len(h1_h3)
+    if n_supported_h1_h3 == 0:
         verdict = "refuted"
-        reason = "all_predeclared_hypotheses_refuted"
-    elif n_supported == len(HYPOTHESES):
+        reason = "all_predeclared_h1_h3_hypotheses_refuted"
+    elif n_supported_h1_h3 == n_h1_h3:
         verdict = "supported"
-        reason = "all_predeclared_hypotheses_supported"
+        reason = "all_predeclared_h1_h3_hypotheses_supported"
     else:
         verdict = "partial"
         supported_names = sorted(
-            h for h, r in hypothesis_results.items() if r["supported"]
+            h for h, r in h1_h3.items() if r["supported"]
         )
         reason = "partial_support: " + ",".join(supported_names)
+    if h4_insufficient_data:
+        reason += (
+            "; H4=insufficient_data (fewer than two known model families); "
+            "H4 insufficient_data does NOT block the H1-H3 verdict"
+        )
+    else:
+        h4_note = (
+            "; H4=supported" if h4_supported else "; H4=refuted"
+        )
+        reason += h4_note
     return hypothesis_results, verdict, reason
 
 
@@ -912,6 +1068,12 @@ def build_report(
         per_variant, replay_source
     )
 
+    # H4 insufficient_data policy: H4 does NOT block the H1-H3 mechanism
+    # verdict. Single-model B12 CI slices can still evaluate H1-H3; H4 needs
+    # multi-model aggregation. Read directly from the H4 result block so the
+    # report flag is always consistent with the actual H4 status.
+    h4_block = hypothesis_results.get("H4_model_specific", {}) or {}
+    h4_insufficient_data = bool(h4_block.get("h4_insufficient_data"))
     ref_hashes = _reference_spec_hashes()
 
     report: dict[str, Any] = {
@@ -948,6 +1110,12 @@ def build_report(
         "metric_names": list(METRIC_NAMES),
         "policy_under_analysis": POLICY_UNDER_ANALYSIS,
         "baseline_for_deltas": BASELINE_FOR_DELTAS,
+        "public_group_key_contract": (
+            "per_repo aggregate keys are public preregistered repo labels for "
+            "synthetic or preregistration fixtures and anonymized "
+            "public_repo_group_NNN labels for private --input replays; raw or "
+            "private repo identifiers are never emitted"
+        ),
         "per_variant_metrics": per_variant,
         "overall_mean": overall_mean,
         "worst_group": worst_group,
@@ -960,6 +1128,9 @@ def build_report(
         "hypothesis_results": hypothesis_results,
         "verdict": verdict,
         "verdict_reason": verdict_reason,
+        "h4_insufficient_data_blocks_overall_verdict": False,
+        "h1_h3_verdict_independent_of_h4": True,
+        "h4_insufficient_data": h4_insufficient_data,
         "aggregate_only_public_artifact": True,
         "safety_invariants": {
             "no_live_llm_calls": True,
@@ -1144,91 +1315,315 @@ def verify_report(report: dict[str, Any]) -> None:
 
 
 # ---------------------------------------------------------------------------
-# --input (stub): load P21 outputs without computing metrics
+# --input: load private P21 v1 records via the C1 adapter and replay
 # ---------------------------------------------------------------------------
 
 
-def _load_p21_input(path: str) -> dict[str, Any]:
-    """Load a P21 outputs JSON file (or directory of JSON files) and return a
-    minimal metadata payload. The full per-variant replay metric computation is
-    deferred to a later task; for now we only verify the input is valid JSON
-    and surface its top-level shape (without leaking any forbidden keys).
+def _record_metric_cell(
+    record: c1.PrivateRecord, strategy: str
+) -> dict[str, float]:
+    """Extract the 5 B12 metrics for one record under one strategy.
+
+    ``gold_span`` / ``false_span`` are the per-record ``added_gold_span`` /
+    ``added_false_span`` counts (mean-aggregated per-group downstream).
+    ``model_calls`` is 1.0 for LLM strategies, 0.0 otherwise (per-record proxy).
+    Falls back to ``candidate_baseline`` outcome if the selected strategy's
+    outcome is all-zero (defensive; P21 v1 always writes all strategy keys).
     """
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"--input path not found: {path}")
-    if p.is_dir():
-        files = sorted(p.glob("*.json"))
-        if not files:
-            raise ValueError(f"--input directory has no .json files: {path}")
-        loaded: list[dict[str, Any]] = []
-        for f in files:
-            data = json.loads(f.read_text(encoding="utf-8"))
-            if isinstance(data, dict):
-                loaded.append(data)
-            elif isinstance(data, list):
-                loaded.extend(x for x in data if isinstance(x, dict))
-            else:
-                raise ValueError(
-                    f"--input file {f.name} must contain a JSON array or object"
-                )
-        return {
-            "source_kind": "directory",
-            "n_files": len(files),
-            "n_records": len(loaded),
-        }
-    data = json.loads(p.read_text(encoding="utf-8"))
-    if isinstance(data, list):
-        return {
-            "source_kind": "file_array",
-            "n_files": 1,
-            "n_records": len(data),
-        }
-    if isinstance(data, dict):
-        records = data.get("records")
-        n_records = len(records) if isinstance(records, list) else 0
-        return {
-            "source_kind": "file_object",
-            "n_files": 1,
-            "n_records": n_records,
-        }
-    raise ValueError(
-        f"--input file must contain a JSON array or object, got {type(data).__name__}"
+    outcome = record.outcomes.get(strategy) or record.outcomes.get(
+        "candidate_baseline"
+    ) or {}
+    return {
+        "span_f0_5": float(outcome.get("span_f0_5", 0.0)),
+        "gold_span": float(outcome.get("added_gold_span", 0)),
+        "false_span": float(outcome.get("added_false_span", 0)),
+        "primary_false_positive_rate": float(
+            outcome.get("primary_false_positive_rate", 0.0)
+        ),
+        "model_calls": 1.0 if strategy in c1.LLM_STRATEGIES else 0.0,
+    }
+
+
+def _group_metrics(cells: list[dict[str, float]]) -> dict[str, float]:
+    """Aggregate a list of per-record metric cells into the mean-per-metric
+    summary (same semantics as the synthetic fixture so the frozen predeclared
+    criteria, calibrated against means, remain consistent)."""
+    if not cells:
+        return {m: 0.0 for m in METRIC_NAMES}
+    return {m: round(_mean([c[m] for c in cells]), 6) for m in METRIC_NAMES}
+
+
+def _select_e_random_subset(
+    records: list[c1.PrivateRecord],
+    p25_llm_subset: list[c1.PrivateRecord],
+    k: int,
+    seed: int,
+) -> set[str]:
+    """Deterministically hash-select ``k`` records from the P25 LLM-eligible
+    population for variant E (random same-count call-reduction control).
+
+    Selection is deterministic given the frozen seed: we sort the p25_llm_subset
+    by its (private, in-memory-only) record hash, seed an RNG, and pick ``k``
+    indices without replacement. The returned set contains private record hashes
+    (IN MEMORY ONLY; never emitted in the public report — only the COUNT is
+    surfaced). Limitation: a single frozen seed is used; seed-averaging can be
+    added later (reported in the algorithm spec).
+    """
+    if k <= 0 or not p25_llm_subset:
+        return set()
+    # Sort by private hash for a stable, input-order-independent ordering.
+    ordered = sorted(p25_llm_subset, key=lambda r: r.private_record_hash)
+    n = len(ordered)
+    k = min(k, n)
+    rng = random.Random(seed)
+    chosen_idx = set(rng.sample(range(n), k))
+    return {ordered[i].private_record_hash for i in chosen_idx}
+
+
+def _build_per_variant_from_records(
+    records: list[c1.PrivateRecord],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Compute the per-variant metrics dict (same shape as
+    ``_build_synthetic_fixture``) plus the count reporting block, from real
+    private P21 records loaded via the C1 adapter.
+
+    Variant definitions (FROZEN):
+      - A full balanced: if balanced_branch -> ``weak_candidate_only``, else
+        D/P25 strategy.
+      - C ambiguous weak_only only: equivalent to A (the balanced policy has
+        only one routing rule); A≡C equivalence is reported explicitly.
+      - D original P25: P25-selected strategy.
+      - B deterministic call-reduction control: only for
+        ``actual_call_avoided_set = balanced_branch_set ∩ p25_llm_subset``,
+        choose local non-LLM ``candidate_baseline``; otherwise D.
+      - E random same-count call-reduction: deterministically hash-select the
+        same number of records as ``actual_call_avoided_set`` from the P25
+        LLM-eligible population, choose ``candidate_baseline`` on those,
+        otherwise D.
+
+    Returns ``(per_variant, counts)`` where ``counts`` carries the safe scalar
+    count reporting (total_records, complete_records, balanced_branch_count,
+    p25_llm_eligible_count, actual_call_avoided_count, random_selected_count).
+    """
+    # Precompute per-record routing decisions (using adapter helpers).
+    balanced_branch_set = {
+        r.private_record_hash: c1.balanced_branch_predicate(r) for r in records
+    }
+    p25_strategies = {r.private_record_hash: c1.compute_p25_strategy(r) for r in records}
+    p25_llm_subset_hashes = {
+        r.private_record_hash for r in records if p25_strategies[r.private_record_hash] in c1.LLM_STRATEGIES
+    }
+    # actual_call_avoided_set = balanced_branch_set ∩ p25_llm_subset.
+    actual_call_avoided_hashes = {
+        h for h, bb in balanced_branch_set.items()
+        if bb and h in p25_llm_subset_hashes
+    }
+    # E random subset: same count as actual_call_avoided_set, drawn from the
+    # P25 LLM-eligible population.
+    p25_llm_subset_records = [
+        r for r in records if r.private_record_hash in p25_llm_subset_hashes
+    ]
+    e_seed = PREDECLARED_CRITERIA["e_random_seed"]
+    e_selected_hashes = _select_e_random_subset(
+        records, p25_llm_subset_records, len(actual_call_avoided_hashes), e_seed
     )
 
+    # Precompute the strategy per record per variant.
+    variant_strategy: dict[str, dict[str, str]] = {v: {} for v in ABLATION_VARIANTS}
+    complete_count = 0
+    incomplete_record_count = 0
+    missing_required_outcome_count = 0
+    # Track, per variant, how many records were missing the chosen strategy
+    # outcome (so consumers can see which variants are affected).
+    missing_by_variant: dict[str, int] = {v: 0 for v in ABLATION_VARIANTS}
+    complete_by_hash: dict[str, bool] = {}
+    for r in records:
+        h = r.private_record_hash
+        d_strat = p25_strategies[h]
+        bb = balanced_branch_set[h]
+        # A / C: ambiguous->weak_only, else P25.
+        a_strat = "weak_candidate_only" if bb else d_strat
+        variant_strategy["A_full_balanced"][h] = a_strat
+        variant_strategy["C_ambiguous_weak_only"][h] = a_strat  # A≡C
+        # D: P25 default.
+        variant_strategy["D_p25_default"][h] = d_strat
+        # B: candidate_baseline on actual_call_avoided_set, else D.
+        variant_strategy["B_deterministic_llm_reduction"][h] = (
+            "candidate_baseline" if h in actual_call_avoided_hashes else d_strat
+        )
+        # E: candidate_baseline on random_selected_set, else D.
+        variant_strategy["E_random_llm_reduction"][h] = (
+            "candidate_baseline" if h in e_selected_hashes else d_strat
+        )
+        # A record is "complete" iff the outcome is PRESENT (not silently
+        # zeroed) for EVERY variant's chosen strategy for that record. A
+        # missing required outcome makes the record incomplete and it must
+        # NOT silently count as a zero-outcome complete record.
+        chosen_strategies = sorted({
+            variant_strategy[v][h] for v in ABLATION_VARIANTS
+        })
+        is_complete = c1.record_complete_for_strategies(r, chosen_strategies)
+        complete_by_hash[h] = is_complete
+        if is_complete:
+            complete_count += 1
+        else:
+            incomplete_record_count += 1
+            missing_required_outcome_count += sum(
+                1 for s in chosen_strategies
+                if not (r.outcome_present or {}).get(s)
+            )
+        for v in ABLATION_VARIANTS:
+            s = variant_strategy[v][h]
+            if not (r.outcome_present or {}).get(s):
+                missing_by_variant[v] += 1
 
-def _build_not_implemented_report(input_meta: dict[str, Any]) -> dict[str, Any]:
-    """Build a stub report for ``--input`` mode.
+    repo_values = sorted({str(r.repo_id or "unknown") for r in records})
+    repo_group_map = {
+        repo: f"public_repo_group_{idx + 1:03d}"
+        for idx, repo in enumerate(repo_values)
+    }
 
-    Real per-variant replay metric computation (reading P21 per-strategy
-    outcomes, computing per-variant aggregates against the predeclared
-    hypothesis criteria, etc.) is deferred to a later task. For now we emit a
-    well-formed report with ``verdict="not_implemented"`` and an explanatory
-    reason, while still passing all safety-invariant checks.
+    out: dict[str, Any] = {}
+    for variant in ABLATION_VARIANTS:
+        per_repo_cells: dict[str, list[dict[str, float]]] = {}
+        per_model_cells: dict[str, list[dict[str, float]]] = {}
+        all_cells: list[dict[str, float]] = []
+        for r in records:
+            h = r.private_record_hash
+            if not complete_by_hash.get(h, False):
+                # Missing/malformed required outcomes are counted in
+                # replay_counts and block the scientific verdict, but they must
+                # never enter metric aggregation as zero-filled compatibility
+                # rows.
+                continue
+            strat = variant_strategy[variant][h]
+            cell = _record_metric_cell(r, strat)
+            repo = repo_group_map[str(r.repo_id or "unknown")]
+            model = str(r.model_family or "unknown")
+            per_repo_cells.setdefault(repo, []).append(cell)
+            per_model_cells.setdefault(model, []).append(cell)
+            all_cells.append(cell)
+        out[variant] = {
+            "per_repo": {k: _group_metrics(v) for k, v in per_repo_cells.items()},
+            "per_model_family": {
+                k: _group_metrics(v) for k, v in per_model_cells.items()
+            },
+            "overall_mean": _group_metrics(all_cells),
+            "n_records": len(all_cells),
+        }
+
+    counts = {
+        "total_records": len(records),
+        "complete_records": complete_count,
+        "incomplete_record_count": incomplete_record_count,
+        "missing_required_outcome_count": missing_required_outcome_count,
+        "missing_by_variant": dict(missing_by_variant),
+        "balanced_branch_count": sum(1 for v in balanced_branch_set.values() if v),
+        "p25_llm_eligible_count": len(p25_llm_subset_hashes),
+        "actual_call_avoided_count": len(actual_call_avoided_hashes),
+        "random_selected_count": len(e_selected_hashes),
+        "e_random_seed": e_seed,
+        "e_seed_limitation": (
+            "single_frozen_seed; seed-averaging can be added later"
+        ),
+    }
+    return out, counts
+
+
+def _load_p21_input(path: str) -> dict[str, Any]:
+    """Load private P21 v1 records via the C1 adapter and return a metadata
+    payload carrying the normalized ``records`` list plus safe scalar counts.
+    The records are kept IN MEMORY ONLY; the public report never emits raw
+    task_ids/repo_ids/spans/snippets/per-record hashes (aggregate-only invariant).
     """
-    spec = build_algorithm_spec()
-    spec_hash = _sha256_json(spec)
-    # Reuse the synthetic fixture so the report has the right SHAPE; the
-    # verdict is overridden below to "not_implemented".
-    per_variant = _build_synthetic_fixture()
+    records, meta = c1.load_private_records(path)
+    return {
+        "source_kind": meta.get("source_kind"),
+        "n_files": meta.get("n_files"),
+        "n_records": meta.get("n_records"),
+        "records": records,
+        # Safe scalar taint summary (no private fields; counts only).
+        "taint_summary": meta.get("taint_summary"),
+    }
+
+
+def _build_input_report(input_meta: dict[str, Any]) -> dict[str, Any]:
+    """Build a real B12 report from private P21 ``--input`` records.
+
+    Computes per-variant metrics (A-E) by routing each record through the
+    frozen ablation-variant strategy selectors (via the C1 adapter helpers),
+    extracting the per-strategy outcome metrics, and aggregating overall /
+    per-repo / per-model-family. The actual-call-avoided / balanced-branch /
+    p25_llm_eligible counts, bootstrap CIs, RobustUtility, variant deltas, and
+    the FROZEN predeclared verdict are all computed from the real records. No
+    live LLM calls; no per-record IDs/hashes/paths in the public output.
+    """
+    records = input_meta.get("records") or []
+    if not records:
+        # No usable records -> emit insufficient_data (cannot apply criteria
+        # to an empty replay set). Still a well-formed report.
+        per_variant = _build_synthetic_fixture()
+        report = build_report(
+            per_variant, self_test=False, replay_source="ci_ephemeral_records"
+        )
+        report["verdict"] = "insufficient_data"
+        report["verdict_reason"] = (
+            "no usable P21 records loaded from --input; cannot apply "
+            "predeclared criteria to an empty replay set"
+        )
+        report["input_meta"] = {
+            "source_kind": input_meta.get("source_kind"),
+            "n_files": input_meta.get("n_files"),
+            "n_records": 0,
+        }
+        report["replay_counts"] = {
+            "total_records": 0,
+            "complete_records": 0,
+            "incomplete_record_count": 0,
+            "missing_required_outcome_count": 0,
+            "missing_by_variant": {v: 0 for v in ABLATION_VARIANTS},
+            "balanced_branch_count": 0,
+            "p25_llm_eligible_count": 0,
+            "actual_call_avoided_count": 0,
+            "random_selected_count": 0,
+            "e_random_seed": PREDECLARED_CRITERIA["e_random_seed"],
+            "e_seed_limitation": "single_frozen_seed; seed-averaging can be added later",
+        }
+        hits = _recursive_key_scan(report)
+        if hits:
+            raise ValueError(
+                f"forbidden public keys/values in input report: {hits!r}"
+            )
+        return report
+
+    per_variant, counts = _build_per_variant_from_records(records)
     report = build_report(
         per_variant, self_test=False, replay_source="ci_ephemeral_records"
     )
-    # Override the verdict to signal that no real replay computation happened.
-    report["verdict"] = "not_implemented"
-    report["verdict_reason"] = (
-        "real-input replay metric computation deferred to later task; "
-        f"input_meta={input_meta}"
-    )
-    # Re-stamp the spec hash fields (defensive: build_report already sets these).
-    report["algorithm_spec_sha256_matched"] = True
-    report["algorithm_spec_sha256_stable"] = (spec_hash == _sha256_json(spec))
-    # Re-scan forbidden keys after the override (input_meta may include only
-    # safe scalar fields by construction).
+    # Surface the (safe, scalar) input metadata + count reporting. ``records``
+    # itself is NEVER emitted (aggregate-only invariant).
+    report["input_meta"] = {
+        "source_kind": input_meta.get("source_kind"),
+        "n_files": input_meta.get("n_files"),
+        "n_records": input_meta.get("n_records"),
+        "taint_summary": input_meta.get("taint_summary"),
+    }
+    report["replay_counts"] = counts
+    if counts.get("incomplete_record_count", 0) > 0:
+        report["verdict"] = "insufficient_data"
+        report["verdict_reason"] = (
+            "incomplete_required_outcomes: one or more records were missing "
+            "a required chosen-strategy outcome; incomplete records were "
+            "excluded from metric aggregation and B12 cannot make a scientific "
+            "mechanism verdict on this input"
+        )
+        report["incomplete_outcomes_block_overall_verdict"] = True
+    else:
+        report["incomplete_outcomes_block_overall_verdict"] = False
     hits = _recursive_key_scan(report)
     if hits:
         raise ValueError(
-            f"forbidden public keys/values in not-implemented report: {hits!r}"
+            f"forbidden public keys/values in input report: {hits!r}"
         )
     return report
 
@@ -1337,21 +1732,62 @@ def _self_test_hypothesis_evaluation_stub() -> None:
         assert a_vs_c[m] == 0.0, ("A-vs-C delta must be zero", m, a_vs_c[m])
 
 
-def _self_test_input_stub_not_implemented(tmp_path: Path) -> None:
-    """--input mode must emit verdict='not_implemented' without doing any real
-    replay metric computation."""
-    p = tmp_path / "p21_stub.json"
-    p.write_text(
-        json.dumps({"records": [{"policy": "balanced_v1"}]}), encoding="utf-8"
-    )
+def _self_test_input_full_mode(tmp_path: Path) -> None:
+    """--input mode must load private P21 v1 records via the C1 adapter, compute
+    per-variant metrics + counts, and emit a real verdict (NOT
+    ``not_implemented``) against the FROZEN criteria."""
+    payload = c1.build_synthetic_v1_payload()
+    p = tmp_path / "kimi_b12_selftest.json"
+    p.write_text(json.dumps(payload), encoding="utf-8")
     meta = _load_p21_input(str(p))
     assert meta["source_kind"] == "file_object"
-    assert meta["n_records"] == 1
-    report = _build_not_implemented_report(meta)
+    assert meta["n_records"] == len(payload["records"])
+    assert len(meta["records"]) == len(payload["records"])
+    # model_family derived from filename prefix "kimi".
+    assert all(r.model_family == "kimi" for r in meta["records"]), (
+        [r.model_family for r in meta["records"]]
+    )
+    report = _build_input_report(meta)
     verify_report(report)
     assert report["replay_source"] == "ci_ephemeral_records"
-    assert report["verdict"] == "not_implemented"
-    assert "deferred" in report["verdict_reason"]
+    assert report["verdict"] != "not_implemented", report["verdict"]
+    assert report["verdict"] in ("supported", "refuted", "partial", "insufficient_data")
+    assert "per_variant_metrics" in report
+    for variant in ABLATION_VARIANTS:
+        assert variant in report["per_variant_metrics"], variant
+        var = report["per_variant_metrics"][variant]
+        assert "per_repo" in var and "per_model_family" in var
+        assert "overall_mean" in var and "n_records" in var
+    # Count reporting.
+    rc = report["replay_counts"]
+    assert rc["total_records"] == len(payload["records"])
+    assert rc["balanced_branch_count"] >= 0
+    assert rc["p25_llm_eligible_count"] >= 0
+    assert rc["actual_call_avoided_count"] <= rc["balanced_branch_count"]
+    assert rc["actual_call_avoided_count"] <= rc["p25_llm_eligible_count"]
+    assert rc["random_selected_count"] == rc["actual_call_avoided_count"]
+    # A≡C equivalence: the A-vs-C delta must be zero on every metric.
+    a_vs_c = report["variant_deltas_vs_c_equivalence_check"]
+    for m in METRIC_NAMES:
+        assert a_vs_c[m] == 0.0, ("A-vs-C delta must be zero", m, a_vs_c[m])
+    # Aggregate-only invariant: no forbidden keys leaked.
+    hits = _recursive_key_scan(report)
+    assert hits == [], hits
+
+    # A malformed/missing chosen outcome must NOT be counted as a zero-valued
+    # complete metric row. It must be counted as incomplete and block the
+    # overall scientific verdict.
+    malformed = c1.build_synthetic_v1_payload()
+    for strategy_key in c1.P21_STRATEGY_KEYS:
+        malformed["records"][0].pop(strategy_key, None)
+    p_bad = tmp_path / "kimi_b12_missing_outcome.json"
+    p_bad.write_text(json.dumps(malformed), encoding="utf-8")
+    bad_meta = _load_p21_input(str(p_bad))
+    bad_report = _build_input_report(bad_meta)
+    verify_report(bad_report)
+    assert bad_report["replay_counts"]["incomplete_record_count"] > 0
+    assert bad_report["verdict"] == "insufficient_data", bad_report["verdict"]
+    assert bad_report.get("incomplete_outcomes_block_overall_verdict") is True
 
 
 def _self_test_reference_specs() -> None:
@@ -1401,9 +1837,13 @@ def _self_test_hypotheses_defined() -> None:
         "approx_equal_threshold",
         "strictly_greater_threshold",
         "h4_model_family_spread_threshold",
-        "h1_a_greater_than_d_gold",
+        "h1_a_approx_d_gold",
+        "h1_a_reduces_d_false_span",
+        "h1_a_beats_b_robust_utility",
         "h2_a_approx_e_gold",
+        "h2_a_reduces_d_model_calls",
         "h3_d_approx_a_gold",
+        "e_random_seed",
     ):
         assert k in PREDECLARED_CRITERIA, k
     spec = build_algorithm_spec()
@@ -1454,9 +1894,9 @@ def run_self_test() -> dict[str, Any]:
     # 4. Hypothesis evaluation stub (synthetic fixture => insufficient_data).
     _self_test_hypothesis_evaluation_stub()
 
-    # 5. --input stub => not_implemented verdict.
+    # 5. --input full mode: real per-variant metrics + verdict via C1 adapter.
     with tempfile.TemporaryDirectory() as tmp:
-        _self_test_input_stub_not_implemented(Path(tmp))
+        _self_test_input_full_mode(Path(tmp))
 
     # 6. B10/B10B/B11 reference specs present.
     _self_test_reference_specs()
@@ -1503,7 +1943,7 @@ def run_self_test() -> dict[str, Any]:
             "spec_hash_stable": True,
             "synthetic_fixture_metrics": True,
             "hypothesis_evaluation_stub": True,
-            "input_stub_not_implemented": True,
+            "input_full_mode": True,
             "reference_specs_pinned": True,
             "artifacts_regenerated": True,
             "on_disk_artifacts_validated": True,
@@ -1530,10 +1970,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=None,
         help=(
-            "path to a JSON file or directory of JSON files containing P21 "
-            "outputs (model x repo runs). Currently a STUB: emits "
-            "verdict='not_implemented'; full replay metric computation "
-            "deferred to a later task."
+            "path to a private P21 v1 JSON file or directory of JSON files "
+            "(schema p25-policy-records-ephemeral-v1). Loads records via the "
+            "C1 adapter (eval/c1_private_records.py), routes each through the "
+            "5 ablation variants (A-E), computes per-variant aggregate metrics, "
+            "count reporting (balanced_branch / p25_llm_eligible / "
+            "actual_call_avoided), and emits a verdict against the FROZEN "
+            "predeclared criteria. Scientific verdicts (supported/refuted/"
+            "partial/insufficient_data) return exit 0; mechanical/privacy/"
+            "schema errors return nonzero."
         ),
     )
     parser.add_argument(
@@ -1578,6 +2023,8 @@ def _print_summary(report: dict[str, Any]) -> None:
         "aggregate_only_public_artifact": report["aggregate_only_public_artifact"],
         "robust_utility": report["robust_utility"],
     }
+    if "replay_counts" in report:
+        summary["replay_counts"] = report["replay_counts"]
     print(json.dumps(summary, indent=2, sort_keys=True))
 
 
@@ -1590,7 +2037,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.input:
         input_meta = _load_p21_input(args.input)
-        report = _build_not_implemented_report(input_meta)
+        report = _build_input_report(input_meta)
         verify_report(report)
         out_path = Path(args.out) if args.out else REPORT_PATH
         _write_json(out_path, report)
