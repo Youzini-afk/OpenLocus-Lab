@@ -139,6 +139,10 @@ B12 是继 B11 之后的 mechanism-decomposition 阶段。它通过 5 个 ablati
 
 B12 是 mechanism decomposition，**不是** promotion step：`promotion_ready=false`、`default_should_change=false`、`evidencecore_semantics_changed=false`、`policy_search_performed=false`、`quality_strategy_tuned=false`。public B12 report 为 **aggregate-only** —— 不输出 task_id、raw/private repo_id、path、span、candidate_id、content_sha、per-record hash、P31/P33 block 或 raw prompt/response/snippet/provider field（仅 COUNTS）。Aggregate group metrics 只使用 synthetic/preregistration fixtures 的 public preregistered repo labels，或 private `--input` replays 的 anonymized `public_repo_group_NNN` labels。Scientific verdicts（`supported` / `refuted` / `partial` / `insufficient_data`）返回 exit 0；mechanical/privacy/schema 错误返回 nonzero；scientific no-result 是有效 CI 结论，**不**使 CI 失败。详见 [B12 详细报告](b12-mechanism-decomposition.md)。
 
+### C2 B12 CI canary（2026-06-19）
+
+C2 在真实 CI run 上验证了新的 C1/B12 路径：`py_fastapi × Kimi × round_robin_public_buckets × 12 tasks`（run `27816890557`）产出 B12 report，字段为 `replay_source="ci_ephemeral_records"`、`total_records=12`、`complete_records=12`、`incomplete_record_count=0`、`balanced_branch_count=4`、`p25_llm_eligible_count=10`、`actual_call_avoided_count=4`、`random_selected_count=4`。public report 仍为 aggregate-only 且 privacy-safe。该 canary verdict 为 `partial`：H1 `refuted`、H2 `refuted`、H3 `supported`、H4 `insufficient_data`（single model family）。这只是 canary-level mechanism result，不是完整 B12 结论。下一步是对 B11 repo/model cells 跑完整 B12 matrix。
+
 ### B12 public aggregate mechanism screen（2026-06-18）
 
 新增一个有界的 **public-aggregate mechanism screen**（`eval/b12_public_aggregate_screen.py` → `artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json`）。这**不是**完整的 B12 per-record replay。explorer/oracle 的结论是：从当前的 public B11 aggregate 无法完成 full B12 replay —— 它缺少 per-record route decisions、ambiguous-subset membership、deterministic call-reduction variant B、random call-reduction variant E 以及 `weak_candidate_only` per-strategy outcomes。该 screen 因此发出**逐 hypothesis 的 screen status**，从不发出单一全局 `supported` verdict，并对 aggregate deltas 应用**相同的**冻结数值门槛（±0.02 approx-equality、0.05 H4 family-spread）。

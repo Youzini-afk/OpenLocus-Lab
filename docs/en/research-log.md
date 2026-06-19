@@ -2760,3 +2760,27 @@ Write the **theoretical synthesis** of the B10-B18 Breakthrough Sprint as a pape
 - The synthesis carries forward the B12 / B13 / B14 / B15 / B16 / B17 / B18 no-go / screen-only / prior-screen statuses UNCHANGED. B11 `partial_with_failure` is carried forward UNCHANGED. B10 `runtime_clean=false` and B10B `runtime_shadow_ambiguous_supported=false` are carried forward UNCHANGED.
 - No raw records / paths / spans / snippets / prompts / responses / gold labels / `content_sha` / provider keys / api keys are present in the public artifact. The drift-guard self-hash is the only digest-like value and is whitelisted by key name.
 - Recommended next step: the B19 next-research-program list (runtime-clean B10B predicate, per-record mechanism / DRO / calibration / pack-policy / downstream-agent / QuIVer / OOD-temporal data collection), then a separate promotion preregistration. The synthesis itself never authorizes promotion.
+
+## 2026-06-19 — C2 B12 CI Canary with Private P21 Records
+
+### Objective
+
+Verify the new C1 private-record adapter and B12 real `--input` replay path against an actual GitHub CI run, rather than only synthetic fixtures. The goal is to prove that B12 can consume runner-temp private P21 records and emit an aggregate-only public report while preserving the public/private boundary.
+
+### Implementation notes
+
+- First tried a tiny `3`-task prefix canary (run `27816674482`); it failed the existing P21 privacy gate because the sample did not exercise remote LLM snippets. This was a canary coverage failure, not a B12 replay failure.
+- Reran with `round_robin_public_buckets` and `max_tasks=12` (run `27816890557`), which exercised the provider path and passed the P21 privacy gate, B10B, B11, and B12 report upload flow.
+- Added aggregate-only artifact `artifacts/c2_b12_canary/c2_b12_canary_report.json` summarizing only public counts, verdicts, deltas, and safety flags. No private records, task IDs, raw repo IDs, paths, spans, content hashes, prompts, responses, snippets, provider URLs, or provider keys are committed.
+
+### Findings
+
+- B12 report used `replay_source="ci_ephemeral_records"` and consumed real private P21 records through `eval/c1_private_records.py`.
+- Counts: `total_records=12`, `complete_records=12`, `incomplete_record_count=0`, `missing_required_outcome_count=0`, `balanced_branch_count=4`, `p25_llm_eligible_count=10`, `actual_call_avoided_count=4`, `random_selected_count=4`.
+- Canary verdict: `partial`. H1 `refuted`, H2 `refuted`, H3 `supported`, H4 `insufficient_data` (single model family; H4 does not block H1-H3 verdict by design).
+- A vs D deltas on the canary: `gold_span 0.0`, `SpanF0.5 0.0`, `false_span 0.0`, `PFP 0.0`, `model_calls -0.333333`. A vs E false-span delta was `-0.083334`.
+
+### Caveats
+
+- This is a canary-level result only: one repo, one model family, 12 records. It does NOT prove the B12 mechanism globally and does NOT promote, default-change, or make balanced_v1 runtime-clean.
+- The next step is a full B12 matrix over the B11 repo/model cells, then aggregate the B12 reports before making mechanism claims.

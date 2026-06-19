@@ -719,16 +719,27 @@ support/refute criteria use explicit thresholds on `gold_span` and
 `span_f0_5` deltas: "≈" means within ±0.02, ">" means strictly greater than
 0.02; H4 uses a worst-case model-family spread threshold of 0.05 on the
 `A - D` `gold_span` delta. The B12 verdict framework emits one of
-`supported`/`refuted`/`partial`/`insufficient_data`/`not_implemented`. The
-evaluator skeleton ships 10 self-test checks (forbidden-scan, spec-hash
-stability, synthetic-fixture metrics incl. A≡C equivalence, hypothesis
-evaluation stub, `--input` stub `not_implemented`, B10/B10B/B11 reference-spec
-pin check, on-disk artifact regeneration + validation, ablation-variants
-defined, hypotheses defined) and the `--input` path is a stub (real per-record
-replay computation deferred to a later task). B12 is mechanism decomposition,
-**not** a promotion step: `promotion_ready=false`,
+`supported`/`refuted`/`partial`/`insufficient_data`/`not_implemented`. After the
+C1 private-record adapter landed, the B12 evaluator's `--input` path is real:
+it consumes CI-private P21 payloads through `eval/c1_private_records.py`,
+normalizes runtime features / benchmark route labels / SCORE-phase outcome
+fields, and emits an aggregate-only public report. It still makes no live LLM
+calls and does not expose task IDs, raw repo IDs, paths, spans, content hashes,
+prompts, responses, snippets, provider URLs, or provider keys. B12 is mechanism
+decomposition, **not** a promotion step: `promotion_ready=false`,
 `default_should_change=false`, `evidencecore_semantics_changed=false`. See
 [`b12-mechanism-decomposition.md`](b12-mechanism-decomposition.md).
+
+C2 B12 CI canary (2026-06-19): after the C1 shared private-record adapter
+landed, a real CI canary (`py_fastapi × Kimi × round_robin_public_buckets × 12
+tasks`, run `27816890557`) verified that B12 consumes private P21 per-record
+records and emits only an aggregate public report. The B12 report used
+`replay_source="ci_ephemeral_records"` with `12/12` complete records,
+`balanced_branch_count=4`, `p25_llm_eligible_count=10`,
+`actual_call_avoided_count=4`, and `random_selected_count=4`. Canary verdict:
+`partial` (H1 `refuted`, H2 `refuted`, H3 `supported`, H4 `insufficient_data`
+because this is a single-model-family slice). This is canary-level evidence
+only; the full B12 matrix over B11 repo/model cells remains the next step.
 
 B12 public aggregate mechanism screen (2026-06-18):
 

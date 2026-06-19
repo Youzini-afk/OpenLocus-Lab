@@ -1,0 +1,123 @@
+{
+  "schema_version": "c2-b12-ci-canary-report-v0",
+  "generated_at": "2026-06-19T00:00:00+00:00",
+  "claim_level": "real_ci_private_record_b12_canary",
+  "source_commit": "fa99522",
+  "public_artifact": true,
+  "aggregate_only_public_artifact": true,
+  "candidate_not_fact": true,
+  "promotion_ready": false,
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "policy_search_performed": false,
+  "quality_strategy_tuned": false,
+  "new_provider_calls_by_report": 0,
+  "records_private_in_ci": true,
+  "private_records_uploaded": false,
+  "private_records_committed": false,
+  "raw_paths_or_spans_emitted": false,
+  "raw_prompts_or_responses_emitted": false,
+  "raw_snippets_emitted": false,
+  "content_sha_emitted": false,
+  "provider_keys_or_urls_emitted": false,
+  "canary_runs": {
+    "first_tiny_prefix_canary": {
+      "run_id": 27816674482,
+      "status": "failed_expected_validation_gate",
+      "reason": "3-task prefix sample did not exercise the remote LLM snippet path, so the existing P21 privacy gate rejected the run before upload. This was a canary coverage failure, not a B12 replay failure."
+    },
+    "round_robin_public_buckets_canary": {
+      "run_id": 27816890557,
+      "status": "success",
+      "stage": "p21_llm_rich",
+      "repo_id": "py_fastapi",
+      "model_family": "kimi",
+      "task_sample_mode": "round_robin_public_buckets",
+      "max_tasks": 12
+    }
+  },
+  "b12_replay_result": {
+    "schema_version": "b12-mechanism-decomposition-report-v0",
+    "replay_source": "ci_ephemeral_records",
+    "verdict": "partial",
+    "total_records": 12,
+    "complete_records": 12,
+    "incomplete_record_count": 0,
+    "missing_required_outcome_count": 0,
+    "balanced_branch_count": 4,
+    "p25_llm_eligible_count": 10,
+    "actual_call_avoided_count": 4,
+    "random_selected_count": 4,
+    "e_random_seed": 20260618,
+    "h1_status": "refuted",
+    "h2_status": "refuted",
+    "h3_status": "supported",
+    "h4_status": "insufficient_data",
+    "h4_insufficient_data": true,
+    "h4_insufficient_data_blocks_overall_verdict": false,
+    "h1_h3_verdict_independent_of_h4": true,
+    "a_vs_d_delta": {
+      "gold_span": 0.0,
+      "span_f0_5": 0.0,
+      "false_span": 0.0,
+      "primary_false_positive_rate": 0.0,
+      "model_calls": -0.333333
+    },
+    "a_vs_b_delta": {
+      "gold_span": 0.0,
+      "span_f0_5": 0.0,
+      "false_span": 0.0,
+      "primary_false_positive_rate": 0.0,
+      "model_calls": 0.0
+    },
+    "a_vs_e_delta": {
+      "gold_span": 0.0,
+      "span_f0_5": 0.0,
+      "false_span": -0.083334,
+      "primary_false_positive_rate": 0.0,
+      "model_calls": 0.0
+    },
+    "per_variant_overall_mean": {
+      "A_full_balanced": {
+        "gold_span": 0.0,
+        "span_f0_5": 0.0,
+        "false_span": 0.083333,
+        "primary_false_positive_rate": 0.0,
+        "model_calls": 0.5
+      },
+      "B_deterministic_llm_reduction": {
+        "gold_span": 0.0,
+        "span_f0_5": 0.0,
+        "false_span": 0.083333,
+        "primary_false_positive_rate": 0.0,
+        "model_calls": 0.5
+      },
+      "C_ambiguous_weak_only": {
+        "gold_span": 0.0,
+        "span_f0_5": 0.0,
+        "false_span": 0.083333,
+        "primary_false_positive_rate": 0.0,
+        "model_calls": 0.5
+      },
+      "D_p25_default": {
+        "gold_span": 0.0,
+        "span_f0_5": 0.0,
+        "false_span": 0.083333,
+        "primary_false_positive_rate": 0.0,
+        "model_calls": 0.833333
+      },
+      "E_random_llm_reduction": {
+        "gold_span": 0.0,
+        "span_f0_5": 0.0,
+        "false_span": 0.166667,
+        "primary_false_positive_rate": 0.0,
+        "model_calls": 0.5
+      }
+    }
+  },
+  "interpretation": {
+    "summary": "This is the first real CI canary showing B12 consumes private P21 per-record records through the C1 adapter and emits only an aggregate public report.",
+    "scope": "single repo, single model family, 12 records; mechanism conclusions are canary-level only",
+    "next_step": "run the full B12 matrix over the B11 repo/model cells and aggregate the B12 reports"
+  }
+}

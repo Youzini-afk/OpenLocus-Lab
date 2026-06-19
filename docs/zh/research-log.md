@@ -2746,3 +2746,27 @@ Add the B18 OOD / temporal evaluation **preregistration + evaluator skeleton + b
 - 本综合原样 carry forward B12 / B13 / B14 / B15 / B16 / B17 / B18 的 no-go / screen-only / prior-screen 状态。B11 `partial_with_failure` 原样 carry forward。B10 `runtime_clean=false` 与 B10B `runtime_shadow_ambiguous_supported=false` 原样 carry forward。
 - 公共 artifact 中无 raw records / paths / spans / snippets / prompts / responses / gold labels / `content_sha` / provider keys / api keys。drift-guard self-hash 是唯一的 digest-like value，按键名白名单豁免。
 - Recommended next step：B19 next-research-program 列表（runtime-clean B10B predicate、per-record mechanism / DRO / calibration / pack-policy / downstream-agent / QuIVer / OOD-temporal 数据收集），然后是一个单独的 promotion preregistration。综合本身**绝不**授权 promotion。
+
+## 2026-06-19 — C2 B12 CI Canary with Private P21 Records
+
+### Objective
+
+用真实 GitHub CI run 验证新的 C1 private-record adapter 与 B12 real `--input` replay path，而不是只依赖 synthetic fixtures。目标是证明 B12 能消费 runner-temp private P21 records，同时只发出 aggregate-only public report，并保持 public/private boundary。
+
+### Implementation notes
+
+- 首先尝试了一个 `3`-task prefix canary（run `27816674482`）；它被现有 P21 privacy gate 拒绝，因为该 sample 没有 exercise remote LLM snippets。这是 canary coverage failure，不是 B12 replay failure。
+- 随后用 `round_robin_public_buckets` 与 `max_tasks=12` 重跑（run `27816890557`），成功 exercise provider path，并通过 P21 privacy gate、B10B、B11 与 B12 report upload flow。
+- 新增 aggregate-only artifact `artifacts/c2_b12_canary/c2_b12_canary_report.json`，只汇总 public counts、verdicts、deltas 与 safety flags。不提交 private records、task IDs、raw repo IDs、paths、spans、content hashes、prompts、responses、snippets、provider URLs 或 provider keys。
+
+### Findings
+
+- B12 report 使用 `replay_source="ci_ephemeral_records"`，并通过 `eval/c1_private_records.py` 消费真实 private P21 records。
+- Counts：`total_records=12`、`complete_records=12`、`incomplete_record_count=0`、`missing_required_outcome_count=0`、`balanced_branch_count=4`、`p25_llm_eligible_count=10`、`actual_call_avoided_count=4`、`random_selected_count=4`。
+- Canary verdict：`partial`。H1 `refuted`、H2 `refuted`、H3 `supported`、H4 `insufficient_data`（single model family；按设计 H4 不阻断 H1-H3 verdict）。
+- Canary 上 A vs D deltas：`gold_span 0.0`、`SpanF0.5 0.0`、`false_span 0.0`、`PFP 0.0`、`model_calls -0.333333`。A vs E false-span delta 为 `-0.083334`。
+
+### Caveats
+
+- 这只是 canary-level result：一个 repo、一个 model family、12 records。它**不**证明 B12 mechanism 全局成立，也**不** promotion、**不** default-change、**不**使 balanced_v1 runtime-clean。
+- 下一步是对 B11 repo/model cells 跑完整 B12 matrix，然后聚合 B12 reports，再做机制 claim。
