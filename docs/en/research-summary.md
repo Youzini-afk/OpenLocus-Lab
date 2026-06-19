@@ -1287,6 +1287,129 @@ backend, do NOT contain an HNSW run, and do NOT contain a
 candidate-set equivalence matrix across backends. See
 [`b17-quiver-systems-track.md`](b17-quiver-systems-track.md).
 
+ B18 OOD / temporal evaluation:
+
+ ```text
+ algorithm_spec_id: b18_ood_temporal_evaluation_v0
+ claim_level: ood_temporal_evaluation_v0
+ replay_and_validation_only: true (no live LLM calls and no live OOD or temporal evaluation inside evaluator)
+ promotion_ready: false
+ default_should_change: false
+ evidencecore_semantics_changed: false
+ retrieval_policy_changed: false
+ backend_quality_promoted: false
+ stage_is_ood_temporal_evaluation: true (B18 stage IS OOD and temporal evaluation)
+ ood_temporal_evaluation_performed: false (skeleton performs no OOD or temporal evaluation)
+ metrics_evaluated: false (skeleton; no fake OOD or temporal metrics from aggregate means)
+ policy_search_performed: false (no-retuning protocol)
+ quality_strategy_tuned: false (no-retuning protocol)
+ real_ood_temporal_supported: false
+ new_provider_calls: 0
+ all_axes_pass: false
+ axes_evaluated: false
+ axes_defined: true
+ axis_count: 5
+ winner_declared: false
+ no_fake_ood_metrics_from_aggregate_means: true
+ ```
+
+ B18 is the **OOD (out-of-distribution) / temporal evaluation** phase
+ that follows B17. The goal is a **frozen, preregistered OOD /
+ temporal evaluation** of the retrieval / candidate / Evidence
+ pipeline across five FROZEN split axes — `temporal_split`,
+ `repo_split`, `language_split`, `model_family_split`,
+ `adversarial_split` — **under a no-retuning protocol** (no policy
+ search, no quality strategy tuning, no retrieval policy change, no
+ EvidenceCore semantics change, no default change, no promotion) so
+ an in-distribution average cannot be mistaken for OOD / temporal
+ generalization. B18 is a **bounded preregistration + public-
+ aggregate no-go screen phase**, NOT a real OOD / temporal
+ evaluation, NOT a policy search, NOT a quality strategy tuning, NOT
+ a default change, NOT an EvidenceCore semantics change, NOT a
+ promotion. Split axes are FROZEN (`temporal_split`,
+ `repo_split`, `language_split`, `model_family_split`,
+ `adversarial_split`). No-retuning protocol is FROZEN
+ (`no_retuning_protocol=true`, `no_policy_search=true`,
+ `no_quality_strategy_tuning=true`, `no_retrieval_policy_change=true`,
+ `no_evidencecore_semantics_change=true`, `no_default_change=true`,
+ `no_promotion=true`). Hard gates (FROZEN): `per_record_data_gate`,
+ `time_axis_gate`, `commit_chronology_gate`, `no_retuning_gate`,
+ `adversarial_holdout_gate`, `temporal_holdout_gate`,
+ `evidencecore_materialization_gate`, `stale_citation_gate`,
+ `privacy_gate`, `promotion_false_gate`. Metric registry (FROZEN, 13
+ names): `ood_generalization_gap`, `temporal_holdout_delta`,
+ `repo_holdout_metric`, `language_holdout_metric`,
+ `model_family_holdout_metric`, `adversarial_robustness_score`,
+ `worst_group_metric`, `cvar_tail_metric`, `per_cell_denominator`,
+ `temporal_split_integrity`, `no_retuning_proof_metric`,
+ `citation_validity`, `stale_evidencecore_rejection_rate` — every
+ metric requires per-record OOD / temporal inputs (per-record
+ records, per-record time index, per-record commit chronology,
+ per-record repo / language / model_family axes, per-record task
+ category, per-record adversarial holdout membership, per-record
+ temporal holdout membership, per-record outcome label, per-record
+ citation validity, per-record stale rejection, per-record
+ EvidenceCore rejection, per-record randomized run order proof,
+ per-record no-retuning proof, shared frozen evaluation protocol
+ manifest); none can be computed from the B11 aggregate means or
+ from the R15 / R20 / R26 repo locks. B18 IS the ood-temporal-
+ evaluation *stage* (`stage_is_ood_temporal_evaluation=true`), but
+ the shipped skeleton performs NO real OOD / temporal evaluation
+ (`ood_temporal_evaluation_performed=false`), NO metrics evaluation
+ (`metrics_evaluated=false`), NO policy search
+ (`policy_search_performed=false`), NO quality strategy tuning
+ (`quality_strategy_tuned=false`), and NO promotion
+ (`promotion_ready=false`); the synthetic-fixture / `--input` stub
+ report sets `promotion_ready=false`, `default_should_change=false`,
+ `evidencecore_semantics_changed=false`,
+ `retrieval_policy_changed=false`, `metrics_evaluated=false`,
+ `new_provider_calls=0`, `no_fake_ood_metrics_from_aggregate_means=true`
+ so the public artifact cannot be misread as an empirical B18 OOD /
+ temporal result. **CRITICAL**: the skeleton MUST NOT compute fake
+ ood_generalization_gap / temporal_holdout_delta /
+ repo_holdout_metric / language_holdout_metric /
+ model_family_holdout_metric / adversarial_robustness_score /
+ worst_group_metric / cvar_tail_metric / per_cell_denominator /
+ temporal_split_integrity / no_retuning_proof_metric /
+ citation_validity / stale_evidencecore_rejection_rate metrics from
+ the existing B11 aggregate means or from the R15 / R20 / R26 repo
+ locks; the B11 aggregate carries public model-family means + repo
+ slice list + sanitized failure slices but NO per-record, per-time-
+ index, per-repo-per-language cell, model_family x repo matrix,
+ adversarial holdout outcome, or temporal holdout outcome, and the
+ R15 / R20 / R26 repo locks are synthetic / static snapshots with no
+ real commit chronology or time axis. Synthetic / stub reports emit
+ only stage *definitions* (no per-stage `passes=true` /
+ `ood_generalization_gap` / `temporal_holdout_delta` /
+ `worst_group_metric` / `cvar_tail_metric` / `per_cell_denominator`);
+ the skeleton verdict framework emits only `insufficient_data`
+ (synthetic fixture) or `not_implemented` (ci_ephemeral_records
+ stub) — `success` / `failure` / `partial` are reserved for a future
+ empirical `ood_temporal_evaluation_performed=true` /
+ `metrics_evaluated=true` path that is NOT present in this skeleton.
+ The `--self-test` is read-only (compares in-memory expected
+ artifacts to on-disk artifacts, fails on drift, does not mutate
+ checked-in artifacts); `--regenerate-artifacts` is the only path
+ that mutates checked-in artifacts; `--input` stub requires explicit
+ `--out` and refuses to write ANY path inside
+ `artifacts/b18_ood_temporal_evaluation/`. The bounded public-
+ aggregate no-go screen (`--public-screen --out <path>`, also run
+ from `--regenerate-artifacts`) reads the published B11 prospective
+ matrix aggregate report plus optional R15 / R20 / R26 repos.lock.jsonl
+ files and dataset manifests and emits `verdict=no_go_public_aggregate_only`
+ (or `public_aggregate_carry_forward_only`) under
+ `artifacts/b18_ood_temporal_evaluation/`; it never claims OOD /
+ temporal evaluation, never computes an OOD / temporal metric from
+ aggregate means, never promotes a retrieval variant, never changes
+ retrieval policy, and never declares a winner. The existing B11 /
+ R15 / R20 / R26 aggregates are **aggregate-only / metadata-only
+ carry-forward** — they are NOT OOD / temporal proof and NOT
+ promotion evidence; they do NOT contain per-record records, a time
+ axis, commit chronology, per-repo-per-language cells, a
+ model_family x repo matrix, adversarial holdout outcomes, or
+ temporal holdout outcomes. See
+ [`b18-ood-temporal-evaluation.md`](b18-ood-temporal-evaluation.md).
+
 ---
 
 ## Current status update — 2026-06-13
