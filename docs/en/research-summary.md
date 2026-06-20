@@ -12,6 +12,50 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## Current status update — 2026-06-20 (C4.1 external benchmark adapter / schema readiness)
+
+C4.1 is a **bounded external benchmark adapter / schema readiness** phase,
+NOT an external benchmark performance evaluation, NOT a benchmark result,
+and NOT a promotion or default change. It adds one evaluator
+(`eval/c4_external_benchmark_adapters.py`) and one canonical aggregate-only
+public artifact
+(`artifacts/c4_external_benchmark_adapters/c4_external_benchmark_adapter_report.json`,
+schema `c4_external_benchmark_adapters.v1`,
+`claim_level=adapter_schema_readiness_only`). The evaluator implements built-in
+known source/schema metadata for ContextBench (`Contextbench/ContextBench`;
+`default/train` 1136, `contextbench_verified/train` 500; license
+`unknown_dataset_license`, row-level redistribution disabled) and SWE-Explore
+(`SWE-Explore-Bench/SWE-Explore-Bench`; `default/train` 848; license
+`cc-by-nc-nd-4.0`, row-level redistribution AND derived-label publication
+disabled), synthetic in-memory row adapters separating `public_task` from
+`private_label` (row-level payload never serialized), line range normalization
+for synthetic self-test / private in-memory validation only, a strict
+fail-closed forbidden-output scanner for all public JSON outputs, a bounded HF
+datasets-server schema smoke via stdlib `urllib` only (no new dependencies), and
+a deterministic `spec_hash`
+(`9de6609359aa8de4cfe7ca50b1388ebc51d9ee2f016bb3bc6c34e253da5ef153`). Row-level
+benchmark contents were NOT persisted in any public artifact or doc.
+
+Validation: `python3 -m py_compile eval/c4_external_benchmark_adapters.py` PASS;
+`python3 eval/c4_external_benchmark_adapters.py --self-test` PASS (9 groups);
+default canonical artifact generation PASS (`forbidden_scan: pass`); real schema
+smoke for ContextBench (`forbidden_scan: pass`, `new_network_calls: 4`) and
+SWE-Explore (`forbidden_scan: pass`, `new_network_calls: 3`) PASS. The `/tmp`
+smoke outputs follow the same aggregate-only boundary as the committed artifact.
+
+All no-claim flags remain false: `promotion_ready=false`,
+`default_should_change=false`, `evidencecore_semantics_changed=false`,
+`runtime_clean_general_algorithm_claimed=false`,
+`downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+`quiver_systems_supported=false`. The schema smoke confirms only that public HF
+datasets-server schema endpoints are reachable and parse; it does NOT confirm
+benchmark quality, label correctness, or fitness for any downstream evaluation.
+Synthetic self-test rows confer NO empirical support. See
+[`docs/en/c4-external-benchmark-adapters.md`](c4-external-benchmark-adapters.md).
+The prior 2026-06-16 status (Candidate-to-Evidence Conversion phase, P25
+bucket_routed_v0 reference policy, B19 Model-Robust Selective Evidence
+Conversion synthesis candidate) is preserved below unchanged.
+
 ## Current status update — 2026-06-16
 
 OpenLocus is now in the **Candidate-to-Evidence Conversion** phase. The current

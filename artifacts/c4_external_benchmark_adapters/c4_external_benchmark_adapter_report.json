@@ -1,0 +1,186 @@
+{
+  "aggregate_only_public_artifact": true,
+  "benchmarks": {
+    "contextbench": {
+      "adapter_self_test_status": "pass",
+      "dataset_id": "Contextbench/ContextBench",
+      "derived_label_publication_allowed": false,
+      "discovery_status": "known_schema_only",
+      "license_status": "unknown_dataset_license",
+      "observed_configs": [
+        {
+          "config": "default",
+          "field_count": 13,
+          "field_names_schema_only": [
+            "instance_id",
+            "original_inst_id",
+            "repo",
+            "repo_url",
+            "language",
+            "base_commit",
+            "gold_context",
+            "patch",
+            "test_patch",
+            "problem_statement",
+            "f2p",
+            "p2p",
+            "source"
+          ],
+          "field_type_summary": {
+            "string": 13
+          },
+          "private_field_categories_detected": [
+            "repo",
+            "repo_url",
+            "base_commit",
+            "gold_context",
+            "patch",
+            "test_patch",
+            "problem_statement",
+            "f2p",
+            "p2p"
+          ],
+          "splits": [
+            {
+              "row_count": 1136,
+              "split": "train"
+            }
+          ]
+        },
+        {
+          "config": "contextbench_verified",
+          "field_count": 13,
+          "field_names_schema_only": [
+            "instance_id",
+            "original_inst_id",
+            "repo",
+            "repo_url",
+            "language",
+            "base_commit",
+            "gold_context",
+            "patch",
+            "test_patch",
+            "problem_statement",
+            "f2p",
+            "p2p",
+            "source"
+          ],
+          "field_type_summary": {
+            "string": 13
+          },
+          "private_field_categories_detected": [
+            "repo",
+            "repo_url",
+            "base_commit",
+            "gold_context",
+            "patch",
+            "test_patch",
+            "problem_statement",
+            "f2p",
+            "p2p"
+          ],
+          "splits": [
+            {
+              "row_count": 500,
+              "split": "train"
+            }
+          ]
+        }
+      ],
+      "public_release_status": "blocked_by_license",
+      "row_level_redistribution_allowed": false,
+      "schema_smoke_status": "not_attempted"
+    },
+    "swe_explore": {
+      "adapter_self_test_status": "pass",
+      "dataset_id": "SWE-Explore-Bench/SWE-Explore-Bench",
+      "derived_label_publication_allowed": false,
+      "discovery_status": "known_schema_only",
+      "license_status": "cc-by-nc-nd-4.0",
+      "observed_configs": [
+        {
+          "config": "default",
+          "field_count": 7,
+          "field_names_schema_only": [
+            "instance_id",
+            "repo_path",
+            "repo_dir",
+            "ground_truth",
+            "read_step_info",
+            "meta",
+            "dataset"
+          ],
+          "field_type_summary": {
+            "nested_object": 3,
+            "string": 4
+          },
+          "private_field_categories_detected": [
+            "repo_path",
+            "repo_dir",
+            "ground_truth",
+            "ground_truth.patch",
+            "ground_truth.test_patch",
+            "ground_truth.modified_files",
+            "ground_truth.core_files",
+            "ground_truth.line_ranges",
+            "read_step_info",
+            "read_step_info.file_maps",
+            "read_step_info.line_ranges"
+          ],
+          "splits": [
+            {
+              "row_count": 848,
+              "split": "train"
+            }
+          ]
+        }
+      ],
+      "public_release_status": "blocked_by_license",
+      "row_level_redistribution_allowed": false,
+      "schema_smoke_status": "not_attempted"
+    }
+  },
+  "candidate_not_fact": true,
+  "claim_level": "adapter_schema_readiness_only",
+  "default_should_change": false,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "evidencecore_semantics_change_claimed": false,
+    "external_benchmark_result_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "ood_temporal_claimed": false,
+    "promotion_readiness_claimed": false,
+    "quiver_systems_claimed": false,
+    "signal_strength": "adapter_schema_readiness_only_synthetic_self_test"
+  },
+  "generated_at": "2026-06-20T10:51:26.727136+00:00",
+  "generated_by": "eval/c4_external_benchmark_adapters.py",
+  "new_network_calls": 0,
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "ood_temporal_supported": false,
+  "promotion_ready": false,
+  "quiver_systems_supported": false,
+  "runtime_clean_general_algorithm_claimed": false,
+  "safety_invariants": {
+    "content_sha_persisted": false,
+    "paths_spans_line_ranges_persisted": false,
+    "prompts_responses_persisted": false,
+    "provider_payloads_persisted": false,
+    "raw_rows_persisted": false,
+    "row_level_labels_persisted": false,
+    "snippets_persisted": false
+  },
+  "schema_smoke_attempted": false,
+  "schema_version": "c4_external_benchmark_adapters.v1",
+  "self_test": false,
+  "spec_hash": "9de6609359aa8de4cfe7ca50b1388ebc51d9ee2f016bb3bc6c34e253da5ef153"
+}

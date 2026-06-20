@@ -1,6 +1,7 @@
 /target/
 /.openlocus/
 /runs/
+.slim/deepwork/
 *.tmp
 *.log
 __pycache__/

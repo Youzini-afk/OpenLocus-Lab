@@ -44,6 +44,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b9b-qwen-low-volume-quality-follow-up.md`: [en](en/b9b-qwen-low-volume-quality-follow-up.md) · [zh](zh/b9b-qwen-low-volume-quality-follow-up.md)
 - `b9c-qwen-frozen-policy-validation.md`: [en](en/b9c-qwen-frozen-policy-validation.md) · [zh](zh/b9c-qwen-frozen-policy-validation.md)
 - `b9d-deepseek-glm-participation-screen.md`: [en](en/b9d-deepseek-glm-participation-screen.md) · [zh](zh/b9d-deepseek-glm-participation-screen.md)
+- `c4-external-benchmark-adapters.md`: [en](en/c4-external-benchmark-adapters.md) · [zh](zh/c4-external-benchmark-adapters.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)

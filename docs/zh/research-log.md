@@ -3097,3 +3097,99 @@ no-selection 的 happy path；forbidden-key 注入拒绝；缺失报告硬失败
   它们**不**是 C3 机制失败。
 - 公开 repo slice ID 与 model family 名以 `repo_slice_id` / `model_family` 发布
   （与 B11/B12 一致），而非 raw `repo_id`；coverage exclusion 不含 run ID。
+
+## 2026-06-20 — C4 外部 Benchmark Adapter —— Schema 就绪 v1
+
+### 目标
+
+为 ContextBench 与 SWE-Explore 实现一个真实（非 skeleton-only）的外部
+benchmark adapter / schema 就绪层，产出一份 aggregate-only 公共 artifact，记录
+adapter/schema 就绪状态而不持久化任何行级 benchmark 内容。C4.1 **不是**外部
+benchmark 性能评估，**不是** benchmark 结果，也**不是** promotion 或默认策略
+变更。
+
+### 实现
+
+- 新增 evaluator `eval/c4_external_benchmark_adapters.py`，提供 argparse CLI：
+  `--self-test`、`--benchmark {contextbench,swe_explore,all}`、
+  `--schema-smoke`、`--limit`（默认 3，硬上限 10）、`--out`。默认调用从内置
+  已知 source/schema 元数据加合成 self-test 状态生成 canonical aggregate 报告，
+  无网络。
+- Canonical aggregate-only artifact
+  `artifacts/c4_external_benchmark_adapters/c4_external_benchmark_adapter_report.json`
+  （schema `c4_external_benchmark_adapters.v1`、
+  `claim_level=adapter_schema_readiness_only`）。
+- ContextBench 规格：dataset_id `Contextbench/ContextBench`；configs
+  `default/train` 1136、`contextbench_verified/train` 500；仅 schema 字段名
+  `instance_id`、`original_inst_id`、`repo`、`repo_url`、`language`、
+  `base_commit`、`gold_context`、`patch`、`test_patch`、`problem_statement`、
+  `f2p`、`p2p`、`source`；license `unknown_dataset_license`；行级再分发禁用。
+- SWE-Explore 规格：dataset_id `SWE-Explore-Bench/SWE-Explore-Bench`；config
+  `default/train` 848；仅 schema 字段名 `instance_id`、`repo_path`、`repo_dir`、
+  `ground_truth`、`read_step_info`、`meta`、`dataset`；私有类别包含
+  `ground_truth.*`、`read_step_info.*`、repo 路径、file maps、line ranges；
+  license `cc-by-nc-nd-4.0`；行级再分发与派生 label 发布均禁用。
+- 合成内存行 adapter（`adapt_contextbench_row`、`adapt_swe_explore_row`）将
+  `public_task`（aggregate-safe 元数据：存在性布尔、字段计数、仅类别桶）与
+  `private_label`（行级 payload，永不序列化）分离。两者均不会以行级值序列化
+  到公共 artifact。
+- Line range 归一化（`normalize_line_range`）接受 list/tuple/dict/`"S-E"`/
+  `"S:E"` 形式；拒绝 `start > end`、`start < 1`、非整型、布尔值。仅用于合成
+  self-test / 私有内存校验。
+- 严格 fail-closed forbidden scanner（`_scan_forbidden`）禁止任何位置作为
+  dict key 出现的敏感 key 名，并禁止 URL/hex-digest/secret-like/path-like/
+  multiline/long-string 值；允许仅 schema 字段名列表出现在显式容器
+  （`field_names_schema_only`、`private_field_categories_detected`）下；将已知
+  安全的 provenance 值路径（`spec_hash`、`generated_by`、`dataset_id`、
+  `schema_version`、`claim_level`）加入 allowlist。artifact 仅记录
+  `forbidden_scan: {status: "pass"}` 加 category/path 计数 —— 从不记录泄漏值。
+- 仅通过 stdlib `urllib`（无新依赖）的有界 HF datasets-server schema smoke，
+  显式有界超时，以 `/splits` 作为 `/first-rows` 尝试的 source of truth。对
+  `/first-rows`，仅解析 features/schema 与行计数/截断布尔；原始行仅保留在本地，
+  永不返回或写入。网络/HF 失败时，产生状态 `unavailable` 或 `partial`，并附带
+  sanitized reason category/status code —— 无原始响应体。
+- 确定性 `spec_hash`（排除时间戳/网络/原始行/本地路径的 canonical spec JSON 的
+  SHA-256）：
+  `9de6609359aa8de4cfe7ca50b1388ebc51d9ee2f016bb3bc6c34e253da5ef153`。
+
+### 结果
+
+```text
+python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS（9 组）
+python3 eval/c4_external_benchmark_adapters.py \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_external_benchmark_adapter_report.json                     => PASS（forbidden_scan: pass）
+python3 eval/c4_external_benchmark_adapters.py \
+  --benchmark contextbench --schema-smoke --limit 3 \
+  --out /tmp/c4_contextbench_schema.json                       => PASS
+  (forbidden_scan: pass, new_network_calls: 4, first_rows_status: pass,
+   row_level_data_returned: false)
+python3 eval/c4_external_benchmark_adapters.py \
+  --benchmark swe_explore --schema-smoke --limit 3 \
+  --out /tmp/c4_swe_explore_schema.json                        => PASS
+  (forbidden_scan: pass, new_network_calls: 3, first_rows_status: pass,
+   row_level_data_returned: false)
+```
+
+Self-test 组（9）：ContextBench adapter 分离、SWE-Explore adapter 分离、line
+range 归一化、forbidden scan 拒绝注入、no-claim 标志全为 false、spec hash 确
+定性、aggregate-only 报告、forbidden scan 在生成时阻断泄漏、schema smoke 报告
+形态。
+
+### 注意事项
+
+- C4.1 仅是 adapter/schema 就绪。它**不**校验行级语义、label 或下游 agent 价值。
+  schema smoke 仅确认公共 HF datasets-server schema 端点可达且可解析；它**不**确
+  认 benchmark 质量、label 正确性或对任何下游评估的适用性。
+- ContextBench 数据集 license 未知，即使代码仓库为 Apache-2.0；行级再分发被禁用。
+- SWE-Explore HF 数据集 license 为 `cc-by-nc-nd-4.0`；行级再分发与派生 label
+  发布均被禁用。
+- 合成 self-test 行不提供任何经验支持。
+- 所有 no-claim 标志保持 false：`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`、
+  `runtime_clean_general_algorithm_claimed=false`、
+  `downstream_agent_value_proven=false`、`ood_temporal_supported=false`、
+  `quiver_systems_supported=false`。C4.1 不产生 promotion、不产生默认策略变更、
+  不产生 EvidenceCore 语义变更、不产生 runtime-clean 通用算法声明、不产生下游
+  agent 价值声明、不产生 OOD 时间声明，也不产生 QuIVer systems 声明。

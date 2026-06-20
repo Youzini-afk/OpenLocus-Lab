@@ -3144,3 +3144,112 @@ only; it confers no empirical support.
 - Public repo slice IDs and model-family names are emitted as `repo_slice_id`
   / `model_family` (matching B11/B12), not as raw `repo_id`; coverage
   exclusions carry no run IDs.
+
+## 2026-06-20 — C4 External Benchmark Adapters — Schema Readiness v1
+
+### Objective
+
+Implement a real (non-skeleton) external benchmark adapter / schema
+readiness layer for ContextBench and SWE-Explore, producing an
+aggregate-only public artifact that records adapter/schema readiness
+without persisting any row-level benchmark contents. C4.1 is **not** an
+external benchmark performance evaluation, **not** a benchmark result,
+and **not** a promotion or default change.
+
+### Implementation
+
+- New evaluator `eval/c4_external_benchmark_adapters.py` with argparse CLI:
+  `--self-test`, `--benchmark {contextbench,swe_explore,all}`,
+  `--schema-smoke`, `--limit` (default 3, hard cap 10), `--out`. Default
+  invocation generates the canonical aggregate report from built-in known
+  source/schema metadata plus synthetic self-test status, with no network.
+- Canonical aggregate-only artifact
+  `artifacts/c4_external_benchmark_adapters/c4_external_benchmark_adapter_report.json`
+  (schema `c4_external_benchmark_adapters.v1`,
+  `claim_level=adapter_schema_readiness_only`).
+- ContextBench spec: dataset_id `Contextbench/ContextBench`; configs
+  `default/train` 1136, `contextbench_verified/train` 500; schema-only
+  field names `instance_id`, `original_inst_id`, `repo`, `repo_url`,
+  `language`, `base_commit`, `gold_context`, `patch`, `test_patch`,
+  `problem_statement`, `f2p`, `p2p`, `source`; license
+  `unknown_dataset_license`; row-level redistribution disabled.
+- SWE-Explore spec: dataset_id `SWE-Explore-Bench/SWE-Explore-Bench`;
+  config `default/train` 848; schema-only field names `instance_id`,
+  `repo_path`, `repo_dir`, `ground_truth`, `read_step_info`, `meta`,
+  `dataset`; private categories include `ground_truth.*`,
+  `read_step_info.*`, repo paths, file maps, line ranges; license
+  `cc-by-nc-nd-4.0`; row-level redistribution AND derived-label
+  publication disabled.
+- Synthetic in-memory row adapters (`adapt_contextbench_row`,
+  `adapt_swe_explore_row`) separate `public_task` (aggregate-safe metadata:
+  presence booleans, field counts, categorical bucket only) from
+  `private_label` (row-level payload, never serialized). Neither is ever
+  serialized into a public artifact with row-level values.
+- Line range normalization (`normalize_line_range`) accepts
+  list/tuple/dict/`"S-E"`/`"S:E"` forms; rejects `start > end`, `start < 1`,
+  non-int, bool. Synthetic self-test / private in-memory validation only.
+- Strict fail-closed forbidden-output scanner (`_scan_forbidden`) forbids
+  sensitive key names anywhere as dict keys and forbids
+  URL/hex-digest/secret-like/path-like/multiline/long-string values; allows
+  schema-only field-name lists under explicit containers
+  (`field_names_schema_only`, `private_field_categories_detected`);
+  allowlists known-safe provenance value paths (`spec_hash`,
+  `generated_by`, `dataset_id`, `schema_version`, `claim_level`). The
+  artifact records only `forbidden_scan: {status: "pass"}` plus
+  category/path counts — never leaked values.
+- Bounded HF datasets-server schema smoke via stdlib `urllib` only (no new
+  dependencies), explicit bounded timeout, `/splits` as source of truth
+  for `/first-rows` attempts. For `/first-rows`, only features/schema and
+  row count/truncation booleans are parsed; raw rows remain local only
+  and are never returned or written. On network/HF failure, produces
+  status `unavailable` or `partial` with sanitized reason
+  category/status code — no raw response body.
+- Deterministic `spec_hash` (SHA-256 of canonical spec JSON excluding
+  timestamps/network/raw rows/local paths):
+  `9de6609359aa8de4cfe7ca50b1388ebc51d9ee2f016bb3bc6c34e253da5ef153`.
+
+### Findings
+
+```text
+python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (9 groups)
+python3 eval/c4_external_benchmark_adapters.py \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_external_benchmark_adapter_report.json                     => PASS (forbidden_scan: pass)
+python3 eval/c4_external_benchmark_adapters.py \
+  --benchmark contextbench --schema-smoke --limit 3 \
+  --out /tmp/c4_contextbench_schema.json                       => PASS
+  (forbidden_scan: pass, new_network_calls: 4, first_rows_status: pass,
+   row_level_data_returned: false)
+python3 eval/c4_external_benchmark_adapters.py \
+  --benchmark swe_explore --schema-smoke --limit 3 \
+  --out /tmp/c4_swe_explore_schema.json                        => PASS
+  (forbidden_scan: pass, new_network_calls: 3, first_rows_status: pass,
+   row_level_data_returned: false)
+```
+
+Self-test groups (9): ContextBench adapter separation, SWE-Explore adapter
+separation, line range normalization, forbidden scan rejects injection,
+no-claim flags exactly false, spec hash deterministic, aggregate-only report,
+forbidden scan blocks leak at generation, schema smoke report shape.
+
+### Caveats
+
+- C4.1 is adapter/schema readiness only. It does NOT validate row-level
+  semantics, labels, or downstream agent value. The schema smoke confirms
+  only that public HF datasets-server schema endpoints are reachable and
+  parse; it does NOT confirm benchmark quality, label correctness, or
+  fitness for any downstream evaluation.
+- ContextBench dataset license is unknown even though the code repo is
+  Apache-2.0; row-level redistribution is disabled.
+- SWE-Explore HF dataset license is `cc-by-nc-nd-4.0`; row-level
+  redistribution AND derived-label publication are disabled.
+- Synthetic self-test rows confer NO empirical support.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`. No promotion, no default change, no
+  EvidenceCore semantics change, no runtime-clean general algorithm claim,
+  no downstream agent value claim, no OOD temporal claim, and no QuIVer
+  systems claim follows from C4.1.

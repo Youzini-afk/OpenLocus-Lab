@@ -19,6 +19,46 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## 当前状态更新 —— 2026-06-20（C4.1 外部 benchmark adapter / schema 就绪）
+
+C4.1 是一个**有界的外部 benchmark adapter / schema 就绪**阶段，**不是**外部
+benchmark 性能评估，**不是** benchmark 结果，也**不是** promotion 或默认策略
+变更。它新增一个 evaluator（`eval/c4_external_benchmark_adapters.py`）与一个
+canonical aggregate-only 公共 artifact
+（`artifacts/c4_external_benchmark_adapters/c4_external_benchmark_adapter_report.json`，
+schema `c4_external_benchmark_adapters.v1`，
+`claim_level=adapter_schema_readiness_only`）。该 evaluator 实现了
+ContextBench（`Contextbench/ContextBench`；`default/train` 1136、
+`contextbench_verified/train` 500；license `unknown_dataset_license`，行级再分发
+禁用）与 SWE-Explore（`SWE-Explore-Bench/SWE-Explore-Bench`；`default/train`
+848；license `cc-by-nc-nd-4.0`，行级再分发与派生 label 发布均禁用）的内置已知
+source/schema 元数据，将 `public_task` 与 `private_label`（行级 payload，永不
+序列化）分离的合成内存行 adapter，仅用于合成 self-test / 私有内存校验的 line
+range 归一化，针对所有公共 JSON 输出的严格 fail-closed forbidden scanner，仅通过
+stdlib `urllib`（无新依赖）的有界 HF datasets-server schema smoke，以及排除时
+间戳/网络/原始行/本地路径的确定性 `spec_hash`
+（`9de6609359aa8de4cfe7ca50b1388ebc51d9ee2f016bb3bc6c34e253da5ef153`）。行级
+benchmark 内容未被持久化到任何公共 artifact 或 doc。
+
+验证：`python3 -m py_compile eval/c4_external_benchmark_adapters.py` PASS；
+`python3 eval/c4_external_benchmark_adapters.py --self-test` PASS（9 组）；默
+认 canonical artifact 生成 PASS（`forbidden_scan: pass`）；ContextBench（
+`forbidden_scan: pass`、`new_network_calls: 4`）与 SWE-Explore（
+`forbidden_scan: pass`、`new_network_calls: 3`）的真实 schema smoke PASS。
+`/tmp` smoke 输出遵循与已提交 artifact 相同的 aggregate-only 边界。
+
+所有 no-claim 标志保持 false：`promotion_ready=false`、
+`default_should_change=false`、`evidencecore_semantics_changed=false`、
+`runtime_clean_general_algorithm_claimed=false`、
+`downstream_agent_value_proven=false`、`ood_temporal_supported=false`、
+`quiver_systems_supported=false`。schema smoke 仅确认公共 HF datasets-server
+schema 端点可达且可解析；它**不**确认 benchmark 质量、label 正确性或对任何下
+游评估的适用性。合成 self-test 行不提供任何经验支持。详见
+[`docs/zh/c4-external-benchmark-adapters.md`](c4-external-benchmark-adapters.md)。
+下方 2026-06-16 的状态（Candidate-to-Evidence Conversion 阶段、P25
+bucket_routed_v0 参考策略、B19 Model-Robust Selective Evidence Conversion 综合
+候选）原样保留。
+
 ## Current status update — 2026-06-16
 
 OpenLocus is now in the **Candidate-to-Evidence Conversion** phase. The current
