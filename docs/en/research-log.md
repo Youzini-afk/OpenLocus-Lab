@@ -3663,3 +3663,104 @@ repo record fields (`repo`, `commit_sha`, `entrypoint_path`, `topic`,
   change, no EvidenceCore semantics change, no runtime-clean general
   algorithm claim, no downstream agent value claim, no OOD temporal claim,
   and no QuIVer systems claim follows from C4.5.
+
+## 2026-06-20 — D1 Dual-Rubric Relevance Eval-Layer Scaffold
+
+### Objective
+
+Produce an **eval-layer scaffold only** dual-rubric relevance diagnostic
+that separates candidate relevance into E-score (semantic / direct-answer
+evidence) and S-score (dependency / support-structure evidence). D1 must
+NOT change retriever ranking, pack construction, model calls, backend
+storage, default policy, or EvidenceCore semantics. It must use only
+deterministic synthetic / source-backed fixtures; real P21/private
+records are deferred to a later D2 calibration phase.
+
+### Implementation
+
+- New script `eval/d1_dual_rubric_relevance.py` (pure Python stdlib
+  only). CLI: default generates the aggregate report to
+  `artifacts/d1_dual_rubric_relevance/d1_dual_rubric_relevance_report.json`;
+  `--self-test` (46 checks, no I/O); `--out`.
+- Claim level `eval_layer_rubric_scaffold_only`; rubric version
+  `d1_dual_rubric_v0`. E-score (semantic direct match + answer-bearing
+  span, range 0..2) and S-score (import + dependency-link + caller
+  support, range 0..3) are deterministic small-integer signals, not
+  model calls.
+- Thresholds `E_HIGH >= 2`, `S_HIGH >= 2`, weak if E or S `>= 1`.
+- Classification order fail-closed: (1) invalid citation / stale
+  source/hash / uncited / explicit no-evidence -> `abstained`; (2) E high
+  and citation valid -> `primary_evidence`; (3) S high and E below high
+  -> `dependency_support`; (4) weak nonzero E or S -> `weak_candidates`;
+  (5) else -> `abstained`. E-high beats S-high; E-high with an invalid
+  citation abstains. Citation validity is an abstention gate that fires
+  before E/S bucket assignment (per oracle review).
+- Canonical buckets `primary_evidence`, `dependency_support`,
+  `weak_candidates`, `abstained`; legacy aliases
+  `dependency_support -> supporting_only`, `abstained -> abstain`.
+- Strict forbidden-output scanner (fail-closed before writing JSON):
+  rejects forbidden dict keys (path/span/line_range/start_line/end_line/
+  content_sha/snippet/excerpt/candidate_text/query/task_id/repo_id/repo/
+  label/qrels/gold/prompt/response/etc.) and forbidden value patterns
+  (URLs, 32/40/64-char hex digests, secret-like strings, path-like
+  `src/foo.py`, multiline strings, raw JSON fragments, raw line ranges
+  `12-34`); allows generic aggregate reason_code strings only when not
+  row-like. Self-test includes forbidden-scan injection and fail-closed
+  generation.
+- Aggregate-only public artifact fields: schema_version, generated_by,
+  generated_at, claim_level, rubric_version, thresholds,
+  classification_order, bucket_names, legacy_bucket_aliases,
+  fixture_count, candidate_count, bucket_counts, e_score_band_counts,
+  s_score_band_counts, reason_code_counts, self_test_checks,
+  self_test_passed, forbidden_scan, and flat no-claim/safety flags.
+- Existing mode-only dirty files (`eval/ci_clone_and_lock_repo.py`,
+  `eval/ci_make_repo_matrix.py`,
+  `eval/p59_contrastive_pack_coverage_counterfactual.py`) were NOT
+  touched.
+
+### Findings
+
+```text
+python3 -m py_compile eval/d1_dual_rubric_relevance.py   => PASS
+python3 eval/d1_dual_rubric_relevance.py --self-test     => PASS (46/46 checks)
+python3 eval/d1_dual_rubric_relevance.py \
+  --out artifacts/d1_dual_rubric_relevance/\
+d1_dual_rubric_relevance_report.json                     => PASS
+  (status: scaffold_only_self_test_passed,
+   forbidden_scan: pass, self_test_passed: true,
+   fixture_count: 10, candidate_count: 10,
+   bucket_counts: {primary_evidence: 2, dependency_support: 1,
+     weak_candidates: 2, abstained: 5},
+   e_score_band_counts: {none: 3, weak: 1, high: 6},
+   s_score_band_counts: {none: 7, weak: 1, high: 2})
+python3 scripts/validate_docs_i18n.py                     => PASS
+```
+
+Deterministic aggregate counts over 10 synthetic fixtures: bucket_counts
+`primary_evidence=2, dependency_support=1, weak_candidates=2,
+abstained=5`; E bands `none=3, weak=1, high=6`; S bands `none=7,
+weak=1, high=2`; reason-code counts total 10. Forbidden scan pass with
+zero violations on the clean report.
+
+### Caveats
+
+- D1 is eval/diagnostic scaffold only. It does NOT change runtime,
+  retriever, pack, model, backend, or default policy; it does NOT change
+  EvidenceCore semantics. It is NOT a benchmark result, NOT a downstream
+  agent value claim, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, and NOT a QuIVer systems claim.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`; `runtime_behavior_changed=false`,
+  `retriever_changed=false`, `pack_builder_changed=false`,
+  `model_calls_changed=false`, `backend_changed=false`,
+  `default_policy_changed=false`; `candidate_text_emitted=false`,
+  `paths_or_spans_emitted=false`, `content_sha_emitted=false`,
+  `raw_private_records_read=false`, `raw_private_records_persisted=false`,
+  `row_level_hashes_emitted=false`, `per_candidate_rows_emitted=false`.
+  `aggregate_only_public_artifact=true`, `diagnostic_only=true`,
+  `not_evidence=true`.
+- Reading real P21/private records is deferred to a later D2 calibration
+  phase; D1 fixtures are synthetic/source-backed only.

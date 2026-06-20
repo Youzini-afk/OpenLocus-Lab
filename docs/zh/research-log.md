@@ -3568,3 +3568,96 @@ repo record fields (`repo`, `commit_sha`, `entrypoint_path`, `topic`,
   change, no EvidenceCore semantics change, no runtime-clean general
   algorithm claim, no downstream agent value claim, no OOD temporal claim,
   and no QuIVer systems claim follows from C4.5.
+
+## 2026-06-20 — D1 双评分相关性评测层脚手架
+
+### 目标
+
+产出**仅评测层脚手架**的双评分相关性诊断，将候选相关性拆分为
+E-score（语义 / 直接作答证据）与 S-score（依赖 / 支撑结构证据）。
+D1 **不得**改变检索器排序、pack 构建、模型调用、后端存储、默认
+策略或 EvidenceCore 语义。它仅使用确定性合成 / 来源回溯 fixture；
+真实 P21/private records 推迟到后续 D2 校准阶段。
+
+### 实现
+
+- 新增脚本 `eval/d1_dual_rubric_relevance.py`（纯 Python 标准库）。
+  CLI：默认生成聚合报告至
+  `artifacts/d1_dual_rubric_relevance/d1_dual_rubric_relevance_report.json`；
+  `--self-test`（46 项检查，无 I/O）；`--out`。
+- 声明级别 `eval_layer_rubric_scaffold_only`；rubric 版本
+  `d1_dual_rubric_v0`。E-score（semantic direct match + answer-bearing
+  span，范围 0..2）与 S-score（import + dependency-link + caller
+  support，范围 0..3）为确定性小整数信号，非模型调用。
+- 阈值 `E_HIGH >= 2`、`S_HIGH >= 2`，当 E 或 S `>= 1` 时为弱。
+- 分类顺序 fail-closed：(1) 无效引用 / 来源-哈希过期 / 未引用 /
+  显式无证据 -> `abstained`；(2) E 高且引用有效 ->
+  `primary_evidence`；(3) S 高且 E 低于 high -> `dependency_support`；
+  (4) 弱非零 E 或 S -> `weak_candidates`；(5) 否则 -> `abstained`。
+  E 高优先于 S 高；E 高但引用无效者弃决。引用有效性是先于 E/S 桶
+  分配触发的弃决门（依据 oracle 评审）。
+- 规范桶 `primary_evidence`、`dependency_support`、`weak_candidates`、
+  `abstained`；旧别名 `dependency_support -> supporting_only`、
+  `abstained -> abstain`。
+- 严格的禁止输出扫描器（写入 JSON 前 fail-closed）：拒绝禁止的
+  字典键（path/span/line_range/start_line/end_line/content_sha/
+  snippet/excerpt/candidate_text/query/task_id/repo_id/repo/label/
+  qrels/gold/prompt/response 等）与禁止的取值模式（URL、32/40/64 字符
+  十六进制摘要、类密钥串、类路径 `src/foo.py`、多行串、原始 JSON
+  片段、原始行范围 `12-34`）；仅当非行级时允许通用聚合 reason_code
+  串。自测包含禁止扫描注入与 fail-closed 生成。
+- 仅聚合的公开产物字段：schema_version、generated_by、generated_at、
+  claim_level、rubric_version、thresholds、classification_order、
+  bucket_names、legacy_bucket_aliases、fixture_count、candidate_count、
+  bucket_counts、e_score_band_counts、s_score_band_counts、
+  reason_code_counts、self_test_checks、self_test_passed、
+  forbidden_scan，以及扁平的 no-claim/安全标志。
+- 既有 mode-only dirty 文件（`eval/ci_clone_and_lock_repo.py`、
+  `eval/ci_make_repo_matrix.py`、
+  `eval/p59_contrastive_pack_coverage_counterfactual.py`）**未被**触碰。
+
+### 结果
+
+```text
+python3 -m py_compile eval/d1_dual_rubric_relevance.py   => PASS
+python3 eval/d1_dual_rubric_relevance.py --self-test     => PASS (46/46 checks)
+python3 eval/d1_dual_rubric_relevance.py \
+  --out artifacts/d1_dual_rubric_relevance/\
+d1_dual_rubric_relevance_report.json                     => PASS
+  (status: scaffold_only_self_test_passed,
+   forbidden_scan: pass, self_test_passed: true,
+   fixture_count: 10, candidate_count: 10,
+   bucket_counts: {primary_evidence: 2, dependency_support: 1,
+     weak_candidates: 2, abstained: 5},
+   e_score_band_counts: {none: 3, weak: 1, high: 6},
+   s_score_band_counts: {none: 7, weak: 1, high: 2})
+python3 scripts/validate_docs_i18n.py                     => PASS
+```
+
+10 个合成 fixture 的确定性聚合计数：bucket_counts
+`primary_evidence=2, dependency_support=1, weak_candidates=2,
+abstained=5`；E 分段 `none=3, weak=1, high=6`；S 分段 `none=7,
+weak=1, high=2`；reason-code 计数合计 10。干净报告的 forbidden 扫描
+通过且零违规。
+
+### 注意事项
+
+- D1 仅评测/诊断脚手架。它**不**改变运行时、检索器、pack、模型、
+  后端或默认策略；它**不**改变 EvidenceCore 语义。它**不是**基准
+  结果、**不是**下游 agent 价值声明、**不是** runtime-clean 通用
+  算法声明、**不是** OOD 时间维度声明，**也不是** QuIVer 系统声明。
+- 所有 no-claim 标志保持为 false：`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`、
+  `runtime_clean_general_algorithm_claimed=false`、
+  `downstream_agent_value_proven=false`、`ood_temporal_supported=false`、
+  `quiver_systems_supported=false`；`runtime_behavior_changed=false`、
+  `retriever_changed=false`、`pack_builder_changed=false`、
+  `model_calls_changed=false`、`backend_changed=false`、
+  `default_policy_changed=false`；`candidate_text_emitted=false`、
+  `paths_or_spans_emitted=false`、`content_sha_emitted=false`、
+  `raw_private_records_read=false`、`raw_private_records_persisted=false`、
+  `row_level_hashes_emitted=false`、`per_candidate_rows_emitted=false`。
+  `aggregate_only_public_artifact=true`、`diagnostic_only=true`、
+  `not_evidence=true`。
+- 读取真实 P21/private records 推迟到后续 D2 校准阶段；D1 fixture
+  仅合成 / 来源回溯。
