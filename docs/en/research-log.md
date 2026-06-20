@@ -4641,3 +4641,221 @@ source input were rejected fail-closed.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified. `current-research-conclusions` was NOT updated (D4c is a
   harness/blocked artifact; no conclusions change).
+
+## 2026-06-20 — D4d Human Annotation Runbook / Checklist Protocol (Public Protocol-Only Artifact)
+
+### Objective
+
+Implement D4d as the **human annotation runbook / checklist protocol**
+public artifact. D4d freezes how future human raters should label D4c
+annotation packets (filling the dual-rubric E/S slots) before any D4e
+converter or D5 aggregate release candidate. The default committed
+artifact is a **public protocol-only runbook**, NOT a label collection,
+NOT a packet build, NOT a filled packet, NOT a D4b bundle, NOT a
+converter run, and NOT a calibration. D4d must NOT read private packets,
+NOT read private packet output, NOT read private source records, NOT
+generate/persist annotation packets, NOT recruit/identify raters, NOT
+emit rater IDs, NOT collect labels, NOT create filled packets, NOT
+create a D4b true-label bundle, NOT run the converter, NOT validate a
+D4b bundle, NOT compute calibration, NOT measure inter-rater agreement,
+NOT compute confidence intervals, NOT pass any release gate, NOT
+unblock D5, NOT claim true E/S calibration, NOT perform model/LLM
+labeling, NOT allow model-assisted labels, NOT emit private
+paths/snippets or packet/task/repo IDs/content hashes/query/candidate
+text, and NOT change runtime behavior, retriever, pack, model, backend,
+default policy, or EvidenceCore semantics. D4d has NO private mode, NO
+`--input`, and NO private packet/source reads.
+
+### Implementation
+
+- New script `eval/d4d_human_annotation_runbook.py` (pure Python
+  stdlib; no external imports). Public protocol-only runbook artifact
+  only; there is no private mode and no `--input`.
+  - Claim level `human_annotation_runbook_protocol_only`; status
+    `protocol_ready_no_raters_no_labels_no_packets`; mode
+    `public_runbook_protocol_only`; phase `D4d`; D3 rubric version
+    `d3_true_dual_rubric_label_protocol_v1`; D4c packet schema target
+    `d4c_annotation_packet_v1`; D4b bundle schema target
+    `d4b_true_label_bundle_v1`.
+  - CLI: `--self-test`, `--out` (only). NO `--input`, NO
+    `--allow-private-source-records`; D4d is protocol-only and never
+    reads private packets or source records. Default mode writes the
+    committed public protocol-only runbook artifact. Unknown/private-looking
+    arguments are rejected with a generic `invalid arguments` message that does
+    not echo private paths or basenames.
+  - Default false flags (all false): `private_packets_read`,
+    `private_packet_output_read`, `private_source_records_read`,
+    `annotation_packets_generated`, `annotation_packets_persisted`,
+    `raters_recruited`, `raters_identified`, `rater_ids_emitted`,
+    `labels_collected`, `filled_packets_created`,
+    `d4b_true_label_bundle_created`, `d4b_bundle_converter_run`,
+    `d4b_true_label_bundle_validated`, `calibration_metrics_computed`,
+    `inter_rater_agreement_measured`, `confidence_intervals_computed`,
+    `public_release_gate_passed`, `d5_unblocked`,
+    `true_e_s_calibration_claimed`, `model_or_llm_labeling_performed`,
+    `model_assisted_labels_allowed`, `private_paths_or_snippets_emitted`,
+    `packet_ids_emitted`, `task_ids_emitted`, `repo_ids_emitted`,
+    `content_sha_emitted`, `query_or_candidate_text_emitted`.
+  - No-claim / no-runtime-change flags (all false):
+    `runtime_behavior_changed`, `retriever_changed`, `pack_builder_changed`,
+    `model_calls_changed`, `backend_changed`, `default_policy_changed`,
+    `evidencecore_semantics_changed`, `promotion_ready`,
+    `default_should_change`, `downstream_agent_value_proven`,
+    `runtime_clean_general_algorithm_claimed`, `ood_temporal_supported`,
+    `quiver_systems_supported`.
+  - Protocol true flags (exactly fifteen, all true):
+    `runbook_protocol_defined`, `checklist_schema_defined`,
+    `rater_independence_required`, `d3_rubric_required`,
+    `d4c_packet_schema_referenced`, `d4b_bundle_schema_referenced`,
+    `local_only_storage_required`, `no_llm_labeling_required`,
+    `adjudication_policy_defined`, `disagreement_handling_defined`,
+    `min_n_gate_referenced`, `k_min_gate_referenced`,
+    `agreement_gate_referenced`, `ci_gate_referenced`,
+    `aggregate_only_public_release_required`. No packet-build / label /
+    bundle / calibration / agreement / CI / release / D5-unblock claim
+    flags are true in the default committed artifact.
+  - Public contracts: `runbook_protocol_contract` (seven category-only
+    sections — preconditions, rater_setup, labeling_rules,
+    prohibited_labeling_sources, local_storage_privacy, adjudication,
+    release_gates — each with an approved abstract category-token
+    checklist); `rubric_contract` (`d3_rubric_version`,
+    `e_score_levels=[E0,E1,E2]`, `s_score_levels=[S0,S1,S2]`,
+    `bucket_names=[primary_evidence,dependency_support,weak_candidates,
+    abstained]`, `required_label_slots=[e_score,s_score,bucket,
+    citation_valid,rater_pair_present,adjudicated]`);
+    `label_slot_contract` (six slots, `target_packet_schema=
+    d4c_annotation_packet_v1`, `target_bundle_schema=
+    d4b_true_label_bundle_v1`, `no_filled_packets_created=true`);
+    `release_gate_contract` (`gate_names=[min_total_labels,k_min,
+    agreement_metric,confidence_intervals,small_cell_suppression]`,
+    `min_total_labels=50`, `k_min=5`, `min_rater_count=2`,
+    `agreement_required=true`, `confidence_intervals_required=true`,
+    `small_cell_suppression_required=true`,
+    `aggregate_only_public_release_required=true`,
+    `d5_blocked_until_all_gates_pass=true`,
+    `public_release_gate_passed=false`);
+    `prohibited_labeling_sources_contract` (`prohibited_sources`:
+    no LLM/model labels, no proxy labels as true, no model-name rules,
+    no benchmark-private buckets as runtime policy, no downstream value
+    claims; `model_or_llm_labeling_performed=false`,
+    `model_assisted_labels_allowed=false`); `rater_setup_contract`
+    (`min_rater_count=2`, `rater_independence_required=true`,
+    `rater_independence_rules`, `local_rater_mapping_private_only=true`,
+    `rater_ids_emitted=false`, `raters_recruited=false`,
+    `raters_identified=false`).
+  - Runbook content is category-only and abstract: no packet examples,
+    snippets, paths, task IDs, repo names, rater IDs/names, URLs, or
+    private examples.
+  - Strict public scanner (fail-closed, with exact contract string
+    allowlist). Contract containers (`checklist`, `e_score_levels`,
+    `s_score_levels`, `bucket_names`, `required_label_slots`,
+    `gate_names`, `prohibited_sources`, `rater_independence_rules`)
+    allow ONLY approved schema identifiers, E/S levels, bucket names,
+    label-slot field names, gate names, and approved abstract runbook
+    category tokens. Arbitrary short strings (e.g. `compute_loss` or
+    private text) are rejected EVEN inside contract containers (no
+    over-broad container exemption); sensitive field names
+    (`content_sha`, `query_text`, `packet_ref`) are rejected even
+    inside contract containers. Field names are forbidden as keys
+    anywhere and as values outside contracts. Rejects forbidden dict
+    keys anywhere and value patterns: ANY URL (no URL allowlist),
+    32/40/64-char hex digests, secret-like strings, path-like strings,
+    multiline strings, raw JSON fragments, raw line ranges, and the
+    self-test sentinel.
+  - Generation refuses success if self-test fails or the scanner finds
+    leakage (fail-closed `_enforce_no_forbidden` +
+    `_refuse_on_self_test_failure` immediately before writing JSON).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4d_human_annotation_runbook.py    => PASS
+python3 eval/d4d_human_annotation_runbook.py --self-test      => PASS (274/274 checks)
+python3 eval/d4d_human_annotation_runbook.py \
+  --out artifacts/d4d_human_annotation_runbook/\
+d4d_human_annotation_runbook_report.json                     => PASS
+  (status: protocol_ready_no_raters_no_labels_no_packets,
+   forbidden_scan: pass, self_test_passed: true,
+   private_packets_read: false,
+   annotation_packets_generated: false,
+   labels_collected: false,
+   filled_packets_created: false,
+   d4b_true_label_bundle_created: false,
+   d4b_bundle_converter_run: false,
+   calibration_metrics_computed: false,
+   inter_rater_agreement_measured: false,
+   confidence_intervals_computed: false,
+   model_or_llm_labeling_performed: false,
+   model_assisted_labels_allowed: false,
+   raters_recruited: false, raters_identified: false,
+   rater_ids_emitted: false,
+   public_release_gate_passed: false, d5_unblocked: false,
+   runbook_protocol_defined: true,
+   checklist_schema_defined: true,
+   rater_independence_required: true,
+   d3_rubric_required: true,
+   d4c_packet_schema_referenced: true,
+   d4b_bundle_schema_referenced: true,
+   local_only_storage_required: true,
+   no_llm_labeling_required: true,
+   adjudication_policy_defined: true,
+   disagreement_handling_defined: true,
+   min_n_gate_referenced: true,
+   k_min_gate_referenced: true,
+   agreement_gate_referenced: true,
+   ci_gate_referenced: true,
+   aggregate_only_public_release_required: true,
+   mode: public_runbook_protocol_only, phase: D4d,
+   d3_rubric_version: d3_true_dual_rubric_label_protocol_v1,
+   d4c_packet_schema_target: d4c_annotation_packet_v1,
+   d4b_bundle_schema_target: d4b_true_label_bundle_v1)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4d freezes the human annotation runbook/checklist protocol that D4e
+(the packet->bundle converter, future) will use, and hardens execution
+controls: a protocol-only CLI (no `--input`, no private mode), a strict
+fail-closed public scanner with an exact contract string allowlist (no
+over-broad container exemption — unapproved strings and sensitive field
+names are rejected even inside contract containers), and fail-closed
+generation that refuses success on scanner leak or self-test failure. The CLI
+also suppresses unknown private-looking argument values, so accidental
+`--input /tmp/...` invocations do not echo private paths or basenames.
+The default committed artifact is protocol-only: it reads no private
+packets, generates no packets, recruits/identifies no raters, collects no
+labels, creates no filled packets, creates no D4b bundle, runs no
+converter, computes no calibration, measures no agreement/CI, performs no
+model/LLM labeling, and passes no release gate. D5 remains blocked. The
+runbook content is category-only and abstract; no packet examples,
+snippets, paths, IDs, rater names, or URLs appear in the public artifact.
+
+### Caveats
+
+- D4d is the human annotation runbook / checklist protocol public
+  artifact only. It is eval/diagnostic only. It does NOT change runtime,
+  retriever, pack, model, backend, or default policy; it does NOT change
+  EvidenceCore semantics. It is NOT a benchmark result, NOT a downstream
+  agent value claim, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, and NOT a QuIVer systems claim.
+- D4d default is protocol-only. The default committed artifact reads NO
+  private packets, generates NO packets, recruits/identifies NO raters,
+  collects NO labels, creates NO filled packets, creates NO D4b bundle,
+  runs NO converter, computes NO calibration, measures NO agreement/CI,
+  performs NO model/LLM labeling, and passes NO public-release gate.
+  D5 remains blocked. Protocol true flags are true only for the defined
+  protocol controls, NOT for any real label collection or bundle claim.
+- D4d is NOT label collection, NOT packet generation, NOT filled-packet
+  creation, NOT D4b true-label bundle creation, NOT converter, NOT
+  calibration, NOT agreement measurement, and NOT D5 unblocked. It
+  freezes the human annotation runbook/checklist that prepares D4e.
+- D4d has NO private mode, NO `--input`, and NO private packet/source
+  reads. Unlike D4c, there is no opt-in private builder. The runbook
+  content is category-only and abstract; no packet examples, snippets,
+  paths, IDs, rater names, or URLs appear in the public artifact.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`)
+  remain true; the protocol true flags are the only true control flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was NOT updated (D4d is a
+  protocol-only artifact; no conclusions change).

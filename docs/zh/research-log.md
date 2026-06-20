@@ -4452,3 +4452,191 @@ prompt_response/labels 被 fail-closed 拒绝。
 - 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
   `current-research-conclusions` **未**更新（D4c 是夹具/blocked 产物；
   结论无变化）。
+
+## 2026-06-20 — D4d 人工标注 Runbook / Checklist 协议（公开纯协议 artifact）
+
+### Objective
+
+实现 D4d 为**人工标注 runbook / checklist 协议**公开 artifact。D4d 在任何
+D4e 转换器或 D5 聚合发布候选之前，冻结未来人工标注者应如何标注 D4c 标注包（填写
+双评分卡 E/S 槽位）。默认提交的 artifact 是**公开纯协议 runbook**，不是标签采
+集，不是数据包构建，不是已填充数据包，不是 D4b bundle，不是转换器运行，也不是
+校准。D4d **不**读取私有数据包、**不**读取私有数据包输出、**不**读取私有源记
+录、**不**生成/持久化标注包、**不**招募/识别标注者、**不**发出标注者 ID、**不**
+采集标签、**不**创建已填充数据包、**不**创建 D4b 真值 bundle、**不**运行转换
+器、**不**校验 D4b bundle、**不**计算校准、**不**度量标注者间一致性、**不**计
+算置信区间、**不**通过任何发布门、**不解锁** D5、**不**声明真 E/S 校准、**不**
+执行模型/LLM 标注、**不**允许模型辅助标签、**不**发出私有路径/代码片段或
+包/任务/仓库 ID/内容哈希/查询/候选文本，且**不**改变运行时行为、retriever、
+pack、model、backend、默认策略或 EvidenceCore 语义。D4d 没有私有模式，没有
+`--input`，也不读取私有数据包/源记录。
+
+### Implementation
+
+- 新脚本 `eval/d4d_human_annotation_runbook.py`（纯 Python stdlib；无
+  外部导入）。仅公开纯协议 runbook artifact；没有私有模式，也没有 `--input`。
+  - 声明级别 `human_annotation_runbook_protocol_only`；状态
+    `protocol_ready_no_raters_no_labels_no_packets`；模式
+    `public_runbook_protocol_only`；阶段 `D4d`；D3 评分卡版本
+    `d3_true_dual_rubric_label_protocol_v1`；D4c 数据包 schema 目标
+    `d4c_annotation_packet_v1`；D4b bundle schema 目标
+    `d4b_true_label_bundle_v1`。
+  - CLI：`--self-test`、`--out`（仅此两个）。**没有** `--input`，**没有**
+    `--allow-private-source-records`；D4d 是纯协议，从不读取私有数据包或源记
+    录。默认模式写入已提交的公开纯协议 runbook artifact。未知或类似私有输入的
+    参数会以通用 `invalid arguments` 消息拒绝，不回显私有路径或 basename。
+  - 默认 false 标志（全为 false）：`private_packets_read`、
+    `private_packet_output_read`、`private_source_records_read`、
+    `annotation_packets_generated`、`annotation_packets_persisted`、
+    `raters_recruited`、`raters_identified`、`rater_ids_emitted`、
+    `labels_collected`、`filled_packets_created`、
+    `d4b_true_label_bundle_created`、`d4b_bundle_converter_run`、
+    `d4b_true_label_bundle_validated`、`calibration_metrics_computed`、
+    `inter_rater_agreement_measured`、`confidence_intervals_computed`、
+    `public_release_gate_passed`、`d5_unblocked`、
+    `true_e_s_calibration_claimed`、`model_or_llm_labeling_performed`、
+    `model_assisted_labels_allowed`、`private_paths_or_snippets_emitted`、
+    `packet_ids_emitted`、`task_ids_emitted`、`repo_ids_emitted`、
+    `content_sha_emitted`、`query_or_candidate_text_emitted`。
+  - 无声明 / 无运行时变更标志（全为 false）：
+    `runtime_behavior_changed`、`retriever_changed`、`pack_builder_changed`、
+    `model_calls_changed`、`backend_changed`、`default_policy_changed`、
+    `evidencecore_semantics_changed`、`promotion_ready`、
+    `default_should_change`、`downstream_agent_value_proven`、
+    `runtime_clean_general_algorithm_claimed`、`ood_temporal_supported`、
+    `quiver_systems_supported`。
+  - 协议 true 标志（共十五个，全为 true）：
+    `runbook_protocol_defined`、`checklist_schema_defined`、
+    `rater_independence_required`、`d3_rubric_required`、
+    `d4c_packet_schema_referenced`、`d4b_bundle_schema_referenced`、
+    `local_only_storage_required`、`no_llm_labeling_required`、
+    `adjudication_policy_defined`、`disagreement_handling_defined`、
+    `min_n_gate_referenced`、`k_min_gate_referenced`、
+    `agreement_gate_referenced`、`ci_gate_referenced`、
+    `aggregate_only_public_release_required`。默认提交产物中无任何数据包构
+    建/标签/bundle/校准/一致性/置信区间/发布/D5 解锁声明标志为 true。
+  - 公开契约：`runbook_protocol_contract`（七个纯类别章节 — preconditions、
+    rater_setup、labeling_rules、prohibited_labeling_sources、
+    local_storage_privacy、adjudication、release_gates — 每个带经批准的抽象
+    类别 token checklist）；`rubric_contract`（`d3_rubric_version`、
+    `e_score_levels=[E0,E1,E2]`、`s_score_levels=[S0,S1,S2]`、
+    `bucket_names=[primary_evidence,dependency_support,weak_candidates,
+    abstained]`、`required_label_slots=[e_score,s_score,bucket,
+    citation_valid,rater_pair_present,adjudicated]`）；
+    `label_slot_contract`（六个槽位、`target_packet_schema=
+    d4c_annotation_packet_v1`、`target_bundle_schema=
+    d4b_true_label_bundle_v1`、`no_filled_packets_created=true`）；
+    `release_gate_contract`（`gate_names=[min_total_labels,k_min,
+    agreement_metric,confidence_intervals,small_cell_suppression]`、
+    `min_total_labels=50`、`k_min=5`、`min_rater_count=2`、
+    `agreement_required=true`、`confidence_intervals_required=true`、
+    `small_cell_suppression_required=true`、
+    `aggregate_only_public_release_required=true`、
+    `d5_blocked_until_all_gates_pass=true`、
+    `public_release_gate_passed=false`）；
+    `prohibited_labeling_sources_contract`（`prohibited_sources`：
+    无 LLM/模型标签、无代理标签作为真值、无模型名称规则、无基准私有桶作为运
+    行时策略、无下游价值声明；`model_or_llm_labeling_performed=false`、
+    `model_assisted_labels_allowed=false`）；`rater_setup_contract`
+    （`min_rater_count=2`、`rater_independence_required=true`、
+    `rater_independence_rules`、`local_rater_mapping_private_only=true`、
+    `rater_ids_emitted=false`、`raters_recruited=false`、
+    `raters_identified=false`）。
+  - runbook 内容是纯类别且抽象的：没有数据包示例、代码片段、路径、任务 ID、
+    仓库名、标注者 ID/姓名、URL 或私有示例。
+  - 严格公开扫描器（故障关闭，带精确契约字符串白名单）。契约容器
+    （`checklist`、`e_score_levels`、`s_score_levels`、`bucket_names`、
+    `required_label_slots`、`gate_names`、`prohibited_sources`、
+    `rater_independence_rules`）仅允许经批准的 schema 标识符、E/S 等级、
+    桶名、标签槽位字段名、门名和经批准的抽象 runbook 类别 token。任意短字
+    符串（如 `compute_loss` 或私有文本）即使在契约容器内**也会被拒绝**（无
+    过宽容器豁免）；敏感字段名（`content_sha`、`query_text`、
+    `packet_ref`）即使在契约容器内也被拒绝。字段名在任何位置作为键、在契约
+    外作为值，均被拒绝。拒绝禁止的 dict 键，并拒绝值模式：任何 URL（无 URL
+    白名单）、32/40/64 字符十六进制摘要、类密钥字符串、类路径字符串、多行
+    字符串、原始 JSON 片段、原始行范围以及自测 sentinel。
+  - 若自测失败或扫描器发现泄漏，生成拒绝成功（写 JSON 前立即故障关闭
+    `_enforce_no_forbidden` + `_refuse_on_self_test_failure`）。
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4d_human_annotation_runbook.py    => PASS
+python3 eval/d4d_human_annotation_runbook.py --self-test      => PASS (274/274 checks)
+python3 eval/d4d_human_annotation_runbook.py \
+  --out artifacts/d4d_human_annotation_runbook/\
+d4d_human_annotation_runbook_report.json                     => PASS
+  (status: protocol_ready_no_raters_no_labels_no_packets,
+   forbidden_scan: pass, self_test_passed: true,
+   private_packets_read: false,
+   annotation_packets_generated: false,
+   labels_collected: false,
+   filled_packets_created: false,
+   d4b_true_label_bundle_created: false,
+   d4b_bundle_converter_run: false,
+   calibration_metrics_computed: false,
+   inter_rater_agreement_measured: false,
+   confidence_intervals_computed: false,
+   model_or_llm_labeling_performed: false,
+   model_assisted_labels_allowed: false,
+   raters_recruited: false, raters_identified: false,
+   rater_ids_emitted: false,
+   public_release_gate_passed: false, d5_unblocked: false,
+   runbook_protocol_defined: true,
+   checklist_schema_defined: true,
+   rater_independence_required: true,
+   d3_rubric_required: true,
+   d4c_packet_schema_referenced: true,
+   d4b_bundle_schema_referenced: true,
+   local_only_storage_required: true,
+   no_llm_labeling_required: true,
+   adjudication_policy_defined: true,
+   disagreement_handling_defined: true,
+   min_n_gate_referenced: true,
+   k_min_gate_referenced: true,
+   agreement_gate_referenced: true,
+   ci_gate_referenced: true,
+   aggregate_only_public_release_required: true,
+   mode: public_runbook_protocol_only, phase: D4d,
+   d3_rubric_version: d3_true_dual_rubric_label_protocol_v1,
+   d4c_packet_schema_target: d4c_annotation_packet_v1,
+   d4b_bundle_schema_target: d4b_true_label_bundle_v1)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4d 冻结 D4e（包->bundle 转换器，未来）将使用的人工标注 runbook/checklist 协
+议，并强化执行控制：纯协议 CLI（无 `--input`、无私有模式，且未知私有输入参数不
+回显路径/basename）、带精确契约字符串白
+名单的严格故障关闭公开扫描器（无过宽容器豁免——未批准字符串和敏感字段名即使在契
+约容器内也被拒绝），以及在扫描器泄漏或自测失败时拒绝成功的故障关闭生成。默认提
+交产物是纯协议：不读取私有数据包，不生成数据包，不招募/识别标注者，不采集标签，
+不创建已填充数据包，不创建 D4b bundle，不运行转换器，不计算校准，不度量一致性/
+置信区间，不执行模型/LLM 标注，也不通过任何发布门。D5 保持锁定。runbook 内容是
+纯类别且抽象的；公开 artifact 中没有数据包示例、代码片段、路径、ID、标注者姓名
+或 URL。
+
+### Caveats
+
+- D4d 仅是人工标注 runbook / checklist 协议公开 artifact。它仅评测/诊断。它
+  **不**改变运行时、retriever、pack、model、backend 或默认策略；也**不**改变
+  EvidenceCore 语义。它不是基准测试结果，不是下游 agent 价值声明，不是
+  runtime-clean 通用算法声明，不是 OOD 时间性声明，也不是 QuIVer 系统声明。
+- D4d 默认是纯协议。默认提交产物**不**读取任何私有数据包，**不**生成任何数据
+  包，**不**招募/识别任何标注者，**不**采集任何标签，**不**创建任何已填充数据
+  包，**不**创建任何 D4b bundle，**不**运行任何转换器，**不**计算任何校准，**不**
+  度量任何一致性/置信区间，**不**执行任何模型/LLM 标注，也**不**通过任何公开发
+  布门。D5 保持锁定。协议 true 标志仅对已定义的协议控制为 true，而非任何真实的
+  标签采集或 bundle 声明。
+- D4d **不是**标签采集，**不是**数据包生成，**不是**已填充数据包创建，**不是**
+  D4b 真值 bundle 创建，**不是**转换器，**不是**校准，**不是**一致性度量，也**不
+  是** D5 解锁。它冻结为 D4e 做准备的人工标注 runbook/checklist。
+- D4d 没有私有模式，没有 `--input`，也不读取私有数据包/源记录。与 D4c 不同，没
+  有可选私有构建器。runbook 内容是纯类别且抽象的；公开 artifact 中没有数据包示
+  例、代码片段、路径、ID、标注者姓名或 URL。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`、`not_evidence`）保持
+  true；协议 true 标志是唯一为 true 的控制标志。
+- 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
+  `current-research-conclusions` **未**更新（D4d 是纯协议 artifact；结论无变
+  化）。

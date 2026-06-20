@@ -1,0 +1,1343 @@
+{
+  "adjudication_policy_defined": true,
+  "aggregate_only_public_artifact": true,
+  "aggregate_only_public_release_required": true,
+  "agreement_gate_referenced": true,
+  "annotation_packets_generated": false,
+  "annotation_packets_persisted": false,
+  "backend_changed": false,
+  "calibration_metrics_computed": false,
+  "checklist_schema_defined": true,
+  "ci_gate_referenced": true,
+  "claim_level": "human_annotation_runbook_protocol_only",
+  "confidence_intervals_computed": false,
+  "content_sha_emitted": false,
+  "d3_rubric_required": true,
+  "d3_rubric_version": "d3_true_dual_rubric_label_protocol_v1",
+  "d4b_bundle_converter_run": false,
+  "d4b_bundle_schema_referenced": true,
+  "d4b_bundle_schema_target": "d4b_true_label_bundle_v1",
+  "d4b_true_label_bundle_created": false,
+  "d4b_true_label_bundle_validated": false,
+  "d4c_packet_schema_referenced": true,
+  "d4c_packet_schema_target": "d4c_annotation_packet_v1",
+  "d5_unblocked": false,
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "diagnostic_only": true,
+  "disagreement_handling_defined": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "filled_packets_created": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-20T19:15:10.908462+00:00",
+  "generated_by": "eval/d4d_human_annotation_runbook.py",
+  "inter_rater_agreement_measured": false,
+  "k_min_gate_referenced": true,
+  "label_slot_contract": {
+    "no_filled_packets_created": true,
+    "required_label_slots": [
+      "e_score",
+      "s_score",
+      "bucket",
+      "citation_valid",
+      "rater_pair_present",
+      "adjudicated"
+    ],
+    "target_bundle_schema": "d4b_true_label_bundle_v1",
+    "target_packet_schema": "d4c_annotation_packet_v1"
+  },
+  "labels_collected": false,
+  "local_only_storage_required": true,
+  "min_n_gate_referenced": true,
+  "mode": "public_runbook_protocol_only",
+  "model_assisted_labels_allowed": false,
+  "model_calls_changed": false,
+  "model_or_llm_labeling_performed": false,
+  "no_llm_labeling_required": true,
+  "not_evidence": true,
+  "ood_temporal_supported": false,
+  "pack_builder_changed": false,
+  "packet_ids_emitted": false,
+  "phase": "D4d",
+  "private_packet_output_read": false,
+  "private_packets_read": false,
+  "private_paths_or_snippets_emitted": false,
+  "private_source_records_read": false,
+  "prohibited_labeling_sources_contract": {
+    "model_assisted_labels_allowed": false,
+    "model_or_llm_labeling_performed": false,
+    "prohibited_sources": [
+      "no_llm_or_model_labels",
+      "no_proxy_labels_as_true_labels",
+      "no_model_name_rules",
+      "no_benchmark_private_buckets_as_runtime_policy",
+      "no_downstream_value_claims"
+    ]
+  },
+  "promotion_ready": false,
+  "public_release_gate_passed": false,
+  "query_or_candidate_text_emitted": false,
+  "quiver_systems_supported": false,
+  "rater_ids_emitted": false,
+  "rater_independence_required": true,
+  "rater_setup_contract": {
+    "local_rater_mapping_private_only": true,
+    "min_rater_count": 2,
+    "rater_ids_emitted": false,
+    "rater_independence_required": true,
+    "rater_independence_rules": [
+      "two_independent_human_raters",
+      "independent_work_before_adjudication",
+      "no_rater_ids_in_public_artifacts",
+      "local_rater_identity_mapping_private",
+      "abstract_training_examples_only"
+    ],
+    "raters_identified": false,
+    "raters_recruited": false
+  },
+  "raters_identified": false,
+  "raters_recruited": false,
+  "release_gate_contract": {
+    "aggregate_only_public_release_required": true,
+    "agreement_required": true,
+    "confidence_intervals_required": true,
+    "d5_blocked_until_all_gates_pass": true,
+    "gate_names": [
+      "min_total_labels",
+      "k_min",
+      "agreement_metric",
+      "confidence_intervals",
+      "small_cell_suppression"
+    ],
+    "k_min": 5,
+    "min_rater_count": 2,
+    "min_total_labels": 50,
+    "public_release_gate_passed": false,
+    "small_cell_suppression_required": true
+  },
+  "repo_ids_emitted": false,
+  "retriever_changed": false,
+  "rubric_contract": {
+    "bucket_names": [
+      "primary_evidence",
+      "dependency_support",
+      "weak_candidates",
+      "abstained"
+    ],
+    "d3_rubric_version": "d3_true_dual_rubric_label_protocol_v1",
+    "e_score_levels": [
+      "E0",
+      "E1",
+      "E2"
+    ],
+    "required_label_slots": [
+      "e_score",
+      "s_score",
+      "bucket",
+      "citation_valid",
+      "rater_pair_present",
+      "adjudicated"
+    ],
+    "s_score_levels": [
+      "S0",
+      "S1",
+      "S2"
+    ]
+  },
+  "runbook_protocol_contract": {
+    "d3_rubric_version": "d3_true_dual_rubric_label_protocol_v1",
+    "d4b_bundle_schema_target": "d4b_true_label_bundle_v1",
+    "d4c_packet_schema_target": "d4c_annotation_packet_v1",
+    "sections": [
+      {
+        "checklist": [
+          "d3_rubric_only",
+          "d4c_packet_schema_source",
+          "d4b_bundle_schema_target_ref",
+          "packets_local_private",
+          "no_public_packet_contents",
+          "d4d_collects_no_labels"
+        ],
+        "section": "preconditions"
+      },
+      {
+        "checklist": [
+          "two_independent_human_raters",
+          "independent_work_before_adjudication",
+          "no_rater_ids_in_public_artifacts",
+          "local_rater_identity_mapping_private",
+          "abstract_training_examples_only"
+        ],
+        "section": "rater_setup"
+      },
+      {
+        "checklist": [
+          "fill_label_slots_only",
+          "d3_e_score_levels_e0_e1_e2",
+          "d3_s_score_levels_s0_s1_s2",
+          "primary_evidence_requires_citation_valid",
+          "dependency_support_structural_not_direct_answer",
+          "abstain_on_invalid_stale_insufficient_evidence"
+        ],
+        "section": "labeling_rules"
+      },
+      {
+        "checklist": [
+          "no_llm_or_model_labels",
+          "no_proxy_labels_as_true_labels",
+          "no_model_name_rules",
+          "no_benchmark_private_buckets_as_runtime_policy",
+          "no_downstream_value_claims"
+        ],
+        "section": "prohibited_labeling_sources"
+      },
+      {
+        "checklist": [
+          "packets_and_filled_packets_local_only",
+          "no_packet_task_repo_ids_in_public",
+          "no_paths_snippets_hashes_query_candidate_text_in_public",
+          "local_outputs_under_tmp_or_approved_private",
+          "no_committed_packets_or_labels"
+        ],
+        "section": "local_storage_privacy"
+      },
+      {
+        "checklist": [
+          "disagreement_categories_local_only",
+          "adjudication_after_independent_labels",
+          "aggregate_disagreement_counts_only_if_d5_gates_pass",
+          "no_disagreement_examples_in_public"
+        ],
+        "section": "adjudication"
+      },
+      {
+        "checklist": [
+          "min_total_labels_n_ge_50",
+          "k_min_per_public_cell_k_ge_5",
+          "agreement_metric_required",
+          "confidence_intervals_required",
+          "small_cells_suppressed_or_merged",
+          "aggregate_only_public_release_candidate",
+          "d5_remains_blocked_until_all_gates_pass"
+        ],
+        "section": "release_gates"
+      }
+    ]
+  },
+  "runbook_protocol_defined": true,
+  "runtime_behavior_changed": false,
+  "runtime_clean_general_algorithm_claimed": false,
+  "schema_version": "d4d_human_annotation_runbook.v1",
+  "self_test_checks": [
+    {
+      "check": "default_flag_private_packets_read_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_packet_output_read_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_source_records_read_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_annotation_packets_generated_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_annotation_packets_persisted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_raters_recruited_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_raters_identified_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_rater_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_labels_collected_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_filled_packets_created_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_d4b_true_label_bundle_created_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_d4b_bundle_converter_run_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_d4b_true_label_bundle_validated_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_calibration_metrics_computed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_inter_rater_agreement_measured_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_confidence_intervals_computed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_public_release_gate_passed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_d5_unblocked_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_true_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_model_or_llm_labeling_performed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_model_assisted_labels_allowed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_paths_or_snippets_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_packet_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_task_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_repo_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_content_sha_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_query_or_candidate_text_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_runbook_protocol_defined_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_checklist_schema_defined_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_rater_independence_required_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_d3_rubric_required_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_d4c_packet_schema_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_d4b_bundle_schema_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_local_only_storage_required_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_no_llm_labeling_required_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_adjudication_policy_defined_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_disagreement_handling_defined_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_min_n_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_k_min_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_agreement_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_ci_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "protocol_flag_aggregate_only_public_release_required_true",
+      "passed": true
+    },
+    {
+      "check": "no_claim_runtime_behavior_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_retriever_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_pack_builder_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_model_calls_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_backend_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_default_policy_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_evidencecore_semantics_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_promotion_ready_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_default_should_change_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_downstream_agent_value_proven_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_runtime_clean_general_algorithm_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_ood_temporal_supported_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_quiver_systems_supported_false",
+      "passed": true
+    },
+    {
+      "check": "diagnostic_aggregate_only_public_artifact_true",
+      "passed": true
+    },
+    {
+      "check": "diagnostic_diagnostic_only_true",
+      "passed": true
+    },
+    {
+      "check": "diagnostic_not_evidence_true",
+      "passed": true
+    },
+    {
+      "check": "schema_version_correct",
+      "passed": true
+    },
+    {
+      "check": "claim_level_correct",
+      "passed": true
+    },
+    {
+      "check": "status_correct_when_self_test_passes",
+      "passed": true
+    },
+    {
+      "check": "status_self_test_failed_when_not_passed",
+      "passed": true
+    },
+    {
+      "check": "mode_public_runbook_protocol_only",
+      "passed": true
+    },
+    {
+      "check": "phase_d4d",
+      "passed": true
+    },
+    {
+      "check": "d3_rubric_version_correct",
+      "passed": true
+    },
+    {
+      "check": "d4c_packet_schema_target_correct",
+      "passed": true
+    },
+    {
+      "check": "d4b_bundle_schema_target_correct",
+      "passed": true
+    },
+    {
+      "check": "runbook_protocol_defined_true",
+      "passed": true
+    },
+    {
+      "check": "checklist_schema_defined_true",
+      "passed": true
+    },
+    {
+      "check": "rater_independence_required_true",
+      "passed": true
+    },
+    {
+      "check": "d3_rubric_required_true",
+      "passed": true
+    },
+    {
+      "check": "d4c_packet_schema_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "d4b_bundle_schema_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "local_only_storage_required_true",
+      "passed": true
+    },
+    {
+      "check": "no_llm_labeling_required_true",
+      "passed": true
+    },
+    {
+      "check": "adjudication_policy_defined_true",
+      "passed": true
+    },
+    {
+      "check": "disagreement_handling_defined_true",
+      "passed": true
+    },
+    {
+      "check": "min_n_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "k_min_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "agreement_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "ci_gate_referenced_true",
+      "passed": true
+    },
+    {
+      "check": "aggregate_only_public_release_required_true",
+      "passed": true
+    },
+    {
+      "check": "runbook_has_seven_sections",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_ids_exact",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_preconditions_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_rater_setup_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_labeling_rules_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_prohibited_labeling_sources_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_local_storage_privacy_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_adjudication_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_release_gates_nonempty",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_preconditions_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_rater_setup_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_labeling_rules_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_prohibited_labeling_sources_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_local_storage_privacy_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_adjudication_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "runbook_section_release_gates_approved_tokens_only",
+      "passed": true
+    },
+    {
+      "check": "rubric_contract_d3_version",
+      "passed": true
+    },
+    {
+      "check": "rubric_contract_e_score_levels",
+      "passed": true
+    },
+    {
+      "check": "rubric_contract_s_score_levels",
+      "passed": true
+    },
+    {
+      "check": "rubric_contract_bucket_names",
+      "passed": true
+    },
+    {
+      "check": "rubric_contract_required_label_slots",
+      "passed": true
+    },
+    {
+      "check": "label_slot_contract_target_packet_schema",
+      "passed": true
+    },
+    {
+      "check": "label_slot_contract_target_bundle_schema",
+      "passed": true
+    },
+    {
+      "check": "label_slot_contract_no_filled_packets_created",
+      "passed": true
+    },
+    {
+      "check": "gate_min_total_labels_ge_50",
+      "passed": true
+    },
+    {
+      "check": "gate_k_min_ge_5",
+      "passed": true
+    },
+    {
+      "check": "gate_min_rater_count_ge_2",
+      "passed": true
+    },
+    {
+      "check": "gate_agreement_required",
+      "passed": true
+    },
+    {
+      "check": "gate_confidence_intervals_required",
+      "passed": true
+    },
+    {
+      "check": "gate_small_cell_suppression_required",
+      "passed": true
+    },
+    {
+      "check": "gate_aggregate_only_release_required",
+      "passed": true
+    },
+    {
+      "check": "gate_d5_blocked_until_all_gates_pass",
+      "passed": true
+    },
+    {
+      "check": "gate_names_exact",
+      "passed": true
+    },
+    {
+      "check": "d5_unblocked_false",
+      "passed": true
+    },
+    {
+      "check": "public_release_gate_passed_false",
+      "passed": true
+    },
+    {
+      "check": "prohibited_sources_contains_no_llm",
+      "passed": true
+    },
+    {
+      "check": "prohibited_sources_contains_no_proxy",
+      "passed": true
+    },
+    {
+      "check": "prohibited_sources_contains_no_model_name_rules",
+      "passed": true
+    },
+    {
+      "check": "prohibited_sources_contains_no_benchmark_buckets_policy",
+      "passed": true
+    },
+    {
+      "check": "prohibited_sources_contains_no_downstream_claims",
+      "passed": true
+    },
+    {
+      "check": "model_or_llm_labeling_performed_false",
+      "passed": true
+    },
+    {
+      "check": "model_assisted_labels_allowed_false",
+      "passed": true
+    },
+    {
+      "check": "no_llm_labeling_required_true_flag",
+      "passed": true
+    },
+    {
+      "check": "private_packets_read_false",
+      "passed": true
+    },
+    {
+      "check": "private_packet_output_read_false",
+      "passed": true
+    },
+    {
+      "check": "private_source_records_read_false",
+      "passed": true
+    },
+    {
+      "check": "annotation_packets_generated_false",
+      "passed": true
+    },
+    {
+      "check": "annotation_packets_persisted_false",
+      "passed": true
+    },
+    {
+      "check": "raters_recruited_false",
+      "passed": true
+    },
+    {
+      "check": "raters_identified_false",
+      "passed": true
+    },
+    {
+      "check": "rater_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "labels_collected_false",
+      "passed": true
+    },
+    {
+      "check": "filled_packets_created_false",
+      "passed": true
+    },
+    {
+      "check": "d4b_true_label_bundle_created_false",
+      "passed": true
+    },
+    {
+      "check": "d4b_bundle_converter_run_false",
+      "passed": true
+    },
+    {
+      "check": "d4b_true_label_bundle_validated_false",
+      "passed": true
+    },
+    {
+      "check": "calibration_metrics_computed_false",
+      "passed": true
+    },
+    {
+      "check": "inter_rater_agreement_measured_false",
+      "passed": true
+    },
+    {
+      "check": "confidence_intervals_computed_false",
+      "passed": true
+    },
+    {
+      "check": "true_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "private_paths_or_snippets_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "packet_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "task_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "repo_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "content_sha_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "query_or_candidate_text_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_path_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_snippet_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_query_text_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_candidate_text_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_packet_ref_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_packet_id_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_label_slots_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_annotation_instructions_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_packets_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_labels_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_rater_id_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_annotator_id_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_raw_label_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_disagreement_example_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_model_output_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_provider_payload_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_api_key_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_evidence_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_task_id_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_repo_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_approved_category_in_checklist",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_e_levels_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_s_levels_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_bucket_names_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_label_slots_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_gate_names_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_schema_refs_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_unapproved_string_in_checklist",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_debug_string_in_checklist",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_unapproved_string_in_gate_names",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_unapproved_string_in_bucket_names",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_unapproved_string_in_label_slots",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_in_contract_container",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_in_contract_container",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_in_contract_container",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_e_score_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_text_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_snippet_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_slots_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotation_instructions_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_rater_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_label_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_model_output_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_payload_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_e_score_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_s_score_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_bucket_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_citation_valid_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_text_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_repo_id_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_repo_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_span_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_start_line_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_end_line_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_snippet_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_text_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_prompt_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_response_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_model_output_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_labels_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_label_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotation_row_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_rater_id_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotator_id_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_disagreement_example_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_per_row_hash_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_id_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_private_record_ref_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_ref_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_bucket_hint_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_evidence_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_e_score_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_s_score_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_bucket_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_slots_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotation_instructions_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_payload_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_api_key_key_value_pattern",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_64_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_40_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_32_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_secret_sentinel_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_like_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_leading_slash_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_jsonl_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_colon_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_multiline_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_url_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_json_fragment",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_secret_like_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_pure_digit_count_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_phase_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_schema_version_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_status_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_section_id_string",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_generation_raises_on_leak",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_public_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "public_report_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_raises_when_failed",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_does_not_raise_when_passed",
+      "passed": true
+    },
+    {
+      "check": "failed_self_test_does_not_carry_success_status",
+      "passed": true
+    },
+    {
+      "check": "passed_self_test_carries_success_status",
+      "passed": true
+    },
+    {
+      "check": "cli_has_self_test_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_out_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_no_input_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_no_allow_private_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_only_required_arguments",
+      "passed": true
+    },
+    {
+      "check": "cli_unknown_input_argument_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_unknown_input_argument_no_private_path_leak",
+      "passed": true
+    }
+  ],
+  "self_test_passed": true,
+  "self_test_summary": {
+    "failed": 0,
+    "passed": 274,
+    "total": 274
+  },
+  "status": "protocol_ready_no_raters_no_labels_no_packets",
+  "task_ids_emitted": false,
+  "true_e_s_calibration_claimed": false
+}
