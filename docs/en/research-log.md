@@ -5479,3 +5479,180 @@ and is NOT evidence that real labels exist.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified. `current-research-conclusions` was NOT updated (D4f is a
   harness/blocked-only artifact; no conclusions change).
+
+---
+
+## 2026-06-20 — D4-series Harness Rollup / D5 Blocked Status (Public Rollup-Only Artifact)
+
+### Objective
+
+Implement a **D4-series harness rollup / D5 blocked status** public
+artifact. This is **rollup-only**, NOT a new research phase. It
+aggregates ONLY the committed D4a-D4f public statuses / claim levels
+and the D5 blockers. It performs NO private reads, NO probes, NO
+`/tmp` outputs, NO label collection, NO metrics, and NO D5
+calibration. The rollup must NOT read private records / packets /
+labels / bundles, must NOT emit labels / raw label rows / exact counts
+/ agreement / CI values, must NOT accept packet refs / task IDs /
+repo IDs / paths / spans / snippets / content hashes / query /
+candidate text / rater IDs / model outputs / provider payloads in any
+committed artifact, must NOT compute calibration / inter-rater
+agreement / confidence intervals, must NOT pass any public-release
+gate, must NOT unblock D5, must NOT claim true E/S calibration, must
+NOT perform model/LLM labeling, and must NOT change runtime behavior,
+retriever, pack, model, backend, default policy, or EvidenceCore
+semantics.
+
+### Implementation
+
+- New script `eval/d4_series_rollup.py` (pure Python stdlib; no
+  external imports). Public rollup-only artifact only; NO private
+  mode, NO `/tmp` output, NO CLI guard for private input.
+  - Schema version `d4_series_rollup.v1`; claim level
+    `d4_series_harness_rollup_only`; status
+    `d5_blocked_no_real_human_manual_labels`; mode
+    `public_rollup_no_private_reads`; phase `D4-rollup`.
+  - CLI: `--self-test`, `--out`. Unknown/private-looking arguments are
+    rejected with a generic `invalid arguments` message that does not
+    echo private paths or basenames (SafeArgumentParser pattern). The
+    rollup has NO `--allow-private-*`, NO `--input-*`, and NO
+    `--synthetic-*` flags: it is rollup-only and reads no private input.
+  - `d4_phases`: list of exactly six entries (D4a-D4f), each exactly
+    once, each with exactly the four keys `phase`, `commit`,
+    `artifact_status`, `claim_level`. Short commit IDs: `d62c13b`
+    (D4a), `6dd4024` (D4b), `3458716` (D4c), `55c9850` (D4d),
+    `280d8bb` (D4e), `fea76d3` (D4f). Per-phase `artifact_status`:
+    `execution_gate_ready_no_labels_collected` (D4a),
+    `blocked_no_true_label_bundle_available` (D4b),
+    `blocked_no_annotation_packets_created` (D4c),
+    `protocol_ready_no_raters_no_labels_no_packets` (D4d),
+    `blocked_no_filled_packets_available_or_no_conversion_run` (D4e),
+    `blocked_no_private_bundle_available_or_no_validation_run` (D4f).
+    Per-phase `claim_level`:
+    `dual_rubric_execution_gate_dry_run_only` (D4a),
+    `true_label_bundle_execution_harness_only` (D4b),
+    `annotation_packet_builder_harness_only` (D4c),
+    `human_annotation_runbook_protocol_only` (D4d),
+    `filled_packet_to_d4b_bundle_converter_harness_only` (D4e),
+    `d4b_bundle_validation_gate_harness_only` (D4f).
+  - Safe true flags (exactly ten, all true):
+    `control_plane_chain_complete`, `d4a_execution_gate_complete`,
+    `d4b_true_label_bundle_harness_complete`,
+    `d4c_annotation_packet_builder_harness_complete`,
+    `d4d_human_annotation_runbook_complete`,
+    `d4e_converter_harness_complete`,
+    `d4f_bundle_validation_gate_harness_complete`,
+    `aggregate_only_public_artifact`, `diagnostic_only`,
+    `not_evidence`. No read/label/counts/metrics/D5 claim flags are
+    true in the default committed artifact.
+  - D5 prerequisite flags (all false):
+    `real_human_manual_labels_available`,
+    `d4e_real_local_conversion_over_real_labels_run`,
+    `d4f_real_local_validation_over_real_labels_run`,
+    `min_n_gate_passed_for_real_labels`,
+    `k_min_gate_passed_for_real_labels`,
+    `agreement_gate_passed_for_real_labels`,
+    `ci_gate_passed_for_real_labels`,
+    `d5_public_aggregate_candidate_allowed`. The same values are also
+    grouped under a `d5_prerequisites` object for readability, and the
+    self-test asserts the flat and nested representations match.
+  - No-read / no-claim / no-runtime-change flags (all false):
+    `private_records_read`, `private_packets_read`,
+    `private_labels_read`, `private_bundles_read`, `labels_collected`,
+    `calibration_metrics_computed`, `agreement_metrics_computed`,
+    `confidence_intervals_computed`,
+    `true_e_s_calibration_claimed`, `promotion_ready`,
+    `default_should_change`, `downstream_agent_value_proven`,
+    `runtime_behavior_changed`, `retriever_changed`,
+    `pack_builder_changed`, `model_calls_changed`, `backend_changed`,
+    `default_policy_changed`, `evidencecore_semantics_changed`,
+    `runtime_clean_general_algorithm_claimed`,
+    `ood_temporal_supported`, `quiver_systems_supported`.
+  - Strict public scanner (fail-closed, with exact contract string
+    allowlist). The `d4_phases` list is an EXACT contract container:
+    string VALUES inside it must be in `APPROVED_CONTRACT_STRINGS`
+    (phase IDs `D4a`-`D4f` + `D4-rollup`; the six short commit IDs;
+    the six per-phase `artifact_status` strings; the six per-phase
+    `claim_level` strings). Arbitrary short strings (e.g.
+    `compute_loss` or private text) are rejected EVEN inside the
+    contract container (no over-broad container exemption); sensitive
+    field names (`content_sha`, `query_text`, `packet_ref`,
+    `source_packet_schema`, `d4d_runbook_attestation`, `packets`) are
+    rejected even inside the contract container and as keys anywhere.
+    Rejects forbidden dict keys anywhere and value patterns: ANY URL
+    (no URL allowlist), 32/40/64-char hex digests, secret-like strings,
+    path-like strings, multiline strings, raw JSON fragments, raw line
+    ranges, and the self-test sentinel.
+  - Generation refuses success if self-test fails or the scanner finds
+    leakage (fail-closed `_enforce_no_forbidden` +
+    `_refuse_on_self_test_failure` immediately before writing JSON).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4_series_rollup.py    => PASS
+python3 eval/d4_series_rollup.py --self-test      => PASS (147/147 checks)
+python3 eval/d4_series_rollup.py \
+  --out artifacts/d4_series_rollup/d4_series_rollup_report.json  => PASS
+  (status: d5_blocked_no_real_human_manual_labels,
+   forbidden_scan: pass, self_test_passed: true,
+   control_plane_chain_complete: true,
+   d5_public_aggregate_candidate_allowed: false,
+   real_human_manual_labels_available: false,
+   mode: public_rollup_no_private_reads, phase: D4-rollup,
+   d4_phases: [D4a d62c13b, D4b 6dd4024, D4c 3458716,
+               D4d 55c9850, D4e 280d8bb, D4f fea76d3])
+python3 scripts/validate_docs_i18n.py             => PASS
+git diff --check                                 => PASS
+```
+
+The D4-series rollup is a public rollup-only artifact with a
+SafeArgumentParser CLI (unknown/private-looking args do not echo
+values), a strict fail-closed public scanner with an exact contract
+string allowlist (no over-broad container exemption — unapproved
+strings and sensitive field names are rejected even inside the
+`d4_phases` contract container), and fail-closed generation that
+refuses success on scanner leak or self-test failure. The rollup lists
+exactly the six D4 phases (D4a-D4f), each exactly once, with their
+committed short commit IDs, per-phase `artifact_status`, and
+per-phase `claim_level`. The default committed artifact reads no
+private records / packets / labels / bundles, collects no labels,
+computes no calibration / agreement / CI, performs no model/LLM
+labeling, and passes no public-release gate. D5 remains blocked
+because real human manual labels are NOT yet collected.
+
+### Caveats
+
+- The D4-series rollup is a public rollup-only artifact. It is
+  eval/diagnostic only. It does NOT change runtime, retriever, pack,
+  model, backend, or default policy; it does NOT change EvidenceCore
+  semantics. It is NOT a benchmark result, NOT a downstream agent value
+  claim, NOT a runtime-clean general algorithm claim, NOT an OOD
+  temporal claim, and NOT a QuIVer systems claim.
+- The rollup aggregates ONLY the committed D4a-D4f public statuses /
+  claim levels. It does NOT re-run any D4 harness, NOT collect labels,
+  NOT compute calibration / agreement / CI, NOT validate any bundle,
+  and NOT unblock D5. D5 remains blocked because real human manual
+  labels are NOT yet collected.
+- The `d4_phases` `artifact_status` strings in this rollup are the
+  rollup summary forms specified by the D4-series rollup contract.
+  The D4c rollup summary status is
+  `blocked_no_annotation_packets_created`; the underlying committed
+  D4c artifact at `artifacts/d4c_annotation_packet_builder/` reports
+  the fuller status
+  `blocked_no_private_source_records_available_or_no_packets_built`
+  (same blocked semantics, fuller wording). The D4a, D4b, D4d, D4e,
+  and D4f rollup statuses match the underlying committed artifacts
+  verbatim. All six `claim_level` values and all six short commit IDs
+  match the underlying committed artifacts verbatim.
+- The safe-true flags express ONLY that the control-plane chain and
+  each D4 harness artifact exist and are committed. They are NOT
+  claims of real label collection, real conversion, real validation,
+  gate-pass, calibration, agreement, CI, or D5 unblock.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`,
+  `not_evidence`) remain true; the safe-true flags are the only true
+  flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was NOT updated (the rollup
+  is a rollup-only / D5-blocked artifact; no conclusions change).
