@@ -1,0 +1,232 @@
+name: empirical-research
+
+# D5-A0 automated E/S calibration smoke CI.
+#
+# This workflow runs the D5-A0 automated empirical E/S calibration smoke in
+# CI without requiring remote provider credential values. It builds the OpenLocus CLI,
+# runs the D5-A0 self-test and default smoke (transient /tmp retrieval
+# outputs only), validates docs i18n, checks the working tree, and uploads
+# ONLY the aggregate temp report artifact (no raw predictions, no per-
+# candidate rows) when upload_report is true.
+#
+# Claim boundary: D5-A0 is eval/diagnostic only. This workflow does NOT
+# claim true E/S calibration, does NOT collect new human labels, does NOT
+# audit human reference labels, does NOT pass any public-release gate, does
+# NOT promote any candidate, and does NOT unblock D5-H / human-reference /
+# human-calibrated claims or default/policy/public-release claims. The
+# D5-A automated empirical path is active; D5-H / human-calibrated audit
+# remains out of scope until human labels. No secrets or remote provider
+# environment is used by this workflow.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'crates/**'
+      - 'eval/d5a_automated_es_calibration.py'
+      - 'eval/run_retrieval.py'
+      - 'fixtures/r14/**'
+      - 'docs/**'
+      - 'scripts/validate_docs_i18n.py'
+      - '.github/workflows/empirical-research.yml'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  schedule:
+    # Weekly empirical smoke; non-hour minute avoids GitHub schedule congestion.
+    - cron: '23 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Empirical research stage'
+        required: false
+        default: 'd5a0'
+        type: choice
+        options:
+          - d5a0
+      candidate_limit:
+        description: 'Max candidates per task per method for D5-A0'
+        required: false
+        default: '50'
+      upload_report:
+        description: 'Upload the temp aggregate report artifact (no raw predictions)'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: empirical-research-${{ github.event_name }}-${{ github.ref }}-${{ inputs.stage || 'd5a0' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  d5a0-empirical-smoke:
+    name: ${{ inputs.stage || 'd5a0' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve D5-A0 inputs
+        id: resolve
+        run: |
+          stage="${{ inputs.stage || 'd5a0' }}"
+          candidate_limit="${{ inputs.candidate_limit || '50' }}"
+          # For workflow_dispatch, honor the explicit upload_report input;
+          # for pull_request/schedule triggers, default to true.
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            upload_report="${{ inputs.upload_report }}"
+          else
+            upload_report="true"
+          fi
+          # Validate stage.
+          if [[ "$stage" != "d5a0" ]]; then
+            echo "unsupported stage: $stage" >&2
+            exit 1
+          fi
+          # Validate candidate_limit is a positive integer.
+          if ! [[ "$candidate_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "candidate_limit must be a positive integer: $candidate_limit" >&2
+            exit 1
+          fi
+          if [[ "$candidate_limit" -gt 500 ]]; then
+            echo "candidate_limit exceeds cap 500: $candidate_limit" >&2
+            exit 1
+          fi
+          # Normalize upload_report to a lowercase boolean string.
+          if [[ "$upload_report" == "true" ]]; then
+            upload_report="true"
+          else
+            upload_report="false"
+          fi
+          echo "stage=$stage" >> "$GITHUB_OUTPUT"
+          echo "candidate_limit=$candidate_limit" >> "$GITHUB_OUTPUT"
+          echo "upload_report=$upload_report" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile D5-A0 evaluator
+        run: python3 -m py_compile eval/d5a_automated_es_calibration.py
+
+      - name: D5-A0 self-test
+        run: python3 eval/d5a_automated_es_calibration.py --self-test
+
+      - name: D5-A0 default smoke (transient /tmp retrieval outputs only)
+        env:
+          CANDIDATE_LIMIT: ${{ steps.resolve.outputs.candidate_limit }}
+        run: |
+          report_path="$RUNNER_TEMP/d5a_automated_es_calibration_report.json"
+          python3 eval/d5a_automated_es_calibration.py \
+            --openlocus target/release/openlocus \
+            --candidate-limit "$CANDIDATE_LIMIT" \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate D5-A0 temp report status/claim flags
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print(f"ERROR: report not found at {path}", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required claim boundary invariants for the D5-A0 automated smoke.
+          # The D5-A automated empirical path is active; D5-H / human-reference
+          # / human-calibrated claims and default/policy/public-release claims
+          # remain false.
+          must_be_true = {
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+              "not_evidence",
+              "automated_e_s_calibration_smoke_claimed",
+              "automated_d5a_path_active",
+              "uses_existing_committed_labels",
+              "self_test_executed",
+              "transient_retrieval_outputs_only",
+          }
+          must_be_false = {
+              "automated_e_s_calibration_claimed",
+              "human_e_s_calibration_claimed",
+              "new_human_labels_collected",
+              "human_reference_audit_claimed",
+              "promotion_ready",
+              "default_should_change",
+              "evidencecore_semantics_changed",
+              "runtime_clean_general_algorithm_claimed",
+              "downstream_agent_value_proven",
+              "external_benchmark_performance_claimed",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "model_calls_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "true_e_s_calibration_claimed",
+              "raw_predictions_committed",
+              "raw_retrieval_outputs_committed",
+              "per_candidate_rows_emitted",
+              "public_release_gate_passed",
+              "d5_human_reference_calibration_unblocked",
+              "ood_temporal_supported",
+              "quiver_systems_supported",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          if status != "automated_es_calibration_smoke_pass":
+              failures.append(f"expected status=automated_es_calibration_smoke_pass, got {status!r}")
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          if failures:
+              print("D5-A0 report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("D5-A0 report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  automated_d5a_path_active={report.get('automated_d5a_path_active')}")
+          print(f"  d5_human_reference_calibration_unblocked={report.get('d5_human_reference_calibration_unblocked')}")
+          print(f"  candidate_count_total={report.get('retrieval_summary', {}).get('candidate_count_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree (no generated files committed)
+        run: git diff --check
+
+      - name: Upload D5-A0 aggregate report artifact
+        if: ${{ steps.resolve.outputs.upload_report == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: d5a0-empirical-smoke-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

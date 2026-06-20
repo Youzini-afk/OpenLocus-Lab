@@ -12,7 +12,7 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
-## Current status update — 2026-06-20 (D4-series rollup / D5 blocked)
+## Historical status update — 2026-06-20 (D4-series rollup / D5-H blocked)
 
 The latest checkpoint is the D4-series harness rollup (`b7c65dd`,
 `add D4 harness rollup`). It is a public rollup-only artifact
@@ -46,16 +46,61 @@ D1 deterministic dual-rubric scaffold
 The D-series result is control-plane readiness only. It does **not** collect real
 human/manual labels, does **not** convert or validate a real human-label bundle,
 does **not** compute calibration/agreement/CI metrics, and does **not** unblock
-D5. D5 remains blocked until real human/manual true E/S labels exist, D4e/D4f run
-locally over those real labels, and min-N/k/agreement/CI gates pass.
+D5-H / human-reference calibration. This historical D4-rollup state is superseded
+for ongoing work by the D5-A0 empirical pivot below: lack of human/manual labels
+does not block the automated/programmatic D5-A path.
 
 Current no-claim flags remain false: `promotion_ready=false`,
 `default_should_change=false`, `evidencecore_semantics_changed=false`,
 `runtime_clean_general_algorithm_claimed=false`, `downstream_agent_value_proven=false`,
 `true_e_s_calibration_claimed=false`, and external benchmark performance remains
-unclaimed. The next appropriate work is an E1 policy-change gate preregistration
-artifact that defines evidence required before any future runtime/default-policy
-proposal; it must not itself change runtime/default behavior.
+unclaimed. The active next step is no longer an E1 control-plane preregistration;
+it is the D5-A automated empirical path recorded below.
+
+## Current status update — 2026-06-20 (D5-A0 automated E/S calibration smoke)
+
+Following the D4-series rollup, the trajectory was corrected: the
+control-plane-only stages stop here, and D5-A0 produces the first empirical,
+post-control-plane smoke. The D5-H / human-reference / human-calibrated audit
+remains out of scope/unavailable until real human/manual true E/S labels are
+collected; the D5-A automated/programmatic empirical path is active and
+continues. D5-A0 (`eval/d5a_automated_es_calibration.py` ->
+`artifacts/d5a_automated_es_calibration/d5a_automated_es_calibration_report.json`,
+schema `d5a_automated_es_calibration.v1`,
+`claim_level=automated_e_s_calibration_smoke_only`,
+`status=automated_es_calibration_smoke_pass`,
+`mode=public_aggregate_r14_retrieval_smoke`, phase `D5-A0`) derives
+**automated E labels** and **deterministic S-proxy labels** from the existing
+committed r14 sanity span labels (gold spans + hard negatives) over real
+OpenLocus retrieval outputs (regex, bm25, symbol, rrf). It invokes
+`eval/run_retrieval.py` per method into transient `/tmp/d5a_retrieval_*`
+outputs (never committed) and writes ONLY aggregate counts/rates to the
+committed artifact. 157/157 self-test checks pass; all four methods succeeded;
+3152 candidates labeled total.
+
+This is smoke-only. It does NOT claim true E/S calibration, does NOT collect
+new human/manual labels, does NOT audit human reference labels, does NOT pass
+any public-release gate, does NOT promote any candidate, and does NOT unblock
+D5-H / human-reference / human-calibrated claims or default/policy/public-release
+claims. The automated E/S labels are derived from existing committed span labels
+(originally collected for span-recall metrics, not for true E/S rubric scoring);
+they are NOT true human/manual E/S scores and are NOT the D3 dual-rubric E/S
+scores. D5-A0 does not unlock default/policy/public release or human-calibrated
+claims; the D5-H / human-reference / human-calibrated audit remains out of scope
+until human labels. All no-claim / no-runtime-change flags remain false
+(`promotion_ready=false`, `default_should_change=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`model_calls_changed=false`, `backend_changed=false`,
+`default_policy_changed=false`, `evidencecore_semantics_changed=false`,
+`runtime_clean_general_algorithm_claimed=false`,
+`downstream_agent_value_proven=false`,
+`external_benchmark_performance_claimed=false`,
+`human_e_s_calibration_claimed=false`,
+`automated_e_s_calibration_claimed=false`,
+`d5_human_reference_calibration_unblocked=false`,
+`automated_d5a_path_active=true`). No runtime/retriever/pack/model/
+backend/default-policy files were modified. See the
+[D5-A0 detailed report](d5a-automated-es-calibration.md).
 
 ## Current status update — 2026-06-20 (C4.1 external benchmark adapter / schema readiness)
 
@@ -203,7 +248,7 @@ Breakthrough Sprint B1 live LLM rich-candidate run:
 matrix:
   repos: py_flask, js_express, go_gin, rust_ripgrep
   tasks: 6 per repo, 24 total per output mode
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   stage: p21_llm_rich
 
 tool_call runs:
@@ -270,7 +315,7 @@ layouts:
 
 matrix:
   4 repos x 6 tasks x 4 layouts = 96 live tasks
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   output: tool_call
 ```
 
@@ -307,7 +352,7 @@ Breakthrough Sprint B3 request-more-context quality experiment:
 ```text
 matrix:
   4 repos x 6 tasks
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   output: tool_call
   treatments: P25, RMC-local, RMC-LLM, RMC-hybrid
 ```
@@ -326,7 +371,7 @@ Breakthrough Sprint B6-lite interpretable policy search:
 ```text
 matrix:
   4 repos x 6 tasks
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   stage: b6_lite_policy_search
 ```
 
@@ -367,7 +412,7 @@ B6C frozen-policy fresh validation:
 ```text
 run: 27706742419 green
 matrix: 4 public repo slices x 6 tasks
-model: [mk]Kimi-K2.7-Code tool_call
+model: Kimi-K2.7-Code tool_call
 claim: frozen_policy_fresh_validation
 search_performed: false
 ```
@@ -388,7 +433,7 @@ spec on a larger fresh task matrix:
 ```text
 run: 27717886432 green
 matrix: 4 public repo slices x 12 tasks = 48 comparable tasks
-model: [mk]Kimi-K2.7-Code tool_call
+model: Kimi-K2.7-Code tool_call
 claim: frozen_policy_fresh_validation
 search_performed: false
 ```
@@ -406,7 +451,7 @@ set of four public repo slices:
 ```text
 run: 27735809672 green
 matrix: 4 new public repo slices x 12 tasks = 48 comparable tasks
-model: [mk]Kimi-K2.7-Code tool_call
+model: Kimi-K2.7-Code tool_call
 claim: frozen_policy_fresh_validation
 search_performed: false
 ```
@@ -473,7 +518,7 @@ for critical-path validation. See [`b9a-adapter-health-report.md`](b9a-adapter-h
 B9B Qwen low-volume quality follow-up:
 
 ```text
-model: [mk]Qwen3.6-27B
+model: Qwen3.6-27B
 adapter: json_schema_strict
 matrix: 4 public repo slices x 6 tasks
 execution: sequential jobs
@@ -677,10 +722,10 @@ tasks, 4 models, 4-6 hours CI per model family) and a full round if promising
 `py_pytest`, `ts_vite`, `ts_hono`, `go_chi`, `go_prometheus`, `rust_deno`,
 `java_spring_petclinic` — all new, none used in B6B/B6C/B6E/B6F/B8-lite.
 
-B11 covers 4 model families: Kimi (`[mk]Kimi-K2.7-Code`, `tool_call`, reference),
-Qwen (`[mk]Qwen3.6-27B`, `json_schema_strict`, secondary), DeepSeek Flash
-(`[mk]DeepSeek-V4-Flash`, `json_schema_strict`, recall), and DeepSeek Pro
-(`[mk]DeepSeek-V4-Pro`, `json_schema_strict`, conservative). GLM-5.2 is excluded
+B11 covers 4 model families: Kimi (`Kimi-K2.7-Code`, `tool_call`, reference),
+Qwen (`Qwen3.6-27B`, `json_schema_strict`, secondary), DeepSeek Flash
+(`DeepSeek-V4-Flash`, `json_schema_strict`, recall), and DeepSeek Pro
+(`DeepSeek-V4-Pro`, `json_schema_strict`, conservative). GLM-5.2 is excluded
 as noisy per B9A/B6D. Output mode is a model-adapter configuration parameter,
 not an OpenLocus algorithm variable. 4 policies are compared: Local baseline
 (no LLM), P25 `p25.route_bucket_routed_v0`, Balanced v1
@@ -2030,7 +2075,7 @@ Public outputs include `h4b_available`, `h4b_budget_overlay=true`, `h4b_selectiv
 | P8/P9 Real-Provider CI Scale-Up | Completed; first public CI slices | Added `real-provider-benchmark.yml` manual workflow with `environment: production`, guarded secrets, input validation, and no private label upload. Ran small public corpus, model bakeoff (`bge-m3`, Qwen 0.6B/4B/8B), and multilingual smoke. Result: file-level signal exists, but SpanF0.5 remains low and model size did not dominate in first slices. |
 | L1/L2 Real-Provider Large-Repo Slices | Completed; strong dense-only/global-dense block | Ran controlled large-repo slices across Django, Kubernetes, Next.js, and Deno. L1 showed file-recall variability and P4 false-span growth. L2 (`60 tasks / 1000 records / 2000 files`) had PFP=1.0 on all four repos, very low SpanF0.5, and unstable FileRecall. Conclusion: dense-only/global dense must remain supporting/candidate-only; next phase should freeze L2, attribute false positives, and test constrained dense. |
 | P10-P14 Constrained Dense Research | Planned | Proposed next phase: freeze `real_provider_l2_v1`, attribute L2 false positives, simulate constrained candidate pools locally, run small remote constrained variants, then rerun fixed L2 only if added_gold exceeds added_false and PFP drops. No EvidenceCore changes and no promotion. |
-| P20-LS LLM Large-Scale Eval Harness | P20-LS-A completed; low-context alias blocked | Bounded eval-only harness (`eval/p20_llm_large_scale.py`) for LLM-derived query aliases and stress-label generation. Remote runs require `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`. P20-LS-A ran `[mk]Kimi-K2.7-Code` on self-test plus 9 real CI corpus runs (220 real provider calls). All LS0/LS1 safety gates passed, no raw source/private labels/prompts uploaded, but 0/9 real runs passed quality: added_gold_span=289 vs added_false_span=8312 (~28.8:1 false:gold), avg fabricated_identifier_rate≈0.459. Narrow decision: stop scaling low-context/query-only LLM aliases. This is not a verdict on rich-context LLM retrieval; it motivates context-grounded rerank/filter/span-narrow experiments. No EvidenceCore changes; promotion_ready=false; default_should_change=false. |
+| P20-LS LLM Large-Scale Eval Harness | P20-LS-A completed; low-context alias blocked | Bounded eval-only harness (`eval/p20_llm_large_scale.py`) for LLM-derived query aliases and stress-label generation. Remote runs require `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`. P20-LS-A ran `Kimi-K2.7-Code` on self-test plus 9 real CI corpus runs (220 real provider calls). All LS0/LS1 safety gates passed, no raw source/private labels/prompts uploaded, but 0/9 real runs passed quality: added_gold_span=289 vs added_false_span=8312 (~28.8:1 false:gold), avg fabricated_identifier_rate≈0.459. Narrow decision: stop scaling low-context/query-only LLM aliases. This is not a verdict on rich-context LLM retrieval; it motivates context-grounded rerank/filter/span-narrow experiments. No EvidenceCore changes; promotion_ready=false; default_should_change=false. |
 | P21-G Cross-Model Context Injection Research | P21-G3L-R GLM tool_call confirmed under low concurrency | Research pivot from minimal-context baselines to cross-model context-injection effects. P21-G1E found rich embedding views have file/span signal but naked dense false spans dominate. P21-G2E found constrained dense (`dense_atom_signature_rrf_file_constrained`) has modest supporting value but dense remains non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain often kill gold. P21-G3L-R added provider-level output modes (`prompt_only`, `json_object`, `json_schema_strict`, `tool_call`), fallback diagnostics, and one no-fallback schema repair retry. GLM 4-mode comparison found `tool_call` best (avg SpanNarrow Δ +0.0677), `prompt_only` blocked, `json_object` insufficient, `json_schema_strict` mixed. A sequential low-concurrency `tool_call` rerun removed 429 noise and improved GLM SpanNarrow avg Δ to +0.1361 across py_flask/js_express. Next: bucketed GLM/Kimi/Flash `span_narrow` with `tool_call` for GLM; filter/abstain remain non-default. EvidenceCore remains final authority. |
 | P21-G3B Bucketed LLM Role Study | Bucketed smoke completed; global LLM roles blocked | Public task generation now exposes safe `task_bucket/task_risk_tags` and P21 runners support `round_robin_public_buckets`, so RUN can sample mixed buckets without labels/gold. First true bucketed LLM role smoke ran 6 runs (Flash/Kimi/GLM × py_flask/js_express, 18 tasks each, provider concurrency ≤6). Bucket coverage now includes abstain/weak/no_gold/ambiguous/dense_false_positive buckets. Result: all LLM roles reduce PFP materially, but often by killing gold spans; global `span_narrow` is positive on py_flask but negative on js_express mixed buckets; `filter`/`abstain` are useful as false-positive reducers only in specific buckets, not as defaults. Next: build a rule-based policy that routes `span_narrow` only to likely-positive/high-confidence tasks and `filter/abstain` only to negative/dense_false_positive/ambiguous buckets. |
 | P22/P23 Evidence-Seeking Policy Surface | Decision surfaces frozen; bottlenecks decomposed | P22/P23 moves from channel bakeoffs to strategy-surface analysis. It freezes two capped local surfaces with hashes and no remote/model calls: `r20_positive` (120 positive tasks across 9 repos) and `r26_guard` (120 no-gold stress tasks across 9 repos). R20 shows RRF is still the reach base (`Reach@5=0.975`, `SpanReach@5=0.95`) but symbol has best local SpanF0.5 (`0.3169`) and `symbol_regex_union` is the best precision/reach experimental baseline candidate for P25/P30. R26 shows BM25/RRF create noisy false primary (`NoGoldFP=0.2833`) while symbol/regex/union/guard abstain, so guard stress must be evaluated separately from positive reach. Reports: `docs/p22-p23-policy-surface.md`, per-surface docs/artifacts under `docs/` and `artifacts/p22_p23/`. |

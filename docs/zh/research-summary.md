@@ -19,7 +19,7 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
-## 当前状态更新 —— 2026-06-20（D4-series rollup / D5 阻塞）
+## 历史状态更新 —— 2026-06-20（D4-series rollup / D5-H 阻塞）
 
 最新 checkpoint 是 D4-series harness rollup（`b7c65dd`，`add D4 harness rollup`）。
 它是公开纯汇总 artifact（`eval/d4_series_rollup.py` ->
@@ -50,15 +50,55 @@ D1 deterministic dual-rubric scaffold
 
 D 系列结果只是控制面就绪。它**没有**采集真实人工/手工 labels，**没有**在真实人工
 label bundle 上执行转换或校验，**没有**计算 calibration/agreement/CI 指标，也**没有**
-解锁 D5。D5 仍被阻塞，直到真实人工/手工 true E/S labels 存在、D4e/D4f 在这些真实
-labels 上本地运行，并且 min-N/k/agreement/CI gates 通过。
+解锁 D5-H / 人工参考校准。这个历史 D4-rollup 状态已由下方 D5-A0 实证转折接续：
+缺少人工/手工标签不再阻塞自动/程序化 D5-A 路径。
 
 当前 no-claim flags 仍为 false：`promotion_ready=false`、
 `default_should_change=false`、`evidencecore_semantics_changed=false`、
 `runtime_clean_general_algorithm_claimed=false`、`downstream_agent_value_proven=false`、
 `true_e_s_calibration_claimed=false`，且没有 external benchmark performance claim。
-下一步合理工作是 E1 policy-change gate preregistration artifact：定义未来任何
-runtime/default-policy proposal 前所需证据；它本身不得修改 runtime/default 行为。
+当前活跃下一步不再是 E1 控制面 preregistration，而是下方记录的 D5-A 自动实证路径。
+
+## 当前状态更新 —— 2026-06-20（D5-A0 自动 E/S 校准 smoke）
+
+D4-series rollup 之后，研究轨迹被修正：控制面阶段在此停止，D5-A0 产出控制面
+之后的首个实证 smoke。D5-H / 人工参考 / 人工校准审计在真实人工/手动 true E/S
+标签采集前仍属 out of scope/不可用；D5-A 自动/程序化实证路径已激活并继续。
+D5-A0
+（`eval/d5a_automated_es_calibration.py` ->
+`artifacts/d5a_automated_es_calibration/d5a_automated_es_calibration_report.json`，
+schema `d5a_automated_es_calibration.v1`、
+`claim_level=automated_e_s_calibration_smoke_only`、
+`status=automated_es_calibration_smoke_pass`、
+`mode=public_aggregate_r14_retrieval_smoke`、phase `D5-A0`）从已提交的
+r14 sanity span 标签（gold spans + hard negatives）在真实 OpenLocus
+retrieval 输出（regex、bm25、symbol、rrf）上派生**自动 E 标签**与**确定性
+S-proxy 标签**。它按方法调用 `eval/run_retrieval.py`，将输出写入临时
+`/tmp/d5a_retrieval_*`（绝不提交），仅将聚合 counts/rates 写入已提交
+artifact。157/157 自测检查通过；四种方法全部成功；共标记 3152 个 candidate。
+
+这是 smoke-only。它**不**声明 true E/S 校准，**不**采集新人工/手动标签，
+**不**审计人工参考标签，**不**通过任何公开发布门，**不**提升任何
+candidate，也**不**解锁 D5-H / 人工参考 / 人工校准声明或 default/policy/公开发布
+声明。自动 E/S 标签是从已提交 span 标签
+（最初为 span-recall 指标采集，而非为 true E/S 评分准则采集）派生的；
+它们**不是**真实人工/手动 E/S 分数，也**不是** D3 dual-rubric E/S 分
+数。D5-A0 不解锁 default/policy/公开发布或人工校准声明；D5-H / 人工参考 /
+人工校准审计在人工标签到位前仍属 out of scope。所有无声明 /
+无运行时变更标志保持 false（`promotion_ready=false`、
+`default_should_change=false`、`retriever_changed=false`、
+`pack_builder_changed=false`、`model_calls_changed=false`、
+`backend_changed=false`、`default_policy_changed=false`、
+`evidencecore_semantics_changed=false`、
+`runtime_clean_general_algorithm_claimed=false`、
+`downstream_agent_value_proven=false`、
+`external_benchmark_performance_claimed=false`、
+`human_e_s_calibration_claimed=false`、
+`automated_e_s_calibration_claimed=false`、
+`d5_human_reference_calibration_unblocked=false`、
+`automated_d5a_path_active=true`）。未修改
+runtime/retriever/pack/model/backend/default-policy 文件。详见
+[D5-A0 详细报告](d5a-automated-es-calibration.md)。
 
 ## 当前状态更新 —— 2026-06-20（C4.1 外部 benchmark adapter / schema 就绪）
 
@@ -202,7 +242,7 @@ Breakthrough Sprint B1 live LLM rich-candidate run:
 matrix:
   repos: py_flask, js_express, go_gin, rust_ripgrep
   tasks: 6 per repo, 24 total per output mode
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   stage: p21_llm_rich
 
 tool_call runs:
@@ -271,7 +311,7 @@ layouts:
 
 matrix:
   4 repos x 6 tasks x 4 layouts = 96 live tasks
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   output: tool_call
 ```
 
@@ -308,7 +348,7 @@ Breakthrough Sprint B3 request-more-context quality experiment:
 ```text
 matrix:
   4 repos x 6 tasks
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   output: tool_call
   treatments: P25, RMC-local, RMC-LLM, RMC-hybrid
 ```
@@ -327,7 +367,7 @@ Breakthrough Sprint B6-lite interpretable policy search:
 ```text
 matrix:
   4 repos x 6 tasks
-  model: [mk]Kimi-K2.7-Code
+  model: Kimi-K2.7-Code
   stage: b6_lite_policy_search
 ```
 
@@ -368,7 +408,7 @@ B6C frozen-policy fresh validation:
 ```text
 run: 27706742419 green
 matrix: 4 public repo slices x 6 tasks
-model: [mk]Kimi-K2.7-Code tool_call
+model: Kimi-K2.7-Code tool_call
 claim: frozen_policy_fresh_validation
 search_performed: false
 ```
@@ -389,7 +429,7 @@ spec on a larger fresh task matrix:
 ```text
 run: 27717886432 green
 matrix: 4 public repo slices x 12 tasks = 48 comparable tasks
-model: [mk]Kimi-K2.7-Code tool_call
+model: Kimi-K2.7-Code tool_call
 claim: frozen_policy_fresh_validation
 search_performed: false
 ```
@@ -407,7 +447,7 @@ set of four public repo slices:
 ```text
 run: 27735809672 green
 matrix: 4 new public repo slices x 12 tasks = 48 comparable tasks
-model: [mk]Kimi-K2.7-Code tool_call
+model: Kimi-K2.7-Code tool_call
 claim: frozen_policy_fresh_validation
 search_performed: false
 ```
@@ -474,7 +514,7 @@ for critical-path validation. See [`b9a-adapter-health-report.md`](b9a-adapter-h
 B9B Qwen low-volume quality follow-up:
 
 ```text
-model: [mk]Qwen3.6-27B
+model: Qwen3.6-27B
 adapter: json_schema_strict
 matrix: 4 public repo slices x 6 tasks
 execution: sequential jobs
@@ -663,10 +703,10 @@ Minimum viable 的 8 个 repos 为 `py_fastapi`、`py_pytest`、`ts_vite`、`ts_
 `go_chi`、`go_prometheus`、`rust_deno`、`java_spring_petclinic` —— 全部为新，均未用于
 B6B/B6C/B6E/B6F/B8-lite。
 
-B11 覆盖 4 个 model families：Kimi（`[mk]Kimi-K2.7-Code`，`tool_call`，reference）、
-Qwen（`[mk]Qwen3.6-27B`，`json_schema_strict`，secondary）、DeepSeek Flash
-（`[mk]DeepSeek-V4-Flash`，`json_schema_strict`，recall）与 DeepSeek Pro
-（`[mk]DeepSeek-V4-Pro`，`json_schema_strict`，conservative）。GLM-5.2 因按 B9A/B6D 噪声大
+B11 覆盖 4 个 model families：Kimi（`Kimi-K2.7-Code`，`tool_call`，reference）、
+Qwen（`Qwen3.6-27B`，`json_schema_strict`，secondary）、DeepSeek Flash
+（`DeepSeek-V4-Flash`，`json_schema_strict`，recall）与 DeepSeek Pro
+（`DeepSeek-V4-Pro`，`json_schema_strict`，conservative）。GLM-5.2 因按 B9A/B6D 噪声大
 被排除。Output mode 是 model-adapter 配置参数，**不是** OpenLocus algorithm 变量。比较
 4 个 policies：Local baseline（无 LLM）、P25 `p25.route_bucket_routed_v0`、Balanced v1
 `balanced_policy_v1_benchmark_routed` 与 Conservative
@@ -1565,7 +1605,7 @@ route features、candidate paths/spans、gold spans、private labels 或 provide
 | P8/P9 Real-Provider CI Scale-Up | Completed; first public CI slices | Added `real-provider-benchmark.yml` manual workflow with `environment: production`, guarded secrets, input validation, and no private label upload. Ran small public corpus, model bakeoff (`bge-m3`, Qwen 0.6B/4B/8B), and multilingual smoke. Result: file-level signal exists, but SpanF0.5 remains low and model size did not dominate in first slices. |
 | L1/L2 Real-Provider Large-Repo Slices | Completed; strong dense-only/global-dense block | Ran controlled large-repo slices across Django, Kubernetes, Next.js, and Deno. L1 showed file-recall variability and P4 false-span growth. L2 (`60 tasks / 1000 records / 2000 files`) had PFP=1.0 on all four repos, very low SpanF0.5, and unstable FileRecall. Conclusion: dense-only/global dense must remain supporting/candidate-only; next phase should freeze L2, attribute false positives, and test constrained dense. |
 | P10-P14 Constrained Dense Research | Planned | Proposed next phase: freeze `real_provider_l2_v1`, attribute L2 false positives, simulate constrained candidate pools locally, run small remote constrained variants, then rerun fixed L2 only if added_gold exceeds added_false and PFP drops. No EvidenceCore changes and no promotion. |
-| P20-LS LLM Large-Scale Eval Harness | P20-LS-A completed; low-context alias blocked | Bounded eval-only harness (`eval/p20_llm_large_scale.py`) for LLM-derived query aliases and stress-label generation. Remote runs require `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`. P20-LS-A ran `[mk]Kimi-K2.7-Code` on self-test plus 9 real CI corpus runs (220 real provider calls). All LS0/LS1 safety gates passed, no raw source/private labels/prompts uploaded, but 0/9 real runs passed quality: added_gold_span=289 vs added_false_span=8312 (~28.8:1 false:gold), avg fabricated_identifier_rate≈0.459. Narrow decision: stop scaling low-context/query-only LLM aliases. This is not a verdict on rich-context LLM retrieval; it motivates context-grounded rerank/filter/span-narrow experiments. No EvidenceCore changes; promotion_ready=false; default_should_change=false. |
+| P20-LS LLM Large-Scale Eval Harness | P20-LS-A completed; low-context alias blocked | Bounded eval-only harness (`eval/p20_llm_large_scale.py`) for LLM-derived query aliases and stress-label generation. Remote runs require `workflow_dispatch + enable_remote_models=true + OPENLOCUS_ALLOW_REMOTE=1`. P20-LS-A ran `Kimi-K2.7-Code` on self-test plus 9 real CI corpus runs (220 real provider calls). All LS0/LS1 safety gates passed, no raw source/private labels/prompts uploaded, but 0/9 real runs passed quality: added_gold_span=289 vs added_false_span=8312 (~28.8:1 false:gold), avg fabricated_identifier_rate≈0.459. Narrow decision: stop scaling low-context/query-only LLM aliases. This is not a verdict on rich-context LLM retrieval; it motivates context-grounded rerank/filter/span-narrow experiments. No EvidenceCore changes; promotion_ready=false; default_should_change=false. |
 | P21-G Cross-Model Context Injection Research | P21-G3L-R GLM tool_call confirmed under low concurrency | Research pivot from minimal-context baselines to cross-model context-injection effects. P21-G1E found rich embedding views have file/span signal but naked dense false spans dominate. P21-G2E found constrained dense (`dense_atom_signature_rrf_file_constrained`) has modest supporting value but dense remains non-primary. P21-G3L found LLM span narrowing has promising but model/repo-specific signal; filter/abstain often kill gold. P21-G3L-R added provider-level output modes (`prompt_only`, `json_object`, `json_schema_strict`, `tool_call`), fallback diagnostics, and one no-fallback schema repair retry. GLM 4-mode comparison found `tool_call` best (avg SpanNarrow Δ +0.0677), `prompt_only` blocked, `json_object` insufficient, `json_schema_strict` mixed. A sequential low-concurrency `tool_call` rerun removed 429 noise and improved GLM SpanNarrow avg Δ to +0.1361 across py_flask/js_express. Next: bucketed GLM/Kimi/Flash `span_narrow` with `tool_call` for GLM; filter/abstain remain non-default. EvidenceCore remains final authority. |
 | P21-G3B Bucketed LLM Role Study | Bucketed smoke completed; global LLM roles blocked | Public task generation now exposes safe `task_bucket/task_risk_tags` and P21 runners support `round_robin_public_buckets`, so RUN can sample mixed buckets without labels/gold. First true bucketed LLM role smoke ran 6 runs (Flash/Kimi/GLM × py_flask/js_express, 18 tasks each, provider concurrency ≤6). Bucket coverage now includes abstain/weak/no_gold/ambiguous/dense_false_positive buckets. Result: all LLM roles reduce PFP materially, but often by killing gold spans; global `span_narrow` is positive on py_flask but negative on js_express mixed buckets; `filter`/`abstain` are useful as false-positive reducers only in specific buckets, not as defaults. Next: build a rule-based policy that routes `span_narrow` only to likely-positive/high-confidence tasks and `filter/abstain` only to negative/dense_false_positive/ambiguous buckets. |
 | P22/P23 Evidence-Seeking Policy Surface | Decision surfaces frozen; bottlenecks decomposed | P22/P23 moves from channel bakeoffs to strategy-surface analysis. It freezes two capped local surfaces with hashes and no remote/model calls: `r20_positive` (120 positive tasks across 9 repos) and `r26_guard` (120 no-gold stress tasks across 9 repos). R20 shows RRF is still the reach base (`Reach@5=0.975`, `SpanReach@5=0.95`) but symbol has best local SpanF0.5 (`0.3169`) and `symbol_regex_union` is the best precision/reach experimental baseline candidate for P25/P30. R26 shows BM25/RRF create noisy false primary (`NoGoldFP=0.2833`) while symbol/regex/union/guard abstain, so guard stress must be evaluated separately from positive reach. Reports: `docs/p22-p23-policy-surface.md`, per-surface docs/artifacts under `docs/` and `artifacts/p22_p23/`. |

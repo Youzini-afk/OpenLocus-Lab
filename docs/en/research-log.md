@@ -5656,3 +5656,197 @@ because real human manual labels are NOT yet collected.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified. `current-research-conclusions` was NOT updated (the rollup
   is a rollup-only / D5-blocked artifact; no conclusions change).
+
+---
+
+## 2026-06-20 — D5-A0 Automated E/S Calibration Smoke
+
+### Objective
+
+Produce the first empirical, post-control-plane smoke of the Step 6
+dual-rubric pipeline by deriving automated E labels and deterministic
+S-proxy labels from the existing committed r14 sanity span labels (gold
+spans + hard negatives) over real OpenLocus retrieval outputs (regex,
+bm25, symbol, rrf). Stop the control-plane-only stages; produce
+empirical results without collecting new human/manual labels.
+
+### Hypothesis
+
+Existing committed span labels (gold + hard negatives) are sufficient
+to derive a smoke-only automated E/S calibration signal over real
+retrieval outputs, without blocking on new human/manual true E/S labels
+and without claiming true E/S calibration.
+
+### Implementation notes
+
+- **D5-A0 artifact** (`eval/d5a_automated_es_calibration.py`): public
+  aggregate-only smoke. Uses existing committed r14 sanity fixtures
+  (`fixtures/r14/tasks/sanity.jsonl` +
+  `fixtures/r14/labels/sanity.jsonl`); invokes `eval/run_retrieval.py`
+  per method into transient `/tmp/d5a_retrieval_*` directories; reads
+  those transient outputs (never committed); computes automated E
+  labels and deterministic S-proxy labels; writes ONLY aggregate
+  counts/rates to the committed artifact.
+- **Automated E label procedure** (deterministic; derived from existing
+  committed span labels; never treated as true human E/S): invalid /
+  source-missing -> `e_uncertain`; overlap hard-negative AND gold ->
+  `conflict_uncertain`; overlap hard-negative only ->
+  `e_hard_negative`; overlap gold -> `e_positive`; same gold file but
+  no gold overlap -> `e_wrong_span_gold_file`; non-gold file with
+  valid span -> `e_negative_non_gold_file`; missing labels never
+  treated as negatives.
+- **S-proxy label procedure** (deterministic support-shape signal,
+  NOT a true human S-score): E-positive ->
+  `s_proxy_not_evaluated_for_e_positive` (avoid conflation);
+  `e_hard_negative`/`conflict_uncertain`/`e_uncertain` ->
+  `s_proxy_none`; `e_wrong_span_gold_file` -> `s_proxy_positive`; same
+  gold file adjacency to a gold span (+/-5 lines, no overlap) ->
+  `s_proxy_positive`; otherwise `s_proxy_none`.
+- **Artifact identity**: `schema_version=d5a_automated_es_calibration.v1`,
+  `claim_level=automated_e_s_calibration_smoke_only`,
+  `status=automated_es_calibration_smoke_pass` (on success),
+  `mode=public_aggregate_r14_retrieval_smoke`, `phase=D5-A0`.
+- **No-claim / no-runtime-change flags** (all false):
+  `automated_e_s_calibration_claimed`,
+  `human_e_s_calibration_claimed`, `new_human_labels_collected`,
+  `human_reference_audit_claimed`, `promotion_ready`,
+  `default_should_change`, `evidencecore_semantics_changed`,
+  `runtime_clean_general_algorithm_claimed`,
+  `downstream_agent_value_proven`,
+  `external_benchmark_performance_claimed`,
+  `runtime_behavior_changed`, `retriever_changed`,
+  `pack_builder_changed`, `model_calls_changed`, `backend_changed`,
+  `default_policy_changed`, `true_e_s_calibration_claimed`,
+  `raw_predictions_committed`, `raw_retrieval_outputs_committed`,
+  `per_candidate_rows_emitted`, `public_release_gate_passed`,
+  `d5_human_reference_calibration_unblocked`, `ood_temporal_supported`,
+  `quiver_systems_supported`.
+- **Safe true flags** (exactly these, all true):
+  `aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`,
+  `automated_e_s_calibration_smoke_claimed`,
+  `automated_d5a_path_active`, `uses_existing_committed_labels`,
+  `self_test_executed`, `transient_retrieval_outputs_only`.
+- **Strict public scanner** (fail-closed, with exact contract string
+  allowlist). Contract containers `methods_evaluated`,
+  `methods_attempted`, `methods_succeeded`, `e_label_categories`,
+  `s_proxy_label_categories` are EXACT allowlists: only approved short
+  tokens (method names, fixture category, E/S label category tokens,
+  retrieval category tokens) may appear there. Arbitrary short strings
+  (e.g. `compute_loss` or private text) are rejected EVEN inside
+  contract containers (no over-broad container exemption); sensitive
+  field names (`content_sha`, `query_text`, `candidate`, `gold`,
+  `hard_negative`, `evidence`, `predictions`, `retrieval_output`,
+  etc.) are rejected even inside contract containers and as keys
+  anywhere. Rejects forbidden dict keys anywhere and value patterns:
+  ANY URL (no URL allowlist), 32/40/64-char hex digests, secret-like
+  strings, path-like strings, multiline strings, raw JSON fragments,
+  raw line ranges, and the self-test sentinel. The scanner runs ONLY
+  against the final public aggregate artifact (NOT against in-memory
+  predictions/labels, which contain path/start_line/etc.).
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Label-source aggregate keys are explicit**: approved committed
+  fixture categories (`human_reviewed`, `mined`, `mined_high_confidence`,
+  `unknown`) are counted as-is; any unapproved row-derived category
+  collapses to `other_unapproved_label_source_category`, and the scanner
+  rejects unapproved dynamic keys under `label_source_category_counts`.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d5a_automated_es_calibration.py    => PASS
+python3 eval/d5a_automated_es_calibration.py --self-test      => PASS (157/157 checks)
+python3 eval/d5a_automated_es_calibration.py \
+  --out artifacts/d5a_automated_es_calibration/\
+d5a_automated_es_calibration_report.json                     => PASS
+  (status: automated_es_calibration_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_r14_retrieval_smoke, phase: D5-A0,
+   methods_succeeded: [regex, bm25, symbol, rrf],
+   candidate_count_total: 3152,
+   uses_existing_committed_labels: true,
+   automated_d5a_path_active: true,
+   new_human_labels_collected: false,
+   human_e_s_calibration_claimed: false,
+   automated_e_s_calibration_claimed: false,
+   raw_retrieval_outputs_committed: false,
+   per_candidate_rows_emitted: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   model_calls_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false,
+   runtime_behavior_changed: false,
+   runtime_clean_general_algorithm_claimed: false,
+   downstream_agent_value_proven: false,
+   external_benchmark_performance_claimed: false,
+   d5_human_reference_calibration_unblocked: false,
+   public_release_gate_passed: false)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+The D5-A0 smoke is the first empirical artifact after the D4-series
+control-plane harnesses were blocked on missing real human/manual
+true E/S labels. The D5-H / human-reference / human-calibrated audit
+remains out of scope/unavailable until real human/manual true E/S
+labels are collected; the D5-A automated/programmatic empirical path
+is active. D5-A0 derives automated E/S labels from the existing
+committed r14 sanity span labels over real OpenLocus retrieval
+outputs (regex, bm25, symbol, rrf all succeeded; 3152 candidates
+labeled total). It is smoke-only: it does NOT claim true E/S
+calibration, does NOT collect new human labels, does NOT audit human
+reference labels, does NOT pass any public-release gate, does NOT
+promote any candidate, and does NOT unblock D5-H / human-reference /
+human-calibrated claims or default/policy/public-release claims.
+See [D5-A0 detailed report](d5a-automated-es-calibration.md).
+
+### Caveats
+
+- D5-A0 is the public aggregate-only smoke artifact. It is
+  eval/diagnostic only. It does NOT change runtime, retriever, pack,
+  model, backend, or default policy; it does NOT change EvidenceCore
+  semantics. It is NOT a benchmark result, NOT a downstream agent
+  value claim, NOT a runtime-clean general algorithm claim, NOT an OOD
+  temporal claim, and NOT a QuIVer systems claim.
+- D5-A0 uses existing committed r14 sanity labels (gold spans + hard
+  negatives) to derive automated E labels and deterministic S-proxy
+  labels. These are NOT true human/manual E/S scores and are NOT the
+  D3 dual-rubric E/S scores. They are smoke-only aggregate signals
+  derived from existing committed span labels.
+- D5-A0 does NOT collect new human/manual labels, does NOT audit
+  human reference labels, does NOT claim true E/S calibration, does
+  NOT pass any public-release gate, and does NOT unblock D5-H /
+  human-reference / human-calibrated claims or default/policy/
+  public-release claims. The D5-H / human-reference / human-calibrated
+  audit remains out of scope/unavailable until real human/manual
+  true E/S labels are collected; the D5-A automated empirical path is
+  active and continues.
+- D5-A0 invokes `eval/run_retrieval.py` per method into transient
+  `/tmp/d5a_retrieval_*` directories and reads those transient outputs
+  (never committed). The committed artifact contains ONLY aggregate
+  counts/rates; no per-candidate rows, no paths, no spans, no
+  snippets, no content_sha, no queries, no gold labels, no
+  hard-negative labels, no task/repo IDs, no row-level data.
+- The aggregate metrics are smoke-only and depend on the existing
+  committed r14 sanity fixture shape, the four fixed retrieval
+  methods, and the deterministic E/S label procedures documented
+  above. They are NOT comparable across different fixtures, label
+  sets, methods, or procedures, and they are NOT benchmark performance
+  claims.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags (`aggregate_only_public_artifact`, `diagnostic_only`,
+  `not_evidence`) remain true; the smoke-claimed / uses-existing-labels
+  / D5-A-path-active flags (`automated_e_s_calibration_smoke_claimed`,
+  `automated_d5a_path_active`, `uses_existing_committed_labels`,
+  `self_test_executed`, `transient_retrieval_outputs_only`) are the
+  only additional true flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was updated to clarify that
+  D5-H / human-reference / human-calibrated calibration remains out of
+  scope until human labels while the D5-A automated empirical path is
+  active; no promotion/default/runtime claims change.

@@ -10,15 +10,19 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - [English research conclusions](en/current-research-conclusions.md)
 - [中文研究结论](zh/current-research-conclusions.md)
 
-Latest status: C4 external benchmark readiness and Step 6/D-series
+Latest status: C4 external benchmark readiness and the Step 6/D-series
 dual-rubric control-plane harnesses are complete through the D4-series
-rollup. D5 remains blocked because no real human/manual true E/S labels
-exist; no runtime/default-policy/promotion/downstream-value claim is made.
+rollup, and the trajectory has now pivoted into D5-A0 automated empirical
+E/S calibration smoke. D5-H / human-reference calibration remains out of
+scope until human labels exist; the D5-A automated/programmatic empirical
+path is active. No runtime/default-policy/promotion/downstream-value claim
+is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
-harness 已推进到 D4-series rollup 并收束。由于尚无真实人工/手工 true E/S
-labels，D5 仍被阻塞；当前不作 runtime/default-policy/promotion/downstream-value
-声明。
+harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
+校准 smoke。D5-H / 人工参考校准在人工标签存在前仍属 out of scope；D5-A
+自动/程序化实证路径已激活。当前不作 runtime/default-policy/promotion/
+downstream-value 声明。
 
 ## Mirror convention / 镜像约定
 
@@ -57,6 +61,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `c4-external-benchmark-adapters.md`: [en](en/c4-external-benchmark-adapters.md) · [zh](zh/c4-external-benchmark-adapters.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
+- `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)
 - `p21-g-cross-model-context-injection.md`: [en](en/p21-g-cross-model-context-injection.md) · [zh](zh/p21-g-cross-model-context-injection.md)

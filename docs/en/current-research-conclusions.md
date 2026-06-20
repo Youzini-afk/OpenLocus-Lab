@@ -6,7 +6,7 @@ Scope: R0-R45 through the B-series mechanism/policy work, C1-C4 external benchma
 
 Status: Research summary, not a promotion request.
 
-## 2026-06-20 Current State: C4 Readiness Complete; D4-Series Rollup Complete; D5 Blocked
+## 2026-06-20 Historical State: C4 Readiness Complete; D4-Series Rollup Complete; D5-H Blocked
 
 OpenLocus has now completed the C4 external benchmark readiness sequence and the
 Step 6 / D-series dual-rubric control-plane sequence through the D4-series
@@ -36,12 +36,15 @@ D4a execution gate / dry-run
 -> D4-series rollup / D5 blocked status
 ```
 
-This is control-plane readiness, not empirical true E/S calibration. D5 remains
-blocked because no real human/manual true E/S labels exist, no D4e real local
-conversion over real labels has run, no D4f real local validation over real labels
-has run, and min-N/k/agreement/CI gates have not passed for real labels. The D4
-rollup states these blockers explicitly in both flat fields and a nested
-`d5_prerequisites` object.
+This is control-plane readiness, not empirical true E/S calibration. The D4
+rollup blocks only D5-H / human-reference calibration because no real
+human/manual labels exist, no D4e real local conversion over real labels has run,
+no D4f real local validation over real labels has run, and min-N/k/agreement/CI
+gates have not passed for real labels. The D4 rollup states these human-reference
+blockers explicitly in both flat fields and a nested `d5_prerequisites` object.
+This historical control-plane state is superseded for ongoing automated research
+by the D5-A0 empirical pivot below: lack of human/manual labels does not block the
+automated/programmatic D5-A path.
 
 Current no-claim state remains unchanged:
 
@@ -56,13 +59,49 @@ external_benchmark_performance_claimed=false
 d5_public_aggregate_candidate_allowed=false
 ```
 
-Therefore the next appropriate work is not D5 calibration and not a runtime or
-default-policy change. The next research step should be a policy-change gate
-preregistration / algorithm-freeze prerequisites artifact that defines what
-evidence would be required before any future runtime/default-policy proposal.
-That future E1-style artifact must remain diagnostic-only unless and until D5
-real human/manual aggregate calibration and the required internal/external,
-ablation, rollback, and downstream-evaluation gates exist.
+Therefore this historical section should not be read as a global research stop.
+It only prevents human-calibrated claims and runtime/default-policy changes. The
+active next work is D5-A automated empirical calibration and downstream/external
+benchmark experimentation, not another control-plane-only E1 preregistration.
+
+## 2026-06-20 D5-A0 Automated E/S Calibration Smoke (Empirical Pivot)
+
+Following the D4-series rollup, the trajectory was corrected: the
+control-plane-only stages stop here, and D5-A0 produces the first empirical,
+post-control-plane smoke. The D5-H / human-reference / human-calibrated audit
+remains out of scope/unavailable until real human/manual true E/S labels are
+collected; the D5-A automated/programmatic empirical path is active and
+continues. D5-A0 derives **automated E labels** and **deterministic S-proxy
+labels** from the existing committed r14 sanity span labels (gold spans + hard
+negatives) over real OpenLocus retrieval outputs (regex, bm25, symbol, rrf),
+invoking `eval/run_retrieval.py` into transient `/tmp` outputs (never
+committed). The committed artifact is aggregate-only: no raw predictions, no
+per-candidate rows, no paths/spans/snippets/hashes/queries/gold/hard-negative
+labels are committed.
+
+This is smoke-only. It does NOT claim true E/S calibration, does NOT collect
+new human/manual labels, does NOT audit human reference labels, does NOT pass
+any public-release gate, does NOT promote any candidate, and does NOT unblock
+D5-H / human-reference / human-calibrated claims or default/policy/public-release
+claims. The automated E/S labels are derived from existing committed span labels
+(originally collected for span-recall metrics, not for true E/S rubric scoring);
+they are NOT true human/manual E/S scores and are NOT the D3 dual-rubric E/S
+scores. D5-A0 does not unlock default/policy/public release or human-calibrated
+claims; the D5-H / human-reference / human-calibrated audit remains out of scope
+until human labels. All no-claim / no-runtime-change flags remain false
+(`promotion_ready=false`, `default_should_change=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`model_calls_changed=false`, `backend_changed=false`,
+`default_policy_changed=false`, `evidencecore_semantics_changed=false`,
+`runtime_clean_general_algorithm_claimed=false`,
+`downstream_agent_value_proven=false`,
+`external_benchmark_performance_claimed=false`,
+`human_e_s_calibration_claimed=false`,
+`automated_e_s_calibration_claimed=false`,
+`d5_human_reference_calibration_unblocked=false`,
+`automated_d5a_path_active=true`). No runtime/retriever/pack/model/
+backend/default-policy files were modified. See the
+[D5-A0 detailed report](d5a-automated-es-calibration.md).
 
 ## P52A Source Materialization / Local Verifier Prerequisite
 
@@ -123,7 +162,7 @@ P59B then repaired the hard-distractor/actionability precondition using a gold-f
 
 ## B1 Live LLM Rich Candidate Run
 
-B1 is the first Breakthrough Sprint live quality experiment after the pre-spend gates. It used the existing P21 rich-candidate harness and P25 scorer on four public repos (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`) with six round-robin public-bucket tasks per repo. `[mk]Kimi-K2.7-Code` was run in both `tool_call` and `json_schema_strict` modes. All eight runs succeeded and passed privacy gates. The strongest result was `llm_span_narrow` in `tool_call` mode: across 24 tasks, added gold rose from 8 to 9, added false spans fell from 43 to 5, mean SpanF0.5 improved from 0.1099 to 0.2849, and mean primary false-positive rate fell from 0.1250 to 0.0625. `json_schema_strict` remained schema-stable but was slower and left more false spans. B1 shows real quality signal for rich candidate span narrowing, but it is not Evidence, not promotion, and not a default change. See the [B1 detailed report](b1-live-llm-rich-candidate-run.md).
+B1 is the first Breakthrough Sprint live quality experiment after the pre-spend gates. It used the existing P21 rich-candidate harness and P25 scorer on four public repos (`py_flask`, `js_express`, `go_gin`, `rust_ripgrep`) with six round-robin public-bucket tasks per repo. `Kimi-K2.7-Code` was run in both `tool_call` and `json_schema_strict` modes. All eight runs succeeded and passed privacy gates. The strongest result was `llm_span_narrow` in `tool_call` mode: across 24 tasks, added gold rose from 8 to 9, added false spans fell from 43 to 5, mean SpanF0.5 improved from 0.1099 to 0.2849, and mean primary false-positive rate fell from 0.1250 to 0.0625. `json_schema_strict` remained schema-stable but was slower and left more false spans. B1 shows real quality signal for rich candidate span narrowing, but it is not Evidence, not promotion, and not a default change. See the [B1 detailed report](b1-live-llm-rich-candidate-run.md).
 
 ## B2 Contrastive Pack Quality Experiment
 
@@ -195,7 +234,7 @@ B10B is the next step after the B10 freeze of `balanced_policy_v1_benchmark_rout
 
 ## B11 Prospective Blind Validation
 
-B11 is the first prospective validation of the frozen balanced policy `balanced_policy_v1_benchmark_routed` on new repos and tasks generated after the 2026-06-18 policy freeze, with no retuning of policies, thresholds, or success criteria. It compares 4 policies (Local baseline, P25 `p25.route_bucket_routed_v0`, Balanced v1 `balanced_policy_v1_benchmark_routed`, Conservative `rmc_local_conservative_v0`) across 4 model families (`[mk]Kimi-K2.7-Code`, `[mk]Qwen3.6-27B`, `[mk]DeepSeek-V4-Flash`, `[mk]DeepSeek-V4-Pro`; GLM-5.2 excluded as noisy). Predeclared success/failure/partial criteria with explicit overall and worst-group thresholds (`Δgold_span`, `ΔSpanF0.5`, `ΔPFP`, `Δfalse_spans`, `ΔLLM_calls`) plus a `RobustUtility` = `min_group(SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency)` aggregate are frozen in the preregistration before any live runs. B10B `--records` is integrated to run in CI after each B11 run, giving B10B its first empirical validation. B11 is a prospective stress test, not a promotion step: `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`. The plan, CI workflow definition, and report-aggregator skeleton are autonomous; actual live LLM runs require a user `workflow_dispatch` trigger with `enable_remote_models=true`. See the [B11 detailed report](b11-prospective-blind-validation.md).
+B11 is the first prospective validation of the frozen balanced policy `balanced_policy_v1_benchmark_routed` on new repos and tasks generated after the 2026-06-18 policy freeze, with no retuning of policies, thresholds, or success criteria. It compares 4 policies (Local baseline, P25 `p25.route_bucket_routed_v0`, Balanced v1 `balanced_policy_v1_benchmark_routed`, Conservative `rmc_local_conservative_v0`) across 4 model families (`Kimi-K2.7-Code`, `Qwen3.6-27B`, `DeepSeek-V4-Flash`, `DeepSeek-V4-Pro`; GLM-5.2 excluded as noisy). Predeclared success/failure/partial criteria with explicit overall and worst-group thresholds (`Δgold_span`, `ΔSpanF0.5`, `ΔPFP`, `Δfalse_spans`, `ΔLLM_calls`) plus a `RobustUtility` = `min_group(SpanF0.5 - λ*PFP - μ*normalized_cost - ν*normalized_latency)` aggregate are frozen in the preregistration before any live runs. B10B `--records` is integrated to run in CI after each B11 run, giving B10B its first empirical validation. B11 is a prospective stress test, not a promotion step: `promotion_ready=false`, `default_should_change=false`, `evidencecore_semantics_changed=false`. The plan, CI workflow definition, and report-aggregator skeleton are autonomous; actual live LLM runs require a user `workflow_dispatch` trigger with `enable_remote_models=true`. See the [B11 detailed report](b11-prospective-blind-validation.md).
 
 ### B11 official integrated matrix result (2026-06-18)
 
@@ -393,7 +432,7 @@ The real LLM provider has run successfully, and P5 generated derived/stress outp
 
 The useful role for LLMs is query aliases, symbol tags, intent views, candidate rerank/filter/span narrowing, and failure/stress generation. LLMs can expand the failure surface and help interpret rich candidate context, but they cannot replace EvidenceCore.
 
-P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The initial offline slice was already a caution signal. P20-LS-A then ran the real LLM provider (`[mk]Kimi-K2.7-Code`) on self-test plus 9 real CI corpus runs. Schema/guardrail behavior was acceptable, but low-context/query-only alias quality failed completely: 0/9 real runs passed quality, added_gold_span=`289` vs added_false_span=`8312` (~28.8:1 false:gold), and average fabricated_identifier_rate was ~`0.459`. Therefore, scale-up is blocked for the low-context/query-only alias mode. This is not a verdict on rich-context LLM retrieval; future alias/retrieval research should use source snippets, candidate metadata, symbol/path inventories, and prompt/context matrices.
+P20-LS makes this boundary executable: LS0 validates safety gates, LS1 generates `not_evidence=true` query aliases and evaluates them as candidate/supporting-only retrieval expansion, and LS3 writes only the public stress split by default. The initial offline slice was already a caution signal. P20-LS-A then ran the real LLM provider (`Kimi-K2.7-Code`) on self-test plus 9 real CI corpus runs. Schema/guardrail behavior was acceptable, but low-context/query-only alias quality failed completely: 0/9 real runs passed quality, added_gold_span=`289` vs added_false_span=`8312` (~28.8:1 false:gold), and average fabricated_identifier_rate was ~`0.459`. Therefore, scale-up is blocked for the low-context/query-only alias mode. This is not a verdict on rich-context LLM retrieval; future alias/retrieval research should use source snippets, candidate metadata, symbol/path inventories, and prompt/context matrices.
 
 ### 2.10 P21-G should study cross-model context injection effects
 
@@ -776,7 +815,7 @@ candidate. The next iteration should tighten strict RRF re-admission or use
 | BQ diagnostics may be compatible with current code-embedding distributions. | Diagnostic signal promising on Flask. | Sharded BQ/proto graph beats flat f32 or improves latency without false-span growth. |
 | Smaller embedding models may be enough. | Initial P9 supports continued bakeoff. | Same-task model bakeoff across more repos with latency/cost. |
 | LLM-derived views can expand failures safely. | Mechanically supported, not quality-proven. | Rich context derived views add gold or stress coverage without inducing primary hallucinations. |
-| LLM query aliases can improve anchors without pollution. | Low-context P20-LS-A query aliases are blocked for `[mk]Kimi-K2.7-Code`: 0/9 real quality pass, false:gold span ≈28.8:1, avg fabricated identifier rate≈0.459. | A grounded variant succeeds: aliases selected from repo inventories or top-k candidate context, `alias_added_gold > alias_added_false`, no PFP increase, low fabricated identifier rate. |
+| LLM query aliases can improve anchors without pollution. | Low-context P20-LS-A query aliases are blocked for `Kimi-K2.7-Code`: 0/9 real quality pass, false:gold span ≈28.8:1, avg fabricated identifier rate≈0.459. | A grounded variant succeeds: aliases selected from repo inventories or top-k candidate context, `alias_added_gold > alias_added_false`, no PFP increase, low fabricated identifier rate. |
 | Context atoms can generalize across model families. | Planned P21-G hypothesis. | Signature/matched-lines/scores/flags/body-window atoms show positive model-averaged treatment effect with low model variance and no PFP increase. |
 | Rich LLM candidate support can improve span targeting. | Planned P21-G role hypothesis. | Rerank/filter/span-narrow over snippet-backed local candidates improves SpanF0.5 and reduces false spans at acceptable latency/cost. |
 
