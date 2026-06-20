@@ -4884,3 +4884,281 @@ real-mode flag-path 测试（在本地设置
 - 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
   `current-research-conclusions` **未**更新（D4e 是夹具/仅阻塞 artifact；结论
   无变化）。
+
+## 2026-06-20 — D4f D4b Bundle 校验 / 门检查夹具（公开夹具 / 无校验产物）
+
+### 目标
+
+实现 D4f 为 **D4b 真值 bundle 校验 / 门检查夹具**公开 artifact。D4f 是真实
+标签存在之前的最后一个有用夹具：D4e 证明已填充 packet 可以在本地转换为 D4b
+bundle；D4f 证明 D4b bundle 可以在本地校验并检查门前提，而无需发布标签、精确
+计数或指标。默认提交的 artifact 是**公开夹具 / 无校验产物**，不是真实的 D4b
+bundle 校验运行，不是门通过，不是校准，不是一致性/置信区间计算，也不解锁 D5。
+D4f 必须不默认读取私有 D4b bundle，不默认校验私有 bundle，不默认持久化私有
+bundle，不接受包引用/任务/仓库 ID/路径/跨度/代码片段/内容哈希/查询/候选文本/
+标注者 ID/模型输出/提供者 payload，不在任何提交产物中发出标签/原始标签行/
+精确计数/桶计数/单元计数/一致性指标值/置信区间数值，不计算校准/标注者间一致
+性/置信区间，不通过任何公开发布门，不解锁 D5，不声明真 E/S 校准，不执行模型/
+LLM 标注，也不改变运行时行为、retriever、pack、model、backend、默认策略或
+EvidenceCore 语义。
+
+### 实现
+
+- 新脚本 `eval/d4f_bundle_validation_gate.py`（纯 Python stdlib；无外部
+  导入）。仅公开夹具 / 无校验 artifact；私有校验器是可选，仅写入 `/tmp` 输出
+  （永不提交）。
+  - 声明级别 `d4b_bundle_validation_gate_harness_only`；状态
+    `blocked_no_private_bundle_available_or_no_validation_run`；模式
+    `public_harness_no_private_bundle_no_validation`；阶段 `D4f`；
+    D4b bundle schema 源 `d4b_true_label_bundle_v1`；D4e 转换器源
+    `d4e_filled_packet_converter_harness.v1`；D4d runbook 协议
+    `d4d_human_annotation_runbook.v1`。
+  - CLI：`--self-test`、`--out`、`--allow-private-bundle`、
+    `--input-bundle`、`--synthetic-harness-test`。未知或类似私有输入的参数
+    会以通用 `invalid arguments` 消息拒绝，不回显私有路径或 basename
+    （SafeArgumentParser 模式）。
+  - 默认 false 标志（全为 false）：`private_bundle_read`、
+    `private_bundle_validated`、`private_bundle_persisted`、
+    `bundle_validation_run`、`labels_read`、`labels_persisted`、
+    `raw_label_rows_emitted`、`exact_private_counts_emitted`、
+    `bucket_counts_emitted`、`cell_counts_emitted`、
+    `calibration_metrics_computed`、`inter_rater_agreement_computed`、
+    `inter_rater_agreement_measured`、`agreement_metric_values_emitted`、
+    `confidence_intervals_computed`、`confidence_interval_values_emitted`、
+    `public_release_gate_passed`、`d5_unblocked`、
+    `true_e_s_calibration_claimed`、`private_input_path_emitted`、
+    `private_output_path_emitted`、`task_ids_emitted`、`repo_ids_emitted`、
+    `paths_or_spans_emitted`、`snippets_emitted`、`content_sha_emitted`、
+    `query_or_candidate_text_emitted`、`rater_ids_emitted`、
+    `model_or_llm_labeling_performed`、`model_assisted_labels_allowed`。
+  - 无声明 / 无运行时变更标志（全为 false）：
+    `runtime_behavior_changed`、`retriever_changed`、`pack_builder_changed`、
+    `model_calls_changed`、`backend_changed`、`default_policy_changed`、
+    `evidencecore_semantics_changed`、`promotion_ready`、
+    `default_should_change`、`downstream_agent_value_proven`、
+    `runtime_clean_general_algorithm_claimed`、`ood_temporal_supported`、
+    `quiver_systems_supported`。
+  - 夹具/控制 true 标志（恰为十个，全为 true）：
+    `bundle_validation_harness_available`、`private_cli_guard_validated`、
+    `tmp_output_resolved_guard_validated`、`sanitized_error_guard_validated`、
+    `d4b_bundle_schema_contract_defined`、`gate_check_contract_defined`、
+    `min_n_gate_referenced`、`k_min_gate_referenced`、
+    `agreement_availability_gate_referenced`、`ci_availability_gate_referenced`。
+    默认提交产物中无读取/校验/标签/计数/指标/D5 声明标志为 true。
+  - 公开契约：`d4b_bundle_schema_contract`（`schema`、`required_label_source`、
+    `bundle_allowed_keys`、`label_object_allowed_keys`、
+    `e_score_levels=[E0,E1,E2]`、`s_score_levels=[S0,S1,S2]`、
+    `bucket_names=[primary_evidence,dependency_support,weak_candidates,
+    abstained]`、`rejects_unknown_keys=true`、
+    `rejects_packet_refs_paths_snippets_raters=true`）；
+    `gate_check_contract`（`min_total_labels_gate_referenced=true`、
+    `k_min_gate_referenced=true`、
+    `agreement_availability_gate_referenced=true`、
+    `ci_availability_gate_referenced=true`、
+    `min_rater_count_gate_referenced=true`、`min_rater_count=2`、
+    `min_total_labels_gate=50`、`k_min_cell_gate=5`、
+    `gate_band_values=[met,not_met,not_evaluated]`、
+    `small_cell_suppression_required=true`、
+    `exact_counts_never_emitted=true`、`metrics_never_computed=true`、
+    `validator_not_run_by_default=true`）；
+    `d4d_runbook_contract`（`protocol`、`required_attestation_fields`、
+    `attestation_must_be_all_true=true`、
+    `no_llm_or_model_labels_required=true`、
+    `no_proxy_labels_as_true_labels_required=true`、
+    `local_only_storage_required=true`）；
+    `d4e_converter_contract`（`converter_source`、`target_bundle_schema`、
+    `private_only=true`、`output_location=tmp_only_local_private`、
+    `committed=false`）；
+    `validation_harness_info`（`available=true`、`opt_in_required=true`、
+    `output_location=tmp_only_local_private`、`committed=false`、
+    `validates_d4b_bundle_schema=true`、`runs_gate_checks_only=true`、
+    `rejects_packet_refs_paths_snippets_raters=true`、
+    `rejects_model_proxy_llm_labels=true`、`claims_calibration=false`、
+    `computes_agreement_or_ci=false`）。
+  - 私有 D4b bundle 输入契约：消费 D4e D4b bundle 输出形状。允许的 bundle 键：
+    `schema`、`label_source`、`rater_count`、`agreement_available`、
+    `confidence_intervals_available`、`synthetic_harness_test`、
+    `local_private_conversion_executed`、`real_human_labels_converted`、
+    `labels`。允许的标签对象键：`e_score`、`s_score`、`bucket`、
+    `citation_valid`、`rater_pair_present`、`adjudicated`。拒绝包引用/任务/仓库
+    ID/路径/跨度/代码片段/内容哈希/查询/候选文本/标注者 ID/姓名/提示/响应/模型
+    输出/提供者 payload/API 密钥/原始一致性指标值/置信区间数值/逐行哈希/未知键。
+    D4f 仅校验 schema 和门可用性，不计算指标。
+  - 私有 D4f 门报告输出契约：`schema_version` 恰为
+    `d4f_bundle_validation_gate_private_report.v1`，`private_validation_report=true`、
+    `public_artifact=false`、`do_not_commit=true`、
+    `small_cell_suppression_required=true`、门布尔（`schema_gate_passed`、
+    `label_source_gate_passed`、`rater_count_gate_passed`、
+    `agreement_availability_gate_passed`、`ci_availability_gate_passed`）、
+    频段（`min_total_labels_gate_band`、`k_min_gate_band`，值为
+    `met`/`not_met`/`not_evaluated`）、`exact_private_counts_emitted=false`、
+    `bucket_counts_emitted=false`、`cell_counts_emitted=false`、
+    `agreement_metric_values_emitted=false`、
+    `confidence_interval_values_emitted=false`、
+    `public_release_gate_passed=false`、`d5_unblocked=false`。对于
+    `--synthetic-harness-test`：`synthetic_harness_test=true`、
+    `synthetic_bundle_validated_for_harness_only=true`、
+    `local_private_bundle_validation_run=false`、
+    `real_human_bundle_validated=false`。对于真实本地私有运行（无 synthetic CLI
+    标志、bundle 未标记为合成、label_source 为 human manual、D4e real-conversion
+    标志为 true、schema 通过、/tmp 守卫通过）：
+    `synthetic_harness_test=false`、
+    `synthetic_bundle_validated_for_harness_only=false`、
+    `local_private_bundle_validation_run=true`、
+    `real_human_bundle_validated=true`。即使所有门本地通过，报告也始终保持
+    `public_release_gate_passed=false` 和 `d5_unblocked=false`。
+  - 严格公开扫描器（故障关闭，带精确契约字符串白名单）。契约容器
+    （`d4b_bundle_schema_contract`、`gate_check_contract`、
+    `d4d_runbook_contract`、`d4e_converter_contract`）仅允许经批准的
+    schema/协议标识符、E/S 等级、桶名、标签槽位字段名、attestation 字段名、
+    human-manual label source 标识符、D4e 转换器源标识符、私有报告 schema
+    标识符、经批准的 D4b bundle 字段名 token、门频段值和经批准的类别字符串
+    （如 `tmp_only_local_private`）。任意短字符串（如 `compute_loss` 或私有
+    文本）即使在契约容器内**也会被拒绝**（无过宽容器豁免）；敏感字段名
+    （`content_sha`、`query_text`、`packet_ref`、`source_packet_schema`、
+    `d4d_runbook_attestation`、`packets`）即使在契约容器内也被拒绝。字段名在
+    任何位置作为键、在契约外作为值，均被拒绝。拒绝禁止的 dict 键和值模式：任何
+    URL（无 URL 白名单）、32/40/64 字符十六进制摘要、类密钥字符串、类路径字符
+    串、多行字符串、原始 JSON 片段、原始行范围以及自测 sentinel。
+  - 私有 D4b bundle 输入守卫（与公开扫描器不同）：校验 D4e D4b bundle 输出形
+    状（schema 恰为 `d4b_true_label_bundle_v1`、label_source 恰为
+    `human_manual_true_e_s`、rater_count >= 2、agreement/CI 可用性为 bool、
+    合成/真实标志为 bool 且组合真实、标签对象键恰为六个槽位、E/S 值在 D3 枚举
+    内、bucket 在 D3 枚举内、citation_valid/rater_pair_present/adjudicated 为
+    bool）；拒绝包引用/路径/代码片段/content_sha/查询/候选文本/标注者 ID/提供者
+    payload/API 密钥/模型输出/原始一致性/置信区间数值/逐行哈希。
+  - 私有 D4f 门报告输出守卫（与公开扫描器和私有 bundle 输入守卫**均**不同）：
+    允许门布尔/频段和 schema/类别名称；拒绝标签列表/标签行/精确计数/一致性/
+    CI 数值/任务/仓库/路径/代码片段/哈希/查询/标注者字段/输入输出路径或
+    basename；校验 schema_version 恰为
+    `d4f_bundle_validation_gate_private_report.v1`、`private_validation_report=true`、
+    `public_artifact=false`、`do_not_commit=true`、
+    `small_cell_suppression_required=true`、`public_release_gate_passed=false`、
+    `d5_unblocked=false`、`*_emitted=false` 标志、合成/真实标志为真（合成 =>
+    harness-only 且无真实校验；真实 => 未标记为合成）。
+  - 解析后的 `/tmp` 输出守卫（强，仅对输出文件系统）：父目录符号链接逃逸被拒
+    绝；已存在输出符号链接被拒绝；解析后目标必须保持在 `/tmp` 下。在打开或
+    stat 输入之前校验（validate-before-read）。
+  - CLI 守卫矩阵（纯词法，无文件系统）：`--input-bundle` 不带
+    `--allow-private-bundle` 退出码 2；`--allow-private-bundle` 不带
+    `--input-bundle` 退出码 2；私有模式要求显式 `--out`；提交产物路径在读取前
+    被拒绝；非 `/tmp` 输出在读取前被拒绝；`--synthetic-harness-test` 不带
+    `--allow-private-bundle` 退出码 2；路径遍历（`/tmp/../etc/...`）被拒绝。
+  - 仅清洗过的错误：任何私有加载/解析/schema/隐私失败返回固定的
+    `error: failed to load private bundle (schema/privacy/parse error; details suppressed)`；
+    永不暴露输入路径、basename、原始 JSON 或标签文本。未知/类似私有输入的参数
+    以通用 `invalid arguments` 消息拒绝（不回显值）。
+  - 门检查逻辑（min-N=50、k_min=5、min_rater_count=2）：min-N 门在内部计算
+    精确 N，但仅发出频段（`met`/`not_met`/`not_evaluated`）；k_min 门在内部计
+    算每桶计数，但仅发出频段；永不发出精确 N 或单元计数。
+  - 生成在自测失败或扫描器发现泄漏时拒绝成功（故障关闭 `_enforce_no_forbidden`
+    + `_refuse_on_self_test_failure` 在写 JSON 之前立即执行）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/d4f_bundle_validation_gate.py    => PASS
+python3 eval/d4f_bundle_validation_gate.py --self-test      => PASS (352/352 checks)
+python3 eval/d4f_bundle_validation_gate.py \
+  --out artifacts/d4f_bundle_validation_gate/\
+d4f_bundle_validation_gate_report.json                     => PASS
+  (status: blocked_no_private_bundle_available_or_no_validation_run,
+   forbidden_scan: pass, self_test_passed: true,
+   private_bundle_read: false,
+   bundle_validation_run: false,
+   d5_unblocked: false,
+   public_release_gate_passed: false,
+   bundle_validation_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   d4b_bundle_schema_contract_defined: true,
+   gate_check_contract_defined: true,
+   min_n_gate_referenced: true,
+   k_min_gate_referenced: true,
+   agreement_availability_gate_referenced: true,
+   ci_availability_gate_referenced: true,
+   mode: public_harness_no_private_bundle_no_validation, phase: D4f,
+   d4b_bundle_schema_source: d4b_true_label_bundle_v1,
+   d4e_converter_source: d4e_filled_packet_converter_harness.v1,
+   d4d_runbook_protocol: d4d_human_annotation_runbook.v1)
+# 私有 /tmp 合成 smoke（不提交）：
+python3 eval/d4f_bundle_validation_gate.py \
+  --allow-private-bundle --synthetic-harness-test \
+  --input-bundle /tmp/synthetic_d4b_bundle.json \
+  --out /tmp/d4f_synthetic_validation.json                      => PASS
+  (synthetic_harness_test=true,
+   synthetic_bundle_validated_for_harness_only=true,
+   local_private_bundle_validation_run=false,
+   real_human_bundle_validated=false,
+   schema_gate_passed=true, public_release_gate_passed=false,
+   d5_unblocked=false)
+# 私有 /tmp real-mode flag-path smoke（不提交；在合成夹具上，D4e real-conversion
+# 标志设为 true）：
+python3 eval/d4f_bundle_validation_gate.py \
+  --allow-private-bundle \
+  --input-bundle /tmp/real_flagpath_d4b_bundle.json \
+  --out /tmp/d4f_real_flagpath_validation.json                  => PASS
+  (synthetic_harness_test=false,
+   local_private_bundle_validation_run=true,
+   real_human_bundle_validated=true,
+   public_release_gate_passed=false,
+   d5_unblocked=false)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4f 是真实标签存在之前的最后一个有用夹具：D4e 证明已填充 packet 可以在本地
+转换为 D4b bundle；D4f 证明 D4b bundle 可以在本地校验并检查门前提，而无需发
+布标签、精确计数或指标。D4f 实现了一个带 SafeArgumentParser CLI 的私有校验
+器夹具（未知/类似私有输入参数不回显值）、一个严格故障关闭的公开扫描器带精确
+契约字符串白名单（无过宽容器豁免——未批准字符串和敏感字段名即使在契约容器内
+也被拒绝）、一个与公开扫描器和私有 bundle 输入守卫**均**不同的私有 D4f 门报
+告输出守卫（允许门布尔/频段和 schema/类别名称；拒绝标签列表/标签行/精确计
+数/一致性/CI 数值/任务/仓库/路径/代码片段/哈希/查询/标注者字段/输入输出路
+径；校验 schema_version、`*_emitted=false` 标志和合成/真实标志为真）、一个解
+析后的 `/tmp` 输出守卫（父目录符号链接逃逸、已存在输出符号链接和解析后目标逃
+逸均被拒绝）、validate-before-read 顺序、以及故障关闭的生成在扫描器泄漏或自
+测失败时拒绝成功。门检查逻辑（min-N=50、k_min=5、min_rater_count=2）在内部
+计算精确 N 和每桶计数，但仅发出频段（`met`/`not_met`/`not_evaluated`）；永不
+发出精确 N 或单元计数。默认提交 artifact 是夹具 / 无校验 artifact：它不读取任
+何私有 D4b bundle，不运行任何校验，不持久化任何私有 bundle，不读取任何标签，
+不计算任何校准/一致性/CI，不执行任何模型/LLM 标注，也不通过任何公开发布门。
+D5 保持锁定。在合成夹具上的 real-mode flag-path 测试（在本地设置
+`local_private_bundle_validation_run=true` 和
+`real_human_bundle_validated=true`）仅是 flag-path 测试，**不**是真实标签
+存在的证据。
+
+### 注意事项
+
+- D4f 仅是 D4b bundle 校验 / 门检查夹具公开 artifact。它是
+  eval/诊断专用。它**不**改变运行时、retriever、pack、model、backend 或默认策
+  略；也**不**改变 EvidenceCore 语义。它不是基准测试结果，不是下游 agent 价值
+  声明，不是 runtime-clean 通用算法声明，不是 OOD 时间性声明，也不是 QuIVer
+  系统声明。
+- D4f 默认是带阻塞公开产物的夹具。默认提交产物**不**读取任何私有 D4b
+  bundle，**不**运行任何校验，**不**持久化任何私有 bundle，**不**读取任何
+  标签，**不**计算任何校准/一致性/置信区间，**不**执行任何模型/LLM
+  标注，也**不**通过任何公开发布门。D5 保持锁定。夹具/控制 true 标志仅对已
+  校验的夹具/控制为 true，而非任何真实 bundle 校验或门通过声明。
+- D4f **不是**提交输出中的真实 bundle 校验，**不是**门通过，**不是**校准，
+  **不是**一致性/置信区间计算，也**不**解锁 D5。它是真实标签存在之前的最后
+  一个有用夹具。
+- D4f 有私有校验器模式（可选，不提交）。私有输出仅写入 `/tmp` 且永不提交。
+  私有报告仅含门布尔和频段（无标签、无精确计数、无指标）。在合成夹具上的
+  real-mode flag-path 测试（在本地设置
+  `local_private_bundle_validation_run=true` 和
+  `real_human_bundle_validated=true`）仅是 flag-path 测试，**不**是真实标签
+  存在的证据。真实人工标签尚未采集；D5 保持锁定。
+- 校验器仅消费 D4e D4b bundle 输出形状；它拒绝包引用/路径/代码片段/
+  content_sha/查询文本/候选文本/标注者 ID/提供者 payload/API 密钥/模型输出/
+  原始一致性/置信区间数值/逐行哈希/未知键。D4f 仅校验 schema 和门可用性，
+  不计算指标。
+- min-N 和 k-min 门在内部计算（精确 N 和每桶计数），但报告仅发出频段
+  （`met`/`not_met`/`not_evaluated`）；永不发出精确 N 或单元计数。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`、`not_evidence`）保持
+  true；夹具/控制 true 标志是唯一为 true 的控制标志。
+- 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
+  `current-research-conclusions` **未**更新（D4f 是夹具/仅阻塞 artifact；结论
+  无变化）。

@@ -5146,3 +5146,336 @@ and is NOT evidence that real labels exist.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified. `current-research-conclusions` was NOT updated (D4e is a
   harness/blocked-only artifact; no conclusions change).
+
+## 2026-06-20 — D4f D4b Bundle Validation / Gate-Check Harness (Public Harness / No-Validation Artifact)
+
+### Objective
+
+Implement D4f as the **D4b true-label bundle validation / gate-check
+harness** public artifact. D4f is the last useful harness before real
+labels exist: D4e proves filled packets can become a D4b bundle locally;
+D4f proves a D4b bundle can be validated and gate-checked locally
+without publishing labels, exact counts, or metrics. The default
+committed artifact is a **public harness / no-validation artifact**,
+NOT a real D4b bundle validation run, NOT gate-check pass, NOT
+calibration, NOT agreement/CI computation, and NOT a D5 unblock. D4f
+must NOT read a private D4b bundle by default, NOT validate a private
+bundle by default, NOT persist any private bundle by default, NOT
+accept packet refs / task IDs / repo IDs / paths / spans / snippets /
+content hashes / query / candidate text / rater IDs / model outputs /
+provider payloads, NOT emit labels / raw label rows / exact counts /
+bucket counts / cell counts / agreement metric values / CI numeric
+values in any committed artifact, NOT compute calibration /
+inter-rater agreement / confidence intervals, NOT pass any
+public-release gate, NOT unblock D5, NOT claim true E/S calibration,
+NOT perform model/LLM labeling, and NOT change runtime behavior,
+retriever, pack, model, backend, default policy, or EvidenceCore
+semantics.
+
+### Implementation
+
+- New script `eval/d4f_bundle_validation_gate.py` (pure Python stdlib;
+  no external imports). Public harness / no-validation artifact only;
+  the private validator is opt-in and writes `/tmp` output only (never
+  committed).
+  - Claim level `d4b_bundle_validation_gate_harness_only`; status
+    `blocked_no_private_bundle_available_or_no_validation_run`; mode
+    `public_harness_no_private_bundle_no_validation`; phase `D4f`;
+    D4b bundle schema source `d4b_true_label_bundle_v1`; D4e converter
+    source `d4e_filled_packet_converter_harness.v1`; D4d runbook
+    protocol `d4d_human_annotation_runbook.v1`.
+  - CLI: `--self-test`, `--out`, `--allow-private-bundle`,
+    `--input-bundle`, `--synthetic-harness-test`. Unknown/private-looking
+    arguments are rejected with a generic `invalid arguments` message
+    that does not echo private paths or basenames (SafeArgumentParser
+    pattern).
+  - Default false flags (all false): `private_bundle_read`,
+    `private_bundle_validated`, `private_bundle_persisted`,
+    `bundle_validation_run`, `labels_read`, `labels_persisted`,
+    `raw_label_rows_emitted`, `exact_private_counts_emitted`,
+    `bucket_counts_emitted`, `cell_counts_emitted`,
+    `calibration_metrics_computed`, `inter_rater_agreement_computed`,
+    `inter_rater_agreement_measured`, `agreement_metric_values_emitted`,
+    `confidence_intervals_computed`, `confidence_interval_values_emitted`,
+    `public_release_gate_passed`, `d5_unblocked`,
+    `true_e_s_calibration_claimed`, `private_input_path_emitted`,
+    `private_output_path_emitted`, `task_ids_emitted`, `repo_ids_emitted`,
+    `paths_or_spans_emitted`, `snippets_emitted`, `content_sha_emitted`,
+    `query_or_candidate_text_emitted`, `rater_ids_emitted`,
+    `model_or_llm_labeling_performed`, `model_assisted_labels_allowed`.
+  - No-claim / no-runtime-change flags (all false):
+    `runtime_behavior_changed`, `retriever_changed`,
+    `pack_builder_changed`, `model_calls_changed`, `backend_changed`,
+    `default_policy_changed`, `evidencecore_semantics_changed`,
+    `promotion_ready`, `default_should_change`,
+    `downstream_agent_value_proven`,
+    `runtime_clean_general_algorithm_claimed`,
+    `ood_temporal_supported`, `quiver_systems_supported`.
+  - Harness/control true flags (exactly ten, all true):
+    `bundle_validation_harness_available`, `private_cli_guard_validated`,
+    `tmp_output_resolved_guard_validated`, `sanitized_error_guard_validated`,
+    `d4b_bundle_schema_contract_defined`, `gate_check_contract_defined`,
+    `min_n_gate_referenced`, `k_min_gate_referenced`,
+    `agreement_availability_gate_referenced`, `ci_availability_gate_referenced`.
+    No read/validation/label/counts/metrics/D5 claim flags are true in
+    the default committed artifact.
+  - Public contracts: `d4b_bundle_schema_contract` (`schema`,
+    `required_label_source`, `bundle_allowed_keys`,
+    `label_object_allowed_keys`, `e_score_levels=[E0,E1,E2]`,
+    `s_score_levels=[S0,S1,S2]`,
+    `bucket_names=[primary_evidence,dependency_support,weak_candidates,
+    abstained]`, `rejects_unknown_keys=true`,
+    `rejects_packet_refs_paths_snippets_raters=true`);
+    `gate_check_contract` (`min_total_labels_gate_referenced=true`,
+    `k_min_gate_referenced=true`,
+    `agreement_availability_gate_referenced=true`,
+    `ci_availability_gate_referenced=true`,
+    `min_rater_count_gate_referenced=true`, `min_rater_count=2`,
+    `min_total_labels_gate=50`, `k_min_cell_gate=5`,
+    `gate_band_values=[met,not_met,not_evaluated]`,
+    `small_cell_suppression_required=true`,
+    `exact_counts_never_emitted=true`, `metrics_never_computed=true`,
+    `validator_not_run_by_default=true`); `d4d_runbook_contract`
+    (`protocol`, `required_attestation_fields`,
+    `attestation_must_be_all_true=true`,
+    `no_llm_or_model_labels_required=true`,
+    `no_proxy_labels_as_true_labels_required=true`,
+    `local_only_storage_required=true`); `d4e_converter_contract`
+    (`converter_source`, `target_bundle_schema`, `private_only=true`,
+    `output_location=tmp_only_local_private`, `committed=false`);
+    `validation_harness_info` (`available=true`, `opt_in_required=true`,
+    `output_location=tmp_only_local_private`, `committed=false`,
+    `validates_d4b_bundle_schema=true`, `runs_gate_checks_only=true`,
+    `rejects_packet_refs_paths_snippets_raters=true`,
+    `rejects_model_proxy_llm_labels=true`, `claims_calibration=false`,
+    `computes_agreement_or_ci=false`).
+  - Private D4b bundle input contract: consumes D4e D4b bundle output
+    shape. Allowed bundle keys: `schema`, `label_source`, `rater_count`,
+    `agreement_available`, `confidence_intervals_available`,
+    `synthetic_harness_test`, `local_private_conversion_executed`,
+    `real_human_labels_converted`, `labels`. Allowed label object keys:
+    `e_score`, `s_score`, `bucket`, `citation_valid`,
+    `rater_pair_present`, `adjudicated`. Rejects packet refs / task/repo
+    IDs / paths/spans/snippets / content hashes / query/candidate text
+    / rater IDs/names / prompts/responses/model outputs/provider
+    payloads/API keys / raw agreement metric values / CI numeric values /
+    per-row hashes / unknown keys. D4f validates schema and gate
+    availability only; it does not compute metrics.
+  - Private D4f gate report output contract: `schema_version` exactly
+    `d4f_bundle_validation_gate_private_report.v1`,
+    `private_validation_report=true`, `public_artifact=false`,
+    `do_not_commit=true`, `small_cell_suppression_required=true`, gate
+    booleans (`schema_gate_passed`, `label_source_gate_passed`,
+    `rater_count_gate_passed`, `agreement_availability_gate_passed`,
+    `ci_availability_gate_passed`), bands
+    (`min_total_labels_gate_band`, `k_min_gate_band`, values
+    `met`/`not_met`/`not_evaluated`), `exact_private_counts_emitted=false`,
+    `bucket_counts_emitted=false`, `cell_counts_emitted=false`,
+    `agreement_metric_values_emitted=false`,
+    `confidence_interval_values_emitted=false`,
+    `public_release_gate_passed=false`, `d5_unblocked=false`. For
+    `--synthetic-harness-test`: `synthetic_harness_test=true`,
+    `synthetic_bundle_validated_for_harness_only=true`,
+    `local_private_bundle_validation_run=false`,
+    `real_human_bundle_validated=false`. For real local private runs (no
+    synthetic CLI flag, bundle not synthetic-marked, label_source is
+    human manual, D4e real-conversion flags are true, schema passes,
+    /tmp guard passes): `synthetic_harness_test=false`,
+    `synthetic_bundle_validated_for_harness_only=false`,
+    `local_private_bundle_validation_run=true`,
+    `real_human_bundle_validated=true`. Even if all gates pass locally,
+    the report always keeps `public_release_gate_passed=false` and
+    `d5_unblocked=false`.
+  - Strict public scanner (fail-closed, with exact contract string
+    allowlist). Contract containers (`d4b_bundle_schema_contract`,
+    `gate_check_contract`, `d4d_runbook_contract`,
+    `d4e_converter_contract`) allow ONLY approved schema/protocol
+    identifiers, E/S levels, bucket names, label-slot field names,
+    attestation field names, the human-manual label source, the D4e
+    converter source identifier, the private report schema identifier,
+    the approved D4b bundle field-name tokens, the gate band values, and
+    the approved category strings (e.g. `tmp_only_local_private`).
+    Arbitrary short strings (e.g. `compute_loss` or private text) are
+    rejected EVEN inside contract containers (no over-broad container
+    exemption); sensitive field names (`content_sha`, `query_text`,
+    `packet_ref`, `source_packet_schema`, `d4d_runbook_attestation`,
+    `packets`) are rejected even inside contract containers. Field names
+    are forbidden as keys anywhere and as values outside contracts.
+    Rejects forbidden dict keys anywhere and value patterns: ANY URL (no
+    URL allowlist), 32/40/64-char hex digests, secret-like strings,
+    path-like strings, multiline strings, raw JSON fragments, raw line
+    ranges, and the self-test sentinel.
+  - Private D4b bundle INPUT guard (different from the public scanner):
+    validates the D4e D4b bundle output shape (schema exactly
+    `d4b_true_label_bundle_v1`, label_source exactly
+    `human_manual_true_e_s`, rater_count >= 2, agreement/CI availability
+    as bools, synthetic/real flags as bools with truthful combinations,
+    label object keys exactly the six slots, E/S values within D3 enum,
+    bucket within D3 enum, citation_valid/rater_pair_present/adjudicated
+    as bools); rejects packet refs / paths / snippets / content_sha /
+    query / candidate text / rater IDs / provider payloads / API
+    secrets / model outputs / raw agreement/CI values / per-row hashes.
+  - Private D4f gate report OUTPUT guard (DIFFERENT from BOTH the
+    public scanner AND the private bundle INPUT guard): allows gate
+    booleans/bands and schema/category names; rejects labels list/label
+    rows/exact counts/agreement/CI numeric values/task/repo/path/
+    snippet/hash/query/rater fields/input-output paths or basenames;
+    verifies schema_version exactly
+    `d4f_bundle_validation_gate_private_report.v1`,
+    `private_validation_report=true`, `public_artifact=false`,
+    `do_not_commit=true`, `small_cell_suppression_required=true`,
+    `public_release_gate_passed=false`, `d5_unblocked=false`,
+    `*_emitted=false` flags, and synthetic/real flags truthful
+    (synthetic => harness-only and no real validation; real => not
+    synthetic-marked).
+  - Resolved `/tmp` output guard (strong, filesystem on OUTPUT only):
+    parent symlink escape rejected; existing output file symlink
+    rejected; resolved target must stay under `/tmp`. Validated BEFORE
+    the input is opened or stat'd (validate-before-read).
+  - CLI guard matrix (pure lexical, no filesystem): `--input-bundle`
+    without `--allow-private-bundle` exits 2; `--allow-private-bundle`
+    without `--input-bundle` exits 2; private mode requires explicit
+    `--out`; committed artifact path rejected before read; non-`/tmp`
+    output rejected before read; `--synthetic-harness-test` without
+    `--allow-private-bundle` exits 2; path traversal
+    (`/tmp/../etc/...`) rejected.
+  - Sanitized errors only: any private load/parse/schema/privacy
+    failure returns the fixed
+    `error: failed to load private bundle (schema/privacy/parse error; details suppressed)`;
+    never surfaces the input path, basename, raw JSON, or label text.
+    Unknown/private-looking arguments are rejected with a generic
+    `invalid arguments` message (no value echo).
+  - Gate-check logic (min-N=50, k_min=5, min_rater_count=2): the min-N
+    gate computes the exact N internally but emits ONLY the band
+    (`met`/`not_met`/`not_evaluated`); the k_min gate computes
+    per-bucket counts internally but emits ONLY the band; never exact N
+    or cell counts.
+  - Generation refuses success if self-test fails or the scanner finds
+    leakage (fail-closed `_enforce_no_forbidden` +
+    `_refuse_on_self_test_failure` immediately before writing JSON).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4f_bundle_validation_gate.py    => PASS
+python3 eval/d4f_bundle_validation_gate.py --self-test      => PASS (352/352 checks)
+python3 eval/d4f_bundle_validation_gate.py \
+  --out artifacts/d4f_bundle_validation_gate/\
+d4f_bundle_validation_gate_report.json                     => PASS
+  (status: blocked_no_private_bundle_available_or_no_validation_run,
+   forbidden_scan: pass, self_test_passed: true,
+   private_bundle_read: false,
+   bundle_validation_run: false,
+   d5_unblocked: false,
+   public_release_gate_passed: false,
+   bundle_validation_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   d4b_bundle_schema_contract_defined: true,
+   gate_check_contract_defined: true,
+   min_n_gate_referenced: true,
+   k_min_gate_referenced: true,
+   agreement_availability_gate_referenced: true,
+   ci_availability_gate_referenced: true,
+   mode: public_harness_no_private_bundle_no_validation, phase: D4f,
+   d4b_bundle_schema_source: d4b_true_label_bundle_v1,
+   d4e_converter_source: d4e_filled_packet_converter_harness.v1,
+   d4d_runbook_protocol: d4d_human_annotation_runbook.v1)
+# Private /tmp synthetic smoke (NOT committed):
+python3 eval/d4f_bundle_validation_gate.py \
+  --allow-private-bundle --synthetic-harness-test \
+  --input-bundle /tmp/synthetic_d4b_bundle.json \
+  --out /tmp/d4f_synthetic_validation.json                      => PASS
+  (synthetic_harness_test=true,
+   synthetic_bundle_validated_for_harness_only=true,
+   local_private_bundle_validation_run=false,
+   real_human_bundle_validated=false,
+   schema_gate_passed=true, public_release_gate_passed=false,
+   d5_unblocked=false)
+# Private /tmp real-mode flag-path smoke (NOT committed; over a synthetic
+# fixture with D4e real-conversion flags set to true):
+python3 eval/d4f_bundle_validation_gate.py \
+  --allow-private-bundle \
+  --input-bundle /tmp/real_flagpath_d4b_bundle.json \
+  --out /tmp/d4f_real_flagpath_validation.json                  => PASS
+  (synthetic_harness_test=false,
+   local_private_bundle_validation_run=true,
+   real_human_bundle_validated=true,
+   public_release_gate_passed=false,
+   d5_unblocked=false)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4f is the last useful harness before real labels exist: D4e proves
+filled packets can become a D4b bundle locally; D4f proves a D4b bundle
+can be validated and gate-checked locally without publishing labels,
+exact counts, or metrics. D4f implements a private validator harness
+with a SafeArgumentParser CLI (unknown/private-looking args do not echo
+values), a strict fail-closed public scanner with an exact contract
+string allowlist (no over-broad container exemption — unapproved strings
+and sensitive field names are rejected even inside contract containers),
+a private D4f gate report OUTPUT guard DIFFERENT from BOTH the public
+scanner AND the private bundle INPUT guard (allows gate booleans/bands
+and schema/category names; rejects labels list/label rows/exact counts/
+agreement/CI numeric values/task/repo/path/snippet/hash/query/rater
+fields/input-output paths; verifies schema_version, `*_emitted=false`
+flags, and truthful synthetic/real flags), a resolved `/tmp` output
+guard (parent symlink escape, existing output symlink, and resolved
+target escape all rejected), validate-before-read ordering, and
+fail-closed generation that refuses success on scanner leak or self-test
+failure. The gate-check logic (min-N=50, k_min=5, min_rater_count=2)
+computes exact N and per-bucket counts internally but emits ONLY the
+bands (`met`/`not_met`/`not_evaluated`); never exact N or cell counts.
+The default committed artifact is a harness / no-validation artifact: it
+reads no private D4b bundle, runs no validation, persists no private
+bundle, reads no labels, computes no calibration / agreement / CI,
+performs no model/LLM labeling, and passes no public-release gate. D5
+remains blocked. A real-mode flag-path test over a synthetic fixture
+(which sets `local_private_bundle_validation_run=true` and
+`real_human_bundle_validated=true` locally) is a flag-path test only
+and is NOT evidence that real labels exist.
+
+### Caveats
+
+- D4f is the D4b bundle validation / gate-check harness public artifact
+  only. It is eval/diagnostic only. It does NOT change runtime,
+  retriever, pack, model, backend, or default policy; it does NOT
+  change EvidenceCore semantics. It is NOT a benchmark result, NOT a
+  downstream agent value claim, NOT a runtime-clean general algorithm
+  claim, NOT an OOD temporal claim, and NOT a QuIVer systems claim.
+- D4f default is a harness with a blocked public artifact. The default
+  committed artifact reads NO private D4b bundle, runs NO validation,
+  persists NO private bundle, reads NO labels, computes NO calibration
+  / agreement / CI, performs NO model/LLM labeling, and passes NO
+  public-release gate. D5 remains blocked. Harness/control true flags
+  are true only for the validated harness/controls, NOT for any real
+  bundle validation or gate-pass claim.
+- D4f is NOT real bundle validation in committed output, NOT gate-pass,
+  NOT calibration, NOT agreement/CI computation, and NOT D5 unblock. It
+  is the last useful harness before real labels exist.
+- D4f has a private validator mode (opt-in, NOT committed). Private
+  output is written to `/tmp` only and never committed. The private
+  report contains gate booleans and bands ONLY (no labels, no exact
+  counts, no metrics). The real-mode flag-path test over a synthetic
+  fixture (which sets `local_private_bundle_validation_run=true` and
+  `real_human_bundle_validated=true` locally) is a flag-path test only
+  and is NOT evidence that real labels exist. Real human labels are not
+  yet collected; D5 remains blocked.
+- The validator consumes only the D4e D4b bundle output shape; it
+  rejects packet refs / paths / snippets / content_sha / query text /
+  candidate text / rater IDs / provider payloads / API secrets / model
+  outputs / raw agreement/CI values / per-row hashes / unknown keys.
+  D4f validates schema and gate availability only; it does not compute
+  metrics.
+- The min-N and k-min gates are computed internally (exact N and
+  per-bucket counts) but the report emits ONLY the bands
+  (`met`/`not_met`/`not_evaluated`); never exact N or cell counts.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`)
+  remain true; the harness/control true flags are the only true control
+  flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was NOT updated (D4f is a
+  harness/blocked-only artifact; no conclusions change).
