@@ -3922,3 +3922,154 @@ or repo_id leaked into the D2b artifact.
 - Missing proxy fields become `proxy_unmappable`, NOT negative evidence.
 - Small-cell suppression (`k_min`) omits rare crosstab cells; suppressed
   cell counts are never emitted.
+
+## 2026-06-20 — D3 Dual-Rubric Label Protocol Preregistration (Protocol Only)
+
+### Objective
+
+Preregister the future true E-score / S-score label collection and
+calibration protocol as a **protocol-only** artifact. D3 is the bridge
+between D1 (deterministic dual-rubric relevance scaffold) and D2 (proxy
+mappability), and a later D4 local/private true E/S calibration run. D3
+must NOT collect labels, NOT read private records, NOT compute
+calibration metrics, NOT measure inter-rater agreement, NOT claim true
+E/S calibration, NOT claim proxy calibration, NOT collect model-assisted
+labels, and NOT change runtime behavior, retriever, pack, model, backend,
+default policy, or EvidenceCore semantics.
+
+### Implementation
+
+- New script `eval/d3_dual_rubric_preregistration.py` (pure Python
+  stdlib; no external imports, no private-record loaders). Protocol-only;
+  no label collection, no private reads, no calibration metrics.
+  - Claim level `dual_rubric_label_protocol_preregistration_only`;
+    rubric version `d3_true_dual_rubric_label_protocol_v1`; status
+    `protocol_ready_no_labels_collected`; mode `protocol_only`.
+  - CLI accepts ONLY `--self-test` and `--out`. There is NO `--input`
+    and NO `--allow-private-records`; the self-test enforces this.
+  - Label-protocol false flags (all false): `labels_collected`,
+    `private_records_read`, `raw_private_records_read`,
+    `private_records_persisted`, `true_e_s_calibration_claimed`,
+    `proxy_calibration_claimed`, `model_assisted_labels_collected`,
+    `inter_rater_agreement_measured`, `calibration_metrics_computed`.
+  - No-claim / no-runtime-change flags (all false): `promotion_ready`,
+    `default_should_change`, `downstream_agent_value_proven`,
+    `runtime_behavior_changed`, `retriever_changed`, `pack_builder_changed`,
+    `model_calls_changed`, `backend_changed`, `default_policy_changed`,
+    `evidencecore_semantics_changed`,
+    `runtime_clean_general_algorithm_claimed`, `ood_temporal_supported`,
+    `quiver_systems_supported`.
+  - Diagnostic flags (all true): `aggregate_only_public_artifact`,
+    `diagnostic_only`, `not_evidence`.
+- Artifact sections (all category-only, aggregate/protocol only):
+  - `sampling_frame_protocol`: `eligible_record_sources` =
+    `["local_private_p21_records", "local_private_d2b_proxy_smoke_candidates"]`;
+    `sampling_axes` = `["proxy_bucket", "proxy_e_band", "proxy_s_band",
+    "abstain_or_unmappable_status"]`; `stratification_required=true`;
+    `max_records_per_batch_local_only=50`;
+    `raw_record_material_private_only=true`.
+  - `annotation_rubric`: `e_score_levels` E0/E1/E2; `s_score_levels`
+    S0/S1/S2; `definitions` (abstention gate, E/S ordinal scales);
+    `bucket_mapping` (`primary_evidence`, `dependency_support`,
+    `weak_candidates`, `abstained`); `abstract_examples` from the
+    approved enum only (`direct_definition_of_requested_symbol`,
+    `caller_import_relation_without_answer_bearing_text`,
+    `same_module_but_insufficient_evidence`).
+  - `future_execution_gates`: `explicit_private_opt_in_required=true`;
+    `local_output_path_required=true`;
+    `output_location_category="tmp_only_local_private"`;
+    `no_committed_raw_labels=true`; `k_min=5`; `min_total_labels=50`;
+    `inter_rater_agreement_required=true`;
+    `agreement_metrics_aggregate_only=["cohens_kappa",
+    "krippendorff_alpha"]`; `confidence_intervals_required=true`.
+  - `public_release_thresholds`: `min_total_n=50`; `k_min_per_cell=5`;
+    `small_cell_policy="suppress_or_merge_to_other"`;
+    `confidence_intervals_required=true`;
+    `per_row_raw_label_outputs=false`.
+  - `privacy_contract`: `no_task_ids`/`no_repo_ids_or_names`/
+    `no_file_paths`/`no_spans_or_line_ranges`/`no_snippets_or_excerpts`/
+    `no_content_hashes`/`no_prompts_or_responses`/`no_model_outputs`/
+    `no_private_labels`/`no_raw_annotation_rows`/`no_per_row_hashes`/
+    `no_local_filesystem_paths` all true; `forbidden_field_categories`
+    lists the forbidden field names.
+  - `phase_graph`: D1..D6 as category strings only (no execution data).
+  - `forbidden_scan` summary (fail-closed before writing JSON).
+- Forbidden scanner (fail-closed): rejects forbidden dict keys (task_id,
+  repo_id, repo, path, span, line_range, start_line, end_line,
+  content_sha, snippet, excerpt, candidate_text, query, prompt, response,
+  model_output, label, raw_label, annotation_row, per_row_hash, etc.)
+  anywhere; rejects value patterns — ANY URL (no URL allowlist), 32/40/64
+  -char hex digests, secret-like strings, path-like `src/foo.py` and
+  `/private/foo.jsonl`, multiline strings, raw JSON fragments, raw line
+  ranges `12-34`. Allows safe protocol strings
+  (`local_private_p21_records`, `proxy_bucket`, `E0`, etc.).
+- Self-tests (8 groups, 96 checks): (1) no private read / no input CLI;
+  (2) no label collection / no calibration metrics / no agreement
+  measured; (3) no-claim flags false; (4) protocol completeness
+  (required sections/fields); (5) forbidden scanner rejects sensitive
+  keys/values; (6) abstract examples only (approved enum; unapproved
+  concrete/path-like example fails validation AND scanner); (7)
+  fail-closed generation on scanner leak; (8) artifact generation
+  refuses success if self-test fails.
+- New docs: `docs/en/d3-dual-rubric-preregistration.md`,
+  `docs/zh/d3-dual-rubric-preregistration.md` (i18n mirror).
+- Existing mode-only dirty files (`eval/ci_clone_and_lock_repo.py`,
+  `eval/ci_make_repo_matrix.py`,
+  `eval/p59_contrastive_pack_coverage_counterfactual.py`) were NOT
+  touched. No runtime/retriever/pack/model/backend/default files were
+  modified. No private records were read. `current-research-conclusions`
+  was NOT updated (D3 is protocol-only, no conclusions change).
+
+### Findings
+
+```text
+python3 -m py_compile eval/d3_dual_rubric_preregistration.py           => PASS
+python3 eval/d3_dual_rubric_preregistration.py --self-test            => PASS (96/96 checks)
+python3 eval/d3_dual_rubric_preregistration.py \
+  --out artifacts/d3_dual_rubric_preregistration/\
+d3_dual_rubric_preregistration_report.json                            => PASS
+  (status: protocol_ready_no_labels_collected,
+   forbidden_scan: pass, self_test_passed: true,
+   labels_collected: false, private_records_read: false,
+   raw_private_records_read: false, private_records_persisted: false,
+   true_e_s_calibration_claimed: false, proxy_calibration_claimed: false,
+   model_assisted_labels_collected: false,
+   inter_rater_agreement_measured: false,
+   calibration_metrics_computed: false,
+   mode: protocol_only,
+   rubric_version: d3_true_dual_rubric_label_protocol_v1)
+python3 scripts/validate_docs_i18n.py                                  => PASS
+git diff --check                                                       => PASS
+```
+
+D3 preregisters the dual-rubric label protocol with all required sections
+(sampling frame, annotation rubric E0/E1/E2 and S0/S1/S2, future D4
+gates, public release thresholds, privacy contract, phase graph). No
+labels collected, no private records read, no calibration metrics
+computed, no inter-rater agreement measured. The forbidden scanner
+passes fail-closed on the committed artifact.
+
+### Caveats
+
+- D3 is protocol-only preregistration. It is eval/diagnostic only. It
+  does NOT change runtime, retriever, pack, model, backend, or default
+  policy; it does NOT change EvidenceCore semantics. It is NOT a
+  benchmark result, NOT a downstream agent value claim, NOT a
+  runtime-clean general algorithm claim, NOT an OOD temporal claim, and
+  NOT a QuIVer systems claim.
+- D3 collects NO labels, reads NO private records, computes NO
+  calibration metrics, measures NO inter-rater agreement, claims NO
+  true E/S calibration, claims NO proxy calibration, and collects NO
+  model-assisted labels.
+- D4 is the first phase that MAY execute local/private true E/S
+  calibration, and only if all `future_execution_gates` hold. D3 does
+  not gate or trigger D4 automatically.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`)
+  remain true.
+- Any examples are approved abstract category strings only; no concrete
+  repo/path/snippet content is emitted.
+- Existing mode-only dirty files (`eval/ci_clone_and_lock_repo.py`,
+  `eval/ci_make_repo_matrix.py`,
+  `eval/p59_contrastive_pack_coverage_counterfactual.py`) were NOT
+  touched.
