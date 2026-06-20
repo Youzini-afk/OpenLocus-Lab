@@ -4097,3 +4097,169 @@ sentinel/输出路径泄露。
 - D4b 真实标签采集/校准仍为独立的未来 gated 阶段；D4a 不自动 gate 或
   触发 D4b。
 - 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
+
+## 2026-06-20 — D4b 双评分真实标签 Smoke 测试夹具（公开夹具 / 无标签产物）
+
+### 目标
+
+将 D4b 实现为**真实标签 smoke 测试夹具**公开产物。D4b 冻结本地/私有真实
+E-score / S-score 标签 bundle 的输入契约，并强化执行控制。**默认提交的产物
+是公开夹具 / 无标签产物**，而非真实真实标签 smoke 结果。D4b **不**伪造标签、
+**不**接受代理/合成/LLM 标签作为真实标签、默认**不**读取私有真实标签
+bundle、**不**计算真实校准指标、**不**衡量 inter-rater agreement、**不**
+声称真实/代理校准，也**不**改变运行时行为、检索器、pack、模型、后端、
+默认策略或 EvidenceCore 语义。`local_private_true_label_smoke_executed`
+仅在真实本地私有运行（人工/手动标签且显式 opt-in）时可为 true；默认提交
+产物保持 blocked/no-labels。
+
+### 实现
+
+- 新脚本 `eval/d4b_dual_rubric_true_label_smoke.py`（纯 Python stdlib；无
+  外部导入、无 private-record loader）。默认公开夹具/无标签；私有 smoke
+  是显式的仅 `/tmp` 夹具。
+  - 声明级别 `true_label_bundle_execution_harness_only`；评分版本
+    `d3_true_dual_rubric_label_protocol_v1`（D3 协议已校验）；状态
+    `blocked_no_true_label_bundle_available`；模式
+    `public_harness_no_labels`；阶段 `D4b`。
+  - CLI：`--self-test`、`--out`、`--allow-private-labels`、`--input`、
+    `--synthetic-harness-test`（默认 false）。默认模式（无私有参数）写入
+    已提交公开夹具/无标签产物（若省略 `--out` 则用默认输出路径）。
+  - 默认 false 标志（全为 false）：`labels_collected`、
+    `true_label_bundle_read`、`true_label_bundle_validated`、
+    `true_label_bundle_persisted`、
+    `local_private_true_label_smoke_executed`、
+    `calibration_metrics_computed`、`inter_rater_agreement_measured`、
+    `confidence_intervals_computed`、`true_e_s_calibration_claimed`、
+    `public_release_gate_passed`、`real_label_bundle_gate_passed`、
+    `raw_label_rows_emitted`、`private_input_path_emitted`、
+    `private_output_path_emitted`、`private_output_committed`、
+    `exact_private_counts_emitted`、`synthetic_labels_accepted_as_true`、
+    `proxy_labels_accepted_as_true`、`llm_labels_accepted_as_true`、
+    `model_assisted_labels_allowed`。
+  - 夹具/控制标志（恰好五个，全为 true）：
+    `private_execution_harness_available`、`private_cli_guard_validated`、
+    `tmp_output_resolved_guard_validated`、`sanitized_error_guard_validated`、
+    `bundle_schema_contract_defined`。默认提交产物中无门校验/校准声明标志
+    为 true。
+  - 私有真实标签 bundle 契约（`d4b_true_label_bundle_v1`）：`label_source`
+    对真实运行必须恰为 `human_manual_true_e_s`；`proxy`/`synthetic`/
+    `llm`/`model_assisted` 作为真实标签被拒绝。`rater_count` int >= 2；
+    `agreement_available` 与 `confidence_intervals_available` 为布尔；
+    `labels` 为对象列表，仅含键 `e_score`（E0/E1/E2）、`s_score`
+    （S0/S1/S2）、`bucket`（primary_evidence/dependency_support/
+    weak_candidates/abstained）、`citation_valid`、`rater_pair_present`、
+    `adjudicated`（布尔）。ID/路径/snippet/rater ID/原始行元数据/未知键被
+    拒绝（fail-closed）而非支持并剥离。
+  - 强解析 `/tmp` 守卫：解析 `/tmp`；在读取私有输入前解析输出父目录；拒绝
+    父 symlink 逃逸 `/tmp`（`/tmp/link_to_repo/out.json`）；拒绝已存在输出
+    文件 symlink；拒绝解析后逃逸 `/tmp` 的目标；读取前拒绝已提交产物路径
+    与非 `/tmp` 输出。所有输出守卫在输入被打开或 stat 前运行
+    （validate-before-read）。
+  - 私有输出仅 `/tmp` 且绝不提交。无 label 行、ID、路径、basename、原始
+    E/S 行、rater ID、annotation 行、行 hash、prompts/responses/model
+    outputs，或确切私有计数。仅 band：`label_count_band`
+    （`min_n_met`/`below_min_n`）、`bucket_count_bands`
+    （`k_met`/`below_k`/`suppressed`），以及 min-N/k/second-rater/
+    agreement/CI 门布尔。因 bundle **输入**契约使用 `labels` 键，任何
+    **输出**不得输出 `labels` 键（禁止扫描器拒绝它）。
+  - 私有输出含 `input_attestation_required=true`。合成/内存夹具自测设
+    `synthetic_harness_test=true` 且
+    `local_private_true_label_smoke_executed=false`（即使 bundle 为
+    human-manual 形状）。真实本地私有运行（无 synthetic 标志、
+    `label_source=human_manual_true_e_s`、有效 schema）可设
+    `local_private_true_label_smoke_executed=true` 仅本地（绝不提交）。
+  - 任何私有真实标签 bundle load/parse/schema/privacy 失败的固定消毒
+    错误：
+    `error: failed to load private true labels (schema/privacy/parse
+    error; details suppressed)`（无原始异常、输入/输出路径或 basename、
+    原始 JSON 或标签文本）。
+
+### 校验结果
+
+```text
+python3 -m py_compile eval/d4b_dual_rubric_true_label_smoke.py    => PASS
+python3 eval/d4b_dual_rubric_true_label_smoke.py --self-test      => PASS (206/206 项检查)
+python3 eval/d4b_dual_rubric_true_label_smoke.py \
+  --out artifacts/d4b_dual_rubric_true_label_smoke/\
+d4b_dual_rubric_true_label_smoke_report.json                     => PASS
+  (status: blocked_no_true_label_bundle_available,
+   forbidden_scan: pass, self_test_passed: true,
+   labels_collected: false, true_label_bundle_read: false,
+   true_label_bundle_validated: false,
+   local_private_true_label_smoke_executed: false,
+   private_output_committed: false,
+   calibration_metrics_computed: false,
+   true_e_s_calibration_claimed: false,
+   synthetic_labels_accepted_as_true: false,
+   proxy_labels_accepted_as_true: false,
+   llm_labels_accepted_as_true: false,
+   model_assisted_labels_allowed: false,
+   public_release_gate_passed: false,
+   real_label_bundle_gate_passed: false,
+   private_execution_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   bundle_schema_contract_defined: true,
+   mode: public_harness_no_labels, phase: D4b)
+/tmp 私有 smoke（合成 human-manual 形状 bundle）                 => PASS
+  (synthetic_harness_test=true,
+   local_private_true_label_smoke_executed=false,
+   输出/stdout/stderr 中无输入/输出路径、basename、原始标签、
+   sentinel、确切计数或 labels 键)
+/tmp 私有 smoke（基于合成 fixture 的真实模式 flag-path 测试）      => PASS
+  (synthetic_harness_test=false,
+   local_private_true_label_smoke_executed=true 仅本地，
+   true_label_bundle_read=true, true_label_bundle_validated=true,
+   不提交)
+CLI 守卫矩阵（缺 allow/input/out、已提交输出、非 /tmp 输出、
+  synthetic 无 allow）                                              => PASS (全部 exit 2)
+解析 /tmp symlink 逃逸守卫（父 symlink、
+  已存在输出文件 symlink）                                         => PASS (exit 2)
+消毒错误（proxy/synthetic/llm 源、畸形 bundle、
+  不存在的输入）                                                   => PASS (exit 2，无泄露)
+python3 scripts/validate_docs_i18n.py                            => PASS
+git diff --check                                                 => PASS
+```
+
+D4b 冻结真实标签 bundle 输入契约（`d4b_true_label_bundle_v1`、
+`label_source=human_manual_true_e_s`、rater_count>=2、六键 label 对象），
+并强化执行控制：CLI/隐私守卫、强解析 `/tmp` symlink 逃逸守卫、
+validate-before-read、fail-closed 禁止扫描与消毒错误。默认提交产物为
+blocked/no-labels：不采集标签、不读取真实标签 bundle、不校验任何 bundle
+为真实标签、不计算校准指标、不衡量 inter-rater agreement、不声称真实/代理
+校准，也不通过任何发布门。基于合成 human-manual 形状 bundle 的 `/tmp` smoke
+通过全部门，且 `synthetic_harness_test=true`、
+`local_private_true_label_smoke_executed=false`，输出/stdout/stderr 中无
+路径/basename/原始标签/sentinel/确切计数/labels 键泄露。proxy/synthetic/
+LLM 源作为真实标签被拒绝。基于合成 fixture 的真实模式 `/tmp` flag-path 测试
+在本地输出中设置 `local_private_true_label_smoke_executed=true`、
+`true_label_bundle_read=true` 和 `true_label_bundle_validated=true`（绝不提交）；
+这只测试私有模式 truth flags，**不是**真实人工标签存在的公开证据。
+
+### 注意事项
+
+- D4b 仅真实标签 smoke 测试夹具公开产物。它仅评测/诊断。它**不**改变
+  运行时、检索器、pack、模型、后端或默认策略；它**不**改变 EvidenceCore
+  语义。它**不是**基准结果、**不是**下游 agent 价值声明、**不是**
+  runtime-clean 通用算法声明、**不是** OOD 时间维度声明，也**不是**
+  QuIVer 系统声明。
+- D4b 默认是 blocked / 无标签。默认提交产物**不**采集标签、**不**读取
+  真实标签 bundle、**不**校验任何 bundle 为真实标签、**不**计算校准指标、
+  **不**衡量 inter-rater agreement、**不**声称真实/代理校准，也**不**
+  通过任何公开发布/真实 bundle 门。夹具/控制标志仅对已校验的夹具/控制
+  为 true，**并非**任何真实校准。
+- 合成/代理/LLM 标签**不**被接受为真实标签。它们仅可出现在自测与可选的
+  私有模式夹具测试中，且 `local_private_true_label_smoke_executed=false`。
+- 私有 smoke 模式仅 `/tmp` 且**绝不**提交。它仅校验一个本地/私有真实
+  标签-bundle 形状 JSON 的结构/门；它**不**计算或声称真实校准指标。真实
+  本地私有运行可设 `local_private_true_label_smoke_executed=true` 仅本地，
+  并在该本地输出中如实记录 `true_label_bundle_read=true` 和
+  `true_label_bundle_validated=true`。本次校验使用合成 fixture 测试该 flag
+  path；它不是真实人工标签存在的公开证据。
+- 所有 no-claim / no-runtime-change 标志保持为 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`、`not_evidence`）
+  保持为 true；五个夹具/控制标志是仅有的 true 控制标志。
+- 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
+  `current-research-conclusions` **未**更新（D4b 是夹具/blocked 产物；
+  结论无变化）。

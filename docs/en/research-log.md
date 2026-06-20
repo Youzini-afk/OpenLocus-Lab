@@ -4238,3 +4238,192 @@ stderr.
   gated phase; D4a does not gate or trigger D4b automatically.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified.
+
+## 2026-06-20 — D4b Dual-Rubric True-Label Smoke Harness (Public Harness / No-Labels Artifact)
+
+### Objective
+
+Implement D4b as the **true-label smoke harness** public artifact. D4b
+freezes the local/private true E-score / S-score label-bundle input
+contract and hardens the execution controls. The **default committed
+artifact is a public harness / no-labels artifact**, NOT a real
+true-label smoke result. D4b must NOT fabricate labels, NOT accept
+proxy/synthetic/LLM labels as true labels, NOT read private true-label
+bundles by default, NOT compute true calibration metrics, NOT measure
+inter-rater agreement, NOT claim true/proxy calibration, and NOT change
+runtime behavior, retriever, pack, model, backend, default policy, or
+EvidenceCore semantics. `local_private_true_label_smoke_executed` may
+be true only for a real local private run with human/manual labels and
+explicit opt-in; the default committed artifact stays blocked/no-labels.
+
+### Implementation
+
+- New script `eval/d4b_dual_rubric_true_label_smoke.py` (pure Python
+  stdlib; no external imports, no private-record loaders). Public
+  harness/no-labels by default; private smoke is an explicit
+  `/tmp`-only harness.
+  - Claim level `true_label_bundle_execution_harness_only`; rubric
+    version `d3_true_dual_rubric_label_protocol_v1` (D3 protocol
+    checked); status `blocked_no_true_label_bundle_available`; mode
+    `public_harness_no_labels`; phase `D4b`.
+  - CLI: `--self-test`, `--out`, `--allow-private-labels`, `--input`,
+    `--synthetic-harness-test` (defaults false). Default mode (no
+    private args) writes the committed public harness/no-labels
+    artifact (default out path if `--out` omitted).
+  - Default false flags (all false): `labels_collected`,
+    `true_label_bundle_read`, `true_label_bundle_validated`,
+    `true_label_bundle_persisted`,
+    `local_private_true_label_smoke_executed`,
+    `calibration_metrics_computed`, `inter_rater_agreement_measured`,
+    `confidence_intervals_computed`, `true_e_s_calibration_claimed`,
+    `public_release_gate_passed`, `real_label_bundle_gate_passed`,
+    `raw_label_rows_emitted`, `private_input_path_emitted`,
+    `private_output_path_emitted`, `private_output_committed`,
+    `exact_private_counts_emitted`,
+    `synthetic_labels_accepted_as_true`, `proxy_labels_accepted_as_true`,
+    `llm_labels_accepted_as_true`, `model_assisted_labels_allowed`.
+  - Harness/control flags (exactly five, all true):
+    `private_execution_harness_available`,
+    `private_cli_guard_validated`, `tmp_output_resolved_guard_validated`,
+    `sanitized_error_guard_validated`, `bundle_schema_contract_defined`.
+    No gate-validated / calibration claim flags are true in the default
+    committed artifact.
+  - Private true-label bundle contract (`d4b_true_label_bundle_v1`):
+    `label_source` must be exactly `human_manual_true_e_s` for a real
+    run; `proxy`/`synthetic`/`llm`/`model_assisted` rejected as true
+    labels. `rater_count` int >= 2; `agreement_available` and
+    `confidence_intervals_available` booleans; `labels` a list of
+    objects with ONLY keys `e_score` (E0/E1/E2), `s_score` (S0/S1/S2),
+    `bucket` (primary_evidence/dependency_support/weak_candidates/
+    abstained), `citation_valid`, `rater_pair_present`, `adjudicated`
+    (booleans). IDs/paths/snippets/rater IDs/raw row metadata/unknown
+    keys rejected (fail-closed) rather than supported and stripped.
+  - Strong resolved `/tmp` guard: resolve `/tmp`; resolve output parent
+    before private input read; reject parent symlink escaping `/tmp`
+    (`/tmp/link_to_repo/out.json`); reject existing output file symlink;
+    reject resolved target escaping `/tmp`; reject committed artifact
+    path and non-`/tmp` out before read. All output guards run before
+    the input is opened or stat'd (validate-before-read).
+  - Private output is `/tmp` only and never committed. No label rows,
+    IDs, paths, basenames, raw E/S rows, rater IDs, annotation rows,
+    row hashes, prompts/responses/model outputs, or exact private
+    counts. Bands only: `label_count_band` (`min_n_met`/`below_min_n`),
+    `bucket_count_bands` (`k_met`/`below_k`/`suppressed`), gate
+    booleans for min-N/k/second-rater/agreement/CI. Because the bundle
+    INPUT contract uses a `labels` key, no OUTPUT may emit a `labels`
+    key (the forbidden scanner rejects it).
+  - `input_attestation_required=true` in private output. Synthetic /
+    in-memory harness self-tests set `synthetic_harness_test=true` and
+    `local_private_true_label_smoke_executed=false` even if the bundle
+    is human-manual-shaped. A real local private run (no synthetic flag,
+    `label_source=human_manual_true_e_s`, valid schema) may set
+    `local_private_true_label_smoke_executed=true` locally only (never
+    committed).
+  - Fixed sanitized error for any private true-label bundle load/parse/
+    schema/privacy failure:
+    `error: failed to load private true labels (schema/privacy/parse
+    error; details suppressed)` (no raw exception, input/output path or
+    basename, raw JSON, or label text).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4b_dual_rubric_true_label_smoke.py    => PASS
+python3 eval/d4b_dual_rubric_true_label_smoke.py --self-test      => PASS (206/206 checks)
+python3 eval/d4b_dual_rubric_true_label_smoke.py \
+  --out artifacts/d4b_dual_rubric_true_label_smoke/\
+d4b_dual_rubric_true_label_smoke_report.json                     => PASS
+  (status: blocked_no_true_label_bundle_available,
+   forbidden_scan: pass, self_test_passed: true,
+   labels_collected: false, true_label_bundle_read: false,
+   true_label_bundle_validated: false,
+   local_private_true_label_smoke_executed: false,
+   private_output_committed: false,
+   calibration_metrics_computed: false,
+   true_e_s_calibration_claimed: false,
+   synthetic_labels_accepted_as_true: false,
+   proxy_labels_accepted_as_true: false,
+   llm_labels_accepted_as_true: false,
+   model_assisted_labels_allowed: false,
+   public_release_gate_passed: false,
+   real_label_bundle_gate_passed: false,
+   private_execution_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   bundle_schema_contract_defined: true,
+   mode: public_harness_no_labels, phase: D4b)
+/tmp private smoke (synthetic human-manual-shaped bundle)        => PASS
+  (synthetic_harness_test=true,
+   local_private_true_label_smoke_executed=false,
+   no input/output path, basename, raw label, sentinel, exact
+   counts, or labels key in output/stdout/stderr)
+/tmp private smoke (real-mode flag-path test over synthetic fixture)
+                                                                 => PASS
+  (synthetic_harness_test=false,
+   local_private_true_label_smoke_executed=true locally only,
+   true_label_bundle_read=true, true_label_bundle_validated=true,
+   NOT committed)
+CLI guard matrix (missing allow/input/out, committed out,
+  non-/tmp out, synthetic without allow)                         => PASS (all exit 2)
+Resolved /tmp symlink-escape guard (parent symlink,
+  existing output file symlink)                                  => PASS (exit 2)
+Sanitized error (proxy/synthetic/llm source, malformed bundle,
+  nonexistent input)                                             => PASS (exit 2, no leak)
+python3 scripts/validate_docs_i18n.py                            => PASS
+git diff --check                                                 => PASS
+```
+
+D4b freezes the true-label bundle input contract (`d4b_true_label_bundle_v1`,
+`label_source=human_manual_true_e_s`, rater_count>=2, six-key label
+objects) and hardens execution controls: CLI/privacy guards, strong
+resolved `/tmp` symlink-escape guard, validate-before-read, fail-closed
+forbidden scanning, and sanitized errors. The default committed artifact
+is blocked/no-labels: it collects no labels, reads no true-label
+bundles, validates no bundle as true labels, computes no calibration
+metrics, measures no inter-rater agreement, claims no true/proxy
+calibration, and passes no release gate. The `/tmp` synthetic
+human-manual-shaped smoke passed all gates with
+`synthetic_harness_test=true` and
+`local_private_true_label_smoke_executed=false`, and no
+path/basename/raw-label/sentinel/exact-count/labels-key leak in
+output/stdout/stderr. Proxy/synthetic/LLM sources were rejected as true
+labels. A real-mode `/tmp` flag-path test over a synthetic fixture set
+`local_private_true_label_smoke_executed=true`,
+`true_label_bundle_read=true`, and `true_label_bundle_validated=true`
+locally only (never committed); this tests the private-mode truth flags and
+is not public evidence that real human labels exist.
+
+### Caveats
+
+- D4b is the true-label smoke harness public artifact only. It is
+  eval/diagnostic only. It does NOT change runtime, retriever, pack,
+  model, backend, or default policy; it does NOT change EvidenceCore
+  semantics. It is NOT a benchmark result, NOT a downstream agent value
+  claim, NOT a runtime-clean general algorithm claim, NOT an OOD
+  temporal claim, and NOT a QuIVer systems claim.
+- D4b default is blocked / no-labels. The default committed artifact
+  collects NO labels, reads NO true-label bundles, validates NO bundle
+  as true labels, computes NO calibration metrics, measures NO
+  inter-rater agreement, claims NO true/proxy calibration, and passes NO
+  public-release / real-bundle gate. Harness/control flags are true only
+  for the validated harness/controls, NOT for any real calibration.
+- Synthetic/proxy/LLM labels are NOT accepted as true labels. They may
+  appear only in self-tests and optional private-mode harness tests,
+  with `local_private_true_label_smoke_executed=false`.
+- The private smoke mode is `/tmp` only and NEVER committed. It
+  validates a local/private true-label-bundle-shaped JSON only to
+  validate shape/gates; it does NOT compute or claim true calibration
+  metrics. A real local private run may set
+  `local_private_true_label_smoke_executed=true` locally only, and then
+  truthfully records `true_label_bundle_read=true` and
+  `true_label_bundle_validated=true` in that local-only output. The validation
+  run used a synthetic fixture to test this flag path; it is not public evidence
+  that real human labels exist.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`)
+  remain true; the five harness/control flags are the only true control
+  flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was NOT updated (D4b is a
+  harness/blocked artifact; no conclusions change).
