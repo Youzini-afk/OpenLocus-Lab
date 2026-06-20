@@ -19,6 +19,47 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## 当前状态更新 —— 2026-06-20（D4-series rollup / D5 阻塞）
+
+最新 checkpoint 是 D4-series harness rollup（`b7c65dd`，`add D4 harness rollup`）。
+它是公开纯汇总 artifact（`eval/d4_series_rollup.py` ->
+`artifacts/d4_series_rollup/d4_series_rollup_report.json`），字段为
+`schema_version=d4_series_rollup.v1`、
+`claim_level=d4_series_harness_rollup_only`、
+`status=d5_blocked_no_real_human_manual_labels`。
+
+C4 外部 benchmark readiness 序列已完成到 C4.5：ContextBench schema/readiness 与
+verified row-mapping smoke、SWE-Explore row-mapping 及负向 line-budget shape 观察、
+CORE-Bench source-readiness no-go、RepoQA source/schema-contract readiness。这些是
+readiness 与边界结果，**不是**外部 benchmark performance claim。
+
+Step 6 / D 系列 dual-rubric 控制面已完成到 D4 rollup：
+
+```text
+D1 deterministic dual-rubric scaffold
+-> D2 public aggregate mappability + private proxy smoke
+-> D3 true E/S label protocol preregistration
+-> D4a execution gate / dry-run
+-> D4b true-label bundle harness
+-> D4c annotation packet builder harness
+-> D4d human annotation runbook/checklist
+-> D4e filled-packet -> D4b bundle converter harness
+-> D4f D4b bundle validation / gate-check harness
+-> D4-series rollup / D5 blocked status
+```
+
+D 系列结果只是控制面就绪。它**没有**采集真实人工/手工 labels，**没有**在真实人工
+label bundle 上执行转换或校验，**没有**计算 calibration/agreement/CI 指标，也**没有**
+解锁 D5。D5 仍被阻塞，直到真实人工/手工 true E/S labels 存在、D4e/D4f 在这些真实
+labels 上本地运行，并且 min-N/k/agreement/CI gates 通过。
+
+当前 no-claim flags 仍为 false：`promotion_ready=false`、
+`default_should_change=false`、`evidencecore_semantics_changed=false`、
+`runtime_clean_general_algorithm_claimed=false`、`downstream_agent_value_proven=false`、
+`true_e_s_calibration_claimed=false`，且没有 external benchmark performance claim。
+下一步合理工作是 E1 policy-change gate preregistration artifact：定义未来任何
+runtime/default-policy proposal 前所需证据；它本身不得修改 runtime/default 行为。
+
 ## 当前状态更新 —— 2026-06-20（C4.1 外部 benchmark adapter / schema 就绪）
 
 C4.1 是一个**有界的外部 benchmark adapter / schema 就绪**阶段，**不是**外部

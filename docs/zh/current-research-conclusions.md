@@ -1,10 +1,62 @@
 # OpenLocus 当前研究结论
 
-日期：2026-06-17
+日期：2026-06-20
 
-范围：R0-R45、real-provider P1-P9、P8/P9 CI scale-up、L1/L2 真实-provider 大仓库 slice 测试、P20-LS/P20-LS-A 低上下文 LLM query-alias 结果，以及 P21-G 跨模型上下文注入研究转向。
+范围：R0-R45 至 B 系列机制/策略研究、C1-C4 外部 benchmark/readiness 工作，以及 Step 6 / D 系列 dual-rubric 控制面 harness 到 D4-series rollup。
 
 状态：研究结论总结，不是 promotion request，不是默认策略升级申请。
+
+## 2026-06-20 当前状态：C4 Readiness 完成；D4-Series Rollup 完成；D5 阻塞
+
+OpenLocus 已完成 C4 外部 benchmark readiness 序列，并完成 Step 6 / D 系列
+dual-rubric 控制面序列直到 D4-series rollup。最新提交 checkpoint 为 `b7c65dd`
+（`add D4 harness rollup`），记录 `claim_level=d4_series_harness_rollup_only`
+和 `status=d5_blocked_no_real_human_manual_labels`。
+
+C4 序列建立了外部 benchmark readiness 边界，但**不**声明 benchmark 性能：
+ContextBench schema 与 verified row-mapping smokes、SWE-Explore row-mapping 及
+负向 line-budget shape 观察、CORE-Bench source-readiness no-go、RepoQA
+source/schema-contract readiness。所有公开 artifact 仍保持 aggregate-only，不持久化
+raw benchmark rows、labels、row-level hashes、paths、spans、prompts、responses、
+snippets、provider payloads 或私有标识符。
+
+D 系列把 Step 6 dual-rubric relevance 从 deterministic scaffold 推进到 proxy
+mappability、true-label protocol preregistration，并完成整个 D4 控制面链：
+
+```text
+D4a execution gate / dry-run
+-> D4b true-label bundle harness
+-> D4c annotation packet builder harness
+-> D4d human annotation runbook/checklist
+-> D4e filled-packet -> D4b bundle converter harness
+-> D4f D4b bundle validation / gate-check harness
+-> D4-series rollup / D5 blocked status
+```
+
+这只是控制面就绪，不是真实 E/S 经验校准。D5 仍被阻塞，因为当前不存在真实人工/
+手工 true E/S labels，没有在真实 labels 上运行 D4e real local conversion，没有在
+真实 labels 上运行 D4f real local validation，且真实 labels 的 min-N/k/agreement/CI
+门尚未通过。D4 rollup 在 flat 字段与嵌套 `d5_prerequisites` 对象中显式记录这些
+阻塞项。
+
+当前 no-claim 状态保持不变：
+
+```text
+promotion_ready=false
+default_should_change=false
+evidencecore_semantics_changed=false
+runtime_clean_general_algorithm_claimed=false
+downstream_agent_value_proven=false
+true_e_s_calibration_claimed=false
+external_benchmark_performance_claimed=false
+d5_public_aggregate_candidate_allowed=false
+```
+
+因此下一步不应进入 D5 校准，也不应修改 runtime 或默认策略。更合适的下一步是
+policy-change gate preregistration / algorithm-freeze prerequisites artifact：定义未来
+任何 runtime/default-policy proposal 之前必须具备哪些证据。该 E1 风格 artifact
+必须保持 diagnostic-only，除非后续真实 D5 人工/手工 aggregate calibration 以及
+internal/external、ablation、rollback、downstream-evaluation 等门全部成立。
 
 ## P57 泛化门控 v0
 

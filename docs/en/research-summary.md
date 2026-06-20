@@ -12,6 +12,51 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## Current status update — 2026-06-20 (D4-series rollup / D5 blocked)
+
+The latest checkpoint is the D4-series harness rollup (`b7c65dd`,
+`add D4 harness rollup`). It is a public rollup-only artifact
+(`eval/d4_series_rollup.py` ->
+`artifacts/d4_series_rollup/d4_series_rollup_report.json`) with
+`schema_version=d4_series_rollup.v1`,
+`claim_level=d4_series_harness_rollup_only`, and
+`status=d5_blocked_no_real_human_manual_labels`.
+
+The C4 external benchmark readiness sequence is complete through C4.5: ContextBench
+schema/readiness and verified row-mapping smoke, SWE-Explore row-mapping with a
+negative line-budget-shape observation, CORE-Bench source-readiness no-go, and
+RepoQA source/schema-contract readiness. These are readiness and boundary results,
+not external benchmark performance claims.
+
+The Step 6 / D-series dual-rubric control plane is complete through D4 rollup:
+
+```text
+D1 deterministic dual-rubric scaffold
+-> D2 public aggregate mappability + private proxy smoke
+-> D3 true E/S label protocol preregistration
+-> D4a execution gate / dry-run
+-> D4b true-label bundle harness
+-> D4c annotation packet builder harness
+-> D4d human annotation runbook/checklist
+-> D4e filled-packet -> D4b bundle converter harness
+-> D4f D4b bundle validation / gate-check harness
+-> D4-series rollup / D5 blocked status
+```
+
+The D-series result is control-plane readiness only. It does **not** collect real
+human/manual labels, does **not** convert or validate a real human-label bundle,
+does **not** compute calibration/agreement/CI metrics, and does **not** unblock
+D5. D5 remains blocked until real human/manual true E/S labels exist, D4e/D4f run
+locally over those real labels, and min-N/k/agreement/CI gates pass.
+
+Current no-claim flags remain false: `promotion_ready=false`,
+`default_should_change=false`, `evidencecore_semantics_changed=false`,
+`runtime_clean_general_algorithm_claimed=false`, `downstream_agent_value_proven=false`,
+`true_e_s_calibration_claimed=false`, and external benchmark performance remains
+unclaimed. The next appropriate work is an E1 policy-change gate preregistration
+artifact that defines evidence required before any future runtime/default-policy
+proposal; it must not itself change runtime/default behavior.
+
 ## Current status update — 2026-06-20 (C4.1 external benchmark adapter / schema readiness)
 
 C4.1 is a **bounded external benchmark adapter / schema readiness** phase,

@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date: 2026-06-17
+Date: 2026-06-20
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -9,6 +9,16 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 
 - [English research conclusions](en/current-research-conclusions.md)
 - [中文研究结论](zh/current-research-conclusions.md)
+
+Latest status: C4 external benchmark readiness and Step 6/D-series
+dual-rubric control-plane harnesses are complete through the D4-series
+rollup. D5 remains blocked because no real human/manual true E/S labels
+exist; no runtime/default-policy/promotion/downstream-value claim is made.
+
+最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
+harness 已推进到 D4-series rollup 并收束。由于尚无真实人工/手工 true E/S
+labels，D5 仍被阻塞；当前不作 runtime/default-policy/promotion/downstream-value
+声明。
 
 ## Mirror convention / 镜像约定
 

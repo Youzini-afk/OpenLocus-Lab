@@ -1,10 +1,68 @@
 # OpenLocus Current Research Conclusions
 
-Date: 2026-06-17
+Date: 2026-06-20
 
-Scope: R0-R45, real-provider P1-P9, P8/P9 CI scale-up, L1/L2 real-provider large-repo-slice tests, P20-LS/P20-LS-A low-context LLM query-alias results, and the P21-G cross-model context-injection pivot.
+Scope: R0-R45 through the B-series mechanism/policy work, C1-C4 external benchmark/readiness work, and Step 6 / D-series dual-rubric control-plane harnesses through the D4-series rollup.
 
 Status: Research summary, not a promotion request.
+
+## 2026-06-20 Current State: C4 Readiness Complete; D4-Series Rollup Complete; D5 Blocked
+
+OpenLocus has now completed the C4 external benchmark readiness sequence and the
+Step 6 / D-series dual-rubric control-plane sequence through the D4-series
+rollup. The latest committed checkpoint is `b7c65dd` (`add D4 harness rollup`),
+which records `claim_level=d4_series_harness_rollup_only` and
+`status=d5_blocked_no_real_human_manual_labels`.
+
+The C4 sequence established external benchmark readiness boundaries without
+claiming benchmark performance: ContextBench schema and verified row-mapping
+smokes, SWE-Explore row-mapping with a negative line-budget shape observation,
+CORE-Bench source-readiness no-go, and RepoQA source/schema-contract readiness.
+All public artifacts remain aggregate-only and do not persist raw benchmark rows,
+labels, row-level hashes, paths, spans, prompts, responses, snippets, provider
+payloads, or private identifiers.
+
+The D-series sequence moved Step 6 dual-rubric relevance from deterministic
+scaffold through proxy mappability, true-label protocol preregistration, and the
+complete D4 control-plane chain:
+
+```text
+D4a execution gate / dry-run
+-> D4b true-label bundle harness
+-> D4c annotation packet builder harness
+-> D4d human annotation runbook/checklist
+-> D4e filled-packet -> D4b bundle converter harness
+-> D4f D4b bundle validation / gate-check harness
+-> D4-series rollup / D5 blocked status
+```
+
+This is control-plane readiness, not empirical true E/S calibration. D5 remains
+blocked because no real human/manual true E/S labels exist, no D4e real local
+conversion over real labels has run, no D4f real local validation over real labels
+has run, and min-N/k/agreement/CI gates have not passed for real labels. The D4
+rollup states these blockers explicitly in both flat fields and a nested
+`d5_prerequisites` object.
+
+Current no-claim state remains unchanged:
+
+```text
+promotion_ready=false
+default_should_change=false
+evidencecore_semantics_changed=false
+runtime_clean_general_algorithm_claimed=false
+downstream_agent_value_proven=false
+true_e_s_calibration_claimed=false
+external_benchmark_performance_claimed=false
+d5_public_aggregate_candidate_allowed=false
+```
+
+Therefore the next appropriate work is not D5 calibration and not a runtime or
+default-policy change. The next research step should be a policy-change gate
+preregistration / algorithm-freeze prerequisites artifact that defines what
+evidence would be required before any future runtime/default-policy proposal.
+That future E1-style artifact must remain diagnostic-only unless and until D5
+real human/manual aggregate calibration and the required internal/external,
+ablation, rollback, and downstream-evaluation gates exist.
 
 ## P52A Source Materialization / Local Verifier Prerequisite
 
