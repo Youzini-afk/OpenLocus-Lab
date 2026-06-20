@@ -1,7 +1,8 @@
 # C4 External Benchmark Adapters — Schema + Row-Mapping Readiness v1
 
 Date: 2026-06-20 (C4.1 schema readiness; C4.2 ContextBench verified subset
-row-mapping smoke; C4.3 SWE-Explore row-mapping / line-budget aggregate smoke)
+row-mapping smoke; C4.3 SWE-Explore row-mapping / line-budget aggregate
+smoke; C4.4 CORE-Bench source readiness / no-go)
 
 C4.1 is the **external benchmark adapter / schema readiness** phase and
 C4.2 is the **ContextBench verified subset row-mapping smoke** phase.
@@ -428,6 +429,68 @@ line-budget readiness evidence. No row-level values, hashes, file paths, line
 ranges, spans, snippets, patches/tests, meta raw content, labels, provider
 payloads, content_sha, or raw HF payloads were persisted.
 
+## C4.4 CORE-Bench source readiness / no-go
+
+C4.4 is a **source-readiness no-go** phase for CORE-Bench (arXiv:2606.11864v1 —
+"CORE-Bench: A Comprehensive Benchmark for Code Retrieval in the Era of
+Agentic Coding"). It is NOT an adapter or schema-readiness module: the actual
+HF dataset files/schema are unavailable, so C4.4 only emits a
+**source-readiness no-go** report. No adapter support or schema readiness is
+claimed.
+
+### Wrong-target disambiguation
+
+The target is the agentic-coding CORE-Bench (HF placeholder
+`zhangfw123/CORE-Bench`), NOT the older `siegelz/core-bench` scientific
+reproduction benchmark. The artifact records `wrong_target_disambiguated=true`
+and `not_siegelz_core_bench=true`.
+
+### Confirmed external findings
+
+- Paper arXiv/HTML confirmed (arXiv:2606.11864v1).
+- HF dataset repo `zhangfw123/CORE-Bench` is public, non-gated, MIT-tagged
+  (from README frontmatter `license: mit`).
+- HF repo currently contains only `.gitattributes` and `README.md`
+  (`sibling_count=2`); no actual dataset files are published.
+- datasets-server preview/viewer/search/filter/statistics are unavailable;
+  `/is-valid` returns false; `/splits` unavailable; `/first-rows` unavailable.
+- No official GitHub/project page confirmed.
+- Paper aggregate facts (from arXiv Table 1, paper-level not row-level): 3
+  levels (code understanding 172,961 queries; issue-to-edit localization
+  5,061 queries / 632 repos / 52,712 qrels; broader context retrieval 2,580
+  queries / 97 repos / 106,479 qrels); total 180,602 queries; 106,479
+  broader-context labels.
+
+### Artifact
+
+`artifacts/c4_external_benchmark_adapters/c4_core_bench_source_readiness_report.json`
+(schema `c4_core_bench_source_readiness.v1`,
+`claim_level=source_readiness_no_go_only`). The status is
+`blocked_dataset_placeholder_empty` (not `pass`/`support`).
+`source_confirmation_status=paper_and_placeholder_confirmed_dataset_unavailable`.
+`adapter_support_claimed=false`, `schema_readiness_claimed=false`,
+`schema_smoke_attempted=true`, `schema_smoke_passed=false`,
+`row_map_smoke_attempted=false`, `row_level_redistribution_allowed=false`,
+`derived_label_publication_allowed=false`. All no-claim flags false;
+`aggregate_only_public_artifact=true`, `not_evidence=true`,
+`candidate_not_fact=true`, `forbidden_scan.status=pass`.
+
+### Source probes
+
+The script `eval/c4_core_bench_source_readiness.py` runs bounded network
+probes via stdlib `urllib` only (timeout 10s, no new dependencies):
+HF dataset API, HF tree API, datasets-server `/is-valid`, `/splits`,
+`/first-rows`. No raw response bodies are stored; only aggregate metadata
+and status categories are parsed. In `--offline` mode, no network calls are
+made and the report is built from confirmed static findings only.
+
+### Follow-up requirements
+
+To unblock CORE-Bench adapter/schema readiness, the following would be
+needed: actual dataset files published, schema and splits exposed,
+qrels/corpus/query files published, license and redistribution statement,
+official GitHub or project page confirmation.
+
 ## Caveats
 
 - C4.1/C4.2/C4.3 is adapter/row-mapping readiness only. It does NOT validate
@@ -437,6 +500,11 @@ payloads, content_sha, or raw HF payloads were persisted.
   task has no private attrs; private label has private values only in
   memory). Neither confirms benchmark quality, label correctness, or fitness
   for any downstream evaluation. No performance claim is made.
+- C4.4 is source-readiness no-go only. It does NOT claim adapter support or
+  schema readiness. The CORE-Bench HF dataset is currently a placeholder
+  (only `.gitattributes` + `README.md`); actual dataset files/schema are
+  unavailable. Row-level redistribution and derived-label publication remain
+  disabled until actual dataset contents and terms are published.
 - ContextBench dataset license is unknown even though the code repo is
   Apache-2.0; row-level redistribution is disabled.
 - SWE-Explore HF dataset license is `cc-by-nc-nd-4.0`; row-level
@@ -448,9 +516,11 @@ payloads, content_sha, or raw HF payloads were persisted.
 
 ## Next steps
 
-- Future external benchmark evaluation (separate from C4.1/C4.2/C4.3) would
+- Future external benchmark evaluation (separate from C4.1/C4.2/C4.3/C4.4) would
   require an explicit, evidence-gated preregistration that respects each
   benchmark's license gating and the OpenLocus public-artifact contract.
+- C4.4 follow-up: await publication of actual CORE-Bench dataset files,
+  schema, and splits before any adapter/schema readiness can be considered.
 - No promotion, no default change, no EvidenceCore semantics change, no
   runtime-clean general algorithm claim, no downstream agent value claim, no
-  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2/C4.3.
+  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2/C4.3/C4.4.

@@ -3473,3 +3473,75 @@ payloads, content_sha, or raw HF payloads were persisted.
   EvidenceCore semantics change, no runtime-clean general algorithm claim,
   no downstream agent value claim, no OOD temporal claim, and no QuIVer
   systems claim follows from C4.3.
+
+## 2026-06-20 — C4.4 CORE-Bench Source Readiness / No-Go
+
+### Objective
+
+Produce a **source-readiness no-go** artifact for CORE-Bench (arXiv:2606.11864v1
+— "CORE-Bench: A Comprehensive Benchmark for Code Retrieval in the Era of
+Agentic Coding"). The actual HF dataset files/schema are unavailable, so
+C4.4 does NOT claim adapter support or schema readiness; it only records
+that the paper and HF placeholder are confirmed but the dataset is
+unavailable. The older `siegelz/core-bench` scientific reproduction
+benchmark is explicitly disambiguated as the wrong target.
+
+### Implementation
+
+- New standalone script `eval/c4_core_bench_source_readiness.py` (pure
+  Python stdlib only). CLI: `--self-test` (no network), `--source-readiness`
+  (default mode, builds report), `--offline` (no network probes), `--out`.
+- Bounded network probes via stdlib `urllib` (timeout 10s): HF dataset API,
+  HF tree API, datasets-server `/is-valid`, `/splits`, `/first-rows`. No
+  raw response bodies are stored; only aggregate metadata and status
+  categories are parsed.
+- Strict source-readiness-specific forbidden scanner: allows official
+  source-level URLs (arXiv/HF placeholder/DOI) but forbids row-level URLs,
+  paths, spans, snippets, raw payloads, content_sha, line ranges. The
+  placeholder repo file names (`.gitattributes`, `README.md`) are allowed
+  only under `placeholder_repo_files_observed`. Injected `src/foo.py`,
+  `12-34`, `patch`, `content_sha`, multiline snippets all fail the scanner.
+- Self-test (5 groups, no network): wrong-target disambiguation rejects
+  `siegelz/core-bench`; offline no-go report builds with status not
+  pass/support; forbidden scan rejects path/range/snippet/content_sha
+  injection; source URLs allowed; report aggregate-only.
+
+### Findings
+
+```text
+python3 -m py_compile eval/c4_core_bench_source_readiness.py   => PASS
+python3 eval/c4_core_bench_source_readiness.py --self-test     => PASS (5 groups)
+python3 eval/c4_core_bench_source_readiness.py \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_core_bench_source_readiness_report.json                    => PASS
+  (status: blocked_dataset_placeholder_empty,
+   source_confirmation_status: paper_and_placeholder_confirmed_dataset_unavailable,
+   forbidden_scan: pass, new_network_calls: 5)
+```
+
+Confirmed external findings: HF dataset repo `zhangfw123/CORE-Bench` is
+public, non-gated, MIT-tagged; currently contains only `.gitattributes`
+and `README.md` (`sibling_count=2`); datasets-server `/is-valid` returns
+false; `/splits` and `/first-rows` unavailable. Paper aggregate facts
+(from arXiv Table 1): 3 levels (code understanding 172,961 queries;
+issue-to-edit localization 5,061 queries / 632 repos / 52,712 qrels;
+broader context retrieval 2,580 queries / 97 repos / 106,479 qrels);
+total 180,602 queries; 106,479 broader-context labels.
+
+### Caveats
+
+- C4.4 is source-readiness no-go only. It does NOT claim adapter support
+  or schema readiness. The CORE-Bench HF dataset is currently a placeholder
+  (only `.gitattributes` + `README.md`); actual dataset files/schema are
+  unavailable.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`. `adapter_support_claimed=false`,
+  `schema_readiness_claimed=false`, `schema_smoke_passed=false`,
+  `row_level_redistribution_allowed=false`,
+  `derived_label_publication_allowed=false`. No
+  promotion, no default change, no EvidenceCore semantics change, no
+  runtime-clean general algorithm claim, no downstream agent value claim,
+  no OOD temporal claim, and no QuIVer systems claim follows from C4.4.

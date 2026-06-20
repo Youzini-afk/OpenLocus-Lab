@@ -1,0 +1,156 @@
+{
+  "adapter_support_claimed": false,
+  "aggregate_only_public_artifact": true,
+  "arxiv_abs_url": "https://arxiv.org/abs/2606.11864",
+  "arxiv_html_url": "https://arxiv.org/html/2606.11864v1",
+  "arxiv_id": "2606.11864v1",
+  "arxiv_pdf_url": "https://arxiv.org/pdf/2606.11864",
+  "benchmark": "core_bench",
+  "candidate_not_fact": true,
+  "claim_level": "source_readiness_no_go_only",
+  "dataset_id": "zhangfw123/CORE-Bench",
+  "dataset_repo_public": true,
+  "default_should_change": false,
+  "derived_label_publication_allowed": false,
+  "doi_url": "https://doi.org/10.48550/arXiv.2606.11864",
+  "downstream_agent_value_proven": false,
+  "ds_server_first_rows_available": null,
+  "ds_server_first_rows_url": "https://datasets-server.huggingface.co/first-rows?dataset=zhangfw123/CORE-Bench&config=default&split=train",
+  "ds_server_is_valid": false,
+  "ds_server_is_valid_url": "https://datasets-server.huggingface.co/is-valid?dataset=zhangfw123/CORE-Bench",
+  "ds_server_splits_available": null,
+  "ds_server_splits_url": "https://datasets-server.huggingface.co/splits?dataset=zhangfw123/CORE-Bench",
+  "evidencecore_semantics_changed": false,
+  "follow_up_requirements": [
+    "actual_dataset_files_published",
+    "schema_and_splits_exposed",
+    "qrels_corpus_query_files_published",
+    "license_and_redistribution_statement",
+    "official_github_or_project_page_confirmation"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "gated": false,
+  "generated_at": "2026-06-20T11:49:34.636107+00:00",
+  "generated_by": "eval/c4_core_bench_source_readiness.py",
+  "hf_api_datasets_url": "https://huggingface.co/api/datasets/zhangfw123/CORE-Bench",
+  "hf_api_tree_url": "https://huggingface.co/api/datasets/zhangfw123/CORE-Bench/tree/main",
+  "hf_dataset_url": "https://huggingface.co/datasets/zhangfw123/CORE-Bench",
+  "license_tag": "mit",
+  "new_network_calls": 5,
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "not_siegelz_core_bench": true,
+  "ood_temporal_supported": false,
+  "paper_aggregate_facts": {
+    "broader_context_labels": 106479,
+    "levels": [
+      {
+        "level": "code_understanding",
+        "queries": 172961
+      },
+      {
+        "level": "issue_to_edit_localization",
+        "qrels": 52712,
+        "queries": 5061,
+        "repos": 632
+      },
+      {
+        "level": "broader_context_retrieval",
+        "qrels": 106479,
+        "queries": 2580,
+        "repos": 97
+      }
+    ],
+    "paper_aggregate_only": true,
+    "total_queries": 180602
+  },
+  "placeholder_repo_files_observed": [
+    ".gitattributes",
+    "README.md"
+  ],
+  "private": false,
+  "promotion_ready": false,
+  "quiver_systems_supported": false,
+  "raw_response_stored": false,
+  "raw_rows_persisted": false,
+  "row_level_hashes_emitted": false,
+  "row_level_redistribution_allowed": false,
+  "row_level_values_emitted": false,
+  "row_map_smoke_attempted": false,
+  "row_map_smoke_passed": false,
+  "runtime_clean_general_algorithm_claimed": false,
+  "schema_readiness_claimed": false,
+  "schema_smoke_attempted": true,
+  "schema_smoke_passed": false,
+  "schema_version": "c4_core_bench_source_readiness.v1",
+  "self_test": false,
+  "sibling_count": 2,
+  "source_confirmation_status": "paper_and_placeholder_confirmed_dataset_unavailable",
+  "source_probes": {
+    "network_calls": 5,
+    "offline_mode": false,
+    "probes": [
+      {
+        "card_license": "mit",
+        "dataset_repo_public": true,
+        "endpoint": "hf_api_datasets",
+        "gated": false,
+        "http_code": 200,
+        "license_tag": "mit",
+        "placeholder_repo_files_observed": [
+          ".gitattributes",
+          "README.md"
+        ],
+        "private": false,
+        "sibling_count": 2,
+        "status": "pass"
+      },
+      {
+        "endpoint": "hf_api_tree",
+        "http_code": 200,
+        "placeholder_repo_files_observed": [
+          ".gitattributes",
+          "README.md"
+        ],
+        "status": "pass",
+        "tree_file_count": 2
+      },
+      {
+        "configs_observed_count": null,
+        "endpoint": "ds_server_is_valid",
+        "first_rows_available": null,
+        "http_code": 200,
+        "is_valid": false,
+        "splits_available": null,
+        "status": "pass"
+      },
+      {
+        "configs_observed_count": null,
+        "endpoint": "ds_server_splits",
+        "first_rows_available": null,
+        "http_code": 500,
+        "is_valid": null,
+        "splits_available": null,
+        "status": "unavailable"
+      },
+      {
+        "configs_observed_count": null,
+        "endpoint": "ds_server_first_rows",
+        "first_rows_available": null,
+        "http_code": 404,
+        "is_valid": null,
+        "splits_available": null,
+        "status": "unavailable"
+      }
+    ]
+  },
+  "status": "blocked_dataset_placeholder_empty",
+  "target_title": "CORE-Bench: A Comprehensive Benchmark for Code Retrieval in the Era of Agentic Coding",
+  "wrong_target_dataset_id": "siegelz/core-bench",
+  "wrong_target_disambiguated": true,
+  "wrong_target_note": "older scientific-reproduction benchmark; not the agentic-coding CORE-Bench targeted by C4.4"
+}
