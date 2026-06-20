@@ -4427,3 +4427,217 @@ is not public evidence that real human labels exist.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified. `current-research-conclusions` was NOT updated (D4b is a
   harness/blocked artifact; no conclusions change).
+
+## 2026-06-20 — D4c Annotation Packet Builder Harness (Public Harness / No-Packets Artifact)
+
+### Objective
+
+Implement D4c as the **annotation packet builder harness** public
+artifact. D4c bridges private source records to future human
+annotations by building local/private annotation packets with blank
+label slots. The **default committed artifact is a public harness /
+no-packets artifact**, NOT a real packet build. D4c must NOT collect
+labels, NOT fill label slots, NOT create a D4b true-label bundle, NOT
+run the packet->bundle converter, NOT compute calibration metrics, NOT
+perform model/LLM labeling, NOT read private source records by default,
+NOT emit provider payloads/API keys/secrets/model outputs, and NOT
+change runtime behavior, retriever, pack, model, backend, default
+policy, or EvidenceCore semantics. Unlike D4b, the D4c private packet
+output MAY intentionally contain sensitive context (paths/snippets/
+content_sha/query/candidate text) for human labeling, but ONLY under
+`/tmp` and NEVER committed; the public artifact stays packet-free.
+
+### Implementation
+
+- New script `eval/d4c_annotation_packet_builder.py` (pure Python
+  stdlib; no external imports). Public harness/no-packets by default;
+  private packet builder is an explicit `/tmp`-only harness.
+  - Claim level `annotation_packet_builder_harness_only`; status
+    `blocked_no_private_source_records_available_or_no_packets_built`;
+    mode `public_harness_no_packets`; phase `D4c`; D4b bundle schema
+    target `d4b_true_label_bundle_v1`.
+  - CLI: `--self-test`, `--out`, `--allow-private-source-records`,
+    `--input` (no synthetic flag; private mode always builds packets from
+    whatever valid input is given). Default mode (no private args) writes
+    the committed public harness/no-packets artifact.
+  - Default false flags (all false): `private_source_records_read`,
+    `private_source_records_persisted`, `annotation_packets_built`,
+    `annotation_packets_persisted`, `private_packet_output_written`,
+    `packet_output_path_emitted`, `private_input_path_emitted`,
+    `packet_ids_emitted`, `task_ids_emitted`, `repo_ids_emitted`,
+    `paths_or_spans_emitted`, `snippets_emitted`, `content_sha_emitted`,
+    `query_text_emitted`, `candidate_text_emitted`,
+    `private_packet_output_contains_sensitive_context`,
+    `private_packet_schema_validated`, `private_packet_labels_filled`,
+    `labels_collected`, `true_label_bundle_created`,
+    `d4b_true_label_bundle_validated`, `d4b_bundle_converter_run`,
+    `calibration_metrics_computed`, `model_or_llm_labeling_performed`,
+    `provider_payloads_emitted`, `annotation_instructions_emitted`,
+    `true_e_s_calibration_claimed`, `public_release_gate_passed`.
+  - Harness/control flags (exactly six, all true):
+    `private_packet_builder_harness_available`,
+    `private_cli_guard_validated`, `tmp_output_resolved_guard_validated`,
+    `sanitized_error_guard_validated`, `packet_schema_contract_defined`,
+    `d4b_mapping_contract_defined`. No packet-build / label / bundle /
+    calibration claim flags are true in the default committed artifact.
+  - Public contracts: `private_source_record_schema_contract`
+    (category-only; schema `d4c_private_source_records_v1`,
+    `private_only=true`, `may_contain_sensitive_context=true`);
+    `packet_schema_contract` (schema `d4c_annotation_packet_v1`,
+    `private_only=true`, `may_contain_sensitive_context=true`,
+    `required_label_slots=[e_score,s_score,bucket,citation_valid,
+    rater_pair_present,adjudicated]`, `target_bundle_schema=
+    d4b_true_label_bundle_v1`); `d4b_mapping_contract`
+    (`target_bundle_schema=d4b_true_label_bundle_v1`, same
+    `packet_label_slots`,
+    `packet_to_bundle_requires_manual_transcription_or_local_converter=true`,
+    `converter_not_run=true`, `true_label_bundle_created=false`).
+  - Private source-records contract (`d4c_private_source_records_v1`):
+    records list; each record requires exactly `private_record_ref`,
+    `candidate_ref`, `query_text`, `candidate_text`,
+    `candidate_bucket_hint`, `evidence`; each evidence entry requires
+    exactly `path`, `start_line`, `end_line`, `content_sha`, `snippet`;
+    `candidate_bucket_hint` in `primary_evidence`/`dependency_support`/
+    `weak_candidates`/`abstained`/`unknown`; `start_line`/`end_line`
+    positive ints with `start_line <= end_line`; `content_sha` 32/40/64
+    hex. Unknown keys (`provider_payload`, `api_key`, `secret`,
+    `model_output`, `prompt_response`, labels/label rows) rejected
+    fail-closed.
+  - Strong resolved `/tmp` guard: resolve `/tmp`; resolve output parent
+    before private input read; reject parent symlink escaping `/tmp`;
+    reject existing output file symlink; reject resolved target escaping
+    `/tmp`; reject committed artifact path and non-`/tmp` out before read.
+    All output guards run before the input is opened or stat'd
+    (validate-before-read).
+  - Two scanners: (1) public artifact scanner (strict, fail-closed,
+    with exact contract string allowlist — only approved schema IDs and
+    approved label-slot field-name tokens are allowed inside contract
+    containers; arbitrary strings such as implementation symbols or
+    private text are rejected even inside contract containers; field names
+    remain forbidden as keys anywhere and as values outside contracts);
+    (2) private packet guard
+    (different — allows paths/snippets/content_sha/query/candidate text/
+    annotation instructions/blank label slots in `/tmp` private packets,
+    enforces packet schema, blank label slots, no filled E0/E1/E2/
+    S0/S1/S2 values, no D4b bundle, no converter, no calibration, no
+    model labeling, rejects provider secrets/API keys/provider payloads/
+    model outputs). The public scanner is not weakened to let private
+    packets pass.
+  - Private packet output is `/tmp` only and never committed. It
+    contains sensitive context (local packet refs, query/candidate text,
+    evidence path/spans/snippet/content_sha, annotation instructions,
+    blank label slots) and the safe flags `private_packet_output=true`,
+    `public_artifact=false`, `do_not_commit=true`,
+    `labels_filled_by_builder=false`, `d4b_bundle_created=false`,
+    `d4b_bundle_converter_run=false`, `true_label_bundle_created=false`,
+    `calibration_metrics_computed=false`,
+    `model_or_llm_labeling_performed=false`. It never echoes
+    input/output paths or basenames in metadata/stdout/stderr, and
+    creates no D4b bundle or labels/calibration claims.
+  - Fixed sanitized error for any private source-records load/parse/
+    schema/privacy failure:
+    `error: failed to load private source records (schema/privacy/parse
+    error; details suppressed)` (no raw exception, input/output path or
+    basename, raw JSON, or private text).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4c_annotation_packet_builder.py    => PASS
+python3 eval/d4c_annotation_packet_builder.py --self-test      => PASS (233/233 checks)
+python3 eval/d4c_annotation_packet_builder.py \
+  --out artifacts/d4c_annotation_packet_builder/\
+d4c_annotation_packet_builder_report.json                     => PASS
+  (status: blocked_no_private_source_records_available_or_no_packets_built,
+   forbidden_scan: pass, self_test_passed: true,
+   private_source_records_read: false,
+   annotation_packets_built: false,
+   private_packet_output_written: false,
+   private_packet_output_contains_sensitive_context: false,
+   labels_collected: false,
+   true_label_bundle_created: false,
+   d4b_bundle_converter_run: false,
+   calibration_metrics_computed: false,
+   model_or_llm_labeling_performed: false,
+   provider_payloads_emitted: false,
+   public_release_gate_passed: false,
+   private_packet_builder_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   packet_schema_contract_defined: true,
+   d4b_mapping_contract_defined: true,
+   mode: public_harness_no_packets, phase: D4c,
+   d4b_bundle_schema_target: d4b_true_label_bundle_v1)
+/tmp private packet builder (synthetic source records)         => PASS
+  (annotation_packets_built=true,
+   private_packet_output_contains_sensitive_context=true,
+   private_packet_guard: pass, label_slots all null,
+   sensitive context (path/snippet/content_sha/query_text/
+   candidate_text/annotation_instructions/packet_ref) present in
+   /tmp output but NOT in public artifact,
+   no input/output path or basename in metadata/stdout/stderr,
+   no provider secrets, no D4b bundle, no converter, no
+   calibration, no model labeling, NOT committed)
+CLI guard matrix (input without allow, allow without input,
+  no explicit out, committed out, non-/tmp out)                => PASS (all exit 2)
+Resolved /tmp symlink-escape guard (parent symlink,
+  existing output file symlink)                                => PASS (exit 2)
+Malformed private input sanitized error                         => PASS (exit 2, no leak)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4c freezes the annotation packet builder harness contract
+(`d4c_private_source_records_v1` / `d4c_annotation_packet_v1` input,
+six blank label slots, `d4b_true_label_bundle_v1` target) and hardens
+execution controls: CLI/privacy guards, strong resolved `/tmp`
+symlink-escape guard, validate-before-read, a split public scanner
+(with exact contract string allowlist) and private packet guard, fail-closed
+forbidden scanning, and sanitized errors. The default committed
+artifact is blocked/no-packets: it reads no private source records,
+builds no packets, fills no labels, creates no D4b bundle, runs no
+converter, computes no calibration, performs no model/LLM labeling,
+and passes no release gate. The `/tmp` synthetic source-records packet
+build wrote packets with sensitive context present
+(`private_packet_output_contains_sensitive_context=true`,
+`annotation_packets_built=true`), blank label slots, no filled E/S
+values, no D4b bundle, no converter, no calibration, no model labeling,
+no provider secrets, and no input/output path/basename leak in
+output/stdout/stderr — while the public artifact stayed packet-free.
+Provider payload/API key/secret/model output/prompt_response/labels in
+source input were rejected fail-closed.
+
+### Caveats
+
+- D4c is the annotation packet builder harness public artifact only. It
+  is eval/diagnostic only. It does NOT change runtime, retriever, pack,
+  model, backend, or default policy; it does NOT change EvidenceCore
+  semantics. It is NOT a benchmark result, NOT a downstream agent value
+  claim, NOT a runtime-clean general algorithm claim, NOT an OOD
+  temporal claim, and NOT a QuIVer systems claim.
+- D4c default is blocked / no-packets. The default committed artifact
+  reads NO private source records, builds NO packets, persists NO
+  packets, fills NO labels, creates NO D4b bundle, runs NO converter,
+  computes NO calibration, performs NO model/LLM labeling, and passes
+  NO public-release gate. Harness/control flags are true only for the
+  validated harness/controls, NOT for any real packet build or label
+  claim.
+- D4c is NOT label collection, NOT D4b true-label bundle creation, NOT
+  calibration, and NOT release readiness. It builds packets with blank
+  label slots for human raters; it does not run the packet->bundle
+  converter.
+- The private packet builder mode is `/tmp` only and NEVER committed.
+  Unlike D4b, the D4c private packet output MAY intentionally contain
+  sensitive context required for human labeling (local packet refs,
+  query/candidate text, evidence path/spans/snippet/content_sha,
+  annotation instructions, blank label slots), but ONLY under `/tmp`.
+  The default public artifact never reads private records and contains
+  no packet/private content.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`)
+  remain true; the six harness/control flags are the only true control
+  flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was NOT updated (D4c is a
+  harness/blocked artifact; no conclusions change).

@@ -4263,3 +4263,192 @@ LLM 源作为真实标签被拒绝。基于合成 fixture 的真实模式 `/tmp`
 - 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
   `current-research-conclusions` **未**更新（D4b 是夹具/blocked 产物；
   结论无变化）。
+
+## 2026-06-20 — D4c 标注 Packet 构建夹具（公开夹具 / 无 Packet 产物）
+
+### 目标
+
+将 D4c 实现为**标注 packet 构建夹具**公开产物。D4c 通过构建带空标签
+槽的本地/私有标注 packet，将私有源记录桥接到未来的人工标注。**默认提交
+的产物是公开夹具 / 无 packet 产物**，而非真实 packet 构建结果。D4c
+**不**采集标签、**不**填充标签槽、**不**创建 D4b 真实标签 bundle、
+**不**运行 packet->bundle 转换器、**不**计算校准指标、**不**进行
+model/LLM 标注、默认**不**读取私有源记录、**不**输出 provider payload/
+API key/secret/model output，也**不**改变运行时行为、检索器、pack、
+模型、后端、默认策略或 EvidenceCore 语义。与 D4b 不同，D4c 私有 packet
+输出**可**有意含敏感上下文（路径/snippet/content_sha/query/candidate
+文本）用于人工标注，但**仅**在 `/tmp` 下且**绝不**提交；公开产物保持无
+packet。
+
+### 实现
+
+- 新脚本 `eval/d4c_annotation_packet_builder.py`（纯 Python stdlib；无
+  外部导入）。默认公开夹具/无 packet；私有 packet 构建是显式的仅
+  `/tmp` 夹具。
+  - 声明级别 `annotation_packet_builder_harness_only`；状态
+    `blocked_no_private_source_records_available_or_no_packets_built`；
+    模式 `public_harness_no_packets`；阶段 `D4c`；D4b bundle schema
+    target `d4b_true_label_bundle_v1`。
+  - CLI：`--self-test`、`--out`、`--allow-private-source-records`、
+    `--input`（无 synthetic 标志；私有模式总是从任意有效输入构建
+    packet）。默认模式（无私有参数）写入已提交公开夹具/无 packet 产物。
+  - 默认 false 标志（全为 false）：`private_source_records_read`、
+    `private_source_records_persisted`、`annotation_packets_built`、
+    `annotation_packets_persisted`、`private_packet_output_written`、
+    `packet_output_path_emitted`、`private_input_path_emitted`、
+    `packet_ids_emitted`、`task_ids_emitted`、`repo_ids_emitted`、
+    `paths_or_spans_emitted`、`snippets_emitted`、`content_sha_emitted`、
+    `query_text_emitted`、`candidate_text_emitted`、
+    `private_packet_output_contains_sensitive_context`、
+    `private_packet_schema_validated`、`private_packet_labels_filled`、
+    `labels_collected`、`true_label_bundle_created`、
+    `d4b_true_label_bundle_validated`、`d4b_bundle_converter_run`、
+    `calibration_metrics_computed`、`model_or_llm_labeling_performed`、
+    `provider_payloads_emitted`、`annotation_instructions_emitted`、
+    `true_e_s_calibration_claimed`、`public_release_gate_passed`。
+  - 夹具/控制标志（恰好六个，全为 true）：
+    `private_packet_builder_harness_available`、
+    `private_cli_guard_validated`、`tmp_output_resolved_guard_validated`、
+    `sanitized_error_guard_validated`、`packet_schema_contract_defined`、
+    `d4b_mapping_contract_defined`。默认提交产物中无 packet 构建/标签/
+    bundle/校准声明标志为 true。
+  - 公开契约：`private_source_record_schema_contract`
+    （category-only；schema `d4c_private_source_records_v1`、
+    `private_only=true`、`may_contain_sensitive_context=true`）；
+    `packet_schema_contract`（schema `d4c_annotation_packet_v1`、
+    `private_only=true`、`may_contain_sensitive_context=true`、
+    `required_label_slots=[e_score,s_score,bucket,citation_valid,
+    rater_pair_present,adjudicated]`、`target_bundle_schema=
+    d4b_true_label_bundle_v1`）；`d4b_mapping_contract`
+    （`target_bundle_schema=d4b_true_label_bundle_v1`、同
+    `packet_label_slots`、
+    `packet_to_bundle_requires_manual_transcription_or_local_converter=true`、
+    `converter_not_run=true`、`true_label_bundle_created=false`）。
+  - 私有源记录契约（`d4c_private_source_records_v1`）：records 列表；
+    每条记录恰好需要 `private_record_ref`、`candidate_ref`、
+    `query_text`、`candidate_text`、`candidate_bucket_hint`、
+    `evidence`；每个 evidence 条目恰好需要 `path`、`start_line`、
+    `end_line`、`content_sha`、`snippet`；`candidate_bucket_hint` 属于
+    `primary_evidence`/`dependency_support`/`weak_candidates`/
+    `abstained`/`unknown`；`start_line`/`end_line` 正整数且
+    `start_line <= end_line`；`content_sha` 为 32/40/64 位十六进制。
+    未知键（`provider_payload`、`api_key`、`secret`、`model_output`、
+    `prompt_response`、labels/label 行）被 fail-closed 拒绝。
+  - 强解析 `/tmp` 守卫：解析 `/tmp`；在读取私有输入前解析输出父目录；
+    拒绝父 symlink 逃逸 `/tmp`；拒绝已存在输出文件 symlink；拒绝解析后
+    逃逸 `/tmp` 的目标；读取前拒绝已提交产物路径与非 `/tmp` 输出。所有
+    输出守卫在输入被打开或 stat 前运行（validate-before-read）。
+  - 两套扫描器：(1) 公开产物扫描器（严格、fail-closed、带精确契约字符串
+    白名单——只有批准的 schema ID 与批准的 label-slot 字段名 token 可出现
+    在契约容器内；实现符号或私有文本等任意字符串即使在契约容器内也会被
+    拒绝；字段名作为键在任何位置被禁止，作为值在契约外被禁止）；
+    (2) 私有 packet 守卫（不同——仅允许
+    在 `/tmp` 私有 packet 中出现路径/snippet/content_sha/query/candidate
+    文本/标注说明/空标签槽，强制 packet schema、空标签槽、无已填充
+    E0/E1/E2/S0/S1/S2 值、无 D4b bundle、无转换器、无校准、无 model
+    标注，拒绝 provider secret/API key/provider payload/model output）。
+    公开扫描器未被削弱以让私有 packet 通过。
+  - 私有 packet 输出仅 `/tmp` 且绝不提交。它含敏感上下文（本地 packet
+    ref、query/candidate 文本、evidence path/span/snippet/content_sha、
+    标注说明、空标签槽）及安全标志 `private_packet_output=true`、
+    `public_artifact=false`、`do_not_commit=true`、
+    `labels_filled_by_builder=false`、`d4b_bundle_created=false`、
+    `d4b_bundle_converter_run=false`、`true_label_bundle_created=false`、
+    `calibration_metrics_computed=false`、
+    `model_or_llm_labeling_performed=false`。它绝不在元数据/stdout/stderr
+    中回显输入/输出路径或 basename，也不创建 D4b bundle 或标签/校准声明。
+  - 任何私有源记录 load/parse/schema/privacy 失败的固定消毒错误：
+    `error: failed to load private source records (schema/privacy/parse
+    error; details suppressed)`（无原始异常、输入/输出路径或 basename、
+    原始 JSON 或私有文本）。
+
+### 校验结果
+
+```text
+python3 -m py_compile eval/d4c_annotation_packet_builder.py    => PASS
+python3 eval/d4c_annotation_packet_builder.py --self-test      => PASS (233/233 项检查)
+python3 eval/d4c_annotation_packet_builder.py \
+  --out artifacts/d4c_annotation_packet_builder/\
+d4c_annotation_packet_builder_report.json                     => PASS
+  (status: blocked_no_private_source_records_available_or_no_packets_built,
+   forbidden_scan: pass, self_test_passed: true,
+   private_source_records_read: false,
+   annotation_packets_built: false,
+   private_packet_output_written: false,
+   private_packet_output_contains_sensitive_context: false,
+   labels_collected: false,
+   true_label_bundle_created: false,
+   d4b_bundle_converter_run: false,
+   calibration_metrics_computed: false,
+   model_or_llm_labeling_performed: false,
+   provider_payloads_emitted: false,
+   public_release_gate_passed: false,
+   private_packet_builder_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   packet_schema_contract_defined: true,
+   d4b_mapping_contract_defined: true,
+   mode: public_harness_no_packets, phase: D4c,
+   d4b_bundle_schema_target: d4b_true_label_bundle_v1)
+/tmp 私有 packet 构建（合成源记录）                                => PASS
+  (annotation_packets_built=true,
+   private_packet_output_contains_sensitive_context=true,
+   private_packet_guard: pass, 标签槽全为 null,
+   敏感上下文（path/snippet/content_sha/query_text/
+   candidate_text/annotation_instructions/packet_ref）存在于
+   /tmp 输出但不在公开产物中,
+   元数据/stdout/stderr 中无输入/输出路径或 basename,
+   无 provider secret、无 D4b bundle、无转换器、无校准、无
+   model 标注、不提交)
+CLI 守卫矩阵（input 无 allow、allow 无 input、无显式 out、
+  已提交输出、非 /tmp 输出）                                       => PASS (全部 exit 2)
+解析 /tmp symlink 逃逸守卫（父 symlink、
+  已存在输出文件 symlink）                                         => PASS (exit 2)
+畸形私有输入消毒错误                                               => PASS (exit 2，无泄露)
+python3 scripts/validate_docs_i18n.py                            => PASS
+git diff --check                                                 => PASS
+```
+
+D4c 冻结标注 packet 构建夹具契约（`d4c_private_source_records_v1` /
+`d4c_annotation_packet_v1` 输入、六个空标签槽、
+`d4b_true_label_bundle_v1` 目标）并强化执行控制：CLI/隐私守卫、强解析
+`/tmp` symlink 逃逸守卫、validate-before-read、分离的公开扫描器（带精确契约
+字符串白名单）与私有 packet 守卫、fail-closed 禁止扫描与消毒错误。默认提交
+产物为 blocked/no-packets：不读取私有源记录、不构建 packet、不填充标签、
+不创建 D4b bundle、不运行转换器、不计算校准、不进行 model/LLM 标注，
+也不通过任何发布门。基于合成源记录的 `/tmp` packet 构建写出了含敏感上下
+文的 packet（`private_packet_output_contains_sensitive_context=true`、
+`annotation_packets_built=true`），标签槽为空、无已填充 E/S 值、无
+D4b bundle、无转换器、无校准、无 model 标注、无 provider secret，且
+输出/stdout/stderr 中无输入/输出路径或 basename 泄露——而公开产物保持
+无 packet。源输入中的 provider payload/API key/secret/model output/
+prompt_response/labels 被 fail-closed 拒绝。
+
+### 注意事项
+
+- D4c 仅标注 packet 构建夹具公开产物。它仅评测/诊断。它**不**改变
+  运行时、检索器、pack、模型、后端或默认策略；它**不**改变
+  EvidenceCore 语义。它**不是**基准结果、**不是**下游 agent 价值
+  声明、**不是** runtime-clean 通用算法声明、**不是** OOD 时间维度
+  声明，也**不是** QuIVer 系统声明。
+- D4c 默认是 blocked / 无 packet。默认提交产物**不**读取私有源记录、
+  **不**构建 packet、**不**持久化 packet、**不**填充标签、**不**
+  创建 D4b bundle、**不**运行转换器、**不**计算校准、**不**进行
+  model/LLM 标注，也**不**通过任何公开发布门。夹具/控制标志仅对已
+  校验的夹具/控制为 true，**并非**任何真实 packet 构建或标签声明。
+- D4c **不是**标签采集、**不是** D4b 真实标签 bundle 创建、**不是**
+  校准、**不是**发布就绪。它为人工 rater 构建带空标签槽的 packet；
+  它不运行 packet->bundle 转换器。
+- 私有 packet 构建模式仅 `/tmp` 且**绝不**提交。与 D4b 不同，D4c 私有
+  packet 输出**可**有意含人工标注所需的敏感上下文（本地 packet ref、
+  query/candidate 文本、evidence path/span/snippet/content_sha、标注
+  说明、空标签槽），但**仅**在 `/tmp` 下。默认公开产物绝不读取私有
+  记录且不含任何 packet/私有内容。
+- 所有 no-claim / no-runtime-change 标志保持为 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`、
+  `not_evidence`）保持为 true；六个夹具/控制标志是仅有的 true 控制
+  标志。
+- 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
+  `current-research-conclusions` **未**更新（D4c 是夹具/blocked 产物；
+  结论无变化）。

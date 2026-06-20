@@ -1,0 +1,1050 @@
+{
+  "aggregate_only_public_artifact": true,
+  "annotation_instructions_emitted": false,
+  "annotation_packets_built": false,
+  "annotation_packets_persisted": false,
+  "backend_changed": false,
+  "calibration_metrics_computed": false,
+  "candidate_text_emitted": false,
+  "claim_level": "annotation_packet_builder_harness_only",
+  "content_sha_emitted": false,
+  "d4b_bundle_converter_run": false,
+  "d4b_bundle_schema_target": "d4b_true_label_bundle_v1",
+  "d4b_mapping_contract": {
+    "converter_not_run": true,
+    "packet_label_slots": [
+      "e_score",
+      "s_score",
+      "bucket",
+      "citation_valid",
+      "rater_pair_present",
+      "adjudicated"
+    ],
+    "packet_to_bundle_requires_manual_transcription_or_local_converter": true,
+    "target_bundle_schema": "d4b_true_label_bundle_v1",
+    "true_label_bundle_created": false
+  },
+  "d4b_mapping_contract_defined": true,
+  "d4b_true_label_bundle_validated": false,
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-20T18:58:11.135707+00:00",
+  "generated_by": "eval/d4c_annotation_packet_builder.py",
+  "input_attestation_required": false,
+  "labels_collected": false,
+  "mode": "public_harness_no_packets",
+  "model_calls_changed": false,
+  "model_or_llm_labeling_performed": false,
+  "not_evidence": true,
+  "ood_temporal_supported": false,
+  "pack_builder_changed": false,
+  "packet_ids_emitted": false,
+  "packet_output_path_emitted": false,
+  "packet_schema_contract": {
+    "may_contain_sensitive_context": true,
+    "private_only": true,
+    "required_label_slots": [
+      "e_score",
+      "s_score",
+      "bucket",
+      "citation_valid",
+      "rater_pair_present",
+      "adjudicated"
+    ],
+    "schema": "d4c_annotation_packet_v1",
+    "target_bundle_schema": "d4b_true_label_bundle_v1"
+  },
+  "packet_schema_contract_defined": true,
+  "paths_or_spans_emitted": false,
+  "phase": "D4c",
+  "private_cli_guard_validated": true,
+  "private_input_path_emitted": false,
+  "private_packet_builder_harness": {
+    "available": true,
+    "builds_annotation_packets": true,
+    "claims_calibration": false,
+    "committed": false,
+    "creates_d4b_bundle": false,
+    "fills_labels": false,
+    "opt_in_required": true,
+    "output_location": "tmp_only_local_private",
+    "runs_converter": false
+  },
+  "private_packet_builder_harness_available": true,
+  "private_packet_labels_filled": false,
+  "private_packet_output_contains_sensitive_context": false,
+  "private_packet_output_written": false,
+  "private_packet_schema_validated": false,
+  "private_source_record_schema_contract": {
+    "may_contain_sensitive_context": true,
+    "private_only": true,
+    "schema": "d4c_private_source_records_v1"
+  },
+  "private_source_records_persisted": false,
+  "private_source_records_read": false,
+  "promotion_ready": false,
+  "provider_payloads_emitted": false,
+  "public_release_gate_passed": false,
+  "query_text_emitted": false,
+  "quiver_systems_supported": false,
+  "repo_ids_emitted": false,
+  "retriever_changed": false,
+  "runtime_behavior_changed": false,
+  "runtime_clean_general_algorithm_claimed": false,
+  "sanitized_error_guard_validated": true,
+  "schema_version": "d4c_annotation_packet_builder_harness.v1",
+  "self_test_checks": [
+    {
+      "check": "default_flag_private_source_records_read_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_source_records_persisted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_annotation_packets_built_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_annotation_packets_persisted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_packet_output_written_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_packet_output_path_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_input_path_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_packet_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_task_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_repo_ids_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_paths_or_spans_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_snippets_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_content_sha_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_query_text_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_candidate_text_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_packet_output_contains_sensitive_context_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_packet_schema_validated_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_private_packet_labels_filled_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_labels_collected_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_true_label_bundle_created_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_d4b_true_label_bundle_validated_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_d4b_bundle_converter_run_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_calibration_metrics_computed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_model_or_llm_labeling_performed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_provider_payloads_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_annotation_instructions_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_true_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "default_flag_public_release_gate_passed_false",
+      "passed": true
+    },
+    {
+      "check": "harness_control_private_packet_builder_harness_available_true",
+      "passed": true
+    },
+    {
+      "check": "harness_control_private_cli_guard_validated_true",
+      "passed": true
+    },
+    {
+      "check": "harness_control_tmp_output_resolved_guard_validated_true",
+      "passed": true
+    },
+    {
+      "check": "harness_control_sanitized_error_guard_validated_true",
+      "passed": true
+    },
+    {
+      "check": "harness_control_packet_schema_contract_defined_true",
+      "passed": true
+    },
+    {
+      "check": "harness_control_d4b_mapping_contract_defined_true",
+      "passed": true
+    },
+    {
+      "check": "no_claim_promotion_ready_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_default_should_change_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_downstream_agent_value_proven_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_runtime_behavior_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_retriever_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_pack_builder_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_model_calls_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_backend_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_default_policy_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_evidencecore_semantics_changed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_runtime_clean_general_algorithm_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_ood_temporal_supported_false",
+      "passed": true
+    },
+    {
+      "check": "no_claim_quiver_systems_supported_false",
+      "passed": true
+    },
+    {
+      "check": "diagnostic_aggregate_only_public_artifact_true",
+      "passed": true
+    },
+    {
+      "check": "diagnostic_diagnostic_only_true",
+      "passed": true
+    },
+    {
+      "check": "diagnostic_not_evidence_true",
+      "passed": true
+    },
+    {
+      "check": "default_input_attestation_required_false",
+      "passed": true
+    },
+    {
+      "check": "schema_version_correct",
+      "passed": true
+    },
+    {
+      "check": "claim_level_correct",
+      "passed": true
+    },
+    {
+      "check": "status_correct_when_self_test_passes",
+      "passed": true
+    },
+    {
+      "check": "status_self_test_failed_when_not_passed",
+      "passed": true
+    },
+    {
+      "check": "mode_public_harness_no_packets",
+      "passed": true
+    },
+    {
+      "check": "phase_d4c",
+      "passed": true
+    },
+    {
+      "check": "d4b_bundle_schema_target_correct",
+      "passed": true
+    },
+    {
+      "check": "packet_schema_contract_defined_true",
+      "passed": true
+    },
+    {
+      "check": "d4b_mapping_contract_defined_true",
+      "passed": true
+    },
+    {
+      "check": "private_source_record_schema_contract_category_only",
+      "passed": true
+    },
+    {
+      "check": "packet_schema_contract_has_schema_and_label_slots",
+      "passed": true
+    },
+    {
+      "check": "d4b_mapping_contract_converter_not_run",
+      "passed": true
+    },
+    {
+      "check": "private_packet_builder_harness_tmp_only_not_committed",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_label_slot_in_packet_schema_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_all_label_slots_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_private_source_schema_in_contract_container",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_unapproved_label_slot_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_debug_string_in_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_string_in_contract_until_approved",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_e_score_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_text_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_snippet_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_slots_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotation_instructions_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_private_record_ref_key_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_e_score_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_value_outside_contract",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_repo_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_repo_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_span_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_start_line_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_end_line_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_snippet_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_text_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_text_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_prompt_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_response_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_model_output_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_labels_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_label_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotation_row_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_rater_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotator_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_disagreement_example_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_per_row_hash_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_ref_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_packet_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_private_record_ref_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_ref_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_bucket_hint_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_evidence_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_e_score_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_s_score_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_bucket_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_slots_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_annotation_instructions_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_64_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_40_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_32_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_secret_sentinel_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_like_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_leading_slash_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_jsonl_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_colon_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_multiline_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_url_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_json_fragment",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_secret_like_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_pure_digit_count_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_phase_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_schema_version_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_status_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_safe_d4b_bundle_schema_target_string",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_generation_raises_on_leak",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_public_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "public_report_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "valid_source_records_validate",
+      "passed": true
+    },
+    {
+      "check": "unknown_source_schema_rejected",
+      "passed": true
+    },
+    {
+      "check": "non_dict_source_rejected",
+      "passed": true
+    },
+    {
+      "check": "empty_records_rejected",
+      "passed": true
+    },
+    {
+      "check": "unknown_top_key_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_with_provider_payload_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_with_api_key_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_with_secret_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_with_model_output_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_with_prompt_response_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_with_labels_rejected",
+      "passed": true
+    },
+    {
+      "check": "record_missing_field_rejected",
+      "passed": true
+    },
+    {
+      "check": "invalid_bucket_hint_rejected",
+      "passed": true
+    },
+    {
+      "check": "empty_query_text_rejected",
+      "passed": true
+    },
+    {
+      "check": "start_line_greater_than_end_line_rejected",
+      "passed": true
+    },
+    {
+      "check": "non_positive_start_line_rejected",
+      "passed": true
+    },
+    {
+      "check": "invalid_content_sha_rejected",
+      "passed": true
+    },
+    {
+      "check": "content_sha_40_hex_accepted",
+      "passed": true
+    },
+    {
+      "check": "evidence_with_extra_key_rejected",
+      "passed": true
+    },
+    {
+      "check": "empty_evidence_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_input_without_allow_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_input_without_allow_no_path_basename_leak",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_without_input_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_without_explicit_out_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_without_explicit_out_no_leak",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_committed_out_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_committed_out_no_leak",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_non_tmp_out_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_non_tmp_out_no_leak",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_tmp_out_allowed",
+      "passed": true
+    },
+    {
+      "check": "cli_default_mode_allowed",
+      "passed": true
+    },
+    {
+      "check": "cli_traversal_out_rejected",
+      "passed": true
+    },
+    {
+      "check": "validate_before_read_no_input_access_on_invalid_out",
+      "passed": true
+    },
+    {
+      "check": "validate_before_read_error_no_sentinel_leak",
+      "passed": true
+    },
+    {
+      "check": "committed_out_rejected_before_read",
+      "passed": true
+    },
+    {
+      "check": "non_tmp_out_rejected_before_read",
+      "passed": true
+    },
+    {
+      "check": "input_without_allow_rejected_before_read",
+      "passed": true
+    },
+    {
+      "check": "malformed_records_returns_sanitized_error",
+      "passed": true
+    },
+    {
+      "check": "malformed_records_error_no_sentinel_or_basename",
+      "passed": true
+    },
+    {
+      "check": "missing_input_returns_sanitized_error",
+      "passed": true
+    },
+    {
+      "check": "missing_input_error_no_path_basename_leak",
+      "passed": true
+    },
+    {
+      "check": "private_success_returns_report",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_sensitive_paths",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_snippets",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_content_sha",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_query_text",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_candidate_text",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_annotation_instructions",
+      "passed": true
+    },
+    {
+      "check": "private_report_contains_local_packet_refs",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_path_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_snippet_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_query_text_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_candidate_text_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_packet_ref_key",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_packets_list",
+      "passed": true
+    },
+    {
+      "check": "public_report_has_no_label_slots",
+      "passed": true
+    },
+    {
+      "check": "private_report_no_sentinel",
+      "passed": true
+    },
+    {
+      "check": "private_report_no_input_path_or_basename",
+      "passed": true
+    },
+    {
+      "check": "private_report_no_output_path_or_basename",
+      "passed": true
+    },
+    {
+      "check": "private_success_message_no_input_path",
+      "passed": true
+    },
+    {
+      "check": "private_success_message_no_output_path",
+      "passed": true
+    },
+    {
+      "check": "private_report_label_slots_all_null",
+      "passed": true
+    },
+    {
+      "check": "private_report_no_filled_label_values",
+      "passed": true
+    },
+    {
+      "check": "private_report_no_d4b_bundle_or_labels",
+      "passed": true
+    },
+    {
+      "check": "private_report_safe_flags",
+      "passed": true
+    },
+    {
+      "check": "private_report_truthful_sensitive_flags",
+      "passed": true
+    },
+    {
+      "check": "private_report_no_task_repo_or_path_emitted_flags",
+      "passed": true
+    },
+    {
+      "check": "private_report_harness_flags_true",
+      "passed": true
+    },
+    {
+      "check": "private_report_packet_guard_passes",
+      "passed": true
+    },
+    {
+      "check": "tmp_smoke_success_returns_report",
+      "passed": true
+    },
+    {
+      "check": "tmp_smoke_output_file_written_under_tmp",
+      "passed": true
+    },
+    {
+      "check": "tmp_smoke_readback_has_blank_label_slots",
+      "passed": true
+    },
+    {
+      "check": "tmp_smoke_readback_has_sensitive_context",
+      "passed": true
+    },
+    {
+      "check": "tmp_smoke_readback_no_input_output_path",
+      "passed": true
+    },
+    {
+      "check": "tmp_smoke_output_not_committed",
+      "passed": true
+    },
+    {
+      "check": "parent_symlink_escape_rejected",
+      "passed": true
+    },
+    {
+      "check": "parent_symlink_escape_error_no_leak",
+      "passed": true
+    },
+    {
+      "check": "existing_output_symlink_rejected",
+      "passed": true
+    },
+    {
+      "check": "valid_tmp_output_guard_passes",
+      "passed": true
+    },
+    {
+      "check": "private_guard_rejects_filled_label_slot",
+      "passed": true
+    },
+    {
+      "check": "private_guard_rejects_provider_payload_key",
+      "passed": true
+    },
+    {
+      "check": "private_guard_rejects_secret_like_value",
+      "passed": true
+    },
+    {
+      "check": "private_guard_passes_clean_packet",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_raises_when_failed",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_does_not_raise_when_passed",
+      "passed": true
+    },
+    {
+      "check": "failed_self_test_does_not_carry_success_status",
+      "passed": true
+    },
+    {
+      "check": "passed_self_test_carries_success_status",
+      "passed": true
+    },
+    {
+      "check": "cli_has_self_test_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_out_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_allow_private_source_records_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_input_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_only_required_arguments",
+      "passed": true
+    }
+  ],
+  "self_test_passed": true,
+  "self_test_summary": {
+    "failed": 0,
+    "passed": 233,
+    "total": 233
+  },
+  "snippets_emitted": false,
+  "status": "blocked_no_private_source_records_available_or_no_packets_built",
+  "task_ids_emitted": false,
+  "tmp_output_resolved_guard_validated": true,
+  "true_e_s_calibration_claimed": false,
+  "true_label_bundle_created": false
+}
