@@ -1,7 +1,7 @@
 # C4 External Benchmark Adapters — Schema + Row-Mapping Readiness v1
 
-Date: 2026-06-20 (C4.1 schema readiness); 2026-06-20 (C4.2 ContextBench
-verified subset row-mapping smoke)
+Date: 2026-06-20 (C4.1 schema readiness; C4.2 ContextBench verified subset
+row-mapping smoke; C4.3 SWE-Explore row-mapping / line-budget aggregate smoke)
 
 C4.1 is the **external benchmark adapter / schema readiness** phase and
 C4.2 is the **ContextBench verified subset row-mapping smoke** phase.
@@ -204,7 +204,7 @@ schema parseable from public HF datasets-server metadata.
 
 ```text
 python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
-python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (12 groups)
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (15 groups)
 python3 eval/c4_external_benchmark_adapters.py \
   --out artifacts/c4_external_benchmark_adapters/\
 c4_external_benchmark_adapter_report.json                     => PASS (forbidden_scan: pass)
@@ -221,13 +221,24 @@ python3 eval/c4_external_benchmark_adapters.py \
 c4_contextbench_verified_row_mapping_report.json              => PASS
   (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
    forbidden_scan: pass, private_label_isolation_verified: true)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark swe_explore \
+  --config default --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_swe_explore_row_mapping_report.json                       => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true,
+   adapter_assertions_passed: true)
 ```
 
-Self-test groups (12): ContextBench adapter separation, SWE-Explore adapter
+Self-test groups (15): ContextBench adapter separation, SWE-Explore adapter
 separation, line range normalization, forbidden scan rejects injection,
 no-claim flags exactly false, spec hash deterministic, aggregate-only report,
 forbidden scan blocks leak at generation, schema smoke report shape, row-map
-smoke aggregate-only (sentinel-clean), row-map smoke no-rows unavailable.
+smoke aggregate-only (sentinel-clean), row-map smoke no-rows unavailable,
+row-map smoke isolation failure fail-closed, swe row-map smoke aggregate-only
+(sentinel-clean), swe row-map line-budget only-counts, swe row-map isolation
+failure fail-closed.
 
 ## C4.2 ContextBench verified subset row-mapping smoke
 
@@ -309,15 +320,123 @@ were non-empty in all 10 rows. No row-level values, hashes, paths, spans,
 snippets, problem statements, patches/tests, prompts/responses, provider
 payloads, content_sha, or raw HF payloads were persisted.
 
+## C4.3 SWE-Explore row-mapping / line-budget aggregate smoke
+
+C4.3 adds a bounded **real row-mapping / line-budget shape readiness smoke**
+for SWE-Explore (`default/train`). It reads real HF datasets-server
+`/first-rows` preview rows via `_http_get_json()` (stdlib `urllib` only), and
+for each preview row calls the existing `adapt_swe_explore_row(row)` adapter
+in function scope. Real rows live ONLY in function scope / memory; they are
+adapted and immediately discarded. The public artifact records ONLY
+aggregate-only counts, booleans, fixed failure categories, and line-budget
+shape readiness counts/booleans — never raw rows, sample rows, row values,
+row-level hashes, file paths/basenames, line ranges/spans/regions, patch/
+test_patch/code snippets, modified/core file names, meta raw content,
+labels/derived labels, provider payloads, content_sha, or raw HF payloads.
+
+### CLI
+
+- `--row-map-smoke --benchmark swe_explore` (mutually exclusive with
+  `--self-test` and `--schema-smoke`; `--benchmark all` is rejected for
+  row-map smoke).
+- `--row-limit` default 10, hard cap 20.
+- `--config` default `default` for `--benchmark swe_explore` (only `default`
+  is supported); `--config` default `contextbench_verified` for
+  `--benchmark contextbench`.
+- `--split` default `train`.
+- `--out` defaults to
+  `artifacts/c4_external_benchmark_adapters/c4_swe_explore_row_mapping_report.json`
+  for SWE-Explore (and to the C4.2 path for ContextBench), so the C4.1
+  canonical schema artifact is never overwritten.
+
+### Aggregate-only output shape
+
+The SWE row-map smoke artifact (`c4_swe_explore_row_mapping.v1`,
+`claim_level=adapter_row_mapping_readiness_only`) records:
+
+- `mode: swe_explore_row_mapping_line_budget_smoke`,
+  `benchmark: swe_explore`, `dataset_id`, `config`, `split`,
+  `row_limit_requested`;
+- `rows_seen`, `rows_mapped`, `rows_failed`, `truncated_rows_observed`;
+- `field_names_schema_only`, `field_presence_counts` for SWE schema field
+  names only (field names are schema-only observations used as count bucket
+  keys, never row values);
+- `public_task_presence_counts`: `has_repo_path`, `has_repo_dir`,
+  `has_ground_truth`, `has_read_step_info`, `has_meta` -> counts of True;
+- `private_field_presence_counts`: private category names -> count of
+  non-empty rows, including nested `ground_truth_patch`,
+  `ground_truth_test_patch`, `ground_truth_modified_files`,
+  `ground_truth_core_files`, `ground_truth_line_ranges`,
+  `read_step_info_file_maps`, `read_step_info_line_ranges` (category names
+  are schema-only observations, never values);
+- `line_budget_readiness`: aggregate counts/booleans only —
+  `line_level_labels_present_count`, `region_like_structures_present_count`,
+  `file_level_labels_present_count`, `rows_with_file_maps`,
+  `rows_with_modified_files`, `rows_with_core_files`,
+  `budget_evaluation_shape_supported`, `line_budget_values_emitted: false`,
+  `paths_or_ranges_emitted: false` (never path or range strings);
+- fixed `failure_category_counts` including `line_budget_shape_error` plus
+  the existing categories (`missing_required_field`, `wrong_type`,
+  `mapping_error`, `private_field_leak`, `public_artifact_leak`,
+  `unexpected_exception`, `no_rows_returned`, `endpoint_unavailable`);
+- `private_label_isolation_verified`, `adapter_assertions_passed`,
+  `raw_rows_persisted: false`, `row_level_values_emitted: false`,
+  `row_level_hashes_emitted: false`, `raw_response_stored: false`,
+  `derived_labels_published: false`;
+- license gating: `license_status: cc-by-nc-nd-4.0`,
+  `row_level_redistribution_allowed: false`,
+  `derived_label_publication_allowed: false`,
+  `public_release_status: blocked_by_license`;
+- all no-claim flags false, `aggregate_only_public_artifact=true`,
+  `not_evidence=true`, `candidate_not_fact=true`,
+  `forbidden_scan.status=pass`;
+- `status: pass|partial|unavailable|fail_forbidden_leak|fail_schema_contract`.
+
+The forbidden scanner was extended with `line_budget_readiness` in the
+`SCHEMA_KEY_CONTAINER_KEYS` allowlist so that its count keys (which are
+fixed readiness labels, not field names or paths) are accepted. The scanner
+still forbids row-level values, paths, spans, hashes, URLs, and secrets
+anywhere in the public output. A fail-closed forbidden scan runs before each
+write. Injected `"12-34"` line-range strings and path-like values still fail
+the scanner.
+
+### Real row-map smoke result (2026-06-20)
+
+```text
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark swe_explore \
+  --config default --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_swe_explore_row_mapping_report.json
+  => rows_seen: 10, rows_mapped: 10, rows_failed: 0
+  => status: pass, forbidden_scan: pass
+  => private_label_isolation_verified: true
+  => adapter_assertions_passed: true
+  => raw_rows_persisted: false, row_level_values_emitted: false,
+     row_level_hashes_emitted: false, raw_response_stored: false,
+     derived_labels_published: false
+```
+
+All 7 SWE schema field names were non-empty in all 10 rows; all 5 public-task
+presence booleans were True in all 10 rows. The nested private categories
+(`ground_truth_patch`, `ground_truth_modified_files`, etc.) were observed as
+absent in the real HF `default/train` preview rows — this is an accurate
+schema observation, not an error. The artifact therefore records
+`budget_evaluation_shape_supported=false`: C4.3 is a row-mapping/privacy
+boundary smoke plus a negative line-budget shape observation, not positive
+line-budget readiness evidence. No row-level values, hashes, file paths, line
+ranges, spans, snippets, patches/tests, meta raw content, labels, provider
+payloads, content_sha, or raw HF payloads were persisted.
+
 ## Caveats
 
-- C4.1/C4.2 is adapter/row-mapping readiness only. It does NOT validate
+- C4.1/C4.2/C4.3 is adapter/row-mapping readiness only. It does NOT validate
   row-level semantics, labels, or downstream agent value. The schema smoke
   confirms that public HF datasets-server schema endpoints are reachable and
   parse; the row-map smoke confirms that the adapter boundary holds (public
   task has no private attrs; private label has private values only in
   memory). Neither confirms benchmark quality, label correctness, or fitness
-  for any downstream evaluation.
+  for any downstream evaluation. No performance claim is made.
 - ContextBench dataset license is unknown even though the code repo is
   Apache-2.0; row-level redistribution is disabled.
 - SWE-Explore HF dataset license is `cc-by-nc-nd-4.0`; row-level
@@ -329,9 +448,9 @@ payloads, content_sha, or raw HF payloads were persisted.
 
 ## Next steps
 
-- Future external benchmark evaluation (separate from C4.1/C4.2) would
+- Future external benchmark evaluation (separate from C4.1/C4.2/C4.3) would
   require an explicit, evidence-gated preregistration that respects each
   benchmark's license gating and the OpenLocus public-artifact contract.
 - No promotion, no default change, no EvidenceCore semantics change, no
   runtime-clean general algorithm claim, no downstream agent value claim, no
-  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2.
+  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2/C4.3.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""C4.1/C4.2 External Benchmark Adapters — schema + row-mapping readiness.
+"""C4.1/C4.2/C4.3 External Benchmark Adapters — schema + row-mapping readiness.
 
 This module implements C4.1 external benchmark adapter schema readiness
 and C4.2 ContextBench verified subset row-mapping smoke. It is NOT
@@ -56,6 +56,11 @@ c4_external_benchmark_adapter_report.json
         --config contextbench_verified --split train --row-limit 10 \\
         --out artifacts/c4_external_benchmark_adapters/\\
 c4_contextbench_verified_row_mapping_report.json
+    python3 eval/c4_external_benchmark_adapters.py \\
+        --row-map-smoke --benchmark swe_explore \\
+        --config default --split train --row-limit 10 \\
+        --out artifacts/c4_external_benchmark_adapters/\\
+c4_swe_explore_row_mapping_report.json
 """
 
 from __future__ import annotations
@@ -124,6 +129,65 @@ ROW_MAP_FAILURE_CATEGORIES: tuple[str, ...] = (
     "unexpected_exception",
     "no_rows_returned",
     "endpoint_unavailable",
+    "line_budget_shape_error",
+)
+
+# C4.3 SWE-Explore row-mapping / line-budget aggregate smoke constants.
+# SWE-Explore default/train is the only supported config for row-map
+# smoke. HF license cc-by-nc-nd-4.0 => row-level redistribution AND
+# derived-label publication disabled.
+SWE_ROW_MAP_SCHEMA_VERSION = "c4_swe_explore_row_mapping.v1"
+SWE_ROW_MAP_DEFAULT_OUT = Path(
+    "artifacts/c4_external_benchmark_adapters/"
+    "c4_swe_explore_row_mapping_report.json"
+)
+SWE_ROW_MAP_ALLOWED_CONFIGS: frozenset[str] = frozenset({"default"})
+SWE_ROW_MAP_MODE = "swe_explore_row_mapping_line_budget_smoke"
+
+# SWE public-task presence keys (aggregate-safe booleans only, never
+# values). Mirrors SWE_EXPLOREPublicTask.__slots__ minus field_count
+# and dataset_category.
+_SWE_PUBLIC_TASK_PRESENCE_KEYS: tuple[str, ...] = (
+    "has_repo_path",
+    "has_repo_dir",
+    "has_ground_truth",
+    "has_read_step_info",
+    "has_meta",
+)
+
+# SWE private-label field/category presence keys. These names are
+# schema-only category labels; the corresponding values are never
+# emitted. Includes nested ground_truth.* and read_step_info.* keys.
+_SWE_PRIVATE_LABEL_FIELDS: tuple[str, ...] = (
+    "instance_id",
+    "repo_path",
+    "repo_dir",
+    "ground_truth",
+    "read_step_info",
+    "meta",
+    "dataset",
+    "ground_truth_patch",
+    "ground_truth_test_patch",
+    "ground_truth_modified_files",
+    "ground_truth_core_files",
+    "ground_truth_line_ranges",
+    "read_step_info_file_maps",
+    "read_step_info_line_ranges",
+)
+
+# Line-budget readiness aggregate count keys (booleans/counts only,
+# never path/range strings). These describe the SHAPE of line-budget
+# labels in the schema, not any specific line range or file.
+_SWE_LINE_BUDGET_READINESS_KEYS: tuple[str, ...] = (
+    "line_level_labels_present_count",
+    "region_like_structures_present_count",
+    "file_level_labels_present_count",
+    "rows_with_file_maps",
+    "rows_with_modified_files",
+    "rows_with_core_files",
+    "budget_evaluation_shape_supported",
+    "line_budget_values_emitted",
+    "paths_or_ranges_emitted",
 )
 
 # ---------------------------------------------------------------------------
@@ -318,6 +382,7 @@ SCHEMA_KEY_CONTAINER_KEYS: frozenset[str] = frozenset(
         "public_task_presence_counts",
         "private_field_presence_counts",
         "failure_category_counts",
+        "line_budget_readiness",
     }
 )
 
@@ -1838,6 +1903,454 @@ def build_row_map_smoke_report(
 
 
 # ---------------------------------------------------------------------------
+# C4.3 SWE-Explore row-mapping / line-budget aggregate smoke (bounded;
+# real rows stay in function scope / memory; only aggregate-only artifact
+# emitted)
+# ---------------------------------------------------------------------------
+
+
+def _swe_gt_has(row: dict[str, Any], key: str) -> bool:
+    """Return True if ``row["ground_truth"][key]`` is present and non-empty."""
+    gt = row.get("ground_truth")
+    if not isinstance(gt, dict):
+        return False
+    if key not in gt:
+        return False
+    val = gt.get(key)
+    if val is None:
+        return False
+    if isinstance(val, str):
+        return len(val) > 0
+    if isinstance(val, (list, tuple, dict)):
+        return len(val) > 0
+    return True
+
+
+def _swe_rsi_has(row: dict[str, Any], key: str) -> bool:
+    """Return True if ``row["read_step_info"][key]`` is present and non-empty."""
+    rsi = row.get("read_step_info")
+    if not isinstance(rsi, dict):
+        return False
+    if key not in rsi:
+        return False
+    val = rsi.get(key)
+    if val is None:
+        return False
+    if isinstance(val, str):
+        return len(val) > 0
+    if isinstance(val, (list, tuple, dict)):
+        return len(val) > 0
+    return True
+
+
+def _swe_row_has_line_ranges(row: dict[str, Any]) -> bool:
+    """Return True if the row has any line-range-like structure in
+    ground_truth or read_step_info. Only the boolean is emitted; never the
+    actual ranges or file keys."""
+    gt = row.get("ground_truth")
+    if isinstance(gt, dict):
+        lr = gt.get("line_ranges")
+        if isinstance(lr, dict) and len(lr) > 0:
+            return True
+        # Some payloads nest ranges under other keys; check common names
+        # without emitting them.
+        for k in ("line_range", "ranges", "regions"):
+            v = gt.get(k)
+            if isinstance(v, (list, dict)) and len(v) > 0:
+                return True
+    rsi = row.get("read_step_info")
+    if isinstance(rsi, dict):
+        lr = rsi.get("line_ranges")
+        if isinstance(lr, dict) and len(lr) > 0:
+            return True
+        for k in ("line_range", "ranges", "regions"):
+            v = rsi.get(k)
+            if isinstance(v, (list, dict)) and len(v) > 0:
+                return True
+    return False
+
+
+def _swe_row_has_region_like(row: dict[str, Any]) -> bool:
+    """Return True if the row has region-like structures (file_maps,
+    modified_files, core_files). Only the boolean is emitted."""
+    gt = row.get("ground_truth")
+    if isinstance(gt, dict):
+        for k in ("file_maps", "modified_files", "core_files"):
+            v = gt.get(k)
+            if isinstance(v, (list, dict)) and len(v) > 0:
+                return True
+    rsi = row.get("read_step_info")
+    if isinstance(rsi, dict):
+        for k in ("file_maps", "modified_files", "core_files"):
+            v = rsi.get(k)
+            if isinstance(v, (list, dict)) and len(v) > 0:
+                return True
+    return False
+
+
+def _build_swe_row_map_summary(
+    rows: list[dict[str, Any]],
+    *,
+    dataset_id: str,
+    config: str,
+    split: str,
+    row_limit_requested: int,
+    observed_field_names: list[str] | None,
+    truncated_rows: bool,
+) -> dict[str, Any]:
+    """Build the aggregate-only SWE-Explore row-map / line-budget summary.
+
+    Real rows live only in the caller's scope. This function never sees
+    raw row values; it only counts field presence (non-empty/missing),
+    validates public/private isolation, and records fixed failure
+    categories and line-budget shape readiness counts/booleans. No
+    row-level values, hashes, paths, spans, line-range strings, file
+    names, or snippets are emitted.
+    """
+    rows_seen = 0
+    rows_mapped = 0
+    rows_failed = 0
+
+    # field_presence_counts: SWE schema field names -> count of non-empty.
+    field_presence_counts: dict[str, int] = {fn: 0 for fn in SWE_EXPLORE_FIELD_NAMES}
+    # public_task_presence_counts: aggregate booleans -> count of True.
+    public_task_presence_counts: dict[str, int] = {
+        k: 0 for k in _SWE_PUBLIC_TASK_PRESENCE_KEYS
+    }
+    # private_field_presence_counts: private category name -> count of non-empty.
+    private_field_presence_counts: dict[str, int] = {
+        fn: 0 for fn in _SWE_PRIVATE_LABEL_FIELDS
+    }
+    # failure_category_counts: fixed categories only.
+    failure_category_counts: dict[str, int] = {c: 0 for c in ROW_MAP_FAILURE_CATEGORIES}
+
+    # line_budget_readiness: aggregate counts/booleans only.
+    line_level_labels_present_count = 0
+    region_like_structures_present_count = 0
+    file_level_labels_present_count = 0
+    rows_with_file_maps = 0
+    rows_with_modified_files = 0
+    rows_with_core_files = 0
+
+    private_label_isolation_verified = True
+    adapter_assertions_passed = True
+
+    # Private attrs that the SWE public task must NEVER carry.
+    swe_private_attrs = (
+        "instance_id",
+        "repo_path",
+        "repo_dir",
+        "ground_truth",
+        "read_step_info",
+        "meta",
+        "dataset",
+    )
+
+    for row in rows:
+        rows_seen += 1
+        try:
+            row_failed = False
+            if not isinstance(row, dict):
+                failure_category_counts["wrong_type"] += 1
+                rows_failed += 1
+                continue
+            # Adapt the row in function scope. The public/private objects
+            # are local-only; neither is ever serialized with row values.
+            public, private = adapt_swe_explore_row(row)
+
+            # Assert the public task carries NO private attrs.
+            for priv_attr in swe_private_attrs:
+                if hasattr(public, priv_attr):
+                    private_label_isolation_verified = False
+                    failure_category_counts["private_field_leak"] += 1
+                    adapter_assertions_passed = False
+                    row_failed = True
+
+            # Assert the public task presence booleans are actual booleans.
+            for pk in _SWE_PUBLIC_TASK_PRESENCE_KEYS:
+                v = getattr(public, pk, None)
+                if not isinstance(v, bool):
+                    failure_category_counts["mapping_error"] += 1
+                    adapter_assertions_passed = False
+                    row_failed = True
+
+            # Count field presence (non-empty) for schema field names.
+            for fn in SWE_EXPLORE_FIELD_NAMES:
+                if _row_field_non_empty(row, fn):
+                    field_presence_counts[fn] += 1
+
+            # Count public_task presence booleans.
+            for pk in _SWE_PUBLIC_TASK_PRESENCE_KEYS:
+                if bool(getattr(public, pk, False)):
+                    public_task_presence_counts[pk] += 1
+
+            # Count top-level private-label field presence (NOT values).
+            for pfn in (
+                "instance_id",
+                "repo_path",
+                "repo_dir",
+                "ground_truth",
+                "read_step_info",
+                "meta",
+                "dataset",
+            ):
+                if _row_field_non_empty(row, pfn):
+                    private_field_presence_counts[pfn] += 1
+
+            # Count nested private-label category presence (NOT values).
+            if _swe_gt_has(row, "patch"):
+                private_field_presence_counts["ground_truth_patch"] += 1
+            if _swe_gt_has(row, "test_patch"):
+                private_field_presence_counts["ground_truth_test_patch"] += 1
+            if _swe_gt_has(row, "modified_files"):
+                private_field_presence_counts["ground_truth_modified_files"] += 1
+                rows_with_modified_files += 1
+            if _swe_gt_has(row, "core_files"):
+                private_field_presence_counts["ground_truth_core_files"] += 1
+                rows_with_core_files += 1
+            if _swe_gt_has(row, "line_ranges"):
+                private_field_presence_counts["ground_truth_line_ranges"] += 1
+            if _swe_rsi_has(row, "file_maps"):
+                private_field_presence_counts["read_step_info_file_maps"] += 1
+                rows_with_file_maps += 1
+            if _swe_rsi_has(row, "line_ranges"):
+                private_field_presence_counts["read_step_info_line_ranges"] += 1
+
+            # Line-budget shape readiness (counts/booleans only, never
+            # path/range strings).
+            if _swe_row_has_line_ranges(row):
+                line_level_labels_present_count += 1
+            if _swe_row_has_region_like(row):
+                region_like_structures_present_count += 1
+            if (
+                _swe_gt_has(row, "modified_files")
+                or _swe_gt_has(row, "core_files")
+                or _swe_rsi_has(row, "file_maps")
+            ):
+                file_level_labels_present_count += 1
+
+            if row_failed:
+                rows_failed += 1
+            else:
+                rows_mapped += 1
+        except (TypeError, ValueError, KeyError, AttributeError) as exc:
+            failure_category_counts["mapping_error"] += 1
+            rows_failed += 1
+            # Record the exception category name only (never the message,
+            # which could contain row values).
+            _ = type(exc).__name__
+        except Exception as exc:  # noqa: BLE001 - last resort
+            failure_category_counts["unexpected_exception"] += 1
+            rows_failed += 1
+            _ = type(exc).__name__
+
+    assertion_failure = (
+        not private_label_isolation_verified
+        or not adapter_assertions_passed
+        or failure_category_counts["private_field_leak"] > 0
+    )
+
+    # Derive overall status. If isolation/assertion gates fail, fail closed.
+    if rows_seen == 0:
+        status = "unavailable"
+        failure_category_counts["no_rows_returned"] = 1
+    elif assertion_failure:
+        status = "fail_schema_contract"
+    elif rows_failed > 0 and rows_mapped == 0:
+        status = "fail_schema_contract"
+    elif rows_failed > 0:
+        status = "partial"
+    else:
+        status = "pass"
+
+    # budget_evaluation_shape_supported: True if at least one row had any
+    # file-level or line-level label structure (shape only, not values).
+    budget_evaluation_shape_supported = (
+        file_level_labels_present_count > 0
+        or line_level_labels_present_count > 0
+        or region_like_structures_present_count > 0
+    )
+
+    # Use observed field names if provided and non-empty, else built-in.
+    emitted_field_names = (
+        list(observed_field_names)
+        if observed_field_names
+        else list(SWE_EXPLORE_FIELD_NAMES)
+    )
+
+    summary: dict[str, Any] = {
+        "mode": SWE_ROW_MAP_MODE,
+        "benchmark": "swe_explore",
+        "dataset_id": dataset_id,
+        "config": config,
+        "split": split,
+        "row_limit_requested": row_limit_requested,
+        "rows_seen": rows_seen,
+        "rows_mapped": rows_mapped,
+        "rows_failed": rows_failed,
+        "truncated_rows_observed": bool(truncated_rows),
+        "field_names_schema_only": emitted_field_names,
+        "field_count": len(emitted_field_names),
+        "field_presence_counts": field_presence_counts,
+        "public_task_presence_counts": public_task_presence_counts,
+        "private_field_presence_counts": private_field_presence_counts,
+        "line_budget_readiness": {
+            "line_level_labels_present_count": line_level_labels_present_count,
+            "region_like_structures_present_count": region_like_structures_present_count,
+            "file_level_labels_present_count": file_level_labels_present_count,
+            "rows_with_file_maps": rows_with_file_maps,
+            "rows_with_modified_files": rows_with_modified_files,
+            "rows_with_core_files": rows_with_core_files,
+            "budget_evaluation_shape_supported": bool(
+                budget_evaluation_shape_supported
+            ),
+            "line_budget_values_emitted": False,
+            "paths_or_ranges_emitted": False,
+        },
+        "failure_category_counts": failure_category_counts,
+        "private_label_isolation_verified": private_label_isolation_verified,
+        "adapter_assertions_passed": adapter_assertions_passed,
+        "raw_rows_persisted": False,
+        "row_level_values_emitted": False,
+        "row_level_hashes_emitted": False,
+        "raw_response_stored": False,
+        "derived_labels_published": False,
+        "status": status,
+    }
+    return summary
+
+
+def _row_map_smoke_swe_explore(
+    config: str,
+    split: str,
+    row_limit: int,
+) -> dict[str, Any]:
+    """Run the bounded C4.3 SWE-Explore row-mapping / line-budget smoke.
+
+    Reads real HF datasets-server ``/first-rows`` preview rows for
+    ``default/train`` via ``_http_get_json()``. Each real row is adapted
+    in function scope via ``adapt_swe_explore_row``; raw rows are
+    discarded immediately after adaptation. Only an aggregate-only
+    summary is returned. On network/HF failure, a sanitized
+    ``unavailable`` status is produced (no raw response body).
+    """
+    base = _HF_DATASETS_SERVER
+    fr_url = (
+        f"{base}/first-rows?dataset="
+        f"{urllib.parse.quote(SWE_EXPLORE_DATASET_ID, safe='/')}"
+        f"&config={urllib.parse.quote(config)}"
+        f"&split={urllib.parse.quote(split)}"
+    )
+    raw, status_code, http_code = _http_get_json(fr_url)
+
+    # Build the report skeleton with standard no-claim flags.
+    report: dict[str, Any] = {
+        "schema_version": SWE_ROW_MAP_SCHEMA_VERSION,
+        "generated_by": GENERATED_BY,
+        "generated_at": _now_iso(),
+        "claim_level": ROW_MAP_CLAIM_LEVEL,
+        "aggregate_only_public_artifact": True,
+        "not_evidence": True,
+        "candidate_not_fact": True,
+        "promotion_ready": False,
+        "default_should_change": False,
+        "evidencecore_semantics_changed": False,
+        "runtime_clean_general_algorithm_claimed": False,
+        "downstream_agent_value_proven": False,
+        "ood_temporal_supported": False,
+        "quiver_systems_supported": False,
+        "new_network_calls": 1,
+        "new_provider_calls": 0,
+        "endpoint_unavailable": status_code != "pass",
+        "http_code_observed": (http_code if isinstance(http_code, int) else None),
+        # SWE-Explore license gating.
+        "license_status": SWE_EXPLORE_LICENSE_STATUS,
+        "row_level_redistribution_allowed": False,
+        "derived_label_publication_allowed": False,
+        "public_release_status": "blocked_by_license",
+    }
+
+    if status_code != "pass" or raw is None:
+        # Sanitized unavailable status; no raw response body.
+        summary = _build_swe_row_map_summary(
+            [],
+            dataset_id=SWE_EXPLORE_DATASET_ID,
+            config=config,
+            split=split,
+            row_limit_requested=row_limit,
+            observed_field_names=list(SWE_EXPLORE_FIELD_NAMES),
+            truncated_rows=False,
+        )
+        summary["status"] = "unavailable"
+        summary["failure_category_counts"]["endpoint_unavailable"] = 1
+        report.update(summary)
+    else:
+        # Extract rows + schema in function scope; raw rows are local only.
+        rows, observed_field_names, truncated = _extract_first_rows(raw)
+        # Discard the raw payload immediately after extraction.
+        del raw
+        # Bound to row_limit.
+        bounded_rows = rows[:row_limit]
+        del rows
+        summary = _build_swe_row_map_summary(
+            bounded_rows,
+            dataset_id=SWE_EXPLORE_DATASET_ID,
+            config=config,
+            split=split,
+            row_limit_requested=row_limit,
+            observed_field_names=observed_field_names,
+            truncated_rows=truncated,
+        )
+        # Discard the bounded rows immediately after aggregation.
+        del bounded_rows
+        report.update(summary)
+
+    # Fail-closed forbidden scan before returning. If the public report
+    # would leak, fail.
+    scan = _forbidden_scan_summary(report)
+    report["forbidden_scan"] = scan
+    if scan["status"] != "pass":
+        # Downgrade status and mark the leak.
+        report["status"] = "fail_forbidden_leak"
+        report["failure_category_counts"]["public_artifact_leak"] = (
+            report["failure_category_counts"].get("public_artifact_leak", 0) + 1
+        )
+    return report
+
+
+def build_swe_row_map_smoke_report(
+    config: str,
+    split: str,
+    row_limit: int,
+    *,
+    self_test: bool = False,
+) -> dict[str, Any]:
+    """Build the C4.3 SWE-Explore row-mapping smoke report (aggregate-only)."""
+    if config not in SWE_ROW_MAP_ALLOWED_CONFIGS:
+        raise ValueError(
+            f"swe row-map smoke only supports configs "
+            f"{sorted(SWE_ROW_MAP_ALLOWED_CONFIGS)}; got {config!r}"
+        )
+    report = _row_map_smoke_swe_explore(config, split, row_limit)
+    report["row_map_smoke"] = True
+    report["benchmark_selected"] = "swe_explore"
+    report["config_selected"] = config
+    report["split_selected"] = split
+    report["row_limit_applied"] = row_limit
+    report["self_test"] = bool(self_test)
+
+    # Re-run forbidden scan after adding smoke fields.
+    scan = _forbidden_scan_summary(report)
+    report["forbidden_scan"] = scan
+    if scan["status"] != "pass":
+        raise ValueError(
+            "c4_external_benchmark_adapters swe row-map report would leak "
+            f"forbidden content: {scan['categories']}"
+        )
+    return report
+
+
+# ---------------------------------------------------------------------------
 # Self-test
 # ---------------------------------------------------------------------------
 
@@ -2434,6 +2947,283 @@ def _self_test_row_map_smoke_isolation_failure_fail_closed() -> None:
     print("self-test row-map smoke isolation failure fail-closed: ok")
 
 
+def _self_test_swe_row_map_smoke_aggregate_only() -> None:
+    """C4.3 SWE row-map smoke aggregation is aggregate-only and
+    sentinel-clean even with private sentinel values in rows.
+
+    Uses no network: builds synthetic SWE rows with sentinel private values
+    (repo_path, repo_dir, patch, file paths, line ranges, instance IDs,
+    read_step_info) and runs the in-memory aggregator. Asserts NONE of the
+    sentinel strings appear in the report JSON, the forbidden scan passes,
+    and the public artifact carries only counts / booleans / fixed failure
+    categories / line-budget shape readiness counts.
+    """
+    secret_repo_path = "SECRET_REPO_PATH_SENTINEL"
+    secret_repo_dir = "SECRET_REPO_DIR_SENTINEL"
+    secret_patch = "SECRET_PATCH_SENTINEL"
+    secret_test_patch = "SECRET_TEST_PATCH_SENTINEL"
+    secret_instance = "SECRET_INSTANCE_ID_SENTINEL"
+    secret_file = "SECRET_FILE_PATH_SENTINEL.py"
+    secret_line_range = "SECRET_LINE_RANGE_SENTINEL"
+    secret_read_step = "SECRET_READ_STEP_SENTINEL"
+    secret_meta = "SECRET_META_SENTINEL"
+
+    synthetic_rows: list[dict[str, Any]] = []
+    for i in range(3):
+        row: dict[str, Any] = {
+            "instance_id": secret_instance + str(i),
+            "repo_path": secret_repo_path + str(i),
+            "repo_dir": secret_repo_dir + str(i),
+            "ground_truth": {
+                "patch": secret_patch + str(i),
+                "test_patch": secret_test_patch + str(i),
+                "modified_files": [secret_file + str(i)],
+                "core_files": [secret_file + "_core_" + str(i)],
+                "line_ranges": {secret_file + str(i): [[1, 10]]},
+            },
+            "read_step_info": {
+                "file_maps": {secret_file + str(i): [[3, 8]]},
+                "line_ranges": {secret_file + str(i): [[5, 15]]},
+                "extra": secret_read_step + str(i),
+            },
+            "meta": {"version": secret_meta + str(i)},
+            "dataset": "synthetic_self_test",
+        }
+        synthetic_rows.append(row)
+
+    summary = _build_swe_row_map_summary(
+        synthetic_rows,
+        dataset_id=SWE_EXPLORE_DATASET_ID,
+        config="default",
+        split="train",
+        row_limit_requested=3,
+        observed_field_names=list(SWE_EXPLORE_FIELD_NAMES),
+        truncated_rows=False,
+    )
+    # All 3 rows should map successfully.
+    assert summary["rows_seen"] == 3, summary["rows_seen"]
+    assert summary["rows_mapped"] == 3, summary["rows_mapped"]
+    assert summary["rows_failed"] == 0, summary["rows_failed"]
+    assert summary["status"] == "pass", summary["status"]
+    assert summary["private_label_isolation_verified"] is True
+    assert summary["adapter_assertions_passed"] is True
+    assert summary["raw_rows_persisted"] is False
+    assert summary["row_level_values_emitted"] is False
+    assert summary["row_level_hashes_emitted"] is False
+    assert summary["raw_response_stored"] is False
+    assert summary["derived_labels_published"] is False
+
+    # Field presence counts: all 7 fields present in all 3 rows.
+    assert summary["field_presence_counts"]["instance_id"] == 3
+    assert summary["field_presence_counts"]["repo_path"] == 3
+    assert summary["field_presence_counts"]["ground_truth"] == 3
+    assert summary["field_presence_counts"]["read_step_info"] == 3
+
+    # Public task presence: all 5 booleans True in all 3 rows.
+    assert summary["public_task_presence_counts"]["has_repo_path"] == 3
+    assert summary["public_task_presence_counts"]["has_ground_truth"] == 3
+    assert summary["public_task_presence_counts"]["has_read_step_info"] == 3
+
+    # Private field presence: nested categories present in all 3 rows.
+    assert summary["private_field_presence_counts"]["ground_truth_patch"] == 3
+    assert summary["private_field_presence_counts"]["ground_truth_test_patch"] == 3
+    assert summary["private_field_presence_counts"]["ground_truth_modified_files"] == 3
+    assert summary["private_field_presence_counts"]["ground_truth_core_files"] == 3
+    assert summary["private_field_presence_counts"]["ground_truth_line_ranges"] == 3
+    assert summary["private_field_presence_counts"]["read_step_info_file_maps"] == 3
+    assert summary["private_field_presence_counts"]["read_step_info_line_ranges"] == 3
+
+    # Line-budget readiness (counts/booleans only, never path/range strings).
+    lbr = summary["line_budget_readiness"]
+    assert lbr["line_level_labels_present_count"] == 3
+    assert lbr["region_like_structures_present_count"] == 3
+    assert lbr["file_level_labels_present_count"] == 3
+    assert lbr["rows_with_file_maps"] == 3
+    assert lbr["rows_with_modified_files"] == 3
+    assert lbr["rows_with_core_files"] == 3
+    assert lbr["budget_evaluation_shape_supported"] is True
+    assert lbr["line_budget_values_emitted"] is False
+    assert lbr["paths_or_ranges_emitted"] is False
+
+    # CRITICAL: NONE of the sentinel strings may appear in the report JSON.
+    summary_json = json.dumps(summary, sort_keys=True)
+    for sentinel in (
+        secret_repo_path,
+        secret_repo_dir,
+        secret_patch,
+        secret_test_patch,
+        secret_instance,
+        secret_file,
+        secret_line_range,
+        secret_read_step,
+        secret_meta,
+    ):
+        assert sentinel not in summary_json, (
+            f"sentinel {sentinel!r} leaked into swe row-map summary JSON"
+        )
+        # Also check the per-row indexed variants.
+        for i in range(3):
+            assert (sentinel + str(i)) not in summary_json, (
+                f"sentinel {sentinel!r}{i} leaked into swe row-map summary JSON"
+            )
+
+    # Forbidden scan on the summary must pass (it's aggregate-only).
+    scan = _forbidden_scan_summary(summary)
+    assert scan["status"] == "pass", scan
+    assert scan["violations_count"] == 0, scan
+
+    # Injected leak with "12-34" (a raw line range) must still be rejected.
+    leaked = dict(summary)
+    leaked["injected_range"] = "12-34"
+    leaked_scan = _forbidden_scan_summary(leaked)
+    assert leaked_scan["status"] == "fail", leaked_scan
+
+    # No-claim flags: build a full report skeleton and verify all false.
+    report = {
+        "schema_version": SWE_ROW_MAP_SCHEMA_VERSION,
+        "generated_by": GENERATED_BY,
+        "claim_level": ROW_MAP_CLAIM_LEVEL,
+        "aggregate_only_public_artifact": True,
+        "not_evidence": True,
+        "candidate_not_fact": True,
+        "promotion_ready": False,
+        "default_should_change": False,
+        "evidencecore_semantics_changed": False,
+        "runtime_clean_general_algorithm_claimed": False,
+        "downstream_agent_value_proven": False,
+        "ood_temporal_supported": False,
+        "quiver_systems_supported": False,
+        **summary,
+    }
+    for flag in NO_CLAIM_FLAGS:
+        assert report[flag] is False, (flag, report[flag])
+    # Forbidden scan on the full report.
+    full_scan = _forbidden_scan_summary(report)
+    assert full_scan["status"] == "pass", full_scan
+    print("self-test swe row-map smoke aggregate-only: ok")
+
+
+def _self_test_swe_row_map_line_budget_only_counts() -> None:
+    """Line-budget readiness records only counts/booleans, never path or
+    range strings. A known synthetic line-range/file-list structure gives
+    correct aggregate counts, but the JSON contains no path/range strings."""
+    rows = [
+        {
+            "instance_id": "synthetic-swe-001",
+            "repo_path": "/tmp/synthetic/repo",
+            "repo_dir": "synthetic-repo",
+            "ground_truth": {
+                "patch": "synthetic patch",
+                "test_patch": "synthetic test patch",
+                "modified_files": ["src/main.py", "src/util.py"],
+                "core_files": ["src/main.py"],
+                "line_ranges": {"src/main.py": [[1, 10], [20, 30]]},
+            },
+            "read_step_info": {
+                "file_maps": {"src/main.py": [[1, 5]]},
+                "line_ranges": {"src/util.py": [[3, 8]]},
+            },
+            "meta": {"version": "1"},
+            "dataset": "synthetic",
+        }
+    ]
+    summary = _build_swe_row_map_summary(
+        rows,
+        dataset_id=SWE_EXPLORE_DATASET_ID,
+        config="default",
+        split="train",
+        row_limit_requested=1,
+        observed_field_names=list(SWE_EXPLORE_FIELD_NAMES),
+        truncated_rows=False,
+    )
+    lbr = summary["line_budget_readiness"]
+    assert lbr["line_level_labels_present_count"] == 1
+    assert lbr["region_like_structures_present_count"] == 1
+    assert lbr["file_level_labels_present_count"] == 1
+    assert lbr["rows_with_file_maps"] == 1
+    assert lbr["rows_with_modified_files"] == 1
+    assert lbr["rows_with_core_files"] == 1
+    assert lbr["budget_evaluation_shape_supported"] is True
+    assert lbr["line_budget_values_emitted"] is False
+    assert lbr["paths_or_ranges_emitted"] is False
+
+    # CRITICAL: no path or range strings in the JSON.
+    summary_json = json.dumps(summary, sort_keys=True)
+    # File paths must not appear.
+    assert "src/main.py" not in summary_json
+    assert "src/util.py" not in summary_json
+    # Line-range strings must not appear.
+    assert "1-10" not in summary_json
+    assert "20-30" not in summary_json
+    assert "12-34" not in summary_json
+    # Patch/test content must not appear.
+    assert "synthetic patch" not in summary_json
+    assert "synthetic test patch" not in summary_json
+
+    scan = _forbidden_scan_summary(summary)
+    assert scan["status"] == "pass", scan
+    print("self-test swe row-map line-budget only-counts: ok")
+
+
+def _self_test_swe_row_map_isolation_failure_fail_closed() -> None:
+    """A SWE public/private isolation regression must not report PASS.
+
+    The synthetic bad adapter returns a public task that exposes a private
+    ``repo_path`` attribute. The SWE row-map summary must fail closed with
+    ``fail_schema_contract`` rather than producing ``status=pass`` with
+    false safety booleans.
+    """
+
+    class BadSWEPublicTask:
+        def __init__(self) -> None:
+            self.repo_path = "SECRET_REPO_PATH_SENTINEL"
+            self.ground_truth = {"patch": "SECRET_PATCH_SENTINEL"}
+            self.has_repo_path = True
+            self.has_repo_dir = True
+            self.has_ground_truth = True
+            self.has_read_step_info = True
+            self.has_meta = True
+            self.field_count = 7
+            self.dataset_category = "synthetic_self_test"
+
+    original_adapter = globals()["adapt_swe_explore_row"]
+
+    def bad_adapter(
+        row: dict[str, Any],
+    ) -> tuple[Any, Any]:
+        _ = row
+        return BadSWEPublicTask(), object()
+
+    try:
+        globals()["adapt_swe_explore_row"] = bad_adapter
+        summary = _build_swe_row_map_summary(
+            [_build_synthetic_swe_explore_row()],
+            dataset_id=SWE_EXPLORE_DATASET_ID,
+            config="default",
+            split="train",
+            row_limit_requested=1,
+            observed_field_names=list(SWE_EXPLORE_FIELD_NAMES),
+            truncated_rows=False,
+        )
+    finally:
+        globals()["adapt_swe_explore_row"] = original_adapter
+
+    assert summary["status"] == "fail_schema_contract", summary
+    assert summary["rows_seen"] == 1, summary
+    assert summary["rows_mapped"] == 0, summary
+    assert summary["rows_failed"] == 1, summary
+    assert summary["private_label_isolation_verified"] is False, summary
+    assert summary["adapter_assertions_passed"] is False, summary
+    assert summary["failure_category_counts"]["private_field_leak"] >= 1, summary
+    # The sentinels are present only in the bad in-memory public object and
+    # must not be emitted to the aggregate summary.
+    assert "SECRET_REPO_PATH_SENTINEL" not in json.dumps(summary, sort_keys=True)
+    assert "SECRET_PATCH_SENTINEL" not in json.dumps(summary, sort_keys=True)
+    scan = _forbidden_scan_summary(summary)
+    assert scan["status"] == "pass", scan
+    print("self-test swe row-map isolation failure fail-closed: ok")
+
+
 def run_self_tests() -> dict[str, Any]:
     """Run all C4 self-tests. Returns a summary (no row-level data)."""
     _self_test_contextbench_adapter_separation()
@@ -2448,6 +3238,9 @@ def run_self_tests() -> dict[str, Any]:
     _self_test_row_map_smoke_aggregate_only()
     _self_test_row_map_smoke_no_rows_unavailable()
     _self_test_row_map_smoke_isolation_failure_fail_closed()
+    _self_test_swe_row_map_smoke_aggregate_only()
+    _self_test_swe_row_map_line_budget_only_counts()
+    _self_test_swe_row_map_isolation_failure_fail_closed()
     return {
         "schema_version": SCHEMA_VERSION,
         "claim_level": CLAIM_LEVEL,
@@ -2465,6 +3258,9 @@ def run_self_tests() -> dict[str, Any]:
             "row_map_smoke_aggregate_only": True,
             "row_map_smoke_no_rows_unavailable": True,
             "row_map_smoke_isolation_failure_fail_closed": True,
+            "swe_row_map_smoke_aggregate_only": True,
+            "swe_row_map_line_budget_only_counts": True,
+            "swe_row_map_isolation_failure_fail_closed": True,
         },
         "spec_hash": compute_spec_hash(),
         "not_evidence": True,
@@ -2480,7 +3276,10 @@ def run_self_tests() -> dict[str, Any]:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="C4.1/C4.2 external benchmark adapters (schema + row-mapping readiness).",
+        description=(
+            "C4.1/C4.2/C4.3 external benchmark adapters (schema + "
+            "row-mapping / line-budget readiness)."
+        ),
     )
     parser.add_argument(
         "--self-test",
@@ -2506,18 +3305,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--row-map-smoke",
         action="store_true",
         help=(
-            "run the bounded C4.2 ContextBench verified subset row-mapping "
-            "smoke: read real HF datasets-server /first-rows preview rows, "
-            "adapt each in function scope, and emit an aggregate-only "
-            "report. Real rows are never persisted."
+            "run the bounded row-mapping smoke: read real HF datasets-server "
+            "/first-rows preview rows, adapt each in function scope, and "
+            "emit an aggregate-only report. Real rows are never persisted. "
+            "Use --benchmark contextbench (C4.2) or swe_explore (C4.3)."
         ),
     )
     parser.add_argument(
         "--config",
-        default="contextbench_verified",
+        default=None,
         help=(
-            "config for --row-map-smoke (default: contextbench_verified; "
-            "only contextbench_verified is supported for row-map smoke)."
+            "config for --row-map-smoke. If omitted, defaults to "
+            "contextbench_verified for --benchmark contextbench and default "
+            "for --benchmark swe_explore."
         ),
     )
     parser.add_argument(
@@ -2550,11 +3350,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         default=DEFAULT_OUT,
         help=(
-            "path to write the report (default: the canonical "
-            "artifacts/c4_external_benchmark_adapters/"
-            "c4_external_benchmark_adapter_report.json). For --row-map-smoke "
-            "the default is artifacts/c4_external_benchmark_adapters/"
-            "c4_contextbench_verified_row_mapping_report.json."
+            "path to write the report. Defaults are benchmark-specific for "
+            "--row-map-smoke."
         ),
     )
     if argv is None:
@@ -2593,21 +3390,38 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "overwriting the canonical aggregate report"
         )
 
-    # --row-map-smoke: only contextbench_verified is supported. If --out
-    # is still the C4.1 default, switch to the C4.2 default artifact path.
+    # --row-map-smoke: dispatch by --benchmark. Require contextbench or
+    # swe_explore (not all). Apply benchmark-specific config defaults and
+    # default artifact paths so the C4.1 canonical schema artifact is
+    # never overwritten.
     if args.row_map_smoke:
-        if args.config not in ROW_MAP_ALLOWED_CONFIGS:
+        if args.benchmark == "all":
             parser.error(
-                f"--row-map-smoke only supports config(s) "
-                f"{sorted(ROW_MAP_ALLOWED_CONFIGS)}; got {args.config!r}"
+                "--row-map-smoke requires --benchmark contextbench or "
+                "swe_explore (not all)"
             )
-        if args.out == DEFAULT_OUT:
-            args.out = ROW_MAP_DEFAULT_OUT
-        if args.benchmark not in ("contextbench", "all"):
-            parser.error(
-                "--row-map-smoke only supports --benchmark contextbench "
-                "(or all); got " + repr(args.benchmark)
-            )
+        if args.benchmark == "contextbench":
+            if args.config is None:
+                args.config = "contextbench_verified"
+            if args.config not in ROW_MAP_ALLOWED_CONFIGS:
+                parser.error(
+                    f"--row-map-smoke --benchmark contextbench only "
+                    f"supports config(s) {sorted(ROW_MAP_ALLOWED_CONFIGS)}; "
+                    f"got {args.config!r}"
+                )
+            if args.out == DEFAULT_OUT:
+                args.out = ROW_MAP_DEFAULT_OUT
+        elif args.benchmark == "swe_explore":
+            if args.config is None:
+                args.config = "default"
+            if args.config not in SWE_ROW_MAP_ALLOWED_CONFIGS:
+                parser.error(
+                    f"--row-map-smoke --benchmark swe_explore only supports "
+                    f"config(s) {sorted(SWE_ROW_MAP_ALLOWED_CONFIGS)}; "
+                    f"got {args.config!r}"
+                )
+            if args.out == DEFAULT_OUT:
+                args.out = SWE_ROW_MAP_DEFAULT_OUT
     return args
 
 
@@ -2648,12 +3462,20 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.row_map_smoke:
-        report = build_row_map_smoke_report(
-            config=args.config,
-            split=args.split,
-            row_limit=args.row_limit,
-            self_test=False,
-        )
+        if args.benchmark == "swe_explore":
+            report = build_swe_row_map_smoke_report(
+                config=args.config,
+                split=args.split,
+                row_limit=args.row_limit,
+                self_test=False,
+            )
+        else:
+            report = build_row_map_smoke_report(
+                config=args.config,
+                split=args.split,
+                row_limit=args.row_limit,
+                self_test=False,
+            )
         _write_json(args.out, report)
         summary = {
             "schema_version": report["schema_version"],

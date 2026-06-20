@@ -1,7 +1,8 @@
 # C4 外部 Benchmark Adapter —— Schema + Row-Mapping 就绪 v1
 
 日期：2026-06-20（C4.1 schema 就绪）；2026-06-20（C4.2 ContextBench
-verified subset row-mapping smoke）
+verified subset row-mapping smoke）；2026-06-20（C4.3 SWE-Explore
+row-mapping / line-budget aggregate smoke）
 
 C4.1 是 **外部 benchmark adapter / schema 就绪** 阶段，C4.2 是
 **ContextBench verified subset row-mapping smoke** 阶段。两者都**不是**外部
@@ -184,7 +185,7 @@ datasets-server 元数据返回可解析 schema。
 
 ```text
 python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
-python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS（12 组）
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS（15 组）
 python3 eval/c4_external_benchmark_adapters.py \
   --out artifacts/c4_external_benchmark_adapters/\
 c4_external_benchmark_adapter_report.json                     => PASS（forbidden_scan: pass）
@@ -201,13 +202,23 @@ python3 eval/c4_external_benchmark_adapters.py \
 c4_contextbench_verified_row_mapping_report.json              => PASS
   (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
    forbidden_scan: pass, private_label_isolation_verified: true)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark swe_explore \
+  --config default --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_swe_explore_row_mapping_report.json                       => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true,
+   adapter_assertions_passed: true)
 ```
 
-Self-test 组（12）：ContextBench adapter 分离、SWE-Explore adapter 分离、line
+Self-test 组（15）：ContextBench adapter 分离、SWE-Explore adapter 分离、line
 range 归一化、forbidden scan 拒绝注入、no-claim 标志全为 false、spec hash 确
 定性、aggregate-only 报告、forbidden scan 在生成时阻断泄漏、schema smoke 报告
 形态、row-map smoke aggregate-only（sentinel 干净）、row-map smoke 无行
-unavailable。
+unavailable、row-map smoke isolation failure fail-closed、swe row-map smoke
+aggregate-only（sentinel 干净）、swe row-map line-budget only-counts、swe
+row-map isolation failure fail-closed。
 
 ## C4.2 ContextBench verified subset row-mapping smoke
 
@@ -284,13 +295,110 @@ c4_contextbench_verified_row_mapping_report.json
 任何行级值、hash、path、span、snippet、problem statement、patch/test、
 prompt/response、provider payload、content_sha 或原始 HF payload。
 
+## C4.3 SWE-Explore row-mapping / line-budget aggregate smoke
+
+C4.3 新增一个针对 SWE-Explore（`default/train`）的有界**真实 row-mapping /
+line-budget shape readiness smoke**。它通过 `_http_get_json()`（仅 stdlib
+`urllib`）读取真实 HF datasets-server `/first-rows` 预览行，并对每个预览行在
+函数作用域内调用现有 `adapt_swe_explore_row(row)` adapter。真实行仅存在于函数
+作用域/内存；它们被适配后立即丢弃。公共 artifact 仅记录 aggregate-only 计数、
+布尔、固定失败类别与 line-budget shape readiness 计数/布尔 —— 从不记录原始行、
+样本行、行值、行级 hash、文件路径/文件名、line range/span/region、patch/
+test_patch/code snippet、modified/core 文件名、meta 原始内容、label/派生 label、
+provider payload、content_sha 或原始 HF payload。
+
+### CLI
+
+- `--row-map-smoke --benchmark swe_explore`（与 `--self-test` 和
+  `--schema-smoke` 互斥；row-map smoke 拒绝 `--benchmark all`）。
+- `--row-limit` 默认 10，硬上限 20。
+- `--config` 对 `--benchmark swe_explore` 默认为 `default`（仅支持 `default`）；
+  对 `--benchmark contextbench` 默认为 `contextbench_verified`。
+- `--split` 默认 `train`。
+- `--out` 对 SWE-Explore 默认为
+  `artifacts/c4_external_benchmark_adapters/c4_swe_explore_row_mapping_report.json`
+  （对 ContextBench 为 C4.2 路径），从而不会覆盖 C4.1 canonical schema artifact。
+
+### Aggregate-only 输出形态
+
+SWE row-map smoke artifact（`c4_swe_explore_row_mapping.v1`、
+`claim_level=adapter_row_mapping_readiness_only`）记录：
+
+- `mode: swe_explore_row_mapping_line_budget_smoke`、
+  `benchmark: swe_explore`、`dataset_id`、`config`、`split`、
+  `row_limit_requested`；
+- `rows_seen`、`rows_mapped`、`rows_failed`、`truncated_rows_observed`；
+- `field_names_schema_only`、`field_presence_counts`（仅 SWE schema 字段名；
+  字段名是仅 schema 的观察用作计数桶 key，从不是行级值）；
+- `public_task_presence_counts`：`has_repo_path`、`has_repo_dir`、
+  `has_ground_truth`、`has_read_step_info`、`has_meta` -> True 计数；
+- `private_field_presence_counts`：私有类别名 -> 非空行计数，包含嵌套
+  `ground_truth_patch`、`ground_truth_test_patch`、
+  `ground_truth_modified_files`、`ground_truth_core_files`、
+  `ground_truth_line_ranges`、`read_step_info_file_maps`、
+  `read_step_info_line_ranges`（类别名是仅 schema 的观察，从不是值）；
+- `line_budget_readiness`：仅 aggregate 计数/布尔 ——
+  `line_level_labels_present_count`、`region_like_structures_present_count`、
+  `file_level_labels_present_count`、`rows_with_file_maps`、
+  `rows_with_modified_files`、`rows_with_core_files`、
+  `budget_evaluation_shape_supported`、`line_budget_values_emitted: false`、
+  `paths_or_ranges_emitted: false`（从不是 path 或 range 字符串）；
+- 固定 `failure_category_counts` 包含 `line_budget_shape_error` 及现有类别
+  （`missing_required_field`、`wrong_type`、`mapping_error`、
+  `private_field_leak`、`public_artifact_leak`、`unexpected_exception`、
+  `no_rows_returned`、`endpoint_unavailable`）；
+- `private_label_isolation_verified`、`adapter_assertions_passed`、
+  `raw_rows_persisted: false`、`row_level_values_emitted: false`、
+  `row_level_hashes_emitted: false`、`raw_response_stored: false`、
+  `derived_labels_published: false`；
+- license gating：`license_status: cc-by-nc-nd-4.0`、
+  `row_level_redistribution_allowed: false`、
+  `derived_label_publication_allowed: false`、
+  `public_release_status: blocked_by_license`；
+- 所有 no-claim 标志为 false、`aggregate_only_public_artifact=true`、
+  `not_evidence=true`、`candidate_not_fact=true`、
+  `forbidden_scan.status=pass`；
+- `status: pass|partial|unavailable|fail_forbidden_leak|fail_schema_contract`。
+
+forbidden scanner 在 `SCHEMA_KEY_CONTAINER_KEYS` allowlist 中添加了
+`line_budget_readiness`，使其计数 key（固定 readiness 标签，非字段名或 path）被
+接受。scanner 仍禁止公共输出中任何位置的行级值、path、span、hash、URL 与
+secret。每次写入前运行 fail-closed forbidden scan。注入的 `"12-34"` line range
+字符串与 path-like 值仍会被拒绝。
+
+### 真实 row-map smoke 结果（2026-06-20）
+
+```text
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark swe_explore \
+  --config default --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_swe_explore_row_mapping_report.json
+  => rows_seen: 10, rows_mapped: 10, rows_failed: 0
+  => status: pass, forbidden_scan: pass
+  => private_label_isolation_verified: true
+  => adapter_assertions_passed: true
+  => raw_rows_persisted: false, row_level_values_emitted: false,
+     row_level_hashes_emitted: false, raw_response_stored: false,
+     derived_labels_published: false
+```
+
+所有 7 个 SWE schema 字段名在全部 10 行中非空；所有 5 个 public-task presence
+布尔在全部 10 行中为 True。嵌套私有类别（`ground_truth_patch`、
+`ground_truth_modified_files` 等）在真实 HF `default/train` 预览行中被观察到
+为缺失 —— 这是准确的 schema 观察，不是错误。因此 artifact 记录
+`budget_evaluation_shape_supported=false`：C4.3 是 row-mapping/privacy boundary
+smoke 加一个负向 line-budget shape observation，不是正向 line-budget readiness
+证据。未持久化任何行级值、hash、文件路径、line range、span、snippet、patch/test、
+meta 原始内容、label、provider payload、content_sha 或原始 HF payload。
+
 ## 注意事项
 
-- C4.1/C4.2 仅是 adapter/row-mapping 就绪。它**不**校验行级语义、label 或下游
+- C4.1/C4.2/C4.3 仅是 adapter/row-mapping 就绪。它**不**校验行级语义、label 或下游
   agent 价值。schema smoke 仅确认公共 HF datasets-server schema 端点可达且可解
   析；row-map smoke 仅确认 adapter 边界成立（public task 无私有 attr；private
   label 仅在内存中保留私有值）。两者均**不**确认 benchmark 质量、label 正确性
-  或对任何下游评估的适用性。
+  或对任何下游评估的适用性。不做任何性能声明。
 - ContextBench 数据集 license 未知，即使代码仓库为 Apache-2.0；行级再分发被禁用。
 - SWE-Explore HF 数据集 license 为 `cc-by-nc-nd-4.0`；行级再分发与派生 label
   发布均被禁用。
@@ -301,9 +409,9 @@ prompt/response、provider payload、content_sha 或原始 HF payload。
 
 ## 下一步
 
-- 未来的外部 benchmark 评估（独立于 C4.1/C4.2）需要一个显式的、evidence-gated
+- 未来的外部 benchmark 评估（独立于 C4.1/C4.2/C4.3）需要一个显式的、evidence-gated
   的 preregistration，并尊重每个 benchmark 的 license gating 与 OpenLocus 公共
   artifact 契约。
-- C4.1/C4.2 不产生 promotion、不产生默认策略变更、不产生 EvidenceCore 语义变更、
+- C4.1/C4.2/C4.3 不产生 promotion、不产生默认策略变更、不产生 EvidenceCore 语义变更、
   不产生 runtime-clean 通用算法声明、不产生下游 agent 价值声明、不产生 OOD 时间
   声明，也不产生 QuIVer systems 声明。

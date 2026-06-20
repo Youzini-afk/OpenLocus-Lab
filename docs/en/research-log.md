@@ -3355,3 +3355,121 @@ were persisted.
   EvidenceCore semantics change, no runtime-clean general algorithm claim,
   no downstream agent value claim, no OOD temporal claim, and no QuIVer
   systems claim follows from C4.2.
+
+## 2026-06-20 — C4.3 SWE-Explore Row-Mapping / Line-Budget Aggregate Smoke
+
+### Objective
+
+Add a bounded **real row-mapping / line-budget shape observation smoke** for
+SWE-Explore (`default/train`) that reads real HF datasets-server
+`/first-rows` preview rows, adapts each row in function scope via the
+existing `adapt_swe_explore_row` adapter, validates the
+`public_task` / `private_label` separation in memory, and emits an
+aggregate-only artifact with line-budget shape observation counts/booleans.
+Real rows live ONLY in function scope / memory; no raw rows, sample rows,
+row values, row-level hashes, file paths/basenames, line ranges/spans/
+regions, patch/test_patch/code snippets, modified/core file names, meta
+raw content, labels/derived labels, provider payloads, content_sha, or raw
+HF payloads are persisted. C4.3 is adapter/row-mapping readiness only, NOT
+a benchmark performance/result.
+
+### Implementation
+
+- Extended `eval/c4_external_benchmark_adapters.py` with SWE-Explore
+  row-map constants: `SWE_ROW_MAP_SCHEMA_VERSION`
+  (`c4_swe_explore_row_mapping.v1`), `SWE_ROW_MAP_DEFAULT_OUT`,
+  `SWE_ROW_MAP_ALLOWED_CONFIGS={"default"}`, `SWE_ROW_MAP_MODE`,
+  `_SWE_PUBLIC_TASK_PRESENCE_KEYS`, `_SWE_PRIVATE_LABEL_FIELDS` (14
+  categories including nested `ground_truth_patch`,
+  `ground_truth_modified_files`, `read_step_info_file_maps`, etc.),
+  `_SWE_LINE_BUDGET_READINESS_KEYS`. Added `line_budget_shape_error` to
+  `ROW_MAP_FAILURE_CATEGORIES`. Added `line_budget_readiness` to
+  `SCHEMA_KEY_CONTAINER_KEYS`.
+- New functions: `_swe_gt_has`, `_swe_rsi_has` (nested presence checks),
+  `_swe_row_has_line_ranges`, `_swe_row_has_region_like` (shape-only
+  booleans, never values), `_build_swe_row_map_summary` (iterates bounded
+  rows, calls `adapt_swe_explore_row`, asserts public task has no private
+  attrs, counts field/public-task/private-field presence, line-budget
+  readiness counts/booleans, fixed failure categories),
+  `_row_map_smoke_swe_explore` (real HF `/first-rows` call, extract rows,
+  bound, adapt, discard raw, build summary, fail-closed forbidden scan,
+  sanitized `unavailable` on network failure), `build_swe_row_map_smoke_report`.
+- CLI extended: `--row-map-smoke` now dispatches by `--benchmark`
+  (`contextbench` → C4.2; `swe_explore` → C4.3). `--benchmark all`
+  rejected for row-map smoke. `--config` default is benchmark-specific
+  (`contextbench_verified` for contextbench; `default` for swe_explore).
+  `--out` default is benchmark-specific. Existing ContextBench C4.2
+  commands unchanged.
+- New no-network self-tests: `_self_test_swe_row_map_smoke_aggregate_only`
+  (sentinel private values `SECRET_REPO_PATH_SENTINEL`,
+  `SECRET_PATCH_SENTINEL`, file paths, line ranges, instance IDs,
+  read_step_info; asserts no sentinels in report JSON, forbidden scan
+  passes, injected `"12-34"` rejected),
+  `_self_test_swe_row_map_line_budget_only_counts` (known synthetic
+  line-range/file-list structure gives correct aggregate counts, but JSON
+  contains no path/range strings),
+  `_self_test_swe_row_map_isolation_failure_fail_closed` (bad SWE public
+  task exposing `repo_path`/`ground_truth`; asserts `fail_schema_contract`,
+  rows_mapped=0, rows_failed>=1, safety bools false,
+  `private_field_leak>=1`, sentinels not emitted). Self-test now has 15
+  groups.
+
+### Findings
+
+```text
+python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (15 groups)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out /tmp/c4_contextbench_row_map.json                       => PASS (regression)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark swe_explore \
+  --config default --split train --row-limit 10 \
+  --out /tmp/c4_swe_row_map.json                                => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true,
+   adapter_assertions_passed: true)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark swe_explore \
+  --config default --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_swe_explore_row_mapping_report.json                       => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true,
+   adapter_assertions_passed: true,
+   raw_rows_persisted: false, row_level_values_emitted: false,
+   row_level_hashes_emitted: false, raw_response_stored: false,
+   derived_labels_published: false)
+```
+
+All 7 SWE schema field names were non-empty in all 10 rows; all 5
+public-task presence booleans were True in all 10 rows. The nested
+private categories (`ground_truth_patch`, `ground_truth_modified_files`,
+etc.) were observed as absent in the real HF `default/train` preview rows
+— this is an accurate schema observation, not an error. The artifact records
+`budget_evaluation_shape_supported=false`, so C4.3 is a row-mapping/privacy
+boundary smoke plus a negative line-budget shape observation, not positive
+line-budget readiness evidence. No row-level values, hashes, file paths, line
+ranges, spans, snippets, patches/tests, meta raw content, labels, provider
+payloads, content_sha, or raw HF payloads were persisted.
+
+### Caveats
+
+- C4.3 is adapter/row-mapping readiness plus a negative line-budget shape
+  observation (`budget_evaluation_shape_supported=false`). It does
+  NOT validate row-level semantics, labels, or downstream agent value. The
+  row-map smoke confirms the adapter boundary holds (public task has no
+  private attrs; private label has private values only in memory); it does
+  NOT confirm benchmark quality, label correctness, or fitness for any
+  downstream evaluation. No performance claim is made.
+- SWE-Explore HF dataset license is `cc-by-nc-nd-4.0`; row-level
+  redistribution AND derived-label publication are disabled.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`. No promotion, no default change, no
+  EvidenceCore semantics change, no runtime-clean general algorithm claim,
+  no downstream agent value claim, no OOD temporal claim, and no QuIVer
+  systems claim follows from C4.3.
