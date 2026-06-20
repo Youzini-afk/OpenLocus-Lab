@@ -4640,3 +4640,247 @@ D4d 冻结 D4e（包->bundle 转换器，未来）将使用的人工标注 runbo
 - 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
   `current-research-conclusions` **未**更新（D4d 是纯协议 artifact；结论无变
   化）。
+
+## 2026-06-20 — D4e 已填充 Packet -> D4b Bundle 转换器夹具（公开夹具 / 无转换产物）
+
+### Objective
+
+实现 D4e 为**已填充 packet -> D4b 真值 bundle 转换器夹具**公开 artifact。D4e
+在任何真实人工标签存在之前，强化 D4d 人工标注与 D4b bundle 校验之间的转换控制
+平面。默认提交的 artifact 是**公开夹具 / 无转换产物**，不是真实的已填充
+packet -> D4b bundle 转换运行，不是校准，不是一致性/置信区间计算，也不解锁
+D5。D4e **不**默认读取私有已填充 packet，**不**默认转换，**不**默认写入或提
+交 D4b bundle，**不**接受 D4c 源上下文字段，**不**接受模型/代理/LLM 标签作
+为人工/手工标签，**不**在任何提交产物中发出包引用/任务 ID/仓库 ID/路径/跨度/
+代码片段/内容哈希/查询/候选文本/标注者 ID，**不**计算校准/标注者间一致性/置
+信区间，**不**通过任何公开发布门，**不解锁** D5，**不**声明真 E/S 校准，**不**
+执行模型/LLM 标注，且**不**改变运行时行为、retriever、pack、model、backend、
+默认策略或 EvidenceCore 语义。
+
+### Implementation
+
+- 新脚本 `eval/d4e_filled_packet_converter.py`（纯 Python stdlib；无外部导
+  入）。仅公开夹具 / 无转换 artifact；私有转换器是可选的，仅写入 `/tmp` 输出
+  （永不提交）。
+  - 声明级别
+    `filled_packet_to_d4b_bundle_converter_harness_only`；状态
+    `blocked_no_filled_packets_available_or_no_conversion_run`；模式
+    `public_harness_no_filled_packets_no_conversion`；阶段 `D4e`；D4c 数据包
+    schema 源 `d4c_annotation_packet_v1`；D4d runbook 协议
+    `d4d_human_annotation_runbook.v1`；D4b bundle schema 目标
+    `d4b_true_label_bundle_v1`。
+  - CLI：`--self-test`、`--out`、`--allow-private-filled-packets`、
+    `--input-filled-packets`、`--synthetic-harness-test`。未知或类似私有输入
+    的参数会以通用 `invalid arguments` 消息拒绝，不回显私有路径或 basename
+    （SafeArgumentParser 模式）。
+  - 默认 false 标志（全为 false）：
+    `private_filled_packets_read`、`filled_packets_validated`、
+    `filled_packets_persisted`、`conversion_run`、
+    `d4b_true_label_bundle_created`、
+    `d4b_true_label_bundle_written`、
+    `d4b_true_label_bundle_validated`、`labels_collected`、
+    `labels_converted`、`raw_label_rows_emitted`、
+    `packet_ids_emitted`、`task_ids_emitted`、`repo_ids_emitted`、
+    `paths_or_spans_emitted`、`snippets_emitted`、
+    `content_sha_emitted`、`query_or_candidate_text_emitted`、
+    `rater_ids_emitted`、`private_input_path_emitted`、
+    `private_output_path_emitted`、`exact_private_counts_emitted`、
+    `calibration_metrics_computed`、
+    `inter_rater_agreement_measured`、
+    `confidence_intervals_computed`、
+    `public_release_gate_passed`、`d5_unblocked`、
+    `true_e_s_calibration_claimed`、
+    `model_or_llm_labeling_performed`、
+    `model_assisted_labels_allowed`。
+  - 无声明 / 无运行时变更标志（全为 false）：
+    `runtime_behavior_changed`、`retriever_changed`、
+    `pack_builder_changed`、`model_calls_changed`、`backend_changed`、
+    `default_policy_changed`、`evidencecore_semantics_changed`、
+    `promotion_ready`、`default_should_change`、
+    `downstream_agent_value_proven`、
+    `runtime_clean_general_algorithm_claimed`、
+    `ood_temporal_supported`、`quiver_systems_supported`。
+  - 夹具/控制 true 标志（共八个，全为 true）：
+    `converter_harness_available`、`private_cli_guard_validated`、
+    `tmp_output_resolved_guard_validated`、
+    `sanitized_error_guard_validated`、
+    `filled_packet_schema_contract_defined`、
+    `d4d_attestation_required`、
+    `d4b_bundle_schema_contract_defined`、
+    `d4b_mapping_contract_defined`。默认提交产物中无任何读取/转换/bundle/标
+    签/校准/D5 声明标志为 true。
+  - attestation 作用域被显式区分，避免矛盾的 shorthand：
+    `default_public_mode_input_attestation_evaluated=false`，因为默认公开模式
+    不读取输入；`private_conversion_d4d_attestation_required=true`，因为私有
+    filled-packet 转换必须带 D4d attestation。
+  - 公开契约：`filled_packet_schema_contract`（`schema`、
+    `source_packet_schema_ref`、`private_only=true`、
+    `may_contain_filled_label_slots=true`、`required_label_slots`、
+    `required_attestation_fields`、
+    `rejects_source_context_fields=true`）；`d4d_runbook_contract`
+    （`protocol`、`required_attestation_fields`、
+    `attestation_must_be_all_true=true`、
+    `no_llm_or_model_labels_required=true`、
+    `no_proxy_labels_as_true_labels_required=true`、
+    `local_only_storage_required=true`）；`d4b_bundle_schema_contract`
+    （`schema`、`required_label_source`、`bundle_allowed_keys`、
+    `label_object_allowed_keys`、`e_score_levels=[E0,E1,E2]`、
+    `s_score_levels=[S0,S1,S2]`、
+    `bucket_names=[primary_evidence,dependency_support,weak_candidates,
+    abstained]`、`rejects_unknown_keys=true`、
+    `rejects_packet_refs_paths_snippets_raters=true`）；
+    `d4b_mapping_contract`（`target_bundle_schema`、
+    `packet_label_slots`、`source_packet_schema_ref`、
+    `runbook_protocol`、
+    `packet_to_bundle_requires_human_or_local_converter=true`、
+    `converter_not_run_by_default=true`、
+    `d4b_true_label_bundle_created=false`）；`converter_harness_info`
+    （`available=true`、`opt_in_required=true`、
+    `output_location=tmp_only_local_private`、`committed=false`、
+    `converts_filled_packets_to_d4b_bundle=true`、
+    `rejects_source_context_fields=true`、
+    `rejects_model_proxy_llm_labels=true`、
+    `claims_calibration=false`）。
+  - 私有已填充 packet 输入契约：最小纯标签批次，带 D4d attestation。允许的
+    批次键：`schema`、`source_packet_schema`、`d4d_runbook_attestation`、
+    `packets`。允许的 attestation 键：`protocol`、
+    `two_independent_human_raters`、`independent_before_adjudication`、
+    `no_llm_or_model_labels`、`no_proxy_labels_as_true_labels`、
+    `local_only_storage`（全为 true；协议必须恰为
+    `d4d_human_annotation_runbook.v1`）。允许的 packet 键：
+    `packet_ref`、`label_slots`。允许的标签槽位键：`e_score`、
+    `s_score`、`bucket`、`citation_valid`、`rater_pair_present`、
+    `adjudicated`。拒绝路径/跨度/代码片段/内容哈希、查询/候选文本、任务/仓库
+    ID、标注者 ID/姓名、提示/响应/模型输出/提供者 payload/API 密钥以及源上下文
+    字段（D4e 仅消费已填充标签和 attestation）。
+  - 私有 D4b bundle 输出契约：schema 恰为
+    `d4b_true_label_bundle_v1`，label_source 恰为
+    `human_manual_true_e_s`，`rater_count=2`、
+    `agreement_available=true`、
+    `confidence_intervals_available=false`，真实的合成/真实标志。对于
+    `--synthetic-harness-test`：`synthetic_harness_test=true`、
+    `synthetic_labels_converted_for_harness_only=true`、
+    `local_private_conversion_executed=false`、
+    `real_human_labels_converted=false`。对于真实本地私有运行（非合成标志、
+    D4d attestation 通过、无模型/代理标签、schema 通过、/tmp 守卫通过）：
+    `synthetic_harness_test=false`、
+    `synthetic_labels_converted_for_harness_only=false`、
+    `local_private_conversion_executed=true`、
+    `real_human_labels_converted=true`。私有输出不得包含包引用、任务/仓库
+    ID、路径/跨度、代码片段、content_sha、查询/候选文本、标注者 ID、提供者
+    payload、API 密钥、模型输出、精确输入/输出路径或 basename。
+  - 严格公开扫描器（故障关闭，带精确契约字符串白名单）。契约容器
+    （`filled_packet_schema_contract`、`d4d_runbook_contract`、
+    `d4b_bundle_schema_contract`、`d4b_mapping_contract`）仅允许经批准的
+    schema/协议标识符、E/S 等级、桶名、标签槽位字段名、attestation 字段名、
+    human-manual label source 标识符和经批准的 D4b bundle 字段名 token。任意
+    短字符串（如 `compute_loss` 或私有文本）即使在契约容器内**也会被拒绝**（无
+    过宽容器豁免）；敏感字段名（`content_sha`、`query_text`、
+    `packet_ref`、`source_packet_schema`、`d4d_runbook_attestation`、
+    `packets`）即使在契约容器内也被拒绝。字段名在任何位置作为键、在契约外作
+    为值，均被拒绝。拒绝禁止的 dict 键，并拒绝值模式：任何 URL（无 URL 白名
+    单）、32/40/64 字符十六进制摘要、类密钥字符串、类路径字符串、多行字符
+    串、原始 JSON 片段、原始行范围以及自测 sentinel。
+  - 私有 D4b bundle 输出守卫（与公开扫描器**不同**）：允许标签字段和 E/S 值
+    （bundle 是真实的 D4b bundle，可在本地包含标签）；拒绝路径/代码片段/
+    content_sha/查询/候选文本、最终 D4b bundle 中的包引用、标注者 ID、提供者
+    payload/API 密钥/模型输出；校验 schema 恰为
+    `d4b_true_label_bundle_v1`、label_source 恰为
+    `human_manual_true_e_s`、真实的合成/真实标志，且输出元数据中无精确输入/
+    输出路径或 basename。
+  - 解析后的 `/tmp` 输出守卫（强，仅在 OUTPUT 上做文件系统访问）：父目录符号
+    链接逃逸被拒绝；已存在的输出文件符号链接被拒绝；解析后的目标必须保持在
+    `/tmp` 下。在打开或 stat 输入之前校验（读取前校验）。
+  - CLI 守卫矩阵（纯词法，无文件系统）：
+    `--input-filled-packets` 不带 `--allow-private-filled-packets` 退出码
+    2；`--allow-private-filled-packets` 不带 `--input-filled-packets` 退出
+    码 2；私有模式要求显式 `--out`；提交产物路径在读取前被拒绝；非 `/tmp` 输
+    出在读取前被拒绝；`--synthetic-harness-test` 不带
+    `--allow-private-filled-packets` 退出码 2；路径遍历
+    （`/tmp/../etc/...`）被拒绝。
+  - 仅清洗错误：任何私有加载/解析/schema/隐私失败返回固定消息
+    `error: failed to load private filled packets (schema/privacy/parse error; details suppressed)`；
+    永不暴露输入路径、basename、原始 JSON 或标签文本。未知/类似私有输入的参
+    数以通用 `invalid arguments` 消息拒绝（不回显值）。
+  - 若自测失败或扫描器发现泄漏，生成拒绝成功（写 JSON 前立即故障关闭
+    `_enforce_no_forbidden` + `_refuse_on_self_test_failure`）。
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4e_filled_packet_converter.py    => PASS
+python3 eval/d4e_filled_packet_converter.py --self-test      => PASS (307/307 checks)
+python3 eval/d4e_filled_packet_converter.py \
+  --out artifacts/d4e_filled_packet_converter/\
+d4e_filled_packet_converter_report.json                     => PASS
+  (status: blocked_no_filled_packets_available_or_no_conversion_run,
+   forbidden_scan: pass, self_test_passed: true,
+   private_filled_packets_read: false,
+   conversion_run: false,
+   d4b_true_label_bundle_created: false,
+   d4b_true_label_bundle_written: false,
+   labels_converted: false,
+   d5_unblocked: false,
+   converter_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   filled_packet_schema_contract_defined: true,
+   d4d_attestation_required: true,
+   d4b_bundle_schema_contract_defined: true,
+   d4b_mapping_contract_defined: true,
+   mode: public_harness_no_filled_packets_no_conversion, phase: D4e,
+   d4c_packet_schema_source: d4c_annotation_packet_v1,
+   d4d_runbook_protocol: d4d_human_annotation_runbook.v1,
+   d4b_bundle_schema_target: d4b_true_label_bundle_v1)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4e 在任何真实人工标签存在之前，强化 D4d 人工标注与 D4b bundle 校验之间的转
+换控制平面：私有转换器夹具，带 SafeArgumentParser CLI（未知私有输入参数不回
+显值）、带精确契约字符串白名单的严格故障关闭公开扫描器（无过宽容器豁免——未
+批准字符串和敏感字段名即使在契约容器内也被拒绝）、与公开扫描器不同的私有
+D4b bundle 输出守卫（允许标签字段/E/S 值；拒绝路径/代码片段/引用/标注者
+ID/密钥/模型输出；校验 schema、label_source 和真实的合成/真实标志）、解析后
+的 `/tmp` 输出守卫（父目录符号链接逃逸、已存在输出符号链接、解析后目标逃逸
+均被拒绝）、读取前校验顺序，以及在扫描器泄漏或自测失败时拒绝成功的故障关闭
+生成。默认提交产物是夹具 / 无转换产物：不读取私有已填充 packet，不运行转换，
+不创建/写入/校验 D4b bundle，不采集/转换标签，不计算校准/一致性/置信区间，
+不执行模型/LLM 标注，也不通过任何公开发布门。D5 保持锁定。在合成夹具上的
+real-mode flag-path 测试（在本地设置
+`local_private_conversion_executed=true` 和
+`real_human_labels_converted=true`）仅是 flag-path 测试，**不**是真实标签存
+在的证据。
+
+### Caveats
+
+- D4e 仅是已填充 packet -> D4b bundle 转换器夹具公开 artifact。它是
+  eval/诊断专用。它**不**改变运行时、retriever、pack、model、backend 或默
+  认策略；也**不**改变 EvidenceCore 语义。它不是基准测试结果，不是下游
+  agent 价值声明，不是 runtime-clean 通用算法声明，不是 OOD 时间性声明，
+  也不是 QuIVer 系统声明。
+- D4e 默认是带阻塞公开产物的夹具。默认提交产物**不**读取任何私有已填充
+  packet，**不**运行任何转换，**不**创建/写入/校验任何 D4b bundle，**不**采
+  集/转换任何标签，**不**计算任何校准/一致性/置信区间，**不**执行任何模型/LLM
+  标注，也**不**通过任何公开发布门。D5 保持锁定。夹具/控制 true 标志仅对已
+  校验的夹具/控制为 true，而非任何真实标签转换或 bundle 声明。
+- D4e **不是**提交输出中的真实标签转换，**不是**校准，**不是**一致性/置信区
+  间计算，也**不**解锁 D5。它在任何真实人工标签存在之前，强化 D4d 人工标注
+  与 D4b bundle 校验之间的转换控制平面。
+- D4e 有私有转换器模式（可选，不提交）。私有输出仅写入 `/tmp` 且永不提交。
+  在合成夹具上的 real-mode flag-path 测试（在本地设置
+  `local_private_conversion_executed=true` 和
+  `real_human_labels_converted=true`）仅是 flag-path 测试，**不**是真实标签
+  存在的证据。真实人工标签尚未采集；D5 保持锁定。
+- 转换器仅消费已填充的标签槽位和 D4d attestation；它拒绝 D4c 源上下文字段
+  （路径、跨度、代码片段、content_sha、查询文本、候选文本、packet 源上下文）。
+  D4d attestation 必须恰为 `d4d_human_annotation_runbook.v1`，且所有六个
+  必需标志为 true（两名独立人工标注者、裁决前独立、无 LLM/模型标签、无代理
+  标签作为真值、仅本地存储）；模型/代理/LLM 标签被拒绝作为人工/手工标签。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`、`not_evidence`）保持
+  true；夹具/控制 true 标志是唯一为 true 的控制标志。
+- 未修改 runtime/retriever/pack/model/backend/default-policy 文件。
+  `current-research-conclusions` **未**更新（D4e 是夹具/仅阻塞 artifact；结论
+  无变化）。

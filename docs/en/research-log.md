@@ -4859,3 +4859,290 @@ snippets, paths, IDs, rater names, or URLs appear in the public artifact.
 - No runtime/retriever/pack/model/backend/default-policy files were
   modified. `current-research-conclusions` was NOT updated (D4d is a
   protocol-only artifact; no conclusions change).
+
+## 2026-06-20 — D4e Filled-Packet to D4b Bundle Converter Harness (Public Harness / No-Conversion Artifact)
+
+### Objective
+
+Implement D4e as the **filled-packet -> D4b true-label bundle converter
+harness** public artifact. D4e hardens the conversion control plane
+between D4d human annotation and D4b bundle validation, before any real
+human labels exist. The default committed artifact is a **public
+harness / no-conversion artifact**, NOT a real filled-packet -> D4b
+bundle conversion run, NOT calibration, NOT agreement/CI computation,
+and NOT a D5 unblock. D4e must NOT read private filled packets by
+default, NOT convert filled packets to a D4b bundle by default, NOT
+write or commit a D4b bundle by default, NOT accept D4c source context
+fields, NOT accept model/proxy/LLM labels as human/manual labels, NOT
+emit packet refs / task IDs / repo IDs / paths / spans / snippets /
+content hashes / query / candidate text / rater IDs in any committed
+artifact, NOT compute calibration / inter-rater agreement / confidence
+intervals, NOT pass any public-release gate, NOT unblock D5, NOT claim
+true E/S calibration, NOT perform model/LLM labeling, and NOT change
+runtime behavior, retriever, pack, model, backend, default policy, or
+EvidenceCore semantics.
+
+### Implementation
+
+- New script `eval/d4e_filled_packet_converter.py` (pure Python stdlib;
+  no external imports). Public harness / no-conversion artifact only;
+  the private converter is opt-in and writes `/tmp` output only (never
+  committed).
+  - Claim level
+    `filled_packet_to_d4b_bundle_converter_harness_only`; status
+    `blocked_no_filled_packets_available_or_no_conversion_run`; mode
+    `public_harness_no_filled_packets_no_conversion`; phase `D4e`;
+    D4c packet schema source `d4c_annotation_packet_v1`; D4d runbook
+    protocol `d4d_human_annotation_runbook.v1`; D4b bundle schema
+    target `d4b_true_label_bundle_v1`.
+  - CLI: `--self-test`, `--out`,
+    `--allow-private-filled-packets`, `--input-filled-packets`,
+    `--synthetic-harness-test`. Unknown/private-looking arguments are
+    rejected with a generic `invalid arguments` message that does not
+    echo private paths or basenames (SafeArgumentParser pattern).
+  - Default false flags (all false):
+    `private_filled_packets_read`, `filled_packets_validated`,
+    `filled_packets_persisted`, `conversion_run`,
+    `d4b_true_label_bundle_created`,
+    `d4b_true_label_bundle_written`,
+    `d4b_true_label_bundle_validated`, `labels_collected`,
+    `labels_converted`, `raw_label_rows_emitted`,
+    `packet_ids_emitted`, `task_ids_emitted`, `repo_ids_emitted`,
+    `paths_or_spans_emitted`, `snippets_emitted`,
+    `content_sha_emitted`, `query_or_candidate_text_emitted`,
+    `rater_ids_emitted`, `private_input_path_emitted`,
+    `private_output_path_emitted`, `exact_private_counts_emitted`,
+    `calibration_metrics_computed`,
+    `inter_rater_agreement_measured`,
+    `confidence_intervals_computed`,
+    `public_release_gate_passed`, `d5_unblocked`,
+    `true_e_s_calibration_claimed`,
+    `model_or_llm_labeling_performed`,
+    `model_assisted_labels_allowed`.
+  - No-claim / no-runtime-change flags (all false):
+    `runtime_behavior_changed`, `retriever_changed`,
+    `pack_builder_changed`, `model_calls_changed`, `backend_changed`,
+    `default_policy_changed`, `evidencecore_semantics_changed`,
+    `promotion_ready`, `default_should_change`,
+    `downstream_agent_value_proven`,
+    `runtime_clean_general_algorithm_claimed`,
+    `ood_temporal_supported`, `quiver_systems_supported`.
+  - Harness/control true flags (exactly eight, all true):
+    `converter_harness_available`, `private_cli_guard_validated`,
+    `tmp_output_resolved_guard_validated`,
+    `sanitized_error_guard_validated`,
+    `filled_packet_schema_contract_defined`,
+    `d4d_attestation_required`,
+    `d4b_bundle_schema_contract_defined`,
+    `d4b_mapping_contract_defined`. No read/conversion/bundle/label/
+    calibration/D5 claim flags are true in the default committed
+    artifact.
+  - Attestation scope is explicit, avoiding contradictory shorthand:
+    `default_public_mode_input_attestation_evaluated=false` because default
+    public mode reads no input, while
+    `private_conversion_d4d_attestation_required=true` because private
+    filled-packet conversion requires D4d attestation.
+  - Public contracts: `filled_packet_schema_contract` (`schema`,
+    `source_packet_schema_ref`, `private_only=true`,
+    `may_contain_filled_label_slots=true`, `required_label_slots`,
+    `required_attestation_fields`,
+    `rejects_source_context_fields=true`); `d4d_runbook_contract`
+    (`protocol`, `required_attestation_fields`,
+    `attestation_must_be_all_true=true`,
+    `no_llm_or_model_labels_required=true`,
+    `no_proxy_labels_as_true_labels_required=true`,
+    `local_only_storage_required=true`); `d4b_bundle_schema_contract`
+    (`schema`, `required_label_source`, `bundle_allowed_keys`,
+    `label_object_allowed_keys`, `e_score_levels=[E0,E1,E2]`,
+    `s_score_levels=[S0,S1,S2]`,
+    `bucket_names=[primary_evidence,dependency_support,weak_candidates,
+    abstained]`, `rejects_unknown_keys=true`,
+    `rejects_packet_refs_paths_snippets_raters=true`);
+    `d4b_mapping_contract` (`target_bundle_schema`,
+    `packet_label_slots`, `source_packet_schema_ref`,
+    `runbook_protocol`,
+    `packet_to_bundle_requires_human_or_local_converter=true`,
+    `converter_not_run_by_default=true`,
+    `d4b_true_label_bundle_created=false`); `converter_harness_info`
+    (`available=true`, `opt_in_required=true`,
+    `output_location=tmp_only_local_private`, `committed=false`,
+    `converts_filled_packets_to_d4b_bundle=true`,
+    `rejects_source_context_fields=true`,
+    `rejects_model_proxy_llm_labels=true`,
+    `claims_calibration=false`).
+  - Private filled-packet input contract: minimal label-only batch
+    with D4d attestation. Allowed batch keys: `schema`,
+    `source_packet_schema`, `d4d_runbook_attestation`, `packets`.
+    Allowed attestation keys: `protocol`,
+    `two_independent_human_raters`, `independent_before_adjudication`,
+    `no_llm_or_model_labels`, `no_proxy_labels_as_true_labels`,
+    `local_only_storage` (all must be true; protocol must be exactly
+    `d4d_human_annotation_runbook.v1`). Allowed packet keys:
+    `packet_ref`, `label_slots`. Allowed label slot keys: `e_score`,
+    `s_score`, `bucket`, `citation_valid`, `rater_pair_present`,
+    `adjudicated`. Rejects paths/spans/snippets/content hashes,
+    query/candidate text, task/repo IDs, rater IDs/names,
+    prompts/responses/model outputs/provider payloads/API keys, and
+    source context fields (D4e consumes filled labels and attestation
+    only).
+  - Private D4b bundle output contract: schema exactly
+    `d4b_true_label_bundle_v1`, label_source exactly
+    `human_manual_true_e_s`, `rater_count=2`, `agreement_available=true`,
+    `confidence_intervals_available=false`, truthful synthetic/real
+    flags. For `--synthetic-harness-test`:
+    `synthetic_harness_test=true`,
+    `synthetic_labels_converted_for_harness_only=true`,
+    `local_private_conversion_executed=false`,
+    `real_human_labels_converted=false`. For real local private runs
+    (no synthetic flag, D4d attestation passes, no model/proxy labels,
+    schema passes, /tmp guard passes):
+    `synthetic_harness_test=false`,
+    `synthetic_labels_converted_for_harness_only=false`,
+    `local_private_conversion_executed=true`,
+    `real_human_labels_converted=true`. Private output must not include
+    packet refs, task/repo IDs, paths/spans, snippets, content_sha,
+    query/candidate text, rater IDs, provider payloads, API secrets,
+    model outputs, exact input/output paths, or basenames.
+  - Strict public scanner (fail-closed, with exact contract string
+    allowlist). Contract containers (`filled_packet_schema_contract`,
+    `d4d_runbook_contract`, `d4b_bundle_schema_contract`,
+    `d4b_mapping_contract`) allow ONLY approved schema/protocol
+    identifiers, E/S levels, bucket names, label-slot field names,
+    attestation field names, the human-manual label source, and
+    approved D4b bundle field-name tokens. Arbitrary short strings
+    (e.g. `compute_loss` or private text) are rejected EVEN inside
+    contract containers (no over-broad container exemption); sensitive
+    field names (`content_sha`, `query_text`, `packet_ref`,
+    `source_packet_schema`, `d4d_runbook_attestation`, `packets`) are
+    rejected even inside contract containers. Field names are forbidden
+    as keys anywhere and as values outside contracts. Rejects forbidden
+    dict keys anywhere and value patterns: ANY URL (no URL allowlist),
+    32/40/64-char hex digests, secret-like strings, path-like strings,
+    multiline strings, raw JSON fragments, raw line ranges, and the
+    self-test sentinel.
+  - Private D4b bundle output guard (DIFFERENT from the public
+    scanner): allows label fields and E/S values (the bundle is a real
+    D4b bundle that may contain labels locally); rejects paths/snippets/
+    content_sha/query/candidate text, packet refs in the final D4b
+    bundle, rater IDs, provider payload/API secrets/model outputs;
+    verifies schema exactly `d4b_true_label_bundle_v1`, label_source
+    exactly `human_manual_true_e_s`, truthful synthetic/real flags, and
+    no exact input/output path or basename in output metadata.
+  - Resolved `/tmp` output guard (strong, filesystem on OUTPUT only):
+    parent symlink escape rejected; existing output file symlink
+    rejected; resolved target must stay under `/tmp`. Validated BEFORE
+    the input is opened or stat'd (validate-before-read).
+  - CLI guard matrix (pure lexical, no filesystem):
+    `--input-filled-packets` without `--allow-private-filled-packets`
+    exits 2; `--allow-private-filled-packets` without
+    `--input-filled-packets` exits 2; private mode requires explicit
+    `--out`; committed artifact path rejected before read; non-`/tmp`
+    output rejected before read; `--synthetic-harness-test` without
+    `--allow-private-filled-packets` exits 2; path traversal
+    (`/tmp/../etc/...`) rejected.
+  - Sanitized errors only: any private load/parse/schema/privacy
+    failure returns the fixed
+    `error: failed to load private filled packets (schema/privacy/parse error; details suppressed)`;
+    never surfaces the input path, basename, raw JSON, or label text.
+    Unknown/private-looking arguments are rejected with a generic
+    `invalid arguments` message (no value echo).
+  - Generation refuses success if self-test fails or the scanner finds
+    leakage (fail-closed `_enforce_no_forbidden` +
+    `_refuse_on_self_test_failure` immediately before writing JSON).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d4e_filled_packet_converter.py    => PASS
+python3 eval/d4e_filled_packet_converter.py --self-test      => PASS (307/307 checks)
+python3 eval/d4e_filled_packet_converter.py \
+  --out artifacts/d4e_filled_packet_converter/\
+d4e_filled_packet_converter_report.json                     => PASS
+  (status: blocked_no_filled_packets_available_or_no_conversion_run,
+   forbidden_scan: pass, self_test_passed: true,
+   private_filled_packets_read: false,
+   conversion_run: false,
+   d4b_true_label_bundle_created: false,
+   d4b_true_label_bundle_written: false,
+   labels_converted: false,
+   d5_unblocked: false,
+   converter_harness_available: true,
+   private_cli_guard_validated: true,
+   tmp_output_resolved_guard_validated: true,
+   sanitized_error_guard_validated: true,
+   filled_packet_schema_contract_defined: true,
+   d4d_attestation_required: true,
+   d4b_bundle_schema_contract_defined: true,
+   d4b_mapping_contract_defined: true,
+   mode: public_harness_no_filled_packets_no_conversion, phase: D4e,
+   d4c_packet_schema_source: d4c_annotation_packet_v1,
+   d4d_runbook_protocol: d4d_human_annotation_runbook.v1,
+   d4b_bundle_schema_target: d4b_true_label_bundle_v1)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+D4e hardens the conversion control plane between D4d human annotation
+and D4b bundle validation, before any real human labels exist: a
+private converter harness with a SafeArgumentParser CLI (unknown
+private-looking args do not echo values), a strict fail-closed public
+scanner with an exact contract string allowlist (no over-broad
+container exemption — unapproved strings and sensitive field names are
+rejected even inside contract containers), a private D4b bundle output
+guard different from the public scanner (allows label fields/E/S
+values; rejects paths/snippets/refs/rater IDs/secrets/model outputs;
+verifies schema, label_source, and truthful synthetic/real flags), a
+resolved `/tmp` output guard (parent symlink escape, existing output
+symlink, and resolved target escape all rejected), validate-before-
+read ordering, and fail-closed generation that refuses success on
+scanner leak or self-test failure. The default committed artifact is a
+harness / no-conversion artifact: it reads no private filled packets,
+runs no conversion, creates/writes/validates no D4b bundle,
+collects/converts no labels, computes no calibration / agreement / CI,
+performs no model/LLM labeling, and passes no public-release gate. D5
+remains blocked. A real-mode flag-path test over a synthetic fixture
+(which sets `local_private_conversion_executed=true` and
+`real_human_labels_converted=true` locally) is a flag-path test only
+and is NOT evidence that real labels exist.
+
+### Caveats
+
+- D4e is the filled-packet -> D4b bundle converter harness public
+  artifact only. It is eval/diagnostic only. It does NOT change runtime,
+  retriever, pack, model, backend, or default policy; it does NOT
+  change EvidenceCore semantics. It is NOT a benchmark result, NOT a
+  downstream agent value claim, NOT a runtime-clean general algorithm
+  claim, NOT an OOD temporal claim, and NOT a QuIVer systems claim.
+- D4e default is a harness with a blocked public artifact. The default
+  committed artifact reads NO private filled packets, runs NO
+  conversion, creates/writes/validates NO D4b bundle, collects/converts
+  NO labels, computes NO calibration / agreement / CI, performs NO
+  model/LLM labeling, and passes NO public-release gate. D5 remains
+  blocked. Harness/control true flags are true only for the validated
+  harness/controls, NOT for any real label conversion or bundle claim.
+- D4e is NOT real label conversion in committed output, NOT
+  calibration, NOT agreement/CI computation, and NOT D5 unblock. It
+  hardens the converter control plane between D4d human annotation and
+  D4b bundle validation, before any real human labels exist.
+- D4e has a private converter mode (opt-in, NOT committed). Private
+  output is written to `/tmp` only and never committed. The real-mode
+  flag-path test over a synthetic fixture (which sets
+  `local_private_conversion_executed=true` and
+  `real_human_labels_converted=true` locally) is a flag-path test only
+  and is NOT evidence that real labels exist. Real human labels are not
+  yet collected; D5 remains blocked.
+- The converter consumes only the filled label slots and the D4d
+  attestation; it rejects D4c source context fields (paths, spans,
+  snippets, content_sha, query text, candidate text, packet source
+  context). The D4d attestation must be exactly
+  `d4d_human_annotation_runbook.v1` with all six required flags true
+  (two independent human raters, independence before adjudication, no
+  LLM/model labels, no proxy labels as true labels, local-only storage);
+  model/proxy/LLM labels are rejected as human/manual labels.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`, `not_evidence`)
+  remain true; the harness/control true flags are the only true control
+  flags.
+- No runtime/retriever/pack/model/backend/default-policy files were
+  modified. `current-research-conclusions` was NOT updated (D4e is a
+  harness/blocked-only artifact; no conclusions change).
