@@ -3661,3 +3661,154 @@ weak=1, high=2`；reason-code 计数合计 10。干净报告的 forbidden 扫描
   `not_evidence=true`。
 - 读取真实 P21/private records 推迟到后续 D2 校准阶段；D1 fixture
   仅合成 / 来源回溯。
+
+## 2026-06-20 — D2 双评分聚合校准（代理可映射性）
+
+### 目标
+
+产出 D1 之后有界的**代理**（proxy）聚合校准。D2 回答：现有本地
+record/outcome 形状能否被映射到 `proxy_e_score` / `proxy_s_score`
+聚合分段，而不暴露私有行或改变运行时行为？D2 **不得**声称真实 E/S
+相关性已校准。它**不得**修改检索器排序、pack 构建、模型调用、后端
+存储、默认策略或 EvidenceCore 语义。
+
+### 实现
+
+- 新增脚本 `eval/d2_dual_rubric_aggregate_calibration.py`（纯 Python
+  标准库；仅在 D2b opt-in 路径中惰性导入 `c1_private_records`）。
+  两种严格分离的模式：
+  - **D2a（默认，已提交）**：公开聚合可映射性清单。仅读取已提交的
+    C3/B12 公开聚合产物（通用标签 `c3_public_aggregate`、
+    `b12_public_aggregate`；不序列化文件系统路径）。**不**读取
+    private records。声明级别
+    `public_aggregate_mappability_only`；状态
+    `public_aggregate_mappability_only`；模式 `public_inventory`；
+    `proxy_calibration_claimed=false`；
+    `true_e_s_calibration_claimed=false`；
+    `private_records_read=false`。
+  - **D2b（可选，未提交，仅 /tmp）**：显式本地/私有代理校准冒烟。
+    需要 `--allow-private-records --input <path> --limit N --out
+    /tmp/...`。使用 C1 适配器
+    （`c1_private_records.load_private_records`）瞬态读取 private
+    records。绝不序列化输入路径/基名/大小/mtime。声明级别
+    `dual_rubric_proxy_calibration_smoke_only`；
+    `proxy_calibration_claimed=true`（冒烟已运行），但
+    `true_e_s_calibration_claimed=false`（代理，非真实 E/S）。仅在该显式
+    本地/私有模式下记录 `raw_private_records_read=true`，同时
+    `raw_private_records_persisted=false` 仍保持为 false。
+- 全程使用代理术语：`proxy_e_score`（范围 0..3，来自
+  `span_f0_5 > 0.5`、`added_gold_span > 0`、
+  `primary_false_positive_rate < 0.3`，取自 `candidate_baseline`
+  outcome）、`proxy_s_score`（范围 0..5，来自
+  `candidate_support_exists`、`local_anchor`、
+  `rrf_backed_by_anchor`、`symbol_regex_agree`、
+  `dense_support_present` route features）、`proxy_e_band` /
+  `proxy_s_band`（none/weak/high）、`proxy_bucket`
+  （`proxy_primary_evidence` / `proxy_dependency_support` /
+  `proxy_weak_candidates` / `proxy_abstained` /
+  `proxy_unmappable`）。
+- 缺失代理字段变为 `proxy_unmappable`，**非**负面证据。
+- 阈值 `PROXY_E_HIGH >= 2`、`PROXY_S_HIGH >= 2`，`>= 1` 时为弱。
+  分类顺序 fail-closed：(1) 缺失字段 -> `proxy_unmappable`；
+  (2) 代理 E 高 -> `proxy_primary_evidence`；(3) 代理 S 高且 E 低于
+  high -> `proxy_dependency_support`；(4) 弱非零 ->
+  `proxy_weak_candidates`；(5) 否则 -> `proxy_abstained`。代理 E 高
+  优先于代理 S 高。
+- 小单元抑制（`k_min`，默认 5）用于私有聚合交叉表（代理 E x S
+  分段）。计数 < `k_min` 的单元被省略；
+  `small_cells_suppressed=true`；`suppressed_cell_count` 报告被抑制
+  单元数量（非个别计数）。
+- 严格的禁止输出扫描器（写入 JSON 前 fail-closed）：拒绝禁止的
+  字典键（path/span/line_range/content_sha/snippet/candidate_text/
+  query/task_id/repo_id/repo/label/qrels/gold/prompt/response/
+  private_record_hash/p31_score_gold 等）与禁止的取值模式（URL、
+  32/40/64 字符十六进制摘要、类密钥串、类路径 `src/foo.py` 和
+  `/private/foo.jsonl`、多行串、原始 JSON 片段、原始行范围
+  `12-34`）。78 项自测检查，包含禁止扫描注入、fail-closed 生成、
+  小单元抑制、缺失字段映射、路径序列化守卫与 CLI 参数守卫。
+- CLI 守卫：`--input` 不带 `--allow-private-records` 非零退出（退出码
+  2）；`--allow-private-records` 不带 `--input` 非零退出（退出码
+  2）。D2b 输出仅写入 `/tmp` 且**绝不**提交。
+- 既有 mode-only dirty 文件（`eval/ci_clone_and_lock_repo.py`、
+  `eval/ci_make_repo_matrix.py`、
+  `eval/p59_contrastive_pack_coverage_counterfactual.py`）**未被**
+  触碰。D1/C1/C3/B12 模块被 import/read 但**未被**修改。
+
+### 结果
+
+```text
+python3 -m py_compile eval/d2_dual_rubric_aggregate_calibration.py   => PASS
+python3 eval/d2_dual_rubric_aggregate_calibration.py --self-test     => PASS (78/78 项检查)
+python3 eval/d2_dual_rubric_aggregate_calibration.py \
+  --out artifacts/d2_dual_rubric_aggregate_calibration/\
+d2_dual_rubric_aggregate_calibration_report.json                     => PASS
+  (status: public_aggregate_mappability_only,
+   forbidden_scan: pass, self_test_passed: true,
+   proxy_calibration_claimed: false,
+   true_e_s_calibration_claimed: false,
+   private_records_read: false,
+   public_aggregates_have_candidate_level_proxy_fields: false,
+   private_input_required_for_proxy_calibration: true,
+   artifact_classes_checked: [c3_public_aggregate, b12_public_aggregate],
+   public_artifact_status_counts: {present: 2, absent: 0})
+# CLI 守卫：--input /private/foo.jsonl 不带 --allow-private-records
+#   => PASS（退出码 2，路径未泄露到错误消息中）
+# CLI 守卫：--allow-private-records 不带 --input
+#   => PASS（退出码 2）
+# CLI 守卫：D2b 不带显式 /tmp --out
+#   => PASS（退出码 2，路径未泄露到错误消息中）
+# CLI 守卫：D2b 使用 committed artifact --out
+#   => PASS（退出码 2，路径未泄露到错误消息中）
+# CLI 守卫：malformed private input 加载错误
+#   => PASS（退出码 2，路径/基名被抑制）
+# D2b 冒烟（--allow-private-records --input /tmp/... --out /tmp/...）
+#   => PASS（仅 /tmp，未提交；forbidden_scan: pass，
+#      private_record_count: 6, small_cells_suppressed: true,
+#      proxy_bucket_counts: {proxy_primary_evidence: 4,
+#        proxy_dependency_support: 2, proxy_abstained: 0,
+#        proxy_weak_candidates: 0, proxy_unmappable: 0},
+#      产物中无输入路径/基名/大小/mtime，
+#      产物中无 task_id/repo_id）
+python3 scripts/validate_docs_i18n.py                                 => PASS
+git diff --check                                                      => PASS
+```
+
+D2a 默认产物确认公开 C3/B12 聚合**不**包含候选级代理字段（按构造
+仅聚合）；代理校准需要私有输入。D2b 冒烟对 6 条合成 C1 private
+records（P21 v1 payload）产生代理桶计数：
+`proxy_primary_evidence=4`（`has_gold=true` 的记录，代理 E 高）、
+`proxy_dependency_support=2`（`has_gold=false` 的记录，代理 E 弱、
+代理 S 高）。小单元抑制（k_min=3）省略了稀疏交叉表单元。产物中未
+泄露输入路径、基名、task_id 或 repo_id。
+
+### 注意事项
+
+- D2 仅评测/诊断。它**不**改变运行时、检索器、pack、模型、后端或
+  默认策略；它**不**改变 EvidenceCore 语义。它**不是**基准结果、
+  **不是**下游 agent 价值声明、**不是** runtime-clean 通用算法声明、
+  **不是** OOD 时间维度声明，**也不是** QuIVer 系统声明。
+- 代理分数**不是**真实 E/S 校准，**不是**改进的检索，**不是**下游
+  agent 价值，**不是**基准结果，**不是**默认变更。
+- D2a（默认）仅公开聚合可映射性，**非**代理校准。它**不**读取
+  private records。
+- D2b（可选）仅是私有代理校准冒烟。其输出仅写入 `/tmp` 且**绝不**
+  提交。它**不**声称真实 E/S 校准。仅在该显式本地/私有模式下记录
+  `raw_private_records_read=true`，同时 `raw_private_records_persisted=false`
+  仍保持为 false。
+- 所有 no-claim 标志保持为 false：`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`、
+  `runtime_clean_general_algorithm_claimed=false`、
+  `downstream_agent_value_proven=false`、`ood_temporal_supported=false`、
+  `quiver_systems_supported=false`；`runtime_behavior_changed=false`、
+  `retriever_changed=false`、`pack_builder_changed=false`、
+  `model_calls_changed=false`、`backend_changed=false`、
+  `default_policy_changed=false`；`candidate_text_emitted=false`、
+  `paths_or_spans_emitted=false`、`content_sha_emitted=false`、
+  已提交 D2a 中 `raw_private_records_read=false`（仅显式 `/tmp` D2b
+  冒烟中为 `true`）、`raw_private_records_persisted=false`、
+  `row_level_hashes_emitted=false`、`per_candidate_rows_emitted=false`。
+  `aggregate_only_public_artifact=true`、`diagnostic_only=true`、
+  `not_evidence=true`。
+- 缺失代理字段变为 `proxy_unmappable`，**非**负面证据。
+- 小单元抑制（`k_min`）省略稀疏交叉表单元；被抑制的单元计数绝不
+  输出。

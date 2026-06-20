@@ -3764,3 +3764,161 @@ zero violations on the clean report.
   `not_evidence=true`.
 - Reading real P21/private records is deferred to a later D2 calibration
   phase; D1 fixtures are synthetic/source-backed only.
+
+## 2026-06-20 — D2 Dual-Rubric Aggregate Calibration (Proxy Mappability)
+
+### Objective
+
+Produce a bounded **proxy** aggregate calibration follow-on to D1. D2
+answers: can existing local record/outcome shapes be mapped to
+`proxy_e_score` / `proxy_s_score` aggregate bands without exposing
+private rows or changing runtime behavior? D2 must NOT claim that true
+E/S relevance is calibrated. It must NOT modify retriever ranking, pack
+construction, model calls, backend storage, default policy, or
+EvidenceCore semantics.
+
+### Implementation
+
+- New script `eval/d2_dual_rubric_aggregate_calibration.py` (pure Python
+  stdlib; lazy-imports `c1_private_records` only in D2b opt-in path).
+  Two strictly separated modes:
+  - **D2a (default, committed)**: public aggregate mappability
+    inventory. Reads committed C3/B12 public aggregate artifacts only
+    (generic labels `c3_public_aggregate`, `b12_public_aggregate`; no
+    filesystem paths serialized). Does NOT read private records.
+    Claim level `public_aggregate_mappability_only`; status
+    `public_aggregate_mappability_only`; mode `public_inventory`;
+    `proxy_calibration_claimed=false`;
+    `true_e_s_calibration_claimed=false`;
+    `private_records_read=false`.
+  - **D2b (opt-in, NOT committed, /tmp only)**: explicit local/private
+    proxy calibration smoke. Requires `--allow-private-records
+    --input <path> --limit N --out /tmp/...`. Uses C1 adapter
+    (`c1_private_records.load_private_records`) to read private records
+    transiently. Never serializes input path/basename/size/mtime.
+    Claim level `dual_rubric_proxy_calibration_smoke_only`;
+    `proxy_calibration_claimed=true` (smoke ran), but
+    `true_e_s_calibration_claimed=false` (proxy, not true E/S). It records
+    `raw_private_records_read=true` only in this explicit local/private mode,
+    while `raw_private_records_persisted=false` remains false.
+- Proxy terminology throughout: `proxy_e_score` (range 0..3, from
+  `span_f0_5 > 0.5`, `added_gold_span > 0`,
+  `primary_false_positive_rate < 0.3` of `candidate_baseline` outcome),
+  `proxy_s_score` (range 0..5, from `candidate_support_exists`,
+  `local_anchor`, `rrf_backed_by_anchor`, `symbol_regex_agree`,
+  `dense_support_present` route features), `proxy_e_band` /
+  `proxy_s_band` (none/weak/high), `proxy_bucket`
+  (`proxy_primary_evidence` / `proxy_dependency_support` /
+  `proxy_weak_candidates` / `proxy_abstained` / `proxy_unmappable`).
+- Missing proxy fields become `proxy_unmappable`, NOT negative evidence.
+- Thresholds `PROXY_E_HIGH >= 2`, `PROXY_S_HIGH >= 2`, weak if `>= 1`.
+  Classification order fail-closed: (1) missing fields ->
+  `proxy_unmappable`; (2) proxy E high -> `proxy_primary_evidence`;
+  (3) proxy S high, E below high -> `proxy_dependency_support`;
+  (4) weak nonzero -> `proxy_weak_candidates`; (5) else ->
+  `proxy_abstained`. Proxy E-high beats proxy S-high.
+- Small-cell suppression (`k_min`, default 5) for private aggregate
+  crosstabs (proxy E x S band). Cells with count < `k_min` are omitted;
+  `small_cells_suppressed=true`; `suppressed_cell_count` reports number
+  of suppressed cells (not individual counts).
+- Strict forbidden-output scanner (fail-closed before writing JSON):
+  rejects forbidden dict keys (path/span/line_range/content_sha/snippet/
+  candidate_text/query/task_id/repo_id/repo/label/qrels/gold/prompt/
+  response/private_record_hash/p31_score_gold/etc.) and forbidden value
+  patterns (URLs, 32/40/64-char hex digests, secret-like strings,
+  path-like `src/foo.py` and `/private/foo.jsonl`, multiline strings,
+  raw JSON fragments, raw line ranges `12-34`). 78 self-test checks
+  including forbidden-scan injection, fail-closed generation,
+  small-cell suppression, missing-field mapping, path-serialization
+  guard, and CLI argument guards.
+- CLI guards: `--input` without `--allow-private-records` exits non-zero
+  (exit 2); `--allow-private-records` without `--input` exits non-zero
+  (exit 2). D2b output goes to `/tmp` only and is NEVER committed.
+- Existing mode-only dirty files (`eval/ci_clone_and_lock_repo.py`,
+  `eval/ci_make_repo_matrix.py`,
+  `eval/p59_contrastive_pack_coverage_counterfactual.py`) were NOT
+  touched. D1/C1/C3/B12 modules were imported/read but NOT modified.
+
+### Findings
+
+```text
+python3 -m py_compile eval/d2_dual_rubric_aggregate_calibration.py   => PASS
+python3 eval/d2_dual_rubric_aggregate_calibration.py --self-test     => PASS (78/78 checks)
+python3 eval/d2_dual_rubric_aggregate_calibration.py \
+  --out artifacts/d2_dual_rubric_aggregate_calibration/\
+d2_dual_rubric_aggregate_calibration_report.json                     => PASS
+  (status: public_aggregate_mappability_only,
+   forbidden_scan: pass, self_test_passed: true,
+   proxy_calibration_claimed: false,
+   true_e_s_calibration_claimed: false,
+   private_records_read: false,
+   public_aggregates_have_candidate_level_proxy_fields: false,
+   private_input_required_for_proxy_calibration: true,
+   artifact_classes_checked: [c3_public_aggregate, b12_public_aggregate],
+   public_artifact_status_counts: {present: 2, absent: 0})
+# CLI guard: --input /private/foo.jsonl without --allow-private-records
+#   => PASS (exit 2, path not leaked in error message)
+# CLI guard: --allow-private-records without --input
+#   => PASS (exit 2)
+# CLI guard: D2b without explicit /tmp --out
+#   => PASS (exit 2, path not leaked in error message)
+# CLI guard: D2b with committed artifact --out
+#   => PASS (exit 2, path not leaked in error message)
+# CLI guard: malformed private input load error
+#   => PASS (exit 2, path/basename suppressed)
+# D2b smoke (--allow-private-records --input /tmp/... --out /tmp/...)
+#   => PASS (/tmp only, not committed; forbidden_scan: pass,
+#      private_record_count: 6, small_cells_suppressed: true,
+#      proxy_bucket_counts: {proxy_primary_evidence: 4,
+#        proxy_dependency_support: 2, proxy_abstained: 0,
+#        proxy_weak_candidates: 0, proxy_unmappable: 0},
+#      no input path/basename/size/mtime in artifact,
+#      no task_id/repo_id in artifact)
+python3 scripts/validate_docs_i18n.py                                 => PASS
+git diff --check                                                      => PASS
+```
+
+D2a default artifact confirms public C3/B12 aggregates do NOT contain
+candidate-level proxy fields (they are aggregate-only by construction);
+private input is required for proxy calibration. D2b smoke over 6
+synthetic C1 private records (P21 v1 payload) produced proxy bucket
+counts: `proxy_primary_evidence=4` (records with `has_gold=true`,
+proxy E high), `proxy_dependency_support=2` (records with
+`has_gold=false`, proxy E weak, proxy S high). Small-cell suppression
+(k_min=3) omitted rare crosstab cells. No input path, basename, task_id,
+or repo_id leaked into the D2b artifact.
+
+### Caveats
+
+- D2 is eval/diagnostic only. It does NOT change runtime, retriever,
+  pack, model, backend, or default policy; it does NOT change
+  EvidenceCore semantics. It is NOT a benchmark result, NOT a downstream
+  agent value claim, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, and NOT a QuIVer systems claim.
+- Proxy scores are NOT true E/S calibration, NOT improved retrieval, NOT
+  downstream agent value, NOT a benchmark result, and NOT a default
+  change.
+- D2a (default) is public aggregate mappability only, NOT proxy
+  calibration. It does NOT read private records.
+- D2b (opt-in) is a private proxy calibration smoke only. Its output goes
+  to `/tmp` only and is NEVER committed. It does NOT claim true E/S
+  calibration. It records `raw_private_records_read=true` only in that
+  explicit local/private mode, while `raw_private_records_persisted=false`
+  remains false.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`; `runtime_behavior_changed=false`,
+  `retriever_changed=false`, `pack_builder_changed=false`,
+  `model_calls_changed=false`, `backend_changed=false`,
+  `default_policy_changed=false`; `candidate_text_emitted=false`,
+  `paths_or_spans_emitted=false`, `content_sha_emitted=false`,
+  `raw_private_records_read=false` in committed D2a (`true` only in explicit
+  `/tmp` D2b smoke), `raw_private_records_persisted=false`,
+  `row_level_hashes_emitted=false`, `per_candidate_rows_emitted=false`.
+  `aggregate_only_public_artifact=true`, `diagnostic_only=true`,
+  `not_evidence=true`.
+- Missing proxy fields become `proxy_unmappable`, NOT negative evidence.
+- Small-cell suppression (`k_min`) omits rare crosstab cells; suppressed
+  cell counts are never emitted.

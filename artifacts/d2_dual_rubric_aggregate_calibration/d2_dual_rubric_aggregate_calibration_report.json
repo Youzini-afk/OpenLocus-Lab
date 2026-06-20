@@ -1,0 +1,412 @@
+{
+  "aggregate_only_public_artifact": true,
+  "artifact_classes_checked": [
+    "c3_public_aggregate",
+    "b12_public_aggregate"
+  ],
+  "backend_changed": false,
+  "candidate_text_emitted": false,
+  "claim_level": "public_aggregate_mappability_only",
+  "content_sha_emitted": false,
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-20T17:13:02.144429+00:00",
+  "generated_by": "eval/d2_dual_rubric_aggregate_calibration.py",
+  "local_input_path_emitted": false,
+  "mode": "public_inventory",
+  "model_calls_changed": false,
+  "not_evidence": true,
+  "ood_temporal_supported": false,
+  "pack_builder_changed": false,
+  "paths_or_spans_emitted": false,
+  "per_candidate_rows_emitted": false,
+  "private_input_required_for_proxy_calibration": true,
+  "private_records_persisted": false,
+  "private_records_read": false,
+  "promotion_ready": false,
+  "proxy_bucket_names": [
+    "proxy_primary_evidence",
+    "proxy_dependency_support",
+    "proxy_weak_candidates",
+    "proxy_abstained",
+    "proxy_unmappable"
+  ],
+  "proxy_calibration_claimed": false,
+  "proxy_e_signal_names": [
+    "span_f0_5_high",
+    "added_gold_span_pos",
+    "low_primary_fpr"
+  ],
+  "proxy_field_terminology": {
+    "proxy_bucket": "proxy_primary_evidence/proxy_dependency_support/proxy_weak_candidates/proxy_abstained/proxy_unmappable",
+    "proxy_e_band": "none/weak/high band over proxy_e_score",
+    "proxy_e_score": "proxy semantic/direct-answer evidence score (NOT true E calibration)",
+    "proxy_s_band": "none/weak/high band over proxy_s_score",
+    "proxy_s_score": "proxy dependency/support-structure evidence score (NOT true S calibration)"
+  },
+  "proxy_s_signal_names": [
+    "candidate_support_exists",
+    "local_anchor",
+    "rrf_backed_by_anchor",
+    "symbol_regex_agree",
+    "dense_support_present"
+  ],
+  "public_aggregate_details": [
+    {
+      "artifact_class": "c3_public_aggregate",
+      "has_aggregate_proxy_relevant_fields": true,
+      "has_candidate_level_proxy_fields": false,
+      "present": true
+    },
+    {
+      "artifact_class": "b12_public_aggregate",
+      "has_aggregate_proxy_relevant_fields": true,
+      "has_candidate_level_proxy_fields": false,
+      "present": true
+    }
+  ],
+  "public_aggregates_have_aggregate_proxy_relevant_fields": true,
+  "public_aggregates_have_candidate_level_proxy_fields": false,
+  "public_artifact_status_counts": {
+    "absent": 0,
+    "present": 2
+  },
+  "public_artifacts_checked": {
+    "b12_public_aggregate": true,
+    "c3_public_aggregate": true
+  },
+  "quiver_systems_supported": false,
+  "raw_private_records_persisted": false,
+  "raw_private_records_read": false,
+  "retriever_changed": false,
+  "row_level_hashes_emitted": false,
+  "rubric_version": "d2_proxy_dual_rubric_v1",
+  "runtime_behavior_changed": false,
+  "runtime_clean_general_algorithm_claimed": false,
+  "schema_version": "d2_dual_rubric_aggregate_calibration.v1",
+  "self_test_checks": [
+    {
+      "check": "d2a_default_private_records_read_false",
+      "passed": true
+    },
+    {
+      "check": "d2a_default_proxy_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "d2a_default_true_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "d2a_default_mode_is_public_inventory",
+      "passed": true
+    },
+    {
+      "check": "d2a_default_status_is_public_aggregate_mappability_only",
+      "passed": true
+    },
+    {
+      "check": "d2a_default_local_input_path_emitted_false",
+      "passed": true
+    },
+    {
+      "check": "d2a_artifact_uses_proxy_e_proxy_s_terminology",
+      "passed": true
+    },
+    {
+      "check": "d2a_no_true_e_s_calibration_claim",
+      "passed": true
+    },
+    {
+      "check": "missing_proxy_e_fields_become_proxy_unmappable",
+      "passed": true
+    },
+    {
+      "check": "missing_proxy_s_fields_become_proxy_unmappable",
+      "passed": true
+    },
+    {
+      "check": "missing_fields_not_proxy_abstained",
+      "passed": true
+    },
+    {
+      "check": "d2b_produces_proxy_bucket_counts",
+      "passed": true
+    },
+    {
+      "check": "d2b_produces_proxy_e_band_counts",
+      "passed": true
+    },
+    {
+      "check": "d2b_produces_proxy_s_band_counts",
+      "passed": true
+    },
+    {
+      "check": "d2b_proxy_calibration_claimed_true",
+      "passed": true
+    },
+    {
+      "check": "d2b_true_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "d2b_private_records_read_true",
+      "passed": true
+    },
+    {
+      "check": "d2b_raw_private_records_read_true",
+      "passed": true
+    },
+    {
+      "check": "d2b_private_records_persisted_false",
+      "passed": true
+    },
+    {
+      "check": "d2b_no_record_ids_emitted",
+      "passed": true
+    },
+    {
+      "check": "d2b_small_cell_suppression_applied",
+      "passed": true
+    },
+    {
+      "check": "d2b_suppressed_cells_omitted_from_crosstab",
+      "passed": true
+    },
+    {
+      "check": "d2b_no_suppression_when_kmin_1",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_repo_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_repo_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_span_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_snippet_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_candidate_text_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_query_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_label_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_qrels_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_64_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_40_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_32_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_path_like_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_leading_slash_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_jsonl_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_colon_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_multiline_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_url_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_json_fragment",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_pure_digit_count_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_aggregate_reason_code_string",
+      "passed": true
+    },
+    {
+      "check": "d2b_local_input_path_not_serialized",
+      "passed": true
+    },
+    {
+      "check": "d2b_local_input_basename_not_serialized",
+      "passed": true
+    },
+    {
+      "check": "d2b_no_input_size_or_mtime_fields",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_generation_raises_on_leak",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_d2a_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_d2b_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "no_claim_flags_all_false",
+      "passed": true
+    },
+    {
+      "check": "safety_flags_scaffold_only",
+      "passed": true
+    },
+    {
+      "check": "d2a_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "d2b_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "d2a_public_aggregates_no_candidate_level_proxy_fields",
+      "passed": true
+    },
+    {
+      "check": "d2a_private_input_required_for_proxy_calibration",
+      "passed": true
+    },
+    {
+      "check": "cli_input_without_allow_private_records_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_private_records_without_input_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_allow_private_records_without_explicit_out_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_private_records_committed_out_rejected",
+      "passed": true
+    },
+    {
+      "check": "cli_private_records_tmp_out_allowed",
+      "passed": true
+    },
+    {
+      "check": "cli_private_load_error_message_suppresses_path",
+      "passed": true
+    },
+    {
+      "check": "proxy_e_high_is_proxy_primary_evidence",
+      "passed": true
+    },
+    {
+      "check": "proxy_s_high_e_low_is_proxy_dependency_support",
+      "passed": true
+    },
+    {
+      "check": "proxy_e_high_beats_s_high",
+      "passed": true
+    },
+    {
+      "check": "proxy_weak_nonzero_is_proxy_weak_candidates",
+      "passed": true
+    },
+    {
+      "check": "proxy_no_signals_is_proxy_abstained",
+      "passed": true
+    },
+    {
+      "check": "d2b_synthetic_proxy_primary_evidence_count_4",
+      "passed": true
+    },
+    {
+      "check": "d2b_synthetic_proxy_dependency_support_count_2",
+      "passed": true
+    },
+    {
+      "check": "d2b_synthetic_proxy_unmappable_count_0",
+      "passed": true
+    },
+    {
+      "check": "d2b_synthetic_proxy_e_band_high_4",
+      "passed": true
+    },
+    {
+      "check": "d2b_synthetic_proxy_e_band_weak_2",
+      "passed": true
+    },
+    {
+      "check": "d2b_synthetic_proxy_s_band_high_6",
+      "passed": true
+    },
+    {
+      "check": "d2b_limit_caps_record_count",
+      "passed": true
+    }
+  ],
+  "self_test_passed": true,
+  "status": "public_aggregate_mappability_only",
+  "true_e_s_calibration_claimed": false
+}
