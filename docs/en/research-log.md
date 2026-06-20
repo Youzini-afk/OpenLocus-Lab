@@ -3253,3 +3253,105 @@ forbidden scan blocks leak at generation, schema smoke report shape.
   EvidenceCore semantics change, no runtime-clean general algorithm claim,
   no downstream agent value claim, no OOD temporal claim, and no QuIVer
   systems claim follows from C4.1.
+
+## 2026-06-20 — C4.2 ContextBench Verified Subset Row-Mapping Smoke
+
+### Objective
+
+Add a bounded **real row-mapping smoke** for the ContextBench verified
+subset (`contextbench_verified/train`) that reads real HF datasets-server
+`/first-rows` preview rows, adapts each row in function scope via the
+existing `adapt_contextbench_row` adapter, validates the
+`public_task` / `private_label` separation in memory, and emits an
+aggregate-only artifact. Real rows live ONLY in function scope / memory;
+no raw rows, sample rows, row values, row-level hashes, paths, spans, line
+ranges, snippets, problem statements, patches/tests, prompts/responses,
+provider payloads, content_sha, or raw HF payloads are persisted. C4.2 is
+adapter/row-mapping readiness only, NOT a benchmark performance/result.
+
+### Implementation
+
+- New CLI flags on `eval/c4_external_benchmark_adapters.py`:
+  `--row-map-smoke` (mutually exclusive with `--self-test` and
+  `--schema-smoke`), `--row-limit` (default 10, hard cap 20),
+  `--config` (default `contextbench_verified`; only this config supported),
+  `--split` (default `train`). `--out` defaults to the C4.2 artifact
+  path when not set, so the C4.1 canonical report is never overwritten.
+- `_extract_first_rows` parses the datasets-server `/first-rows` payload
+  into (rows, field_names, truncated) in function scope. Raw rows are
+  returned to the caller ONLY for immediate in-scope adaptation and
+  discarding.
+- `_build_row_map_summary` iterates bounded rows, calls
+  `adapt_contextbench_row(row)` per row, asserts the public task has no
+  private attrs, counts field presence (non-empty by field name),
+  public-task presence booleans, private-field category presence, and
+  fixed failure categories. No row-level values, hashes, paths, spans, or
+  snippets are emitted.
+- `_row_map_smoke_contextbench_verified` calls `_http_get_json()` for the
+  real `/first-rows` endpoint, extracts rows, bounds to `row_limit`,
+  adapts, discards raw rows + payload immediately, builds the aggregate
+  summary, and runs a fail-closed forbidden scan. On network/HF failure,
+  emits sanitized `unavailable` status with `endpoint_unavailable`
+  failure category — no raw response body.
+- Forbidden scanner extended with `SCHEMA_KEY_CONTAINER_KEYS` allowlist
+  (`field_presence_counts`, `public_task_presence_counts`,
+  `private_field_presence_counts`, `failure_category_counts`) so count
+  containers may use schema-only field-name strings as count bucket keys.
+  The scanner still forbids row-level values, paths, spans, hashes, URLs,
+  and secrets anywhere.
+- New no-network self-test `_self_test_row_map_smoke_aggregate_only`
+  builds synthetic rows with sentinel private values
+  (`SECRET_REPO_SENTINEL`, `SECRET_PATCH_SENTINEL`, etc.), runs the
+  aggregator, and asserts NONE of the sentinels appear in the report JSON,
+  forbidden scan passes, injected `"12-34"` line range is rejected. New
+  `_self_test_row_map_smoke_no_rows_unavailable` verifies `unavailable`
+  status with `no_rows_returned` failure category when zero rows returned.
+
+### Findings
+
+```text
+python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (12 groups)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out /tmp/c4_contextbench_row_map.json                       => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_contextbench_verified_row_mapping_report.json              => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true,
+   adapter_assertions_passed: true,
+   raw_rows_persisted: false, row_level_values_emitted: false,
+   row_level_hashes_emitted: false, raw_response_stored: false)
+```
+
+All 13 schema field names were non-empty in all 10 rows; all 5 public-task
+presence booleans were True in all 10 rows; all 12 private-field
+categories were non-empty in all 10 rows. No row-level values, hashes,
+paths, spans, snippets, problem statements, patches/tests,
+prompts/responses, provider payloads, content_sha, or raw HF payloads
+were persisted.
+
+### Caveats
+
+- C4.2 is adapter/row-mapping readiness only. It does NOT validate
+  row-level semantics, labels, or downstream agent value. The row-map
+  smoke confirms the adapter boundary holds (public task has no private
+  attrs; private label has private values only in memory); it does NOT
+  confirm benchmark quality, label correctness, or fitness for any
+  downstream evaluation.
+- ContextBench dataset license is unknown; row-level redistribution is
+  disabled.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`. No promotion, no default change, no
+  EvidenceCore semantics change, no runtime-clean general algorithm claim,
+  no downstream agent value claim, no OOD temporal claim, and no QuIVer
+  systems claim follows from C4.2.

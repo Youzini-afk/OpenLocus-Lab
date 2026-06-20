@@ -3193,3 +3193,90 @@ range 归一化、forbidden scan 拒绝注入、no-claim 标志全为 false、sp
   `quiver_systems_supported=false`。C4.1 不产生 promotion、不产生默认策略变更、
   不产生 EvidenceCore 语义变更、不产生 runtime-clean 通用算法声明、不产生下游
   agent 价值声明、不产生 OOD 时间声明，也不产生 QuIVer systems 声明。
+
+## 2026-06-20 — C4.2 ContextBench Verified Subset Row-Mapping Smoke
+
+### 目标
+
+新增一个针对 ContextBench verified subset
+（`contextbench_verified/train`）的有界**真实 row-mapping smoke**：读取真实 HF
+datasets-server `/first-rows` 预览行，在函数作用域内通过现有
+`adapt_contextbench_row` adapter 适配每一行，在内存中校验
+`public_task` / `private_label` 分离，并输出 aggregate-only artifact。真实行
+仅存在于函数作用域/内存；不持久化任何原始行、样本行、行值、行级 hash、path、
+span、line range、snippet、problem statement、patch/test、prompt/response、
+provider payload、content_sha 或原始 HF payload。C4.2 仅是 adapter/row-mapping
+就绪，**不**是 benchmark performance/result。
+
+### 实现
+
+- `eval/c4_external_benchmark_adapters.py` 新增 CLI 标志：
+  `--row-map-smoke`（与 `--self-test` 和 `--schema-smoke` 互斥）、
+  `--row-limit`（默认 10，硬上限 20）、`--config`（默认
+  `contextbench_verified`；仅支持该 config）、`--split`（默认 `train`）。
+  未设置 `--out` 时默认为 C4.2 artifact 路径，从而不覆盖 C4.1 canonical 报告。
+- `_extract_first_rows` 在函数作用域内将 datasets-server `/first-rows` payload
+  解析为 (rows, field_names, truncated)。原始行仅返回给调用方用于立即在作用域内
+  适配与丢弃。
+- `_build_row_map_summary` 遍历有界行，对每行调用
+  `adapt_contextbench_row(row)`，断言 public task 无私有 attr，按字段名计数非空
+  field presence、public-task presence 布尔、私有字段类别 presence 与固定失败
+  类别。不输出任何行级值、hash、path、span 或 snippet。
+- `_row_map_smoke_contextbench_verified` 调用 `_http_get_json()` 获取真实
+  `/first-rows` 端点，提取行，限制为 `row_limit`，适配，立即丢弃原始行 + payload，
+  构建 aggregate 摘要，并运行 fail-closed forbidden scan。网络/HF 失败时，输出
+  sanitized `unavailable` 状态并附带 `endpoint_unavailable` 失败类别 —— 无原始
+  响应体。
+- forbidden scanner 扩展 `SCHEMA_KEY_CONTAINER_KEYS` allowlist
+  （`field_presence_counts`、`public_task_presence_counts`、
+  `private_field_presence_counts`、`failure_category_counts`），使计数容器可使
+  用仅 schema 字段名字符串作为计数桶 key。scanner 仍禁止公共输出中任何位置的行级
+  值、path、span、hash、URL 与 secret。
+- 新增无网络 self-test `_self_test_row_map_smoke_aggregate_only`：用 sentinel
+  私有值（`SECRET_REPO_SENTINEL`、`SECRET_PATCH_SENTINEL` 等）构建合成行，运行
+  aggregator，断言报告 JSON 中不包含任何 sentinel、forbidden scan 通过、注入的
+  `"12-34"` line range 被拒绝。新增 `_self_test_row_map_smoke_no_rows_unavailable`
+  校验零行时为 `unavailable` 状态并附带 `no_rows_returned` 失败类别。
+
+### 结果
+
+```text
+python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS（12 组）
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out /tmp/c4_contextbench_row_map.json                       => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true)
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_contextbench_verified_row_mapping_report.json              => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true,
+   adapter_assertions_passed: true,
+   raw_rows_persisted: false, row_level_values_emitted: false,
+   row_level_hashes_emitted: false, raw_response_stored: false)
+```
+
+所有 13 个 schema 字段名在全部 10 行中非空；所有 5 个 public-task presence
+布尔在全部 10 行中为 True；所有 12 个私有字段类别在全部 10 行中非空。未持久化
+任何行级值、hash、path、span、snippet、problem statement、patch/test、
+prompt/response、provider payload、content_sha 或原始 HF payload。
+
+### 注意事项
+
+- C4.2 仅是 adapter/row-mapping 就绪。它**不**校验行级语义、label 或下游 agent
+  价值。row-map smoke 仅确认 adapter 边界成立（public task 无私有 attr；private
+  label 仅在内存中保留私有值）；它**不**确认 benchmark 质量、label 正确性或对任
+  何下游评估的适用性。
+- ContextBench 数据集 license 未知；行级再分发被禁用。
+- 所有 no-claim 标志保持 false：`promotion_ready=false`、
+  `default_should_change=false`、`evidencecore_semantics_changed=false`、
+  `runtime_clean_general_algorithm_claimed=false`、
+  `downstream_agent_value_proven=false`、`ood_temporal_supported=false`、
+  `quiver_systems_supported=false`。C4.2 不产生 promotion、不产生默认策略变更、
+  不产生 EvidenceCore 语义变更、不产生 runtime-clean 通用算法声明、不产生下游
+  agent 价值声明、不产生 OOD 时间声明，也不产生 QuIVer systems 声明。

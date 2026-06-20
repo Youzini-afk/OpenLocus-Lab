@@ -1,16 +1,20 @@
-# C4 External Benchmark Adapters — Schema Readiness v1
+# C4 External Benchmark Adapters — Schema + Row-Mapping Readiness v1
 
-Date: 2026-06-20
+Date: 2026-06-20 (C4.1 schema readiness); 2026-06-20 (C4.2 ContextBench
+verified subset row-mapping smoke)
 
-C4.1 is the **external benchmark adapter / schema readiness** phase. It is
-**not** an external benchmark performance evaluation, **not** a benchmark
-result, **not** a downstream agent value proof, and **not** a promotion or
-default change. The phase produces one new evaluator
-(`eval/c4_external_benchmark_adapters.py`) and one canonical aggregate-only
-public artifact
+C4.1 is the **external benchmark adapter / schema readiness** phase and
+C4.2 is the **ContextBench verified subset row-mapping smoke** phase.
+Neither is an external benchmark performance evaluation, a benchmark
+result, a downstream agent value proof, or a promotion or default change.
+C4.1 produces one evaluator (`eval/c4_external_benchmark_adapters.py`) and
+one canonical aggregate-only public artifact
 (`artifacts/c4_external_benchmark_adapters/c4_external_benchmark_adapter_report.json`)
-that records adapter/schema readiness only. Row-level benchmark contents were
-not persisted.
+that records adapter/schema readiness only. C4.2 adds a bounded real
+row-mapping smoke for the ContextBench verified subset and emits a separate
+aggregate-only artifact
+(`artifacts/c4_external_benchmark_adapters/c4_contextbench_verified_row_mapping_report.json`).
+Row-level benchmark contents were not persisted in either phase.
 
 > **Important claim boundary.** C4.1 emits `claim_level =
 > adapter_schema_readiness_only`. It does NOT claim performance, promotion,
@@ -200,7 +204,7 @@ schema parseable from public HF datasets-server metadata.
 
 ```text
 python3 -m py_compile eval/c4_external_benchmark_adapters.py   => PASS
-python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (9 groups)
+python3 eval/c4_external_benchmark_adapters.py --self-test     => PASS (12 groups)
 python3 eval/c4_external_benchmark_adapters.py \
   --out artifacts/c4_external_benchmark_adapters/\
 c4_external_benchmark_adapter_report.json                     => PASS (forbidden_scan: pass)
@@ -210,20 +214,110 @@ python3 eval/c4_external_benchmark_adapters.py \
 python3 eval/c4_external_benchmark_adapters.py \
   --benchmark swe_explore --schema-smoke --limit 3 \
   --out /tmp/c4_swe_explore_schema.json                        => PASS
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_contextbench_verified_row_mapping_report.json              => PASS
+  (rows_seen: 10, rows_mapped: 10, rows_failed: 0, status: pass,
+   forbidden_scan: pass, private_label_isolation_verified: true)
 ```
 
-Self-test groups (9): ContextBench adapter separation, SWE-Explore adapter
+Self-test groups (12): ContextBench adapter separation, SWE-Explore adapter
 separation, line range normalization, forbidden scan rejects injection,
 no-claim flags exactly false, spec hash deterministic, aggregate-only report,
-forbidden scan blocks leak at generation, schema smoke report shape.
+forbidden scan blocks leak at generation, schema smoke report shape, row-map
+smoke aggregate-only (sentinel-clean), row-map smoke no-rows unavailable.
+
+## C4.2 ContextBench verified subset row-mapping smoke
+
+C4.2 adds a bounded **real row-mapping smoke** for the ContextBench verified
+subset (`contextbench_verified/train`). It reads real HF datasets-server
+`/first-rows` preview rows via `_http_get_json()` (stdlib `urllib` only), and
+for each preview row calls the existing `adapt_contextbench_row(row)` adapter
+in function scope. Real rows live ONLY in function scope / memory; they are
+adapted and immediately discarded. The public artifact records ONLY
+aggregate-only counts, booleans, and fixed failure categories — never raw
+rows, sample rows, row values, row-level hashes, paths, spans, line ranges,
+snippets, problem statements, patches/tests, prompts/responses, provider
+payloads, content_sha, or raw HF payloads.
+
+### CLI
+
+- `--row-map-smoke` (mutually exclusive with `--self-test` and `--schema-smoke`).
+- `--row-limit` default 10, hard cap 20.
+- `--config` default `contextbench_verified`; only `contextbench_verified` is
+  supported for row-map smoke.
+- `--split` default `train`.
+- `--out` defaults to
+  `artifacts/c4_external_benchmark_adapters/c4_contextbench_verified_row_mapping_report.json`
+  when not explicitly set (so the C4.1 canonical report is never overwritten).
+
+### Aggregate-only output shape
+
+The row-map smoke artifact (`c4_contextbench_verified_row_mapping.v1`,
+`claim_level=adapter_row_mapping_readiness_only`) records:
+
+- `mode: contextbench_verified_row_mapping_smoke`, `benchmark: contextbench`,
+  `dataset_id`, `config`, `split`, `row_limit_requested`;
+- `rows_seen`, `rows_mapped`, `rows_failed`, `truncated_rows_observed`;
+- `field_presence_counts`: schema field names -> count of non-empty rows
+  (field names are schema-only observations used as count bucket keys, never
+  row values);
+- `public_task_presence_counts`: `has_original_inst_id`, `has_f2p`,
+  `has_p2p`, `has_repo_locator`, `has_private_label_payload` -> counts of True;
+- `private_field_presence_counts`: private category names -> count of
+  non-empty rows (category names are schema-only observations, never values);
+- `failure_category_counts`: fixed categories only (`missing_required_field`,
+  `wrong_type`, `mapping_error`, `private_field_leak`, `public_artifact_leak`,
+  `unexpected_exception`, `no_rows_returned`, `endpoint_unavailable`);
+- `private_label_isolation_verified`, `adapter_assertions_passed`,
+  `raw_rows_persisted: false`, `row_level_values_emitted: false`,
+  `row_level_hashes_emitted: false`, `raw_response_stored: false`;
+- `status: pass|partial|unavailable|fail_forbidden_leak|fail_schema_contract`;
+- all no-claim flags false, `aggregate_only_public_artifact=true`,
+  `not_evidence=true`, `candidate_not_fact=true`,
+  `forbidden_scan.status=pass`.
+
+The forbidden scanner was extended with a `SCHEMA_KEY_CONTAINER_KEYS`
+allowlist so that count-container dicts (`field_presence_counts`,
+`public_task_presence_counts`, `private_field_presence_counts`,
+`failure_category_counts`) may use schema-only field-name strings as count
+bucket keys. The scanner still forbids row-level values, paths, spans,
+hashes, URLs, and secrets anywhere in the public output. A fail-closed
+forbidden scan runs before each write.
+
+### Real row-map smoke result (2026-06-20)
+
+```text
+python3 eval/c4_external_benchmark_adapters.py \
+  --row-map-smoke --benchmark contextbench \
+  --config contextbench_verified --split train --row-limit 10 \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_contextbench_verified_row_mapping_report.json
+  => rows_seen: 10, rows_mapped: 10, rows_failed: 0
+  => status: pass, forbidden_scan: pass
+  => private_label_isolation_verified: true
+  => adapter_assertions_passed: true
+  => raw_rows_persisted: false, row_level_values_emitted: false,
+     row_level_hashes_emitted: false, raw_response_stored: false
+```
+
+All 13 schema field names were non-empty in all 10 rows; all 5 public-task
+presence booleans were True in all 10 rows; all 12 private-field categories
+were non-empty in all 10 rows. No row-level values, hashes, paths, spans,
+snippets, problem statements, patches/tests, prompts/responses, provider
+payloads, content_sha, or raw HF payloads were persisted.
 
 ## Caveats
 
-- C4.1 is adapter/schema readiness only. It does NOT validate row-level
-  semantics, labels, or downstream agent value. The schema smoke confirms
-  that public HF datasets-server schema endpoints are reachable and parse;
-  it does NOT confirm benchmark quality, label correctness, or fitness for
-  any downstream evaluation.
+- C4.1/C4.2 is adapter/row-mapping readiness only. It does NOT validate
+  row-level semantics, labels, or downstream agent value. The schema smoke
+  confirms that public HF datasets-server schema endpoints are reachable and
+  parse; the row-map smoke confirms that the adapter boundary holds (public
+  task has no private attrs; private label has private values only in
+  memory). Neither confirms benchmark quality, label correctness, or fitness
+  for any downstream evaluation.
 - ContextBench dataset license is unknown even though the code repo is
   Apache-2.0; row-level redistribution is disabled.
 - SWE-Explore HF dataset license is `cc-by-nc-nd-4.0`; row-level
@@ -231,12 +325,13 @@ forbidden scan blocks leak at generation, schema smoke report shape.
 - Synthetic self-test rows confer NO empirical support.
 - `spec_hash` is deterministic and excludes timestamps/network/raw
   rows/local paths; it is NOT a content_sha and is not row-level evidence.
+- Row-level hashes are row-level derived data and are never emitted.
 
 ## Next steps
 
-- Future external benchmark evaluation (separate from C4.1) would require an
-  explicit, evidence-gated preregistration that respects each benchmark's
-  license gating and the OpenLocus public-artifact contract.
+- Future external benchmark evaluation (separate from C4.1/C4.2) would
+  require an explicit, evidence-gated preregistration that respects each
+  benchmark's license gating and the OpenLocus public-artifact contract.
 - No promotion, no default change, no EvidenceCore semantics change, no
   runtime-clean general algorithm claim, no downstream agent value claim, no
-  OOD temporal claim, and no QuIVer systems claim follows from C4.1.
+  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2.
