@@ -1,0 +1,245 @@
+{
+  "adapter_derived_private_field_categories": [
+    "model_output",
+    "predicted_function",
+    "generation",
+    "task_id"
+  ],
+  "adapter_support_claimed": false,
+  "aggregate_only_public_artifact": true,
+  "arxiv_abs_url": "https://arxiv.org/abs/2406.06025",
+  "arxiv_id": "2406.06025",
+  "arxiv_pdf_url": "https://arxiv.org/pdf/2406.06025",
+  "asset_url_current": "https://github.com/evalplus/repoqa_release/releases/download/2024-06-23/repoqa-2024-06-23.json.gz",
+  "asset_url_paper": "https://github.com/evalplus/repoqa_release/releases/download/2024-04-20/repoqa-2024-04-20.json.gz",
+  "benchmark": "repoqa",
+  "benchmark_result_claimed": false,
+  "candidate_not_fact": true,
+  "claim_level": "source_schema_contract_readiness_adapter_deferred_only",
+  "code_repo": "evalplus/repoqa",
+  "code_repo_api_url": "https://api.github.com/repos/evalplus/repoqa",
+  "code_repo_default_branch": "main",
+  "code_repo_license_spdx": "Apache-2.0",
+  "code_repo_public": true,
+  "code_repo_stars_count": 134,
+  "code_repo_url": "https://github.com/evalplus/repoqa",
+  "default_should_change": false,
+  "derived_label_publication_allowed": false,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "follow_up_requirements": [
+    "derived_qrels_design_decision",
+    "version_selection_decision",
+    "license_and_redistribution_statement",
+    "row_map_smoke_design",
+    "adapter_integration_decision"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-20T12:21:22.282845+00:00",
+  "generated_by": "eval/c4_repoqa_source_readiness.py",
+  "homepage_url": "https://evalplus.github.io/repoqa.html",
+  "model_output_contract_fields": [
+    "model_name",
+    "generation",
+    "predicted_function"
+  ],
+  "monolithic_json_rows_read": false,
+  "needle_contract_fields": [
+    "path",
+    "name",
+    "start_byte",
+    "end_byte",
+    "start_line",
+    "end_line",
+    "description"
+  ],
+  "new_network_calls": 6,
+  "new_provider_calls": 0,
+  "not_evidence": true,
+  "ood_temporal_supported": false,
+  "openreview_url": "https://openreview.net/forum?id=hK9YSrFuGf",
+  "paper_aggregate_facts": {
+    "languages_per_paper": 5,
+    "needles_per_repo_per_paper": 10,
+    "paper_aggregate_only": true,
+    "repos_per_language_per_paper": 10,
+    "total_repos_per_paper": 50,
+    "total_tasks_per_paper": 500
+  },
+  "promotion_ready": false,
+  "public_row_schema_readiness_claimed": false,
+  "quiver_systems_supported": false,
+  "raw_response_stored": false,
+  "raw_rows_persisted": false,
+  "release_api_url": "https://api.github.com/repos/evalplus/repoqa_release/releases/tags/2024-06-23",
+  "release_asset_body_read": false,
+  "release_asset_decompressed": false,
+  "release_asset_downloaded": false,
+  "release_metadata": {
+    "current_loader_default_asset_content_type": "application/x-gzip",
+    "current_loader_default_asset_name": "repoqa-2024-06-23.json.gz",
+    "current_loader_default_asset_size": 12525636,
+    "current_loader_default_tag": "2024-06-23",
+    "paper_compatible_asset_name": "repoqa-2024-04-20.json.gz",
+    "paper_compatible_tag": "2024-04-20"
+  },
+  "release_repo": "evalplus/repoqa_release",
+  "release_repo_api_url": "https://api.github.com/repos/evalplus/repoqa_release",
+  "release_repo_default_branch": "main",
+  "release_repo_license_spdx": "Apache-2.0",
+  "release_repo_public": true,
+  "release_repo_url": "https://github.com/evalplus/repoqa_release",
+  "repo_record_contract_fields": [
+    "repo",
+    "commit_sha",
+    "entrypoint_path",
+    "topic",
+    "content",
+    "dependency",
+    "needles"
+  ],
+  "row_level_hashes_emitted": false,
+  "row_level_redistribution_allowed": false,
+  "row_level_values_emitted": false,
+  "row_map_smoke_attempted": false,
+  "row_map_smoke_passed": false,
+  "runtime_clean_general_algorithm_claimed": false,
+  "schema_contract_field_names": [
+    "repo",
+    "commit_sha",
+    "entrypoint_path",
+    "topic",
+    "content",
+    "dependency",
+    "needles",
+    "path",
+    "name",
+    "start_byte",
+    "end_byte",
+    "start_line",
+    "end_line",
+    "description"
+  ],
+  "schema_contract_readiness_claimed": true,
+  "schema_readiness_claimed": false,
+  "schema_version": "c4_repoqa_source_readiness.v1",
+  "self_test": false,
+  "source_confirmation_status": "sources_confirmed_via_probe",
+  "source_probes": {
+    "network_calls": 6,
+    "offline_mode": false,
+    "probes": [
+      {
+        "default_branch": "main",
+        "endpoint": "github_code_repo_api",
+        "http_code": 200,
+        "is_fork": false,
+        "license_spdx": "Apache-2.0",
+        "repo_public": true,
+        "stars_count": 134,
+        "status": "pass"
+      },
+      {
+        "default_branch": "main",
+        "endpoint": "github_release_repo_api",
+        "http_code": 200,
+        "is_fork": false,
+        "license_spdx": "Apache-2.0",
+        "repo_public": true,
+        "stars_count": 1,
+        "status": "pass"
+      },
+      {
+        "asset_count": 1,
+        "asset_metadata": [
+          {
+            "asset_content_type": "application/x-gzip",
+            "asset_download_count": 514,
+            "asset_name": "repoqa-2024-06-23.json.gz",
+            "asset_size": 12525636
+          }
+        ],
+        "endpoint": "github_release_api",
+        "http_code": 200,
+        "release_draft": false,
+        "release_prerelease": false,
+        "release_published_at": "2024-10-07T19:18:17Z",
+        "release_tag": "2024-06-23",
+        "status": "pass"
+      },
+      {
+        "endpoint": "url_status",
+        "http_code": 200,
+        "status": "pass",
+        "url_safe_category": "official_source"
+      },
+      {
+        "endpoint": "url_status",
+        "http_code": 200,
+        "status": "pass",
+        "url_safe_category": "official_source"
+      },
+      {
+        "endpoint": "url_status",
+        "http_code": 200,
+        "status": "pass",
+        "url_safe_category": "official_source"
+      }
+    ]
+  },
+  "status": "source_confirmed_schema_contract_ready_adapter_deferred",
+  "target_task": "searching_needle_function",
+  "target_title": "RepoQA: Evaluating Long Context Code Understanding via Searching Needle Function",
+  "task_record_contract_fields": [
+    "language",
+    "repo_record",
+    "needles"
+  ],
+  "version_skew": {
+    "current_loader_default_version": "2024-06-23",
+    "current_loader_languages": 6,
+    "go_added_in_current_loader_default": true,
+    "paper_homepage_version": "2024-04-20",
+    "paper_languages": 5,
+    "version_skew_noted": true
+  },
+  "wrong_target_disambiguated": true,
+  "wrong_target_exclusions": [
+    {
+      "excluded_target": "Nutanix/RepoQA-neo4j",
+      "exclusion_reason": "unrelated HuggingFace dataset; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "microsoft/SCBench:scbench_repoqa",
+      "exclusion_reason": "SCBench subset with a similar name; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "CodeRepoQA",
+      "exclusion_reason": "similar name; different benchmark; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "SWE-QA-Bench",
+      "exclusion_reason": "similar name; different benchmark; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "CoReQA",
+      "exclusion_reason": "similar name; different benchmark; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "RepoExec",
+      "exclusion_reason": "different benchmark; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "RepoBench",
+      "exclusion_reason": "different benchmark; not EvalPlus RepoQA/SNF"
+    },
+    {
+      "excluded_target": "SWE-QA-Pro",
+      "exclusion_reason": "different benchmark; not EvalPlus RepoQA/SNF"
+    }
+  ]
+}

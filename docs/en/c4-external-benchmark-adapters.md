@@ -2,7 +2,8 @@
 
 Date: 2026-06-20 (C4.1 schema readiness; C4.2 ContextBench verified subset
 row-mapping smoke; C4.3 SWE-Explore row-mapping / line-budget aggregate
-smoke; C4.4 CORE-Bench source readiness / no-go)
+smoke; C4.4 CORE-Bench source readiness / no-go; C4.5 RepoQA
+source/schema-contract readiness with adapter deferred)
 
 C4.1 is the **external benchmark adapter / schema readiness** phase and
 C4.2 is the **ContextBench verified subset row-mapping smoke** phase.
@@ -491,6 +492,130 @@ needed: actual dataset files published, schema and splits exposed,
 qrels/corpus/query files published, license and redistribution statement,
 official GitHub or project page confirmation.
 
+## C4.5 RepoQA source/schema-contract readiness (adapter deferred)
+
+C4.5 is a **source/schema-contract readiness with adapter deferred**
+phase for the EvalPlus **RepoQA** benchmark (task: **Searching Needle
+Function / SNF**; arXiv:2406.06025; OpenReview
+`hK9YSrFuGf`). It is **not** an adapter module, **not** a
+schema-readiness module, **not** a public-row-schema readiness module,
+and **not** a benchmark-result module. The official schema contract is
+known from source/docs/loader, but full adapter/row-map benchmark support
+is **deferred** pending a conscious derived-qrels/version/license
+decision. No RepoQA entry is added to
+`eval/c4_external_benchmark_adapters.py`.
+
+### Wrong-target disambiguation
+
+The canonical target is EvalPlus RepoQA/SNF, NOT `Nutanix/RepoQA-neo4j`,
+`microsoft/SCBench:scbench_repoqa`, `CodeRepoQA`, `SWE-QA-Bench`,
+`CoReQA`, `RepoExec`, `RepoBench`, or `SWE-QA-Pro`. The artifact records
+`wrong_target_disambiguated=true` and a list of excluded targets with
+reasons.
+
+### Confirmed external findings
+
+- Paper: arXiv:2406.06025, OpenReview `hK9YSrFuGf`.
+- Homepage/leaderboard: `https://evalplus.github.io/repoqa.html`.
+- Code repo: `https://github.com/evalplus/repoqa` (Apache-2.0).
+- Dataset release repo: `https://github.com/evalplus/repoqa_release`
+  (Apache-2.0).
+- Current loader default release: tag `2024-06-23`, asset
+  `repoqa-2024-06-23.json.gz` (a monolithic `.json.gz`; NOT downloaded
+  or decompressed).
+- Paper-compatible release: tag `2024-04-20`, asset
+  `repoqa-2024-04-20.json.gz`.
+- Paper aggregate facts (paper-level, not row-level): 5 languages x 10
+  repos x 10 needles = 500 code-search tasks over 50 repositories.
+- Version skew: paper describes 5 languages; current loader default
+  (`2024-06-23`) adds Go support (6 languages).
+- Official schema contract: top-level shape is language -> repo records.
+  Repo record fields: `repo`, `commit_sha`, `entrypoint_path`, `topic`,
+  `content`, `dependency`, `needles`. Needle fields: `path`, `name`,
+  `start_byte`, `end_byte`, `start_line`, `end_line`, `description`.
+  SNF task/model-output fields are adapter-derived and row-level/private
+  in real data.
+- No official HF dataset/Data Viewer/qrels/corpus/query split was
+  confirmed. The dataset is a monolithic source-containing JSON.gz.
+
+### Artifact
+
+`artifacts/c4_external_benchmark_adapters/c4_repoqa_source_readiness_report.json`
+(schema `c4_repoqa_source_readiness.v1`, `claim_level =
+source_schema_contract_readiness_adapter_deferred_only`). The status is
+`source_confirmed_schema_contract_ready_adapter_deferred` (not
+`pass`/`support`).
+`adapter_support_claimed=false`, `schema_readiness_claimed=false`,
+`public_row_schema_readiness_claimed=false`,
+`schema_contract_readiness_claimed=true`,
+`row_map_smoke_attempted=false`, `row_map_smoke_passed=false`,
+`benchmark_result_claimed=false`.
+`release_asset_downloaded=false`, `release_asset_decompressed=false`,
+`release_asset_body_read=false`, `monolithic_json_rows_read=false`,
+`row_level_redistribution_allowed=false`,
+`derived_label_publication_allowed=false`. All no-claim flags false;
+`aggregate_only_public_artifact=true`, `not_evidence=true`,
+`candidate_not_fact=true`, `forbidden_scan.status=pass`.
+
+### Source probes
+
+The script `eval/c4_repoqa_source_readiness.py` runs bounded network
+probes via stdlib `urllib` only (timeout 10s, no new dependencies):
+GitHub code repo API, GitHub release repo API, GitHub release API (tag
+`2024-06-23`) for asset metadata (name/size/content_type only; asset body
+NOT downloaded or decompressed), and HEAD/GET status probes for arXiv
+abs, homepage, and OpenReview URLs. No raw response bodies are stored;
+only aggregate metadata and status categories are parsed. In `--offline`
+mode, no network calls are made and the report is built from confirmed
+static findings only.
+
+### Schema contract field-name categories
+
+Schema contract field names (`repo`, `content`, `needles`, `path`,
+`start_line`, `description`, etc.) are recorded ONLY under explicit
+schema-contract containers (`repo_record_contract_fields`,
+`needle_contract_fields`, `task_record_contract_fields`,
+`model_output_contract_fields`,
+`adapter_derived_private_field_categories`,
+`schema_contract_field_names`). They are observations about the schema
+contract, not row-level data. The forbidden scanner allows them here but
+rejects them as row-like dict keys/values elsewhere.
+
+### Follow-up requirements
+
+To unblock RepoQA adapter/row-map readiness, the following would be
+needed: derived-qrels design decision, version selection decision,
+license and redistribution statement, row-map smoke design, adapter
+integration decision.
+
+### Validation
+
+```text
+python3 -m py_compile eval/c4_repoqa_source_readiness.py   => PASS
+python3 eval/c4_repoqa_source_readiness.py --self-test     => PASS (9 groups)
+python3 eval/c4_repoqa_source_readiness.py --offline \
+  --out /tmp/c4_repoqa_offline.json                         => PASS
+  (status: source_confirmed_schema_contract_ready_adapter_deferred,
+   source_confirmation_status: offline_static_findings_only,
+   forbidden_scan: pass, new_network_calls: 0)
+python3 eval/c4_repoqa_source_readiness.py \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_repoqa_source_readiness_report.json                     => PASS
+  (status: source_confirmed_schema_contract_ready_adapter_deferred,
+   source_confirmation_status: sources_confirmed_via_probe,
+   forbidden_scan: pass, new_network_calls: 6)
+```
+
+Self-test groups (9): wrong-target disambiguation, offline report shape,
+schema-contract allowlist vs row-key leak, schema container strict
+pass/fail (approved strings pass; unapproved function/path values, dict
+row-like objects, and forbidden dict keys inside schema containers all
+fail), leak injection rejections (repo/function names, path, commit SHA,
+line/byte range, description/question/answer, snippet, raw JSON fragment,
+content hash/provider payload), release metadata allowed but content
+sample/digest forbidden, source URLs allowed, report aggregate-only,
+fail-closed generation.
+
 ## Caveats
 
 - C4.1/C4.2/C4.3 is adapter/row-mapping readiness only. It does NOT validate
@@ -505,6 +630,13 @@ official GitHub or project page confirmation.
   (only `.gitattributes` + `README.md`); actual dataset files/schema are
   unavailable. Row-level redistribution and derived-label publication remain
   disabled until actual dataset contents and terms are published.
+- C4.5 is source/schema-contract readiness with adapter deferred. It does
+  NOT claim adapter support, schema readiness, public row schema readiness,
+  row-map smoke pass, or benchmark result. The official schema contract is
+  known from source/docs/loader, but the monolithic JSON.gz is NOT downloaded
+  or decompressed; no row-level data is read or persisted. Row-level
+  redistribution and derived-label publication remain disabled pending a
+  conscious derived-qrels/version/license decision.
 - ContextBench dataset license is unknown even though the code repo is
   Apache-2.0; row-level redistribution is disabled.
 - SWE-Explore HF dataset license is `cc-by-nc-nd-4.0`; row-level
@@ -516,11 +648,14 @@ official GitHub or project page confirmation.
 
 ## Next steps
 
-- Future external benchmark evaluation (separate from C4.1/C4.2/C4.3/C4.4) would
+- Future external benchmark evaluation (separate from C4.1/C4.2/C4.3/C4.4/C4.5) would
   require an explicit, evidence-gated preregistration that respects each
   benchmark's license gating and the OpenLocus public-artifact contract.
 - C4.4 follow-up: await publication of actual CORE-Bench dataset files,
   schema, and splits before any adapter/schema readiness can be considered.
+- C4.5 follow-up: RepoQA adapter/row-map readiness is deferred pending a
+  conscious derived-qrels/version/license decision. The monolithic JSON.gz
+  is NOT downloaded or decompressed; no row-level data is read or persisted.
 - No promotion, no default change, no EvidenceCore semantics change, no
   runtime-clean general algorithm claim, no downstream agent value claim, no
-  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2/C4.3/C4.4.
+  OOD temporal claim, and no QuIVer systems claim follows from C4.1/C4.2/C4.3/C4.4/C4.5.

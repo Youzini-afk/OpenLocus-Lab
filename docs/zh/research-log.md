@@ -3450,3 +3450,121 @@ broader context retrieval 2,580 queries / 97 repos / 106,479 qrels）；共
   promotion、不产生默认策略变更、不产生 EvidenceCore 语义变更、不产生
   runtime-clean 通用算法声明、不产生下游 agent 价值声明、不产生 OOD 时间声明，
   也不产生 QuIVer systems 声明。
+
+---
+
+## 2026-06-20 — C4.5 RepoQA Source / Schema-Contract Readiness (Adapter Deferred)
+
+### Objective
+
+Produce a **source/schema-contract readiness with adapter deferred**
+artifact for the EvalPlus **RepoQA** benchmark (task: Searching Needle
+Function / SNF; arXiv:2406.06025; OpenReview `hK9YSrFuGf`). The official
+schema contract is known from source/docs/loader, but full adapter/row-map
+benchmark support is deferred pending a conscious
+derived-qrels/version/license decision. C4.5 does NOT claim adapter
+support, schema readiness, public row schema readiness, row-map smoke
+pass, or benchmark result. No RepoQA entry is added to
+`eval/c4_external_benchmark_adapters.py`.
+
+### Implementation
+
+- New standalone script `eval/c4_repoqa_source_readiness.py` (pure
+  Python stdlib only). CLI: `--self-test` (no network, 9 groups),
+  `--source-readiness` (default mode, builds report), `--offline` (no
+  network probes), `--out`.
+- Bounded network probes via stdlib `urllib` (timeout 10s): GitHub code
+  repo API, GitHub release repo API, GitHub release API (tag
+  `2024-06-23`) for asset metadata (name/size/content_type only; asset
+  body NOT downloaded or decompressed), and HEAD/GET status probes for
+  arXiv abs, homepage, OpenReview URLs. No raw response bodies are
+  stored; only aggregate metadata and status categories are parsed.
+- Strict source/schema-contract-specific forbidden scanner: allows
+  official source-level URLs (arXiv/OpenReview/homepage/GitHub/GitHub-API/
+  release-asset URLs) but forbids row-level URLs, paths, spans, snippets,
+  raw payloads, content hashes, descriptions, questions, answers, raw
+  JSON fragments, and line/byte ranges. Schema contract field names
+  (`repo`, `content`, `needles`, `path`, `start_line`, `description`,
+  etc.) are allowed ONLY as exact approved contract strings from
+  `APPROVED_CONTRACT_STRINGS` inside explicit schema-contract containers
+  (`repo_record_contract_fields`, `needle_contract_fields`,
+  `task_record_contract_fields`, `model_output_contract_fields`,
+  `adapter_derived_private_field_categories`,
+  `schema_contract_field_names`); they are NEVER allowed as dict keys
+  (the forbidden dict-key check is NOT relaxed inside schema-contract
+  containers). Dict objects are forbidden inside schema-contract
+  containers (row-like objects). Unapproved strings inside schema-contract
+  containers are rejected. Injected `pytorch/pytorch`, `/src/main.py`,
+  40-char commit SHA, `12-34` line range, multiline snippet,
+  `{"repo":...}` raw JSON fragment, 64-char content hash, unapproved
+  function name `compute_loss`, path-like `src/main.py`, and dict
+  row-like object `[{"repo": "pytorch/pytorch"}]` all fail the scanner.
+  Release asset metadata (name/size/tag) is allowed but content
+  samples/digests are forbidden. Scanner is fail-closed before writing JSON.
+- Self-test (9 groups, no network): wrong-target disambiguation; offline
+  report shape (deferred status, not pass/support); schema-contract
+  allowlist vs row-key leak; schema container strict pass/fail (approved
+  strings pass; unapproved function/path values, dict row-like objects,
+  and forbidden dict keys inside schema containers all fail); leak
+  injection rejections (repo/function names, path, commit SHA, line/byte
+  range, description/question/answer, snippet, raw JSON fragment, content
+  hash/provider payload); release metadata allowed but content
+  sample/digest forbidden; source URLs allowed; report aggregate-only;
+  fail-closed generation.
+
+### Findings
+
+```text
+python3 -m py_compile eval/c4_repoqa_source_readiness.py   => PASS
+python3 eval/c4_repoqa_source_readiness.py --self-test     => PASS (9 groups)
+python3 eval/c4_repoqa_source_readiness.py --offline \
+  --out /tmp/c4_repoqa_offline.json                         => PASS
+  (status: source_confirmed_schema_contract_ready_adapter_deferred,
+   source_confirmation_status: offline_static_findings_only,
+   forbidden_scan: pass, new_network_calls: 0)
+python3 eval/c4_repoqa_source_readiness.py \
+  --out artifacts/c4_external_benchmark_adapters/\
+c4_repoqa_source_readiness_report.json                     => PASS
+  (status: source_confirmed_schema_contract_ready_adapter_deferred,
+   source_confirmation_status: sources_confirmed_via_probe,
+   forbidden_scan: pass, new_network_calls: 6)
+```
+
+Confirmed external findings: code repo `evalplus/repoqa` and release repo
+`evalplus/repoqa_release` are public Apache-2.0; current loader default
+release tag `2024-06-23` with monolithic asset
+`repoqa-2024-06-23.json.gz` (NOT downloaded or decompressed); paper
+aggregate facts: 5 languages x 10 repos x 10 needles = 500 tasks over 50
+repositories; version skew noted (paper 5 langs vs current loader 6 langs
+with Go added). Official schema contract known from source/docs/loader:
+repo record fields (`repo`, `commit_sha`, `entrypoint_path`, `topic`,
+`content`, `dependency`, `needles`) and needle fields (`path`, `name`,
+`start_byte`, `end_byte`, `start_line`, `end_line`, `description`).
+
+### Caveats
+
+- C4.5 is source/schema-contract readiness with adapter deferred. It
+  does NOT claim adapter support, schema readiness, public row schema
+  readiness, row-map smoke pass, or benchmark result. The official schema
+  contract is known from source/docs/loader, but the monolithic JSON.gz
+  is NOT downloaded or decompressed; no row-level data is read or
+  persisted.
+- All no-claim flags remain false: `promotion_ready=false`,
+  `default_should_change=false`, `evidencecore_semantics_changed=false`,
+  `runtime_clean_general_algorithm_claimed=false`,
+  `downstream_agent_value_proven=false`, `ood_temporal_supported=false`,
+  `quiver_systems_supported=false`. `adapter_support_claimed=false`,
+  `schema_readiness_claimed=false`,
+  `public_row_schema_readiness_claimed=false`,
+  `schema_contract_readiness_claimed=true`,
+  `row_map_smoke_attempted=false`, `row_map_smoke_passed=false`,
+  `benchmark_result_claimed=false`,
+  `release_asset_downloaded=false`,
+  `release_asset_decompressed=false`,
+  `release_asset_body_read=false`,
+  `monolithic_json_rows_read=false`,
+  `row_level_redistribution_allowed=false`,
+  `derived_label_publication_allowed=false`. No promotion, no default
+  change, no EvidenceCore semantics change, no runtime-clean general
+  algorithm claim, no downstream agent value claim, no OOD temporal claim,
+  and no QuIVer systems claim follows from C4.5.
