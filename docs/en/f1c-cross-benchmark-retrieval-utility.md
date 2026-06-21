@@ -360,7 +360,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-Local real-network run produced the following aggregate metrics
+Local real-network run and manual CI run `27911651758` produced the following aggregate metrics
 (no row/needle/repo/commit/query/gold/path/span/snippet/source/
 JSONL/evidence/stdout/stderr/clone-path/row-id/hash/provider/
 model-routing-prefix/winner/best/default/recommended fields

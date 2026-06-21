@@ -351,7 +351,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-本地真实网络 run 产出以下聚合指标（不提交任何 row/needle/repo/commit/
+本地真实网络 run 与手动 CI run `27911651758` 产出以下聚合指标（不提交任何 row/needle/repo/commit/
 query/gold/path/span/snippet/source/JSONL/evidence/stdout/stderr/
 clone-path/row-id/hash/provider/model-routing-prefix/winner/best/
 default/recommended 字段）：

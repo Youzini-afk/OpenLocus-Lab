@@ -8543,7 +8543,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-Local real-network run produced the following aggregate metrics:
+Local real-network run and manual CI run `27911651758` produced the following aggregate metrics:
 
 ```text
 status: cross_benchmark_retrieval_utility_pass

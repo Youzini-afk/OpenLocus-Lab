@@ -432,7 +432,7 @@ and 5 fixed counterfactual effects (`bm25_vs_empty`,
 baseline (no retrieval run; all metrics/utility 0). Records-shaped
 only; no dynamic dict mirrors; no winner/best/default fields; no E/S
 calibration notation; ContextBench and RepoQA failure categories kept
-separate. No provider calls. Local real-network run passed: 20
+separate. No provider calls. Local real-network run and manual CI run `27911651758` passed: 20
 ContextBench rows fetched, 10 RepoQA needles seen, status
 `cross_benchmark_retrieval_utility_pass`, forbidden scan pass,
 provider_calls=0; bm25 cross-benchmark weighted-mean

@@ -382,7 +382,7 @@ retrieval-derived utility proxy
 基线（无 retrieval run；所有指标/效用为 0）。仅 records-shaped；无动
 态 dict 镜像；无 winner/best/default 字段；无 E/S 校准记法；
 ContextBench 与 RepoQA 失败类别保持分离。无 provider 调用。本地真实
-网络 run 已通过：20 行 ContextBench 抓取，10 个 RepoQA needle 见到，
+网络 run 与手动 CI run `27911651758` 已通过：20 行 ContextBench 抓取，10 个 RepoQA needle 见到，
 status `cross_benchmark_retrieval_utility_pass`，forbidden scan pass，
 provider_calls=0；bm25 跨基准加权均值 file_recall@10=0.4 /
 mrr=0.218477 / span_f0.5@10=0.020831 / success_rate=1.0 /

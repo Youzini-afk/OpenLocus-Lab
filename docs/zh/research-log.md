@@ -7915,7 +7915,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-本地真实网络 run 产出以下聚合指标：
+本地真实网络 run 与手动 CI run `27911651758` 产出以下聚合指标：
 
 ```text
 status: cross_benchmark_retrieval_utility_pass
