@@ -396,6 +396,10 @@ candidate-set utility deltas. Five variants and four effects; metrics
 are `file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`.
 Records-shaped only; no dynamic dict mirrors; no winner/best/default
 fields; no E/S calibration notation. No provider calls.
+Manual CI run `27903995230` passed: 5 rows fetched/successful,
+forbidden scan pass, `bm25_topk` file_recall@10=0.4 / mrr=0.225 /
+span_f0.5@10=0.015905 / success_rate=1.0, `regex_topk` and
+`symbol_topk` file_recall@10=0.0, and `symbol_added_to_bm25` delta=0.0.
 
 This is smoke-only. It is NOT downstream utility, NOT true E/S
 calibration, NOT an external benchmark performance claim, NOT a

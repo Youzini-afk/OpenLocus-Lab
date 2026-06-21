@@ -61,7 +61,18 @@ synthetic smoke signal, not downstream value proof; B16-E does NOT
 claim downstream agent value, live agent generalization, external
 benchmark performance, real user task, promotion, or
 default/policy/runtime/retriever/pack/backend/EvidenceCore semantic
-change. C5-A is an
+change. F1-B is a retrieval-derived counterfactual utility smoke using
+real ContextBench verified rows, transient /tmp clones, real OpenLocus
+retrieval, and `eval/score.py` metrics (bm25,regex,symbol; 5 fixed
+candidate-set variants; 4 fixed effects; no provider calls; no
+winner/best/default fields; no E/S calibration notation); manual CI run
+27903995230 passed with 5 rows fetched/successful, forbidden scan pass,
+`bm25_topk` file_recall@10=0.4 / mrr=0.225 / span_f0.5@10=0.015905 /
+success_rate=1.0, `regex_topk` and `symbol_topk` file_recall@10=0.0,
+and `symbol_added_to_bm25` delta=0.0; this is NOT downstream utility,
+NOT true E/S calibration, NOT an external benchmark performance claim,
+NOT a leaderboard entry, and NOT promotion/default/runtime/retriever/
+pack/backend/EvidenceCore semantic change. C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
 verified subset; transient /tmp clone + retrieval + score; aggregate-only
 public artifact; no provider calls); it does NOT claim an external
@@ -116,7 +127,17 @@ solve_rate=0.125、treatment solve_rate=1.0、solve/test delta `+0.875`，
 4/4 families positive，且 `context_pack_signal_observed=true`；这是更广但仍微型
 的合成 smoke 信号，不是下游价值证明；B16-E **不**声明下游 agent 价值、
 live agent 泛化、外部基准测试性能、真实用户任务、promotion 或
-default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
+default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。F1-B 是
+retrieval-derived counterfactual utility smoke，使用真实 ContextBench verified
+rows、临时 /tmp clones、真实 OpenLocus retrieval 与 `eval/score.py` 指标
+（bm25,regex,symbol；5 个固定 candidate-set variants；4 个固定 effects；无
+provider 调用；无 winner/best/default 字段；无 E/S 校准记法）；manual CI run
+27903995230 已通过，5 行抓取/成功，forbidden scan pass，`bm25_topk`
+file_recall@10=0.4 / mrr=0.225 / span_f0.5@10=0.015905 / success_rate=1.0，
+`regex_topk` 与 `symbol_topk` file_recall@10=0.0，`symbol_added_to_bm25`
+delta=0.0；这**不是**下游效用、**不是** true E/S 校准、**不是**外部基准测试性能
+声明、**不是** leaderboard 条目，也**不是** promotion/default/runtime/retriever/
+pack/backend/EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
 retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
 **不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、

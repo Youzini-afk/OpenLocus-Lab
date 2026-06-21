@@ -7628,6 +7628,26 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+Manual CI run `27903995230` passed after a workflow-only upload env fix
+(`4fe5708`). The CI artifact was downloaded and structurally checked:
+
+```text
+status: retrieval_derived_counterfactual_utility_smoke_pass
+rows_fetched: 5
+rows_successful: 5
+forbidden_scan: pass
+bm25_topk: file_recall@10=0.4, mrr=0.225, span_f0.5@10=0.015905, success_rate=1.0
+regex_topk: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol_topk: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+bm25_plus_symbol_topk: file_recall@10=0.4, mrr=0.225, span_f0.5@10=0.015905, success_rate=1.0
+bm25_candidates_vs_empty: file_recall@10 delta=+0.4, mrr delta=+0.225
+symbol_added_to_bm25: file_recall@10 delta=0.0, mrr delta=0.0
+```
+
+The CI artifact contains no repo URLs, base commits, queries/problem
+statements, gold contexts, content hashes, stdout/stderr, `/tmp` paths,
+provider fields, winner/best/default fields, or E/S notation.
+
 F1-B is the first retrieval-derived counterfactual utility smoke. It
 uses real ContextBench verified rows, real OpenLocus retrieval, and
 real `eval/score.py` metrics to compute aggregate candidate-set

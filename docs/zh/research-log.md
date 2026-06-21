@@ -7082,6 +7082,26 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+手动 CI run `27903995230` 在 workflow-only upload env 修复（`4fe5708`）后通过。
+CI artifact 已下载并结构化检查：
+
+```text
+status: retrieval_derived_counterfactual_utility_smoke_pass
+rows_fetched: 5
+rows_successful: 5
+forbidden_scan: pass
+bm25_topk: file_recall@10=0.4, mrr=0.225, span_f0.5@10=0.015905, success_rate=1.0
+regex_topk: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol_topk: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+bm25_plus_symbol_topk: file_recall@10=0.4, mrr=0.225, span_f0.5@10=0.015905, success_rate=1.0
+bm25_candidates_vs_empty: file_recall@10 delta=+0.4, mrr delta=+0.225
+symbol_added_to_bm25: file_recall@10 delta=0.0, mrr delta=0.0
+```
+
+CI artifact 不含 repo URLs、base commits、queries/problem statements、gold
+contexts、content hashes、stdout/stderr、`/tmp` paths、provider fields、
+winner/best/default 字段或 E/S notation。
+
 F1-B 是首个 retrieval-derived counterfactual utility smoke。它使用
 真实 ContextBench verified rows、真实 OpenLocus retrieval 和真实
 `eval/score.py` 指标计算聚合 candidate-set 效用 delta。它是

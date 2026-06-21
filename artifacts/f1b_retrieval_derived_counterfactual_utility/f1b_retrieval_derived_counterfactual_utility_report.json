@@ -159,7 +159,7 @@
     "promotion_claimed": false,
     "signal_strength": "retrieval_derived_counterfactual_utility_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-21T12:09:05.951958+00:00",
+  "generated_at": "2026-06-21T12:18:02.601500+00:00",
   "generated_by": "eval/f1b_retrieval_derived_counterfactual_utility_smoke.py",
   "human_e_s_calibration_claimed": false,
   "input_summary": {

@@ -359,6 +359,10 @@ schema `f1b_retrieval_derived_counterfactual_utility_smoke.v1`、
 Records-shaped `variant_results`、`counterfactual_effects`、
 `method_inputs`。无 provider 调用。无 winner/best/default 字段。
 无 E/S 校准记法。95/95 self-test checks 通过。
+手动 CI run `27903995230` 已通过：5 行抓取/成功，forbidden scan pass，
+`bm25_topk` file_recall@10=0.4 / mrr=0.225 /
+span_f0.5@10=0.015905 / success_rate=1.0，`regex_topk` 与
+`symbol_topk` file_recall@10=0.0，`symbol_added_to_bm25` delta=0.0。
 
 这是 smoke-only。它**不是**下游效用，**不是** true E/S 校准，**不
 是**外部基准测试性能声明，**不是** leaderboard 条目，**不是**

@@ -238,6 +238,30 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+手动 CI run `27903995230`
+（`f1b-retrieval-derived-utility-smoke.yml`，
+`enable_external_benchmark_network=true`）也已通过。上传的聚合报告与已提交
+artifact surface 一致，并通过相同 no-claim/scanner 检查：
+
+```text
+status: retrieval_derived_counterfactual_utility_smoke_pass
+rows_fetched: 5
+rows_successful: 5
+methods: bm25,regex,symbol
+forbidden_scan: pass
+baseline_empty_candidate_set: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=0.0
+bm25_topk: file_recall@10=0.4, mrr=0.225, span_f0.5@10=0.015905, success_rate=1.0
+regex_topk: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol_topk: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+bm25_plus_symbol_topk: file_recall@10=0.4, mrr=0.225, span_f0.5@10=0.015905, success_rate=1.0
+bm25_candidates_vs_empty: file_recall@10 delta=+0.4, mrr delta=+0.225, success_rate delta=+1.0
+symbol_added_to_bm25: file_recall@10 delta=0.0, mrr delta=0.0, success_rate delta=0.0
+```
+
+这是在微型 ContextBench 子集上的 retrieval-derived candidate-set utility
+smoke。它不是下游效用，不是正式外部 benchmark 结果，也不是 default/promotion
+信号。
+
 ## 注意事项
 
 - F1-B 是公开仅聚合 retrieval-derived counterfactual utility smoke

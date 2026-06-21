@@ -394,6 +394,10 @@ candidate-set utility deltas. Five variants (`baseline_empty_candidate_set`,
 Records-shaped `variant_results`, `counterfactual_effects`,
 `method_inputs`. No provider calls. No winner/best/default fields.
 No E/S calibration notation. 95/95 self-test checks pass.
+Manual CI run `27903995230` passed: 5 rows fetched/successful,
+forbidden scan pass, `bm25_topk` file_recall@10=0.4 / mrr=0.225 /
+span_f0.5@10=0.015905 / success_rate=1.0, `regex_topk` and
+`symbol_topk` file_recall@10=0.0, and `symbol_added_to_bm25` delta=0.0.
 
 This is smoke-only. It is NOT downstream utility, NOT true E/S
 calibration, NOT an external benchmark performance claim, NOT a
