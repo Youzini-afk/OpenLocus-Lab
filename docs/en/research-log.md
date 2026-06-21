@@ -8372,13 +8372,15 @@ C5-F scales C5-E from 5 RepoQA Python needles per method to 10 needles per metho
 
 C5-F reuses C5-E's RepoQA asset/needle/clone/retrieval/score pipeline but swaps to C5-F identity (`schema_version=c5f_repoqa_method_matrix_scale_smoke.v1`, `claim_level=repoqa_retrieval_method_matrix_scale_smoke_only`, `mode=repoqa_bounded_10_needle_method_matrix_scale_smoke`, `phase=C5-F`) and default/hard-cap needle limit 10.
 
-### Local real smoke
+### Real smoke
 
 ```text
 python3 -m py_compile eval/c5f_repoqa_method_matrix_scale_smoke.py => PASS
 python3 eval/c5f_repoqa_method_matrix_scale_smoke.py --self-test => PASS (191/191 checks)
 python3 eval/c5f_repoqa_method_matrix_scale_smoke.py --needle-limit 10 --language-filter python --methods bm25,regex,symbol --out artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json => PASS
 ```
+
+Manual CI run `27909885489` completed successfully and the committed artifact now mirrors that sanitized aggregate report.
 
 Aggregate result:
 
@@ -8392,6 +8394,7 @@ provider_calls: 0
 bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0
 regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
 symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+aggregate_runtime_seconds: bm25=19.018, regex=18.181, symbol=28.251
 regex-minus-bm25 file_recall@10 delta: -0.5
 symbol-minus-bm25 file_recall@10 delta: -0.5
 ```

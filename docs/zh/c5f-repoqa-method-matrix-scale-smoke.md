@@ -36,7 +36,7 @@ Raw RepoQA repo 值、commit、description、path、line range、source、生成
 retrieval evidence rows、stdout/stderr、clone path、row ID、hash 与 provider fields
 都只临时存在，绝不提交或上传。
 
-## 本地真实 smoke 结果
+## 真实 smoke 结果
 
 ```text
 python3 -m py_compile eval/c5f_repoqa_method_matrix_scale_smoke.py => PASS
@@ -46,7 +46,13 @@ python3 eval/c5f_repoqa_method_matrix_scale_smoke.py \
   --out artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json => PASS
 ```
 
-Aggregate 本地结果：
+手动 CI run `27909885489`
+（`c5-repoqa-method-matrix-scale-smoke`，
+`enable_external_benchmark_network=true`，`needle_limit=10`，
+`methods=bm25,regex,symbol`）已成功完成。已提交 artifact 现在镜像该 sanitized
+aggregate CI report。
+
+Aggregate 结果：
 
 ```text
 status: repoqa_method_matrix_scale_smoke_pass
@@ -58,11 +64,12 @@ provider_calls: 0
 bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0
 regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
 symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+aggregate_runtime_seconds: bm25=19.018, regex=18.181, symbol=28.251
 regex-minus-bm25 file_recall@10 delta: -0.5
 symbol-minus-bm25 file_recall@10 delta: -0.5
 ```
 
-这些只是 smoke diagnostics，不是性能或 default-policy 声明。
+这些只是 smoke diagnostics，不是性能、方法 winner 或 default-policy 声明。
 
 ## 手动 CI
 

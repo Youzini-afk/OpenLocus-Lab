@@ -7754,13 +7754,15 @@ C5-F 将 C5-E 从每方法 5 个 RepoQA Python needle 扩展到每方法 10 个 
 
 C5-F 复用 C5-E 的 RepoQA asset/needle/clone/retrieval/score 管线，但替换为 C5-F identity（`schema_version=c5f_repoqa_method_matrix_scale_smoke.v1`、`claim_level=repoqa_retrieval_method_matrix_scale_smoke_only`、`mode=repoqa_bounded_10_needle_method_matrix_scale_smoke`、`phase=C5-F`）以及默认/硬上限 needle limit 10。
 
-### 本地真实 smoke
+### 真实 smoke
 
 ```text
 python3 -m py_compile eval/c5f_repoqa_method_matrix_scale_smoke.py => PASS
 python3 eval/c5f_repoqa_method_matrix_scale_smoke.py --self-test => PASS (191/191 checks)
 python3 eval/c5f_repoqa_method_matrix_scale_smoke.py --needle-limit 10 --language-filter python --methods bm25,regex,symbol --out artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json => PASS
 ```
+
+手动 CI run `27909885489` 已成功完成，已提交 artifact 现在镜像该 sanitized aggregate report。
 
 Aggregate result：
 
@@ -7774,6 +7776,7 @@ provider_calls: 0
 bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0
 regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
 symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+aggregate_runtime_seconds: bm25=19.018, regex=18.181, symbol=28.251
 regex-minus-bm25 file_recall@10 delta: -0.5
 symbol-minus-bm25 file_recall@10 delta: -0.5
 ```
