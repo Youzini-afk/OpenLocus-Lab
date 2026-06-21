@@ -263,13 +263,16 @@ distractor/support 不可编辑），运行真实子进程测试，并在 paired
 support-relation cue 及 exact edit constraint；control 缺少决定性
 cue。
 
-提交的 artifact 是**真实的**：因为本地无 provider env，状态为
-`blocked_remote_not_enabled`，live-run 标志为 false。live
-`live_provider_less_trivial_paired_smoke_pass` artifact 需要显式本
-地 opt-in run 或手动 CI `real-provider-benchmark` workflow
-（`stage=b16d_less_trivial_live_provider_paired_smoke` +
-`enable_remote_models=true`）。**手动 CI live-provider run：待执
-行。**
+手动 CI run `27901644438`（`real-provider-benchmark`，
+`stage=b16d_less_trivial_live_provider_paired_smoke`，
+`enable_remote_models=true`）完成
+`live_provider_less_trivial_paired_smoke_pass` 并通过 privacy validation。已提交
+artifact 现在镜像该 sanitized aggregate CI report：4 个合成任务 / 8 次 live
+provider calls，8/8 provider calls succeeded，invalid JSON count 0，control
+solve_rate=0.5，treatment solve_rate=1.0，treatment-minus-control solve_rate
+delta `+0.5`，tests_pass_rate delta `+0.5`，且
+`context_pack_signal_observed=true`。默认本地 no-provider-env 路径仍真实输出
+`blocked_remote_not_enabled`，live-run 标志为 false。
 
 这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
 泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升
@@ -284,7 +287,8 @@ patch 和测试输出仅留在 `/tmp`，**绝不**提交或上传。honest signa
 声明 / 无运行时变更标志保持 false。live-run 标志**仅**在 live run
 实际执行时为 true，否则为 false。不发布 raw model 路由前缀；仅记录
 规范化的 `model_display_category`。未修改任何
-runtime/retriever/pack/model/backend/default-policy 文件。完整 B16
+runtime/retriever/pack/model/backend/default-policy 文件。正向 treatment delta 是
+微型合成 smoke 信号，不是下游价值或泛化证明。完整 B16
 下游 coding-agent 评估阶段仍是有界规划/可行性阶段。详见
 [B16-D 详细报告](b16d-less-trivial-live-provider-paired-smoke.md)。
 

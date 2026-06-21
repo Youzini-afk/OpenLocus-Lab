@@ -48,28 +48,48 @@ remains a bounded planning / feasibility stage. B16-D only produces a
 harder live-provider downstream smoke by running a tiny paired live LLM
 agent on synthetic public less-trivial micro tasks.
 
-## Committed artifact vs manual CI live-provider result
+## Committed artifact and manual CI live-provider result
 
 The **committed artifact** at
 `artifacts/b16d_less_trivial_live_provider_paired_smoke/b16d_less_trivial_live_provider_paired_smoke_report.json`
-is a **truthful local report**. If a local provider env is not available
-(the default state), it carries status `blocked_remote_not_enabled` or
-`unavailable_no_local_provider_env` with all live-run flags false
-(except `aggregate_only_public_artifact=true` and
-`diagnostic_only=true`). A live
-`live_provider_less_trivial_paired_smoke_pass` artifact is produced
-ONLY by an explicit local opt-in run (`--allow-remote` +
-`OPENLOCUS_ALLOW_REMOTE=1` + provider env) or by the manual CI
-`real-provider-benchmark` workflow with
-`stage=b16d_less_trivial_live_provider_paired_smoke` and
-`enable_remote_models=true`.
+now mirrors the sanitized aggregate report from manual CI run
+`27901644438` (`real-provider-benchmark`, stage
+`b16d_less_trivial_live_provider_paired_smoke`,
+`enable_remote_models=true`). The run completed
+`live_provider_less_trivial_paired_smoke_pass`, passed the workflow
+privacy validator, and uploaded only the dedicated B16-D aggregate
+report. The generic `real-provider` artifact upload is explicitly
+disabled for B16-D so `plan.json` and other stage artifacts are not
+part of the B16-D upload surface.
 
-**Manual CI live-provider run: pending.** As of this commit, no manual
-CI `real-provider-benchmark` run for
-`b16d_less_trivial_live_provider_paired_smoke` has been triggered yet.
-When it is triggered, the CI report will be uploaded as
-`artifacts/real_provider_ci/b16d_less_trivial_live_provider_paired_smoke_report.json`
-and the docs will be updated to reflect the CI run result.
+The default local no-env run is still truthful: without
+`--allow-remote` and the required provider env, the evaluator emits
+`unavailable_no_local_provider_env` or `blocked_remote_not_enabled`
+with live-run flags false. A live pass is produced ONLY by an explicit
+local opt-in run (`--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` +
+provider env) or by the manual CI workflow described above.
+
+Manual CI run `27901644438` summary:
+
+```text
+status: live_provider_less_trivial_paired_smoke_pass
+model_display_category: Kimi-K2.7-Code
+synthetic_task_count: 4
+total_runs: 8
+provider calls: 8 attempted / 8 succeeded / 0 failed
+invalid_json_count: 0
+forbidden_scan: pass
+control_sparse: solve_rate=0.5, tests_pass_rate=0.5, wrong_file_edits_mean=0.0
+treatment_context_pack: solve_rate=1.0, tests_pass_rate=1.0, wrong_file_edits_mean=0.0
+treatment-minus-control solve_rate delta: +0.5
+treatment-minus-control tests_pass_rate delta: +0.5
+context_pack_signal_observed: true
+```
+
+This is a less-trivial live-provider execution smoke with a positive
+context-pack smoke signal on this tiny synthetic task family. It is
+NOT downstream agent value proof, NOT live-agent generalization proof,
+and NOT a default/promotion signal.
 
 ## Less-trivial synthetic public micro bug task design
 
@@ -377,13 +397,12 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-The committed artifact is the truthful local unavailable/blocked
-report because no local provider env is available. A live
-`live_provider_less_trivial_paired_smoke_pass` artifact requires an
-explicit local opt-in run or the manual CI `real-provider-benchmark`
-workflow with
-`stage=b16d_less_trivial_live_provider_paired_smoke` and
-`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+The local no-env validation path is truthful and blocked/unavailable.
+After manual CI run `27901644438`, the committed artifact mirrors the
+sanitized aggregate `live_provider_less_trivial_paired_smoke_pass`
+report from that run. The live CI report passed privacy validation and
+contains no raw prompt/response/provider payload/base URL/API key/
+workspace path/patch/diff/stdout/stderr/per-run rows.
 
 ## Caveats
 
@@ -396,10 +415,10 @@ workflow with
   and NOT a QuIVer systems claim.
 - B16-D uses a **live LLM provider** (OpenAI-compatible) only when
   `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are
-  all set. The committed artifact is truthful: if no local provider
-  env is available, it carries status `blocked_remote_not_enabled` /
-  `unavailable_no_local_provider_env` with live-run flags false. It
-  is NOT a fake pass.
+  all set. The default local no-env path remains truthful
+  (`blocked_remote_not_enabled` / `unavailable_no_local_provider_env`),
+  while the committed artifact mirrors the successful sanitized manual
+  CI live-provider run `27901644438`. It is NOT a fake pass.
 - B16-D does NOT prove downstream agent value.
   `downstream_agent_value_proven=false`.
 - B16-D does NOT claim live agent generalization.

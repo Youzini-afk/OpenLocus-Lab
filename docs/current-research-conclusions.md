@@ -31,22 +31,25 @@ B16-C is the first live-provider B16-style downstream-agent smoke
 (OpenAI-compatible live LLM only when --allow-remote +
 OPENLOCUS_ALLOW_REMOTE=1 + provider env; structured edit action
 allowlisted to target.py; real file edits + real subprocess tests; no
-raw prompt/response/payload committed); the committed artifact is
-truthful: status is blocked_remote_not_enabled when no local provider
-env (NOT a fake pass); it does NOT claim downstream agent value, live
-agent generalization, external benchmark performance, real user task,
-promotion, or default/policy/runtime/retriever/pack/backend/
+raw prompt/response/payload committed); manual CI run 27900913599 passed
+with 2 synthetic tasks / 4 live provider calls and both arms solved all
+tasks (solve-rate delta 0.0); it does NOT claim downstream agent value,
+live agent generalization, external benchmark performance, real user
+task, promotion, or default/policy/runtime/retriever/pack/backend/
 EvidenceCore semantic change. B16-D extends B16-C with a harder
 less-trivial multi-file task family (same-symbol distractor + support
 relation required; treatment includes target file cue, target symbol
 cue, support-relation cue, exact edit constraint; control lacks the
 decisive cue; same live-provider gating; same aggregate-only safety
-model; CI pass does NOT require treatment improvement); the committed
-artifact is truthful: status is blocked_remote_not_enabled when no local
-provider env; it does NOT claim downstream agent value, live agent
-generalization, external benchmark performance, real user task,
-promotion, or default/policy/runtime/retriever/pack/backend/
-EvidenceCore semantic change. C5-A is an
+model; CI pass does NOT require treatment improvement); manual CI run
+27901644438 passed with 4 synthetic tasks / 8 live provider calls,
+control solve_rate=0.5, treatment solve_rate=1.0, solve-rate delta
+`+0.5`, tests-pass delta `+0.5`, and
+`context_pack_signal_observed=true`. This is a tiny synthetic smoke
+signal, not downstream value proof; B16-D does NOT claim downstream
+agent value, live agent generalization, external benchmark performance,
+real user task, promotion, or default/policy/runtime/retriever/pack/
+backend/EvidenceCore semantic change. C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
 verified subset; transient /tmp clone + retrieval + score; aggregate-only
 public artifact; no provider calls); it does NOT claim an external
@@ -66,7 +69,8 @@ runtime/default-policy/promotion/downstream-value claim is made.
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
 校准 smoke、B16-A 最小确定性/mock 下游 paired-agent 实证 run、B16-B
 less-separable 确定性/mock 下游 paired-agent 压力测试 run、B16-C
-live-provider 下游 paired smoke、C5-A ContextBench verified 检索性能
+live-provider 下游 paired smoke、B16-D less-trivial live-provider 下游 paired
+smoke、C5-A ContextBench verified 检索性能
 smoke，以及 C5-B ContextBench verified 检索方法矩阵 smoke。D5-H / 人工
 参考校准在人工标签存在前仍属 out of scope；D5-A 自动/程序化实证路径已激
 活。B16-A 是确定性 mock 下游 smoke（无 live LLM、无 provider 调用）；它
@@ -77,19 +81,21 @@ promotion 字段，且 treatment 按构造完美（harness/stress，非 live 结
 B16-C 是首个 live-provider B16 风格下游 agent smoke（仅当 --allow-remote
 + OPENLOCUS_ALLOW_REMOTE=1 + provider env 时使用 OpenAI 兼容 live LLM；
 结构化 edit action 白名单限 target.py；真实文件编辑 + 真实子进程测试；
-不提交 raw prompt/response/payload）；提交的 artifact 是真实的：本地无
-provider env 时状态为 blocked_remote_not_enabled（**不是** fake pass）；
-它**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
-户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
+不提交 raw prompt/response/payload）；manual CI run 27900913599 已通过，覆盖
+2 个合成任务 / 4 次 live provider calls，两个 arm 都解出（solve-rate delta
+0.0）；它**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、
+真实用户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
 EvidenceCore 语义变更。B16-D 扩展 B16-C 为更难的 less-trivial 多文件
 任务族（同符号 distractor + 需要 support relation；treatment 含 target
 file cue、target symbol cue、support-relation cue、exact edit
 constraint；control 缺少决定性 cue；相同 live-provider gating；相同仅
-聚合安全模型；CI 通过**不**要求 treatment 改善）；提交的 artifact 是
-真实的：本地无 provider env 时状态为 blocked_remote_not_enabled；它
-**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
-户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
-EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
+聚合安全模型；CI 通过**不**要求 treatment 改善）；manual CI run
+27901644438 已通过，覆盖 4 个合成任务 / 8 次 live provider calls，control
+solve_rate=0.5、treatment solve_rate=1.0、solve-rate delta `+0.5`、
+tests-pass delta `+0.5`，且 `context_pack_signal_observed=true`。这是微型合成
+smoke 信号，不是下游价值证明；B16-D **不**声明下游 agent 价值、live agent
+泛化、外部基准测试性能、真实用户任务、promotion 或
+default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
 retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
 **不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、

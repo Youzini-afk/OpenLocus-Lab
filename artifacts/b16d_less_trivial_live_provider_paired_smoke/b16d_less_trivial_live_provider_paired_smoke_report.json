@@ -1,13 +1,78 @@
 {
-  "agent_behavior_metrics_evaluated": false,
+  "agent_behavior_metrics_evaluated": true,
   "aggregate_only_public_artifact": true,
-  "arm_results": [],
+  "arm_results": [
+    {
+      "arm": "control_sparse",
+      "failure_category_counts": {
+        "ok": 4
+      },
+      "metrics": {
+        "context_tokens_mean": 20.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 3388.0,
+        "run_count": 4,
+        "solve_rate": 0.5,
+        "tests_pass_rate": 0.5,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 4,
+        "calls_failed": 0,
+        "calls_succeeded": 4,
+        "completion_tokens_total": 1467,
+        "failure_category_counts": {
+          "ok": 4
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 13303,
+        "prompt_tokens_total": 468,
+        "timeout_count": 0,
+        "total_tokens_total": 1935,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "treatment_context_pack",
+      "failure_category_counts": {
+        "ok": 4
+      },
+      "metrics": {
+        "context_tokens_mean": 64.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 1096.25,
+        "run_count": 4,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 4,
+        "calls_failed": 0,
+        "calls_succeeded": 4,
+        "completion_tokens_total": 267,
+        "failure_category_counts": {
+          "ok": 4
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 4308,
+        "prompt_tokens_total": 808,
+        "timeout_count": 0,
+        "total_tokens_total": 1075,
+        "usage_available": true
+      }
+    }
+  ],
   "backend_changed": false,
   "claim_level": "less_trivial_live_provider_downstream_paired_smoke_only",
   "default_policy_changed": false,
   "default_should_change": false,
   "diagnostic_only": true,
-  "downstream_agent_runs_performed": false,
+  "downstream_agent_runs_performed": true,
   "downstream_agent_value_proven": false,
   "evidencecore_semantics_changed": false,
   "external_benchmark_performance_claimed": false,
@@ -16,11 +81,11 @@
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-21T10:35:49.259553+00:00",
+  "generated_at": "2026-06-21T10:38:02.105025+00:00",
   "generated_by": "eval/b16d_less_trivial_live_provider_paired_smoke.py",
   "honest_signals": {
-    "context_pack_signal_observed": false,
-    "treatment_solve_rate_delta": 0.0,
+    "context_pack_signal_observed": true,
+    "treatment_solve_rate_delta": 0.5,
     "treatment_wrong_file_edits_delta": 0.0
   },
   "input_summary": {
@@ -31,27 +96,76 @@
     "designed_causal_subset": true,
     "less_trivial_multi_file_tasks": true,
     "paired_design": true,
-    "run_count_per_arm": 0,
+    "run_count_per_arm": 4,
     "support_relation_required": true,
-    "synthetic_task_count": 0,
-    "total_runs": 0,
+    "synthetic_task_count": 4,
+    "total_runs": 8,
     "transient_workspace_outputs_only": true,
     "workspace_isolation": "fresh_tmp_per_task_arm"
   },
   "live_agent_generalization_claimed": false,
-  "live_llm_agent": false,
+  "live_llm_agent": true,
   "mode": "public_aggregate_synthetic_less_trivial_tasks",
-  "model_display_category": "unavailable",
+  "model_display_category": "Kimi-K2.7-Code",
   "pack_builder_changed": false,
-  "paired_deltas": [],
-  "paired_run_executed": false,
+  "paired_deltas": [
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.5,
+      "metric": "solve_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.5,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "wrong_file_edits_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "tool_calls_before_first_edit_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 44.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -2291.75,
+      "metric": "latency_ms_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_mean",
+      "treatment_arm": "treatment_context_pack"
+    }
+  ],
+  "paired_run_executed": true,
   "phase": "B16-D",
   "promotion_ready": false,
-  "provider_calls_made": false,
-  "real_file_edits_performed": false,
-  "real_test_commands_executed": false,
+  "provider_calls_made": true,
+  "real_file_edits_performed": true,
+  "real_test_commands_executed": true,
   "real_user_task_claimed": false,
-  "remote_provider_calls_made": false,
+  "remote_provider_calls_made": true,
   "retriever_changed": false,
   "runtime_behavior_changed": false,
   "schema_version": "b16d_less_trivial_live_provider_paired_smoke.v1",
@@ -77,19 +191,11 @@
       "passed": true
     },
     {
-      "check": "status_paired_run_failed_preserved",
-      "passed": true
-    },
-    {
       "check": "status_unavailable_no_local_provider_env_preserved",
       "passed": true
     },
     {
-      "check": "status_live_provider_less_trivial_paired_smoke_pass_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_blocked_remote_not_enabled_preserved",
+      "check": "status_paired_run_failed_preserved",
       "passed": true
     },
     {
@@ -97,11 +203,19 @@
       "passed": true
     },
     {
-      "check": "status_fail_forbidden_scan_preserved",
+      "check": "status_provider_call_failed_preserved",
       "passed": true
     },
     {
-      "check": "status_provider_call_failed_preserved",
+      "check": "status_blocked_remote_not_enabled_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_live_provider_less_trivial_paired_smoke_pass_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_fail_forbidden_scan_preserved",
       "passed": true
     },
     {
@@ -615,6 +729,6 @@
     "passed": 138,
     "total": 138
   },
-  "status": "blocked_remote_not_enabled",
-  "synthetic_micro_tasks_used": false
+  "status": "live_provider_less_trivial_paired_smoke_pass",
+  "synthetic_micro_tasks_used": true
 }

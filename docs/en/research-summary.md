@@ -289,15 +289,19 @@ set, applies the model's structured edit action locally (allowlisted
 runs real subprocess tests, and computes aggregate behavior metrics
 over paired `control_sparse` / `treatment_context_pack` arms.
 Treatment includes target file cue, target symbol cue, support-relation
-cue, and exact edit constraint; control lacks the decisive cues. The
-committed artifact is **truthful**: because no local provider env is
-available, status is `blocked_remote_not_enabled` with live-run flags
-false. A live `live_provider_less_trivial_paired_smoke_pass` artifact
-requires an explicit local opt-in run or the manual CI
-`real-provider-benchmark` workflow with
-`stage=b16d_less_trivial_live_provider_paired_smoke` and
-`enable_remote_models=true`. **Manual CI live-provider run: pending.**
-138/138 self-test checks pass.
+cue, and exact edit constraint; control lacks the decisive cues. Manual
+CI run `27901644438` (`real-provider-benchmark`,
+`stage=b16d_less_trivial_live_provider_paired_smoke`,
+`enable_remote_models=true`) completed
+`live_provider_less_trivial_paired_smoke_pass` and passed privacy
+validation. The committed artifact now mirrors that sanitized aggregate
+CI report: 4 synthetic tasks / 8 live provider calls, 8/8 provider
+calls succeeded, invalid JSON count 0, control solve_rate=0.5,
+treatment solve_rate=1.0, treatment-minus-control solve_rate delta
+`+0.5`, tests_pass_rate delta `+0.5`, and
+`context_pack_signal_observed=true`. The default local no-provider-env
+path remains truthful (`blocked_remote_not_enabled` with live-run flags
+false). 138/138 self-test checks pass.
 
 This is smoke-only. It does NOT claim downstream agent value, does NOT
 claim live agent generalization, does NOT claim external benchmark
@@ -315,7 +319,8 @@ flags remain false. Live-run flags are true ONLY when a live run
 actually executed; otherwise false. No raw model routing prefix is
 emitted; only the normalized `model_display_category` is recorded. No
 runtime/retriever/pack/model/backend/default-policy files were
-modified. See the
+modified. The positive treatment delta is a tiny synthetic smoke signal,
+not proof of downstream value or generalization. See the
 [B16-D detailed report](b16d-less-trivial-live-provider-paired-smoke.md).
 
 ## Current status update — 2026-06-21 (C5-A ContextBench verified retrieval performance smoke)

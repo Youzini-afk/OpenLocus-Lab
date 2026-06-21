@@ -6793,12 +6793,28 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-提交的 artifact 是真实的本地 unavailable/blocked 报告，因为本地无
-provider env。live `live_provider_less_trivial_paired_smoke_pass`
-artifact 需要显式本地 opt-in run 或手动 CI
-`real-provider-benchmark` workflow
-（`stage=b16d_less_trivial_live_provider_paired_smoke` +
-`enable_remote_models=true`）。**手动 CI live-provider run：待执行。**
+手动 CI run `27901644438`（`real-provider-benchmark`，
+`stage=b16d_less_trivial_live_provider_paired_smoke`，
+`enable_remote_models=true`）完成
+`live_provider_less_trivial_paired_smoke_pass` 并通过 privacy validation。已提交
+artifact 现在镜像该 sanitized aggregate CI report：
+
+```text
+synthetic_task_count: 4
+total_runs: 8
+provider calls: 8 attempted / 8 succeeded / 0 failed
+invalid_json_count: 0
+forbidden_scan: pass
+model_display_category: Kimi-K2.7-Code
+control_sparse: solve_rate=0.5, tests_pass_rate=0.5, wrong_file_edits_mean=0.0
+treatment_context_pack: solve_rate=1.0, tests_pass_rate=1.0, wrong_file_edits_mean=0.0
+treatment-minus-control solve_rate delta: +0.5
+treatment-minus-control tests_pass_rate delta: +0.5
+context_pack_signal_observed: true
+```
+
+默认本地 no-provider-env 路径仍真实输出 `blocked_remote_not_enabled` 且 live-run
+标志为 false。正向 treatment delta 是微型合成 smoke 信号，不是下游价值或泛化证明。
 详见 [B16-D 详细报告](b16d-less-trivial-live-provider-paired-smoke.md)。
 
 ### 注意事项
@@ -6810,11 +6826,9 @@ artifact 需要显式本地 opt-in run 或手动 CI
   runtime-clean 通用算法声明，**不是** OOD 时间性声明，也**不是**
   QuIVer 系统声明。
 - B16-D 仅在 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider
-  env 全部设置时使用 **live LLM provider**（OpenAI 兼容）。提交的
-  artifact 是真实的：若本地无 provider env，其状态为
-  `blocked_remote_not_enabled` /
-  `unavailable_no_local_provider_env`，live-run 标志为 false。它**不
-  是** fake pass。
+  env 全部设置时使用 **live LLM provider**（OpenAI 兼容）。默认本地 no-env
+  路径仍真实；已提交 artifact 镜像手动 CI run `27901644438` 的 sanitized
+  成功结果。它**不是** fake pass。
 - B16-D **不**证明下游 agent 价值。
   `downstream_agent_value_proven=false`。
 - B16-D **不**声明 live agent 泛化。
