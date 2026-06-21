@@ -7990,3 +7990,231 @@ default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。
   smoke-claimed 标志**仅**在真实网络 run 实际执行时为 true。未修改任
   何 runtime/retriever/pack/model/backend/default-policy 文件；无
   promotion/default/runtime 声明变更。
+
+## 2026-06-21 — F1-D 跨基准检索 Utility 稳健性 Smoke
+
+### 目标
+
+将 F1-C 从点估计扩展到诊断性 paired-bootstrap 置信/符号稳定性估计。
+F1-D 必须重新运行真实有界外部数据（不组合现有 C5 或 F1-C aggregate
+artifact），在聚合前拦截 per-unit score 指标（仅在内存或 `/tmp` 中），
+按 benchmark/method 计算固定 retrieval-derived utility proxy、跨基准加
+权均值，以及五个固定 effect 跨五个 metric 的 paired bootstrap 置信/符
+号稳定性统计。
+
+### 假设
+
+对 ContextBench verified 20 行 + RepoQA 10 needle 的真实重新运行，结
+合聚合前的 per-unit 指标拦截、固定诊断 utility proxy（与 F1-C 不变：
+`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`，
+其中 `miss_penalty=0.25 if file_recall@10 == 0 else 0`）、合成
+`empty_retrieval` 零基线，以及保持基准样本计数的 paired 跨基准
+bootstrap 重采样，可以在不进行 provider 调用、不声明下游效用、true E/S
+校准、方法 winner、外部基准性能或正式置信区间的前提下，产出 effect
+`bm25_vs_empty`、`regex_vs_empty`、`symbol_vs_empty`、
+`regex_vs_bm25`、`symbol_vs_bm25` 在 metric `retrieval_utility`、
+`file_recall@10`、`mrr`、`span_f0.5@10`、`success_rate` 上的聚合
+bootstrap 置信区间（p05/p50/p95）与符号稳定性分数。
+
+### 实现备注
+
+- **F1-D artifact**
+  （`eval/f1d_cross_benchmark_retrieval_robustness.py`）：公开仅聚合跨
+  基准稳健性 smoke。导入 F1-C、C5-C、C5-E、C5-A、C5-D helper 向后兼容
+  （均未修改）。本地镜像 C5-C `_run_single_method` 循环与 C5-E
+  `_run_single_method` 循环，但在聚合前将 per-unit 指标捕获为
+  `dict[int, dict[str, float]]`（unit index -> 指标），仅存在于内存。
+  **不**调用会内部折叠 per-unit 数据的 `c5c._run_single_method` 或
+  `c5e._run_single_method`。复用 C5-A 原语
+  （`_fetch_contextbench_rows`、`_resolve_openlocus_binary`、
+  `_clone_and_checkout`、`_run_retrieval_and_score`、
+  `_parse_gold_context`、`_sanitize_query`、`_write_transient_jsonl`）
+  与 C5-D 原语（`_download_asset_to_bytes`、`_decompress_asset`、
+  `_parse_repoqa_needles`、`_sanitize_needle_description`、
+  `_clone_and_checkout`、`_write_transient_jsonl`、
+  `_run_retrieval_and_score`）。复用 F1-C utility 公式
+  （`f1c._compute_utility`、`f1c._extract_method_metrics`）以保证公式同
+  一性。复用 F1-C scanner（`f1c._scan_f1c`）并添加 F1-D 特定 forbidden
+  key 与 record-shape 检查。
+- **Utility 公式（固定诊断 proxy；与 F1-C 不变）**：
+  `utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`，
+  其中 `miss_penalty=0.25 if file_recall@10 == 0 else 0`。
+- **Per-unit 指标拦截**：F1-D 为每个成功 unit（row/needle）捕获 per-unit
+  score.py 指标（file_recall@10、mrr、span_f0.5@10、success_rate），计
+  算 per-unit retrieval_utility，并作为
+  `dict[int, dict[str, float]]` 仅存储在内存中。Per-unit 数据**绝不**写
+  入磁盘或提交。公开 artifact 仅输出聚合均值与 bootstrap 统计。
+- **聚合 retrieval_utility**：从聚合 metric 均值计算（mean 的 utility），
+  与 F1-C 的聚合语义一致。这**不是** per-unit utility 的均值（
+  miss_penalty 非线性使两者不同）。
+- **Bootstrap effects（固定 allowlist；仅 records 形态）**：
+  `bm25_vs_empty`（bm25 - empty_retrieval）、`regex_vs_empty`
+  （regex - empty_retrieval）、`symbol_vs_empty`（symbol -
+  empty_retrieval）、`regex_vs_bm25`（regex - bm25）、`symbol_vs_bm25`
+  （symbol - bm25）。计算用于每个聚合 metric（`file_recall@10`、`mrr`、
+  `span_f0.5@10`、`success_rate`、`retrieval_utility`）的跨基准加权均
+  值。5 个 effect x 5 个 metric = 25 条 bootstrap effect 记录。
+- **跨基准重采样（保持样本计数）**：在每个 bootstrap replicate 内，
+  ContextBench paired unit 按 ContextBench 样本计数（20）有放回重采样，
+  RepoQA paired unit 按 RepoQA needle 计数（10）有放回重采样，跨基准加
+  权均值使用原始样本计数作为权重计算。对于 paired effect
+  （`regex_vs_bm25`、`symbol_vs_bm25`），重采样保持 treatment-baseline
+  配对（paired complete-case 分析）。对于 `retrieval_utility`，
+  bootstrap 从重采样的聚合 metric 均值重新计算 utility（mean 的
+  utility）。对于 `empty_retrieval` baseline，baseline utility 按构造
+  为 0.0（**不是** utility(0,0,0) 即 -0.25）。
+- **公开 effect 记录字段**：`effect_name`、`metric`、`point_estimate`、
+  `bootstrap_mean`、`ci_p05`、`ci_p50`、`ci_p95`、
+  `sign_positive_fraction`、`sign_negative_fraction`、
+  `sign_zero_fraction`、`sample_units`、`bootstrap_replicates`、
+  `bootstrap_seed`。
+- **Artifact 身份**：
+  `schema_version=f1d_cross_benchmark_retrieval_robustness.v1`、
+  `claim_level=cross_benchmark_retrieval_utility_robustness_smoke_only`、
+  `mode=bounded_contextbench_repoqa_retrieval_robustness`、阶段
+  `F1-D`。状态枚举：
+  `cross_benchmark_retrieval_robustness_pass`（两个基准均通过且 bm25 在
+  两者上均成功）、`partial`（至少一个基准通过且 bm25 至少在一个上成
+  功）、`unavailable_with_reason`（无/阻塞/网络不可用）、
+  `fail_forbidden_scan`、`fail_schema_contract`。
+- **安全 true flag**（仅当实际为 true 时）：
+  `retrieval_utility_robustness_smoke`、`contextbench_rows_read`、
+  `repoqa_needles_read`、`openlocus_retrieval_executed`、
+  `score_py_metrics_computed`、`bootstrap_computed`、
+  `aggregate_only_public_artifact`、`diagnostic_only`。
+- **始终为 false 的 no-claim flag**：`true_e_s_calibration_claimed`、
+  `automated_e_s_full_calibration_claimed`、
+  `human_e_s_calibration_claimed`、
+  `external_benchmark_performance_claimed`、
+  `leaderboard_entry_claimed`、`method_winner_claimed`、
+  `baseline_is_policy_candidate`、`downstream_agent_value_proven`、
+  `promotion_ready`、`default_should_change`、
+  `runtime_behavior_changed`、`retriever_changed`、
+  `pack_builder_changed`、`backend_changed`、
+  `default_policy_changed`、`evidencecore_semantics_changed`、
+  `provider_calls_made`、`remote_provider_calls_made`。
+- **无 winner/best/recommended-default 字段**。**无 E/S 校准记法**
+  （`E_primary` / `S_support`）。**无 raw model/routing prefix**。
+  **无 per-unit metric 数组、row hash 或 F1-C 容器名**
+  （`benchmark_results`、`cross_benchmark_method_results`、
+  `counterfactual_effects`）。
+- **失败类别保持分离**：ContextBench 失败类别在
+  `contextbench_failure_category_counts` 下；RepoQA 失败类别在
+  `repoqa_failure_category_counts` 下。不兼容枚举**不**合并。
+- **Forbidden scanner（公开，fail-closed）**：组合 F1-C scanner（本身
+  组合 C5-A/C5-C/C5-E scanner 与 F1-C 特定检查）并添加 F1-D 特定检查：
+  拒绝任意位置出现 F1-C record 容器名与 per-unit metric 数组 key；拒绝
+  `benchmark_method_means` / `cross_benchmark_method_means` /
+  `bootstrap_effect_records` 的 dict-keyed mirror；拒绝 raw model routing
+  prefix。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/f1d_cross_benchmark_retrieval_robustness.py  => PASS
+python3 eval/f1d_cross_benchmark_retrieval_robustness.py --self-test  => PASS (185/185 checks)
+python3 eval/f1d_cross_benchmark_retrieval_robustness.py \
+  --contextbench-row-limit 20 --repoqa-needle-limit 10 \
+  --methods bm25,regex,symbol --bootstrap-replicates 1000 \
+  --out artifacts/f1d_cross_benchmark_retrieval_robustness/\
+f1d_cross_benchmark_retrieval_robustness_report.json  => PASS
+  (status: cross_benchmark_retrieval_robustness_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   contextbench_rows_fetched: 20, repoqa_needles_seen: 10,
+   network_calls: 2, provider_calls: 0,
+   bootstrap_record_count: 25,
+   retrieval_utility_robustness_smoke: true,
+   bootstrap_computed: true,
+   contextbench_rows_read: true, repoqa_needles_read: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   method_winner_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地真实网络 run 产生以下聚合指标与 bootstrap 统计：
+
+```text
+status: cross_benchmark_retrieval_robustness_pass
+contextbench_rows_fetched: 20
+repoqa_needles_seen: 10
+network_calls: 2
+forbidden_scan: pass
+provider_calls: 0
+bootstrap_replicates: 1000
+bootstrap_seed: 20240621
+bootstrap_record_count: 25
+contextbench/bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0, retrieval_utility=0.396196
+contextbench/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+contextbench/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0, retrieval_utility=0.602712
+repoqa/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark bm25: file_recall@10=0.4, mrr=0.218477, span_f0.5@10=0.020831, success_rate=1.0, retrieval_utility=0.465035
+cross_benchmark regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+bm25_vs_empty [retrieval_utility]: point=+0.465035, mean=+0.463491, ci=[+0.298938, +0.464512, +0.624026], sign+=1.0, sign-=0.0, sign0=0.0
+regex_vs_empty [retrieval_utility]: point=-0.25, mean=-0.25, ci=[-0.25, -0.25, -0.25], sign+=0.0, sign-=1.0, sign0=0.0
+symbol_vs_empty [retrieval_utility]: point=-0.25, mean=-0.25, ci=[-0.25, -0.25, -0.25], sign+=0.0, sign-=1.0, sign0=0.0
+regex_vs_bm25 [retrieval_utility]: point=-0.715035, mean=-0.713491, ci=[-0.874026, -0.714511, -0.548938], sign+=0.0, sign-=1.0, sign0=0.0
+symbol_vs_bm25 [retrieval_utility]: point=-0.715035, mean=-0.713491, ci=[-0.874026, -0.714511, -0.548938], sign+=0.0, sign-=1.0, sign0=0.0
+bm25_vs_empty [file_recall@10]: point=+0.4, mean=+0.398833, ci=[+0.266667, +0.4, +0.533333], sign+=1.0, sign-=0.0, sign0=0.0
+```
+
+点估计与 F1-C 的跨基准加权均值 delta 一致（`bm25_vs_empty`
+retrieval_utility = +0.465035，`regex_vs_bm25` = -0.715035），确认
+utility 公式与聚合与 F1-C 不变。bootstrap CI 与符号稳定性分数在这些
+点估计之上扩展了诊断性稳健性信息。
+
+已提交 artifact 不包含 repo URL、commit、problem statement、query、
+needle description、gold label、label path/span/line range、source
+snippet、generated JSONL、retrieval evidence row、candidate path/span/
+content hash、stdout/stderr、clone path、raw asset row、per-row/
+per-needle metric 数组、row hash、provider 字段、raw model/routing
+prefix、F1-C 容器名或 winner/best/default/recommended 字段。
+
+F1-D 是首个跨基准检索 utility 稳健性 smoke。它重新运行真实
+ContextBench verified 20 行 + RepoQA 10 needle Python 外部数据，在聚
+合前拦截 per-unit score 指标，并计算 paired bootstrap 置信/符号稳定
+性统计。它是 smoke-only：它**不**声明下游效用、true E/S 校准、方法
+winner、外部基准性能、正式置信区间、leaderboard 条目、promotion 或
+default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。详见
+[F1-D 详细报告](f1d-cross-benchmark-retrieval-robustness.md)。
+
+### 注意事项
+
+- F1-D 是公开仅聚合跨基准检索 utility 稳健性 smoke artifact。它是
+  eval/诊断专用。它**不**改变 runtime、retriever、pack、backend 或
+  default policy；它**不**改变 EvidenceCore 语义。它**不是**基准测试
+  结果，**不是**下游效用，**不是** true E/S 校准，**不是**外部基准测
+  试性能声明，**不是** leaderboard 条目，**不是**方法 winner，**不
+  是**正式置信区间，也**不是** promotion。
+- F1-D 重新运行真实有界外部数据（ContextBench verified 20 行 + RepoQA
+  10 needle Python）。它**不**组合现有 C5-C、C5-E 或 F1-C aggregate
+  artifact；它重新执行真实 retrieval+score 管线，并在聚合前在内存中拦
+  截 per-unit 指标。
+- F1-D **不**进行任何 provider 调用，**不**进行任何远程 provider 调
+  用。所有临时数据仅保留在内存或 `/tmp`。Per-unit 指标仅存在于内存或
+  `/tmp`；公开 artifact 仅输出聚合均值与 bootstrap 统计。
+- bootstrap 统计是诊断性稳健性估计，**不是**正式外部基准置信区间。它
+  们反映有界 smoke 样本的变异性，而非完整基准评估的总体级不确定性。
+- `success_rate` metric 是退化的（对成功完成检索的 real method 始终
+  为 1.0）。bootstrap 正确反映这一点。
+- 跨基准重采样保持基准样本计数。这是 smoke 级诊断，**不是**正式
+  meta-analysis。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志保持 true；
+  smoke-claimed 标志**仅**在真实网络 run 实际执行时为 true。未修改任
+  何 runtime/retriever/pack/model/backend/default-policy 文件；无
+  promotion/default/runtime 声明变更。

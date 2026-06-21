@@ -410,6 +410,60 @@ no-runtime-change flags remain false.
 network run actually executed. See the
 [F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
 
+## 2026-06-21 F1-D Cross-Benchmark Retrieval Utility Robustness Smoke
+
+F1-D extends F1-C from point estimates to **diagnostic paired-bootstrap
+confidence/sign-stability estimates**. F1-D
+(`eval/f1d_cross_benchmark_retrieval_robustness.py`,
+reusing F1-C/C5-C/C5-E/C5-A/C5-D primitives backward-compatibly; none
+modified) ->
+`artifacts/f1d_cross_benchmark_retrieval_robustness/f1d_cross_benchmark_retrieval_robustness_report.json`,
+schema `f1d_cross_benchmark_retrieval_robustness.v1`,
+`claim_level=cross_benchmark_retrieval_utility_robustness_smoke_only`,
+`status=cross_benchmark_retrieval_robustness_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`,
+`mode=bounded_contextbench_repoqa_retrieval_robustness`, phase `F1-D`)
+**reruns real bounded external data** for two benchmarks
+(ContextBench verified 20-row + RepoQA 10-needle Python), intercepts
+per-unit score metrics **before aggregation** (in memory or `/tmp`
+only), computes a fixed retrieval-derived utility proxy
+(`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`
+where `miss_penalty=0.25 if file_recall@10 == 0 else 0`; unchanged
+from F1-C), cross-benchmark weighted means (by sample counts), and
+paired bootstrap confidence/sign-stability statistics for 5 fixed
+effects (`bm25_vs_empty`, `regex_vs_empty`, `symbol_vs_empty`,
+`regex_vs_bm25`, `symbol_vs_bm25`) over 5 metrics
+(`file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`,
+`retrieval_utility`) = 25 bootstrap effect records.
+`empty_retrieval` is the explicit zero-context baseline (no retrieval
+run; all metrics/utility 0). Cross-benchmark resampling preserves
+benchmark sample counts (ContextBench 20, RepoQA 10). Records-shaped
+only (`benchmark_method_means`, `cross_benchmark_method_means`,
+`bootstrap_effect_records`, `input_summary`, `bootstrap_summary`); no
+dynamic dict mirrors; no per-unit metric arrays; no F1-C container
+names; no winner/best/default fields; no E/S calibration notation;
+ContextBench and RepoQA failure categories kept separate. No provider
+calls. Bootstrap replicates default 1000 (hard cap 2000), fixed seed
+20240621. 185/185 self-test checks pass. Local real-network run
+passed: 20 ContextBench rows fetched, 10 RepoQA needles seen, status
+`cross_benchmark_retrieval_robustness_pass`, forbidden scan pass,
+provider_calls=0, bootstrap_record_count=25; point estimates match
+F1-C deltas (`bm25_vs_empty` retrieval_utility = +0.465035,
+`regex_vs_bm25` = -0.715035); `bm25_vs_empty` retrieval_utility
+bootstrap CI=[+0.298938, +0.464512, +0.624026], sign_positive=1.0;
+`regex_vs_bm25` retrieval_utility CI=[-0.874026, -0.714511,
+-0.548938], sign_negative=1.0.
+
+This is smoke-only. The bootstrap statistics are diagnostic robustness
+estimates, NOT formal external benchmark confidence intervals. It is
+NOT downstream utility, NOT true E/S calibration, NOT an external
+benchmark performance claim, NOT a leaderboard entry, NOT a method
+winner, NOT a formal confidence interval, NOT a promotion/default/
+runtime/retriever/pack/backend/EvidenceCore semantic change. All
+no-claim / no-runtime-change flags remain false.
+`retrieval_utility_robustness_smoke=true` and `bootstrap_computed=true`
+only when a real network run actually executed. See the
+[F1-D detailed report](f1d-cross-benchmark-retrieval-robustness.md).
+
 ## 2026-06-21 F1-C Cross-Benchmark Retrieval-Derived Utility Smoke
 
 F1-C is the **cross-benchmark** retrieval-derived utility smoke. F1-C
@@ -1398,6 +1452,7 @@ Manual CI run `27906775008` passed for C5-D: 5 RepoQA Python needles seen/succes
 - `docs/en/c5e-repoqa-method-matrix-smoke.md` — C5-E RepoQA method-matrix retrieval smoke (aggregate-only; bounded RepoQA Python needle subset per method; bm25,regex,symbol only (no text); transient /tmp asset download + clone + retrieval + score; per-method records with aggregate_runtime_seconds; aggregate-only deltas vs bm25; no winner/best_method/recommended_default; not a benchmark result, not a leaderboard entry, not a performance claim, not a promotion, not a default change, not a downstream agent value claim).
 - `docs/en/c5f-repoqa-method-matrix-scale-smoke.md` — C5-F RepoQA 10-needle method-matrix scale smoke (aggregate-only; separate C5-F checkpoint; bm25,regex,symbol only; default/hard cap 10 Python needles per method; no provider calls; no winner/best_method/recommended_default; not a benchmark result, not a leaderboard entry, not a performance claim, not a promotion, not a default change, not a downstream agent value claim).
 - `docs/en/f1c-cross-benchmark-retrieval-utility.md` — F1-C cross-benchmark retrieval-derived utility smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy; cross-benchmark weighted means; 5 fixed counterfactual effects bm25_vs_empty/regex_vs_empty/symbol_vs_empty/regex_vs_bm25/symbol_vs_bm25; ContextBench and RepoQA failure categories kept separate; no provider calls; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
+- `docs/en/f1d-cross-benchmark-retrieval-robustness.md` — F1-D cross-benchmark retrieval utility robustness smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; per-unit metrics intercepted in memory before aggregation; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy unchanged from F1-C; cross-benchmark weighted means; paired cross-benchmark bootstrap preserving sample counts; 5 fixed effects x 5 metrics = 25 bootstrap effect records with CI p05/p50/p95 and sign-stability fractions; benchmark_method_means/cross_benchmark_method_means/bootstrap_effect_records/input_summary/bootstrap_summary only; no per-unit metric arrays; no F1-C container names; ContextBench and RepoQA failure categories kept separate; no provider calls; bootstrap replicates default 1000 hard cap 2000 seed 20240621; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a formal confidence interval, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
 
 ---
 

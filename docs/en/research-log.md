@@ -8625,3 +8625,260 @@ change. See
   network run actually executed. No runtime/retriever/pack/model/
   backend/default-policy files were modified; no promotion/default/
   runtime claims change.
+
+## 2026-06-21 — F1-D Cross-Benchmark Retrieval Utility Robustness Smoke
+
+### Objective
+
+Extend F1-C from point estimates to diagnostic paired-bootstrap
+confidence/sign-stability estimates. F1-D must rerun real bounded
+external data (not combine existing C5 or F1-C aggregate artifacts),
+intercept per-unit score metrics before aggregation (in memory or
+`/tmp` only), compute a fixed retrieval-derived utility proxy per
+benchmark/method, cross-benchmark weighted means, and paired
+bootstrap confidence/sign-stability statistics for five fixed effects
+over five metrics.
+
+### Hypothesis
+
+Real ContextBench verified 20-row + real RepoQA 10-needle reruns,
+combined with per-unit metric interception before aggregation, a fixed
+diagnostic utility proxy (unchanged from F1-C:
+`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`
+where `miss_penalty=0.25 if file_recall@10 == 0 else 0`), a synthetic
+`empty_retrieval` zero baseline, and paired cross-benchmark bootstrap
+resampling that preserves benchmark sample counts, can produce
+aggregate bootstrap confidence intervals (p05/p50/p95) and
+sign-stability fractions for effects `bm25_vs_empty`,
+`regex_vs_empty`, `symbol_vs_empty`, `regex_vs_bm25`,
+`symbol_vs_bm25` over metrics `retrieval_utility`, `file_recall@10`,
+`mrr`, `span_f0.5@10`, `success_rate` without provider calls and
+without claiming downstream utility, true E/S calibration, method
+winner, external benchmark performance, or formal confidence
+intervals.
+
+### Implementation notes
+
+- **F1-D artifact**
+  (`eval/f1d_cross_benchmark_retrieval_robustness.py`): public
+  aggregate-only cross-benchmark robustness smoke. Imports F1-C, C5-C,
+  C5-E, C5-A, and C5-D helpers backward-compatibly (none modified).
+  Mirrors the C5-C `_run_single_method` loop and the C5-E
+  `_run_single_method` loop locally, but captures per-unit metrics as
+  `dict[int, dict[str, float]]` (unit index -> metrics) in memory only,
+  before aggregation. Does NOT call `c5c._run_single_method` or
+  `c5e._run_single_method` (which collapse per-unit data internally).
+  Reuses C5-A primitives (`_fetch_contextbench_rows`,
+  `_resolve_openlocus_binary`, `_clone_and_checkout`,
+  `_run_retrieval_and_score`, `_parse_gold_context`,
+  `_sanitize_query`, `_write_transient_jsonl`) and C5-D primitives
+  (`_download_asset_to_bytes`, `_decompress_asset`,
+  `_parse_repoqa_needles`, `_sanitize_needle_description`,
+  `_clone_and_checkout`, `_write_transient_jsonl`,
+  `_run_retrieval_and_score`). Reuses F1-C utility formula
+  (`f1c._compute_utility`, `f1c._extract_method_metrics`) to guarantee
+  formula identity. Reuses F1-C scanner (`f1c._scan_f1c`) and adds
+  F1-D-specific forbidden keys and record-shape checks.
+- **Utility formula (fixed diagnostic proxy; unchanged from F1-C)**:
+  `utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 -
+  miss_penalty` where `miss_penalty=0.25 if file_recall@10 == 0
+  else 0`.
+- **Per-unit metric interception**: F1-D captures per-unit score.py
+  metrics (file_recall@10, mrr, span_f0.5@10, success_rate) for each
+  successful unit (row/needle), computes per-unit retrieval_utility,
+  and stores them as `dict[int, dict[str, float]]` in memory only.
+  Per-unit data is NEVER written to disk or committed. The public
+  artifact emits aggregate means and bootstrap statistics only.
+- **Aggregate retrieval_utility**: computed from aggregate metric
+  means (utility of means), matching F1-C's aggregate semantics. This
+  is NOT the mean of per-unit utilities (the miss_penalty nonlinearity
+  makes them differ).
+- **Bootstrap effects (fixed allowlist; records-shaped only)**:
+  `bm25_vs_empty` (bm25 - empty_retrieval), `regex_vs_empty`
+  (regex - empty_retrieval), `symbol_vs_empty` (symbol -
+  empty_retrieval), `regex_vs_bm25` (regex - bm25), `symbol_vs_bm25`
+  (symbol - bm25). Computed for the cross-benchmark weighted mean of
+  each aggregate metric (`file_recall@10`, `mrr`, `span_f0.5@10`,
+  `success_rate`, `retrieval_utility`). 5 effects x 5 metrics = 25
+  bootstrap effect records.
+- **Cross-benchmark resampling (preserves sample counts)**: within
+  each bootstrap replicate, ContextBench paired units are resampled
+  with replacement to the ContextBench sample count (20), RepoQA
+  paired units are resampled with replacement to the RepoQA needle
+  count (10), and the cross-benchmark weighted mean is computed with
+  the original sample counts as weights. For paired effects
+  (`regex_vs_bm25`, `symbol_vs_bm25`), resampling preserves the
+  treatment-baseline pairing (paired complete-case analysis). For
+  `retrieval_utility`, the bootstrap recomputes utility from the
+  resampled aggregate metric means (utility of means). For
+  `empty_retrieval` baseline, the baseline utility is 0.0 by
+  construction (NOT utility(0,0,0) which would be -0.25).
+- **Public effect record fields**: `effect_name`, `metric`,
+  `point_estimate`, `bootstrap_mean`, `ci_p05`, `ci_p50`, `ci_p95`,
+  `sign_positive_fraction`, `sign_negative_fraction`,
+  `sign_zero_fraction`, `sample_units`, `bootstrap_replicates`,
+  `bootstrap_seed`.
+- **Artifact identity**: `schema_version=f1d_cross_benchmark_retrieval_robustness.v1`,
+  `claim_level=cross_benchmark_retrieval_utility_robustness_smoke_only`,
+  `mode=bounded_contextbench_repoqa_retrieval_robustness`,
+  `phase=F1-D`. Status enum:
+  `cross_benchmark_retrieval_robustness_pass` (both benchmarks pass
+  AND bm25 succeeds on both), `partial` (at least one benchmark
+  passes AND bm25 succeeds on at least one), `unavailable_with_reason`
+  (none/blocked/network unavailable), `fail_forbidden_scan`,
+  `fail_schema_contract`.
+- **Safe true flags** (only when actually true):
+  `retrieval_utility_robustness_smoke`, `contextbench_rows_read`,
+  `repoqa_needles_read`, `openlocus_retrieval_executed`,
+  `score_py_metrics_computed`, `bootstrap_computed`,
+  `aggregate_only_public_artifact`, `diagnostic_only`.
+- **Always-false no-claim flags**: `true_e_s_calibration_claimed`,
+  `automated_e_s_full_calibration_claimed`,
+  `human_e_s_calibration_claimed`,
+  `external_benchmark_performance_claimed`,
+  `leaderboard_entry_claimed`, `method_winner_claimed`,
+  `baseline_is_policy_candidate`, `downstream_agent_value_proven`,
+  `promotion_ready`, `default_should_change`,
+  `runtime_behavior_changed`, `retriever_changed`,
+  `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `provider_calls_made`, `remote_provider_calls_made`.
+- **No winner/best/recommended-default fields**. **No E/S calibration
+  notation** (`E_primary` / `S_support`). **No raw model/routing
+  prefixes**. **No per-unit metric arrays, row hashes, or F1-C
+  container names** (`benchmark_results`,
+  `cross_benchmark_method_results`, `counterfactual_effects`).
+- **Failure categories kept SEPARATE**: ContextBench failure categories
+  under `contextbench_failure_category_counts`; RepoQA failure
+  categories under `repoqa_failure_category_counts`. Incompatible
+  enums are NOT merged.
+- **Forbidden scanner (public, fail-closed)**: combines the F1-C
+  scanner (which combines C5-A/C5-C/C5-E scanners and F1-C-specific
+  checks) and adds F1-D-specific checks: rejects F1-C record container
+  names and per-unit metric array keys anywhere; rejects dict-keyed
+  mirrors of `benchmark_method_means` /
+  `cross_benchmark_method_means` / `bootstrap_effect_records`;
+  rejects raw model routing prefixes.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/f1d_cross_benchmark_retrieval_robustness.py  => PASS
+python3 eval/f1d_cross_benchmark_retrieval_robustness.py --self-test  => PASS (185/185 checks)
+python3 eval/f1d_cross_benchmark_retrieval_robustness.py \
+  --contextbench-row-limit 20 --repoqa-needle-limit 10 \
+  --methods bm25,regex,symbol --bootstrap-replicates 1000 \
+  --out artifacts/f1d_cross_benchmark_retrieval_robustness/\
+f1d_cross_benchmark_retrieval_robustness_report.json  => PASS
+  (status: cross_benchmark_retrieval_robustness_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   contextbench_rows_fetched: 20, repoqa_needles_seen: 10,
+   network_calls: 2, provider_calls: 0,
+   bootstrap_record_count: 25,
+   retrieval_utility_robustness_smoke: true,
+   bootstrap_computed: true,
+   contextbench_rows_read: true, repoqa_needles_read: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   method_winner_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+Local real-network run produced the following aggregate metrics and
+bootstrap statistics:
+
+```text
+status: cross_benchmark_retrieval_robustness_pass
+contextbench_rows_fetched: 20
+repoqa_needles_seen: 10
+network_calls: 2
+forbidden_scan: pass
+provider_calls: 0
+bootstrap_replicates: 1000
+bootstrap_seed: 20240621
+bootstrap_record_count: 25
+contextbench/bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0, retrieval_utility=0.396196
+contextbench/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+contextbench/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0, retrieval_utility=0.602712
+repoqa/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark bm25: file_recall@10=0.4, mrr=0.218477, span_f0.5@10=0.020831, success_rate=1.0, retrieval_utility=0.465035
+cross_benchmark regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+bm25_vs_empty [retrieval_utility]: point=+0.465035, mean=+0.463491, ci=[+0.298938, +0.464512, +0.624026], sign+=1.0, sign-=0.0, sign0=0.0
+regex_vs_empty [retrieval_utility]: point=-0.25, mean=-0.25, ci=[-0.25, -0.25, -0.25], sign+=0.0, sign-=1.0, sign0=0.0
+symbol_vs_empty [retrieval_utility]: point=-0.25, mean=-0.25, ci=[-0.25, -0.25, -0.25], sign+=0.0, sign-=1.0, sign0=0.0
+regex_vs_bm25 [retrieval_utility]: point=-0.715035, mean=-0.713491, ci=[-0.874026, -0.714511, -0.548938], sign+=0.0, sign-=1.0, sign0=0.0
+symbol_vs_bm25 [retrieval_utility]: point=-0.715035, mean=-0.713491, ci=[-0.874026, -0.714511, -0.548938], sign+=0.0, sign-=1.0, sign0=0.0
+bm25_vs_empty [file_recall@10]: point=+0.4, mean=+0.398833, ci=[+0.266667, +0.4, +0.533333], sign+=1.0, sign-=0.0, sign0=0.0
+```
+
+The point estimates match F1-C's cross-benchmark weighted-mean deltas
+(`bm25_vs_empty` retrieval_utility = +0.465035, `regex_vs_bm25` =
+-0.715035), confirming the utility formula and aggregation are
+unchanged from F1-C. The bootstrap CIs and sign-stability fractions
+extend these point estimates with diagnostic robustness information.
+
+The committed artifact contains no repo URLs, commits, problem
+statements, queries, needle descriptions, gold labels, label paths/
+spans/line ranges, source snippets, generated JSONL, retrieval evidence
+rows, candidate paths/spans/content hashes, stdout/stderr, clone paths,
+raw asset rows, per-row/per-needle metric arrays, row hashes, provider
+fields, raw model/routing prefixes, F1-C container names, or
+winner/best/default/recommended fields.
+
+F1-D is the first cross-benchmark retrieval utility robustness smoke.
+It reruns real ContextBench verified 20-row + RepoQA 10-needle Python
+external data, intercepts per-unit score metrics before aggregation,
+and computes paired bootstrap confidence/sign-stability statistics. It
+is smoke-only: it does NOT claim downstream utility, true E/S
+calibration, method winner, external benchmark performance, formal
+confidence intervals, leaderboard entry, promotion, or
+default/policy/runtime/retriever/pack/backend/EvidenceCore semantic
+change. See
+[F1-D detailed report](f1d-cross-benchmark-retrieval-robustness.md).
+
+### Caveats
+
+- F1-D is the public aggregate-only cross-benchmark retrieval utility
+  robustness smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it
+  does NOT change EvidenceCore semantics. It is NOT a benchmark result,
+  NOT downstream utility, NOT true E/S calibration, NOT an external
+  benchmark performance claim, NOT a leaderboard entry, NOT a method
+  winner, NOT a formal confidence interval, and NOT a promotion.
+- F1-D reruns real bounded external data (ContextBench verified 20-row
+  + RepoQA 10-needle Python). It does NOT combine existing C5-C, C5-E,
+  or F1-C aggregate artifacts; it re-executes the real retrieval+score
+  pipeline and intercepts per-unit metrics in memory before aggregation.
+- F1-D makes NO provider calls and NO remote provider calls. All
+  transient data stays in memory or under `/tmp` only. Per-unit metrics
+  exist only in memory or `/tmp`; the public artifact emits aggregate
+  means and bootstrap statistics only.
+- The bootstrap statistics are diagnostic robustness estimates, NOT
+  formal external benchmark confidence intervals. They reflect the
+  variability of the bounded smoke sample, not the population-level
+  uncertainty of a full benchmark evaluation.
+- The `success_rate` metric is degenerate (always 1.0 for real methods
+  that successfully complete retrieval). The bootstrap correctly
+  reflects this.
+- Cross-benchmark resampling preserves benchmark sample counts. This is
+  a smoke-level diagnostic, NOT a formal meta-analysis.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags remain true; smoke-claimed flags are true ONLY when a real
+  network run actually executed. No runtime/retriever/pack/model/
+  backend/default-policy files were modified; no promotion/default/
+  runtime claims change.

@@ -1,0 +1,386 @@
+name: f1d-cross-benchmark-retrieval-robustness
+
+# F1-D Cross-Benchmark Retrieval Utility Robustness Smoke CI.
+#
+# This workflow runs the F1-D cross-benchmark retrieval utility
+# robustness smoke in CI. It is MANUAL OPT-IN ONLY via workflow_dispatch
+# with `enable_external_benchmark_network=true`. It does NOT run on
+# PR/push by default. It uses NO provider secrets/vars and NO provider
+# model env. It uploads ONLY the aggregate F1-D report
+# (no raw repo/row/needle values, repo URLs, commits, problem
+# statements, queries, needle descriptions/paths/line ranges, gold
+# labels, source snippets, generated JSONL, retrieval evidence rows,
+# candidate paths/spans/content hashes, stdout/stderr, clone paths,
+# raw asset rows, per-row/per-needle metric arrays, row hashes,
+# provider fields, raw model/routing prefixes, or winner/best/default/
+# recommended fields).
+#
+# Claim boundary: F1-D is eval/diagnostic only. The claim level is
+# `cross_benchmark_retrieval_utility_robustness_smoke_only`. This
+# workflow does NOT claim an external benchmark result, NOT a
+# leaderboard entry, NOT a method winner, NOT a performance claim,
+# NOT a formal confidence interval, NOT a promotion, NOT a
+# default/policy change, NOT a runtime/retriever/pack/backend/
+# EvidenceCore semantic change, NOT true E/S calibration, and NOT a
+# downstream agent value claim. If `enable_external_benchmark_network`
+# is false, the workflow is a no-op with a clear message and exits 0.
+#
+# Network-enabled CI is fail-closed: status pass/partial only,
+# ContextBench rows > 0, RepoQA needles > 0, bootstrap record count
+# equals effect_count times metric_count, forbidden_scan pass,
+# provider_calls=0.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real ContextBench row fetch + RepoQA asset download + GitHub clone + retrieval (must be true to run network)'
+        required: false
+        default: false
+        type: boolean
+      contextbench_row_limit:
+        description: 'Number of ContextBench verified rows to evaluate per method (default 20; hard cap 20)'
+        required: false
+        default: '20'
+      repoqa_needle_limit:
+        description: 'Number of RepoQA Python needles to evaluate per method (default 10; hard cap 10)'
+        required: false
+        default: '10'
+      methods:
+        description: 'Comma-separated OpenLocus retrieval methods (default bm25,regex,symbol; allowed bm25/regex/symbol only; duplicates deduplicated deterministically)'
+        required: false
+        default: 'bm25,regex,symbol'
+      bootstrap_replicates:
+        description: 'Number of bootstrap replicates (default 1000; hard cap 2000)'
+        required: false
+        default: '1000'
+      bootstrap_seed:
+        description: 'Bootstrap RNG seed (default 20240621)'
+        required: false
+        default: '20240621'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: f1d-cross-benchmark-retrieval-robustness-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}-${{ inputs.methods }}-${{ inputs.bootstrap_replicates }}-${{ inputs.bootstrap_seed }}
+  cancel-in-progress: false
+
+jobs:
+  f1d-cross-benchmark-retrieval-robustness:
+    name: f1d-cross-benchmark-retrieval-robustness
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve F1-D inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          contextbench_row_limit="${{ inputs.contextbench_row_limit || '20' }}"
+          repoqa_needle_limit="${{ inputs.repoqa_needle_limit || '10' }}"
+          methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
+          bootstrap_replicates="${{ inputs.bootstrap_replicates || '1000' }}"
+          bootstrap_seed="${{ inputs.bootstrap_seed || '20240621' }}"
+          # Validate contextbench_row_limit is a positive integer.
+          if ! [[ "$contextbench_row_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "contextbench_row_limit must be a positive integer: $contextbench_row_limit" >&2
+            exit 1
+          fi
+          if [[ "$contextbench_row_limit" -gt 20 ]]; then
+            echo "contextbench_row_limit exceeds hard cap 20: $contextbench_row_limit (will be capped by the evaluator)" >&2
+          fi
+          # Validate repoqa_needle_limit is a positive integer.
+          if ! [[ "$repoqa_needle_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "repoqa_needle_limit must be a positive integer: $repoqa_needle_limit" >&2
+            exit 1
+          fi
+          if [[ "$repoqa_needle_limit" -gt 10 ]]; then
+            echo "repoqa_needle_limit exceeds hard cap 10: $repoqa_needle_limit (will be capped by the evaluator)" >&2
+          fi
+          # Validate methods: each token must be one of bm25/regex/symbol
+          # (text is NOT allowed in F1-D).
+          IFS=',' read -ra method_tokens <<< "$methods"
+          if [[ ${#method_tokens[@]} -eq 0 ]]; then
+            echo "methods must not be empty" >&2
+            exit 1
+          fi
+          for tok in "${method_tokens[@]}"; do
+            tok_trimmed="$(echo "$tok" | xargs)"
+            case "$tok_trimmed" in
+              bm25|regex|symbol) ;;
+              *) echo "unsupported method token: $tok_trimmed (F1-D allows bm25/regex/symbol only)" >&2; exit 1 ;;
+            esac
+          done
+          # Validate bootstrap_replicates is a positive integer.
+          if ! [[ "$bootstrap_replicates" =~ ^[1-9][0-9]*$ ]]; then
+            echo "bootstrap_replicates must be a positive integer: $bootstrap_replicates" >&2
+            exit 1
+          fi
+          if [[ "$bootstrap_replicates" -gt 2000 ]]; then
+            echo "bootstrap_replicates exceeds hard cap 2000: $bootstrap_replicates (will be capped by the evaluator)" >&2
+          fi
+          # Validate bootstrap_seed is a non-negative integer.
+          if ! [[ "$bootstrap_seed" =~ ^[0-9]+$ ]]; then
+            echo "bootstrap_seed must be a non-negative integer: $bootstrap_seed" >&2
+            exit 1
+          fi
+          # Normalize enable_network to a lowercase boolean string.
+          if [[ "$enable_network" == "true" ]]; then
+            enable_network="true"
+          else
+            enable_network="false"
+          fi
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+          echo "contextbench_row_limit=$contextbench_row_limit" >> "$GITHUB_OUTPUT"
+          echo "repoqa_needle_limit=$repoqa_needle_limit" >> "$GITHUB_OUTPUT"
+          echo "methods=$methods" >> "$GITHUB_OUTPUT"
+          echo "bootstrap_replicates=$bootstrap_replicates" >> "$GITHUB_OUTPUT"
+          echo "bootstrap_seed=$bootstrap_seed" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile F1-D evaluator
+        run: python3 -m py_compile eval/f1d_cross_benchmark_retrieval_robustness.py
+
+      - name: F1-D self-test (no network)
+        run: python3 eval/f1d_cross_benchmark_retrieval_robustness.py --self-test
+
+      - name: F1-D cross-benchmark robustness smoke (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          CONTEXTBENCH_ROW_LIMIT: ${{ steps.resolve.outputs.contextbench_row_limit }}
+          REPOQA_NEEDLE_LIMIT: ${{ steps.resolve.outputs.repoqa_needle_limit }}
+          METHODS: ${{ steps.resolve.outputs.methods }}
+          BOOTSTRAP_REPLICATES: ${{ steps.resolve.outputs.bootstrap_replicates }}
+          BOOTSTRAP_SEED: ${{ steps.resolve.outputs.bootstrap_seed }}
+        run: |
+          report_path="$RUNNER_TEMP/f1d_cross_benchmark_retrieval_robustness_report.json"
+          python3 eval/f1d_cross_benchmark_retrieval_robustness.py \
+            --contextbench-row-limit "$CONTEXTBENCH_ROW_LIMIT" \
+            --repoqa-needle-limit "$REPOQA_NEEDLE_LIMIT" \
+            --methods "$METHODS" \
+            --bootstrap-replicates "$BOOTSTRAP_REPLICATES" \
+            --bootstrap-seed "$BOOTSTRAP_SEED" \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: F1-D no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          echo "enable_external_benchmark_network is false; skipping real cross-benchmark retrieval utility robustness smoke."
+          echo "Run with enable_external_benchmark_network=true to execute the real F1-D smoke (ContextBench + RepoQA + bootstrap)."
+          echo "Self-test and py_compile already passed; no aggregate report is produced in no-op mode."
+
+      - name: Validate F1-D temp report status/claim flags (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          must_be_true = {
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+          }
+          must_be_false = {
+              "true_e_s_calibration_claimed",
+              "automated_e_s_full_calibration_claimed",
+              "human_e_s_calibration_claimed",
+              "external_benchmark_performance_claimed",
+              "leaderboard_entry_claimed",
+              "method_winner_claimed",
+              "baseline_is_policy_candidate",
+              "downstream_agent_value_proven",
+              "promotion_ready",
+              "default_should_change",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          if report.get("dataset_license_status") != "unknown_dataset_license":
+              failures.append(f"expected dataset_license_status=unknown_dataset_license, got {report.get('dataset_license_status')!r}")
+          if report.get("row_level_redistribution_allowed") is not False:
+              failures.append("expected row_level_redistribution_allowed=false")
+          if report.get("derived_row_level_publication_allowed") is not False:
+              failures.append("expected derived_row_level_publication_allowed=false")
+          if report.get("aggregate_metrics_publication") != "aggregate_only_smoke":
+              failures.append("expected aggregate_metrics_publication=aggregate_only_smoke")
+          # Fail-closed: network-enabled CI cannot pass with
+          # unavailable/no rows or no needles. Require status in
+          # (cross_benchmark_retrieval_robustness_pass, partial),
+          # ContextBench rows > 0, RepoQA needles > 0, bootstrap record
+          # count equals effect_count times metric_count, forbidden_scan
+          # pass, provider_calls=0.
+          status = report.get("status")
+          if status not in ("cross_benchmark_retrieval_robustness_pass", "partial"):
+              failures.append(
+                  f"expected status in (cross_benchmark_retrieval_robustness_pass, partial) when network enabled, got {status!r}"
+              )
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          if report.get("contextbench_rows_fetched", 0) <= 0:
+              failures.append(f"expected contextbench_rows_fetched > 0, got {report.get('contextbench_rows_fetched')!r}")
+          if report.get("repoqa_needles_seen", 0) <= 0:
+              failures.append(f"expected repoqa_needles_seen > 0, got {report.get('repoqa_needles_seen')!r}")
+          if report.get("provider_calls") != 0:
+              failures.append(f"expected provider_calls=0, got {report.get('provider_calls')!r}")
+          # Bootstrap record count must equal effect_count * metric_count.
+          bootstrap_summary = report.get("bootstrap_summary", {})
+          expected_record_count = (
+              bootstrap_summary.get("effect_count", 0)
+              * bootstrap_summary.get("metric_count", 0)
+          )
+          actual_record_count = len(report.get("bootstrap_effect_records", []))
+          if actual_record_count != expected_record_count:
+              failures.append(
+                  f"expected bootstrap_effect_records count={expected_record_count}, got {actual_record_count}"
+              )
+          if bootstrap_summary.get("bootstrap_record_count") != actual_record_count:
+              failures.append(
+                  f"bootstrap_summary.bootstrap_record_count={bootstrap_summary.get('bootstrap_record_count')} != actual={actual_record_count}"
+              )
+          if report.get("bootstrap_computed") is not True:
+              failures.append(f"expected bootstrap_computed=true, got {report.get('bootstrap_computed')!r}")
+          # Identity fields.
+          if report.get("schema_version") != "f1d_cross_benchmark_retrieval_robustness.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "cross_benchmark_retrieval_utility_robustness_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("mode") != "bounded_contextbench_repoqa_retrieval_robustness":
+              failures.append(f"unexpected mode: {report.get('mode')!r}")
+          if report.get("phase") != "F1-D":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("baseline_method") != "bm25":
+              failures.append(f"unexpected baseline_method: {report.get('baseline_method')!r}")
+          # Recommendation / policy / ES notation fields must NOT appear
+          # anywhere as dict keys.
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k in keys:
+                          found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for idx, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{idx}]"))
+              return found
+          forbidden_keys = (
+              "winner", "best_method", "recommended_default",
+              "recommended_method", "preferred_method", "default_method",
+              "policy_decision", "decision", "ranking", "rank",
+              "E_primary", "S_support", "e_score", "s_score",
+              "model_id_raw", "routing_prefix",
+              # F1-C container names must NOT appear.
+              "benchmark_results", "cross_benchmark_method_results",
+              "counterfactual_effects",
+              # Per-unit metric array keys must NOT appear.
+              "per_row_metrics", "per_needle_metrics",
+              "row_metrics", "needle_metrics",
+              "row_hashes", "needle_hashes",
+          )
+          leaked = find_keys(report, forbidden_keys)
+          if leaked:
+              failures.append(f"forbidden recommendation/ES/per-unit keys present: {leaked}")
+          # Records must be list-shaped (not dict-keyed mirrors).
+          for container in (
+              "benchmark_method_means",
+              "cross_benchmark_method_means",
+              "bootstrap_effect_records",
+          ):
+              val = report.get(container)
+              if val is None:
+                  failures.append(f"expected {container} to be present, got None")
+                  continue
+              if not isinstance(val, list):
+                  failures.append(f"expected {container} to be a list, got {type(val)!r}")
+          # Each bootstrap_effect_records entry must have exactly the
+          # public effect fields.
+          expected_effect_fields = {
+              "effect_name", "metric", "point_estimate",
+              "bootstrap_mean", "ci_p05", "ci_p50", "ci_p95",
+              "sign_positive_fraction", "sign_negative_fraction",
+              "sign_zero_fraction", "sample_units",
+              "bootstrap_replicates", "bootstrap_seed",
+          }
+          for idx, rec in enumerate(report.get("bootstrap_effect_records", [])):
+              if not isinstance(rec, dict):
+                  failures.append(f"bootstrap_effect_records[{idx}] is not a dict")
+                  continue
+              actual_fields = set(rec.keys())
+              if actual_fields != expected_effect_fields:
+                  failures.append(
+                      f"bootstrap_effect_records[{idx}] fields mismatch: "
+                      f"extra={actual_fields - expected_effect_fields}, "
+                      f"missing={expected_effect_fields - actual_fields}"
+                  )
+          if failures:
+              print("F1-D report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("F1-D report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  contextbench_rows_fetched={report.get('contextbench_rows_fetched')}")
+          print(f"  repoqa_needles_seen={report.get('repoqa_needles_seen')}")
+          print(f"  network_calls={report.get('network_calls')}")
+          print(f"  provider_calls={report.get('provider_calls')}")
+          print(f"  baseline_method={report.get('baseline_method')}")
+          print(f"  bootstrap_record_count={actual_record_count}")
+          print(f"  bootstrap_computed={report.get('bootstrap_computed')}")
+          if report.get("failure_reason_category"):
+              print(f"  failure_reason_category={report.get('failure_reason_category')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree (no generated files committed)
+        run: git diff --check
+
+      - name: Upload F1-D aggregate report artifact (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: f1d-cross-benchmark-retrieval-robustness-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

@@ -372,6 +372,65 @@ runtime/retriever/pack/model/backend/default-policy files were
 modified. See the
 [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
 
+## Current status update — 2026-06-21 (F1-D cross-benchmark retrieval utility robustness smoke)
+
+F1-D extends F1-C from point estimates to **diagnostic paired-bootstrap
+confidence/sign-stability estimates**. F1-D
+(`eval/f1d_cross_benchmark_retrieval_robustness.py`,
+reusing F1-C/C5-C/C5-E/C5-A/C5-D primitives backward-compatibly; none
+modified) ->
+`artifacts/f1d_cross_benchmark_retrieval_robustness/f1d_cross_benchmark_retrieval_robustness_report.json`,
+schema `f1d_cross_benchmark_retrieval_robustness.v1`,
+`claim_level=cross_benchmark_retrieval_utility_robustness_smoke_only`,
+`status=cross_benchmark_retrieval_robustness_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`,
+`mode=bounded_contextbench_repoqa_retrieval_robustness`, phase `F1-D`)
+**reruns real bounded external data** for two benchmarks
+(ContextBench verified 20-row + RepoQA 10-needle Python), intercepts
+per-unit score metrics **before aggregation** (in memory or `/tmp`
+only), computes a fixed retrieval-derived utility proxy
+(`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`
+where `miss_penalty=0.25 if file_recall@10 == 0 else 0`; unchanged
+from F1-C), cross-benchmark weighted means (by sample counts), and
+paired bootstrap confidence/sign-stability statistics for 5 fixed
+effects (`bm25_vs_empty`, `regex_vs_empty`, `symbol_vs_empty`,
+`regex_vs_bm25`, `symbol_vs_bm25`) over 5 metrics
+(`file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`,
+`retrieval_utility`) = 25 bootstrap effect records with fields
+`effect_name`, `metric`, `point_estimate`, `bootstrap_mean`,
+`ci_p05`, `ci_p50`, `ci_p95`, `sign_positive_fraction`,
+`sign_negative_fraction`, `sign_zero_fraction`, `sample_units`,
+`bootstrap_replicates`, `bootstrap_seed`. Cross-benchmark resampling
+preserves benchmark sample counts (ContextBench 20, RepoQA 10);
+paired effects preserve treatment-baseline pairing. `empty_retrieval`
+is the explicit zero-context baseline (no retrieval run; all
+metrics/utility 0). Records-shaped only
+(`benchmark_method_means`, `cross_benchmark_method_means`,
+`bootstrap_effect_records`, `input_summary`, `bootstrap_summary`);
+no per-unit metric arrays; no F1-C container names; no dynamic dict
+mirrors; no winner/best/default fields; no E/S calibration notation;
+ContextBench and RepoQA failure categories kept separate. Bootstrap
+replicates default 1000 (hard cap 2000), fixed seed 20240621.
+185/185 self-test checks pass. Local real-network run passed: 20
+ContextBench rows fetched, 10 RepoQA needles seen, status
+`cross_benchmark_retrieval_robustness_pass`, forbidden scan pass,
+provider_calls=0, bootstrap_record_count=25; point estimates match
+F1-C deltas (`bm25_vs_empty` retrieval_utility = +0.465035,
+`regex_vs_bm25` = -0.715035); `bm25_vs_empty` retrieval_utility
+bootstrap CI=[+0.298938, +0.464512, +0.624026], sign_positive=1.0;
+`regex_vs_bm25` retrieval_utility CI=[-0.874026, -0.714511,
+-0.548938], sign_negative=1.0.
+
+This is smoke-only. The bootstrap statistics are diagnostic robustness
+estimates, NOT formal external benchmark confidence intervals. It is
+NOT downstream utility, NOT true E/S calibration, NOT an external
+benchmark performance claim, NOT a leaderboard entry, NOT a method
+winner, NOT a formal confidence interval, NOT a promotion/default/
+runtime/retriever/pack/backend/EvidenceCore semantic change. All
+no-claim / no-runtime-change flags remain false.
+`retrieval_utility_robustness_smoke=true` and `bootstrap_computed=true`
+only when a real network run actually executed. See the
+[F1-D detailed report](f1d-cross-benchmark-retrieval-robustness.md).
+
 ## Current status update — 2026-06-21 (F1-C cross-benchmark retrieval-derived utility smoke)
 
 F1-C is the **cross-benchmark** retrieval-derived utility smoke. F1-C
