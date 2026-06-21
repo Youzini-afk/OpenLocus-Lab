@@ -375,7 +375,7 @@ RepoQA 10）；paired effect 保持 treatment-baseline 配对。
 F1-C 容器名；无动态 dict 镜像；无 winner/best/default 字段；无 E/S 校
 准记法；ContextBench 与 RepoQA 失败类别保持分离。Bootstrap replicate
 默认 1000（硬上限 2000），固定 seed 20240621。185/185 self-test 检查通
-过。本地真实网络 run 已通过：20 行 ContextBench 抓取，10 个 RepoQA
+过。本地真实网络 run 与手动 CI run `27913035117` 已通过：20 行 ContextBench 抓取，10 个 RepoQA
 needle 见到，status
 `cross_benchmark_retrieval_robustness_pass`，forbidden scan pass，
 provider_calls=0，bootstrap_record_count=25；点估计与 F1-C delta 一致

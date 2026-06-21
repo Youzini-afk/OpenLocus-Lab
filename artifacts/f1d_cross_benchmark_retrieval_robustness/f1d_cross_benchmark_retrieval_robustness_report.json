@@ -563,7 +563,7 @@
     "promotion_claimed": false,
     "signal_strength": "cross_benchmark_retrieval_utility_robustness_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-21T18:04:01.494605+00:00",
+  "generated_at": "2026-06-21T18:19:33.700285+00:00",
   "generated_by": "eval/f1d_cross_benchmark_retrieval_robustness.py",
   "human_e_s_calibration_claimed": false,
   "input_summary": {
@@ -624,7 +624,7 @@
   "mode": "bounded_contextbench_repoqa_retrieval_robustness",
   "network_calls": 2,
   "network_mode": "local_explicit",
-  "openlocus_binary_source": "default",
+  "openlocus_binary_source": "explicit",
   "openlocus_retrieval_executed": true,
   "pack_builder_changed": false,
   "phase": "F1-D",

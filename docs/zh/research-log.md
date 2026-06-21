@@ -8144,7 +8144,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-本地真实网络 run 产生以下聚合指标与 bootstrap 统计：
+本地真实网络 run 与手动 CI run `27913035117` 产生以下聚合指标与 bootstrap 统计：
 
 ```text
 status: cross_benchmark_retrieval_robustness_pass

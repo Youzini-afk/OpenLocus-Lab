@@ -410,7 +410,7 @@ no per-unit metric arrays; no F1-C container names; no dynamic dict
 mirrors; no winner/best/default fields; no E/S calibration notation;
 ContextBench and RepoQA failure categories kept separate. Bootstrap
 replicates default 1000 (hard cap 2000), fixed seed 20240621.
-185/185 self-test checks pass. Local real-network run passed: 20
+185/185 self-test checks pass. Local real-network run and manual CI run `27913035117` passed: 20
 ContextBench rows fetched, 10 RepoQA needles seen, status
 `cross_benchmark_retrieval_robustness_pass`, forbidden scan pass,
 provider_calls=0, bootstrap_record_count=25; point estimates match

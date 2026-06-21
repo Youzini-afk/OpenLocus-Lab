@@ -443,7 +443,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-Local real-network run produced the following aggregate metrics and
+Local real-network run and manual CI run `27913035117` produced the following aggregate metrics and
 bootstrap statistics (no row/needle/repo/commit/query/gold/path/span/
 snippet/source/JSONL/evidence/stdout/stderr/clone-path/row-id/hash/
 per-unit-metric-array/provider/model-routing-prefix/winner/best/

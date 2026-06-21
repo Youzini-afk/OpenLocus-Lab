@@ -418,7 +418,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-本地真实网络 run 产生以下聚合指标与 bootstrap 统计（不提交
+本地真实网络 run 与手动 CI run `27913035117` 产生以下聚合指标与 bootstrap 统计（不提交
 row/needle/repo/commit/query/gold/path/span/snippet/source/JSONL/
 evidence/stdout/stderr/clone-path/row-id/hash/per-unit-metric-array/
 provider/model-routing-prefix/winner/best/default/recommended 字段）：
