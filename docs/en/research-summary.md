@@ -372,6 +372,47 @@ runtime/retriever/pack/model/backend/default-policy files were
 modified. See the
 [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
 
+## Current status update — 2026-06-21 (F1-C cross-benchmark retrieval-derived utility smoke)
+
+F1-C is the **cross-benchmark** retrieval-derived utility smoke. F1-C
+(`eval/f1c_cross_benchmark_retrieval_utility.py`,
+reusing C5-C/C5-E/C5-A/C5-D primitives backward-compatibly; none
+modified) ->
+`artifacts/f1c_cross_benchmark_retrieval_utility/f1c_cross_benchmark_retrieval_utility_report.json`,
+schema `f1c_cross_benchmark_retrieval_utility.v1`,
+`claim_level=cross_benchmark_retrieval_derived_utility_smoke_only`,
+`status=cross_benchmark_retrieval_utility_pass|partial_with_exclusions|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`,
+`mode=bounded_contextbench_repoqa_retrieval_utility`, phase `F1-C`)
+**reruns real bounded external data** for two benchmarks
+(ContextBench verified 20-row + RepoQA 10-needle Python), computes a
+fixed retrieval-derived utility proxy
+(`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`
+where `miss_penalty=0.25 if file_recall@10 == 0 else 0`) per
+benchmark/method, cross-benchmark weighted means (by sample counts),
+and 5 fixed counterfactual effects (`bm25_vs_empty`,
+`regex_vs_empty`, `symbol_vs_empty`, `regex_vs_bm25`,
+`symbol_vs_bm25`). `empty_retrieval` is the explicit zero-context
+baseline (no retrieval run; all metrics/utility 0). Records-shaped
+only; no dynamic dict mirrors; no winner/best/default fields; no E/S
+calibration notation; ContextBench and RepoQA failure categories kept
+separate. 167/167 self-test checks pass. Local real-network run
+passed: 20 ContextBench rows fetched, 10 RepoQA needles seen, status
+`cross_benchmark_retrieval_utility_pass`, forbidden scan pass,
+provider_calls=0; bm25 cross-benchmark weighted-mean
+file_recall@10=0.4 / mrr=0.218477 / span_f0.5@10=0.020831 /
+success_rate=1.0 / retrieval_utility=0.465035; `bm25_vs_empty`
+retrieval_utility delta=+0.465035; `regex_vs_bm25` and
+`symbol_vs_bm25` retrieval_utility delta=-0.715035.
+
+This is smoke-only. It is NOT downstream utility, NOT true E/S
+calibration, NOT an external benchmark performance claim, NOT a
+leaderboard entry, NOT a method winner, NOT a promotion/default/
+runtime/retriever/pack/backend/EvidenceCore semantic change. All
+no-claim / no-runtime-change flags remain false.
+`retrieval_derived_counterfactual_utility_smoke=true` only when a
+real network run actually executed. See the
+[F1-C detailed report](f1c-cross-benchmark-retrieval-utility.md).
+
 ## Current status update — 2026-06-21 (F1-B retrieval-derived counterfactual utility smoke)
 
 F1-B moves F1 from purely synthetic context variants to

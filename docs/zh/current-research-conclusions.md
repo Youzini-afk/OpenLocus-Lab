@@ -362,6 +362,42 @@ promotion/default/runtime/retriever/pack/backend/EvidenceCore 语义变
 run 实际执行时。详见
 [F1-B 详细报告](f1b-retrieval-derived-counterfactual-utility.md)。
 
+## 2026-06-21 F1-C Cross-Benchmark Retrieval-Derived Utility Smoke
+
+F1-C 是 **跨基准测试** retrieval-derived utility smoke。F1-C
+（`eval/f1c_cross_benchmark_retrieval_utility.py`，向后兼容复用
+C5-C/C5-E/C5-A/C5-D 原语；均未修改）->
+`artifacts/f1c_cross_benchmark_retrieval_utility/f1c_cross_benchmark_retrieval_utility_report.json`，
+schema `f1c_cross_benchmark_retrieval_utility.v1`、
+`claim_level=cross_benchmark_retrieval_derived_utility_smoke_only`、
+`mode=bounded_contextbench_repoqa_retrieval_utility`、阶段 `F1-C`）
+对两个基准（ContextBench verified 20 行 + RepoQA 10 needle Python）
+**重新运行真实有界外部数据**，并按 benchmark/method 计算固定
+retrieval-derived utility proxy
+（`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`，
+其中 `miss_penalty=0.25 if file_recall@10 == 0 else 0`）、跨基准加权
+均值（按样本计数）以及 5 个固定 counterfactual effects
+（`bm25_vs_empty`、`regex_vs_empty`、`symbol_vs_empty`、
+`regex_vs_bm25`、`symbol_vs_bm25`）。`empty_retrieval` 是显式零上下文
+基线（无 retrieval run；所有指标/效用为 0）。仅 records-shaped；无动
+态 dict 镜像；无 winner/best/default 字段；无 E/S 校准记法；
+ContextBench 与 RepoQA 失败类别保持分离。无 provider 调用。本地真实
+网络 run 已通过：20 行 ContextBench 抓取，10 个 RepoQA needle 见到，
+status `cross_benchmark_retrieval_utility_pass`，forbidden scan pass，
+provider_calls=0；bm25 跨基准加权均值 file_recall@10=0.4 /
+mrr=0.218477 / span_f0.5@10=0.020831 / success_rate=1.0 /
+retrieval_utility=0.465035；`bm25_vs_empty` retrieval_utility
+delta=+0.465035；`regex_vs_bm25` 与 `symbol_vs_bm25`
+retrieval_utility delta=-0.715035。
+
+这是 smoke-only。它**不是**下游效用，**不是** true E/S 校准，**不
+是**外部基准测试性能声明，**不是** leaderboard 条目，**不是**方法
+winner，**不是** promotion/default/runtime/retriever/pack/backend/
+EvidenceCore 语义变更。所有无声明 / 无运行时变更标志保持 false。
+`retrieval_derived_counterfactual_utility_smoke=true` 仅在真实网络
+run 实际执行时。详见
+[F1-C 详细报告](f1c-cross-benchmark-retrieval-utility.md)。
+
 ## 2026-06-21 F1 反事实证据效用 Smoke
 
 继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1
@@ -1103,6 +1139,7 @@ P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_ove
 - `docs/en/c5d-repoqa-bm25-retrieval-smoke.md` — C5-D RepoQA BM25 检索性能 smoke（aggregate-only；有界 RepoQA Python needle subset；临时 /tmp asset 下载 + clone + retrieval + score；仅 bm25；仅 python（无静默全语言回退）；无 winner/best_method/recommended_default；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是 promotion、不是默认变更、不是下游 agent 价值声称）。
 - `docs/en/c5e-repoqa-method-matrix-smoke.md` — C5-E RepoQA 方法矩阵检索 smoke（aggregate-only；每方法有界 RepoQA Python needle subset；仅 bm25,regex,symbol（无 text）；临时 /tmp asset 下载 + clone + retrieval + score；每方法记录带 aggregate_runtime_seconds；仅 aggregate 的与 bm25 的 delta；无 winner/best_method/recommended_default；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是 promotion、不是默认变更、不是下游 agent 价值声称）。
 - `docs/en/c5f-repoqa-method-matrix-scale-smoke.md` — C5-F RepoQA 10-needle 方法矩阵 scale smoke（aggregate-only；单独 C5-F checkpoint；仅 bm25,regex,symbol；默认/硬上限每方法 10 个 Python needle；无 provider 调用；无 winner/best_method/recommended_default；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是 promotion、不是默认变更、不是下游 agent 价值声称）。
+- `docs/en/f1c-cross-benchmark-retrieval-utility.md` — F1-C 跨基准 retrieval-derived utility smoke（aggregate-only；重新运行真实有界外部数据：ContextBench verified 20 行 + RepoQA 10 needle Python；bm25,regex,symbol + empty_retrieval 零基线；固定 retrieval_utility proxy；跨基准加权均值；5 个固定 counterfactual effects bm25_vs_empty/regex_vs_empty/symbol_vs_empty/regex_vs_bm25/symbol_vs_bm25；ContextBench 与 RepoQA 失败类别保持分离；无 provider 调用；无 winner/best_method/recommended_default/E_S 记法；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是方法 winner、不是 promotion、不是默认变更、不是下游 agent 价值声称、不是 true E/S 校准）。
 
 ---
 

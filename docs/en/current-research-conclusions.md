@@ -410,6 +410,46 @@ no-runtime-change flags remain false.
 network run actually executed. See the
 [F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
 
+## 2026-06-21 F1-C Cross-Benchmark Retrieval-Derived Utility Smoke
+
+F1-C is the **cross-benchmark** retrieval-derived utility smoke. F1-C
+(`eval/f1c_cross_benchmark_retrieval_utility.py`,
+reusing C5-C/C5-E/C5-A/C5-D primitives backward-compatibly; none
+modified) ->
+`artifacts/f1c_cross_benchmark_retrieval_utility/f1c_cross_benchmark_retrieval_utility_report.json`,
+schema `f1c_cross_benchmark_retrieval_utility.v1`,
+`claim_level=cross_benchmark_retrieval_derived_utility_smoke_only`,
+`mode=bounded_contextbench_repoqa_retrieval_utility`, phase `F1-C`)
+**reruns real bounded external data** for two benchmarks
+(ContextBench verified 20-row + RepoQA 10-needle Python) and computes a
+fixed retrieval-derived utility proxy
+(`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 - miss_penalty`
+where `miss_penalty=0.25 if file_recall@10 == 0 else 0`) per
+benchmark/method, cross-benchmark weighted means (by sample counts),
+and 5 fixed counterfactual effects (`bm25_vs_empty`,
+`regex_vs_empty`, `symbol_vs_empty`, `regex_vs_bm25`,
+`symbol_vs_bm25`). `empty_retrieval` is the explicit zero-context
+baseline (no retrieval run; all metrics/utility 0). Records-shaped
+only; no dynamic dict mirrors; no winner/best/default fields; no E/S
+calibration notation; ContextBench and RepoQA failure categories kept
+separate. No provider calls. Local real-network run passed: 20
+ContextBench rows fetched, 10 RepoQA needles seen, status
+`cross_benchmark_retrieval_utility_pass`, forbidden scan pass,
+provider_calls=0; bm25 cross-benchmark weighted-mean
+file_recall@10=0.4 / mrr=0.218477 / span_f0.5@10=0.020831 /
+success_rate=1.0 / retrieval_utility=0.465035; `bm25_vs_empty`
+retrieval_utility delta=+0.465035; `regex_vs_bm25` and
+`symbol_vs_bm25` retrieval_utility delta=-0.715035.
+
+This is smoke-only. It is NOT downstream utility, NOT true E/S
+calibration, NOT an external benchmark performance claim, NOT a
+leaderboard entry, NOT a method winner, NOT a promotion/default/
+runtime/retriever/pack/backend/EvidenceCore semantic change. All
+no-claim / no-runtime-change flags remain false.
+`retrieval_derived_counterfactual_utility_smoke=true` only when a
+real network run actually executed. See the
+[F1-C detailed report](f1c-cross-benchmark-retrieval-utility.md).
+
 ## 2026-06-21 F1 Counterfactual Evidence Utility Smoke
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual
@@ -1357,6 +1397,7 @@ Manual CI run `27906775008` passed for C5-D: 5 RepoQA Python needles seen/succes
 - `docs/en/c5d-repoqa-bm25-retrieval-smoke.md` — C5-D RepoQA BM25 retrieval performance smoke (aggregate-only; bounded RepoQA Python needle subset; transient /tmp asset download + clone + retrieval + score; bm25 only; python only (no silent all-language fallback); no winner/best_method/recommended_default; not a benchmark result, not a leaderboard entry, not a performance claim, not a promotion, not a default change, not a downstream agent value claim).
 - `docs/en/c5e-repoqa-method-matrix-smoke.md` — C5-E RepoQA method-matrix retrieval smoke (aggregate-only; bounded RepoQA Python needle subset per method; bm25,regex,symbol only (no text); transient /tmp asset download + clone + retrieval + score; per-method records with aggregate_runtime_seconds; aggregate-only deltas vs bm25; no winner/best_method/recommended_default; not a benchmark result, not a leaderboard entry, not a performance claim, not a promotion, not a default change, not a downstream agent value claim).
 - `docs/en/c5f-repoqa-method-matrix-scale-smoke.md` — C5-F RepoQA 10-needle method-matrix scale smoke (aggregate-only; separate C5-F checkpoint; bm25,regex,symbol only; default/hard cap 10 Python needles per method; no provider calls; no winner/best_method/recommended_default; not a benchmark result, not a leaderboard entry, not a performance claim, not a promotion, not a default change, not a downstream agent value claim).
+- `docs/en/f1c-cross-benchmark-retrieval-utility.md` — F1-C cross-benchmark retrieval-derived utility smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy; cross-benchmark weighted means; 5 fixed counterfactual effects bm25_vs_empty/regex_vs_empty/symbol_vs_empty/regex_vs_bm25/symbol_vs_bm25; ContextBench and RepoQA failure categories kept separate; no provider calls; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
 
 ---
 

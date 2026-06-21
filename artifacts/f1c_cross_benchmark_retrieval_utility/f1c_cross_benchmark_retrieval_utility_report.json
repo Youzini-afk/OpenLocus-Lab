@@ -1,0 +1,578 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "automated_e_s_full_calibration_claimed": false,
+  "backend_changed": false,
+  "baseline_is_policy_candidate": false,
+  "baseline_method": "bm25",
+  "benchmark_results": [
+    {
+      "benchmark": "contextbench",
+      "failure_category_counts": {
+        "checkout_failed": 0,
+        "clone_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_context_parse_failed": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "network_fetch_failed": 0,
+        "no_python_rows": 0,
+        "retrieval_failed": 0,
+        "row_limit_capped": 0,
+        "row_parse_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "bm25",
+      "metrics": {
+        "file_recall@10": 0.35,
+        "mrr": 0.143107,
+        "retrieval_utility": 0.396196,
+        "span_f0.5@10": 0.020838,
+        "success_rate": 1.0
+      },
+      "rows_evaluated": 20,
+      "rows_failed": 0,
+      "rows_successful": 20,
+      "status": "pass"
+    },
+    {
+      "benchmark": "contextbench",
+      "failure_category_counts": {
+        "checkout_failed": 0,
+        "clone_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_context_parse_failed": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "network_fetch_failed": 0,
+        "no_python_rows": 0,
+        "retrieval_failed": 0,
+        "row_limit_capped": 0,
+        "row_parse_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "regex",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "rows_evaluated": 20,
+      "rows_failed": 0,
+      "rows_successful": 20,
+      "status": "pass"
+    },
+    {
+      "benchmark": "contextbench",
+      "failure_category_counts": {
+        "checkout_failed": 0,
+        "clone_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_context_parse_failed": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "network_fetch_failed": 0,
+        "no_python_rows": 0,
+        "retrieval_failed": 0,
+        "row_limit_capped": 0,
+        "row_parse_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "symbol",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "rows_evaluated": 20,
+      "rows_failed": 0,
+      "rows_successful": 20,
+      "status": "pass"
+    },
+    {
+      "benchmark": "repoqa",
+      "failure_category_counts": {
+        "asset_decompress_failed": 0,
+        "asset_download_failed": 0,
+        "asset_parse_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "needle_limit_capped": 0,
+        "needle_parse_failed": 0,
+        "no_python_needles": 0,
+        "repo_checkout_failed": 0,
+        "repo_clone_failed": 0,
+        "retrieval_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "bm25",
+      "metrics": {
+        "file_recall@10": 0.5,
+        "mrr": 0.369216,
+        "retrieval_utility": 0.602712,
+        "span_f0.5@10": 0.020817,
+        "success_rate": 1.0
+      },
+      "needles_evaluated": 10,
+      "needles_failed": 0,
+      "needles_successful": 10,
+      "status": "pass"
+    },
+    {
+      "benchmark": "repoqa",
+      "failure_category_counts": {
+        "asset_decompress_failed": 0,
+        "asset_download_failed": 0,
+        "asset_parse_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "needle_limit_capped": 0,
+        "needle_parse_failed": 0,
+        "no_python_needles": 0,
+        "repo_checkout_failed": 0,
+        "repo_clone_failed": 0,
+        "retrieval_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "regex",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "needles_evaluated": 10,
+      "needles_failed": 0,
+      "needles_successful": 10,
+      "status": "pass"
+    },
+    {
+      "benchmark": "repoqa",
+      "failure_category_counts": {
+        "asset_decompress_failed": 0,
+        "asset_download_failed": 0,
+        "asset_parse_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "needle_limit_capped": 0,
+        "needle_parse_failed": 0,
+        "no_python_needles": 0,
+        "repo_checkout_failed": 0,
+        "repo_clone_failed": 0,
+        "retrieval_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "symbol",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "needles_evaluated": 10,
+      "needles_failed": 0,
+      "needles_successful": 10,
+      "status": "pass"
+    }
+  ],
+  "claim_level": "cross_benchmark_retrieval_derived_utility_smoke_only",
+  "contextbench_failure_category_counts": {
+    "checkout_failed": 0,
+    "clone_failed": 0,
+    "forbidden_leak_blocked": 0,
+    "label_context_parse_failed": 0,
+    "label_jsonl_write_failed": 0,
+    "language_filter_excluded": 0,
+    "network_fetch_failed": 0,
+    "no_python_rows": 0,
+    "retrieval_failed": 0,
+    "row_limit_capped": 0,
+    "row_parse_failed": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "task_jsonl_write_failed": 0,
+    "unexpected_exception": 0
+  },
+  "contextbench_row_limit_requested": 20,
+  "contextbench_rows_fetched": 20,
+  "contextbench_rows_read": true,
+  "counterfactual_effects": [
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.4,
+      "effect_name": "bm25_vs_empty",
+      "metric": "file_recall@10",
+      "treatment_method": "bm25"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.218477,
+      "effect_name": "bm25_vs_empty",
+      "metric": "mrr",
+      "treatment_method": "bm25"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.020831,
+      "effect_name": "bm25_vs_empty",
+      "metric": "span_f0.5@10",
+      "treatment_method": "bm25"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 1.0,
+      "effect_name": "bm25_vs_empty",
+      "metric": "success_rate",
+      "treatment_method": "bm25"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.465035,
+      "effect_name": "bm25_vs_empty",
+      "metric": "retrieval_utility",
+      "treatment_method": "bm25"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.0,
+      "effect_name": "regex_vs_empty",
+      "metric": "file_recall@10",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.0,
+      "effect_name": "regex_vs_empty",
+      "metric": "mrr",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.0,
+      "effect_name": "regex_vs_empty",
+      "metric": "span_f0.5@10",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 1.0,
+      "effect_name": "regex_vs_empty",
+      "metric": "success_rate",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": -0.25,
+      "effect_name": "regex_vs_empty",
+      "metric": "retrieval_utility",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.0,
+      "effect_name": "symbol_vs_empty",
+      "metric": "file_recall@10",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.0,
+      "effect_name": "symbol_vs_empty",
+      "metric": "mrr",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 0.0,
+      "effect_name": "symbol_vs_empty",
+      "metric": "span_f0.5@10",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": 1.0,
+      "effect_name": "symbol_vs_empty",
+      "metric": "success_rate",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "empty_retrieval",
+      "delta": -0.25,
+      "effect_name": "symbol_vs_empty",
+      "metric": "retrieval_utility",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.4,
+      "effect_name": "regex_vs_bm25",
+      "metric": "file_recall@10",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.218477,
+      "effect_name": "regex_vs_bm25",
+      "metric": "mrr",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.020831,
+      "effect_name": "regex_vs_bm25",
+      "metric": "span_f0.5@10",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": 0.0,
+      "effect_name": "regex_vs_bm25",
+      "metric": "success_rate",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.715035,
+      "effect_name": "regex_vs_bm25",
+      "metric": "retrieval_utility",
+      "treatment_method": "regex"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.4,
+      "effect_name": "symbol_vs_bm25",
+      "metric": "file_recall@10",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.218477,
+      "effect_name": "symbol_vs_bm25",
+      "metric": "mrr",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.020831,
+      "effect_name": "symbol_vs_bm25",
+      "metric": "span_f0.5@10",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": 0.0,
+      "effect_name": "symbol_vs_bm25",
+      "metric": "success_rate",
+      "treatment_method": "symbol"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.715035,
+      "effect_name": "symbol_vs_bm25",
+      "metric": "retrieval_utility",
+      "treatment_method": "symbol"
+    }
+  ],
+  "cross_benchmark_method_results": [
+    {
+      "contextbench_sample_count": 0,
+      "method": "empty_retrieval",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": 0.0,
+        "span_f0.5@10": 0.0,
+        "success_rate": 0.0
+      },
+      "repoqa_sample_count": 0
+    },
+    {
+      "contextbench_sample_count": 20,
+      "method": "bm25",
+      "metrics": {
+        "file_recall@10": 0.4,
+        "mrr": 0.218477,
+        "retrieval_utility": 0.465035,
+        "span_f0.5@10": 0.020831,
+        "success_rate": 1.0
+      },
+      "repoqa_sample_count": 10
+    },
+    {
+      "contextbench_sample_count": 20,
+      "method": "regex",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "repoqa_sample_count": 10
+    },
+    {
+      "contextbench_sample_count": 20,
+      "method": "symbol",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "repoqa_sample_count": 10
+    }
+  ],
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_true_e_s_calibration": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "cross_benchmark_retrieval_derived_utility_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-21T17:08:25.948427+00:00",
+  "generated_by": "eval/f1c_cross_benchmark_retrieval_utility.py",
+  "human_e_s_calibration_claimed": false,
+  "input_summary": {
+    "benchmarks": [
+      "contextbench",
+      "repoqa"
+    ],
+    "contextbench_query_mode": "first_paragraph",
+    "contextbench_row_limit": 20,
+    "contextbench_rows_fetched": 20,
+    "effect_labels": [
+      "bm25_vs_empty",
+      "regex_vs_empty",
+      "symbol_vs_empty",
+      "regex_vs_bm25",
+      "symbol_vs_bm25"
+    ],
+    "method_labels": [
+      "empty_retrieval",
+      "bm25",
+      "regex",
+      "symbol"
+    ],
+    "methods": [
+      "bm25",
+      "regex",
+      "symbol"
+    ],
+    "metric_labels": [
+      "file_recall@10",
+      "mrr",
+      "span_f0.5@10",
+      "success_rate",
+      "retrieval_utility"
+    ],
+    "repoqa_gold_target_mode": "needle_path_line_range",
+    "repoqa_needle_limit": 10,
+    "repoqa_needles_seen": 10,
+    "repoqa_query_mode": "needle_description"
+  },
+  "leaderboard_entry_claimed": false,
+  "method_winner_claimed": false,
+  "methods_allowed": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "methods_attempted": 6,
+  "methods_count": 3,
+  "methods_failed": 0,
+  "methods_requested": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "methods_succeeded": 6,
+  "methods_successful": 6,
+  "mode": "bounded_contextbench_repoqa_retrieval_utility",
+  "network_calls": 2,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "phase": "F1-C",
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "remote_provider_calls_made": false,
+  "repoqa_failure_category_counts": {
+    "asset_decompress_failed": 0,
+    "asset_download_failed": 0,
+    "asset_parse_failed": 0,
+    "forbidden_leak_blocked": 0,
+    "label_jsonl_write_failed": 0,
+    "language_filter_excluded": 0,
+    "needle_limit_capped": 0,
+    "needle_parse_failed": 0,
+    "no_python_needles": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "retrieval_failed": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "task_jsonl_write_failed": 0,
+    "unexpected_exception": 0
+  },
+  "repoqa_needle_limit_requested": 10,
+  "repoqa_needles_read": true,
+  "repoqa_needles_seen": 10,
+  "retrieval_derived_counterfactual_utility_smoke": true,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "f1c_cross_benchmark_retrieval_utility.v1",
+  "score_py_metrics_computed": true,
+  "self_test_checks_passed": 167,
+  "self_test_checks_total": 167,
+  "self_test_passed": true,
+  "status": "cross_benchmark_retrieval_utility_pass",
+  "true_e_s_calibration_claimed": false
+}

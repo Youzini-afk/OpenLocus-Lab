@@ -8402,3 +8402,226 @@ symbol-minus-bm25 file_recall@10 delta: -0.5
 ### Boundaries
 
 C5-F is smoke-only. It does NOT claim an external benchmark result, leaderboard entry, performance, promotion, default change, method winner, runtime/retriever/pack/backend/EvidenceCore semantic change, or downstream agent value. It emits no `winner`, `best_method`, `recommended_default`, or policy/default recommendation fields. Raw RepoQA repo values, commits, descriptions, paths, line ranges, source, generated JSONL, retrieval evidence rows, stdout/stderr, clone paths, row IDs, hashes, and provider fields remain transient and are never committed or uploaded. The manual workflow is `workflow_dispatch` only, uses no provider credential/model environment, uploads only the aggregate report, and is fail-closed for network-enabled runs.
+
+---
+
+## 2026-06-21 — F1-C Cross-Benchmark Retrieval-Derived Utility Smoke
+
+### Objective
+
+Produce a new empirical counterfactual utility experiment over two
+bounded external-benchmark-shaped retrieval samples. F1-C must re-run
+real data, not combine existing C5 aggregate artifacts. F1-C reruns
+ContextBench verified (20 rows, python, `first_paragraph`,
+`bm25,regex,symbol`) and RepoQA (10 Python needles,
+`bm25,regex,symbol`), and computes a fixed retrieval-derived utility
+proxy per benchmark/method plus cross-benchmark weighted means and
+counterfactual effects.
+
+### Hypothesis
+
+Real ContextBench verified 20-row + real RepoQA 10-needle reruns,
+combined with a fixed diagnostic utility proxy
+(`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 -
+miss_penalty` where `miss_penalty=0.25 if file_recall@10 == 0 else
+0`) and a synthetic `empty_retrieval` zero baseline, can produce
+aggregate cross-benchmark counterfactual utility deltas
+(`bm25_vs_empty`, `regex_vs_empty`, `symbol_vs_empty`,
+`regex_vs_bm25`, `symbol_vs_bm25`) without provider calls and
+without claiming downstream utility, true E/S calibration, method
+winner, or external benchmark performance.
+
+### Implementation notes
+
+- **F1-C artifact**
+  (`eval/f1c_cross_benchmark_retrieval_utility.py`): public
+  aggregate-only cross-benchmark smoke. Imports C5-C, C5-E, C5-A, and
+  C5-D helpers backward-compatibly (none modified). Reuses C5-C matrix
+  execution (`c5c._run_single_method`,
+  `c5c._public_failure_counts`,
+  `c5c.PUBLIC_FAILURE_CATEGORIES`) for ContextBench; reuses C5-E
+  matrix execution (`c5e._run_single_method`) for RepoQA. Reruns
+  real bounded external data: ContextBench verified 20-row (HF
+  datasets-server `/rows`; stdlib `urllib` only; paginated; shared
+  across methods); RepoQA 10 Python needles (EvalPlus release asset
+  `repoqa-2024-06-23.json.gz` downloaded to in-memory bytes;
+  decompressed in memory; needles parsed in memory; NO silent
+  all-language fallback). Reuses C5-A primitives
+  (`_fetch_contextbench_rows`, `_resolve_openlocus_binary`,
+  `_clone_and_checkout`, `_run_retrieval_and_score`,
+  `_filter_score_metrics`) and C5-D primitives
+  (`_download_asset_to_bytes`, `_decompress_asset`,
+  `_parse_repoqa_needles`, `_sanitize_needle_description`).
+- **Utility formula (fixed diagnostic proxy; NOT downstream solve
+  rate, NOT E/S calibration)**:
+  `utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 -
+  miss_penalty` where `miss_penalty=0.25 if file_recall@10 == 0
+  else 0`.
+- **Counterfactual effects (fixed allowlist; records-shaped only)**:
+  `bm25_vs_empty` (bm25 - empty_retrieval), `regex_vs_empty`
+  (regex - empty_retrieval), `symbol_vs_empty` (symbol -
+  empty_retrieval), `regex_vs_bm25` (regex - bm25), `symbol_vs_bm25`
+  (symbol - bm25). Computed for the cross-benchmark weighted mean of
+  each aggregate metric (`file_recall@10`, `mrr`, `span_f0.5@10`,
+  `success_rate`, `retrieval_utility`).
+- **Cross-benchmark weighted means**: by sample counts (ContextBench
+  row count, RepoQA needle count). `empty_retrieval` has
+  sample_count=0 on both benchmarks; its weighted mean is 0 by
+  construction.
+- **Artifact identity**: `schema_version=f1c_cross_benchmark_retrieval_utility.v1`,
+  `claim_level=cross_benchmark_retrieval_derived_utility_smoke_only`,
+  `mode=bounded_contextbench_repoqa_retrieval_utility`,
+  `phase=F1-C`. Status enum:
+  `cross_benchmark_retrieval_utility_pass` (both benchmarks pass AND
+  bm25 succeeds on both), `partial_with_exclusions` (at least one
+  benchmark passes AND bm25 succeeds on at least one),
+  `unavailable_with_reason` (none/blocked/network unavailable),
+  `fail_forbidden_scan`, `fail_schema_contract`.
+- **Safe true flags** (only when actually true):
+  `retrieval_derived_counterfactual_utility_smoke`,
+  `contextbench_rows_read`, `repoqa_needles_read`,
+  `openlocus_retrieval_executed`, `score_py_metrics_computed`,
+  `aggregate_only_public_artifact`, `diagnostic_only`.
+- **Always-false no-claim flags**: `true_e_s_calibration_claimed`,
+  `automated_e_s_full_calibration_claimed`,
+  `human_e_s_calibration_claimed`,
+  `external_benchmark_performance_claimed`,
+  `leaderboard_entry_claimed`, `method_winner_claimed`,
+  `baseline_is_policy_candidate`, `downstream_agent_value_proven`,
+  `promotion_ready`, `default_should_change`,
+  `runtime_behavior_changed`, `retriever_changed`,
+  `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `provider_calls_made`, `remote_provider_calls_made`.
+- **No winner/best/recommended-default fields**. **No E/S calibration
+  notation** (`E_primary` / `S_support`). **No raw model/routing
+  prefixes**.
+- **Failure categories kept SEPARATE**: ContextBench failure categories
+  (C5-C public enum, with `label_context_parse_failed` rename) under
+  `contextbench_failure_category_counts`; RepoQA failure categories
+  (C5-D/C5-E enum, with `asset_download_failed`,
+  `needle_parse_failed`, etc.) under
+  `repoqa_failure_category_counts`. Incompatible enums are NOT merged.
+- **Forbidden scanner (public, fail-closed)**: combines C5-A/C5-C/C5-E
+  scanners and adds F1-C-specific checks: rejects recommendation /
+  ES-notation keys anywhere; rejects dict-keyed mirrors of
+  `benchmark_results` / `cross_benchmark_method_results` /
+  `counterfactual_effects`; rejects raw model routing prefixes
+  (`[mk]`).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/f1c_cross_benchmark_retrieval_utility.py  => PASS
+python3 eval/f1c_cross_benchmark_retrieval_utility.py --self-test  => PASS (167/167 checks)
+python3 eval/f1c_cross_benchmark_retrieval_utility.py \
+  --contextbench-row-limit 20 --repoqa-needle-limit 10 \
+  --methods bm25,regex,symbol \
+  --out artifacts/f1c_cross_benchmark_retrieval_utility/\
+f1c_cross_benchmark_retrieval_utility_report.json  => PASS
+  (status: cross_benchmark_retrieval_utility_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   contextbench_rows_fetched: 20, repoqa_needles_seen: 10,
+   network_calls: 2, provider_calls: 0,
+   retrieval_derived_counterfactual_utility_smoke: true,
+   contextbench_rows_read: true, repoqa_needles_read: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   method_winner_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+Local real-network run produced the following aggregate metrics:
+
+```text
+status: cross_benchmark_retrieval_utility_pass
+contextbench_rows_fetched: 20
+repoqa_needles_seen: 10
+network_calls: 2
+forbidden_scan: pass
+provider_calls: 0
+contextbench/bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0, retrieval_utility=0.396196
+contextbench/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+contextbench/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0, retrieval_utility=0.602712
+repoqa/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark bm25: file_recall@10=0.4, mrr=0.218477, span_f0.5@10=0.020831, success_rate=1.0, retrieval_utility=0.465035
+cross_benchmark regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+bm25_vs_empty [retrieval_utility]: delta=+0.465035
+regex_vs_empty [retrieval_utility]: delta=-0.25
+symbol_vs_empty [retrieval_utility]: delta=-0.25
+regex_vs_bm25 [retrieval_utility]: delta=-0.715035
+symbol_vs_bm25 [retrieval_utility]: delta=-0.715035
+```
+
+The committed artifact contains no repo URLs, commits, problem
+statements, queries, needle descriptions, gold labels, label paths/
+spans/line ranges, source snippets, generated JSONL, retrieval evidence
+rows, candidate paths/spans/content hashes, stdout/stderr, clone paths,
+raw asset rows, row hashes, provider fields, raw model/routing
+prefixes, or winner/best/default/recommended fields.
+
+F1-C is the first cross-benchmark retrieval-derived utility smoke. It
+reruns real ContextBench verified 20-row + RepoQA 10-needle Python
+external data, real OpenLocus retrieval, and real `eval/score.py`
+metrics to compute a fixed retrieval-derived utility proxy and
+aggregate counterfactual deltas. It is smoke-only: it does NOT claim
+downstream utility, true E/S calibration, method winner, external
+benchmark performance, leaderboard entry, promotion, or
+default/policy/runtime/retriever/pack/backend/EvidenceCore semantic
+change. See
+[F1-C detailed report](f1c-cross-benchmark-retrieval-utility.md).
+
+### Caveats
+
+- F1-C is the public aggregate-only cross-benchmark retrieval-derived
+  utility smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it
+  does NOT change EvidenceCore semantics. It is NOT a benchmark result,
+  NOT downstream utility, NOT true E/S calibration, NOT an external
+  benchmark performance claim, NOT a leaderboard entry, NOT a method
+  winner, and NOT a promotion.
+- F1-C reruns real bounded external data (ContextBench verified 20-row
+  + RepoQA 10-needle Python). It does NOT combine existing C5-C or
+  C5-E aggregate artifacts; it re-executes the real retrieval+score
+  pipeline.
+- F1-C makes NO provider calls and NO remote provider calls. All
+  transient data stays in memory or under `/tmp` only.
+- F1-C does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- F1-C does NOT claim true E/S calibration.
+  `true_e_s_calibration_claimed=false`.
+- F1-C does NOT claim external benchmark performance.
+  `external_benchmark_performance_claimed=false`.
+- F1-C does NOT claim a method winner.
+  `method_winner_claimed=false`.
+- The utility formula is a fixed diagnostic proxy. It is NOT a
+  downstream solve rate, NOT a calibrated agent utility, and NOT a
+  promotion metric. The miss_penalty (0.25 when file_recall@10 == 0)
+  can produce negative utility values; this is intentional.
+- `empty_retrieval` is a synthetic zero-context baseline. No retrieval
+  run is performed for it; all metrics and utility are 0 by
+  construction.
+- Cross-benchmark weighted means use sample counts as weights. This
+  is a smoke-level aggregation, NOT a formal meta-analysis.
+- ContextBench and RepoQA failure categories are kept SEPARATE in the
+  public artifact; their incompatible enums are NOT merged.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags remain true; smoke-claimed flags are true ONLY when a real
+  network run actually executed. No runtime/retriever/pack/model/
+  backend/default-policy files were modified; no promotion/default/
+  runtime claims change.

@@ -7784,3 +7784,209 @@ symbol-minus-bm25 file_recall@10 delta: -0.5
 ### 边界
 
 C5-F 是 smoke-only。它不声明外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、方法 winner、runtime/retriever/pack/backend/EvidenceCore 语义变更或下游 agent 价值。它不输出 `winner`、`best_method`、`recommended_default` 或 policy/default recommendation 字段。Raw RepoQA repo 值、commit、description、path、line range、source、生成的 JSONL、retrieval evidence rows、stdout/stderr、clone path、row ID、hash 与 provider fields 均保持临时，绝不提交或上传。手动 workflow 仅 `workflow_dispatch`，不使用 provider credential/model environment，只上传 aggregate report，并对 network-enabled run fail-closed。
+
+---
+
+## 2026-06-21 — F1-C Cross-Benchmark Retrieval-Derived Utility Smoke
+
+### 目标
+
+在两个有界外部-benchmark-形态的检索样本上产出新的实证 counterfactual
+utility 实验。F1-C 必须重新运行真实数据，而非组合现有 C5 aggregate
+artifact。F1-C 重新运行 ContextBench verified（20 行，python，
+`first_paragraph`，`bm25,regex,symbol`）和 RepoQA（10 个 Python
+needle，`bm25,regex,symbol`），并按 benchmark/method 计算固定
+retrieval-derived utility proxy、跨基准加权均值与 counterfactual
+effects。
+
+### 假设
+
+真实 ContextBench verified 20 行 + 真实 RepoQA 10 needle 重新运行，
+结合固定诊断 utility proxy
+（`utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 -
+miss_penalty`，其中 `miss_penalty=0.25 if file_recall@10 == 0 else
+0`）与合成 `empty_retrieval` 零基线，可产出聚合跨基准 counterfactual
+utility delta（`bm25_vs_empty`、`regex_vs_empty`、`symbol_vs_empty`、
+`regex_vs_bm25`、`symbol_vs_bm25`），无需 provider 调用，且不声明下游
+效用、true E/S 校准、方法 winner 或外部基准性能。
+
+### 实现说明
+
+- **F1-C artifact**
+  （`eval/f1c_cross_benchmark_retrieval_utility.py`）：公开仅聚合跨基准
+  smoke。向后兼容导入 C5-C、C5-E、C5-A、C5-D helpers（均未修改）。
+  ContextBench 复用 C5-C matrix 执行（`c5c._run_single_method`、
+  `c5c._public_failure_counts`、`c5c.PUBLIC_FAILURE_CATEGORIES`）；
+  RepoQA 复用 C5-E matrix 执行（`c5e._run_single_method`）。重新运行
+  真实有界外部数据：ContextBench verified 20 行（HF datasets-server
+  `/rows`；仅 stdlib `urllib`；分页；跨方法共享）；RepoQA 10 个 Python
+  needle（EvalPlus release asset `repoqa-2024-06-23.json.gz` 下载到内
+  存字节；内存解压；内存解析 needle；**不**静默回退到 all-language）。
+  复用 C5-A 原语（`_fetch_contextbench_rows`、
+  `_resolve_openlocus_binary`、`_clone_and_checkout`、
+  `_run_retrieval_and_score`、`_filter_score_metrics`）与 C5-D 原语
+  （`_download_asset_to_bytes`、`_decompress_asset`、
+  `_parse_repoqa_needles`、`_sanitize_needle_description`）。
+- **效用公式（固定诊断 proxy；**不是**下游 solve rate，**不是** E/S
+  校准）**：
+  `utility = file_recall@10 + 0.25*mrr + 0.5*span_f0.5@10 -
+  miss_penalty`，其中 `miss_penalty=0.25 if file_recall@10 == 0
+  else 0`。
+- **Counterfactual effects（固定白名单；仅 records-shaped）**：
+  `bm25_vs_empty`（bm25 - empty_retrieval）、`regex_vs_empty`
+  （regex - empty_retrieval）、`symbol_vs_empty`（symbol -
+  empty_retrieval）、`regex_vs_bm25`（regex - bm25）、`symbol_vs_bm25`
+  （symbol - bm25）。针对每个聚合指标（`file_recall@10`、`mrr`、
+  `span_f0.5@10`、`success_rate`、`retrieval_utility`）的跨基准加权
+  均值计算。
+- **跨基准加权均值**：按样本计数（ContextBench 行计数、RepoQA needle
+  计数）。`empty_retrieval` 在两个基准上 sample_count=0；其加权均值按
+  构造为 0。
+- **Artifact identity**：
+  `schema_version=f1c_cross_benchmark_retrieval_utility.v1`、
+  `claim_level=cross_benchmark_retrieval_derived_utility_smoke_only`、
+  `mode=bounded_contextbench_repoqa_retrieval_utility`、阶段 `F1-C`。
+  状态枚举：`cross_benchmark_retrieval_utility_pass`（两基准都 pass
+  且 bm25 在两基准上都成功）、`partial_with_exclusions`（至少一个基
+  准 pass 且 bm25 至少在一个基准上成功）、`unavailable_with_reason`
+  （无/阻塞/网络不可用）、`fail_forbidden_scan`、
+  `fail_schema_contract`。
+- **Safe true flags**（仅当实际为 true 时）：
+  `retrieval_derived_counterfactual_utility_smoke`、
+  `contextbench_rows_read`、`repoqa_needles_read`、
+  `openlocus_retrieval_executed`、`score_py_metrics_computed`、
+  `aggregate_only_public_artifact`、`diagnostic_only`。
+- **Always-false no-claim flags**：`true_e_s_calibration_claimed`、
+  `automated_e_s_full_calibration_claimed`、
+  `human_e_s_calibration_claimed`、
+  `external_benchmark_performance_claimed`、
+  `leaderboard_entry_claimed`、`method_winner_claimed`、
+  `baseline_is_policy_candidate`、`downstream_agent_value_proven`、
+  `promotion_ready`、`default_should_change`、
+  `runtime_behavior_changed`、`retriever_changed`、
+  `pack_builder_changed`、`backend_changed`、
+  `default_policy_changed`、`evidencecore_semantics_changed`、
+  `provider_calls_made`、`remote_provider_calls_made`。
+- **无 winner/best/recommended-default 字段**。**无 E/S 校准记法**
+  （`E_primary` / `S_support`）。**无 raw model/routing 前缀**。
+- **失败类别保持分离**：ContextBench 失败类别（C5-C public 枚举，含
+  `label_context_parse_failed` 重命名）位于
+  `contextbench_failure_category_counts`；RepoQA 失败类别
+  （C5-D/C5-E 枚举，含 `asset_download_failed`、
+  `needle_parse_failed` 等）位于 `repoqa_failure_category_counts`。
+  不兼容枚举**不**合并。
+- **Forbidden scanner（公开，fail-closed）**：组合 C5-A/C5-C/C5-E
+  scanner 并添加 F1-C 特定检查：拒绝任意位置出现 recommendation /
+  ES-notation key；拒绝 `benchmark_results` /
+  `cross_benchmark_method_results` / `counterfactual_effects` 的
+  dict-keyed 镜像；拒绝 raw model 路由前缀（`[mk]`）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/f1c_cross_benchmark_retrieval_utility.py  => PASS
+python3 eval/f1c_cross_benchmark_retrieval_utility.py --self-test  => PASS (167/167 checks)
+python3 eval/f1c_cross_benchmark_retrieval_utility.py \
+  --contextbench-row-limit 20 --repoqa-needle-limit 10 \
+  --methods bm25,regex,symbol \
+  --out artifacts/f1c_cross_benchmark_retrieval_utility/\
+f1c_cross_benchmark_retrieval_utility_report.json  => PASS
+  (status: cross_benchmark_retrieval_utility_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   contextbench_rows_fetched: 20, repoqa_needles_seen: 10,
+   network_calls: 2, provider_calls: 0,
+   retrieval_derived_counterfactual_utility_smoke: true,
+   contextbench_rows_read: true, repoqa_needles_read: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   method_winner_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地真实网络 run 产出以下聚合指标：
+
+```text
+status: cross_benchmark_retrieval_utility_pass
+contextbench_rows_fetched: 20
+repoqa_needles_seen: 10
+network_calls: 2
+forbidden_scan: pass
+provider_calls: 0
+contextbench/bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0, retrieval_utility=0.396196
+contextbench/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+contextbench/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0, retrieval_utility=0.602712
+repoqa/regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+repoqa/symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark bm25: file_recall@10=0.4, mrr=0.218477, span_f0.5@10=0.020831, success_rate=1.0, retrieval_utility=0.465035
+cross_benchmark regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+cross_benchmark symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, retrieval_utility=-0.25
+bm25_vs_empty [retrieval_utility]: delta=+0.465035
+regex_vs_empty [retrieval_utility]: delta=-0.25
+symbol_vs_empty [retrieval_utility]: delta=-0.25
+regex_vs_bm25 [retrieval_utility]: delta=-0.715035
+symbol_vs_bm25 [retrieval_utility]: delta=-0.715035
+```
+
+已提交 artifact 不含 repo URL、commit、problem statement、query、
+needle description、gold label、label path/span/line range、source
+snippet、生成 JSONL、retrieval evidence row、candidate path/span/
+content hash、stdout/stderr、clone path、raw asset row、row hash、
+provider field、raw model/routing 前缀或 winner/best/default/
+recommended 字段。
+
+F1-C 是首个跨基准 retrieval-derived utility smoke。它重新运行真实
+ContextBench verified 20 行 + RepoQA 10 needle Python 外部数据、真实
+OpenLocus retrieval 与真实 `eval/score.py` 指标，以计算固定
+retrieval-derived utility proxy 与聚合 counterfactual delta。它是
+smoke-only：它**不**声明下游效用、true E/S 校准、方法 winner、外部
+基准性能、leaderboard 条目、promotion 或
+default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。
+详见 [F1-C 详细报告](f1c-cross-benchmark-retrieval-utility.md)。
+
+### 注意事项
+
+- F1-C 是公开仅聚合跨基准 retrieval-derived utility smoke artifact。
+  它是 eval/诊断专用。它**不**改变 runtime、retriever、pack、backend
+  或 default policy；它**不**改变 EvidenceCore 语义。它**不是**基准
+  测试结果，**不是**下游效用，**不是** true E/S 校准，**不是**外部
+  基准测试性能声明，**不是** leaderboard 条目，**不是**方法 winner，
+  也**不是** promotion。
+- F1-C 重新运行真实有界外部数据（ContextBench verified 20 行 + RepoQA
+  10 needle Python）。它**不**组合现有 C5-C 或 C5-E aggregate
+  artifact；它重新执行真实 retrieval+score 管线。
+- F1-C **不**进行任何 provider 调用，**不**进行任何远程 provider 调
+  用。所有临时数据仅保留在内存或 `/tmp`。
+- F1-C **不**证明下游 agent 价值。
+  `downstream_agent_value_proven=false`。
+- F1-C **不**声明 true E/S 校准。
+  `true_e_s_calibration_claimed=false`。
+- F1-C **不**声明外部基准测试性能。
+  `external_benchmark_performance_claimed=false`。
+- F1-C **不**声明方法 winner。
+  `method_winner_claimed=false`。
+- 效用公式是固定诊断 proxy。它**不是**下游 solve rate，**不是**已校准
+  agent utility，**不是** promotion 指标。miss_penalty（当
+  file_recall@10 == 0 时为 0.25）可能产生负效用值；这是有意的。
+- `empty_retrieval` 是合成零上下文基线。不对其执行 retrieval run；
+  所有指标与效用按构造为 0。
+- 跨基准加权均值使用样本计数作为权重。这是 smoke 级聚合，**不是**正
+  式 meta-analysis。
+- ContextBench 与 RepoQA 失败类别在公开 artifact 中保持分离；其不兼
+  容枚举**不**合并。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志保持 true；
+  smoke-claimed 标志**仅**在真实网络 run 实际执行时为 true。未修改任
+  何 runtime/retriever/pack/model/backend/default-policy 文件；无
+  promotion/default/runtime 声明变更。
