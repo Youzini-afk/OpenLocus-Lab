@@ -44,7 +44,7 @@
     "promotion_claimed": false,
     "signal_strength": "external_benchmark_retrieval_method_matrix_scale_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-21T13:01:58.342127+00:00",
+  "generated_at": "2026-06-21T13:30:55.322978+00:00",
   "generated_by": "eval/c5c_contextbench_verified_method_matrix_scale_smoke.py",
   "input_summary": {
     "language_filter": "python",
@@ -64,7 +64,7 @@
   "leaderboard_entry_claimed": false,
   "method_results": [
     {
-      "aggregate_runtime_seconds": 106.181,
+      "aggregate_runtime_seconds": 158.871,
       "failure_category_counts": {
         "checkout_failed": 0,
         "clone_failed": 0,
@@ -95,7 +95,7 @@
       "status": "contextbench_method_matrix_scale_smoke_pass"
     },
     {
-      "aggregate_runtime_seconds": 97.509,
+      "aggregate_runtime_seconds": 152.098,
       "failure_category_counts": {
         "checkout_failed": 0,
         "clone_failed": 0,
@@ -126,7 +126,7 @@
       "status": "contextbench_method_matrix_scale_smoke_pass"
     },
     {
-      "aggregate_runtime_seconds": 170.797,
+      "aggregate_runtime_seconds": 244.593,
       "failure_category_counts": {
         "checkout_failed": 0,
         "clone_failed": 0,
@@ -175,7 +175,7 @@
   "mode": "contextbench_verified_bounded_scale_method_matrix",
   "network_calls": 1,
   "network_mode": "local_explicit",
-  "openlocus_binary_source": "default",
+  "openlocus_binary_source": "explicit",
   "openlocus_retrieval_executed": true,
   "pack_builder_changed": false,
   "phase": "C5-C",

@@ -242,7 +242,9 @@ artifact 仅含聚合数据，使用 records-shaped `arm_results` 和
 `real_file_edits_performed`、`real_test_commands_executed`、
 `agent_behavior_metrics_evaluated`）**仅**在 live run 实际执行时为
 true，否则为 false。不发布 raw model 路由前缀；仅记录规范化的
-`model_display_category`。未修改任何
+`model_display_category`。较早的 C5-C CI run `27905321437` 因上传绿色
+`unavailable_with_reason` 被视为 fail-open bug；workflow 现在会让 network-enabled
+unavailable report 失败。未修改任何
 runtime/retriever/pack/model/backend/default-policy 文件。B16-C upload surface
 仅包含 sanitized aggregate report；`plan.json` 等通用 `real-provider` artifacts
 已从 B16-C artifact upload 中排除。详见
@@ -495,7 +497,11 @@ provider 调用），通过 `eval/score.py` 对每种方法针对 benchmark labe
 打分，并仅提交一个 aggregate 公共报告，其中包含每方法记录（列表，**非**以
 方法名为 key 的 dict）、可选的每方法 `aggregate_runtime_seconds`、仅
 aggregate 的与固定 `bm25` baseline 的 delta，以及一个 `input_summary`
-块。179/179 self-test 检查通过；20 行抓取，3/3 方法成功，0 方法失败。
+块。179/179 self-test 检查通过。手动 CI run `27905621090` 在 workflow 对
+network-enabled run 改为 fail-closed 后通过：20 行抓取，3/3 方法成功，0 方法
+失败；bm25 产出 file_recall@10=0.35、mrr=0.143107、span_f0.5@10=0.020838、
+success_rate=1.0；regex 与 symbol 在此有界 smoke 上 file_recall@10=0.0、
+mrr=0.0。
 
 这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
 条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**声称

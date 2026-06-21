@@ -411,6 +411,33 @@ git diff --check  => PASS
 
 ## 真实 smoke 结果（2026-06-21）
 
+手动 CI run `27905621090`
+（`c5-contextbench-method-matrix-scale-smoke`，
+`enable_external_benchmark_network=true`，`row_limit=20`，
+`methods=bm25,regex,symbol`）在 workflow 对 network-enabled run 改为
+fail-closed 后成功完成。已提交 artifact 现在镜像该 sanitized aggregate CI report。
+
+```text
+status: contextbench_method_matrix_scale_smoke_pass
+self_test_passed: true (179/179 checks)
+forbidden_scan: pass
+rows_fetched: 20
+methods_successful: 3
+methods_failed: 0
+bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0
+regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+regex-minus-bm25 file_recall@10 delta: -0.35
+symbol-minus-bm25 file_recall@10 delta: -0.35
+```
+
+较早的手动 run `27905321437` 上传了绿色的 `unavailable_with_reason`
+artifact。该结果被当作 fail-open bug，而不是经验性成功。workflow 现在要求
+network-enabled C5-C CI 必须产出 `contextbench_method_matrix_scale_smoke_pass`
+或 `partial`，`rows_fetched > 0`，且至少一个方法成功；否则 job 会以 sanitized
+失败类别失败。
+
+
 ```text
 python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py \
   --row-limit 20 --methods bm25,regex,symbol \

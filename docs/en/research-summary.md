@@ -518,7 +518,9 @@ safe true flags (true only if actually true:
 smoke cannot complete (network/HF/GitHub failure, clone timeout,
 retrieval failure, score failure), the artifact records truthful
 `unavailable_with_reason` with a real `failure_reason_category` (no
-stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
+stale/fake pass). Earlier C5-C CI run `27905321437` was treated as a fail-open bug
+because it uploaded green `unavailable_with_reason`; the workflow now
+fails network-enabled unavailable reports. No runtime/retriever/pack/model/backend/default-policy
 files were modified. See
 the [C5-B detailed report](c5b-contextbench-verified-method-matrix-smoke.md).
 
@@ -546,8 +548,12 @@ benchmark label spans via `eval/score.py`, and commits only an aggregate
 public report with per-method records (list, NOT dict keyed by method
 name), optional per-method `aggregate_runtime_seconds`, aggregate-only
 deltas vs the fixed `bm25` baseline, and an `input_summary` block.
-179/179 self-test checks pass; 20 rows fetched, 3/3 methods successful,
-0 methods failed.
+179/179 self-test checks pass. Manual CI run `27905621090` passed after
+the workflow was made fail-closed for network-enabled runs: 20 rows
+fetched, 3/3 methods successful, 0 methods failed; bm25 produced
+file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838,
+success_rate=1.0; regex and symbol produced file_recall@10=0.0 and
+mrr=0.0 on this bounded smoke.
 
 This is smoke-only. It does NOT claim an external benchmark result,
 does NOT claim a leaderboard entry, does NOT claim performance, does

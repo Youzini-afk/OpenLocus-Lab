@@ -7288,6 +7288,28 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+手动 CI run `27905621090`（`c5-contextbench-method-matrix-scale-smoke`，
+`enable_external_benchmark_network=true`，`row_limit=20`，
+`methods=bm25,regex,symbol`）在 workflow 对 network-enabled run 改为 fail-closed
+后通过。CI artifact 检查：
+
+```text
+status: contextbench_method_matrix_scale_smoke_pass
+rows_fetched: 20
+methods_successful: 3
+methods_failed: 0
+forbidden_scan: pass
+bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0
+regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+regex-minus-bm25 file_recall@10 delta: -0.35
+symbol-minus-bm25 file_recall@10 delta: -0.35
+```
+
+较早的 run `27905321437` 上传了绿色 `unavailable_with_reason` 报告，被视为
+fail-open bug 而不是经验性成功；network-enabled C5-C CI 现在要求 pass/partial、
+`rows_fetched > 0` 且至少一个方法成功。
+
 C5-C smoke 是第一个外部-benchmark-形态的检索方法矩阵 scale smoke。它执行
 从 HF datasets-server 的真实网络抓取（**一次性**，跨全部 3 个方法共享），
 在临时 `/tmp` 目录下对引用仓库到其 `base_commit` 的真实 `git clone` +

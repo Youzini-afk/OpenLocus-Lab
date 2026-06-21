@@ -165,7 +165,7 @@ contextbench_method_matrix_scale_smoke_pass；无 winner/best_method/
 recommended_default；baseline_is_policy_candidate=false；
 default_should_change=false）；它同样**不**声称外部 benchmark 结果、
 leaderboard 条目、性能、promotion、默认变更、runtime/retriever/pack/backend/
-EvidenceCore 语义变更或下游 agent 价值。当前不作
+EvidenceCore 语义变更或下游 agent 价值。C5-C manual CI run 27905621090 已在 fail-closed workflow 下通过：20 行抓取，3/3 方法成功，bm25 file_recall@10=0.35 / mrr=0.143107 / span_f0.5@10=0.020838 / success_rate=1.0，regex 与 symbol file_recall@10=0.0；较早 run 27905321437 的绿色 unavailable 被视为 fail-open 并已修复；这仍只是 smoke 诊断，不是外部 benchmark 性能/default-policy 声明。当前不作
 runtime/default-policy/promotion/downstream-value 声明。
 
 ## Mirror convention / 镜像约定

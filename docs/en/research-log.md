@@ -7715,7 +7715,7 @@ rows, cloned repos, or stdout/stderr.
 
 ### Stage gates
 
-- C5-C passes when self-test passes (177 checks), the real network
+- C5-C passes when self-test passes (179 checks), the real network
   smoke completes (rows fetched, repos cloned, retrieval executed for
   all 3 methods, score.py metrics computed), the forbidden scan is
   clean, and the committed artifact records only aggregate counts/
@@ -7813,13 +7813,16 @@ rows, cloned repos, or stdout/stderr.
   `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
   (release), runs self-test, runs network smoke only when enabled,
   validates flags, validates docs i18n, checks working tree, uploads
-  aggregate report only (7-day retention).
+  aggregate report only (7-day retention). After fail-closed hardening,
+  network-enabled CI requires pass/partial, `rows_fetched > 0`, and at
+  least one successful method; green `unavailable_with_reason` artifacts
+  are no longer accepted.
 
 ### Validation results
 
 ```text
 python3 -m py_compile eval/c5c_contextbench_verified_method_matrix_scale_smoke.py  => PASS
-python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py --self-test  => PASS (174/174 checks)
+python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py --self-test  => PASS (179/179 checks)
 python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py \
   --row-limit 20 --methods bm25,regex,symbol \
   --query-mode first_paragraph --language-filter python \
@@ -7852,6 +7855,27 @@ c5c_contextbench_verified_method_matrix_scale_report.json  => PASS
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+Manual CI run `27905621090` passed after the C5-C workflow was made
+fail-closed for network-enabled runs. CI artifact check:
+
+```text
+status: contextbench_method_matrix_scale_smoke_pass
+rows_fetched: 20
+methods_successful: 3
+methods_failed: 0
+forbidden_scan: pass
+bm25: file_recall@10=0.35, mrr=0.143107, span_f0.5@10=0.020838, success_rate=1.0
+regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+regex-minus-bm25 file_recall@10 delta: -0.35
+symbol-minus-bm25 file_recall@10 delta: -0.35
+```
+
+Earlier run `27905321437` uploaded a green `unavailable_with_reason`
+report and was treated as a fail-open bug rather than empirical success;
+network-enabled C5-C CI now requires pass/partial plus `rows_fetched > 0`
+and at least one successful method.
 
 The C5-C smoke is the first external-benchmark-shaped retrieval method
 matrix scale smoke. It executes a real network fetch from HF
