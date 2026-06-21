@@ -104,7 +104,7 @@ claim. C5-E extends RepoQA to a bm25/regex/symbol method matrix:
 manual CI run 27907731742 passed with 5 RepoQA Python needles per
 method, 3/3 methods successful, bm25 file_recall@10=0.6/mrr=0.46/
 span_f0.5@10=0.041634/success_rate=1.0, regex/symbol file_recall@10=0.0,
-provider_calls=0; this is smoke-only, not a method winner/default claim.
+provider_calls=0; this is smoke-only, not a method winner/default claim. C5-F extends RepoQA to a 10-needle method matrix scale smoke: local run passed with 10 RepoQA Python needles per method, 3/3 methods successful, bm25 file_recall@10=0.5/mrr=0.369216/span_f0.5@10=0.020817/success_rate=1.0, regex/symbol file_recall@10=0.0, provider_calls=0; this is smoke-only, not a method winner/default claim.
 No runtime/default-policy/promotion/downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面

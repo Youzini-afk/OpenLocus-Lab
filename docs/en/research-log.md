@@ -8358,3 +8358,44 @@ evaluation phase remains a bounded planning / feasibility stage. See
 - All no-claim / no-runtime-change flags remain false; diagnostic flags
   remain true. No runtime/retriever/pack/model/backend/default-policy
   files were modified; no promotion/default/runtime claims change.
+
+## 2026-06-21 — C5-F RepoQA 10-Needle Method-Matrix Scale Smoke
+
+### What changed
+
+C5-F scales C5-E from 5 RepoQA Python needles per method to 10 needles per method while preserving C5-E as a completed checkpoint. C5-F is a separate artifact/workflow/docs phase:
+
+- evaluator: `eval/c5f_repoqa_method_matrix_scale_smoke.py`
+- artifact: `artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json`
+- workflow: `.github/workflows/c5-repoqa-method-matrix-scale-smoke.yml`
+- detailed report: [C5-F detailed report](c5f-repoqa-method-matrix-scale-smoke.md)
+
+C5-F reuses C5-E's RepoQA asset/needle/clone/retrieval/score pipeline but swaps to C5-F identity (`schema_version=c5f_repoqa_method_matrix_scale_smoke.v1`, `claim_level=repoqa_retrieval_method_matrix_scale_smoke_only`, `mode=repoqa_bounded_10_needle_method_matrix_scale_smoke`, `phase=C5-F`) and default/hard-cap needle limit 10.
+
+### Local real smoke
+
+```text
+python3 -m py_compile eval/c5f_repoqa_method_matrix_scale_smoke.py => PASS
+python3 eval/c5f_repoqa_method_matrix_scale_smoke.py --self-test => PASS (191/191 checks)
+python3 eval/c5f_repoqa_method_matrix_scale_smoke.py --needle-limit 10 --language-filter python --methods bm25,regex,symbol --out artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json => PASS
+```
+
+Aggregate result:
+
+```text
+status: repoqa_method_matrix_scale_smoke_pass
+needles_seen: 10
+methods_successful: 3
+methods_failed: 0
+forbidden_scan: pass
+provider_calls: 0
+bm25: file_recall@10=0.5, mrr=0.369216, span_f0.5@10=0.020817, success_rate=1.0
+regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0
+regex-minus-bm25 file_recall@10 delta: -0.5
+symbol-minus-bm25 file_recall@10 delta: -0.5
+```
+
+### Boundaries
+
+C5-F is smoke-only. It does NOT claim an external benchmark result, leaderboard entry, performance, promotion, default change, method winner, runtime/retriever/pack/backend/EvidenceCore semantic change, or downstream agent value. It emits no `winner`, `best_method`, `recommended_default`, or policy/default recommendation fields. Raw RepoQA repo values, commits, descriptions, paths, line ranges, source, generated JSONL, retrieval evidence rows, stdout/stderr, clone paths, row IDs, hashes, and provider fields remain transient and are never committed or uploaded. The manual workflow is `workflow_dispatch` only, uses no provider credential/model environment, uploads only the aggregate report, and is fail-closed for network-enabled runs.

@@ -643,6 +643,13 @@ stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
 files were modified. See
 the [C5-D detailed report](c5d-repoqa-bm25-retrieval-smoke.md).
 
+
+## Current status update — 2026-06-21 (C5-F RepoQA 10-needle method-matrix scale smoke)
+
+C5-F scales C5-E from 5 RepoQA Python needles per method to 10 needles per method while keeping C5-E unchanged. C5-F (`eval/c5f_repoqa_method_matrix_scale_smoke.py` -> `artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json`, schema `c5f_repoqa_method_matrix_scale_smoke.v1`, `claim_level=repoqa_retrieval_method_matrix_scale_smoke_only`, `status=repoqa_method_matrix_scale_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`, `mode=repoqa_bounded_10_needle_method_matrix_scale_smoke`, phase `C5-F`) runs the RepoQA method matrix over `bm25,regex,symbol`, default/hard-cap 10 Python needles per method, fixed `baseline_method=bm25`, no provider calls, aggregate-only records and deltas. 191/191 self-test checks pass; the local real run saw 10 needles, 3/3 methods successful, forbidden scan pass, and provider_calls=0. Aggregate metrics: bm25 file_recall@10=0.5 / mrr=0.369216 / span_f0.5@10=0.020817 / success_rate=1.0; regex and symbol file_recall@10=0.0 / mrr=0.0 / span_f0.5@10=0.0 / success_rate=1.0.
+
+This is smoke-only. It does NOT claim an external benchmark result, leaderboard entry, performance, promotion, default change, method winner, runtime/retriever/pack/backend/EvidenceCore semantic change, or downstream agent value. It emits no `winner`, `best_method`, `recommended_default`, or policy/default recommendation fields. Raw RepoQA row/repo/needle values and generated files remain transient. See the [C5-F detailed report](c5f-repoqa-method-matrix-scale-smoke.md).
+
 ## Current status update — 2026-06-21 (C5-E RepoQA method-matrix retrieval smoke)
 
 Following D5-A0, B16-A, C5-A, C5-B, C5-C, and C5-D, C5-E produces the
