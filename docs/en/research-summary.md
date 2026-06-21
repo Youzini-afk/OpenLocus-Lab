@@ -208,6 +208,62 @@ additional true flags. No runtime/retriever/pack/model/
 backend/default-policy files were modified. See the
 [B16-B detailed report](b16b-less-separable-mock-paired-run.md).
 
+## Current status update — 2026-06-21 (B16-C live-provider downstream paired smoke)
+
+Following B16-A/B16-B (deterministic/mock), B16-C produces the first
+**live-provider** B16-style downstream-agent empirical run. B16-C
+(`eval/b16c_live_provider_paired_smoke.py` + shared
+`eval/provider_client.py` ->
+`artifacts/b16c_live_provider_paired_smoke/b16c_live_provider_paired_smoke_report.json`,
+schema `b16c_live_provider_paired_smoke.v1`,
+`claim_level=live_provider_downstream_paired_smoke_only`,
+`mode=public_aggregate_synthetic_micro_tasks`, phase `B16-C`) generates
+deterministic synthetic public micro bug tasks, creates a fresh `/tmp`
+workspace per task+arm, runs a **live LLM agent** (OpenAI-compatible)
+only when `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env
+are all set, applies the model's structured edit action locally
+(allowlisted `target.py` only; actions `replace_return_value` /
+`no_op` only), runs real subprocess tests, and computes aggregate
+behavior metrics over paired `control_sparse` /
+`treatment_context_pack` arms. The committed artifact is **truthful**:
+because no local provider env is available in this environment, it
+carries status `blocked_remote_not_enabled` with live-run flags false
+(except `aggregate_only_public_artifact=true` and
+`diagnostic_only=true`). A live `live_provider_paired_smoke_pass`
+artifact requires an explicit local opt-in run or the manual CI
+`real-provider-benchmark` workflow with
+`stage=b16c_live_provider_paired_smoke` and `enable_remote_models=true`.
+**Manual CI live-provider run: pending.** 33/33 provider-client
+self-test checks pass; 118/118 B16-C self-test checks pass.
+
+This is smoke-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. Per-run prompts, responses,
+event logs, patches, and test output stay under `/tmp` only and are
+NEVER committed or uploaded. The committed artifact is aggregate-only
+with records-shaped `arm_results` and `paired_deltas`. All no-claim /
+no-runtime-change flags remain false
+(`downstream_agent_value_proven=false`,
+`live_agent_generalization_claimed=false`, `promotion_ready=false`,
+`default_should_change=false`,
+`external_benchmark_performance_claimed=false`,
+`real_user_task_claimed=false`, `runtime_behavior_changed=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`backend_changed=false`, `default_policy_changed=false`,
+`evidencecore_semantics_changed=false`). Live-run flags
+(`downstream_agent_runs_performed`, `live_llm_agent`,
+`provider_calls_made`, `remote_provider_calls_made`,
+`paired_run_executed`, `synthetic_micro_tasks_used`,
+`real_file_edits_performed`, `real_test_commands_executed`,
+`agent_behavior_metrics_evaluated`) are true ONLY when a live run
+actually executed; otherwise false. No raw model routing prefix is
+emitted; only the normalized `model_display_category` is recorded. No
+runtime/retriever/pack/model/backend/default-policy files were
+modified. See the
+[B16-C detailed report](b16c-live-provider-paired-smoke.md).
+
 ## Current status update — 2026-06-21 (C5-A ContextBench verified retrieval performance smoke)
 
 Following D5-A0 and B16-A, C5-A produces the first

@@ -7040,3 +7040,163 @@ analysis. See
   (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
   No runtime/retriever/pack/model/backend/default-policy files were
   modified; no promotion/default/runtime claims change.
+
+---
+
+## 2026-06-21 — B16-C Live-Provider Downstream Paired Smoke
+
+### Objective
+
+Move B16 from deterministic/mock downstream edit-test experiments into
+the first **live-provider downstream paired smoke**. Run a tiny paired
+live LLM agent over synthetic public micro bug tasks, apply the model's
+structured edit action locally, execute real tests, and publish only
+aggregate behavior metrics.
+
+### Hypothesis
+
+A live LLM provider (OpenAI-compatible) can exercise the full B16
+downstream-agent edit/test loop on synthetic public micro tasks and
+produce behavior metrics (solve_rate, tests_pass_rate,
+correct_file_before_first_edit_rate, wrong_file_edits_mean,
+tool_calls_before_first_edit_mean, context_tokens_mean,
+latency_ms_mean, cost_proxy_mean) under paired
+control_sparse / treatment_context_pack arms, without claiming
+downstream agent value or live agent generalization.
+
+### Implementation notes
+
+- **B16-C artifact** (`eval/b16c_live_provider_paired_smoke.py`):
+  public aggregate-only smoke. Generates deterministic synthetic
+  public micro bug tasks in code (default 2; `--task-count` range
+  2-8, hard cap 8); creates a fresh `/tmp` workspace per task+arm
+  with real tiny Python modules + stdlib tests; runs a **live LLM
+  agent** (OpenAI-compatible) only when `--allow-remote` +
+  `OPENLOCUS_ALLOW_REMOTE=1` + provider env are all set; applies the
+  model's structured edit action locally (allowlisted `target.py`
+  only; actions `replace_return_value` / `no_op` only; no arbitrary
+  paths, no shell); runs real subprocess tests; computes aggregate
+  behavior metrics; writes ONLY aggregate counts/rates/means to the
+  committed artifact.
+- **Provider client helper** (`eval/provider_client.py`): minimal
+  shared OpenAI-compatible chat helper. Returns a safe
+  `ProviderCallResult` with aggregate counts (calls attempted /
+  succeeded / failed, invalid_json, timeout, latency, numeric
+  provider `usage` if present, fixed failure-category enum token,
+  HTTP status). Raw prompts / messages / responses / base URLs /
+  API keys / provider payloads are NEVER in public diagnostics. Safe
+  failure categories are a fixed enum; raw exception text is
+  suppressed.
+- **Paired arm design**: `control_sparse` (minimal description; no
+  target file cue; small token budget) vs `treatment_context_pack`
+  (target file cue, symbol cue, compact file summary; larger token
+  budget). Same budget/tool constraints; only the context pack
+  differs.
+- **Live LLM provider constraints**: remote calls only when
+  `--allow-remote` AND `OPENLOCUS_ALLOW_REMOTE=1` AND (when
+  `--require-workflow-dispatch`) `OPENLOCUS_LLM_WORKFLOW_DISPATCH=1`
+  AND all of `OPENLOCUS_LLM_BASE_URL` / `OPENLOCUS_LLM_API_KEY` /
+  `OPENLOCUS_LLM_MODEL` are set. Prompts/responses never persisted.
+- **Artifact identity**: `schema_version=b16c_live_provider_paired_smoke.v1`,
+  `claim_level=live_provider_downstream_paired_smoke_only`,
+  `mode=public_aggregate_synthetic_micro_tasks`, `phase=B16-C`.
+  Status enum: `live_provider_paired_smoke_pass`,
+  `unavailable_no_local_provider_env`, `blocked_remote_not_enabled`,
+  `provider_call_failed`, `structured_action_parse_failed`,
+  `paired_run_failed`, `fail_forbidden_scan`.
+- **Safe true flags** (only on live run):
+  `downstream_agent_runs_performed`, `live_llm_agent`,
+  `provider_calls_made`, `remote_provider_calls_made`,
+  `paired_run_executed`, `synthetic_micro_tasks_used`,
+  `real_file_edits_performed`, `real_test_commands_executed`,
+  `agent_behavior_metrics_evaluated`,
+  `aggregate_only_public_artifact`, `diagnostic_only`. On
+  unavailable/blocked status, live-run flags are false except
+  `aggregate_only_public_artifact=true` and `diagnostic_only=true`.
+- **Always-false no-claim flags**:
+  `downstream_agent_value_proven`,
+  `live_agent_generalization_claimed`, `promotion_ready`,
+  `default_should_change`,
+  `external_benchmark_performance_claimed`, `real_user_task_claimed`,
+  `runtime_behavior_changed`, `retriever_changed`,
+  `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`.
+- **Strict public scanner** (fail-closed). Rejects forbidden dict
+  keys anywhere (`prompt`, `messages`, `response`,
+  `provider_payload`, `url`, `base_url`, `api_key`, `secret`,
+  `workspace`, `path`, `file`, `target_file`, `snippet`, `code`,
+  `patch`, `diff`, `test_output`, `stdout`, `stderr`, `event_log`,
+  `stack_trace`, `content_sha`, `task_id`, `per_run`,
+  `model_id_raw`, `model_id`, etc.) and value patterns: ANY URL,
+  32+ char hex digests, secret-like strings, path-like strings,
+  `/tmp/` workspace path values, `task_N` identifiers, patch/diff
+  markers, stack traces, multiline strings, raw JSON fragments, raw
+  line ranges, raw model routing prefixes, and the self-test
+  sentinel.
+- **Generation refuses success if self-test fails or the scanner
+  finds leakage** (fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Per-run event logs/prompts/responses/test output stay under
+  `/tmp` only** and are NEVER committed or uploaded.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/provider_client.py eval/b16c_live_provider_paired_smoke.py  => PASS
+python3 eval/provider_client.py --self-test                            => PASS (33/33 checks)
+python3 eval/b16c_live_provider_paired_smoke.py --self-test            => PASS (118/118 checks)
+python3 eval/b16c_live_provider_paired_smoke.py \
+  --out artifacts/b16c_live_provider_paired_smoke/\
+b16c_live_provider_paired_smoke_report.json                           => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_micro_tasks, phase: B16-C,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_provider_calls_made: false, paired_run_executed: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   default_should_change: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   runtime_behavior_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false, real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py                                  => PASS
+git diff --check                                                       => PASS
+```
+
+The committed artifact is the truthful local unavailable/blocked
+report because no local provider env is available. A live
+`live_provider_paired_smoke_pass` artifact requires an explicit local
+opt-in run or the manual CI `real-provider-benchmark` workflow with
+`stage=b16c_live_provider_paired_smoke` and `enable_remote_models=true`.
+**Manual CI live-provider run: pending.** See
+[B16-C detailed report](b16c-live-provider-paired-smoke.md).
+
+### Caveats
+
+- B16-C is the public aggregate-only live-provider downstream paired
+  smoke artifact. It is eval/diagnostic only. It does NOT change
+  runtime, retriever, pack, backend, or default policy; it does NOT
+  change EvidenceCore semantics. It is NOT a benchmark result, NOT a
+  downstream agent value claim, NOT a runtime-clean general algorithm
+  claim, NOT an OOD temporal claim, and NOT a QuIVer systems claim.
+- B16-C uses a **live LLM provider** (OpenAI-compatible) only when
+  `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are
+  all set. The committed artifact is truthful: if no local provider
+  env is available, it carries status `blocked_remote_not_enabled` /
+  `unavailable_no_local_provider_env` with live-run flags false. It
+  is NOT a fake pass.
+- B16-C does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- B16-C does NOT claim live agent generalization.
+  `live_agent_generalization_claimed=false`.
+- B16-C does NOT publish prompts, responses, provider payloads, base
+  URLs, API keys, raw model routing prefixes, workspace paths, file
+  paths, source snippets, patches/diffs, test output, raw event logs,
+  or per-run rows. Per-run data stays under `/tmp` only.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags remain true; live-run flags are true ONLY when a live run
+  actually executed. No runtime/retriever/pack/model/backend/
+  default-policy files were modified; no promotion/default/runtime
+  claims change.

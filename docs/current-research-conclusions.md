@@ -15,17 +15,27 @@ dual-rubric control-plane harnesses are complete through the D4-series
 rollup, and the trajectory has now pivoted into D5-A0 automated empirical
 E/S calibration smoke, B16-A minimal deterministic/mock downstream
 paired-agent empirical run, B16-B less-separable deterministic/mock
-downstream paired-agent stress run, C5-A ContextBench verified retrieval
-performance smoke, and C5-B ContextBench verified retrieval method matrix
-smoke. D5-H / human-reference calibration remains out
-of scope until human labels exist; the D5-A automated/programmatic empirical
-path is active. B16-A is a deterministic mock downstream smoke (no live LLM,
-no provider calls); it does NOT claim downstream agent value. B16-B extends
-B16-A into a harder less-separable multi-cue stress (no live LLM, no
-provider calls); it does NOT claim downstream agent value, emits no
+downstream paired-agent stress run, B16-C live-provider downstream paired
+smoke, C5-A ContextBench verified retrieval performance smoke, and C5-B
+ContextBench verified retrieval method matrix smoke. D5-H / human-reference
+calibration remains out of scope until human labels exist; the D5-A
+automated/programmatic empirical path is active. B16-A is a deterministic
+mock downstream smoke (no live LLM, no provider calls); it does NOT claim
+downstream agent value. B16-B extends B16-A into a harder less-separable
+multi-cue stress (no live LLM, no provider calls); it does NOT claim
+downstream agent value, emits no
 winner/best_arm/recommended_default/preferred_policy/promotion field, and
 treatment is perfect by construction (harness/stress, not live result).
-C5-A is an
+B16-C is the first live-provider B16-style downstream-agent smoke
+(OpenAI-compatible live LLM only when --allow-remote +
+OPENLOCUS_ALLOW_REMOTE=1 + provider env; structured edit action
+allowlisted to target.py; real file edits + real subprocess tests; no
+raw prompt/response/payload committed); the committed artifact is
+truthful: status is blocked_remote_not_enabled when no local provider
+env (NOT a fake pass); it does NOT claim downstream agent value, live
+agent generalization, external benchmark performance, real user task,
+promotion, or default/policy/runtime/retriever/pack/backend/
+EvidenceCore semantic change. C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
 verified subset; transient /tmp clone + retrieval + score; aggregate-only
 public artifact; no provider calls); it does NOT claim an external
@@ -44,15 +54,23 @@ runtime/default-policy/promotion/downstream-value claim is made.
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
 校准 smoke、B16-A 最小确定性/mock 下游 paired-agent 实证 run、B16-B
-less-separable 确定性/mock 下游 paired-agent 压力测试 run、C5-A
-ContextBench verified 检索性能 smoke，以及 C5-B ContextBench verified 检索
-方法矩阵 smoke。D5-H / 人工参考校准在人工标签存在前仍属 out of scope；D5-A
-自动/程序化实证路径已激活。B16-A 是确定性 mock 下游 smoke（无 live LLM、
-无 provider 调用）；它**不**声明下游 agent 价值。B16-B 将 B16-A 扩展为更难的
-less-separable 多线索压力测试（无 live LLM、无 provider 调用）；它**不**声明
-下游 agent 价值，不输出 winner/best_arm/recommended_default/preferred_policy/
+less-separable 确定性/mock 下游 paired-agent 压力测试 run、B16-C
+live-provider 下游 paired smoke、C5-A ContextBench verified 检索性能
+smoke，以及 C5-B ContextBench verified 检索方法矩阵 smoke。D5-H / 人工
+参考校准在人工标签存在前仍属 out of scope；D5-A 自动/程序化实证路径已激
+活。B16-A 是确定性 mock 下游 smoke（无 live LLM、无 provider 调用）；它
+**不**声明下游 agent 价值。B16-B 将 B16-A 扩展为更难的 less-separable
+多线索压力测试（无 live LLM、无 provider 调用）；它**不**声明下游 agent
+价值，不输出 winner/best_arm/recommended_default/preferred_policy/
 promotion 字段，且 treatment 按构造完美（harness/stress，非 live 结果）。
-C5-A 是外部-benchmark-形态
+B16-C 是首个 live-provider B16 风格下游 agent smoke（仅当 --allow-remote
++ OPENLOCUS_ALLOW_REMOTE=1 + provider env 时使用 OpenAI 兼容 live LLM；
+结构化 edit action 白名单限 target.py；真实文件编辑 + 真实子进程测试；
+不提交 raw prompt/response/payload）；提交的 artifact 是真实的：本地无
+provider env 时状态为 blocked_remote_not_enabled（**不是** fake pass）；
+它**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
+户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
+EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
 retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
 **不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、
@@ -107,6 +125,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)
 - `b16a-minimal-mock-agent-paired-run.md`: [en](en/b16a-minimal-mock-agent-paired-run.md) · [zh](zh/b16a-minimal-mock-agent-paired-run.md)
 - `b16b-less-separable-mock-paired-run.md`: [en](en/b16b-less-separable-mock-paired-run.md) · [zh](zh/b16b-less-separable-mock-paired-run.md)
+- `b16c-live-provider-paired-smoke.md`: [en](en/b16c-live-provider-paired-smoke.md) · [zh](zh/b16c-live-provider-paired-smoke.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)

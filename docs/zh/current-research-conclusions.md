@@ -188,6 +188,53 @@ only additional true flags. No runtime/retriever/pack/model/
 backend/default-policy files were modified. See the
 [B16-B detailed report](b16b-less-separable-mock-paired-run.md).
 
+## 2026-06-21 B16-C Live-Provider 下游 Paired Smoke（实证 live-provider 转折）
+
+继 B16-A/B16-B（确定性/mock）之后，B16-C 产出首个 **live-provider**
+B16 风格下游 agent 实证 run。B16-C
+（`eval/b16c_live_provider_paired_smoke.py` + 共享
+`eval/provider_client.py` ->
+`artifacts/b16c_live_provider_paired_smoke/b16c_live_provider_paired_smoke_report.json`，
+schema `b16c_live_provider_paired_smoke.v1`、
+`claim_level=live_provider_downstream_paired_smoke_only`、
+`mode=public_aggregate_synthetic_micro_tasks`、阶段 `B16-C`）在代码中
+生成确定性合成公开 micro bug 任务，为每个 task+arm 创建全新 `/tmp` 工
+作区，仅当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider
+env 全部设置时运行 **live LLM agent**（OpenAI 兼容），本地应用模型的
+结构化 edit action（仅白名单 `target.py`；action 仅
+`replace_return_value` / `no_op`；无任意路径，无 shell），运行真实
+子进程测试，并在 paired `control_sparse` / `treatment_context_pack`
+arms 上计算聚合行为指标。
+
+提交的 artifact 是**真实的**：因为本环境无本地 provider env，其状态
+为 `blocked_remote_not_enabled`，live-run 标志为 false（除
+`aggregate_only_public_artifact=true` 和 `diagnostic_only=true`）。
+live `live_provider_paired_smoke_pass` artifact 需要显式本地 opt-in
+run 或手动 CI `real-provider-benchmark` workflow
+（`stage=b16c_live_provider_paired_smoke` +
+`enable_remote_models=true`）。**手动 CI live-provider run：待执行。**
+
+这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
+泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升
+任何 candidate，也**不**改变 runtime/retriever/pack/backend/
+default-policy/EvidenceCore 语义。per-run prompt、response、event
+log、patch 和测试输出仅留在 `/tmp`，**绝不**提交或上传。提交的
+artifact 仅含聚合数据，使用 records-shaped `arm_results` 和
+`paired_deltas`。所有无声明 / 无运行时变更标志保持 false
+（`downstream_agent_value_proven=false`、
+`live_agent_generalization_claimed=false`、`promotion_ready=false`、
+`default_should_change=false`、
+`external_benchmark_performance_claimed=false`、
+`real_user_task_claimed=false`、`runtime_behavior_changed=false`、
+`retriever_changed=false`、`pack_builder_changed=false`、
+`backend_changed=false`、`default_policy_changed=false`、
+`evidencecore_semantics_changed=false`）。live-run 标志**仅**在 live
+run 实际执行时为 true，否则为 false。不发布 raw model 路由前缀；仅记
+录规范化的 `model_display_category`。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。完整 B16
+下游 coding-agent 评估阶段仍是有界规划/可行性阶段。详见
+[B16-C 详细报告](b16c-live-provider-paired-smoke.md)。
+
 ## 2026-06-21 F1 反事实证据效用 Smoke
 
 继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1
