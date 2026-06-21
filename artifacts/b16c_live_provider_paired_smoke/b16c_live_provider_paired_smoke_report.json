@@ -1,13 +1,78 @@
 {
-  "agent_behavior_metrics_evaluated": false,
+  "agent_behavior_metrics_evaluated": true,
   "aggregate_only_public_artifact": true,
-  "arm_results": [],
+  "arm_results": [
+    {
+      "arm": "control_sparse",
+      "failure_category_counts": {
+        "ok": 2
+      },
+      "metrics": {
+        "context_tokens_mean": 16.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 1137.5,
+        "run_count": 2,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 2,
+        "calls_failed": 0,
+        "calls_succeeded": 2,
+        "completion_tokens_total": 183,
+        "failure_category_counts": {
+          "ok": 2
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 2239,
+        "prompt_tokens_total": 208,
+        "timeout_count": 0,
+        "total_tokens_total": 391,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "treatment_context_pack",
+      "failure_category_counts": {
+        "ok": 2
+      },
+      "metrics": {
+        "context_tokens_mean": 48.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 1081.0,
+        "run_count": 2,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 2,
+        "calls_failed": 0,
+        "calls_succeeded": 2,
+        "completion_tokens_total": 250,
+        "failure_category_counts": {
+          "ok": 2
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 2125,
+        "prompt_tokens_total": 280,
+        "timeout_count": 0,
+        "total_tokens_total": 530,
+        "usage_available": true
+      }
+    }
+  ],
   "backend_changed": false,
   "claim_level": "live_provider_downstream_paired_smoke_only",
   "default_policy_changed": false,
   "default_should_change": false,
   "diagnostic_only": true,
-  "downstream_agent_runs_performed": false,
+  "downstream_agent_runs_performed": true,
   "downstream_agent_value_proven": false,
   "evidencecore_semantics_changed": false,
   "external_benchmark_performance_claimed": false,
@@ -16,7 +81,7 @@
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-21T10:01:23.587659+00:00",
+  "generated_at": "2026-06-21T10:05:55.181267+00:00",
   "generated_by": "eval/b16c_live_provider_paired_smoke.py",
   "input_summary": {
     "arms": [
@@ -25,26 +90,75 @@
     ],
     "designed_causal_subset": true,
     "paired_design": true,
-    "run_count_per_arm": 0,
-    "synthetic_task_count": 0,
-    "total_runs": 0,
+    "run_count_per_arm": 2,
+    "synthetic_task_count": 2,
+    "total_runs": 4,
     "transient_workspace_outputs_only": true,
     "workspace_isolation": "fresh_tmp_per_task_arm"
   },
   "live_agent_generalization_claimed": false,
-  "live_llm_agent": false,
+  "live_llm_agent": true,
   "mode": "public_aggregate_synthetic_micro_tasks",
-  "model_display_category": "unavailable",
+  "model_display_category": "Kimi-K2.7-Code",
   "pack_builder_changed": false,
-  "paired_deltas": [],
-  "paired_run_executed": false,
+  "paired_deltas": [
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "solve_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "wrong_file_edits_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "tool_calls_before_first_edit_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 32.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -56.5,
+      "metric": "latency_ms_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_mean",
+      "treatment_arm": "treatment_context_pack"
+    }
+  ],
+  "paired_run_executed": true,
   "phase": "B16-C",
   "promotion_ready": false,
-  "provider_calls_made": false,
-  "real_file_edits_performed": false,
-  "real_test_commands_executed": false,
+  "provider_calls_made": true,
+  "real_file_edits_performed": true,
+  "real_test_commands_executed": true,
   "real_user_task_claimed": false,
-  "remote_provider_calls_made": false,
+  "remote_provider_calls_made": true,
   "retriever_changed": false,
   "runtime_behavior_changed": false,
   "schema_version": "b16c_live_provider_paired_smoke.v1",
@@ -70,6 +184,14 @@
       "passed": true
     },
     {
+      "check": "status_fail_forbidden_scan_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_paired_run_failed_preserved",
+      "passed": true
+    },
+    {
       "check": "status_provider_call_failed_preserved",
       "passed": true
     },
@@ -78,15 +200,7 @@
       "passed": true
     },
     {
-      "check": "status_paired_run_failed_preserved",
-      "passed": true
-    },
-    {
       "check": "status_structured_action_parse_failed_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_fail_forbidden_scan_preserved",
       "passed": true
     },
     {
@@ -532,6 +646,6 @@
     "passed": 119,
     "total": 119
   },
-  "status": "blocked_remote_not_enabled",
-  "synthetic_micro_tasks_used": false
+  "status": "live_provider_paired_smoke_pass",
+  "synthetic_micro_tasks_used": true
 }

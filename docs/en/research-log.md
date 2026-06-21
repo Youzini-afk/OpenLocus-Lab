@@ -7165,13 +7165,21 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-The committed artifact is the truthful local unavailable/blocked
-report because no local provider env is available. A live
-`live_provider_paired_smoke_pass` artifact requires an explicit local
-opt-in run or the manual CI `real-provider-benchmark` workflow with
-`stage=b16c_live_provider_paired_smoke` and `enable_remote_models=true`.
-**Manual CI live-provider run: pending.** See
-[B16-C detailed report](b16c-live-provider-paired-smoke.md).
+Manual CI run `27900913599` (`real-provider-benchmark`,
+`stage=b16c_live_provider_paired_smoke`, `enable_remote_models=true`)
+completed `status=live_provider_paired_smoke_pass`; the committed
+artifact now mirrors that sanitized aggregate CI report. The run
+executed 2 synthetic tasks / 4 live provider calls, 4/4 calls succeeded,
+invalid_json_count=0, and the workflow privacy validator passed. Both
+arms solved both trivial micro tasks (`control_sparse` solve_rate=1.0;
+`treatment_context_pack` solve_rate=1.0), so the
+treatment-minus-control solve-rate delta is 0.0. The B16-C upload
+surface is dedicated to the sanitized aggregate report only; generic
+`real-provider` artifacts such as `plan.json` are excluded from the
+B16-C artifact upload. The default local no-env path remains truthful
+(`blocked_remote_not_enabled` / `unavailable_no_local_provider_env`)
+when remote opt-in/provider env are not available. See [B16-C detailed
+report](b16c-live-provider-paired-smoke.md).
 
 ### Caveats
 
@@ -7189,6 +7197,9 @@ opt-in run or the manual CI `real-provider-benchmark` workflow with
   is NOT a fake pass.
 - B16-C does NOT prove downstream agent value.
   `downstream_agent_value_proven=false`.
+- The successful live CI run is a provider/plumbing and live execution
+  smoke. Because both arms solved the tiny synthetic tasks, it does NOT
+  show a positive treatment effect (`solve_rate` delta = 0.0).
 - B16-C does NOT claim live agent generalization.
   `live_agent_generalization_claimed=false`.
 - B16-C does NOT publish prompts, responses, provider payloads, base

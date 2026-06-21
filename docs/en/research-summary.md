@@ -225,16 +225,17 @@ are all set, applies the model's structured edit action locally
 (allowlisted `target.py` only; actions `replace_return_value` /
 `no_op` only), runs real subprocess tests, and computes aggregate
 behavior metrics over paired `control_sparse` /
-`treatment_context_pack` arms. The committed artifact is **truthful**:
-because no local provider env is available in this environment, it
-carries status `blocked_remote_not_enabled` with live-run flags false
-(except `aggregate_only_public_artifact=true` and
-`diagnostic_only=true`). A live `live_provider_paired_smoke_pass`
-artifact requires an explicit local opt-in run or the manual CI
-`real-provider-benchmark` workflow with
-`stage=b16c_live_provider_paired_smoke` and `enable_remote_models=true`.
-**Manual CI live-provider run: pending.** 33/33 provider-client
-self-test checks pass; 119/119 B16-C self-test checks pass.
+`treatment_context_pack` arms. Manual CI run `27900913599`
+(`real-provider-benchmark`, `stage=b16c_live_provider_paired_smoke`,
+`enable_remote_models=true`) completed
+`status=live_provider_paired_smoke_pass`; the committed artifact now
+mirrors that sanitized aggregate CI report. The run executed 2 synthetic
+tasks / 4 live provider calls, 4/4 calls succeeded, invalid_json_count=0,
+and the workflow privacy validator passed. Both arms solved both trivial
+micro tasks (`control_sparse` solve_rate=1.0;
+`treatment_context_pack` solve_rate=1.0), so the treatment-minus-control
+solve-rate delta is 0.0. 33/33 provider-client self-test checks pass;
+119/119 B16-C self-test checks pass.
 
 This is smoke-only. It does NOT claim downstream agent value, does NOT
 claim live agent generalization, does NOT claim external benchmark
@@ -261,7 +262,9 @@ no-runtime-change flags remain false
 actually executed; otherwise false. No raw model routing prefix is
 emitted; only the normalized `model_display_category` is recorded. No
 runtime/retriever/pack/model/backend/default-policy files were
-modified. See the
+modified. The B16-C upload surface is dedicated to the sanitized
+aggregate report only; generic `real-provider` artifacts such as
+`plan.json` are excluded from the B16-C artifact upload. See the
 [B16-C detailed report](b16c-live-provider-paired-smoke.md).
 
 ## Current status update — 2026-06-21 (C5-A ContextBench verified retrieval performance smoke)

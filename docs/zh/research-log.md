@@ -6650,12 +6650,18 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-提交的 artifact 是真实的本地 unavailable/blocked 报告，因为本地无
-provider env。live `live_provider_paired_smoke_pass` artifact 需要显
-式本地 opt-in run 或手动 CI `real-provider-benchmark` workflow
-（`stage=b16c_live_provider_paired_smoke` +
-`enable_remote_models=true`）。**手动 CI live-provider run：待执行。**
-详见 [B16-C 详细报告](b16c-live-provider-paired-smoke.md)。
+手动 CI run `27900913599`（`real-provider-benchmark`，
+`stage=b16c_live_provider_paired_smoke`，`enable_remote_models=true`）完成
+`status=live_provider_paired_smoke_pass`；已提交 artifact 现在镜像该
+sanitized aggregate CI report。该 run 执行 2 个合成任务 / 4 次 live provider
+call，4/4 calls 成功，invalid_json_count=0，并通过 workflow privacy
+validator。两个 arm 都解出两个平凡 micro 任务（`control_sparse`
+solve_rate=1.0；`treatment_context_pack` solve_rate=1.0），因此
+treatment-minus-control solve-rate delta 为 0.0。B16-C upload surface
+仅包含 sanitized aggregate report；`plan.json` 等通用 `real-provider` artifacts
+已从 B16-C artifact upload 中排除。默认本地 no-env 路径在未开启 remote
+opt-in / provider env 不可用时仍真实输出 `blocked_remote_not_enabled` /
+`unavailable_no_local_provider_env`。详见 [B16-C 详细报告](b16c-live-provider-paired-smoke.md)。
 
 ### 注意事项
 
@@ -6665,13 +6671,15 @@ provider env。live `live_provider_paired_smoke_pass` artifact 需要显
   结果，**不是**下游 agent 价值声明，**不是** runtime-clean 通用算法
   声明，**不是** OOD 时间性声明，也**不是** QuIVer 系统声明。
 - B16-C 仅在 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider
-  env 全部设置时使用 **live LLM provider**（OpenAI 兼容）。提交的
-  artifact 是真实的：若本地无 provider env，其状态为
-  `blocked_remote_not_enabled` /
-  `unavailable_no_local_provider_env`，live-run 标志为 false。它**不
-  是** fake pass。
+  env 全部设置时使用 **live LLM provider**（OpenAI 兼容）。默认本地
+  no-env 路径仍真实输出 `blocked_remote_not_enabled` /
+  `unavailable_no_local_provider_env`；已提交 artifact 镜像手动 CI
+  live-provider run `27900913599` 的 sanitized 成功结果。它**不是** fake pass。
 - B16-C **不**证明下游 agent 价值。
   `downstream_agent_value_proven=false`。
+- 成功的 live CI run 是 provider/plumbing 与 live execution smoke。由于两个
+  arm 都解出了微型合成任务，它**没有**显示正向 treatment effect
+  （`solve_rate` delta = 0.0）。
 - B16-C **不**声明 live agent 泛化。
   `live_agent_generalization_claimed=false`。
 - B16-C **不**发布 prompt、response、provider payload、base URL、

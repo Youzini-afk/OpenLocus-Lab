@@ -232,14 +232,18 @@ actions `replace_return_value` / `no_op` only; no arbitrary paths, no
 shell), runs real subprocess tests, and computes aggregate behavior
 metrics over paired `control_sparse` / `treatment_context_pack` arms.
 
-The committed artifact is **truthful**: because no local provider env
-is available in this environment, it carries status
-`blocked_remote_not_enabled` with live-run flags false (except
-`aggregate_only_public_artifact=true` and `diagnostic_only=true`).
-A live `live_provider_paired_smoke_pass` artifact requires an explicit
-local opt-in run or the manual CI `real-provider-benchmark` workflow
-with `stage=b16c_live_provider_paired_smoke` and
-`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+Manual CI run `27900913599` (`real-provider-benchmark`,
+`stage=b16c_live_provider_paired_smoke`, `enable_remote_models=true`)
+completed `status=live_provider_paired_smoke_pass`; the committed
+artifact now mirrors that sanitized aggregate CI report. The run executed
+2 synthetic tasks / 4 live provider calls, 4/4 calls succeeded,
+invalid_json_count=0, and the workflow privacy validator passed. Both
+arms solved both trivial micro tasks (`control_sparse` solve_rate=1.0;
+`treatment_context_pack` solve_rate=1.0), so the
+treatment-minus-control solve-rate delta is 0.0. The default local
+no-env path remains truthful (`blocked_remote_not_enabled` /
+`unavailable_no_local_provider_env`) when remote opt-in/provider env are
+not available.
 
 This is smoke-only. It does NOT claim downstream agent value, does NOT
 claim live agent generalization, does NOT claim external benchmark
@@ -261,9 +265,11 @@ no-runtime-change flags remain false
 when a live run actually executed; otherwise false. No raw model
 routing prefix is emitted; only the normalized
 `model_display_category` is recorded. No runtime/retriever/pack/model/
-backend/default-policy files were modified. The full B16
-downstream-coding-agent evaluation phase remains a bounded planning /
-feasibility stage. See the
+backend/default-policy files were modified. The B16-C upload surface is
+dedicated to the sanitized aggregate report only; generic `real-provider`
+artifacts such as `plan.json` are excluded from the B16-C artifact
+upload. The full B16 downstream-coding-agent evaluation phase remains a
+bounded planning / feasibility stage. See the
 [B16-C detailed report](b16c-live-provider-paired-smoke.md).
 
 ## 2026-06-21 F1 Counterfactual Evidence Utility Smoke
