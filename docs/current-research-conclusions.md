@@ -95,8 +95,12 @@ recommended_default; baseline_is_policy_candidate=false;
 default_should_change=false); it likewise does NOT claim an external
 benchmark result, leaderboard entry, performance claim, promotion,
 default change, runtime/retriever/pack/backend/EvidenceCore semantic
-change, or downstream agent value. No
-runtime/default-policy/promotion/downstream-value claim is made.
+change, or downstream agent value. C5-D adds the first RepoQA-shaped
+BM25 retrieval smoke: manual CI run 27906775008 passed with 5 RepoQA
+Python needles seen/successful, forbidden scan pass, file_recall@10=0.6,
+mrr=0.46, span_f0.5@10=0.041634, success_rate=1.0, provider_calls=0;
+this is smoke-only, not a benchmark/performance/leaderboard/default
+claim. No runtime/default-policy/promotion/downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
@@ -165,8 +169,7 @@ contextbench_method_matrix_scale_smoke_pass；无 winner/best_method/
 recommended_default；baseline_is_policy_candidate=false；
 default_should_change=false）；它同样**不**声称外部 benchmark 结果、
 leaderboard 条目、性能、promotion、默认变更、runtime/retriever/pack/backend/
-EvidenceCore 语义变更或下游 agent 价值。C5-C manual CI run 27905621090 已在 fail-closed workflow 下通过：20 行抓取，3/3 方法成功，bm25 file_recall@10=0.35 / mrr=0.143107 / span_f0.5@10=0.020838 / success_rate=1.0，regex 与 symbol file_recall@10=0.0；较早 run 27905321437 的绿色 unavailable 被视为 fail-open 并已修复；这仍只是 smoke 诊断，不是外部 benchmark 性能/default-policy 声明。当前不作
-runtime/default-policy/promotion/downstream-value 声明。
+EvidenceCore 语义变更或下游 agent 价值。C5-C manual CI run 27905621090 已在 fail-closed workflow 下通过：20 行抓取，3/3 方法成功，bm25 file_recall@10=0.35 / mrr=0.143107 / span_f0.5@10=0.020838 / success_rate=1.0，regex 与 symbol file_recall@10=0.0；较早 run 27905321437 的绿色 unavailable 被视为 fail-open 并已修复；这仍只是 smoke 诊断，不是外部 benchmark 性能/default-policy 声明。C5-D 增加第一个 RepoQA 形态的 BM25 检索 smoke：manual CI run 27906775008 已通过，5 个 RepoQA Python needle seen/successful，forbidden scan pass，file_recall@10=0.6，mrr=0.46，span_f0.5@10=0.041634，success_rate=1.0，provider_calls=0；这只是 smoke，不是 benchmark/performance/leaderboard/default 声明。当前不作 runtime/default-policy/promotion/downstream-value 声明。
 
 ## Mirror convention / 镜像约定
 

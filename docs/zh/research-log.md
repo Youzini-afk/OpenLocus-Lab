@@ -7510,6 +7510,12 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+手动 CI run `27906775008` 已通过，并且只上传 aggregate C5-D report。已提交
+artifact 现在镜像该 sanitized CI report：needles_seen=5、needles_successful=5、
+needles_failed=0、file_recall@10=0.6、mrr=0.46、span_f0.5@10=0.041634、
+success_rate=1.0、aggregate_runtime_seconds=4.025、forbidden_scan=pass、
+provider_calls=0。
+
 C5-D smoke 是第一个 RepoQA 形态的检索性能 smoke。它下载
 `repoqa-2024-06-23.json.gz` release asset 到内存字节（临时），在内存中解析
 5 个 RepoQA Python needle，在临时 `/tmp` 目录下克隆引用仓库到其

@@ -436,6 +436,14 @@ git diff --check  => PASS
 
 ## Real smoke result (2026-06-21)
 
+Manual CI run `27906775008` (`c5-repoqa-bm25-retrieval-smoke`,
+`enable_external_benchmark_network=true`, `needle_limit=5`,
+`language_filter=python`, `method=bm25`) completed successfully. The
+committed artifact now mirrors that sanitized aggregate CI report. The
+workflow validator was fail-closed: network-enabled CI required
+`repoqa_retrieval_smoke_pass` or `partial`, `needles_seen > 0`,
+`needles_successful > 0`, and `forbidden_scan.status=pass` before upload.
+
 ```text
 python3 eval/c5d_repoqa_bm25_retrieval_smoke.py \
   --needle-limit 5 --language-filter python --method bm25 \
@@ -453,7 +461,7 @@ c5d_repoqa_bm25_retrieval_smoke_report.json
   => score_py_metrics_computed: true
   => aggregate_metrics: file_recall@10=0.6, mrr=0.46,
      span_f0.5@10=0.041634, success_rate=1.0
-  => aggregate_runtime_seconds: 4.244
+  => aggregate_runtime_seconds: 4.025
 ```
 
 The `repoqa-2024-06-23.json.gz` release asset was downloaded to

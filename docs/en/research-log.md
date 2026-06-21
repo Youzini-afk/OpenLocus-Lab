@@ -7810,7 +7810,7 @@ rows, cloned repos, or stdout/stderr.
   (default 20, hard cap 20), `methods` (default `bm25,regex,symbol`;
   only `bm25,regex,symbol` allowed), `query_mode` inputs. If not
   enabled, no-op with clear message. No `secrets.`, no `vars.`, no
-  `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
+  provider model env. Builds OpenLocus CLI
   (release), runs self-test, runs network smoke only when enabled,
   validates flags, validates docs i18n, checks working tree, uploads
   aggregate report only (7-day retention). After fail-closed hardening,
@@ -8054,7 +8054,7 @@ JSONL, evidence rows, cloned repos, or stdout/stderr.
   default false, `needle_limit` (default 5, hard cap 10),
   `language_filter` (python only), `method` (bm25 only) inputs. If not
   enabled, no-op with clear message. No `secrets.`, no `vars.`, no
-  `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
+  provider model env. Builds OpenLocus CLI
   (release), runs self-test, runs network smoke only when enabled,
   validates flags (fail-closed like C5-C: network-enabled CI cannot
   pass with unavailable/no needles; require status in
@@ -8102,6 +8102,12 @@ c5d_repoqa_bm25_retrieval_smoke_report.json  => PASS
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+Manual CI run `27906775008` passed and uploaded only the aggregate C5-D report.
+The committed artifact now mirrors that sanitized CI report: needles_seen=5,
+needles_successful=5, needles_failed=0, file_recall@10=0.6, mrr=0.46,
+span_f0.5@10=0.041634, success_rate=1.0, aggregate_runtime_seconds=4.025,
+forbidden_scan=pass, provider_calls=0.
 
 The C5-D smoke is the first RepoQA-shaped retrieval performance smoke.
 It downloads the `repoqa-2024-06-23.json.gz` release asset to in-memory

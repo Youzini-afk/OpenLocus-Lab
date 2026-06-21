@@ -606,6 +606,10 @@ OpenLocus `bm25` retrieval (bm25 only; no provider calls), scores
 against `needle.path`/`start_line`/`end_line` via `eval/score.py`, and
 commits only an aggregate public report. 219/219 self-test checks
 pass; 5 needles seen, 5 needles successful, 0 needles failed.
+Manual CI run `27906775008` passed with the same aggregate metrics; the
+committed artifact now mirrors that sanitized CI report: file_recall@10=0.6,
+mrr=0.46, span_f0.5@10=0.041634, success_rate=1.0, forbidden scan pass,
+and provider_calls=0.
 
 This is smoke-only. It does NOT claim an external benchmark result,
 does NOT claim a leaderboard entry, does NOT claim performance, does

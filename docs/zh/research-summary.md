@@ -547,6 +547,9 @@ schema `c5d_repoqa_retrieval_performance_smoke.v1`、
 调用），通过 `eval/score.py` 对 `needle.path`/`start_line`/`end_line`
 打分，并仅提交一个 aggregate 公共报告。219/219 self-test 检查通过；5
 needle seen，5 needle successful，0 needle failed。
+手动 CI run `27906775008` 已通过，aggregate metrics 与本地一致；已提交 artifact
+现在镜像该 sanitized CI report：file_recall@10=0.6、mrr=0.46、
+span_f0.5@10=0.041634、success_rate=1.0、forbidden scan pass，且 provider_calls=0。
 
 这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
 条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**声称
