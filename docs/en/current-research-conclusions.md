@@ -410,6 +410,51 @@ no-runtime-change flags remain false.
 network run actually executed. See the
 [F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
 
+## 2026-06-21 D5-A1 Automated Calibration Feature Table
+
+D5-A1 moves from empirical smokes to **calibration-ready weak-
+supervision features** by machine-reading committed aggregate
+artifacts. D5-A1
+(`eval/d5a1_automated_calibration_feature_table.py`, reusing F1-D
+scanner primitives backward-compatibly; none modified) ->
+`artifacts/d5a1_automated_calibration_feature_table/d5a1_automated_calibration_feature_table_report.json`,
+schema `d5a1_automated_calibration_feature_table.v1`,
+`claim_level=automated_calibration_feature_extraction_only`,
+`status=automated_calibration_feature_table_pass|fail_input_contract|fail_forbidden_scan`,
+`mode=committed_aggregate_feature_extraction`, phase `D5-A1`)
+machine-reads committed aggregate artifacts (F1-D, F1-C, C5-C, C5-F,
+B16-E required; D5-A0, B16-D optional if present and claim-safe),
+validates their schemas and claim flags fail-closed, extracts numeric
+aggregate signals (retrieval robustness from F1-D; external benchmark
+agreement/disagreement from C5-C+C5-F; live provider delta from
+B16-E), and computes deterministic calibration feature/bucket records
+and readiness buckets (`ready_for_manual_review`,
+`needs_more_live_downstream`, `retrieval_only_insufficient`,
+`conflicting_signals`, `insufficient_signal`). Recommended next
+measurements are measurement-only (`manual_reference_audit`,
+`heldout_benchmark_scale`, `live_downstream_scale`), NOT policy/
+default/method winner. Records-shaped lists only; no per-unit metric
+arrays, no raw input artifact paths/content, no B16 task text, no
+winner/best/default/calibrated-model/policy-recommendation fields, no
+E/S calibration notation. 126/126 self-test checks pass. Local feature
+extraction run passed: status
+`automated_calibration_feature_table_pass`, forbidden scan pass, 7
+input artifacts loaded (5 required + 2 optional), 9 signals, 7
+features, 5 bucket records, 2 measurements;
+cross_signal_alignment=`retrieval_robust_positive_plus_live_positive`,
+readiness_bucket=`ready_for_manual_review`.
+
+This is feature extraction only, NOT calibration. It is NOT
+calibration, NOT a calibrated model claim, NOT a policy/default
+recommendation, NOT a benchmark result, NOT downstream utility, NOT
+true E/S calibration, NOT an external benchmark performance claim, NOT
+a leaderboard entry, NOT a method winner, NOT a formal confidence
+interval, NOT a promotion/default/runtime/retriever/pack/backend/
+EvidenceCore semantic change. All no-claim / no-runtime-change flags
+remain false. `automated_calibration_feature_extraction_performed=true`
+only when feature extraction actually executed. See the
+[D5-A1 detailed report](d5a1-automated-calibration-feature-table.md).
+
 ## 2026-06-21 F1-D Cross-Benchmark Retrieval Utility Robustness Smoke
 
 F1-D extends F1-C from point estimates to **diagnostic paired-bootstrap
@@ -1453,6 +1498,7 @@ Manual CI run `27906775008` passed for C5-D: 5 RepoQA Python needles seen/succes
 - `docs/en/c5f-repoqa-method-matrix-scale-smoke.md` — C5-F RepoQA 10-needle method-matrix scale smoke (aggregate-only; separate C5-F checkpoint; bm25,regex,symbol only; default/hard cap 10 Python needles per method; no provider calls; no winner/best_method/recommended_default; not a benchmark result, not a leaderboard entry, not a performance claim, not a promotion, not a default change, not a downstream agent value claim).
 - `docs/en/f1c-cross-benchmark-retrieval-utility.md` — F1-C cross-benchmark retrieval-derived utility smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy; cross-benchmark weighted means; 5 fixed counterfactual effects bm25_vs_empty/regex_vs_empty/symbol_vs_empty/regex_vs_bm25/symbol_vs_bm25; ContextBench and RepoQA failure categories kept separate; no provider calls; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
 - `docs/en/f1d-cross-benchmark-retrieval-robustness.md` — F1-D cross-benchmark retrieval utility robustness smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; per-unit metrics intercepted in memory before aggregation; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy unchanged from F1-C; cross-benchmark weighted means; paired cross-benchmark bootstrap preserving sample counts; 5 fixed effects x 5 metrics = 25 bootstrap effect records with CI p05/p50/p95 and sign-stability fractions; benchmark_method_means/cross_benchmark_method_means/bootstrap_effect_records/input_summary/bootstrap_summary only; no per-unit metric arrays; no F1-C container names; ContextBench and RepoQA failure categories kept separate; no provider calls; bootstrap replicates default 1000 hard cap 2000 seed 20240621; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a formal confidence interval, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
+- `docs/en/d5a1-automated-calibration-feature-table.md` — D5-A1 automated calibration feature table (aggregate-only; machine-reads committed aggregate artifacts: F1-D/F1-C/C5-C/C5-F/B16-E required, D5-A0/B16-D optional if present and claim-safe; fail-closed input validation (schema/status/claim-flags/forbidden_scan); extracts retrieval robustness signals (F1-D bm25_vs_empty/regex_vs_bm25/symbol_vs_bm25 point/CI/sign stability), external benchmark agreement/disagreement (C5-C+C5-F bm25 positive on both, regex/symbol negative on both, method agreement counts), live provider delta (B16-E context_pack_signal/solve_rate_delta/families); computes deterministic calibration feature/bucket records (magnitude buckets, sign stability buckets, live provider delta bucket, family distribution bucket, cross-signal alignment label); readiness buckets ready_for_manual_review/needs_more_live_downstream/retrieval_only_insufficient/conflicting_signals/insufficient_signal; recommended next measurements manual_reference_audit/heldout_benchmark_scale/live_downstream_scale (measurement-only, NOT policy/default/method winner); input_artifact_records/signal_records/calibration_feature_records/readiness_bucket_records/recommended_next_measurement_records only; no per-unit metric arrays, no raw input artifact paths/content, no B16 task text, no winner/best/default/calibrated-model/policy-recommendation fields, no E/S notation; feature extraction, NOT calibration; not a benchmark result, not a leaderboard entry, not a performance claim, not a formal confidence interval, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration, not a calibrated model claim, not a policy recommendation).
 
 ---
 

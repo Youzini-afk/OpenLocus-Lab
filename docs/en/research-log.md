@@ -8882,3 +8882,212 @@ change. See
   network run actually executed. No runtime/retriever/pack/model/
   backend/default-policy files were modified; no promotion/default/
   runtime claims change.
+
+## 2026-06-21 — D5-A1 Automated Calibration Feature Table
+
+### Objective
+
+Move from empirical smokes to calibration-ready weak-supervision
+features by machine-reading committed aggregate artifacts and
+computing deterministic feature records. D5-A1 is empirical feature
+extraction over real prior runs, not a research-log summary and not
+calibration.
+
+### Hypothesis
+
+Machine-reading committed aggregate artifacts from F1-D, F1-C, C5-C,
+C5-F, B16-E (optionally D5-A0, B16-D), validating their schemas and
+claim flags, and extracting numeric aggregate signals can produce
+deterministic calibration feature/bucket records and measurement
+recommendations without provider calls, without calibration, and
+without claiming downstream utility, true E/S calibration, method
+winner, external benchmark performance, policy/default, or calibrated
+model.
+
+### Implementation notes
+
+- **D5-A1 artifact**
+  (`eval/d5a1_automated_calibration_feature_table.py`): public
+  aggregate-only feature table. Imports F1-D scanner primitives
+  backward-compatibly (none modified). Machine-reads committed
+  aggregate artifacts (NOT research logs or freeform docs).
+- **Required inputs** (fail-closed on missing/schema-mismatch/status-
+  mismatch/unsafe-claim-flags): F1-D, F1-C, C5-C, C5-F, B16-E.
+- **Optional inputs** (included only if present and claim-safe;
+  otherwise recorded as `skipped_optional` with aggregate reason
+  category): D5-A0, B16-D.
+- **Extracted signals**: retrieval robustness (F1-D bm25_vs_empty,
+  regex_vs_bm25, symbol_vs_bm25 retrieval_utility point/CI/sign
+  stability); external benchmark agreement/disagreement (C5-C+C5-F
+  bm25_positive_on_both, regex_symbol_negative_on_both,
+  method agreement counts); live provider delta (B16-E
+  context_pack_signal_observed, solve_rate_delta, families
+  positive/zero/negative); optional D5-A0 anchor and B16-D secondary
+  live signal.
+- **Calibration features** (weak-supervision, NOT calibrated labels):
+  magnitude buckets, sign stability buckets, live provider delta
+  bucket, family distribution bucket, cross-signal alignment label.
+- **Cross-signal alignment labels** (fixed allowlist):
+  `retrieval_robust_positive_plus_live_positive`,
+  `retrieval_negative_methods_plus_live_not_supported`,
+  `retrieval_only_insufficient`, `conflicting_signals`.
+- **Readiness buckets** (fixed allowlist):
+  `ready_for_manual_review`, `needs_more_live_downstream`,
+  `retrieval_only_insufficient`, `conflicting_signals`,
+  `insufficient_signal`.
+- **Recommended next measurements** (measurement-only, NOT policy/
+  default/method winner): `manual_reference_audit`,
+  `heldout_benchmark_scale`, `live_downstream_scale`.
+- **Artifact identity**:
+  `schema_version=d5a1_automated_calibration_feature_table.v1`,
+  `claim_level=automated_calibration_feature_extraction_only`,
+  `mode=committed_aggregate_feature_extraction`,
+  `phase=D5-A1`. Status enum:
+  `automated_calibration_feature_table_pass`,
+  `fail_input_contract`, `fail_forbidden_scan`.
+- **Safe true flags** (only when actually true):
+  `automated_calibration_feature_extraction_performed`,
+  `aggregate_only_public_artifact`, `diagnostic_only`.
+- **Always-false no-claim flags**: `true_e_s_calibration_claimed`,
+  `automated_e_s_full_calibration_claimed`,
+  `human_e_s_calibration_claimed`, `calibrated_model_claimed`,
+  `policy_recommendation_claimed`, `method_winner_claimed`,
+  `external_benchmark_performance_claimed`,
+  `downstream_agent_value_proven`, `promotion_ready`,
+  `default_should_change`, all runtime/retriever/pack/backend/
+  default-policy/EvidenceCore change flags, `provider_calls_made`,
+  `remote_provider_calls_made`.
+- **No winner/best/recommended-default/calibrated-model/policy-
+  recommendation fields**. **No E/S calibration notation**. **No raw
+  model/routing prefixes**. **No per-unit metric arrays, raw input
+  artifact paths/content, or B16 task text**.
+- **Forbidden scanner (public, fail-closed)**: combines the F1-D
+  scanner (which combines F1-C/C5-A/C5-C/C5-E scanners and F1-D-
+  specific checks) and adds D5-A1-specific forbidden keys (raw input
+  artifact paths/content, calibration claim keys, policy/default
+  recommendation keys, raw B16 task text / provider payloads,
+  per-unit metric array keys) and D5-A1 record-shape checks for
+  `input_artifact_records`, `signal_records`,
+  `calibration_feature_records`, `readiness_bucket_records`,
+  `recommended_next_measurement_records`.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d5a1_automated_calibration_feature_table.py  => PASS
+python3 eval/d5a1_automated_calibration_feature_table.py --self-test  => PASS (126/126 checks)
+python3 eval/d5a1_automated_calibration_feature_table.py \
+  --out artifacts/d5a1_automated_calibration_feature_table/\
+d5a1_automated_calibration_feature_table_report.json  => PASS
+  (status: automated_calibration_feature_table_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   cross_signal_alignment: retrieval_robust_positive_plus_live_positive,
+   readiness_bucket: ready_for_manual_review,
+   signals: 9, features: 7, bucket_records: 5, measurements: 2,
+   automated_calibration_feature_extraction_performed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   method_winner_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false,
+   calibrated_model_claimed: false,
+   policy_recommendation_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+Local feature extraction run produced the following aggregate records:
+
+```text
+status: automated_calibration_feature_table_pass
+forbidden_scan: pass
+cross_signal_alignment: retrieval_robust_positive_plus_live_positive
+readiness_bucket: ready_for_manual_review
+input_artifact_records:
+  F1-D: required=true, loaded=true, claim_safe=true, unit_count=30
+  F1-C: required=true, loaded=true, claim_safe=true, unit_count=30
+  C5-C: required=true, loaded=true, claim_safe=true, unit_count=20
+  C5-F: required=true, loaded=true, claim_safe=true, unit_count=10
+  B16-E: required=true, loaded=true, claim_safe=true, unit_count=16
+  D5-A0: required=false, loaded=true, claim_safe=true, unit_count=4
+  B16-D: required=false, loaded=true, claim_safe=true, unit_count=8
+signal_records:
+  bm25_vs_empty_retrieval_utility (F1-D): point=+0.465035, ci=[+0.298938, +0.464512, +0.624026], sign+=1.0, units=30
+  regex_vs_bm25_retrieval_utility (F1-D): sign-=1.0, units=30
+  symbol_vs_bm25_retrieval_utility (F1-D): sign-=1.0, units=30
+  bm25_positive_on_both_benchmarks (C5-C+C5-F): bm25_positive_on_both=true
+  regex_symbol_negative_on_both_benchmarks (C5-C+C5-F): regex_negative=true, symbol_negative=true
+  benchmark_method_agreement (C5-C+C5-F): agree=3, disagree=0
+  b16e_context_pack_signal (B16-E): solve_rate_delta=+0.875, families_positive=4
+  d5a0_automated_calibration_smoke_anchor (D5-A0)
+  b16d_secondary_live_signal (B16-D)
+calibration_feature_records:
+  bm25_vs_empty_retrieval_utility_magnitude: bucket=weak_positive, value=0.465035
+  bm25_vs_empty_sign_stability: bucket=stable_positive, value=1.0
+  regex_vs_bm25_sign_stability: bucket=stable_negative, value=1.0
+  symbol_vs_bm25_sign_stability: bucket=stable_negative, value=1.0
+  live_provider_solve_rate_delta: bucket=strong_positive, value=0.875
+  live_provider_family_distribution: bucket=all_families_positive, value=4
+  cross_signal_alignment: bucket=retrieval_robust_positive_plus_live_positive
+readiness_bucket_records:
+  ready_for_manual_review: count=1
+  needs_more_live_downstream: count=0
+  retrieval_only_insufficient: count=0
+  conflicting_signals: count=0
+  insufficient_signal: count=0
+recommended_next_measurement_records:
+  manual_reference_audit
+  heldout_benchmark_scale
+```
+
+The committed artifact contains no raw task/row/needle IDs, repo
+URLs, commits, paths/spans/line ranges, source/snippets, prompts/
+responses, provider payloads, per-unit metric arrays, B16 task text,
+private labels, content hashes, candidate/evidence rows, or
+winner/best/default/calibrated-model/policy-recommendation fields.
+
+D5-A1 is the first automated calibration feature table. It machine-
+reads committed aggregate artifacts, extracts numeric signals, and
+computes deterministic calibration feature/bucket records for future
+calibration / manual review. It is feature extraction only: it does
+NOT claim calibration, downstream utility, true E/S calibration,
+method winner, external benchmark performance, formal confidence
+intervals, policy/default recommendation, leaderboard entry,
+promotion, or default/policy/runtime/retriever/pack/backend/
+EvidenceCore semantic change. See
+[D5-A1 detailed report](d5a1-automated-calibration-feature-table.md).
+
+### Caveats
+
+- D5-A1 is the public aggregate-only automated calibration feature
+  table artifact. It is eval/diagnostic only. It does NOT change
+  runtime, retriever, pack, backend, or default policy; it does NOT
+  change EvidenceCore semantics. It is NOT calibration, NOT a
+  calibrated model claim, NOT a policy/default recommendation, NOT a
+  benchmark result, NOT downstream utility, NOT true E/S calibration,
+  NOT an external benchmark performance claim, NOT a leaderboard
+  entry, NOT a method winner, and NOT a promotion.
+- D5-A1 machine-reads committed aggregate artifacts. It does NOT
+  summarize research logs or freeform docs. It does NOT re-run any
+  retrieval or scoring pipeline.
+- D5-A1 makes NO provider calls and NO remote provider calls. All
+  input data is read from committed aggregate artifacts (aggregate
+  counts and metrics only).
+- The features are weak-supervision features for future calibration /
+  manual review, NOT calibrated labels. The readiness buckets are
+  diagnostic buckets, NOT promotion/default gates.
+- The recommended next measurements are measurement-only. They are NOT
+  policy/default/method winner recommendations.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags remain true;
+  `automated_calibration_feature_extraction_performed=true` only when
+  feature extraction actually executed. No runtime/retriever/pack/
+  model/backend/default-policy files were modified; no promotion/
+  default/runtime claims change.

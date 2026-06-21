@@ -1,0 +1,315 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_feature_extraction",
+  "aggregate_only_public_artifact": true,
+  "automated_calibration_feature_extraction_performed": true,
+  "automated_e_s_full_calibration_claimed": false,
+  "backend_changed": false,
+  "calibrated_model_claimed": false,
+  "calibration_feature_records": [
+    {
+      "feature_bucket": "weak_positive",
+      "feature_name": "bm25_vs_empty_retrieval_utility_magnitude",
+      "feature_unit": "retrieval_utility_delta",
+      "feature_value": 0.465035
+    },
+    {
+      "feature_bucket": "stable_positive",
+      "feature_name": "bm25_vs_empty_sign_stability",
+      "feature_unit": "sign_positive_fraction",
+      "feature_value": 1.0
+    },
+    {
+      "feature_bucket": "stable_negative",
+      "feature_name": "regex_vs_bm25_sign_stability",
+      "feature_unit": "sign_negative_fraction",
+      "feature_value": 1.0
+    },
+    {
+      "feature_bucket": "stable_negative",
+      "feature_name": "symbol_vs_bm25_sign_stability",
+      "feature_unit": "sign_negative_fraction",
+      "feature_value": 1.0
+    },
+    {
+      "feature_bucket": "strong_positive",
+      "feature_name": "live_provider_solve_rate_delta",
+      "feature_unit": "solve_rate_delta",
+      "feature_value": 0.875
+    },
+    {
+      "feature_bucket": "all_families_positive",
+      "feature_name": "live_provider_family_distribution",
+      "feature_unit": "families_positive",
+      "feature_value": 4
+    },
+    {
+      "feature_bucket": "retrieval_robust_positive_plus_live_positive",
+      "feature_name": "cross_signal_alignment",
+      "feature_unit": "label",
+      "feature_value": 1.0
+    }
+  ],
+  "claim_level": "automated_calibration_feature_extraction_only",
+  "cross_signal_alignment": "retrieval_robust_positive_plus_live_positive",
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_calibration": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_policy_recommendation": false,
+    "is_true_e_s_calibration": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "automated_calibration_feature_extraction_aggregate_only"
+  },
+  "generated_at": "2026-06-21T18:53:10.388671+00:00",
+  "generated_by": "eval/d5a1_automated_calibration_feature_table.py",
+  "human_e_s_calibration_claimed": false,
+  "input_artifact_records": [
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "F1-D",
+      "required": true,
+      "schema_version": "f1d_cross_benchmark_retrieval_robustness.v1",
+      "skipped_reason_category": "",
+      "status": "cross_benchmark_retrieval_robustness_pass",
+      "unit_count": 30
+    },
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "F1-C",
+      "required": true,
+      "schema_version": "f1c_cross_benchmark_retrieval_utility.v1",
+      "skipped_reason_category": "",
+      "status": "cross_benchmark_retrieval_utility_pass",
+      "unit_count": 30
+    },
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "C5-C",
+      "required": true,
+      "schema_version": "c5c_contextbench_verified_method_matrix_scale_smoke.v1",
+      "skipped_reason_category": "",
+      "status": "contextbench_method_matrix_scale_smoke_pass",
+      "unit_count": 20
+    },
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "C5-F",
+      "required": true,
+      "schema_version": "c5f_repoqa_method_matrix_scale_smoke.v1",
+      "skipped_reason_category": "",
+      "status": "repoqa_method_matrix_scale_smoke_pass",
+      "unit_count": 10
+    },
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "B16-E",
+      "required": true,
+      "schema_version": "b16e_broader_live_provider_paired_smoke.v1",
+      "skipped_reason_category": "",
+      "status": "broader_live_provider_paired_smoke_pass",
+      "unit_count": 16
+    },
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "D5-A0",
+      "required": false,
+      "schema_version": "d5a_automated_es_calibration.v1",
+      "skipped_reason_category": "",
+      "status": "automated_es_calibration_smoke_pass",
+      "unit_count": 4
+    },
+    {
+      "claim_safe": true,
+      "loaded": true,
+      "phase": "B16-D",
+      "required": false,
+      "schema_version": "b16d_less_trivial_live_provider_paired_smoke.v1",
+      "skipped_reason_category": "",
+      "status": "live_provider_less_trivial_paired_smoke_pass",
+      "unit_count": 8
+    }
+  ],
+  "input_summary": {
+    "input_phases": [
+      "F1-D",
+      "F1-C",
+      "C5-C",
+      "C5-F",
+      "B16-E",
+      "D5-A0",
+      "B16-D"
+    ],
+    "optional_input_count": 2,
+    "optional_loaded_count": 2,
+    "optional_skipped_count": 0,
+    "required_input_count": 5,
+    "required_loaded_count": 5
+  },
+  "method_winner_claimed": false,
+  "mode": "committed_aggregate_feature_extraction",
+  "pack_builder_changed": false,
+  "phase": "D5-A1",
+  "policy_recommendation_claimed": false,
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "readiness_bucket": "ready_for_manual_review",
+  "readiness_bucket_records": [
+    {
+      "bucket": "ready_for_manual_review",
+      "bucket_count": 1
+    },
+    {
+      "bucket": "needs_more_live_downstream",
+      "bucket_count": 0
+    },
+    {
+      "bucket": "retrieval_only_insufficient",
+      "bucket_count": 0
+    },
+    {
+      "bucket": "conflicting_signals",
+      "bucket_count": 0
+    },
+    {
+      "bucket": "insufficient_signal",
+      "bucket_count": 0
+    }
+  ],
+  "recommended_next_measurement_records": [
+    {
+      "measurement": "manual_reference_audit",
+      "measurement_rationale": "retrieval_robust_positive_plus_live_positive: manual reference audit is the next weak-supervision step toward calibration readiness"
+    },
+    {
+      "measurement": "heldout_benchmark_scale",
+      "measurement_rationale": "scale retrieval benchmarks on heldout subsets to confirm bootstrap stability generalizes"
+    }
+  ],
+  "remote_provider_calls_made": false,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "d5a1_automated_calibration_feature_table.v1",
+  "self_test_checks_passed": 128,
+  "self_test_checks_total": 128,
+  "self_test_passed": true,
+  "signal_records": [
+    {
+      "bootstrap_replicates": 1000,
+      "bootstrap_seed": 20240621,
+      "ci_p05": 0.298938,
+      "ci_p50": 0.464512,
+      "ci_p95": 0.624026,
+      "effect_name": "bm25_vs_empty",
+      "metric": "retrieval_utility",
+      "point_estimate": 0.465035,
+      "sample_units": 30,
+      "sign_negative_fraction": 0.0,
+      "sign_positive_fraction": 1.0,
+      "sign_zero_fraction": 0.0,
+      "signal_name": "bm25_vs_empty_retrieval_utility",
+      "signal_source_phase": "F1-D"
+    },
+    {
+      "bootstrap_replicates": 1000,
+      "bootstrap_seed": 20240621,
+      "ci_p05": -0.874026,
+      "ci_p50": -0.714511,
+      "ci_p95": -0.548938,
+      "effect_name": "regex_vs_bm25",
+      "metric": "retrieval_utility",
+      "point_estimate": -0.715035,
+      "sample_units": 30,
+      "sign_negative_fraction": 1.0,
+      "sign_positive_fraction": 0.0,
+      "sign_zero_fraction": 0.0,
+      "signal_name": "regex_vs_bm25_retrieval_utility",
+      "signal_source_phase": "F1-D"
+    },
+    {
+      "bootstrap_replicates": 1000,
+      "bootstrap_seed": 20240621,
+      "ci_p05": -0.874026,
+      "ci_p50": -0.714511,
+      "ci_p95": -0.548938,
+      "effect_name": "symbol_vs_bm25",
+      "metric": "retrieval_utility",
+      "point_estimate": -0.715035,
+      "sample_units": 30,
+      "sign_negative_fraction": 1.0,
+      "sign_positive_fraction": 0.0,
+      "sign_zero_fraction": 0.0,
+      "signal_name": "symbol_vs_bm25_retrieval_utility",
+      "signal_source_phase": "F1-D"
+    },
+    {
+      "bm25_positive_on_both": true,
+      "contextbench_bm25_file_recall": 0.35,
+      "repoqa_bm25_file_recall": 0.5,
+      "signal_name": "bm25_positive_on_both_benchmarks",
+      "signal_source_phase": "C5-C+C5-F"
+    },
+    {
+      "regex_negative_on_both": true,
+      "signal_name": "regex_symbol_negative_on_both_benchmarks",
+      "signal_source_phase": "C5-C+C5-F",
+      "symbol_negative_on_both": true
+    },
+    {
+      "methods_agree": 3,
+      "methods_disagree": 0,
+      "signal_name": "benchmark_method_agreement",
+      "signal_source_phase": "C5-C+C5-F"
+    },
+    {
+      "context_pack_signal_observed": true,
+      "families_evaluated": 4,
+      "families_negative": 0,
+      "families_positive": 4,
+      "families_zero": 0,
+      "signal_name": "b16e_context_pack_signal",
+      "signal_source_phase": "B16-E",
+      "solve_rate_delta": 0.875
+    },
+    {
+      "d5a0_feature_anchor_loaded": true,
+      "d5a0_smoke_anchor_present": true,
+      "d5a0_true_e_s_calibration_claimed": false,
+      "method_aggregate_metrics_count": 4,
+      "signal_name": "d5a0_automated_calibration_smoke_anchor",
+      "signal_source_phase": "D5-A0"
+    },
+    {
+      "context_pack_signal_observed": true,
+      "families_evaluated": 0,
+      "signal_name": "b16d_secondary_live_signal",
+      "signal_source_phase": "B16-D",
+      "solve_rate_delta": 0.0
+    }
+  ],
+  "status": "automated_calibration_feature_table_pass",
+  "true_e_s_calibration_claimed": false
+}

@@ -362,6 +362,47 @@ promotion/default/runtime/retriever/pack/backend/EvidenceCore 语义变
 run 实际执行时。详见
 [F1-B 详细报告](f1b-retrieval-derived-counterfactual-utility.md)。
 
+## 2026-06-21 D5-A1 自动化校准特征表
+
+D5-A1 从实证 smoke 推进到 **校准就绪弱监督特征**，通过机器读取已提交
+的聚合 artifact。D5-A1
+（`eval/d5a1_automated_calibration_feature_table.py`，向后兼容复用
+F1-D scanner 原语；均未修改）->
+`artifacts/d5a1_automated_calibration_feature_table/d5a1_automated_calibration_feature_table_report.json`，
+schema `d5a1_automated_calibration_feature_table.v1`、
+`claim_level=automated_calibration_feature_extraction_only`、
+`status=automated_calibration_feature_table_pass|fail_input_contract|fail_forbidden_scan`、
+`mode=committed_aggregate_feature_extraction`、阶段 `D5-A1`）
+机器读取已提交聚合 artifact（F1-D、F1-C、C5-C、C5-F、B16-E 必需；
+D5-A0、B16-D 可选，若存在且 claim-safe），fail-closed 验证其 schema
+与声明 flag，提取数值聚合信号（来自 F1-D 的检索稳健性；来自 C5-C+C5-F
+的外部基准一致/分歧；来自 B16-E 的 live provider delta），并计算确定
+性校准特征/bucket 记录与就绪 bucket
+（`ready_for_manual_review`、`needs_more_live_downstream`、
+`retrieval_only_insufficient`、`conflicting_signals`、
+`insufficient_signal`）。推荐的下一步测量仅测量
+（`manual_reference_audit`、`heldout_benchmark_scale`、
+`live_downstream_scale`），**不是** policy/default/method winner。仅
+records 形态列表；无 per-unit metric 数组，无原始输入 artifact 路径/
+内容，无 B16 任务文本，无 winner/best/default/calibrated-model/
+policy-recommendation 字段，无 E/S 校准记法。126/126 self-test 检查通
+过。本地特征提取 run 已通过：status
+`automated_calibration_feature_table_pass`，forbidden scan pass，7 个
+输入 artifact 加载（5 必需 + 2 可选），9 信号，7 特征，5 bucket 记
+录，2 测量；
+cross_signal_alignment=`retrieval_robust_positive_plus_live_positive`，
+readiness_bucket=`ready_for_manual_review`。
+
+这是仅特征提取，**不是**校准。它**不是**校准、**不是**已校准模型声
+明、**不是** policy/default 推荐、**不是** benchmark 结果、**不是**下
+游 utility、**不是** true E/S 校准、**不是**外部基准测试性能声明、**不
+是** leaderboard 条目、**不是**方法 winner、**不是**正式置信区间、**不
+是** promotion/default/runtime/retriever/pack/backend/EvidenceCore 语义
+变更。所有无声明 / 无运行时变更标志保持 false。
+`automated_calibration_feature_extraction_performed=true` 仅在特征提取
+实际执行时。详见
+[D5-A1 详细报告](d5a1-automated-calibration-feature-table.md)。
+
 ## 2026-06-21 F1-D 跨基准检索 Utility 稳健性 Smoke
 
 F1-D 将 F1-C 从点估计扩展到 **诊断性 paired-bootstrap 置信/符号稳定性估
@@ -1189,6 +1230,7 @@ P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_ove
 - `docs/en/c5f-repoqa-method-matrix-scale-smoke.md` — C5-F RepoQA 10-needle 方法矩阵 scale smoke（aggregate-only；单独 C5-F checkpoint；仅 bm25,regex,symbol；默认/硬上限每方法 10 个 Python needle；无 provider 调用；无 winner/best_method/recommended_default；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是 promotion、不是默认变更、不是下游 agent 价值声称）。
 - `docs/en/f1c-cross-benchmark-retrieval-utility.md` — F1-C 跨基准 retrieval-derived utility smoke（aggregate-only；重新运行真实有界外部数据：ContextBench verified 20 行 + RepoQA 10 needle Python；bm25,regex,symbol + empty_retrieval 零基线；固定 retrieval_utility proxy；跨基准加权均值；5 个固定 counterfactual effects bm25_vs_empty/regex_vs_empty/symbol_vs_empty/regex_vs_bm25/symbol_vs_bm25；ContextBench 与 RepoQA 失败类别保持分离；无 provider 调用；无 winner/best_method/recommended_default/E_S 记法；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是方法 winner、不是 promotion、不是默认变更、不是下游 agent 价值声称、不是 true E/S 校准）。
 - `docs/en/f1d-cross-benchmark-retrieval-robustness.md` — F1-D 跨基准检索 utility 稳健性 smoke（aggregate-only；重新运行真实有界外部数据：ContextBench verified 20 行 + RepoQA 10 needle Python；per-unit 指标在聚合前在内存中拦截；bm25,regex,symbol + empty_retrieval 零基线；固定 retrieval_utility proxy 与 F1-C 不变；跨基准加权均值；保持样本计数的 paired 跨基准 bootstrap；5 个固定 effect x 5 个 metric = 25 条 bootstrap effect 记录带 CI p05/p50/p95 与符号稳定性分数；仅 benchmark_method_means/cross_benchmark_method_means/bootstrap_effect_records/input_summary/bootstrap_summary；无 per-unit metric 数组；无 F1-C 容器名；ContextBench 与 RepoQA 失败类别保持分离；无 provider 调用；bootstrap replicate 默认 1000 硬上限 2000 seed 20240621；无 winner/best_method/recommended_default/E_S 记法；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是正式置信区间、不是方法 winner、不是 promotion、不是默认变更、不是下游 agent 价值声称、不是 true E/S 校准）。
+- `docs/en/d5a1-automated-calibration-feature-table.md` — D5-A1 自动化校准特征表（aggregate-only；机器读取已提交聚合 artifact：F1-D/F1-C/C5-C/C5-F/B16-E 必需，D5-A0/B16-D 可选若存在且 claim-safe；fail-closed 输入验证（schema/status/声明 flag/forbidden_scan）；提取检索稳健性信号（F1-D bm25_vs_empty/regex_vs_bm25/symbol_vs_bm25 point/CI/sign stability）、外部基准一致/分歧（C5-C+C5-F bm25 在两者均正、regex/symbol 在两者均负、方法一致计数）、live provider delta（B16-E context_pack_signal/solve_rate_delta/families）；计算确定性校准特征/bucket 记录（量级 bucket、符号稳定性 bucket、live provider delta bucket、family 分布 bucket、跨信号对齐标签）；就绪 bucket ready_for_manual_review/needs_more_live_downstream/retrieval_only_insufficient/conflicting_signals/insufficient_signal；推荐下一步测量 manual_reference_audit/heldout_benchmark_scale/live_downstream_scale（仅测量，**不是** policy/default/method winner）；仅 input_artifact_records/signal_records/calibration_feature_records/readiness_bucket_records/recommended_next_measurement_records；无 per-unit metric 数组，无原始输入 artifact 路径/内容，无 B16 任务文本，无 winner/best/default/calibrated-model/policy-recommendation 字段，无 E/S 记法；特征提取，**不是**校准；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是正式置信区间、不是方法 winner、不是 promotion、不是默认变更、不是下游 agent 价值声称、不是 true E/S 校准、不是已校准模型声明、不是 policy 推荐）。
 
 ---
 

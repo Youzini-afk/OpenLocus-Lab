@@ -8218,3 +8218,192 @@ default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。详见
   smoke-claimed 标志**仅**在真实网络 run 实际执行时为 true。未修改任
   何 runtime/retriever/pack/model/backend/default-policy 文件；无
   promotion/default/runtime 声明变更。
+
+## 2026-06-21 — D5-A1 自动化校准特征表
+
+### 目标
+
+从实证 smoke 推进到校准就绪弱监督特征，通过机器读取已提交的聚合
+artifact 并计算确定性特征记录。D5-A1 是对真实先前 run 的经验特征提
+取，不是研究日志摘要，也不是校准。
+
+### 假设
+
+机器读取 F1-D、F1-C、C5-C、C5-F、B16-E（可选 D5-A0、B16-D）的已提交
+聚合 artifact，验证其 schema 与声明 flag，并提取数值聚合信号，可以
+在不进行 provider 调用、不进行校准、不声明下游 utility、true E/S 校
+准、方法 winner、外部基准性能、policy/default 或已校准模型的前提下，
+产出确定性校准特征/bucket 记录与测量推荐。
+
+### 实现备注
+
+- **D5-A1 artifact**
+  （`eval/d5a1_automated_calibration_feature_table.py`）：公开仅聚合特
+  征表。导入 F1-D scanner 原语向后兼容（均未修改）。机器读取已提交聚
+  合 artifact（**不是**研究日志或自由文档）。
+- **必需输入**（缺失/schema 不匹配/status 不匹配/不安全声明 flag 时
+  fail-closed）：F1-D、F1-C、C5-C、C5-F、B16-E。
+- **可选输入**（仅在存在且 claim-safe 时包含；否则记录为
+  `skipped_optional`，仅带聚合原因类别）：D5-A0、B16-D。
+- **提取的信号**：检索稳健性（F1-D bm25_vs_empty、regex_vs_bm25、
+  symbol_vs_bm25 retrieval_utility point/CI/sign stability）；外部基
+  准一致/分歧（C5-C+C5-F bm25_positive_on_both、
+  regex_symbol_negative_on_both、方法一致计数）；live provider delta
+  （B16-E context_pack_signal_observed、solve_rate_delta、families
+  positive/zero/negative）；可选 D5-A0 anchor 与 B16-D 次要 live 信号。
+- **校准特征**（弱监督，**不是**已校准标签）：量级 bucket、符号稳定
+  性 bucket、live provider delta bucket、family 分布 bucket、跨信号对
+  齐标签。
+- **跨信号对齐标签**（固定 allowlist）：
+  `retrieval_robust_positive_plus_live_positive`、
+  `retrieval_negative_methods_plus_live_not_supported`、
+  `retrieval_only_insufficient`、`conflicting_signals`。
+- **就绪 bucket**（固定 allowlist）：
+  `ready_for_manual_review`、`needs_more_live_downstream`、
+  `retrieval_only_insufficient`、`conflicting_signals`、
+  `insufficient_signal`。
+- **推荐的下一步测量**（仅测量，**不是** policy/default/method
+  winner）：`manual_reference_audit`、`heldout_benchmark_scale`、
+  `live_downstream_scale`。
+- **Artifact 身份**：
+  `schema_version=d5a1_automated_calibration_feature_table.v1`、
+  `claim_level=automated_calibration_feature_extraction_only`、
+  `mode=committed_aggregate_feature_extraction`、阶段 `D5-A1`。状态枚
+  举：`automated_calibration_feature_table_pass`、
+  `fail_input_contract`、`fail_forbidden_scan`。
+- **安全 true flag**（仅当实际为 true 时）：
+  `automated_calibration_feature_extraction_performed`、
+  `aggregate_only_public_artifact`、`diagnostic_only`。
+- **始终为 false 的 no-claim flag**：`true_e_s_calibration_claimed`、
+  `automated_e_s_full_calibration_claimed`、
+  `human_e_s_calibration_claimed`、`calibrated_model_claimed`、
+  `policy_recommendation_claimed`、`method_winner_claimed`、
+  `external_benchmark_performance_claimed`、
+  `downstream_agent_value_proven`、`promotion_ready`、
+  `default_should_change`、所有 runtime/retriever/pack/backend/
+  default-policy/EvidenceCore 变更 flag、`provider_calls_made`、
+  `remote_provider_calls_made`。
+- **无 winner/best/recommended-default/calibrated-model/policy-
+  recommendation 字段**。**无 E/S 校准记法**。**无 raw model/routing
+  prefix**。**无 per-unit metric 数组、原始输入 artifact 路径/内容或
+  B16 任务文本**。
+- **Forbidden scanner（公开，fail-closed）**：组合 F1-D scanner（本身
+  组合 F1-C/C5-A/C5-C/C5-E scanner 与 F1-D 特定检查）并添加 D5-A1 特定
+  forbidden key（原始输入 artifact 路径/内容、校准声明 key、policy/
+  default 推荐 key、原始 B16 任务文本/provider payload、per-unit metric
+  数组 key）与 D5-A1 record-shape 检查（`input_artifact_records`、
+  `signal_records`、`calibration_feature_records`、
+  `readiness_bucket_records`、
+  `recommended_next_measurement_records`）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/d5a1_automated_calibration_feature_table.py  => PASS
+python3 eval/d5a1_automated_calibration_feature_table.py --self-test  => PASS (126/126 checks)
+python3 eval/d5a1_automated_calibration_feature_table.py \
+  --out artifacts/d5a1_automated_calibration_feature_table/\
+d5a1_automated_calibration_feature_table_report.json  => PASS
+  (status: automated_calibration_feature_table_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   cross_signal_alignment: retrieval_robust_positive_plus_live_positive,
+   readiness_bucket: ready_for_manual_review,
+   signals: 9, features: 7, bucket_records: 5, measurements: 2,
+   automated_calibration_feature_extraction_performed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   method_winner_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false,
+   calibrated_model_claimed: false,
+   policy_recommendation_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地特征提取 run 产生以下聚合记录：
+
+```text
+status: automated_calibration_feature_table_pass
+forbidden_scan: pass
+cross_signal_alignment: retrieval_robust_positive_plus_live_positive
+readiness_bucket: ready_for_manual_review
+input_artifact_records:
+  F1-D: required=true, loaded=true, claim_safe=true, unit_count=30
+  F1-C: required=true, loaded=true, claim_safe=true, unit_count=30
+  C5-C: required=true, loaded=true, claim_safe=true, unit_count=20
+  C5-F: required=true, loaded=true, claim_safe=true, unit_count=10
+  B16-E: required=true, loaded=true, claim_safe=true, unit_count=16
+  D5-A0: required=false, loaded=true, claim_safe=true, unit_count=4
+  B16-D: required=false, loaded=true, claim_safe=true, unit_count=8
+signal_records:
+  bm25_vs_empty_retrieval_utility (F1-D): point=+0.465035, ci=[+0.298938, +0.464512, +0.624026], sign+=1.0, units=30
+  regex_vs_bm25_retrieval_utility (F1-D): sign-=1.0, units=30
+  symbol_vs_bm25_retrieval_utility (F1-D): sign-=1.0, units=30
+  bm25_positive_on_both_benchmarks (C5-C+C5-F): bm25_positive_on_both=true
+  regex_symbol_negative_on_both_benchmarks (C5-C+C5-F): regex_negative=true, symbol_negative=true
+  benchmark_method_agreement (C5-C+C5-F): agree=3, disagree=0
+  b16e_context_pack_signal (B16-E): solve_rate_delta=+0.875, families_positive=4
+  d5a0_automated_calibration_smoke_anchor (D5-A0)
+  b16d_secondary_live_signal (B16-D)
+calibration_feature_records:
+  bm25_vs_empty_retrieval_utility_magnitude: bucket=weak_positive, value=0.465035
+  bm25_vs_empty_sign_stability: bucket=stable_positive, value=1.0
+  regex_vs_bm25_sign_stability: bucket=stable_negative, value=1.0
+  symbol_vs_bm25_sign_stability: bucket=stable_negative, value=1.0
+  live_provider_solve_rate_delta: bucket=strong_positive, value=0.875
+  live_provider_family_distribution: bucket=all_families_positive, value=4
+  cross_signal_alignment: bucket=retrieval_robust_positive_plus_live_positive
+readiness_bucket_records:
+  ready_for_manual_review: count=1
+  needs_more_live_downstream: count=0
+  retrieval_only_insufficient: count=0
+  conflicting_signals: count=0
+  insufficient_signal: count=0
+recommended_next_measurement_records:
+  manual_reference_audit
+  heldout_benchmark_scale
+```
+
+已提交 artifact 不包含原始 task/row/needle ID、repo URL、commit、
+path/span/line range、source/snippet、prompt/response、provider
+payload、per-unit metric 数组、B16 任务文本、私有标签、content hash、
+candidate/evidence 行或 winner/best/default/calibrated-model/policy-
+recommendation 字段。
+
+D5-A1 是首个自动化校准特征表。它机器读取已提交聚合 artifact，提取
+数值信号，并计算确定性校准特征/bucket 记录用于未来校准/人工审查。它
+仅特征提取：它**不**声明校准、下游 utility、true E/S 校准、方法
+winner、外部基准性能、正式置信区间、policy/default 推荐、
+leaderboard 条目、promotion 或 default/policy/runtime/retriever/pack/
+backend/EvidenceCore 语义变更。详见
+[D5-A1 详细报告](d5a1-automated-calibration-feature-table.md)。
+
+### 注意事项
+
+- D5-A1 是公开仅聚合自动化校准特征表 artifact。它是 eval/diagnostic
+  only。它**不**改变 runtime、retriever、pack、backend 或 default
+  policy；它**不**改变 EvidenceCore 语义。它**不是**校准、**不是**已
+  校准模型声明、**不是** policy/default 推荐、**不是** benchmark 结果、
+  **不是**下游 utility、**不是** true E/S 校准、**不是**外部基准测试
+  性能声明、**不是** leaderboard 条目、**不是**方法 winner、**也不
+  是** promotion。
+- D5-A1 机器读取已提交聚合 artifact。它**不**摘要研究日志或自由文档。
+  它**不**重新运行任何检索或评分管线。
+- D5-A1 **不**进行任何 provider 调用，**不**进行任何远程 provider 调
+  用。所有输入数据从已提交聚合 artifact 读取（仅聚合计数与指标）。
+- 特征是面向未来校准/人工审查的弱监督特征，**不是**已校准标签。就绪
+  bucket 是诊断 bucket，**不是** promotion/default 门槛。
+- 推荐的下一步测量仅测量。它们**不是** policy/default/method winner
+  推荐。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志保持 true；
+  `automated_calibration_feature_extraction_performed=true` 仅在特征提
+  取实际执行时。未修改任何 runtime/retriever/pack/model/backend/
+  default-policy 文件；无 promotion/default/runtime 声明变更。

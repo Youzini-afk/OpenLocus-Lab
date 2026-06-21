@@ -372,6 +372,55 @@ runtime/retriever/pack/model/backend/default-policy files were
 modified. See the
 [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
 
+## Current status update — 2026-06-21 (D5-A1 automated calibration feature table)
+
+D5-A1 moves from empirical smokes to **calibration-ready weak-supervision
+features** by machine-reading committed aggregate artifacts. D5-A1
+(`eval/d5a1_automated_calibration_feature_table.py`, reusing F1-D
+scanner primitives backward-compatibly; none modified) ->
+`artifacts/d5a1_automated_calibration_feature_table/d5a1_automated_calibration_feature_table_report.json`,
+schema `d5a1_automated_calibration_feature_table.v1`,
+`claim_level=automated_calibration_feature_extraction_only`,
+`status=automated_calibration_feature_table_pass|fail_input_contract|fail_forbidden_scan`,
+`mode=committed_aggregate_feature_extraction`, phase `D5-A1`)
+machine-reads committed aggregate artifacts (F1-D, F1-C, C5-C, C5-F,
+B16-E required; D5-A0, B16-D optional if present and claim-safe),
+validates their schemas and claim flags fail-closed, extracts numeric
+aggregate signals (retrieval robustness from F1-D; external benchmark
+agreement/disagreement from C5-C+C5-F; live provider delta from
+B16-E), and computes deterministic calibration feature/bucket records
+(magnitude buckets, sign stability buckets, live provider delta bucket,
+family distribution bucket, cross-signal alignment label) and
+readiness buckets (`ready_for_manual_review`,
+`needs_more_live_downstream`, `retrieval_only_insufficient`,
+`conflicting_signals`, `insufficient_signal`). Recommended next
+measurements are measurement-only (`manual_reference_audit`,
+`heldout_benchmark_scale`, `live_downstream_scale`), NOT policy/
+default/method winner. Records-shaped lists only
+(`input_artifact_records`, `signal_records`,
+`calibration_feature_records`, `readiness_bucket_records`,
+`recommended_next_measurement_records`); no per-unit metric arrays, no
+raw input artifact paths/content, no B16 task text, no
+winner/best/default/calibrated-model/policy-recommendation fields, no
+E/S calibration notation. 126/126 self-test checks pass. Local feature
+extraction run passed: status
+`automated_calibration_feature_table_pass`, forbidden scan pass, 7
+input artifacts loaded (5 required + 2 optional), 9 signals, 7
+features, 5 bucket records, 2 measurements;
+cross_signal_alignment=`retrieval_robust_positive_plus_live_positive`,
+readiness_bucket=`ready_for_manual_review`.
+
+This is feature extraction only, NOT calibration. It is NOT
+calibration, NOT a calibrated model claim, NOT a policy/default
+recommendation, NOT a benchmark result, NOT downstream utility, NOT
+true E/S calibration, NOT an external benchmark performance claim, NOT
+a leaderboard entry, NOT a method winner, NOT a formal confidence
+interval, NOT a promotion/default/runtime/retriever/pack/backend/
+EvidenceCore semantic change. All no-claim / no-runtime-change flags
+remain false. `automated_calibration_feature_extraction_performed=true`
+only when feature extraction actually executed. See the
+[D5-A1 detailed report](d5a1-automated-calibration-feature-table.md).
+
 ## Current status update — 2026-06-21 (F1-D cross-benchmark retrieval utility robustness smoke)
 
 F1-D extends F1-C from point estimates to **diagnostic paired-bootstrap
