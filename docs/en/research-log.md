@@ -6248,3 +6248,269 @@ methods, and statistical analysis. See
   flags (`aggregate_only_public_artifact`, `diagnostic_only`) remain
   true. No runtime/retriever/pack/model/backend/default-policy files
   were modified; no promotion/default/runtime claims change.
+
+## 2026-06-21 — F1 Counterfactual Evidence Utility Smoke
+
+### Objective
+
+Produce the first counterfactual evidence utility smoke, testing the
+deep-research idea that E/S should be measured as **marginal causal
+utility for a coding-agent trajectory**, not only as subjective
+relevance. F1 runs a deterministic/mock agent over synthetic public
+micro bug tasks under **six counterfactual context variants**, measures
+B16-style downstream metrics per variant, and computes **five marginal
+utility deltas** from aggregate variant metrics. This is empirical and
+causal-shaped, but still a deterministic/mock smoke, not live-agent
+value and not true E/S calibration.
+
+### Hypothesis
+
+A deterministic mock agent on synthetic public micro bug tasks can
+produce causal-shaped marginal utility deltas across counterfactual
+context variants (primary vs base; support vs base; distractor vs base;
+support added to primary; distractor added to primary) under transient
+`/tmp` workspaces with real file edits and real subprocess tests,
+without persisting any task IDs, workspace paths, file paths, source
+snippets, patches/diffs, test output, raw event logs, per-run rows,
+context pack contents, or content hashes. The committed artifact is
+aggregate-only and the smoke is `pass` when all six variants execute,
+primary solves, support-only/distractor-only/base do not solve,
+distractor-only wrong_file_edits > base, and all five marginal deltas
+are computed from aggregate metrics.
+
+### Stage gates
+
+- F1 passes when self-test passes (162 checks), all six variants run
+  with run_count > 0, primary_only solve_rate = 1.0, base_no_context /
+  support_only / distractor_only solve_rate = 0.0, distractor_only
+  wrong_file_edits_mean > base_no_context wrong_file_edits_mean, all
+  five marginal effects are computed from aggregate variant metrics,
+  the forbidden scan is clean, and the committed artifact records only
+  aggregate counts/rates/means with all no-claim flags false.
+
+### Implementation notes
+
+- **F1 artifact** (`eval/f1_counterfactual_evidence_utility_smoke.py`):
+  public aggregate-only smoke. Generates deterministic synthetic public
+  micro bug task specs in code (default 24 tasks; CLI hard cap 100; no
+  fixture files committed). For each task and each of six variants,
+  creates a fresh `TemporaryDirectory` workspace containing `target.py`
+  (buggy), `support.py` (helper, not the target symbol),
+  `distractor.py` (wrong file), and `test_target.py` (stdlib test).
+  These paths/files NEVER appear in the public artifact.
+- **Six counterfactual context variants** (fixed allowlist; pack cues
+  are in-memory only, never emitted):
+  `base_no_context` (no cue -> no-op -> tests fail),
+  `primary_only` (primary target/symbol/operation cue -> edit target
+  correctly -> tests pass),
+  `support_only` (support cue -> edit support.py wrong file -> tests
+  fail),
+  `primary_plus_support` (primary + support -> inspect support, edit
+  target correctly -> tests pass; richer tool/context than primary),
+  `distractor_only` (wrong cue -> edit distractor -> tests fail;
+  wrong_file_edits increases),
+  `primary_plus_distractor` (primary + distractor -> inspect
+  distractor, edit target correctly, then edit distractor after the
+  correct first edit -> tests pass; worse wrong_file_edits/tool/context
+  than primary).
+- **Mock agent policy** (deterministic, pack-dependent; per-run event
+  log in-memory only, never committed):
+  if primary_target cue present -> inspect support/distractor if also
+  present, then edit target correctly, then (if distractor also
+  present) edit distractor after the correct first edit;
+  elif support cue present (no primary) -> edit support (wrong file);
+  elif wrong cue present (no primary) -> edit distractor (wrong file);
+  else -> no-op. Run real subprocess test, record pass/fail.
+- **Marginal utility deltas** (fixed effect names; utility-specific;
+  deliberately NOT `E_primary` / `S_support`):
+  `primary_context_vs_base` = `primary_only` - `base_no_context`;
+  `support_context_vs_base` = `support_only` - `base_no_context`;
+  `distractor_context_vs_base` = `distractor_only` - `base_no_context`;
+  `support_added_to_primary` = `primary_plus_support` - `primary_only`;
+  `distractor_added_to_primary` = `primary_plus_distractor` -
+  `primary_only`. Each effect emits deltas for every rate/mean metric
+  (excluding `run_count`).
+- **Theory mapping**: records that `primary_context_vs_base` corresponds
+  to `e_utility_smoke_proxy`, `support_added_to_primary` to
+  `s_conditional_utility_smoke_proxy`, `distractor_added_to_primary` to
+  `s_conditional_distractor_utility_smoke_proxy`, but
+  `true_e_s_calibration_claimed=false`,
+  `automated_e_s_full_calibration_claimed=false`,
+  `human_e_s_calibration_claimed=false`. The mapping is a
+  naming/interpretation aid only; the deltas are computed from
+  deterministic mock aggregate metrics over synthetic tasks, not from
+  real human/manual E/S labels.
+- **Artifact identity**: `schema_version=f1_counterfactual_evidence_utility_smoke.v1`,
+  `claim_level=counterfactual_evidence_utility_smoke_only`,
+  `status=counterfactual_evidence_utility_smoke_pass`,
+  `mode=public_aggregate_synthetic_micro_tasks`, `phase=F1`.
+- **Safe true flags** (exactly these, all true):
+  `counterfactual_context_variants_executed`, `deterministic_mock_agent`,
+  `real_file_edits_performed`, `subprocess_tests_executed`,
+  `marginal_utility_metrics_computed`,
+  `aggregate_only_public_artifact`, `diagnostic_only`.
+- **No-claim / no-runtime-change flags** (all false):
+  `live_llm_agent`, `provider_calls_made`,
+  `remote_provider_calls_made`, `downstream_agent_value_proven`,
+  `live_agent_generalization_claimed`, `real_user_task_claimed`,
+  `true_e_s_calibration_claimed`,
+  `automated_e_s_full_calibration_claimed`,
+  `human_e_s_calibration_claimed`,
+  `external_benchmark_performance_claimed`, `promotion_ready`,
+  `default_should_change`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`.
+- **Strict public scanner** (fail-closed). Modeled on B16-A: no
+  contract containers with field-name tokens; no over-broad container
+  exemption. Rejects forbidden dict keys anywhere (`task_id`,
+  `workspace_path`, `file`, `target_file`, `wrong_cue_file`,
+  `support_file`, `target_module`, `support_module`,
+  `distractor_module`, `test_module`, `path`, `span`, `content_sha`,
+  `snippet`, `code`, `patch`, `diff`, `test_output`, `stdout`,
+  `stderr`, `event_log`, `stack_trace`, `api_key`, `base_url`,
+  `provider_key`, `secret`, `token`, `credential`, `rows`, `per_run`,
+  `predictions`, `candidates`, `content`, `source`, `text`, `body`,
+  etc.) and value patterns: ANY URL (no URL allowlist), 32+ char hex
+  digests, secret-like strings, path-like strings with file extensions
+  (rejects `target.py`, `support.py`, `distractor.py`,
+  `test_target.py` as values), `/tmp/` workspace path values, `task_N`
+  task-identifier values, patch/diff markers (`---`, `+++`, `@@`),
+  stack traces, multiline strings, raw JSON fragments, raw line ranges
+  `12-34`, and the self-test sentinel.
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+
+### CI workflow
+
+- `.github/workflows/empirical-research.yml`: adds an `f1-counterfactual-
+  evidence-utility-smoke` job after `b16a-minimal-mock-agent-paired-run`.
+  No `secrets.`, no `vars.`, no `OPENLOCUS` provider env, no network.
+  Runs `python3 -m py_compile`, `--self-test`, default run (writes to
+  `$RUNNER_TEMP`), validates flag invariants (must-be-true:
+  `counterfactual_context_variants_executed`, `deterministic_mock_agent`,
+  `real_file_edits_performed`, `subprocess_tests_executed`,
+  `marginal_utility_metrics_computed`, `aggregate_only_public_artifact`,
+  `diagnostic_only`; must-be-false: all 18 no-claim /
+  no-runtime-change flags), validates docs i18n, checks working tree,
+  uploads only the aggregate temp report (7-day retention).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/f1_counterfactual_evidence_utility_smoke.py  => PASS
+python3 eval/f1_counterfactual_evidence_utility_smoke.py --self-test  => PASS (162/162 checks)
+python3 eval/f1_counterfactual_evidence_utility_smoke.py \
+  --out artifacts/f1_counterfactual_evidence_utility/\
+f1_counterfactual_evidence_utility_report.json  => PASS
+  (status: counterfactual_evidence_utility_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_micro_tasks, phase: F1,
+   variant_count: 6, effect_count: 5,
+   synthetic_task_count: 24, total_runs: 144,
+   base_no_context: solve_rate=0.0, tests_pass_rate=0.0,
+     wrong_file_edits_mean=0.0, tool_calls_before_first_edit_mean=0.0,
+     context_tokens_mean=8.0,
+   primary_only: solve_rate=1.0, tests_pass_rate=1.0,
+     wrong_file_edits_mean=0.0, tool_calls_before_first_edit_mean=1.0,
+     context_tokens_mean=24.0,
+   support_only: solve_rate=0.0, tests_pass_rate=0.0,
+     wrong_file_edits_mean=1.0, tool_calls_before_first_edit_mean=1.0,
+     context_tokens_mean=20.0,
+   primary_plus_support: solve_rate=1.0, tests_pass_rate=1.0,
+     wrong_file_edits_mean=0.0, tool_calls_before_first_edit_mean=2.0,
+     context_tokens_mean=40.0,
+   distractor_only: solve_rate=0.0, tests_pass_rate=0.0,
+     wrong_file_edits_mean=1.0, tool_calls_before_first_edit_mean=1.0,
+     context_tokens_mean=16.0,
+   primary_plus_distractor: solve_rate=1.0, tests_pass_rate=1.0,
+     wrong_file_edits_mean=1.0, tool_calls_before_first_edit_mean=2.0,
+     context_tokens_mean=32.0,
+   marginal_effects:
+     primary_context_vs_base: solve_rate_delta=+1.0,
+       wrong_file_edits_mean_delta=+0.0,
+       tool_calls_before_first_edit_mean_delta=+1.0,
+       context_tokens_mean_delta=+16.0,
+     support_context_vs_base: solve_rate_delta=+0.0,
+       wrong_file_edits_mean_delta=+1.0,
+       tool_calls_before_first_edit_mean_delta=+1.0,
+       context_tokens_mean_delta=+12.0,
+     distractor_context_vs_base: solve_rate_delta=+0.0,
+       wrong_file_edits_mean_delta=+1.0,
+       tool_calls_before_first_edit_mean_delta=+1.0,
+       context_tokens_mean_delta=+8.0,
+     support_added_to_primary: solve_rate_delta=+0.0,
+       wrong_file_edits_mean_delta=+0.0,
+       tool_calls_before_first_edit_mean_delta=+1.0,
+       context_tokens_mean_delta=+16.0,
+     distractor_added_to_primary: solve_rate_delta=+0.0,
+       wrong_file_edits_mean_delta=+1.0,
+       tool_calls_before_first_edit_mean_delta=+1.0,
+       context_tokens_mean_delta=+8.0,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_provider_calls_made: false,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   automated_e_s_full_calibration_claimed: false,
+   human_e_s_calibration_claimed: false,
+   promotion_ready: false, default_should_change: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false,
+   real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The F1 smoke is the first counterfactual evidence utility smoke in the
+OpenLocus research track. It executes a real edit/test loop under six
+counterfactual context variants, computes aggregate per-variant
+behavior metrics, and computes five marginal utility deltas from those
+aggregate metrics. It is explicitly NOT a benchmark result, NOT a live
+downstream agent value claim, NOT a true E/S calibration claim, NOT a
+promotion, NOT a default/policy change, NOT a runtime/retriever/pack/
+backend/EvidenceCore semantic change, and NOT a real user task claim.
+See [F1 detailed report](f1-counterfactual-evidence-utility.md).
+
+### Caveats
+
+- F1 is the public aggregate-only counterfactual evidence utility smoke
+  artifact. It is eval/diagnostic only. It does NOT change runtime,
+  retriever, pack, backend, or default policy; it does NOT change
+  EvidenceCore semantics. It is NOT a benchmark result, NOT a live
+  downstream agent value claim, NOT a true E/S calibration claim, NOT a
+  runtime-clean general algorithm claim, NOT an OOD temporal claim, NOT
+  a QuIVer systems claim, and NOT a real user task claim.
+- F1 uses a **deterministic mock agent** (no live LLM, no provider
+  calls, no remote calls). The mock agent's behavior is pack-dependent
+  by design. This is a causal pack-effect smoke, NOT a live agent value
+  claim.
+- F1 generates **deterministic synthetic public micro bug tasks** in
+  code. These are NOT real user tasks and are NOT external benchmark
+  tasks. The exact task/run counts are acceptable because these are
+  synthetic public tasks.
+- F1 performs **real file edits** and **real subprocess tests** (stdlib
+  Python) in fresh `/tmp` workspaces per task+variant. The per-run event
+  logs, patches, and test output stay under `/tmp` only and are NEVER
+  committed or uploaded. The committed artifact contains ONLY aggregate
+  counts/rates/means and aggregate marginal-effect deltas.
+- F1 does NOT prove downstream agent value. The marginal-effect deltas
+  are deterministic mock artifacts of the designed pack cues, NOT
+  evidence that any context variant improves a live downstream agent.
+  `downstream_agent_value_proven=false`.
+- F1 does NOT claim live agent generalization. The deterministic mock
+  agent generalizes trivially to the synthetic task family by
+  construction; this is NOT a live agent generalization claim.
+  `live_agent_generalization_claimed=false`.
+- F1 is NOT true E/S calibration. The theory mapping labels are
+  naming/interpretation aids only; the marginal deltas are computed
+  from deterministic mock aggregate metrics over synthetic tasks, not
+  from real human/manual E/S labels. `true_e_s_calibration_claimed=false`,
+  `automated_e_s_full_calibration_claimed=false`,
+  `human_e_s_calibration_claimed=false`.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
+  No runtime/retriever/pack/model/backend/default-policy files were
+  modified; no promotion/default/runtime claims change.

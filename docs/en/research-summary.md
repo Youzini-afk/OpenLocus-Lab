@@ -202,6 +202,67 @@ a real `failure_reason_category` (no stale/fake pass). No runtime/
 retriever/pack/model/backend/default-policy files were modified. See
 the [C5-A detailed report](c5-contextbench-verified-performance-smoke.md).
 
+## Current status update — 2026-06-21 (F1 counterfactual evidence utility smoke)
+
+Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual
+evidence utility smoke. F1
+(`eval/f1_counterfactual_evidence_utility_smoke.py` ->
+`artifacts/f1_counterfactual_evidence_utility/f1_counterfactual_evidence_utility_report.json`,
+schema `f1_counterfactual_evidence_utility_smoke.v1`,
+`claim_level=counterfactual_evidence_utility_smoke_only`,
+`status=counterfactual_evidence_utility_smoke_pass`,
+`mode=public_aggregate_synthetic_micro_tasks`, phase `F1`) generates
+deterministic synthetic public micro bug tasks in code, creates a fresh
+`/tmp` workspace per task+variant with real tiny Python modules + stdlib
+tests, runs a **deterministic mock agent** (no live LLM, no provider
+calls, no remote calls) that performs **real file edits** and runs
+**real subprocess tests** under **six counterfactual context variants**
+(`base_no_context`, `primary_only`, `support_only`,
+`primary_plus_support`, `distractor_only`, `primary_plus_distractor`),
+computes aggregate behavior metrics per variant, and computes
+**five marginal utility deltas** from aggregate variant metrics
+(`primary_context_vs_base`, `support_context_vs_base`,
+`distractor_context_vs_base`, `support_added_to_primary`,
+`distractor_added_to_primary`). The deltas are causal-shaped (variant
+vs variant) and use utility-specific names that deliberately avoid
+`E_primary` / `S_support` field-name shape. A `theory_mapping` block
+records that `primary_context_vs_base` corresponds to an E-utility smoke
+proxy and `support_added_to_primary` / `distractor_added_to_primary`
+correspond to S-conditional utility smoke proxies, but F1 is explicitly
+NOT true E/S calibration (`true_e_s_calibration_claimed=false`,
+`automated_e_s_full_calibration_claimed=false`,
+`human_e_s_calibration_claimed=false`). 162/162 self-test checks pass;
+24 tasks; 6 variants; 144 total runs.
+
+This is smoke-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT claim true E/S
+calibration, does NOT promote any candidate, and does NOT change
+runtime/retriever/pack/backend/default-policy/EvidenceCore semantics.
+The per-run event logs, patches, and test output stay under `/tmp` only
+and are NEVER committed or uploaded. The committed artifact is
+aggregate-only. All no-claim / no-runtime-change flags remain false
+(`live_llm_agent=false`, `provider_calls_made=false`,
+`remote_provider_calls_made=false`,
+`downstream_agent_value_proven=false`, `promotion_ready=false`,
+`default_should_change=false`, `runtime_behavior_changed=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`backend_changed=false`, `default_policy_changed=false`,
+`evidencecore_semantics_changed=false`,
+`external_benchmark_performance_claimed=false`,
+`live_agent_generalization_claimed=false`,
+`real_user_task_claimed=false`,
+`true_e_s_calibration_claimed=false`,
+`automated_e_s_full_calibration_claimed=false`,
+`human_e_s_calibration_claimed=false`). The deterministic-mock-run
+flags (`counterfactual_context_variants_executed`,
+`deterministic_mock_agent`, `real_file_edits_performed`,
+`subprocess_tests_executed`, `marginal_utility_metrics_computed`,
+`aggregate_only_public_artifact`, `diagnostic_only`) are the only
+additional true flags. No runtime/retriever/pack/model/
+backend/default-policy files were modified. See
+the [F1 detailed report](f1-counterfactual-evidence-utility.md).
+
 ## Current status update — 2026-06-20 (C4.1 external benchmark adapter / schema readiness)
 
 C4.1 is a **bounded external benchmark adapter / schema readiness** phase,

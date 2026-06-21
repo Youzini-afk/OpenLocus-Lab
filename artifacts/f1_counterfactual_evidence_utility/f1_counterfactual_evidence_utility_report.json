@@ -1,0 +1,851 @@
+{
+  "aggregate_only_public_artifact": true,
+  "automated_e_s_full_calibration_claimed": false,
+  "backend_changed": false,
+  "claim_level": "counterfactual_evidence_utility_smoke_only",
+  "counterfactual_context_variants_executed": true,
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "deterministic_mock_agent": true,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-21T07:55:23.529608+00:00",
+  "generated_by": "eval/f1_counterfactual_evidence_utility_smoke.py",
+  "human_e_s_calibration_claimed": false,
+  "input_summary": {
+    "counterfactual_design": true,
+    "effect_count": 5,
+    "effects": [
+      "primary_context_vs_base",
+      "support_context_vs_base",
+      "distractor_context_vs_base",
+      "support_added_to_primary",
+      "distractor_added_to_primary"
+    ],
+    "run_count_per_variant": 24,
+    "synthetic_task_count": 24,
+    "total_runs": 144,
+    "transient_workspace_outputs_only": true,
+    "variant_count": 6,
+    "variants": [
+      "base_no_context",
+      "primary_only",
+      "support_only",
+      "primary_plus_support",
+      "distractor_only",
+      "primary_plus_distractor"
+    ],
+    "workspace_isolation": "fresh_tmp_per_task_variant"
+  },
+  "live_agent_generalization_claimed": false,
+  "live_llm_agent": false,
+  "marginal_effects": {
+    "distractor_added_to_primary": {
+      "context_tokens_mean_delta": 8.0,
+      "correct_file_before_first_edit_rate_delta": 0.0,
+      "cost_proxy_mean_delta": 0.0,
+      "latency_ms_mean_delta": -0.041666,
+      "solve_rate_delta": 0.0,
+      "tests_pass_rate_delta": 0.0,
+      "tool_calls_before_first_edit_mean_delta": 1.0,
+      "wrong_file_edits_mean_delta": 1.0
+    },
+    "distractor_context_vs_base": {
+      "context_tokens_mean_delta": 8.0,
+      "correct_file_before_first_edit_rate_delta": 0.0,
+      "cost_proxy_mean_delta": 0.0,
+      "latency_ms_mean_delta": -1.541667,
+      "solve_rate_delta": 0.0,
+      "tests_pass_rate_delta": 0.0,
+      "tool_calls_before_first_edit_mean_delta": 1.0,
+      "wrong_file_edits_mean_delta": 1.0
+    },
+    "primary_context_vs_base": {
+      "context_tokens_mean_delta": 16.0,
+      "correct_file_before_first_edit_rate_delta": 1.0,
+      "cost_proxy_mean_delta": 0.0,
+      "latency_ms_mean_delta": -13.041667,
+      "solve_rate_delta": 1.0,
+      "tests_pass_rate_delta": 1.0,
+      "tool_calls_before_first_edit_mean_delta": 1.0,
+      "wrong_file_edits_mean_delta": 0.0
+    },
+    "support_added_to_primary": {
+      "context_tokens_mean_delta": 16.0,
+      "correct_file_before_first_edit_rate_delta": 0.0,
+      "cost_proxy_mean_delta": 0.0,
+      "latency_ms_mean_delta": -0.416666,
+      "solve_rate_delta": 0.0,
+      "tests_pass_rate_delta": 0.0,
+      "tool_calls_before_first_edit_mean_delta": 1.0,
+      "wrong_file_edits_mean_delta": 0.0
+    },
+    "support_context_vs_base": {
+      "context_tokens_mean_delta": 12.0,
+      "correct_file_before_first_edit_rate_delta": 0.0,
+      "cost_proxy_mean_delta": 0.0,
+      "latency_ms_mean_delta": -0.083333,
+      "solve_rate_delta": 0.0,
+      "tests_pass_rate_delta": 0.0,
+      "tool_calls_before_first_edit_mean_delta": 1.0,
+      "wrong_file_edits_mean_delta": 1.0
+    }
+  },
+  "marginal_utility_metrics_computed": true,
+  "mode": "public_aggregate_synthetic_micro_tasks",
+  "pack_builder_changed": false,
+  "phase": "F1",
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "real_file_edits_performed": true,
+  "real_user_task_claimed": false,
+  "remote_provider_calls_made": false,
+  "retriever_changed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "f1_counterfactual_evidence_utility_smoke.v1",
+  "self_test_checks": [
+    {
+      "check": "schema_version_correct",
+      "passed": true
+    },
+    {
+      "check": "claim_level_correct",
+      "passed": true
+    },
+    {
+      "check": "mode_correct",
+      "passed": true
+    },
+    {
+      "check": "phase_correct",
+      "passed": true
+    },
+    {
+      "check": "generated_by_correct",
+      "passed": true
+    },
+    {
+      "check": "status_blocked_when_self_test_not_passed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_counterfactual_context_variants_executed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_deterministic_mock_agent",
+      "passed": true
+    },
+    {
+      "check": "safe_true_real_file_edits_performed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_subprocess_tests_executed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_marginal_utility_metrics_computed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_aggregate_only_public_artifact",
+      "passed": true
+    },
+    {
+      "check": "safe_true_diagnostic_only",
+      "passed": true
+    },
+    {
+      "check": "default_false_live_llm_agent",
+      "passed": true
+    },
+    {
+      "check": "default_false_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "default_false_remote_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "default_false_downstream_agent_value_proven",
+      "passed": true
+    },
+    {
+      "check": "default_false_live_agent_generalization_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_real_user_task_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_true_e_s_calibration_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_automated_e_s_full_calibration_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_human_e_s_calibration_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_external_benchmark_performance_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_promotion_ready",
+      "passed": true
+    },
+    {
+      "check": "default_false_default_should_change",
+      "passed": true
+    },
+    {
+      "check": "default_false_runtime_behavior_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_retriever_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_pack_builder_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_backend_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_default_policy_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_evidencecore_semantics_changed",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_count_correct",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_symbols_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_correct_value_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_buggy_value_deterministic",
+      "passed": true
+    },
+    {
+      "check": "base_pack_has_no_file_cue",
+      "passed": true
+    },
+    {
+      "check": "primary_pack_has_target_file_cue",
+      "passed": true
+    },
+    {
+      "check": "primary_pack_has_target_symbol_cue",
+      "passed": true
+    },
+    {
+      "check": "primary_pack_has_operation_hint_cue",
+      "passed": true
+    },
+    {
+      "check": "support_pack_has_support_file_cue_only",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_pack_has_both_target_and_support",
+      "passed": true
+    },
+    {
+      "check": "distractor_pack_has_wrong_cue_file_cue_only",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_pack_has_both_target_and_wrong_cue",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_pack_richer_than_primary_pack",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_pack_richer_than_primary_pack",
+      "passed": true
+    },
+    {
+      "check": "variant_count_is_six",
+      "passed": true
+    },
+    {
+      "check": "effect_count_is_five",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_target_file",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_support_file",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_distractor_file",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_test_file",
+      "passed": true
+    },
+    {
+      "check": "test_fails_before_fix",
+      "passed": true
+    },
+    {
+      "check": "base_agent_no_edit",
+      "passed": true
+    },
+    {
+      "check": "base_agent_tests_fail",
+      "passed": true
+    },
+    {
+      "check": "base_agent_no_solve",
+      "passed": true
+    },
+    {
+      "check": "primary_agent_edits_correct_file",
+      "passed": true
+    },
+    {
+      "check": "primary_agent_no_wrong_file_edits",
+      "passed": true
+    },
+    {
+      "check": "primary_agent_one_tool_call_before_first_edit",
+      "passed": true
+    },
+    {
+      "check": "primary_agent_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "primary_agent_solve",
+      "passed": true
+    },
+    {
+      "check": "primary_agent_real_file_edit",
+      "passed": true
+    },
+    {
+      "check": "support_agent_edits_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "support_agent_not_correct_file",
+      "passed": true
+    },
+    {
+      "check": "support_agent_tests_fail",
+      "passed": true
+    },
+    {
+      "check": "support_agent_no_solve",
+      "passed": true
+    },
+    {
+      "check": "support_agent_edited_support_file",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_agent_edits_correct_file",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_agent_no_wrong_file_edits",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_agent_two_tool_calls_before_edit",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_agent_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_agent_solve",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_support_richer_context_than_primary",
+      "passed": true
+    },
+    {
+      "check": "distractor_agent_edits_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "distractor_agent_not_correct_file",
+      "passed": true
+    },
+    {
+      "check": "distractor_agent_tests_fail",
+      "passed": true
+    },
+    {
+      "check": "distractor_agent_no_solve",
+      "passed": true
+    },
+    {
+      "check": "distractor_agent_wrong_edits_greater_than_base",
+      "passed": true
+    },
+    {
+      "check": "distractor_agent_edited_distractor_file",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_agent_edits_correct_file",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_agent_wrong_file_edits_one",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_agent_two_tool_calls_before_edit",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_agent_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_agent_solve",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_wrong_edits_greater_than_primary",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_richer_context_than_primary",
+      "passed": true
+    },
+    {
+      "check": "mock_action_depends_on_primary_target_file",
+      "passed": true
+    },
+    {
+      "check": "mock_action_depends_on_wrong_cue_file",
+      "passed": true
+    },
+    {
+      "check": "primary_solve_rate_higher_than_base",
+      "passed": true
+    },
+    {
+      "check": "support_only_does_not_solve_but_edits_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "distractor_only_does_not_solve_but_edits_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "primary_plus_distractor_still_solves",
+      "passed": true
+    },
+    {
+      "check": "aggregate_run_count_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_solve_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_tests_pass_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_correct_file_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_wrong_file_edits_mean_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_tool_calls_mean_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_cost_proxy_mean_zero",
+      "passed": true
+    },
+    {
+      "check": "primary_context_vs_base_solve_rate_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "primary_context_vs_base_tool_calls_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "primary_context_vs_base_context_tokens_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "support_context_vs_base_solve_rate_delta_zero",
+      "passed": true
+    },
+    {
+      "check": "support_context_vs_base_wrong_file_edits_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "distractor_context_vs_base_solve_rate_delta_zero",
+      "passed": true
+    },
+    {
+      "check": "distractor_context_vs_base_wrong_file_edits_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "support_added_to_primary_solve_rate_delta_zero",
+      "passed": true
+    },
+    {
+      "check": "support_added_to_primary_tool_calls_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "support_added_to_primary_context_tokens_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "distractor_added_to_primary_solve_rate_delta_zero",
+      "passed": true
+    },
+    {
+      "check": "distractor_added_to_primary_wrong_file_edits_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "distractor_added_to_primary_context_tokens_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "delta_run_count_not_present_in_effects",
+      "passed": true
+    },
+    {
+      "check": "theory_mapping_marks_e_utility_proxy",
+      "passed": true
+    },
+    {
+      "check": "theory_mapping_marks_s_conditional_proxy",
+      "passed": true
+    },
+    {
+      "check": "theory_mapping_marks_s_conditional_distractor_proxy",
+      "passed": true
+    },
+    {
+      "check": "theory_mapping_true_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "theory_mapping_automated_e_s_full_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "theory_mapping_human_e_s_calibration_claimed_false",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_tmp_workspace_path",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_support_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_distractor_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_test_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_source_snippet",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_context_text",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_patch_marker",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_test_output",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_event_log",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_stack_trace",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_auth_field_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_endpoint_url_field_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_sentinel_canary",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_url_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_forbidden_field_name_as_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_multiline_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_json_fragment",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_variant_name_base_no_context",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_variant_name_primary_only",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_variant_name_primary_plus_distractor",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_effect_name_primary_context_vs_base",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_effect_name_distractor_added_to_primary",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_metric_values",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_delta_metric_values",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_workspace_isolation_token",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_theory_mapping_proxy_token",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_public_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_generation_raises_on_leak",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_raises_when_failed",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_does_not_raise_when_passed",
+      "passed": true
+    },
+    {
+      "check": "failed_self_test_does_not_carry_success_status",
+      "passed": true
+    },
+    {
+      "check": "public_report_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "public_report_no_forbidden_key_anywhere",
+      "passed": true
+    },
+    {
+      "check": "cli_has_self_test_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_out_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_task_count_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_only_expected_arguments",
+      "passed": true
+    },
+    {
+      "check": "cli_default_task_count_in_range",
+      "passed": true
+    }
+  ],
+  "self_test_passed": true,
+  "self_test_summary": {
+    "failed": 0,
+    "passed": 162,
+    "total": 162
+  },
+  "status": "counterfactual_evidence_utility_smoke_pass",
+  "subprocess_tests_executed": true,
+  "theory_mapping": {
+    "automated_e_s_full_calibration_claimed": false,
+    "distractor_added_to_primary_corresponds_to": "s_conditional_distractor_utility_smoke_proxy",
+    "distractor_context_vs_base_corresponds_to": "e_utility_smoke_proxy_distractor_variant",
+    "human_e_s_calibration_claimed": false,
+    "interpretation": "marginal utility deltas computed from aggregate variant metrics; deterministic mock causal smoke; not true E/S calibration",
+    "primary_context_vs_base_corresponds_to": "e_utility_smoke_proxy",
+    "support_added_to_primary_corresponds_to": "s_conditional_utility_smoke_proxy",
+    "support_context_vs_base_corresponds_to": "e_utility_smoke_proxy_support_variant",
+    "true_e_s_calibration_claimed": false
+  },
+  "true_e_s_calibration_claimed": false,
+  "variant_metrics": {
+    "base_no_context": {
+      "context_tokens_mean": 8.0,
+      "correct_file_before_first_edit_rate": 0.0,
+      "cost_proxy_mean": 0.0,
+      "latency_ms_mean": 25.0,
+      "run_count": 24,
+      "solve_rate": 0.0,
+      "tests_pass_rate": 0.0,
+      "tool_calls_before_first_edit_mean": 0.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    "distractor_only": {
+      "context_tokens_mean": 16.0,
+      "correct_file_before_first_edit_rate": 0.0,
+      "cost_proxy_mean": 0.0,
+      "latency_ms_mean": 23.458333,
+      "run_count": 24,
+      "solve_rate": 0.0,
+      "tests_pass_rate": 0.0,
+      "tool_calls_before_first_edit_mean": 1.0,
+      "wrong_file_edits_mean": 1.0
+    },
+    "primary_only": {
+      "context_tokens_mean": 24.0,
+      "correct_file_before_first_edit_rate": 1.0,
+      "cost_proxy_mean": 0.0,
+      "latency_ms_mean": 11.958333,
+      "run_count": 24,
+      "solve_rate": 1.0,
+      "tests_pass_rate": 1.0,
+      "tool_calls_before_first_edit_mean": 1.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    "primary_plus_distractor": {
+      "context_tokens_mean": 32.0,
+      "correct_file_before_first_edit_rate": 1.0,
+      "cost_proxy_mean": 0.0,
+      "latency_ms_mean": 11.916667,
+      "run_count": 24,
+      "solve_rate": 1.0,
+      "tests_pass_rate": 1.0,
+      "tool_calls_before_first_edit_mean": 2.0,
+      "wrong_file_edits_mean": 1.0
+    },
+    "primary_plus_support": {
+      "context_tokens_mean": 40.0,
+      "correct_file_before_first_edit_rate": 1.0,
+      "cost_proxy_mean": 0.0,
+      "latency_ms_mean": 11.541667,
+      "run_count": 24,
+      "solve_rate": 1.0,
+      "tests_pass_rate": 1.0,
+      "tool_calls_before_first_edit_mean": 2.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    "support_only": {
+      "context_tokens_mean": 20.0,
+      "correct_file_before_first_edit_rate": 0.0,
+      "cost_proxy_mean": 0.0,
+      "latency_ms_mean": 24.916667,
+      "run_count": 24,
+      "solve_rate": 0.0,
+      "tests_pass_rate": 0.0,
+      "tool_calls_before_first_edit_mean": 1.0,
+      "wrong_file_edits_mean": 1.0
+    }
+  }
+}

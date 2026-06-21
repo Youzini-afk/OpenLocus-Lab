@@ -190,6 +190,62 @@ true：`external_benchmark_rows_read`、
 runtime/retriever/pack/model/backend/default-policy 文件。详见
 [C5-A 详细报告](c5-contextbench-verified-performance-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（F1 反事实证据效用 smoke）
+
+继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1
+（`eval/f1_counterfactual_evidence_utility_smoke.py` ->
+`artifacts/f1_counterfactual_evidence_utility/f1_counterfactual_evidence_utility_report.json`，
+schema `f1_counterfactual_evidence_utility_smoke.v1`、
+`claim_level=counterfactual_evidence_utility_smoke_only`、
+`status=counterfactual_evidence_utility_smoke_pass`、
+`mode=public_aggregate_synthetic_micro_tasks`、阶段 `F1`）在代码中
+生成确定性合成公开 micro bug 任务，为每个 task+variant 创建全新
+`/tmp` 工作区，含真实微型 Python 模块 + stdlib 测试，运行**确定性
+mock agent**（无 live LLM、无 provider 调用、无远程调用），在**六个
+反事实 context variant**（`base_no_context`、`primary_only`、
+`support_only`、`primary_plus_support`、`distractor_only`、
+`primary_plus_distractor`）下执行**真实文件编辑**和**真实子进程测
+试**，按 variant 计算聚合行为指标，并从聚合 variant 指标计算**五个
+边际效用 delta**（`primary_context_vs_base`、
+`support_context_vs_base`、`distractor_context_vs_base`、
+`support_added_to_primary`、`distractor_added_to_primary`）。这些
+delta 是因果形态的（variant 对 variant），使用刻意避开
+`E_primary` / `S_support` 字段名形态的效用专属名称。一个
+`theory_mapping` 块记录 `primary_context_vs_base` 对应 E-utility
+smoke proxy，`support_added_to_primary` / `distractor_added_to_primary`
+对应 S-conditional utility smoke proxy，但 F1 明确**不是**真实 E/S
+校准（`true_e_s_calibration_claimed=false`、
+`automated_e_s_full_calibration_claimed=false`、
+`human_e_s_calibration_claimed=false`）。162/162 self-test 检查通
+过；24 个任务；6 个 variant；共 144 次 run。
+
+这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
+泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**
+声明真实 E/S 校准，**不**提升任何 candidate，也**不**改变
+runtime/retriever/pack/backend/default-policy/EvidenceCore 语义。
+per-run event log、patch 和测试输出仅留在 `/tmp`，**绝不**提交或上
+传。提交的 artifact 仅含聚合数据。所有无声明 / 无运行时变更标志保持
+false（`live_llm_agent=false`、`provider_calls_made=false`、
+`remote_provider_calls_made=false`、
+`downstream_agent_value_proven=false`、`promotion_ready=false`、
+`default_should_change=false`、`runtime_behavior_changed=false`、
+`retriever_changed=false`、`pack_builder_changed=false`、
+`backend_changed=false`、`default_policy_changed=false`、
+`evidencecore_semantics_changed=false`、
+`external_benchmark_performance_claimed=false`、
+`live_agent_generalization_claimed=false`、
+`real_user_task_claimed=false`、
+`true_e_s_calibration_claimed=false`、
+`automated_e_s_full_calibration_claimed=false`、
+`human_e_s_calibration_claimed=false`）。确定性 mock run 标志
+（`counterfactual_context_variants_executed`、
+`deterministic_mock_agent`、`real_file_edits_performed`、
+`subprocess_tests_executed`、`marginal_utility_metrics_computed`、
+`aggregate_only_public_artifact`、`diagnostic_only`）是仅有的额外
+true 标志。未修改任何 runtime/retriever/pack/model/
+backend/default-policy 文件。详见
+[F1 详细报告](f1-counterfactual-evidence-utility.md)。
+
 ## 当前状态更新 —— 2026-06-20（C4.1 外部 benchmark adapter / schema 就绪）
 
 C4.1 是一个**有界的外部 benchmark adapter / schema 就绪**阶段，**不是**外部

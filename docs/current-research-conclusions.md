@@ -80,6 +80,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)
 - `b16a-minimal-mock-agent-paired-run.md`: [en](en/b16a-minimal-mock-agent-paired-run.md) · [zh](zh/b16a-minimal-mock-agent-paired-run.md)
+- `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)
 - `p21-g-cross-model-context-injection.md`: [en](en/p21-g-cross-model-context-injection.md) · [zh](zh/p21-g-cross-model-context-injection.md)
