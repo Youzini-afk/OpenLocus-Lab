@@ -351,13 +351,17 @@ real subprocess tests, and computes aggregate behavior metrics +
 family-level records over paired `control_sparse` /
 `treatment_context_pack` arms.
 
-The committed artifact is **truthful**: status is
-`blocked_remote_not_enabled` with live-run flags false because no
-local provider env is available. A live
-`broader_live_provider_paired_smoke_pass` artifact requires an explicit
-local opt-in run or the manual CI `real-provider-benchmark` workflow
-with `stage=b16e_broader_live_provider_paired_smoke` and
-`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+Manual CI run `27902925812` (`real-provider-benchmark`,
+`stage=b16e_broader_live_provider_paired_smoke`,
+`enable_remote_models=true`) completed
+`broader_live_provider_paired_smoke_pass` and passed privacy
+validation. The committed artifact now mirrors that sanitized aggregate
+CI report: 8 synthetic tasks / 16 live provider calls; 16/16 provider
+calls succeeded; invalid JSON count 0; forbidden scan pass;
+control_sparse solve_rate=0.125 and tests_pass_rate=0.125;
+treatment_context_pack solve_rate=1.0 and tests_pass_rate=1.0;
+treatment-minus-control solve/test delta `+0.875`; 4/4 families had
+positive solve-rate delta; `context_pack_signal_observed=true`.
 
 This is smoke-only. It does NOT claim downstream agent value, does NOT
 claim live agent generalization, does NOT claim external benchmark

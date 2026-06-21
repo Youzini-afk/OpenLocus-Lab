@@ -310,13 +310,16 @@ schema `b16e_broader_live_provider_paired_smoke.v1`、
 `target.py`），运行真实子进程测试，并在 paired `control_sparse` /
 `treatment_context_pack` arms 上计算聚合行为指标 + 族级记录。
 
-提交的 artifact 是**真实的**：状态为 `blocked_remote_not_enabled`，
-live-run 标志为 false，因为本地无 provider env。live
-`broader_live_provider_paired_smoke_pass` artifact 需要显式本地
-opt-in run 或手动 CI `real-provider-benchmark` workflow
-（`stage=b16e_broader_live_provider_paired_smoke` +
-`enable_remote_models=true`）。**手动 CI live-provider run：待执
-行。**
+手动 CI run `27902925812`（`real-provider-benchmark`，
+`stage=b16e_broader_live_provider_paired_smoke`，
+`enable_remote_models=true`）完成
+`broader_live_provider_paired_smoke_pass` 并通过 privacy validation。已提交
+artifact 现在镜像该 sanitized aggregate CI report：8 个合成任务 / 16 次 live
+provider calls；16/16 provider calls succeeded；invalid JSON count 0；
+forbidden scan pass；control_sparse solve_rate=0.125、tests_pass_rate=0.125；
+treatment_context_pack solve_rate=1.0、tests_pass_rate=1.0；
+treatment-minus-control solve/test delta `+0.875`；4/4 families had positive
+solve-rate delta；`context_pack_signal_observed=true`。
 
 这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
 泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升

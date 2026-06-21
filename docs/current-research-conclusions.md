@@ -52,15 +52,16 @@ real user task, promotion, or default/policy/runtime/retriever/pack/
 backend/EvidenceCore semantic change. B16-E broadens B16-D into a
 heterogeneous synthetic task-family matrix with four fixed families
 (`same_symbol_support_relation`, `operation_ambiguity`,
-`boundary_condition`, `helper_dependency_choice`); each family has a
-different decisive cue; default 8 tasks / 16 live calls; same
-aggregate-only safety model; CI pass does NOT require treatment
-improvement; the committed artifact is truthful:
-`blocked_remote_not_enabled` with live-run flags false because no
-local provider env (NOT a fake pass); it does NOT claim downstream
-agent value, live agent generalization, external benchmark performance,
-real user task, promotion, or default/policy/runtime/retriever/pack/
-backend/EvidenceCore semantic change. C5-A is an
+`boundary_condition`, `helper_dependency_choice`); manual CI run
+27902925812 passed with 8 synthetic tasks / 16 live provider calls,
+control solve_rate=0.125, treatment solve_rate=1.0, solve/test delta
+`+0.875`, 4/4 families positive, and
+`context_pack_signal_observed=true`; this is a broader but still tiny
+synthetic smoke signal, not downstream value proof; B16-E does NOT
+claim downstream agent value, live agent generalization, external
+benchmark performance, real user task, promotion, or
+default/policy/runtime/retriever/pack/backend/EvidenceCore semantic
+change. C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
 verified subset; transient /tmp clone + retrieval + score; aggregate-only
 public artifact; no provider calls); it does NOT claim an external
@@ -109,13 +110,13 @@ smoke 信号，不是下游价值证明；B16-D **不**声明下游 agent 价值
 default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。B16-E
 将 B16-D 扩展为含四个固定族的异构合成任务族矩阵
 （`same_symbol_support_relation`、`operation_ambiguity`、
-`boundary_condition`、`helper_dependency_choice`）；每族有不同决定性
-cue；默认 8 任务 / 16 live 调用；相同仅聚合安全模型；CI 通过**不**要求
-treatment 改善；提交的 artifact 是真实的：`blocked_remote_not_enabled`
-（live-run 标志为 false，因为本地无 provider env；**不是** fake pass）；
-它**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
-户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
-EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
+`boundary_condition`、`helper_dependency_choice`）；manual CI run 27902925812
+已通过，覆盖 8 个合成任务 / 16 次 live provider calls，control
+solve_rate=0.125、treatment solve_rate=1.0、solve/test delta `+0.875`，
+4/4 families positive，且 `context_pack_signal_observed=true`；这是更广但仍微型
+的合成 smoke 信号，不是下游价值证明；B16-E **不**声明下游 agent 价值、
+live agent 泛化、外部基准测试性能、真实用户任务、promotion 或
+default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
 retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
 **不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、

@@ -7474,14 +7474,33 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-The committed artifact is the truthful local unavailable/blocked
-report because no local provider env is available. A live
-`broader_live_provider_paired_smoke_pass` artifact requires an
-explicit local opt-in run or the manual CI `real-provider-benchmark`
-workflow with
-`stage=b16e_broader_live_provider_paired_smoke` and
-`enable_remote_models=true`. **Manual CI live-provider run: pending.**
-See [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
+Manual CI run `27902925812` (`real-provider-benchmark`,
+`stage=b16e_broader_live_provider_paired_smoke`,
+`enable_remote_models=true`) completed
+`broader_live_provider_paired_smoke_pass` and passed privacy
+validation. The committed artifact now mirrors that sanitized aggregate
+CI report:
+
+```text
+synthetic_task_count: 8
+total_runs: 16
+provider calls: 16 attempted / 16 succeeded / 0 failed
+invalid_json_count: 0
+forbidden_scan: pass
+model_display_category: Kimi-K2.7-Code
+control_sparse: solve_rate=0.125, tests_pass_rate=0.125, wrong_file_edits_mean=0.0
+treatment_context_pack: solve_rate=1.0, tests_pass_rate=1.0, wrong_file_edits_mean=0.0
+treatment-minus-control solve_rate delta: +0.875
+treatment-minus-control tests_pass_rate delta: +0.875
+families_with_positive_solve_delta: 4/4
+context_pack_signal_observed: true
+```
+
+The default local no-provider-env path remains truthful
+(`blocked_remote_not_enabled` with live-run flags false). The positive
+treatment delta is a broader but still tiny synthetic smoke signal, not
+proof of downstream value or generalization. See [B16-E detailed
+report](b16e-broader-live-provider-paired-smoke.md).
 
 ### Caveats
 
@@ -7494,10 +7513,9 @@ See [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
   QuIVer systems claim.
 - B16-E uses a **live LLM provider** (OpenAI-compatible) only when
   `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are
-  all set. The committed artifact is truthful: if no local provider
-  env is available, it carries status `blocked_remote_not_enabled` /
-  `unavailable_no_local_provider_env` with live-run flags false. It
-  is NOT a fake pass.
+  all set. The default local no-env path remains truthful, while the
+  committed artifact mirrors successful sanitized manual CI run
+  `27902925812`. It is NOT a fake pass.
 - B16-E does NOT prove downstream agent value.
   `downstream_agent_value_proven=false`.
 - B16-E does NOT claim live agent generalization.

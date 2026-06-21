@@ -1,20 +1,85 @@
 {
-  "agent_behavior_metrics_evaluated": false,
+  "agent_behavior_metrics_evaluated": true,
   "aggregate_only_public_artifact": true,
-  "arm_results": [],
+  "arm_results": [
+    {
+      "arm": "control_sparse",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "context_tokens_mean": 20.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 13745.875,
+        "run_count": 8,
+        "solve_rate": 0.125,
+        "tests_pass_rate": 0.125,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 22224,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 109212,
+        "prompt_tokens_total": 992,
+        "timeout_count": 0,
+        "total_tokens_total": 23216,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "treatment_context_pack",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "context_tokens_mean": 64.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 985.25,
+        "run_count": 8,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 987,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 7730,
+        "prompt_tokens_total": 1690,
+        "timeout_count": 0,
+        "total_tokens_total": 2677,
+        "usage_available": true
+      }
+    }
+  ],
   "backend_changed": false,
   "claim_level": "broader_live_provider_downstream_paired_smoke_only",
   "default_policy_changed": false,
   "default_should_change": false,
   "diagnostic_only": true,
-  "downstream_agent_runs_performed": false,
+  "downstream_agent_runs_performed": true,
   "downstream_agent_value_proven": false,
   "evidencecore_semantics_changed": false,
   "external_benchmark_performance_claimed": false,
   "family_signal_summary": {
-    "families_evaluated": 0,
+    "families_evaluated": 4,
     "families_with_negative_solve_delta": 0,
-    "families_with_positive_solve_delta": 0,
+    "families_with_positive_solve_delta": 4,
     "families_with_zero_solve_delta": 0
   },
   "forbidden_scan": {
@@ -22,16 +87,16 @@
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-21T11:28:09.988082+00:00",
+  "generated_at": "2026-06-21T11:34:20.145301+00:00",
   "generated_by": "eval/b16e_broader_live_provider_paired_smoke.py",
   "honest_signals": {
-    "context_pack_signal_observed": false,
-    "families_evaluated": 0,
+    "context_pack_signal_observed": true,
+    "families_evaluated": 4,
     "families_with_negative_solve_delta": 0,
-    "families_with_positive_solve_delta": 0,
+    "families_with_positive_solve_delta": 4,
     "families_with_zero_solve_delta": 0,
-    "overall_treatment_solve_rate_delta": 0.0,
-    "overall_treatment_tests_pass_rate_delta": 0.0
+    "overall_treatment_solve_rate_delta": 0.875,
+    "overall_treatment_tests_pass_rate_delta": 0.875
   },
   "input_summary": {
     "arms": [
@@ -40,8 +105,8 @@
     ],
     "designed_causal_subset": true,
     "paired_design": true,
-    "run_count_per_arm": 0,
-    "synthetic_task_count": 0,
+    "run_count_per_arm": 8,
+    "synthetic_task_count": 8,
     "task_families": [
       "same_symbol_support_relation",
       "operation_ambiguity",
@@ -49,24 +114,73 @@
       "helper_dependency_choice"
     ],
     "task_family_matrix": true,
-    "total_runs": 0,
+    "total_runs": 16,
     "transient_workspace_outputs_only": true,
     "workspace_isolation": "fresh_tmp_per_task_arm"
   },
   "live_agent_generalization_claimed": false,
-  "live_llm_agent": false,
+  "live_llm_agent": true,
   "mode": "public_aggregate_synthetic_task_family_matrix",
-  "model_display_category": "unavailable",
+  "model_display_category": "Kimi-K2.7-Code",
   "pack_builder_changed": false,
-  "paired_deltas": [],
-  "paired_run_executed": false,
+  "paired_deltas": [
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.875,
+      "metric": "solve_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.875,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "wrong_file_edits_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "tool_calls_before_first_edit_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 44.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -12760.625,
+      "metric": "latency_ms_mean",
+      "treatment_arm": "treatment_context_pack"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_mean",
+      "treatment_arm": "treatment_context_pack"
+    }
+  ],
+  "paired_run_executed": true,
   "phase": "B16-E",
   "promotion_ready": false,
-  "provider_calls_made": false,
-  "real_file_edits_performed": false,
-  "real_test_commands_executed": false,
+  "provider_calls_made": true,
+  "real_file_edits_performed": true,
+  "real_test_commands_executed": true,
   "real_user_task_claimed": false,
-  "remote_provider_calls_made": false,
+  "remote_provider_calls_made": true,
   "retriever_changed": false,
   "runtime_behavior_changed": false,
   "schema_version": "b16e_broader_live_provider_paired_smoke.v1",
@@ -96,11 +210,11 @@
       "passed": true
     },
     {
-      "check": "status_unavailable_no_local_provider_env_preserved",
+      "check": "status_structured_action_parse_failed_preserved",
       "passed": true
     },
     {
-      "check": "status_fail_forbidden_scan_preserved",
+      "check": "status_unavailable_no_local_provider_env_preserved",
       "passed": true
     },
     {
@@ -108,15 +222,15 @@
       "passed": true
     },
     {
-      "check": "status_blocked_remote_not_enabled_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_structured_action_parse_failed_preserved",
+      "check": "status_fail_forbidden_scan_preserved",
       "passed": true
     },
     {
       "check": "status_provider_call_failed_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_blocked_remote_not_enabled_preserved",
       "passed": true
     },
     {
@@ -830,7 +944,80 @@
     "passed": 188,
     "total": 188
   },
-  "status": "blocked_remote_not_enabled",
-  "synthetic_task_family_matrix_used": false,
-  "task_family_results": []
+  "status": "broader_live_provider_paired_smoke_pass",
+  "synthetic_task_family_matrix_used": true,
+  "task_family_results": [
+    {
+      "arm": "control_sparse",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 0.5,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 0.5,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "treatment_context_pack",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "control_sparse",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "treatment_context_pack",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 1.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 1.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "control_sparse",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 0.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 0.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "treatment_context_pack",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 1.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 1.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "control_sparse",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 0.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 0.0,
+      "wrong_file_edits_mean": 0.0
+    },
+    {
+      "arm": "treatment_context_pack",
+      "correct_file_before_first_edit_rate": 1.0,
+      "run_count": 2,
+      "solve_rate": 1.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 1.0,
+      "wrong_file_edits_mean": 0.0
+    }
+  ]
 }
