@@ -1,0 +1,365 @@
+name: c5-contextbench-method-matrix-smoke
+
+# C5-B ContextBench verified retrieval method matrix smoke (manual opt-in).
+#
+# This workflow runs the C5-B external benchmark retrieval method matrix
+# smoke in CI. It is MANUAL OPT-IN ONLY via workflow_dispatch with
+# `enable_external_benchmark_network=true`. It does NOT run on PR/push
+# by default. It uses NO provider secrets/vars and NO OPENLOCUS_LLM/
+# OPENLOCUS_EMBEDDING env. It uploads ONLY the aggregate temp report
+# (no raw ContextBench rows, queries, repo URLs/commits, gold paths/spans,
+# generated task/label/run JSONL, evidence rows, cloned repos, or
+# stdout/stderr).
+#
+# Claim boundary: C5-B is eval/diagnostic only. The claim level is
+# `external_benchmark_retrieval_method_matrix_smoke_only`. This workflow
+# does NOT claim an external benchmark result, NOT a leaderboard entry,
+# NOT a performance claim, NOT a promotion, NOT a default/policy change,
+# NOT a runtime/retriever/pack/backend/EvidenceCore semantic change, and
+# NOT a downstream agent value claim. It does NOT emit `winner`,
+# `best_method`, `recommended_default`, or anything implying a policy/
+# default decision. `baseline_method` is fixed to `bm25`,
+# `baseline_is_policy_candidate=false`, and `default_should_change=false`.
+# If `enable_external_benchmark_network` is false, the workflow is a
+# no-op with a clear message and exits 0.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HF datasets-server + GitHub network access for the external benchmark method matrix smoke (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+      row_limit:
+        description: 'Number of ContextBench verified rows to evaluate per method (default 5; hard cap 10)'
+        required: false
+        default: '5'
+      methods:
+        description: 'Comma-separated OpenLocus retrieval methods (default bm25,regex,symbol; allowed bm25/regex/text/symbol; duplicates deduplicated deterministically)'
+        required: false
+        default: 'bm25,regex,symbol'
+      query_mode:
+        description: 'Query sanitizer mode (default first_paragraph; allowed first_paragraph/first_sentence/raw)'
+        required: false
+        default: 'first_paragraph'
+        type: choice
+        options:
+          - first_paragraph
+          - first_sentence
+          - raw
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: c5-contextbench-method-matrix-smoke-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}-${{ inputs.methods }}-${{ inputs.query_mode }}
+  cancel-in-progress: false
+
+jobs:
+  c5-contextbench-method-matrix-smoke:
+    name: c5b-method-matrix-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve C5-B inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          row_limit="${{ inputs.row_limit || '5' }}"
+          methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
+          query_mode="${{ inputs.query_mode || 'first_paragraph' }}"
+          # Validate row_limit is a positive integer.
+          if ! [[ "$row_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "row_limit must be a positive integer: $row_limit" >&2
+            exit 1
+          fi
+          if [[ "$row_limit" -gt 10 ]]; then
+            echo "row_limit exceeds hard cap 10: $row_limit (will be capped by the evaluator)" >&2
+          fi
+          # Validate methods: each token must be one of bm25/regex/text/symbol.
+          IFS=',' read -ra method_tokens <<< "$methods"
+          if [[ ${#method_tokens[@]} -eq 0 ]]; then
+            echo "methods must not be empty" >&2
+            exit 1
+          fi
+          for tok in "${method_tokens[@]}"; do
+            tok_trimmed="$(echo "$tok" | xargs)"
+            case "$tok_trimmed" in
+              bm25|regex|text|symbol) ;;
+              *) echo "unsupported method token: $tok_trimmed" >&2; exit 1 ;;
+            esac
+          done
+          # Validate query_mode.
+          case "$query_mode" in
+            first_paragraph|first_sentence|raw) ;;
+            *) echo "unsupported query_mode: $query_mode" >&2; exit 1 ;;
+          esac
+          # Normalize enable_network to a lowercase boolean string.
+          if [[ "$enable_network" == "true" ]]; then
+            enable_network="true"
+          else
+            enable_network="false"
+          fi
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+          echo "row_limit=$row_limit" >> "$GITHUB_OUTPUT"
+          echo "methods=$methods" >> "$GITHUB_OUTPUT"
+          echo "query_mode=$query_mode" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile C5-B evaluator
+        run: python3 -m py_compile eval/c5b_contextbench_verified_method_matrix_smoke.py
+
+      - name: C5-B self-test (no network)
+        run: python3 eval/c5b_contextbench_verified_method_matrix_smoke.py --self-test
+
+      - name: C5-B matrix smoke (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          ROW_LIMIT: ${{ steps.resolve.outputs.row_limit }}
+          METHODS: ${{ steps.resolve.outputs.methods }}
+          QUERY_MODE: ${{ steps.resolve.outputs.query_mode }}
+        run: |
+          report_path="$RUNNER_TEMP/c5b_contextbench_verified_method_matrix_report.json"
+          python3 eval/c5b_contextbench_verified_method_matrix_smoke.py \
+            --row-limit "$ROW_LIMIT" \
+            --methods "$METHODS" \
+            --query-mode "$QUERY_MODE" \
+            --language-filter python \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: C5-B no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          echo "enable_external_benchmark_network is false; skipping real network matrix smoke."
+          echo "Run with enable_external_benchmark_network=true to execute the real ContextBench verified retrieval method matrix smoke."
+          echo "Self-test and py_compile already passed; no aggregate report is produced in no-op mode."
+
+      - name: Validate C5-B temp report status/claim flags
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required claim boundary invariants for the C5-B external
+          # benchmark retrieval method matrix smoke. C5-B runs NO provider,
+          # makes NO remote provider calls, proves NO downstream agent
+          # value, promotes NO candidate, changes NO runtime/retriever/
+          # pack/backend/default-policy/EvidenceCore semantics, claims NO
+          # external benchmark performance (smoke only), and emits NO
+          # leaderboard entry, NO winner, NO best_method, NO
+          # recommended_default.
+          must_be_true = {
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+          }
+          must_be_false = {
+              "external_benchmark_performance_claimed",
+              "leaderboard_entry_claimed",
+              "downstream_agent_value_proven",
+              "promotion_ready",
+              "default_should_change",
+              "baseline_is_policy_candidate",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          # License fields.
+          if report.get("dataset_license_status") != "unknown_dataset_license":
+              failures.append(f"expected dataset_license_status=unknown_dataset_license, got {report.get('dataset_license_status')!r}")
+          if report.get("row_level_redistribution_allowed") is not False:
+              failures.append("expected row_level_redistribution_allowed=false")
+          if report.get("derived_row_level_publication_allowed") is not False:
+              failures.append("expected derived_row_level_publication_allowed=false")
+          if report.get("aggregate_metrics_publication") != "aggregate_only_smoke":
+              failures.append("expected aggregate_metrics_publication=aggregate_only_smoke")
+          # Status must be pass, partial, or unavailable_with_reason (no
+          # stale/fake pass; no fail_schema_contract / fail_forbidden_scan).
+          status = report.get("status")
+          if status not in ("pass", "partial", "unavailable_with_reason"):
+              failures.append(f"expected status in (pass, partial, unavailable_with_reason), got {status!r}")
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          # Identity fields.
+          if report.get("schema_version") != "c5b_contextbench_verified_method_matrix_smoke.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "external_benchmark_retrieval_method_matrix_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("mode") != "contextbench_verified_retrieval_method_matrix_smoke":
+              failures.append(f"unexpected mode: {report.get('mode')!r}")
+          if report.get("phase") != "C5-B":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("baseline_method") != "bm25":
+              failures.append(f"unexpected baseline_method: {report.get('baseline_method')!r}")
+          if "deltas_vs_baseline" in report:
+              failures.append("legacy deltas_vs_baseline field must not be present")
+          if report.get("methods_attempted") != len(report.get("methods_requested") or []):
+              failures.append(
+                  f"methods_attempted mismatch: {report.get('methods_attempted')!r} "
+                  f"vs requested={report.get('methods_requested')!r}"
+              )
+          if report.get("methods_succeeded") != report.get("methods_successful"):
+              failures.append(
+                  f"methods_succeeded/methods_successful mismatch: "
+                  f"{report.get('methods_succeeded')!r} vs {report.get('methods_successful')!r}"
+              )
+          # Provider calls must be 0.
+          if report.get("provider_calls") != 0:
+              failures.append(f"expected provider_calls=0, got {report.get('provider_calls')!r}")
+          # Recommendation / policy fields must NOT appear anywhere.
+          forbidden_recommendation_fields = (
+              "winner", "best_method", "recommended_default",
+              "recommended_method", "preferred_method", "default_method",
+              "policy_decision", "decision", "ranking", "rank",
+          )
+
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k in keys:
+                          found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for idx, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{idx}]"))
+              return found
+
+          leaked_recommendation_fields = find_keys(
+              report, forbidden_recommendation_fields
+          )
+          if leaked_recommendation_fields:
+              failures.append(
+                  f"forbidden recommendation fields present: "
+                  f"{leaked_recommendation_fields}"
+              )
+          # method_results must be a list of records (NOT a dict keyed by
+          # method name).
+          method_results = report.get("method_results")
+          if not isinstance(method_results, list):
+              failures.append(
+                  f"expected method_results to be a list, got {type(method_results)!r}"
+              )
+          else:
+              for idx, rec in enumerate(method_results):
+                  if not isinstance(rec, dict):
+                      failures.append(
+                          f"method_results[{idx}] must be a dict"
+                      )
+                      continue
+                  m = rec.get("method")
+                  if m not in ("bm25", "regex", "text", "symbol"):
+                      failures.append(
+                          f"method_results[{idx}].method not allowlisted: {m!r}"
+                      )
+          # Delta records must be record-shaped: one metric per row, fixed
+          # baseline, no dynamic metric keys and no winner/default semantics.
+          delta_records = report.get("smoke_metric_deltas_vs_baseline")
+          if not isinstance(delta_records, list):
+              failures.append(
+                  f"expected smoke_metric_deltas_vs_baseline to be a list, got {type(delta_records)!r}"
+              )
+          else:
+              allowed_delta_metrics = {"file_recall@10", "mrr", "span_f0.5@10", "success_rate"}
+              allowed_delta_keys = {"baseline_method", "method", "metric", "delta"}
+              for idx, rec in enumerate(delta_records):
+                  if not isinstance(rec, dict):
+                      failures.append(
+                          f"smoke_metric_deltas_vs_baseline[{idx}] must be a dict"
+                      )
+                      continue
+                  if set(rec) != allowed_delta_keys:
+                      failures.append(
+                          f"smoke_metric_deltas_vs_baseline[{idx}] has unexpected keys: {sorted(rec)!r}"
+                      )
+                  if rec.get("baseline_method") != "bm25":
+                      failures.append(
+                          f"smoke_metric_deltas_vs_baseline[{idx}].baseline_method invalid: {rec.get('baseline_method')!r}"
+                      )
+                  if rec.get("method") not in ("regex", "text", "symbol"):
+                      failures.append(
+                          f"smoke_metric_deltas_vs_baseline[{idx}].method invalid: {rec.get('method')!r}"
+                      )
+                  if rec.get("metric") not in allowed_delta_metrics:
+                      failures.append(
+                          f"smoke_metric_deltas_vs_baseline[{idx}].metric invalid: {rec.get('metric')!r}"
+                      )
+                  if not isinstance(rec.get("delta"), (int, float)):
+                      failures.append(
+                          f"smoke_metric_deltas_vs_baseline[{idx}].delta must be numeric: {rec.get('delta')!r}"
+                      )
+          if failures:
+              print("C5-B report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("C5-B report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  rows_fetched={report.get('rows_fetched')}")
+          print(f"  methods_requested={report.get('methods_requested')}")
+          print(f"  methods_attempted={report.get('methods_attempted')}")
+          print(f"  methods_successful={report.get('methods_successful')}")
+          print(f"  methods_succeeded={report.get('methods_succeeded')}")
+          print(f"  methods_failed={report.get('methods_failed')}")
+          print(f"  network_calls={report.get('network_calls')}")
+          print(f"  provider_calls={report.get('provider_calls')}")
+          print(f"  baseline_method={report.get('baseline_method')}")
+          if report.get("failure_reason_category"):
+              print(f"  failure_reason_category={report.get('failure_reason_category')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree (no generated files committed)
+        run: git diff --check
+
+      - name: Upload C5-B aggregate report artifact (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: c5-contextbench-method-matrix-smoke-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

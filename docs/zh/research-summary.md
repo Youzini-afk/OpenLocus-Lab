@@ -190,6 +190,61 @@ true：`external_benchmark_rows_read`、
 runtime/retriever/pack/model/backend/default-policy 文件。详见
 [C5-A 详细报告](c5-contextbench-verified-performance-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（C5-B ContextBench verified 检索方法矩阵 smoke）
+
+继 C5-A 之后，C5-B 产出首个外部-benchmark-形态检索性能 smoke 的有界多方法
+矩阵扩展。C5-B
+（`eval/c5b_contextbench_verified_method_matrix_smoke.py` ->
+`artifacts/c5b_contextbench_verified_method_matrix/c5b_contextbench_verified_method_matrix_report.json`，
+schema `c5b_contextbench_verified_method_matrix_smoke.v1`、
+`claim_level=external_benchmark_retrieval_method_matrix_smoke_only`、
+`status=pass|partial|unavailable_with_reason|fail_schema_contract|fail_forbidden_scan`、
+`mode=contextbench_verified_retrieval_method_matrix_smoke`、阶段 `C5-B`）从
+HF datasets-server `/rows` 读取有界 ContextBench verified subset **一次**
+（每方法默认 5 行；硬上限 10；跨所有方法共享；仅 stdlib `urllib`），将
+`gold_context` JSON 解析为临时 `gold_paths`/`gold_lines`（`content` 字段
+**绝不**读取或持久化），将 `problem_statement` sanitizer 为检索 query（仅
+内存中；first paragraph / first sentence / raw），在每行
+`TemporaryDirectory` 下通过 `git clone --filter=blob:none --no-checkout`
+然后 `git checkout` 克隆 `repo_url` 到 `base_commit`（有界超时），在
+`TemporaryDirectory` 下生成临时 task/label JSONL，通过
+`eval/run_retrieval.py` 跨请求方法矩阵运行 OpenLocus 检索（默认
+`bm25,regex,symbol`；允许 `bm25,regex,text,symbol`；固定
+`baseline_method=bm25`；`--method <method> --cwd <repo_root>`，无 provider
+调用），每方法运行 `eval/score.py` 并解析 aggregate metrics，并**仅**将
+每方法 aggregate 记录 + 与固定 `bm25` baseline 的仅 aggregate delta 写入
+提交的 artifact。161/161 self-test 检查通过；抓取 5 行（跨方法共享），3 个
+方法请求（bm25, regex, symbol），3 个方法成功，0 个方法失败。
+
+这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
+条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**
+声称 runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不**声称
+下游 agent 价值。它**不**输出 `winner`、`best_method`、
+`recommended_default` 或任何暗示策略/默认决策的字段。`baseline_method`
+固定为 `bm25`、`baseline_is_policy_candidate=false`、
+`default_should_change=false`。原始 ContextBench 行、queries、repo URL/名称、
+base commit、gold paths/spans/contents、生成的 task/label/run JSONL、
+evidence 行、克隆仓库、每行 metrics、行级 hash 与 stdout/stderr 仅保留在
+`/tmp` 下，**绝不**提交或上传。提交的 artifact 是 aggregate-only。所有
+无声明 / 无运行时变更标志保持 false
+（`external_benchmark_performance_claimed=false`、
+`leaderboard_entry_claimed=false`、
+`downstream_agent_value_proven=false`、`promotion_ready=false`、
+`default_should_change=false`、`baseline_is_policy_candidate=false`、
+`runtime_behavior_changed=false`、`retriever_changed=false`、
+`pack_builder_changed=false`、`backend_changed=false`、
+`default_policy_changed=false`、`evidencecore_semantics_changed=false`、
+`provider_calls_made=false`、`remote_provider_calls_made=false`）。Safe
+true 标志（仅当实际为真时为 true：`external_benchmark_rows_read`、
+`repositories_materialized_transiently`、`openlocus_retrieval_executed`、
+`score_py_metrics_computed`、`method_matrix_smoke`、
+`aggregate_only_public_artifact`、`diagnostic_only`）是仅有的额外 true
+标志。如果网络 smoke 无法完成（网络/HF/GitHub 失败、克隆超时、检索失败、
+打分失败），artifact 记录真实的 `unavailable_with_reason`，带真实的
+`failure_reason_category`（无 stale/fake pass）。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。见
+[C5-B 详细报告](c5b-contextbench-verified-method-matrix-smoke.md)。
+
 ## 当前状态更新 —— 2026-06-21（F1 反事实证据效用 smoke）
 
 继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1

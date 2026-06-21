@@ -6514,3 +6514,332 @@ See [F1 detailed report](f1-counterfactual-evidence-utility.md).
   (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
   No runtime/retriever/pack/model/backend/default-policy files were
   modified; no promotion/default/runtime claims change.
+
+## 2026-06-21 — C5-B ContextBench Verified Retrieval Method Matrix Smoke
+
+### Objective
+
+Produce the bounded multi-method matrix extension of the C5-A
+external-benchmark-shaped retrieval performance smoke. Read a bounded
+ContextBench verified subset from HuggingFace datasets-server `/rows`
+ONCE (shared across all methods), materialize the referenced repository
+at `base_commit` under a transient `/tmp` workspace, run OpenLocus
+retrieval across the requested method matrix (default
+`bm25,regex,symbol`; allowed `bm25,regex,text,symbol`; fixed
+`baseline_method=bm25`; no provider/model calls), score each method
+against ContextBench `gold_context` spans via the existing
+`eval/score.py` logic, and commit only an aggregate public report with
+per-method records and aggregate-only deltas vs the fixed `bm25`
+baseline. C5-B does NOT emit `winner`, `best_method`,
+`recommended_default`, or anything implying a policy/default decision.
+
+### Hypothesis
+
+A bounded ContextBench verified subset can be run through the real
+OpenLocus retrieval + scoring pipeline across a bounded method matrix
+under transient `/tmp` workspaces, producing per-method aggregate
+retrieval metrics (file recall@10, MRR, span F0.5@10, success_rate) and
+aggregate-only deltas vs the fixed `bm25` baseline, without persisting
+any row-level data, repo URLs/commits, gold paths/spans, generated
+JSONL, evidence rows, cloned repos, per-row metrics, row-level hashes,
+stdout/stderr, or any winner/recommendation field. The committed
+artifact is aggregate-only and the smoke is `pass` when all requested
+methods complete retrieval+scoring with at least one successful row each
+and the scanner passes; `partial` when at least one method succeeds and
+at least one fails; truthful `unavailable_with_reason` when no method
+completes retrieval+scoring (no stale/fake pass).
+
+### Stage gates
+
+- C5-B passes when self-test passes (154 checks), the real network
+  matrix smoke completes (rows fetched ONCE shared across methods, repos
+  cloned per method, retrieval executed for each method, score.py
+  metrics computed per method), the C5-B forbidden scan is clean, the
+  artifact shape is a list-of-records (NOT a dict keyed by method
+  name), and the committed artifact records only aggregate counts/rates/
+  means and aggregate-only deltas with all no-claim flags false and no
+  recommendation fields present.
+- C5-B is `partial` when at least one method succeeds and at least one
+  method fails/unavailable.
+- C5-B is `unavailable_with_reason` when network/HF/GitHub/clone/
+  retrieval/score fails for all methods; the artifact records the real
+  failure category without row-level values.
+- C5-B is `fail_schema_contract` on invalid method config, unexpected
+  metric key, or unsafe artifact structure (e.g. `method_results` as a
+  dict keyed by method name).
+- C5-B is `fail_forbidden_scan` on scanner failure.
+
+### Implementation notes
+
+- **C5-B artifact** (`eval/c5b_contextbench_verified_method_matrix_smoke.py`):
+  public aggregate-only method-matrix smoke. Reuses C5-A helpers
+  (`import c5_contextbench_verified_performance_smoke as c5a`) for row
+  fetch (`c5a._fetch_contextbench_rows`), query sanitizer
+  (`c5a._sanitize_query`), gold context parser
+  (`c5a._parse_gold_context`), clone + checkout
+  (`c5a._clone_and_checkout`), transient JSONL writers
+  (`c5a._write_transient_jsonl`), retrieval + score runner
+  (`c5a._run_retrieval_and_score`), OpenLocus binary resolution
+  (`c5a._resolve_openlocus_binary`), failure categories
+  (`c5a.FAILURE_CATEGORIES`), score metric allowlist
+  (`c5a.SCORE_METRIC_ALLOWLIST` — C5-B's
+  `METHOD_METRIC_ALLOWLIST` is a strict subset), scanner primitives
+  (`c5a._scan_forbidden`, `c5a._refuse_on_self_test_failure`,
+  `c5a._now_iso`, `c5a._write_json`, `c5a._check`), query modes / language
+  filters (`c5a.ALLOWED_QUERY_MODES` etc.), and license fields
+  (`c5a.LICENSE_FIELDS`). C5-B owns its own schema, claim fields,
+  method-matrix aggregation, method allowlist validation, and matrix
+  self-tests.
+- **Method parser** (`parse_methods`): empty/None -> default
+  `["bm25", "regex", "symbol"]`; each token must be in `ALLOWED_METHODS`
+  (`bm25,regex,text,symbol`); duplicates are deduplicated deterministically
+  (first-seen order preserved); empty tokens are skipped; on invalid
+  config, produces `fail_schema_contract` report.
+- **Row fetch shared across methods**: bounded ContextBench verified rows
+  fetched ONCE from HF datasets-server `/rows` endpoint (paginated;
+  stdlib `urllib` only; bounded timeout); filtered in-memory by
+  `language_filter` (categorical bucket only). The same row list is
+  reused for each method (no duplicate network fetch).
+- **Per-method retrieval + scoring**: for each method in the requested
+  matrix, iterates over the shared rows; per row, parses `gold_context`
+  JSON into transient `gold_paths`/`gold_lines` (the `content` field is
+  NEVER read or persisted); sanitizes `problem_statement` into a
+  retrieval query (in-memory only); clones `repo_url` at `base_commit`
+  under a per-row `TemporaryDirectory`; generates transient task/label
+  JSONL under a `TemporaryDirectory`; runs OpenLocus retrieval via
+  `eval/run_retrieval.py` (`--method <method> --cwd <repo_root>`); runs
+  `eval/score.py` and parses aggregate metrics; aggregates metrics
+  across successful rows for that method (mean of each allowlisted
+  numeric metric; `success_rate` recomputed from
+  `rows_successful / rows_evaluated`).
+- **Method result records** (`method_results`): a list of records (NOT a
+  dict keyed by method name) —
+  `{"method": <m>, "status": <s>, "rows_evaluated": <n>,
+  "rows_successful": <n>, "rows_failed": <n>, "metrics": {...},
+  "failure_category_counts": {...}}`. Each `method` value must be in
+  `ALLOWED_METHODS`.
+- **Deltas vs baseline** (`smoke_metric_deltas_vs_baseline`): a list of
+  records (only for methods other than the fixed `baseline_method=bm25`),
+  one metric per record. Each record has `baseline_method`, `method`,
+  `metric`, and numeric `delta` (`method_metric - baseline_metric`).
+  Only `DELTA_METRIC_ALLOWLIST` metrics (`file_recall@10`, `mrr`,
+  `span_f0.5@10`, `success_rate`) are emitted. If baseline method is
+  missing or has no metrics, no deltas are emitted (empty list, NOT a
+  fake zero).
+- **No recommendation fields**: C5-B does NOT emit `winner`,
+  `best_method`, `recommended_default`, `recommended_method`,
+  `preferred_method`, `default_method`, `policy_decision`, `decision`,
+  `ranking`, or `rank` anywhere. `baseline_method` is fixed to `bm25`,
+  `baseline_is_policy_candidate=false`, and `default_should_change=false`.
+- **OpenLocus binary resolution**: resolves `--openlocus` (or default
+  `target/release/openlocus` then `target/debug/openlocus` fallback) to
+  an ABSOLUTE path, because `run_retrieval.py` runs with
+  `--cwd <repo_root>` and a relative binary path would not resolve.
+- **Artifact identity**: `schema_version=c5b_contextbench_verified_method_matrix_smoke.v1`,
+  `claim_level=external_benchmark_retrieval_method_matrix_smoke_only`,
+  `status=pass|partial|unavailable_with_reason|fail_schema_contract|fail_forbidden_scan`,
+  `mode=contextbench_verified_retrieval_method_matrix_smoke`, `phase=C5-B`.
+- **Safe true flags** (true only if actually true):
+  `external_benchmark_rows_read`, `repositories_materialized_transiently`,
+  `openlocus_retrieval_executed`, `score_py_metrics_computed`,
+  `method_matrix_smoke`, `aggregate_only_public_artifact`, `diagnostic_only`.
+- **No-claim / no-runtime-change flags** (all false):
+  `external_benchmark_performance_claimed`, `leaderboard_entry_claimed`,
+  `downstream_agent_value_proven`, `promotion_ready`,
+  `default_should_change`, `baseline_is_policy_candidate`,
+  `runtime_behavior_changed`, `retriever_changed`, `pack_builder_changed`,
+  `backend_changed`, `default_policy_changed`,
+  `evidencecore_semantics_changed`, `provider_calls_made`,
+  `remote_provider_calls_made`.
+- **License fields** (fixed):
+  `dataset_license_status=unknown_dataset_license`,
+  `row_level_redistribution_allowed=false`,
+  `derived_row_level_publication_allowed=false`,
+  `aggregate_metrics_publication=aggregate_only_smoke`.
+- **Strict C5-B public scanner** (fail-closed). Reuses C5-A
+  forbidden scanner primitives for raw key/value leak detection (URLs,
+  hex digests, repo slugs, /tmp paths, patch markers, stack traces,
+  secrets, etc.) and ADDS C5-B-specific checks:
+  - rejects `method_results` if it is a dict keyed by method name
+    (C5-B requires a list of records, NOT a dict);
+  - rejects each method result record whose `method` value is not in
+    `ALLOWED_METHODS`;
+  - rejects `FORBIDDEN_RECOMMENDATION_FIELDS` keys anywhere (`winner`,
+    `best_method`, `recommended_default`, `recommended_method`,
+    `preferred_method`, `default_method`, `policy_decision`, `decision`,
+    `ranking`, `rank`);
+  - rejects C5-B-specific extra forbidden keys anywhere: `row`,
+    `rows_data`, `raw_row`, `raw_rows`, `repo_name`, `repo_slug`,
+    `query_text`, `gold`, `gold_path`, `gold_span`, `gold_snippet`,
+    `snippet`, `snippets`, `content_sha`, `stdout`, `stderr`,
+    `stdout_text`, `stderr_text`, `evidence_row`, `evidence_rows`,
+    `retrieved_path`, `retrieved_paths`, `retrieved_snippet`,
+    `cloned_repo_path`, `cloned_repo`, `per_row_metrics`, `row_metrics`.
+  - filters out a single C5-A false positive: the method-name string
+    `"text"` appearing as a value under `methods_allowed` /
+    `methods_requested` is flagged by C5-A as
+    `forbidden_field_name_value` (because `text` is a forbidden
+    CONTENT/KEY name in C5-A's contract). In C5-B, `text` is also a
+    legitimate OpenLocus retrieval method name, so it may appear as a
+    value under `methods_allowed`/`methods_requested`. The C5-B scanner
+    filters out that single false positive (only for
+    `forbidden_field_name_value` violations on C5-B-specific safe value
+    paths); all other C5-A violations are preserved.
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_c5b_no_forbidden` +
+  `c5a._refuse_on_self_test_failure` immediately before writing JSON).
+- **Transient /tmp clone + retrieval + score**: per-method per-row
+  `TemporaryDirectory` for cloned repos; `TemporaryDirectory` for
+  generated task/label/run JSONL. All raw ContextBench rows, queries,
+  repo URLs/names, base commits, gold paths/spans/contents, generated
+  JSONL, evidence rows, cloned repos, per-row metrics, row-level
+  hashes, and stdout/stderr stay under `/tmp` only and are NEVER
+  committed or uploaded. The committed artifact contains ONLY aggregate
+  counts/rates/means and aggregate-only deltas.
+- **Unavailable mode**: if the network smoke cannot complete (network/
+  HF/GitHub failure, clone timeout, retrieval failure, score failure)
+  for all methods, the artifact records truthful
+  `unavailable_with_reason` with a real `failure_reason_category` and
+  the corresponding `failure_category_counts` increment. No stale/fake
+  pass is ever written. In unavailable mode, `method_results` is a list
+  of records, one per requested method, each with
+  `status=unavailable_with_reason` and empty `metrics={}`;
+  `smoke_metric_deltas_vs_baseline=[]`; `method_matrix_smoke=false`;
+  `openlocus_retrieval_executed=false`; `score_py_metrics_computed=false`;
+  `repositories_materialized_transiently=false`;
+  `external_benchmark_rows_read=true` only if rows were actually
+  fetched before the failure.
+- **Schema contract failure mode**: on invalid method config (unknown
+  method, empty methods, etc.), unexpected metric key, or unsafe
+  artifact structure (e.g. `method_results` as a dict), the artifact
+  records `fail_schema_contract` with `failure_reason_category` set to
+  the schema violation type.
+
+### CI workflow
+
+- `.github/workflows/c5-contextbench-method-matrix-smoke.yml`: manual
+  opt-in `workflow_dispatch` with boolean
+  `enable_external_benchmark_network` default false, `row_limit`,
+  `methods`, `query_mode` inputs. If not enabled, no-op with clear
+  message. No `secrets.`, no `vars.`, no `OPENLOCUS_LLM` /
+  `OPENLOCUS_EMBEDDING` provider env. Builds OpenLocus CLI (release),
+  runs self-test, runs matrix smoke only when enabled, validates flags
+  (must-be-true: `aggregate_only_public_artifact`, `diagnostic_only`;
+  must-be-false: all no-claim / no-runtime-change flags including
+  `baseline_is_policy_candidate`, `default_should_change`,
+  `leaderboard_entry_claimed`; license fields fixed;
+  `baseline_method=bm25`; no `winner`/`best_method`/
+  `recommended_default` field present anywhere; `method_results` is a
+  list of records with allowlisted `method` values), validates docs
+  i18n, checks working tree, uploads aggregate report only (7-day
+  retention).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/c5b_contextbench_verified_method_matrix_smoke.py  => PASS
+python3 eval/c5b_contextbench_verified_method_matrix_smoke.py --self-test  => PASS (161/161 checks)
+cargo build --locked --release -p openlocus-cli  => PASS
+python3 eval/c5b_contextbench_verified_method_matrix_smoke.py \
+  --row-limit 5 --methods bm25,regex,symbol \
+  --query-mode first_paragraph --language-filter python \
+  --openlocus target/release/openlocus \
+  --out artifacts/c5b_contextbench_verified_method_matrix/\
+c5b_contextbench_verified_method_matrix_report.json  => PASS
+  (status: pass, forbidden_scan: pass, self_test_passed: true,
+   mode: contextbench_verified_retrieval_method_matrix_smoke, phase: C5-B,
+   methods: [bm25, regex, symbol], methods_attempted: 3,
+   methods_successful: 3, methods_succeeded: 3, methods_failed: 0,
+   rows_fetched: 5, network_calls: 1, provider_calls: 0,
+   baseline_method: bm25, baseline_is_policy_candidate: false,
+   default_should_change: false,
+   external_benchmark_rows_read: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   method_matrix_smoke: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The C5-B smoke is the first external-benchmark-shaped retrieval method
+matrix smoke in the OpenLocus research track. It executes a real
+network fetch from HF datasets-server ONCE (shared across methods), a
+real `git clone` + `git checkout` of the referenced repositories at
+their `base_commit` under transient `/tmp` directories per method, a real
+OpenLocus retrieval on each repository across the requested method
+matrix (`bm25`, `regex`, `symbol`), and a real `eval/score.py` scoring
+pass per method, producing aggregate retrieval metrics over a bounded
+ContextBench verified subset per method plus aggregate-only deltas vs
+the fixed `bm25` baseline. It is explicitly NOT a rigorous benchmark
+result, NOT a leaderboard entry, NOT a performance claim, NOT a
+promotion, NOT a default/policy change, NOT a runtime/retriever/pack/
+backend/EvidenceCore semantic change, NOT a downstream agent value
+claim, and does NOT emit any `winner`/`best_method`/`recommended_default`
+field. The full C5 external-benchmark-evaluation phase remains a
+bounded planning / feasibility stage that would require rigorous
+benchmark design, larger sample sizes, multiple methods, and statistical
+analysis. See
+[C5-B detailed report](c5b-contextbench-verified-method-matrix-smoke.md).
+
+### Caveats
+
+- C5-B is the public aggregate-only external benchmark retrieval method
+  matrix smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it does
+  NOT change EvidenceCore semantics. It is NOT a benchmark result, NOT
+  a leaderboard entry, NOT a performance claim, NOT a promotion, NOT a
+  default change, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, NOT a QuIVer systems claim, and NOT a downstream
+  agent value claim.
+- C5-B does NOT emit `winner`, `best_method`, `recommended_default`, or
+  anything implying a policy/default decision. The fixed
+  `baseline_method` is `bm25`, `baseline_is_policy_candidate=false`, and
+  `default_should_change=false`.
+- C5-B runs NO provider calls and NO remote provider calls. The only
+  network calls are to the public HF datasets-server (to fetch bounded
+  ContextBench verified rows ONCE, shared across methods) and to public
+  GitHub (to clone the referenced repositories at their `base_commit`
+  under transient `/tmp` directories per method). `provider_calls=0`,
+  `provider_calls_made=false`, `remote_provider_calls_made=false`.
+- C5-B uses a **bounded ContextBench verified subset** (default 5 rows;
+  hard cap 10 rows; per method). This is a smoke, not a rigorous
+  benchmark evaluation. The aggregate metrics are point estimates over a
+  small sample and should NOT be interpreted as a benchmark result,
+  leaderboard entry, performance claim, or method recommendation.
+- C5-B materializes the referenced repositories at their `base_commit`
+  under transient `/tmp` directories. The cloned repos, generated
+  task/label/run JSONL, evidence rows, and stdout/stderr stay under
+  `/tmp` only and are NEVER committed or uploaded. The committed
+  artifact contains ONLY aggregate counts/rates/means and
+  aggregate-only deltas.
+- C5-B does NOT claim external benchmark performance. The aggregate
+  metrics are smoke-level diagnostics, NOT a benchmark result.
+  `external_benchmark_performance_claimed=false`.
+- C5-B does NOT prove downstream agent value. The retrieval matrix smoke
+  does not exercise any downstream agent.
+  `downstream_agent_value_proven=false`.
+- ContextBench dataset license is unknown
+  (`unknown_dataset_license`); row-level redistribution is disabled
+  (`row_level_redistribution_allowed=false`) and derived row-level
+  publication is disabled
+  (`derived_row_level_publication_allowed=false`). Aggregate metrics
+  publication is allowed as aggregate-only smoke
+  (`aggregate_metrics_publication=aggregate_only_smoke`).
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
+  No runtime/retriever/pack/model/backend/default-policy files were
+  modified; no promotion/default/runtime claims change.

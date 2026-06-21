@@ -14,8 +14,9 @@ Latest status: C4 external benchmark readiness and the Step 6/D-series
 dual-rubric control-plane harnesses are complete through the D4-series
 rollup, and the trajectory has now pivoted into D5-A0 automated empirical
 E/S calibration smoke, B16-A minimal deterministic/mock downstream
-paired-agent empirical run, and C5-A ContextBench verified retrieval
-performance smoke. D5-H / human-reference calibration remains out
+paired-agent empirical run, C5-A ContextBench verified retrieval
+performance smoke, and C5-B ContextBench verified retrieval method matrix
+smoke. D5-H / human-reference calibration remains out
 of scope until human labels exist; the D5-A automated/programmatic empirical
 path is active. B16-A is a deterministic mock downstream smoke (no live LLM,
 no provider calls); it does NOT claim downstream agent value. C5-A is an
@@ -24,21 +25,34 @@ verified subset; transient /tmp clone + retrieval + score; aggregate-only
 public artifact; no provider calls); it does NOT claim an external
 benchmark result, leaderboard entry, performance claim, promotion, default
 change, runtime/retriever/pack/backend/EvidenceCore semantic change, or
-downstream agent value. No runtime/default-policy/promotion/downstream-value
-claim is made.
+downstream agent value. C5-B extends C5-A into a bounded multi-method
+matrix smoke (default bm25,regex,symbol; allowed bm25,regex,text,symbol;
+fixed baseline_method=bm25; per-method aggregate records; aggregate-only
+deltas vs bm25; no winner/best_method/recommended_default;
+baseline_is_policy_candidate=false; default_should_change=false); it
+likewise does NOT claim an external benchmark result, leaderboard entry,
+performance claim, promotion, default change, runtime/retriever/pack/
+backend/EvidenceCore semantic change, or downstream agent value. No
+runtime/default-policy/promotion/downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
-校准 smoke、B16-A 最小确定性/mock 下游 paired-agent 实证 run，以及 C5-A
-ContextBench verified 检索性能 smoke。D5-H / 人工参考校准在人工标签存在前
-仍属 out of scope；D5-A 自动/程序化实证路径已激活。B16-A 是确定性 mock
-下游 smoke（无 live LLM、无 provider 调用）；它**不**声明下游 agent 价值。
-C5-A 是外部-benchmark-形态的检索性能 smoke（有界 ContextBench verified
-subset；临时 /tmp clone + retrieval + score；aggregate-only 公共 artifact；
-无 provider 调用）；它**不**声称外部 benchmark 结果、leaderboard 条目、性能、
-promotion、默认变更、runtime/retriever/pack/backend/EvidenceCore 语义变更
-或下游 agent 价值。当前不作 runtime/default-policy/promotion/
-downstream-value 声明。
+校准 smoke、B16-A 最小确定性/mock 下游 paired-agent 实证 run、C5-A
+ContextBench verified 检索性能 smoke，以及 C5-B ContextBench verified 检索
+方法矩阵 smoke。D5-H / 人工参考校准在人工标签存在前仍属 out of scope；D5-A
+自动/程序化实证路径已激活。B16-A 是确定性 mock 下游 smoke（无 live LLM、
+无 provider 调用）；它**不**声明下游 agent 价值。C5-A 是外部-benchmark-形态
+的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
+retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
+**不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、
+runtime/retriever/pack/backend/EvidenceCore 语义变更或下游 agent 价值。C5-B
+将 C5-A 扩展为有界多方法矩阵 smoke（默认 bm25,regex,symbol；允许
+bm25,regex,text,symbol；固定 baseline_method=bm25；每方法 aggregate 记录；
+仅 aggregate 的与 bm25 的 delta；无 winner/best_method/recommended_default；
+baseline_is_policy_candidate=false；default_should_change=false）；它同样
+**不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、
+runtime/retriever/pack/backend/EvidenceCore 语义变更或下游 agent 价值。当前
+不作 runtime/default-policy/promotion/downstream-value 声明。
 
 ## Mirror convention / 镜像约定
 
@@ -76,6 +90,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b9d-deepseek-glm-participation-screen.md`: [en](en/b9d-deepseek-glm-participation-screen.md) · [zh](zh/b9d-deepseek-glm-participation-screen.md)
 - `c4-external-benchmark-adapters.md`: [en](en/c4-external-benchmark-adapters.md) · [zh](zh/c4-external-benchmark-adapters.md)
 - `c5-contextbench-verified-performance-smoke.md`: [en](en/c5-contextbench-verified-performance-smoke.md) · [zh](zh/c5-contextbench-verified-performance-smoke.md)
+- `c5b-contextbench-verified-method-matrix-smoke.md`: [en](en/c5b-contextbench-verified-method-matrix-smoke.md) · [zh](zh/c5b-contextbench-verified-method-matrix-smoke.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)

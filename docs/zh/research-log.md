@@ -6084,3 +6084,282 @@ runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不是**真实
   （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
   未修改任何 runtime/retriever/pack/model/backend/default-policy 文
   件；无 promotion/default/runtime 声明变更。
+
+## 2026-06-21 — C5-B ContextBench Verified 检索方法矩阵 Smoke
+
+### 目标
+
+产出 C5-A 外部-benchmark-形态检索性能 smoke 的有界多方法矩阵扩展。从
+HuggingFace datasets-server `/rows` 读取有界 ContextBench verified subset
+**一次**（跨所有方法共享），在临时 `/tmp` 工作区中检出引用仓库到
+`base_commit`，跨请求的方法矩阵（默认 `bm25,regex,symbol`；允许
+`bm25,regex,text,symbol`；固定 `baseline_method=bm25`；无 provider/model
+调用）运行 OpenLocus 检索，通过现有 `eval/score.py` 逻辑对每种方法针对
+ContextBench `gold_context` spans 打分，并仅提交一个 aggregate 公共报告，
+其中包含每方法记录和仅 aggregate 的、与固定 `bm25` baseline 的 delta。C5-B
+**不**输出 `winner`、`best_method`、`recommended_default` 或任何暗示策略/默认
+决策的字段。
+
+### 假设
+
+有界 ContextBench verified subset 可在临时 `/tmp` 工作区下通过真实 OpenLocus
+检索 + 打分管线跨有界方法矩阵运行，产出每方法 aggregate 检索 metrics
+（file recall@10、MRR、span F0.5@10、success_rate）和仅 aggregate 的、与固定
+`bm25` baseline 的 delta，而无需持久化任何行级数据、repo URL/commit、gold
+paths/spans、生成的 JSONL、evidence 行、克隆仓库、每行 metrics、行级 hash、
+stdout/stderr，或任何 winner/recommendation 字段。提交的 artifact 是
+aggregate-only，且当所有请求方法都完成检索+打分且每方法至少一个成功行、
+scanner 通过、artifact 形态为记录列表（**非**以方法名为 key 的 dict）时，smoke
+为 `pass`；当至少一个方法成功且至少一个失败时为 `partial`；当无方法完成
+检索+打分时为真实的 `unavailable_with_reason`（无 stale/fake pass）。
+
+### 阶段门
+
+- C5-B 通过当 self-test 通过（154 个检查）、真实网络矩阵 smoke 完成（行抓取
+  **一次**跨方法共享、仓库每方法克隆、每方法检索执行、每方法 score.py
+  metrics 计算）、C5-B forbidden scan 干净、artifact 形态为记录列表（**非**
+  以方法名为 key 的 dict），且提交的 artifact 仅记录 aggregate 计数/比率/均值
+  与仅 aggregate 的 delta，所有无声明标志为 false，且无 recommendation 字段。
+- C5-B 为 `partial` 当至少一个方法成功且至少一个方法失败/不可用。
+- C5-B 为 `unavailable_with_reason` 当所有方法的网络/HF/GitHub/clone/检索/
+  打分失败；artifact 记录真实的失败类别，无行级值。
+- C5-B 为 `fail_schema_contract` 当方法配置无效、意外 metric key 或不安全
+  artifact 结构（如 `method_results` 为以方法名为 key 的 dict）。
+- C5-B 为 `fail_forbidden_scan` 当 scanner 失败。
+
+### 实现说明
+
+- **C5-B artifact**
+  （`eval/c5b_contextbench_verified_method_matrix_smoke.py`）：公共
+  aggregate-only 方法矩阵 smoke。复用 C5-A helper
+  （`import c5_contextbench_verified_performance_smoke as c5a`）：
+  行抓取（`c5a._fetch_contextbench_rows`）、query sanitizer
+  （`c5a._sanitize_query`）、gold context 解析（`c5a._parse_gold_context`）、
+  克隆 + 检出（`c5a._clone_and_checkout`）、临时 JSONL 写入
+  （`c5a._write_transient_jsonl`）、检索 + 打分 runner
+  （`c5a._run_retrieval_and_score`）、OpenLocus 二进制解析
+  （`c5a._resolve_openlocus_binary`）、失败类别
+  （`c5a.FAILURE_CATEGORIES`）、score metric allowlist
+  （`c5a.SCORE_METRIC_ALLOWLIST` —— C5-B 的 `METHOD_METRIC_ALLOWLIST` 是
+  严格子集）、scanner 原语（`c5a._scan_forbidden`、
+  `c5a._refuse_on_self_test_failure`、`c5a._now_iso`、`c5a._write_json`、
+  `c5a._check`）、query 模式 / 语言过滤器（`c5a.ALLOWED_QUERY_MODES`
+  等）与 license 字段（`c5a.LICENSE_FIELDS`）。C5-B 拥有自己的 schema、claim
+  字段、方法矩阵聚合、方法 allowlist 校验与矩阵 self-test。
+- **方法 parser**（`parse_methods`）：空/None -> 默认
+  `["bm25", "regex", "symbol"]`；每个 token 必须在 `ALLOWED_METHODS`
+  （`bm25,regex,text,symbol`）中；重复方法被确定性去重（保留首次出现顺序）；
+  空 token 被跳过；无效配置时，产出 `fail_schema_contract` 报告。
+- **跨方法共享行抓取**：从 HF datasets-server `/rows` 端点抓取有界
+  ContextBench verified 行**一次**（分页；仅 stdlib `urllib`；有界超时）；在
+  内存中按 `language_filter`（仅为类别桶）过滤。同一行列表对每种方法复用
+  （无重复网络抓取）。
+- **每方法检索 + 打分**：对请求矩阵中的每种方法，遍历共享行；每行，将
+  `gold_context` JSON 解析为临时 `gold_paths`/`gold_lines`（`content` 字段
+  **绝不**读取或持久化）；将 `problem_statement` sanitizer 为检索 query
+  （仅内存中）；在每行 `TemporaryDirectory` 下克隆 `repo_url` 到
+  `base_commit`；在 `TemporaryDirectory` 下生成临时 task/label JSONL；通过
+  `eval/run_retrieval.py`（`--method <method> --cwd <repo_root>`）运行
+  OpenLocus 检索；运行 `eval/score.py` 并解析 aggregate metrics；在该方法的
+  成功行上聚合 metrics（每个 allowlisted 数值 metric 的均值；`success_rate`
+  由 `rows_successful / rows_evaluated` 重新计算）。
+- **方法结果记录**（`method_results`）：记录列表（**非**以方法名为 key 的
+  dict）——
+  `{"method": <m>, "status": <s>, "rows_evaluated": <n>,
+  "rows_successful": <n>, "rows_failed": <n>, "metrics": {...},
+  "failure_category_counts": {...}}`。每个 `method` 值必须在
+  `ALLOWED_METHODS` 中。
+- **与 baseline 的 delta**（`smoke_metric_deltas_vs_baseline`）：记录列表
+  （仅固定 `baseline_method=bm25` 以外的方法），每条记录对应一个 metric。
+  每条记录含 `baseline_method`、`method`、`metric` 与数值 `delta`
+  （`method_metric - baseline_metric`）。仅输出 `DELTA_METRIC_ALLOWLIST`
+  metric（`file_recall@10`、`mrr`、`span_f0.5@10`、`success_rate`）。如果
+  baseline 方法缺失或没有 metrics，则不输出 delta（空列表，**非** fake zero）。
+- **无 recommendation 字段**：C5-B **不**在任何位置输出 `winner`、
+  `best_method`、`recommended_default`、`recommended_method`、
+  `preferred_method`、`default_method`、`policy_decision`、`decision`、
+  `ranking` 或 `rank`。`baseline_method` 固定为 `bm25`、
+  `baseline_is_policy_candidate=false`、`default_should_change=false`。
+- **OpenLocus 二进制解析**：将 `--openlocus`（或默认
+  `target/release/openlocus`，然后 `target/debug/openlocus` 回退）解析为
+  **绝对**路径，因为 `run_retrieval.py` 使用 `--cwd <repo_root>` 运行，
+  相对二进制路径无法解析。
+- **Artifact 身份**：`schema_version=c5b_contextbench_verified_method_matrix_smoke.v1`、
+  `claim_level=external_benchmark_retrieval_method_matrix_smoke_only`、
+  `status=pass|partial|unavailable_with_reason|fail_schema_contract|fail_forbidden_scan`、
+  `mode=contextbench_verified_retrieval_method_matrix_smoke`、阶段 `C5-B`。
+- **Safe true 标志**（仅当实际为真时为 true）：
+  `external_benchmark_rows_read`、`repositories_materialized_transiently`、
+  `openlocus_retrieval_executed`、`score_py_metrics_computed`、
+  `method_matrix_smoke`、`aggregate_only_public_artifact`、`diagnostic_only`。
+- **无声明 / 无运行时变更标志**（全为 false）：
+  `external_benchmark_performance_claimed`、`leaderboard_entry_claimed`、
+  `downstream_agent_value_proven`、`promotion_ready`、
+  `default_should_change`、`baseline_is_policy_candidate`、
+  `runtime_behavior_changed`、`retriever_changed`、`pack_builder_changed`、
+  `backend_changed`、`default_policy_changed`、
+  `evidencecore_semantics_changed`、`provider_calls_made`、
+  `remote_provider_calls_made`。
+- **License 字段**（固定）：
+  `dataset_license_status=unknown_dataset_license`、
+  `row_level_redistribution_allowed=false`、
+  `derived_row_level_publication_allowed=false`、
+  `aggregate_metrics_publication=aggregate_only_smoke`。
+- **严格 C5-B 公共 scanner**（fail-closed）。复用 C5-A forbidden scanner 原语
+  进行原始 key/value 泄露检测（URL、hex digest、repo slug、/tmp 路径、patch
+  marker、stack trace、secret 等），并**新增** C5-B 特定检查：
+  - 如果 `method_results` 是以方法名为 key 的 dict，则拒绝（C5-B 要求记录
+    列表，**非** dict）；
+  - 拒绝每个 `method` 值不在 `ALLOWED_METHODS` 中的方法结果记录；
+  - 拒绝任何位置的 `FORBIDDEN_RECOMMENDATION_FIELDS` key（`winner`、
+    `best_method`、`recommended_default`、`recommended_method`、
+    `preferred_method`、`default_method`、`policy_decision`、`decision`、
+    `ranking`、`rank`）；
+  - 拒绝任何位置的 C5-B 特定额外 forbidden key：`row`、`rows_data`、
+    `raw_row`、`raw_rows`、`repo_name`、`repo_slug`、`query_text`、`gold`、
+    `gold_path`、`gold_span`、`gold_snippet`、`snippet`、`snippets`、
+    `content_sha`、`stdout`、`stderr`、`stdout_text`、`stderr_text`、
+    `evidence_row`、`evidence_rows`、`retrieved_path`、`retrieved_paths`、
+    `retrieved_snippet`、`cloned_repo_path`、`cloned_repo`、
+    `per_row_metrics`、`row_metrics`。
+  - 过滤掉一个 C5-A false positive：方法名字符串 `"text"` 作为值出现在
+    `methods_allowed`/`methods_requested` 下时，会被 C5-A 标记为
+    `forbidden_field_name_value`（因为 `text` 是 C5-A 合约中的 forbidden
+    CONTENT/KEY 名）。在 C5-B 中，`text` 也是一个合法的 OpenLocus 检索方法
+    名，因此它可以作为值出现在 `methods_allowed`/`methods_requested` 下。C5-B
+    scanner 过滤掉该单点 false positive（仅针对 C5-B 特定安全值路径上的
+    `forbidden_field_name_value` 违规）；所有其他 C5-A 违规保留。
+- **生成在 self-test 失败或 scanner 发现泄露时拒绝成功**
+  （fail-closed `_enforce_c5b_no_forbidden` +
+  `c5a._refuse_on_self_test_failure`，在写入 JSON 前立即执行）。
+- **临时 /tmp clone + 检索 + 打分**：每方法每行 `TemporaryDirectory` 用于
+  克隆仓库；`TemporaryDirectory` 用于生成的 task/label/run JSONL。所有原始
+  ContextBench 行、queries、repo URL/名称、base commit、gold paths/spans/
+  contents、生成的 JSONL、evidence 行、克隆仓库、每行 metrics、行级 hash 与
+  stdout/stderr 仅保留在 `/tmp` 下，**绝不**提交或上传。提交的 artifact 仅
+  包含 aggregate 计数/比率/均值与仅 aggregate 的 delta。
+- **不可用模式**：如果所有方法的网络 smoke 无法完成（网络/HF/GitHub 失败、
+  克隆超时、检索失败、打分失败），artifact 记录真实的
+  `unavailable_with_reason`，带真实的 `failure_reason_category` 与对应的
+  `failure_category_counts` 计数。绝不写入 stale/fake pass。在不可用模式下，
+  `method_results` 是记录列表，每请求方法一条，每条
+  `status=unavailable_with_reason` 且 `metrics={}` 为空；
+  `smoke_metric_deltas_vs_baseline=[]`；`method_matrix_smoke=false`；
+  `openlocus_retrieval_executed=false`；`score_py_metrics_computed=false`；
+  `repositories_materialized_transiently=false`；
+  `external_benchmark_rows_read=true` 仅当失败前实际抓取了行。
+- **Schema 合约失败模式**：在无效方法配置（未知方法、空方法等）、意外 metric
+  key 或不安全 artifact 结构（如 `method_results` 为 dict）时，artifact 记录
+  `fail_schema_contract`，`failure_reason_category` 设为 schema 违规类型。
+
+### CI workflow
+
+- `.github/workflows/c5-contextbench-method-matrix-smoke.yml`：手动 opt-in
+  `workflow_dispatch`，带布尔 `enable_external_benchmark_network` 默认
+  false，以及 `row_limit`、`methods`、`query_mode` 输入。未启用时，no-op
+  并显示明确消息。无 `secrets.`、无 `vars.`、无 `OPENLOCUS_LLM`/
+  `OPENLOCUS_EMBEDDING` provider env。构建 OpenLocus CLI（release），运行
+  self-test，仅在启用时运行矩阵 smoke，校验标志（必须为 true：
+  `aggregate_only_public_artifact`、`diagnostic_only`；必须为 false：所有
+  无声明 / 无运行时变更标志，含 `baseline_is_policy_candidate`、
+  `default_should_change`、`leaderboard_entry_claimed`；license 字段固定；
+  `baseline_method=bm25`；任何位置无 `winner`/`best_method`/
+  `recommended_default` 字段；`method_results` 是带 allowlisted `method` 值的
+  记录列表），校验 docs i18n，检查工作树，仅上传 aggregate 报告（7 天保留）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/c5b_contextbench_verified_method_matrix_smoke.py  => PASS
+python3 eval/c5b_contextbench_verified_method_matrix_smoke.py --self-test  => PASS (161/161 checks)
+cargo build --locked --release -p openlocus-cli  => PASS
+python3 eval/c5b_contextbench_verified_method_matrix_smoke.py \
+  --row-limit 5 --methods bm25,regex,symbol \
+  --query-mode first_paragraph --language-filter python \
+  --openlocus target/release/openlocus \
+  --out artifacts/c5b_contextbench_verified_method_matrix/\
+c5b_contextbench_verified_method_matrix_report.json  => PASS
+  (status: pass, forbidden_scan: pass, self_test_passed: true,
+   mode: contextbench_verified_retrieval_method_matrix_smoke, phase: C5-B,
+   methods: [bm25, regex, symbol], methods_attempted: 3,
+   methods_successful: 3, methods_succeeded: 3, methods_failed: 0,
+   rows_fetched: 5, network_calls: 1, provider_calls: 0,
+   baseline_method: bm25, baseline_is_policy_candidate: false,
+   default_should_change: false,
+   external_benchmark_rows_read: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   method_matrix_smoke: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+C5-B smoke 是 OpenLocus 研究轨中第一个外部-benchmark-形态的检索方法矩阵
+smoke。它执行从 HF datasets-server 的真实网络抓取**一次**（跨方法共享）、对
+引用仓库到其 `base_commit` 的每方法每行真实 `git clone` + `git checkout`（在
+临时 `/tmp` 目录下）、跨请求方法矩阵（`bm25`、`regex`、`symbol`）对每个
+仓库的真实 OpenLocus 检索，以及每方法真实的 `eval/score.py` 打分，产出有界
+ContextBench verified subset 上每方法的 aggregate 检索 metrics，以及与固定
+`bm25` baseline 的仅 aggregate delta。它明确**不是**严格的 benchmark 结果、
+**不是**leaderboard 条目、**不是**性能声称、**不是**promotion、**不是**默认/
+策略变更、**不是**runtime/retriever/pack/backend/EvidenceCore 语义变更、
+**不是**下游 agent 价值声称，且**不**输出任何
+`winner`/`best_method`/`recommended_default` 字段。完整的 C5 外部-benchmark-
+评估阶段仍然是一个有界的规划/可行性阶段，需要严格的 benchmark 设计、更大的
+样本量、多种方法与统计分析。见
+[C5-B 详细报告](c5b-contextbench-verified-method-matrix-smoke.md)。
+
+### 注意事项
+
+- C5-B 是公共 aggregate-only 外部 benchmark 检索方法矩阵 smoke artifact。
+  它是 eval/diagnostic only。它**不**改变 runtime、retriever、pack、
+  backend 或默认策略；它**不**改变 EvidenceCore 语义。它**不是**
+  benchmark 结果、**不是**leaderboard 条目、**不是**性能声称、**不是**
+  promotion、**不是**默认变更、**不是**runtime-clean 通用算法声称、
+  **不是**OOD 时间泛化声称、**不是**QuIVer systems 声称，也**不是**下游
+  agent 价值声称。
+- C5-B **不**输出 `winner`、`best_method`、`recommended_default` 或任何
+  暗示策略/默认决策的字段。固定 `baseline_method` 为 `bm25`、
+  `baseline_is_policy_candidate=false`、`default_should_change=false`。
+- C5-B **不**运行 provider 调用，**不**运行远程 provider 调用。唯一的
+  网络调用是对公共 HF datasets-server（抓取有界 ContextBench verified 行
+  **一次**，跨方法共享）与对公共 GitHub（在临时 `/tmp` 目录下每方法克隆
+  引用仓库到其 `base_commit`）。`provider_calls=0`、
+  `provider_calls_made=false`、`remote_provider_calls_made=false`。
+- C5-B 使用**有界 ContextBench verified subset**（默认 5 行；硬上限 10 行；
+  每方法）。这是 smoke，**不是**严格的 benchmark 评估。Aggregate metrics
+  是小样本上的点估计，**不应**被解读为 benchmark 结果、leaderboard 条目、
+  性能声称或方法推荐。
+- C5-B 在临时 `/tmp` 目录下检出引用仓库到其 `base_commit`。克隆的仓库、
+  生成的 task/label/run JSONL、evidence 行与 stdout/stderr 仅保留在
+  `/tmp` 下，**绝不**提交或上传。提交的 artifact 仅包含 aggregate
+  计数/比率/均值与仅 aggregate 的 delta。
+- C5-B **不**声称外部 benchmark 性能。Aggregate metrics 是 smoke 级别的
+  诊断，**不是**benchmark 结果。
+  `external_benchmark_performance_claimed=false`。
+- C5-B **不**证明下游 agent 价值。检索矩阵 smoke 不演练任何下游 agent。
+  `downstream_agent_value_proven=false`。
+- ContextBench 数据集 license 未知
+  （`unknown_dataset_license`）；行级再分发被禁用
+  （`row_level_redistribution_allowed=false`），派生行级发布被禁用
+  （`derived_row_level_publication_allowed=false`）。Aggregate metrics
+  发布允许作为 aggregate-only smoke
+  （`aggregate_metrics_publication=aggregate_only_smoke`）。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
+  未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
+  无 promotion/default/runtime 声明变更。
