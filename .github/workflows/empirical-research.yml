@@ -25,6 +25,7 @@ on:
       - 'crates/**'
       - 'eval/d5a_automated_es_calibration.py'
       - 'eval/b16a_minimal_mock_agent_paired_run.py'
+      - 'eval/b16b_less_separable_mock_paired_run.py'
       - 'eval/f1_counterfactual_evidence_utility_smoke.py'
       - 'eval/run_retrieval.py'
       - 'fixtures/r14/**'
@@ -344,9 +345,158 @@ jobs:
           if-no-files-found: error
           include-hidden-files: false
 
+  b16b-less-separable-mock-paired-run:
+    name: b16b
+    needs: b16a-minimal-mock-agent-paired-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: py_compile B16-B evaluator
+        run: python3 -m py_compile eval/b16b_less_separable_mock_paired_run.py
+
+      - name: B16-B self-test
+        run: python3 eval/b16b_less_separable_mock_paired_run.py --self-test
+
+      - name: B16-B default run (transient /tmp workspaces only)
+        run: |
+          report_path="$RUNNER_TEMP/b16b_less_separable_mock_paired_run_report.json"
+          python3 eval/b16b_less_separable_mock_paired_run.py --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate B16-B temp report status/claim flags
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required claim boundary invariants for the B16-B less-separable
+          # mock downstream paired stress. B16-B runs a deterministic mock
+          # agent (no live LLM, no provider calls, no remote provider
+          # calls); it does NOT claim downstream agent value, live agent
+          # generalization, promotion, default/policy change, or runtime/
+          # EvidenceCore semantic change.
+          must_be_true = {
+              "downstream_agent_runs_performed",
+              "deterministic_mock_agent",
+              "paired_run_executed",
+              "real_file_edits_performed",
+              "subprocess_tests_executed",
+              "less_separable_stress_tasks",
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+          }
+          must_be_false = {
+              "live_llm_agent",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+              "downstream_agent_value_proven",
+              "live_agent_generalization_claimed",
+              "promotion_ready",
+              "default_should_change",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "external_benchmark_performance_claimed",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          if status != "mock_downstream_paired_stress_pass":
+              failures.append(f"expected status=mock_downstream_paired_stress_pass, got {status!r}")
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          if "arm_metrics" in report:
+              failures.append("top-level arm_metrics dict mirror must not be present")
+          if "outcome_category_counts" in report:
+              failures.append("top-level outcome_category_counts dict mirror must not be present")
+          if "deltas_treatment_minus_control" in report:
+              failures.append("legacy deltas_treatment_minus_control field must not be present")
+          arm_results = report.get("arm_results")
+          if not isinstance(arm_results, list):
+              failures.append("expected arm_results to be a list of records")
+          else:
+              arms = [r.get("arm") for r in arm_results if isinstance(r, dict)]
+              if arms != ["control_sparse", "treatment_multi_cue"]:
+                  failures.append(f"unexpected arm_results arms: {arms!r}")
+          deltas = report.get("paired_deltas")
+          expected_delta_keys = {"baseline_arm", "treatment_arm", "metric", "delta"}
+          if not isinstance(deltas, list):
+              failures.append("expected paired_deltas to be a list of fixed-shape records")
+          else:
+              for idx, record in enumerate(deltas):
+                  if not isinstance(record, dict) or set(record) != expected_delta_keys:
+                      failures.append(f"paired_deltas[{idx}] has unexpected shape: {record!r}")
+                      break
+          # No recommendation fields allowed anywhere.
+          for rec_field in ("winner", "best_arm", "recommended_default", "preferred_policy", "promotion"):
+              def has_key(obj, key):
+                  if isinstance(obj, dict):
+                      if key in obj:
+                          return True
+                      for v in obj.values():
+                          if has_key(v, key):
+                              return True
+                  elif isinstance(obj, list):
+                      for v in obj:
+                          if has_key(v, key):
+                              return True
+                  return False
+              if has_key(report, rec_field):
+                  failures.append(f"forbidden recommendation field present: {rec_field}")
+          if failures:
+              print("B16-B report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("B16-B report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  deterministic_mock_agent={report.get('deterministic_mock_agent')}")
+          print(f"  live_llm_agent={report.get('live_llm_agent')}")
+          print(f"  provider_calls_made={report.get('provider_calls_made')}")
+          print(f"  remote_provider_calls_made={report.get('remote_provider_calls_made')}")
+          print(f"  downstream_agent_value_proven={report.get('downstream_agent_value_proven')}")
+          print(f"  synthetic_task_count={report.get('input_summary', {}).get('synthetic_task_count')}")
+          PY
+
+      - name: Upload B16-B aggregate report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: b16b-less-separable-mock-paired-run-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false
+
   f1-counterfactual-evidence-utility-smoke:
     name: f1
-    needs: b16a-minimal-mock-agent-paired-run
+    needs: b16b-less-separable-mock-paired-run
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:

@@ -5936,6 +5936,11 @@ without a live LLM and without claiming downstream agent value.
 - **Per-run event logs/patches/test output stay under `/tmp` only** and
   are NEVER committed or uploaded. The committed artifact contains ONLY
   aggregate counts/rates/means.
+- **Public schema is records-shaped**: `arm_results` contains fixed arm
+  records and `paired_deltas` contains one metric per fixed-shape record;
+  top-level dynamic-arm dict mirrors (`arm_metrics`, top-level
+  `outcome_category_counts`) and the legacy
+  `deltas_treatment_minus_control` field are intentionally absent.
 
 ### Validation results
 
@@ -6017,6 +6022,198 @@ requires live paired agent runs with real provider calls. See
   true; the deterministic-mock-run flags are the only additional true
   flags. No runtime/retriever/pack/model/backend/default-policy files
   were modified; no promotion/default/runtime claims change.
+
+---
+
+## 2026-06-21 — B16-B Less-Separable Mock Downstream Paired-Agent Stress
+
+### Objective
+
+Extend B16-A from deliberately separable synthetic micro bugs to a
+harder deterministic/mock downstream paired-agent **stress** run. This
+remains empirical: real temporary workspaces, real file edits, real
+subprocess tests, aggregate
+solve/correct-file/wrong-file/tool-call/context/latency/cost-proxy
+metrics. The new work reduces the artificial separability of B16-A
+without jumping yet to live-provider agent execution.
+
+### Hypothesis
+
+A deterministic mock agent whose action depends on a **multi-cue**
+context pack (target_file + target_symbol + operation_hint +
+support_relation) can exercise the full B16 downstream-agent edit/test
+loop on harder less-separable synthetic tasks (within-file symbol
+ambiguity + cross-file symbol ambiguity + support offset) and produce
+behavior metrics over paired control/treatment arms, without a live
+LLM and without claiming downstream agent value. The treatment pack
+causally alters the mock agent's behavior; treatment is perfect by
+construction and docs describe this as a harness/stress result, NOT a
+live agent result.
+
+### Implementation notes
+
+- **B16-B artifact** (`eval/b16b_less_separable_mock_paired_run.py`):
+  public aggregate-only stress. Generates deterministic synthetic
+  public less-separable stress tasks in code (default 24;
+  `--task-count` range 4-32); creates a fresh `/tmp` workspace per
+  task+arm with real multi-file Python modules (target.py with decoy
+  symbol, distractor.py with same symbol, support.py with offset
+  constant, test_target.py) + stdlib tests; runs a deterministic mock
+  agent (real file edits + real subprocess tests); computes aggregate
+  behavior metrics; writes ONLY aggregate counts/rates/means to the
+  committed artifact.
+- **Less-separable task family**: each task requires combining four
+  cues to solve: `target_file` (to pick target.py, not distractor.py),
+  `target_symbol` (to pick the right symbol in target.py, not the
+  decoy), `operation_hint` (to apply replace-return-value), and
+  `support_relation` (to apply the support offset). Missing any cue
+  causes a deterministic wrong action.
+- **Paired arm design**: same budget/tool constraints; only the
+  context pack differs. **control_sparse** pack has `target_symbol` +
+  `operation_hint` but NO `target_file` and NO `support_relation`
+  (cross-file ambiguity + missing offset). **treatment_multi_cue** pack
+  has all four cues (full multi-cue). The treatment pack causally
+  alters the deterministic mock agent's behavior.
+- **Deterministic mock agent**: multi-cue-dependent. Without
+  `target_file` cue, performs a deterministic lexicographic symbol
+  search; `distractor.py` sorts before `target.py`, so the agent picks
+  the distractor (wrong file). Without `support_relation`, applies
+  `correct_value` without offset (wrong value, tests fail). With all
+  four cues, edits the correct file/symbol with the correct value
+  (tests pass). After the edit/no-op, runs the real subprocess test
+  command.
+- **Artifact identity**: `schema_version=b16b_less_separable_mock_paired_run.v1`,
+  `claim_level=deterministic_mock_downstream_paired_stress_only`,
+  `status=mock_downstream_paired_stress_pass` (on success),
+  `mode=public_aggregate_synthetic_stress_tasks`, `phase=B16-B`.
+- **Safe true flags** (exactly these, all true):
+  `downstream_agent_runs_performed`, `deterministic_mock_agent`,
+  `paired_run_executed`, `real_file_edits_performed`,
+  `subprocess_tests_executed`, `less_separable_stress_tasks`,
+  `aggregate_only_public_artifact`, `diagnostic_only`.
+- **No-claim / no-runtime-change flags** (all false):
+  `live_llm_agent`, `provider_calls_made`,
+  `remote_provider_calls_made`, `downstream_agent_value_proven`,
+  `live_agent_generalization_claimed`, `promotion_ready`,
+  `default_should_change`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `external_benchmark_performance_claimed`.
+- **No recommendation fields**: B16-B emits NO `winner`, `best_arm`,
+  `recommended_default`, `preferred_policy`, or `promotion` field
+  anywhere. The treatment pack is perfect by construction; this is a
+  harness/stress property, not a live recommendation.
+- **Strict public scanner** (fail-closed). Rejects forbidden dict keys
+  anywhere (task_id, workspace_path, file, target_file, target_module,
+  support_module, distractor_module, test_module, path, content_sha,
+  snippet, code, patch, diff, test_output, stdout, stderr, event_log,
+  stack_trace, api_key, base_url, provider_key, secret, token,
+  model_name, provider_env, rows, per_run, predictions, winner,
+  best_arm, recommended_default, preferred_policy, promotion, etc.)
+  and value patterns: ANY URL (no URL allowlist), 32+ char hex digests,
+  secret-like strings, path-like strings with file extensions, `/tmp/`
+  workspace path values, `task_N` task-identifier values, patch/diff
+  markers, stack traces, multiline strings, raw JSON fragments, raw
+  line ranges, model-name-like strings (gpt/claude/gemini/qwen/
+  deepseek/kimi/glm/llama/mistral), provider-env-like strings
+  (OPENAI/ANTHROPIC/GOOGLE/AZURE/AWS/VERTEX), and the self-test
+  sentinel. The scanner runs ONLY against the final public aggregate
+  artifact (NOT against in-memory per-run event logs, which contain
+  paths/patches/test output).
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Per-run event logs/patches/test output stay under `/tmp` only** and
+  are NEVER committed or uploaded. The committed artifact contains ONLY
+  aggregate counts/rates/means.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16b_less_separable_mock_paired_run.py    => PASS
+python3 eval/b16b_less_separable_mock_paired_run.py --self-test      => PASS (147/147 checks)
+python3 eval/b16b_less_separable_mock_paired_run.py \
+  --out artifacts/b16b_less_separable_mock_paired_run/\
+b16b_less_separable_mock_paired_run_report.json                     => PASS
+  (status: mock_downstream_paired_stress_pass,
+    forbidden_scan: pass, self_test_passed: true,
+    mode: public_aggregate_synthetic_stress_tasks, phase: B16-B,
+    synthetic_task_count: 24, total_runs: 48,
+    control_sparse: solve_rate=0.0, tests_pass_rate=0.0,
+      correct_file_before_first_edit_rate=0.0, wrong_file_edits_mean=1.0,
+    treatment_multi_cue: solve_rate=1.0, tests_pass_rate=1.0,
+      correct_file_before_first_edit_rate=1.0, wrong_file_edits_mean=0.0,
+    paired_deltas records: solve_rate=+1.0, wrong_file_edits_mean=-1.0,
+    live_llm_agent: false, provider_calls_made: false,
+    remote_provider_calls_made: false,
+    downstream_agent_value_proven: false,
+    promotion_ready: false, default_should_change: false,
+    retriever_changed: false, pack_builder_changed: false,
+    backend_changed: false, default_policy_changed: false,
+    evidencecore_semantics_changed: false, runtime_behavior_changed: false,
+    external_benchmark_performance_claimed: false,
+    live_agent_generalization_claimed: false)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+The B16-B stress extends B16-A from deliberately separable micro bugs
+to a harder less-separable multi-cue task family. It executes a real
+edit/test loop on synthetic public less-separable stress tasks with a
+deterministic mock agent (no live LLM, no provider calls, no remote
+calls). The treatment multi-cue pack causally alters the mock agent's
+behavior (treatment solve_rate=1.0 vs control solve_rate=0.0),
+demonstrating a pack-effect stress. Treatment is perfect by
+construction; docs describe this as a harness/stress result, NOT a
+live agent result. It is explicitly NOT a live downstream agent value
+claim, NOT a live agent generalization claim, NOT an external benchmark
+performance claim, and NOT a real user task claim. The full B16
+downstream-coding-agent evaluation phase remains a bounded planning /
+feasibility stage that requires live paired agent runs with real
+provider calls. See
+[B16-B detailed report](b16b-less-separable-mock-paired-run.md).
+
+### Caveats
+
+- B16-B is the public aggregate-only less-separable mock downstream
+  paired stress artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it
+  does NOT change EvidenceCore semantics. It is NOT a benchmark result,
+  NOT a live downstream agent value claim, NOT a runtime-clean general
+  algorithm claim, NOT an OOD temporal claim, and NOT a QuIVer systems
+  claim.
+- B16-B uses a **deterministic mock agent** (no live LLM, no provider
+  calls, no remote calls). The mock agent's behavior is multi-cue
+  pack-dependent by design: the treatment pack includes target_file +
+  target_symbol + operation_hint + support_relation, while the control
+  pack lacks the target_file and support_relation cues. This is a
+  causal pack-effect stress, NOT a live agent value claim. Treatment
+  is perfect by construction; docs describe this as a harness/stress
+  result, NOT a live agent result.
+- B16-B generates **deterministic synthetic public less-separable
+  stress tasks** in code. These are NOT real user tasks and are NOT
+  external benchmark tasks. The exact task/run counts are acceptable
+  because these are synthetic public tasks.
+- B16-B performs **real file edits** and **real subprocess tests**
+  (stdlib Python) in fresh `/tmp` workspaces per task+arm. The per-run
+  event logs, patches, and test output stay under `/tmp` only and are
+  NEVER committed or uploaded. The committed artifact contains ONLY
+  aggregate counts/rates/means.
+- B16-B does NOT prove downstream agent value. The treatment-vs-control
+  delta is a deterministic mock artifact of the designed multi-cue
+  pack, NOT evidence that the treatment pack improves a live downstream
+  agent. `downstream_agent_value_proven=false`.
+- B16-B does NOT claim live agent generalization. The deterministic
+  mock agent generalizes trivially to the synthetic task family by
+  construction; this is NOT a live agent generalization claim.
+  `live_agent_generalization_claimed=false`.
+- B16-B emits NO `winner`, `best_arm`, `recommended_default`,
+  `preferred_policy`, or `promotion` recommendation field.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags (`aggregate_only_public_artifact`, `diagnostic_only`) remain
+  true; the deterministic-mock-stress-run flags are the only additional
+  true flags. No runtime/retriever/pack/model/backend/default-policy
+  files were modified; no promotion/default/runtime claims change.
 
 ---
 

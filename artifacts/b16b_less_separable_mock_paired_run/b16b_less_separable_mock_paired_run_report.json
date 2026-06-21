@@ -1,0 +1,740 @@
+{
+  "aggregate_only_public_artifact": true,
+  "arm_results": [
+    {
+      "arm": "control_sparse",
+      "metrics": {
+        "context_tokens_mean": 18.0,
+        "correct_file_before_first_edit_rate": 0.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 25.625,
+        "run_count": 24,
+        "solve_rate": 0.0,
+        "tests_pass_rate": 0.0,
+        "tool_calls_before_first_edit_mean": 2.0,
+        "wrong_file_edits_mean": 1.0
+      },
+      "outcome_category_counts": {
+        "outcome_no_edit_performed": 0,
+        "outcome_solved": 0,
+        "outcome_wrong_file_targeted": 24,
+        "outcome_wrong_symbol_targeted": 0,
+        "outcome_wrong_value_applied": 0
+      }
+    },
+    {
+      "arm": "treatment_multi_cue",
+      "metrics": {
+        "context_tokens_mean": 36.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_mean": 0.0,
+        "latency_ms_mean": 12.833333,
+        "run_count": 24,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "tool_calls_before_first_edit_mean": 1.0,
+        "wrong_file_edits_mean": 0.0
+      },
+      "outcome_category_counts": {
+        "outcome_no_edit_performed": 0,
+        "outcome_solved": 24,
+        "outcome_wrong_file_targeted": 0,
+        "outcome_wrong_symbol_targeted": 0,
+        "outcome_wrong_value_applied": 0
+      }
+    }
+  ],
+  "backend_changed": false,
+  "claim_level": "deterministic_mock_downstream_paired_stress_only",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "deterministic_mock_agent": true,
+  "diagnostic_only": true,
+  "downstream_agent_runs_performed": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-21T09:09:55.308746+00:00",
+  "generated_by": "eval/b16b_less_separable_mock_paired_run.py",
+  "input_summary": {
+    "arms": [
+      "control_sparse",
+      "treatment_multi_cue"
+    ],
+    "less_separable_tasks": true,
+    "multi_cue_design": true,
+    "paired_design": true,
+    "run_count_per_arm": 24,
+    "synthetic_task_count": 24,
+    "total_runs": 48,
+    "transient_workspace_outputs_only": true,
+    "workspace_isolation": "fresh_tmp_per_task_arm"
+  },
+  "less_separable_stress_tasks": true,
+  "live_agent_generalization_claimed": false,
+  "live_llm_agent": false,
+  "mode": "public_aggregate_synthetic_stress_tasks",
+  "pack_builder_changed": false,
+  "paired_deltas": [
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -1.0,
+      "metric": "wrong_file_edits_mean",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -1.0,
+      "metric": "tool_calls_before_first_edit_mean",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 18.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -12.791667,
+      "metric": "latency_ms_mean",
+      "treatment_arm": "treatment_multi_cue"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_mean",
+      "treatment_arm": "treatment_multi_cue"
+    }
+  ],
+  "paired_run_executed": true,
+  "phase": "B16-B",
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "real_file_edits_performed": true,
+  "remote_provider_calls_made": false,
+  "retriever_changed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "b16b_less_separable_mock_paired_run.v1",
+  "self_test_checks": [
+    {
+      "check": "schema_version_correct",
+      "passed": true
+    },
+    {
+      "check": "claim_level_correct",
+      "passed": true
+    },
+    {
+      "check": "mode_correct",
+      "passed": true
+    },
+    {
+      "check": "phase_correct",
+      "passed": true
+    },
+    {
+      "check": "generated_by_correct",
+      "passed": true
+    },
+    {
+      "check": "status_blocked_when_self_test_not_passed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_downstream_agent_runs_performed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_deterministic_mock_agent",
+      "passed": true
+    },
+    {
+      "check": "safe_true_paired_run_executed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_real_file_edits_performed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_subprocess_tests_executed",
+      "passed": true
+    },
+    {
+      "check": "safe_true_less_separable_stress_tasks",
+      "passed": true
+    },
+    {
+      "check": "safe_true_aggregate_only_public_artifact",
+      "passed": true
+    },
+    {
+      "check": "safe_true_diagnostic_only",
+      "passed": true
+    },
+    {
+      "check": "default_false_live_llm_agent",
+      "passed": true
+    },
+    {
+      "check": "default_false_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "default_false_remote_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "default_false_downstream_agent_value_proven",
+      "passed": true
+    },
+    {
+      "check": "default_false_live_agent_generalization_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_promotion_ready",
+      "passed": true
+    },
+    {
+      "check": "default_false_default_should_change",
+      "passed": true
+    },
+    {
+      "check": "default_false_runtime_behavior_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_retriever_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_pack_builder_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_backend_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_default_policy_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_evidencecore_semantics_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_external_benchmark_performance_claimed",
+      "passed": true
+    },
+    {
+      "check": "no_recommendation_field_winner",
+      "passed": true
+    },
+    {
+      "check": "no_recommendation_field_best_arm",
+      "passed": true
+    },
+    {
+      "check": "no_recommendation_field_recommended_default",
+      "passed": true
+    },
+    {
+      "check": "no_recommendation_field_preferred_policy",
+      "passed": true
+    },
+    {
+      "check": "no_recommendation_field_promotion",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_count_correct",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_symbols_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_correct_value_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_buggy_value_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_support_offset_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_expected_value_deterministic",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_has_decoy_symbol",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_less_separable_multi_cue",
+      "passed": true
+    },
+    {
+      "check": "control_pack_has_target_symbol_cue",
+      "passed": true
+    },
+    {
+      "check": "control_pack_has_operation_hint_cue",
+      "passed": true
+    },
+    {
+      "check": "control_pack_lacks_target_file_cue",
+      "passed": true
+    },
+    {
+      "check": "control_pack_lacks_support_relation_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_target_file_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_target_symbol_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_operation_hint_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_support_relation_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_richer_than_control",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_differs_from_control",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_operation_hint_uses_support_offset",
+      "passed": true
+    },
+    {
+      "check": "control_pack_operation_hint_lacks_support_offset",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_target_file",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_support_file",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_distractor_file",
+      "passed": true
+    },
+    {
+      "check": "workspace_creates_test_file",
+      "passed": true
+    },
+    {
+      "check": "target_file_has_decoy_symbol",
+      "passed": true
+    },
+    {
+      "check": "distractor_file_has_same_symbol_as_target",
+      "passed": true
+    },
+    {
+      "check": "support_file_has_offset_constant",
+      "passed": true
+    },
+    {
+      "check": "test_fails_before_fix",
+      "passed": true
+    },
+    {
+      "check": "treatment_agent_edits_correct_file",
+      "passed": true
+    },
+    {
+      "check": "treatment_agent_no_wrong_file_edits",
+      "passed": true
+    },
+    {
+      "check": "treatment_agent_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "treatment_agent_solve",
+      "passed": true
+    },
+    {
+      "check": "treatment_agent_real_file_edit",
+      "passed": true
+    },
+    {
+      "check": "treatment_agent_outcome_solved",
+      "passed": true
+    },
+    {
+      "check": "control_agent_edits_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "control_agent_not_correct_file",
+      "passed": true
+    },
+    {
+      "check": "control_agent_tests_fail",
+      "passed": true
+    },
+    {
+      "check": "control_agent_no_solve",
+      "passed": true
+    },
+    {
+      "check": "control_agent_edited_distractor_file",
+      "passed": true
+    },
+    {
+      "check": "control_agent_outcome_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "mock_action_depends_on_target_file_cue",
+      "passed": true
+    },
+    {
+      "check": "mock_action_depends_on_support_relation_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_solve_rate_higher_than_control",
+      "passed": true
+    },
+    {
+      "check": "treatment_uses_more_context_tokens_than_control",
+      "passed": true
+    },
+    {
+      "check": "workspaces_isolated_different_paths",
+      "passed": true
+    },
+    {
+      "check": "isolated_workspace_has_target_file",
+      "passed": true
+    },
+    {
+      "check": "isolated_workspace_independent_solve",
+      "passed": true
+    },
+    {
+      "check": "aggregate_run_count_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_solve_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_tests_pass_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_correct_file_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_wrong_file_edits_mean_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_cost_proxy_mean_zero",
+      "passed": true
+    },
+    {
+      "check": "outcome_counts_solved_correct",
+      "passed": true
+    },
+    {
+      "check": "outcome_counts_wrong_file_correct",
+      "passed": true
+    },
+    {
+      "check": "outcome_counts_no_edit_zero",
+      "passed": true
+    },
+    {
+      "check": "outcome_counts_total_matches_run_count",
+      "passed": true
+    },
+    {
+      "check": "delta_solve_rate_positive",
+      "passed": true
+    },
+    {
+      "check": "delta_wrong_file_edits_negative",
+      "passed": true
+    },
+    {
+      "check": "delta_correct_file_rate_positive",
+      "passed": true
+    },
+    {
+      "check": "delta_run_count_not_present",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_tmp_workspace_path",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_support_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_source_snippet",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_patch_marker",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_test_output",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_stderr_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_event_log",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_stack_trace",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_auth_field_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_endpoint_url_field_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_env_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_model_name_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_winner_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_best_arm_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_recommended_default_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_preferred_policy_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_promotion_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_sentinel_canary",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_url_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_forbidden_field_name_as_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_line_range_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_arm_name_control_sparse",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_arm_name_treatment_multi_cue",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_metric_values",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_workspace_isolation_token",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_outcome_category_names",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_multi_cue_design_token",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_less_separable_token",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_public_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_generation_raises_on_leak",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_raises_when_failed",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_does_not_raise_when_passed",
+      "passed": true
+    },
+    {
+      "check": "failed_self_test_does_not_carry_success_status",
+      "passed": true
+    },
+    {
+      "check": "public_report_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "public_report_no_forbidden_key_anywhere",
+      "passed": true
+    },
+    {
+      "check": "public_report_no_per_run_rows",
+      "passed": true
+    },
+    {
+      "check": "public_report_arm_results_is_list",
+      "passed": true
+    },
+    {
+      "check": "public_report_arm_results_fixed_allowlist",
+      "passed": true
+    },
+    {
+      "check": "public_report_paired_deltas_is_list",
+      "passed": true
+    },
+    {
+      "check": "public_report_paired_deltas_fixed_shape",
+      "passed": true
+    },
+    {
+      "check": "public_report_no_top_level_dict_mirrors",
+      "passed": true
+    },
+    {
+      "check": "cli_has_self_test_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_out_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_task_count_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_only_expected_arguments",
+      "passed": true
+    },
+    {
+      "check": "cli_default_task_count_in_range",
+      "passed": true
+    },
+    {
+      "check": "both_arms_run_same_task_count",
+      "passed": true
+    },
+    {
+      "check": "total_runs_equals_task_count_times_arms",
+      "passed": true
+    }
+  ],
+  "self_test_passed": true,
+  "self_test_summary": {
+    "failed": 0,
+    "passed": 147,
+    "total": 147
+  },
+  "status": "mock_downstream_paired_stress_pass",
+  "subprocess_tests_executed": true
+}

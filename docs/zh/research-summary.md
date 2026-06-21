@@ -140,8 +140,60 @@ default-policy/EvidenceCore 语义。per-run event log、patch 和测试输出
 `real_file_edits_performed`、`real_test_commands_executed`、
 `agent_behavior_metrics_evaluated`、`aggregate_only_public_artifact`、
 `diagnostic_only`）是仅有的额外 true 标志。未修改任何
-runtime/retriever/pack/model/backend/default-policy 文件。详见
-[B16-A 详细报告](b16a-minimal-mock-agent-paired-run.md)。
+ runtime/retriever/pack/model/backend/default-policy 文件。详见
+ [B16-A 详细报告](b16a-minimal-mock-agent-paired-run.md)。
+
+## Current status update — 2026-06-21 (B16-B less-separable mock downstream paired stress)
+
+> 中文译本待补充。以下为英文原文，避免内容丢失。
+
+Following B16-A, B16-B extends the deterministic/mock downstream
+paired-agent empirical run from deliberately separable micro bugs to a
+harder **less-separable multi-cue stress** task family. B16-B
+(`eval/b16b_less_separable_mock_paired_run.py` ->
+`artifacts/b16b_less_separable_mock_paired_run/b16b_less_separable_mock_paired_run_report.json`,
+schema `b16b_less_separable_mock_paired_run.v1`,
+`claim_level=deterministic_mock_downstream_paired_stress_only`,
+`status=mock_downstream_paired_stress_pass`,
+`mode=public_aggregate_synthetic_stress_tasks`, phase `B16-B`)
+generates deterministic synthetic public less-separable stress tasks
+in code, creates a fresh `/tmp` workspace per task+arm with real
+multi-file Python modules (target.py with decoy symbol, distractor.py
+with same symbol, support.py with offset constant, test_target.py) +
+stdlib tests, runs a **deterministic mock agent** (no live LLM, no
+provider calls, no remote calls) that performs **real file edits** and
+runs **real subprocess tests**, and computes aggregate behavior metrics
+over paired control_sparse/treatment_multi_cue arms. Solving requires
+combining four cues (target_file + target_symbol + operation_hint +
+support_relation); missing any cue causes a deterministic wrong action.
+The treatment multi-cue pack causally alters the mock agent's behavior
+(treatment solve_rate=1.0 vs control solve_rate=0.0). 147/147 self-test
+checks pass; 24 tasks; 48 total runs. Treatment is perfect by
+construction; docs describe this as a harness/stress result, NOT a
+live agent result.
+
+This is stress-only. It does NOT claim downstream agent value, does
+NOT claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. It emits NO `winner`,
+`best_arm`, `recommended_default`, `preferred_policy`, or `promotion`
+recommendation field. The committed artifact is aggregate-only. All
+no-claim / no-runtime-change flags remain false
+(`live_llm_agent=false`, `provider_calls_made=false`,
+`remote_provider_calls_made=false`,
+`downstream_agent_value_proven=false`,
+`live_agent_generalization_claimed=false`,
+`promotion_ready=false`, `default_should_change=false`,
+`runtime_behavior_changed=false`, `retriever_changed=false`,
+`pack_builder_changed=false`, `backend_changed=false`,
+`default_policy_changed=false`,
+`evidencecore_semantics_changed=false`,
+`external_benchmark_performance_claimed=false`). The
+deterministic-mock-stress-run flags are the only additional true
+flags. No runtime/retriever/pack/model/backend/default-policy files
+were modified. See the
+[B16-B detailed report](b16b-less-separable-mock-paired-run.md).
 
 ## 当前状态更新 —— 2026-06-21（C5-A ContextBench verified 检索性能 smoke）
 

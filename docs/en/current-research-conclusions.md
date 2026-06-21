@@ -155,6 +155,64 @@ feasibility stage that requires live paired agent runs with real
 provider calls. See the
 [B16-A detailed report](b16a-minimal-mock-agent-paired-run.md).
 
+## 2026-06-21 B16-B Less-Separable Mock Downstream Paired-Agent Stress
+
+Following B16-A, B16-B extends the deterministic/mock downstream
+paired-agent empirical run from deliberately separable micro bugs to a
+harder **less-separable multi-cue stress** task family. B16-B
+(`eval/b16b_less_separable_mock_paired_run.py` ->
+`artifacts/b16b_less_separable_mock_paired_run/b16b_less_separable_mock_paired_run_report.json`,
+schema `b16b_less_separable_mock_paired_run.v1`,
+`claim_level=deterministic_mock_downstream_paired_stress_only`,
+`status=mock_downstream_paired_stress_pass`,
+`mode=public_aggregate_synthetic_stress_tasks`, phase `B16-B`) generates
+deterministic synthetic public less-separable stress tasks in code,
+creates a fresh `/tmp` workspace per task+arm with real multi-file
+Python modules (target.py with decoy symbol, distractor.py with same
+symbol, support.py with offset constant, test_target.py) + stdlib
+tests, runs a **deterministic mock agent** (no live LLM, no provider
+calls, no remote calls) that performs **real file edits** and runs
+**real subprocess tests**, and computes aggregate behavior metrics
+over paired control_sparse/treatment_multi_cue arms. Solving requires
+combining four cues (target_file + target_symbol + operation_hint +
+support_relation); missing any cue causes a deterministic wrong
+action. The treatment multi-cue pack causally alters the mock agent's
+behavior (treatment solve_rate=1.0 vs control solve_rate=0.0).
+
+This is stress-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. It emits NO `winner`,
+`best_arm`, `recommended_default`, `preferred_policy`, or `promotion`
+recommendation field. The per-run event logs, patches, and test
+output stay under `/tmp` only and are NEVER committed or uploaded.
+The committed artifact is aggregate-only. All no-claim /
+no-runtime-change flags remain false (`live_llm_agent=false`,
+`provider_calls_made=false`,
+`remote_provider_calls_made=false`,
+`downstream_agent_value_proven=false`,
+`live_agent_generalization_claimed=false`,
+`promotion_ready=false`, `default_should_change=false`,
+`runtime_behavior_changed=false`, `retriever_changed=false`,
+`pack_builder_changed=false`, `backend_changed=false`,
+`default_policy_changed=false`,
+`evidencecore_semantics_changed=false`,
+`external_benchmark_performance_claimed=false`). The
+deterministic-mock-stress-run flags
+(`downstream_agent_runs_performed=true`,
+`deterministic_mock_agent=true`, `paired_run_executed=true`,
+`real_file_edits_performed=true`,
+`subprocess_tests_executed=true`,
+`less_separable_stress_tasks=true`,
+`aggregate_only_public_artifact=true`, `diagnostic_only=true`) are the
+only additional true flags. No runtime/retriever/pack/model/
+backend/default-policy files were modified. The full B16
+downstream-coding-agent evaluation phase remains a bounded planning /
+feasibility stage that requires live paired agent runs with real
+provider calls. See the
+[B16-B detailed report](b16b-less-separable-mock-paired-run.md).
+
 ## 2026-06-21 F1 Counterfactual Evidence Utility Smoke
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual

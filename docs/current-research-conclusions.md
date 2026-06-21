@@ -14,12 +14,18 @@ Latest status: C4 external benchmark readiness and the Step 6/D-series
 dual-rubric control-plane harnesses are complete through the D4-series
 rollup, and the trajectory has now pivoted into D5-A0 automated empirical
 E/S calibration smoke, B16-A minimal deterministic/mock downstream
-paired-agent empirical run, C5-A ContextBench verified retrieval
+paired-agent empirical run, B16-B less-separable deterministic/mock
+downstream paired-agent stress run, C5-A ContextBench verified retrieval
 performance smoke, and C5-B ContextBench verified retrieval method matrix
 smoke. D5-H / human-reference calibration remains out
 of scope until human labels exist; the D5-A automated/programmatic empirical
 path is active. B16-A is a deterministic mock downstream smoke (no live LLM,
-no provider calls); it does NOT claim downstream agent value. C5-A is an
+no provider calls); it does NOT claim downstream agent value. B16-B extends
+B16-A into a harder less-separable multi-cue stress (no live LLM, no
+provider calls); it does NOT claim downstream agent value, emits no
+winner/best_arm/recommended_default/preferred_policy/promotion field, and
+treatment is perfect by construction (harness/stress, not live result).
+C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
 verified subset; transient /tmp clone + retrieval + score; aggregate-only
 public artifact; no provider calls); it does NOT claim an external
@@ -37,11 +43,16 @@ runtime/default-policy/promotion/downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
-校准 smoke、B16-A 最小确定性/mock 下游 paired-agent 实证 run、C5-A
+校准 smoke、B16-A 最小确定性/mock 下游 paired-agent 实证 run、B16-B
+less-separable 确定性/mock 下游 paired-agent 压力测试 run、C5-A
 ContextBench verified 检索性能 smoke，以及 C5-B ContextBench verified 检索
 方法矩阵 smoke。D5-H / 人工参考校准在人工标签存在前仍属 out of scope；D5-A
 自动/程序化实证路径已激活。B16-A 是确定性 mock 下游 smoke（无 live LLM、
-无 provider 调用）；它**不**声明下游 agent 价值。C5-A 是外部-benchmark-形态
+无 provider 调用）；它**不**声明下游 agent 价值。B16-B 将 B16-A 扩展为更难的
+less-separable 多线索压力测试（无 live LLM、无 provider 调用）；它**不**声明
+下游 agent 价值，不输出 winner/best_arm/recommended_default/preferred_policy/
+promotion 字段，且 treatment 按构造完美（harness/stress，非 live 结果）。
+C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
 retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
 **不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、
@@ -95,6 +106,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)
 - `b16a-minimal-mock-agent-paired-run.md`: [en](en/b16a-minimal-mock-agent-paired-run.md) · [zh](zh/b16a-minimal-mock-agent-paired-run.md)
+- `b16b-less-separable-mock-paired-run.md`: [en](en/b16b-less-separable-mock-paired-run.md) · [zh](zh/b16b-less-separable-mock-paired-run.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)
