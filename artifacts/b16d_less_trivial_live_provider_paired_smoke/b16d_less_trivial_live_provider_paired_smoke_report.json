@@ -16,7 +16,7 @@
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-21T10:30:47.502756+00:00",
+  "generated_at": "2026-06-21T10:35:49.259553+00:00",
   "generated_by": "eval/b16d_less_trivial_live_provider_paired_smoke.py",
   "honest_signals": {
     "context_pack_signal_observed": false,
@@ -77,23 +77,7 @@
       "passed": true
     },
     {
-      "check": "status_fail_forbidden_scan_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_structured_action_parse_failed_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_blocked_remote_not_enabled_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_live_provider_less_trivial_paired_smoke_pass_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_provider_call_failed_preserved",
+      "check": "status_paired_run_failed_preserved",
       "passed": true
     },
     {
@@ -101,7 +85,23 @@
       "passed": true
     },
     {
-      "check": "status_paired_run_failed_preserved",
+      "check": "status_live_provider_less_trivial_paired_smoke_pass_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_blocked_remote_not_enabled_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_structured_action_parse_failed_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_fail_forbidden_scan_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_provider_call_failed_preserved",
       "passed": true
     },
     {
@@ -599,13 +599,21 @@
     {
       "check": "unavailable_when_env_missing",
       "passed": true
+    },
+    {
+      "check": "self_test_missing_env_probe_restores_provider_env",
+      "passed": true
+    },
+    {
+      "check": "self_test_preserves_synthetic_provider_env",
+      "passed": true
     }
   ],
   "self_test_passed": true,
   "self_test_summary": {
     "failed": 0,
-    "passed": 136,
-    "total": 136
+    "passed": 138,
+    "total": 138
   },
   "status": "blocked_remote_not_enabled",
   "synthetic_micro_tasks_used": false

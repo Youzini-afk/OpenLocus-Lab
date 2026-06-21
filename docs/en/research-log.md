@@ -7298,7 +7298,7 @@ promotion/default change.
 
 ```text
 python3 -m py_compile eval/b16d_less_trivial_live_provider_paired_smoke.py  => PASS
-python3 eval/b16d_less_trivial_live_provider_paired_smoke.py --self-test  => PASS (136/136 checks)
+python3 eval/b16d_less_trivial_live_provider_paired_smoke.py --self-test  => PASS (138/138 checks)
 python3 eval/b16d_less_trivial_live_provider_paired_smoke.py \
   --out artifacts/b16d_less_trivial_live_provider_paired_smoke/\
 b16d_less_trivial_live_provider_paired_smoke_report.json               => PASS

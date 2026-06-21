@@ -297,7 +297,7 @@ requires an explicit local opt-in run or the manual CI
 `real-provider-benchmark` workflow with
 `stage=b16d_less_trivial_live_provider_paired_smoke` and
 `enable_remote_models=true`. **Manual CI live-provider run: pending.**
-136/136 self-test checks pass.
+138/138 self-test checks pass.
 
 This is smoke-only. It does NOT claim downstream agent value, does NOT
 claim live agent generalization, does NOT claim external benchmark

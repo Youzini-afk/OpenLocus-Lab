@@ -276,7 +276,7 @@ edit constraint；control 缺少决定性 cue。提交的 artifact 是**真实
 地 opt-in run 或手动 CI `real-provider-benchmark` workflow
 （`stage=b16d_less_trivial_live_provider_paired_smoke` +
 `enable_remote_models=true`）。**手动 CI live-provider run：待执
-行。** 136/136 self-test checks 通过。
+行。** 138/138 self-test checks 通过。
 
 这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
 泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升

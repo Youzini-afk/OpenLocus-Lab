@@ -289,6 +289,13 @@ _RE_RAW_MODEL_PREFIX = re.compile(r"\[mk\]", re.IGNORECASE)
 # The sentinel used by self-tests; the scanner must never let it through.
 _SECRET_SENTINEL = "SECRET_VALIDATOR_SENTINEL"
 _ROUTING_PREFIX_SENTINEL = "[" + "m" + "k]"
+_REMOTE_ENV_KEYS = (
+    provider_client.ENV_BASE_URL,
+    provider_client.ENV_API_KEY,
+    provider_client.ENV_MODEL,
+    provider_client.ENV_ALLOW_REMOTE,
+    provider_client.ENV_WORKFLOW_DISPATCH,
+)
 
 
 def _path_last_key(path: str) -> str:
@@ -1288,6 +1295,48 @@ def _normalize_model_display(raw_model: str) -> str:
     return cleaned
 
 
+def _probe_missing_env_without_mutating_remote_env() -> tuple[bool, str, bool]:
+    """Probe missing-env path while restoring provider env exactly."""
+    before = {k: os.environ.get(k) for k in _REMOTE_ENV_KEYS}
+    saved = {k: os.environ.pop(k, None) for k in _REMOTE_ENV_KEYS}
+    try:
+        os.environ[provider_client.ENV_ALLOW_REMOTE] = "1"
+        enabled, failure_category = provider_client._check_remote_enabled(
+            allow_remote=True, require_workflow_dispatch=False
+        )
+    finally:
+        for k, v in saved.items():
+            if v is not None:
+                os.environ[k] = v
+            else:
+                os.environ.pop(k, None)
+    after = {k: os.environ.get(k) for k in _REMOTE_ENV_KEYS}
+    return enabled, failure_category, after == before
+
+
+def _self_test_probe_preserves_synthetic_provider_env() -> bool:
+    """Regression guard: no-network self-test probes must not clear live env."""
+    outer = {k: os.environ.get(k) for k in _REMOTE_ENV_KEYS}
+    synthetic = {
+        provider_client.ENV_BASE_URL: "https://example.invalid/openai/v1",
+        provider_client.ENV_API_KEY: "redacted-test-key",
+        provider_client.ENV_MODEL: _ROUTING_PREFIX_SENTINEL + "Kimi-K2.7-Code",
+        provider_client.ENV_ALLOW_REMOTE: "1",
+        provider_client.ENV_WORKFLOW_DISPATCH: "1",
+    }
+    try:
+        for k, v in synthetic.items():
+            os.environ[k] = v
+        _enabled, _failure_category, restored = _probe_missing_env_without_mutating_remote_env()
+        return restored and all(os.environ.get(k) == v for k, v in synthetic.items())
+    finally:
+        for k, v in outer.items():
+            if v is not None:
+                os.environ[k] = v
+            else:
+                os.environ.pop(k, None)
+
+
 # ---------------------------------------------------------------------------
 # Self-test checks (no network; uses fake provider responses)
 # ---------------------------------------------------------------------------
@@ -2082,37 +2131,30 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
             blocked_rep["forbidden_scan"]["status"] == "pass",
         )
     )
-    # Unavailable path: when allow_remote=True but env missing.
-    old_env = {
-        k: os.environ.pop(k, None)
-        for k in (
-            provider_client.ENV_BASE_URL,
-            provider_client.ENV_API_KEY,
-            provider_client.ENV_MODEL,
-            provider_client.ENV_ALLOW_REMOTE,
-            provider_client.ENV_WORKFLOW_DISPATCH,
+    # Unavailable path: when allow_remote=True but env missing. This probe must
+    # restore the exact provider env, because build_report() runs self-tests and
+    # live provider calls in the same process.
+    enabled, failure_category, restored = _probe_missing_env_without_mutating_remote_env()
+    checks.append(
+        _check(
+            "unavailable_when_env_missing",
+            not enabled
+            and failure_category
+            == provider_client.FAILURE_CATEGORY_MISSING_ENV,
         )
-    }
-    try:
-        os.environ[provider_client.ENV_ALLOW_REMOTE] = "1"
-        enabled, failure_category = provider_client._check_remote_enabled(
-            allow_remote=True, require_workflow_dispatch=False
+    )
+    checks.append(
+        _check(
+            "self_test_missing_env_probe_restores_provider_env",
+            restored,
         )
-        checks.append(
-            _check(
-                "unavailable_when_env_missing",
-                not enabled
-                and failure_category
-                == provider_client.FAILURE_CATEGORY_MISSING_ENV,
-            )
+    )
+    checks.append(
+        _check(
+            "self_test_preserves_synthetic_provider_env",
+            _self_test_probe_preserves_synthetic_provider_env(),
         )
-    finally:
-        for k, v in old_env.items():
-            if v is not None:
-                os.environ[k] = v
-            else:
-                os.environ.pop(k, None)
-        os.environ.pop(provider_client.ENV_ALLOW_REMOTE, None)
+    )
 
     all_passed = all(c["passed"] for c in checks)
     return checks, all_passed
