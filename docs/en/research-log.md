@@ -7942,3 +7942,216 @@ feasibility stage. See
   (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
   No runtime/retriever/pack/model/backend/default-policy files were
   modified; no promotion/default/runtime claims change.
+
+---
+
+## 2026-06-21 — C5-D RepoQA BM25 Retrieval Performance Smoke
+
+### Objective
+
+Run the first real RepoQA retrieval performance smoke without creating
+another readiness-only stage. Use the known EvalPlus RepoQA release
+asset `repoqa-2024-06-23.json.gz`, parse a small bounded Python needle
+set in memory, clone referenced repos transiently, run OpenLocus
+`bm25`, score against needle path/line ranges with `eval/score.py`, and
+publish only aggregate metrics.
+
+### Why RepoQA, not SWE-Explore
+
+- SWE-Explore C4.3 row-map smoke found no usable line-budget/retrieval
+  label shape in preview rows.
+- RepoQA has a known release asset and natural retrieval structure:
+  `needle.description` is the query, `needle.path` + start/end lines are
+  the gold target.
+
+### Hypothesis
+
+A bounded RepoQA Python needle subset can be run through the real
+OpenLocus retrieval + scoring pipeline under transient `/tmp`
+workspaces, producing aggregate retrieval metrics without persisting
+the release asset, repo records, commit SHAs, needle fields, generated
+JSONL, evidence rows, cloned repos, or stdout/stderr.
+
+### Stage gates
+
+- C5-D passes when self-test passes (219 checks), the real network
+  smoke completes (asset downloaded, needles parsed, repos cloned,
+  retrieval executed, score.py metrics computed), the forbidden scan is
+  clean, and the committed artifact records only aggregate counts/
+  rates/means with all no-claim flags false and no `winner`/
+  `best_method`/`recommended_default`.
+- C5-D is `unavailable_*` when asset download/parse fails, no Python
+  needles, or repo clone/retrieval/score fails.
+
+### Implementation notes
+
+- **C5-D artifact** (`eval/c5d_repoqa_bm25_retrieval_smoke.py`): public
+  aggregate-only smoke. Downloads `repoqa-2024-06-23.json.gz` to
+  in-memory bytes (transient; NEVER written to workspace); decompresses
+  in memory; parses RepoQA needles filtered by
+  `language_filter=python` (NO silent all-language fallback); for each
+  needle, sanitizes `needle_description` into a retrieval query
+  (extracts the `Purpose` section's first sentence; in-memory only);
+  clones `repo_url` at `commit_sha` under a per-needle
+  `TemporaryDirectory`; generates transient task/label JSONL; runs
+  OpenLocus retrieval via `eval/run_retrieval.py` (`--method bm25 --cwd
+  <repo_root>`); runs `eval/score.py`; aggregates metrics across
+  successful needles; writes ONLY aggregate counts/rates/means to the
+  committed artifact.
+- **Artifact identity**:
+  `schema_version=c5d_repoqa_retrieval_performance_smoke.v1`,
+  `claim_level=repoqa_retrieval_performance_smoke_only`,
+  `status=repoqa_retrieval_smoke_pass|partial|unavailable_asset_download_failed|unavailable_no_python_needles|unavailable_repo_clone_failed|fail_forbidden_scan|fail_schema_contract`,
+  `mode=repoqa_bounded_bm25_retrieval_smoke`, `phase=C5-D`.
+- **Safe true flags** (true only if actually true):
+  `repoqa_retrieval_smoke_performed`, `asset_downloaded_transiently`,
+  `repoqa_needles_parsed_in_memory`,
+  `repositories_materialized_transiently`,
+  `openlocus_retrieval_executed`, `score_py_metrics_computed`,
+  `aggregate_only_public_artifact`, `diagnostic_only`.
+- **No-claim / no-runtime-change flags** (all false):
+  `external_benchmark_performance_claimed`,
+  `leaderboard_entry_claimed`, `downstream_agent_value_proven`,
+  `promotion_ready`, `default_should_change`,
+  `runtime_behavior_changed`, `retriever_changed`,
+  `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `provider_calls_made`, `remote_provider_calls_made`.
+- **License fields** (fixed):
+  `dataset_license_status=unknown_dataset_license`,
+  `row_level_redistribution_allowed=false`,
+  `derived_row_level_publication_allowed=false`,
+  `aggregate_metrics_publication=aggregate_only_smoke`.
+- **Method matrix**: `ALLOWED_METHODS = (bm25,)` only.
+- **Language filter**: `ALLOWED_LANGUAGE_FILTERS = (python,)` only; NO
+  silent all-language fallback.
+- **Strict public scanner** (fail-closed). Reuses C5-A forbidden scanner
+  primitives + C5-D-specific checks: rejects RepoQA-specific forbidden
+  keys (repo, commit_sha, entrypoint_path, topic, content, dependency,
+  needles, needle, needle_name, needle_path, needle_description,
+  start_line, end_line, start_byte, end_byte, global_*, code_ratio,
+  path, description, etc.); rejects recommendation/policy fields
+  (`winner`, `best_method`, `recommended_default`, etc.) anywhere.
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_c5d_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Transient /tmp asset + clone + retrieval + score**: asset downloaded
+  to in-memory bytes (NEVER written to workspace); per-needle
+  `TemporaryDirectory` for cloned repos; `TemporaryDirectory` for
+  generated task/label/run JSONL. All raw repo records, repo names/URLs,
+  commit SHAs, entrypoint paths, topics, content, dependency, needle
+  names/descriptions/paths/start/end lines, generated JSONL, evidence
+  rows, cloned repos, and stdout/stderr stay under `/tmp` only and are
+  NEVER committed or uploaded.
+- **Unavailable statuses**: if the network smoke cannot complete, the
+  artifact records truthful `unavailable_*` with a real
+  `failure_reason_category` (no stale/fake pass).
+
+### CI workflow
+
+- `.github/workflows/c5-repoqa-bm25-retrieval-smoke.yml`: manual opt-in
+  `workflow_dispatch` with boolean `enable_external_benchmark_network`
+  default false, `needle_limit` (default 5, hard cap 10),
+  `language_filter` (python only), `method` (bm25 only) inputs. If not
+  enabled, no-op with clear message. No `secrets.`, no `vars.`, no
+  `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
+  (release), runs self-test, runs network smoke only when enabled,
+  validates flags (fail-closed like C5-C: network-enabled CI cannot
+  pass with unavailable/no needles; require status in
+  (`repoqa_retrieval_smoke_pass`, `partial`), `needles_seen > 0`,
+  `needles_successful > 0`, `forbidden_scan.status=pass`), validates
+  docs i18n, checks working tree, uploads aggregate report only (7-day
+  retention).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/c5d_repoqa_bm25_retrieval_smoke.py  => PASS
+python3 eval/c5d_repoqa_bm25_retrieval_smoke.py --self-test  => PASS (219/219 checks)
+python3 eval/c5d_repoqa_bm25_retrieval_smoke.py \
+  --needle-limit 5 --language-filter python --method bm25 \
+  --out artifacts/c5d_repoqa_bm25_retrieval_smoke/\
+c5d_repoqa_bm25_retrieval_smoke_report.json  => PASS
+  (status: repoqa_retrieval_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: repoqa_bounded_bm25_retrieval_smoke, phase: C5-D,
+   method: bm25, language_filter: python,
+   query_mode: needle_description, gold_target_mode: needle_path_line_range,
+   needles_seen: 5, needles_evaluated: 5, needles_successful: 5, needles_failed: 0,
+   network_calls: 1, provider_calls: 0,
+   repoqa_retrieval_smoke_performed: true,
+   asset_downloaded_transiently: true,
+   repoqa_needles_parsed_in_memory: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The C5-D smoke is the first RepoQA-shaped retrieval performance smoke.
+It downloads the `repoqa-2024-06-23.json.gz` release asset to in-memory
+bytes (transient), parses 5 RepoQA Python needles in memory, clones the
+referenced repositories at their `commit_sha` under transient `/tmp`
+directories, runs OpenLocus `bm25` retrieval on each repository, and
+runs `eval/score.py` to produce aggregate retrieval metrics. It is
+explicitly NOT a rigorous benchmark result, NOT a leaderboard entry,
+NOT a performance claim, NOT a promotion, NOT a default/policy change,
+NOT a runtime/retriever/pack/backend/EvidenceCore semantic change, and
+NOT a downstream agent value claim. The full C5 external-benchmark-
+evaluation phase remains a bounded planning / feasibility stage. See
+[C5-D detailed report](c5d-repoqa-bm25-retrieval-smoke.md).
+
+### Caveats
+
+- C5-D is the public aggregate-only RepoQA BM25 retrieval performance
+  smoke artifact. It is eval/diagnostic only. It does NOT change
+  runtime, retriever, pack, backend, or default policy; it does NOT
+  change EvidenceCore semantics. It is NOT a benchmark result, NOT a
+  leaderboard entry, NOT a performance claim, NOT a promotion, NOT a
+  default change, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, NOT a QuIVer systems claim, and NOT a downstream
+  agent value claim.
+- C5-D does NOT emit `winner`, `best_method`, `recommended_default`, or
+  anything implying a policy/default decision.
+- C5-D runs NO provider calls and NO remote provider calls. The only
+  network calls are to public GitHub (asset download + repo clones).
+  `provider_calls=0`, `provider_calls_made=false`,
+  `remote_provider_calls_made=false`.
+- C5-D uses a **bounded RepoQA Python needle subset** (default 5
+  needles; hard cap 10). This is a smoke, not a rigorous benchmark
+  evaluation.
+- C5-D downloads the `repoqa-2024-06-23.json.gz` release asset to
+  in-memory bytes (transient; NEVER written to workspace) and
+  decompresses it in memory. The cloned repos, generated task/label/run
+  JSONL, evidence rows, and stdout/stderr stay under `/tmp` only and
+  are NEVER committed or uploaded.
+- C5-D does NOT silently fall back from Python to all languages. If
+  `language_filter=python` and zero Python needles are found, the
+  artifact is truthful `unavailable_no_python_needles`.
+- C5-D does NOT claim external benchmark performance.
+  `external_benchmark_performance_claimed=false`.
+- C5-D does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- RepoQA dataset license is unknown
+  (`unknown_dataset_license`); row-level redistribution is disabled
+  and derived row-level publication is disabled. Aggregate metrics
+  publication is allowed as aggregate-only smoke.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
+  No runtime/retriever/pack/model/backend/default-policy files were
+  modified; no promotion/default/runtime claims change.

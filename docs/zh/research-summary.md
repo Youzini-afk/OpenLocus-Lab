@@ -528,6 +528,54 @@ false（`external_benchmark_performance_claimed=false`、
 runtime/retriever/pack/model/backend/default-policy 文件。见
 [C5-C 详细报告](c5c-contextbench-method-matrix-scale-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（C5-D RepoQA BM25 检索性能 smoke）
+
+继 D5-A0、B16-A、C5-A、C5-B 与 C5-C 之后，C5-D 产出首个 RepoQA 形态的
+检索性能 smoke。C5-D
+（`eval/c5d_repoqa_bm25_retrieval_smoke.py` ->
+`artifacts/c5d_repoqa_bm25_retrieval_smoke/c5d_repoqa_bm25_retrieval_smoke_report.json`，
+schema `c5d_repoqa_retrieval_performance_smoke.v1`、
+`claim_level=repoqa_retrieval_performance_smoke_only`、
+`status=repoqa_retrieval_smoke_pass|partial|unavailable_asset_download_failed|unavailable_no_python_needles|unavailable_repo_clone_failed|fail_forbidden_scan|fail_schema_contract`、
+`mode=repoqa_bounded_bm25_retrieval_smoke`、阶段 `C5-D`）从
+`evalplus/repoqa_release` 下载 EvalPlus RepoQA release asset
+`repoqa-2024-06-23.json.gz` 到内存字节（临时；**绝不**写入工作区），在内存
+中解压，解析有界 RepoQA Python needle subset（默认 5 needle；硬上限 10；
+**无**静默全语言回退），在临时 `/tmp` 目录下通过
+`git clone --filter=blob:none --no-checkout` 然后 `git checkout` 检出引用
+仓库到其 `commit_sha`，运行 OpenLocus `bm25` 检索（仅 bm25；无 provider
+调用），通过 `eval/score.py` 对 `needle.path`/`start_line`/`end_line`
+打分，并仅提交一个 aggregate 公共报告。219/219 self-test 检查通过；5
+needle seen，5 needle successful，0 needle failed。
+
+这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
+条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**声称
+runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不**声称下游
+agent 价值。它**不**输出 `winner`、`best_method`、`recommended_default`
+或任何暗示策略/默认决策的字段。Release asset、原始 repo 记录、repo 名称/
+URL、commit SHA、entrypoint 路径、topics、content、dependency、needle 名称/
+描述/路径/start/end lines、生成的 task/label/run JSONL、evidence 行、克隆
+仓库与 stdout/stderr 仅保留在 `/tmp` 或内存中，**绝不**提交或上传。提交
+的 artifact 是 aggregate-only。所有无声明 / 无运行时变更标志保持 false
+（`external_benchmark_performance_claimed=false`、
+`leaderboard_entry_claimed=false`、
+`downstream_agent_value_proven=false`、`promotion_ready=false`、
+`default_should_change=false`、`runtime_behavior_changed=false`、
+`retriever_changed=false`、`pack_builder_changed=false`、
+`backend_changed=false`、`default_policy_changed=false`、
+`evidencecore_semantics_changed=false`、`provider_calls_made=false`、
+`remote_provider_calls_made=false`）。Safe true 标志（仅当实际为真时为
+true：`repoqa_retrieval_smoke_performed`、`asset_downloaded_transiently`、
+`repoqa_needles_parsed_in_memory`、
+`repositories_materialized_transiently`、`openlocus_retrieval_executed`、
+`score_py_metrics_computed`、`aggregate_only_public_artifact`、
+`diagnostic_only`）是仅有的额外 true 标志。如果网络 smoke 无法完成
+（asset 下载失败、无 Python needle、repo 克隆失败、检索失败、打分失败），
+artifact 记录真实的 `unavailable_*`，带真实的
+`failure_reason_category`（无 stale/fake pass）。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。见
+[C5-D 详细报告](c5d-repoqa-bm25-retrieval-smoke.md)。
+
 ## 当前状态更新 —— 2026-06-21（F1 反事实证据效用 smoke）
 
 继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1

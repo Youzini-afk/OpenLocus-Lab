@@ -585,6 +585,60 @@ stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
 files were modified. See
 the [C5-C detailed report](c5c-contextbench-method-matrix-scale-smoke.md).
 
+## Current status update — 2026-06-21 (C5-D RepoQA BM25 retrieval performance smoke)
+
+Following D5-A0, B16-A, C5-A, C5-B, and C5-C, C5-D produces the first
+RepoQA-shaped retrieval performance smoke. C5-D
+(`eval/c5d_repoqa_bm25_retrieval_smoke.py` ->
+`artifacts/c5d_repoqa_bm25_retrieval_smoke/c5d_repoqa_bm25_retrieval_smoke_report.json`,
+schema `c5d_repoqa_retrieval_performance_smoke.v1`,
+`claim_level=repoqa_retrieval_performance_smoke_only`,
+`status=repoqa_retrieval_smoke_pass|partial|unavailable_asset_download_failed|unavailable_no_python_needles|unavailable_repo_clone_failed|fail_forbidden_scan|fail_schema_contract`,
+`mode=repoqa_bounded_bm25_retrieval_smoke`, phase `C5-D`) downloads
+the EvalPlus RepoQA release asset `repoqa-2024-06-23.json.gz` from
+`evalplus/repoqa_release` to in-memory bytes (transient; NEVER written
+to the workspace), decompresses it in memory, parses a bounded RepoQA
+Python needle subset (default 5 needles; hard cap 10; NO silent
+all-language fallback), materializes the referenced repositories at
+their `commit_sha` under transient `/tmp` directories via
+`git clone --filter=blob:none --no-checkout` then `git checkout`, runs
+OpenLocus `bm25` retrieval (bm25 only; no provider calls), scores
+against `needle.path`/`start_line`/`end_line` via `eval/score.py`, and
+commits only an aggregate public report. 219/219 self-test checks
+pass; 5 needles seen, 5 needles successful, 0 needles failed.
+
+This is smoke-only. It does NOT claim an external benchmark result,
+does NOT claim a leaderboard entry, does NOT claim performance, does
+NOT claim a promotion, does NOT claim a default change, does NOT claim
+a runtime/retriever/pack/backend/EvidenceCore semantic change, and does
+NOT claim downstream agent value. It does NOT emit `winner`,
+`best_method`, `recommended_default`, or anything implying a policy/
+default decision. The release asset, raw repo records, repo names/URLs,
+commit SHAs, entrypoint paths, topics, content, dependency, needle
+names/descriptions/paths/start/end lines, generated task/label/run
+JSONL, evidence rows, cloned repos, and stdout/stderr stay under `/tmp`
+or in-memory only and are NEVER committed or uploaded. The committed
+artifact is aggregate-only. All no-claim / no-runtime-change flags
+remain false (`external_benchmark_performance_claimed=false`,
+`leaderboard_entry_claimed=false`,
+`downstream_agent_value_proven=false`, `promotion_ready=false`,
+`default_should_change=false`, `runtime_behavior_changed=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`backend_changed=false`, `default_policy_changed=false`,
+`evidencecore_semantics_changed=false`, `provider_calls_made=false`,
+`remote_provider_calls_made=false`). The safe true flags (true only if
+actually true: `repoqa_retrieval_smoke_performed`,
+`asset_downloaded_transiently`, `repoqa_needles_parsed_in_memory`,
+`repositories_materialized_transiently`, `openlocus_retrieval_executed`,
+`score_py_metrics_computed`, `aggregate_only_public_artifact`,
+`diagnostic_only`) are the only additional true flags. If the network
+smoke cannot complete (asset download failure, no Python needles, repo
+clone failure, retrieval failure, score failure), the artifact records
+truthful `unavailable_*` with a real `failure_reason_category` (no
+stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
+files were modified. See
+the [C5-D detailed report](c5d-repoqa-bm25-retrieval-smoke.md).
+
 ## Current status update — 2026-06-21 (F1 counterfactual evidence utility smoke)
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual

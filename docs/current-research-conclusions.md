@@ -206,6 +206,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `c5-contextbench-verified-performance-smoke.md`: [en](en/c5-contextbench-verified-performance-smoke.md) · [zh](zh/c5-contextbench-verified-performance-smoke.md)
 - `c5b-contextbench-verified-method-matrix-smoke.md`: [en](en/c5b-contextbench-verified-method-matrix-smoke.md) · [zh](zh/c5b-contextbench-verified-method-matrix-smoke.md)
 - `c5c-contextbench-method-matrix-scale-smoke.md`: [en](en/c5c-contextbench-method-matrix-scale-smoke.md) · [zh](zh/c5c-contextbench-method-matrix-scale-smoke.md)
+- `c5d-repoqa-bm25-retrieval-smoke.md`: [en](en/c5d-repoqa-bm25-retrieval-smoke.md) · [zh](zh/c5d-repoqa-bm25-retrieval-smoke.md)
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)

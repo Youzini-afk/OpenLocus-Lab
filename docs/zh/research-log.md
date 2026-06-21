@@ -7363,3 +7363,193 @@ runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不是**下游 a
   （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
   未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
   无 promotion/default/runtime 声明变更。
+
+---
+
+## 2026-06-21 — C5-D RepoQA BM25 检索性能 Smoke
+
+### 目标
+
+运行第一个真实 RepoQA 检索性能 smoke，而不创建另一个仅就绪阶段。使用已知
+的 EvalPlus RepoQA release asset `repoqa-2024-06-23.json.gz`，在内存中解析
+一个小的有界 Python needle 集，临时克隆引用仓库，运行 OpenLocus `bm25`，
+用 `eval/score.py` 对 needle path/line ranges 打分，并仅发布 aggregate
+metrics。
+
+### 为何 RepoQA，而非 SWE-Explore
+
+- SWE-Explore C4.3 row-map smoke 在预览行中未找到可用的 line-budget/检索
+  label 形状。
+- RepoQA 有已知的 release asset 和自然的检索结构：
+  `needle.description` 是 query，`needle.path` + start/end lines 是 gold
+  target。
+
+### 假设
+
+有界 RepoQA Python needle subset 可在临时 `/tmp` 工作区下通过真实
+OpenLocus 检索 + 打分管线运行，产出 aggregate 检索 metrics，而无需持久化
+release asset、repo 记录、commit SHA、needle 字段、生成的 JSONL、evidence
+行、克隆仓库或 stdout/stderr。
+
+### 阶段门
+
+- C5-D 通过当 self-test 通过（219 个检查）、真实网络 smoke 完成（asset 已
+  下载、needle 已解析、仓库已克隆、检索已执行、score.py metrics 已计算）、
+  forbidden scan 干净，且提交的 artifact 仅记录 aggregate 计数/比率/均值，
+  所有无声明标志为 false，无 `winner`/`best_method`/`recommended_default`。
+- C5-D 为 `unavailable_*` 当 asset 下载/解析失败、无 Python needle、或
+  repo 克隆/检索/打分失败。
+
+### 实现说明
+
+- **C5-D artifact**（`eval/c5d_repoqa_bm25_retrieval_smoke.py`）：公共
+  aggregate-only smoke。下载 `repoqa-2024-06-23.json.gz` 到内存字节（临时；
+  **绝不**写入工作区）；在内存中解压；解析按 `language_filter=python`
+  过滤的 RepoQA needle（**无**静默全语言回退）；对每个 needle，将
+  `needle_description` sanitizer 为检索 query（提取 `Purpose` 部分的第一句；
+  仅内存中）；在每 needle `TemporaryDirectory` 下克隆 `repo_url` 到
+  `commit_sha`；生成临时 task/label JSONL；通过 `eval/run_retrieval.py`
+  运行 OpenLocus 检索（`--method bm25 --cwd <repo_root>`）；运行
+  `eval/score.py`；在成功 needle 上聚合 metrics；仅写入 aggregate 计数/比率/
+  均值到提交的 artifact。
+- **Artifact 身份**：
+  `schema_version=c5d_repoqa_retrieval_performance_smoke.v1`、
+  `claim_level=repoqa_retrieval_performance_smoke_only`、
+  `status=repoqa_retrieval_smoke_pass|partial|unavailable_asset_download_failed|unavailable_no_python_needles|unavailable_repo_clone_failed|fail_forbidden_scan|fail_schema_contract`、
+  `mode=repoqa_bounded_bm25_retrieval_smoke`、`phase=C5-D`。
+- **Safe true 标志**（仅当实际为真时为 true）：
+  `repoqa_retrieval_smoke_performed`、`asset_downloaded_transiently`、
+  `repoqa_needles_parsed_in_memory`、
+  `repositories_materialized_transiently`、
+  `openlocus_retrieval_executed`、`score_py_metrics_computed`、
+  `aggregate_only_public_artifact`、`diagnostic_only`。
+- **无声明 / 无运行时变更标志**（全为 false）：
+  `external_benchmark_performance_claimed`、
+  `leaderboard_entry_claimed`、`downstream_agent_value_proven`、
+  `promotion_ready`、`default_should_change`、
+  `runtime_behavior_changed`、`retriever_changed`、
+  `pack_builder_changed`、`backend_changed`、
+  `default_policy_changed`、`evidencecore_semantics_changed`、
+  `provider_calls_made`、`remote_provider_calls_made`。
+- **License 字段**（固定）：
+  `dataset_license_status=unknown_dataset_license`、
+  `row_level_redistribution_allowed=false`、
+  `derived_row_level_publication_allowed=false`、
+  `aggregate_metrics_publication=aggregate_only_smoke`。
+- **方法矩阵**：`ALLOWED_METHODS = (bm25,)` 仅。
+- **语言过滤**：`ALLOWED_LANGUAGE_FILTERS = (python,)` 仅；**无**静默全语言
+  回退。
+- **严格公共 scanner**（fail-closed）。复用 C5-A forbidden scanner 原语 +
+  C5-D 专属检查：拒绝 RepoQA 专属 forbidden key（repo、commit_sha、
+  entrypoint_path、topic、content、dependency、needles、needle、needle_name、
+  needle_path、needle_description、start_line、end_line、start_byte、
+  end_byte、global_*、code_ratio、path、description 等）；拒绝推荐/策略字段
+  （`winner`、`best_method`、`recommended_default` 等）出现在任意位置。
+- **生成在 self-test 失败或 scanner 发现泄露时拒绝成功**
+  （fail-closed `_enforce_c5d_no_forbidden` +
+  `_refuse_on_self_test_failure`，在写入 JSON 前立即执行）。
+- **临时 /tmp asset + clone + 检索 + 打分**：asset 下载到内存字节（**绝不**
+  写入工作区）；每 needle `TemporaryDirectory` 用于克隆仓库；
+  `TemporaryDirectory` 用于生成的 task/label/run JSONL。所有原始 repo 记录、
+  repo 名称/URL、commit SHA、entrypoint 路径、topics、content、dependency、
+  needle 名称/描述/路径/start/end lines、生成的 JSONL、evidence 行、克隆
+  仓库与 stdout/stderr 仅保留在 `/tmp` 下，**绝不**提交或上传。
+- **不可用状态**：如果网络 smoke 无法完成，artifact 记录真实的
+  `unavailable_*`，带有真实的 `failure_reason_category`（无 stale/fake pass）。
+
+### CI workflow
+
+- `.github/workflows/c5-repoqa-bm25-retrieval-smoke.yml`：手动 opt-in
+  `workflow_dispatch`，带布尔 `enable_external_benchmark_network` 默认 false，
+  `needle_limit`（默认 5，硬上限 10），`language_filter`（仅 python），
+  `method`（仅 bm25）输入。未启用时，no-op 并显示明确消息。无 `secrets.`、
+  无 `vars.`、无 `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env。构建 OpenLocus
+  CLI（release），运行 self-test，仅在启用时运行网络 smoke，校验标志
+  （fail-closed 如 C5-C：network-enabled CI 不可在 unavailable/无 needle 时
+  通过；要求 status 在（`repoqa_retrieval_smoke_pass`，`partial`）、
+  `needles_seen > 0`、`needles_successful > 0`、`forbidden_scan.status=pass`），
+  校验 docs i18n，检查工作树，仅上传 aggregate 报告（7 天保留）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/c5d_repoqa_bm25_retrieval_smoke.py  => PASS
+python3 eval/c5d_repoqa_bm25_retrieval_smoke.py --self-test  => PASS (219/219 checks)
+python3 eval/c5d_repoqa_bm25_retrieval_smoke.py \
+  --needle-limit 5 --language-filter python --method bm25 \
+  --out artifacts/c5d_repoqa_bm25_retrieval_smoke/\
+c5d_repoqa_bm25_retrieval_smoke_report.json  => PASS
+  (status: repoqa_retrieval_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: repoqa_bounded_bm25_retrieval_smoke, phase: C5-D,
+   method: bm25, language_filter: python,
+   query_mode: needle_description, gold_target_mode: needle_path_line_range,
+   needles_seen: 5, needles_evaluated: 5, needles_successful: 5, needles_failed: 0,
+   network_calls: 1, provider_calls: 0,
+   repoqa_retrieval_smoke_performed: true,
+   asset_downloaded_transiently: true,
+   repoqa_needles_parsed_in_memory: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+C5-D smoke 是第一个 RepoQA 形态的检索性能 smoke。它下载
+`repoqa-2024-06-23.json.gz` release asset 到内存字节（临时），在内存中解析
+5 个 RepoQA Python needle，在临时 `/tmp` 目录下克隆引用仓库到其
+`commit_sha`，对每个仓库运行 OpenLocus `bm25` 检索，并运行 `eval/score.py`
+产出 aggregate 检索 metrics。它明确**不是**严格的 benchmark 结果、**不是**
+leaderboard 条目、**不是**性能声称、**不是**promotion、**不是**默认/策略
+变更、**不是**runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不是**
+下游 agent 价值声称。完整的 C5 外部-benchmark-评估阶段仍然是一个有界的
+规划/可行性阶段。见 [C5-D 详细报告](c5d-repoqa-bm25-retrieval-smoke.md)。
+
+### 注意事项
+
+- C5-D 是公共 aggregate-only RepoQA BM25 检索性能 smoke artifact。它是
+  eval/diagnostic only。它**不**改变 runtime、retriever、pack、backend 或
+  默认策略；它**不**改变 EvidenceCore 语义。它**不是** benchmark 结果、
+  **不是**leaderboard 条目、**不是**性能声称、**不是**promotion、**不是**
+  默认变更、**不是**runtime-clean 通用算法声称、**不是**OOD 时间泛化声称、
+  **不是**QuIVer systems 声称，也**不是**下游 agent 价值声称。
+- C5-D **不**输出 `winner`、`best_method`、`recommended_default` 或任何
+  暗示策略/默认决策的字段。
+- C5-D **不**运行 provider 调用，**不**运行远程 provider 调用。唯一的网络
+  调用是对公共 GitHub（asset 下载 + repo 克隆）。`provider_calls=0`、
+  `provider_calls_made=false`、`remote_provider_calls_made=false`。
+- C5-D 使用**有界 RepoQA Python needle subset**（默认 5 needle；硬上限
+  10）。这是 smoke，**不是**严格的 benchmark 评估。
+- C5-D 下载 `repoqa-2024-06-23.json.gz` release asset 到内存字节（临时；
+  **绝不**写入工作区）并在内存中解压。克隆的仓库、生成的 task/label/run
+  JSONL、evidence 行与 stdout/stderr 仅保留在 `/tmp` 下，**绝不**提交或
+  上传。
+- C5-D **不**静默从 Python 回退到所有语言。若
+  `language_filter=python` 且零 Python needle 找到，artifact 为真实的
+  `unavailable_no_python_needles`。
+- C5-D **不**声称外部 benchmark 性能。
+  `external_benchmark_performance_claimed=false`。
+- C5-D **不**证明下游 agent 价值。
+  `downstream_agent_value_proven=false`。
+- RepoQA 数据集 license 未知
+  （`unknown_dataset_license`）；行级再分发被禁用，派生行级发布被禁用。
+  Aggregate metrics 发布允许作为 aggregate-only smoke。
+- 所有 no-claim / no-runtime-change 标志保持 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
+  未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
+  无 promotion/default/runtime 声明变更。
