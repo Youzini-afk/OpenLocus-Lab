@@ -365,8 +365,7 @@ Python 行 21-40（抓取 40，评估切片 [20,40)）与 RepoQA Python needle
 `unavailable_with_reason`。仅 records 形态列表（`d5a1_input_record`、
 `heldout_benchmark_method_records`、`validation_records`、
 `validation_summary_records`）；无 per-unit metric 数组，无 row/needle
-ID，无 winner/default/calibration 声明。88/88 self-test 检查通过。本地
-heldout run 已通过：status `heldout_feature_validation_pass`，forbidden
+ID，无 winner/default/calibration 声明。88/88 self-test 检查通过。本地 heldout run 与手动 CI run `27915252367` 已通过：status `heldout_feature_validation_pass`，forbidden
 scan pass，`validation_outcome=retrieval_feature_validation_supported`，
 contextbench_rows_fetched=20，repoqa_needles_seen=10，network_calls=2，
 provider_calls=0；所有 4 个 D5-A1 检索特征在 heldout 数据上复现

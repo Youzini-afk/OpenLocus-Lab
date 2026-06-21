@@ -63,7 +63,7 @@
     "promotion_claimed": false,
     "signal_strength": "heldout_feature_validation_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-21T19:34:08.940417+00:00",
+  "generated_at": "2026-06-21T19:51:36.797450+00:00",
   "generated_by": "eval/d5a2_heldout_feature_validation.py",
   "heldout_benchmark_method_records": [
     {
@@ -191,7 +191,7 @@
   "mode": "heldout_contextbench_repoqa_feature_validation",
   "network_calls": 2,
   "network_mode": "local_explicit",
-  "openlocus_binary_source": "default",
+  "openlocus_binary_source": "explicit",
   "openlocus_retrieval_executed": true,
   "pack_builder_changed": false,
   "phase": "D5-A2",

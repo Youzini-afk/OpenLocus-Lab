@@ -374,8 +374,7 @@ schema `d5a2_heldout_feature_validation.v1`、
 运行新鲜 heldout ContextBench 行 21-40 + RepoQA needle 11-20，方法
 bm25/regex/symbol，计算相同固定 retrieval-derived utility proxy，并
 检查 4 项检索特征验证（bm25_vs_empty 量级/符号稳定性；
-regex/symbol_vs_bm25 符号稳定性）。88/88 self-test 检查通过。本地
-heldout run 已通过：status `heldout_feature_validation_pass`、
+regex/symbol_vs_bm25 符号稳定性）。88/88 self-test 检查通过。本地 heldout run 与手动 CI run `27915252367` 已通过：status `heldout_feature_validation_pass`、
 `validation_outcome=retrieval_feature_validation_supported`，20 行抓
 取，10 个 needle 见到，所有 4 个特征在 heldout 数据上复现
 （bm25_vs_empty heldout +0.727961 正；bm25 符号稳定性 heldout

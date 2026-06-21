@@ -398,7 +398,7 @@ stability; regex/symbol_vs_bm25 sign stability). Validation outcomes
 (`d5a1_input_record`, `heldout_benchmark_method_records`,
 `validation_records`, `validation_summary_records`); no per-unit
 metric arrays, no row/needle IDs, no winner/default/calibration claims.
-88/88 self-test checks pass. Local heldout run passed: status
+88/88 self-test checks pass. Local heldout run and manual CI run `27915252367` passed: status
 `heldout_feature_validation_pass`, forbidden scan pass,
 `validation_outcome=retrieval_feature_validation_supported`,
 contextbench_rows_fetched=20, repoqa_needles_seen=10,

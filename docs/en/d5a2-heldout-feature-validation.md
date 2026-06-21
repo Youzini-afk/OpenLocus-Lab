@@ -141,7 +141,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-Local heldout run produced the following aggregate records (no
+Local heldout run and manual CI run `27915252367` produced the following aggregate records (no
 row/needle IDs/repo URLs/commits/queries/paths/spans/snippets/JSONL/
 evidence/per-unit metrics/hashes/stdout/stderr/clone paths/provider
 fields/winner/default/calibration claims committed):

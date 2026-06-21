@@ -424,14 +424,14 @@ RepoQA needles 11-20 with bm25/regex/symbol, computes the same fixed
 retrieval-derived utility proxy, and checks 4 retrieval-feature
 validations (bm25_vs_empty magnitude/sign stability; regex/symbol
 vs_bm25 sign stability). 88/88 self-test checks pass. Local heldout run
-passed: status `heldout_feature_validation_pass`,
+and manual CI run `27915252367` passed: status `heldout_feature_validation_pass`,
 `validation_outcome=retrieval_feature_validation_supported`, 20 rows
 fetched, 10 needles seen, all 4 features reproduce on heldout data
 (bm25_vs_empty heldout +0.727961 positive; bm25 sign stability heldout
 file_recall +0.6 positive; regex/symbol_vs_bm25 heldout -0.977961
 negative). The heldout bm25 file_recall@10=0.7 on ContextBench (vs
-0.35 on original rows 1-20) confirms the bm25 positive retrieval
-feature generalizes.
+0.35 on original rows 1-20) supports the bm25 positive retrieval
+feature on this heldout slice.
 
 This is heldout feature validation, NOT calibration. It is NOT
 calibration, NOT a calibrated model claim, NOT a policy/default

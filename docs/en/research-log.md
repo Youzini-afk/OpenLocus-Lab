@@ -9148,14 +9148,14 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-All 4 D5-A1 retrieval features reproduce on heldout data:
+Manual CI run `27915252367` passed and uploaded the sanitized aggregate D5-A2 report. All 4 D5-A1 retrieval features reproduce on heldout data:
 bm25_vs_empty_retrieval_utility_magnitude (heldout +0.727961,
 positive, supported); bm25_vs_empty_sign_stability (heldout file_recall
 +0.6, positive, supported); regex_vs_bm25_sign_stability (heldout
 -0.977961, negative, supported); symbol_vs_bm25_sign_stability
 (heldout -0.977961, negative, supported). The heldout bm25
 file_recall@10=0.7 on ContextBench (vs 0.35 on original D5-A1 rows
-1-20) confirms the bm25 positive retrieval feature is supported on this heldout slice.
+1-20) supports the bm25 positive retrieval feature on this heldout slice.
 
 See [D5-A2 detailed report](d5a2-heldout-feature-validation.md).
 

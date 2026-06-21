@@ -8461,13 +8461,13 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-所有 4 个 D5-A1 检索特征在 heldout 数据上复现：
+手动 CI run `27915252367` 已通过，并上传 sanitized aggregate D5-A2 report。所有 4 个 D5-A1 检索特征在 heldout 数据上复现：
 bm25_vs_empty_retrieval_utility_magnitude（heldout +0.727961，正，
 supported）；bm25_vs_empty_sign_stability（heldout file_recall
 +0.6，正，supported）；regex_vs_bm25_sign_stability（heldout
 -0.977961，负，supported）；symbol_vs_bm25_sign_stability（heldout
 -0.977961，负，supported）。heldout ContextBench bm25
-file_recall@10=0.7（对比原始 D5-A1 行 1-20 的 0.35）确认 bm25 正向
+file_recall@10=0.7（对比原始 D5-A1 行 1-20 的 0.35）支持 bm25 正向
 检索特征在此 heldout 切片上成立。
 
 详见 [D5-A2 详细报告](d5a2-heldout-feature-validation.md)。
