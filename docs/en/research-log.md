@@ -7211,3 +7211,151 @@ report](b16c-live-provider-paired-smoke.md).
   actually executed. No runtime/retriever/pack/model/backend/
   default-policy files were modified; no promotion/default/runtime
   claims change.
+
+---
+
+## 2026-06-21 — B16-D Less-Trivial Live-Provider Downstream Paired Smoke
+
+### Objective
+
+Follow B16-C with a harder live-provider paired smoke that directly
+tests whether a context pack can influence live LLM edit/test behavior
+on less-trivial synthetic public tasks. B16-C proved live-provider
+plumbing and privacy gates, but both arms saturated
+(`solve_rate=1.0`, treatment delta `0.0`). B16-D keeps the same
+aggregate-only safety model while making the task family less trivial.
+
+### Hypothesis
+
+A less-trivial multi-file task family (same-symbol distractor + support
+relation required) under a live LLM provider can exercise the full B16
+downstream-agent edit/test loop and produce behavior metrics + honest
+signal fields (`context_pack_signal_observed`,
+`treatment_solve_rate_delta`, `treatment_wrong_file_edits_delta`),
+without claiming downstream agent value, live agent generalization, or
+promotion/default change.
+
+### Implementation notes
+
+- **B16-D artifact**
+  (`eval/b16d_less_trivial_live_provider_paired_smoke.py`): public
+  aggregate-only smoke. Reuses `eval/provider_client.py` from B16-C
+  (unchanged). Generates deterministic less-trivial synthetic public
+  micro bug tasks (default 4; `--task-count` range 2-8, hard cap 8);
+  each task is multi-file: `target.py` (buggy function, same symbol as
+  distractor), `distractor.py` (same-named decoy), `support.py`
+  (helper constant; support relation), `test_target.py` (imports
+  target AND support; asserts correct relation). Fresh `/tmp`
+  workspace per task+arm. Live LLM agent only when `--allow-remote` +
+  `OPENLOCUS_ALLOW_REMOTE=1` + provider env. Structured edit action
+  allowlisted: file `target.py` only; actions
+  `replace_return_value` / `choose_helper_constant` / `no_op`; no
+  arbitrary paths, no shell; distractor/support NOT editable. Real
+  file edits + real subprocess tests.
+- **Deterministic correct value formula**:
+  `helper_constant = 10 + task_index * 7`;
+  `correct_value = helper_constant * 2 + task_index`.
+- **Paired arm design**: `control_sparse` (NO target file cue; NO
+  support-relation cue; small token budget) vs
+  `treatment_context_pack` (target file cue, target symbol cue,
+  support-relation cue, exact edit constraint; larger token budget).
+  Same budget/tool constraints; only the context pack differs.
+- **Artifact identity**:
+  `schema_version=b16d_less_trivial_live_provider_paired_smoke.v1`,
+  `claim_level=less_trivial_live_provider_downstream_paired_smoke_only`,
+  `mode=public_aggregate_synthetic_less_trivial_tasks`,
+  `phase=B16-D`. Status enum:
+  `live_provider_less_trivial_paired_smoke_pass`,
+  `blocked_remote_not_enabled`,
+  `unavailable_no_local_provider_env`, `provider_call_failed`,
+  `structured_action_parse_failed`, `paired_run_failed`,
+  `fail_forbidden_scan`.
+- **Safe true flags** (only on live run): same 11 as B16-C
+  (`downstream_agent_runs_performed`, `live_llm_agent`,
+  `provider_calls_made`, `remote_provider_calls_made`,
+  `paired_run_executed`, `synthetic_micro_tasks_used`,
+  `real_file_edits_performed`, `real_test_commands_executed`,
+  `agent_behavior_metrics_evaluated`,
+  `aggregate_only_public_artifact`, `diagnostic_only`).
+- **Always-false no-claim flags** (all 12): same as B16-C.
+- **Honest signal fields** (diagnostic smoke outcomes only, NEVER
+  promotion/default/value claims):
+  `context_pack_signal_observed` (bool), `treatment_solve_rate_delta`
+  (number), `treatment_wrong_file_edits_delta` (number). Zero/negative
+  treatment delta is a valid empirical result.
+- **CI pass criterion**: live run completed + privacy scan passed +
+  artifact is honest. CI pass does NOT require treatment improvement.
+- **Strict public scanner** (fail-closed): same shape as B16-C; rejects
+  forbidden keys anywhere and value patterns (URL, hex digest,
+  secret-like, path-like, `/tmp/`, task identifier, patch markers,
+  stack traces, multiline, raw JSON, line ranges, raw model routing
+  prefix, sentinel). Scanner runs ONLY against the final public
+  aggregate artifact.
+- **Per-run event logs/prompts/responses/test output stay under
+  `/tmp` only** and are NEVER committed or uploaded.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16d_less_trivial_live_provider_paired_smoke.py  => PASS
+python3 eval/b16d_less_trivial_live_provider_paired_smoke.py --self-test  => PASS (136/136 checks)
+python3 eval/b16d_less_trivial_live_provider_paired_smoke.py \
+  --out artifacts/b16d_less_trivial_live_provider_paired_smoke/\
+b16d_less_trivial_live_provider_paired_smoke_report.json               => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_less_trivial_tasks, phase: B16-D,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_provider_calls_made: false, paired_run_executed: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   default_should_change: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   runtime_behavior_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false, real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py                                  => PASS
+git diff --check                                                       => PASS
+```
+
+The committed artifact is the truthful local unavailable/blocked
+report because no local provider env is available. A live
+`live_provider_less_trivial_paired_smoke_pass` artifact requires an
+explicit local opt-in run or the manual CI `real-provider-benchmark`
+workflow with
+`stage=b16d_less_trivial_live_provider_paired_smoke` and
+`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+See [B16-D detailed report](b16d-less-trivial-live-provider-paired-smoke.md).
+
+### Caveats
+
+- B16-D is the public aggregate-only less-trivial live-provider
+  downstream paired smoke artifact. It is eval/diagnostic only. It
+  does NOT change runtime, retriever, pack, backend, or default
+  policy; it does NOT change EvidenceCore semantics. It is NOT a
+  benchmark result, NOT a downstream agent value claim, NOT a
+  runtime-clean general algorithm claim, NOT an OOD temporal claim,
+  and NOT a QuIVer systems claim.
+- B16-D uses a **live LLM provider** (OpenAI-compatible) only when
+  `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are
+  all set. The committed artifact is truthful: if no local provider
+  env is available, it carries status `blocked_remote_not_enabled` /
+  `unavailable_no_local_provider_env` with live-run flags false. It
+  is NOT a fake pass.
+- B16-D does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- B16-D does NOT claim live agent generalization.
+  `live_agent_generalization_claimed=false`.
+- B16-D does NOT publish prompts, responses, provider payloads, base
+  URLs, API keys, raw model routing prefixes, workspace paths, file
+  paths, source snippets, patches/diffs, test output, raw event logs,
+  or per-run rows. Per-run data stays under `/tmp` only.
+- `honest_signals` are diagnostic smoke outcomes only, NEVER
+  promotion/default/value claims. Zero/negative treatment delta is a
+  valid empirical result.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags remain true; live-run flags are true ONLY when a live run
+  actually executed. No runtime/retriever/pack/model/backend/
+  default-policy files were modified; no promotion/default/runtime
+  claims change.

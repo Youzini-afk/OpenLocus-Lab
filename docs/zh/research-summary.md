@@ -248,6 +248,52 @@ runtime/retriever/pack/model/backend/default-policy 文件。B16-C upload surfac
 已从 B16-C artifact upload 中排除。详见
 [B16-C 详细报告](b16c-live-provider-paired-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（B16-D less-trivial live-provider 下游 paired smoke）
+
+继 B16-C 之后，B16-D 是更难的 live-provider paired smoke，任务族更不
+平凡。B16-D
+（`eval/b16d_less_trivial_live_provider_paired_smoke.py`，复用 B16-C 的
+`eval/provider_client.py`）->
+`artifacts/b16d_less_trivial_live_provider_paired_smoke/b16d_less_trivial_live_provider_paired_smoke_report.json`，
+schema `b16d_less_trivial_live_provider_paired_smoke.v1`、
+`claim_level=less_trivial_live_provider_downstream_paired_smoke_only`、
+`mode=public_aggregate_synthetic_less_trivial_tasks`、阶段 `B16-D`）
+生成确定性 less-trivial 多文件任务（target.py + distractor.py +
+support.py + test_target.py；同符号 distractor；需要 support
+relation；正确值 = `helper_constant * 2 + task_index`），为每个
+task+arm 创建全新 `/tmp` 工作区，仅当 `--allow-remote` +
+`OPENLOCUS_ALLOW_REMOTE=1` + provider env 全部设置时运行 **live LLM
+agent**（OpenAI 兼容），本地应用模型的结构化 edit action（仅白名单
+`target.py`；action `replace_return_value` /
+`choose_helper_constant` / `no_op`；distractor/support 不可编辑），
+运行真实子进程测试，并在 paired `control_sparse` /
+`treatment_context_pack` arms 上计算聚合行为指标。treatment 含
+target file cue、target symbol cue、support-relation cue 及 exact
+edit constraint；control 缺少决定性 cue。提交的 artifact 是**真实
+的**：因为本地无 provider env，状态为
+`blocked_remote_not_enabled`，live-run 标志为 false。live
+`live_provider_less_trivial_paired_smoke_pass` artifact 需要显式本
+地 opt-in run 或手动 CI `real-provider-benchmark` workflow
+（`stage=b16d_less_trivial_live_provider_paired_smoke` +
+`enable_remote_models=true`）。**手动 CI live-provider run：待执
+行。** 136/136 self-test checks 通过。
+
+这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
+泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升
+任何 candidate，也**不**改变 runtime/retriever/pack/backend/
+default-policy/EvidenceCore 语义。CI 通过意味着 live run completed +
+privacy scan passed + artifact is honest；CI 通过**不**要求 treatment
+改善（零/负 delta 有效）。per-run prompt、response、event log、
+patch 和测试输出仅留在 `/tmp`，**绝不**提交或上传。honest signal
+字段（`context_pack_signal_observed`、
+`treatment_solve_rate_delta`、`treatment_wrong_file_edits_delta`）
+是诊断 smoke 结果，**绝不**是 promotion/default/value 声明。所有无
+声明 / 无运行时变更标志保持 false。live-run 标志**仅**在 live run
+实际执行时为 true，否则为 false。不发布 raw model 路由前缀；仅记录
+规范化的 `model_display_category`。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。详见
+[B16-D 详细报告](b16d-less-trivial-live-provider-paired-smoke.md)。
+
 ## 当前状态更新 —— 2026-06-21（C5-A ContextBench verified 检索性能 smoke）
 
 继 D5-A0 与 B16-A 之后，C5-A 产出第一个外部-benchmark-形态的检索性能

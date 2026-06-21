@@ -6690,3 +6690,143 @@ opt-in / provider env 不可用时仍真实输出 `blocked_remote_not_enabled` /
   live-run 标志**仅**在 live run 实际执行时为 true。未修改任何
   runtime/retriever/pack/model/backend/default-policy 文件；无
   promotion/default/runtime 声明变更。
+
+---
+
+## 2026-06-21 — B16-D Less-Trivial Live-Provider 下游 Paired Smoke
+
+### 目标
+
+继 B16-C 之后，用更难的 live-provider paired smoke 直接测试 context
+pack 是否能在更不平凡的合成公开任务上影响 live LLM edit/test 行为。
+B16-C 证明了 live-provider 管道和隐私门，但两 arm 饱和
+（`solve_rate=1.0`，treatment delta `0.0`）。B16-D 保持相同的仅聚合安
+全模型，同时让任务族更不平凡。
+
+### 假设
+
+在 live LLM provider 下的 less-trivial 多文件任务族（同符号
+distractor + 需要 support relation）能执行完整 B16 下游 agent edit/test
+循环，并产出行为指标 + honest signal 字段
+（`context_pack_signal_observed`、`treatment_solve_rate_delta`、
+`treatment_wrong_file_edits_delta`），且不声明下游 agent 价值、live
+agent 泛化或 promotion/default 变更。
+
+### 实现说明
+
+- **B16-D artifact**
+  （`eval/b16d_less_trivial_live_provider_paired_smoke.py`）：公开仅
+  聚合 smoke。复用 B16-C 的 `eval/provider_client.py`（不变）。在代码
+  中生成确定性 less-trivial 合成公开 micro bug 任务（默认 4；
+  `--task-count` 范围 2-8，硬上限 8）；每个任务多文件：`target.py`
+  （buggy 函数，与 distractor 同符号）、`distractor.py`（同名
+  decoy）、`support.py`（helper constant；support relation）、
+  `test_target.py`（导入 target AND support；断言正确关系）。每个
+  task+arm 全新 `/tmp` 工作区。仅当 `--allow-remote` +
+  `OPENLOCUS_ALLOW_REMOTE=1` + provider env 时使用 live LLM agent。
+  结构化 edit action 白名单：仅 `target.py`；action
+  `replace_return_value` / `choose_helper_constant` / `no_op`；无任
+  意路径，无 shell；distractor/support 不可编辑。真实文件编辑 + 真
+  实子进程测试。
+- **确定性正确值公式**：
+  `helper_constant = 10 + task_index * 7`；
+  `correct_value = helper_constant * 2 + task_index`。
+- **Paired arm 设计**：`control_sparse`（无 target file cue；无
+  support-relation cue；小 token 预算）vs `treatment_context_pack`
+  （target file cue、target symbol cue、support-relation cue、
+  exact edit constraint；较大 token 预算）。预算/工具约束相同；仅
+  context pack 不同。
+- **Artifact 身份**：
+  `schema_version=b16d_less_trivial_live_provider_paired_smoke.v1`、
+  `claim_level=less_trivial_live_provider_downstream_paired_smoke_only`、
+  `mode=public_aggregate_synthetic_less_trivial_tasks`、`phase=B16-D`。
+  状态枚举：`live_provider_less_trivial_paired_smoke_pass`、
+  `blocked_remote_not_enabled`、
+  `unavailable_no_local_provider_env`、`provider_call_failed`、
+  `structured_action_parse_failed`、`paired_run_failed`、
+  `fail_forbidden_scan`。
+- **Safe true flags**（仅 live run 时）：与 B16-C 相同的 11 个
+  （`downstream_agent_runs_performed`、`live_llm_agent`、
+  `provider_calls_made`、`remote_provider_calls_made`、
+  `paired_run_executed`、`synthetic_micro_tasks_used`、
+  `real_file_edits_performed`、`real_test_commands_executed`、
+  `agent_behavior_metrics_evaluated`、
+  `aggregate_only_public_artifact`、`diagnostic_only`）。
+- **Always-false no-claim flags**（全 12 个）：与 B16-C 相同。
+- **Honest signal 字段**（诊断 smoke 结果，**绝不**是
+  promotion/default/value 声明）：
+  `context_pack_signal_observed`（bool）、`treatment_solve_rate_delta`
+  （number）、`treatment_wrong_file_edits_delta`（number）。零/负
+  treatment delta 是有效的实证结果。
+- **CI 通过标准**：live run completed + privacy scan passed +
+  artifact is honest。CI 通过**不**要求 treatment 改善。
+- **严格公开 scanner**（fail-closed）：与 B16-C 相同形状；拒绝
+  forbidden key 在任何位置出现及 value 模式（URL、hex digest、
+  secret-like、path-like、`/tmp/`、任务标识、patch 标记、堆栈跟踪、
+  多行、raw JSON、行范围、raw model routing prefix、sentinel）。scanner
+  仅对最终公开聚合 artifact 运行。
+- **per-run event log/prompt/response/测试输出仅留在 `/tmp`**，绝不提
+  交或上传。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16d_less_trivial_live_provider_paired_smoke.py  => PASS
+python3 eval/b16d_less_trivial_live_provider_paired_smoke.py --self-test  => PASS (136/136 checks)
+python3 eval/b16d_less_trivial_live_provider_paired_smoke.py \
+  --out artifacts/b16d_less_trivial_live_provider_paired_smoke/\
+b16d_less_trivial_live_provider_paired_smoke_report.json               => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_less_trivial_tasks, phase: B16-D,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_provider_calls_made: false, paired_run_executed: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   default_should_change: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   runtime_behavior_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false, real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py                                  => PASS
+git diff --check                                                       => PASS
+```
+
+提交的 artifact 是真实的本地 unavailable/blocked 报告，因为本地无
+provider env。live `live_provider_less_trivial_paired_smoke_pass`
+artifact 需要显式本地 opt-in run 或手动 CI
+`real-provider-benchmark` workflow
+（`stage=b16d_less_trivial_live_provider_paired_smoke` +
+`enable_remote_models=true`）。**手动 CI live-provider run：待执行。**
+详见 [B16-D 详细报告](b16d-less-trivial-live-provider-paired-smoke.md)。
+
+### 注意事项
+
+- B16-D 是公开仅聚合 less-trivial live-provider 下游 paired smoke
+  artifact。它是 eval/诊断专用。它**不**改变 runtime、retriever、
+  pack、backend 或 default policy；它**不**改变 EvidenceCore 语义。
+  它**不是**基准测试结果，**不是**下游 agent 价值声明，**不是**
+  runtime-clean 通用算法声明，**不是** OOD 时间性声明，也**不是**
+  QuIVer 系统声明。
+- B16-D 仅在 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider
+  env 全部设置时使用 **live LLM provider**（OpenAI 兼容）。提交的
+  artifact 是真实的：若本地无 provider env，其状态为
+  `blocked_remote_not_enabled` /
+  `unavailable_no_local_provider_env`，live-run 标志为 false。它**不
+  是** fake pass。
+- B16-D **不**证明下游 agent 价值。
+  `downstream_agent_value_proven=false`。
+- B16-D **不**声明 live agent 泛化。
+  `live_agent_generalization_claimed=false`。
+- B16-D **不**发布 prompt、response、provider payload、base URL、
+  API key、raw model 路由前缀、工作区路径、文件路径、源码片段、
+  patch/diff、测试输出、raw event log 或 per-run 行。per-run 数据仅
+  留在 `/tmp`。
+- `honest_signals` 是诊断 smoke 结果，**绝不**是
+  promotion/default/value 声明。零/负 treatment delta 是有效的实证
+  结果。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志保持 true；
+  live-run 标志**仅**在 live run 实际执行时为 true。未修改任何
+  runtime/retriever/pack/model/backend/default-policy 文件；无
+  promotion/default/runtime 声明变更。

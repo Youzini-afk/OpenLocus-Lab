@@ -16,8 +16,9 @@ rollup, and the trajectory has now pivoted into D5-A0 automated empirical
 E/S calibration smoke, B16-A minimal deterministic/mock downstream
 paired-agent empirical run, B16-B less-separable deterministic/mock
 downstream paired-agent stress run, B16-C live-provider downstream paired
-smoke, C5-A ContextBench verified retrieval performance smoke, and C5-B
-ContextBench verified retrieval method matrix smoke. D5-H / human-reference
+smoke, B16-D less-trivial live-provider downstream paired smoke, C5-A
+ContextBench verified retrieval performance smoke, and C5-B ContextBench
+verified retrieval method matrix smoke. D5-H / human-reference
 calibration remains out of scope until human labels exist; the D5-A
 automated/programmatic empirical path is active. B16-A is a deterministic
 mock downstream smoke (no live LLM, no provider calls); it does NOT claim
@@ -34,6 +35,16 @@ raw prompt/response/payload committed); the committed artifact is
 truthful: status is blocked_remote_not_enabled when no local provider
 env (NOT a fake pass); it does NOT claim downstream agent value, live
 agent generalization, external benchmark performance, real user task,
+promotion, or default/policy/runtime/retriever/pack/backend/
+EvidenceCore semantic change. B16-D extends B16-C with a harder
+less-trivial multi-file task family (same-symbol distractor + support
+relation required; treatment includes target file cue, target symbol
+cue, support-relation cue, exact edit constraint; control lacks the
+decisive cue; same live-provider gating; same aggregate-only safety
+model; CI pass does NOT require treatment improvement); the committed
+artifact is truthful: status is blocked_remote_not_enabled when no local
+provider env; it does NOT claim downstream agent value, live agent
+generalization, external benchmark performance, real user task,
 promotion, or default/policy/runtime/retriever/pack/backend/
 EvidenceCore semantic change. C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
@@ -69,6 +80,14 @@ B16-C 是首个 live-provider B16 风格下游 agent smoke（仅当 --allow-remo
 不提交 raw prompt/response/payload）；提交的 artifact 是真实的：本地无
 provider env 时状态为 blocked_remote_not_enabled（**不是** fake pass）；
 它**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
+户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
+EvidenceCore 语义变更。B16-D 扩展 B16-C 为更难的 less-trivial 多文件
+任务族（同符号 distractor + 需要 support relation；treatment 含 target
+file cue、target symbol cue、support-relation cue、exact edit
+constraint；control 缺少决定性 cue；相同 live-provider gating；相同仅
+聚合安全模型；CI 通过**不**要求 treatment 改善）；提交的 artifact 是
+真实的：本地无 provider env 时状态为 blocked_remote_not_enabled；它
+**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
 户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
 EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
@@ -126,6 +145,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b16a-minimal-mock-agent-paired-run.md`: [en](en/b16a-minimal-mock-agent-paired-run.md) · [zh](zh/b16a-minimal-mock-agent-paired-run.md)
 - `b16b-less-separable-mock-paired-run.md`: [en](en/b16b-less-separable-mock-paired-run.md) · [zh](zh/b16b-less-separable-mock-paired-run.md)
 - `b16c-live-provider-paired-smoke.md`: [en](en/b16c-live-provider-paired-smoke.md) · [zh](zh/b16c-live-provider-paired-smoke.md)
+- `b16d-less-trivial-live-provider-paired-smoke.md`: [en](en/b16d-less-trivial-live-provider-paired-smoke.md) · [zh](zh/b16d-less-trivial-live-provider-paired-smoke.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)

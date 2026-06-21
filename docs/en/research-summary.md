@@ -267,6 +267,57 @@ aggregate report only; generic `real-provider` artifacts such as
 `plan.json` are excluded from the B16-C artifact upload. See the
 [B16-C detailed report](b16c-live-provider-paired-smoke.md).
 
+## Current status update — 2026-06-21 (B16-D less-trivial live-provider downstream paired smoke)
+
+Following B16-C, B16-D is a harder live-provider paired smoke with a
+less-trivial synthetic public task family. B16-D
+(`eval/b16d_less_trivial_live_provider_paired_smoke.py`, reusing
+`eval/provider_client.py` from B16-C) ->
+`artifacts/b16d_less_trivial_live_provider_paired_smoke/b16d_less_trivial_live_provider_paired_smoke_report.json`,
+schema `b16d_less_trivial_live_provider_paired_smoke.v1`,
+`claim_level=less_trivial_live_provider_downstream_paired_smoke_only`,
+`mode=public_aggregate_synthetic_less_trivial_tasks`, phase `B16-D`)
+generates deterministic less-trivial multi-file tasks (target.py +
+distractor.py + support.py + test_target.py; same-symbol distractor;
+support relation required; correct value =
+`helper_constant * 2 + task_index`), creates a fresh `/tmp` workspace
+per task+arm, runs a **live LLM agent** (OpenAI-compatible) only when
+`--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are all
+set, applies the model's structured edit action locally (allowlisted
+`target.py` only; actions `replace_return_value` /
+`choose_helper_constant` / `no_op`; distractor/support NOT editable),
+runs real subprocess tests, and computes aggregate behavior metrics
+over paired `control_sparse` / `treatment_context_pack` arms.
+Treatment includes target file cue, target symbol cue, support-relation
+cue, and exact edit constraint; control lacks the decisive cues. The
+committed artifact is **truthful**: because no local provider env is
+available, status is `blocked_remote_not_enabled` with live-run flags
+false. A live `live_provider_less_trivial_paired_smoke_pass` artifact
+requires an explicit local opt-in run or the manual CI
+`real-provider-benchmark` workflow with
+`stage=b16d_less_trivial_live_provider_paired_smoke` and
+`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+136/136 self-test checks pass.
+
+This is smoke-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. CI pass means live run completed
++ privacy scan passed + artifact is honest; CI pass does NOT require
+treatment improvement (zero/negative delta is valid). Per-run prompts,
+responses, event logs, patches, and test output stay under `/tmp` only
+and are NEVER committed or uploaded. Honest signal fields
+(`context_pack_signal_observed`, `treatment_solve_rate_delta`,
+`treatment_wrong_file_edits_delta`) are diagnostic smoke outcomes only,
+NEVER promotion/default/value claims. All no-claim / no-runtime-change
+flags remain false. Live-run flags are true ONLY when a live run
+actually executed; otherwise false. No raw model routing prefix is
+emitted; only the normalized `model_display_category` is recorded. No
+runtime/retriever/pack/model/backend/default-policy files were
+modified. See the
+[B16-D detailed report](b16d-less-trivial-live-provider-paired-smoke.md).
+
 ## Current status update — 2026-06-21 (C5-A ContextBench verified retrieval performance smoke)
 
 Following D5-A0 and B16-A, C5-A produces the first

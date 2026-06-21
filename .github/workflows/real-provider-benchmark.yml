@@ -25,6 +25,7 @@ on:
           - b6d_cross_adapter_frozen_validation
           - p51c_planner
           - b16c_live_provider_paired_smoke
+          - b16d_less_trivial_live_provider_paired_smoke
           - all_smoke
       enable_remote_models:
         description: 'Allow real embedding / LLM providers from production environment'
@@ -215,7 +216,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner", "b16c_live_provider_paired_smoke", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner", "b16c_live_provider_paired_smoke", "b16d_less_trivial_live_provider_paired_smoke", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -308,7 +309,7 @@ jobs:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
-              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "b16c_live_provider_paired_smoke", "all_smoke"}
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "b16c_live_provider_paired_smoke", "b16d_less_trivial_live_provider_paired_smoke", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
               if not embedding_provider:
                   raise SystemExit("unsupported embedding provider variable")
@@ -1375,6 +1376,143 @@ jobs:
           print(f"B16-C sanitized aggregate report written to {dst}")
           if data.get("status") != "live_provider_paired_smoke_pass":
               print(f"B16-C live-provider smoke did not pass: {data.get('status')}", file=sys.stderr)
+              sys.exit(1)
+          PY
+
+      - name: B16-D less-trivial live-provider downstream paired smoke
+        if: ${{ inputs.stage == 'b16d_less_trivial_live_provider_paired_smoke' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_LLM_WORKFLOW_DISPATCH: "1"
+          OPENLOCUS_LLM_MODEL: ${{ steps.plan.outputs.llm_model }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          TASK_COUNT: "4"
+        run: |
+          # B16-D requires enable_remote_models=true via the plan step;
+          # the plan step refuses to set allow_remote=1 otherwise. No
+          # provider run if ALLOW_REMOTE != "1".
+          if [[ "$ALLOW_REMOTE" != "1" ]]; then
+            echo "B16-D requires enable_remote_models=true; skipping live run"
+            exit 1
+          fi
+          tmp_report="$RUNNER_TEMP/b16d_less_trivial_live_provider_paired_smoke_report.json"
+          python3 eval/b16d_less_trivial_live_provider_paired_smoke.py \
+            --self-test
+          python3 eval/provider_client.py --self-test
+          python3 eval/b16d_less_trivial_live_provider_paired_smoke.py \
+            --allow-remote --require-workflow-dispatch \
+            --task-count "$TASK_COUNT" \
+            --out "$tmp_report"
+          # Copy/sanitize into the real_provider_ci artifact dir only
+          # if the script's own scanner passed (status in the allowlist
+          # and forbidden_scan.status=pass). The script itself runs the
+          # fail-closed scanner before writing, so a successful write
+          # already guarantees aggregate-only safety.
+          mkdir -p artifacts/real_provider_ci
+          python3 - <<'PY'
+          import json
+          import os
+          import pathlib
+          import re
+          import sys
+          src = pathlib.Path(os.environ["RUNNER_TEMP"]) / "b16d_less_trivial_live_provider_paired_smoke_report.json"
+          if not src.is_file():
+              print("B16-D temp report not found", file=sys.stderr)
+              sys.exit(1)
+          data = json.loads(src.read_text(encoding="utf-8"))
+          allowed_statuses = {
+              "live_provider_less_trivial_paired_smoke_pass",
+              "unavailable_no_local_provider_env",
+              "blocked_remote_not_enabled",
+              "provider_call_failed",
+              "structured_action_parse_failed",
+              "paired_run_failed",
+          }
+          if data.get("status") not in allowed_statuses:
+              print(f"B16-D unexpected status: {data.get('status')}", file=sys.stderr)
+              sys.exit(1)
+          if data.get("forbidden_scan", {}).get("status") != "pass":
+              print("B16-D forbidden_scan failed", file=sys.stderr)
+              sys.exit(1)
+          # Hard no-claim gate.
+          for flag in (
+              "downstream_agent_value_proven",
+              "live_agent_generalization_claimed",
+              "promotion_ready",
+              "default_should_change",
+              "external_benchmark_performance_claimed",
+              "real_user_task_claimed",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+          ):
+              if data.get(flag) is not False:
+                  print(f"B16-D {flag} must be false", file=sys.stderr)
+                  sys.exit(1)
+          if data.get("aggregate_only_public_artifact") is not True:
+              print("B16-D aggregate_only_public_artifact must be true", file=sys.stderr)
+              sys.exit(1)
+          if data.get("diagnostic_only") is not True:
+              print("B16-D diagnostic_only must be true", file=sys.stderr)
+              sys.exit(1)
+          # If the live run did NOT execute, the live-run flags MUST be
+          # false. If it DID execute, the live-run flags MUST be true.
+          # CI pass criterion: live run completed + privacy scan passed
+          # + artifact is honest. CI pass does NOT require treatment
+          # improvement; zero/negative delta is valid.
+          live_flags = (
+              "downstream_agent_runs_performed",
+              "live_llm_agent",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+              "paired_run_executed",
+              "synthetic_micro_tasks_used",
+              "real_file_edits_performed",
+              "real_test_commands_executed",
+              "agent_behavior_metrics_evaluated",
+          )
+          if data.get("status") == "live_provider_less_trivial_paired_smoke_pass":
+              for flag in live_flags:
+                  if data.get(flag) is not True:
+                      print(f"B16-D pass status requires {flag}=true", file=sys.stderr)
+                      sys.exit(1)
+          else:
+              for flag in live_flags:
+                  if data.get(flag) is not False:
+                      print(f"B16-D non-pass status requires {flag}=false", file=sys.stderr)
+                      sys.exit(1)
+          # Final secret/URL/raw-prefix scan over the artifact text.
+          text = src.read_text(encoding="utf-8")
+          forbidden_patterns = [
+              re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
+              re.compile(r"(?i)authorization\s*[:=]"),
+              re.compile(r"(?i)bearer\s+[A-Za-z0-9_.-]{20,}"),
+              re.compile(r"https?://"),
+              re.compile(r"\[mk\]"),
+          ]
+          for pat in forbidden_patterns:
+              if pat.search(text):
+                  print(f"B16-D forbidden pattern leaked: {pat.pattern}", file=sys.stderr)
+                  sys.exit(1)
+          dst = pathlib.Path("artifacts/real_provider_ci/b16d_less_trivial_live_provider_paired_smoke_report.json")
+          dst.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          plan_path = pathlib.Path("artifacts/real_provider_ci/plan.json")
+          if plan_path.exists():
+              plan_path.unlink()
+          b16d_jsons = sorted(pathlib.Path("artifacts/real_provider_ci").glob("*.json"))
+          if b16d_jsons != [dst]:
+              unexpected = ", ".join(str(path) for path in b16d_jsons)
+              print(f"B16-D upload surface must contain only sanitized report, got: {unexpected}", file=sys.stderr)
+              sys.exit(1)
+          print(f"B16-D sanitized aggregate report written to {dst}")
+          # CI pass requires the live run to have completed successfully.
+          if data.get("status") != "live_provider_less_trivial_paired_smoke_pass":
+              print(f"B16-D live-provider smoke did not pass: {data.get('status')}", file=sys.stderr)
               sys.exit(1)
           PY
 
@@ -3246,7 +3384,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
-        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' && inputs.stage != 'b16c_live_provider_paired_smoke' }}
+        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' && inputs.stage != 'b16c_live_provider_paired_smoke' && inputs.stage != 'b16d_less_trivial_live_provider_paired_smoke' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
@@ -3384,6 +3522,30 @@ jobs:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
           path: |
             artifacts/real_provider_ci/b16c_live_provider_paired_smoke_report.json
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !**/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+            !**/prompts/**
+            !**/responses/**
+            !**/messages/**
+            !**/provider_payload/**
+            !**/logs/**
+            !**/tmp/**
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload B16-D less-trivial live-provider paired smoke artifacts
+        if: ${{ inputs.stage == 'b16d_less_trivial_live_provider_paired_smoke' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/b16d_less_trivial_live_provider_paired_smoke_report.json
+            !artifacts/real_provider_ci/plan.json
             !artifacts/real_provider_ci/**/labels/**
             !artifacts/real_provider_ci/**/corpus/**
             !artifacts/real_provider_ci/*label*
