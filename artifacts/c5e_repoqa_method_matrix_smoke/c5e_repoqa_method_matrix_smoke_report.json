@@ -48,14 +48,14 @@
     "promotion_claimed": false,
     "signal_strength": "repoqa_method_matrix_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-21T14:38:50.656473+00:00",
+  "generated_at": "2026-06-21T14:43:35.948281+00:00",
   "generated_by": "eval/c5e_repoqa_method_matrix_smoke.py",
   "gold_target_mode": "needle_path_line_range",
   "language_filter": "python",
   "leaderboard_entry_claimed": false,
   "method_results": [
     {
-      "aggregate_runtime_seconds": 3.66,
+      "aggregate_runtime_seconds": 9.416,
       "failure_category_counts": {
         "asset_decompress_failed": 0,
         "asset_download_failed": 0,
@@ -87,7 +87,7 @@
       "status": "repoqa_method_matrix_smoke_pass"
     },
     {
-      "aggregate_runtime_seconds": 3.983,
+      "aggregate_runtime_seconds": 6.969,
       "failure_category_counts": {
         "asset_decompress_failed": 0,
         "asset_download_failed": 0,
@@ -119,7 +119,7 @@
       "status": "repoqa_method_matrix_smoke_pass"
     },
     {
-      "aggregate_runtime_seconds": 6.83,
+      "aggregate_runtime_seconds": 11.436,
       "failure_category_counts": {
         "asset_decompress_failed": 0,
         "asset_download_failed": 0,
@@ -171,7 +171,7 @@
   "needles_seen": 5,
   "network_calls": 1,
   "network_mode": "local_explicit",
-  "openlocus_binary_source": "default",
+  "openlocus_binary_source": "explicit",
   "openlocus_retrieval_executed": true,
   "pack_builder_changed": false,
   "phase": "C5-E",

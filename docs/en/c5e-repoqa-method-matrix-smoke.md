@@ -250,6 +250,8 @@ git diff --check  => PASS
 
 ## Real smoke result (2026-06-21)
 
+Manual CI run `27907731742` (`c5-repoqa-method-matrix-smoke`, `enable_external_benchmark_network=true`, `needle_limit=5`, `methods=bm25,regex,symbol`, `language_filter=python`) completed successfully. The committed artifact now mirrors that sanitized aggregate CI report. The workflow validator was fail-closed: network-enabled CI required `repoqa_method_matrix_smoke_pass` or `partial`, `needles_seen > 0`, `methods_successful > 0`, and `forbidden_scan.status=pass` before upload.
+
 ```text
 python3 eval/c5e_repoqa_method_matrix_smoke.py \
   --needle-limit 5 --language-filter python --methods bm25,regex,symbol \
@@ -261,9 +263,9 @@ c5e_repoqa_method_matrix_smoke_report.json
   => network_calls: 1, provider_calls: 0
   => repoqa_method_matrix_smoke_performed: true
   => method_results:
-     bm25: file_recall@10=0.6, mrr=0.46, span_f0.5@10=0.041634, success_rate=1.0, runtime=3.977s
-     regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, runtime=2.721s
-     symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, runtime=7.076s
+     bm25: file_recall@10=0.6, mrr=0.46, span_f0.5@10=0.041634, success_rate=1.0, runtime=9.416s
+     regex: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, runtime=6.969s
+     symbol: file_recall@10=0.0, mrr=0.0, span_f0.5@10=0.0, success_rate=1.0, runtime=11.436s
   => smoke_metric_deltas_vs_baseline: 8 records (regex×4 + symbol×4)
 ```
 

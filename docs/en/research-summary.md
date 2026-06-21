@@ -669,6 +669,10 @@ per-method records (list, NOT dict keyed by method name), per-method
 `aggregate_runtime_seconds`, and aggregate-only deltas vs the fixed
 `bm25` baseline. 228/228 self-test checks pass; 5 needles seen, 3/3
 methods successful, 0 methods failed.
+Manual CI run `27907731742` passed with the same aggregate metrics; the
+committed artifact now mirrors that sanitized CI report. CI runtimes were
+bm25=9.416s, regex=6.969s, symbol=11.436s; provider_calls=0 and
+forbidden_scan=pass.
 
 This is smoke-only. It does NOT claim an external benchmark result,
 does NOT claim a leaderboard entry, does NOT claim performance, does

@@ -8260,8 +8260,7 @@ repos, or stdout/stderr.
   default false, `needle_limit` (default 5, hard cap 10), `methods`
   (default `bm25,regex,symbol`; only bm25/regex/symbol allowed),
   `language_filter` (python only) inputs. If not enabled, no-op with
-  clear message. No `secrets.`, no `vars.`, no
-  `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
+  clear message. No `secrets.`, no `vars.`, no provider model env. Builds OpenLocus CLI
   (release), runs self-test, runs network smoke only when enabled,
   validates flags (fail-closed like C5-C: network-enabled CI cannot
   pass with unavailable/no needles; require status in
@@ -8308,6 +8307,8 @@ c5e_repoqa_method_matrix_smoke_report.json  => PASS
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+Manual CI run `27907731742` passed and uploaded only the aggregate C5-E report. The committed artifact now mirrors that sanitized CI report: needles_seen=5, methods_successful=3, methods_failed=0, bm25 file_recall@10=0.6/mrr=0.46/span_f0.5@10=0.041634/success_rate=1.0, regex and symbol file_recall@10=0.0, aggregate_runtime_seconds bm25=9.416 / regex=6.969 / symbol=11.436, forbidden_scan=pass, provider_calls=0.
 
 The C5-E smoke is the first RepoQA-shaped retrieval method-matrix smoke.
 It downloads the `repoqa-2024-06-23.json.gz` release asset to in-memory

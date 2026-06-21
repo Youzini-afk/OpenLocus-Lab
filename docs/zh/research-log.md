@@ -7648,7 +7648,7 @@ JSONL、evidence 行、克隆仓库或 stdout/stderr。
   false，`needle_limit`（默认 5，硬上限 10），`methods`（默认
   `bm25,regex,symbol`；仅允许 bm25/regex/symbol），`language_filter`
   （仅 python）输入。未启用时，no-op 并显示明确消息。无 `secrets.`、无
-  `vars.`、无 `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env。构建 OpenLocus
+  `vars.`、无 provider model env。构建 OpenLocus
   CLI（release），运行 self-test，仅在启用时运行网络 smoke，校验标志
   （fail-closed 如 C5-C：network-enabled CI 不可在 unavailable/无 needle 时
   通过；要求 status 在（`repoqa_method_matrix_smoke_pass`，`partial`）、
@@ -7694,6 +7694,12 @@ c5e_repoqa_method_matrix_smoke_report.json  => PASS
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+手动 CI run `27907731742` 已通过，并且只上传 aggregate C5-E report。已提交
+artifact 现在镜像该 sanitized CI report：needles_seen=5、methods_successful=3、
+methods_failed=0、bm25 file_recall@10=0.6/mrr=0.46/span_f0.5@10=0.041634/
+success_rate=1.0，regex 与 symbol file_recall@10=0.0，aggregate_runtime_seconds
+bm25=9.416 / regex=6.969 / symbol=11.436，forbidden_scan=pass，provider_calls=0。
 
 C5-E smoke 是第一个 RepoQA 形态的检索方法矩阵 smoke。它下载
 `repoqa-2024-06-23.json.gz` release asset 到内存字节（临时），在内存中解析
