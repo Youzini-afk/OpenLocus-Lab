@@ -103,6 +103,58 @@ until human labels. All no-claim / no-runtime-change flags remain false
 backend/default-policy files were modified. See the
 [D5-A0 detailed report](d5a-automated-es-calibration.md).
 
+## 2026-06-20 B16-A Minimal Mock Downstream Paired Run (Empirical Downstream-Agent Smoke)
+
+Following D5-A0, B16-A produces the first B16-style downstream-agent
+empirical run that is **not** control-plane-only. B16-A
+(`eval/b16a_minimal_mock_agent_paired_run.py` ->
+`artifacts/b16a_minimal_mock_agent_paired_run/b16a_minimal_mock_agent_paired_run_report.json`,
+schema `b16a_minimal_mock_agent_paired_run.v1`,
+`claim_level=deterministic_mock_downstream_paired_smoke_only`,
+`status=mock_downstream_paired_smoke_pass`,
+`mode=public_aggregate_synthetic_micro_tasks`, phase `B16-A`) generates
+deterministic synthetic public micro bug tasks in code, creates a fresh
+`/tmp` workspace per task+arm with real tiny Python modules + stdlib
+tests, runs a **deterministic mock agent** (no live LLM, no provider
+calls, no remote calls) that performs **real file edits** and runs
+**real subprocess tests**, and computes aggregate behavior metrics over
+paired control/treatment arms. The treatment pack causally alters the
+mock agent's behavior (treatment solve_rate=1.0 vs control
+solve_rate=0.0) for a designed subset.
+
+This is smoke-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. The per-run event logs,
+patches, and test output stay under `/tmp` only and are NEVER committed
+or uploaded. The committed artifact is aggregate-only: no task IDs,
+workspace paths, file paths, source snippets, patches/diffs, test
+output, raw event logs, per-run rows, private IDs, or provider/model
+info beyond the deterministic mock identity. All no-claim /
+no-runtime-change flags remain false (`live_llm_agent=false`,
+`provider_calls_made=false`, `remote_calls_made=false`,
+`downstream_agent_value_proven=false`, `promotion_ready=false`,
+`default_should_change=false`, `runtime_behavior_changed=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`backend_changed=false`, `default_policy_changed=false`,
+`evidencecore_semantics_changed=false`,
+`external_benchmark_performance_claimed=false`,
+`live_agent_generalization_claimed=false`,
+`real_user_task_claimed=false`). The deterministic-mock-run flags
+(`downstream_agent_runs_performed=true`,
+`deterministic_mock_agent=true`, `synthetic_micro_tasks_used=true`,
+`paired_arms_evaluated=true`, `real_file_edits_performed=true`,
+`real_test_commands_executed=true`,
+`agent_behavior_metrics_evaluated=true`,
+`aggregate_only_public_artifact=true`, `diagnostic_only=true`) are the
+only additional true flags. No runtime/retriever/pack/model/
+backend/default-policy files were modified. The full B16
+downstream-coding-agent evaluation phase remains a bounded planning /
+feasibility stage that requires live paired agent runs with real
+provider calls. See the
+[B16-A detailed report](b16a-minimal-mock-agent-paired-run.md).
+
 ## P52A Source Materialization / Local Verifier Prerequisite
 
 P52A reads local source files only for bounded aggregate materialization prerequisite diagnostics. It stores no raw source, snippets, digests, paths, or spans. Source read is not Evidence, and materialized candidate is not Evidence. P52A does not validate EvidenceCore and does not produce verifier pass/fail or default/promotion claims. See the [P52A detailed report](p52a-source-materialization-prerequisite.md).

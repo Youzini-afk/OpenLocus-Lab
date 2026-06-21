@@ -13,15 +13,19 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 Latest status: C4 external benchmark readiness and the Step 6/D-series
 dual-rubric control-plane harnesses are complete through the D4-series
 rollup, and the trajectory has now pivoted into D5-A0 automated empirical
-E/S calibration smoke. D5-H / human-reference calibration remains out of
-scope until human labels exist; the D5-A automated/programmatic empirical
-path is active. No runtime/default-policy/promotion/downstream-value claim
-is made.
+E/S calibration smoke and B16-A minimal deterministic/mock downstream
+paired-agent empirical run. D5-H / human-reference calibration remains out
+of scope until human labels exist; the D5-A automated/programmatic empirical
+path is active. B16-A is a deterministic mock downstream smoke (no live LLM,
+no provider calls); it does NOT claim downstream agent value. No
+runtime/default-policy/promotion/downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
-校准 smoke。D5-H / 人工参考校准在人工标签存在前仍属 out of scope；D5-A
-自动/程序化实证路径已激活。当前不作 runtime/default-policy/promotion/
+校准 smoke 及 B16-A 最小确定性/mock 下游 paired-agent 实证 run。D5-H /
+人工参考校准在人工标签存在前仍属 out of scope；D5-A 自动/程序化实证路径
+已激活。B16-A 是确定性 mock 下游 smoke（无 live LLM、无 provider 调用）；
+它**不**声明下游 agent 价值。当前不作 runtime/default-policy/promotion/
 downstream-value 声明。
 
 ## Mirror convention / 镜像约定
@@ -62,6 +66,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `ci-research-harness.md`: [en](en/ci-research-harness.md) · [zh](zh/ci-research-harness.md)
 - `current-research-conclusions.md`: [en](en/current-research-conclusions.md) · [zh](zh/current-research-conclusions.md)
 - `d5a-automated-es-calibration.md`: [en](en/d5a-automated-es-calibration.md) · [zh](zh/d5a-automated-es-calibration.md)
+- `b16a-minimal-mock-agent-paired-run.md`: [en](en/b16a-minimal-mock-agent-paired-run.md) · [zh](zh/b16a-minimal-mock-agent-paired-run.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)
 - `p21-g-cross-model-context-injection.md`: [en](en/p21-g-cross-model-context-injection.md) · [zh](zh/p21-g-cross-model-context-injection.md)

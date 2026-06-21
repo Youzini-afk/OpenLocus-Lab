@@ -5850,3 +5850,170 @@ See [D5-A0 detailed report](d5a-automated-es-calibration.md).
   D5-H / human-reference / human-calibrated calibration remains out of
   scope until human labels while the D5-A automated empirical path is
   active; no promotion/default/runtime claims change.
+
+---
+
+## 2026-06-20 — B16-A Minimal Mock Downstream Paired Run
+
+### Objective
+
+Produce the first B16-style downstream-agent empirical run that is
+**not** control-plane-only, without waiting for a live LLM agent or
+provider credentials. Generate isolated synthetic public micro bug
+workspaces under `/tmp`, run paired control/treatment arms, execute a
+deterministic mock agent whose behavior depends on the provided context
+pack, perform real file edits, run real subprocess tests, and emit only
+aggregate public behavior metrics.
+
+### Hypothesis
+
+A deterministic mock agent whose action depends on a context pack can
+exercise the full B16 downstream-agent edit/test loop and produce
+behavior metrics (solve_rate, tests_pass_rate,
+correct_file_before_first_edit_rate, wrong_file_edits_mean,
+tool_calls_before_first_edit_mean, context_tokens_mean,
+latency_ms_mean, cost_proxy_mean) over synthetic public micro tasks,
+without a live LLM and without claiming downstream agent value.
+
+### Implementation notes
+
+- **B16-A artifact** (`eval/b16a_minimal_mock_agent_paired_run.py`):
+  public aggregate-only smoke. Generates deterministic synthetic public
+  micro bug tasks in code (default 24; `--task-count` range 4-32);
+  creates a fresh `/tmp` workspace per task+arm with real tiny Python
+  modules + stdlib tests; runs a deterministic mock agent (real file
+  edits + real subprocess tests); computes aggregate behavior metrics;
+  writes ONLY aggregate counts/rates/means to the committed artifact.
+- **Paired arm design**: same budget/tool constraints; only the context
+  pack differs. **control** pack is bare/wrong-cue (even-index tasks
+  carry a wrong-cue file pointing at the distractor; odd-index tasks
+  carry no file cue). **treatment** pack is richer/evidence with the
+  target file/symbol/operation hint cue. The treatment pack causally
+  alters the deterministic mock agent's behavior for the designed
+  subset.
+- **Deterministic mock agent**: pack-dependent. If the pack has a
+  `target_file` cue -> edit that file with the correct fix (tests
+  pass). Elif the pack has a `wrong_cue_file` cue -> edit the wrong
+  file (tests still fail; wrong_file_edits=1). Else -> do nothing
+  (tests fail; no edit). After the edit/no-op, runs the real subprocess
+  test command (`python3 <workspace>/test_target.py`).
+- **Artifact identity**: `schema_version=b16a_minimal_mock_agent_paired_run.v1`,
+  `claim_level=deterministic_mock_downstream_paired_smoke_only`,
+  `status=mock_downstream_paired_smoke_pass` (on success),
+  `mode=public_aggregate_synthetic_micro_tasks`, `phase=B16-A`.
+- **Safe true flags** (exactly these, all true):
+  `downstream_agent_runs_performed`, `deterministic_mock_agent`,
+  `synthetic_micro_tasks_used`, `paired_arms_evaluated`,
+  `real_file_edits_performed`, `real_test_commands_executed`,
+  `agent_behavior_metrics_evaluated`, `aggregate_only_public_artifact`,
+  `diagnostic_only`.
+- **No-claim / no-runtime-change flags** (all false):
+  `live_llm_agent`, `provider_calls_made`, `remote_calls_made`,
+  `downstream_agent_value_proven`, `promotion_ready`,
+  `default_should_change`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `external_benchmark_performance_claimed`,
+  `live_agent_generalization_claimed`, `real_user_task_claimed`.
+- **Strict public scanner** (fail-closed). Rejects forbidden dict keys
+  anywhere (`task_id`, `workspace_path`, `file`, `target_file`,
+  `wrong_cue_file`, `path`, `span`, `content_sha`, `snippet`, `code`,
+  `patch`, `diff`, `test_output`, `stdout`, `stderr`, `event_log`,
+  `stack_trace`, `api_key`, `base_url`, `provider_key`, `secret`,
+  `token`, `credential`, `rows`, `per_run`, `predictions`, etc.) and
+  value patterns: ANY URL (no URL allowlist), 32+ char hex digests,
+  secret-like strings, path-like strings with file extensions,
+  `/tmp/` workspace path values, `task_N` task-identifier values,
+  patch/diff markers (`---`, `+++`, `@@`), stack traces
+  (`Traceback (most recent call last)`), multiline strings, raw JSON
+  fragments, raw line ranges, and the self-test sentinel. The scanner
+  runs ONLY against the final public aggregate artifact (NOT against
+  in-memory per-run event logs, which contain paths/patches/test
+  output).
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Per-run event logs/patches/test output stay under `/tmp` only** and
+  are NEVER committed or uploaded. The committed artifact contains ONLY
+  aggregate counts/rates/means.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16a_minimal_mock_agent_paired_run.py    => PASS
+python3 eval/b16a_minimal_mock_agent_paired_run.py --self-test      => PASS (104/104 checks)
+python3 eval/b16a_minimal_mock_agent_paired_run.py \
+  --out artifacts/b16a_minimal_mock_agent_paired_run/\
+b16a_minimal_mock_agent_paired_run_report.json                     => PASS
+  (status: mock_downstream_paired_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_micro_tasks, phase: B16-A,
+   synthetic_task_count: 24, total_runs: 48,
+   control: solve_rate=0.0, tests_pass_rate=0.0,
+     correct_file_before_first_edit_rate=0.0, wrong_file_edits_mean=0.5,
+   treatment: solve_rate=1.0, tests_pass_rate=1.0,
+     correct_file_before_first_edit_rate=1.0, wrong_file_edits_mean=0.0,
+   deltas_treatment_minus_control: solve_rate=+1.0,
+     wrong_file_edits_mean=-0.5,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_calls_made: false, downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   retriever_changed: false, pack_builder_changed: false,
+   backend_changed: false, default_policy_changed: false,
+   evidencecore_semantics_changed: false, runtime_behavior_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false, real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py                           => PASS
+git diff --check                                               => PASS
+```
+
+The B16-A smoke is the first B16-style downstream-agent empirical run
+that is not control-plane-only. It executes a real edit/test loop on
+synthetic public micro tasks with a deterministic mock agent (no live
+LLM, no provider calls, no remote calls). The treatment pack causally
+alters the mock agent's behavior (treatment solve_rate=1.0 vs control
+solve_rate=0.0), demonstrating a pack-effect smoke. It is explicitly
+NOT a live downstream agent value claim, NOT a live agent
+generalization claim, NOT an external benchmark performance claim,
+and NOT a real user task claim. The full B16 downstream-coding-agent
+evaluation phase remains a bounded planning / feasibility stage that
+requires live paired agent runs with real provider calls. See
+[B16-A detailed report](b16a-minimal-mock-agent-paired-run.md).
+
+### Caveats
+
+- B16-A is the public aggregate-only minimal mock downstream paired
+  smoke artifact. It is eval/diagnostic only. It does NOT change
+  runtime, retriever, pack, backend, or default policy; it does NOT
+  change EvidenceCore semantics. It is NOT a benchmark result, NOT a
+  live downstream agent value claim, NOT a runtime-clean general
+  algorithm claim, NOT an OOD temporal claim, and NOT a QuIVer systems
+  claim.
+- B16-A uses a **deterministic mock agent** (no live LLM, no provider
+  calls, no remote calls). The mock agent's behavior is pack-dependent
+  by design: the treatment pack includes the target file/symbol/
+  operation cue, while the control pack lacks the target cue or
+  carries a wrong-cue file. This is a causal pack-effect smoke, NOT a
+  live agent value claim.
+- B16-A generates **deterministic synthetic public micro bug tasks**
+  in code. These are NOT real user tasks and are NOT external benchmark
+  tasks. The exact task/run counts are acceptable because these are
+  synthetic public tasks.
+- B16-A performs **real file edits** and **real subprocess tests**
+  (stdlib Python) in fresh `/tmp` workspaces per task+arm. The
+  per-run event logs, patches, and test output stay under `/tmp` only
+  and are NEVER committed or uploaded. The committed artifact contains
+  ONLY aggregate counts/rates/means.
+- B16-A does NOT prove downstream agent value. The treatment-vs-control
+  delta is a deterministic mock artifact of the designed pack cues,
+  NOT evidence that the treatment pack improves a live downstream
+  agent. `downstream_agent_value_proven=false`.
+- B16-A does NOT claim live agent generalization. The deterministic
+  mock agent generalizes trivially to the synthetic task family by
+  construction; this is NOT a live agent generalization claim.
+  `live_agent_generalization_claimed=false`.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags (`aggregate_only_public_artifact`, `diagnostic_only`) remain
+  true; the deterministic-mock-run flags are the only additional true
+  flags. No runtime/retriever/pack/model/backend/default-policy files
+  were modified; no promotion/default/runtime claims change.

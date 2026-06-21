@@ -102,6 +102,53 @@ until human labels. All no-claim / no-runtime-change flags remain false
 backend/default-policy files were modified. See the
 [D5-A0 detailed report](d5a-automated-es-calibration.md).
 
+## Current status update — 2026-06-20 (B16-A minimal mock downstream paired run)
+
+Following D5-A0, B16-A produces the first B16-style downstream-agent
+empirical run that is **not** control-plane-only. B16-A
+(`eval/b16a_minimal_mock_agent_paired_run.py` ->
+`artifacts/b16a_minimal_mock_agent_paired_run/b16a_minimal_mock_agent_paired_run_report.json`,
+schema `b16a_minimal_mock_agent_paired_run.v1`,
+`claim_level=deterministic_mock_downstream_paired_smoke_only`,
+`status=mock_downstream_paired_smoke_pass`,
+`mode=public_aggregate_synthetic_micro_tasks`, phase `B16-A`) generates
+deterministic synthetic public micro bug tasks in code, creates a fresh
+`/tmp` workspace per task+arm with real tiny Python modules + stdlib
+tests, runs a **deterministic mock agent** (no live LLM, no provider
+calls, no remote calls) that performs **real file edits** and runs
+**real subprocess tests**, and computes aggregate behavior metrics
+(solve_rate, tests_pass_rate, correct_file_before_first_edit_rate,
+wrong_file_edits_mean, tool_calls_before_first_edit_mean,
+context_tokens_mean, latency_ms_mean, cost_proxy_mean) over paired
+control/treatment arms. The treatment pack causally alters the mock
+agent's behavior (treatment solve_rate=1.0 vs control solve_rate=0.0).
+104/104 self-test checks pass; 24 tasks; 48 total runs.
+
+This is smoke-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. The per-run event logs,
+patches, and test output stay under `/tmp` only and are NEVER committed
+or uploaded. The committed artifact is aggregate-only. All no-claim /
+no-runtime-change flags remain false (`live_llm_agent=false`,
+`provider_calls_made=false`, `remote_calls_made=false`,
+`downstream_agent_value_proven=false`, `promotion_ready=false`,
+`default_should_change=false`, `runtime_behavior_changed=false`,
+`retriever_changed=false`, `pack_builder_changed=false`,
+`backend_changed=false`, `default_policy_changed=false`,
+`evidencecore_semantics_changed=false`,
+`external_benchmark_performance_claimed=false`,
+`live_agent_generalization_claimed=false`,
+`real_user_task_claimed=false`). The deterministic-mock-run flags
+(`downstream_agent_runs_performed`, `deterministic_mock_agent`,
+`synthetic_micro_tasks_used`, `paired_arms_evaluated`,
+`real_file_edits_performed`, `real_test_commands_executed`,
+`agent_behavior_metrics_evaluated`, `aggregate_only_public_artifact`,
+`diagnostic_only`) are the only additional true flags. No runtime/
+retriever/pack/model/backend/default-policy files were modified. See
+the [B16-A detailed report](b16a-minimal-mock-agent-paired-run.md).
+
 ## Current status update — 2026-06-20 (C4.1 external benchmark adapter / schema readiness)
 
 C4.1 is a **bounded external benchmark adapter / schema readiness** phase,

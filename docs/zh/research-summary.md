@@ -100,6 +100,49 @@ candidate，也**不**解锁 D5-H / 人工参考 / 人工校准声明或 default
 runtime/retriever/pack/model/backend/default-policy 文件。详见
 [D5-A0 详细报告](d5a-automated-es-calibration.md)。
 
+## 当前状态更新 —— 2026-06-20（B16-A 最小 mock 下游 paired run）
+
+继 D5-A0 之后，B16-A 产出首个**非仅控制面**的 B16 风格下游 agent 实证
+run。B16-A（`eval/b16a_minimal_mock_agent_paired_run.py` ->
+`artifacts/b16a_minimal_mock_agent_paired_run/b16a_minimal_mock_agent_paired_run_report.json`，
+schema `b16a_minimal_mock_agent_paired_run.v1`、
+`claim_level=deterministic_mock_downstream_paired_smoke_only`、
+`status=mock_downstream_paired_smoke_pass`、
+`mode=public_aggregate_synthetic_micro_tasks`、阶段 `B16-A`）在代码中生成
+确定性合成公开 micro bug 任务，为每个 task+arm 创建全新 `/tmp` 工作区，
+含真实微型 Python 模块 + stdlib 测试，运行**确定性 mock agent**（无
+live LLM、无 provider 调用、无远程调用），执行**真实文件编辑**和**真实
+子进程测试**，并在 paired control/treatment arms 上计算聚合行为指标
+（solve_rate、tests_pass_rate、correct_file_before_first_edit_rate、
+wrong_file_edits_mean、tool_calls_before_first_edit_mean、
+context_tokens_mean、latency_ms_mean、cost_proxy_mean）。treatment pack
+因果地改变 mock agent 的行为（treatment solve_rate=1.0 vs control
+solve_rate=0.0）。104/104 self-test checks 通过；24 个任务；48 个总
+run。
+
+这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
+泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升
+任何 candidate，也**不**改变 runtime/retriever/pack/backend/
+default-policy/EvidenceCore 语义。per-run event log、patch 和测试输出
+仅留在 `/tmp`，**绝不**提交或上传。提交的 artifact 仅含聚合数据。所有
+无声明 / 无运行时变更标志保持 false（`live_llm_agent=false`、
+`provider_calls_made=false`、`remote_calls_made=false`、
+`downstream_agent_value_proven=false`、`promotion_ready=false`、
+`default_should_change=false`、`runtime_behavior_changed=false`、
+`retriever_changed=false`、`pack_builder_changed=false`、
+`backend_changed=false`、`default_policy_changed=false`、
+`evidencecore_semantics_changed=false`、
+`external_benchmark_performance_claimed=false`、
+`live_agent_generalization_claimed=false`、
+`real_user_task_claimed=false`）。确定性 mock run 标志
+（`downstream_agent_runs_performed`、`deterministic_mock_agent`、
+`synthetic_micro_tasks_used`、`paired_arms_evaluated`、
+`real_file_edits_performed`、`real_test_commands_executed`、
+`agent_behavior_metrics_evaluated`、`aggregate_only_public_artifact`、
+`diagnostic_only`）是仅有的额外 true 标志。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。详见
+[B16-A 详细报告](b16a-minimal-mock-agent-paired-run.md)。
+
 ## 当前状态更新 —— 2026-06-20（C4.1 外部 benchmark adapter / schema 就绪）
 
 C4.1 是一个**有界的外部 benchmark adapter / schema 就绪**阶段，**不是**外部

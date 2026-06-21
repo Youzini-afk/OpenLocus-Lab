@@ -24,6 +24,7 @@ on:
     paths:
       - 'crates/**'
       - 'eval/d5a_automated_es_calibration.py'
+      - 'eval/b16a_minimal_mock_agent_paired_run.py'
       - 'eval/run_retrieval.py'
       - 'fixtures/r14/**'
       - 'docs/**'
@@ -226,6 +227,117 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: d5a0-empirical-smoke-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false
+
+  b16a-minimal-mock-agent-paired-run:
+    name: b16a
+    needs: d5a0-empirical-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: py_compile B16-A evaluator
+        run: python3 -m py_compile eval/b16a_minimal_mock_agent_paired_run.py
+
+      - name: B16-A self-test
+        run: python3 eval/b16a_minimal_mock_agent_paired_run.py --self-test
+
+      - name: B16-A default run (transient /tmp workspaces only)
+        run: |
+          report_path="$RUNNER_TEMP/b16a_minimal_mock_agent_paired_run_report.json"
+          python3 eval/b16a_minimal_mock_agent_paired_run.py --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate B16-A temp report status/claim flags
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required claim boundary invariants for the B16-A minimal mock
+          # downstream paired smoke. B16-A runs a deterministic mock agent
+          # (no live LLM, no provider calls); it does NOT claim downstream
+          # agent value, promotion, default/policy change, or runtime/
+          # EvidenceCore semantic change.
+          must_be_true = {
+              "downstream_agent_runs_performed",
+              "deterministic_mock_agent",
+              "synthetic_micro_tasks_used",
+              "paired_arms_evaluated",
+              "real_file_edits_performed",
+              "real_test_commands_executed",
+              "agent_behavior_metrics_evaluated",
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+          }
+          must_be_false = {
+              "live_llm_agent",
+              "provider_calls_made",
+              "remote_calls_made",
+              "downstream_agent_value_proven",
+              "promotion_ready",
+              "default_should_change",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "external_benchmark_performance_claimed",
+              "live_agent_generalization_claimed",
+              "real_user_task_claimed",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          if status != "mock_downstream_paired_smoke_pass":
+              failures.append(f"expected status=mock_downstream_paired_smoke_pass, got {status!r}")
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          if failures:
+              print("B16-A report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("B16-A report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  deterministic_mock_agent={report.get('deterministic_mock_agent')}")
+          print(f"  live_llm_agent={report.get('live_llm_agent')}")
+          print(f"  provider_calls_made={report.get('provider_calls_made')}")
+          print(f"  downstream_agent_value_proven={report.get('downstream_agent_value_proven')}")
+          print(f"  synthetic_task_count={report.get('input_summary', {}).get('synthetic_task_count')}")
+          PY
+
+      - name: Upload B16-A aggregate report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: b16a-minimal-mock-agent-paired-run-report-${{ github.run_id }}
           path: ${{ env.report_path }}
           retention-days: 7
           if-no-files-found: error
