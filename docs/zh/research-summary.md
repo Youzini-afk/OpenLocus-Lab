@@ -218,7 +218,7 @@ live `live_provider_paired_smoke_pass` artifact 需要显式本地 opt-in
 run 或手动 CI `real-provider-benchmark` workflow
 （`stage=b16c_live_provider_paired_smoke` +
 `enable_remote_models=true`）。**手动 CI live-provider run：待执行。**
-33/33 provider-client self-test checks 通过；118/118 B16-C self-test
+33/33 provider-client self-test checks 通过；119/119 B16-C self-test
 checks 通过。
 
 这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent

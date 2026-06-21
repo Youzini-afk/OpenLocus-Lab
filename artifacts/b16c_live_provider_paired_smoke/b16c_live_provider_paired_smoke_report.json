@@ -16,7 +16,7 @@
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-21T09:55:25.443564+00:00",
+  "generated_at": "2026-06-21T10:01:23.587659+00:00",
   "generated_by": "eval/b16c_live_provider_paired_smoke.py",
   "input_summary": {
     "arms": [
@@ -70,7 +70,7 @@
       "passed": true
     },
     {
-      "check": "status_structured_action_parse_failed_preserved",
+      "check": "status_provider_call_failed_preserved",
       "passed": true
     },
     {
@@ -82,19 +82,19 @@
       "passed": true
     },
     {
+      "check": "status_structured_action_parse_failed_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_fail_forbidden_scan_preserved",
+      "passed": true
+    },
+    {
       "check": "status_blocked_remote_not_enabled_preserved",
       "passed": true
     },
     {
       "check": "status_live_provider_paired_smoke_pass_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_provider_call_failed_preserved",
-      "passed": true
-    },
-    {
-      "check": "status_fail_forbidden_scan_preserved",
       "passed": true
     },
     {
@@ -520,13 +520,17 @@
     {
       "check": "unavailable_when_env_missing",
       "passed": true
+    },
+    {
+      "check": "self_test_restores_provider_env",
+      "passed": true
     }
   ],
   "self_test_passed": true,
   "self_test_summary": {
     "failed": 0,
-    "passed": 118,
-    "total": 118
+    "passed": 119,
+    "total": 119
   },
   "status": "blocked_remote_not_enabled",
   "synthetic_micro_tasks_used": false

@@ -6629,7 +6629,7 @@ agent 价值或 live agent 泛化。
 ```text
 python3 -m py_compile eval/provider_client.py eval/b16c_live_provider_paired_smoke.py  => PASS
 python3 eval/provider_client.py --self-test                            => PASS (33/33 checks)
-python3 eval/b16c_live_provider_paired_smoke.py --self-test            => PASS (118/118 checks)
+python3 eval/b16c_live_provider_paired_smoke.py --self-test            => PASS (119/119 checks)
 python3 eval/b16c_live_provider_paired_smoke.py \
   --out artifacts/b16c_live_provider_paired_smoke/\
 b16c_live_provider_paired_smoke_report.json                           => PASS

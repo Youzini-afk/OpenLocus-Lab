@@ -234,7 +234,7 @@ artifact requires an explicit local opt-in run or the manual CI
 `real-provider-benchmark` workflow with
 `stage=b16c_live_provider_paired_smoke` and `enable_remote_models=true`.
 **Manual CI live-provider run: pending.** 33/33 provider-client
-self-test checks pass; 118/118 B16-C self-test checks pass.
+self-test checks pass; 119/119 B16-C self-test checks pass.
 
 This is smoke-only. It does NOT claim downstream agent value, does NOT
 claim live agent generalization, does NOT claim external benchmark

@@ -298,13 +298,15 @@ public contract, and never committed.
   (plus `-h`/`--help`); default task count is in range.
 - Remote gating: blocked when `allow_remote=False`; unavailable when
   env missing; `provider_client._check_remote_enabled` enum tokens.
+- Env restoration regression: self-tests restore provider env exactly so
+  the live CI gate is not cleared before the provider call.
 
 ## Validation
 
 ```text
 python3 -m py_compile eval/provider_client.py eval/b16c_live_provider_paired_smoke.py  => PASS
 python3 eval/provider_client.py --self-test                            => PASS (33/33 checks)
-python3 eval/b16c_live_provider_paired_smoke.py --self-test            => PASS (118/118 checks)
+python3 eval/b16c_live_provider_paired_smoke.py --self-test            => PASS (119/119 checks)
 python3 eval/b16c_live_provider_paired_smoke.py \
   --out artifacts/b16c_live_provider_paired_smoke/\
 b16c_live_provider_paired_smoke_report.json                           => PASS

@@ -1890,17 +1890,26 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
             blocked_rep["forbidden_scan"]["status"] == "pass",
         )
     )
-    # Unavailable path: when allow_remote=True but env missing.
-    old_env = {
-        k: os.environ.pop(k, None)
-        for k in (
-            provider_client.ENV_BASE_URL,
-            provider_client.ENV_API_KEY,
-            provider_client.ENV_MODEL,
-            provider_client.ENV_ALLOW_REMOTE,
-            provider_client.ENV_WORKFLOW_DISPATCH,
-        )
+    # Unavailable path: when allow_remote=True but env missing. This
+    # self-test must restore the caller's provider env exactly because
+    # build_report() runs self-tests before the live provider gate.
+    provider_env_keys = (
+        provider_client.ENV_BASE_URL,
+        provider_client.ENV_API_KEY,
+        provider_client.ENV_MODEL,
+        provider_client.ENV_ALLOW_REMOTE,
+        provider_client.ENV_WORKFLOW_DISPATCH,
+    )
+    outer_env = {k: os.environ.get(k) for k in provider_env_keys}
+    sentinel_env = {
+        provider_client.ENV_BASE_URL: "https://example.invalid/v1",
+        provider_client.ENV_API_KEY: "redacted-test-key",
+        provider_client.ENV_MODEL: _ROUTING_PREFIX_SENTINEL + "Kimi-K2.7-Code",
+        provider_client.ENV_ALLOW_REMOTE: "1",
+        provider_client.ENV_WORKFLOW_DISPATCH: "1",
     }
+    os.environ.update(sentinel_env)
+    old_env = {k: os.environ.pop(k, None) for k in provider_env_keys}
     try:
         os.environ[provider_client.ENV_ALLOW_REMOTE] = "1"
         enabled, failure_category = provider_client._check_remote_enabled(
@@ -1920,7 +1929,17 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
                 os.environ[k] = v
             else:
                 os.environ.pop(k, None)
-        os.environ.pop(provider_client.ENV_ALLOW_REMOTE, None)
+    checks.append(
+        _check(
+            "self_test_restores_provider_env",
+            all(os.environ.get(k) == sentinel_env[k] for k in provider_env_keys),
+        )
+    )
+    for k, v in outer_env.items():
+        if v is None:
+            os.environ.pop(k, None)
+        else:
+            os.environ[k] = v
 
     all_passed = all(c["passed"] for c in checks)
     return checks, all_passed
