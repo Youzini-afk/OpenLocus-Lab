@@ -6724,7 +6724,7 @@ at `base_commit` under a transient `/tmp` workspace, run OpenLocus
 retrieval across the requested method matrix (default
 `bm25,regex,symbol`; allowed `bm25,regex,text,symbol`; fixed
 `baseline_method=bm25`; no provider/model calls), score each method
-against ContextBench `gold_context` spans via the existing
+against benchmark label spans via the existing
 `eval/score.py` logic, and commit only an aggregate public report with
 per-method records and aggregate-only deltas vs the fixed `bm25`
 baseline. C5-B does NOT emit `winner`, `best_method`,
@@ -7684,3 +7684,237 @@ EvidenceCore semantic change. See
   run actually executed. No runtime/retriever/pack/model/backend/
   default-policy files were modified; no promotion/default/runtime
   claims change.
+
+---
+
+## 2026-06-21 — C5-C ContextBench Verified Retrieval Method Matrix Scale Smoke
+
+### Objective
+
+Scale C5-B/F1-B from 5-row ContextBench verified retrieval smoke to a
+bounded 20-row external-benchmark method-matrix scale smoke. Read a
+bounded 20-row ContextBench verified subset from HF datasets-server
+ONCE (shared across all methods), materialize the referenced
+repositories at `base_commit` under transient `/tmp` directories (once
+per method+row), run OpenLocus retrieval across the requested method
+matrix (default `bm25,regex,symbol`; only `bm25,regex,symbol` allowed
+in C5-C; no `text`; no provider/model calls), score each method
+against benchmark label spans via the existing
+`eval/score.py` logic, and commit only an aggregate public report.
+
+### Hypothesis
+
+A bounded 20-row ContextBench verified subset can be run through the
+real OpenLocus retrieval + scoring pipeline across the
+`bm25,regex,symbol` method matrix under transient `/tmp` workspaces
+(once per method+row), producing per-method aggregate retrieval metrics
+(file_recall@10, mrr, span_f0.5@10, success_rate) and aggregate-only
+deltas vs the fixed `bm25` baseline without persisting any row-level
+data, repo URLs/commits, gold paths/spans, generated JSONL, evidence
+rows, cloned repos, or stdout/stderr.
+
+### Stage gates
+
+- C5-C passes when self-test passes (177 checks), the real network
+  smoke completes (rows fetched, repos cloned, retrieval executed for
+  all 3 methods, score.py metrics computed), the forbidden scan is
+  clean, and the committed artifact records only aggregate counts/
+  rates/means with all no-claim flags false and no `winner`/
+  `best_method`/`recommended_default`.
+- C5-C is `unavailable_with_reason` when network/HF/GitHub/clone/
+  retrieval/score fails; the artifact records the real failure category
+  without row-level values.
+
+### Implementation notes
+
+- **C5-C artifact**
+  (`eval/c5c_contextbench_verified_method_matrix_scale_smoke.py`):
+  public aggregate-only scale smoke. Reuses C5-A primitives (row fetch,
+  query sanitizer, clone/retrieval/score runner, score metric
+  allowlist, failure categories, scanner primitives) but does NOT import
+  or mutate C5-B. Fetches bounded 20-row ContextBench verified rows
+  from HF datasets-server `/rows` endpoint ONCE (shared across methods;
+  paginated; stdlib `urllib` only; bounded timeout); filters in-memory
+  by `language_filter` (categorical bucket only); for each method
+  (`bm25,regex,symbol` only), for each row, parses benchmark label context JSON
+  into transient `gold_paths`/`gold_lines` (the `content` field is
+  NEVER read or persisted); sanitizes `problem_statement` into a
+  retrieval query (in-memory only); clones `repo_url` at `base_commit`
+  under a per-row `TemporaryDirectory` via
+  `git clone --filter=blob:none --no-checkout` then `git checkout`
+  (bounded timeouts); generates transient task/label JSONL under a
+  `TemporaryDirectory`; runs OpenLocus retrieval via
+  `eval/run_retrieval.py` (`--method <method> --cwd <repo_root>`); runs
+  `eval/score.py` and parses aggregate metrics; aggregates metrics
+  across successful rows (mean of each allowlisted numeric metric);
+  records `aggregate_runtime_seconds` per method; computes aggregate
+  deltas vs the fixed `bm25` baseline; writes ONLY aggregate counts/
+  rates/means to the committed artifact.
+- **Artifact identity**:
+  `schema_version=c5c_contextbench_verified_method_matrix_scale_smoke.v1`,
+  `claim_level=external_benchmark_retrieval_method_matrix_scale_smoke_only`,
+  `status=contextbench_method_matrix_scale_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan`,
+  `mode=contextbench_verified_bounded_scale_method_matrix`, `phase=C5-C`.
+- **Safe true flags** (true only if actually true):
+  `retrieval_scale_smoke_performed`, `openlocus_retrieval_executed`,
+  `score_py_metrics_computed`, `aggregate_only_public_artifact`,
+  `diagnostic_only`. (C5-C does NOT use C5-B's `method_matrix_smoke`
+  flag or C5-A's `external_benchmark_rows_read`/
+  `repositories_materialized_transiently`/`performance_smoke` flags.)
+- **No-claim / no-runtime-change flags** (all false):
+  `external_benchmark_performance_claimed`,
+  `leaderboard_entry_claimed`, `downstream_agent_value_proven`,
+  `promotion_ready`, `default_should_change`,
+  `baseline_is_policy_candidate`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `provider_calls_made`, `remote_provider_calls_made`.
+- **License fields** (fixed):
+  `dataset_license_status=unknown_dataset_license`,
+  `row_level_redistribution_allowed=false`,
+  `derived_row_level_publication_allowed=false`,
+  `aggregate_metrics_publication=aggregate_only_smoke`.
+- **Method matrix**: `ALLOWED_METHODS = (bm25, regex, symbol)` only.
+  `text` is NOT allowed in C5-C (unlike C5-B). `BASELINE_METHOD=bm25`,
+  `baseline_is_policy_candidate=false`.
+- **Strict public scanner** (fail-closed). Reuses C5-A forbidden
+  scanner primitives + C5-C-specific checks: rejects
+  `method_results` as dict keyed by method name; rejects
+  recommendation/policy fields (`winner`, `best_method`,
+  `recommended_default`, etc.) anywhere; rejects extra row/repo/query/
+  gold/path/span/snippet/content_sha/stdout/stderr keys anywhere;
+  rejects `text` as a method in `method_results`.
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_c5c_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Transient /tmp clone + retrieval + score**: per-method+row
+  `TemporaryDirectory` for cloned repos; `TemporaryDirectory` for
+  generated task/label/run JSONL. All raw ContextBench rows, queries,
+  repo URLs/names, base commits, gold paths/spans/contents, generated
+  JSONL, evidence rows, cloned repos, and stdout/stderr stay under
+  `/tmp` only and are NEVER committed or uploaded.
+- **Unavailable mode**: if the network smoke cannot complete, the
+  artifact records truthful `unavailable_with_reason` with a real
+  `failure_reason_category` (no stale/fake pass). In unavailable mode,
+  `method_results` is a list of per-method records each with
+  `status=unavailable_with_reason`, `metrics={}`, zero row counts;
+  `smoke_metric_deltas_vs_baseline=[]`; `retrieval_scale_smoke_performed=false`;
+  `aggregate_only_public_artifact=true` and `diagnostic_only=true`
+  remain true.
+
+### CI workflow
+
+- `.github/workflows/c5-contextbench-method-matrix-scale-smoke.yml`:
+  manual opt-in `workflow_dispatch` with boolean
+  `enable_external_benchmark_network` default false, `row_limit`
+  (default 20, hard cap 20), `methods` (default `bm25,regex,symbol`;
+  only `bm25,regex,symbol` allowed), `query_mode` inputs. If not
+  enabled, no-op with clear message. No `secrets.`, no `vars.`, no
+  `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
+  (release), runs self-test, runs network smoke only when enabled,
+  validates flags, validates docs i18n, checks working tree, uploads
+  aggregate report only (7-day retention).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/c5c_contextbench_verified_method_matrix_scale_smoke.py  => PASS
+python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py --self-test  => PASS (174/174 checks)
+python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py \
+  --row-limit 20 --methods bm25,regex,symbol \
+  --query-mode first_paragraph --language-filter python \
+  --out artifacts/c5c_contextbench_verified_method_matrix_scale/\
+c5c_contextbench_verified_method_matrix_scale_report.json  => PASS
+  (status: contextbench_method_matrix_scale_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: contextbench_verified_bounded_scale_method_matrix, phase: C5-C,
+   methods: [bm25, regex, symbol], methods_successful: 3, methods_failed: 0,
+   rows_fetched: 20, rows_evaluated: 20, rows_successful: 20, rows_failed: 0,
+   network_calls: 1, provider_calls: 0,
+   retrieval_scale_smoke_performed: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   baseline_is_policy_candidate: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The C5-C smoke is the first external-benchmark-shaped retrieval method
+matrix scale smoke. It executes a real network fetch from HF
+datasets-server (ONCE, shared across all 3 methods), real
+`git clone` + `git checkout` of the referenced repositories at their
+`base_commit` under transient `/tmp` directories (once per method+row),
+real OpenLocus retrieval for each method (`bm25`, `regex`, `symbol`)
+on each repository, and a real `eval/score.py` scoring pass, producing
+per-method aggregate retrieval metrics over a bounded 20-row ContextBench
+verified subset. It is explicitly NOT a rigorous benchmark result, NOT a
+leaderboard entry, NOT a performance claim, NOT a promotion, NOT a
+default/policy change, NOT a runtime/retriever/pack/backend/EvidenceCore
+semantic change, and NOT a downstream agent value claim. The full C5
+external-benchmark-evaluation phase remains a bounded planning /
+feasibility stage. See
+[C5-C detailed report](c5c-contextbench-method-matrix-scale-smoke.md).
+
+### Caveats
+
+- C5-C is the public aggregate-only external benchmark retrieval method
+  matrix scale smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it does
+  NOT change EvidenceCore semantics. It is NOT a benchmark result, NOT
+  a leaderboard entry, NOT a performance claim, NOT a promotion, NOT a
+  default change, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, NOT a QuIVer systems claim, and NOT a downstream
+  agent value claim.
+- C5-C does NOT emit `winner`, `best_method`, `recommended_default`, or
+  anything implying a policy/default decision. The fixed
+  `baseline_method` is `bm25`, `baseline_is_policy_candidate=false`, and
+  `default_should_change=false`.
+- C5-C runs NO provider calls and NO remote provider calls. The only
+  network calls are to the public HF datasets-server (to fetch bounded
+  ContextBench verified rows ONCE, shared across all methods) and to
+  public GitHub (to clone the referenced repositories at their
+  `base_commit` under transient `/tmp` directories, once per method+row).
+  `provider_calls=0`, `provider_calls_made=false`,
+  `remote_provider_calls_made=false`.
+- C5-C uses a **bounded 20-row ContextBench verified subset** (default
+  20 rows per method; hard cap 20). This is a scale smoke, not a
+  rigorous benchmark evaluation. The aggregate metrics are point
+  estimates over a bounded sample and should NOT be interpreted as a
+  benchmark result, leaderboard entry, or performance claim.
+- C5-C materializes the referenced repositories at their `base_commit`
+  under transient `/tmp` directories, once per method+row (because
+  each method runs against the same rows but in isolated workspaces).
+  The cloned repos, generated task/label/run JSONL, evidence rows, and
+  stdout/stderr stay under `/tmp` only and are NEVER committed or
+  uploaded. The committed artifact contains ONLY aggregate counts/
+  rates/means and optional per-method aggregate runtime seconds.
+- C5-C does NOT claim external benchmark performance. The aggregate
+  metrics are smoke-level diagnostics, NOT a benchmark result.
+  `external_benchmark_performance_claimed=false`.
+- C5-C does NOT prove downstream agent value. The retrieval smoke does
+  not exercise any downstream agent. `downstream_agent_value_proven=false`.
+- ContextBench dataset license is unknown
+  (`unknown_dataset_license`); row-level redistribution is disabled
+  (`row_level_redistribution_allowed=false`) and derived row-level
+  publication is disabled
+  (`derived_row_level_publication_allowed=false`). Aggregate metrics
+  publication is allowed as aggregate-only smoke
+  (`aggregate_metrics_publication=aggregate_only_smoke`).
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
+  No runtime/retriever/pack/model/backend/default-policy files were
+  modified; no promotion/default/runtime claims change.

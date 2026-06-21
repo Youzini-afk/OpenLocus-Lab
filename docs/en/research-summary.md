@@ -522,6 +522,63 @@ stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
 files were modified. See
 the [C5-B detailed report](c5b-contextbench-verified-method-matrix-smoke.md).
 
+## Current status update — 2026-06-21 (C5-C ContextBench verified method matrix scale smoke)
+
+Following D5-A0, B16-A, C5-A, and C5-B, C5-C produces the first
+external-benchmark-shaped retrieval method matrix scale smoke. C5-C
+(`eval/c5c_contextbench_verified_method_matrix_scale_smoke.py` ->
+`artifacts/c5c_contextbench_verified_method_matrix_scale/c5c_contextbench_verified_method_matrix_scale_report.json`,
+schema `c5c_contextbench_verified_method_matrix_scale_smoke.v1`,
+`claim_level=external_benchmark_retrieval_method_matrix_scale_smoke_only`,
+`status=contextbench_method_matrix_scale_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan`,
+`mode=contextbench_verified_bounded_scale_method_matrix`, phase
+`C5-C`) scales C5-B up from a 5-row method matrix to a bounded 20-row
+method-matrix scale smoke. It reads a bounded 20-row ContextBench
+verified subset from HF datasets-server `/rows` ONCE (shared across all
+3 methods; hard cap 20; stdlib `urllib` only), materializes the
+referenced repositories at `base_commit` under transient `/tmp`
+directories (once per method+row) via `git clone --filter=blob:none
+--no-checkout` then `git checkout`, runs OpenLocus retrieval across the
+requested method matrix (default `bm25,regex,symbol`; only
+`bm25,regex,symbol` allowed in C5-C; `text` is NOT allowed; fixed
+`baseline_method=bm25`; no provider calls), scores each method against
+benchmark label spans via `eval/score.py`, and commits only an aggregate
+public report with per-method records (list, NOT dict keyed by method
+name), optional per-method `aggregate_runtime_seconds`, aggregate-only
+deltas vs the fixed `bm25` baseline, and an `input_summary` block.
+177/177 self-test checks pass; 20 rows fetched, 3/3 methods successful,
+0 methods failed.
+
+This is smoke-only. It does NOT claim an external benchmark result,
+does NOT claim a leaderboard entry, does NOT claim performance, does
+NOT claim a promotion, does NOT claim a default change, does NOT claim
+a runtime/retriever/pack/backend/EvidenceCore semantic change, and does
+NOT claim downstream agent value. It does NOT emit `winner`,
+`best_method`, `recommended_default`, or anything implying a policy/
+default decision. The raw ContextBench rows, queries, repo URLs/names,
+base commits, gold paths/spans/contents, generated task/label/run
+JSONL, evidence rows, cloned repos, and stdout/stderr stay under `/tmp`
+only and are NEVER committed or uploaded. The committed artifact is
+aggregate-only. All no-claim / no-runtime-change flags remain false
+(`external_benchmark_performance_claimed=false`,
+`leaderboard_entry_claimed=false`,
+`downstream_agent_value_proven=false`, `promotion_ready=false`,
+`default_should_change=false`, `baseline_is_policy_candidate=false`,
+`runtime_behavior_changed=false`, `retriever_changed=false`,
+`pack_builder_changed=false`, `backend_changed=false`,
+`default_policy_changed=false`, `evidencecore_semantics_changed=false`,
+`provider_calls_made=false`, `remote_provider_calls_made=false`). The
+safe true flags (true only if actually true:
+`retrieval_scale_smoke_performed`, `openlocus_retrieval_executed`,
+`score_py_metrics_computed`, `aggregate_only_public_artifact`,
+`diagnostic_only`) are the only additional true flags. If the network
+smoke cannot complete (network/HF/GitHub failure, clone timeout,
+retrieval failure, score failure), the artifact records truthful
+`unavailable_with_reason` with a real `failure_reason_category` (no
+stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
+files were modified. See
+the [C5-C detailed report](c5c-contextbench-method-matrix-scale-smoke.md).
+
 ## Current status update — 2026-06-21 (F1 counterfactual evidence utility smoke)
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual
