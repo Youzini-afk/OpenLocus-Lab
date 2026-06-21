@@ -1,0 +1,243 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "asset_downloaded_transiently": true,
+  "backend_changed": false,
+  "baseline_is_policy_candidate": false,
+  "baseline_method": "bm25",
+  "benchmark": "repoqa",
+  "claim_level": "repoqa_retrieval_method_matrix_smoke_only",
+  "dataset_license_status": "unknown_dataset_license",
+  "dataset_release": "repoqa-2024-06-23",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "failure_category_counts": {
+    "asset_decompress_failed": 0,
+    "asset_download_failed": 0,
+    "asset_parse_failed": 0,
+    "forbidden_leak_blocked": 0,
+    "label_jsonl_write_failed": 0,
+    "language_filter_excluded": 0,
+    "needle_limit_capped": 0,
+    "needle_parse_failed": 0,
+    "no_python_needles": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "retrieval_failed": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "task_jsonl_write_failed": 0,
+    "unexpected_exception": 0
+  },
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "leaderboard_entry_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "repoqa_method_matrix_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-21T14:38:50.656473+00:00",
+  "generated_by": "eval/c5e_repoqa_method_matrix_smoke.py",
+  "gold_target_mode": "needle_path_line_range",
+  "language_filter": "python",
+  "leaderboard_entry_claimed": false,
+  "method_results": [
+    {
+      "aggregate_runtime_seconds": 3.66,
+      "failure_category_counts": {
+        "asset_decompress_failed": 0,
+        "asset_download_failed": 0,
+        "asset_parse_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "needle_limit_capped": 0,
+        "needle_parse_failed": 0,
+        "no_python_needles": 0,
+        "repo_checkout_failed": 0,
+        "repo_clone_failed": 0,
+        "retrieval_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "bm25",
+      "metrics": {
+        "file_recall@10": 0.6,
+        "mrr": 0.46,
+        "span_f0.5@10": 0.041634,
+        "success_rate": 1.0
+      },
+      "needles_evaluated": 5,
+      "needles_failed": 0,
+      "needles_successful": 5,
+      "status": "repoqa_method_matrix_smoke_pass"
+    },
+    {
+      "aggregate_runtime_seconds": 3.983,
+      "failure_category_counts": {
+        "asset_decompress_failed": 0,
+        "asset_download_failed": 0,
+        "asset_parse_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "needle_limit_capped": 0,
+        "needle_parse_failed": 0,
+        "no_python_needles": 0,
+        "repo_checkout_failed": 0,
+        "repo_clone_failed": 0,
+        "retrieval_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "regex",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "needles_evaluated": 5,
+      "needles_failed": 0,
+      "needles_successful": 5,
+      "status": "repoqa_method_matrix_smoke_pass"
+    },
+    {
+      "aggregate_runtime_seconds": 6.83,
+      "failure_category_counts": {
+        "asset_decompress_failed": 0,
+        "asset_download_failed": 0,
+        "asset_parse_failed": 0,
+        "forbidden_leak_blocked": 0,
+        "label_jsonl_write_failed": 0,
+        "language_filter_excluded": 0,
+        "needle_limit_capped": 0,
+        "needle_parse_failed": 0,
+        "no_python_needles": 0,
+        "repo_checkout_failed": 0,
+        "repo_clone_failed": 0,
+        "retrieval_failed": 0,
+        "scanner_self_test_failed": 0,
+        "score_failed": 0,
+        "task_jsonl_write_failed": 0,
+        "unexpected_exception": 0
+      },
+      "method": "symbol",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "needles_evaluated": 5,
+      "needles_failed": 0,
+      "needles_successful": 5,
+      "status": "repoqa_method_matrix_smoke_pass"
+    }
+  ],
+  "methods_allowed": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "methods_attempted": 3,
+  "methods_count": 3,
+  "methods_failed": 0,
+  "methods_requested": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "methods_succeeded": 3,
+  "methods_successful": 3,
+  "mode": "repoqa_bounded_method_matrix_smoke",
+  "needle_limit_requested": 5,
+  "needles_seen": 5,
+  "network_calls": 1,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "phase": "C5-E",
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "query_mode": "needle_description",
+  "remote_provider_calls_made": false,
+  "repoqa_method_matrix_smoke_performed": true,
+  "repoqa_needles_parsed_in_memory": true,
+  "repositories_materialized_transiently": true,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "c5e_repoqa_method_matrix_smoke.v1",
+  "score_py_metrics_computed": true,
+  "self_test_passed": true,
+  "smoke_metric_deltas_vs_baseline": [
+    {
+      "baseline_method": "bm25",
+      "delta": -0.6,
+      "method": "regex",
+      "metric": "file_recall@10"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.46,
+      "method": "regex",
+      "metric": "mrr"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.041634,
+      "method": "regex",
+      "metric": "span_f0.5@10"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": 0.0,
+      "method": "regex",
+      "metric": "success_rate"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.6,
+      "method": "symbol",
+      "metric": "file_recall@10"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.46,
+      "method": "symbol",
+      "metric": "mrr"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": -0.041634,
+      "method": "symbol",
+      "metric": "span_f0.5@10"
+    },
+    {
+      "baseline_method": "bm25",
+      "delta": 0.0,
+      "method": "symbol",
+      "metric": "success_rate"
+    }
+  ],
+  "status": "repoqa_method_matrix_smoke_pass"
+}

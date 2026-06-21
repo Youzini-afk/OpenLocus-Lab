@@ -579,6 +579,49 @@ artifact 记录真实的 `unavailable_*`，带真实的
 runtime/retriever/pack/model/backend/default-policy 文件。见
 [C5-D 详细报告](c5d-repoqa-bm25-retrieval-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（C5-E RepoQA 方法矩阵检索 smoke）
+
+继 D5-A0、B16-A、C5-A、C5-B、C5-C 与 C5-D 之后，C5-E 产出首个 RepoQA 形态
+的检索方法矩阵 smoke。C5-E
+（`eval/c5e_repoqa_method_matrix_smoke.py` ->
+`artifacts/c5e_repoqa_method_matrix_smoke/c5e_repoqa_method_matrix_smoke_report.json`，
+schema `c5e_repoqa_method_matrix_smoke.v1`、
+`claim_level=repoqa_retrieval_method_matrix_smoke_only`、
+`status=repoqa_method_matrix_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`、
+`mode=repoqa_bounded_method_matrix_smoke`、阶段 `C5-E`）将 C5-D 从单方法
+`bm25` 扩展为 `bm25,regex,symbol` 有界方法矩阵。它下载 EvalPlus RepoQA
+release asset `repoqa-2024-06-23.json.gz` 到内存字节（临时；**绝不**写入
+工作区），解析有界 RepoQA Python needle subset（每方法默认 5 needle；
+硬上限 10；**无**静默全语言回退），在临时 `/tmp` 目录下（每方法+每 needle
+一次）检出引用仓库到其 `commit_sha`，跨请求方法矩阵运行 OpenLocus 检索
+（默认 `bm25,regex,symbol`；仅允许 `bm25,regex,symbol`；**不**允许
+`text`；固定 `baseline_method=bm25`；无 provider 调用），通过
+`eval/score.py` 对每种方法针对 `needle.path`/`start_line`/`end_line`
+打分，并仅提交一个 aggregate 公共报告，其中包含每方法记录（列表，**非**
+以方法名为 key 的 dict）、每方法 `aggregate_runtime_seconds`，以及仅
+aggregate 的与固定 `bm25` baseline 的 delta。228/228 self-test 检查通过；
+5 needle seen，3/3 方法成功，0 方法失败。
+
+这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
+条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**声称
+runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不**声称下游
+agent 价值。它**不**输出 `winner`、`best_method`、`recommended_default`
+或任何暗示策略/默认决策的字段。Release asset、原始 repo 记录、repo 名称/
+URL、commit SHA、entrypoint 路径、topics、content、dependency、needle 名称/
+描述/路径/start/end lines、生成的 task/label/run JSONL、evidence 行、克隆
+仓库与 stdout/stderr 仅保留在 `/tmp` 或内存中，**绝不**提交或上传。提交
+的 artifact 是 aggregate-only。所有无声明 / 无运行时变更标志保持 false。
+Safe true 标志（仅当实际为真时为 true：
+`repoqa_method_matrix_smoke_performed`、`asset_downloaded_transiently`、
+`repoqa_needles_parsed_in_memory`、
+`repositories_materialized_transiently`、`openlocus_retrieval_executed`、
+`score_py_metrics_computed`、`aggregate_only_public_artifact`、
+`diagnostic_only`）是仅有的额外 true 标志。如果网络 smoke 无法完成，
+artifact 记录真实的 `unavailable_with_reason`，带真实的
+`failure_reason_category`（无 stale/fake pass）。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。见
+[C5-E 详细报告](c5e-repoqa-method-matrix-smoke.md)。
+
 ## 当前状态更新 —— 2026-06-21（F1 反事实证据效用 smoke）
 
 继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1

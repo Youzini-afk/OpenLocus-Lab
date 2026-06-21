@@ -8161,3 +8161,199 @@ evaluation phase remains a bounded planning / feasibility stage. See
   (`aggregate_only_public_artifact`, `diagnostic_only`) remain true.
   No runtime/retriever/pack/model/backend/default-policy files were
   modified; no promotion/default/runtime claims change.
+
+---
+
+## 2026-06-21 — C5-E RepoQA Method-Matrix Retrieval Smoke
+
+### Objective
+
+Extend C5-D from single-method RepoQA `bm25` to a bounded RepoQA method
+matrix over `bm25,regex,symbol`. Download the EvalPlus RepoQA release
+asset transiently, parse Python needles in memory, transiently clone
+referenced repositories, run OpenLocus retrieval per method, score with
+`eval/score.py`, and publish only aggregate metrics.
+
+### Hypothesis
+
+A bounded RepoQA Python needle subset can be run through the real
+OpenLocus retrieval + scoring pipeline across the `bm25,regex,symbol`
+method matrix under transient `/tmp` workspaces, producing per-method
+aggregate retrieval metrics and aggregate-only deltas vs the fixed
+`bm25` baseline without persisting the release asset, repo records,
+commit SHAs, needle fields, generated JSONL, evidence rows, cloned
+repos, or stdout/stderr.
+
+### Stage gates
+
+- C5-E passes when self-test passes (228 checks), the real network
+  smoke completes (asset downloaded, needles parsed, repos cloned,
+  retrieval executed for all 3 methods, score.py metrics computed),
+  the forbidden scan is clean, and the committed artifact records only
+  aggregate counts/rates/means with all no-claim flags false and no
+  `winner`/`best_method`/`recommended_default`.
+- C5-E is `unavailable_with_reason` when asset download/parse fails, no
+  Python needles, or repo clone/retrieval/score fails.
+
+### Implementation notes
+
+- **C5-E artifact** (`eval/c5e_repoqa_method_matrix_smoke.py`): public
+  aggregate-only smoke. Reuses C5-D primitives (asset download, gzip
+  parse, needle extraction, transient repo clone/checkout, score
+  task/label/run generation, scanner/failure categories) and C5-B/C5-C
+  patterns (records-shaped method results, deltas vs baseline). Does
+  NOT import or mutate C5-C. Fetches bounded RepoQA Python needle
+  subset (shared across methods); per-method+needle transient `/tmp`
+  clone+retrieval+score; per-method `aggregate_runtime_seconds`;
+  `method_results` as list of records (NOT dict keyed by method);
+  `smoke_metric_deltas_vs_baseline` as fixed records with
+  `baseline_method=bm25`.
+- **Artifact identity**:
+  `schema_version=c5e_repoqa_method_matrix_smoke.v1`,
+  `claim_level=repoqa_retrieval_method_matrix_smoke_only`,
+  `status=repoqa_method_matrix_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`,
+  `mode=repoqa_bounded_method_matrix_smoke`, `phase=C5-E`.
+- **Safe true flags** (true only if actually true):
+  `repoqa_method_matrix_smoke_performed`,
+  `asset_downloaded_transiently`, `repoqa_needles_parsed_in_memory`,
+  `repositories_materialized_transiently`,
+  `openlocus_retrieval_executed`, `score_py_metrics_computed`,
+  `aggregate_only_public_artifact`, `diagnostic_only`. (C5-E does NOT
+  use C5-D's `repoqa_retrieval_smoke_performed` flag.)
+- **No-claim / no-runtime-change flags** (all false):
+  `external_benchmark_performance_claimed`,
+  `leaderboard_entry_claimed`, `downstream_agent_value_proven`,
+  `promotion_ready`, `default_should_change`,
+  `baseline_is_policy_candidate`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `provider_calls_made`, `remote_provider_calls_made`.
+- **Method matrix**: `ALLOWED_METHODS = (bm25, regex, symbol)` only.
+  `text` is NOT allowed. `BASELINE_METHOD=bm25`,
+  `baseline_is_policy_candidate=false`.
+- **Strict public scanner** (fail-closed). Reuses C5-D forbidden scanner
+  primitives + C5-E-specific checks: rejects `method_results` as dict
+  keyed by method name; rejects recommendation/policy fields anywhere;
+  rejects RepoQA-specific forbidden keys anywhere.
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_c5e_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Transient /tmp asset + clone + retrieval + score**: asset downloaded
+  to in-memory bytes (NEVER written to workspace); per-method+needle
+  `TemporaryDirectory` for cloned repos; `TemporaryDirectory` for
+  generated task/label/run JSONL. All raw repo records, repo names/URLs,
+  commit SHAs, entrypoint paths, topics, content, dependency, needle
+  names/descriptions/paths/start/end lines, generated JSONL, evidence
+  rows, cloned repos, and stdout/stderr stay under `/tmp` or in-memory
+  only and are NEVER committed or uploaded.
+- **Unavailable mode**: if the network smoke cannot complete, the
+  artifact records truthful `unavailable_with_reason` with a real
+  `failure_reason_category` (no stale/fake pass). `method_results` is a
+  list of per-method records each with
+  `status=unavailable_with_reason`, `metrics={}`, zero needle counts;
+  `smoke_metric_deltas_vs_baseline=[]`.
+
+### CI workflow
+
+- `.github/workflows/c5-repoqa-method-matrix-smoke.yml`: manual opt-in
+  `workflow_dispatch` with boolean `enable_external_benchmark_network`
+  default false, `needle_limit` (default 5, hard cap 10), `methods`
+  (default `bm25,regex,symbol`; only bm25/regex/symbol allowed),
+  `language_filter` (python only) inputs. If not enabled, no-op with
+  clear message. No `secrets.`, no `vars.`, no
+  `OPENLOCUS_LLM`/`OPENLOCUS_EMBEDDING` env. Builds OpenLocus CLI
+  (release), runs self-test, runs network smoke only when enabled,
+  validates flags (fail-closed like C5-C: network-enabled CI cannot
+  pass with unavailable/no needles; require status in
+  (`repoqa_method_matrix_smoke_pass`, `partial`), `needles_seen > 0`,
+  `methods_successful > 0`, `forbidden_scan.status=pass`), validates
+  docs i18n, checks working tree, uploads aggregate report only (7-day
+  retention).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/c5e_repoqa_method_matrix_smoke.py  => PASS
+python3 eval/c5e_repoqa_method_matrix_smoke.py --self-test  => PASS (228/228 checks)
+python3 eval/c5e_repoqa_method_matrix_smoke.py \
+  --needle-limit 5 --language-filter python --methods bm25,regex,symbol \
+  --out artifacts/c5e_repoqa_method_matrix_smoke/\
+c5e_repoqa_method_matrix_smoke_report.json  => PASS
+  (status: repoqa_method_matrix_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: repoqa_bounded_method_matrix_smoke, phase: C5-E,
+   methods: [bm25, regex, symbol], methods_successful: 3, methods_failed: 0,
+   needles_seen: 5, network_calls: 1, provider_calls: 0,
+   repoqa_method_matrix_smoke_performed: true,
+   asset_downloaded_transiently: true,
+   repoqa_needles_parsed_in_memory: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   baseline_is_policy_candidate: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The C5-E smoke is the first RepoQA-shaped retrieval method-matrix smoke.
+It downloads the `repoqa-2024-06-23.json.gz` release asset to in-memory
+bytes (transient), parses 5 RepoQA Python needles in memory, clones the
+referenced repositories at their `commit_sha` under transient `/tmp`
+directories (once per method+needle), runs OpenLocus retrieval for each
+method (`bm25`, `regex`, `symbol`) on each repository, and runs
+`eval/score.py` to produce per-method aggregate retrieval metrics. It
+is explicitly NOT a rigorous benchmark result, NOT a leaderboard entry,
+NOT a performance claim, NOT a promotion, NOT a default/policy change,
+NOT a runtime/retriever/pack/backend/EvidenceCore semantic change, and
+NOT a downstream agent value claim. The full C5 external-benchmark-
+evaluation phase remains a bounded planning / feasibility stage. See
+[C5-E detailed report](c5e-repoqa-method-matrix-smoke.md).
+
+### Caveats
+
+- C5-E is the public aggregate-only RepoQA retrieval method-matrix smoke
+  artifact. It is eval/diagnostic only. It does NOT change runtime,
+  retriever, pack, backend, or default policy; it does NOT change
+  EvidenceCore semantics. It is NOT a benchmark result, NOT a leaderboard
+  entry, NOT a performance claim, NOT a promotion, NOT a default change,
+  NOT a runtime-clean general algorithm claim, NOT an OOD temporal claim,
+  NOT a QuIVer systems claim, and NOT a downstream agent value claim.
+- C5-E does NOT emit `winner`, `best_method`, `recommended_default`, or
+  anything implying a policy/default decision. The fixed
+  `baseline_method` is `bm25`, `baseline_is_policy_candidate=false`, and
+  `default_should_change=false`.
+- C5-E runs NO provider calls and NO remote provider calls. The only
+  network calls are to public GitHub (asset download + repo clones).
+  `provider_calls=0`, `provider_calls_made=false`,
+  `remote_provider_calls_made=false`.
+- C5-E uses a **bounded RepoQA Python needle subset** (default 5 needles
+  per method; hard cap 10). This is a smoke, not a rigorous benchmark
+  evaluation.
+- C5-E materializes the referenced repositories at their `commit_sha`
+  under transient `/tmp` directories, once per method+needle (because
+  each method runs against the same needles but in isolated workspaces).
+- C5-E does NOT silently fall back from Python to all languages.
+- C5-E does NOT claim external benchmark performance.
+  `external_benchmark_performance_claimed=false`.
+- C5-E does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- RepoQA dataset license is unknown; row-level redistribution is
+  disabled and derived row-level publication is disabled. Aggregate
+  metrics publication is allowed as aggregate-only smoke.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  remain true. No runtime/retriever/pack/model/backend/default-policy
+  files were modified; no promotion/default/runtime claims change.

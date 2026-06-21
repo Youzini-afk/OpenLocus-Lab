@@ -643,6 +643,57 @@ stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
 files were modified. See
 the [C5-D detailed report](c5d-repoqa-bm25-retrieval-smoke.md).
 
+## Current status update — 2026-06-21 (C5-E RepoQA method-matrix retrieval smoke)
+
+Following D5-A0, B16-A, C5-A, C5-B, C5-C, and C5-D, C5-E produces the
+first RepoQA-shaped retrieval method-matrix smoke. C5-E
+(`eval/c5e_repoqa_method_matrix_smoke.py` ->
+`artifacts/c5e_repoqa_method_matrix_smoke/c5e_repoqa_method_matrix_smoke_report.json`,
+schema `c5e_repoqa_method_matrix_smoke.v1`,
+`claim_level=repoqa_retrieval_method_matrix_smoke_only`,
+`status=repoqa_method_matrix_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`,
+`mode=repoqa_bounded_method_matrix_smoke`, phase `C5-E`) extends C5-D
+from single-method `bm25` to a bounded method matrix over
+`bm25,regex,symbol`. It downloads the EvalPlus RepoQA release asset
+`repoqa-2024-06-23.json.gz` to in-memory bytes (transient; NEVER written
+to workspace), parses a bounded RepoQA Python needle subset (default 5
+needles per method; hard cap 10; NO silent all-language fallback),
+materializes the referenced repositories at their `commit_sha` under
+transient `/tmp` directories (once per method+needle), runs OpenLocus
+retrieval across the requested method matrix (default
+`bm25,regex,symbol`; only `bm25,regex,symbol` allowed; `text` NOT
+allowed; fixed `baseline_method=bm25`; no provider calls), scores each
+method against `needle.path`/`start_line`/`end_line` via
+`eval/score.py`, and commits only an aggregate public report with
+per-method records (list, NOT dict keyed by method name), per-method
+`aggregate_runtime_seconds`, and aggregate-only deltas vs the fixed
+`bm25` baseline. 228/228 self-test checks pass; 5 needles seen, 3/3
+methods successful, 0 methods failed.
+
+This is smoke-only. It does NOT claim an external benchmark result,
+does NOT claim a leaderboard entry, does NOT claim performance, does
+NOT claim a promotion, does NOT claim a default change, does NOT claim
+a runtime/retriever/pack/backend/EvidenceCore semantic change, and does
+NOT claim downstream agent value. It does NOT emit `winner`,
+`best_method`, `recommended_default`, or anything implying a policy/
+default decision. The release asset, raw repo records, repo names/URLs,
+commit SHAs, entrypoint paths, topics, content, dependency, needle
+names/descriptions/paths/start/end lines, generated task/label/run
+JSONL, evidence rows, cloned repos, and stdout/stderr stay under `/tmp`
+or in-memory only and are NEVER committed or uploaded. The committed
+artifact is aggregate-only. All no-claim / no-runtime-change flags
+remain false. The safe true flags (true only if actually true:
+`repoqa_method_matrix_smoke_performed`, `asset_downloaded_transiently`,
+`repoqa_needles_parsed_in_memory`,
+`repositories_materialized_transiently`, `openlocus_retrieval_executed`,
+`score_py_metrics_computed`, `aggregate_only_public_artifact`,
+`diagnostic_only`) are the only additional true flags. If the network
+smoke cannot complete, the artifact records truthful
+`unavailable_with_reason` with a real `failure_reason_category` (no
+stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
+files were modified. See
+the [C5-E detailed report](c5e-repoqa-method-matrix-smoke.md).
+
 ## Current status update — 2026-06-21 (F1 counterfactual evidence utility smoke)
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual
