@@ -372,6 +372,54 @@ runtime/retriever/pack/model/backend/default-policy files were
 modified. See the
 [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
 
+## Current status update — 2026-06-21 (D5-A2 heldout feature validation smoke)
+
+D5-A2 validates whether D5-A1's retrieval-derived feature bucket
+reproduces on fresh heldout external retrieval samples. D5-A2
+(`eval/d5a2_heldout_feature_validation.py`, reusing C5-A/C5-C/C5-D/C5-E
+primitives backward-compatibly; none modified) ->
+`artifacts/d5a2_heldout_feature_validation/d5a2_heldout_feature_validation_report.json`,
+schema `d5a2_heldout_feature_validation.v1`,
+`claim_level=heldout_retrieval_feature_validation_smoke_only`,
+`status=heldout_feature_validation_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`,
+`mode=heldout_contextbench_repoqa_feature_validation`, phase `D5-A2`)
+loads the D5-A1 committed artifact as the preregistered feature source
+(fail-closed on missing/schema-mismatch/unsafe-claim-flags), runs fresh
+heldout ContextBench verified Python rows 21-40 (fetch 40, evaluate
+slice [20,40)) and RepoQA Python needles 11-20 (parse 20, evaluate
+slice [10,20)) with methods bm25/regex/symbol, computes the same fixed
+retrieval-derived utility proxy (unchanged from F1-C/F1-D), and checks
+4 retrieval-feature validations (bm25_vs_empty magnitude/sign
+stability; regex/symbol_vs_bm25 sign stability). Validation outcomes
+(fixed allowlist): `retrieval_feature_validation_supported`,
+`retrieval_feature_validation_mixed`,
+`retrieval_feature_validation_not_supported`,
+`unavailable_with_reason`. Records-shaped lists only
+(`d5a1_input_record`, `heldout_benchmark_method_records`,
+`validation_records`, `validation_summary_records`); no per-unit
+metric arrays, no row/needle IDs, no winner/default/calibration claims.
+88/88 self-test checks pass. Local heldout run passed: status
+`heldout_feature_validation_pass`, forbidden scan pass,
+`validation_outcome=retrieval_feature_validation_supported`,
+contextbench_rows_fetched=20, repoqa_needles_seen=10,
+network_calls=2, provider_calls=0; all 4 D5-A1 retrieval features
+reproduce on heldout data (bm25_vs_empty heldout +0.727961 positive
+supported; bm25 sign stability heldout file_recall +0.6 positive
+supported; regex/symbol_vs_bm25 heldout -0.977961 negative supported).
+
+This is heldout feature validation, NOT calibration. It is NOT
+calibration, NOT a calibrated model claim, NOT a policy/default
+recommendation, NOT a benchmark result, NOT downstream utility, NOT
+true E/S calibration, NOT an external benchmark performance claim, NOT
+a leaderboard entry, NOT a method winner, NOT a promotion/default/
+runtime/retriever/pack/backend/EvidenceCore semantic change. It
+validates only retrieval-feature stability from D5-A1; it does NOT
+validate live-provider/downstream alignment. All no-claim /
+no-runtime-change flags remain false.
+`heldout_feature_validation_executed=true` only when a real heldout run
+actually executed. See the
+[D5-A2 detailed report](d5a2-heldout-feature-validation.md).
+
 ## Current status update — 2026-06-21 (D5-A1 automated calibration feature table)
 
 D5-A1 moves from empirical smokes to **calibration-ready weak-supervision

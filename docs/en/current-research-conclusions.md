@@ -410,6 +410,40 @@ no-runtime-change flags remain false.
 network run actually executed. See the
 [F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
 
+## 2026-06-21 D5-A2 Heldout Feature Validation Smoke
+
+D5-A2 validates whether D5-A1's retrieval-derived feature bucket
+reproduces on fresh heldout external retrieval samples. D5-A2
+(`eval/d5a2_heldout_feature_validation.py`) ->
+`artifacts/d5a2_heldout_feature_validation/d5a2_heldout_feature_validation_report.json`,
+schema `d5a2_heldout_feature_validation.v1`,
+`claim_level=heldout_retrieval_feature_validation_smoke_only`, phase
+`D5-A2`) loads the D5-A1 committed artifact as preregistered feature
+source (fail-closed), runs fresh heldout ContextBench rows 21-40 +
+RepoQA needles 11-20 with bm25/regex/symbol, computes the same fixed
+retrieval-derived utility proxy, and checks 4 retrieval-feature
+validations (bm25_vs_empty magnitude/sign stability; regex/symbol
+vs_bm25 sign stability). 88/88 self-test checks pass. Local heldout run
+passed: status `heldout_feature_validation_pass`,
+`validation_outcome=retrieval_feature_validation_supported`, 20 rows
+fetched, 10 needles seen, all 4 features reproduce on heldout data
+(bm25_vs_empty heldout +0.727961 positive; bm25 sign stability heldout
+file_recall +0.6 positive; regex/symbol_vs_bm25 heldout -0.977961
+negative). The heldout bm25 file_recall@10=0.7 on ContextBench (vs
+0.35 on original rows 1-20) confirms the bm25 positive retrieval
+feature generalizes.
+
+This is heldout feature validation, NOT calibration. It is NOT
+calibration, NOT a calibrated model claim, NOT a policy/default
+recommendation, NOT a benchmark result, NOT downstream utility, NOT
+true E/S calibration, NOT an external benchmark performance claim, NOT
+a leaderboard entry, NOT a method winner, NOT a promotion/default/
+runtime/retriever/pack/backend/EvidenceCore semantic change. It
+validates only retrieval-feature stability from D5-A1; it does NOT
+validate live-provider/downstream alignment. All no-claim /
+no-runtime-change flags remain false. See the
+[D5-A2 detailed report](d5a2-heldout-feature-validation.md).
+
 ## 2026-06-21 D5-A1 Automated Calibration Feature Table
 
 D5-A1 moves from empirical smokes to **calibration-ready weak-
@@ -1499,6 +1533,7 @@ Manual CI run `27906775008` passed for C5-D: 5 RepoQA Python needles seen/succes
 - `docs/en/f1c-cross-benchmark-retrieval-utility.md` — F1-C cross-benchmark retrieval-derived utility smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy; cross-benchmark weighted means; 5 fixed counterfactual effects bm25_vs_empty/regex_vs_empty/symbol_vs_empty/regex_vs_bm25/symbol_vs_bm25; ContextBench and RepoQA failure categories kept separate; no provider calls; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
 - `docs/en/f1d-cross-benchmark-retrieval-robustness.md` — F1-D cross-benchmark retrieval utility robustness smoke (aggregate-only; reruns real bounded external data: ContextBench verified 20-row + RepoQA 10-needle Python; per-unit metrics intercepted in memory before aggregation; bm25,regex,symbol + empty_retrieval zero baseline; fixed retrieval_utility proxy unchanged from F1-C; cross-benchmark weighted means; paired cross-benchmark bootstrap preserving sample counts; 5 fixed effects x 5 metrics = 25 bootstrap effect records with CI p05/p50/p95 and sign-stability fractions; benchmark_method_means/cross_benchmark_method_means/bootstrap_effect_records/input_summary/bootstrap_summary only; no per-unit metric arrays; no F1-C container names; ContextBench and RepoQA failure categories kept separate; no provider calls; bootstrap replicates default 1000 hard cap 2000 seed 20240621; no winner/best_method/recommended_default/E_S notation; not a benchmark result, not a leaderboard entry, not a performance claim, not a formal confidence interval, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration).
 - `docs/en/d5a1-automated-calibration-feature-table.md` — D5-A1 automated calibration feature table (aggregate-only; machine-reads committed aggregate artifacts: F1-D/F1-C/C5-C/C5-F/B16-E required, D5-A0/B16-D optional if present and claim-safe; fail-closed input validation (schema/status/claim-flags/forbidden_scan); extracts retrieval robustness signals (F1-D bm25_vs_empty/regex_vs_bm25/symbol_vs_bm25 point/CI/sign stability), external benchmark agreement/disagreement (C5-C+C5-F bm25 positive on both, regex/symbol negative on both, method agreement counts), live provider delta (B16-E context_pack_signal/solve_rate_delta/families); computes deterministic calibration feature/bucket records (magnitude buckets, sign stability buckets, live provider delta bucket, family distribution bucket, cross-signal alignment label); readiness buckets ready_for_manual_review/needs_more_live_downstream/retrieval_only_insufficient/conflicting_signals/insufficient_signal; recommended next measurements manual_reference_audit/heldout_benchmark_scale/live_downstream_scale (measurement-only, NOT policy/default/method winner); input_artifact_records/signal_records/calibration_feature_records/readiness_bucket_records/recommended_next_measurement_records only; no per-unit metric arrays, no raw input artifact paths/content, no B16 task text, no winner/best/default/calibrated-model/policy-recommendation fields, no E/S notation; feature extraction, NOT calibration; not a benchmark result, not a leaderboard entry, not a performance claim, not a formal confidence interval, not a method winner, not a promotion, not a default change, not a downstream agent value claim, not true E/S calibration, not a calibrated model claim, not a policy recommendation).
+- `docs/en/d5a2-heldout-feature-validation.md` — D5-A2 heldout feature validation smoke (aggregate-only; runs fresh heldout ContextBench rows 21-40 + RepoQA needles 11-20; loads D5-A1 committed artifact as preregistered feature source (fail-closed); methods bm25/regex/symbol only; fixed retrieval_utility proxy unchanged from F1-C/F1-D; 4 retrieval-feature validations (bm25_vs_empty magnitude/sign stability, regex/symbol_vs_bm25 sign stability); validation outcomes retrieval_feature_validation_supported/mixed/not_supported/unavailable; d5a1_input_record/heldout_benchmark_method_records/validation_records/validation_summary_records only; no per-unit metrics, no row/needle IDs, no winner/default/calibration claims; heldout feature validation, NOT calibration, NOT policy/default, NOT method winner, NOT benchmark performance, NOT downstream value, NOT runtime/retriever/pack/backend/default-policy/EvidenceCore change; validates only retrieval-feature stability from D5-A1, NOT live-provider/downstream alignment).
 
 ---
 

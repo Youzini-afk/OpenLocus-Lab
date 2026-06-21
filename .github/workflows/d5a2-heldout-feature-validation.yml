@@ -1,0 +1,222 @@
+name: d5a2-heldout-feature-validation
+
+# D5-A2 Heldout Feature Validation Smoke CI.
+#
+# This workflow runs the D5-A2 heldout feature validation smoke in CI.
+# It is MANUAL OPT-IN ONLY via workflow_dispatch with
+# `enable_external_benchmark_network=true`. It does NOT run on PR/push
+# by default. It uses NO provider secrets/vars and NO provider model
+# env. It uploads ONLY the aggregate D5-A2 report.
+#
+# Claim boundary: D5-A2 is eval/diagnostic only. The claim level is
+# `heldout_retrieval_feature_validation_smoke_only`. This workflow
+# does NOT claim calibration, NOT a calibrated model, NOT a policy/
+# default recommendation, NOT a method winner, NOT external benchmark
+# performance, NOT downstream value, NOT a formal confidence interval,
+# NOT a promotion, NOT a default/policy/runtime/retriever/pack/backend/
+# EvidenceCore semantic change, NOT true E/S calibration. If
+# `enable_external_benchmark_network` is false, the workflow is a
+# no-op and exits 0.
+#
+# Network-enabled CI is fail-closed: status pass/partial only,
+# ContextBench rows > 0, RepoQA needles > 0, forbidden_scan pass,
+# provider_calls=0.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real ContextBench row fetch + RepoQA asset download + GitHub clone + retrieval (must be true to run network)'
+        required: false
+        default: false
+        type: boolean
+      contextbench_row_offset:
+        description: 'ContextBench row offset (default 20; rows 21-40)'
+        required: false
+        default: '20'
+      contextbench_row_limit:
+        description: 'ContextBench row limit (default 20; hard cap 20)'
+        required: false
+        default: '20'
+      repoqa_needle_offset:
+        description: 'RepoQA needle offset (default 10; needles 11-20)'
+        required: false
+        default: '10'
+      repoqa_needle_limit:
+        description: 'RepoQA needle limit (default 10; hard cap 10)'
+        required: false
+        default: '10'
+      methods:
+        description: 'Comma-separated methods (default bm25,regex,symbol; allowed bm25/regex/symbol only)'
+        required: false
+        default: 'bm25,regex,symbol'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: d5a2-heldout-feature-validation-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}-${{ inputs.methods }}
+  cancel-in-progress: false
+
+jobs:
+  d5a2-heldout-feature-validation:
+    name: d5a2-heldout-feature-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve D5-A2 inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          contextbench_row_offset="${{ inputs.contextbench_row_offset || '20' }}"
+          contextbench_row_limit="${{ inputs.contextbench_row_limit || '20' }}"
+          repoqa_needle_offset="${{ inputs.repoqa_needle_offset || '10' }}"
+          repoqa_needle_limit="${{ inputs.repoqa_needle_limit || '10' }}"
+          methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
+          # Validate offsets/limits are non-negative/positive integers.
+          if ! [[ "$contextbench_row_offset" =~ ^[0-9]+$ ]]; then
+            echo "contextbench_row_offset must be a non-negative integer: $contextbench_row_offset" >&2; exit 1
+          fi
+          if ! [[ "$contextbench_row_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "contextbench_row_limit must be a positive integer: $contextbench_row_limit" >&2; exit 1
+          fi
+          if [[ "$contextbench_row_limit" -gt 20 ]]; then
+            echo "contextbench_row_limit exceeds hard cap 20 (will be capped by the evaluator)" >&2
+          fi
+          if ! [[ "$repoqa_needle_offset" =~ ^[0-9]+$ ]]; then
+            echo "repoqa_needle_offset must be a non-negative integer: $repoqa_needle_offset" >&2; exit 1
+          fi
+          if ! [[ "$repoqa_needle_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "repoqa_needle_limit must be a positive integer: $repoqa_needle_limit" >&2; exit 1
+          fi
+          if [[ "$repoqa_needle_limit" -gt 10 ]]; then
+            echo "repoqa_needle_limit exceeds hard cap 10 (will be capped by the evaluator)" >&2
+          fi
+          IFS=',' read -ra method_tokens <<< "$methods"
+          for tok in "${method_tokens[@]}"; do
+            tok_trimmed="$(echo "$tok" | xargs)"
+            case "$tok_trimmed" in
+              bm25|regex|symbol) ;;
+              *) echo "unsupported method: $tok_trimmed (allowed bm25/regex/symbol)" >&2; exit 1 ;;
+            esac
+          done
+          if [[ "$enable_network" == "true" ]]; then
+            enable_network="true"
+          else
+            enable_network="false"
+          fi
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+          echo "contextbench_row_offset=$contextbench_row_offset" >> "$GITHUB_OUTPUT"
+          echo "contextbench_row_limit=$contextbench_row_limit" >> "$GITHUB_OUTPUT"
+          echo "repoqa_needle_offset=$repoqa_needle_offset" >> "$GITHUB_OUTPUT"
+          echo "repoqa_needle_limit=$repoqa_needle_limit" >> "$GITHUB_OUTPUT"
+          echo "methods=$methods" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile D5-A2 evaluator
+        run: python3 -m py_compile eval/d5a2_heldout_feature_validation.py
+
+      - name: D5-A2 self-test (no network)
+        run: python3 eval/d5a2_heldout_feature_validation.py --self-test
+
+      - name: D5-A2 heldout validation (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          CB_OFFSET: ${{ steps.resolve.outputs.contextbench_row_offset }}
+          CB_LIMIT: ${{ steps.resolve.outputs.contextbench_row_limit }}
+          RQ_OFFSET: ${{ steps.resolve.outputs.repoqa_needle_offset }}
+          RQ_LIMIT: ${{ steps.resolve.outputs.repoqa_needle_limit }}
+          METHODS: ${{ steps.resolve.outputs.methods }}
+        run: |
+          report_path="$RUNNER_TEMP/d5a2_heldout_feature_validation_report.json"
+          python3 eval/d5a2_heldout_feature_validation.py \
+            --contextbench-row-offset "$CB_OFFSET" \
+            --contextbench-row-limit "$CB_LIMIT" \
+            --repoqa-needle-offset "$RQ_OFFSET" \
+            --repoqa-needle-limit "$RQ_LIMIT" \
+            --methods "$METHODS" \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: D5-A2 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          echo "enable_external_benchmark_network is false; skipping heldout feature validation."
+          echo "Run with enable_external_benchmark_network=true to execute the real D5-A2 smoke."
+
+      - name: Validate D5-A2 report (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          must_be_false = {
+              "true_e_s_calibration_claimed", "automated_e_s_full_calibration_claimed",
+              "human_e_s_calibration_claimed", "calibrated_model_claimed",
+              "policy_recommendation_claimed", "method_winner_claimed",
+              "external_benchmark_performance_claimed", "downstream_agent_value_proven",
+              "promotion_ready", "default_should_change", "runtime_behavior_changed",
+              "retriever_changed", "pack_builder_changed", "backend_changed",
+              "default_policy_changed", "evidencecore_semantics_changed",
+              "provider_calls_made", "remote_provider_calls_made",
+          }
+          failures = []
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          if status not in ("heldout_feature_validation_pass", "partial"):
+              failures.append(f"expected status pass/partial, got {status!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("forbidden_scan not pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("self_test_passed not true")
+          if report.get("contextbench_rows_fetched", 0) <= 0:
+              failures.append("contextbench_rows_fetched <= 0")
+          if report.get("repoqa_needles_seen", 0) <= 0:
+              failures.append("repoqa_needles_seen <= 0")
+          if report.get("provider_calls") != 0:
+              failures.append("provider_calls != 0")
+          if report.get("heldout_feature_validation_executed") is not True:
+              failures.append("heldout_feature_validation_executed not true")
+          if failures:
+              print("D5-A2 validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print(f"D5-A2 validation passed. status={status}, outcome={report.get('validation_outcome')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree
+        run: git diff --check
+
+      - name: Upload D5-A2 aggregate report (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: d5a2-heldout-feature-validation-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

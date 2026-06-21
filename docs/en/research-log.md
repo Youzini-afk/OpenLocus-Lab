@@ -9091,3 +9091,81 @@ EvidenceCore semantic change. See
   feature extraction actually executed. No runtime/retriever/pack/
   model/backend/default-policy files were modified; no promotion/
   default/runtime claims change.
+
+## 2026-06-21 — D5-A2 Heldout Feature Validation Smoke
+
+### Objective
+
+Validate whether D5-A1's retrieval-derived feature bucket reproduces
+on fresh heldout external retrieval samples. D5-A2 must run new heldout
+measurements (ContextBench rows 21-40 + RepoQA needles 11-20), not
+reread existing C5/F1 artifacts.
+
+### Implementation notes
+
+- **D5-A2 artifact** (`eval/d5a2_heldout_feature_validation.py`):
+  public aggregate-only heldout feature validation smoke. Loads D5-A1
+  committed artifact as preregistered feature source (fail-closed on
+  missing/schema-mismatch/unsafe-claim-flags). Runs fresh heldout
+  ContextBench verified Python rows 21-40 (fetch 40, evaluate slice
+  [20,40)) and RepoQA Python needles 11-20 (parse 20, evaluate slice
+  [10,20)) with methods bm25/regex/symbol. Reuses C5-A/C5-C/C5-D/C5-E
+  primitives backward-compatibly (none modified). Computes the same
+  fixed retrieval-derived utility proxy (unchanged from F1-C/F1-D).
+- **Validation records** (4 checks): bm25_vs_empty retrieval_utility
+  magnitude (positive); bm25_vs_empty sign stability (file_recall > 0
+  on both benchmarks); regex_vs_bm25 sign stability (negative);
+  symbol_vs_bm25 sign stability (negative).
+- **Validation outcomes** (fixed allowlist):
+  `retrieval_feature_validation_supported`,
+  `retrieval_feature_validation_mixed`,
+  `retrieval_feature_validation_not_supported`,
+  `unavailable_with_reason`.
+- **Artifact identity**:
+  `schema_version=d5a2_heldout_feature_validation.v1`,
+  `claim_level=heldout_retrieval_feature_validation_smoke_only`,
+  `mode=heldout_contextbench_repoqa_feature_validation`,
+  `phase=D5-A2`.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/d5a2_heldout_feature_validation.py  => PASS
+python3 eval/d5a2_heldout_feature_validation.py --self-test  => PASS (88/88 checks)
+python3 eval/d5a2_heldout_feature_validation.py \
+  --contextbench-row-offset 20 --contextbench-row-limit 20 \
+  --repoqa-needle-offset 10 --repoqa-needle-limit 10 \
+  --methods bm25,regex,symbol \
+  --out artifacts/d5a2_heldout_feature_validation/\
+d5a2_heldout_feature_validation_report.json  => PASS
+  (status: heldout_feature_validation_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   validation_outcome: retrieval_feature_validation_supported,
+   contextbench_rows_fetched: 20, repoqa_needles_seen: 10,
+   network_calls: 2, provider_calls: 0,
+   heldout_feature_validation_executed: true)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+All 4 D5-A1 retrieval features reproduce on heldout data:
+bm25_vs_empty_retrieval_utility_magnitude (heldout +0.727961,
+positive, supported); bm25_vs_empty_sign_stability (heldout file_recall
++0.6, positive, supported); regex_vs_bm25_sign_stability (heldout
+-0.977961, negative, supported); symbol_vs_bm25_sign_stability
+(heldout -0.977961, negative, supported). The heldout bm25
+file_recall@10=0.7 on ContextBench (vs 0.35 on original D5-A1 rows
+1-20) confirms the bm25 positive retrieval feature is supported on this heldout slice.
+
+See [D5-A2 detailed report](d5a2-heldout-feature-validation.md).
+
+### Caveats
+
+- D5-A2 is heldout aggregate feature validation smoke, NOT
+  calibration, NOT policy/default, NOT method winner, NOT benchmark
+  performance, NOT downstream value, NOT runtime/retriever/pack/
+  backend/default-policy/EvidenceCore change.
+- D5-A2 validates only retrieval-feature stability from D5-A1; it does
+  NOT validate live-provider/downstream alignment.
+- D5-A2 runs fresh heldout retrieval; it does NOT reread C5/F1
+  artifacts. No provider calls. All transient data in memory or /tmp.

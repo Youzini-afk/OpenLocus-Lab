@@ -8407,3 +8407,78 @@ backend/EvidenceCore 语义变更。详见
   `automated_calibration_feature_extraction_performed=true` 仅在特征提
   取实际执行时。未修改任何 runtime/retriever/pack/model/backend/
   default-policy 文件；无 promotion/default/runtime 声明变更。
+
+## 2026-06-21 — D5-A2 Heldout 特征验证 Smoke
+
+### 目标
+
+验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜的 heldout
+外部检索样本上复现。D5-A2 必须运行新的 heldout 测量（ContextBench
+行 21-40 + RepoQA needle 11-20），不重读现有 C5/F1 artifact。
+
+### 实现备注
+
+- **D5-A2 artifact**（`eval/d5a2_heldout_feature_validation.py`）：
+  公开仅聚合 heldout 特征验证 smoke。加载 D5-A1 已提交 artifact 作为
+  预注册特征源（缺失/schema 不匹配/不安全声明 flag 时 fail-closed）。
+  运行新鲜 heldout ContextBench verified Python 行 21-40（抓取 40，
+  评估切片 [20,40)）与 RepoQA Python needle 11-20（解析 20，评估切片
+  [10,20)），方法 bm25/regex/symbol。向后兼容复用 C5-A/C5-C/C5-D/C5-E
+  原语（均未修改）。计算相同固定 retrieval-derived utility proxy
+  （与 F1-C/F1-D 不变）。
+- **验证记录**（4 项检查）：bm25_vs_empty retrieval_utility 量级
+  （正）；bm25_vs_empty 符号稳定性（两个基准 file_recall > 0）；
+  regex_vs_bm25 符号稳定性（负）；symbol_vs_bm25 符号稳定性（负）。
+- **验证结果**（固定 allowlist）：
+  `retrieval_feature_validation_supported`、
+  `retrieval_feature_validation_mixed`、
+  `retrieval_feature_validation_not_supported`、
+  `unavailable_with_reason`。
+- **Artifact 身份**：
+  `schema_version=d5a2_heldout_feature_validation.v1`、
+  `claim_level=heldout_retrieval_feature_validation_smoke_only`、
+  `mode=heldout_contextbench_repoqa_feature_validation`、阶段
+  `D5-A2`。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/d5a2_heldout_feature_validation.py  => PASS
+python3 eval/d5a2_heldout_feature_validation.py --self-test  => PASS (88/88 checks)
+python3 eval/d5a2_heldout_feature_validation.py \
+  --contextbench-row-offset 20 --contextbench-row-limit 20 \
+  --repoqa-needle-offset 10 --repoqa-needle-limit 10 \
+  --methods bm25,regex,symbol \
+  --out artifacts/d5a2_heldout_feature_validation/\
+d5a2_heldout_feature_validation_report.json  => PASS
+  (status: heldout_feature_validation_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   validation_outcome: retrieval_feature_validation_supported,
+   contextbench_rows_fetched: 20, repoqa_needles_seen: 10,
+   network_calls: 2, provider_calls: 0,
+   heldout_feature_validation_executed: true)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+所有 4 个 D5-A1 检索特征在 heldout 数据上复现：
+bm25_vs_empty_retrieval_utility_magnitude（heldout +0.727961，正，
+supported）；bm25_vs_empty_sign_stability（heldout file_recall
++0.6，正，supported）；regex_vs_bm25_sign_stability（heldout
+-0.977961，负，supported）；symbol_vs_bm25_sign_stability（heldout
+-0.977961，负，supported）。heldout ContextBench bm25
+file_recall@10=0.7（对比原始 D5-A1 行 1-20 的 0.35）确认 bm25 正向
+检索特征在此 heldout 切片上成立。
+
+详见 [D5-A2 详细报告](d5a2-heldout-feature-validation.md)。
+
+### 注意事项
+
+- D5-A2 是 heldout 仅聚合特征验证 smoke，**不是**校准，**不是**
+  policy/default，**不是**方法 winner，**不是** benchmark 性能，**不
+  是**下游价值，**不是** runtime/retriever/pack/backend/default-policy/
+  EvidenceCore 变更。
+- D5-A2 仅验证 D5-A1 的检索特征稳定性；它 **不**验证 live-provider/
+  下游对齐。
+- D5-A2 运行新鲜 heldout 检索；它 **不**重读 C5/F1 artifact。无
+  provider 调用。所有临时数据在内存或 /tmp。

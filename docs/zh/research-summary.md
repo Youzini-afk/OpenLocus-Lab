@@ -341,6 +341,49 @@ privacy scan passed + artifact is honest；CI 通过**不**要求 treatment
 runtime/retriever/pack/model/backend/default-policy 文件。详见
 [B16-E 详细报告](b16e-broader-live-provider-paired-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（D5-A2 heldout 特征验证 smoke）
+
+D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout
+外部检索样本上复现。D5-A2
+（`eval/d5a2_heldout_feature_validation.py`，向后兼容复用
+C5-A/C5-C/C5-D/C5-E 原语；均未修改）->
+`artifacts/d5a2_heldout_feature_validation/d5a2_heldout_feature_validation_report.json`，
+schema `d5a2_heldout_feature_validation.v1`、
+`claim_level=heldout_retrieval_feature_validation_smoke_only`、
+`status=heldout_feature_validation_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`、
+`mode=heldout_contextbench_repoqa_feature_validation`、阶段 `D5-A2`）
+加载 D5-A1 已提交 artifact 作为预注册特征源（缺失/schema 不匹配/不安全
+声明 flag 时 fail-closed），运行新鲜 heldout ContextBench verified
+Python 行 21-40（抓取 40，评估切片 [20,40)）与 RepoQA Python needle
+11-20（解析 20，评估切片 [10,20)），方法 bm25/regex/symbol，计算相同
+固定 retrieval-derived utility proxy（与 F1-C/F1-D 不变），并检查 4 项
+检索特征验证（bm25_vs_empty 量级/符号稳定性；regex/symbol_vs_bm25 符
+号稳定性）。验证结果（固定 allowlist）：
+`retrieval_feature_validation_supported`、
+`retrieval_feature_validation_mixed`、
+`retrieval_feature_validation_not_supported`、
+`unavailable_with_reason`。仅 records 形态列表（`d5a1_input_record`、
+`heldout_benchmark_method_records`、`validation_records`、
+`validation_summary_records`）；无 per-unit metric 数组，无 row/needle
+ID，无 winner/default/calibration 声明。88/88 self-test 检查通过。本地
+heldout run 已通过：status `heldout_feature_validation_pass`，forbidden
+scan pass，`validation_outcome=retrieval_feature_validation_supported`，
+contextbench_rows_fetched=20，repoqa_needles_seen=10，network_calls=2，
+provider_calls=0；所有 4 个 D5-A1 检索特征在 heldout 数据上复现
+（bm25_vs_empty heldout +0.727961 正 supported；bm25 符号稳定性
+heldout file_recall +0.6 正 supported；regex/symbol_vs_bm25 heldout
+-0.977961 负 supported）。
+
+这是 heldout 特征验证，**不是**校准。它**不是**校准、**不是**已校准
+模型声明、**不是** policy/default 推荐、**不是** benchmark 结果、**不
+是**下游 utility、**不是** true E/S 校准、**不是**外部基准测试性能声明、
+**不是** leaderboard 条目、**不是**方法 winner、**不是** promotion/
+default/runtime/retriever/pack/backend/EvidenceCore 语义变更。它仅验证
+D5-A1 的检索特征稳定性；它 **不**验证 live-provider/下游对齐。所有无
+声明 / 无运行时变更标志保持 false。
+`heldout_feature_validation_executed=true` 仅在真实 heldout run 实际执行
+时。详见 [D5-A2 详细报告](d5a2-heldout-feature-validation.md)。
+
 ## 当前状态更新 —— 2026-06-21（D5-A1 自动化校准特征表）
 
 D5-A1 从实证 smoke 推进到 **校准就绪弱监督特征**，通过机器读取已提交

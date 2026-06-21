@@ -1,0 +1,284 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_heldout_validation",
+  "aggregate_only_public_artifact": true,
+  "automated_e_s_full_calibration_claimed": false,
+  "backend_changed": false,
+  "baseline_method": "bm25",
+  "calibrated_model_claimed": false,
+  "claim_level": "heldout_retrieval_feature_validation_smoke_only",
+  "contextbench_failure_category_counts": {
+    "checkout_failed": 0,
+    "clone_failed": 0,
+    "forbidden_leak_blocked": 0,
+    "label_context_parse_failed": 0,
+    "label_jsonl_write_failed": 0,
+    "language_filter_excluded": 0,
+    "network_fetch_failed": 0,
+    "no_python_rows": 0,
+    "retrieval_failed": 0,
+    "row_limit_capped": 0,
+    "row_parse_failed": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "task_jsonl_write_failed": 0,
+    "unexpected_exception": 0
+  },
+  "contextbench_row_limit_requested": 20,
+  "contextbench_row_offset_requested": 20,
+  "contextbench_rows_fetched": 20,
+  "contextbench_rows_read": true,
+  "d5a1_input_record": {
+    "cross_signal_alignment": "retrieval_robust_positive_plus_live_positive",
+    "d5a1_claim_safe": true,
+    "d5a1_schema_version": "d5a1_automated_calibration_feature_table.v1",
+    "d5a1_status": "automated_calibration_feature_table_pass",
+    "feature_count": 7,
+    "readiness_bucket": "ready_for_manual_review",
+    "signal_count": 9
+  },
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_calibration": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_live_provider_validation": false,
+    "is_policy_recommendation": false,
+    "is_true_e_s_calibration": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "heldout_feature_validation_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-21T19:34:08.940417+00:00",
+  "generated_by": "eval/d5a2_heldout_feature_validation.py",
+  "heldout_benchmark_method_records": [
+    {
+      "benchmark": "contextbench",
+      "method": "bm25",
+      "metrics": {
+        "file_recall@10": 0.7,
+        "mrr": 0.341406,
+        "retrieval_utility": 0.815104,
+        "span_f0.5@10": 0.059505,
+        "success_rate": 1.0
+      },
+      "sample_count": 20
+    },
+    {
+      "benchmark": "contextbench",
+      "method": "regex",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "sample_count": 20
+    },
+    {
+      "benchmark": "contextbench",
+      "method": "symbol",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "sample_count": 20
+    },
+    {
+      "benchmark": "repoqa",
+      "method": "bm25",
+      "metrics": {
+        "file_recall@10": 0.5,
+        "mrr": 0.191001,
+        "retrieval_utility": 0.553674,
+        "span_f0.5@10": 0.011848,
+        "success_rate": 1.0
+      },
+      "sample_count": 10
+    },
+    {
+      "benchmark": "repoqa",
+      "method": "regex",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "sample_count": 10
+    },
+    {
+      "benchmark": "repoqa",
+      "method": "symbol",
+      "metrics": {
+        "file_recall@10": 0.0,
+        "mrr": 0.0,
+        "retrieval_utility": -0.25,
+        "span_f0.5@10": 0.0,
+        "success_rate": 1.0
+      },
+      "sample_count": 10
+    }
+  ],
+  "heldout_feature_validation_executed": true,
+  "human_e_s_calibration_claimed": false,
+  "input_summary": {
+    "benchmarks": [
+      "contextbench",
+      "repoqa"
+    ],
+    "contextbench_row_limit": 20,
+    "contextbench_row_offset": 20,
+    "contextbench_rows_fetched": 20,
+    "method_labels": [
+      "empty_retrieval",
+      "bm25",
+      "regex",
+      "symbol"
+    ],
+    "methods": [
+      "bm25",
+      "regex",
+      "symbol"
+    ],
+    "metric_labels": [
+      "file_recall@10",
+      "mrr",
+      "span_f0.5@10",
+      "success_rate",
+      "retrieval_utility"
+    ],
+    "outcome_labels": [
+      "retrieval_feature_validation_supported",
+      "retrieval_feature_validation_mixed",
+      "retrieval_feature_validation_not_supported",
+      "unavailable_with_reason"
+    ],
+    "repoqa_needle_limit": 10,
+    "repoqa_needle_offset": 10,
+    "repoqa_needles_seen": 10
+  },
+  "method_winner_claimed": false,
+  "methods_allowed": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "methods_requested": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "heldout_contextbench_repoqa_feature_validation",
+  "network_calls": 2,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "phase": "D5-A2",
+  "policy_recommendation_claimed": false,
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "remote_provider_calls_made": false,
+  "repoqa_failure_category_counts": {
+    "asset_decompress_failed": 0,
+    "asset_download_failed": 0,
+    "asset_parse_failed": 0,
+    "forbidden_leak_blocked": 0,
+    "label_jsonl_write_failed": 0,
+    "language_filter_excluded": 0,
+    "needle_limit_capped": 0,
+    "needle_parse_failed": 0,
+    "no_python_needles": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "retrieval_failed": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "task_jsonl_write_failed": 0,
+    "unexpected_exception": 0
+  },
+  "repoqa_needle_limit_requested": 10,
+  "repoqa_needle_offset_requested": 10,
+  "repoqa_needles_read": true,
+  "repoqa_needles_seen": 10,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "d5a2_heldout_feature_validation.v1",
+  "score_py_metrics_computed": true,
+  "self_test_checks_passed": 88,
+  "self_test_checks_total": 88,
+  "self_test_passed": true,
+  "status": "heldout_feature_validation_pass",
+  "true_e_s_calibration_claimed": false,
+  "validation_outcome": "retrieval_feature_validation_supported",
+  "validation_records": [
+    {
+      "feature_name": "bm25_vs_empty_retrieval_utility_magnitude",
+      "heldout_direction": "positive",
+      "heldout_metric": 0.727961,
+      "preregistered_bucket": "weak_positive",
+      "supported": true
+    },
+    {
+      "feature_name": "bm25_vs_empty_sign_stability",
+      "heldout_direction": "positive",
+      "heldout_metric": 0.6,
+      "preregistered_bucket": "stable_positive",
+      "supported": true
+    },
+    {
+      "feature_name": "regex_vs_bm25_sign_stability",
+      "heldout_direction": "negative",
+      "heldout_metric": -0.977961,
+      "preregistered_bucket": "stable_negative",
+      "supported": true
+    },
+    {
+      "feature_name": "symbol_vs_bm25_sign_stability",
+      "heldout_direction": "negative",
+      "heldout_metric": -0.977961,
+      "preregistered_bucket": "stable_negative",
+      "supported": true
+    }
+  ],
+  "validation_summary_records": [
+    {
+      "outcome": "retrieval_feature_validation_supported",
+      "outcome_count": 4
+    },
+    {
+      "outcome": "retrieval_feature_validation_mixed",
+      "outcome_count": 0
+    },
+    {
+      "outcome": "retrieval_feature_validation_not_supported",
+      "outcome_count": 0
+    },
+    {
+      "outcome": "unavailable_with_reason",
+      "outcome_count": 0
+    }
+  ]
+}
