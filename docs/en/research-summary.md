@@ -546,7 +546,7 @@ benchmark label spans via `eval/score.py`, and commits only an aggregate
 public report with per-method records (list, NOT dict keyed by method
 name), optional per-method `aggregate_runtime_seconds`, aggregate-only
 deltas vs the fixed `bm25` baseline, and an `input_summary` block.
-177/177 self-test checks pass; 20 rows fetched, 3/3 methods successful,
+179/179 self-test checks pass; 20 rows fetched, 3/3 methods successful,
 0 methods failed.
 
 This is smoke-only. It does NOT claim an external benchmark result,

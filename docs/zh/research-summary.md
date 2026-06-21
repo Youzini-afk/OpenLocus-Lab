@@ -495,7 +495,7 @@ provider 调用），通过 `eval/score.py` 对每种方法针对 benchmark labe
 打分，并仅提交一个 aggregate 公共报告，其中包含每方法记录（列表，**非**以
 方法名为 key 的 dict）、可选的每方法 `aggregate_runtime_seconds`、仅
 aggregate 的与固定 `bm25` baseline 的 delta，以及一个 `input_summary`
-块。177/177 self-test 检查通过；20 行抓取，3/3 方法成功，0 方法失败。
+块。179/179 self-test 检查通过；20 行抓取，3/3 方法成功，0 方法失败。
 
 这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
 条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**声称

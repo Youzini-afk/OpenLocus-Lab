@@ -666,6 +666,23 @@ def _write_json(path: Path, obj: Any) -> None:
     c5a._write_json(path, obj)
 
 
+def _sanitized_exception_category(exc: BaseException) -> str:
+    """Return a fixed public-safe exception bucket.
+
+    Never include exception messages, paths, URLs, command arguments,
+    stdout/stderr, or ``repr(exc)`` in a public artifact or CI log.
+    """
+    if isinstance(exc, subprocess.TimeoutExpired):
+        return "subprocess_timeout"
+    if isinstance(exc, subprocess.SubprocessError):
+        return "subprocess_error"
+    if isinstance(exc, TimeoutError):
+        return "timeout_error"
+    if isinstance(exc, OSError):
+        return "os_error"
+    return "unexpected_exception_type"
+
+
 def _check(name: str, ok: bool) -> dict[str, bool | str]:
     return c5a._check(name, ok)
 
@@ -2249,6 +2266,20 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
             not in json.dumps(unavail, sort_keys=True),
         )
     )
+    checks.append(
+        _check(
+            "sanitized_exception_category_omits_message",
+            _sanitized_exception_category(OSError("SECRET /tmp/path"))
+            == "os_error",
+        )
+    )
+    checks.append(
+        _check(
+            "sanitized_exception_category_subprocess",
+            _sanitized_exception_category(subprocess.SubprocessError("cmd"))
+            == "subprocess_error",
+        )
+    )
 
     # --- Group 16: CLI argument surface. ---
     parser = build_parser()
@@ -2544,7 +2575,7 @@ def main() -> None:
             eval_dir=eval_dir,
             self_test_passed=self_test_passed,
         )
-    except (OSError, subprocess.SubprocessError):
+    except (OSError, subprocess.SubprocessError) as exc:
         report = _build_unavailable_report(
             "unexpected_exception",
             self_test_passed=self_test_passed,
@@ -2554,6 +2585,9 @@ def main() -> None:
             language_filter=language_filter,
             openlocus_binary_source=openlocus_source,
             network_mode=network_mode,
+        )
+        report["failure_exception_category"] = _sanitized_exception_category(
+            exc
         )
 
     _enforce_c5c_no_forbidden(report)

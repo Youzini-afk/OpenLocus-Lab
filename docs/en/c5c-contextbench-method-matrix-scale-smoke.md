@@ -108,7 +108,7 @@ scoring pipeline across the requested method matrix.
 `eval/c5c_contextbench_verified_method_matrix_scale_smoke.py` exposes
 an argparse CLI:
 
-- `--self-test` — no-network synthetic self-test (177 assertion checks).
+- `--self-test` — no-network synthetic self-test (179 assertion checks).
 - `--row-limit` — number of ContextBench verified rows to evaluate per
   method; default 20, hard cap 20 (C5-C is the bounded scale smoke: it
   uses the full ContextBench verified preview budget in one run).
@@ -359,7 +359,7 @@ the public contract, and never committed.
 
 ## Self-tests
 
-`--self-test` runs 177 deterministic checks across 19 groups (no
+`--self-test` runs 179 deterministic checks across 19 groups (no
 network; synthetic rows + synthetic score data):
 
 1. Method parser (rejects unknown; dedups duplicates; default exactly
@@ -414,7 +414,7 @@ network; synthetic rows + synthetic score data):
 
 ```text
 python3 -m py_compile eval/c5c_contextbench_verified_method_matrix_scale_smoke.py  => PASS
-python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py --self-test  => PASS (177/177 checks)
+python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py --self-test  => PASS (179/179 checks)
 python3 eval/c5c_contextbench_verified_method_matrix_scale_smoke.py \
   --row-limit 20 --methods bm25,regex,symbol \
   --query-mode first_paragraph --language-filter python \

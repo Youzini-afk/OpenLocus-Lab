@@ -7161,7 +7161,7 @@ evidence 行、克隆仓库或 stdout/stderr。
 
 ### 阶段门
 
-- C5-C 通过当 self-test 通过（177 个检查）、真实网络 smoke 完成（行已抓取、
+- C5-C 通过当 self-test 通过（179 个检查）、真实网络 smoke 完成（行已抓取、
   仓库已克隆、全部 3 个方法的检索已执行、score.py metrics 已计算）、
   forbidden scan 干净，且提交的 artifact 仅记录 aggregate 计数/比率/均值，
   所有无声明标志为 false，无 `winner`/`best_method`/`recommended_default`。

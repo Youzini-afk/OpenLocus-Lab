@@ -209,16 +209,23 @@ jobs:
               failures.append("expected derived_row_level_publication_allowed=false")
           if report.get("aggregate_metrics_publication") != "aggregate_only_smoke":
               failures.append("expected aggregate_metrics_publication=aggregate_only_smoke")
-          # Status must be contextbench_method_matrix_scale_smoke_pass,
-          # partial, or unavailable_with_reason (no stale/fake pass; no
-          # fail_forbidden_scan).
+          # Network-enabled CI is an empirical run: it must produce a
+          # pass/partial report with at least one fetched row. A truthful
+          # unavailable report is acceptable for local diagnostics, but must
+          # fail this CI rather than upload a green unavailable artifact.
           status = report.get("status")
-          if status not in (
-              "contextbench_method_matrix_scale_smoke_pass",
-              "partial",
-              "unavailable_with_reason",
-          ):
-              failures.append(f"expected status in (contextbench_method_matrix_scale_smoke_pass, partial, unavailable_with_reason), got {status!r}")
+          if status not in ("contextbench_method_matrix_scale_smoke_pass", "partial"):
+              failures.append(
+                  f"network-enabled C5-C CI requires pass/partial, got {status!r}; "
+                  f"failure_reason_category={report.get('failure_reason_category')!r}; "
+                  f"failure_exception_category={report.get('failure_exception_category')!r}"
+              )
+          if not isinstance(report.get("rows_fetched"), int) or report.get("rows_fetched") <= 0:
+              failures.append(
+                  f"network-enabled C5-C CI requires rows_fetched > 0, got {report.get('rows_fetched')!r}"
+              )
+          if report.get("methods_successful") == 0:
+              failures.append("network-enabled C5-C CI requires at least one successful method")
           scan = report.get("forbidden_scan", {}).get("status")
           if scan != "pass":
               failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
@@ -360,6 +367,8 @@ jobs:
           print(f"  baseline_method={report.get('baseline_method')}")
           if report.get("failure_reason_category"):
               print(f"  failure_reason_category={report.get('failure_reason_category')}")
+          if report.get("failure_exception_category"):
+              print(f"  failure_exception_category={report.get('failure_exception_category')}")
           PY
 
       - name: Validate docs i18n mirror
