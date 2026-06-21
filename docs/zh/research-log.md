@@ -5627,3 +5627,209 @@ paired agent run 的有界规划/可行性阶段。详见
   确定性 mock run 标志是仅有的额外 true 标志。未修改任何
   runtime/retriever/pack/model/backend/default-policy 文件；无
   promotion/default/runtime 声明变更。
+
+---
+
+## 2026-06-21 — C5-A ContextBench Verified 检索性能 Smoke
+
+### 目标
+
+产出第一个外部-benchmark-形态的检索性能 smoke，基于 ContextBench verified
+subset，将 C4 ContextBench 就绪/row-mapping smoke 转化为真实的检索性能
+smoke。从 HuggingFace datasets-server 读取有界的 ContextBench verified
+subset，在临时 `/tmp` 工作区中检出引用仓库到 `base_commit`，运行 OpenLocus
+检索（初始 `bm25`，无 provider/model 调用），通过现有 `eval/score.py`
+逻辑对 ContextBench `gold_context` spans 打分，并仅提交 aggregate 公共
+报告。
+
+### 假设
+
+有界 ContextBench verified subset 可在临时 `/tmp` 工作区下通过真实
+OpenLocus 检索 + 打分管线运行，产出 aggregate 检索 metrics（file recall、
+MRR、span/line metrics、zero-overlap、structural/citation validity），
+而无需持久化任何行级数据、repo URL/commit、gold paths/spans、生成的
+JSONL、evidence 行、克隆仓库或 stdout/stderr。提交的 artifact 是
+aggregate-only，且当检索 + 打分成功时 smoke 为 `pass`；当网络/HF/GitHub
+失败时为真实的 `unavailable_with_reason`（无 stale/fake pass）。
+
+### 阶段门
+
+- C5-A 通过当 self-test 通过（113 个检查）、真实网络 smoke 完成（行已
+  抓取、仓库已克隆、检索已执行、score.py metrics 已计算）、forbidden
+  scan 干净，且提交的 artifact 仅记录 aggregate 计数/比率/均值，所有
+  无声明标志为 false。
+- C5-A 为 `unavailable_with_reason` 当网络/HF/GitHub/clone/检索/打分
+  失败；artifact 记录真实的失败类别，无行级值。
+
+### 实现说明
+
+- **C5-A artifact**（`eval/c5_contextbench_verified_performance_smoke.py`）：
+  公共 aggregate-only smoke。从 HF datasets-server `/rows` 端点抓取有界
+  ContextBench verified 行（分页；仅 stdlib `urllib`；有界超时）；在内存
+  中按 `language_filter`（仅为类别桶）过滤；对每一行，将 `gold_context`
+  JSON 解析为临时 `gold_paths`/`gold_lines`（`content` 字段**绝不**读取或
+  持久化）；将 `problem_statement` sanitizer 为检索 query（仅内存中；
+  first paragraph / first sentence / raw；剥离 HTML 注释、HTML 标签、
+  markdown header、code fence；限制长度）；在每行 `TemporaryDirectory`
+  下通过 `git clone --filter=blob:none --no-checkout` 然后 `git checkout`
+  克隆 `repo_url` 到 `base_commit`（有界超时）；在 `TemporaryDirectory`
+  下生成临时 task/label JSONL；通过 `eval/run_retrieval.py`
+  （`--method bm25 --cwd <repo_root>`）运行 OpenLocus 检索；运行
+  `eval/score.py` 并解析 aggregate metrics；在成功行上聚合 metrics（每个
+  allowlisted 数值 metric 的均值）；仅写入 aggregate 计数/比率/均值到
+  提交的 artifact。
+- **OpenLocus 二进制解析**：将 `--openlocus`（或默认
+  `target/release/openlocus`，然后 `target/debug/openlocus` 回退）解析为
+  **绝对**路径，因为 `run_retrieval.py` 使用 `--cwd <repo_root>` 运行，
+  相对二进制路径无法解析。
+- **Artifact 身份**：`schema_version=c5_contextbench_verified_performance_smoke.v1`、
+  `claim_level=external_benchmark_retrieval_performance_smoke_only`、
+  `status=pass|partial|unavailable_with_reason|fail_schema_contract|fail_forbidden_scan`、
+  `mode=contextbench_verified_retrieval_performance_smoke`、`phase=C5-A`。
+- **Safe true 标志**（仅当实际为真时为 true）：
+  `external_benchmark_rows_read`、`repositories_materialized_transiently`、
+  `openlocus_retrieval_executed`、`score_py_metrics_computed`、
+  `performance_smoke`、`aggregate_only_public_artifact`、`diagnostic_only`。
+- **无声明 / 无运行时变更标志**（全为 false）：
+  `external_benchmark_performance_claimed`、`downstream_agent_value_proven`、
+  `promotion_ready`、`default_should_change`、`runtime_behavior_changed`、
+  `retriever_changed`、`pack_builder_changed`、`backend_changed`、
+  `default_policy_changed`、`evidencecore_semantics_changed`、
+  `provider_calls_made`、`remote_provider_calls_made`。
+- **License 字段**（固定）：
+  `dataset_license_status=unknown_dataset_license`、
+  `row_level_redistribution_allowed=false`、
+  `derived_row_level_publication_allowed=false`、
+  `aggregate_metrics_publication=aggregate_only_smoke`。
+- **严格公共 scanner**（fail-closed）。以 B16-A 为模型：无带字段名 token
+  的合约容器；无过宽容器豁免。拒绝 forbidden dict key（`path`、`span`、
+  `file`、`repo`、`repo_url`、`base_commit`、`instance_id`、
+  `problem_statement`、`gold_context`、`gold_paths`、`gold_lines`、
+  `query`、`content_sha`、`snippet`、`patch`、`diff`、`stdout`、`stderr`、
+  `event_log`、`stack_trace`、`api_key`、`base_url`、`provider_key`、
+  `secret`、`token`、`credential`、`rows`、`per_run`、`predictions`、
+  `candidates`、`evidence` 等）出现在任意位置，并拒绝值模式：任意 URL（无
+  URL allowlist —— repo URL **绝不**泄露）、32+ 字符 hex digest、40 字符
+  commit SHA、形如 `astropy/astropy` 的 repo slug、secret-like 字符串、
+  带文件扩展名的 path-like 字符串、`/tmp/` 工作区路径值、`task_N`
+  任务标识符值、patch/diff 标记（`---`、`+++`、`@@`）、stack trace、
+  多行字符串、原始 JSON 片段、原始行范围 `12-34`，以及 self-test sentinel。
+  `failure_category_counts` 与 `metrics` 容器是 schema-key 容器，其
+  CHILD KEY 是固定类别标签或 allowlisted metric 名称（**非**行级值）；
+  forbidden_key 检查对这些子键放宽，但其下的值仍会被扫描。
+- **生成在 self-test 失败或 scanner 发现泄露时拒绝成功**
+  （fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure`，在写入 JSON 前立即执行）。
+- **临时 /tmp clone + 检索 + 打分**：每行 `TemporaryDirectory` 用于克隆
+  仓库；`TemporaryDirectory` 用于生成的 task/label/run JSONL。所有原始
+  ContextBench 行、queries、repo URL/名称、base commit、gold paths/spans/
+  contents、生成的 JSONL、evidence 行、克隆仓库与 stdout/stderr 仅保留在
+  `/tmp` 下，**绝不**提交或上传。提交的 artifact 仅包含 aggregate
+  计数/比率/均值。
+- **不可用模式**：如果网络 smoke 无法完成（网络/HF/GitHub 失败、克隆
+  超时、检索失败、打分失败），artifact 记录真实的
+  `unavailable_with_reason`，带有真实的 `failure_reason_category` 与
+  对应的 `failure_category_counts` 计数。绝不写入 stale/fake pass。在
+  不可用模式下，`metrics={}`、`performance_smoke=false`、
+  `openlocus_retrieval_executed=false`、`score_py_metrics_computed=false`、
+  `repositories_materialized_transiently=false`；
+  `external_benchmark_rows_read=true` 仅当失败前实际抓取了行。
+
+### CI workflow
+
+- `.github/workflows/c5-contextbench-verified-performance-smoke.yml`：
+  手动 opt-in `workflow_dispatch`，带有布尔
+  `enable_external_benchmark_network` 默认 false，以及 `row_limit`、
+  `method`、`query_mode` 输入。未启用时，no-op 并显示明确消息。无
+  `secrets.`、无 `vars.`、无 `OPENLOCUS` provider env。构建 OpenLocus
+  CLI（release），运行 self-test，仅在启用时运行网络 smoke，校验标志
+  （必须为 true：`aggregate_only_public_artifact`、`diagnostic_only`；
+  必须为 false：所有无声明 / 无运行时变更标志），校验 docs i18n，检查
+  工作树，仅上传 aggregate 报告（7 天保留）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/c5_contextbench_verified_performance_smoke.py  => PASS
+python3 eval/c5_contextbench_verified_performance_smoke.py --self-test  => PASS (113/113 checks)
+python3 eval/c5_contextbench_verified_performance_smoke.py \
+  --row-limit 5 --method bm25 --query-mode first_paragraph \
+  --language-filter python \
+  --out artifacts/c5_contextbench_verified_performance_smoke/\
+c5_contextbench_verified_performance_smoke_report.json  => PASS
+  (status: pass, forbidden_scan: pass, self_test_passed: true,
+   mode: contextbench_verified_retrieval_performance_smoke, phase: C5-A,
+   method: bm25, query_mode: first_paragraph, language_filter: python,
+   rows_fetched: 5, rows_evaluated: 5, rows_successful: 5, rows_failed: 0,
+   network_calls: 1, provider_calls: 0,
+   external_benchmark_rows_read: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   performance_smoke: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+C5-A smoke 是 OpenLocus 研究轨中第一个外部-benchmark-形态的检索性能
+smoke。它执行从 HF datasets-server 的真实网络抓取、在临时 `/tmp` 目录下
+对引用仓库到其 `base_commit` 的真实 `git clone` + `git checkout`、对
+每个仓库的真实 OpenLocus `bm25` 检索，以及真实的 `eval/score.py` 打分，
+产出有界 ContextBench verified subset 上的 aggregate 检索 metrics。它
+明确**不是**严格的 benchmark 结果、**不是**leaderboard 条目、**不是**
+性能声称、**不是**promotion、**不是**默认/策略变更、**不是**
+runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不是**下游
+agent 价值声称。完整的 C5 外部-benchmark-评估阶段仍然是一个有界的规划/
+可行性阶段，需要严格的 benchmark 设计、更大的样本量、多种方法与统计
+分析。见 [C5-A 详细报告](c5-contextbench-verified-performance-smoke.md)。
+
+### 注意事项
+
+- C5-A 是公共 aggregate-only 外部 benchmark 检索性能 smoke artifact。
+  它是 eval/diagnostic only。它**不**改变 runtime、retriever、pack、
+  backend 或默认策略；它**不**改变 EvidenceCore 语义。它**不是**
+  benchmark 结果、**不是**leaderboard 条目、**不是**性能声称、**不是**
+  promotion、**不是**默认变更、**不是**runtime-clean 通用算法声称、
+  **不是**OOD 时间泛化声称、**不是**QuIVer systems 声称，也**不是**下游
+  agent 价值声称。
+- C5-A **不**运行 provider 调用，**不**运行远程 provider 调用。唯一的
+  网络调用是对公共 HF datasets-server（抓取有界 ContextBench verified
+  行）与对公共 GitHub（在临时 `/tmp` 目录下克隆引用仓库到其
+  `base_commit`）。`provider_calls=0`、`provider_calls_made=false`、
+  `remote_provider_calls_made=false`。
+- C5-A 使用**有界 ContextBench verified subset**（默认 5 行；硬上限 20
+  行）。这是 smoke，**不是**严格的 benchmark 评估。Aggregate metrics
+  是小样本上的点估计，**不应**被解读为 benchmark 结果、leaderboard 条目
+  或性能声称。
+- C5-A 在临时 `/tmp` 目录下检出引用仓库到其 `base_commit`。克隆的仓库、
+  生成的 task/label/run JSONL、evidence 行与 stdout/stderr 仅保留在
+  `/tmp` 下，**绝不**提交或上传。提交的 artifact 仅包含 aggregate
+  计数/比率/均值。
+- C5-A **不**声称外部 benchmark 性能。Aggregate metrics 是 smoke 级别
+  的诊断，**不是**benchmark 结果。
+  `external_benchmark_performance_claimed=false`。
+- C5-A **不**证明下游 agent 价值。检索 smoke 不演练任何下游 agent。
+  `downstream_agent_value_proven=false`。
+- ContextBench 数据集 license 未知
+  （`unknown_dataset_license`）；行级再分发被禁用
+  （`row_level_redistribution_allowed=false`），派生行级发布被禁用
+  （`derived_row_level_publication_allowed=false`）。Aggregate metrics
+  发布允许作为 aggregate-only smoke
+  （`aggregate_metrics_publication=aggregate_only_smoke`）。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志
+  （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
+  未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
+  无 promotion/default/runtime 声明变更。

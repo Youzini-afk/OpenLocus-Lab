@@ -143,6 +143,53 @@ default-policy/EvidenceCore 语义。per-run event log、patch 和测试输出
 runtime/retriever/pack/model/backend/default-policy 文件。详见
 [B16-A 详细报告](b16a-minimal-mock-agent-paired-run.md)。
 
+## 当前状态更新 —— 2026-06-21（C5-A ContextBench verified 检索性能 smoke）
+
+继 D5-A0 与 B16-A 之后，C5-A 产出第一个外部-benchmark-形态的检索性能
+smoke。C5-A
+（`eval/c5_contextbench_verified_performance_smoke.py` ->
+`artifacts/c5_contextbench_verified_performance_smoke/c5_contextbench_verified_performance_smoke_report.json`，
+schema `c5_contextbench_verified_performance_smoke.v1`、
+`claim_level=external_benchmark_retrieval_performance_smoke_only`、
+`status=pass|partial|unavailable_with_reason`、
+`mode=contextbench_verified_retrieval_performance_smoke`、阶段
+`C5-A`）从 HF datasets-server `/rows` 读取有界 ContextBench verified
+subset（默认 5 行；硬上限 20；仅 stdlib `urllib`），将 `gold_context`
+JSON 解析为临时 `gold_paths`/`gold_lines`（`content` 字段**绝不**读取或
+持久化），将 `problem_statement` sanitizer 为检索 query（仅内存中；
+first paragraph / first sentence / raw），在每行
+`TemporaryDirectory` 下通过 `git clone --filter=blob:none --no-checkout`
+然后 `git checkout` 克隆 `repo_url` 到 `base_commit`（有界超时），在
+`TemporaryDirectory` 下生成临时 task/label JSONL，通过
+`eval/run_retrieval.py` 运行 OpenLocus 检索（`--method bm25 --cwd
+<repo_root>`，无 provider 调用），运行 `eval/score.py` 并解析 aggregate
+metrics，仅写入 aggregate 计数/比率/均值到提交的 artifact。113/113
+self-test 检查通过；5 行抓取，5 行成功，0 行失败。
+
+这是 smoke-only。它**不**声称外部 benchmark 结果、**不**声称 leaderboard
+条目、**不**声称性能、**不**声称 promotion、**不**声称默认变更、**不**
+声称 runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不**声称
+下游 agent 价值。原始 ContextBench 行、queries、repo URL/名称、base
+commit、gold paths/spans/contents、生成的 task/label/run JSONL、evidence
+行、克隆仓库与 stdout/stderr 仅保留在 `/tmp` 下，**绝不**提交或上传。
+提交的 artifact 是 aggregate-only。所有无声明 / 无运行时变更标志保持
+false（`external_benchmark_performance_claimed=false`、
+`downstream_agent_value_proven=false`、`promotion_ready=false`、
+`default_should_change=false`、`runtime_behavior_changed=false`、
+`retriever_changed=false`、`pack_builder_changed=false`、
+`backend_changed=false`、`default_policy_changed=false`、
+`evidencecore_semantics_changed=false`、`provider_calls_made=false`、
+`remote_provider_calls_made=false`）。Safe true 标志（仅当实际为真时为
+true：`external_benchmark_rows_read`、
+`repositories_materialized_transiently`、`openlocus_retrieval_executed`、
+`score_py_metrics_computed`、`performance_smoke`、
+`aggregate_only_public_artifact`、`diagnostic_only`）是仅有的额外 true
+标志。如果网络 smoke 无法完成（网络/HF/GitHub 失败、克隆超时、检索失败、
+打分失败），artifact 记录真实的 `unavailable_with_reason`，带有真实的
+`failure_reason_category`（无 stale/fake pass）。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。详见
+[C5-A 详细报告](c5-contextbench-verified-performance-smoke.md)。
+
 ## 当前状态更新 —— 2026-06-20（C4.1 外部 benchmark adapter / schema 就绪）
 
 C4.1 是一个**有界的外部 benchmark adapter / schema 就绪**阶段，**不是**外部

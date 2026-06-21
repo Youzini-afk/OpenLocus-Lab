@@ -1,0 +1,255 @@
+name: c5-contextbench-verified-performance-smoke
+
+# C5-A ContextBench verified retrieval performance smoke (manual opt-in).
+#
+# This workflow runs the C5-A external benchmark retrieval performance
+# smoke in CI. It is MANUAL OPT-IN ONLY via workflow_dispatch with
+# `enable_external_benchmark_network=true`. It does NOT run on PR/push
+# by default. It uses NO provider secrets/vars and NO OPENLOCUS
+# provider env. It uploads ONLY the aggregate temp report (no raw
+# ContextBench rows, queries, repo URLs/commits, gold paths/spans,
+# generated task/label/run JSONL, evidence rows, cloned repos, or
+# stdout/stderr).
+#
+# Claim boundary: C5-A is eval/diagnostic only. The claim level is
+# `external_benchmark_retrieval_performance_smoke_only`. This workflow
+# does NOT claim an external benchmark result, NOT a leaderboard entry,
+# NOT a performance claim, NOT a promotion, NOT a default/policy change,
+# NOT a runtime/retriever/pack/backend/EvidenceCore semantic change, and
+# NOT a downstream agent value claim. If `enable_external_benchmark_network`
+# is false, the workflow is a no-op with a clear message and exits 0.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HF datasets-server + GitHub network access for the external benchmark smoke (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+      row_limit:
+        description: 'Number of ContextBench verified rows to evaluate (default 5; hard cap 20)'
+        required: false
+        default: '5'
+      method:
+        description: 'OpenLocus retrieval method (default bm25; allowed bm25/regex/text/symbol)'
+        required: false
+        default: 'bm25'
+        type: choice
+        options:
+          - bm25
+          - regex
+          - text
+          - symbol
+      query_mode:
+        description: 'Query sanitizer mode (default first_paragraph; allowed first_paragraph/first_sentence/raw)'
+        required: false
+        default: 'first_paragraph'
+        type: choice
+        options:
+          - first_paragraph
+          - first_sentence
+          - raw
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: c5-contextbench-smoke-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}-${{ inputs.method }}-${{ inputs.query_mode }}
+  cancel-in-progress: false
+
+jobs:
+  c5-contextbench-verified-performance-smoke:
+    name: c5-contextbench-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve C5-A inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          row_limit="${{ inputs.row_limit || '5' }}"
+          method="${{ inputs.method || 'bm25' }}"
+          query_mode="${{ inputs.query_mode || 'first_paragraph' }}"
+          # Validate row_limit is a positive integer.
+          if ! [[ "$row_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "row_limit must be a positive integer: $row_limit" >&2
+            exit 1
+          fi
+          if [[ "$row_limit" -gt 20 ]]; then
+            echo "row_limit exceeds hard cap 20: $row_limit (will be capped by the evaluator)" >&2
+          fi
+          # Validate method.
+          case "$method" in
+            bm25|regex|text|symbol) ;;
+            *) echo "unsupported method: $method" >&2; exit 1 ;;
+          esac
+          # Validate query_mode.
+          case "$query_mode" in
+            first_paragraph|first_sentence|raw) ;;
+            *) echo "unsupported query_mode: $query_mode" >&2; exit 1 ;;
+          esac
+          # Normalize enable_network to a lowercase boolean string.
+          if [[ "$enable_network" == "true" ]]; then
+            enable_network="true"
+          else
+            enable_network="false"
+          fi
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+          echo "row_limit=$row_limit" >> "$GITHUB_OUTPUT"
+          echo "method=$method" >> "$GITHUB_OUTPUT"
+          echo "query_mode=$query_mode" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile C5-A evaluator
+        run: python3 -m py_compile eval/c5_contextbench_verified_performance_smoke.py
+
+      - name: C5-A self-test (no network)
+        run: python3 eval/c5_contextbench_verified_performance_smoke.py --self-test
+
+      - name: C5-A network smoke (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          ROW_LIMIT: ${{ steps.resolve.outputs.row_limit }}
+          METHOD: ${{ steps.resolve.outputs.method }}
+          QUERY_MODE: ${{ steps.resolve.outputs.query_mode }}
+        run: |
+          report_path="$RUNNER_TEMP/c5_contextbench_verified_performance_smoke_report.json"
+          python3 eval/c5_contextbench_verified_performance_smoke.py \
+            --row-limit "$ROW_LIMIT" \
+            --method "$METHOD" \
+            --query-mode "$QUERY_MODE" \
+            --language-filter python \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: C5-A no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          echo "enable_external_benchmark_network is false; skipping real network smoke."
+          echo "Run with enable_external_benchmark_network=true to execute the real ContextBench verified retrieval performance smoke."
+          echo "Self-test and py_compile already passed; no aggregate report is produced in no-op mode."
+
+      - name: Validate C5-A temp report status/claim flags
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required claim boundary invariants for the C5-A external
+          # benchmark retrieval performance smoke. C5-A runs NO provider,
+          # makes NO remote provider calls, proves NO downstream agent
+          # value, promotes NO candidate, changes NO runtime/retriever/
+          # pack/backend/default-policy/EvidenceCore semantics, and
+          # claims NO external benchmark performance (smoke only).
+          must_be_true = {
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+          }
+          must_be_false = {
+              "external_benchmark_performance_claimed",
+              "downstream_agent_value_proven",
+              "promotion_ready",
+              "default_should_change",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          # License fields.
+          if report.get("dataset_license_status") != "unknown_dataset_license":
+              failures.append(f"expected dataset_license_status=unknown_dataset_license, got {report.get('dataset_license_status')!r}")
+          if report.get("row_level_redistribution_allowed") is not False:
+              failures.append("expected row_level_redistribution_allowed=false")
+          if report.get("derived_row_level_publication_allowed") is not False:
+              failures.append("expected derived_row_level_publication_allowed=false")
+          if report.get("aggregate_metrics_publication") != "aggregate_only_smoke":
+              failures.append("expected aggregate_metrics_publication=aggregate_only_smoke")
+          # Status must be pass, partial, or unavailable_with_reason (no
+          # stale/fake pass; no fail_schema_contract / fail_forbidden_scan).
+          status = report.get("status")
+          if status not in ("pass", "partial", "unavailable_with_reason"):
+              failures.append(f"expected status in (pass, partial, unavailable_with_reason), got {status!r}")
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          # Identity fields.
+          if report.get("schema_version") != "c5_contextbench_verified_performance_smoke.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "external_benchmark_retrieval_performance_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("mode") != "contextbench_verified_retrieval_performance_smoke":
+              failures.append(f"unexpected mode: {report.get('mode')!r}")
+          if report.get("phase") != "C5-A":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          # Provider calls must be 0.
+          if report.get("provider_calls") != 0:
+              failures.append(f"expected provider_calls=0, got {report.get('provider_calls')!r}")
+          if failures:
+              print("C5-A report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("C5-A report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  rows_fetched={report.get('rows_fetched')}")
+          print(f"  rows_successful={report.get('rows_successful')}")
+          print(f"  rows_failed={report.get('rows_failed')}")
+          print(f"  network_calls={report.get('network_calls')}")
+          print(f"  provider_calls={report.get('provider_calls')}")
+          if report.get("failure_reason_category"):
+              print(f"  failure_reason_category={report.get('failure_reason_category')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree (no generated files committed)
+        run: git diff --check
+
+      - name: Upload C5-A aggregate report artifact (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: c5-contextbench-verified-performance-smoke-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

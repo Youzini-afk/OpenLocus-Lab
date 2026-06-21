@@ -765,6 +765,10 @@ P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_ove
 - P25：bucket-routed LLM role policy 评估器。确定性、无远程、只按公开 `task_bucket`/`task_risk_tags` 路由；能降低 false primary 但也会损失一些 gold span；作为 P30 输入有价值，不是默认策略。
 - P30：Admission Model V3 研究脚手架。确定性可解释评分卡加 hard guard，只从 pre-SCORE 公开特征路由，比较多个 baseline 和 `admission_v3`/`admission_v3_h1`/`admission_v3_h2`，输出 score bands/selective risk/deltas、action-specific span-cost accounting（P30-H3），并递归扫描公开输出中的禁用键。P30-H1 修复了 missing outcomes；P30-H2 收紧 local-anchor admission 后仍弱于 P25；P30-H3 现在提供诊断性动作成本会计而不改路由。
 
+### C5-A：ContextBench verified 检索性能 smoke
+
+- C5-A：第一个外部-benchmark-形态的检索性能 smoke。从 HF datasets-server `/rows` 读取有界 ContextBench verified subset（默认 5 行；硬上限 20；仅 stdlib `urllib`），在临时 `/tmp` 目录下通过 `git clone --filter=blob:none --no-checkout` 然后 `git checkout` 检出引用仓库到 `base_commit`，运行 OpenLocus `bm25` 检索（无 provider 调用），通过 `eval/score.py` 对 `gold_context` spans 打分，并仅提交 aggregate 公共报告。Schema `c5_contextbench_verified_performance_smoke.v1`、`claim_level=external_benchmark_retrieval_performance_smoke_only`、`status=pass|partial|unavailable_with_reason`、`mode=contextbench_verified_retrieval_performance_smoke`、阶段 `C5-A`。113/113 self-test 检查通过。Safe true 标志（仅当实际为真时为 true）：`external_benchmark_rows_read`、`repositories_materialized_transiently`、`openlocus_retrieval_executed`、`score_py_metrics_computed`、`performance_smoke`、`aggregate_only_public_artifact`、`diagnostic_only`。所有无声明 / 无运行时变更标志为 false（`external_benchmark_performance_claimed`、`downstream_agent_value_proven`、`promotion_ready`、`default_should_change`、`runtime_behavior_changed`、`retriever_changed`、`pack_builder_changed`、`backend_changed`、`default_policy_changed`、`evidencecore_semantics_changed`、`provider_calls_made`、`remote_provider_calls_made`）。License：`dataset_license_status=unknown_dataset_license`、`row_level_redistribution_allowed=false`、`derived_row_level_publication_allowed=false`、`aggregate_metrics_publication=aggregate_only_smoke`。CI 是单独的手动 opt-in `workflow_dispatch`，带 `enable_external_benchmark_network=true`；无 provider secrets/vars；仅上传 aggregate 报告。如果网络 smoke 无法完成，artifact 为真实的 `unavailable_with_reason`，带真实失败类别（无 stale/fake pass）。C5-A **不是** benchmark 结果、**不是** leaderboard 条目、**不是**性能声称、**不是**promotion、**不是**默认变更、**不是**runtime/retriever/pack/backend/EvidenceCore 语义变更，也**不是**下游 agent 价值声称。见 `docs/en/c5-contextbench-verified-performance-smoke.md`。
+
 关键详细报告：
 
 - `docs/final-research-report.md` — R0-R29 historical report。
@@ -783,6 +787,7 @@ P33-B 已证明任何 subtype 都不 primary-safe：即便是最好的 `span_ove
 - `docs/p30-h2-remote-smoke.md` — P30-H2 stricter local-anchor admission 真实 remote smoke。
 - `docs/p30-h3-span-cost-accounting.md` — P30-H3 action-specific span-cost accounting（仅诊断、仅 SCORE 阶段、不改路由）。
 - `docs/p30-h3-remote-smoke.md` — P30-H3 真实 remote smoke 的 action-cost 诊断。
+- `docs/en/c5-contextbench-verified-performance-smoke.md` — C5-A ContextBench verified 检索性能 smoke（aggregate-only；外部 benchmark 检索 smoke；不是 benchmark 结果、不是 leaderboard 条目、不是性能声称、不是 promotion、不是默认变更、不是下游 agent 价值声称）。
 
 ---
 

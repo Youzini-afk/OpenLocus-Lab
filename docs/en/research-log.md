@@ -6017,3 +6017,234 @@ requires live paired agent runs with real provider calls. See
   true; the deterministic-mock-run flags are the only additional true
   flags. No runtime/retriever/pack/model/backend/default-policy files
   were modified; no promotion/default/runtime claims change.
+
+---
+
+## 2026-06-21 — C5-A ContextBench Verified Retrieval Performance Smoke
+
+### Objective
+
+Produce the first external-benchmark-shaped retrieval performance smoke
+over the ContextBench verified subset, turning the C4 ContextBench
+readiness/row-mapping smoke into a real retrieval performance smoke.
+Read a bounded ContextBench verified subset from HuggingFace
+datasets-server, materialize the referenced repository at `base_commit`
+under a transient `/tmp` workspace, run OpenLocus retrieval (initially
+`bm25`, no provider/model calls), score against ContextBench
+`gold_context` spans via the existing `eval/score.py` logic, and commit
+only an aggregate public report.
+
+### Hypothesis
+
+A bounded ContextBench verified subset can be run through the real
+OpenLocus retrieval + scoring pipeline under transient `/tmp`
+workspaces, producing aggregate retrieval metrics (file recall, MRR,
+span/line metrics, zero-overlap, structural/citation validity) without
+persisting any row-level data, repo URLs/commits, gold paths/spans,
+generated JSONL, evidence rows, cloned repos, or stdout/stderr. The
+committed artifact is aggregate-only and the smoke is `pass` when
+retrieval + scoring succeed; truthful `unavailable_with_reason` when
+network/HF/GitHub fails (no stale/fake pass).
+
+### Stage gates
+
+- C5-A passes when self-test passes (113 checks), the real network smoke
+  completes (rows fetched, repos cloned, retrieval executed, score.py
+  metrics computed), the forbidden scan is clean, and the committed
+  artifact records only aggregate counts/rates/means with all no-claim
+  flags false.
+- C5-A is `unavailable_with_reason` when network/HF/GitHub/clone/
+  retrieval/score fails; the artifact records the real failure category
+  without row-level values.
+
+### Implementation notes
+
+- **C5-A artifact** (`eval/c5_contextbench_verified_performance_smoke.py`):
+  public aggregate-only smoke. Fetches bounded ContextBench verified
+  rows from HF datasets-server `/rows` endpoint (paginated; stdlib
+  `urllib` only; bounded timeout); filters in-memory by
+  `language_filter` (categorical bucket only); for each row, parses
+  `gold_context` JSON into transient `gold_paths`/`gold_lines` (the
+  `content` field is NEVER read or persisted); sanitizes
+  `problem_statement` into a retrieval query (in-memory only; first
+  paragraph / first sentence / raw; strip HTML comments, HTML tags,
+  markdown headers, code fences; cap length); clones `repo_url` at
+  `base_commit` under a per-row `TemporaryDirectory` via
+  `git clone --filter=blob:none --no-checkout` then `git checkout`
+  (bounded timeouts); generates transient task/label JSONL under a
+  `TemporaryDirectory`; runs OpenLocus retrieval via
+  `eval/run_retrieval.py` (`--method bm25 --cwd <repo_root>`); runs
+  `eval/score.py` and parses aggregate metrics; aggregates metrics
+  across successful rows (mean of each allowlisted numeric metric);
+  writes ONLY aggregate counts/rates/means to the committed artifact.
+- **OpenLocus binary resolution**: resolves `--openlocus` (or default
+  `target/release/openlocus` then `target/debug/openlocus` fallback)
+  to an ABSOLUTE path, because `run_retrieval.py` runs with
+  `--cwd <repo_root>` and a relative binary path would not resolve.
+- **Artifact identity**: `schema_version=c5_contextbench_verified_performance_smoke.v1`,
+  `claim_level=external_benchmark_retrieval_performance_smoke_only`,
+  `status=pass|partial|unavailable_with_reason|fail_schema_contract|fail_forbidden_scan`,
+  `mode=contextbench_verified_retrieval_performance_smoke`, `phase=C5-A`.
+- **Safe true flags** (true only if actually true):
+  `external_benchmark_rows_read`, `repositories_materialized_transiently`,
+  `openlocus_retrieval_executed`, `score_py_metrics_computed`,
+  `performance_smoke`, `aggregate_only_public_artifact`, `diagnostic_only`.
+- **No-claim / no-runtime-change flags** (all false):
+  `external_benchmark_performance_claimed`, `downstream_agent_value_proven`,
+  `promotion_ready`, `default_should_change`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`,
+  `provider_calls_made`, `remote_provider_calls_made`.
+- **License fields** (fixed):
+  `dataset_license_status=unknown_dataset_license`,
+  `row_level_redistribution_allowed=false`,
+  `derived_row_level_publication_allowed=false`,
+  `aggregate_metrics_publication=aggregate_only_smoke`.
+- **Strict public scanner** (fail-closed). Modeled on B16-A: no contract
+  containers with field-name tokens; no over-broad container exemption.
+  Rejects forbidden dict keys anywhere (`path`, `span`, `file`, `repo`,
+  `repo_url`, `base_commit`, `instance_id`, `problem_statement`,
+  `gold_context`, `gold_paths`, `gold_lines`, `query`, `content_sha`,
+  `snippet`, `patch`, `diff`, `stdout`, `stderr`, `event_log`,
+  `stack_trace`, `api_key`, `base_url`, `provider_key`, `secret`,
+  `token`, `credential`, `rows`, `per_run`, `predictions`, `candidates`,
+  `evidence`, etc.) and value patterns: ANY URL (no URL allowlist — repo
+  URLs must NEVER leak), 32+ char hex digests, 40-char commit SHAs, repo
+  slugs like `astropy/astropy`, secret-like strings, path-like strings
+  with file extensions, `/tmp/` workspace path values, `task_N`
+  task-identifier values, patch/diff markers (`---`, `+++`, `@@`),
+  stack traces, multiline strings, raw JSON fragments, raw line ranges
+  `12-34`, and the self-test sentinel. The `failure_category_counts`
+  and `metrics` containers are schema-key containers whose CHILD KEYS
+  are fixed category labels or allowlisted metric names (NOT row-level
+  values); the forbidden_key check is relaxed for those child keys, but
+  the values under them are still scanned.
+- **Generation refuses success if self-test fails or the scanner finds
+  leakage** (fail-closed `_enforce_no_forbidden` +
+  `_refuse_on_self_test_failure` immediately before writing JSON).
+- **Transient /tmp clone + retrieval + score**: per-row
+  `TemporaryDirectory` for cloned repos; `TemporaryDirectory` for
+  generated task/label/run JSONL. All raw ContextBench rows, queries,
+  repo URLs/names, base commits, gold paths/spans/contents, generated
+  JSONL, evidence rows, cloned repos, and stdout/stderr stay under
+  `/tmp` only and are NEVER committed or uploaded. The committed
+  artifact contains ONLY aggregate counts/rates/means.
+- **Unavailable mode**: if the network smoke cannot complete (network/
+  HF/GitHub failure, clone timeout, retrieval failure, score failure),
+  the artifact records truthful `unavailable_with_reason` with a real
+  `failure_reason_category` and the corresponding
+  `failure_category_counts` increment. No stale/fake pass is ever
+  written. In unavailable mode, `metrics={}`, `performance_smoke=false`,
+  `openlocus_retrieval_executed=false`, `score_py_metrics_computed=false`,
+  `repositories_materialized_transiently=false`;
+  `external_benchmark_rows_read=true` only if rows were actually
+  fetched before the failure.
+
+### CI workflow
+
+- `.github/workflows/c5-contextbench-verified-performance-smoke.yml`:
+  manual opt-in `workflow_dispatch` with boolean
+  `enable_external_benchmark_network` default false, `row_limit`,
+  `method`, `query_mode` inputs. If not enabled, no-op with clear
+  message. No `secrets.`, no `vars.`, no `OPENLOCUS` provider env.
+  Builds OpenLocus CLI (release), runs self-test, runs network smoke
+  only when enabled, validates flags (must-be-true:
+  `aggregate_only_public_artifact`, `diagnostic_only`; must-be-false:
+  all no-claim / no-runtime-change flags), validates docs i18n, checks
+  working tree, uploads aggregate report only (7-day retention).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/c5_contextbench_verified_performance_smoke.py  => PASS
+python3 eval/c5_contextbench_verified_performance_smoke.py --self-test  => PASS (113/113 checks)
+python3 eval/c5_contextbench_verified_performance_smoke.py \
+  --row-limit 5 --method bm25 --query-mode first_paragraph \
+  --language-filter python \
+  --out artifacts/c5_contextbench_verified_performance_smoke/\
+c5_contextbench_verified_performance_smoke_report.json  => PASS
+  (status: pass, forbidden_scan: pass, self_test_passed: true,
+   mode: contextbench_verified_retrieval_performance_smoke, phase: C5-A,
+   method: bm25, query_mode: first_paragraph, language_filter: python,
+   rows_fetched: 5, rows_evaluated: 5, rows_successful: 5, rows_failed: 0,
+   network_calls: 1, provider_calls: 0,
+   external_benchmark_rows_read: true,
+   repositories_materialized_transiently: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   performance_smoke: true,
+   aggregate_only_public_artifact: true,
+   diagnostic_only: true,
+   external_benchmark_performance_claimed: false,
+   downstream_agent_value_proven: false,
+   promotion_ready: false, default_should_change: false,
+   runtime_behavior_changed: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   provider_calls_made: false, remote_provider_calls_made: false,
+   dataset_license_status: unknown_dataset_license,
+   row_level_redistribution_allowed: false,
+   derived_row_level_publication_allowed: false,
+   aggregate_metrics_publication: aggregate_only_smoke)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The C5-A smoke is the first external-benchmark-shaped retrieval
+performance smoke in the OpenLocus research track. It executes a real
+network fetch from HF datasets-server, a real `git clone` + `git
+checkout` of the referenced repositories at their `base_commit` under
+transient `/tmp` directories, a real OpenLocus `bm25` retrieval on each
+repository, and a real `eval/score.py` scoring pass, producing aggregate
+retrieval metrics over a bounded ContextBench verified subset. It is
+explicitly NOT a rigorous benchmark result, NOT a leaderboard entry,
+NOT a performance claim, NOT a promotion, NOT a default/policy change,
+NOT a runtime/retriever/pack/backend/EvidenceCore semantic change, and
+NOT a downstream agent value claim. The full C5 external-benchmark-
+evaluation phase remains a bounded planning / feasibility stage that
+would require rigorous benchmark design, larger sample sizes, multiple
+methods, and statistical analysis. See
+[C5-A detailed report](c5-contextbench-verified-performance-smoke.md).
+
+### Caveats
+
+- C5-A is the public aggregate-only external benchmark retrieval
+  performance smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it does
+  NOT change EvidenceCore semantics. It is NOT a benchmark result, NOT
+  a leaderboard entry, NOT a performance claim, NOT a promotion, NOT a
+  default change, NOT a runtime-clean general algorithm claim, NOT an
+  OOD temporal claim, NOT a QuIVer systems claim, and NOT a downstream
+  agent value claim.
+- C5-A runs NO provider calls and NO remote provider calls. The only
+  network calls are to the public HF datasets-server (to fetch bounded
+  ContextBench verified rows) and to public GitHub (to clone the
+  referenced repositories at their `base_commit` under transient `/tmp`
+  directories). `provider_calls=0`, `provider_calls_made=false`,
+  `remote_provider_calls_made=false`.
+- C5-A uses a **bounded ContextBench verified subset** (default 5 rows;
+  hard cap 20 rows). This is a smoke, not a rigorous benchmark
+  evaluation. The aggregate metrics are point estimates over a small
+  sample and should NOT be interpreted as a benchmark result,
+  leaderboard entry, or performance claim.
+- C5-A materializes the referenced repositories at their `base_commit`
+  under transient `/tmp` directories. The cloned repos, generated
+  task/label/run JSONL, evidence rows, and stdout/stderr stay under
+  `/tmp` only and are NEVER committed or uploaded. The committed
+  artifact contains ONLY aggregate counts/rates/means.
+- C5-A does NOT claim external benchmark performance. The aggregate
+  metrics are smoke-level diagnostics, NOT a benchmark result.
+  `external_benchmark_performance_claimed=false`.
+- C5-A does NOT prove downstream agent value. The retrieval smoke does
+  not exercise any downstream agent. `downstream_agent_value_proven=false`.
+- ContextBench dataset license is unknown
+  (`unknown_dataset_license`); row-level redistribution is disabled
+  (`row_level_redistribution_allowed=false`) and derived row-level
+  publication is disabled
+  (`derived_row_level_publication_allowed=false`). Aggregate metrics
+  publication is allowed as aggregate-only smoke
+  (`aggregate_metrics_publication=aggregate_only_smoke`).
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags (`aggregate_only_public_artifact`, `diagnostic_only`) remain
+  true. No runtime/retriever/pack/model/backend/default-policy files
+  were modified; no promotion/default/runtime claims change.
