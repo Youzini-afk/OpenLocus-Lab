@@ -14,7 +14,7 @@ name: f1b-retrieval-derived-utility-smoke
 # claim downstream utility, true E/S calibration, external benchmark
 # performance, leaderboard entry, promotion, or default/policy/runtime/
 # retriever/pack/backend/EvidenceCore semantic change. No provider
-# No provider credential/model environment is injected.
+# credential/model environment is injected.
 
 on:
   workflow_dispatch:
@@ -138,6 +138,8 @@ jobs:
           PY
 
       - name: Copy sanitized report to artifacts dir
+        env:
+          REPORT_PATH: ${{ env.report_path }}
         run: |
           mkdir -p artifacts/real_provider_ci
           cp "$REPORT_PATH" artifacts/real_provider_ci/f1b_retrieval_derived_counterfactual_utility_report.json
