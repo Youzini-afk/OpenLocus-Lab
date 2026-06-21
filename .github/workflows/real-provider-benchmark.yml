@@ -3246,7 +3246,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
-        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' }}
+        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' && inputs.stage != 'b16c_live_provider_paired_smoke' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
