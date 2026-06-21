@@ -334,6 +334,30 @@ privacy scan passed + artifact is honest；CI 通过**不**要求 treatment
 runtime/retriever/pack/model/backend/default-policy 文件。详见
 [B16-E 详细报告](b16e-broader-live-provider-paired-smoke.md)。
 
+## 2026-06-21 F1-B Retrieval-Derived Counterfactual Utility Smoke
+
+F1-B 将 F1 从纯合成 context variants 推进到 **retrieval-derived**
+counterfactual utility。F1-B（`eval/f1b_retrieval_derived_counterfactual_utility_smoke.py`，
+向后兼容导入 C5-A helpers）->
+`artifacts/f1b_retrieval_derived_counterfactual_utility/f1b_retrieval_derived_counterfactual_utility_report.json`，
+schema `f1b_retrieval_derived_counterfactual_utility_smoke.v1`、
+`claim_level=retrieval_derived_counterfactual_utility_smoke_only`、
+`mode=public_aggregate_contextbench_retrieval_counterfactual`、阶段
+`F1-B`）使用真实 ContextBench verified rows、临时 /tmp repo clones、
+真实 OpenLocus retrieval（bm25,regex,symbol）及 `eval/score.py` 指标
+计算聚合 counterfactual candidate-set 效用 delta。五个 variants 和四个
+effects；指标为 `file_recall@10`、`mrr`、`span_f0.5@10`、
+`success_rate`。仅 records-shaped；无动态 dict 镜像；无
+winner/best/default 字段；无 E/S 校准记法。无 provider 调用。
+
+这是 smoke-only。它**不是**下游效用，**不是** true E/S 校准，**不
+是**外部基准测试性能声明，**不是** leaderboard 条目，**不是**
+promotion/default/runtime/retriever/pack/backend/EvidenceCore 语义变
+更。所有无声明 / 无运行时变更标志保持 false。
+`retrieval_derived_counterfactual_utility_smoke=true` 仅在真实网络
+run 实际执行时。详见
+[F1-B 详细报告](f1b-retrieval-derived-counterfactual-utility.md)。
+
 ## 2026-06-21 F1 反事实证据效用 Smoke
 
 继 D5-A0、B16-A 与 C5-A 之后，F1 产出首个反事实证据效用 smoke。F1

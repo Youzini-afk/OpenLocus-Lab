@@ -1,0 +1,159 @@
+name: f1b-retrieval-derived-utility-smoke
+
+# F1-B Retrieval-Derived Counterfactual Utility Smoke CI.
+#
+# This workflow runs the F1-B retrieval-derived counterfactual utility
+# smoke in CI. It requires explicit opt-in via
+# `enable_external_benchmark_network=true`. It builds the OpenLocus CLI,
+# runs the F1-B self-test, then runs the live network smoke (transient
+# /tmp clone + retrieval + score), and uploads ONLY the aggregate F1-B
+# report (no raw rows/queries/repo URLs/commits/gold paths/spans/
+# candidates/stdout/stderr).
+#
+# Claim boundary: F1-B is eval/diagnostic only. This workflow does NOT
+# claim downstream utility, true E/S calibration, external benchmark
+# performance, leaderboard entry, promotion, or default/policy/runtime/
+# retriever/pack/backend/EvidenceCore semantic change. No provider
+# No provider credential/model environment is injected.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real ContextBench row fetch + GitHub clone + retrieval (must be true to run network)'
+        required: true
+        type: boolean
+        default: false
+      row_limit:
+        description: 'Number of ContextBench verified rows to evaluate (default 5, hard cap 10)'
+        required: false
+        default: '5'
+      methods:
+        description: 'Comma-separated retrieval methods (default: bm25,regex,symbol)'
+        required: false
+        default: 'bm25,regex,symbol'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: f1b-retrieval-derived-utility-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  f1b-smoke:
+    name: f1b
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ inputs.enable_external_benchmark_network == true }}
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile F1-B evaluator
+        run: python3 -m py_compile eval/f1b_retrieval_derived_counterfactual_utility_smoke.py
+
+      - name: F1-B self-test
+        run: python3 eval/f1b_retrieval_derived_counterfactual_utility_smoke.py --self-test
+
+      - name: F1-B network smoke (transient /tmp clone + retrieval + score)
+        env:
+          ROW_LIMIT: ${{ inputs.row_limit }}
+          METHODS: ${{ inputs.methods }}
+        run: |
+          report_path="$RUNNER_TEMP/f1b_retrieval_derived_counterfactual_utility_report.json"
+          python3 eval/f1b_retrieval_derived_counterfactual_utility_smoke.py \
+            --row-limit "$ROW_LIMIT" \
+            --methods "$METHODS" \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate F1-B report no-claim flags and scanner
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required no-claim flags must be false.
+          must_be_false = {
+              "true_e_s_calibration_claimed",
+              "automated_e_s_full_calibration_claimed",
+              "human_e_s_calibration_claimed",
+              "downstream_agent_value_proven",
+              "live_llm_agent",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+              "external_benchmark_performance_claimed",
+              "leaderboard_entry_claimed",
+              "promotion_ready",
+              "default_should_change",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+          }
+          failures = []
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          if report.get("aggregate_only_public_artifact") is not True:
+              failures.append("expected aggregate_only_public_artifact=true")
+          if report.get("diagnostic_only") is not True:
+              failures.append("expected diagnostic_only=true")
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true")
+          if failures:
+              print("F1-B report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("F1-B report flag validation passed.")
+          print(f"  status={report.get('status')}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  rows_fetched={report.get('rows_fetched')}")
+          print(f"  rows_successful={report.get('rows_successful')}")
+          PY
+
+      - name: Copy sanitized report to artifacts dir
+        run: |
+          mkdir -p artifacts/real_provider_ci
+          cp "$REPORT_PATH" artifacts/real_provider_ci/f1b_retrieval_derived_counterfactual_utility_report.json
+
+      - name: Upload F1-B aggregate report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: f1b-retrieval-derived-utility-smoke-report-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/f1b_retrieval_derived_counterfactual_utility_report.json
+            !artifacts/real_provider_ci/plan.json
+            !**/prompts/**
+            !**/responses/**
+            !**/messages/**
+            !**/provider_payload/**
+            !**/logs/**
+            !**/tmp/**
+          if-no-files-found: error
+          retention-days: 14

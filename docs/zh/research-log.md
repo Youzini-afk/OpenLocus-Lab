@@ -6988,3 +6988,129 @@ live-run 标志为 false。正向 treatment delta 是更广但仍微型的合成
   live-run 标志**仅**在 live run 实际执行时为 true。未修改任何
   runtime/retriever/pack/model/backend/default-policy 文件；无
   promotion/default/runtime 声明变更。
+
+---
+
+## 2026-06-21 — F1-B Retrieval-Derived Counterfactual Utility Smoke
+
+### 目标
+
+将 F1 从纯合成 context variants 推进到 **retrieval-derived**
+counterfactual utility：使用真实 ContextBench verified rows、临时公开
+repo clones、真实 OpenLocus retrieval 输出及 `eval/score.py` 指标，估计
+candidate-set variants 的聚合边际效用。
+
+### 假设
+
+真实 ContextBench verified rows + 真实 OpenLocus retrieval + 真实
+`eval/score.py` 指标能产出聚合 counterfactual candidate-set 效用 delta
+（bm25 vs empty、regex vs empty、symbol vs empty、symbol added to
+bm25），且不进行 provider 调用，不声明下游效用、true E/S 校准或外部
+基准测试性能。
+
+### 实现说明
+
+- **F1-B artifact**
+  （`eval/f1b_retrieval_derived_counterfactual_utility_smoke.py`）：
+  公开仅聚合 smoke。向后兼容导入 C5-A helpers
+  （`c5_contextbench_verified_performance_smoke`，C5-A **不**被修改）。
+  获取有界 ContextBench verified rows（默认 5；`--row-limit` 硬上限
+  10）；在 `/tmp` 下临时 clone repos；按方法（bm25,regex,symbol）运行
+  真实 OpenLocus retrieval；运行 `eval/score.py`；派生五个
+  candidate-set variants（`baseline_empty_candidate_set`、`bm25_topk`、
+  `regex_topk`、`symbol_topk`、`bm25_plus_symbol_topk`）和四个
+  counterfactual effects（`bm25_candidates_vs_empty`、
+  `regex_candidates_vs_empty`、`symbol_candidates_vs_empty`、
+  `symbol_added_to_bm25`）。指标：`file_recall@10`、`mrr`、
+  `span_f0.5@10`、`success_rate`。Records-shaped
+  `variant_results`、`counterfactual_effects`、`method_inputs`。无动态
+  dict 镜像。严格 fail-closed scanner。无 provider 调用。
+- **已延迟**：`bm25_plus_distractor_topk` variant 和
+  `distractor_added_to_bm25` effect 已延迟（安全实现需要
+  per-candidate 身份跟踪，有泄露风险）。
+- **Artifact 身份**：
+  `schema_version=f1b_retrieval_derived_counterfactual_utility_smoke.v1`、
+  `claim_level=retrieval_derived_counterfactual_utility_smoke_only`、
+  `mode=public_aggregate_contextbench_retrieval_counterfactual`、
+  `phase=F1-B`。
+- **Safe true flags**（仅当实际为 true 时）：
+  `retrieval_derived_counterfactual_utility_smoke`、
+  `external_benchmark_rows_read`、`openlocus_retrieval_executed`、
+  `score_py_metrics_computed`、`aggregate_only_public_artifact`、
+  `diagnostic_only`。
+- **Always-false no-claim flags**：
+  `true_e_s_calibration_claimed`、
+  `automated_e_s_full_calibration_claimed`、
+  `human_e_s_calibration_claimed`、
+  `downstream_agent_value_proven`、`live_llm_agent`、
+  `provider_calls_made`、`remote_provider_calls_made`、
+  `external_benchmark_performance_claimed`、
+  `leaderboard_entry_claimed`、`promotion_ready`、
+  `default_should_change`、`runtime_behavior_changed`、
+  `retriever_changed`、`pack_builder_changed`、`backend_changed`、
+  `default_policy_changed`、`evidencecore_semantics_changed`。
+- **无 winner/best/recommended-default 字段**。**无 E/S 校准记法**
+  （`E_primary` / `S_support`）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/f1b_retrieval_derived_counterfactual_utility_smoke.py  => PASS
+python3 eval/f1b_retrieval_derived_counterfactual_utility_smoke.py --self-test  => PASS (95/95 checks)
+python3 eval/f1b_retrieval_derived_counterfactual_utility_smoke.py \
+  --out artifacts/f1b_retrieval_derived_counterfactual_utility/\
+f1b_retrieval_derived_counterfactual_utility_report.json  => PASS
+  (status: retrieval_derived_counterfactual_utility_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   rows_fetched: 5, rows_successful: 5,
+   retrieval_derived_counterfactual_utility_smoke: true,
+   external_benchmark_rows_read: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+F1-B 是首个 retrieval-derived counterfactual utility smoke。它使用
+真实 ContextBench verified rows、真实 OpenLocus retrieval 和真实
+`eval/score.py` 指标计算聚合 candidate-set 效用 delta。它是
+smoke-only：它**不**声明下游效用、true E/S 校准、外部基准测试性能、
+leaderboard 条目、promotion 或 default/policy/runtime/retriever/
+pack/backend/EvidenceCore 语义变更。详见
+[F1-B 详细报告](f1b-retrieval-derived-counterfactual-utility.md)。
+
+### 注意事项
+
+- F1-B 是公开仅聚合 retrieval-derived counterfactual utility smoke
+  artifact。它是 eval/诊断专用。它**不**改变 runtime、retriever、
+  pack、backend 或 default policy；它**不**改变 EvidenceCore 语义。
+  它**不是**基准测试结果，**不是**下游效用，**不是** true E/S 校
+  准，**不是**外部基准测试性能声明，**不是** leaderboard 条目，也
+  **不是** promotion。
+- F1-B **不**进行任何 provider 调用，**不**进行任何远程 provider
+  调用。所有临时数据仅保留在内存或 `/tmp`。
+- F1-B **不**证明下游 agent 价值。
+  `downstream_agent_value_proven=false`。
+- F1-B **不**声明 true E/S 校准。
+  `true_e_s_calibration_claimed=false`。
+- F1-B **不**声明外部基准测试性能。
+  `external_benchmark_performance_claimed=false`。
+- `bm25_plus_distractor_topk` variant 和 `distractor_added_to_bm25`
+  effect 已延迟（安全实现需要 per-candidate 身份跟踪，有泄露风险）。
+- `bm25_plus_symbol_topk` 使用近似聚合（per-method 指标 max），**不
+  是**真正的 union candidate set。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志保持 true；
+  smoke-claimed 标志**仅**在真实网络 run 实际执行时为 true。未修改
+  任何 runtime/retriever/pack/model/backend/default-policy 文件；无
+  promotion/default/runtime 声明变更。

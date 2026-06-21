@@ -379,6 +379,33 @@ recorded. No runtime/retriever/pack/model/backend/default-policy files
 were modified. See the
 [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
 
+## 2026-06-21 F1-B Retrieval-Derived Counterfactual Utility Smoke
+
+F1-B moves F1 from purely synthetic context variants to
+**retrieval-derived** counterfactual utility. F1-B
+(`eval/f1b_retrieval_derived_counterfactual_utility_smoke.py`,
+importing C5-A helpers backward-compatibly) ->
+`artifacts/f1b_retrieval_derived_counterfactual_utility/f1b_retrieval_derived_counterfactual_utility_report.json`,
+schema `f1b_retrieval_derived_counterfactual_utility_smoke.v1`,
+`claim_level=retrieval_derived_counterfactual_utility_smoke_only`,
+`mode=public_aggregate_contextbench_retrieval_counterfactual`, phase
+`F1-B`) uses real ContextBench verified rows, transient /tmp repo
+clones, real OpenLocus retrieval (bm25,regex,symbol), and
+`eval/score.py` metrics to compute aggregate counterfactual
+candidate-set utility deltas. Five variants and four effects; metrics
+are `file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`.
+Records-shaped only; no dynamic dict mirrors; no winner/best/default
+fields; no E/S calibration notation. No provider calls.
+
+This is smoke-only. It is NOT downstream utility, NOT true E/S
+calibration, NOT an external benchmark performance claim, NOT a
+leaderboard entry, NOT a promotion/default/runtime/retriever/pack/
+backend/EvidenceCore semantic change. All no-claim /
+no-runtime-change flags remain false.
+`retrieval_derived_counterfactual_utility_smoke=true` only when a real
+network run actually executed. See the
+[F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
+
 ## 2026-06-21 F1 Counterfactual Evidence Utility Smoke
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual

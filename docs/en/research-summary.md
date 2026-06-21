@@ -372,6 +372,37 @@ runtime/retriever/pack/model/backend/default-policy files were
 modified. See the
 [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
 
+## Current status update — 2026-06-21 (F1-B retrieval-derived counterfactual utility smoke)
+
+F1-B moves F1 from purely synthetic context variants to
+**retrieval-derived** counterfactual utility. F1-B
+(`eval/f1b_retrieval_derived_counterfactual_utility_smoke.py`,
+importing C5-A helpers backward-compatibly) ->
+`artifacts/f1b_retrieval_derived_counterfactual_utility/f1b_retrieval_derived_counterfactual_utility_report.json`,
+schema `f1b_retrieval_derived_counterfactual_utility_smoke.v1`,
+`claim_level=retrieval_derived_counterfactual_utility_smoke_only`,
+`mode=public_aggregate_contextbench_retrieval_counterfactual`, phase
+`F1-B`) uses real ContextBench verified rows, transient /tmp repo
+clones, real OpenLocus retrieval (bm25,regex,symbol), and
+`eval/score.py` metrics to compute aggregate counterfactual
+candidate-set utility deltas. Five variants (`baseline_empty_candidate_set`,
+`bm25_topk`, `regex_topk`, `symbol_topk`,
+`bm25_plus_symbol_topk`) and four effects
+(`bm25_candidates_vs_empty`, `regex_candidates_vs_empty`,
+`symbol_candidates_vs_empty`, `symbol_added_to_bm25`). Metrics:
+`file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`.
+Records-shaped `variant_results`, `counterfactual_effects`,
+`method_inputs`. No provider calls. No winner/best/default fields.
+No E/S calibration notation. 95/95 self-test checks pass.
+
+This is smoke-only. It is NOT downstream utility, NOT true E/S
+calibration, NOT an external benchmark performance claim, NOT a
+leaderboard entry, NOT a promotion/default/runtime/retriever/pack/
+backend/EvidenceCore semantic change. All no-claim /
+no-runtime-change flags remain false. `retrieval_derived_counterfactual_utility_smoke=true`
+only when a real network run actually executed. See the
+[F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
+
 ## Current status update — 2026-06-21 (C5-A ContextBench verified retrieval performance smoke)
 
 Following D5-A0 and B16-A, C5-A produces the first

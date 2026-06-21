@@ -175,6 +175,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b16d-less-trivial-live-provider-paired-smoke.md`: [en](en/b16d-less-trivial-live-provider-paired-smoke.md) · [zh](zh/b16d-less-trivial-live-provider-paired-smoke.md)
 - `b16e-broader-live-provider-paired-smoke.md`: [en](en/b16e-broader-live-provider-paired-smoke.md) · [zh](zh/b16e-broader-live-provider-paired-smoke.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
+- `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)
 - `p21-g-cross-model-context-injection.md`: [en](en/p21-g-cross-model-context-injection.md) · [zh](zh/p21-g-cross-model-context-injection.md)

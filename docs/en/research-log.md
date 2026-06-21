@@ -7532,3 +7532,135 @@ report](b16e-broader-live-provider-paired-smoke.md).
   actually executed. No runtime/retriever/pack/model/backend/
   default-policy files were modified; no promotion/default/runtime
   claims change.
+
+---
+
+## 2026-06-21 — F1-B Retrieval-Derived Counterfactual Utility Smoke
+
+### Objective
+
+Move F1 from purely synthetic context variants to **retrieval-derived**
+counterfactual utility: use real ContextBench verified rows, transient
+public repo clones, real OpenLocus retrieval outputs, and
+`eval/score.py` metrics to estimate aggregate marginal utility of
+candidate-set variants.
+
+### Hypothesis
+
+Real ContextBench verified rows + real OpenLocus retrieval + real
+`eval/score.py` metrics can produce aggregate counterfactual
+candidate-set utility deltas (bm25 vs empty, regex vs empty, symbol vs
+empty, symbol added to bm25) without provider calls and without
+claiming downstream utility, true E/S calibration, or external benchmark
+performance.
+
+### Implementation notes
+
+- **F1-B artifact**
+  (`eval/f1b_retrieval_derived_counterfactual_utility_smoke.py`):
+  public aggregate-only smoke. Imports C5-A helpers
+  (`c5_contextbench_verified_performance_smoke`) backward-compatibly
+  (C5-A NOT modified). Fetches bounded ContextBench verified rows
+  (default 5; `--row-limit` hard cap 10); clones repos transiently
+  under `/tmp`; runs real OpenLocus retrieval per method
+  (bm25,regex,symbol); runs `eval/score.py`; derives five candidate-set
+  variants (`baseline_empty_candidate_set`, `bm25_topk`, `regex_topk`,
+  `symbol_topk`, `bm25_plus_symbol_topk`) and four counterfactual
+  effects (`bm25_candidates_vs_empty`, `regex_candidates_vs_empty`,
+  `symbol_candidates_vs_empty`, `symbol_added_to_bm25`). Metrics:
+  `file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`. Records-
+  shaped `variant_results`, `counterfactual_effects`, `method_inputs`.
+  No dynamic dict mirrors. Strict fail-closed scanner. No provider
+  calls.
+- **Deferred**: `bm25_plus_distractor_topk` variant and
+  `distractor_added_to_bm25` effect deferred (safe implementation
+  requires per-candidate identity tracking which risks leakage).
+- **Artifact identity**:
+  `schema_version=f1b_retrieval_derived_counterfactual_utility_smoke.v1`,
+  `claim_level=retrieval_derived_counterfactual_utility_smoke_only`,
+  `mode=public_aggregate_contextbench_retrieval_counterfactual`,
+  `phase=F1-B`.
+- **Safe true flags** (only when actually true):
+  `retrieval_derived_counterfactual_utility_smoke`,
+  `external_benchmark_rows_read`, `openlocus_retrieval_executed`,
+  `score_py_metrics_computed`, `aggregate_only_public_artifact`,
+  `diagnostic_only`.
+- **Always-false no-claim flags**: `true_e_s_calibration_claimed`,
+  `automated_e_s_full_calibration_claimed`,
+  `human_e_s_calibration_claimed`,
+  `downstream_agent_value_proven`, `live_llm_agent`,
+  `provider_calls_made`, `remote_provider_calls_made`,
+  `external_benchmark_performance_claimed`,
+  `leaderboard_entry_claimed`, `promotion_ready`,
+  `default_should_change`, `runtime_behavior_changed`,
+  `retriever_changed`, `pack_builder_changed`, `backend_changed`,
+  `default_policy_changed`, `evidencecore_semantics_changed`.
+- **No winner/best/recommended-default fields**. **No E/S calibration
+  notation** (`E_primary` / `S_support`).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/f1b_retrieval_derived_counterfactual_utility_smoke.py  => PASS
+python3 eval/f1b_retrieval_derived_counterfactual_utility_smoke.py --self-test  => PASS (95/95 checks)
+python3 eval/f1b_retrieval_derived_counterfactual_utility_smoke.py \
+  --out artifacts/f1b_retrieval_derived_counterfactual_utility/\
+f1b_retrieval_derived_counterfactual_utility_report.json  => PASS
+  (status: retrieval_derived_counterfactual_utility_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   rows_fetched: 5, rows_successful: 5,
+   retrieval_derived_counterfactual_utility_smoke: true,
+   external_benchmark_rows_read: true,
+   openlocus_retrieval_executed: true,
+   score_py_metrics_computed: true,
+   downstream_agent_value_proven: false,
+   true_e_s_calibration_claimed: false,
+   external_benchmark_performance_claimed: false,
+   leaderboard_entry_claimed: false,
+   promotion_ready: false,
+   default_should_change: false,
+   retriever_changed: false,
+   pack_builder_changed: false,
+   backend_changed: false,
+   default_policy_changed: false,
+   evidencecore_semantics_changed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+F1-B is the first retrieval-derived counterfactual utility smoke. It
+uses real ContextBench verified rows, real OpenLocus retrieval, and
+real `eval/score.py` metrics to compute aggregate candidate-set
+utility deltas. It is smoke-only: it does NOT claim downstream utility,
+true E/S calibration, external benchmark performance, leaderboard entry,
+promotion, or default/policy/runtime/retriever/pack/backend/
+EvidenceCore semantic change. See
+[F1-B detailed report](f1b-retrieval-derived-counterfactual-utility.md).
+
+### Caveats
+
+- F1-B is the public aggregate-only retrieval-derived counterfactual
+  utility smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it does
+  NOT change EvidenceCore semantics. It is NOT a benchmark result,
+  NOT downstream utility, NOT true E/S calibration, NOT an external
+  benchmark performance claim, NOT a leaderboard entry, and NOT a
+  promotion.
+- F1-B makes NO provider calls and NO remote provider calls. All
+  transient data stays in memory or under `/tmp` only.
+- F1-B does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- F1-B does NOT claim true E/S calibration.
+  `true_e_s_calibration_claimed=false`.
+- F1-B does NOT claim external benchmark performance.
+  `external_benchmark_performance_claimed=false`.
+- `bm25_plus_distractor_topk` variant and `distractor_added_to_bm25`
+  effect are deferred (safe implementation requires per-candidate
+  identity tracking which risks leakage).
+- `bm25_plus_symbol_topk` uses an approximate aggregation (max of
+  per-method metrics), NOT a true union candidate set.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  remain true; smoke-claimed flags are true ONLY when a real network
+  run actually executed. No runtime/retriever/pack/model/backend/
+  default-policy files were modified; no promotion/default/runtime
+  claims change.
