@@ -1,0 +1,836 @@
+{
+  "agent_behavior_metrics_evaluated": false,
+  "aggregate_only_public_artifact": true,
+  "arm_results": [],
+  "backend_changed": false,
+  "claim_level": "broader_live_provider_downstream_paired_smoke_only",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "diagnostic_only": true,
+  "downstream_agent_runs_performed": false,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "family_signal_summary": {
+    "families_evaluated": 0,
+    "families_with_negative_solve_delta": 0,
+    "families_with_positive_solve_delta": 0,
+    "families_with_zero_solve_delta": 0
+  },
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "generated_at": "2026-06-21T11:28:09.988082+00:00",
+  "generated_by": "eval/b16e_broader_live_provider_paired_smoke.py",
+  "honest_signals": {
+    "context_pack_signal_observed": false,
+    "families_evaluated": 0,
+    "families_with_negative_solve_delta": 0,
+    "families_with_positive_solve_delta": 0,
+    "families_with_zero_solve_delta": 0,
+    "overall_treatment_solve_rate_delta": 0.0,
+    "overall_treatment_tests_pass_rate_delta": 0.0
+  },
+  "input_summary": {
+    "arms": [
+      "control_sparse",
+      "treatment_context_pack"
+    ],
+    "designed_causal_subset": true,
+    "paired_design": true,
+    "run_count_per_arm": 0,
+    "synthetic_task_count": 0,
+    "task_families": [
+      "same_symbol_support_relation",
+      "operation_ambiguity",
+      "boundary_condition",
+      "helper_dependency_choice"
+    ],
+    "task_family_matrix": true,
+    "total_runs": 0,
+    "transient_workspace_outputs_only": true,
+    "workspace_isolation": "fresh_tmp_per_task_arm"
+  },
+  "live_agent_generalization_claimed": false,
+  "live_llm_agent": false,
+  "mode": "public_aggregate_synthetic_task_family_matrix",
+  "model_display_category": "unavailable",
+  "pack_builder_changed": false,
+  "paired_deltas": [],
+  "paired_run_executed": false,
+  "phase": "B16-E",
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "real_file_edits_performed": false,
+  "real_test_commands_executed": false,
+  "real_user_task_claimed": false,
+  "remote_provider_calls_made": false,
+  "retriever_changed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "b16e_broader_live_provider_paired_smoke.v1",
+  "self_test_checks": [
+    {
+      "check": "schema_version_correct",
+      "passed": true
+    },
+    {
+      "check": "claim_level_correct",
+      "passed": true
+    },
+    {
+      "check": "mode_correct",
+      "passed": true
+    },
+    {
+      "check": "phase_correct",
+      "passed": true
+    },
+    {
+      "check": "generated_by_correct",
+      "passed": true
+    },
+    {
+      "check": "status_paired_run_failed_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_unavailable_no_local_provider_env_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_fail_forbidden_scan_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_broader_live_provider_paired_smoke_pass_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_blocked_remote_not_enabled_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_structured_action_parse_failed_preserved",
+      "passed": true
+    },
+    {
+      "check": "status_provider_call_failed_preserved",
+      "passed": true
+    },
+    {
+      "check": "default_false_downstream_agent_value_proven",
+      "passed": true
+    },
+    {
+      "check": "default_false_live_agent_generalization_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_promotion_ready",
+      "passed": true
+    },
+    {
+      "check": "default_false_default_should_change",
+      "passed": true
+    },
+    {
+      "check": "default_false_external_benchmark_performance_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_real_user_task_claimed",
+      "passed": true
+    },
+    {
+      "check": "default_false_runtime_behavior_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_retriever_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_pack_builder_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_backend_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_default_policy_changed",
+      "passed": true
+    },
+    {
+      "check": "default_false_evidencecore_semantics_changed",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_downstream_agent_runs_performed",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_live_llm_agent",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_remote_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_paired_run_executed",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_synthetic_task_family_matrix_used",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_real_file_edits_performed",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_real_test_commands_executed",
+      "passed": true
+    },
+    {
+      "check": "unavailable_live_flag_false_agent_behavior_metrics_evaluated",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_downstream_agent_runs_performed",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_live_llm_agent",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_remote_provider_calls_made",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_paired_run_executed",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_synthetic_task_family_matrix_used",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_real_file_edits_performed",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_real_test_commands_executed",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_agent_behavior_metrics_evaluated",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_aggregate_only_public_artifact",
+      "passed": true
+    },
+    {
+      "check": "live_flag_true_diagnostic_only",
+      "passed": true
+    },
+    {
+      "check": "synthetic_task_count_correct",
+      "passed": true
+    },
+    {
+      "check": "family_present_same_symbol_support_relation",
+      "passed": true
+    },
+    {
+      "check": "family_present_operation_ambiguity",
+      "passed": true
+    },
+    {
+      "check": "family_present_boundary_condition",
+      "passed": true
+    },
+    {
+      "check": "family_present_helper_dependency_choice",
+      "passed": true
+    },
+    {
+      "check": "families_balanced_2_each_for_8_tasks",
+      "passed": true
+    },
+    {
+      "check": "family1_correct_value_uses_support_relation",
+      "passed": true
+    },
+    {
+      "check": "family2_correct_value_uses_multiply",
+      "passed": true
+    },
+    {
+      "check": "family3_correct_value_uses_exclusive_bound",
+      "passed": true
+    },
+    {
+      "check": "family4_correct_value_uses_helper_b",
+      "passed": true
+    },
+    {
+      "check": "workspace_same_symbol_support_relation_creates_target",
+      "passed": true
+    },
+    {
+      "check": "workspace_same_symbol_support_relation_creates_distractor",
+      "passed": true
+    },
+    {
+      "check": "workspace_same_symbol_support_relation_creates_support",
+      "passed": true
+    },
+    {
+      "check": "workspace_same_symbol_support_relation_creates_test",
+      "passed": true
+    },
+    {
+      "check": "workspace_same_symbol_support_relation_same_symbol",
+      "passed": true
+    },
+    {
+      "check": "workspace_same_symbol_support_relation_test_fails_before_fix",
+      "passed": true
+    },
+    {
+      "check": "workspace_operation_ambiguity_creates_target",
+      "passed": true
+    },
+    {
+      "check": "workspace_operation_ambiguity_creates_distractor",
+      "passed": true
+    },
+    {
+      "check": "workspace_operation_ambiguity_creates_support",
+      "passed": true
+    },
+    {
+      "check": "workspace_operation_ambiguity_creates_test",
+      "passed": true
+    },
+    {
+      "check": "workspace_operation_ambiguity_same_symbol",
+      "passed": true
+    },
+    {
+      "check": "workspace_operation_ambiguity_test_fails_before_fix",
+      "passed": true
+    },
+    {
+      "check": "workspace_boundary_condition_creates_target",
+      "passed": true
+    },
+    {
+      "check": "workspace_boundary_condition_creates_distractor",
+      "passed": true
+    },
+    {
+      "check": "workspace_boundary_condition_creates_support",
+      "passed": true
+    },
+    {
+      "check": "workspace_boundary_condition_creates_test",
+      "passed": true
+    },
+    {
+      "check": "workspace_boundary_condition_same_symbol",
+      "passed": true
+    },
+    {
+      "check": "workspace_boundary_condition_test_fails_before_fix",
+      "passed": true
+    },
+    {
+      "check": "workspace_helper_dependency_choice_creates_target",
+      "passed": true
+    },
+    {
+      "check": "workspace_helper_dependency_choice_creates_distractor",
+      "passed": true
+    },
+    {
+      "check": "workspace_helper_dependency_choice_creates_support",
+      "passed": true
+    },
+    {
+      "check": "workspace_helper_dependency_choice_creates_test",
+      "passed": true
+    },
+    {
+      "check": "workspace_helper_dependency_choice_same_symbol",
+      "passed": true
+    },
+    {
+      "check": "workspace_helper_dependency_choice_test_fails_before_fix",
+      "passed": true
+    },
+    {
+      "check": "control_pack_lacks_target_file_cue",
+      "passed": true
+    },
+    {
+      "check": "control_pack_lacks_decisive_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_target_file_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_symbol_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_decisive_cue",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_has_exact_edit_constraint",
+      "passed": true
+    },
+    {
+      "check": "treatment_pack_richer_than_control",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_nonempty_same_symbol_support_relation",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_no_raw_routing_prefix_same_symbol_support_relation",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_nonempty_operation_ambiguity",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_no_raw_routing_prefix_operation_ambiguity",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_nonempty_boundary_condition",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_no_raw_routing_prefix_boundary_condition",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_nonempty_helper_dependency_choice",
+      "passed": true
+    },
+    {
+      "check": "decisive_cue_text_no_raw_routing_prefix_helper_dependency_choice",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_same_symbol_support_relation_correct_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_same_symbol_support_relation_no_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_same_symbol_support_relation_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_same_symbol_support_relation_solve",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_same_symbol_support_relation_provider_succeeded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_same_symbol_support_relation_family_recorded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_operation_ambiguity_correct_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_operation_ambiguity_no_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_operation_ambiguity_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_operation_ambiguity_solve",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_operation_ambiguity_provider_succeeded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_operation_ambiguity_family_recorded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_boundary_condition_correct_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_boundary_condition_no_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_boundary_condition_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_boundary_condition_solve",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_boundary_condition_provider_succeeded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_boundary_condition_family_recorded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_helper_dependency_choice_correct_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_helper_dependency_choice_no_wrong_file",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_helper_dependency_choice_tests_pass",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_helper_dependency_choice_solve",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_helper_dependency_choice_provider_succeeded",
+      "passed": true
+    },
+    {
+      "check": "fake_valid_helper_dependency_choice_family_recorded",
+      "passed": true
+    },
+    {
+      "check": "invalid_json_no_edit",
+      "passed": true
+    },
+    {
+      "check": "invalid_json_tests_fail",
+      "passed": true
+    },
+    {
+      "check": "no_raw_response_in_run_result",
+      "passed": true
+    },
+    {
+      "check": "disallowed_file_rejected",
+      "passed": true
+    },
+    {
+      "check": "disallowed_action_rejected",
+      "passed": true
+    },
+    {
+      "check": "distractor_file_rejected",
+      "passed": true
+    },
+    {
+      "check": "support_file_rejected",
+      "passed": true
+    },
+    {
+      "check": "missing_symbol_rejected",
+      "passed": true
+    },
+    {
+      "check": "non_int_return_rejected",
+      "passed": true
+    },
+    {
+      "check": "non_object_rejected",
+      "passed": true
+    },
+    {
+      "check": "valid_action_accepted",
+      "passed": true
+    },
+    {
+      "check": "choose_helper_constant_accepted",
+      "passed": true
+    },
+    {
+      "check": "no_op_action_accepted",
+      "passed": true
+    },
+    {
+      "check": "aggregate_run_count_correct",
+      "passed": true
+    },
+    {
+      "check": "aggregate_solve_rate_correct",
+      "passed": true
+    },
+    {
+      "check": "family_results_records_shaped",
+      "passed": true
+    },
+    {
+      "check": "family_results_all_four_families",
+      "passed": true
+    },
+    {
+      "check": "family_results_two_arms_per_family",
+      "passed": true
+    },
+    {
+      "check": "family_signal_summary_has_counts",
+      "passed": true
+    },
+    {
+      "check": "honest_signal_context_pack_observed_true",
+      "passed": true
+    },
+    {
+      "check": "honest_signal_solve_rate_delta_positive",
+      "passed": true
+    },
+    {
+      "check": "honest_signal_zero_delta_not_observed",
+      "passed": true
+    },
+    {
+      "check": "normalize_strips_routing_prefix",
+      "passed": true
+    },
+    {
+      "check": "normalize_empty_returns_unavailable",
+      "passed": true
+    },
+    {
+      "check": "normalize_strips_unsafe_chars",
+      "passed": true
+    },
+    {
+      "check": "env_preservation_probe_restores_env",
+      "passed": true
+    },
+    {
+      "check": "probe_missing_env_returns_missing_env",
+      "passed": true
+    },
+    {
+      "check": "probe_missing_env_restores_env",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_tmp_workspace_path",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_file_path_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_source_snippet",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_patch_marker",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_test_output",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_task_id_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_event_log",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_stack_trace",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_content_sha_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_hex_digest_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_auth_field_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_endpoint_url_field_string",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_raw_routing_prefix",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_url_value",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_prompt_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_response_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_messages_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_provider_payload_key",
+      "passed": true
+    },
+    {
+      "check": "scanner_rejects_sentinel_canary",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_arm_name_control",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_arm_name_treatment",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_task_family_names",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_metric_records",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_family_results_records",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_model_display_category",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_honest_signal_fields",
+      "passed": true
+    },
+    {
+      "check": "scanner_allows_failure_category_token",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_clean_public_report_does_not_raise",
+      "passed": true
+    },
+    {
+      "check": "fail_closed_generation_raises_on_leak",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_raises_when_failed",
+      "passed": true
+    },
+    {
+      "check": "refuse_on_self_test_failure_does_not_raise_when_passed",
+      "passed": true
+    },
+    {
+      "check": "public_report_forbidden_scan_clean",
+      "passed": true
+    },
+    {
+      "check": "public_report_no_forbidden_key_anywhere",
+      "passed": true
+    },
+    {
+      "check": "cli_has_self_test_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_out_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_allow_remote_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_require_workflow_dispatch_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_has_task_count_argument",
+      "passed": true
+    },
+    {
+      "check": "cli_only_expected_arguments",
+      "passed": true
+    },
+    {
+      "check": "cli_default_task_count_in_range",
+      "passed": true
+    },
+    {
+      "check": "blocked_when_allow_remote_false",
+      "passed": true
+    },
+    {
+      "check": "blocked_report_live_flags_false",
+      "passed": true
+    },
+    {
+      "check": "blocked_report_forbidden_scan_pass",
+      "passed": true
+    }
+  ],
+  "self_test_passed": true,
+  "self_test_summary": {
+    "failed": 0,
+    "passed": 188,
+    "total": 188
+  },
+  "status": "blocked_remote_not_enabled",
+  "synthetic_task_family_matrix_used": false,
+  "task_family_results": []
+}

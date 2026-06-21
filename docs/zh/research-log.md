@@ -6844,3 +6844,131 @@ context_pack_signal_observed: true
   live-run 标志**仅**在 live run 实际执行时为 true。未修改任何
   runtime/retriever/pack/model/backend/default-policy 文件；无
   promotion/default/runtime 声明变更。
+
+---
+
+## 2026-06-21 — B16-E Broader Live-Provider 下游 Paired Smoke
+
+### 目标
+
+将 B16-D 从单一 less-trivial 合成 live-provider 任务族扩展为小型异构合
+成任务族矩阵。测试 context-pack treatment 信号是否能超越 B16-D 模板，
+同时保持阶段有界、仅聚合、手动 provider gating。
+
+### 假设
+
+在 live LLM provider 下的异构合成任务族矩阵（四族，各有不同决定性 cue）
+能执行完整 B16 下游 agent edit/test 循环，并产出行为指标 + 族级 honest
+signal 字段，且不声明下游 agent 价值、live agent 泛化或
+promotion/default 变更。
+
+### 实现说明
+
+- **B16-E artifact**
+  （`eval/b16e_broader_live_provider_paired_smoke.py`）：公开仅聚合
+  smoke。复用 B16-C/D 的 `eval/provider_client.py`（不变）。在四个固定
+  白名单任务族中生成确定性异构合成公开 micro bug 任务（默认 8；
+  `--task-count` 范围 4-12，硬上限 12；默认 16 live 调用；最多 24）。
+  每个任务多文件：`target.py`（buggy 函数，与 distractor 同符号）、
+  `distractor.py`（同名 decoy）、`support.py`（helper constant）、
+  `test_target.py`（导入 target AND support；断言正确族特定关系）。每
+  个 task+arm 全新 `/tmp` 工作区。仅当 `--allow-remote` +
+  `OPENLOCUS_ALLOW_REMOTE=1` + provider env 时使用 live LLM agent。
+  结构化 edit action 白名单：仅 `target.py`；action
+  `replace_return_value` / `choose_helper_constant` / `no_op`；无任
+  意路径，无 shell；distractor/support 不可编辑。真实文件编辑 + 真实
+  子进程测试。
+- **四任务族**（各有不同决定性 cue）：
+  1. `same_symbol_support_relation` — 正确值 =
+     `helper_constant * 2 + task_index`。
+  2. `operation_ambiguity` — 正确值 = `base_value * 2`。
+  3. `boundary_condition` — 正确值 = `limit_value - 1`。
+  4. `helper_dependency_choice` — 正确值 = `helper_b * 3`。
+- **Paired arm 设计**：`control_sparse`（无 target file cue；无决定性
+  cue；小 token 预算）vs `treatment_context_pack`（target file cue、
+  target symbol cue、族特定决定性 cue、exact edit constraint；较大
+  token 预算）。
+- **Artifact 身份**：
+  `schema_version=b16e_broader_live_provider_paired_smoke.v1`、
+  `claim_level=broader_live_provider_downstream_paired_smoke_only`、
+  `mode=public_aggregate_synthetic_task_family_matrix`、`phase=B16-E`。
+  状态枚举：`broader_live_provider_paired_smoke_pass`、
+  `blocked_remote_not_enabled`、
+  `unavailable_no_local_provider_env`、`provider_call_failed`、
+  `structured_action_parse_failed`、`paired_run_failed`、
+  `fail_forbidden_scan`。
+- **Safe true flags**（仅 live run 时）：11 个，含
+  `synthetic_task_family_matrix_used`。
+- **Always-false no-claim flags**（全 12 个）：与 B16-C/D 相同。
+- **Records-shaped 容器**：`arm_results`、`paired_deltas`、
+  `task_family_results`（固定记录，白名单族名；无 task ID）、
+  `family_signal_summary`（仅聚合计数）、`honest_signals`（诊断
+  smoke 结果）。
+- **env preservation self-test**：回归守卫，无网络 self-test probe 不
+  清除 live provider env。
+- **CI 通过标准**：live run completed + privacy scan passed +
+  artifact is honest。CI 通过**不**要求 treatment 改善。零/负 delta
+  有效。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16e_broader_live_provider_paired_smoke.py  => PASS
+python3 eval/b16e_broader_live_provider_paired_smoke.py --self-test  => PASS (188/188 checks)
+python3 eval/b16e_broader_live_provider_paired_smoke.py \
+  --out artifacts/b16e_broader_live_provider_paired_smoke/\
+b16e_broader_live_provider_paired_smoke_report.json               => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-E,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_provider_calls_made: false, paired_run_executed: false,
+   synthetic_task_family_matrix_used: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   default_should_change: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   runtime_behavior_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false, real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py                                  => PASS
+git diff --check                                                       => PASS
+```
+
+提交的 artifact 是真实的本地 unavailable/blocked 报告，因为本地无
+provider env。live `broader_live_provider_paired_smoke_pass` artifact
+需要显式本地 opt-in run 或手动 CI `real-provider-benchmark` workflow
+（`stage=b16e_broader_live_provider_paired_smoke` +
+`enable_remote_models=true`）。**手动 CI live-provider run：待执行。**
+详见 [B16-E 详细报告](b16e-broader-live-provider-paired-smoke.md)。
+
+### 注意事项
+
+- B16-E 是公开仅聚合 broader live-provider 下游 paired smoke
+  artifact。它是 eval/诊断专用。它**不**改变 runtime、retriever、
+  pack、backend 或 default policy；它**不**改变 EvidenceCore 语义。
+  它**不是**基准测试结果，**不是**下游 agent 价值声明，**不是**
+  runtime-clean 通用算法声明，**不是** OOD 时间性声明，也**不是**
+  QuIVer 系统声明。
+- B16-E 仅在 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider
+  env 全部设置时使用 **live LLM provider**（OpenAI 兼容）。提交的
+  artifact 是真实的：若本地无 provider env，其状态为
+  `blocked_remote_not_enabled` /
+  `unavailable_no_local_provider_env`，live-run 标志为 false。它**不
+  是** fake pass。
+- B16-E **不**证明下游 agent 价值。
+  `downstream_agent_value_proven=false`。
+- B16-E **不**声明 live agent 泛化。
+  `live_agent_generalization_claimed=false`。
+- B16-E **不**发布 prompt、response、provider payload、base URL、
+  API key、raw model 路由前缀、工作区路径、文件路径、源码片段、
+  patch/diff、测试输出、raw event log 或 per-run 行。per-run 数据仅
+  留在 `/tmp`。
+- `honest_signals` 和 `family_signal_summary` 是诊断 smoke 结果，
+  **绝不**是 promotion/default/value 声明。零/负 treatment delta
+  是有效的实证结果。
+- 所有无声明 / 无运行时变更标志保持 false；诊断标志保持 true；
+  live-run 标志**仅**在 live run 实际执行时为 true。未修改任何
+  runtime/retriever/pack/model/backend/default-policy 文件；无
+  promotion/default/runtime 声明变更。

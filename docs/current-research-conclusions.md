@@ -49,6 +49,17 @@ control solve_rate=0.5, treatment solve_rate=1.0, solve-rate delta
 signal, not downstream value proof; B16-D does NOT claim downstream
 agent value, live agent generalization, external benchmark performance,
 real user task, promotion, or default/policy/runtime/retriever/pack/
+backend/EvidenceCore semantic change. B16-E broadens B16-D into a
+heterogeneous synthetic task-family matrix with four fixed families
+(`same_symbol_support_relation`, `operation_ambiguity`,
+`boundary_condition`, `helper_dependency_choice`); each family has a
+different decisive cue; default 8 tasks / 16 live calls; same
+aggregate-only safety model; CI pass does NOT require treatment
+improvement; the committed artifact is truthful:
+`blocked_remote_not_enabled` with live-run flags false because no
+local provider env (NOT a fake pass); it does NOT claim downstream
+agent value, live agent generalization, external benchmark performance,
+real user task, promotion, or default/policy/runtime/retriever/pack/
 backend/EvidenceCore semantic change. C5-A is an
 external-benchmark-shaped retrieval performance smoke (bounded ContextBench
 verified subset; transient /tmp clone + retrieval + score; aggregate-only
@@ -95,7 +106,16 @@ solve_rate=0.5、treatment solve_rate=1.0、solve-rate delta `+0.5`、
 tests-pass delta `+0.5`，且 `context_pack_signal_observed=true`。这是微型合成
 smoke 信号，不是下游价值证明；B16-D **不**声明下游 agent 价值、live agent
 泛化、外部基准测试性能、真实用户任务、promotion 或
-default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
+default/policy/runtime/retriever/pack/backend/EvidenceCore 语义变更。B16-E
+将 B16-D 扩展为含四个固定族的异构合成任务族矩阵
+（`same_symbol_support_relation`、`operation_ambiguity`、
+`boundary_condition`、`helper_dependency_choice`）；每族有不同决定性
+cue；默认 8 任务 / 16 live 调用；相同仅聚合安全模型；CI 通过**不**要求
+treatment 改善；提交的 artifact 是真实的：`blocked_remote_not_enabled`
+（live-run 标志为 false，因为本地无 provider env；**不是** fake pass）；
+它**不**声明下游 agent 价值、live agent 泛化、外部基准测试性能、真实用
+户任务、promotion 或 default/policy/runtime/retriever/pack/backend/
+EvidenceCore 语义变更。C5-A 是外部-benchmark-形态
 的检索性能 smoke（有界 ContextBench verified subset；临时 /tmp clone +
 retrieval + score；aggregate-only 公共 artifact；无 provider 调用）；它
 **不**声称外部 benchmark 结果、leaderboard 条目、性能、promotion、默认变更、
@@ -152,6 +172,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b16b-less-separable-mock-paired-run.md`: [en](en/b16b-less-separable-mock-paired-run.md) · [zh](zh/b16b-less-separable-mock-paired-run.md)
 - `b16c-live-provider-paired-smoke.md`: [en](en/b16c-live-provider-paired-smoke.md) · [zh](zh/b16c-live-provider-paired-smoke.md)
 - `b16d-less-trivial-live-provider-paired-smoke.md`: [en](en/b16d-less-trivial-live-provider-paired-smoke.md) · [zh](zh/b16d-less-trivial-live-provider-paired-smoke.md)
+- `b16e-broader-live-provider-paired-smoke.md`: [en](en/b16e-broader-live-provider-paired-smoke.md) · [zh](zh/b16e-broader-live-provider-paired-smoke.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `final-research-report.md`: [en](en/final-research-report.md) · [zh](zh/final-research-report.md)
 - `p20-llm-large-scale.md`: [en](en/p20-llm-large-scale.md) · [zh](zh/p20-llm-large-scale.md)

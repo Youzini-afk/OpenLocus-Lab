@@ -7376,3 +7376,141 @@ See [B16-D detailed report](b16d-less-trivial-live-provider-paired-smoke.md).
   actually executed. No runtime/retriever/pack/model/backend/
   default-policy files were modified; no promotion/default/runtime
   claims change.
+
+---
+
+## 2026-06-21 — B16-E Broader Live-Provider Downstream Paired Smoke
+
+### Objective
+
+Broaden B16-D from one less-trivial synthetic live-provider task family
+into a small heterogeneous synthetic task-family matrix. Test whether a
+context-pack treatment signal persists beyond the B16-D template while
+keeping the phase bounded, aggregate-only, and manually provider-gated.
+
+### Hypothesis
+
+A heterogeneous synthetic task-family matrix with four families (each
+with a different decisive cue) under a live LLM provider can exercise
+the full B16 downstream-agent edit/test loop and produce behavior
+metrics + family-level honest signal fields, without claiming
+downstream agent value, live agent generalization, or promotion/default
+change.
+
+### Implementation notes
+
+- **B16-E artifact**
+  (`eval/b16e_broader_live_provider_paired_smoke.py`): public
+  aggregate-only smoke. Reuses `eval/provider_client.py` from B16-C/D
+  (unchanged). Generates deterministic heterogeneous synthetic public
+  micro bug tasks across four fixed allowlisted task families (default
+  8; `--task-count` range 4-12, hard cap 12; default 16 live calls;
+  max 24). Each task is multi-file: `target.py` (buggy function, same
+  symbol as distractor), `distractor.py` (same-named decoy),
+  `support.py` (helper constant(s)), `test_target.py` (imports target
+  AND support; asserts correct family-specific relation). Fresh `/tmp`
+  workspace per task+arm. Live LLM agent only when `--allow-remote` +
+  `OPENLOCUS_ALLOW_REMOTE=1` + provider env. Structured edit action
+  allowlisted: file `target.py` only; actions `replace_return_value`
+  / `choose_helper_constant` / `no_op`; no arbitrary paths, no shell;
+  distractor/support NOT editable. Real file edits + real subprocess
+  tests.
+- **Four task families** (each with a different decisive cue):
+  1. `same_symbol_support_relation` — correct value =
+     `helper_constant * 2 + task_index`.
+  2. `operation_ambiguity` — correct value = `base_value * 2`.
+  3. `boundary_condition` — correct value = `limit_value - 1`.
+  4. `helper_dependency_choice` — correct value = `helper_b * 3`.
+- **Paired arm design**: `control_sparse` (NO target file cue; NO
+  decisive cue; small token budget) vs `treatment_context_pack`
+  (target file cue, target symbol cue, family-specific decisive cue,
+  exact edit constraint; larger token budget).
+- **Artifact identity**:
+  `schema_version=b16e_broader_live_provider_paired_smoke.v1`,
+  `claim_level=broader_live_provider_downstream_paired_smoke_only`,
+  `mode=public_aggregate_synthetic_task_family_matrix`,
+  `phase=B16-E`. Status enum:
+  `broader_live_provider_paired_smoke_pass`,
+  `blocked_remote_not_enabled`,
+  `unavailable_no_local_provider_env`, `provider_call_failed`,
+  `structured_action_parse_failed`, `paired_run_failed`,
+  `fail_forbidden_scan`.
+- **Safe true flags** (only on live run): 11 flags including
+  `synthetic_task_family_matrix_used`.
+- **Always-false no-claim flags** (all 12): same as B16-C/D.
+- **Records-shaped containers**: `arm_results`, `paired_deltas`,
+  `task_family_results` (fixed records with allowlisted family names;
+  no task IDs), `family_signal_summary` (aggregate counts only),
+  `honest_signals` (diagnostic smoke outcomes only).
+- **Env preservation self-test**: regression guard that no-network
+  self-test probes do not clear a live provider env.
+- **CI pass criterion**: live run completed + privacy scan passed +
+  artifact is honest. CI pass does NOT require treatment improvement.
+  Zero/negative delta is valid.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16e_broader_live_provider_paired_smoke.py  => PASS
+python3 eval/b16e_broader_live_provider_paired_smoke.py --self-test  => PASS (188/188 checks)
+python3 eval/b16e_broader_live_provider_paired_smoke.py \
+  --out artifacts/b16e_broader_live_provider_paired_smoke/\
+b16e_broader_live_provider_paired_smoke_report.json               => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-E,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   remote_provider_calls_made: false, paired_run_executed: false,
+   synthetic_task_family_matrix_used: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   default_should_change: false, retriever_changed: false,
+   pack_builder_changed: false, backend_changed: false,
+   default_policy_changed: false, evidencecore_semantics_changed: false,
+   runtime_behavior_changed: false,
+   external_benchmark_performance_claimed: false,
+   live_agent_generalization_claimed: false, real_user_task_claimed: false)
+python3 scripts/validate_docs_i18n.py                                  => PASS
+git diff --check                                                       => PASS
+```
+
+The committed artifact is the truthful local unavailable/blocked
+report because no local provider env is available. A live
+`broader_live_provider_paired_smoke_pass` artifact requires an
+explicit local opt-in run or the manual CI `real-provider-benchmark`
+workflow with
+`stage=b16e_broader_live_provider_paired_smoke` and
+`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+See [B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
+
+### Caveats
+
+- B16-E is the public aggregate-only broader live-provider downstream
+  paired smoke artifact. It is eval/diagnostic only. It does NOT
+  change runtime, retriever, pack, backend, or default policy; it
+  does NOT change EvidenceCore semantics. It is NOT a benchmark
+  result, NOT a downstream agent value claim, NOT a runtime-clean
+  general algorithm claim, NOT an OOD temporal claim, and NOT a
+  QuIVer systems claim.
+- B16-E uses a **live LLM provider** (OpenAI-compatible) only when
+  `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are
+  all set. The committed artifact is truthful: if no local provider
+  env is available, it carries status `blocked_remote_not_enabled` /
+  `unavailable_no_local_provider_env` with live-run flags false. It
+  is NOT a fake pass.
+- B16-E does NOT prove downstream agent value.
+  `downstream_agent_value_proven=false`.
+- B16-E does NOT claim live agent generalization.
+  `live_agent_generalization_claimed=false`.
+- B16-E does NOT publish prompts, responses, provider payloads, base
+  URLs, API keys, raw model routing prefixes, workspace paths, file
+  paths, source snippets, patches/diffs, test output, raw event logs,
+  or per-run rows. Per-run data stays under `/tmp` only.
+- `honest_signals` and `family_signal_summary` are diagnostic smoke
+  outcomes only, NEVER promotion/default/value claims. Zero/negative
+  treatment delta is a valid empirical result.
+- All no-claim / no-runtime-change flags remain false; diagnostic
+  flags remain true; live-run flags are true ONLY when a live run
+  actually executed. No runtime/retriever/pack/model/backend/
+  default-policy files were modified; no promotion/default/runtime
+  claims change.

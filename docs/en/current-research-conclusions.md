@@ -329,6 +329,52 @@ signal, not proof of downstream value or generalization. The full B16 downstream
 remains a bounded planning / feasibility stage. See the
 [B16-D detailed report](b16d-less-trivial-live-provider-paired-smoke.md).
 
+## 2026-06-21 B16-E Broader Live-Provider Downstream Paired Smoke (Task-Family Matrix)
+
+Following B16-D, B16-E broadens the live-provider paired smoke into a
+heterogeneous synthetic task-family matrix with four fixed families.
+B16-E
+(`eval/b16e_broader_live_provider_paired_smoke.py`, reusing
+`eval/provider_client.py`) ->
+`artifacts/b16e_broader_live_provider_paired_smoke/b16e_broader_live_provider_paired_smoke_report.json`,
+schema `b16e_broader_live_provider_paired_smoke.v1`,
+`claim_level=broader_live_provider_downstream_paired_smoke_only`,
+`mode=public_aggregate_synthetic_task_family_matrix`, phase `B16-E`)
+generates 8 deterministic tasks across four families
+(`same_symbol_support_relation`, `operation_ambiguity`,
+`boundary_condition`, `helper_dependency_choice`), creates a fresh
+`/tmp` workspace per task+arm, runs a **live LLM agent**
+(OpenAI-compatible) only when `--allow-remote` +
+`OPENLOCUS_ALLOW_REMOTE=1` + provider env, applies the model's
+structured edit action locally (allowlisted `target.py` only), runs
+real subprocess tests, and computes aggregate behavior metrics +
+family-level records over paired `control_sparse` /
+`treatment_context_pack` arms.
+
+The committed artifact is **truthful**: status is
+`blocked_remote_not_enabled` with live-run flags false because no
+local provider env is available. A live
+`broader_live_provider_paired_smoke_pass` artifact requires an explicit
+local opt-in run or the manual CI `real-provider-benchmark` workflow
+with `stage=b16e_broader_live_provider_paired_smoke` and
+`enable_remote_models=true`. **Manual CI live-provider run: pending.**
+
+This is smoke-only. It does NOT claim downstream agent value, does NOT
+claim live agent generalization, does NOT claim external benchmark
+performance, does NOT claim a real user task, does NOT promote any
+candidate, and does NOT change runtime/retriever/pack/backend/
+default-policy/EvidenceCore semantics. CI pass means live run
+completed + privacy scan passed + artifact is honest; CI pass does NOT
+require treatment improvement (zero/negative delta is valid).
+`honest_signals` and `family_signal_summary` are diagnostic smoke
+outcomes only, NEVER promotion/default/value claims. All no-claim /
+no-runtime-change flags remain false. Live-run flags are true ONLY when
+a live run actually executed; otherwise false. No raw model routing
+prefix is emitted; only the normalized `model_display_category` is
+recorded. No runtime/retriever/pack/model/backend/default-policy files
+were modified. See the
+[B16-E detailed report](b16e-broader-live-provider-paired-smoke.md).
+
 ## 2026-06-21 F1 Counterfactual Evidence Utility Smoke
 
 Following D5-A0, B16-A, and C5-A, F1 produces the first counterfactual

@@ -298,6 +298,45 @@ runtime/retriever/pack/model/backend/default-policy 文件。正向 treatment de
 微型合成 smoke 信号，不是下游价值或泛化证明。详见
 [B16-D 详细报告](b16d-less-trivial-live-provider-paired-smoke.md)。
 
+## 当前状态更新 —— 2026-06-21（B16-E broader live-provider 下游 paired smoke）
+
+继 B16-D 之后，B16-E 将 live-provider paired smoke 从单一任务族扩展为含
+四个固定族的异构合成任务族矩阵。B16-E
+（`eval/b16e_broader_live_provider_paired_smoke.py`，复用
+`eval/provider_client.py`）->
+`artifacts/b16e_broader_live_provider_paired_smoke/b16e_broader_live_provider_paired_smoke_report.json`，
+schema `b16e_broader_live_provider_paired_smoke.v1`、
+`claim_level=broader_live_provider_downstream_paired_smoke_only`、
+`mode=public_aggregate_synthetic_task_family_matrix`、阶段 `B16-E`）
+在四个族（`same_symbol_support_relation`、`operation_ambiguity`、
+`boundary_condition`、`helper_dependency_choice`）中生成 8 个确定性任务，
+为每个 task+arm 创建全新 `/tmp` 工作区，仅当 `--allow-remote` +
+`OPENLOCUS_ALLOW_REMOTE=1` + provider env 时运行 **live LLM agent**
+（OpenAI 兼容），本地应用模型的结构化 edit action（仅白名单
+`target.py`），运行真实子进程测试，并在 paired `control_sparse` /
+`treatment_context_pack` arms 上计算聚合行为指标 + 族级记录。提交的
+artifact 是**真实的**：状态为 `blocked_remote_not_enabled`，
+live-run 标志为 false，因为本地无 provider env。live
+`broader_live_provider_paired_smoke_pass` artifact 需要显式本地
+opt-in run 或手动 CI `real-provider-benchmark` workflow
+（`stage=b16e_broader_live_provider_paired_smoke` +
+`enable_remote_models=true`）。**手动 CI live-provider run：待执
+行。** 未来的 live 结果可能为零、负或正 treatment delta；不作
+价值/泛化/default 声明。188/188 self-test checks 通过。
+
+这是 smoke-only。它**不**声明下游 agent 价值，**不**声明 live agent
+泛化，**不**声明外部基准测试性能，**不**声明真实用户任务，**不**提升
+任何 candidate，也**不**改变 runtime/retriever/pack/backend/
+default-policy/EvidenceCore 语义。CI 通过意味着 live run completed +
+privacy scan passed + artifact is honest；CI 通过**不**要求 treatment
+改善（零/负 delta 有效）。`honest_signals` 和 `family_signal_summary`
+是诊断 smoke 结果，**绝不**是 promotion/default/value 声明。所有无
+声明 / 无运行时变更标志保持 false。live-run 标志**仅**在 live run
+实际执行时为 true，否则为 false。不发布 raw model 路由前缀；仅记录
+规范化的 `model_display_category`。未修改任何
+runtime/retriever/pack/model/backend/default-policy 文件。详见
+[B16-E 详细报告](b16e-broader-live-provider-paired-smoke.md)。
+
 ## 当前状态更新 —— 2026-06-21（C5-A ContextBench verified 检索性能 smoke）
 
 继 D5-A0 与 B16-A 之后，C5-A 产出第一个外部-benchmark-形态的检索性能
