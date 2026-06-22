@@ -114,7 +114,7 @@ import c5d_repoqa_bm25_retrieval_smoke as c5d  # noqa: E402
 SCHEMA_VERSION = "bea5_frozen_policy_robustness.v1"
 GENERATED_BY = "eval/bea5_frozen_policy_robustness.py"
 CLAIM_LEVEL = "bea_v03_frozen_policy_robustness_smoke_only"
-SELF_TEST_CHECKS_EXPECTED = 285
+SELF_TEST_CHECKS_EXPECTED = 385
 MODE = "bea_v03_frozen_policy_robustness_smoke"
 PHASE = "BEA-5"
 
@@ -124,14 +124,28 @@ DEFAULT_OUT = Path(
 )
 
 PRIVATE_SCORE_SCHEMA_VERSION = "bea5_private_score.v1"
+PRIVATE_ATTEMPT_SCHEMA_VERSION = "bea5_private_attempt.v1"
 
-# Fresh disjoint larger slice from BEA-4. Hard caps 240/120.
+# Fresh disjoint larger slice from BEA-4. Hard caps 480/240 raw attempts;
+# success-quota sampling stops once target_successful_records is reached.
 CONTEXTBENCH_ROW_OFFSET_DEFAULT = 160
-CONTEXTBENCH_ROW_LIMIT_DEFAULT = 240
-CONTEXTBENCH_ROW_LIMIT_HARD_CAP = 240
+CONTEXTBENCH_ROW_LIMIT_DEFAULT = 480
+CONTEXTBENCH_ROW_LIMIT_HARD_CAP = 480
 REPOQA_NEEDLE_OFFSET_DEFAULT = 80
-REPOQA_NEEDLE_LIMIT_DEFAULT = 120
-REPOQA_NEEDLE_LIMIT_HARD_CAP = 120
+REPOQA_NEEDLE_LIMIT_DEFAULT = 240
+REPOQA_NEEDLE_LIMIT_HARD_CAP = 240
+
+# Success-quota sampling (BEA-5 fix after CI failures on raw disjoint slices
+# that produced only 72 successful records). Stop evaluation once
+# target_successful_records is reached across both benchmarks. Requires
+# nonzero both benchmarks; prefer min contextbench_successful >= 40 and
+# repoqa_successful >= 20 (implemented as public fields and CI gates).
+SAMPLING_MODE = "success_quota"
+TARGET_SUCCESSFUL_RECORDS = 120
+RAW_ATTEMPT_CAP_CONTEXTBENCH = 480
+RAW_ATTEMPT_CAP_REPOQA = 240
+MIN_CONTEXTBENCH_SUCCESSFUL = 40
+MIN_REPOQA_SUCCESSFUL = 20
 
 BUDGET_DEFAULT = 5
 BUDGET_HARD_CAP = 20
@@ -267,13 +281,19 @@ FAILURE_CATEGORIES: tuple[str, ...] = (
     "heldout_offset_exceeds_available",
     "repo_clone_failed",
     "repo_checkout_failed",
+    "materialization_failed",
     "retrieval_failed",
+    "scoring_unavailable",
     "rrf_required_but_missing",
+    "unsupported_schema",
+    "attempt_timeout",
     "score_failed",
     "private_score_write_failed",
+    "private_attempt_write_failed",
     "record_excluded_from_paired_denominator",
     "row_limit_capped",
     "needle_limit_capped",
+    "quota_reached_stop",
     "scanner_self_test_failed",
     "forbidden_leak_blocked",
     "duplicate_record_key_blocked",
@@ -311,6 +331,12 @@ BEA5_FORBIDDEN_EXTRA_KEYS: frozenset[str] = frozenset(
         # Worst-slice private identifiers.
         "worst_slice_record_id", "slice_label", "slice_id",
         "worst_slice_label", "slice_record_ids", "slice_member_ids",
+        # Private attempt manifest private identifiers (BEA-5 fix).
+        "private_attempt_path", "attempt_path", "private_attempt_file",
+        "private_attempt_id", "attempt_id", "attempt_outcome",
+        "attempt_record", "attempt_reason", "attempt_query",
+        "attempt_repo_url", "attempt_commit", "attempt_path_value",
+        "attempt_gold", "attempt_candidate",
         # Self-test detail list must NOT be serialized publicly.
         "self_test_checks", "self_test_details", "self_test_list",
         "checks", "check_list",
@@ -329,8 +355,9 @@ def _is_bea5_schema_key_container(path: str) -> bool:
         "failure_category_counts", "benchmark_arm_metric_records",
         "delta_records", "win_tie_loss_records",
         "worst_slice_records", "mechanism_summary_records",
-        "robustness_summary_records",
-        "private_score_manifest", "framing", "arm_metric_records",
+        "robustness_summary_records", "benchmark_attempt_records",
+        "private_score_manifest", "private_attempt_manifest",
+        "framing", "arm_metric_records",
     )
 
 
@@ -541,6 +568,64 @@ def _private_score_manifest_hash() -> str:
 
 def _write_private_score_row(score_path: Path, row: dict[str, Any]) -> None:
     bea0._write_private_score_row(score_path, row)
+
+
+# ---------------------------------------------------------------------------
+# Private attempt manifest (BEA-5 success-quota sampling fix)
+# ---------------------------------------------------------------------------
+
+
+def _private_attempt_manifest_hash() -> str:
+    """Hash of the private attempt manifest schema (NOT row contents).
+
+    Public artifact records only this hash. The private attempt JSONL is
+    written under /tmp only and NEVER committed or uploaded.
+    """
+    manifest_schema = {
+        "schema_version": PRIVATE_ATTEMPT_SCHEMA_VERSION,
+        "fields": [
+            "phase_run_id", "benchmark", "private_attempt_id",
+            "outcome_category", "attempt_reason",
+        ],
+    }
+    canonical = json.dumps(manifest_schema, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _write_private_attempt_row(
+    attempt_path: Path, row: dict[str, Any],
+) -> None:
+    """Append one private attempt row (transient /tmp only)."""
+    bea0._write_private_score_row(attempt_path, row)
+
+
+def _benchmark_attempt_records(
+    per_benchmark_attempts: dict[str, dict[str, int]],
+) -> list[dict[str, Any]]:
+    """Build benchmark_attempt_records (records-only; no dynamic dict mirror).
+
+    Each record: ``{benchmark, attempted, successful, excluded, record_count}``.
+    Natural key: ``(benchmark,)``.
+    """
+    records: list[dict[str, Any]] = []
+    for benchmark in sorted(per_benchmark_attempts.keys()):
+        counts = per_benchmark_attempts[benchmark]
+        attempted = int(counts.get("attempted", 0))
+        successful = int(counts.get("successful", 0))
+        excluded = int(counts.get("excluded", 0))
+        records.append({
+            "benchmark": benchmark,
+            "attempted": attempted,
+            "successful": successful,
+            "excluded": excluded,
+            "record_count": attempted,
+        })
+    records.sort(key=lambda r: r["benchmark"])
+    return records
+
+
+def _bamr_attempt_natural_key(rec: dict[str, Any]) -> tuple:
+    return (rec["benchmark"],)
 
 
 # ---------------------------------------------------------------------------
@@ -1411,9 +1496,22 @@ def _build_unavailable_report(
     private_score_record_count: int = 0,
     private_score_storage_class: str = "tmp_private",
     private_score_manifest_hash: str | None = None,
+    private_attempt_records_written: bool = False,
+    private_attempt_record_count: int = 0,
+    private_attempt_storage_class: str = "tmp_private",
+    private_attempt_manifest_hash: str | None = None,
+    records_attempted_total: int = 0,
     records_evaluated: int = 0,
     records_successful: int = 0,
     records_failed: int = 0,
+    records_excluded: int = 0,
+    contextbench_attempted: int = 0,
+    contextbench_successful: int = 0,
+    contextbench_excluded: int = 0,
+    repoqa_attempted: int = 0,
+    repoqa_successful: int = 0,
+    repoqa_excluded: int = 0,
+    quota_reached: bool = False,
     network_calls: int = 0,
     failure_category_counts: dict[str, int] | None = None,
 ) -> dict[str, Any]:
@@ -1435,11 +1533,30 @@ def _build_unavailable_report(
     safe_true["robustness_summary_computed"] = False
     safe_true["private_score_records_written"] = bool(private_score_records_written)
 
-    manifest_hash = (
+    score_manifest_hash = (
         private_score_manifest_hash
         if private_score_manifest_hash is not None
         else _private_score_manifest_hash()
     )
+    attempt_manifest_hash = (
+        private_attempt_manifest_hash
+        if private_attempt_manifest_hash is not None
+        else _private_attempt_manifest_hash()
+    )
+
+    per_benchmark_attempts = {
+        "contextbench": {
+            "attempted": int(contextbench_attempted),
+            "successful": int(contextbench_successful),
+            "excluded": int(contextbench_excluded),
+        },
+        "repoqa": {
+            "attempted": int(repoqa_attempted),
+            "successful": int(repoqa_successful),
+            "excluded": int(repoqa_excluded),
+        },
+    }
+    benchmark_attempt_records = _benchmark_attempt_records(per_benchmark_attempts)
 
     report: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
@@ -1453,13 +1570,27 @@ def _build_unavailable_report(
         "budget": int(budget),
         "network_mode": network_mode,
         "openlocus_binary_source": openlocus_binary_source,
+        # Success-quota sampling fields (BEA-5 fix).
+        "sampling_mode": SAMPLING_MODE,
+        "target_successful_records": TARGET_SUCCESSFUL_RECORDS,
+        "raw_attempt_cap_contextbench": RAW_ATTEMPT_CAP_CONTEXTBENCH,
+        "raw_attempt_cap_repoqa": RAW_ATTEMPT_CAP_REPOQA,
         "contextbench_row_offset_requested": contextbench_row_offset_requested,
         "contextbench_row_limit_requested": contextbench_row_limit_requested,
         "repoqa_needle_offset_requested": repoqa_needle_offset_requested,
         "repoqa_needle_limit_requested": repoqa_needle_limit_requested,
+        "records_attempted_total": int(records_attempted_total),
         "records_evaluated": records_evaluated,
         "records_successful": records_successful,
         "records_failed": records_failed,
+        "records_excluded": int(records_excluded),
+        "contextbench_attempted": int(contextbench_attempted),
+        "contextbench_successful": int(contextbench_successful),
+        "contextbench_excluded": int(contextbench_excluded),
+        "repoqa_attempted": int(repoqa_attempted),
+        "repoqa_successful": int(repoqa_successful),
+        "repoqa_excluded": int(repoqa_excluded),
+        "quota_reached": bool(quota_reached),
         "network_calls": network_calls,
         "provider_calls": 0,
         "failure_reason_category": failure_reason_category,
@@ -1470,12 +1601,21 @@ def _build_unavailable_report(
         "worst_slice_records": [],
         "mechanism_summary_records": [],
         "robustness_summary_records": [],
+        "benchmark_attempt_records": benchmark_attempt_records,
         "private_score_manifest": {
             "records_written": bool(private_score_records_written),
             "record_count": int(private_score_record_count),
             "schema_version": PRIVATE_SCORE_SCHEMA_VERSION,
-            "manifest_hash": manifest_hash,
+            "manifest_hash": score_manifest_hash,
             "storage_class": private_score_storage_class,
+            "path_publicly_serialized": False,
+        },
+        "private_attempt_manifest": {
+            "records_written": bool(private_attempt_records_written),
+            "record_count": int(private_attempt_record_count),
+            "schema_version": PRIVATE_ATTEMPT_SCHEMA_VERSION,
+            "manifest_hash": attempt_manifest_hash,
+            "storage_class": private_attempt_storage_class,
             "path_publicly_serialized": False,
         },
         **safe_true,
@@ -1520,9 +1660,18 @@ def _build_pass_report(
     methods: tuple[str, ...],
     openlocus_binary_source: str,
     network_mode: str,
+    records_attempted_total: int,
     records_evaluated: int,
     records_successful: int,
     records_failed: int,
+    records_excluded: int,
+    contextbench_attempted: int,
+    contextbench_successful: int,
+    contextbench_excluded: int,
+    repoqa_attempted: int,
+    repoqa_successful: int,
+    repoqa_excluded: int,
+    quota_reached: bool,
     network_calls: int,
     arm_aggs: dict[str, dict[str, Any]],
     per_record_arm_metrics: list[dict[str, dict[str, Any]]],
@@ -1533,6 +1682,10 @@ def _build_pass_report(
     private_score_record_count: int,
     private_score_storage_class: str,
     private_score_manifest_hash: str,
+    private_attempt_records_written: bool,
+    private_attempt_record_count: int,
+    private_attempt_storage_class: str,
+    private_attempt_manifest_hash: str,
     aggregate_runtime_seconds: float,
     failure_category_counts: dict[str, int],
     paired_exclusion_count: int,
@@ -1604,6 +1757,20 @@ def _build_pass_report(
     else:
         status = "unavailable_with_reason"
 
+    per_benchmark_attempts = {
+        "contextbench": {
+            "attempted": int(contextbench_attempted),
+            "successful": int(contextbench_successful),
+            "excluded": int(contextbench_excluded),
+        },
+        "repoqa": {
+            "attempted": int(repoqa_attempted),
+            "successful": int(repoqa_successful),
+            "excluded": int(repoqa_excluded),
+        },
+    }
+    benchmark_attempt_records = _benchmark_attempt_records(per_benchmark_attempts)
+
     report: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "generated_by": GENERATED_BY,
@@ -1620,13 +1787,27 @@ def _build_pass_report(
         "seeded_random_seed": SEEDED_RANDOM_SEED,
         "network_mode": network_mode,
         "openlocus_binary_source": openlocus_binary_source,
+        # Success-quota sampling fields (BEA-5 fix).
+        "sampling_mode": SAMPLING_MODE,
+        "target_successful_records": TARGET_SUCCESSFUL_RECORDS,
+        "raw_attempt_cap_contextbench": RAW_ATTEMPT_CAP_CONTEXTBENCH,
+        "raw_attempt_cap_repoqa": RAW_ATTEMPT_CAP_REPOQA,
         "contextbench_row_offset_requested": contextbench_row_offset_requested,
         "contextbench_row_limit_requested": contextbench_row_limit_requested,
         "repoqa_needle_offset_requested": repoqa_needle_offset_requested,
         "repoqa_needle_limit_requested": repoqa_needle_limit_requested,
+        "records_attempted_total": int(records_attempted_total),
         "records_evaluated": records_evaluated,
         "records_successful": records_successful,
         "records_failed": records_failed,
+        "records_excluded": int(records_excluded),
+        "contextbench_attempted": int(contextbench_attempted),
+        "contextbench_successful": int(contextbench_successful),
+        "contextbench_excluded": int(contextbench_excluded),
+        "repoqa_attempted": int(repoqa_attempted),
+        "repoqa_successful": int(repoqa_successful),
+        "repoqa_excluded": int(repoqa_excluded),
+        "quota_reached": bool(quota_reached),
         "paired_exclusion_count": int(paired_exclusion_count),
         "network_calls": network_calls,
         "provider_calls": 0,
@@ -1636,12 +1817,21 @@ def _build_pass_report(
         "worst_slice_records": worst_slice_records,
         "mechanism_summary_records": mechanism_summary_records,
         "robustness_summary_records": robustness_summary_records,
+        "benchmark_attempt_records": benchmark_attempt_records,
         "private_score_manifest": {
             "records_written": bool(private_score_records_written),
             "record_count": int(private_score_record_count),
             "schema_version": PRIVATE_SCORE_SCHEMA_VERSION,
             "manifest_hash": private_score_manifest_hash,
             "storage_class": private_score_storage_class,
+            "path_publicly_serialized": False,
+        },
+        "private_attempt_manifest": {
+            "records_written": bool(private_attempt_records_written),
+            "record_count": int(private_attempt_record_count),
+            "schema_version": PRIVATE_ATTEMPT_SCHEMA_VERSION,
+            "manifest_hash": private_attempt_manifest_hash,
+            "storage_class": private_attempt_storage_class,
             "path_publicly_serialized": False,
         },
         "aggregate_runtime_seconds": round(float(aggregate_runtime_seconds), 3),
@@ -1805,7 +1995,13 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         budget=5, methods=("bm25", "regex", "symbol"),
         openlocus_binary_source="self_test",
         network_mode="self_test",
+        records_attempted_total=1,
         records_evaluated=1, records_successful=1, records_failed=0,
+        records_excluded=0,
+        contextbench_attempted=1, contextbench_successful=1,
+        contextbench_excluded=0,
+        repoqa_attempted=0, repoqa_successful=0, repoqa_excluded=0,
+        quota_reached=True,
         network_calls=0, arm_aggs=arm_aggs,
         per_record_arm_metrics=per_record_arm_metrics,
         per_benchmark_arm_aggs=per_benchmark_arm_aggs,
@@ -1815,6 +2011,10 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         private_score_record_count=7,
         private_score_storage_class="tmp_private",
         private_score_manifest_hash=_private_score_manifest_hash(),
+        private_attempt_records_written=True,
+        private_attempt_record_count=1,
+        private_attempt_storage_class="tmp_private",
+        private_attempt_manifest_hash=_private_attempt_manifest_hash(),
         aggregate_runtime_seconds=0.5,
         failure_category_counts={c: 0 for c in FAILURE_CATEGORIES},
         paired_exclusion_count=0, partial=False,
@@ -1828,6 +2028,15 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         budget=5, methods=("bm25", "regex", "symbol"),
         openlocus_binary_source="self_test",
         network_mode="self_test",
+        records_attempted_total=0,
+        records_evaluated=0, records_successful=0, records_failed=0,
+        records_excluded=0,
+        contextbench_attempted=0, contextbench_successful=0,
+        contextbench_excluded=0,
+        repoqa_attempted=0, repoqa_successful=0, repoqa_excluded=0,
+        quota_reached=False,
+        private_attempt_records_written=False,
+        private_attempt_record_count=0,
     )
 
     # Group 1: Identity.
@@ -1863,18 +2072,25 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
 
     # Group 5: Robustness slice defaults and hard caps.
     checks.append(_check("cb_offset_default", CONTEXTBENCH_ROW_OFFSET_DEFAULT == 160))
-    checks.append(_check("cb_limit_default", CONTEXTBENCH_ROW_LIMIT_DEFAULT == 240))
-    checks.append(_check("cb_limit_hard_cap", CONTEXTBENCH_ROW_LIMIT_HARD_CAP == 240))
+    checks.append(_check("cb_limit_default", CONTEXTBENCH_ROW_LIMIT_DEFAULT == 480))
+    checks.append(_check("cb_limit_hard_cap", CONTEXTBENCH_ROW_LIMIT_HARD_CAP == 480))
     checks.append(_check("rq_offset_default", REPOQA_NEEDLE_OFFSET_DEFAULT == 80))
-    checks.append(_check("rq_limit_default", REPOQA_NEEDLE_LIMIT_DEFAULT == 120))
-    checks.append(_check("rq_limit_hard_cap", REPOQA_NEEDLE_LIMIT_HARD_CAP == 120))
+    checks.append(_check("rq_limit_default", REPOQA_NEEDLE_LIMIT_DEFAULT == 240))
+    checks.append(_check("rq_limit_hard_cap", REPOQA_NEEDLE_LIMIT_HARD_CAP == 240))
     checks.append(_check("budget_default", BUDGET_DEFAULT == 5))
     checks.append(_check("budget_hard_cap", BUDGET_HARD_CAP == 20))
     checks.append(_check("ci_min_records", CI_MIN_RECORDS_SUCCESSFUL == 120))
+    checks.append(_check("sampling_mode_constant", SAMPLING_MODE == "success_quota"))
+    checks.append(_check("target_successful_records", TARGET_SUCCESSFUL_RECORDS == 120))
+    checks.append(_check("raw_attempt_cap_cb", RAW_ATTEMPT_CAP_CONTEXTBENCH == 480))
+    checks.append(_check("raw_attempt_cap_rq", RAW_ATTEMPT_CAP_REPOQA == 240))
+    checks.append(_check("min_cb_successful", MIN_CONTEXTBENCH_SUCCESSFUL == 40))
+    checks.append(_check("min_rq_successful", MIN_REPOQA_SUCCESSFUL == 20))
+    checks.append(_check("private_attempt_schema_version", PRIVATE_ATTEMPT_SCHEMA_VERSION == "bea5_private_attempt.v1"))
 
     # Group 6: Validation caps.
-    checks.append(_check("validate_row_limit_caps", _validate_row_limit(300) == 240))
-    checks.append(_check("validate_needle_limit_caps", _validate_needle_limit(200) == 120))
+    checks.append(_check("validate_row_limit_caps", _validate_row_limit(600) == 480))
+    checks.append(_check("validate_needle_limit_caps", _validate_needle_limit(300) == 240))
     checks.append(_check("validate_budget_caps", _validate_budget(100) == 20))
     try:
         _validate_row_limit(0)
@@ -2214,6 +2430,120 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     ]
     checks.append(_check("unique_validator_detects_dup", bool(_check_unique_records(dup_bamr, _bamr_natural_key, "test"))))
 
+    # Group 33: Success-quota sampling fields present in pass report.
+    for field in ("sampling_mode", "target_successful_records",
+                  "raw_attempt_cap_contextbench", "raw_attempt_cap_repoqa",
+                  "records_attempted_total", "records_excluded",
+                  "contextbench_attempted", "contextbench_successful",
+                  "contextbench_excluded",
+                  "repoqa_attempted", "repoqa_successful", "repoqa_excluded",
+                  "quota_reached", "benchmark_attempt_records",
+                  "private_attempt_manifest"):
+        checks.append(_check(f"pass_has_{field}", field in skeleton))
+    checks.append(_check("pass_sampling_mode_value", skeleton.get("sampling_mode") == "success_quota"))
+    checks.append(_check("pass_target_successful_value", skeleton.get("target_successful_records") == 120))
+    checks.append(_check("pass_raw_attempt_cap_cb_value", skeleton.get("raw_attempt_cap_contextbench") == 480))
+    checks.append(_check("pass_raw_attempt_cap_rq_value", skeleton.get("raw_attempt_cap_repoqa") == 240))
+    checks.append(_check("pass_records_attempted_total_value", skeleton.get("records_attempted_total") == 1))
+    checks.append(_check("pass_records_excluded_value", skeleton.get("records_excluded") == 0))
+    checks.append(_check("pass_contextbench_attempted_value", skeleton.get("contextbench_attempted") == 1))
+    checks.append(_check("pass_contextbench_successful_value", skeleton.get("contextbench_successful") == 1))
+    checks.append(_check("pass_repoqa_attempted_value", skeleton.get("repoqa_attempted") == 0))
+    checks.append(_check("pass_quota_reached_value", skeleton.get("quota_reached") is True))
+
+    # Group 34: Success-quota fields present in unavailable report.
+    for field in ("sampling_mode", "target_successful_records",
+                  "raw_attempt_cap_contextbench", "raw_attempt_cap_repoqa",
+                  "records_attempted_total", "records_excluded",
+                  "contextbench_attempted", "contextbench_successful",
+                  "contextbench_excluded",
+                  "repoqa_attempted", "repoqa_successful", "repoqa_excluded",
+                  "quota_reached", "benchmark_attempt_records",
+                  "private_attempt_manifest"):
+        checks.append(_check(f"unavail_has_{field}", field in unavail))
+    checks.append(_check("unavail_sampling_mode_value", unavail.get("sampling_mode") == "success_quota"))
+    checks.append(_check("unavail_target_successful_value", unavail.get("target_successful_records") == 120))
+    checks.append(_check("unavail_quota_reached_value", unavail.get("quota_reached") is False))
+    checks.append(_check("unavail_records_attempted_total_value", unavail.get("records_attempted_total") == 0))
+    checks.append(_check("unavail_records_excluded_value", unavail.get("records_excluded") == 0))
+
+    # Group 35: private_attempt_manifest shape + hash + storage class.
+    attempt_manifest = skeleton.get("private_attempt_manifest", {})
+    checks.append(_check("attempt_manifest_records_written", attempt_manifest.get("records_written") is True))
+    checks.append(_check("attempt_manifest_record_count", attempt_manifest.get("record_count") == 1))
+    checks.append(_check("attempt_manifest_schema", attempt_manifest.get("schema_version") == PRIVATE_ATTEMPT_SCHEMA_VERSION))
+    checks.append(_check("attempt_manifest_storage_class", attempt_manifest.get("storage_class") == "tmp_private"))
+    checks.append(_check("attempt_manifest_path_not_serialized",
+        attempt_manifest.get("path_publicly_serialized") is False))
+    amh = attempt_manifest.get("manifest_hash", "")
+    checks.append(_check("attempt_manifest_hash_len", len(amh) == 64))
+
+    # Group 36: private_attempt_manifest in unavailable report is empty.
+    unavail_attempt_manifest = unavail.get("private_attempt_manifest", {})
+    checks.append(_check("unavail_attempt_manifest_records_written", unavail_attempt_manifest.get("records_written") is False))
+    checks.append(_check("unavail_attempt_manifest_record_count", unavail_attempt_manifest.get("record_count") == 0))
+    checks.append(_check("unavail_attempt_manifest_path_not_serialized", unavail_attempt_manifest.get("path_publicly_serialized") is False))
+
+    # Group 37: benchmark_attempt_records content + uniqueness.
+    bar = skeleton.get("benchmark_attempt_records", [])
+    checks.append(_check("bar_nonempty", len(bar) > 0))
+    checks.append(_check("bar_count_2", len(bar) == 2))
+    for rec in bar:
+        for key in ("benchmark", "attempted", "successful", "excluded", "record_count"):
+            checks.append(_check(f"bar_has_{key}", key in rec))
+    bar_dup = _check_unique_records(bar, _bamr_attempt_natural_key, "benchmark_attempt_records")
+    checks.append(_check("bar_unique", not bar_dup))
+    cb_bar = next((r for r in bar if r["benchmark"] == "contextbench"), None)
+    rq_bar = next((r for r in bar if r["benchmark"] == "repoqa"), None)
+    checks.append(_check("bar_cb_attempted", cb_bar is not None and cb_bar["attempted"] == 1))
+    checks.append(_check("bar_cb_successful", cb_bar is not None and cb_bar["successful"] == 1))
+    checks.append(_check("bar_rq_attempted", rq_bar is not None and rq_bar["attempted"] == 0))
+    checks.append(_check("bar_rq_successful", rq_bar is not None and rq_bar["successful"] == 0))
+
+    # Group 38: Scanner rejects private-attempt private identifiers.
+    for forbidden_key in ("private_attempt_path", "attempt_path",
+                          "private_attempt_file", "private_attempt_id",
+                          "attempt_id", "attempt_outcome",
+                          "attempt_record", "attempt_reason",
+                          "attempt_query", "attempt_repo_url",
+                          "attempt_commit", "attempt_path_value",
+                          "attempt_gold", "attempt_candidate"):
+        leaked = dict(skeleton)
+        leaked[forbidden_key] = "leak"
+        checks.append(_check(f"scanner_rejects_{forbidden_key}",
+            bool(_scan_bea5(leaked))))
+
+    # Group 39: Private attempt writer round-trip.
+    with tempfile.TemporaryDirectory(prefix="bea5_att_st_") as sd:
+        af = Path(sd) / "bea5.attempt.jsonl"
+        _write_private_attempt_row(af, {"phase_run_id": "st", "benchmark": "contextbench",
+                                        "private_attempt_id": "st-1",
+                                        "outcome_category": "successful",
+                                        "attempt_reason": ""})
+        _write_private_attempt_row(af, {"phase_run_id": "st", "benchmark": "repoqa",
+                                        "private_attempt_id": "st-2",
+                                        "outcome_category": "repo_clone_failed",
+                                        "attempt_reason": "clone_failed"})
+        alines = af.read_text(encoding="utf-8").splitlines()
+        checks.append(_check("attempt_writer_2_rows", len(alines) == 2))
+        checks.append(_check("attempt_rows_parse",
+            all(isinstance(json.loads(l), dict) for l in alines if l)))
+
+    # Group 40: benchmark_attempt_records builder handles missing benchmarks.
+    partial_attempts = {"contextbench": {"attempted": 5, "successful": 3, "excluded": 2}}
+    partial_bar = _benchmark_attempt_records(partial_attempts)
+    checks.append(_check("partial_bar_count_1", len(partial_bar) == 1))
+    checks.append(_check("partial_bar_cb", partial_bar[0]["benchmark"] == "contextbench"))
+    checks.append(_check("partial_bar_cb_attempted", partial_bar[0]["attempted"] == 5))
+    checks.append(_check("partial_bar_cb_successful", partial_bar[0]["successful"] == 3))
+    checks.append(_check("partial_bar_cb_excluded", partial_bar[0]["excluded"] == 2))
+
+    # Group 41: Pass report status reflects quota reached.
+    # The skeleton uses records_successful=1, quota_reached=True, partial=False,
+    # so it should be a full pass.
+    checks.append(_check("skeleton_status_pass_with_quota",
+        skeleton.get("status") == "bea5_frozen_policy_robustness_pass"))
+
     all_passed = all(c["passed"] for c in checks if c is not None)
     return checks, all_passed
 
@@ -2277,10 +2607,16 @@ def _run_network_smoke(
     fcc = {c: 0 for c in FAILURE_CATEGORIES}
     network_calls = 0
     smoke_start = time.perf_counter()
-    manifest_hash = _private_score_manifest_hash()
+    score_manifest_hash = _private_score_manifest_hash()
+    attempt_manifest_hash = _private_attempt_manifest_hash()
     score_file = private_score_dir / "bea5.private.jsonl"
+    attempt_file = private_score_dir / "bea5.attempt.jsonl"
     try:
         score_file.unlink()
+    except OSError:
+        pass
+    try:
+        attempt_file.unlink()
     except OSError:
         pass
 
@@ -2288,10 +2624,36 @@ def _run_network_smoke(
     per_benchmark_arm_aggs: dict[str, dict[str, dict[str, Any]]] = {}
     per_record_mechanism_summaries: list[dict[str, Any]] = []
     per_record_buckets: list[dict[str, Any]] = []
+    records_attempted_total = 0
     records_evaluated = 0
     records_successful = 0
     records_failed = 0
+    records_excluded = 0
+    contextbench_attempted = 0
+    contextbench_successful = 0
+    contextbench_excluded = 0
+    repoqa_attempted = 0
+    repoqa_successful = 0
+    repoqa_excluded = 0
+    quota_reached = False
     paired_exclusion_count = 0
+
+    def _write_attempt(
+        benchmark: str, private_attempt_id: str,
+        outcome_category: str, attempt_reason: str,
+    ) -> None:
+        try:
+            _write_private_attempt_row(attempt_file, {
+                "phase_run_id": phase_run_id,
+                "benchmark": benchmark,
+                "private_attempt_id": private_attempt_id,
+                "outcome_category": outcome_category,
+                "attempt_reason": attempt_reason,
+            })
+        except OSError:
+            fcc["private_attempt_write_failed"] = (
+                fcc.get("private_attempt_write_failed", 0) + 1
+            )
 
     # ContextBench heldout robustness slice.
     cb_rows, cb_status, cb_nc, cb_fcc = _fetch_heldout_contextbench_rows(
@@ -2303,13 +2665,26 @@ def _run_network_smoke(
             fcc[k] += v
     if cb_status == "pass" and cb_rows:
         for idx, row in enumerate(cb_rows):
+            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
+                quota_reached = True
+                fcc["quota_reached_stop"] = (
+                    fcc.get("quota_reached_stop", 0) + 1
+                )
+                break
+            records_attempted_total += 1
+            contextbench_attempted += 1
             records_evaluated += 1
+            private_attempt_id = f"contextbench-{idx}"
             gold_paths, gold_lines, gc_status = c5a._parse_gold_context(
                 row.get("gold_context")
             )
             if gc_status != "pass":
                 fcc["contextbench_gold_parse_failed"] += 1
                 records_failed += 1
+                records_excluded += 1
+                contextbench_excluded += 1
+                _write_attempt("contextbench", private_attempt_id,
+                               "contextbench_gold_parse_failed", "gold_parse_failed")
                 continue
             query = c5a._sanitize_query(
                 row.get("problem_statement", ""), "first_paragraph"
@@ -2317,6 +2692,10 @@ def _run_network_smoke(
             if not query:
                 fcc["contextbench_no_python_rows"] += 1
                 records_failed += 1
+                records_excluded += 1
+                contextbench_excluded += 1
+                _write_attempt("contextbench", private_attempt_id,
+                               "contextbench_no_python_rows", "no_query")
                 continue
             repo_url = row.get("repo_url", "")
             base_commit = row.get("base_commit", "")
@@ -2325,6 +2704,10 @@ def _run_network_smoke(
             ) or not repo_url or not base_commit:
                 fcc["contextbench_no_python_rows"] += 1
                 records_failed += 1
+                records_excluded += 1
+                contextbench_excluded += 1
+                _write_attempt("contextbench", private_attempt_id,
+                               "contextbench_no_python_rows", "no_repo_or_commit")
                 continue
             with tempfile.TemporaryDirectory(prefix=f"bea5_cb_{idx}_") as rds:
                 rwd = Path(rds)
@@ -2335,13 +2718,20 @@ def _run_network_smoke(
                     if k in fcc:
                         fcc[k] += v
                 if not clone_ok:
+                    fcc["materialization_failed"] = (
+                        fcc.get("materialization_failed", 0) + 1
+                    )
                     records_failed += 1
+                    records_excluded += 1
+                    contextbench_excluded += 1
+                    _write_attempt("contextbench", private_attempt_id,
+                                   "materialization_failed", "clone_or_checkout_failed")
                     continue
                 repo_root = rwd / "repo"
                 per_arm, fcc, mech_summary, rec_buckets = _evaluate_record(
                     openlocus_bin=openlocus_bin,
                     benchmark="contextbench",
-                    private_record_id=f"contextbench-{idx}",
+                    private_record_id=private_attempt_id,
                     task_id=f"cb_row_{idx}", query=query,
                     gold_paths=gold_paths, gold_lines=gold_lines,
                     repo_root=repo_root, methods=methods, budget=budget,
@@ -2349,6 +2739,10 @@ def _run_network_smoke(
                 )
                 if per_arm is None:
                     records_failed += 1
+                    records_excluded += 1
+                    contextbench_excluded += 1
+                    _write_attempt("contextbench", private_attempt_id,
+                                   "scoring_unavailable", "evaluate_record_failed")
                     continue
                 per_record_arm_metrics.append(per_arm)
                 per_record_mechanism_summaries.append(mech_summary)
@@ -2363,6 +2757,16 @@ def _run_network_smoke(
                             cb_aggs[arm_id].setdefault(m, [])
                             cb_aggs[arm_id][m].append(metrics[m])
                 records_successful += 1
+                contextbench_successful += 1
+                _write_attempt("contextbench", private_attempt_id,
+                               "successful", "")
+            # Check quota after each successful record.
+            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
+                quota_reached = True
+                fcc["quota_reached_stop"] = (
+                    fcc.get("quota_reached_stop", 0) + 1
+                )
+                break
 
     # RepoQA heldout robustness slice.
     rq_needles, rq_status, rq_nc, rq_fcc = _fetch_heldout_repoqa_needles(
@@ -2374,13 +2778,26 @@ def _run_network_smoke(
             fcc[k] += v
     if rq_status == "pass" and rq_needles:
         for idx, needle in enumerate(rq_needles):
+            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
+                quota_reached = True
+                fcc["quota_reached_stop"] = (
+                    fcc.get("quota_reached_stop", 0) + 1
+                )
+                break
+            records_attempted_total += 1
+            repoqa_attempted += 1
             records_evaluated += 1
+            private_attempt_id = f"repoqa-{idx}"
             query = c5d._sanitize_needle_description(
                 needle.get("needle_description", "")
             )
             if not query:
                 fcc["repoqa_needle_parse_failed"] += 1
                 records_failed += 1
+                records_excluded += 1
+                repoqa_excluded += 1
+                _write_attempt("repoqa", private_attempt_id,
+                               "repoqa_needle_parse_failed", "no_query")
                 continue
             repo_url = needle.get("repo_url", "")
             commit_sha = needle.get("commit_sha", "")
@@ -2392,6 +2809,10 @@ def _run_network_smoke(
                 or not isinstance(needle_path, str) or not needle_path):
                 fcc["repoqa_needle_parse_failed"] += 1
                 records_failed += 1
+                records_excluded += 1
+                repoqa_excluded += 1
+                _write_attempt("repoqa", private_attempt_id,
+                               "repoqa_needle_parse_failed", "no_repo_or_commit_or_path")
                 continue
             with tempfile.TemporaryDirectory(prefix=f"bea5_rq_{idx}_") as rds:
                 rwd = Path(rds)
@@ -2402,13 +2823,20 @@ def _run_network_smoke(
                     if k in fcc:
                         fcc[k] += v
                 if not clone_ok:
+                    fcc["materialization_failed"] = (
+                        fcc.get("materialization_failed", 0) + 1
+                    )
                     records_failed += 1
+                    records_excluded += 1
+                    repoqa_excluded += 1
+                    _write_attempt("repoqa", private_attempt_id,
+                                   "materialization_failed", "clone_or_checkout_failed")
                     continue
                 repo_root = rwd / "repo"
                 per_arm, fcc, mech_summary, rec_buckets = _evaluate_record(
                     openlocus_bin=openlocus_bin,
                     benchmark="repoqa",
-                    private_record_id=f"repoqa-{idx}",
+                    private_record_id=private_attempt_id,
                     task_id=f"rq_needle_{idx}", query=query,
                     gold_paths=[needle_path],
                     gold_lines=[[start_line, end_line]],
@@ -2417,6 +2845,10 @@ def _run_network_smoke(
                 )
                 if per_arm is None:
                     records_failed += 1
+                    records_excluded += 1
+                    repoqa_excluded += 1
+                    _write_attempt("repoqa", private_attempt_id,
+                                   "scoring_unavailable", "evaluate_record_failed")
                     continue
                 per_record_arm_metrics.append(per_arm)
                 per_record_mechanism_summaries.append(mech_summary)
@@ -2431,8 +2863,28 @@ def _run_network_smoke(
                             rq_aggs[arm_id].setdefault(m, [])
                             rq_aggs[arm_id][m].append(metrics[m])
                 records_successful += 1
+                repoqa_successful += 1
+                _write_attempt("repoqa", private_attempt_id,
+                               "successful", "")
+            # Check quota after each successful record.
+            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
+                quota_reached = True
+                fcc["quota_reached_stop"] = (
+                    fcc.get("quota_reached_stop", 0) + 1
+                )
+                break
 
     if not per_record_arm_metrics:
+        # Count private attempt rows even in unavailable case.
+        private_attempt_count = 0
+        try:
+            if attempt_file.exists():
+                with attempt_file.open("r", encoding="utf-8") as fh:
+                    for line in fh:
+                        if line.strip():
+                            private_attempt_count += 1
+        except OSError:
+            private_attempt_count = 0
         return _build_unavailable_report(
             "retrieval_failed", self_test_passed=self_test_passed,
             contextbench_row_offset_requested=contextbench_row_offset,
@@ -2443,10 +2895,23 @@ def _run_network_smoke(
             openlocus_binary_source=openlocus_binary_source,
             network_mode=network_mode,
             private_score_storage_class=private_score_storage_class,
-            private_score_manifest_hash=manifest_hash,
+            private_score_manifest_hash=score_manifest_hash,
+            private_attempt_records_written=private_attempt_count > 0,
+            private_attempt_record_count=private_attempt_count,
+            private_attempt_storage_class=private_score_storage_class,
+            private_attempt_manifest_hash=attempt_manifest_hash,
+            records_attempted_total=records_attempted_total,
             records_evaluated=records_evaluated,
             records_successful=records_successful,
             records_failed=records_failed,
+            records_excluded=records_excluded,
+            contextbench_attempted=contextbench_attempted,
+            contextbench_successful=contextbench_successful,
+            contextbench_excluded=contextbench_excluded,
+            repoqa_attempted=repoqa_attempted,
+            repoqa_successful=repoqa_successful,
+            repoqa_excluded=repoqa_excluded,
+            quota_reached=quota_reached,
             network_calls=network_calls, failure_category_counts=fcc,
         )
 
@@ -2493,6 +2958,16 @@ def _run_network_smoke(
         fcc["private_score_write_failed"] = (
             fcc.get("private_score_write_failed", 0) + 1
         )
+        # Count private attempt rows.
+        private_attempt_count = 0
+        try:
+            if attempt_file.exists():
+                with attempt_file.open("r", encoding="utf-8") as fh:
+                    for line in fh:
+                        if line.strip():
+                            private_attempt_count += 1
+        except OSError:
+            private_attempt_count = 0
         return _build_unavailable_report(
             "private_score_write_failed", self_test_passed=self_test_passed,
             contextbench_row_offset_requested=contextbench_row_offset,
@@ -2505,17 +2980,42 @@ def _run_network_smoke(
             private_score_records_written=private_score_written,
             private_score_record_count=private_score_count,
             private_score_storage_class=private_score_storage_class,
-            private_score_manifest_hash=manifest_hash,
+            private_score_manifest_hash=score_manifest_hash,
+            private_attempt_records_written=private_attempt_count > 0,
+            private_attempt_record_count=private_attempt_count,
+            private_attempt_storage_class=private_score_storage_class,
+            private_attempt_manifest_hash=attempt_manifest_hash,
+            records_attempted_total=records_attempted_total,
             records_evaluated=records_evaluated,
             records_successful=records_successful,
             records_failed=records_failed,
+            records_excluded=records_excluded,
+            contextbench_attempted=contextbench_attempted,
+            contextbench_successful=contextbench_successful,
+            contextbench_excluded=contextbench_excluded,
+            repoqa_attempted=repoqa_attempted,
+            repoqa_successful=repoqa_successful,
+            repoqa_excluded=repoqa_excluded,
+            quota_reached=quota_reached,
             network_calls=network_calls, failure_category_counts=fcc,
         )
 
+    # Count private attempt rows.
+    private_attempt_count = 0
+    try:
+        if attempt_file.exists():
+            with attempt_file.open("r", encoding="utf-8") as fh:
+                for line in fh:
+                    if line.strip():
+                        private_attempt_count += 1
+    except OSError:
+        private_attempt_count = 0
+
     aggregate_runtime_seconds = time.perf_counter() - smoke_start
-    partial = records_failed > 0 or records_successful < (
-        contextbench_row_limit + repoqa_needle_limit
-    )
+    # In success-quota mode, "partial" reflects whether the quota was
+    # reached and whether both benchmarks contributed nonzero records.
+    # A pass requires quota_reached=True and records_failed==0.
+    partial = (not quota_reached) or records_failed > 0
 
     return _build_pass_report(
         self_test_passed=self_test_passed,
@@ -2526,9 +3026,19 @@ def _run_network_smoke(
         budget=budget, methods=methods,
         openlocus_binary_source=openlocus_binary_source,
         network_mode=network_mode,
+        records_attempted_total=records_attempted_total,
         records_evaluated=records_evaluated,
         records_successful=records_successful,
-        records_failed=records_failed, network_calls=network_calls,
+        records_failed=records_failed,
+        records_excluded=records_excluded,
+        contextbench_attempted=contextbench_attempted,
+        contextbench_successful=contextbench_successful,
+        contextbench_excluded=contextbench_excluded,
+        repoqa_attempted=repoqa_attempted,
+        repoqa_successful=repoqa_successful,
+        repoqa_excluded=repoqa_excluded,
+        quota_reached=quota_reached,
+        network_calls=network_calls,
         arm_aggs=arm_aggs,
         per_record_arm_metrics=per_record_arm_metrics,
         per_benchmark_arm_aggs=per_benchmark_arm_aggs,
@@ -2537,7 +3047,11 @@ def _run_network_smoke(
         private_score_records_written=private_score_written,
         private_score_record_count=private_score_count,
         private_score_storage_class=private_score_storage_class,
-        private_score_manifest_hash=manifest_hash,
+        private_score_manifest_hash=score_manifest_hash,
+        private_attempt_records_written=private_attempt_count > 0,
+        private_attempt_record_count=private_attempt_count,
+        private_attempt_storage_class=private_score_storage_class,
+        private_attempt_manifest_hash=attempt_manifest_hash,
         aggregate_runtime_seconds=aggregate_runtime_seconds,
         failure_category_counts=fcc,
         paired_exclusion_count=paired_exclusion_count,

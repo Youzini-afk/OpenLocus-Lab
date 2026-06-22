@@ -30,17 +30,17 @@ on:
         required: false
         default: '160'
       contextbench_row_limit:
-        description: 'ContextBench row limit (default 240; hard cap 240)'
+        description: 'ContextBench raw attempt cap (default 480; hard cap 480; success-quota sampling stops at target_successful_records=120)'
         required: false
-        default: '240'
+        default: '480'
       repoqa_needle_offset:
         description: 'RepoQA needle offset (default 80)'
         required: false
         default: '80'
       repoqa_needle_limit:
-        description: 'RepoQA needle limit (default 120; hard cap 120)'
+        description: 'RepoQA raw attempt cap (default 240; hard cap 240; success-quota sampling stops at target_successful_records=120)'
         required: false
-        default: '120'
+        default: '240'
       budget:
         description: 'Evidence budget (default 5; hard cap 20)'
         required: false
@@ -78,9 +78,9 @@ jobs:
         run: |
           enable_network="${{ inputs.enable_external_benchmark_network }}"
           cb_offset="${{ inputs.contextbench_row_offset || '160' }}"
-          cb_limit="${{ inputs.contextbench_row_limit || '240' }}"
+          cb_limit="${{ inputs.contextbench_row_limit || '480' }}"
           rq_offset="${{ inputs.repoqa_needle_offset || '80' }}"
-          rq_limit="${{ inputs.repoqa_needle_limit || '120' }}"
+          rq_limit="${{ inputs.repoqa_needle_limit || '240' }}"
           budget="${{ inputs.budget || '5' }}"
           methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
           for var in cb_offset rq_offset; do
@@ -91,8 +91,8 @@ jobs:
             val="${!var}"
             if ! [[ "$val" =~ ^[1-9][0-9]*$ ]]; then echo "$var must be positive integer" >&2; exit 1; fi
           done
-          [[ "$cb_limit" -gt 240 ]] && echo "cb_limit exceeds cap 240" >&2
-          [[ "$rq_limit" -gt 120 ]] && echo "rq_limit exceeds cap 120" >&2
+          [[ "$cb_limit" -gt 480 ]] && echo "cb_limit exceeds cap 480" >&2
+          [[ "$rq_limit" -gt 240 ]] && echo "rq_limit exceeds cap 240" >&2
           [[ "$budget" -gt 20 ]] && echo "budget exceeds cap 20" >&2
           IFS=',' read -ra ma <<< "$methods"
           has_bm25=0
@@ -192,6 +192,50 @@ jobs:
           failure_counts = report.get("failure_category_counts", {}) or {}
           if failure_counts.get("rrf_required_but_missing", 0) != 0:
               failures.append("rrf_required_but_missing must be zero in BEA-5 pass artifact")
+          # Success-quota sampling fields (BEA-5 fix).
+          if report.get("sampling_mode") != "success_quota":
+              failures.append(f"expected sampling_mode=success_quota, got {report.get('sampling_mode')!r}")
+          if report.get("target_successful_records") != 120:
+              failures.append(f"expected target_successful_records=120, got {report.get('target_successful_records')!r}")
+          if report.get("raw_attempt_cap_contextbench") != 480:
+              failures.append(f"expected raw_attempt_cap_contextbench=480, got {report.get('raw_attempt_cap_contextbench')!r}")
+          if report.get("raw_attempt_cap_repoqa") != 240:
+              failures.append(f"expected raw_attempt_cap_repoqa=240, got {report.get('raw_attempt_cap_repoqa')!r}")
+          if report.get("quota_reached") is not True:
+              failures.append(f"expected quota_reached=true, got {report.get('quota_reached')!r}")
+          if report.get("records_attempted_total", 0) < 120:
+              failures.append(f"expected records_attempted_total >= 120, got {report.get('records_attempted_total')!r}")
+          if report.get("records_excluded", 0) != report.get("records_failed", 0):
+              failures.append(f"records_excluded ({report.get('records_excluded')}) != records_failed ({report.get('records_failed')})")
+          # Min per-benchmark successful gates.
+          if report.get("contextbench_successful", 0) < 40:
+              failures.append(f"expected contextbench_successful >= 40, got {report.get('contextbench_successful')!r}")
+          if report.get("repoqa_successful", 0) < 20:
+              failures.append(f"expected repoqa_successful >= 20, got {report.get('repoqa_successful')!r}")
+          # private_attempt_manifest must exist and match records_attempted_total.
+          attempt_manifest = report.get("private_attempt_manifest", {})
+          if not isinstance(attempt_manifest, dict) or not attempt_manifest:
+              failures.append("expected non-empty private_attempt_manifest")
+          else:
+              if attempt_manifest.get("path_publicly_serialized") is not False:
+                  failures.append("expected private_attempt_manifest.path_publicly_serialized=false")
+              if attempt_manifest.get("records_written") is not True:
+                  failures.append("expected private_attempt_manifest.records_written=true")
+              if attempt_manifest.get("record_count") != report.get("records_attempted_total"):
+                  failures.append(
+                      f"private_attempt_manifest.record_count={attempt_manifest.get('record_count')} != "
+                      f"records_attempted_total={report.get('records_attempted_total')}"
+                  )
+          # benchmark_attempt_records must be a list with both benchmarks.
+          bar = report.get("benchmark_attempt_records") or []
+          if not isinstance(bar, list) or len(bar) < 2:
+              failures.append("expected benchmark_attempt_records to be a list with >= 2 entries")
+          else:
+              bar_benchmarks = {r["benchmark"] for r in bar}
+              if "contextbench" not in bar_benchmarks:
+                  failures.append("expected contextbench in benchmark_attempt_records")
+              if "repoqa" not in bar_benchmarks:
+                  failures.append("expected repoqa in benchmark_attempt_records")
           manifest = report.get("private_score_manifest", {})
           if not isinstance(manifest, dict) or not manifest:
               failures.append("expected non-empty private_score_manifest")
@@ -225,7 +269,8 @@ jobs:
           # Records-only public shape.
           for key in ("benchmark_arm_metric_records", "delta_records",
                       "win_tie_loss_records", "worst_slice_records",
-                      "mechanism_summary_records", "robustness_summary_records"):
+                      "mechanism_summary_records", "robustness_summary_records",
+                      "benchmark_attempt_records"):
               if not isinstance(report.get(key), list):
                   failures.append(f"expected {key} to be a list")
           # No dynamic dict mirrors.
@@ -254,6 +299,13 @@ jobs:
               "worst_slice_label", "slice_record_ids", "slice_member_ids",
               "self_test_checks", "self_test_details", "self_test_list",
               "checks", "check_list",
+              "private_attempt_path", "attempt_path",
+              "private_attempt_file", "private_attempt_id",
+              "attempt_id", "attempt_outcome",
+              "attempt_record", "attempt_reason",
+              "attempt_query", "attempt_repo_url",
+              "attempt_commit", "attempt_path_value",
+              "attempt_gold", "attempt_candidate",
           )
           def find_keys(obj, keys, path="$"):
               found = []
@@ -313,6 +365,9 @@ jobs:
           check_unique(report.get("robustness_summary_records") or [],
                        lambda r: (r["robustness_field"],),
                        "robustness_summary_records")
+          check_unique(report.get("benchmark_attempt_records") or [],
+                       lambda r: (r["benchmark"],),
+                       "benchmark_attempt_records")
           # Private SCORE count must match records × 7 arms.
           expected_count = report.get("records_successful", 0) * 7
           if manifest.get("record_count") != expected_count:
@@ -345,6 +400,14 @@ jobs:
           print(f"  self_test_checks_passed={report.get('self_test_checks_passed')}")
           print(f"  algorithm_changed_during_bea5={report.get('algorithm_changed_during_bea5')}")
           print(f"  weights_tuned_during_bea5={report.get('weights_tuned_during_bea5')}")
+          print(f"  sampling_mode={report.get('sampling_mode')}")
+          print(f"  target_successful_records={report.get('target_successful_records')}")
+          print(f"  records_attempted_total={report.get('records_attempted_total')}")
+          print(f"  records_excluded={report.get('records_excluded')}")
+          print(f"  contextbench_successful={report.get('contextbench_successful')}")
+          print(f"  repoqa_successful={report.get('repoqa_successful')}")
+          print(f"  quota_reached={report.get('quota_reached')}")
+          print(f"  private_attempt_manifest.record_count={attempt_manifest.get('record_count')}")
           PY
 
       - name: Validate docs i18n mirror
