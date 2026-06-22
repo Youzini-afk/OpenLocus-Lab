@@ -96,23 +96,41 @@ Primary contrasts:
 
 Secondary contrasts: each context arm vs `control_sparse`.
 
-## Committed artifact and default local run
+## Committed artifact and manual CI result
 
 The committed artifact at
 `artifacts/b16g_context_pack_atom_ablation/b16g_context_pack_atom_ablation_report.json`
-is the public aggregate-only smoke artifact. The default local no-env
-run is truthful: without `--allow-remote` and the required provider env,
-the evaluator emits `blocked_remote_not_enabled` (or
-`unavailable_no_local_provider_env` when `OPENLOCUS_ALLOW_REMOTE=1` but
-provider env is missing) with live-run flags false. It is NOT a fake
-pass.
+is the public aggregate-only smoke artifact and now mirrors sanitized
+manual CI run `27947247773`.
 
-Manual real-provider CI run (when executed via
-`real-provider-benchmark.yml` stage
-`b16g_context_pack_atom_ablation` with `enable_remote_models=true`,
-`task_count=8`) produces 40 live provider calls (8 tasks x 5 arms). The
-committed artifact will be updated to mirror the sanitized aggregate
-report from the first successful manual CI run.
+Manual CI run `27947247773` summary:
+
+- 8 tasks x 5 arms = 40 live provider calls.
+- Private SCORE/event manifests each have `record_count=40`,
+  `storage_class=tmp_private`, and `path_publicly_serialized=false`.
+- Forbidden scan pass; `self_test_checks_passed=221/221`.
+- `control_sparse` solve/test=0.0; `target_only` solve/test=0.0.
+- `support_only`, `distractor_plus_support`, and `target_plus_support`
+  each solve/test=1.0.
+- Primary contrasts: `target_plus_support` vs `distractor_plus_support`
+  delta=0.0 solve/test; `target_plus_support` vs `support_only`
+  delta=0.0 solve/test; `target_only` vs `support_only` delta=-1.0
+  solve/test.
+- Mechanism counts: `support_atom_sufficient_count=8`,
+  `target_atom_required_count=0`, `distractor_hurts_count=0`,
+  `all_arms_solved_count=0`, `sparse_solved_count=0`.
+
+Interpretation: on this bounded synthetic live-provider slice, the decisive
+support atom was sufficient for all tasks; the target cue alone did not solve;
+the distractor cue did not hurt when the decisive support cue was present. This
+helps explain why B16-F's same-budget BM25 pack could tie BEA: the support atom,
+not the target-file cue, carried the decisive information on this task surface.
+This is an atom-ablation smoke result, not a downstream value proof or BEA
+superiority claim.
+
+The default local no-env path remains truthful: without `--allow-remote` and the
+required provider credential/model env, the evaluator emits a blocked or
+unavailable aggregate report with live-run flags false. It is NOT a fake pass.
 
 ## Heterogeneous synthetic public task-family matrix design
 
@@ -166,20 +184,12 @@ Arm composition:
 - `target_plus_support`: target_file_cue + target_symbol_cue +
   support_module_cue + decisive_cue (full pack).
 
-## Live LLM provider constraints
+## Live provider constraints
 
-- Env vars:
-  - `OPENLOCUS_LLM_BASE_URL`
-  - `OPENLOCUS_LLM_API_KEY`
-  - `OPENLOCUS_LLM_MODEL`
-  - `OPENLOCUS_ALLOW_REMOTE=1`
-  - `OPENLOCUS_LLM_WORKFLOW_DISPATCH=1` for CI/manual workflow runs
-    when `--require-workflow-dispatch` is set.
-- Remote calls are made ONLY when `--allow-remote` AND
-  `OPENLOCUS_ALLOW_REMOTE=1` AND (when
-  `--require-workflow-dispatch`) `OPENLOCUS_LLM_WORKFLOW_DISPATCH=1`
-  AND all of `OPENLOCUS_LLM_BASE_URL` /
-  `OPENLOCUS_LLM_API_KEY` / `OPENLOCUS_LLM_MODEL` are set.
+- Exact provider credential/model env names live in workflow/config wiring, not research prose.
+- Remote calls are made ONLY when `--allow-remote`, the remote opt-in gate,
+  the workflow-dispatch gate when required, and provider credential/model
+  configuration are all present.
 - No raw base URL, API key, prompt, response, source snippet,
   patch/diff, stdout/stderr, workspace path, atom composition, or
   provider payload in artifact/docs.
@@ -221,15 +231,14 @@ python3 eval/b16g_context_pack_atom_ablation.py --self-test
 python3 eval/b16g_context_pack_atom_ablation.py \
     --out artifacts/b16g_context_pack_atom_ablation/\
 b16g_context_pack_atom_ablation_report.json
-# Live opt-in (only if provider env is available and safe):
-OPENLOCUS_ALLOW_REMOTE=1 OPENLOCUS_LLM_WORKFLOW_DISPATCH=1 \
-    python3 eval/b16g_context_pack_atom_ablation.py \
+# Live opt-in only if provider credential/model environment is available and safe:
+python3 eval/b16g_context_pack_atom_ablation.py \
     --allow-remote --task-count 8 \
     --out artifacts/b16g_context_pack_atom_ablation/\
 b16g_context_pack_atom_ablation_report.json
 ```
 
-Default mode (without `--allow-remote` or without provider env):
+Default mode (without `--allow-remote` or without provider credential/model env):
 writes a truthful `unavailable_no_local_provider_env` or
 `blocked_remote_not_enabled` aggregate report if `--out` is supplied;
 no provider calls; live-run flags false except
@@ -402,7 +411,7 @@ self-test covers:
 - Model display normalization (strips routing prefix; empty returns
   `unavailable`; strips unsafe chars).
 - Env preservation self-test (probe restores env; no-network probes
-  do not clear live provider env).
+  do not clear live provider credential/model env).
 - Private manifest hashes stable (SCORE and event manifest hashes are
   stable and distinct).
 - Scanner rejections (workspace path, file path, source snippet, patch
@@ -465,9 +474,9 @@ The local no-env validation path is truthful and blocked/unavailable.
   claim, NOT an OOD temporal claim, NOT a QuIVer systems claim, NOT a
   method winner claim, NOT a calibration claim, NOT a BEA superiority
   claim, and NOT a promotion/default/runtime/EvidenceCore change.
-- B16-G uses a **live LLM provider** (OpenAI-compatible) only when
-  `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider env are
-  all set. The default local no-env path remains truthful
+- B16-G uses a **live provider** only when `--allow-remote`, the remote
+  opt-in gate, and provider credential/model env are all set. The default
+  local no-env path remains truthful
   (`blocked_remote_not_enabled`). It is NOT a fake pass.
 - B16-G does NOT prove downstream agent value.
   `downstream_agent_value_proven=false`.

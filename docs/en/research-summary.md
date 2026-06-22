@@ -3559,8 +3559,19 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   runtime/EvidenceCore/downstream-value/BEA-superiority. CI pass does
   NOT require any atom to win; zero/negative delta is valid.
   `bea_superiority_claimed=false`.
-- **B16-G does NOT mutate B16-F**: standalone phase, evaluator,
-  artifact. Manual real-provider CI run pending.
+- **Manual real-provider CI run `27947247773` passed**: 8 tasks x 5 arms
+  = 40 live provider calls; forbidden scan pass; private SCORE/event manifests
+  each record_count=40 with `path_publicly_serialized=false`; 221/221 self-test
+  checks. Result: `control_sparse` solve/test=0.0, `target_only` solve/test=0.0,
+  `support_only` solve/test=1.0, `distractor_plus_support` solve/test=1.0,
+  `target_plus_support` solve/test=1.0.
+- **Mechanism interpretation**: decisive support was sufficient on this bounded
+  synthetic live-provider slice (`support_atom_sufficient_count=8`); target-only
+  context was not sufficient (`target_atom_required_count=0`); distractor did
+  not hurt when decisive support was present (`distractor_hurts_count=0`). This
+  explains B16-F's BEA-vs-BM25 tie without claiming BEA superiority or
+  downstream value proof.
+- **B16-G does NOT mutate B16-F**: standalone phase, evaluator, artifact.
 - **Public artifact is aggregate-only**: `arm_results`, `paired_deltas`,
   `task_family_results`, `mechanism_summary_records`, `honest_signals`,
   `private_score_manifest`, `private_event_manifest`, `forbidden_scan`,

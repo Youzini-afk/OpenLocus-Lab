@@ -491,15 +491,27 @@ context_pack_atom_ablation_downstream_smoke_only`、阶段 `B16-G`。
 提交）。公开 artifact 仅聚合：`arm_results`、`paired_deltas`、
 `task_family_results`、`mechanism_summary_records`、`honest_signals`、
 `private_score_manifest`、`private_event_manifest`、`forbidden_scan`、
-no-claim flag（包括 `bea_superiority_claimed=false`）。live provider 仅
-当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时使用。本地
-no-env 路径真实 `blocked_remote_not_enabled`（**不**是假通过）。CI 通过
-**不**要求任何 atom 获胜；零/负 delta 有效。B16-G 不是基准测试结果、不是
-leaderboard entry、不是性能声明、不是 method-winner 声明、不是
-calibration 声明、不是 BEA 优越性声明、不是 promotion、不是 default
-改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是
-下游 agent 价值声明。B16-G 不修改 B16-F 语义。手动 real-provider CI
-run 待执行。详见
+no-claim flag（包括 `bea_superiority_claimed=false`）。live provider 仅在显式
+remote opt-in gate 与 provider credential/model env 存在时使用。本地 no-env
+路径真实 `blocked_remote_not_enabled`（**不**是假通过）。手动 real-provider CI
+run `27947247773` 已通过：8 任务 x 5 arms = 40 次 live provider calls，
+forbidden scan pass，`model_display_category=Kimi-K2.7-Code`，221/221 self-test
+checks，`private_score_manifest.record_count=40`、`private_event_manifest.record_count=40`，
+两个 manifest 均为 `storage_class=tmp_private` 且 `path_publicly_serialized=false`。
+结果：`control_sparse` solve/test=0.0，`target_only` solve/test=0.0，
+`support_only` solve/test=1.0，`distractor_plus_support` solve/test=1.0，
+`target_plus_support` solve/test=1.0。主对比：target+support vs
+distractor+support solve/test delta=0.0；target+support vs support-only
+solve/test delta=0.0；target-only vs support-only solve/test delta=-1.0。
+机制 summary：`support_atom_sufficient_count=8`、
+`target_atom_required_count=0`、`distractor_hurts_count=0`、
+`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在该有界合成
+live-provider 切片上，decisive support 足以驱动解题；target-only context 不足；
+当 decisive support 存在时 distractor 未造成伤害。CI 通过**不**要求任何 atom 获胜；
+零/负 delta 有效。B16-G 不是基准测试结果、不是 leaderboard entry、不是性能声明、
+不是 method-winner 声明、不是 calibration 声明、不是 BEA 优越性声明、不是 promotion、
+不是 default 改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是下游
+agent 价值声明。B16-G 不修改 B16-F 语义。详见
 [B16-G 详细报告](b16g-context-pack-atom-ablation.md)。
 
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke

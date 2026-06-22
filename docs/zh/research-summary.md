@@ -3003,8 +3003,18 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   leaderboard/performance/method-winner/calibration/promotion/default/
   runtime/EvidenceCore/downstream-value/BEA-优越性。CI 通过**不**要求任何
   atom 获胜；零/负 delta 有效。`bea_superiority_claimed=false`。
-- **B16-G 不修改 B16-F**：独立 phase、evaluator、artifact。手动
-  real-provider CI run 待执行。
+- **手动 real-provider CI run `27947247773` 已通过**：8 任务 x 5 arms
+  = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest
+  各 record_count=40 且 `path_publicly_serialized=false`；221/221 self-test
+  checks。结果：`control_sparse` solve/test=0.0，`target_only` solve/test=0.0，
+  `support_only` solve/test=1.0，`distractor_plus_support` solve/test=1.0，
+  `target_plus_support` solve/test=1.0。
+- **机制解释**：在该有界合成 live-provider 切片上，decisive support 足以驱动解题
+  （`support_atom_sufficient_count=8`）；target-only context 不足
+  （`target_atom_required_count=0`）；当 decisive support 存在时 distractor
+  未造成伤害（`distractor_hurts_count=0`）。这解释 B16-F 的 BEA-vs-BM25 tie，
+  但不声明 BEA 优越性或下游价值证明。
+- **B16-G 不修改 B16-F**：独立 phase、evaluator、artifact。
 - **公开 artifact 仅聚合**：`arm_results`、`paired_deltas`、
   `task_family_results`、`mechanism_summary_records`、`honest_signals`、
   `private_score_manifest`、`private_event_manifest`、`forbidden_scan`、

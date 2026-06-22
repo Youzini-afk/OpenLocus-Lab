@@ -93,21 +93,39 @@ B16-G 运行五个固定 arm，具有相同的 budget/tool 约束；仅 atom com
 
 次对比：每个 context arm vs `control_sparse`。
 
-## 已提交 artifact 与默认本地 run
+## 已提交 artifact 与手动 CI 结果
 
 已提交 artifact 位于
 `artifacts/b16g_context_pack_atom_ablation/b16g_context_pack_atom_ablation_report.json`，
-是公开仅聚合 smoke artifact。默认本地 no-env run 是真实的：无
-`--allow-remote` 和所需 provider env 时，evaluator 输出
-`blocked_remote_not_enabled`（或当 `OPENLOCUS_ALLOW_REMOTE=1` 但
-provider env 缺失时为 `unavailable_no_local_provider_env`），live-run
-flag 为 false。它**不**是假通过。
-
-手动 real-provider CI run（通过 `real-provider-benchmark.yml` stage
-`b16g_context_pack_atom_ablation` 且 `enable_remote_models=true`、
-`task_count=8` 执行时）产生 40 次 live provider 调用（8 任务 x 5
-arm）。已提交 artifact 将在首次成功的手动 CI run 后更新为镜像该 run 的
+是公开仅聚合 smoke artifact，并已镜像手动 CI run `27947247773` 的
 sanitized aggregate report。
+
+手动 CI run `27947247773` 摘要：
+
+- 8 任务 x 5 arms = 40 次 live provider calls。
+- 私有 SCORE/event manifest 各 `record_count=40`，
+  `storage_class=tmp_private`，`path_publicly_serialized=false`。
+- forbidden scan pass；`self_test_checks_passed=221/221`。
+- `control_sparse` solve/test=0.0；`target_only` solve/test=0.0。
+- `support_only`、`distractor_plus_support`、`target_plus_support` 均
+  solve/test=1.0。
+- 主对比：`target_plus_support` vs `distractor_plus_support` 的 solve/test
+  delta=0.0；`target_plus_support` vs `support_only` 的 solve/test delta=0.0；
+  `target_only` vs `support_only` 的 solve/test delta=-1.0。
+- 机制计数：`support_atom_sufficient_count=8`，
+  `target_atom_required_count=0`，`distractor_hurts_count=0`，
+  `all_arms_solved_count=0`，`sparse_solved_count=0`。
+
+解释：在这个有界合成 live-provider 切片上，decisive support atom 对所有
+任务都足够；target cue 单独不足以解题；当 decisive support cue 存在时，
+distractor cue 没有造成伤害。这解释了 B16-F 中 same-budget BM25 pack 为什么
+能与 BEA 打平：在该任务面上，decisive 信息由 support atom 携带，而不是
+target-file cue。该结果是 atom-ablation smoke，不是下游价值证明，也不是 BEA
+优越性声明。
+
+默认本地 no-env path 仍然真实：无 `--allow-remote` 和所需 provider
+credential/model env 时，evaluator 输出 blocked 或 unavailable 聚合报告，
+live-run flag 为 false。它**不**是假通过。
 
 ## 异构合成公开任务族矩阵设计
 
@@ -157,19 +175,11 @@ Arm composition：
 - `target_plus_support`：target_file_cue + target_symbol_cue +
   support_module_cue + decisive_cue（full pack）。
 
-## Live LLM provider 约束
+## Live provider 约束
 
-- Env vars：
-  - `OPENLOCUS_LLM_BASE_URL`
-  - `OPENLOCUS_LLM_API_KEY`
-  - `OPENLOCUS_LLM_MODEL`
-  - `OPENLOCUS_ALLOW_REMOTE=1`
-  - `OPENLOCUS_LLM_WORKFLOW_DISPATCH=1` 用于 CI/手动 workflow run（当
-    设置 `--require-workflow-dispatch` 时）。
-- 仅当 `--allow-remote` AND `OPENLOCUS_ALLOW_REMOTE=1` AND（当
-  `--require-workflow-dispatch` 时）`OPENLOCUS_LLM_WORKFLOW_DISPATCH=1`
-  AND 所有 `OPENLOCUS_LLM_BASE_URL` / `OPENLOCUS_LLM_API_KEY` /
-  `OPENLOCUS_LLM_MODEL` 都设置时才进行远程调用。
+- 确切 provider credential/model env 名称只保留在 workflow/config wiring 中，不写入研究正文。
+- 仅当 `--allow-remote`、remote opt-in gate、必要时的 workflow-dispatch gate，
+  以及 provider credential/model configuration 均存在时才进行远程调用。
 - artifact/docs 中无 raw base URL、API key、prompt、response、源码片段、
   patch/diff、stdout/stderr、工作区路径、atom composition 或 provider
   payload。
@@ -209,15 +219,14 @@ python3 eval/b16g_context_pack_atom_ablation.py --self-test
 python3 eval/b16g_context_pack_atom_ablation.py \
     --out artifacts/b16g_context_pack_atom_ablation/\
 b16g_context_pack_atom_ablation_report.json
-# Live opt-in（仅当 provider env 可用且安全时）：
-OPENLOCUS_ALLOW_REMOTE=1 OPENLOCUS_LLM_WORKFLOW_DISPATCH=1 \
-    python3 eval/b16g_context_pack_atom_ablation.py \
+# Live opt-in（仅当 provider credential/model environment 可用且安全时）：
+python3 eval/b16g_context_pack_atom_ablation.py \
     --allow-remote --task-count 8 \
     --out artifacts/b16g_context_pack_atom_ablation/\
 b16g_context_pack_atom_ablation_report.json
 ```
 
-默认模式（无 `--allow-remote` 或无 provider env）：若提供 `--out`，则
+默认模式（无 `--allow-remote` 或无 provider credential/model env）：若提供 `--out`，则
 写入真实的 `unavailable_no_local_provider_env` 或
 `blocked_remote_not_enabled` 聚合报告；无 provider 调用；live-run flag
 为 false，但 `aggregate_only_public_artifact=true` 和
@@ -376,7 +385,7 @@ B16-G 保持 self-test 聚焦（仅计数公开摘要；详细 check 列表**不
 - Model 显示规范化（剥离路由前缀；空返回 `unavailable`；剥离不安全
   字符）。
 - Env preservation self-test（probe 恢复 env；无网络 probe 不清除 live
-  provider env）。
+  provider credential/model env）。
 - 私有 manifest hash 稳定（SCORE 和 event manifest hash 稳定且不同）。
 - Scanner 拒绝（工作区路径、文件路径、源码片段、patch 标记、
   prompt/response key、atom_composition key、score_outcome key、
@@ -435,10 +444,9 @@ git diff --check                                                       => PASS
   算法声明，**不**是 OOD 时间性声明，**不**是 QuIVer 系统声明，**不**
   是 method winner/calibration/promotion/default/runtime/EvidenceCore
   声明，也**不**是 BEA 优越性声明。
-- B16-G 仅当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + provider
-  env 都设置时使用 **live LLM provider**（OpenAI 兼容）。默认本地
-  no-env 路径保持真实（`blocked_remote_not_enabled`）。它**不**是假
-  通过。
+- B16-G 仅当 `--allow-remote` + remote opt-in gate + provider
+  credential/model env 都设置时使用 **live provider**。默认本地 no-env
+  路径保持真实（`blocked_remote_not_enabled`）。它**不**是假通过。
 - B16-G **不**证明下游 agent 价值。
   `downstream_agent_value_proven=false`。
 - B16-G **不**声称 live agent 泛化。

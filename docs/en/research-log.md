@@ -9921,7 +9921,8 @@ Records-only aggregate public artifact: `schema_version`,
 4 secondary), `task_family_results`, `mechanism_summary_records`,
 `honest_signals`, `private_score_manifest`, `private_event_manifest`,
 `forbidden_scan`, no-claim flags (including `bea_superiority_claimed`),
-`self_test_summary`/`self_test_passed`. No raw task text, prompts,
+`self_test_checks_total`, `self_test_checks_passed`, and `self_test_passed`.
+No raw task text, prompts,
 responses, patches, paths, snippets, atom compositions, candidate
 traces, provider payloads, private paths, or per-task outcomes.
 
@@ -9956,8 +9957,26 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-The local no-env validation path is truthful and blocked/unavailable.
-Manual real-provider CI run pending.
+The local no-env validation path is truthful and blocked/unavailable. Manual
+real-provider CI run `27947247773` passed and the committed artifact now mirrors
+that sanitized aggregate report: 8 tasks x 5 arms = 40 live provider calls,
+forbidden scan pass, `model_display_category=Kimi-K2.7-Code`, 221/221 self-test
+checks, `private_score_manifest.record_count=40`, and
+`private_event_manifest.record_count=40`, both with
+`storage_class=tmp_private` and `path_publicly_serialized=false`.
+
+Live result: `control_sparse` solve/test=0.0; `target_only` solve/test=0.0;
+`support_only` solve/test=1.0; `distractor_plus_support` solve/test=1.0;
+`target_plus_support` solve/test=1.0. Primary contrasts: target+support vs
+distractor+support solve/test delta=0.0; target+support vs support-only
+solve/test delta=0.0; target-only vs support-only solve/test delta=-1.0.
+Mechanism summary: `support_atom_sufficient_count=8`,
+`target_atom_required_count=0`, `distractor_hurts_count=0`,
+`all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation:
+decisive support was sufficient on this bounded synthetic live-provider slice;
+target-only context was not sufficient; distractor did not hurt when decisive
+support was present. This explains B16-F's tie without claiming BEA superiority
+or downstream value proof.
 
 ### Caveats
 

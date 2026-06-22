@@ -66,14 +66,14 @@ Claim boundary (binding):
 Modes:
 
 * ``--self-test``: no provider/network; uses fake provider responses.
-* default without ``--allow-remote`` or without provider env: writes a
+* default without ``--allow-remote`` or without provider credential/model env:
+  writes a
   truthful ``blocked_remote_not_enabled`` /
   ``unavailable_no_local_provider_env`` aggregate report if ``--out``
   is supplied; no provider calls; live-run flags false except
   ``aggregate_only_public_artifact`` / ``diagnostic_only``.
-* live opt-in: requires ``--allow-remote``,
-  ``OPENLOCUS_ALLOW_REMOTE=1``, and (when
-  ``--require-workflow-dispatch``) ``OPENLOCUS_LLM_WORKFLOW_DISPATCH=1``;
+* live opt-in: requires ``--allow-remote``, the remote opt-in gate, and
+  (when ``--require-workflow-dispatch``) the workflow-dispatch provider gate;
   runs a tiny task count (default 8; hard cap 12; default 40 live
   calls = 8 tasks x 5 arms; max 60 live calls).
 
@@ -84,9 +84,9 @@ Run::
     python3 eval/b16g_context_pack_atom_ablation.py \
         --out artifacts/b16g_context_pack_atom_ablation/\
 b16g_context_pack_atom_ablation_report.json
-    # Live opt-in (only if provider env is available and safe):
-    OPENLOCUS_ALLOW_REMOTE=1 OPENLOCUS_LLM_WORKFLOW_DISPATCH=1 \
-        python3 eval/b16g_context_pack_atom_ablation.py \
+    # Live opt-in only when provider credential/model environment is
+    # configured and safe:
+    python3 eval/b16g_context_pack_atom_ablation.py \
         --allow-remote --task-count 8 \
         --out artifacts/b16g_context_pack_atom_ablation/\
 b16g_context_pack_atom_ablation_report.json
@@ -1860,8 +1860,8 @@ def build_report(
 ) -> dict[str, Any]:
     """Assemble the public aggregate-only report.
 
-    If remote opt-in is not satisfied or provider env is missing, write
-    a truthful unavailable/blocked report with live-run flags false.
+    If remote opt-in is not satisfied or provider credential/model env is
+    missing, write a truthful unavailable/blocked report with live-run flags false.
     Otherwise run a tiny live paired smoke.
     """
     checks, all_passed = run_self_test_checks()
@@ -2070,7 +2070,7 @@ def build_report(
 
 
 def _probe_missing_env_without_mutating_remote_env() -> tuple[bool, str, bool]:
-    """Probe missing-env path while restoring provider env exactly."""
+    """Probe missing-env path while restoring provider gates/env exactly."""
     before = {k: os.environ.get(k) for k in _REMOTE_ENV_KEYS}
     saved = {k: os.environ.pop(k, None) for k in _REMOTE_ENV_KEYS}
     try:
@@ -2466,8 +2466,8 @@ def build_parser() -> argparse.ArgumentParser:
             "task-family matrix; five arms: control_sparse, target_only, "
             "support_only, distractor_plus_support, "
             "target_plus_support; fresh /tmp workspace per task+arm; "
-            "real file edits + real subprocess tests; live LLM provider "
-            "only when --allow-remote + OPENLOCUS_ALLOW_REMOTE=1 + env; "
+            "real file edits + real subprocess tests; live provider "
+            "only when --allow-remote plus provider gates/env are set; "
             "primary contrasts target_plus_support vs "
             "distractor_plus_support, target_plus_support vs "
             "support_only, target_only vs support_only; no raw prompt/"
@@ -2489,12 +2489,12 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--allow-remote",
         action="store_true",
-        help="allow live provider calls (requires OPENLOCUS_ALLOW_REMOTE=1)",
+        help="allow live provider calls when provider gates/env are configured",
     )
     ap.add_argument(
         "--require-workflow-dispatch",
         action="store_true",
-        help="require OPENLOCUS_LLM_WORKFLOW_DISPATCH=1 for live calls",
+        help="require the workflow-dispatch provider gate for live calls",
     )
     ap.add_argument(
         "--task-count",

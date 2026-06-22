@@ -9196,7 +9196,8 @@ metrics）、`paired_deltas`（7 对比：3 主 + 4 次）、
 `task_family_results`、`mechanism_summary_records`、`honest_signals`、
 `private_score_manifest`、`private_event_manifest`、`forbidden_scan`、
 no-claim flag（包括 `bea_superiority_claimed`）、
-`self_test_summary`/`self_test_passed`。无 raw task text、prompt、
+`self_test_checks_total`、`self_test_checks_passed` 和 `self_test_passed`。
+无 raw task text、prompt、
 response、patch、path、片段、atom composition、候选 trace、provider
 payload、私有 path 或 per-task 结果。
 
@@ -9231,8 +9232,25 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI
-run 待执行。
+本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI run
+`27947247773` 已通过，已提交 artifact 现在镜像该 sanitized aggregate report：8
+任务 x 5 arms = 40 次 live provider calls，forbidden scan pass，
+`model_display_category=Kimi-K2.7-Code`，221/221 self-test checks，
+`private_score_manifest.record_count=40`、`private_event_manifest.record_count=40`，
+两个 manifest 均为 `storage_class=tmp_private` 且
+`path_publicly_serialized=false`。
+
+Live result：`control_sparse` solve/test=0.0；`target_only` solve/test=0.0；
+`support_only` solve/test=1.0；`distractor_plus_support` solve/test=1.0；
+`target_plus_support` solve/test=1.0。主对比：target+support vs
+distractor+support solve/test delta=0.0；target+support vs support-only
+solve/test delta=0.0；target-only vs support-only solve/test delta=-1.0。
+机制 summary：`support_atom_sufficient_count=8`、
+`target_atom_required_count=0`、`distractor_hurts_count=0`、
+`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在该有界合成
+live-provider 切片上，decisive support 足以驱动解题；target-only context 不足；
+当 decisive support 存在时 distractor 未造成伤害。该结果解释 B16-F 的 tie，
+但不声明 BEA 优越性或下游价值证明。
 
 ### Caveats
 
