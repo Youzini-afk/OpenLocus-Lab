@@ -8999,14 +8999,9 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### 真实有界本地运行结果（2026-06-21）
+### 手动 CI 结果（2026-06-21）
 
-5 条记录成功（ContextBench 3 + RepoQA 2）。Win/tie/loss（v0.2 vs v0，
-n=5）：file_recall@10 win=0 tie=4 loss=1；mrr win=0 tie=4 loss=1；
-span_f0.5@10 win=0 tie=4 loss=1；success_rate win=0 tie=4 loss=1。v0.2
-diversity/risk 策略在 1/5 记录上选择了不同候选集，在此有界样本上造成了
-损失。30 行私有 SCORE 写入
-`/tmp/bea0_private_score_<pid>_<ts>/bea2.private.jsonl`（transient）。
+手动 CI run `27938484585`（2026-06-21）已通过：ContextBench offset 40 limit 20 + RepoQA offset 20 limit 10，budget=5，方法 bm25/regex/symbol，启用 RRF baseline。30 条记录成功；`paired_exclusion_count=0`；forbidden scan pass；`provider_calls=0`；`private_score_manifest.record_count=180`（30 条记录 × 6 arm）；`private_score_manifest.storage_class=tmp_private`；`private_score_manifest.path_publicly_serialized=false`；`aggregate_runtime_seconds=386.3`。BEA v0.2 相对 BEA v0 / same-budget BM25 / agreement-only / RRF：`file_recall@10` delta=+0.033334，`mrr` delta=+0.081667，`span_f0.5@10` delta=-0.012947，`success_rate` delta=+0.033334，`latency_seconds` delta=+8.188547，`evidence_budget_used` delta=0.0。Win/tie/loss（v0.2 vs v0，n=30）：file_recall@10 win=3 tie=25 loss=2；mrr win=7 tie=21 loss=2；span_f0.5@10 win=0 tie=28 loss=2；success_rate win=3 tie=25 loss=2。相对 seeded random，v0.2 的正向 delta 更强（`file_recall@10` +0.233334，`mrr` +0.326667，`span_f0.5@10` +0.019687，`success_rate` +0.233334）。这是 mixed smoke-level 机制结果，不是 method-winner/default/performance/calibration 声明。
 
 ### Caveats
 
@@ -9014,5 +9009,5 @@ diversity/risk 策略在 1/5 记录上选择了不同候选集，在此有界样
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value 声明。
 - v0.2 优先级权重为冻结常量，不从 outcomes 调优。
-- 有界样本（5 条记录）。smoke，非严格评估。
+- 有界 CI 样本（30 条记录）。smoke，非严格评估。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义不变。

@@ -399,6 +399,33 @@ BEA-1 是 BEA v0 的第一个机制消融 smoke。它重新运行新鲜有界 Co
 
 [BEA-1 详细报告](bea1-mechanism-ablation.md)。
 
+## 2026-06-21 BEA-2 Policy v0.2 Diversity/Risk 机制 Smoke
+
+BEA-2 实现了真正的 BEA v0.2 算法策略变更：在全新 heldout ContextBench
+verified Python rows offset 40 limit 20 + RepoQA Python needles offset 20 limit
+10 上，以冻结权重（agreement=0.30、bm25_norm=0.20、diversity=0.20、
+query_path_overlap=0.15、risk_penalty=-0.25、duplication_penalty=-0.30）运行
+diversity/risk-aware greedy 采集，并与 `bea_v0`、same-budget BM25、
+agreement-only、seeded random 和可选 RRF 对照。每条 record × policy arm 写入
+私有 per-record SCORE JSONL，仅在 `/tmp`，公开 artifact 只保留 records-only
+聚合：`benchmark_arm_metric_records`、`delta_records`、
+`mechanism_contrast_records`、`win_tie_loss_records` 与 aggregate
+`private_score_manifest`，且 `path_publicly_serialized=false`。
+
+手动 CI run `27938484585` 已通过：30 条记录成功，`paired_exclusion_count=0`，
+forbidden scan pass，`provider_calls=0`，`private_score_manifest.record_count=180`
+（30 条记录 × 6 arm），`aggregate_runtime_seconds=386.3`。BEA v0.2 相对
+BEA v0 / same-budget BM25 / agreement-only / RRF：file_recall@10 delta=+0.033334，
+mrr delta=+0.081667，span_f0.5@10 delta=-0.012947，success_rate delta=+0.033334，
+latency_seconds delta=+8.188547，evidence_budget_used delta=0.0。相对 seeded
+random，v0.2 的 file_recall@10/mrr/span_f0.5@10/success_rate deltas 为
++0.233334/+0.326667/+0.019687/+0.233334。结论是 mixed smoke-level 机制结果：
+v0.2 在该 bounded CI slice 上改善 file recall/MRR/success，但降低 span metric
+并增加 latency；这不是 method-winner、default-policy、benchmark-performance 或
+calibration 声明。
+
+[BEA-2 详细报告](bea2-policy-v02.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

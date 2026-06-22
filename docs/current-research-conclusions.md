@@ -196,17 +196,18 @@ and agreement-only: greedy priority-scored selection with
 diversity/risk/duplication-aware recomputation after each selection. 5 fixed
 policy arms (`bm25_prefix_same_budget`, `agreement_only_same_budget`,
 `bea_v0`, `bea_v0_2_diversity_risk`, `seeded_random_same_budget`; optional
-`rrf_same_budget`). Bounded local run (2026-06-21) with ContextBench
-offset 40 limit 3 + RepoQA offset 20 limit 2, budget=5, methods
-bm25/regex/symbol, rrf baseline enabled: 5 records successful,
+`rrf_same_budget`). Manual CI run 27938484585 (2026-06-21) passed with ContextBench
+offset 40 limit 20 + RepoQA offset 20 limit 10, budget=5, methods
+bm25/regex/symbol, rrf baseline enabled: 30 records successful,
 `paired_exclusion_count=0`, forbidden scan pass, `provider_calls=0`,
-`private_score_manifest.record_count=30` (5 records × 6 arms),
+`private_score_manifest.record_count=180` (30 records × 6 arms),
 `private_score_storage_class=tmp_private`,
-`private_score_path_publicly_serialized=false`. Win/tie/loss (v0.2 vs v0,
-n=5): file_recall@10 win=0 tie=4 loss=1; mrr win=0 tie=4 loss=1;
-span_f0.5@10 win=0 tie=4 loss=1; success_rate win=0 tie=4 loss=1. The v0.2
-diversity/risk policy selected a different candidate set on 1/5 records,
-which hurt on this bounded sample. Schema `bea2_policy_v02.v1`,
+`private_score_path_publicly_serialized=false`, `aggregate_runtime_seconds=386.3`.
+BEA v0.2 vs BEA v0 / same-budget BM25 / agreement-only / RRF: file_recall@10
+delta=+0.033334, mrr delta=+0.081667, span_f0.5@10 delta=-0.012947,
+success_rate delta=+0.033334, latency_seconds delta=+8.188547, evidence_budget_used
+delta=0.0; v0.2 vs v0 win/tie/loss n=30: file_recall 3/25/2, mrr 7/21/2,
+span_f0.5 0/28/2, success 3/25/2. Mixed smoke-level mechanism result. Schema `bea2_policy_v02.v1`,
 `claim_level=bea_v02_policy_smoke_only`, phase `BEA-2`, 321/321 self-test
 checks pass. BEA-2 is NOT a benchmark result, NOT a leaderboard entry, NOT
 a performance claim, NOT a method-winner claim, NOT a calibration claim,

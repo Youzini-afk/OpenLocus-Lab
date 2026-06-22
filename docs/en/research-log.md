@@ -9719,14 +9719,9 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### Real bounded local run results (2026-06-21)
+### Manual CI result (2026-06-21)
 
-5 records successful (ContextBench 3 + RepoQA 2). Win/tie/loss (v0.2 vs
-v0, n=5): file_recall@10 win=0 tie=4 loss=1; mrr win=0 tie=4 loss=1;
-span_f0.5@10 win=0 tie=4 loss=1; success_rate win=0 tie=4 loss=1. The v0.2
-diversity/risk policy selected a different candidate set on 1/5 records,
-which hurt on this bounded sample. 30 private SCORE rows written to
-`/tmp/bea0_private_score_<pid>_<ts>/bea2.private.jsonl` (transient).
+Manual CI run `27938484585` (2026-06-21) passed with ContextBench offset 40 limit 20 + RepoQA offset 20 limit 10, budget=5, methods bm25/regex/symbol, RRF baseline enabled. 30 records successful; `paired_exclusion_count=0`; forbidden scan pass; `provider_calls=0`; `private_score_manifest.record_count=180` (30 records × 6 arms); `private_score_manifest.storage_class=tmp_private`; `private_score_manifest.path_publicly_serialized=false`; `aggregate_runtime_seconds=386.3`. BEA v0.2 vs BEA v0 / same-budget BM25 / agreement-only / RRF: `file_recall@10` delta=+0.033334, `mrr` delta=+0.081667, `span_f0.5@10` delta=-0.012947, `success_rate` delta=+0.033334, `latency_seconds` delta=+8.188547, `evidence_budget_used` delta=0.0. Win/tie/loss (v0.2 vs v0, n=30): file_recall@10 win=3 tie=25 loss=2; mrr win=7 tie=21 loss=2; span_f0.5@10 win=0 tie=28 loss=2; success_rate win=3 tie=25 loss=2. Against seeded random, v0.2 deltas were stronger positive (`file_recall@10` +0.233334, `mrr` +0.326667, `span_f0.5@10` +0.019687, `success_rate` +0.233334). This is a mixed smoke-level mechanism result, not a method-winner/default/performance/calibration claim.
 
 ### Caveats
 
@@ -9734,6 +9729,6 @@ which hurt on this bounded sample. 30 private SCORE rows written to
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value claim.
 - v0.2 priority weights are frozen constants, NOT tuned from outcomes.
-- Bounded sample (5 records). Smoke, not rigorous evaluation.
+- Bounded CI sample (30 records). Smoke, not rigorous evaluation.
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged.

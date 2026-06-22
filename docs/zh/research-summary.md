@@ -2904,12 +2904,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   行（offset 40）+ RepoQA Python needle（offset 20）上运行。v0.2 在结构上
   与 v0 和 agreement-only 不同：按优先级降序贪心选择，含
   diversity/risk/duplication-aware 重计算。
-- **有界本地运行（2026-06-21）**：5 条记录成功（CB 3 + RQ 2），budget=5，
-  方法 bm25/regex/symbol，启用 rrf baseline。Win/tie/loss（v0.2 vs v0，
-  n=5）：file_recall@10 win=0 tie=4 loss=1；mrr win=0 tie=4 loss=1；
-  span_f0.5@10 win=0 tie=4 loss=1；success_rate win=0 tie=4 loss=1。v0.2
-  diversity/risk 策略在 1/5 记录上选择了不同候选集，在此有界样本上造成了
-  损失。30 行私有 SCORE（5 条记录 × 6 arm）。这是诚实的 smoke 级结果。
+- **手动 CI run `27938484585`（2026-06-21）**：手动 CI run `27938484585`（2026-06-21）已通过：ContextBench offset 40 limit 20 + RepoQA offset 20 limit 10，budget=5，方法 bm25/regex/symbol，启用 RRF baseline。30 条记录成功；`paired_exclusion_count=0`；forbidden scan pass；`provider_calls=0`；`private_score_manifest.record_count=180`（30 条记录 × 6 arm）；`private_score_manifest.storage_class=tmp_private`；`private_score_manifest.path_publicly_serialized=false`；`aggregate_runtime_seconds=386.3`。BEA v0.2 相对 BEA v0 / same-budget BM25 / agreement-only / RRF：`file_recall@10` delta=+0.033334，`mrr` delta=+0.081667，`span_f0.5@10` delta=-0.012947，`success_rate` delta=+0.033334，`latency_seconds` delta=+8.188547，`evidence_budget_used` delta=0.0。Win/tie/loss（v0.2 vs v0，n=30）：file_recall@10 win=3 tie=25 loss=2；mrr win=7 tie=21 loss=2；span_f0.5@10 win=0 tie=28 loss=2；success_rate win=3 tie=25 loss=2。相对 seeded random，v0.2 的正向 delta 更强（`file_recall@10` +0.233334，`mrr` +0.326667，`span_f0.5@10` +0.019687，`success_rate` +0.233334）。这是 mixed smoke-level 机制结果，不是 method-winner/default/performance/calibration 声明。
 - **321/321 self-test 检查通过**：31 组。
 - **严格 claim 边界**：`claim_level=bea_v02_policy_smoke_only`。非
   benchmark/leaderboard/performance/method-winner/calibration/promotion/
