@@ -7,7 +7,7 @@
 
 BEA-5 是冻结 BEA v0.3 策略的 **frozen-policy 稳健性 smoke**。它在全新
 disjoint 更大/跨切片 external 稳健性 smoke 上运行（ContextBench verified
-Python 行 offset 160 limit 120，RepoQA Python needle offset 80 limit 120），
+Python 行 offset 160 limit 240，RepoQA Python needle offset 80 limit 120），
 测试 BEA-4 结论在任何 BEA v0.4 调优前是否稳定。**v0.3 算法和权重与
 BEA-3/BEA-4 完全一致（冻结）；本阶段是稳健性度量，不是新算法。**
 

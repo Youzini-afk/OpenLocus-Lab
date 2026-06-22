@@ -3,8 +3,8 @@
 
 This module implements the **BEA-5 frozen-policy robustness smoke** for the
 frozen BEA v0.3 policy. It runs a fresh, disjoint larger/cross-slice external
-robustness smoke (ContextBench verified Python rows offset 160 limit 120,
-RepoQA Python needles offset 80 limit 60) and tests whether BEA-4's
+robustness smoke (ContextBench verified Python rows offset 160 limit 240,
+RepoQA Python needles offset 80 limit 120) and tests whether BEA-4's
 conclusions are stable before any BEA v0.4 tuning.
 
 BEA-5 is explicitly **not** a benchmark result, **not** a leaderboard entry,
@@ -125,13 +125,13 @@ DEFAULT_OUT = Path(
 
 PRIVATE_SCORE_SCHEMA_VERSION = "bea5_private_score.v1"
 
-# Fresh disjoint larger slice from BEA-4. Hard caps 120/60.
+# Fresh disjoint larger slice from BEA-4. Hard caps 240/120.
 CONTEXTBENCH_ROW_OFFSET_DEFAULT = 160
-CONTEXTBENCH_ROW_LIMIT_DEFAULT = 120
-CONTEXTBENCH_ROW_LIMIT_HARD_CAP = 120
+CONTEXTBENCH_ROW_LIMIT_DEFAULT = 240
+CONTEXTBENCH_ROW_LIMIT_HARD_CAP = 240
 REPOQA_NEEDLE_OFFSET_DEFAULT = 80
-REPOQA_NEEDLE_LIMIT_DEFAULT = 60
-REPOQA_NEEDLE_LIMIT_HARD_CAP = 60
+REPOQA_NEEDLE_LIMIT_DEFAULT = 120
+REPOQA_NEEDLE_LIMIT_HARD_CAP = 120
 
 BUDGET_DEFAULT = 5
 BUDGET_HARD_CAP = 20
@@ -1863,18 +1863,18 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
 
     # Group 5: Robustness slice defaults and hard caps.
     checks.append(_check("cb_offset_default", CONTEXTBENCH_ROW_OFFSET_DEFAULT == 160))
-    checks.append(_check("cb_limit_default", CONTEXTBENCH_ROW_LIMIT_DEFAULT == 120))
-    checks.append(_check("cb_limit_hard_cap", CONTEXTBENCH_ROW_LIMIT_HARD_CAP == 120))
+    checks.append(_check("cb_limit_default", CONTEXTBENCH_ROW_LIMIT_DEFAULT == 240))
+    checks.append(_check("cb_limit_hard_cap", CONTEXTBENCH_ROW_LIMIT_HARD_CAP == 240))
     checks.append(_check("rq_offset_default", REPOQA_NEEDLE_OFFSET_DEFAULT == 80))
-    checks.append(_check("rq_limit_default", REPOQA_NEEDLE_LIMIT_DEFAULT == 60))
-    checks.append(_check("rq_limit_hard_cap", REPOQA_NEEDLE_LIMIT_HARD_CAP == 60))
+    checks.append(_check("rq_limit_default", REPOQA_NEEDLE_LIMIT_DEFAULT == 120))
+    checks.append(_check("rq_limit_hard_cap", REPOQA_NEEDLE_LIMIT_HARD_CAP == 120))
     checks.append(_check("budget_default", BUDGET_DEFAULT == 5))
     checks.append(_check("budget_hard_cap", BUDGET_HARD_CAP == 20))
     checks.append(_check("ci_min_records", CI_MIN_RECORDS_SUCCESSFUL == 120))
 
     # Group 6: Validation caps.
-    checks.append(_check("validate_row_limit_caps", _validate_row_limit(200) == 120))
-    checks.append(_check("validate_needle_limit_caps", _validate_needle_limit(200) == 60))
+    checks.append(_check("validate_row_limit_caps", _validate_row_limit(300) == 240))
+    checks.append(_check("validate_needle_limit_caps", _validate_needle_limit(200) == 120))
     checks.append(_check("validate_budget_caps", _validate_budget(100) == 20))
     try:
         _validate_row_limit(0)
