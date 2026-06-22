@@ -10396,3 +10396,118 @@ calibration/downstream-value claim.
   ContextBench 80 + RepoQA 40 scale slice. The smaller 3+2 command is retained
   only as local validation, not result evidence.
 - BEA-0/BEA-1/BEA-2/BEA-3 semantics not mutated.
+
+## 2026-06-21 — BEA-5 Frozen-Policy Robustness Smoke
+
+### Objective
+
+Run a fresh, disjoint larger/cross-slice external robustness smoke with BEA
+v0.3 frozen exactly as BEA-4. This tests whether BEA-4's conclusions are
+stable before any BEA v0.4 tuning.
+
+### Frozen policy
+
+`bea_v0_3_anchor_span_latency` is identical to BEA-3/BEA-4 (frozen weights:
+anchor=0.35, span_tight=0.15, anchor_file_support=0.10,
+weak_support_penalty=-0.20, early_stop_margin=0.05). No algorithm/weight
+change during BEA-5 (`algorithm_changed_during_bea5=false`,
+`weights_tuned_during_bea5=false` — binding).
+
+### Required arms (7; RRF required never optional)
+
+`bea_v0_3_anchor_span_latency`, `bea_v0_2_diversity_risk`, `bea_v0`,
+`bm25_prefix_same_budget`, `agreement_only_same_budget`, `rrf_same_budget`,
+`seeded_random_same_budget`. No ablations.
+
+### Fresh disjoint larger slice
+
+ContextBench verified Python rows offset 160, limit 120 (hard cap 120).
+RepoQA Python needles offset 80, limit 60 (hard cap 60).
+
+### Public artifact shape
+
+Records-only: `benchmark_arm_metric_records`, `delta_records` (v0.3 vs
+bm25/agreement/rrf/v0.2/v0/random), `win_tie_loss_records`,
+`worst_slice_records` (7 fixed bucket labels; worst N=5 per benchmark × arm),
+`mechanism_summary_records`, `robustness_summary_records` (NEW:
+cross_slice deltas, sign stability, quality_per_latency aggregates,
+worst-slice cluster counts), aggregate-only `private_score_manifest`.
+
+### Natural-key uniqueness
+
+Every public record table is unique by its natural key. Self-tests and CI
+validator check uniqueness for all 6 record tables.
+
+### Counts-only self-test summary
+
+Public artifact records ONLY `self_test_passed` (bool),
+`self_test_checks_total` (int, 282), `self_test_checks_passed` (int). No
+self_test detail list. Forbidden fields: `self_test_checks`,
+`self_test_details`, `self_test_list`, `checks`, `check_list`.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/bea5_frozen_policy_robustness.py  => PASS
+python3 eval/bea5_frozen_policy_robustness.py --self-test  => PASS (282/282 checks)
+python3 eval/bea5_frozen_policy_robustness.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-offset 160 --contextbench-row-limit 3 \
+  --repoqa-needle-offset 80 --repoqa-needle-limit 2 \
+  --budget 5 --methods bm25,regex,symbol \
+  --out artifacts/bea5_frozen_policy_robustness/bea5_frozen_policy_robustness_report.json  => PASS
+  (status: bea5_frozen_policy_robustness_pass, 5 records successful,
+   private_score_manifest.record_count=35 (5×7 arms),
+   private_score_storage_class=tmp_private,
+   private_score_path_publicly_serialized=false,
+   provider_calls=0, forbidden_scan=pass,
+   algorithm_changed_during_bea5=false, weights_tuned_during_bea5=false,
+   self_test_checks_total=282, self_test_checks_passed=282)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Real bounded local smoke result (2026-06-21)
+
+Bounded local smoke (ContextBench offset 160 limit 3 + RepoQA offset 80
+limit 2, budget=5, methods bm25/regex/symbol): 5 records successful,
+`paired_exclusion_count=0`, forbidden scan pass, `provider_calls=0`,
+`private_score_manifest.record_count=35` (5×7 arms),
+`private_score_storage_class=tmp_private`,
+`private_score_path_publicly_serialized=false`,
+`algorithm_changed_during_bea5=false`, `weights_tuned_during_bea5=false`.
+
+Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=2 tie=3 loss=0; mrr
+win=2 tie=2 loss=1; span_f0.5@10 win=2 tie=3 loss=0; success_rate win=2
+tie=3 loss=0. v0.3 ties v0.2 on mrr (delta=0.0); beats v0/agreement/bm25/
+rrf by +0.056667 mrr; beats seeded_random by +0.09 mrr.
+
+Robustness summary (selected): `cross_slice_v03_vs_v02_mrr_delta=0.0`,
+`cross_slice_v03_vs_v0_mrr_delta=0.056667`,
+`v03_vs_v02_sign_stability_mrr=1.0`,
+`v03_vs_v0_sign_stability_mrr=0.8`,
+`v03_quality_per_latency_mean=0.054622`,
+`rrf_quality_per_latency_mean=0.009144`,
+`v03_vs_rrf_quality_per_latency_delta=0.045478`.
+
+Public record tables: 140 `benchmark_arm_metric_records`, 60 `delta_records`,
+24 `win_tie_loss_records`, 30 `worst_slice_records`, 6
+`mechanism_summary_records`, 24 `robustness_summary_records`. All record
+tables verified unique by natural key.
+
+The full robustness slice (ContextBench 120 + RepoQA 60) is pending manual
+CI run; the committed artifact reflects the local smoke only. Local debug may
+use 3+2 only and must not be recorded as CI scale evidence.
+
+### Caveats
+
+- BEA-5 is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value claim.
+- v0.3 algorithm/weights frozen exactly as in BEA-3/BEA-4.
+  `algorithm_changed_during_bea5=false`,
+  `weights_tuned_during_bea5=false` (binding).
+- Bounded local smoke used 3+2 records for speed. Full robustness slice
+  pending manual CI.
+- RRF arm is required; CI fails if RRF is disabled/missing.
+- BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 semantics not mutated.

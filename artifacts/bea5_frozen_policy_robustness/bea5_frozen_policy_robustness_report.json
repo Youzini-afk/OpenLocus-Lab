@@ -1,0 +1,2240 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "aggregate_runtime_seconds": 32.17,
+  "algorithm_changed_during_bea5": false,
+  "backend_changed": false,
+  "baseline_arm": "bea_v0",
+  "bea_v02_policy_executed": true,
+  "bea_v03_policy_executed": true,
+  "bea_v0_acquisition_performed": true,
+  "benchmark_arm_metric_records": [
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.25
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.001755
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.035112
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 6.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 7.1125
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.25
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.001755
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.004927
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.035112
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 1.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 7.1125
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.291666
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.00331
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.009307
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.066207
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 1.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 1.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 7.113748
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.291666
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.00331
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.009306
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.066207
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 1.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.25
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.001755
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.035112
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 1.5885
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.25
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.001755
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.022815
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.035112
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.166666
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.001554
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.031095
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 6.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.8315
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.8315
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.004529
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.107194
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.090579
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.832569
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.004529
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.10706
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.090579
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.5415
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.0
+    }
+  ],
+  "budget": 5,
+  "calibration_claimed": false,
+  "claim_level": "bea_v03_frozen_policy_robustness_smoke_only",
+  "contextbench_row_limit_requested": 2,
+  "contextbench_row_offset_requested": 160,
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "delta_records": [
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.5,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 3.973159,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.070833,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.003042,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.058183,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.060837,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "delta": 0.5,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.5,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.001159,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.070833,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.003042,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.055719,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.060837,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.5,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.001159,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": -6.8e-05,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.5,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 3.973159,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.070833,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.003042,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.058183,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.060837,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "delta": 0.5,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.5,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 2.908159,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.070833,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.003042,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.046776,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.060837,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "delta": 0.5,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.5,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 3.973159,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.1125,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.003143,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.058183,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.062846,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "delta": 0.5,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    }
+  ],
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "external_benchmark_rows_read": true,
+  "failure_category_counts": {
+    "contextbench_fetch_failed": 0,
+    "contextbench_gold_parse_failed": 0,
+    "contextbench_no_python_rows": 0,
+    "duplicate_record_key_blocked": 0,
+    "forbidden_leak_blocked": 0,
+    "heldout_offset_exceeds_available": 0,
+    "needle_limit_capped": 0,
+    "private_score_write_failed": 0,
+    "record_excluded_from_paired_denominator": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "repoqa_asset_decompress_failed": 0,
+    "repoqa_asset_download_failed": 0,
+    "repoqa_asset_parse_failed": 0,
+    "repoqa_needle_parse_failed": 0,
+    "repoqa_no_python_needles": 0,
+    "retrieval_failed": 0,
+    "row_limit_capped": 0,
+    "rrf_required_but_missing": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "unexpected_exception": 0
+  },
+  "fixed_arms": [
+    "bea_v0_3_anchor_span_latency",
+    "bea_v0_2_diversity_risk",
+    "bea_v0",
+    "bm25_prefix_same_budget",
+    "agreement_only_same_budget",
+    "rrf_same_budget",
+    "seeded_random_same_budget"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_proven": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_v03_frozen_policy_robustness_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-22T14:51:53.709454+00:00",
+  "generated_by": "eval/bea5_frozen_policy_robustness.py",
+  "leaderboard_entry_claimed": false,
+  "mechanism_summary_records": [
+    {
+      "mechanism_field": "anchor_used_rate",
+      "record_count": 4,
+      "value": 1.0
+    },
+    {
+      "mechanism_field": "early_stop_rate",
+      "record_count": 4,
+      "value": 0.0
+    },
+    {
+      "mechanism_field": "mean_budget_used",
+      "record_count": 4,
+      "value": 5.0
+    },
+    {
+      "mechanism_field": "mean_latency_seconds",
+      "record_count": 4,
+      "value": 5.04175
+    },
+    {
+      "mechanism_field": "mean_span_extent",
+      "record_count": 4,
+      "value": 5.0
+    },
+    {
+      "mechanism_field": "span_proxy_bucket_tight",
+      "record_count": 4,
+      "value": 20
+    }
+  ],
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "bea_v03_frozen_policy_robustness_smoke",
+  "network_calls": 3,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "paired_exclusion_count": 0,
+  "phase": "BEA-5",
+  "private_score_manifest": {
+    "manifest_hash": "4eced6eddb32fa169b9ce5f09d89ea3706d5c17eba7209a5a650d3185470c0ae",
+    "path_publicly_serialized": false,
+    "record_count": 28,
+    "records_written": true,
+    "schema_version": "bea5_private_score.v1",
+    "storage_class": "tmp_private"
+  },
+  "private_score_records_written": true,
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "records_evaluated": 4,
+  "records_failed": 0,
+  "records_successful": 4,
+  "remote_provider_calls_made": false,
+  "repoqa_needle_limit_requested": 2,
+  "repoqa_needle_offset_requested": 81,
+  "retriever_changed": false,
+  "robustness_slice_read": true,
+  "robustness_summary_computed": true,
+  "robustness_summary_records": [
+    {
+      "record_count": 4,
+      "robustness_field": "cross_slice_v03_vs_v02_file_recall_delta",
+      "value": 0.0
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "cross_slice_v03_vs_v02_mrr_delta",
+      "value": 0.0
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "cross_slice_v03_vs_v0_file_recall_delta",
+      "value": 0.5
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "cross_slice_v03_vs_v0_mrr_delta",
+      "value": 0.070833
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "rrf_quality_per_latency_mean",
+      "value": 0.011407
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "v03_quality_per_latency_mean",
+      "value": 0.058183
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "v03_vs_rrf_quality_per_latency_delta",
+      "value": 0.046776
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "v03_vs_v02_sign_stability_file_recall",
+      "value": 1.0
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "v03_vs_v02_sign_stability_mrr",
+      "value": 1.0
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "v03_vs_v0_sign_stability_file_recall",
+      "value": 1.0
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "v03_vs_v0_sign_stability_mrr",
+      "value": 0.75
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_budget_exhaustion_bucket_full",
+      "value": 22
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_candidate_pool_size_bucket_medium",
+      "value": 22
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_file_kind_mix_bucket_mixed",
+      "value": 12
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_file_kind_mix_bucket_non_python",
+      "value": 4
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_file_kind_mix_bucket_pure_python",
+      "value": 6
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_method_agreement_bucket_low",
+      "value": 22
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_query_length_bucket_medium",
+      "value": 22
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_rank_gap_bucket_medium",
+      "value": 14
+    },
+    {
+      "record_count": 4,
+      "robustness_field": "worst_slice_cluster_rank_gap_bucket_wide",
+      "value": 8
+    }
+  ],
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "bea5_frozen_policy_robustness.v1",
+  "score_py_metrics_computed": true,
+  "seeded_random_seed": 20240621,
+  "self_test_checks_passed": 285,
+  "self_test_checks_total": 285,
+  "self_test_passed": true,
+  "status": "bea5_frozen_policy_robustness_pass",
+  "treatment_arm": "bea_v0_3_anchor_span_latency",
+  "weights_tuned_during_bea5": false,
+  "win_tie_loss_records": [
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 1,
+      "metric": "mrr",
+      "record_count": 4,
+      "tie": 1,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 1,
+      "metric": "mrr",
+      "record_count": 4,
+      "tie": 1,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 4,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "mrr",
+      "record_count": 4,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 4,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 4,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 1,
+      "metric": "mrr",
+      "record_count": 4,
+      "tie": 1,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 1,
+      "metric": "mrr",
+      "record_count": 4,
+      "tie": 1,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 1,
+      "metric": "mrr",
+      "record_count": 4,
+      "tie": 1,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 4,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    }
+  ],
+  "worst_slice_aggregated": true,
+  "worst_slice_records": [
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "pure_python",
+      "file_recall@10": 0.5,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.25,
+      "quality_per_candidate": 0.001755,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 2,
+      "span_f0.5@10": 0.035112,
+      "success_rate": 0.5
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "pure_python",
+      "file_recall@10": 0.5,
+      "latency_seconds": 7.1125,
+      "method_agreement_bucket": "low",
+      "mrr": 0.25,
+      "quality_per_candidate": 0.001755,
+      "quality_per_latency": 0.004927,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 2,
+      "span_f0.5@10": 0.035112,
+      "success_rate": 0.5
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 1.0,
+      "latency_seconds": 7.099,
+      "method_agreement_bucket": "low",
+      "mrr": 0.25,
+      "quality_per_candidate": 0.003109,
+      "quality_per_latency": 0.00876,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 1,
+      "span_f0.5@10": 0.062189,
+      "success_rate": 1.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "pure_python",
+      "file_recall@10": 1.0,
+      "latency_seconds": 7.126,
+      "method_agreement_bucket": "low",
+      "mrr": 0.333333,
+      "quality_per_candidate": 0.003511,
+      "quality_per_latency": 0.009855,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 1,
+      "span_f0.5@10": 0.070225,
+      "success_rate": 1.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 1.0,
+      "latency_seconds": 7.10023,
+      "method_agreement_bucket": "low",
+      "mrr": 0.25,
+      "quality_per_candidate": 0.003109,
+      "quality_per_latency": 0.008759,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 1,
+      "span_f0.5@10": 0.062189,
+      "success_rate": 1.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "pure_python",
+      "file_recall@10": 1.0,
+      "latency_seconds": 7.127267,
+      "method_agreement_bucket": "low",
+      "mrr": 0.333333,
+      "quality_per_candidate": 0.003511,
+      "quality_per_latency": 0.009853,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 1,
+      "span_f0.5@10": 0.070225,
+      "success_rate": 1.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "pure_python",
+      "file_recall@10": 0.5,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.25,
+      "quality_per_candidate": 0.001755,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 2,
+      "span_f0.5@10": 0.035112,
+      "success_rate": 0.5
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "pure_python",
+      "file_recall@10": 0.5,
+      "latency_seconds": 1.5885,
+      "method_agreement_bucket": "low",
+      "mrr": 0.25,
+      "quality_per_candidate": 0.001755,
+      "quality_per_latency": 0.022815,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 2,
+      "span_f0.5@10": 0.035112,
+      "success_rate": 0.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.5,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.166666,
+      "quality_per_candidate": 0.001554,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 2,
+      "span_f0.5@10": 0.031095,
+      "success_rate": 0.5
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "non_python",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.845,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "non_python",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.818,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.818,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 1.0,
+      "latency_seconds": 0.845,
+      "method_agreement_bucket": "low",
+      "mrr": 0.2,
+      "quality_per_candidate": 0.009058,
+      "quality_per_latency": 0.214389,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 1,
+      "span_f0.5@10": 0.181159,
+      "success_rate": 1.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.819072,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 1.0,
+      "latency_seconds": 0.846067,
+      "method_agreement_bucket": "low",
+      "mrr": 0.2,
+      "quality_per_candidate": 0.009058,
+      "quality_per_latency": 0.214119,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 1,
+      "span_f0.5@10": 0.181159,
+      "success_rate": 1.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "non_python",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.542,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "non_python",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.541,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "medium",
+      "record_count": 1,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "budget_exhaustion_bucket": "full",
+      "candidate_pool_size_bucket": "medium",
+      "evidence_budget_used": 5.0,
+      "file_kind_mix_bucket": "mixed",
+      "file_recall@10": 0.0,
+      "latency_seconds": 0.0,
+      "method_agreement_bucket": "low",
+      "mrr": 0.0,
+      "quality_per_candidate": 0.0,
+      "quality_per_latency": 0.0,
+      "query_length_bucket": "medium",
+      "rank_gap_bucket": "wide",
+      "record_count": 2,
+      "span_f0.5@10": 0.0,
+      "success_rate": 0.0
+    }
+  ]
+}

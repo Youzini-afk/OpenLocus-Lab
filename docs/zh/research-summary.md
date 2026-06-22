@@ -3167,3 +3167,39 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
 - **BEA-4 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、评估器、artifact；
   v0.3 冻结。
+
+## BEA-5 findings
+
+- **BEA-5 是 frozen-policy 更大/跨切片稳健性 smoke**：在全新 disjoint
+  更大 external 切片（ContextBench verified Python 行 offset 160 limit 120；
+  RepoQA Python needle offset 80 limit 60）上运行 7 个固定 arm（无消融；
+  v0.3 + v0.2 + v0 + bm25_prefix + agreement_only + rrf_same_budget 必需
+  + seeded_random）。v0.3 算法/权重与 BEA-3/BEA-4 完全一致（冻结；
+  `algorithm_changed_during_bea5=false`、
+  `weights_tuned_during_bea5=false`——绑定）。
+- **公开 artifact 为 records-only**，新增 `robustness_summary_records` 表：
+  `benchmark_arm_metric_records`、`delta_records`（v0.3 vs
+  bm25/agreement/rrf/v0.2/v0/random）、`win_tie_loss_records`（paired
+  denominator）、`worst_slice_records`（7 个固定 bucket 标签；每
+  benchmark × arm 取最差 N=5，按 span_f0.5@10 升序）、
+  `mechanism_summary_records`、`robustness_summary_records`（cross_slice
+  delta、sign stability、quality_per_latency 聚合、worst-slice cluster
+  计数）、aggregate-only `private_score_manifest`。
+- **Natural-key 唯一性**：每个公开 record 表按其 natural key 唯一；
+  self-test 和 CI validator 检查全部 6 个 record 表的唯一性。
+- **Counts-only self-test 摘要**：公开 artifact 仅记录 `self_test_passed`、
+  `self_test_checks_total`（282）、`self_test_checks_passed`。无 self_test
+  详情列表。禁止字段：`self_test_checks`、`self_test_details`、
+  `self_test_list`、`checks`、`check_list`。
+- **282/282 self-test 检查通过**：32 组。
+- **有界本地 smoke（2026-06-21）**：5 条记录（CB 3 + RQ 2），budget=5，
+  7 arm。Win/tie/loss（v0.3 vs v0，n=5）：file_recall@10 win=2 tie=3 loss=0；
+  mrr win=2 tie=2 loss=1；span_f0.5@10 win=2 tie=3 loss=0；success_rate
+  win=2 tie=3 loss=0。v0.3 与 v0.2 在 mrr 上持平；胜 v0/agreement/bm25/rrf
+  +0.056667 mrr；胜 seeded_random +0.09 mrr。35 行私有 SCORE（5×7 arm）。
+- **严格 claim 边界**：`claim_level=
+  bea_v03_frozen_policy_robustness_smoke_only`。非 benchmark/leaderboard/
+  performance/method-winner/calibration/promotion/default/runtime/EvidenceCore
+  /downstream-value。`provider_calls=0`。
+- **BEA-5 不修改 BEA-0/BEA-1/BEA-2/BEA-3/BEA-4**：独立 phase、评估器、
+  artifact。v0.3 冻结。

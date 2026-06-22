@@ -9649,3 +9649,116 @@ smoke evidence，不是 method-winner/default/performance/calibration/downstream
 - 已提交 artifact 镜像手动 CI run `27957586271` 的完整 ContextBench 80 +
   RepoQA 40 scale 切片。3+2 命令仅作为本地验证保留，不作为结果证据。
 - BEA-0/BEA-1/BEA-2/BEA-3 语义未修改。
+
+## 2026-06-21 — BEA-5 Frozen-Policy Robustness Smoke
+
+### 目标
+
+运行全新 disjoint 更大/跨切片 external 稳健性 smoke，BEA v0.3 与 BEA-4
+完全一致（冻结）。测试 BEA-4 结论在任何 BEA v0.4 调优前是否稳定。
+
+### 冻结策略
+
+`bea_v0_3_anchor_span_latency` 与 BEA-3/BEA-4 完全相同（冻结权重：
+anchor=0.35、span_tight=0.15、anchor_file_support=0.10、
+weak_support_penalty=-0.20、early_stop_margin=0.05）。BEA-5 期间无算法/权重
+变更（`algorithm_changed_during_bea5=false`、
+`weights_tuned_during_bea5=false`——绑定）。
+
+### 必需 arm（7 个；RRF 必需，从不可选）
+
+`bea_v0_3_anchor_span_latency`、`bea_v0_2_diversity_risk`、`bea_v0`、
+`bm25_prefix_same_budget`、`agreement_only_same_budget`、`rrf_same_budget`、
+`seeded_random_same_budget`。无消融。
+
+### 全新 disjoint 更大切片
+
+ContextBench verified Python 行 offset 160、limit 120（硬上限 120）。
+RepoQA Python needle offset 80、limit 60（硬上限 60）。
+
+### 公开 artifact 形态
+
+仅 records：`benchmark_arm_metric_records`、`delta_records`（v0.3 vs
+bm25/agreement/rrf/v0.2/v0/random）、`win_tie_loss_records`、
+`worst_slice_records`（7 个固定 bucket 标签；每 benchmark × arm 取最差
+N=5）、`mechanism_summary_records`、`robustness_summary_records`（新增：
+cross_slice delta、sign stability、quality_per_latency 聚合、worst-slice
+cluster 计数）、aggregate-only `private_score_manifest`。
+
+### Natural-key 唯一性
+
+每个公开 record 表按其 natural key 唯一。self-test 和 CI validator 检查
+全部 6 个 record 表的唯一性。
+
+### Counts-only self-test 摘要
+
+公开 artifact 仅记录 `self_test_passed`（bool）、
+`self_test_checks_total`（int, 282）、`self_test_checks_passed`（int）。
+无 self_test 详情列表。禁止字段：`self_test_checks`、
+`self_test_details`、`self_test_list`、`checks`、`check_list`。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/bea5_frozen_policy_robustness.py  => PASS
+python3 eval/bea5_frozen_policy_robustness.py --self-test  => PASS (282/282 checks)
+python3 eval/bea5_frozen_policy_robustness.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-offset 160 --contextbench-row-limit 3 \
+  --repoqa-needle-offset 80 --repoqa-needle-limit 2 \
+  --budget 5 --methods bm25,regex,symbol \
+  --out artifacts/bea5_frozen_policy_robustness/bea5_frozen_policy_robustness_report.json  => PASS
+  (status: bea5_frozen_policy_robustness_pass, 5 records successful,
+   private_score_manifest.record_count=35 (5×7 arms),
+   private_score_storage_class=tmp_private,
+   private_score_path_publicly_serialized=false,
+   provider_calls=0, forbidden_scan=pass,
+   algorithm_changed_during_bea5=false, weights_tuned_during_bea5=false,
+   self_test_checks_total=282, self_test_checks_passed=282)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### 真实有界本地 smoke 结果（2026-06-21）
+
+有界本地 smoke（ContextBench offset 160 limit 3 + RepoQA offset 80
+limit 2，budget=5，方法 bm25/regex/symbol）：5 条记录成功，
+`paired_exclusion_count=0`，forbidden scan pass，`provider_calls=0`，
+`private_score_manifest.record_count=35`（5×7 arm），
+`private_score_storage_class=tmp_private`，
+`private_score_path_publicly_serialized=false`，
+`algorithm_changed_during_bea5=false`，`weights_tuned_during_bea5=false`。
+
+Win/tie/loss（v0.3 vs v0，n=5）：file_recall@10 win=2 tie=3 loss=0；mrr
+win=2 tie=2 loss=1；span_f0.5@10 win=2 tie=3 loss=0；success_rate win=2
+tie=3 loss=0。v0.3 与 v0.2 在 mrr 上持平（delta=0.0）；胜 v0/agreement/
+bm25/rrf +0.056667 mrr；胜 seeded_random +0.09 mrr。
+
+Robustness summary（精选）：`cross_slice_v03_vs_v02_mrr_delta=0.0`、
+`cross_slice_v03_vs_v0_mrr_delta=0.056667`、
+`v03_vs_v02_sign_stability_mrr=1.0`、
+`v03_vs_v0_sign_stability_mrr=0.8`、
+`v03_quality_per_latency_mean=0.054622`、
+`rrf_quality_per_latency_mean=0.009144`、
+`v03_vs_rrf_quality_per_latency_delta=0.045478`。
+
+公开 record 表：140 `benchmark_arm_metric_records`、60 `delta_records`、
+24 `win_tie_loss_records`、30 `worst_slice_records`、6
+`mechanism_summary_records`、24 `robustness_summary_records`。所有 record
+表均通过 natural key 唯一性验证。
+
+完整稳健性切片（ContextBench 120 + RepoQA 60）待手动 CI 运行；已提交
+artifact 仅反映本地 smoke。本地 debug 可使用 3+2，但绝不能记为 CI scale
+证据。
+
+### Caveats
+
+- BEA-5 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value 声明。
+- v0.3 算法/权重与 BEA-3/BEA-4 完全一致（冻结）。
+  `algorithm_changed_during_bea5=false`、
+  `weights_tuned_during_bea5=false`（绑定）。
+- 有界本地 smoke 使用 3+2 条记录以加速。完整稳健性切片待手动 CI。
+- RRF arm 必需；CI 在 RRF 禁用/缺失时失败。
+- BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 语义未修改。
