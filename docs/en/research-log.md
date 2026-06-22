@@ -9846,3 +9846,127 @@ Manual real-provider CI run `27945253824` passed. The committed artifact now mir
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged.
 - BEA-0/BEA-1/BEA-2/BEA-3 semantics not mutated.
+
+## 2026-06-21 — B16-G Context-Pack Atom Ablation Live-Provider Smoke
+
+### Objective
+
+Explain B16-F's downstream tie: context packs beat sparse, but BEA v0.3
+did not beat same-budget BM25. B16-G runs a live-provider atom ablation
+to identify whether the target-file cue, the decisive support cue, the
+distractor cue, or their combination drive solves on bounded synthetic
+coding tasks.
+
+### Prior result
+
+B16-F result checkpoint `f58ce0f`, manual CI run `27945253824`: 8
+synthetic tasks x 3 arms = 24 live calls. Sparse solve/test=0.25,
+same-budget BM25 context solve/test=1.0, BEA v0.3 context solve/test=1.0.
+BEA-vs-BM25 primary deltas are 0.0 for solve/test/wrong-file/edit-
+validity; BEA latency +0.3905s and extra tokens. Interpretation:
+context packs helped over sparse, but BEA did not improve over same-
+budget BM25.
+
+### Scope
+
+- Phase: `B16-G`.
+- Evaluator: `eval/b16g_context_pack_atom_ablation.py`.
+- Artifact:
+  `artifacts/b16g_context_pack_atom_ablation/b16g_context_pack_atom_ablation_report.json`.
+- Docs:
+  `docs/en/b16g-context-pack-atom-ablation.md` and zh mirror.
+- Workflow stage in `.github/workflows/real-provider-benchmark.yml`:
+  `b16g_context_pack_atom_ablation`.
+- Manual real-provider workflow only; local/no-env mode truthfully blocks.
+- Default: 8 synthetic tasks x 5 arms = 40 live provider calls.
+
+### Arms
+
+1. `control_sparse`: task issue only, minimal context; no atoms.
+2. `target_only`: target file cue + target symbol cue; no support, no
+   decisive cue.
+3. `support_only`: support module cue + decisive cue; no target file/
+   symbol cue.
+4. `distractor_plus_support`: distractor file cue + support module cue
+   + decisive cue; no target file; wrong-file cue.
+5. `target_plus_support`: target file cue + target symbol cue + support
+   module cue + decisive cue (full pack).
+
+Primary contrasts: `target_plus_support` vs
+`distractor_plus_support`; `target_plus_support` vs `support_only`;
+`target_only` vs `support_only`. Secondary contrasts: each context arm
+vs `control_sparse`.
+
+### Mechanism summary records
+
+Records-only aggregate fields: `support_atom_sufficient_count`,
+`target_atom_required_count`, `distractor_hurts_count`,
+`all_arms_solved_count`, `sparse_solved_count`.
+
+### Private artifacts
+
+For every task x arm, B16-G writes private SCORE JSONL (atom
+composition, score outcome) and private event JSONL (prompt, response,
+parsed action, patch, test stdout/stderr, provider metadata) under
+`/tmp` only. The public artifact includes only aggregate manifests with
+record counts, schema versions, `storage_class=tmp_private`,
+`path_publicly_serialized=false`, and manifest hashes.
+
+### Public artifact shape
+
+Records-only aggregate public artifact: `schema_version`,
+`generated_by`, `generated_at`, `claim_level`, `status`, `mode`,
+`phase`, `model_display_category`, `input_summary`, `arm_results`
+(per-arm aggregate metrics), `paired_deltas` (7 contrasts: 3 primary +
+4 secondary), `task_family_results`, `mechanism_summary_records`,
+`honest_signals`, `private_score_manifest`, `private_event_manifest`,
+`forbidden_scan`, no-claim flags (including `bea_superiority_claimed`),
+`self_test_summary`/`self_test_passed`. No raw task text, prompts,
+responses, patches, paths, snippets, atom compositions, candidate
+traces, provider payloads, private paths, or per-task outcomes.
+
+### Claim boundary
+
+B16-G is live-provider atom-ablation downstream smoke only. It is not
+downstream-agent value proof, BEA superiority claim, method winner,
+benchmark performance, default/promotion/runtime/EvidenceCore change, or
+calibration. Docs say smoke only; negative/tie result acceptable.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16g_context_pack_atom_ablation.py  => PASS
+python3 eval/b16g_context_pack_atom_ablation.py --self-test  => PASS (221/221 checks)
+python3 eval/b16g_context_pack_atom_ablation.py \
+  --out artifacts/b16g_context_pack_atom_ablation/\
+b16g_context_pack_atom_ablation_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-G,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   atom_ablation_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false,
+   bea_superiority_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The local no-env validation path is truthful and blocked/unavailable.
+Manual real-provider CI run pending.
+
+### Caveats
+
+- B16-G is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value/BEA-superiority claim.
+- Atom compositions are deterministic per arm; NOT tuned from outcomes.
+- Bounded synthetic sample (8 tasks x 5 arms default). Smoke, not
+  rigorous evaluation.
+- All no-claim / no-runtime-change flags false; EvidenceCore semantics
+  unchanged.
+- B16-F semantics not mutated; B16-G is a standalone atom-ablation phase.

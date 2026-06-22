@@ -3524,3 +3524,52 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   generic upload excluded; plan.json deleted; fail-closed on missing arms,
   zero provider_calls, missing paired_deltas, private manifest count
   mismatch, forbidden_scan fail).
+
+## B16-G findings
+
+- **B16-G explains B16-F's downstream tie via a live-provider atom
+  ablation**. Five fixed arms: `control_sparse`, `target_only`,
+  `support_only`, `distractor_plus_support`, `target_plus_support`.
+  Eight fixed task families (reused from B16-F for comparability).
+  Default 8 tasks x 5 arms = 40 live provider calls.
+- **Atom composition per arm is deterministic and private** (written
+  only to private SCORE JSONL under /tmp). Atoms: `target_file_cue`,
+  `target_symbol_cue`, `support_module_cue`, `decisive_cue`,
+  `distractor_file_cue`. `target_plus_support` carries all four target/
+  support/decisive atoms; `distractor_plus_support` carries distractor
+  + support + decisive (wrong-file cue); `target_only` carries target
+  file + symbol only; `support_only` carries support + decisive only.
+- **Primary contrasts**: `target_plus_support` vs
+  `distractor_plus_support`; `target_plus_support` vs `support_only`;
+  `target_only` vs `support_only`. **Secondary contrasts**: each
+  context arm vs `control_sparse`. 7 contrasts x 13 metrics = 91
+  paired delta records.
+- **Mechanism summary records** (counts only):
+  `support_atom_sufficient_count` (tasks where support_only solved),
+  `target_atom_required_count` (tasks where target_only solved but
+  support_only did NOT), `distractor_hurts_count` (tasks where
+  distractor_plus_support did NOT solve but target_plus_support DID),
+  `all_arms_solved_count`, `sparse_solved_count`.
+- **221/221 self-test checks pass**. Local no-env path truthfully
+  `blocked_remote_not_enabled` (NOT a fake pass). Self-test summary is
+  counts-only in the public artifact (no detailed check list).
+- **Strict claim boundary**: `claim_level=
+  context_pack_atom_ablation_downstream_smoke_only`. NOT benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value/BEA-superiority. CI pass does
+  NOT require any atom to win; zero/negative delta is valid.
+  `bea_superiority_claimed=false`.
+- **B16-G does NOT mutate B16-F**: standalone phase, evaluator,
+  artifact. Manual real-provider CI run pending.
+- **Public artifact is aggregate-only**: `arm_results`, `paired_deltas`,
+  `task_family_results`, `mechanism_summary_records`, `honest_signals`,
+  `private_score_manifest`, `private_event_manifest`, `forbidden_scan`,
+  no-claim flags. No raw prompts/responses/patches/paths/snippets/atom
+  compositions/candidate traces/per-run rows.
+- **Workflow stage `b16g_context_pack_atom_ablation`** added to
+  `real-provider-benchmark.yml` (manual `workflow_dispatch` only;
+  `enable_remote_models=false` default; dedicated sanitized upload;
+  generic upload excluded; plan.json deleted; fail-closed on missing
+  arms, zero provider_calls, missing primary contrast, missing
+  paired_deltas, private manifest count mismatch, forbidden_scan fail,
+  bea_superiority_claimed not false).

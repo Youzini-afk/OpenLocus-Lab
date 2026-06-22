@@ -9125,3 +9125,121 @@ git diff --check  => PASS
 - 有界合成样本（默认 8 任务 x 3 arms）。smoke，非严格评估。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义未改。
 - BEA-0/BEA-1/BEA-2/BEA-3 语义未修改。
+
+## 2026-06-21 — B16-G Context-Pack Atom Ablation Live-Provider Smoke
+
+### 目标
+
+解释 B16-F 的下游 tie：context pack 优于 sparse，但 BEA v0.3 并未优于
+same-budget BM25。B16-G 运行 live-provider atom ablation，以识别
+target-file cue、decisive support cue、distractor cue 或其组合是否驱动
+解决。
+
+### 前序结果
+
+B16-F 结果 checkpoint `f58ce0f`，手动 CI run `27945253824`：8 合成任务 x
+3 arms = 24 live 调用。Sparse solve/test=0.25，same-budget BM25 context
+solve/test=1.0，BEA v0.3 context solve/test=1.0。BEA-vs-BM25 主 delta 在
+solve/test/wrong-file/edit-validity 上为 0.0；BEA latency +0.3905s 且
+额外 token。解释：context pack 优于 sparse，但 BEA 未优于 same-budget
+BM25。
+
+### 范围
+
+- 阶段：`B16-G`。
+- Evaluator：`eval/b16g_context_pack_atom_ablation.py`。
+- Artifact：
+  `artifacts/b16g_context_pack_atom_ablation/b16g_context_pack_atom_ablation_report.json`。
+- 文档：`docs/en/b16g-context-pack-atom-ablation.md` 和 zh 镜像。
+- `.github/workflows/real-provider-benchmark.yml` 中的 workflow stage：
+  `b16g_context_pack_atom_ablation`。
+- 仅手动 real-provider workflow；本地/no-env 模式真实阻断。
+- 默认：8 合成任务 x 5 arms = 40 次 live provider 调用。
+
+### Arms
+
+1. `control_sparse`：仅任务 issue，最小 context；无 atom。
+2. `target_only`：target file cue + target symbol cue；无 support，无
+   decisive cue。
+3. `support_only`：support module cue + decisive cue；无 target file/
+   symbol cue。
+4. `distractor_plus_support`：distractor file cue + support module cue
+   + decisive cue；无 target file；wrong-file cue。
+5. `target_plus_support`：target file cue + target symbol cue + support
+   module cue + decisive cue（full pack）。
+
+主对比：`target_plus_support` vs `distractor_plus_support`；
+`target_plus_support` vs `support_only`；`target_only` vs
+`support_only`。次对比：每个 context arm vs `control_sparse`。
+
+### 机制摘要 record
+
+仅聚合 record 字段：`support_atom_sufficient_count`、
+`target_atom_required_count`、`distractor_hurts_count`、
+`all_arms_solved_count`、`sparse_solved_count`。
+
+### 私有 artifact
+
+对于每个 task x arm，B16-G 写入私有 SCORE JSONL（atom composition、score
+outcome）和私有 event JSONL（prompt、response、parsed action、patch、
+test stdout/stderr、provider metadata），仅 `/tmp` 下。公开 artifact 仅
+包含聚合 manifest，含 record count、schema 版本、
+`storage_class=tmp_private`、`path_publicly_serialized=false` 和 manifest
+hash。
+
+### 公开 artifact 形状
+
+仅聚合 record 的公开 artifact：`schema_version`、`generated_by`、
+`generated_at`、`claim_level`、`status`、`mode`、`phase`、
+`model_display_category`、`input_summary`、`arm_results`（per-arm 聚合
+metrics）、`paired_deltas`（7 对比：3 主 + 4 次）、
+`task_family_results`、`mechanism_summary_records`、`honest_signals`、
+`private_score_manifest`、`private_event_manifest`、`forbidden_scan`、
+no-claim flag（包括 `bea_superiority_claimed`）、
+`self_test_summary`/`self_test_passed`。无 raw task text、prompt、
+response、patch、path、片段、atom composition、候选 trace、provider
+payload、私有 path 或 per-task 结果。
+
+### 声明边界
+
+B16-G 仅为 live-provider atom-ablation 下游 smoke。它不是下游 agent 价值
+证明、BEA 优越性声明、method winner、基准性能、default/promotion/
+runtime/EvidenceCore 改动或 calibration。文档标明仅为 smoke；负/平结果
+可接受。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16g_context_pack_atom_ablation.py  => PASS
+python3 eval/b16g_context_pack_atom_ablation.py --self-test  => PASS (221/221 checks)
+python3 eval/b16g_context_pack_atom_ablation.py \
+  --out artifacts/b16g_context_pack_atom_ablation/\
+b16g_context_pack_atom_ablation_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-G,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   atom_ablation_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false,
+   bea_superiority_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI
+run 待执行。
+
+### Caveats
+
+- B16-G 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value/BEA-优越性 声明。
+- Atom composition per arm 为确定性；不从 outcomes 调优。
+- 有界合成样本（默认 8 任务 x 5 arms）。smoke，非严格评估。
+- 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义未改。
+- B16-F 语义未修改；B16-G 是独立 atom-ablation phase。

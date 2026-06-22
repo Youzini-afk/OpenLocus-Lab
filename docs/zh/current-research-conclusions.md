@@ -464,6 +464,44 @@ task x arm 一行；绝不提交；私有路径**绝不**序列化）。公开 a
 latency_seconds_mean=13.4355）；same-budget BM25 context pack 解出 8/8（solve/test=1.0，latency=1.1885）；
 BEA v0.3 context pack 也解出 8/8（solve/test=1.0，latency=1.579）。主对比 BEA-vs-BM25 solve/test/wrong-file delta 均为 0.0，BEA latency +0.3905s、prompt tokens +161、completion tokens +47；两个 context arms 相对 sparse 的 solve/test 均 +0.75。解释：context pack 相对 sparse 有收益，但 BEA v0.3 未优于 same-budget BM25；primary contrast 的 `context_pack_signal_observed=false`。B16-F 不是基准测试结果、不是 leaderboard entry、不是性能声明、不是 method-winner 声明、不是 calibration 声明、不是 promotion、不是 default 改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是下游 agent 价值声明。B16-F 不修改 BEA-0/BEA-1/BEA-2/BEA-3 语义。详见 [B16-F 详细报告](b16f-bea-derived-context-pack-paired-smoke.md)。
 
+## 2026-06-21 B16-G Context-Pack Atom Ablation Live-Provider Smoke
+
+B16-G 解释 B16-F 的下游 tie：context pack 优于 sparse，但 BEA v0.3
+并未优于 same-budget BM25。B16-G 运行 live-provider atom ablation，以
+识别 target-file cue、decisive support cue、distractor cue 或其组合
+是否驱动解决。五个固定 arm：`control_sparse`、`target_only`、
+`support_only`、`distractor_plus_support`、`target_plus_support`。八个
+固定任务族（复用 B16-F 以保持可比性）。默认 8 任务 x 5 arms = 40 次
+live provider 调用。schema
+`b16g_context_pack_atom_ablation.v1`、`claim_level=
+context_pack_atom_ablation_downstream_smoke_only`、阶段 `B16-G`。
+221/221 self-test 检查通过。Atom composition per arm 为确定性且私有
+（仅写入 `/tmp` 下的私有 SCORE JSONL；绝不提交；私有路径**绝不**
+序列化）。Atom：`target_file_cue`、`target_symbol_cue`、
+`support_module_cue`、`decisive_cue`、`distractor_file_cue`。
+`target_plus_support` 携带全部四个 target/support/decisive atom；
+`distractor_plus_support` 携带 distractor + support + decisive
+（wrong-file cue）。主对比：`target_plus_support` vs
+`distractor_plus_support`、`target_plus_support` vs `support_only`、
+`target_only` vs `support_only`。次对比：每个 context arm vs
+`control_sparse`。`mechanism_summary_records`：
+`support_atom_sufficient_count`、`target_atom_required_count`、
+`distractor_hurts_count`、`all_arms_solved_count`、`sparse_solved_count`。
+私有 event JSONL 仅写入 `/tmp`（prompt/response/patch/test output 绝不
+提交）。公开 artifact 仅聚合：`arm_results`、`paired_deltas`、
+`task_family_results`、`mechanism_summary_records`、`honest_signals`、
+`private_score_manifest`、`private_event_manifest`、`forbidden_scan`、
+no-claim flag（包括 `bea_superiority_claimed=false`）。live provider 仅
+当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时使用。本地
+no-env 路径真实 `blocked_remote_not_enabled`（**不**是假通过）。CI 通过
+**不**要求任何 atom 获胜；零/负 delta 有效。B16-G 不是基准测试结果、不是
+leaderboard entry、不是性能声明、不是 method-winner 声明、不是
+calibration 声明、不是 BEA 优越性声明、不是 promotion、不是 default
+改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是
+下游 agent 价值声明。B16-G 不修改 B16-F 语义。手动 real-provider CI
+run 待执行。详见
+[B16-G 详细报告](b16g-context-pack-atom-ablation.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

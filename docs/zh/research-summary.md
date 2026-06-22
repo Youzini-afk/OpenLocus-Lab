@@ -2970,3 +2970,49 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   upload；删除 plan.json；在缺失 arm、零 provider_calls、缺失
   paired_deltas、私有 manifest 计数不匹配、forbidden_scan 失败时
   fail-closed）。
+
+## B16-G findings
+
+- **B16-G 通过 live-provider atom ablation 解释 B16-F 的下游 tie**。
+  五个固定 arm：`control_sparse`、`target_only`、`support_only`、
+  `distractor_plus_support`、`target_plus_support`。八个固定任务族
+  （复用 B16-F 以保持可比性）。默认 8 任务 x 5 arms = 40 次 live
+  provider 调用。
+- **Atom composition per arm 为确定性且私有**（仅写入 `/tmp` 下的私有
+  SCORE JSONL）。Atom：`target_file_cue`、`target_symbol_cue`、
+  `support_module_cue`、`decisive_cue`、`distractor_file_cue`。
+  `target_plus_support` 携带全部四个 target/support/decisive atom；
+  `distractor_plus_support` 携带 distractor + support + decisive
+  （wrong-file cue）；`target_only` 仅携带 target file + symbol；
+  `support_only` 仅携带 support + decisive。
+- **主对比**：`target_plus_support` vs `distractor_plus_support`；
+  `target_plus_support` vs `support_only`；`target_only` vs
+  `support_only`。**次对比**：每个 context arm vs `control_sparse`。7
+  对比 x 13 metrics = 91 paired delta record。
+- **机制摘要 record**（仅计数）：
+  `support_atom_sufficient_count`（support_only 解决的任务数）、
+  `target_atom_required_count`（target_only 解决但 support_only 未解决
+  的任务数）、`distractor_hurts_count`（distractor_plus_support 未解决
+  但 target_plus_support 解决的任务数）、`all_arms_solved_count`、
+  `sparse_solved_count`。
+- **221/221 self-test check 通过**。本地 no-env 路径真实
+  `blocked_remote_not_enabled`（**不**是假通过）。公开 artifact 中的
+  self-test summary 仅计数（无详细 check 列表）。
+- **严格声明边界**：`claim_level=
+  context_pack_atom_ablation_downstream_smoke_only`。不是 benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value/BEA-优越性。CI 通过**不**要求任何
+  atom 获胜；零/负 delta 有效。`bea_superiority_claimed=false`。
+- **B16-G 不修改 B16-F**：独立 phase、evaluator、artifact。手动
+  real-provider CI run 待执行。
+- **公开 artifact 仅聚合**：`arm_results`、`paired_deltas`、
+  `task_family_results`、`mechanism_summary_records`、`honest_signals`、
+  `private_score_manifest`、`private_event_manifest`、`forbidden_scan`、
+  no-claim flag。无 raw prompt/response/patch/path/片段/atom
+  composition/候选 trace/per-run 行。
+- **Workflow stage `b16g_context_pack_atom_ablation`** 添加到
+  `real-provider-benchmark.yml`（仅手动 `workflow_dispatch`；
+  `enable_remote_models=false` 默认；专用 sanitized upload；排除通用
+  upload；删除 plan.json；在缺失 arm、零 provider_calls、缺失主对比、
+  缺失 paired_deltas、私有 manifest 计数不匹配、forbidden_scan 失败、
+  bea_superiority_claimed 不为 false 时 fail-closed）。
