@@ -215,7 +215,36 @@ NOT a promotion, NOT a default change, NOT a
 runtime/retriever/pack/backend/EvidenceCore semantic change, and NOT a
 downstream agent value claim. BEA-2 does NOT mutate BEA-0/BEA-1 semantics.
 No runtime/default-policy/promotion/method-winner/calibration/
-downstream-value claim is made.
+downstream-value claim is made. BEA-3 is the anchor/span/latency-aware
+policy smoke: it implements a frozen BEA v0.3 algorithmic policy
+(anchor_count=min(2,budget) reserved for BM25/agreement anchors,
+diversity/risk scoring on remaining budget, runtime-clean span/latency
+proxies: tighter line-span bonus, same-file-as-anchor support bonus, risk
+bucket penalties, weak-support + low-BM25 penalty, fixed marginal-priority
+early stop after anchors) with frozen weights (anchor=0.35, span_tight=0.15,
+anchor_file_support=0.10, weak_support_penalty=-0.20,
+early_stop_margin=0.05) that are NOT tuned from outcomes, over fresh
+heldout ContextBench verified Python rows (offset 60, limit 20) + RepoQA
+Python needles (offset 30, limit 10). 9 fixed arms (v0.3, v0.3_no_anchor,
+v0.3_no_early_stop, v0.2, v0, bm25_prefix, agreement_only, seeded_random,
+rrf_same_budget). Bounded local run (2026-06-21) with ContextBench offset
+60 limit 3 + RepoQA offset 30 limit 2, budget=5, methods
+bm25/regex/symbol, rrf baseline enabled: 5 records successful, forbidden
+scan pass, `provider_calls=0`, `private_score_manifest.record_count=45`
+(5×9 arms), `private_score_storage_class=tmp_private`,
+`private_score_path_publicly_serialized=false`. Win/tie/loss (v0.3 vs v0.2,
+n=5): all primary metrics tie=5 loss=0. v0.3 ties v0.2 on this bounded
+sample (all candidates were tight-span, low-risk, BM25-backed). New metric:
+`quality_per_latency`. New record type: `mechanism_summary_records`.
+Latency attribution fix: all arms share candidate-collection latency. Schema
+`bea3_anchor_span_latency.v1`, `claim_level=bea_v03_policy_smoke_only`,
+phase `BEA-3`, 224/224 self-test checks pass. BEA-3 is NOT a benchmark
+result, NOT a leaderboard entry, NOT a performance claim, NOT a
+method-winner claim, NOT a calibration claim, NOT a promotion, NOT a
+default change, NOT a runtime/retriever/pack/backend/EvidenceCore semantic
+change, and NOT a downstream agent value claim. BEA-3 does NOT mutate
+BEA-0/BEA-1/BEA-2 semantics. No runtime/default-policy/promotion/
+method-winner/calibration/downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S
@@ -338,6 +367,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `bea0-budgeted-evidence-acquisition.md`: [en](en/bea0-budgeted-evidence-acquisition.md) · [zh](zh/bea0-budgeted-evidence-acquisition.md)
 - `bea1-mechanism-ablation.md`: [en](en/bea1-mechanism-ablation.md) · [zh](zh/bea1-mechanism-ablation.md)
 - `bea2-policy-v02.md`: [en](en/bea2-policy-v02.md) · [zh](zh/bea2-policy-v02.md)
+- `bea3-anchor-span-latency.md`: [en](en/bea3-anchor-span-latency.md) · [zh](zh/bea3-anchor-span-latency.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

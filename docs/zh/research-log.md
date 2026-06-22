@@ -9011,3 +9011,71 @@ git diff --check  => PASS
 - v0.2 优先级权重为冻结常量，不从 outcomes 调优。
 - 有界 CI 样本（30 条记录）。smoke，非严格评估。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义不变。
+
+## 2026-06-21 — BEA-3 Anchor/Span/Latency-Aware 策略 Smoke
+
+### 目标
+
+测试冻结 BEA v0.3 算法策略，针对 BEA-2 的混合结果：保持 file/MRR/success
+增益的同时减少 span_f0.5 和 latency 回归。
+
+### v0.3 冻结策略
+
+`bea_v0_3_anchor_span_latency`：为 BM25/agreement anchor 预留
+`anchor_count=min(2,budget)` slot；对剩余预算应用 diversity/risk 评分；
+添加 span/latency 代理（更紧 line-span bonus、same-file-as-anchor 支持
+bonus、风险惩罚、weak-support 惩罚、边际优先级 early stop）。冻结权重：
+anchor=0.35、span_tight=0.15、anchor_file_support=0.10、
+weak_support_penalty=-0.20、early_stop_margin=0.05。不从 outcomes 调优。
+
+消融：`v0_3_no_anchor`、`v0_3_no_early_stop`。
+
+### 全新 primary 切片
+
+ContextBench offset 60、limit 20。RepoQA offset 30、limit 10。
+
+### 必需 arm
+
+v0.3、v0.3_no_anchor、v0.3_no_early_stop、v0.2、v0、bm25_prefix、
+agreement_only、seeded_random、rrf_same_budget（可用时）。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/bea3_anchor_span_latency.py  => PASS
+python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (224/224 checks)
+python3 eval/bea3_anchor_span_latency.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-offset 60 --contextbench-row-limit 3 \
+  --repoqa-needle-offset 30 --repoqa-needle-limit 2 \
+  --budget 5 --methods bm25,regex,symbol --enable-rrf-baseline \
+  --out artifacts/bea3_anchor_span_latency/bea3_anchor_span_latency_report.json  => PASS
+  (status: bea3_anchor_span_latency_pass, 5 records successful,
+   private_score_manifest.record_count=45 (5×9 arms),
+   private_score_storage_class=tmp_private,
+   private_score_path_publicly_serialized=false,
+   provider_calls=0, forbidden_scan=pass)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### 真实有界本地运行结果（2026-06-21）
+
+5 条记录成功（CB 3 + RQ 2）。45 行私有 SCORE（5×9 arm）。
+Win/tie/loss（v0.3 vs v0.2，n=5）：file_recall@10 win=0 tie=5 loss=0；
+mrr win=0 tie=5 loss=0；span_f0.5@10 win=0 tie=5 loss=0；success_rate
+win=0 tie=5 loss=0。v0.3 在此有界样本上与 v0.2 在所有 primary 指标上持平。
+
+机制摘要：anchor_used_rate=1.0、early_stop_rate=0.0、
+mean_budget_used=5.0、mean_latency_seconds=6.7364、
+mean_span_extent=4.88、span_proxy_bucket_tight=25。
+
+### Caveats
+
+- BEA-3 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value 声明。
+- v0.3 权重为冻结常量，不从 outcomes 调优。
+- 有界样本（5 条记录）。v0.3 与 v0.2 持平——anchor/span/latency 代理
+  未改变 accepted set（所有候选均为 tight-span、low-risk、BM25-backed）。
+- BEA-0/BEA-1/BEA-2 语义未修改。

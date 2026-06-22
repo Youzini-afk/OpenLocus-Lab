@@ -1,0 +1,2690 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "aggregate_runtime_seconds": 53.472,
+  "backend_changed": false,
+  "baseline_arm": "bea_v0",
+  "bea_v02_policy_executed": true,
+  "bea_v03_policy_executed": true,
+  "bea_v0_acquisition_performed": true,
+  "benchmark_arm_metric_records": [
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 6.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 6.215667
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 6.215667
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.222222
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.001094
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.003589
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.021872
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 6.216855
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.222222
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.001094
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.003588
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.021872
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 6.215667
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.222222
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.001094
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.003589
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.021872
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 6.215667
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.222222
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.001094
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.003589
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.021872
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.666667
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 3.923
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "action_steps",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "candidate_count_read",
+      "record_count": 3,
+      "value": 20.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "evidence_budget_used",
+      "record_count": 3,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "file_recall@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "latency_seconds",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "mrr",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_candidate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "quality_per_latency",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "span_f0.5@10",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "contextbench",
+      "metric": "success_rate",
+      "record_count": 3,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 6.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 1.383
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 1.383
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_2_diversity_risk",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 1.384146
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_anchor_span_latency",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 1.383
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_no_anchor",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 1.383
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bea_v0_3_no_early_stop",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "bm25_prefix_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.638
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.1
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "rrf_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "action_steps",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "candidate_count_read",
+      "record_count": 2,
+      "value": 20.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "evidence_budget_used",
+      "record_count": 2,
+      "value": 5.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "file_recall@10",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "latency_seconds",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "mrr",
+      "record_count": 2,
+      "value": 0.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_candidate",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "quality_per_latency",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "span_f0.5@10",
+      "record_count": 2,
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "benchmark": "repoqa",
+      "metric": "success_rate",
+      "record_count": 2,
+      "value": 0.5
+    }
+  ],
+  "budget": 5,
+  "calibration_claimed": false,
+  "claim_level": "bea_v03_policy_smoke_only",
+  "contextbench_row_limit_requested": 3,
+  "contextbench_row_offset_requested": 60,
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "delta_records": [
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -4.2826,
+      "metric": "latency_seconds",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_latency",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.002153,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_2_diversity_risk"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.001171,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.002153,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.002153,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_no_anchor"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.002153,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_3_no_early_stop"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -4.2826,
+      "metric": "latency_seconds",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_latency",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "bm25_prefix_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.6736,
+      "metric": "latency_seconds",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_latency",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "rrf_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": -4.2826,
+      "metric": "latency_seconds",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.16,
+      "metric": "mrr",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "quality_per_latency",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "seeded_random_same_budget"
+    }
+  ],
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "enable_rrf_baseline": true,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "external_benchmark_rows_read": true,
+  "failure_category_counts": {
+    "contextbench_fetch_failed": 0,
+    "contextbench_gold_parse_failed": 0,
+    "contextbench_no_python_rows": 0,
+    "forbidden_leak_blocked": 0,
+    "heldout_offset_exceeds_available": 0,
+    "needle_limit_capped": 0,
+    "private_score_write_failed": 0,
+    "record_excluded_from_paired_denominator": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "repoqa_asset_download_failed": 0,
+    "repoqa_asset_parse_failed": 0,
+    "repoqa_needle_parse_failed": 0,
+    "repoqa_no_python_needles": 0,
+    "retrieval_failed": 0,
+    "row_limit_capped": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "unexpected_exception": 0
+  },
+  "fixed_arms": [
+    "bea_v0_3_anchor_span_latency",
+    "bea_v0_3_no_anchor",
+    "bea_v0_3_no_early_stop",
+    "bea_v0_2_diversity_risk",
+    "bea_v0",
+    "bm25_prefix_same_budget",
+    "agreement_only_same_budget",
+    "seeded_random_same_budget",
+    "rrf_same_budget"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_v03_policy_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-22T09:02:40.495663+00:00",
+  "generated_by": "eval/bea3_anchor_span_latency.py",
+  "heldout_fresh_slice_read": true,
+  "leaderboard_entry_claimed": false,
+  "mechanism_contrast_records": [
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.001171,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_anchor",
+      "contrast": "v03_anchor_vs_no_anchor",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.001171,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_3_no_early_stop",
+      "contrast": "v03_early_stop_vs_no_early_stop",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 4.283771,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "v03_vs_agreement",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 4.283771,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "contrast": "v03_vs_bm25",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 1.674771,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "contrast": "v03_vs_rrf",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 4.283771,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": -0.026667,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "v03_vs_seeded_random",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": -1.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.4,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.001171,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.133333,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.000656,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.013123,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "contrast": "v03_vs_v0",
+      "delta": 0.4,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.001171,
+      "metric": "latency_seconds",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "mrr",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "contrast": "v03_vs_v02",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency"
+    }
+  ],
+  "mechanism_summary_records": [
+    {
+      "mechanism_field": "anchor_used_rate",
+      "record_count": 5,
+      "value": 1.0
+    },
+    {
+      "mechanism_field": "early_stop_rate",
+      "record_count": 5,
+      "value": 0.0
+    },
+    {
+      "mechanism_field": "mean_budget_used",
+      "record_count": 5,
+      "value": 5.0
+    },
+    {
+      "mechanism_field": "mean_latency_seconds",
+      "record_count": 5,
+      "value": 6.8976
+    },
+    {
+      "mechanism_field": "mean_span_extent",
+      "record_count": 5,
+      "value": 4.88
+    },
+    {
+      "mechanism_field": "span_proxy_bucket_tight",
+      "record_count": 5,
+      "value": 25
+    }
+  ],
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "bounded_heldout_retrieval_policy_v03_smoke",
+  "network_calls": 2,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "paired_exclusion_count": 0,
+  "phase": "BEA-3",
+  "private_score_manifest": {
+    "manifest_hash": "26060e8431c67e7e06b95c5c605b2657286c25e372ec54c691d627445f421ab3",
+    "path_publicly_serialized": false,
+    "record_count": 45,
+    "records_written": true,
+    "schema_version": "bea3_private_score.v1",
+    "storage_class": "tmp_private"
+  },
+  "private_score_records_written": true,
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "records_evaluated": 5,
+  "records_failed": 0,
+  "records_successful": 5,
+  "remote_provider_calls_made": false,
+  "repoqa_needle_limit_requested": 2,
+  "repoqa_needle_offset_requested": 30,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "bea3_anchor_span_latency.v1",
+  "score_py_metrics_computed": true,
+  "seeded_random_seed": 20240621,
+  "self_test_passed": true,
+  "status": "bea3_anchor_span_latency_pass",
+  "treatment_arm": "bea_v0_3_anchor_span_latency",
+  "win_tie_loss_records": [
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "mrr",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 1
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "mrr",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 1
+    },
+    {
+      "baseline_arm": "bea_v0",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "tie": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "mrr",
+      "record_count": 5,
+      "tie": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "tie": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bea_v0_2_diversity_risk",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "tie": 5,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 0
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "mrr",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 1
+    },
+    {
+      "baseline_arm": "bm25_prefix_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "mrr",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 1
+    },
+    {
+      "baseline_arm": "rrf_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 0,
+      "metric": "file_recall@10",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 1,
+      "metric": "mrr",
+      "record_count": 5,
+      "tie": 2,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 0,
+      "metric": "span_f0.5@10",
+      "record_count": 5,
+      "tie": 4,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 1
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "loss": 0,
+      "metric": "success_rate",
+      "record_count": 5,
+      "tie": 3,
+      "treatment_arm": "bea_v0_3_anchor_span_latency",
+      "win": 2
+    }
+  ]
+}

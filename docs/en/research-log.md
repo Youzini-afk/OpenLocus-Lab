@@ -9732,3 +9732,74 @@ Manual CI run `27938484585` (2026-06-21) passed with ContextBench offset 40 limi
 - Bounded CI sample (30 records). Smoke, not rigorous evaluation.
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged.
+
+## 2026-06-21 — BEA-3 Anchor/Span/Latency-Aware Policy Smoke
+
+### Objective
+
+Test a frozen BEA v0.3 algorithmic policy that targets BEA-2's mixed result:
+preserve file/MRR/success gains while reducing span_f0.5 and latency
+regressions.
+
+### v0.3 frozen policy
+
+`bea_v0_3_anchor_span_latency`: reserve `anchor_count=min(2,budget)` slots
+for BM25/agreement anchors; apply diversity/risk scoring to remaining budget;
+add span/latency proxies (tighter line-span bonus, same-file-as-anchor
+support bonus, risk penalties, weak-support penalty, marginal-priority early
+stop). Frozen weights: anchor=0.35, span_tight=0.15,
+anchor_file_support=0.10, weak_support_penalty=-0.20,
+early_stop_margin=0.05. NOT tuned from outcomes.
+
+Ablations: `v0_3_no_anchor`, `v0_3_no_early_stop`.
+
+### Fresh primary slice
+
+ContextBench offset 60, limit 20. RepoQA offset 30, limit 10.
+
+### Required arms
+
+v0.3, v0.3_no_anchor, v0.3_no_early_stop, v0.2, v0, bm25_prefix,
+agreement_only, seeded_random, rrf_same_budget (when available).
+
+### Validation results
+
+```text
+python3 -m py_compile eval/bea3_anchor_span_latency.py  => PASS
+python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (224/224 checks)
+python3 eval/bea3_anchor_span_latency.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-offset 60 --contextbench-row-limit 3 \
+  --repoqa-needle-offset 30 --repoqa-needle-limit 2 \
+  --budget 5 --methods bm25,regex,symbol --enable-rrf-baseline \
+  --out artifacts/bea3_anchor_span_latency/bea3_anchor_span_latency_report.json  => PASS
+  (status: bea3_anchor_span_latency_pass, 5 records successful,
+   private_score_manifest.record_count=45 (5×9 arms),
+   private_score_storage_class=tmp_private,
+   private_score_path_publicly_serialized=false,
+   provider_calls=0, forbidden_scan=pass)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Real bounded local run results (2026-06-21)
+
+5 records successful (CB 3 + RQ 2). 45 private SCORE rows (5×9 arms).
+Win/tie/loss (v0.3 vs v0.2, n=5): file_recall@10 win=0 tie=5 loss=0; mrr
+win=0 tie=5 loss=0; span_f0.5@10 win=0 tie=5 loss=0; success_rate win=0
+tie=5 loss=0. v0.3 ties v0.2 on all primary metrics on this bounded sample.
+
+Mechanism summary: anchor_used_rate=1.0, early_stop_rate=0.0,
+mean_budget_used=5.0, mean_latency_seconds=6.7364, mean_span_extent=4.88,
+span_proxy_bucket_tight=25.
+
+### Caveats
+
+- BEA-3 is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value claim.
+- v0.3 weights are frozen constants, NOT tuned from outcomes.
+- Bounded sample (5 records). v0.3 ties v0.2 on all primary metrics —
+  the anchor/span/latency proxies did not change the accepted set on these
+  5 records (all candidates were tight-span, low-risk, BM25-backed).
+- BEA-0/BEA-1/BEA-2 semantics not mutated.

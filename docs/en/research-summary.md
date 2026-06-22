@@ -3457,3 +3457,29 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
 - **BEA-2 does NOT mutate BEA-0/BEA-1**: standalone phase, standalone
   evaluator, standalone artifact. BEA-0/BEA-1 semantics unchanged.
+
+## BEA-3 findings
+
+- **BEA-3 implements a frozen BEA v0.3 anchor/span/latency-aware policy**:
+  reserves anchor slots for BM25/agreement anchors, applies diversity/risk
+  scoring to remaining budget, adds runtime-clean span/latency proxies
+  (tighter line-span bonus, same-file-as-anchor support, risk penalties,
+  weak-support penalty, marginal-priority early stop). Frozen weights NOT
+  tuned from outcomes. Ablations: v0_3_no_anchor, v0_3_no_early_stop.
+- **Bounded local run (2026-06-21)**: 5 records (CB 3 + RQ 2), budget=5,
+  9 arms. Win/tie/loss (v0.3 vs v0.2, n=5): all primary metrics tie=5.
+  v0.3 ties v0.2 on this bounded sample (all candidates were tight-span,
+  low-risk, BM25-backed — the span/latency proxies didn't change the
+  accepted set). 45 private SCORE rows (5×9 arms).
+- **224/224 self-test checks pass**: 30 groups.
+- **Strict claim boundary**: `claim_level=bea_v03_policy_smoke_only`.
+  NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
+- **BEA-3 does NOT mutate BEA-0/BEA-1/BEA-2**: standalone phase, evaluator,
+  artifact.
+- **New metric**: `quality_per_latency` = span_f0.5@10 / latency_seconds.
+- **New record type**: `mechanism_summary_records` (anchor_used_rate,
+  early_stop_rate, mean_budget_used, mean_latency_seconds,
+  mean_span_extent, span_proxy_bucket counts).
+- **Latency attribution fix**: all arms share candidate-collection latency
+  (fair attribution); v0.3 also gets incremental policy time.
