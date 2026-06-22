@@ -2823,3 +2823,74 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-0 不是 C3**：C3 仅 replay，从预计算 P21 outcomes 中选择；BEA-0
   真正重新运行检索，并在预算下采集证据，附带私有 per-record SCORE 轨迹。
   C3 -> BEA-0 是从仅 replay 到真正采集的转向。
+
+## BEA-1 findings
+
+- **BEA-1 是首个机制消融 smoke**：对全新有界 ContextBench verified
+  Python 行（默认 5；硬上限 20）和 RepoQA Python needle（默认 3；硬上限
+  10）重新运行多方法检索（bm25/regex/symbol + 可选 rrf），运行 5 个固定
+  arm（`bm25_top10`、`bea_v0_budgeted`、`same_budget_bm25_prefix`、
+  `agreement_only_same_budget`、`seeded_random_same_budget`；启用 rrf 时还
+  包括 `rrf_bm25_regex_symbol_top10`），并计算 per-arm metric records、
+  baseline-vs-treatment delta records，以及机制对比 records（在 paired
+  denominator 上）。非聚合校验；真正 fresh retrieval + 3 个同预算控制 +
+  机制对比。
+- **Same-budget K 确切**：
+  `K = min(len(bea_v0_budgeted.accepted_candidates), available_deduped_candidate_count)`。
+  若 BEA 对某条记录接受零候选，同预算控制也选择零。公开产物绝不序列化
+  accepted candidates 或 candidate lists。
+- **同预算控制 runtime-clean 且确定**：`same_budget_bm25_prefix` 取去重
+  后前 K 个 BM25 候选；`agreement_only_same_budget` 按
+  （agreement desc, min_rank asc, max_normalized_score desc, stable order）
+  排序与 BEA 相同的去重宇宙；`seeded_random_same_budget` 在稳定排序后的
+  去重宇宙上使用固定公开种子 `20240621`。种子或排序中无
+  gold/labels/row IDs/provider/model 字段。在合成 gold/label/row-id 污染下
+  验证 invariance。
+- **Paired denominator 规则**：机制对比仅包含 baseline 和 treatment arm
+  在同一记录上均有有效指标的记录。每条 `mechanism_contrast_records` 行含
+  `record_count`，以便 delta 可解释。公开产物不序列化 per-record
+  inclusion masks。
+- **有界本地运行（2026-06-21）**：ContextBench 5 行 + RepoQA 3 needle，
+  budget=5，方法 bm25/regex/symbol，启用 rrf baseline。8 条记录全部成功；
+  `paired_exclusion_count=0`。BEA v0 与 `same_budget_bm25_prefix` 和
+  `agreement_only_same_budget` 在 file_recall@10/mrr/span_f0.5@10/
+  success_rate 上持平，且 `evidence_budget_used=3.125` 相同；BEA v0 以
+  `delta(mrr)=+0.09375` 胜过 `seeded_random_same_budget`。8 行私有
+  per-record SCORE 写入
+  `/tmp/bea0_private_score_<pid>_<ts>/bea1.private.jsonl`。
+- **严格 claim 边界**：BEA-1 输出 `claim_level =
+  bea_v0_mechanism_ablation_smoke_only`。不是 benchmark 结果、不是
+  leaderboard 条目、不是性能声明、不是 method-winner 声明、不是
+  calibration 声明、不是 promotion、不是 default 变更、不是
+  runtime/retriever/pack/backend/EvidenceCore 语义变更、不是 downstream
+  agent 价值声明。不输出 `winner`、`best_method`、`recommended_default`、
+  `method_winner`、`calibration`。所有 no-claim / no-runtime-change flag
+  为 false；`aggregate_only_public_artifact=true`、
+  `diagnostic_only=true`、`provider_calls=0`。
+- **420/420 self-test 检查通过**：28 组覆盖身份字段、safe true flag、
+  no-claim false flag、license 字段、私有 SCORE manifest aggregate-only
+  字段、row/needle/budget 硬上限、method 校验、same-budget K 确切、三个
+  同预算控制 arm 算法、runtime-clean invariance、arm_metric_records 固定
+  形态、delta_records 固定形态、mechanism_contrast_records 固定形态 +
+  record_count、failure category count enum、unavailable 状态、扫描器拒绝
+  BEA-0 + BEA-1 禁止 key 和 value 模式、扫描器允许 safe value、
+  fail-closed 生成、CLI 表面、私有 SCORE writer round-trip、paired
+  denominator 规则、aggregate runtime seconds 存在、任何位置无
+  winner/best_method/recommended_default/method_winner/calibration、固定
+  arm 存在、扫描器拒绝 BEA-1 专属 claim 边界 key（calibration、
+  method_winner 等）。
+- **CI 为手动 opt-in `workflow_dispatch`**，带
+  `enable_external_benchmark_network=true`。默认禁用网络。启用时
+  fail-closed：要求 status 在（`bea1_mechanism_ablation_pass`、`partial`）
+  中、`records_successful >= 3`、每条机制对比 `record_count >= 3`、
+  `forbidden_scan.status=pass`、`provider_calls=0`、`private_score_manifest`
+  存在且 `path_publicly_serialized=false` 且
+  `record_count == records_successful`，任何位置无
+  `winner`/`best_method`/`recommended_default`/`method_winner`/`calibration`
+  字段，任何位置无 BEA-1 私有字段。仅上传 aggregate 公开报告；绝不上传
+  私有 SCORE JSONL。
+- **BEA-1 不是 BEA-0**：BEA-0 度量 BEA v0 vs `bm25_top10`（以及启用 rrf
+  时 `rrf_bm25_regex_symbol_top10`）；BEA-1 度量 BEA v0 vs 三个同预算
+  控制，这些控制隔离 BEA-0 的增益（若有）是否来自多源 agreement / 序贯
+  预算采集而非仅仅是读取更少候选。BEA-1 不 bootstrap BEA-0 聚合 artifact；
+  它重新运行 fresh external retrieval。

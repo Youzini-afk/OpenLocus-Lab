@@ -142,6 +142,49 @@ downstream agent value claim. BEA-0 is NOT C3: C3 was replay-only and
 selected among precomputed P21 outcomes; BEA-0 actually reruns retrieval
 and acquires evidence under a budget, with private per-record SCORE
 traces. No runtime/default-policy/promotion/method-winner/calibration/
+downstream-value claim is made. BEA-1 is the mechanism ablation follow-up
+to BEA-0: it reruns fresh bounded external ContextBench verified Python
+rows (default 5; hard cap 20) + RepoQA Python needles (default 3; hard cap
+10) over bm25/regex/symbol (+ optional rrf baseline), and runs 5 fixed arms
+(`bm25_top10`, `bea_v0_budgeted`, `same_budget_bm25_prefix`,
+`agreement_only_same_budget`, `seeded_random_same_budget`;
+`rrf_bm25_regex_symbol_top10` when rrf enabled) on every record under a
+paired denominator rule. Same-budget K exactly:
+`K = min(len(bea_v0_budgeted.accepted_candidates), available_deduped_candidate_count)`.
+Same-budget controls are runtime-clean and deterministic (BM25 prefix;
+agreement-only sorted by agreement desc/min_rank asc/max_normalized_score
+desc/stable order; seeded random with fixed public seed `20240621` over
+stable-ordered deduped universe; no gold/labels/row IDs/provider/model
+fields in seed or ordering). Bounded local run (2026-06-21) with
+ContextBench 5 rows + RepoQA 3 needles, budget=5, methods
+bm25/regex/symbol, rrf baseline enabled: 8 records successful,
+`paired_exclusion_count=0`, forbidden scan pass, `provider_calls=0`,
+`private_score_manifest.record_count=8` (matches records_successful),
+`private_score_manifest.storage_class=tmp_private`,
+`private_score_manifest.path_publicly_serialized=false`. Mechanism
+contrasts (mrr, paired `record_count=8`):
+`bea_vs_same_budget_bm25` delta(mrr)=0.0 (BEA ties same-budget BM25 prefix);
+`bea_vs_agreement_only` delta(mrr)=0.0 (BEA ties agreement-only);
+`bea_vs_seeded_random` delta(mrr)=+0.09375 (BEA beats seeded random). BEA
+v0 and `agreement_only_same_budget` produce IDENTICAL
+file_recall@10/mrr/span_f0.5@10/success_rate with the same
+`evidence_budget_used=3.125`, suggesting BEA v0's gain over a pure
+agreement-only rank under the same budget is zero on this bounded sample;
+`seeded_random_same_budget` underperforms both, confirming deterministic
+agreement-based selection beats random selection under the same budget.
+Schema `bea1_mechanism_ablation.v1`,
+`claim_level=bea_v0_mechanism_ablation_smoke_only`, phase `BEA-1`,
+420/420 self-test checks pass. BEA-1 is NOT a benchmark result, NOT a
+leaderboard entry, NOT a performance claim, NOT a method-winner claim, NOT
+a calibration claim, NOT a promotion, NOT a default change, NOT a
+runtime/retriever/pack/backend/EvidenceCore semantic change, and NOT a
+downstream agent value claim. BEA-1 is NOT BEA-0: BEA-0 measured BEA v0
+vs `bm25_top10` (and `rrf_bm25_regex_symbol_top10` when enabled); BEA-1
+measures BEA v0 vs three same-budget controls that isolate whether BEA-0's
+gains (if any) come from multi-source agreement / sequential budgeted
+evidence acquisition rather than merely reading fewer candidates. BEA-1
+does NOT bootstrap the BEA-0 aggregate artifact; it reruns fresh external
+retrieval. No runtime/default-policy/promotion/method-winner/calibration/
 downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
@@ -263,6 +306,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b16d-less-trivial-live-provider-paired-smoke.md`: [en](en/b16d-less-trivial-live-provider-paired-smoke.md) · [zh](zh/b16d-less-trivial-live-provider-paired-smoke.md)
 - `b16e-broader-live-provider-paired-smoke.md`: [en](en/b16e-broader-live-provider-paired-smoke.md) · [zh](zh/b16e-broader-live-provider-paired-smoke.md)
 - `bea0-budgeted-evidence-acquisition.md`: [en](en/bea0-budgeted-evidence-acquisition.md) · [zh](zh/bea0-budgeted-evidence-acquisition.md)
+- `bea1-mechanism-ablation.md`: [en](en/bea1-mechanism-ablation.md) · [zh](zh/bea1-mechanism-ablation.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

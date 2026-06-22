@@ -9395,3 +9395,274 @@ committed or uploaded).
   runtime/retriever/pack/model/backend/default-policy files were modified;
   no promotion/default/runtime claims change. EvidenceCore semantics are
   unchanged.
+
+## 2026-06-21 — BEA-1 Mechanism Ablation Smoke
+
+### Objective
+
+Turn BEA-0 into a small real mechanism ablation. Rerun bounded external
+ContextBench + RepoQA retrieval, preserve private per-record SCORE JSONL
+under `/tmp`, and compare BEA v0 against mechanism-specific controls on the
+same records. Public output remains records-shaped aggregate only.
+
+### Design reviewed by specialists
+
+- @oracle plan review No-Go as written (initial BEA-1 draft); plan
+  tightened with exact same-budget `K`, arm algorithms, paired denominator
+  rule, contrast record shape, private SCORE manifest shape, and stronger
+  CI gates.
+- BEA-1 reuses BEA-0 primitives (candidate normalization, BEA v0 policy,
+  scanner, private SCORE writer, arm metrics) via direct module import. No
+  new runtime/retriever/default change.
+
+### Scope
+
+- Phase: `BEA-1`.
+- Fresh external run; does NOT bootstrap BEA-0 aggregate artifact.
+- Default bounded sample: ContextBench 5 rows + RepoQA 3 needles.
+- Hard caps: ContextBench 20 rows, RepoQA 10 needles.
+- Methods: `bm25,regex,symbol`; optional RRF baseline.
+- Evidence budget default: 5; hard cap 20.
+- No provider calls.
+- Manual external-network CI only.
+
+### Arms (fixed; no dynamic arm names)
+
+- `bm25_top10`: normal BM25 top-10 baseline.
+- `rrf_bm25_regex_symbol_top10`: multi-method RRF baseline when enabled.
+- `bea_v0_budgeted`: BEA-0 deterministic policy with runtime-clean features
+  only; records private action trace only in SCORE.
+- `same_budget_bm25_prefix`: first `K` BM25 candidates after dedupe; no
+  agreement reranking, no BEA sequential coverage/defer/expand rules.
+- `agreement_only_same_budget`: same deduped candidate universe as BEA;
+  sort by agreement desc, min_rank asc, max_normalized_score desc, stable
+  candidate order; take first `K`; no BEA sequential coverage/defer/expand
+  rules.
+- `seeded_random_same_budget`: deterministic PRNG with fixed public seed
+  `20240621`; sample `K` from the same deduped candidate universe after
+  stable ordering; no gold/labels/row IDs/provider/model fields in seed
+  or ordering.
+
+These arms answer whether BEA-0 gains come from multi-source agreement /
+sequential budgeted evidence acquisition rather than merely reading fewer
+candidates.
+
+### Same-budget definition
+
+```text
+K = len(bea_v0_budgeted.accepted_candidates)
+K = min(K, available_deduped_candidate_count)
+```
+
+If BEA accepts zero candidates for a record, same-budget controls also
+select zero and the record is marked unusable for mechanism contrasts
+unless all fixed arms have valid zero-candidate metrics. Public artifacts
+never serialize accepted candidates or candidate lists; only aggregate arm/
+contrast records are public.
+
+### Paired denominator rule
+
+Mechanism contrasts are paired. A contrast only includes records where both
+baseline and treatment arms have valid metrics for the same record. If any
+fixed mechanism arm fails for a record, either exclude that record from
+every mechanism contrast and increment `paired_exclusion_count` (and the
+`record_excluded_from_paired_denominator` failure category), or mark the
+run `partial` if exclusions prevent the minimum paired count. Every public
+`mechanism_contrast_records` row must include `record_count` so deltas are
+interpretable.
+
+### Claim boundary
+
+BEA-1 is a mechanism-ablation smoke only. Not a benchmark performance claim,
+leaderboard, method winner/default recommendation, calibration,
+downstream-agent value proof, promotion, runtime/retriever/pack/backend/
+default-policy change, or EvidenceCore semantic change.
+
+Required false flags: `external_benchmark_performance_claimed`,
+`leaderboard_entry_claimed`, `method_winner_claimed`, `calibration_claimed`,
+`downstream_agent_value_proven`, `promotion_ready`, `default_should_change`,
+all runtime/retriever/pack/backend/default/EvidenceCore change flags, and
+provider call flags.
+
+Allowed true flags if actually true: `mechanism_ablation_performed`,
+`bea_v0_acquisition_performed`, `private_score_records_written`,
+`external_benchmark_rows_read`, `openlocus_retrieval_executed`,
+`score_py_metrics_computed`, `aggregate_only_public_artifact`,
+`diagnostic_only`.
+
+### Artifact identity
+
+- `schema_version`: `bea1_mechanism_ablation.v1`
+- `claim_level`: `bea_v0_mechanism_ablation_smoke_only`
+- `status`: `bea1_mechanism_ablation_pass` | `partial` |
+  `unavailable_with_reason` | `fail_forbidden_scan` | `fail_schema_contract`
+- `mode`: `bounded_external_retrieval_mechanism_ablation`
+- `phase`: `BEA-1`
+
+### Public artifact shape (records only)
+
+- `arm_metric_records`: one `{arm, metric, value}` record per arm/metric.
+- `delta_records`: `{baseline_arm, treatment_arm, metric, delta}` per
+  treatment/metric (each treatment arm vs fixed `bm25_top10` baseline).
+- `mechanism_contrast_records`: fixed shape
+  `{contrast, baseline_arm, treatment_arm, metric, delta, record_count}`
+  for `bea_vs_same_budget_bm25`, `bea_vs_agreement_only`,
+  `bea_vs_seeded_random` (BEA v0 vs each same-budget control on the
+  paired denominator).
+- `private_score_manifest`: aggregate-only manifest block with
+  `records_written`, `record_count`, `schema_version`, `manifest_hash`,
+  `storage_class`, `path_publicly_serialized=false`.
+
+Allowed metrics: `file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`,
+`candidate_count_read`, `evidence_budget_used`, `action_steps`,
+`latency_seconds`, `quality_per_candidate`.
+
+Forbidden publicly: queries, repo URLs/names, commits, paths, spans,
+content, candidate lists, action traces, accepted candidates, budget
+states, per-record metrics, SCORE rows, private SCORE paths, row/needle
+IDs, content hashes, provider fields, winner/best/default labels,
+calibration labels.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/bea1_mechanism_ablation.py  => PASS
+python3 eval/bea1_mechanism_ablation.py --self-test  => PASS (420/420 checks)
+python3 eval/bea1_mechanism_ablation.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-limit 5 --repoqa-needle-limit 3 \
+  --budget 5 --methods bm25,regex,symbol --enable-rrf-baseline \
+  --out artifacts/bea1_mechanism_ablation/\
+bea1_mechanism_ablation_report.json  => PASS
+  (status: bea1_mechanism_ablation_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: bounded_external_retrieval_mechanism_ablation, phase: BEA-1,
+   methods: bm25,regex,symbol, budget: 5,
+   enable_rrf_baseline: true,
+   fixed_arms: [bm25_top10, bea_v0_budgeted, same_budget_bm25_prefix,
+                agreement_only_same_budget, seeded_random_same_budget,
+                rrf_bm25_regex_symbol_top10],
+   baseline_arm: bm25_top10, treatment_arm: bea_v0_budgeted,
+   seeded_random_seed: 20240621,
+   records_evaluated: 8, records_successful: 8, records_failed: 0,
+   paired_exclusion_count: 0,
+   network_calls: 2, provider_calls: 0,
+   mechanism_ablation_performed: true,
+   bea_v0_acquisition_performed: true,
+   private_score_records_written: true,
+   private_score_manifest.record_count: 8,
+   private_score_manifest.storage_class: tmp_private,
+   private_score_manifest.path_publicly_serialized: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Real bounded local run results (2026-06-21)
+
+Bounded local run (ContextBench 5 rows + RepoQA 3 needles, budget=5,
+methods bm25/regex/symbol, rrf baseline enabled) completed successfully:
+
+- `bm25_top10`: file_recall@10=0.5, mrr=0.296875, span_f0.5@10=0.035962,
+  success_rate=0.5, candidate_count_read=12.5, evidence_budget_used=6.25,
+  action_steps=6.25, latency_seconds=0.447125,
+  quality_per_candidate=0.001798.
+- `rrf_bm25_regex_symbol_top10`: file_recall@10=0.5, mrr=0.296875,
+  span_f0.5@10=0.035962, success_rate=0.5, candidate_count_read=12.5,
+  evidence_budget_used=6.25, action_steps=6.25, latency_seconds=1.249875,
+  quality_per_candidate=0.001798.
+- `bea_v0_budgeted`: file_recall@10=0.375, mrr=0.28125,
+  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.75,
+  latency_seconds=3.74384, quality_per_candidate=0.002859.
+- `same_budget_bm25_prefix`: file_recall@10=0.375, mrr=0.28125,
+  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
+  quality_per_candidate=0.002859.
+- `agreement_only_same_budget`: file_recall@10=0.375, mrr=0.28125,
+  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
+  quality_per_candidate=0.002859.
+- `seeded_random_same_budget`: file_recall@10=0.25, mrr=0.1875,
+  span_f0.5@10=0.020161, success_rate=0.25, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
+  quality_per_candidate=0.001008.
+
+Mechanism contrast records (mrr, paired `record_count=8`):
+
+- `bea_vs_same_budget_bm25`: delta(mrr)=0.0 (BEA ties same-budget BM25
+  prefix).
+- `bea_vs_agreement_only`: delta(mrr)=0.0 (BEA ties agreement-only).
+- `bea_vs_seeded_random`: delta(mrr)=+0.09375 (BEA beats seeded random).
+
+8 private per-record SCORE JSONL rows written to
+`/tmp/bea0_private_score_<pid>_<ts>/bea1.private.jsonl` (transient; never
+committed or uploaded); each row contains phase_run_id, benchmark,
+private_record_id, runtime_query_feature_summary, candidate_list,
+bea_v0_action_trace, bea_v0_budget_states, bea_v0_accepted_candidates,
+final_candidates, baseline_bm25_top10_evidence, baseline_rrf_top10_evidence,
+same_budget_bm25_prefix_evidence, agreement_only_same_budget_evidence,
+seeded_random_same_budget_evidence, same_budget_k, score_outcome (per-arm
+metrics), latency_ms, cost_usd=0.0, tokens=0, provider_calls=0,
+failure_reason.
+
+Key mechanism ablation findings (smoke-level, NOT benchmark/calibration/
+method-winner claims):
+
+- BEA v0 and `agreement_only_same_budget` produce IDENTICAL
+  file_recall@10 / mrr / span_f0.5@10 / success_rate on the paired
+  denominator, with the same `evidence_budget_used=3.125`. This suggests
+  BEA v0's gain (if any) over a pure agreement-only rank under the same
+  budget is zero on this bounded sample; BEA v0's sequential
+  coverage/defer/expand rules did not change the accepted set vs the
+  simpler agreement-only sort.
+- BEA v0 and `same_budget_bm25_prefix` also produce IDENTICAL
+  file_recall@10 / mrr / span_f0.5@10 / success_rate, suggesting BEA v0's
+  agreement-based reranking did not differ from BM25-prefix selection on
+  this bounded sample (the high-agreement spans were also the top BM25
+  spans).
+- `seeded_random_same_budget` underperforms both BEA v0 and the
+  agreement-only control by `delta(mrr)=+0.09375` in BEA v0's favor,
+  confirming that deterministic agreement-based selection beats random
+  selection under the same budget on this bounded sample.
+
+These are honest smoke-level aggregate deltas over a bounded sample, not
+benchmark results, leaderboard entries, performance claims, method-winner
+claims, calibration claims, promotions, default changes, runtime/retriever/
+pack/backend/EvidenceCore semantic changes, or downstream agent value
+claims.
+
+### Caveats
+
+- BEA-1 is the public aggregate-only mechanism ablation smoke artifact.
+  It is eval/diagnostic only. It does NOT change runtime, retriever, pack,
+  backend, or default policy; it does NOT change EvidenceCore semantics.
+  It is NOT a benchmark result, NOT a leaderboard entry, NOT a performance
+  claim, NOT a method-winner claim, NOT a calibration claim, NOT a
+  promotion, NOT a default change, NOT a runtime-clean general algorithm
+  claim, and NOT a downstream agent value claim.
+- BEA-1 does NOT emit `winner`, `best_method`, `recommended_default`,
+  `method_winner`, `calibration`, or anything implying a policy/default
+  decision.
+- BEA-1 runs NO provider calls and NO remote provider calls.
+  `provider_calls=0`, `provider_calls_made=false`,
+  `remote_provider_calls_made=false`.
+- BEA-1 uses bounded ContextBench verified Python rows (default 5; hard
+  cap 20) and bounded RepoQA Python needles (default 3; hard cap 10).
+  This is a smoke, not a rigorous benchmark evaluation. Aggregate metrics
+  are point estimates over a bounded sample.
+- BEA-1 writes private per-record SCORE JSONL ONLY under `/tmp` (or an
+  explicitly ignored private path under the gitignored `runs/` directory).
+  The private SCORE path is NEVER serialized in the public artifact, docs,
+  or CI artifacts.
+- BEA-1 does NOT silently fall back from Python to all languages.
+- BEA-1 does NOT claim external benchmark performance, method-winner, or
+  calibration. The aggregate metrics are smoke-level diagnostics.
+- BEA-1 does NOT prove downstream agent value. The mechanism ablation
+  smoke does not exercise any downstream agent.
+- BEA-1 does NOT bootstrap the BEA-0 aggregate artifact. It reruns fresh
+  external retrieval; the BEA-0 artifact is not read or relied upon.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true. No
+  runtime/retriever/pack/model/backend/default-policy files were modified;
+  no promotion/default/runtime claims change. EvidenceCore semantics are
+  unchanged.

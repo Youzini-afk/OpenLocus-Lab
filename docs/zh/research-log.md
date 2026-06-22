@@ -8692,3 +8692,258 @@ success_rate 持平，并将 `span_f0.5@10` 提升 `+0.028`、
   （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
   未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
   无 promotion/default/runtime claim 变更。EvidenceCore 语义不变。
+
+## 2026-06-21 — BEA-1 Mechanism Ablation Smoke
+
+### 目标
+
+将 BEA-0 转为一个小型真实机制消融。对全新有界 external ContextBench +
+RepoQA 检索，保留私有 per-record SCORE JSONL 于 `/tmp`，并在同一组记录上
+将 BEA v0 与机制特定控制进行对比。公开输出仍为 records 形态的仅聚合。
+
+### 设计（specialist 审查）
+
+- @oracle plan 审查 No-Go（初始 BEA-1 草稿）；计划收紧为确切的
+  same-budget `K`、arm 算法、paired denominator 规则、对比 record 形态、
+  私有 SCORE manifest 形态，以及更严格的 CI gate。
+- BEA-1 通过直接模块导入复用 BEA-0 原语（候选规范化、BEA v0 策略、扫描器、
+  私有 SCORE writer、arm 指标）。无新 runtime/retriever/default 变更。
+
+### 范围
+
+- Phase：`BEA-1`。
+- Fresh external run；不 bootstrap BEA-0 聚合 artifact。
+- 默认有界样本：ContextBench 5 行 + RepoQA 3 needle。
+- 硬上限：ContextBench 20 行，RepoQA 10 needle。
+- 方法：`bm25,regex,symbol`；可选 RRF baseline。
+- 证据预算默认：5；硬上限 20。
+- 无 provider 调用。
+- 仅手动 external-network CI。
+
+### Arm（固定；无动态 arm 名）
+
+- `bm25_top10`：正常 BM25 top-10 baseline。
+- `rrf_bm25_regex_symbol_top10`：启用时的多方法 RRF baseline。
+- `bea_v0_budgeted`：BEA-0 确定性策略，仅 runtime-clean 特征；仅将私有
+  action trace 记录到 SCORE。
+- `same_budget_bm25_prefix`：去重后前 `K` 个 BM25 候选；无 agreement
+  reranking，无 BEA 序贯 coverage/defer/expand 规则。
+- `agreement_only_same_budget`：与 BEA 相同的去重候选宇宙；按 agreement
+  desc、min_rank asc、max_normalized_score desc、稳定候选顺序排序；取前
+  `K`；无 BEA 序贯 coverage/defer/expand 规则。
+- `seeded_random_same_budget`：确定性 PRNG，固定公开种子 `20240621`；从
+  稳定排序后相同的去重候选宇宙中采样 `K`；种子或排序中无
+  gold/labels/row IDs/provider/model 字段。
+
+这些 arm 回答 BEA-0 的增益是否来自多源 agreement / 序贯预算采集，而非
+仅仅是读取更少候选。
+
+### 同预算定义
+
+```text
+K = len(bea_v0_budgeted.accepted_candidates)
+K = min(K, available_deduped_candidate_count)
+```
+
+若 BEA 对某条记录接受零候选，同预算控制也选择零，且该记录在机制对比中
+标记为不可用，除非所有固定 arm 均有有效的零候选指标。公开产物绝不序列化
+accepted candidates 或 candidate lists；仅聚合 arm/对比 records 公开。
+
+### Paired denominator 规则
+
+机制对比是 paired 的。一条对比仅包含 baseline 和 treatment arm 在同一
+记录上均有有效指标的记录。若任一固定机制 arm 对某条记录失败，则从每条
+机制对比中排除该记录，并增加 `paired_exclusion_count`（以及
+`record_excluded_from_paired_denominator` failure category），或若排除
+导致低于最小 paired 计数，则将运行标记为 `partial`。每条公开
+`mechanism_contrast_records` 行必须包含 `record_count`，以便 delta 可
+解释。
+
+### Claim 边界
+
+BEA-1 是机制消融 smoke。不声明 benchmark 性能、leaderboard、method
+winner/default 推荐、calibration、downstream-agent 价值证明、promotion、
+runtime/retriever/pack/backend/default-policy 变更，或 EvidenceCore 语义
+变更。
+
+必需 false flag：`external_benchmark_performance_claimed`、
+`leaderboard_entry_claimed`、`method_winner_claimed`、
+`calibration_claimed`、`downstream_agent_value_proven`、
+`promotion_ready`、`default_should_change`，所有
+runtime/retriever/pack/backend/default/EvidenceCore 变更 flag，以及
+provider 调用 flag。
+
+允许 true flag（若确实为 true）：`mechanism_ablation_performed`、
+`bea_v0_acquisition_performed`、`private_score_records_written`、
+`external_benchmark_rows_read`、`openlocus_retrieval_executed`、
+`score_py_metrics_computed`、`aggregate_only_public_artifact`、
+`diagnostic_only`。
+
+### Artifact 身份
+
+- `schema_version`：`bea1_mechanism_ablation.v1`
+- `claim_level`：`bea_v0_mechanism_ablation_smoke_only`
+- `status`：`bea1_mechanism_ablation_pass` | `partial` |
+  `unavailable_with_reason` | `fail_forbidden_scan` | `fail_schema_contract`
+- `mode`：`bounded_external_retrieval_mechanism_ablation`
+- `phase`：`BEA-1`
+
+### 公开 artifact 形态（仅 records）
+
+- `arm_metric_records`：每 arm/metric 一条 `{arm, metric, value}` record。
+- `delta_records`：每 treatment/metric 一条
+  `{baseline_arm, treatment_arm, metric, delta}`（每条 treatment arm vs 固定
+  `bm25_top10` baseline）。
+- `mechanism_contrast_records`：固定形态
+  `{contrast, baseline_arm, treatment_arm, metric, delta, record_count}`，
+  对 `bea_vs_same_budget_bm25`、`bea_vs_agreement_only`、
+  `bea_vs_seeded_random`（BEA v0 vs 每个同预算控制，在 paired denominator
+  上）。
+- `private_score_manifest`：aggregate-only manifest 块，含
+  `records_written`、`record_count`、`schema_version`、`manifest_hash`、
+  `storage_class`、`path_publicly_serialized=false`。
+
+允许的指标：`file_recall@10`、`mrr`、`span_f0.5@10`、`success_rate`、
+`candidate_count_read`、`evidence_budget_used`、`action_steps`、
+`latency_seconds`、`quality_per_candidate`。
+
+禁止公开：queries、repo URL/name、commit、path、span、content、candidate
+list、action trace、accepted candidate、budget state、per-record 指标、
+SCORE 行、私有 SCORE 路径、row/needle ID、content hash、provider 字段、
+winner/best/default label、calibration label。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/bea1_mechanism_ablation.py  => PASS
+python3 eval/bea1_mechanism_ablation.py --self-test  => PASS (420/420 checks)
+python3 eval/bea1_mechanism_ablation.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-limit 5 --repoqa-needle-limit 3 \
+  --budget 5 --methods bm25,regex,symbol --enable-rrf-baseline \
+  --out artifacts/bea1_mechanism_ablation/\
+bea1_mechanism_ablation_report.json  => PASS
+  (status: bea1_mechanism_ablation_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: bounded_external_retrieval_mechanism_ablation, phase: BEA-1,
+   methods: bm25,regex,symbol, budget: 5,
+   enable_rrf_baseline: true,
+   fixed_arms: [bm25_top10, bea_v0_budgeted, same_budget_bm25_prefix,
+                agreement_only_same_budget, seeded_random_same_budget,
+                rrf_bm25_regex_symbol_top10],
+   baseline_arm: bm25_top10, treatment_arm: bea_v0_budgeted,
+   seeded_random_seed: 20240621,
+   records_evaluated: 8, records_successful: 8, records_failed: 0,
+   paired_exclusion_count: 0,
+   network_calls: 2, provider_calls: 0,
+   mechanism_ablation_performed: true,
+   bea_v0_acquisition_performed: true,
+   private_score_records_written: true,
+   private_score_manifest.record_count: 8,
+   private_score_manifest.storage_class: tmp_private,
+   private_score_manifest.path_publicly_serialized: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### 真实有界本地运行结果（2026-06-21）
+
+有界本地运行（ContextBench 5 行 + RepoQA 3 needle，budget=5，方法
+bm25/regex/symbol，启用 rrf baseline）成功完成：
+
+- `bm25_top10`: file_recall@10=0.5, mrr=0.296875, span_f0.5@10=0.035962,
+  success_rate=0.5, candidate_count_read=12.5, evidence_budget_used=6.25,
+  action_steps=6.25, latency_seconds=0.447125,
+  quality_per_candidate=0.001798。
+- `rrf_bm25_regex_symbol_top10`: file_recall@10=0.5, mrr=0.296875,
+  span_f0.5@10=0.035962, success_rate=0.5, candidate_count_read=12.5,
+  evidence_budget_used=6.25, action_steps=6.25, latency_seconds=1.249875,
+  quality_per_candidate=0.001798。
+- `bea_v0_budgeted`: file_recall@10=0.375, mrr=0.28125,
+  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.75,
+  latency_seconds=3.74384, quality_per_candidate=0.002859。
+- `same_budget_bm25_prefix`: file_recall@10=0.375, mrr=0.28125,
+  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
+  quality_per_candidate=0.002859。
+- `agreement_only_same_budget`: file_recall@10=0.375, mrr=0.28125,
+  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
+  quality_per_candidate=0.002859。
+- `seeded_random_same_budget`: file_recall@10=0.25, mrr=0.1875,
+  span_f0.5@10=0.020161, success_rate=0.25, candidate_count_read=12.5,
+  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
+  quality_per_candidate=0.001008。
+
+机制对比 records（mrr，paired `record_count=8`）：
+
+- `bea_vs_same_budget_bm25`: delta(mrr)=0.0（BEA 与 same-budget BM25 prefix
+  持平）。
+- `bea_vs_agreement_only`: delta(mrr)=0.0（BEA 与 agreement-only 持平）。
+- `bea_vs_seeded_random`: delta(mrr)=+0.09375（BEA 胜过 seeded random）。
+
+8 行私有 per-record SCORE JSONL 写入
+`/tmp/bea0_private_score_<pid>_<ts>/bea1.private.jsonl`（transient；绝不
+提交或上传）；每行含 phase_run_id、benchmark、private_record_id、
+runtime_query_feature_summary、candidate_list、bea_v0_action_trace、
+bea_v0_budget_states、bea_v0_accepted_candidates、final_candidates、
+baseline_bm25_top10_evidence、baseline_rrf_top10_evidence、
+same_budget_bm25_prefix_evidence、agreement_only_same_budget_evidence、
+seeded_random_same_budget_evidence、same_budget_k、score_outcome（per-arm
+指标）、latency_ms、cost_usd=0.0、tokens=0、provider_calls=0、
+failure_reason。
+
+关键机制消融发现（smoke 级，**非** benchmark/calibration/method-winner
+声明）：
+
+- BEA v0 与 `agreement_only_same_budget` 在 paired denominator 上产生
+  IDENTICAL 的 file_recall@10 / mrr / span_f0.5@10 / success_rate，且
+  `evidence_budget_used=3.125` 相同。这表明 BEA v0 在此有界样本上相对
+  纯 agreement-only rank（相同预算）的增益为零；BEA v0 的序贯
+  coverage/defer/expand 规则未改变 accepted set 与更简单的 agreement-only
+  排序的差异。
+- BEA v0 与 `same_budget_bm25_prefix` 也产生 IDENTICAL 的
+  file_recall@10 / mrr / span_f0.5@10 / success_rate，表明 BEA v0 的
+  基于 agreement 的 reranking 在此有界样本上与 BM25-prefix 选择无差异
+  （高 agreement span 也是 top BM25 span）。
+- `seeded_random_same_budget` 在 mrr 上以 `delta(mrr)=+0.09375` 劣于
+  BEA v0 与 agreement-only 控制，确认在此有界样本上基于确定性
+  agreement 的选择在相同预算下优于随机选择。
+
+这些是对有界样本的诚实 smoke 级聚合 delta，不是 benchmark 结果、
+leaderboard 条目、性能声明、method-winner 声明、calibration 声明、
+promotion、default 变更、runtime/retriever/pack/backend/EvidenceCore 语义
+变更，或 downstream agent 价值声明。
+
+### Caveats
+
+- BEA-1 是公开 aggregate-only 机制消融 smoke artifact。它是
+  eval/diagnostic only。它不更改 runtime、retriever、pack、backend 或
+  default policy；它不更改 EvidenceCore 语义。它不是 benchmark 结果、不是
+  leaderboard 条目、不是性能声明、不是 method-winner 声明、不是
+  calibration 声明、不是 promotion、不是 default 变更、不是
+  runtime-clean general algorithm 声明、且不是 downstream agent 价值
+  声明。
+- BEA-1 不输出 `winner`、`best_method`、`recommended_default`、
+  `method_winner`、`calibration`，或任何暗示 policy/default 决策的字段。
+- BEA-1 不运行 provider 调用，也不运行 remote provider 调用。
+  `provider_calls=0`、`provider_calls_made=false`、
+  `remote_provider_calls_made=false`。
+- BEA-1 使用有界 ContextBench verified Python 行（默认 5；硬上限 20）和
+  有界 RepoQA Python needle（默认 3；硬上限 10）。这是 smoke，不是严格
+  benchmark 评估。聚合指标为有界样本上的点估计。
+- BEA-1 仅在 `/tmp`（或显式忽略的私有路径，位于被 gitignore 的 `runs/`
+  目录下）写入私有 per-record SCORE JSONL。私有 SCORE 路径绝不序列化到
+  公开 artifact、docs 或 CI artifact。
+- BEA-1 不会从 Python 静默回退到所有语言。
+- BEA-1 不声明 external benchmark 性能、method-winner 或 calibration。
+  聚合指标为 smoke 级 diagnostic。
+- BEA-1 不证明 downstream agent 价值。机制消融 smoke 不演练任何
+  downstream agent。
+- BEA-1 不 bootstrap BEA-0 聚合 artifact。它重新运行 fresh external
+  retrieval；不读取或不依赖 BEA-0 artifact。
+- 所有 no-claim / no-runtime-change flag 保持 false；diagnostic flag
+  （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
+  未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
+  无 promotion/default/runtime claim 变更。EvidenceCore 语义不变。

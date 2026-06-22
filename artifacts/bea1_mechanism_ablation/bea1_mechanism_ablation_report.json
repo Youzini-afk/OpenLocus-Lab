@@ -1,0 +1,872 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "aggregate_runtime_seconds": 49.73,
+  "arm_metric_records": [
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "file_recall@10",
+      "value": 0.375
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "mrr",
+      "value": 0.28125
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "span_f0.5@10",
+      "value": 0.057174
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "success_rate",
+      "value": 0.375
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "candidate_count_read",
+      "value": 12.5
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "evidence_budget_used",
+      "value": 3.125
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "action_steps",
+      "value": 3.125
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "latency_seconds",
+      "value": 0.0
+    },
+    {
+      "arm": "agreement_only_same_budget",
+      "metric": "quality_per_candidate",
+      "value": 0.002859
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "file_recall@10",
+      "value": 0.375
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "mrr",
+      "value": 0.28125
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "span_f0.5@10",
+      "value": 0.057174
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "success_rate",
+      "value": 0.375
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "candidate_count_read",
+      "value": 12.5
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "evidence_budget_used",
+      "value": 3.125
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "action_steps",
+      "value": 3.75
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "latency_seconds",
+      "value": 3.74384
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "quality_per_candidate",
+      "value": 0.002859
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "file_recall@10",
+      "value": 0.5
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "mrr",
+      "value": 0.296875
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "span_f0.5@10",
+      "value": 0.035962
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "success_rate",
+      "value": 0.5
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "candidate_count_read",
+      "value": 12.5
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "evidence_budget_used",
+      "value": 6.25
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "action_steps",
+      "value": 6.25
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "latency_seconds",
+      "value": 0.447125
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "quality_per_candidate",
+      "value": 0.001798
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "file_recall@10",
+      "value": 0.5
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "mrr",
+      "value": 0.296875
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "span_f0.5@10",
+      "value": 0.035962
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "success_rate",
+      "value": 0.5
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "candidate_count_read",
+      "value": 12.5
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "evidence_budget_used",
+      "value": 6.25
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "action_steps",
+      "value": 6.25
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "latency_seconds",
+      "value": 1.249875
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "quality_per_candidate",
+      "value": 0.001798
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "file_recall@10",
+      "value": 0.375
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "mrr",
+      "value": 0.28125
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "span_f0.5@10",
+      "value": 0.057174
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "success_rate",
+      "value": 0.375
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "candidate_count_read",
+      "value": 12.5
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "evidence_budget_used",
+      "value": 3.125
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "action_steps",
+      "value": 3.125
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "latency_seconds",
+      "value": 0.0
+    },
+    {
+      "arm": "same_budget_bm25_prefix",
+      "metric": "quality_per_candidate",
+      "value": 0.002859
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "file_recall@10",
+      "value": 0.25
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "mrr",
+      "value": 0.1875
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "span_f0.5@10",
+      "value": 0.020161
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "success_rate",
+      "value": 0.25
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "candidate_count_read",
+      "value": 12.5
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "evidence_budget_used",
+      "value": 3.125
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "action_steps",
+      "value": 3.125
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "latency_seconds",
+      "value": 0.0
+    },
+    {
+      "arm": "seeded_random_same_budget",
+      "metric": "quality_per_candidate",
+      "value": 0.001008
+    }
+  ],
+  "backend_changed": false,
+  "baseline_arm": "bm25_top10",
+  "bea_v0_acquisition_performed": true,
+  "budget": 5,
+  "calibration_claimed": false,
+  "claim_level": "bea_v0_mechanism_ablation_smoke_only",
+  "contextbench_row_limit_requested": 5,
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "delta_records": [
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "action_steps",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.125,
+      "metric": "file_recall@10",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.447125,
+      "metric": "latency_seconds",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.015625,
+      "metric": "mrr",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.001061,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.021212,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.125,
+      "metric": "success_rate",
+      "treatment_arm": "agreement_only_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -2.5,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.125,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 3.296715,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.015625,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.001061,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.021212,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.125,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.80275,
+      "metric": "latency_seconds",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "action_steps",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.125,
+      "metric": "file_recall@10",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.447125,
+      "metric": "latency_seconds",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.015625,
+      "metric": "mrr",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.001061,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.021212,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.125,
+      "metric": "success_rate",
+      "treatment_arm": "same_budget_bm25_prefix"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "action_steps",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.125,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.25,
+      "metric": "file_recall@10",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.447125,
+      "metric": "latency_seconds",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.109375,
+      "metric": "mrr",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.00079,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.015801,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "seeded_random_same_budget"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -0.25,
+      "metric": "success_rate",
+      "treatment_arm": "seeded_random_same_budget"
+    }
+  ],
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "enable_rrf_baseline": true,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "external_benchmark_rows_read": true,
+  "failure_category_counts": {
+    "contextbench_fetch_failed": 0,
+    "contextbench_gold_parse_failed": 0,
+    "contextbench_no_python_rows": 0,
+    "forbidden_leak_blocked": 0,
+    "needle_limit_capped": 0,
+    "private_score_write_failed": 0,
+    "record_excluded_from_paired_denominator": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "repoqa_asset_download_failed": 0,
+    "repoqa_asset_parse_failed": 0,
+    "repoqa_needle_parse_failed": 0,
+    "repoqa_no_python_needles": 0,
+    "retrieval_failed": 3,
+    "row_limit_capped": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "unexpected_exception": 0
+  },
+  "fixed_arms": [
+    "bm25_top10",
+    "bea_v0_budgeted",
+    "same_budget_bm25_prefix",
+    "agreement_only_same_budget",
+    "seeded_random_same_budget",
+    "rrf_bm25_regex_symbol_top10"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_v0_mechanism_ablation_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-22T07:20:38.198055+00:00",
+  "generated_by": "eval/bea1_mechanism_ablation.py",
+  "leaderboard_entry_claimed": false,
+  "mechanism_ablation_performed": true,
+  "mechanism_contrast_records": [
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.625,
+      "metric": "action_steps",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 3.74384,
+      "metric": "latency_seconds",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "mrr",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "agreement_only_same_budget",
+      "contrast": "bea_vs_agreement_only",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.625,
+      "metric": "action_steps",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 3.74384,
+      "metric": "latency_seconds",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "mrr",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "same_budget_bm25_prefix",
+      "contrast": "bea_vs_same_budget_bm25",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.625,
+      "metric": "action_steps",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.125,
+      "metric": "file_recall@10",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 3.74384,
+      "metric": "latency_seconds",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.09375,
+      "metric": "mrr",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.001851,
+      "metric": "quality_per_candidate",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.037013,
+      "metric": "span_f0.5@10",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "seeded_random_same_budget",
+      "contrast": "bea_vs_seeded_random",
+      "delta": 0.125,
+      "metric": "success_rate",
+      "record_count": 8,
+      "treatment_arm": "bea_v0_budgeted"
+    }
+  ],
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "bounded_external_retrieval_mechanism_ablation",
+  "network_calls": 2,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "paired_exclusion_count": 0,
+  "phase": "BEA-1",
+  "private_score_manifest": {
+    "manifest_hash": "0fdffdf56d685c14a0886c4f6e765d2c05ce298ee8c82fb6267d9a9fe3c6cbf2",
+    "path_publicly_serialized": false,
+    "record_count": 8,
+    "records_written": true,
+    "schema_version": "bea1_private_score.v1",
+    "storage_class": "tmp_private"
+  },
+  "private_score_records_written": true,
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "records_evaluated": 8,
+  "records_failed": 0,
+  "records_successful": 8,
+  "remote_provider_calls_made": false,
+  "repoqa_needle_limit_requested": 3,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "bea1_mechanism_ablation.v1",
+  "score_py_metrics_computed": true,
+  "seeded_random_seed": 20240621,
+  "self_test_passed": true,
+  "status": "bea1_mechanism_ablation_pass",
+  "treatment_arm": "bea_v0_budgeted"
+}

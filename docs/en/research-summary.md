@@ -3351,3 +3351,81 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   P21 outcomes; BEA-0 actually reruns retrieval and acquires evidence
   under a budget, with private per-record SCORE traces. C3 -> BEA-0 is the
   pivot from replay-only to real acquisition.
+
+## BEA-1 findings
+
+- **BEA-1 is the first mechanism ablation smoke**: reruns fresh
+  multi-method retrieval (bm25/regex/symbol + optional rrf) over bounded
+  real ContextBench verified Python rows (default 5; hard cap 20) and
+  RepoQA Python needles (default 3; hard cap 10), runs 5 fixed arms
+  (`bm25_top10`, `bea_v0_budgeted`, `same_budget_bm25_prefix`,
+  `agreement_only_same_budget`, `seeded_random_same_budget`; plus
+  `rrf_bm25_regex_symbol_top10` when rrf enabled), and computes per-arm
+  metric records, baseline-vs-treatment delta records, and mechanism
+  contrast records on the paired denominator. NOT aggregate validation;
+  real fresh retrieval + 3 same-budget controls + mechanism contrasts.
+- **Same-budget K exactly per plan**:
+  `K = min(len(bea_v0_budgeted.accepted_candidates), available_deduped_candidate_count)`.
+  If BEA accepts zero candidates for a record, same-budget controls also
+  select zero. Public artifacts never serialize accepted candidates or
+  candidate lists.
+- **Same-budget controls are runtime-clean and deterministic**:
+  `same_budget_bm25_prefix` takes the first K BM25 candidates after
+  dedupe; `agreement_only_same_budget` sorts the same deduped universe as
+  BEA by (agreement desc, min_rank asc, max_normalized_score desc, stable
+  order); `seeded_random_same_budget` uses fixed public seed `20240621`
+  over the stable-ordered deduped universe. No gold/labels/row IDs/
+  provider/model fields in seed or ordering. Verified invariant under
+  synthetic gold/label/row-id tainting.
+- **Paired denominator rule**: mechanism contrasts only include records
+  where both baseline and treatment arms have valid metrics for the same
+  record. Every `mechanism_contrast_records` row includes `record_count`
+  so deltas are interpretable. Public artifacts do not serialize per-record
+  inclusion masks.
+- **Bounded local run (2026-06-21)**: ContextBench 5 rows + RepoQA 3
+  needles, budget=5, methods bm25/regex/symbol, rrf baseline enabled.
+  All 8 records successful; `paired_exclusion_count=0`. BEA v0 ties
+  `same_budget_bm25_prefix` and `agreement_only_same_budget` on
+  file_recall@10/mrr/span_f0.5@10/success_rate with the same
+  `evidence_budget_used=3.125`; BEA v0 beats `seeded_random_same_budget`
+  by `delta(mrr)=+0.09375`. 8 private per-record SCORE rows written to
+  `/tmp/bea0_private_score_<pid>_<ts>/bea1.private.jsonl`.
+- **Strict claim boundary**: BEA-1 emits `claim_level =
+  bea_v0_mechanism_ablation_smoke_only`. NOT a benchmark result, NOT a
+  leaderboard entry, NOT a performance claim, NOT a method-winner claim,
+  NOT a calibration claim, NOT a promotion, NOT a default change, NOT a
+  runtime/retriever/pack/backend/EvidenceCore semantic change, NOT a
+  downstream agent value claim. Does NOT emit `winner`, `best_method`,
+  `recommended_default`, `method_winner`, `calibration`. All no-claim /
+  no-runtime-change flags false; `aggregate_only_public_artifact=true`,
+  `diagnostic_only=true`, `provider_calls=0`.
+- **420/420 self-test checks pass**: 28 groups covering identity fields,
+  safe true flags, no-claim false flags, license fields, private SCORE
+  manifest aggregate-only fields, row/needle/budget hard caps, method
+  validation, same-budget K exactly, three same-budget control arm
+  algorithms, runtime-clean invariance, arm_metric_records fixed shape,
+  delta_records fixed shape, mechanism_contrast_records fixed shape +
+  record_count, failure category counts enum, unavailable statuses,
+  scanner rejects BEA-0 + BEA-1 forbidden keys and value patterns,
+  scanner allows safe values, fail-closed generation, CLI surface,
+  private SCORE writer round-trip, paired denominator rule, aggregate
+  runtime seconds present, no winner/best_method/recommended_default/
+  method_winner/calibration anywhere, fixed arms present, scanner rejects
+  BEA-1-specific claim-boundary keys (calibration, method_winner, etc.).
+- **CI is manual opt-in `workflow_dispatch`** with
+  `enable_external_benchmark_network=true`. Network disabled by default.
+  Fail-closed when enabled: require status in (`bea1_mechanism_ablation_pass`,
+  `partial`), `records_successful >= 3`, every mechanism contrast
+  `record_count >= 3`, `forbidden_scan.status=pass`, `provider_calls=0`,
+  `private_score_manifest` present with `path_publicly_serialized=false`
+  and `record_count == records_successful`, no
+  `winner`/`best_method`/`recommended_default`/`method_winner`/`calibration`
+  fields anywhere, no BEA-1 private fields anywhere. Uploads only
+  aggregate public report; never uploads private SCORE JSONL.
+- **BEA-1 is NOT BEA-0**: BEA-0 measured BEA v0 vs `bm25_top10` (and
+  `rrf_bm25_regex_symbol_top10` when enabled); BEA-1 measures BEA v0 vs
+  three same-budget controls that isolate whether BEA-0's gains (if any)
+  come from multi-source agreement / sequential budgeted evidence
+  acquisition rather than merely reading fewer candidates. BEA-1 does
+  NOT bootstrap the BEA-0 aggregate artifact; it reruns fresh external
+  retrieval.
