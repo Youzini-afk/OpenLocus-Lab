@@ -3268,3 +3268,86 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Dense mock and dense+RRF are net-negative failure surfaces**: dense_mock primary_false_positive_rate=0.874; dense_mock_plus_rrf/rrf_plus_dense_mock primary_false_positive_rate=0.906.
 - **Graph remains default-blocked**: graph_basic added_gold_span=0 and added_false_span=437; all graph/dense expansion variants are blocked by added_false_span > added_gold_span.
 - **Failure clusters surfaced at scale**: DENSE_MOCK_NOISE=577, RRF_INHERITED_BM25_FALSE_POSITIVE=299, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE=219, GRAPH_ADDS_NO_GOLD=90, GUARD_RECALL_KILL=62. Bucket regressions total=448.
+
+## BEA-0 findings
+
+- **BEA-0 is the first real algorithmic retrieval/acquisition experiment**:
+  reruns fresh multi-method retrieval (bm25/regex/symbol + optional rrf)
+  over fresh bounded ContextBench verified Python rows (default 10; hard
+  cap 20) and RepoQA Python needles (default 5; hard cap 10), runs a
+  deterministic `bea_v0_budgeted` policy under an evidence budget (default
+  10; hard cap 20), and computes per-arm aggregate metrics with
+  baseline-vs-treatment deltas vs `bm25_top10` (and
+  `rrf_bm25_regex_symbol_top10` when rrf enabled). Not replay, not
+  aggregate validation — real fresh retrieval + acquisition loop.
+- **BEA v0 policy is runtime-clean and deterministic**: consumes only
+  method source, candidate rank, score/normalized score, rank agreement
+  across methods, duplicate path/span overlap, candidate count, accepted
+  coverage, budget remaining, cheap path extension. Verified invariant under
+  synthetic gold/label/row-id/model-family/previous-outcome tainting
+  (policy produces IDENTICAL accepted/action_trace/budget_states because it
+  ignores those fields). Initial actions: `accept_candidate`,
+  `skip_low_support`, `rerank_by_agreement`, `stop_budget_exhausted`;
+  optional `expand_same_file` for deferred same-file candidates under budget.
+- **Private per-record SCORE JSONL preserved in /tmp**: every evaluated
+  record gets a private SCORE row with phase_run_id, benchmark, private
+  record id, runtime query feature summary, candidate list (method, rank,
+  score, normalized_score, path, span, content_sha, extension, agreement),
+  action trace, budget states, accepted/final candidates, score outcome
+  (per-arm metrics), latency_ms, cost_usd=0.0, tokens=0, provider_calls=0,
+  failure_reason. Private SCORE path NEVER serialized in public artifact,
+  docs, or CI artifacts. Public artifact records ONLY aggregate SCORE
+  manifest fields (records_written, record_count, schema_version,
+  manifest_hash, storage_class, path_publicly_serialized=false).
+- **Bounded local run (2026-06-21)**: ContextBench 2 rows + RepoQA 1
+  needle, budget=5, methods bm25/regex/symbol, rrf baseline enabled. All 3
+  records successful. Treatment `bea_v0_budgeted` preserved file_recall@10
+  / mrr / success_rate parity with both baselines while using roughly half
+  the evidence budget (`evidence_budget_used=3.33` vs `6.67`) and improved
+  `span_f0.5@10` by `+0.028` and `quality_per_candidate` by `+0.0014`.
+  3 private per-record SCORE rows written to
+  `/tmp/bea0_private_score_<pid>_<ts>/bea0.private.jsonl`.
+- **Strict claim boundary**: BEA-0 emits `claim_level =
+  bea_v0_budgeted_acquisition_smoke_only`. NOT a benchmark result, NOT a
+  leaderboard entry, NOT a performance claim, NOT a method-winner claim,
+  NOT a calibration claim, NOT a promotion, NOT a default change, NOT a
+  runtime/retriever/pack/backend/EvidenceCore semantic change, NOT a
+  downstream agent value claim. Does NOT emit `winner`, `best_method`,
+  `recommended_default`, `method_winner`, `calibration`. All no-claim /
+  no-runtime-change flags false; `aggregate_only_public_artifact=true`,
+  `diagnostic_only=true`, `provider_calls=0`.
+- **210/210 self-test checks pass**: 26 groups covering identity fields,
+  safe true flags, no-claim false flags, license fields, private SCORE
+  manifest aggregate-only fields, row/needle/budget hard caps, method
+  validation, path extension helper, BEA v0 policy mechanics (accepts
+  nonempty; first accept is high-agreement; skips low_support; budget
+  states track budget_remaining; respects budget cap), runtime-clean
+  invariance under tainting, per-arm metrics + deltas, aggregate means,
+  arm metric allowlist filtering, failure category counts enum,
+  unavailable statuses, scanner rejects BEA-0-specific forbidden keys
+  (private_score_path, action_trace, budget_states, accepted_candidates,
+  final_candidates, candidate_list, score_outcome, etc.) and value
+  patterns (repo URL/slug/commit SHA/file path/tmp path/multiline), scanner
+  allows safe values (schema_version, methods, budget, arm_metrics,
+  deltas, private_score_manifest_hash, failure_category), fail-closed
+  generation (clean report no raise; private_score_path raises;
+  action_trace raises; accepted_candidates raises; winner raises;
+  best_method raises; self-test failure refuses artifact generation),
+  CLI surface, private SCORE writer round-trip, aggregate runtime seconds
+  present, no winner/best_method/recommended_default/method_winner/
+  calibration anywhere.
+- **CI is manual opt-in `workflow_dispatch`** with
+  `enable_external_benchmark_network=true`. Network disabled by default.
+  Fail-closed when enabled: require status in (`bea_v0_smoke_pass`,
+  `partial`), `records_successful > 0`, `forbidden_scan.status=pass`,
+  `provider_calls=0`, `private_score_record_count == records_successful`,
+  no `winner`/`best_method`/`recommended_default`/`method_winner`/
+  `calibration` fields anywhere, no BEA-0 private fields
+  (`private_score_path`, `action_trace`, `budget_states`,
+  `accepted_candidates`, `final_candidates`, `candidate_list`,
+  `score_outcome`, etc.) anywhere. Uploads only aggregate public report;
+  never uploads private SCORE JSONL.
+- **BEA-0 is NOT C3**: C3 was replay-only and selected among precomputed
+  P21 outcomes; BEA-0 actually reruns retrieval and acquires evidence
+  under a budget, with private per-record SCORE traces. C3 -> BEA-0 is the
+  pivot from replay-only to real acquisition.

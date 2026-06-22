@@ -1,0 +1,348 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "aggregate_runtime_seconds": 19.641,
+  "arm_metric_records": [
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "file_recall@10",
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "mrr",
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "span_f0.5@10",
+      "value": 0.086849
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "success_rate",
+      "value": 0.666667
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "candidate_count_read",
+      "value": 13.333333
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "evidence_budget_used",
+      "value": 3.333333
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "action_steps",
+      "value": 4.0
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "latency_seconds",
+      "value": 3.640497
+    },
+    {
+      "arm": "bea_v0_budgeted",
+      "metric": "quality_per_candidate",
+      "value": 0.004343
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "file_recall@10",
+      "value": 0.666667
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "mrr",
+      "value": 0.666667
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "span_f0.5@10",
+      "value": 0.059187
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "success_rate",
+      "value": 0.666667
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "candidate_count_read",
+      "value": 13.333333
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "evidence_budget_used",
+      "value": 6.666667
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "action_steps",
+      "value": 6.666667
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "latency_seconds",
+      "value": 0.467
+    },
+    {
+      "arm": "bm25_top10",
+      "metric": "quality_per_candidate",
+      "value": 0.002959
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "file_recall@10",
+      "value": 0.666667
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "mrr",
+      "value": 0.666667
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "span_f0.5@10",
+      "value": 0.059187
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "success_rate",
+      "value": 0.666667
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "candidate_count_read",
+      "value": 13.333333
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "evidence_budget_used",
+      "value": 6.666667
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "action_steps",
+      "value": 6.666667
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "latency_seconds",
+      "value": 1.219
+    },
+    {
+      "arm": "rrf_bm25_regex_symbol_top10",
+      "metric": "quality_per_candidate",
+      "value": 0.002959
+    }
+  ],
+  "backend_changed": false,
+  "baseline_arms": [
+    "bm25_top10",
+    "rrf_bm25_regex_symbol_top10"
+  ],
+  "bea_v0_acquisition_performed": true,
+  "budget": 5,
+  "budgeted_policy_executed": true,
+  "calibration_claimed": false,
+  "claim_level": "bea_v0_budgeted_acquisition_smoke_only",
+  "contextbench_row_limit_requested": 2,
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "delta_records": [
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.027662,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -3.333334,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": -2.666667,
+      "metric": "action_steps",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 3.173497,
+      "metric": "latency_seconds",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.001384,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "bea_v0_budgeted"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "file_recall@10",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "mrr",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "span_f0.5@10",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "success_rate",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "candidate_count_read",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "evidence_budget_used",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "action_steps",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.752,
+      "metric": "latency_seconds",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    },
+    {
+      "baseline_arm": "bm25_top10",
+      "delta": 0.0,
+      "metric": "quality_per_candidate",
+      "treatment_arm": "rrf_bm25_regex_symbol_top10"
+    }
+  ],
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "enable_rrf_baseline": true,
+  "evidencecore_semantics_changed": false,
+  "external_benchmark_performance_claimed": false,
+  "external_benchmark_rows_read": true,
+  "failure_category_counts": {
+    "contextbench_fetch_failed": 0,
+    "contextbench_gold_parse_failed": 0,
+    "contextbench_no_python_rows": 0,
+    "forbidden_leak_blocked": 0,
+    "needle_limit_capped": 0,
+    "private_score_write_failed": 0,
+    "repo_checkout_failed": 0,
+    "repo_clone_failed": 0,
+    "repoqa_asset_download_failed": 0,
+    "repoqa_asset_parse_failed": 0,
+    "repoqa_needle_parse_failed": 0,
+    "repoqa_no_python_needles": 0,
+    "retrieval_failed": 1,
+    "row_limit_capped": 0,
+    "scanner_self_test_failed": 0,
+    "score_failed": 0,
+    "unexpected_exception": 0
+  },
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_v0_budgeted_acquisition_smoke_aggregate_only"
+  },
+  "generated_at": "2026-06-22T06:30:23.869518+00:00",
+  "generated_by": "eval/bea0_budgeted_evidence_acquisition.py",
+  "leaderboard_entry_claimed": false,
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "bea_v0_budgeted_acquisition",
+  "multi_method_candidates_collected": true,
+  "network_calls": 2,
+  "network_mode": "local_explicit",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": true,
+  "pack_builder_changed": false,
+  "phase": "BEA-0",
+  "private_score_manifest_hash": "9c4ed83f2ae697de2fb5f1e90484942183ab80dc95ee64db27ea4303e13cfb03",
+  "private_score_path_publicly_serialized": false,
+  "private_score_record_count": 3,
+  "private_score_records_written": true,
+  "private_score_schema_version": "bea0_private_score.v1",
+  "private_score_storage_class": "tmp_private",
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "records_evaluated": 3,
+  "records_failed": 0,
+  "records_successful": 3,
+  "remote_provider_calls_made": false,
+  "repoqa_needle_limit_requested": 1,
+  "repositories_materialized_transiently": true,
+  "retriever_changed": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "schema_version": "bea0_budgeted_evidence_acquisition.v1",
+  "score_py_metrics_computed": true,
+  "self_test_passed": true,
+  "status": "bea_v0_smoke_pass",
+  "treatment_arm": "bea_v0_budgeted"
+}

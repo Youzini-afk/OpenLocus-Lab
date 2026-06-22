@@ -2747,3 +2747,79 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Dense mock and dense+RRF are net-negative failure surfaces**: dense_mock primary_false_positive_rate=0.874; dense_mock_plus_rrf/rrf_plus_dense_mock primary_false_positive_rate=0.906.
 - **Graph remains default-blocked**: graph_basic added_gold_span=0 and added_false_span=437; all graph/dense expansion variants are blocked by added_false_span > added_gold_span.
 - **Failure clusters surfaced at scale**: DENSE_MOCK_NOISE=577, RRF_INHERITED_BM25_FALSE_POSITIVE=299, DENSE_SEMANTIC_TRAP_FALSE_POSITIVE=219, GRAPH_ADDS_NO_GOLD=90, GUARD_RECALL_KILL=62. Bucket regressions total=448.
+
+## BEA-0 findings
+
+- **BEA-0 是首个真正算法级检索/采集实验**：对全新有界 ContextBench
+  verified Python 行（默认 10；硬上限 20）和 RepoQA Python needle
+  （默认 5；硬上限 10）重新运行多方法检索（bm25/regex/symbol + 可选
+  rrf），运行确定性 `bea_v0_budgeted` 策略（在证据预算下，默认 10；硬
+  上限 20），并计算 per-arm 聚合指标，含相对 `bm25_top10`（启用 rrf 时
+  还包括 `rrf_bm25_regex_symbol_top10`）的 baseline-vs-treatment
+  delta。非 replay、非 aggregate 验证 — 真正 fresh retrieval + 采集
+  循环。
+- **BEA v0 策略 runtime-clean 且确定**：只消费 method source、候选 rank、
+  score/normalized score、跨 method 的 rank agreement、重复 path/span
+  overlap、候选总数、已接受覆盖、剩余预算、廉价 path extension。在合成
+  gold/label/row-id/model-family/previous-outcome 污染下验证 invariance
+  （策略产生 IDENTICAL 的 accepted/action_trace/budget_states，因为忽略
+  这些字段）。初始 action：`accept_candidate`、`skip_low_support`、
+  `rerank_by_agreement`、`stop_budget_exhausted`；可选
+  `expand_same_file` 用于在预算下保留 deferred 同文件候选。
+- **私有 per-record SCORE JSONL 保留于 /tmp**：每条 evaluated record 都
+  有一条私有 SCORE 行，含 phase_run_id、benchmark、private record id、
+  runtime query feature summary、candidate list（method、rank、score、
+  normalized_score、path、span、content_sha、extension、agreement）、
+  action trace、budget states、accepted/final candidate、score outcome
+  （per-arm 指标）、latency_ms、cost_usd=0.0、tokens=0、provider_calls=0、
+  failure_reason。私有 SCORE 路径绝不序列化到公开 artifact、docs 或 CI
+  artifact。公开 artifact 仅记录聚合 SCORE manifest 字段
+  （records_written、record_count、schema_version、manifest_hash、
+  storage_class、path_publicly_serialized=false）。
+- **有界本地运行（2026-06-21）**：ContextBench 2 行 + RepoQA 1 needle，
+  budget=5，方法 bm25/regex/symbol，启用 rrf baseline。3 条记录全部成功。
+  Treatment `bea_v0_budgeted` 与两条 baseline 持平 file_recall@10 / mrr
+  / success_rate，同时使用约一半 evidence budget
+  （`evidence_budget_used=3.33` vs `6.67`），并将 `span_f0.5@10` 提升
+  `+0.028`、`quality_per_candidate` 提升 `+0.0014`。3 行私有 per-record
+  SCORE 写入
+  `/tmp/bea0_private_score_<pid>_<ts>/bea0.private.jsonl`。
+- **严格 claim 边界**：BEA-0 输出 `claim_level =
+  bea_v0_budgeted_acquisition_smoke_only`。不是 benchmark 结果、不是
+  leaderboard 条目、不是性能声明、不是 method-winner 声明、不是
+  calibration 声明、不是 promotion、不是 default 变更、不是
+  runtime/retriever/pack/backend/EvidenceCore 语义变更、不是 downstream
+  agent 价值声明。不输出 `winner`、`best_method`、`recommended_default`、
+  `method_winner`、`calibration`。所有 no-claim / no-runtime-change flag
+  为 false；`aggregate_only_public_artifact=true`、
+  `diagnostic_only=true`、`provider_calls=0`。
+- **210/210 self-test 检查通过**：26 组覆盖身份字段、safe true flag、
+  no-claim false flag、license 字段、私有 SCORE manifest aggregate-only
+  字段、row/needle/budget 硬上限、method 校验、path extension helper、
+  BEA v0 策略机制（接受非空；首个接受为高 agreement；跳过 low_support；
+  budget state 跟踪 budget_remaining；尊重预算上限）、runtime-clean
+  invariance、per-arm 指标 + delta、聚合均值、arm 指标 allowlist 过滤、
+  failure category count enum、unavailable 状态、扫描器拒绝 BEA-0 专属
+  禁止 key（private_score_path、action_trace、budget_states、
+  accepted_candidates、final_candidates、candidate_list、score_outcome 等）
+  和 value 模式（repo URL/slug/commit SHA/file path/tmp path/multiline）、
+  扫描器允许 safe value（schema_version、methods、budget、arm_metrics、
+  deltas、private_score_manifest_hash、failure_category）、fail-closed 生成
+  （干净报告不 raise；private_score_path raise；action_trace raise；
+  accepted_candidates raise；winner raise；best_method raise；self-test 失败
+  拒绝 artifact 生成）、CLI 表面、私有 SCORE writer round-trip、
+  aggregate runtime seconds 存在、任何位置无
+  winner/best_method/recommended_default/method_winner/calibration。
+- **CI 为手动 opt-in `workflow_dispatch`**，带
+  `enable_external_benchmark_network=true`。默认禁用网络。启用时
+  fail-closed：要求 status 在（`bea_v0_smoke_pass`、`partial`）中、
+  `records_successful > 0`、`forbidden_scan.status=pass`、
+  `provider_calls=0`、`private_score_record_count == records_successful`，
+  任何位置无 `winner`/`best_method`/`recommended_default`/`method_winner`/
+  `calibration` 字段，任何位置无 BEA-0 私有字段（`private_score_path`、
+  `action_trace`、`budget_states`、`accepted_candidates`、
+  `final_candidates`、`candidate_list`、`score_outcome` 等）。仅上传
+  aggregate 公开报告；绝不上传私有 SCORE JSONL。
+- **BEA-0 不是 C3**：C3 仅 replay，从预计算 P21 outcomes 中选择；BEA-0
+  真正重新运行检索，并在预算下采集证据，附带私有 per-record SCORE 轨迹。
+  C3 -> BEA-0 是从仅 replay 到真正采集的转向。

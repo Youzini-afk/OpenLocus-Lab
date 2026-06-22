@@ -9169,3 +9169,229 @@ See [D5-A2 detailed report](d5a2-heldout-feature-validation.md).
   NOT validate live-provider/downstream alignment.
 - D5-A2 runs fresh heldout retrieval; it does NOT reread C5/F1
   artifacts. No provider calls. All transient data in memory or /tmp.
+
+## 2026-06-21 — BEA-0 Budgeted Evidence Acquisition v0
+
+### Objective
+
+Pivot from readiness/control-plane/aggregate-validation work to a real
+algorithmic retrieval/acquisition experiment with private per-record SCORE
+traces. BEA-0 implements and runs a deterministic budgeted acquisition
+policy over fresh external benchmark data, preserves private per-record
+SCORE JSONL in `/tmp` (never committed, never uploaded), and publishes only
+aggregate baseline-vs-treatment deltas.
+
+### Design reviewed by specialists
+
+- @explorer mapped BEA/retrieval/logging entrypoints:
+  `eval/run_retrieval.py:run_query()` (real per-row retrieval primitive for
+  `regex`/`text`/`bm25`/`symbol`/`rrf` via OpenLocus CLI),
+  `eval/score.py` (per-row scoring functions, importable as a module),
+  `eval/c5_contextbench_verified_performance_smoke.py` and
+  `eval/c5d_repoqa_bm25_retrieval_smoke.py` (real fetch/clone/retrieve/score
+  harnesses with forbidden scanners and license fields), and
+  `eval/c3_budgeted_evidence_acquisition.py` (replay-only; selects among
+  precomputed P21 outcomes, does NOT acquire new evidence; not sufficient).
+- @oracle approved BEA-0 only if it is a real algorithmic
+  retrieval/acquisition experiment with private SCORE traces, not an
+  aggregate validation wrapper.
+
+### Scope
+
+- Phase: `BEA-0`.
+- Data: fresh ContextBench verified Python rows (default 10; hard cap 20)
+  and RepoQA Python needles (default 5; hard cap 10).
+- Methods: `bm25`, `regex`, `symbol`; optional `rrf` if cheap.
+- Baselines: `bm25_top10`; preferably `rrf_bm25_regex_symbol_top10` if rrf
+  enabled.
+- Treatment: `bea_v0_budgeted` deterministic policy under an evidence budget
+  (default 10; hard cap 20).
+- No provider calls. No runtime/retriever/default change.
+
+### BEA v0 policy (runtime-clean, deterministic)
+
+The treatment policy `bea_v0_budgeted` consumes ONLY runtime-clean
+candidate features available before scoring: method source, candidate rank
+within method, score or normalized score if available, rank agreement
+across methods (how many distinct methods returned the same
+`(path, start_line, end_line)` span), duplicate path/span overlap,
+candidate count, accepted file/path coverage so far, budget remaining, and
+cheap path kind/file extension metadata. It MUST NOT use gold
+files/lines/labels, row IDs, benchmark-specific answer hints, previous
+outcome on the same record, provider/model names, or private route buckets.
+
+Algorithm: (1) compute per-span agreement; (2) sort deduplicated spans by
+(agreement DESC, min_rank ASC, max_norm_score DESC); (3) iterate with
+budget, emitting `accept_candidate` / `skip_low_support` /
+`rerank_by_agreement` / `stop_budget_exhausted` actions; (4) optional
+`expand_same_file` pass over deferred rerank pool when budget remains.
+
+### Private SCORE JSONL
+
+Required for every evaluated record. Written ONLY under `/tmp` (or an
+explicitly ignored private path under the gitignored `runs/` directory).
+Never committed, never uploaded. The private SCORE path is NEVER serialized
+in the public artifact, docs, or CI artifacts.
+
+Private row contents: `phase_run_id`, `benchmark`, `private_record_id`,
+`runtime_query_feature_summary` (cheap runtime-clean features only),
+`candidate_list` (per-candidate: method, rank, score, normalized_score,
+path, start_line, end_line, content_sha, extension, agreement),
+`action_trace` (step, action, candidate_method, candidate_rank, agreement,
+max_norm_score), `budget_states` (step, budget_remaining,
+accepted_so_far, candidate_count), `accepted_candidates`,
+`final_candidates`, `baseline_bm25_top10_evidence`,
+`baseline_rrf_top10_evidence`, `score_outcome` (per-arm metrics),
+`latency_ms`, `cost_usd=0.0`, `tokens=0`, `provider_calls=0`,
+`failure_reason`, `method_latencies_ms`, `rrf_latency_ms`, `method_errors`,
+`rrf_error`.
+
+### Public artifact
+
+Target path:
+`artifacts/bea0_budgeted_evidence_acquisition/bea0_budgeted_evidence_acquisition_report.json`.
+
+Aggregate fields only: `schema_version`, `generated_by`, `generated_at`,
+`claim_level`, `status`, `mode`, `phase`, `methods`, `budget`,
+`enable_rrf_baseline`, `baseline_arms`, `treatment_arm`, `network_mode`,
+`openlocus_binary_source`, `contextbench_row_limit_requested`,
+`repoqa_needle_limit_requested`, `records_evaluated`,
+`records_successful`, `records_failed`, `network_calls`, `provider_calls=0`,
+`arm_metrics` (per-arm allowlisted metrics), `deltas` (per-arm
+baseline-vs-treatment allowlisted deltas), private SCORE manifest
+aggregate-only fields (`private_score_records_written`,
+`private_score_record_count`, `private_score_schema_version`,
+`private_score_manifest_hash`, `private_score_storage_class`,
+`private_score_path_publicly_serialized=false`), `aggregate_runtime_seconds`,
+`failure_category_counts`, safe true flags, no-claim / no-runtime-change
+false flags, license fields, `self_test_passed`, `framing`,
+`forbidden_scan` summary.
+
+Forbidden public values: repo URLs/names, commits, row/needle IDs,
+queries/descriptions, paths/spans/line ranges, source/snippets, candidate
+lists, evidence rows, content hashes, private SCORE path, provider
+payloads, stdout/stderr, clone paths, gold labels, action traces, budget
+states, accepted candidates, final candidates, score outcomes.
+
+### Claim boundary
+
+Allowed claim: BEA-0 measured aggregate retrieval/acquisition quality and
+budget deltas for a deterministic budgeted acquisition policy over bounded
+real ContextBench/RepoQA samples.
+
+Not allowed: benchmark performance, leaderboard, downstream-agent value,
+calibration, method winner, default/promotion, runtime/retriever/backend
+change, EvidenceCore semantic change. Candidate remains not fact;
+EvidenceCore semantics unchanged.
+
+### Metrics
+
+Per arm aggregate: `file_recall@10`, `mrr`, `span_f0.5@10`, `success_rate`,
+`candidate_count_read`, `evidence_budget_used`, `action_steps`,
+`latency_seconds`, `quality_per_candidate`. Aggregate deltas vs `bm25_top10`
+(and vs `rrf_bm25_regex_symbol_top10` when rrf enabled).
+
+Valid outcomes include improvement, same quality with less budget,
+no-delta, or quality loss with causal action-trace failure mode.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/bea0_budgeted_evidence_acquisition.py  => PASS
+python3 eval/bea0_budgeted_evidence_acquisition.py --self-test  => PASS (210/210 checks)
+python3 eval/bea0_budgeted_evidence_acquisition.py \
+  --contextbench-row-limit 2 --repoqa-needle-limit 1 \
+  --budget 5 --methods bm25,regex,symbol \
+  --enable-rrf-baseline --enable-external-benchmark-network \
+  --openlocus target/debug/openlocus \
+  --out artifacts/bea0_budgeted_evidence_acquisition/\
+bea0_budgeted_evidence_acquisition_report.json  => PASS
+  (status: bea_v0_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: bea_v0_budgeted_acquisition, phase: BEA-0,
+   methods: bm25,regex,symbol, budget: 5,
+   enable_rrf_baseline: true,
+   baseline_arms: [bm25_top10, rrf_bm25_regex_symbol_top10],
+   treatment_arm: bea_v0_budgeted,
+   records_evaluated: 3, records_successful: 3, records_failed: 0,
+   network_calls: 2, provider_calls: 0,
+   bea_v0_acquisition_performed: true,
+   multi_method_candidates_collected: true,
+   budgeted_policy_executed: true,
+   private_score_records_written: true,
+   private_score_record_count: 3,
+   private_score_storage_class: tmp_private,
+   private_score_path_publicly_serialized: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Real bounded local run results (2026-06-21)
+
+Bounded local run (ContextBench 2 rows + RepoQA 1 needle, budget=5,
+methods bm25/regex/symbol, rrf baseline enabled) completed successfully:
+
+- `arm_metrics.bm25_top10`: file_recall@10=0.666667, mrr=0.666667,
+  span_f0.5@10=0.059187, success_rate=0.666667,
+  candidate_count_read=13.333333, evidence_budget_used=6.666667,
+  action_steps=6.666667, latency_seconds=0.467,
+  quality_per_candidate=0.002959.
+- `arm_metrics.rrf_bm25_regex_symbol_top10`: file_recall@10=0.666667,
+  mrr=0.666667, span_f0.5@10=0.059187, success_rate=0.666667,
+  candidate_count_read=13.333333, evidence_budget_used=6.666667,
+  action_steps=6.666667, latency_seconds=1.219,
+  quality_per_candidate=0.002959.
+- `arm_metrics.bea_v0_budgeted`: file_recall@10=0.666667, mrr=0.666667,
+  span_f0.5@10=0.086849, success_rate=0.666667,
+  candidate_count_read=13.333333, evidence_budget_used=3.333333,
+  action_steps=4.0, latency_seconds=3.640497,
+  quality_per_candidate=0.004343.
+- `deltas.bea_v0_budgeted` (vs `bm25_top10`): file_recall@10=0.0,
+  mrr=0.0, span_f0.5@10=+0.027662, success_rate=0.0,
+  evidence_budget_used=-3.333334, action_steps=-2.666667,
+  quality_per_candidate=+0.001384, latency_seconds=+3.173497,
+  candidate_count_read=0.0.
+- `aggregate_runtime_seconds`: 19.641.
+
+The treatment preserved file_recall@10 / mrr / success_rate parity with
+both baselines while using roughly half the evidence budget
+(`evidence_budget_used=3.33` vs `6.67`) and improved `span_f0.5@10` by
+`+0.028` and `quality_per_candidate` by `+0.0014`. 3 private per-record
+SCORE JSONL rows were written to
+`/tmp/bea0_private_score_<pid>_<ts>/bea0.private.jsonl` (transient; never
+committed or uploaded).
+
+### Caveats
+
+- BEA-0 is the public aggregate-only budgeted evidence acquisition v0 smoke
+  artifact. It is eval/diagnostic only. It does NOT change runtime,
+  retriever, pack, backend, or default policy; it does NOT change
+  EvidenceCore semantics. It is NOT a benchmark result, NOT a leaderboard
+  entry, NOT a performance claim, NOT a method-winner claim, NOT a
+  calibration claim, NOT a promotion, NOT a default change, NOT a
+  runtime-clean general algorithm claim, and NOT a downstream agent value
+  claim.
+- BEA-0 does NOT emit `winner`, `best_method`, `recommended_default`,
+  `method_winner`, `calibration`, or anything implying a policy/default
+  decision.
+- BEA-0 runs NO provider calls and NO remote provider calls.
+  `provider_calls=0`, `provider_calls_made=false`,
+  `remote_provider_calls_made=false`.
+- BEA-0 uses bounded ContextBench verified Python rows (default 10; hard
+  cap 20) and bounded RepoQA Python needles (default 5; hard cap 10). This
+  is a smoke, not a rigorous benchmark evaluation. Aggregate metrics are
+  point estimates over a bounded sample.
+- BEA-0 writes private per-record SCORE JSONL ONLY under `/tmp` (or an
+  explicitly ignored private path under the gitignored `runs/` directory).
+  The private SCORE path is NEVER serialized in the public artifact, docs,
+  or CI artifacts.
+- BEA-0 does NOT silently fall back from Python to all languages.
+- BEA-0 does NOT claim external benchmark performance, method-winner, or
+  calibration. The aggregate metrics are smoke-level diagnostics.
+- BEA-0 does NOT prove downstream agent value. The acquisition smoke does
+  not exercise any downstream agent.
+- All no-claim / no-runtime-change flags remain false; diagnostic flags
+  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true. No
+  runtime/retriever/pack/model/backend/default-policy files were modified;
+  no promotion/default/runtime claims change. EvidenceCore semantics are
+  unchanged.

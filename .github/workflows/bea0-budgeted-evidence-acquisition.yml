@@ -1,0 +1,423 @@
+name: bea0-budgeted-evidence-acquisition
+
+# BEA-0 Budgeted Evidence Acquisition v0 (manual opt-in).
+#
+# This workflow runs the BEA-0 budgeted evidence acquisition smoke in CI.
+# It is MANUAL OPT-IN ONLY via workflow_dispatch with
+# `enable_external_benchmark_network=true`. It does NOT run on PR/push by
+# default. It uses NO provider secrets/vars and NO provider model env. It
+# uploads ONLY the aggregate public report (no raw ContextBench rows /
+# RepoQA needles, repo URLs/names, commit SHAs, gold paths/spans/contents,
+# generated task/label/run JSONL, evidence rows, candidate lists, action
+# traces, budget states, accepted candidates, score outcomes, the private
+# SCORE JSONL, cloned repos, the release asset, or stdout/stderr).
+#
+# Claim boundary: BEA-0 is eval/diagnostic only. The claim level is
+# `bea_v0_budgeted_acquisition_smoke_only`. This workflow does NOT claim an
+# external benchmark result, NOT a leaderboard entry, NOT a performance
+# claim, NOT a method-winner claim, NOT a calibration claim, NOT a promotion,
+# NOT a default/policy change, NOT a runtime/retriever/pack/backend/
+# EvidenceCore semantic change, and NOT a downstream agent value claim. It
+# does NOT emit `winner`, `best_method`, `recommended_default`,
+# `method_winner`, `calibration`, or anything implying a policy/default
+# decision. If `enable_external_benchmark_network` is false, the workflow
+# is a no-op with a clear message and exits 0 (an unavailable aggregate
+# artifact is still produced).
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access for ContextBench row fetch + RepoQA asset download + repo clones (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+      contextbench_row_limit:
+        description: 'Number of ContextBench verified Python rows to evaluate (default 10; hard cap 20)'
+        required: false
+        default: '10'
+      repoqa_needle_limit:
+        description: 'Number of RepoQA Python needles to evaluate (default 5; hard cap 10)'
+        required: false
+        default: '5'
+      budget:
+        description: 'Evidence budget for the bea_v0_budgeted policy (default 10; hard cap 20)'
+        required: false
+        default: '10'
+      methods:
+        description: 'Comma-separated retrieval methods (default bm25,regex,symbol; bm25 required)'
+        required: false
+        default: 'bm25,regex,symbol'
+      enable_rrf_baseline:
+        description: 'Enable the rrf_bm25_regex_symbol_top10 baseline arm (default false; optional, do not block on rrf)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea0-budgeted-evidence-acquisition-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}-${{ inputs.contextbench_row_limit }}-${{ inputs.repoqa_needle_limit }}-${{ inputs.budget }}-${{ inputs.methods }}
+  cancel-in-progress: false
+
+jobs:
+  bea0-budgeted-evidence-acquisition:
+    name: bea0-budgeted-evidence-acquisition-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve BEA-0 inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          contextbench_row_limit="${{ inputs.contextbench_row_limit || '10' }}"
+          repoqa_needle_limit="${{ inputs.repoqa_needle_limit || '5' }}"
+          budget="${{ inputs.budget || '10' }}"
+          methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
+          enable_rrf_baseline="${{ inputs.enable_rrf_baseline || 'false' }}"
+          # Validate contextbench_row_limit is a positive integer.
+          if ! [[ "$contextbench_row_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "contextbench_row_limit must be a positive integer: $contextbench_row_limit" >&2
+            exit 1
+          fi
+          if [[ "$contextbench_row_limit" -gt 20 ]]; then
+            echo "contextbench_row_limit exceeds hard cap 20: $contextbench_row_limit (will be capped by the evaluator)" >&2
+          fi
+          # Validate repoqa_needle_limit is a positive integer.
+          if ! [[ "$repoqa_needle_limit" =~ ^[1-9][0-9]*$ ]]; then
+            echo "repoqa_needle_limit must be a positive integer: $repoqa_needle_limit" >&2
+            exit 1
+          fi
+          if [[ "$repoqa_needle_limit" -gt 10 ]]; then
+            echo "repoqa_needle_limit exceeds hard cap 10: $repoqa_needle_limit (will be capped by the evaluator)" >&2
+          fi
+          # Validate budget is a positive integer.
+          if ! [[ "$budget" =~ ^[1-9][0-9]*$ ]]; then
+            echo "budget must be a positive integer: $budget" >&2
+            exit 1
+          fi
+          if [[ "$budget" -gt 20 ]]; then
+            echo "budget exceeds hard cap 20: $budget (will be capped by the evaluator)" >&2
+          fi
+          # Validate methods: bm25,regex,symbol allowed; bm25 required.
+          IFS=',' read -ra method_arr <<< "$methods"
+          has_bm25=0
+          for m in "${method_arr[@]}"; do
+            m_trimmed="$(echo -n "$m" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')"
+            case "$m_trimmed" in
+              bm25|regex|symbol) ;;
+              *) echo "unsupported method: $m_trimmed (BEA-0 allows bm25,regex,symbol only)" >&2; exit 1 ;;
+            esac
+            if [[ "$m_trimmed" == "bm25" ]]; then
+              has_bm25=1
+            fi
+          done
+          if [[ "$has_bm25" -eq 0 ]]; then
+            echo "methods must include bm25: $methods" >&2
+            exit 1
+          fi
+          # Normalize enable_network to a lowercase boolean string.
+          if [[ "$enable_network" == "true" ]]; then
+            enable_network="true"
+          else
+            enable_network="false"
+          fi
+          # Normalize enable_rrf_baseline.
+          if [[ "$enable_rrf_baseline" == "true" ]]; then
+            enable_rrf_baseline="true"
+          else
+            enable_rrf_baseline="false"
+          fi
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+          echo "contextbench_row_limit=$contextbench_row_limit" >> "$GITHUB_OUTPUT"
+          echo "repoqa_needle_limit=$repoqa_needle_limit" >> "$GITHUB_OUTPUT"
+          echo "budget=$budget" >> "$GITHUB_OUTPUT"
+          echo "methods=$methods" >> "$GITHUB_OUTPUT"
+          echo "enable_rrf_baseline=$enable_rrf_baseline" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-0 evaluator
+        run: python3 -m py_compile eval/bea0_budgeted_evidence_acquisition.py
+
+      - name: BEA-0 self-test (no network)
+        run: python3 eval/bea0_budgeted_evidence_acquisition.py --self-test
+
+      - name: BEA-0 acquisition smoke (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          CONTEXTBENCH_ROW_LIMIT: ${{ steps.resolve.outputs.contextbench_row_limit }}
+          REPOQA_NEEDLE_LIMIT: ${{ steps.resolve.outputs.repoqa_needle_limit }}
+          BUDGET: ${{ steps.resolve.outputs.budget }}
+          METHODS: ${{ steps.resolve.outputs.methods }}
+          ENABLE_RRF_BASELINE: ${{ steps.resolve.outputs.enable_rrf_baseline }}
+        run: |
+          report_path="$RUNNER_TEMP/bea0_budgeted_evidence_acquisition_report.json"
+          rrf_flag=""
+          if [[ "$ENABLE_RRF_BASELINE" == "true" ]]; then
+            rrf_flag="--enable-rrf-baseline"
+          fi
+          python3 eval/bea0_budgeted_evidence_acquisition.py \
+            --contextbench-row-limit "$CONTEXTBENCH_ROW_LIMIT" \
+            --repoqa-needle-limit "$REPOQA_NEEDLE_LIMIT" \
+            --budget "$BUDGET" \
+            --methods "$METHODS" \
+            $rrf_flag \
+            --enable-external-benchmark-network \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-0 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          echo "enable_external_benchmark_network is false; skipping real BEA-0 acquisition smoke."
+          echo "Run with enable_external_benchmark_network=true to execute the real BEA-0 acquisition smoke."
+          echo "Self-test and py_compile already passed; an unavailable aggregate artifact is produced in no-op mode."
+
+      - name: Validate BEA-0 temp report status/claim flags (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          # Required claim boundary invariants for the BEA-0 budgeted
+          # evidence acquisition smoke. BEA-0 runs NO provider, makes NO
+          # remote provider calls, proves NO downstream agent value,
+          # promotes NO candidate, changes NO runtime/retriever/pack/
+          # backend/default-policy/EvidenceCore semantics, claims NO
+          # external benchmark performance (smoke only), claims NO
+          # method-winner, NO calibration, emits NO leaderboard entry,
+          # NO winner, NO best_method, NO recommended_default, NO
+          # method_winner, NO calibration field.
+          must_be_true = {
+              "aggregate_only_public_artifact",
+              "diagnostic_only",
+          }
+          must_be_false = {
+              "external_benchmark_performance_claimed",
+              "leaderboard_entry_claimed",
+              "downstream_agent_value_proven",
+              "calibration_claimed",
+              "method_winner_claimed",
+              "promotion_ready",
+              "default_should_change",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          # License fields.
+          if report.get("dataset_license_status") != "unknown_dataset_license":
+              failures.append(f"expected dataset_license_status=unknown_dataset_license, got {report.get('dataset_license_status')!r}")
+          if report.get("row_level_redistribution_allowed") is not False:
+              failures.append("expected row_level_redistribution_allowed=false")
+          if report.get("derived_row_level_publication_allowed") is not False:
+              failures.append("expected derived_row_level_publication_allowed=false")
+          if report.get("aggregate_metrics_publication") != "aggregate_only_smoke":
+              failures.append("expected aggregate_metrics_publication=aggregate_only_smoke")
+          # Fail-closed: network-enabled CI cannot pass with unavailable/no
+          # records. Require status in (bea_v0_smoke_pass, partial),
+          # records_successful > 0, forbidden_scan.status=pass,
+          # provider_calls=0, private_score_record_count == records_successful.
+          status = report.get("status")
+          if status not in ("bea_v0_smoke_pass", "partial"):
+              failures.append(
+                  f"expected status in (bea_v0_smoke_pass, partial) when network enabled, got {status!r}"
+              )
+          scan = report.get("forbidden_scan", {}).get("status")
+          if scan != "pass":
+              failures.append(f"expected forbidden_scan.status=pass, got {scan!r}")
+          if report.get("self_test_passed") is not True:
+              failures.append(f"expected self_test_passed=true, got {report.get('self_test_passed')!r}")
+          if report.get("records_successful", 0) <= 0:
+              failures.append(f"expected records_successful > 0, got {report.get('records_successful')!r}")
+          if report.get("provider_calls") != 0:
+              failures.append(f"expected provider_calls=0, got {report.get('provider_calls')!r}")
+          # Private SCORE manifest aggregate-only fields.
+          if report.get("private_score_records_written") is not True:
+              failures.append(f"expected private_score_records_written=true, got {report.get('private_score_records_written')!r}")
+          if report.get("private_score_record_count", 0) != report.get("records_successful", 0):
+              failures.append(
+                  f"expected private_score_record_count={report.get('records_successful')}, "
+                  f"got {report.get('private_score_record_count')!r}"
+              )
+          if report.get("private_score_path_publicly_serialized") is not False:
+              failures.append("expected private_score_path_publicly_serialized=false")
+          if report.get("private_score_storage_class") not in ("tmp_private", "ignored_private"):
+              failures.append(f"unexpected private_score_storage_class: {report.get('private_score_storage_class')!r}")
+          # Identity fields.
+          if report.get("schema_version") != "bea0_budgeted_evidence_acquisition.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_v0_budgeted_acquisition_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("mode") != "bea_v0_budgeted_acquisition":
+              failures.append(f"unexpected mode: {report.get('mode')!r}")
+          if report.get("phase") != "BEA-0":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("treatment_arm") != "bea_v0_budgeted":
+              failures.append(f"unexpected treatment_arm: {report.get('treatment_arm')!r}")
+          if "bm25_top10" not in report.get("baseline_arms", []):
+              failures.append("expected bm25_top10 in baseline_arms")
+          # Recommendation / policy / calibration / method-winner fields
+          # must NOT appear anywhere.
+          forbidden_recommendation_fields = (
+              "winner", "best_method", "recommended_default",
+              "recommended_method", "preferred_method", "default_method",
+              "policy_decision", "decision", "ranking", "rank",
+              "method_winner", "calibration",
+          )
+
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k in keys:
+                          found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for idx, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{idx}]"))
+              return found
+
+          leaked_recommendation_fields = find_keys(
+              report, forbidden_recommendation_fields
+          )
+          if leaked_recommendation_fields:
+              failures.append(
+                  f"forbidden recommendation/method-winner/calibration fields present: "
+                  f"{leaked_recommendation_fields}"
+              )
+          # BEA-0-specific forbidden keys must NOT appear anywhere.
+          bea0_forbidden_keys = (
+              "private_score_path", "score_path", "private_score_file",
+              "private_record_id", "private_record_hash",
+              "action_trace", "action_steps_trace",
+              "budget_state", "budget_states",
+              "accepted_candidates", "final_candidates",
+              "candidate_list", "candidates", "score_outcome",
+              "per_record_metrics", "runtime_query_features",
+              "query_feature_summary", "query_features",
+              "benchmark_row_id", "benchmark_record_id", "benchmark_label",
+              "phase_run_id", "run_id", "task_id", "row_id", "needle_id",
+              "instance_id", "provider_name", "model_name", "model_family",
+              "provider_payload", "private_bucket", "route_bucket",
+              "task_bucket",
+          )
+          leaked_bea0_fields = find_keys(report, bea0_forbidden_keys)
+          if leaked_bea0_fields:
+              failures.append(
+                  f"forbidden BEA-0 private fields present: "
+                  f"{leaked_bea0_fields}"
+              )
+          # Public metrics must be fixed-shape records, not dynamic arm-key maps.
+          allowed_metrics = {
+              "file_recall@10", "mrr", "span_f0.5@10", "success_rate",
+              "candidate_count_read", "evidence_budget_used",
+              "action_steps", "latency_seconds", "quality_per_candidate",
+          }
+          if "arm_metrics" in report:
+              failures.append("legacy arm_metrics dict mirror must not be present")
+          if "deltas" in report:
+              failures.append("legacy deltas dict mirror must not be present")
+          arm_records = report.get("arm_metric_records")
+          if not isinstance(arm_records, list) or not arm_records:
+              failures.append("expected non-empty arm_metric_records list")
+          else:
+              for idx, rec in enumerate(arm_records):
+                  if not isinstance(rec, dict):
+                      failures.append(f"arm_metric_records[{idx}] must be a dict")
+                      continue
+                  if set(rec) != {"arm", "metric", "value"}:
+                      failures.append(f"arm_metric_records[{idx}] has unexpected keys: {sorted(rec)!r}")
+                  if rec.get("metric") not in allowed_metrics:
+                      failures.append(f"arm_metric_records[{idx}].metric invalid: {rec.get('metric')!r}")
+                  if not isinstance(rec.get("value"), (int, float)):
+                      failures.append(f"arm_metric_records[{idx}].value must be numeric")
+          delta_records = report.get("delta_records")
+          if not isinstance(delta_records, list) or not delta_records:
+              failures.append("expected non-empty delta_records list")
+          else:
+              for idx, rec in enumerate(delta_records):
+                  if not isinstance(rec, dict):
+                      failures.append(f"delta_records[{idx}] must be a dict")
+                      continue
+                  if set(rec) != {"baseline_arm", "treatment_arm", "metric", "delta"}:
+                      failures.append(f"delta_records[{idx}] has unexpected keys: {sorted(rec)!r}")
+                  if rec.get("baseline_arm") != "bm25_top10":
+                      failures.append(f"delta_records[{idx}].baseline_arm invalid: {rec.get('baseline_arm')!r}")
+                  if rec.get("metric") not in allowed_metrics:
+                      failures.append(f"delta_records[{idx}].metric invalid: {rec.get('metric')!r}")
+                  if not isinstance(rec.get("delta"), (int, float)):
+                      failures.append(f"delta_records[{idx}].delta must be numeric")
+          if failures:
+              print("BEA-0 report flag validation FAILED:", file=sys.stderr)
+              for f in failures:
+                  print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-0 report flag validation passed.")
+          print(f"  status={status}")
+          print(f"  forbidden_scan={scan}")
+          print(f"  self_test_passed={report.get('self_test_passed')}")
+          print(f"  records_evaluated={report.get('records_evaluated')}")
+          print(f"  records_successful={report.get('records_successful')}")
+          print(f"  records_failed={report.get('records_failed')}")
+          print(f"  network_calls={report.get('network_calls')}")
+          print(f"  provider_calls={report.get('provider_calls')}")
+          print(f"  private_score_records_written={report.get('private_score_records_written')}")
+          print(f"  private_score_record_count={report.get('private_score_record_count')}")
+          print(f"  private_score_storage_class={report.get('private_score_storage_class')}")
+          print(f"  aggregate_runtime_seconds={report.get('aggregate_runtime_seconds')}")
+          if report.get("failure_reason_category"):
+              print(f"  failure_reason_category={report.get('failure_reason_category')}")
+          print(f"  arm_metric_records={len(report.get('arm_metric_records') or [])}")
+          print(f"  delta_records={len(report.get('delta_records') or [])}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree (no generated files committed)
+        run: git diff --check
+
+      - name: Upload BEA-0 aggregate report artifact (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea0-budgeted-evidence-acquisition-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

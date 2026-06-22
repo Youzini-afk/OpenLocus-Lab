@@ -8482,3 +8482,213 @@ file_recall@10=0.7（对比原始 D5-A1 行 1-20 的 0.35）支持 bm25 正向
   下游对齐。
 - D5-A2 运行新鲜 heldout 检索；它 **不**重读 C5/F1 artifact。无
   provider 调用。所有临时数据在内存或 /tmp。
+
+## 2026-06-21 — BEA-0 Budgeted Evidence Acquisition v0
+
+### 目标
+
+从 readiness/control-plane/aggregate-validation 工作转向一个真正的算法级
+检索/采集实验，并保留私有 per-record SCORE 轨迹。BEA-0 实现并运行一个
+确定性 budgeted 采集策略，对全新 external benchmark 数据重新运行，将私有
+per-record SCORE JSONL 保留在 `/tmp`（绝不提交、绝不上传），仅公开聚合的
+baseline-vs-treatment delta。
+
+### 设计（specialist 审查）
+
+- @explorer 映射 BEA/retrieval/logging 入口：
+  `eval/run_retrieval.py:run_query()`（真实 per-row 检索原语，覆盖
+  `regex`/`text`/`bm25`/`symbol`/`rrf`，通过 OpenLocus CLI），
+  `eval/score.py`（per-row 评分函数，可作为模块导入），
+  `eval/c5_contextbench_verified_performance_smoke.py` 和
+  `eval/c5d_repoqa_bm25_retrieval_smoke.py`（真实 fetch/clone/retrieve/score
+  harness，含 forbidden 扫描器和 license 字段），以及
+  `eval/c3_budgeted_evidence_acquisition.py`（仅 replay；从预计算 P21
+  outcomes 中选择，不采集新证据；不充分）。
+- @oracle 批准 BEA-0 仅当它是一个真正算法级检索/采集实验且含私有 SCORE
+  轨迹时，而非 aggregate validation wrapper。
+
+### 范围
+
+- Phase：`BEA-0`。
+- 数据：全新 ContextBench verified Python 行（默认 10；硬上限 20）和
+  RepoQA Python needle（默认 5；硬上限 10）。
+- 方法：`bm25`、`regex`、`symbol`；可选 `rrf`（如便宜）。
+- Baseline：`bm25_top10`；启用 rrf 时为 `rrf_bm25_regex_symbol_top10`。
+- Treatment：`bea_v0_budgeted` 确定性策略，在证据预算下（默认 10；硬上限
+  20）。
+- 无 provider 调用。无 runtime/retriever/default 变更。
+
+### BEA v0 策略（runtime-clean，确定性）
+
+Treatment 策略 `bea_v0_budgeted` 只消费在评分前可用的 runtime-clean 候选
+特征：method source、候选在 method 内的 rank、score 或 normalized
+score（如可用）、跨 method 的 rank agreement（多少个不同 method 返回同一
+`(path, start_line, end_line)` span）、重复 path/span overlap、候选总数、
+已接受 file/path 覆盖、剩余预算，以及廉价 path kind/file extension 元数据。
+不得使用 gold files/lines/labels、row IDs、benchmark 专属 answer hints、
+同一记录的 previous outcome、provider/model 名、或私有 route buckets。
+
+算法：(1) 计算每 span 的 agreement；(2) 对去重 span 按
+（agreement DESC, min_rank ASC, max_norm_score DESC）排序；(3) 在预算下
+迭代，emit `accept_candidate` / `skip_low_support` / `rerank_by_agreement`
+/ `stop_budget_exhausted` action；(4) 可选 `expand_same_file` 处理 deferred
+rerank 池（预算剩余时）。
+
+### 私有 SCORE JSONL
+
+每条 evaluated record 必需。仅写入 `/tmp`（或显式忽略的私有路径，位于被
+gitignore 的 `runs/` 目录下）。绝不提交，绝不上传。私有 SCORE 路径绝不
+序列化到公开 artifact、docs 或 CI artifact。
+
+私有行内容：`phase_run_id`、`benchmark`、`private_record_id`、
+`runtime_query_feature_summary`（仅 runtime-clean 特征）、`candidate_list`
+（每候选：method、rank、score、normalized_score、path、start_line、
+end_line、content_sha、extension、agreement）、`action_trace`（step、
+action、candidate_method、candidate_rank、agreement、max_norm_score）、
+`budget_states`（step、budget_remaining、accepted_so_far、candidate_count）、
+`accepted_candidates`、`final_candidates`、
+`baseline_bm25_top10_evidence`、`baseline_rrf_top10_evidence`、
+`score_outcome`（per-arm 指标）、`latency_ms`、`cost_usd=0.0`、`tokens=0`、
+`provider_calls=0`、`failure_reason`、`method_latencies_ms`、
+`rrf_latency_ms`、`method_errors`、`rrf_error`。
+
+### 公开 artifact
+
+目标路径：
+`artifacts/bea0_budgeted_evidence_acquisition/bea0_budgeted_evidence_acquisition_report.json`。
+
+仅聚合计：`schema_version`、`generated_by`、`generated_at`、
+`claim_level`、`status`、`mode`、`phase`、`methods`、`budget`、
+`enable_rrf_baseline`、`baseline_arms`、`treatment_arm`、`network_mode`、
+`openlocus_binary_source`、`contextbench_row_limit_requested`、
+`repoqa_needle_limit_requested`、`records_evaluated`、`records_successful`、
+`records_failed`、`network_calls`、`provider_calls=0`、`arm_metrics`（per-arm
+allowlisted 指标）、`deltas`（per-arm baseline-vs-treatment allowlisted
+delta）、私有 SCORE manifest aggregate-only 字段
+（`private_score_records_written`、`private_score_record_count`、
+`private_score_schema_version`、`private_score_manifest_hash`、
+`private_score_storage_class`、`private_score_path_publicly_serialized=false`）、
+`aggregate_runtime_seconds`、`failure_category_counts`、safe true flag、
+no-claim / no-runtime-change false flag、license 字段、`self_test_passed`、
+`framing`、`forbidden_scan` 摘要。
+
+禁止公开值：repo URL/name、commit、row/needle ID、query/description、
+path/span/line range、source/snippet、candidate list、evidence row、
+content hash、私有 SCORE 路径、provider payload、stdout/stderr、clone 路径、
+gold label、action trace、budget state、accepted candidate、final
+candidate、score outcome。
+
+### Claim 边界
+
+允许的 claim：BEA-0 度量确定性 budgeted 采集策略在有界 real
+ContextBench/RepoQA 样本上的聚合检索/采集质量与预算 delta。
+
+不允许：benchmark 性能、leaderboard、downstream-agent 价值、calibration、
+method winner、default/promotion、runtime/retriever/backend 变更、
+EvidenceCore 语义变更。Candidate 仍非事实；EvidenceCore 语义不变。
+
+### 指标
+
+Per arm 聚合：`file_recall@10`、`mrr`、`span_f0.5@10`、`success_rate`、
+`candidate_count_read`、`evidence_budget_used`、`action_steps`、
+`latency_seconds`、`quality_per_candidate`。聚合 delta vs `bm25_top10`
+（启用 rrf 时还包括 vs `rrf_bm25_regex_symbol_top10`）。
+
+有效结果可为 improvement、相同质量但更少预算、no-delta、或质量损失但含
+causal action-trace 失败模式。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/bea0_budgeted_evidence_acquisition.py  => PASS
+python3 eval/bea0_budgeted_evidence_acquisition.py --self-test  => PASS (210/210 checks)
+python3 eval/bea0_budgeted_evidence_acquisition.py \
+  --contextbench-row-limit 2 --repoqa-needle-limit 1 \
+  --budget 5 --methods bm25,regex,symbol \
+  --enable-rrf-baseline --enable-external-benchmark-network \
+  --openlocus target/debug/openlocus \
+  --out artifacts/bea0_budgeted_evidence_acquisition/\
+bea0_budgeted_evidence_acquisition_report.json  => PASS
+  (status: bea_v0_smoke_pass,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: bea_v0_budgeted_acquisition, phase: BEA-0,
+   methods: bm25,regex,symbol, budget: 5,
+   enable_rrf_baseline: true,
+   baseline_arms: [bm25_top10, rrf_bm25_regex_symbol_top10],
+   treatment_arm: bea_v0_budgeted,
+   records_evaluated: 3, records_successful: 3, records_failed: 0,
+   network_calls: 2, provider_calls: 0,
+   bea_v0_acquisition_performed: true,
+   multi_method_candidates_collected: true,
+   budgeted_policy_executed: true,
+   private_score_records_written: true,
+   private_score_record_count: 3,
+   private_score_storage_class: tmp_private,
+   private_score_path_publicly_serialized: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### 真实有界本地运行结果（2026-06-21）
+
+有界本地运行（ContextBench 2 行 + RepoQA 1 needle，budget=5，方法
+bm25/regex/symbol，启用 rrf baseline）成功完成：
+
+- `arm_metrics.bm25_top10`: file_recall@10=0.666667, mrr=0.666667,
+  span_f0.5@10=0.059187, success_rate=0.666667,
+  candidate_count_read=13.333333, evidence_budget_used=6.666667,
+  action_steps=6.666667, latency_seconds=0.467,
+  quality_per_candidate=0.002959。
+- `arm_metrics.rrf_bm25_regex_symbol_top10`: file_recall@10=0.666667,
+  mrr=0.666667, span_f0.5@10=0.059187, success_rate=0.666667,
+  candidate_count_read=13.333333, evidence_budget_used=6.666667,
+  action_steps=6.666667, latency_seconds=1.219,
+  quality_per_candidate=0.002959。
+- `arm_metrics.bea_v0_budgeted`: file_recall@10=0.666667, mrr=0.666667,
+  span_f0.5@10=0.086849, success_rate=0.666667,
+  candidate_count_read=13.333333, evidence_budget_used=3.333333,
+  action_steps=4.0, latency_seconds=3.640497,
+  quality_per_candidate=0.004343。
+- `deltas.bea_v0_budgeted`（vs `bm25_top10`）: file_recall@10=0.0,
+  mrr=0.0, span_f0.5@10=+0.027662, success_rate=0.0,
+  evidence_budget_used=-3.333334, action_steps=-2.666667,
+  quality_per_candidate=+0.001384, latency_seconds=+3.173497,
+  candidate_count_read=0.0。
+- `aggregate_runtime_seconds`: 19.641。
+
+Treatment 在使用约一半 evidence budget（`evidence_budget_used=3.33` vs
+`6.67`）的情况下，与两条 baseline 保持 file_recall@10 / mrr /
+success_rate 持平，并将 `span_f0.5@10` 提升 `+0.028`、
+`quality_per_candidate` 提升 `+0.0014`。3 行私有 per-record SCORE JSONL
+写入 `/tmp/bea0_private_score_<pid>_<ts>/bea0.private.jsonl`（transient；
+绝不提交或上传）。
+
+### Caveats
+
+- BEA-0 是公开 aggregate-only budgeted evidence acquisition v0 smoke
+  artifact。它是 eval/diagnostic only。它不更改 runtime、retriever、
+  pack、backend 或 default policy；它不更改 EvidenceCore 语义。它不是
+  benchmark 结果、不是 leaderboard 条目、不是性能声明、不是
+  method-winner 声明、不是 calibration 声明、不是 promotion、不是
+  default 变更、不是 runtime-clean general algorithm 声明、且不是
+  downstream agent 价值声明。
+- BEA-0 不输出 `winner`、`best_method`、`recommended_default`、
+  `method_winner`、`calibration`，或任何暗示 policy/default 决策的字段。
+- BEA-0 不运行 provider 调用，也不运行 remote provider 调用。
+  `provider_calls=0`、`provider_calls_made=false`、
+  `remote_provider_calls_made=false`。
+- BEA-0 使用有界 ContextBench verified Python 行（默认 10；硬上限 20）和
+  有界 RepoQA Python needle（默认 5；硬上限 10）。这是 smoke，不是严格
+  benchmark 评估。聚合指标为有界样本上的点估计。
+- BEA-0 仅在 `/tmp`（或显式忽略的私有路径，位于被 gitignore 的 `runs/`
+  目录下）写入私有 per-record SCORE JSONL。私有 SCORE 路径绝不序列化到
+  公开 artifact、docs 或 CI artifact。
+- BEA-0 不会从 Python 静默回退到所有语言。
+- BEA-0 不声明 external benchmark 性能、method-winner 或 calibration。
+  聚合指标为 smoke 级 diagnostic。
+- BEA-0 不证明 downstream agent 价值。采集 smoke 不演练任何 downstream
+  agent。
+- 所有 no-claim / no-runtime-change flag 保持 false；diagnostic flag
+  （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
+  未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
+  无 promotion/default/runtime claim 变更。EvidenceCore 语义不变。
