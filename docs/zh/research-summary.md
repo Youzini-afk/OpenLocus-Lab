@@ -2927,3 +2927,45 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **新指标**：`quality_per_latency` = span_f0.5@10 / latency_seconds。
 - **新 record 类型**：`mechanism_summary_records`。
 - **延迟归因修复**：所有 arm 共享候选收集延迟（公平归因）。
+
+## B16-F findings
+
+- **B16-F 是第一个下游 live-provider paired smoke**，将 BEA v0.3-derived
+  context pack 与 same-budget BM25 context-pack 对照（以及 sparse 对照）
+  在有界合成 coding 任务上进行比较。三个 arm：`control_sparse`、
+  `bm25_same_budget_context_pack`、`bea_v03_context_pack`。主对比：BEA vs
+  same-budget BM25。次对比：BEA vs sparse、BM25 vs sparse。八个固定任务
+  族。默认 8 任务 x 3 arms = 24 次 live provider 调用。
+- **BEA v0.3 context pack selector 仅使用 runtime-clean 候选特征**
+  （method source、rank、score/normalized score、agreement count、span
+  extent、path）。**绝不**读取 gold path、`correct_value`、task_family
+  decisive cue 或任何私有答案。通过 self-test 中的 gold-tainting 不变量
+  验证（污染 `correct_value` **不**改变 BEA 选择）。
+- **私有 SCORE JSONL + 私有 event JSONL 仅写入 `/tmp`**（每个 task x arm
+  一行 = 默认各 24 行）。私有 SCORE 携带 candidate_features、
+  bea_action_trace、bea_budget_trace、selected_candidates、score_outcome。
+  私有 event 携带 prompt、response、parsed_action、patch、test_stdout/
+  stderr、provider_metadata。公开 artifact 仅包含聚合 manifest，含 record
+  count、schema 版本、`storage_class=tmp_private`、
+  `path_publicly_serialized=false`、manifest hash。
+- **352/352 self-test check 通过**。本地 no-env 路径真实
+  `blocked_remote_not_enabled`（**不**是假通过）。
+- **严格声明边界**：`claim_level=
+  bea_derived_context_pack_downstream_paired_smoke_only`。不是 benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value。CI 通过**不**要求 BEA 改善；零/
+  负 delta 有效。
+- **B16-F 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、evaluator、
+  artifact。手动 real-provider CI run 待执行。
+- **公开 artifact 仅聚合**：`arm_results`（per-arm metrics）、
+  `paired_deltas`（3 对比）、`task_family_results`、
+  `family_signal_summary`、`honest_signals`、`private_score_manifest`、
+  `private_event_manifest`、`forbidden_scan`、no-claim flag。无 raw
+  prompt/response/patch/path/片段/候选特征/BEA action trace/pack
+  composition/per-run 行。
+- **Workflow stage `b16f_bea_derived_context_pack_paired_smoke`** 添加到
+  `real-provider-benchmark.yml`（仅手动 `workflow_dispatch`；
+  `enable_remote_models=false` 默认；专用 sanitized upload；排除通用
+  upload；删除 plan.json；在缺失 arm、零 provider_calls、缺失
+  paired_deltas、私有 manifest 计数不匹配、forbidden_scan 失败时
+  fail-closed）。

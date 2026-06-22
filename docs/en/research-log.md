@@ -9719,3 +9719,127 @@ default-policy claim.
 - v0.3 is effectively tied with v0.2 on file/MRR/success, with only a tiny
   positive span/quality-per-latency signal.
 - BEA-0/BEA-1/BEA-2 semantics not mutated.
+
+## 2026-06-21 — B16-F BEA-Derived Context Pack Live-Provider Paired Smoke
+
+### Objective
+
+Run the first downstream live-provider paired smoke that compares a
+BEA v0.3-derived context pack against a same-budget BM25 context-pack
+control (and a sparse control) on bounded synthetic coding tasks. This
+directly addresses the deep-research directive's gap: BEA retrieval-side
+metrics are not enough; BEA must be tested against live coding-agent
+behavior. The primary contrast is BEA v0.3 context pack vs same-budget
+BM25 context pack, NOT merely BEA vs sparse.
+
+### Scope
+
+- Phase: `B16-F`.
+- Evaluator: `eval/b16f_bea_derived_context_pack_paired_smoke.py`.
+- Artifact:
+  `artifacts/b16f_bea_derived_context_pack_paired_smoke/b16f_bea_derived_context_pack_paired_smoke_report.json`.
+- Docs:
+  `docs/en/b16f-bea-derived-context-pack-paired-smoke.md` and zh mirror.
+- Workflow stage in `.github/workflows/real-provider-benchmark.yml`:
+  `b16f_bea_derived_context_pack_paired_smoke`.
+- Manual real-provider workflow only; local/no-env mode truthfully blocks.
+- Default: 8 synthetic tasks x 3 arms = 24 live provider calls.
+
+### Arms
+
+1. `control_sparse`: task issue only, minimal context.
+2. `bm25_same_budget_context_pack`: same-budget BM25 prefix pack.
+3. `bea_v03_context_pack`: frozen BEA v0.3 anchor/span/latency selected pack.
+
+Primary public paired delta: BEA minus same-budget BM25. Secondary deltas:
+BEA minus sparse and BM25 minus sparse.
+
+### Task families
+
+Eight fixed public family labels: `same_symbol_support_relation`,
+`operation_ambiguity`, `boundary_condition`, `helper_dependency_choice`,
+`config_or_test_mismatch`, `distractor_file`, `nearby_wrong_function`,
+`cross_file_symbol`. Public artifacts include only family aggregate counts,
+never raw task text.
+
+### Context-pack generation
+
+For each synthetic workspace, B16-F constructs runtime-clean candidate
+features (method source, rank, score/normalized score, agreement count,
+span extent, path). BM25 selects the same-budget BM25 prefix; BEA applies
+frozen v0.3 using only runtime available features. The BEA selector NEVER
+reads gold paths/lines/labels, `correct_value`, task_family decisive cue,
+or any private answer. Candidate paths, snippets, BEA/BM25 action traces,
+budget traces, pack composition, prompts, responses, patches, and test
+output are private under `/tmp` only.
+
+### Private artifacts
+
+For every task x arm, B16-F writes private SCORE JSONL (candidate features,
+BEA action/budget trace, selected candidates, score outcome) and private
+event JSONL (prompt, response, parsed action, patch, test stdout/stderr,
+provider metadata) under `/tmp` only. The public artifact includes only
+`private_score_manifest` and `private_event_manifest` with record counts,
+schema versions, `storage_class=tmp_private`,
+`path_publicly_serialized=false`, and manifest hashes.
+
+### Public artifact shape
+
+Records-only aggregate public artifact: `schema_version`, `generated_by`,
+`generated_at`, `claim_level`, `status`, `mode`, `phase`,
+`model_display_category`, `input_summary`, `arm_results` (per-arm aggregate
+metrics), `paired_deltas` (3 contrasts: BEA-vs-BM25 primary, BEA-vs-sparse,
+BM25-vs-sparse), `task_family_results`, `family_signal_summary`,
+`honest_signals`, `private_score_manifest`, `private_event_manifest`,
+`forbidden_scan`, no-claim/no-runtime-change flags, `self_test_summary`/
+`self_test_checks`/`self_test_passed`. No raw task text, prompts,
+responses, patches, paths, snippets, candidate features, BEA action traces,
+pack composition, provider payloads, private paths, or per-task outcomes.
+
+### Claim boundary
+
+B16-F is live-provider downstream paired smoke only. It is not
+downstream-agent value proof, method winner, benchmark performance,
+default/promotion/runtime/EvidenceCore change, or calibration. Docs say
+smoke only; negative/tie result acceptable.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16f_bea_derived_context_pack_paired_smoke.py  => PASS
+python3 eval/b16f_bea_derived_context_pack_paired_smoke.py --self-test  => PASS (352/352 checks)
+python3 eval/b16f_bea_derived_context_pack_paired_smoke.py \
+  --out artifacts/b16f_bea_derived_context_pack_paired_smoke/\
+b16f_bea_derived_context_pack_paired_smoke_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-F,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   bea_v03_context_pack_executed: false,
+   bm25_same_budget_context_pack_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The local no-env validation path is truthful and blocked/unavailable.
+Manual real-provider CI run pending.
+
+### Caveats
+
+- B16-F is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value claim.
+- BEA v0.3 frozen policy weights are constants, NOT tuned from outcomes.
+- The BEA selector uses ONLY runtime-clean candidate features; verified
+  via gold-tainting invariant in the self-test.
+- Bounded synthetic sample (8 tasks x 3 arms default). Smoke, not rigorous
+  evaluation.
+- All no-claim / no-runtime-change flags false; EvidenceCore semantics
+  unchanged.
+- BEA-0/BEA-1/BEA-2/BEA-3 semantics not mutated.

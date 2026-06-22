@@ -434,6 +434,38 @@ BEA-3 实现冻结 BEA v0.3 anchor/span/latency-aware 算法策略，针对 BEA-
 
 [BEA-3 详细报告](bea3-anchor-span-latency.md)。
 
+## 2026-06-21 B16-F BEA-Derived Context Pack Live-Provider Paired Smoke
+
+B16-F 是第一个下游 live-provider paired smoke，将 BEA v0.3-derived
+context pack 与 same-budget BM25 context-pack 对照（以及 sparse 对照）在
+有界合成 coding 任务上进行比较。三个 arm：`control_sparse`、
+`bm25_same_budget_context_pack`、`bea_v03_context_pack`。主对比：BEA vs
+same-budget BM25。次对比：BEA vs sparse、BM25 vs sparse。八个固定任务族
+（`same_symbol_support_relation`、`operation_ambiguity`、
+`boundary_condition`、`helper_dependency_choice`、
+`config_or_test_mismatch`、`distractor_file`、`nearby_wrong_function`、
+`cross_file_symbol`）。默认 8 任务 x 3 arms = 24 次 live provider 调用。
+schema `b16f_bea_derived_context_pack_paired_smoke.v1`、`claim_level=
+bea_derived_context_pack_downstream_paired_smoke_only`、阶段 `B16-F`。
+352/352 self-test 检查通过。BEA v0.3 context pack selector **仅**使用
+runtime-clean 候选特征（method source、rank、score/normalized score、
+agreement count、span extent、path），**绝不**读取 gold path、
+`correct_value`、task_family decisive cue 或任何私有答案；通过
+gold-tainting 不变量在 self-test 中验证（污染 `correct_value` **不**改变
+BEA 选择）。私有 SCORE JSONL + 私有 event JSONL 仅写入 `/tmp`（每个
+task x arm 一行；绝不提交；私有路径**绝不**序列化）。公开 artifact 仅聚合：
+`arm_results`、`paired_deltas`（3 对比）、`task_family_results`、
+`family_signal_summary`、`honest_signals`、`private_score_manifest`、
+`private_event_manifest`、`forbidden_scan`、no-claim flag。live LLM
+provider 仅当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时使用。
+本地 no-env 路径真实 `blocked_remote_not_enabled`（**不**是假通过）。CI
+通过**不**要求 BEA 改善；零/负 delta 有效。B16-F 不是基准测试结果、不是
+leaderboard entry、不是性能声明、不是 method-winner 声明、不是
+calibration 声明、不是 promotion、不是 default 改动、不是 runtime/
+retriever/pack/backend/EvidenceCore 语义改动、不是下游 agent 价值声明。
+B16-F 不修改 BEA-0/BEA-1/BEA-2/BEA-3 语义。手动 real-provider CI run
+待执行。详见 [B16-F 详细报告](b16f-bea-derived-context-pack-paired-smoke.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

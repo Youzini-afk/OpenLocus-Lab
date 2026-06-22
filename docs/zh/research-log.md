@@ -9003,3 +9003,122 @@ smoke 结果，不是 method winner 或 default-policy 声明。
 - v0.3 在 file/MRR/success 上与 v0.2 基本持平，只出现极小的
   span/quality-per-latency 正向信号。
 - BEA-0/BEA-1/BEA-2 语义未修改。
+
+## 2026-06-21 — B16-F BEA-Derived Context Pack Live-Provider Paired Smoke
+
+### 目标
+
+运行第一个下游 live-provider paired smoke，将 BEA v0.3-derived
+context pack 与 same-budget BM25 context-pack 对照（以及 sparse 对照）
+在有界合成 coding 任务上进行比较。这直接回应 deep-research 指令的缺口：
+BEA 检索侧指标不够；BEA 必须在 live coding-agent 行为上测试。主对比为
+BEA v0.3 context pack vs same-budget BM25 context pack，而非仅仅 BEA vs
+sparse。
+
+### 范围
+
+- 阶段：`B16-F`。
+- Evaluator：`eval/b16f_bea_derived_context_pack_paired_smoke.py`。
+- Artifact：
+  `artifacts/b16f_bea_derived_context_pack_paired_smoke/b16f_bea_derived_context_pack_paired_smoke_report.json`。
+- 文档：
+  `docs/en/b16f-bea-derived-context-pack-paired-smoke.md` 和 zh 镜像。
+- `.github/workflows/real-provider-benchmark.yml` 中的 workflow stage：
+  `b16f_bea_derived_context_pack_paired_smoke`。
+- 仅手动 real-provider workflow；本地/no-env 模式真实阻断。
+- 默认：8 合成任务 x 3 arms = 24 次 live provider 调用。
+
+### Arms
+
+1. `control_sparse`：仅任务 issue，最小 context。
+2. `bm25_same_budget_context_pack`：same-budget BM25 prefix pack。
+3. `bea_v03_context_pack`：冻结 BEA v0.3 anchor/span/latency 选中 pack。
+
+主公开 paired delta：BEA 减 same-budget BM25。次 delta：BEA 减 sparse
+与 BM25 减 sparse。
+
+### 任务族
+
+八个固定公开族标签：`same_symbol_support_relation`、
+`operation_ambiguity`、`boundary_condition`、
+`helper_dependency_choice`、`config_or_test_mismatch`、
+`distractor_file`、`nearby_wrong_function`、`cross_file_symbol`。公开
+artifact 仅包含族聚合计数，绝不包含 raw task text。
+
+### Context-pack 生成
+
+对于每个合成工作区，B16-F 构造 runtime-clean 候选特征（method source、
+rank、score/normalized score、agreement count、span extent、path）。BM25
+选择 same-budget BM25 prefix；BEA 应用冻结 v0.3，仅使用 runtime 可用特征。
+BEA selector **绝不**读取 gold paths/lines/labels、`correct_value`、
+task_family decisive cue 或任何私有答案。候选路径、片段、BEA/BM25 action
+trace、budget trace、pack composition、prompt、response、patch 和测试输出
+仅在 `/tmp` 下私有。
+
+### 私有 artifact
+
+对于每个 task x arm，B16-F 写入私有 SCORE JSONL（候选特征、BEA action/
+budget trace、选中候选、score outcome）和私有 event JSONL（prompt、
+response、parsed action、patch、test stdout/stderr、provider metadata），
+仅 `/tmp` 下。公开 artifact 仅包含 `private_score_manifest` 和
+`private_event_manifest`，含 record count、schema 版本、
+`storage_class=tmp_private`、`path_publicly_serialized=false` 和 manifest
+hash。
+
+### 公开 artifact 形状
+
+仅聚合 record 的公开 artifact：`schema_version`、`generated_by`、
+`generated_at`、`claim_level`、`status`、`mode`、`phase`、
+`model_display_category`、`input_summary`、`arm_results`（per-arm 聚合
+metrics）、`paired_deltas`（3 对比：BEA-vs-BM25 主、BEA-vs-sparse、
+BM25-vs-sparse）、`task_family_results`、`family_signal_summary`、
+`honest_signals`、`private_score_manifest`、`private_event_manifest`、
+`forbidden_scan`、no-claim/no-runtime-change flag、`self_test_summary`/
+`self_test_checks`/`self_test_passed`。无 raw task text、prompt、response、
+patch、path、片段、候选特征、BEA action trace、pack composition、provider
+payload、私有 path 或 per-task 结果。
+
+### 声明边界
+
+B16-F 仅为 live-provider 下游 paired smoke。它不是下游 agent 价值证明、
+method winner、基准性能、default/promotion/runtime/EvidenceCore 改动或
+calibration。文档标明仅为 smoke；负/平结果可接受。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16f_bea_derived_context_pack_paired_smoke.py  => PASS
+python3 eval/b16f_bea_derived_context_pack_paired_smoke.py --self-test  => PASS (352/352 checks)
+python3 eval/b16f_bea_derived_context_pack_paired_smoke.py \
+  --out artifacts/b16f_bea_derived_context_pack_paired_smoke/\
+b16f_bea_derived_context_pack_paired_smoke_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-F,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   bea_v03_context_pack_executed: false,
+   bm25_same_budget_context_pack_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI
+run 待执行。
+
+### Caveats
+
+- B16-F 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value 声明。
+- BEA v0.3 冻结策略权重为常量，不从 outcomes 调优。
+- BEA selector 仅使用 runtime-clean 候选特征；通过 self-test 中的
+  gold-tainting 不变量验证。
+- 有界合成样本（默认 8 任务 x 3 arms）。smoke，非严格评估。
+- 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义未改。
+- BEA-0/BEA-1/BEA-2/BEA-3 语义未修改。

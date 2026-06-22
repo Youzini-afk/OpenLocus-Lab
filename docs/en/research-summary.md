@@ -3479,3 +3479,47 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   mean_span_extent, span_proxy_bucket counts).
 - **Latency attribution fix**: all arms share candidate-collection latency
   (fair attribution); v0.3 also gets incremental policy time.
+
+## B16-F findings
+
+- **B16-F is the first downstream live-provider paired smoke that compares
+  a BEA v0.3-derived context pack against a same-budget BM25 context-pack
+  control** (and a sparse control) on bounded synthetic coding tasks. Three
+  arms: `control_sparse`, `bm25_same_budget_context_pack`,
+  `bea_v03_context_pack`. Primary contrast: BEA vs same-budget BM25.
+  Secondary: BEA vs sparse, BM25 vs sparse. Eight fixed task families.
+  Default 8 tasks x 3 arms = 24 live provider calls.
+- **BEA v0.3 context pack selector uses ONLY runtime-clean candidate
+  features** (method source, rank, score/normalized score, agreement count,
+  span extent, path). NEVER reads gold paths, `correct_value`, task_family
+  decisive cue, or any private answer. Verified via gold-tainting invariant
+  in self-test (tainting `correct_value` does NOT change BEA selection).
+- **Private SCORE JSONL + private event JSONL written under `/tmp` only**
+  (one row per task x arm = 24 rows each default). Private SCORE carries
+  candidate_features, bea_action_trace, bea_budget_trace,
+  selected_candidates, score_outcome. Private event carries prompt,
+  response, parsed_action, patch, test_stdout/stderr, provider_metadata.
+  Public artifact includes only aggregate manifests with record counts,
+  schema versions, `storage_class=tmp_private`,
+  `path_publicly_serialized=false`, manifest hashes.
+- **352/352 self-test checks pass**. Local no-env path truthfully
+  `blocked_remote_not_enabled` (NOT a fake pass).
+- **Strict claim boundary**: `claim_level=
+  bea_derived_context_pack_downstream_paired_smoke_only`. NOT benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value. CI pass does NOT require BEA
+  improvement; zero/negative delta is valid.
+- **B16-F does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3**: standalone phase,
+  evaluator, artifact. Manual real-provider CI run pending.
+- **Public artifact is aggregate-only**: `arm_results` (per-arm metrics),
+  `paired_deltas` (3 contrasts), `task_family_results`, `family_signal_summary`,
+  `honest_signals`, `private_score_manifest`, `private_event_manifest`,
+  `forbidden_scan`, no-claim flags. No raw prompts/responses/patches/paths/
+  snippets/candidate features/BEA action traces/pack composition/per-run
+  rows.
+- **Workflow stage `b16f_bea_derived_context_pack_paired_smoke`** added to
+  `real-provider-benchmark.yml` (manual `workflow_dispatch` only;
+  `enable_remote_models=false` default; dedicated sanitized upload;
+  generic upload excluded; plan.json deleted; fail-closed on missing arms,
+  zero provider_calls, missing paired_deltas, private manifest count
+  mismatch, forbidden_scan fail).
