@@ -3139,33 +3139,31 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-4 findings
 
-- **BEA-4 是冻结 BEA v0.3 策略的 external scale smoke**：在更大全新
-  external 切片（ContextBench verified Python 行 offset 80 limit 80；
-  RepoQA Python needle offset 40 limit 40）上运行 7 个固定 arm（无消融；
-  v0.3 + v0.2 + v0 + bm25_prefix + agreement_only + seeded_random + 可选
-  rrf）。v0.3 算法/权重与 BEA-3 完全一致（冻结；
-  `algorithm_changed_during_bea4=false`、
-  `weights_tuned_during_bea4=false`——绑定）。
+- **BEA-4 是冻结 BEA v0.3 策略的 external scale smoke**：手动 CI run
+  `27957586271` 在更大全新 external 切片上通过（ContextBench verified Python
+  行 offset 80 limit 80 + RepoQA Python needle offset 40 limit 40），7 个固定
+  arm（无消融；v0.3 + v0.2 + v0 + bm25_prefix + agreement_only + rrf +
+  seeded_random）。v0.3 算法/权重与 BEA-3 完全一致（冻结；
+  `algorithm_changed_during_bea4=false`、`weights_tuned_during_bea4=false`）。
+- **Scale 结果**：120 条记录成功（ContextBench 80 + RepoQA 40），
+  `private_score_manifest.record_count=840`（120×7 arm），`network_calls=3`，
+  `provider_calls=0`，forbidden scan pass，aggregate runtime 864.538s。
+- **BEA v0.3 指标**：ContextBench file_recall@10=0.225，mrr=0.151875，
+  span_f0.5@10=0.013607，success_rate=0.225；RepoQA file_recall@10=0.575，
+  mrr=0.402917，span_f0.5@10=0.044761，success_rate=0.575。
+- **Deltas mixed**：vs BEA v0.2，v0.3 在 file_recall/MRR/success 上持平，
+  span 略低（-0.000075），latency 微增（+0.000831s）。vs BEA v0 / same-budget
+  BM25 / agreement-only / RRF，v0.3 的 file_recall +0.108334，MRR +0.076945，
+  span +0.001333，success +0.108334；vs seeded random 的 file_recall +0.175，
+  MRR +0.139028，span +0.020195，success +0.175。Latency 与
+  quality-per-latency trade-off 仍 mixed，尤其 vs RRF。
 - **公开 artifact 为 records-only**：`benchmark_arm_metric_records`、
-  `delta_records`（v0.3 vs bm25/agreement/rrf/v0.2/v0/random）、
-  `win_tie_loss_records`（paired denominator）、
-  `worst_slice_records`（7 个固定 bucket 标签；每 benchmark × arm 取最差
-  N=5，按 span_f0.5@10 升序）、`mechanism_summary_records`、aggregate-only
-  `private_score_manifest`。
-- **Worst-slice 可见性**：仅 7 个固定公开聚合 bucket 标签（`benchmark`、
-  `query_length_bucket`、`candidate_pool_size_bucket`、
-  `budget_exhaustion_bucket`、`file_kind_mix_bucket`、
-  `method_agreement_bucket`、`rank_gap_bucket`）。无 row IDs、repos、paths、
-  commits、queries、labels、candidate lists 或 gold/source snippets。
-- **237/237 self-test 检查通过**：28 组。
-- **有界本地 smoke（2026-06-21）**：5 条记录（CB 3 + RQ 2），budget=5，
-  7 arm。Win/tie/loss（v0.3 vs v0，n=5）：file_recall@10 win=1 tie=4
-  loss=0；mrr win=2 tie=3 loss=0；span_f0.5@10 win=1 tie=3 loss=1；
-  success_rate win=1 tie=4 loss=0。v0.3 与 v0.2 在所有 primary 指标上持平；
-  胜 v0/agreement/bm25/rrf +0.2 file_recall/mrr/success_rate；胜
-  seeded_random +0.4 file_recall/+0.267 mrr。35 行私有 SCORE（5×7 arm）。
+  `delta_records`、`win_tie_loss_records`、`worst_slice_records`（70 条聚合记录，
+  7 个固定 bucket 标签）、`mechanism_summary_records`、aggregate-only
+  `private_score_manifest`。无 row IDs、repos、paths、commits、queries、labels、
+  candidate lists、gold/source snippets 或 private SCORE paths。
 - **严格 claim 边界**：`claim_level=bea_v03_external_scale_smoke_only`。
   非 benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
-- **BEA-4 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、评估器、artifact。
+- **BEA-4 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、评估器、artifact；
   v0.3 冻结。

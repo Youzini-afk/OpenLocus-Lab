@@ -4544,7 +4544,7 @@ content_sha/query/candidate text) for human labeling, but ONLY under
 
 ```text
 python3 -m py_compile eval/d4c_annotation_packet_builder.py    => PASS
-python3 eval/d4c_annotation_packet_builder.py --self-test      => PASS (237/237 checks)
+python3 eval/d4c_annotation_packet_builder.py --self-test      => PASS (238/238 checks)
 python3 eval/d4c_annotation_packet_builder.py \
   --out artifacts/d4c_annotation_packet_builder/\
 d4c_annotation_packet_builder_report.json                     => PASS
@@ -10343,7 +10343,7 @@ candidate lists, or gold/source snippets.
 
 ```text
 python3 -m py_compile eval/bea4_external_scale_smoke.py  => PASS
-python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (237/237 checks)
+python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (238/238 checks)
 python3 eval/bea4_external_scale_smoke.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 80 --contextbench-row-limit 3 \
@@ -10360,28 +10360,29 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### Real bounded local smoke result (2026-06-21)
+### Manual CI scale result (run `27957586271`)
 
-Bounded local smoke (ContextBench offset 80 limit 3 + RepoQA offset 40
-limit 2, budget=5, methods bm25/regex/symbol, rrf baseline required and enabled):
-5 records successful, `paired_exclusion_count=0`, forbidden scan pass,
-`provider_calls=0`, `private_score_manifest.record_count=35` (5×7 arms),
-`private_score_storage_class=tmp_private`,
-`private_score_path_publicly_serialized=false`.
+Manual CI run `27957586271` completed green on the full BEA-4 scale slice:
+120 records successful (ContextBench 80 + RepoQA 40), `network_calls=3`,
+`provider_calls=0`, forbidden scan pass, and
+`private_score_manifest.record_count=840` (120×7 arms) with
+`path_publicly_serialized=false`.
 
-Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=1 tie=4 loss=0; mrr
-win=2 tie=3 loss=0; span_f0.5@10 win=1 tie=3 loss=1; success_rate win=1
-tie=4 loss=0. v0.3 ties v0.2 on all primary metrics on this bounded sample;
-beats v0/agreement/bm25/rrf by +0.2 file_recall/mrr/success_rate (loses
--0.0206 on span_f0.5); beats seeded_random by +0.4 file_recall/+0.267 mrr.
+BEA v0.3 benchmark metrics: ContextBench file_recall@10=0.225, mrr=0.151875,
+span_f0.5@10=0.013607, success_rate=0.225; RepoQA file_recall@10=0.575,
+mrr=0.402917, span_f0.5@10=0.044761, success_rate=0.575.
 
-Mechanism summary: anchor_used_rate=1.0, early_stop_rate=0.0,
-mean_budget_used=5.0, mean_latency_seconds=6.3926, mean_span_extent=5.0,
-span_proxy_bucket_tight=25. Worst-slice records: 27 slices emitted across
-(benchmark × arm) combinations.
+Deltas: v0.3 ties BEA v0.2 on file_recall/MRR/success and is slightly lower on
+span (-0.000075) plus a tiny latency increase (+0.000831s). v0.3 improves over
+BEA v0 / same-budget BM25 / agreement-only / RRF by +0.108334 file_recall,
++0.076945 MRR, +0.001333 span, +0.108334 success; over seeded random by
++0.175 file_recall, +0.139028 MRR, +0.020195 span, +0.175 success. Latency and
+quality-per-latency are mixed, especially vs RRF (quality_per_latency delta
+-0.05038).
 
-The full scale slice (ContextBench 80 + RepoQA 40) is pending manual CI
-run; the committed artifact reflects the local smoke only.
+Worst-slice records: 70 aggregate records with fixed public bucket labels only.
+The result is scale-smoke evidence, not a method-winner/default/performance/
+calibration/downstream-value claim.
 
 ### Caveats
 
@@ -10391,6 +10392,7 @@ run; the committed artifact reflects the local smoke only.
 - v0.3 algorithm/weights frozen exactly as in BEA-3.
   `algorithm_changed_during_bea4=false`,
   `weights_tuned_during_bea4=false` (binding).
-- Bounded local smoke used 3+2 records for speed. Full scale slice pending
-  manual CI.
+- The committed artifact mirrors manual CI run `27957586271` over the full
+  ContextBench 80 + RepoQA 40 scale slice. The smaller 3+2 command is retained
+  only as local validation, not result evidence.
 - BEA-0/BEA-1/BEA-2/BEA-3 semantics not mutated.

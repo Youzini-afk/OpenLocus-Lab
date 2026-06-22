@@ -4366,7 +4366,7 @@ packet。
 
 ```text
 python3 -m py_compile eval/d4c_annotation_packet_builder.py    => PASS
-python3 eval/d4c_annotation_packet_builder.py --self-test      => PASS (237/237 项检查)
+python3 eval/d4c_annotation_packet_builder.py --self-test      => PASS (238/238 项检查)
 python3 eval/d4c_annotation_packet_builder.py \
   --out artifacts/d4c_annotation_packet_builder/\
 d4c_annotation_packet_builder_report.json                     => PASS
@@ -9599,7 +9599,7 @@ candidate lists 或 gold/source snippets。
 
 ```text
 python3 -m py_compile eval/bea4_external_scale_smoke.py  => PASS
-python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (237/237 checks)
+python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (238/238 checks)
 python3 eval/bea4_external_scale_smoke.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 80 --contextbench-row-limit 3 \
@@ -9616,28 +9616,27 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### 真实有界本地 smoke 结果（2026-06-21）
+### 手动 CI scale 结果（run `27957586271`）
 
-有界本地 smoke（ContextBench offset 80 limit 3 + RepoQA offset 40
-limit 2，budget=5，方法 bm25/regex/symbol，必需并启用 rrf baseline）：5 条记录成
-功，`paired_exclusion_count=0`，forbidden scan pass，`provider_calls=0`，
-`private_score_manifest.record_count=35`（5×7 arm），
-`private_score_storage_class=tmp_private`，
-`private_score_path_publicly_serialized=false`。
+手动 CI run `27957586271` 在完整 BEA-4 scale 切片上通过：120 条记录成功
+（ContextBench 80 + RepoQA 40），`network_calls=3`，`provider_calls=0`，
+forbidden scan pass，`private_score_manifest.record_count=840`（120×7 arm），
+`path_publicly_serialized=false`。
 
-Win/tie/loss（v0.3 vs v0，n=5）：file_recall@10 win=1 tie=4 loss=0；mrr
-win=2 tie=3 loss=0；span_f0.5@10 win=1 tie=3 loss=1；success_rate win=1
-tie=4 loss=0。v0.3 在此有界样本上与 v0.2 在所有 primary 指标上持平；
-胜 v0/agreement/bm25/rrf +0.2 file_recall/mrr/success_rate（span_f0.5 输
--0.0206）；胜 seeded_random +0.4 file_recall/+0.267 mrr。
+BEA v0.3 benchmark 指标：ContextBench file_recall@10=0.225、mrr=0.151875、
+span_f0.5@10=0.013607、success_rate=0.225；RepoQA file_recall@10=0.575、
+mrr=0.402917、span_f0.5@10=0.044761、success_rate=0.575。
 
-机制摘要：anchor_used_rate=1.0、early_stop_rate=0.0、
-mean_budget_used=5.0、mean_latency_seconds=6.3926、
-mean_span_extent=5.0、span_proxy_bucket_tight=25。Worst-slice records：跨
-（benchmark × arm）组合发出 27 个 slice。
+Delta：v0.3 与 BEA v0.2 在 file_recall/MRR/success 上持平，span 略低
+（-0.000075），latency 微增（+0.000831s）。v0.3 相对 BEA v0 / same-budget
+BM25 / agreement-only / RRF：file_recall +0.108334，MRR +0.076945，span
++0.001333，success +0.108334；相对 seeded random：file_recall +0.175，MRR
++0.139028，span +0.020195，success +0.175。Latency 与 quality-per-latency 是
+mixed，尤其 vs RRF 的 quality_per_latency delta=-0.05038。
 
-完整 scale 切片（ContextBench 80 + RepoQA 40）待手动 CI 运行；已提交
-artifact 仅反映本地 smoke。
+Worst-slice records：70 条固定公开 bucket label 的聚合记录。该结果是 scale
+smoke evidence，不是 method-winner/default/performance/calibration/downstream-value
+声明。
 
 ### Caveats
 
@@ -9647,5 +9646,6 @@ artifact 仅反映本地 smoke。
 - v0.3 算法/权重与 BEA-3 完全一致（冻结）。
   `algorithm_changed_during_bea4=false`、
   `weights_tuned_during_bea4=false`（绑定）。
-- 有界本地 smoke 使用 3+2 条记录以加速。完整 scale 切片待手动 CI。
+- 已提交 artifact 镜像手动 CI run `27957586271` 的完整 ContextBench 80 +
+  RepoQA 40 scale 切片。3+2 命令仅作为本地验证保留，不作为结果证据。
 - BEA-0/BEA-1/BEA-2/BEA-3 语义未修改。

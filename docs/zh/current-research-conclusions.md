@@ -434,6 +434,14 @@ BEA-3 实现冻结 BEA v0.3 anchor/span/latency-aware 算法策略，针对 BEA-
 
 [BEA-3 详细报告](bea3-anchor-span-latency.md)。
 
+## 2026-06-21 BEA-4 External Scale Smoke
+
+BEA-4 是冻结 BEA v0.3 策略的 external scale smoke，运行更大全新 external 切片：ContextBench verified Python 行 offset 80 limit 80 + RepoQA Python needle offset 40 limit 40。v0.3 算法/权重与 BEA-3 完全一致（`algorithm_changed_during_bea4=false`、`weights_tuned_during_bea4=false`）。7 个固定 arm（无消融）：`bea_v0_3_anchor_span_latency`、`bea_v0_2_diversity_risk`、`bea_v0`、`bm25_prefix_same_budget`、`agreement_only_same_budget`、`seeded_random_same_budget`、`rrf_same_budget`（必需）。公开 artifact records-only：`benchmark_arm_metric_records`、`delta_records`、`win_tie_loss_records`、`worst_slice_records`（7 个固定公开 bucket label，按 span_f0.5@10 取每 benchmark × arm 最差 N=5）、`mechanism_summary_records` 与 aggregate-only `private_score_manifest`。私有 per-record SCORE JSONL 仅写 `/tmp`，公开路径不序列化。
+
+手动 CI run `27957586271` 已通过完整 BEA-4 scale 切片：120 条记录成功（ContextBench 80 + RepoQA 40），`paired_exclusion_count=0`，forbidden scan pass，`provider_calls=0`，`network_calls=3`，`private_score_manifest.record_count=840`（120×7 arm），`private_score_storage_class=tmp_private`，`private_score_path_publicly_serialized=false`，`aggregate_runtime_seconds=864.538`。BEA v0.3 benchmark 指标：ContextBench file_recall@10=0.225、mrr=0.151875、span_f0.5@10=0.013607、success_rate=0.225；RepoQA file_recall@10=0.575、mrr=0.402917、span_f0.5@10=0.044761、success_rate=0.575。Delta：vs BEA v0.2，v0.3 在 file_recall/MRR/success 上持平，span 略低（-0.000075），latency 微增（+0.000831s）；vs BEA v0 / same-budget BM25 / agreement-only / RRF，v0.3 的 file_recall +0.108334，MRR +0.076945，span +0.001333，success +0.108334；vs seeded random 的 file_recall +0.175，MRR +0.139028，span +0.020195，success +0.175。Latency 与 quality-per-latency trade-off 仍 mixed，尤其 vs RRF（`quality_per_latency` delta=-0.05038）。Worst-slice 输出包含 70 条固定公开 bucket label 的聚合记录。解释：BEA v0.3 作为冻结 diagnostic policy 可在更大 scale 上运行，并在该切片上相对 v0/random 与 same-budget BM25/agreement/RRF 改善 file/MRR/success，但基本与 v0.2 持平且 latency/quality trade-off 混合。这是 scale-smoke evidence，不是 method-winner/default/benchmark-performance/calibration/promotion/runtime/EvidenceCore/downstream-value 声明。
+
+[BEA-4 详细报告](bea4-external-scale-smoke.md)。
+
 ## 2026-06-21 B16-F BEA-Derived Context Pack Live-Provider Paired Smoke
 
 B16-F 是第一个下游 live-provider paired smoke，将 BEA v0.3-derived

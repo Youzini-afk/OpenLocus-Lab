@@ -83,7 +83,7 @@ queries、labels、candidate lists 或 gold/source snippets：
 
 ```text
 python3 -m py_compile eval/bea4_external_scale_smoke.py  => PASS
-python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (237/237 checks)
+python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (238/238 checks)
 python3 eval/bea4_external_scale_smoke.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 80 --contextbench-row-limit 3 \
@@ -100,38 +100,56 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## 真实有界本地 smoke 结果（2026-06-21）
+## 手动 CI scale 结果（run `27957586271`，2026-06-21）
 
-有界本地 smoke（ContextBench offset 80 limit 3 + RepoQA offset 40
-limit 2，budget=5，方法 bm25/regex/symbol，必需并启用 rrf baseline）：5 条记录成
-功，`paired_exclusion_count=0`，forbidden scan pass，`provider_calls=0`，
-`private_score_manifest.record_count=35`（5×7 arm），
+手动 CI run `27957586271` 执行完整 BEA-4 scale 切片：ContextBench offset 80
+limit 80 + RepoQA offset 40 limit 40，budget=5，方法 bm25/regex/symbol，
+RRF baseline 必需并启用。
+
+结果：`status=bea4_external_scale_smoke_pass`，120 条记录成功（ContextBench
+80 + RepoQA 40），`paired_exclusion_count=0`，forbidden scan pass，
+`provider_calls=0`，`network_calls=3`，
+`private_score_manifest.record_count=840`（120×7 arm），
 `private_score_storage_class=tmp_private`，
-`private_score_path_publicly_serialized=false`。
+`private_score_path_publicly_serialized=false`，
+`aggregate_runtime_seconds=864.538`。
 
-Win/tie/loss（v0.3 vs v0，n=5）：file_recall@10 win=1 tie=4 loss=0；mrr
-win=2 tie=3 loss=0；span_f0.5@10 win=1 tie=3 loss=1；success_rate win=1
-tie=4 loss=0。
+BEA v0.3 按 benchmark 的指标：
 
-Delta records（v0.3 vs 控制）：vs `bea_v0_2_diversity_risk` 所有 delta
-0.0（v0.3 在此有界样本上与 v0.2 在所有 primary 指标上持平）；vs
-`bea_v0`/`agreement_only`/`bm25_prefix`/`rrf_same_budget` file_recall@10
-+0.2 / mrr +0.2 / success_rate +0.2 / span_f0.5@10 -0.020628；vs
-`seeded_random` file_recall@10 +0.4 / mrr +0.266667 / span_f0.5@10
-+0.038277 / success_rate +0.4。
+- ContextBench：file_recall@10=0.225，mrr=0.151875，
+  span_f0.5@10=0.013607，success_rate=0.225，latency_seconds=3.719746。
+- RepoQA：file_recall@10=0.575，mrr=0.402917，
+  span_f0.5@10=0.044761，success_rate=0.575，latency_seconds=0.50835。
 
-机制摘要：anchor_used_rate=1.0、early_stop_rate=0.0、
-mean_budget_used=5.0、mean_latency_seconds=6.3926、
-mean_span_extent=5.0、span_proxy_bucket_tight=25。
+`bea_v0_3_anchor_span_latency` 的 delta：
 
-Worst-slice records：跨（benchmark × arm）组合发出 27 个 slice，每个
-`record_count >= 1`，按 span_f0.5@10 升序。所有 bucket 标签为固定公开聚
-合标签；无 row IDs、repos、paths、commits、queries、labels、candidate
-lists 或 gold/source snippets。
+- vs `bea_v0_2_diversity_risk`：file_recall@10=0.0，mrr=0.0，
+  span_f0.5@10=-0.000075，success_rate=0.0，latency_seconds=+0.000831，
+  quality_per_latency=-0.000427。
+- vs `bea_v0`：file_recall@10=+0.108334，mrr=+0.076945，
+  span_f0.5@10=+0.001333，success_rate=+0.108334，latency_seconds=+0.000831，
+  quality_per_latency=+0.000417。
+- vs `bm25_prefix_same_budget` 和 `agreement_only_same_budget`：
+  file_recall@10=+0.108334，mrr=+0.076945，span_f0.5@10=+0.001333，
+  success_rate=+0.108334，latency_seconds=+2.649281，
+  quality_per_latency=+0.053332。
+- vs `rrf_same_budget`：file_recall@10=+0.108334，mrr=+0.076945，
+  span_f0.5@10=+0.001333，success_rate=+0.108334，latency_seconds=+1.391673，
+  quality_per_latency=-0.05038。
+- vs `seeded_random_same_budget`：file_recall@10=+0.175，mrr=+0.139028，
+  span_f0.5@10=+0.020195，success_rate=+0.175，latency_seconds=+2.649281，
+  quality_per_latency=+0.053332。
 
-这是诚实的 smoke 级 scale 结果，不是 method-winner、calibration、
-default、promotion、runtime/retriever/EvidenceCore 或 downstream-agent-value
-声明。完整 scale 切片（ContextBench 80 + RepoQA 40）待手动 CI 运行。
+Worst-slice records：发出 70 条跨 benchmark × arm × 固定 bucket context 的
+聚合记录，无 row IDs、repos、paths、commits、queries、labels、candidate lists
+或 gold/source snippets。
+
+解释：BEA v0.3 作为冻结 diagnostic policy 可以在更大 scale 上运行；在该切片
+上明显优于 BEA v0/random，也在 file_recall/MRR/success 上优于 same-budget
+BM25、agreement-only 和 RRF，但 latency 与 quality-per-latency trade-off 混合，
+并且基本与 BEA v0.2 持平。这是 scale smoke evidence，不是 method-winner、
+benchmark-performance、default-policy、calibration、runtime/retriever/EvidenceCore
+或 downstream-agent-value 声明。
 
 ## Caveats
 
@@ -141,10 +159,9 @@ default、promotion、runtime/retriever/EvidenceCore 或 downstream-agent-value
 - v0.3 算法和权重与 BEA-3 完全一致（冻结）。
   `algorithm_changed_during_bea4=false`、
   `weights_tuned_during_bea4=false`（绑定）。
-- 有界本地 smoke 使用 3+2 条记录以加速。完整 scale 切片（ContextBench
-  80 + RepoQA 40）待手动 CI 运行；已提交 artifact 仅反映本地 smoke。
+- 已提交 artifact 镜像手动 CI run `27957586271` 的完整 ContextBench 80 +
+  RepoQA 40 scale 切片。上面的 3+2 命令仅作为本地验证保留，不作为结果证据。
 - Network-enabled CI 仅用于 scale：若成功记录少于 75，或 ContextBench 与
-  RepoQA 任一方没有非零记录，则 fail。3+2 小样本只用于本地验证，不作为
-  CI result evidence。
+  RepoQA 任一方没有非零记录，则 fail。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义不变。
   BEA-0/BEA-1/BEA-2/BEA-3 语义未修改。

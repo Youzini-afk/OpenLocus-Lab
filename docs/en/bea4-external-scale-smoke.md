@@ -86,7 +86,7 @@ commits, queries, labels, candidate lists, or gold/source snippets:
 
 ```text
 python3 -m py_compile eval/bea4_external_scale_smoke.py  => PASS
-python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (237/237 checks)
+python3 eval/bea4_external_scale_smoke.py --self-test  => PASS (238/238 checks)
 python3 eval/bea4_external_scale_smoke.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 80 --contextbench-row-limit 3 \
@@ -103,40 +103,58 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## Real bounded local smoke result (2026-06-21)
+## Manual CI scale result (run `27957586271`, 2026-06-21)
 
-Bounded local smoke (ContextBench offset 80 limit 3 + RepoQA offset 40
-limit 2, budget=5, methods bm25/regex/symbol, rrf baseline required and enabled):
-5 records successful, `paired_exclusion_count=0`, forbidden scan pass,
-`provider_calls=0`, `private_score_manifest.record_count=35` (5×7 arms),
+Manual CI run `27957586271` executed the full BEA-4 scale slice:
+ContextBench offset 80 limit 80 + RepoQA offset 40 limit 40, budget=5,
+methods bm25/regex/symbol, RRF baseline required and enabled.
+
+Result: `status=bea4_external_scale_smoke_pass`, 120 records successful
+(ContextBench 80 + RepoQA 40), `paired_exclusion_count=0`, forbidden scan pass,
+`provider_calls=0`, `network_calls=3`,
+`private_score_manifest.record_count=840` (120×7 arms),
 `private_score_storage_class=tmp_private`,
-`private_score_path_publicly_serialized=false`.
+`private_score_path_publicly_serialized=false`,
+`aggregate_runtime_seconds=864.538`.
 
-Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=1 tie=4 loss=0; mrr
-win=2 tie=3 loss=0; span_f0.5@10 win=1 tie=3 loss=1; success_rate win=1
-tie=4 loss=0.
+BEA v0.3 metrics by benchmark:
 
-Delta records (v0.3 vs controls): vs `bea_v0_2_diversity_risk` all deltas
-0.0 (v0.3 ties v0.2 on all primary metrics on this bounded sample); vs
-`bea_v0`/`agreement_only`/`bm25_prefix`/`rrf_same_budget` file_recall@10
-+0.2 / mrr +0.2 / success_rate +0.2 / span_f0.5@10 -0.020628; vs
-`seeded_random` file_recall@10 +0.4 / mrr +0.266667 / span_f0.5@10
-+0.038277 / success_rate +0.4.
+- ContextBench: file_recall@10=0.225, mrr=0.151875,
+  span_f0.5@10=0.013607, success_rate=0.225,
+  latency_seconds=3.719746.
+- RepoQA: file_recall@10=0.575, mrr=0.402917,
+  span_f0.5@10=0.044761, success_rate=0.575,
+  latency_seconds=0.50835.
 
-Mechanism summary: anchor_used_rate=1.0, early_stop_rate=0.0,
-mean_budget_used=5.0, mean_latency_seconds=6.3926, mean_span_extent=5.0,
-span_proxy_bucket_tight=25.
+Deltas for `bea_v0_3_anchor_span_latency`:
 
-Worst-slice records: 27 slices emitted across (benchmark × arm)
-combinations with `record_count >= 1` each, sorted ascending by
-span_f0.5@10. All bucket labels are fixed public aggregate labels; no
-row IDs, repos, paths, commits, queries, labels, candidate lists, or
-gold/source snippets.
+- vs `bea_v0_2_diversity_risk`: file_recall@10=0.0, mrr=0.0,
+  span_f0.5@10=-0.000075, success_rate=0.0,
+  latency_seconds=+0.000831, quality_per_latency=-0.000427.
+- vs `bea_v0`: file_recall@10=+0.108334, mrr=+0.076945,
+  span_f0.5@10=+0.001333, success_rate=+0.108334,
+  latency_seconds=+0.000831, quality_per_latency=+0.000417.
+- vs `bm25_prefix_same_budget` and `agreement_only_same_budget`:
+  file_recall@10=+0.108334, mrr=+0.076945, span_f0.5@10=+0.001333,
+  success_rate=+0.108334, latency_seconds=+2.649281,
+  quality_per_latency=+0.053332.
+- vs `rrf_same_budget`: file_recall@10=+0.108334, mrr=+0.076945,
+  span_f0.5@10=+0.001333, success_rate=+0.108334,
+  latency_seconds=+1.449782, quality_per_latency=-0.05038.
+- vs `seeded_random_same_budget`: file_recall@10=+0.175,
+  mrr=+0.139028, span_f0.5@10=+0.020195, success_rate=+0.175,
+  latency_seconds=+2.649281, quality_per_latency=+0.053332.
 
-This is an honest smoke-level scale result, not a method-winner, calibration,
-default, promotion, runtime/retriever/EvidenceCore, or downstream-agent-value
-claim. The full scale slice (ContextBench 80 + RepoQA 40) is pending manual
-CI run.
+Worst-slice records: 70 aggregate records emitted across benchmark × arm ×
+fixed bucket contexts, with no row IDs, repos, paths, commits, queries, labels,
+candidate lists, or gold/source snippets.
+
+Interpretation: BEA v0.3 scales as a frozen diagnostic policy and is clearly
+better than BEA v0/random on this slice; it also beats same-budget BM25,
+agreement-only, and RRF on file_recall/MRR/success, but has mixed latency and
+quality-per-latency trade-offs and essentially ties BEA v0.2. This is scale
+smoke evidence, not a method-winner, benchmark-performance, default-policy,
+calibration, runtime/retriever/EvidenceCore, or downstream-agent-value claim.
 
 ## Caveats
 
@@ -146,11 +164,10 @@ CI run.
 - The v0.3 algorithm and weights are frozen exactly as in BEA-3.
   `algorithm_changed_during_bea4=false`,
   `weights_tuned_during_bea4=false` (binding).
-- Bounded local smoke used 3+2 records for speed. The full scale slice
-  (ContextBench 80 + RepoQA 40) is pending manual CI run; this committed
-  artifact reflects the local smoke only.
+- The committed artifact mirrors manual CI run `27957586271` over the full
+  ContextBench 80 + RepoQA 40 scale slice. The smaller 3+2 command above is
+  retained only as local validation, not result evidence.
 - Network-enabled CI is scale-only: it fails unless at least 75 records succeed
-  and both ContextBench and RepoQA contribute nonzero records. Smaller 3+2 runs
-  are local validation only, not CI result evidence.
+  and both ContextBench and RepoQA contribute nonzero records.
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged. BEA-0/BEA-1/BEA-2/BEA-3 semantics not mutated.
