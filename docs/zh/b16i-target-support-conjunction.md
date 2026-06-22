@@ -7,8 +7,9 @@
 
 B16-I 测试 B16-H 暴露的机制。B16-H 移除了文件选择 confound，但
 support-only 仍然解决了所有任务，因为 support cue 过于 decisive。B16-I
-重新设计 live-provider 合成任务，使 support 单独是非 decisive 的：target
-binding 和 support rule 都应需要。
+重新设计 live-provider 合成任务，用来测试 support 单独是否可变为非
+decisive：预期 target binding 和 support rule 需要同时存在。手动 CI
+显示该 conjunction 未被观察到；support-only 仍然足够。
 
 B16-I 有五个固定 arm，覆盖从 B16-F/B16-G/B16-H 复用的相同八个合成任务
 族。在合成公开 micro bug 任务上使用 live LLM provider（OpenAI 兼容）；本地
@@ -56,9 +57,9 @@ B16-H file-choice atom ablation 下游 smoke
     file_choice_distractor_plus_nondecisive_support、
     file_choice_target_plus_support；
     8 任务 x 5 arm = 默认 40 live 调用；
-    support cue 非决定性：给出 formula/invariant/rule，仍需要 target
-    binding；target_plus_support 是 conjunction arm，应为唯一可靠解决
-    的 context arm）
+    support cue 预期非决定性：给出 formula/invariant/rule，按设计应仍
+    需要 target binding；target_plus_support 是 conjunction arm。CI 后续
+    显示 support-only 仍解出 8/8）
 ```
 
 ## Arms
@@ -76,9 +77,9 @@ B16-H file-choice atom ablation 下游 smoke
    file cue + support module cue + 非决定性 support rule；无 target
    file；wrong-file binding。给出 rule 加错误 binding。
 5. **`file_choice_target_plus_support`**：target file cue + target
-   symbol cue + support module cue + 非决定性 support rule。这是
-   conjunction arm——给出 target binding 和 support rule，应为唯一
-   可靠解决的 context arm。
+   symbol cue + support module cue + 非决定性 support rule。这是预注册
+   conjunction arm——给出 target binding 和 support rule，预期会是可靠
+   解决的 context arm；CI 显示 support-only 也解出 8/8。
 
 主对比：
 
@@ -94,10 +95,10 @@ B16-H file-choice atom ablation 下游 smoke
   `file_choice_nondecisive_support_only`
 - 每个 context arm vs `control_sparse`
 
-## 非决定性 support cue 设计
+## 预期非决定性 support cue 设计
 
-support atom 给出 formula/invariant/dependency/config relation，仍需要
-TARGET BINDING 才能应用。它**不**包含：
+support atom 按设计给出 formula/invariant/dependency/config relation，
+应仍需要 TARGET BINDING 才能应用。它**不**包含：
 
 - 确切最终答案（如 "Correct value: 42"）；
 - 确切 target-file 指令（如 "edit target.py"）；
@@ -106,7 +107,8 @@ TARGET BINDING 才能应用。它**不**包含：
 相反，它说类似 "the correct return value is derived as helper_constant *
 2 + task_index ... You must determine which file applies this relation."
 的话。target_plus_support arm 额外给出 target binding（哪个文件+哪个
-符号），使完整 cue 成为决定性的。
+符号），使完整 cue 按构造成为决定性的。手动 CI 显示尽管如此，
+support-only cue 仍然足够。
 
 ## 文件选择 confound 移除（从 B16-H 沿用）
 
@@ -203,7 +205,7 @@ raw model 路由前缀和 self-test sentinel。
 306 self-test check（仅计数公开摘要；详细 check 列表**不**发布到公开
 artifact）。覆盖：artifact identity、no-claim flag、live-run flag gating、
 八个任务族、workspace builder、安全文件集、pack builder atom、atom
-composition、非决定性 support cue text（无确切答案/无 target-file 指令/
+composition、预期非决定性 support cue text（无确切答案/无 target-file 指令/
 decisive cue 确实包含答案）、文件选择 validator（拒绝 evil.py；接受
 per-task 安全文件）、chosen-file 分类、私有 SCORE/event writer + fake
 response、聚合 metrics + 文件选择率 + paired delta（8 对比 x 17 metrics）
@@ -244,14 +246,17 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
+## 手动 CI 结果
+
+手动 real-provider CI run `27950908481` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；306/306 self-test。结果：`control_sparse` solve/test=0.0；`file_choice_target_only` solve/test=0.125 且 selected target file rate=1.0；`file_choice_nondecisive_support_only` solve/test=1.0 且 selected target file rate=1.0；`file_choice_distractor_plus_nondecisive_support` solve/test=1.0 且 selected target file rate=1.0；`file_choice_target_plus_support` solve/test=1.0 且 selected target file rate=1.0。机制 summary：`target_support_conjunction_required_count=0`、`support_only_sufficient_count=8`、`target_only_sufficient_count=1`、`distractor_hurts_count=0`、`wrong_file_selection_count=0`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：预期非决定性的 support cue 在此有界合成 file-choice 切片上仍然足够；target+support 未超过 support-only；target-only 仅解出 1/8；support 存在时 distractor 未造成伤害。这意味着 target-support conjunction 未被观察到。这不是下游价值证明、BEA 优越性声明、method-winner/default 声明、benchmark/performance 声明或 calibration 声明。
+
 ## 注意事项
 
 - B16-I 是公开仅聚合 non-decisive support / target-support conjunction
   下游 smoke artifact。它是 eval/诊断专用。它**不**改变 runtime、
   retriever、pack、backend 或 default policy；它**不**改变 EvidenceCore
   语义。
-- B16-I 仅当 `--allow-remote` + remote opt-in gate + provider
-  env 都设置时使用 **live LLM provider**（OpenAI 兼容）。默认本地
+- B16-I 仅当 `--allow-remote` + remote opt-in gate + provider credential/model env 都设置时使用 **live LLM provider**（OpenAI 兼容）。默认本地
   no-env 路径保持真实（`blocked_remote_not_enabled`）。它**不**是假
   通过。
 - B16-I **不**证明下游 agent 价值。
@@ -260,6 +265,6 @@ git diff --check                                                       => PASS
   `bea_superiority_claimed=false`。
 - B16-I **不**发布 prompt、response、support rule text、exact answer、
   chosen file 名、atom composition 或 per-run 行。
-- sufficiency 发现限于 "在此有界合成 file-choice 切片上"。
+- support cue 按设计是非决定性的，但 run `27950908481` 未观察到 target-support conjunction requirement；support-only 仍然足够。sufficiency 发现限于 "在此有界合成 file-choice 切片上"。
 - 所有 no-claim/no-runtime-change flag 保持 false；诊断 flag 保持 true；
   live-run flag 仅在 live run 实际执行时为 true。

@@ -3085,18 +3085,17 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 - **B16-I 测试 B16-H 暴露的机制**。B16-H 移除了文件选择 confound，但
   support-only 仍然解决了所有任务，因为 support cue 过于 decisive。
-  B16-I 重新设计任务，使 support 单独非决定性：target binding 和
-  support rule 都应需要。
+  B16-I 重新设计任务，用来测试 support 单独是否可变为非决定性：预期
+  target binding 和 support rule 需要同时存在。
 - **五个固定 arm**：`control_sparse`、`file_choice_target_only`、
   `file_choice_nondecisive_support_only`、
   `file_choice_distractor_plus_nondecisive_support`、
   `file_choice_target_plus_support`。八个固定任务族（复用
   B16-F/B16-G/B16-H）。默认 8 任务 x 5 arms = 40 次 live provider 调用。
-- **非决定性 support cue**：给出 formula/invariant/dependency/config
-  relation，仍需要 TARGET BINDING。**不**包含确切最终答案、确切
-  target-file 指令或 target-symbol edit 指令。
-  `file_choice_target_plus_support` arm 额外给出 target binding，使完整
-  cue 成为决定性的。
+- **预期非决定性 support cue**：给出 formula/invariant/dependency/config
+  relation，按设计仍应需要 TARGET BINDING。**不**包含确切最终答案、
+  确切 target-file 指令或 target-symbol edit 指令。Run `27950908481`
+  显示该设计未让 support-only 变为非决定性：support-only 仍解出 8/8。
 - **主对比**：`file_choice_target_plus_support` vs
   `file_choice_target_only`；vs
   `file_choice_nondecisive_support_only`；vs
@@ -3119,8 +3118,8 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   leaderboard/performance/method-winner/calibration/promotion/default/
   runtime/EvidenceCore/downstream-value/BEA-优越性。CI 通过**不**要求
   conjunction 成立。`bea_superiority_claimed=false`。
+- **B16-I live 结果**：手动 real-provider CI run `27950908481` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；306/306 self-test。结果：`control_sparse` solve/test=0.0；`file_choice_target_only` solve/test=0.125 且 selected target file rate=1.0；`file_choice_nondecisive_support_only` solve/test=1.0 且 selected target file rate=1.0；`file_choice_distractor_plus_nondecisive_support` solve/test=1.0 且 selected target file rate=1.0；`file_choice_target_plus_support` solve/test=1.0 且 selected target file rate=1.0。机制 summary：`target_support_conjunction_required_count=0`、`support_only_sufficient_count=8`、`target_only_sufficient_count=1`、`distractor_hurts_count=0`、`wrong_file_selection_count=0`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：预期非决定性的 support cue 在此有界合成 file-choice 切片上仍然足够；target+support 未超过 support-only；target-only 仅解出 1/8；support 存在时 distractor 未造成伤害。这意味着 target-support conjunction 未被观察到。这不是下游价值证明、BEA 优越性声明、method-winner/default 声明、benchmark/performance 声明或 calibration 声明。
 - **B16-I 不修改 B16-F/B16-G/B16-H**：独立 phase、evaluator、artifact。
-  手动 real-provider CI run 待执行。
 - **Workflow stage `b16i_target_support_conjunction`** 添加到
   `real-provider-benchmark.yml`（仅手动 `workflow_dispatch`；
   `enable_remote_models=false` 默认；专用 sanitized upload；排除通用

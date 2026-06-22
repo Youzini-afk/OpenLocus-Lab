@@ -9406,8 +9406,9 @@ git diff --check  => PASS
 
 B16-I 测试 B16-H 暴露的机制。B16-H 移除了文件选择 confound，但
 support-only 仍然解决了所有任务，因为 support cue 过于 decisive。B16-I
-重新设计 live-provider 合成任务，使 support 单独是非 decisive 的：
-target binding 和 support rule 都应需要。
+重新设计 live-provider 合成任务，用来测试 support 单独是否可变为非
+decisive：预期 target binding 和 support rule 需要同时存在。Run
+`27950908481` 未支持该假设；support-only 仍然足够。
 
 ### 前序结果
 
@@ -9455,7 +9456,7 @@ selected_target_file_rate=1.0。`file_choice_support_only`、
 `file_choice_nondecisive_support_only`；每个 context arm vs
 `control_sparse`。
 
-### 非决定性 support cue 设计
+### 预期非决定性 support cue 设计
 
 support atom 给出 formula/invariant/dependency/config relation，仍需要
 TARGET BINDING 才能应用。它**不**包含确切最终答案、确切 target-file
@@ -9501,7 +9502,7 @@ run 待执行。
 - B16-I 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value/BEA-优越性 声明。
-- support cue 非决定性；仍需要 target binding。
+- support cue 按设计预期非决定性，但 run `27950908481` 未观察到 target-support conjunction requirement；support-only 仍然足够。
 - 有界合成样本（默认 8 任务 x 5 arms）。smoke，非严格评估。sufficiency
   措辞限于 "在此有界合成 file-choice 切片上"。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义

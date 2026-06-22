@@ -4,9 +4,10 @@
 
 B16-I tests the mechanism exposed by B16-H. B16-H removed the file-choice
 confound, but support-only still solved every task because the support cue
-was too decisive. B16-I redesigns the live-provider synthetic tasks so
-support alone is non-decisive: target binding and support rule should
-both be needed.
+was too decisive. B16-I redesigns the live-provider synthetic tasks to
+test whether support alone can be made non-decisive: target binding and
+support rule were expected to be needed together. Manual CI showed this
+conjunction was not observed; support-only remained sufficient.
 
 B16-I has FIVE fixed arms over the same eight synthetic task families
 reused from B16-F/B16-G/B16-H for comparability. A live LLM provider
@@ -56,9 +57,9 @@ B16-H file-choice atom ablation downstream smoke
     file_choice_distractor_plus_nondecisive_support,
     file_choice_target_plus_support;
     8 tasks x 5 arms = 40 live calls default;
-    support cue NON-decisive: gives formula/invariant/rule that still
-    requires target binding; target_plus_support is the conjunction arm
-    and should be the only reliably solving context arm)
+     support cue intended to be non-decisive: gives formula/invariant/rule
+     designed to require target binding; target_plus_support is the
+     conjunction arm. CI later showed support-only still solved 8/8.)
 ```
 
 ## Arms
@@ -77,8 +78,9 @@ B16-H file-choice atom ablation downstream smoke
    file; wrong-file binding. Gives rule plus wrong binding.
 5. **`file_choice_target_plus_support`**: target file cue + target
    symbol cue + support module cue + non-decisive support rule. This is
-   the conjunction arm — gives both target binding and support rule and
-   should be the only reliably solving context arm.
+   the preregistered conjunction arm — gives both target binding and
+   support rule and was intended to be the reliably solving context arm;
+   CI showed support-only also solved 8/8.
 
 Primary contrasts:
 
@@ -94,10 +96,11 @@ Secondary contrasts:
   `file_choice_nondecisive_support_only`
 - each context arm vs `control_sparse`
 
-## Non-decisive support cue design
+## Intended non-decisive support cue design
 
-The support atom gives a formula/invariant/dependency/config relation
-that STILL REQUIRES TARGET BINDING to apply. It does NOT contain:
+The support atom was designed to give a formula/invariant/dependency/
+config relation that should still require target binding to apply. It
+does NOT contain:
 
 - the exact final answer (e.g. "Correct value: 42");
 - the exact target-file instruction (e.g. "edit target.py");
@@ -108,7 +111,8 @@ Instead, it says things like "the correct return value is derived as
 helper_constant * 2 + task_index ... You must determine which file
 applies this relation." The target_plus_support arm additionally gives
 the target binding (which file + which symbol), making the full cue
-decisive.
+decisive by construction. Manual CI showed the support-only cue was still
+sufficient despite this design.
 
 ## File-choice confound removal (carried over from B16-H)
 
@@ -255,6 +259,10 @@ b16i_target_support_conjunction_report.json               => PASS
 python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
+
+## Manual CI result
+
+Manual real-provider CI run `27950908481` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 306/306 self-tests. Results: `control_sparse` solve/test=0.0; `file_choice_target_only` solve/test=0.125 and selected target file rate=1.0; `file_choice_nondecisive_support_only` solve/test=1.0 and selected target file rate=1.0; `file_choice_distractor_plus_nondecisive_support` solve/test=1.0 and selected target file rate=1.0; `file_choice_target_plus_support` solve/test=1.0 and selected target file rate=1.0. Mechanism summary: `target_support_conjunction_required_count=0`, `support_only_sufficient_count=8`, `target_only_sufficient_count=1`, `distractor_hurts_count=0`, `wrong_file_selection_count=0`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: the intended non-decisive support cue was still sufficient on this bounded synthetic file-choice slice; target+support did not improve over support-only; target-only solved only 1/8; distractor did not hurt when support was present. This means the target-support conjunction was not observed. This is not a downstream value proof, BEA superiority claim, method-winner/default claim, benchmark/performance claim, or calibration claim.
 
 ## Caveats
 

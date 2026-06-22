@@ -10143,9 +10143,10 @@ Manual real-provider CI run `27949115076` passed: 8 tasks x 5 arms = 40 live pro
 
 B16-I tests the mechanism exposed by B16-H. B16-H removed the file-choice
 confound, but support-only still solved every task because the support cue
-was too decisive. B16-I redesigns the live-provider synthetic tasks so
-support alone is non-decisive: target binding and support rule should both
-be needed.
+was too decisive. B16-I redesigns the live-provider synthetic tasks to test whether
+support alone can be made non-decisive: target binding and support rule were
+expected to be needed together. Run `27950908481` did not support that
+hypothesis; support-only remained sufficient.
 
 ### Prior result
 
@@ -10236,14 +10237,14 @@ git diff --check  => PASS
 ```
 
 Local no-env validation path is truthful and blocked/unavailable.
-Manual real-provider CI run pending.
+Manual real-provider CI run `27950908481` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 306/306 self-tests. Results: `control_sparse` solve/test=0.0; `file_choice_target_only` solve/test=0.125 and selected target file rate=1.0; `file_choice_nondecisive_support_only` solve/test=1.0 and selected target file rate=1.0; `file_choice_distractor_plus_nondecisive_support` solve/test=1.0 and selected target file rate=1.0; `file_choice_target_plus_support` solve/test=1.0 and selected target file rate=1.0. Mechanism summary: `target_support_conjunction_required_count=0`, `support_only_sufficient_count=8`, `target_only_sufficient_count=1`, `distractor_hurts_count=0`, `wrong_file_selection_count=0`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: the intended non-decisive support cue was still sufficient on this bounded synthetic file-choice slice; target+support did not improve over support-only; target-only solved only 1/8; distractor did not hurt when support was present. This means the target-support conjunction was not observed. This is not a downstream value proof, BEA superiority claim, method-winner/default claim, benchmark/performance claim, or calibration claim.
 
 ### Caveats
 
 - B16-I is eval/diagnostic only. NOT benchmark/leaderboard/performance/
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value/BEA-superiority claim.
-- Support cue is non-decisive; still requires target binding.
+- Support cue was designed to be non-decisive, but run `27950908481` did not observe a target-support conjunction requirement; support-only remained sufficient.
 - Bounded synthetic sample (8 tasks x 5 arms default). Smoke, not
   rigorous evaluation. Sufficiency wording bounded to "on this bounded
   synthetic file-choice slice".

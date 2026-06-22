@@ -3649,21 +3649,21 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 - **B16-I tests the mechanism exposed by B16-H**. B16-H removed the
   file-choice confound, but support-only still solved every task because
-  the support cue was too decisive. B16-I redesigns the tasks so support
-  alone is non-decisive: target binding and support rule should both be
-  needed.
+  the support cue was too decisive. B16-I redesigns the tasks to test
+  whether support alone can be made non-decisive: target binding and
+  support rule were expected to be needed together.
 - **Five fixed arms**: `control_sparse`, `file_choice_target_only`,
   `file_choice_nondecisive_support_only`,
   `file_choice_distractor_plus_nondecisive_support`,
   `file_choice_target_plus_support`. Eight fixed task families (reused
   from B16-F/B16-G/B16-H). Default 8 tasks x 5 arms = 40 live provider
   calls.
-- **Non-decisive support cue**: gives formula/invariant/dependency/
-  config relation that STILL REQUIRES TARGET BINDING. Does NOT contain
-  the exact final answer, exact target-file instruction, or
-  target-symbol edit instruction. The `file_choice_target_plus_support`
-  arm additionally gives the target binding, making the full cue
-  decisive.
+- **Intended non-decisive support cue**: gives formula/invariant/
+  dependency/config relation that was designed to still require target
+  binding. It does NOT contain the exact final answer, exact target-file
+  instruction, or target-symbol edit instruction. Run `27950908481`
+  showed this design did not make support-only non-decisive: support-only
+  still solved 8/8.
 - **Primary contrasts**: `file_choice_target_plus_support` vs
   `file_choice_target_only`; vs
   `file_choice_nondecisive_support_only`; vs
@@ -3686,8 +3686,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   leaderboard/performance/method-winner/calibration/promotion/default/
   runtime/EvidenceCore/downstream-value/BEA-superiority. CI pass does
   NOT require the conjunction to hold. `bea_superiority_claimed=false`.
+- **B16-I live result**: Manual real-provider CI run `27950908481` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 306/306 self-tests. Results: `control_sparse` solve/test=0.0; `file_choice_target_only` solve/test=0.125 and selected target file rate=1.0; `file_choice_nondecisive_support_only` solve/test=1.0 and selected target file rate=1.0; `file_choice_distractor_plus_nondecisive_support` solve/test=1.0 and selected target file rate=1.0; `file_choice_target_plus_support` solve/test=1.0 and selected target file rate=1.0. Mechanism summary: `target_support_conjunction_required_count=0`, `support_only_sufficient_count=8`, `target_only_sufficient_count=1`, `distractor_hurts_count=0`, `wrong_file_selection_count=0`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: the intended non-decisive support cue was still sufficient on this bounded synthetic file-choice slice; target+support did not improve over support-only; target-only solved only 1/8; distractor did not hurt when support was present. This means the target-support conjunction was not observed. This is not a downstream value proof, BEA superiority claim, method-winner/default claim, benchmark/performance claim, or calibration claim.
 - **B16-I does NOT mutate B16-F/B16-G/B16-H**: standalone phase,
-  evaluator, artifact. Manual real-provider CI run pending.
+  evaluator, artifact.
 - **Workflow stage `b16i_target_support_conjunction`** added to
   `real-provider-benchmark.yml` (manual `workflow_dispatch` only;
   `enable_remote_models=false` default; dedicated sanitized upload;
