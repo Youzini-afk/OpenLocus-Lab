@@ -1382,7 +1382,8 @@ def _build_pass_report(
 
     benchmark_arm_metric_records = _benchmark_arm_metric_records(per_benchmark_arm_aggs)
 
-    # Delta records: v0.3 vs each control arm, with v0 as fixed baseline.
+    # Delta records include both broad arm-vs-v0 summaries and the required
+    # v0.3-vs-control comparisons used to diagnose BEA-2 regression repair.
     treatment_arms = [
         ARM_BEA_V0_3_ANCHOR_SPAN_LATENCY,
         ARM_BEA_V0_3_NO_ANCHOR,
@@ -1395,6 +1396,28 @@ def _build_pass_report(
     if enable_rrf_baseline:
         treatment_arms.append(ARM_RRF_SAME_BUDGET)
     delta_records = _delta_records(arm_aggs, BASELINE_ARM, treatment_arms)
+    for comparison_baseline in (
+        ARM_BEA_V0_2,
+        ARM_BM25_PREFIX,
+        ARM_AGREEMENT_ONLY,
+        ARM_SEEDED_RANDOM,
+    ):
+        delta_records.extend(
+            _delta_records(
+                arm_aggs,
+                comparison_baseline,
+                [ARM_BEA_V0_3_ANCHOR_SPAN_LATENCY],
+            )
+        )
+    if enable_rrf_baseline:
+        delta_records.extend(
+            _delta_records(
+                arm_aggs,
+                ARM_RRF_SAME_BUDGET,
+                [ARM_BEA_V0_3_ANCHOR_SPAN_LATENCY],
+            )
+        )
+    delta_records.sort(key=lambda r: (r["baseline_arm"], r["treatment_arm"], r["metric"]))
 
     # Mechanism contrast records: v0.3 vs each control on paired denominator.
     contrasts = [
@@ -1759,6 +1782,14 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     if dr:
         rec = dr[0]
         checks.append(_check("delta_shape", set(rec.keys()) == {"baseline_arm", "treatment_arm", "metric", "delta"}))
+        checks.append(_check(
+            "delta_has_v03_vs_v02",
+            any(
+                r.get("baseline_arm") == ARM_BEA_V0_2
+                and r.get("treatment_arm") == ARM_BEA_V0_3_ANCHOR_SPAN_LATENCY
+                for r in dr
+            ),
+        ))
 
     # Group 15: mechanism_contrast_records shape.
     mcr = skeleton.get("mechanism_contrast_records", [])

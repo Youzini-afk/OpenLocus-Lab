@@ -222,6 +222,13 @@ jobs:
                       "aggregate_metrics"):
               if key in report:
                   failures.append(f"legacy {key} dict must not be present")
+          delta_records = report.get("delta_records") or []
+          if not any(
+              rec.get("baseline_arm") == "bea_v0_2_diversity_risk"
+              and rec.get("treatment_arm") == "bea_v0_3_anchor_span_latency"
+              for rec in delta_records
+          ):
+              failures.append("expected delta_records to include v0.3 vs v0.2 comparison")
           bea3_forbidden = (
               "private_score_path", "action_order", "priority_components",
               "selected_decisions", "budget_trace", "stop_reason",

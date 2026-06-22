@@ -76,7 +76,7 @@ ContextBench offset 60、limit 20。RepoQA offset 30、limit 10。本地 smoke
 
 ```text
 python3 -m py_compile eval/bea3_anchor_span_latency.py  => PASS
-python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (224/224 checks)
+python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (225/225 checks)
 python3 eval/bea3_anchor_span_latency.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 60 --contextbench-row-limit 3 \

@@ -238,7 +238,7 @@ sample (all candidates were tight-span, low-risk, BM25-backed). New metric:
 `quality_per_latency`. New record type: `mechanism_summary_records`.
 Latency attribution fix: all arms share candidate-collection latency. Schema
 `bea3_anchor_span_latency.v1`, `claim_level=bea_v03_policy_smoke_only`,
-phase `BEA-3`, 224/224 self-test checks pass. BEA-3 is NOT a benchmark
+phase `BEA-3`, 225/225 self-test checks pass. BEA-3 is NOT a benchmark
 result, NOT a leaderboard entry, NOT a performance claim, NOT a
 method-winner claim, NOT a calibration claim, NOT a promotion, NOT a
 default change, NOT a runtime/retriever/pack/backend/EvidenceCore semantic
