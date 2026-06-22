@@ -94,11 +94,7 @@ pack 不同：
 evaluator 输出 `blocked_remote_not_enabled` 或
 `unavailable_no_local_provider_env`，live-run flag 为 false。它**不**是假通过。
 
-手动 real-provider CI run（通过 `real-provider-benchmark.yml` stage
-`b16f_bea_derived_context_pack_paired_smoke` 且
-`enable_remote_models=true`、`task_count=8` 执行时）产生 24 次 live
-provider 调用（8 任务 x 3 arms）。已提交 artifact 将在首次成功的手动
-CI run 后更新为镜像该 run 的 sanitized aggregate report。
+手动 real-provider CI run `27945253824` 已通过。已提交 artifact 现在镜像该 run 的 sanitized aggregate report：8 个合成任务 x 3 arms = 24 次 live provider calls，`model_display_category=Kimi-K2.7-Code`，forbidden scan pass，352/352 self-test checks，`private_score_manifest.record_count=24`、`private_event_manifest.record_count=24`，两个 manifest 均为 `storage_class=tmp_private` 且 `path_publicly_serialized=false`。Sparse control 解出 2/8（`solve_rate=0.25`、`tests_pass_rate=0.25`、`latency_seconds_mean=13.4355`）；same-budget BM25 context pack 解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.1885`）；BEA v0.3 context pack 也解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.579`）。主对比 BEA-vs-BM25：solve/test/wrong-file/edit-validity delta 均为 0.0，`latency_seconds_mean` delta +0.3905，prompt tokens +161，completion tokens +47。相对 sparse 的次级 delta：两个 context arms 的 solve/test 均为 +0.75。解释：B16-F 在此有界合成 live-provider 切片上显示 context pack 相对 sparse 有收益，但 BEA v0.3 未优于 same-budget BM25；primary contrast 的 `context_pack_signal_observed=false`。这是下游 live-provider smoke 结果，不是下游价值证明、不是 method-winner/default/performance/calibration 声明。
 
 ## 异构合成公开任务族矩阵设计
 
@@ -468,7 +464,12 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-本地 no-env 验证路径是真实的且 blocked/unavailable。
+本地 no-env 验证路径是真实的且 blocked/unavailable。上方 manual CI 结果是
+B16-F 的已提交 result checkpoint。
+
+## 手动 CI 结果
+
+手动 real-provider CI run `27945253824` 已通过。已提交 artifact 现在镜像该 run 的 sanitized aggregate report：8 个合成任务 x 3 arms = 24 次 live provider calls，`model_display_category=Kimi-K2.7-Code`，forbidden scan pass，352/352 self-test checks，`private_score_manifest.record_count=24`、`private_event_manifest.record_count=24`，两个 manifest 均为 `storage_class=tmp_private` 且 `path_publicly_serialized=false`。Sparse control 解出 2/8（`solve_rate=0.25`、`tests_pass_rate=0.25`、`latency_seconds_mean=13.4355`）；same-budget BM25 context pack 解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.1885`）；BEA v0.3 context pack 也解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.579`）。主对比 BEA-vs-BM25：solve/test/wrong-file/edit-validity delta 均为 0.0，`latency_seconds_mean` delta +0.3905，prompt tokens +161，completion tokens +47。相对 sparse 的次级 delta：两个 context arms 的 solve/test 均为 +0.75。解释：B16-F 在此有界合成 live-provider 切片上显示 context pack 相对 sparse 有收益，但 BEA v0.3 未优于 same-budget BM25；primary contrast 的 `context_pack_signal_observed=false`。这是下游 live-provider smoke 结果，不是下游价值证明、不是 method-winner/default/performance/calibration 声明。
 
 ## 注意事项
 

@@ -99,13 +99,7 @@ the evaluator emits `blocked_remote_not_enabled` or
 `unavailable_no_local_provider_env` with live-run flags false. It is NOT a fake
 pass.
 
-Manual real-provider CI run (when executed via
-`real-provider-benchmark.yml` stage
-`b16f_bea_derived_context_pack_paired_smoke` with
-`enable_remote_models=true`, `task_count=8`) produces 24 live provider
-calls (8 tasks x 3 arms). The committed artifact will be updated to
-mirror the sanitized aggregate report from the first successful manual
-CI run.
+Manual real-provider CI run `27945253824` passed. The committed artifact now mirrors the sanitized aggregate report from that run: 8 synthetic tasks x 3 arms = 24 live provider calls, `model_display_category=Kimi-K2.7-Code`, forbidden scan pass, 352/352 self-test checks, `private_score_manifest.record_count=24`, `private_event_manifest.record_count=24`, both manifests `storage_class=tmp_private` and `path_publicly_serialized=false`. Sparse control solved 2/8 (`solve_rate=0.25`, `tests_pass_rate=0.25`, `latency_seconds_mean=13.4355`); same-budget BM25 context pack solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.1885`); BEA v0.3 context pack also solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.579`). Primary BEA-vs-BM25 deltas: solve/test/wrong-file/edit-validity deltas 0.0, `latency_seconds_mean` delta +0.3905, prompt tokens +161, completion tokens +47. Secondary deltas vs sparse: both context arms +0.75 solve/test. Interpretation: B16-F shows context-pack benefit over sparse on this bounded synthetic live-provider slice, but BEA v0.3 does not improve over same-budget BM25; `context_pack_signal_observed=false` for the primary contrast. This is a downstream live-provider smoke result, not downstream value proof, not a method-winner/default/performance/calibration claim.
 
 ## Heterogeneous synthetic public task-family matrix design
 
@@ -514,7 +508,12 @@ python3 scripts/validate_docs_i18n.py                                  => PASS
 git diff --check                                                       => PASS
 ```
 
-The local no-env validation path is truthful and blocked/unavailable.
+The local no-env validation path is truthful and blocked/unavailable. The
+manual CI result above is the committed result checkpoint for B16-F.
+
+## Manual CI result
+
+Manual real-provider CI run `27945253824` passed. The committed artifact now mirrors the sanitized aggregate report from that run: 8 synthetic tasks x 3 arms = 24 live provider calls, `model_display_category=Kimi-K2.7-Code`, forbidden scan pass, 352/352 self-test checks, `private_score_manifest.record_count=24`, `private_event_manifest.record_count=24`, both manifests `storage_class=tmp_private` and `path_publicly_serialized=false`. Sparse control solved 2/8 (`solve_rate=0.25`, `tests_pass_rate=0.25`, `latency_seconds_mean=13.4355`); same-budget BM25 context pack solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.1885`); BEA v0.3 context pack also solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.579`). Primary BEA-vs-BM25 deltas: solve/test/wrong-file/edit-validity deltas 0.0, `latency_seconds_mean` delta +0.3905, prompt tokens +161, completion tokens +47. Secondary deltas vs sparse: both context arms +0.75 solve/test. Interpretation: B16-F shows context-pack benefit over sparse on this bounded synthetic live-provider slice, but BEA v0.3 does not improve over same-budget BM25; `context_pack_signal_observed=false` for the primary contrast. This is a downstream live-provider smoke result, not downstream value proof, not a method-winner/default/performance/calibration claim.
 
 ## Caveats
 

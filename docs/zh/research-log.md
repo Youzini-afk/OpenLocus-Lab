@@ -9073,8 +9073,8 @@ hash。
 metrics）、`paired_deltas`（3 对比：BEA-vs-BM25 主、BEA-vs-sparse、
 BM25-vs-sparse）、`task_family_results`、`family_signal_summary`、
 `honest_signals`、`private_score_manifest`、`private_event_manifest`、
-`forbidden_scan`、no-claim/no-runtime-change flag、`self_test_summary`/
-`self_test_checks`/`self_test_passed`。无 raw task text、prompt、response、
+`forbidden_scan`、no-claim/no-runtime-change flag、`self_test_checks_total`、
+`self_test_checks_passed` 与 `self_test_passed`。无 raw task text、prompt、response、
 patch、path、片段、候选特征、BEA action trace、pack composition、provider
 payload、私有 path 或 per-task 结果。
 
@@ -9108,8 +9108,11 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI
-run 待执行。
+本地 no-env 验证路径真实且 blocked/unavailable。
+
+### 手动 CI 结果
+
+手动 real-provider CI run `27945253824` 已通过。已提交 artifact 现在镜像该 run 的 sanitized aggregate report：8 个合成任务 x 3 arms = 24 次 live provider calls，`model_display_category=Kimi-K2.7-Code`，forbidden scan pass，352/352 self-test checks，`private_score_manifest.record_count=24`、`private_event_manifest.record_count=24`，两个 manifest 均为 `storage_class=tmp_private` 且 `path_publicly_serialized=false`。Sparse control 解出 2/8（`solve_rate=0.25`、`tests_pass_rate=0.25`、`latency_seconds_mean=13.4355`）；same-budget BM25 context pack 解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.1885`）；BEA v0.3 context pack 也解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.579`）。主对比 BEA-vs-BM25：solve/test/wrong-file/edit-validity delta 均为 0.0，`latency_seconds_mean` delta +0.3905，prompt tokens +161，completion tokens +47。相对 sparse 的次级 delta：两个 context arms 的 solve/test 均为 +0.75。解释：B16-F 在此有界合成 live-provider 切片上显示 context pack 相对 sparse 有收益，但 BEA v0.3 未优于 same-budget BM25；primary contrast 的 `context_pack_signal_observed=false`。这是下游 live-provider smoke 结果，不是下游价值证明、不是 method-winner/default/performance/calibration 声明。
 
 ### Caveats
 

@@ -2955,8 +2955,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   leaderboard/performance/method-winner/calibration/promotion/default/
   runtime/EvidenceCore/downstream-value。CI 通过**不**要求 BEA 改善；零/
   负 delta 有效。
+- **手动 real-provider CI run `27945253824` 已通过**：8 任务 x 3 arms = 24 次 live provider calls。Sparse control 解出 2/8（`solve_rate=0.25`、`tests_pass_rate=0.25`、`latency_seconds_mean=13.4355`）；same-budget BM25 context pack 解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.1885`）；BEA v0.3 context pack 也解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.579`）。主对比 BEA-vs-BM25 solve/test delta 为 0.0；BEA mean latency +0.3905s，prompt tokens +161。两个 context arms 相对 sparse 的 solve/test 均 +0.75。primary contrast 的 `context_pack_signal_observed=false`。
 - **B16-F 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、evaluator、
-  artifact。手动 real-provider CI run 待执行。
+  artifact。该 CI 结果仍是 smoke-only，不证明下游价值或方法优越。
 - **公开 artifact 仅聚合**：`arm_results`（per-arm metrics）、
   `paired_deltas`（3 对比）、`task_family_results`、
   `family_signal_summary`、`honest_signals`、`private_score_manifest`、

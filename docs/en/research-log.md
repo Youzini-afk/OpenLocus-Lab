@@ -9791,8 +9791,8 @@ Records-only aggregate public artifact: `schema_version`, `generated_by`,
 metrics), `paired_deltas` (3 contrasts: BEA-vs-BM25 primary, BEA-vs-sparse,
 BM25-vs-sparse), `task_family_results`, `family_signal_summary`,
 `honest_signals`, `private_score_manifest`, `private_event_manifest`,
-`forbidden_scan`, no-claim/no-runtime-change flags, `self_test_summary`/
-`self_test_checks`/`self_test_passed`. No raw task text, prompts,
+`forbidden_scan`, no-claim/no-runtime-change flags, `self_test_checks_total`,
+`self_test_checks_passed`, and `self_test_passed`. No raw task text, prompts,
 responses, patches, paths, snippets, candidate features, BEA action traces,
 pack composition, provider payloads, private paths, or per-task outcomes.
 
@@ -9828,7 +9828,10 @@ git diff --check  => PASS
 ```
 
 The local no-env validation path is truthful and blocked/unavailable.
-Manual real-provider CI run pending.
+
+### Manual CI result
+
+Manual real-provider CI run `27945253824` passed. The committed artifact now mirrors the sanitized aggregate report from that run: 8 synthetic tasks x 3 arms = 24 live provider calls, `model_display_category=Kimi-K2.7-Code`, forbidden scan pass, 352/352 self-test checks, `private_score_manifest.record_count=24`, `private_event_manifest.record_count=24`, both manifests `storage_class=tmp_private` and `path_publicly_serialized=false`. Sparse control solved 2/8 (`solve_rate=0.25`, `tests_pass_rate=0.25`, `latency_seconds_mean=13.4355`); same-budget BM25 context pack solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.1885`); BEA v0.3 context pack also solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.579`). Primary BEA-vs-BM25 deltas: solve/test/wrong-file/edit-validity deltas 0.0, `latency_seconds_mean` delta +0.3905, prompt tokens +161, completion tokens +47. Secondary deltas vs sparse: both context arms +0.75 solve/test. Interpretation: B16-F shows context-pack benefit over sparse on this bounded synthetic live-provider slice, but BEA v0.3 does not improve over same-budget BM25; `context_pack_signal_observed=false` for the primary contrast. This is a downstream live-provider smoke result, not downstream value proof, not a method-winner/default/performance/calibration claim.
 
 ### Caveats
 

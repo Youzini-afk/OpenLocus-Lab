@@ -3509,8 +3509,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   leaderboard/performance/method-winner/calibration/promotion/default/
   runtime/EvidenceCore/downstream-value. CI pass does NOT require BEA
   improvement; zero/negative delta is valid.
+- **Manual real-provider CI run `27945253824` passed**: 8 tasks x 3 arms = 24 live provider calls. Sparse control solved 2/8 (`solve_rate=0.25`, `tests_pass_rate=0.25`, `latency_seconds_mean=13.4355`); same-budget BM25 context pack solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.1885`); BEA v0.3 context pack also solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.579`). Primary BEA-vs-BM25 solve/test deltas are 0.0; BEA has +0.3905s mean latency and +161 prompt tokens. Both context arms beat sparse by +0.75 solve/test. `context_pack_signal_observed=false` for the primary contrast.
 - **B16-F does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3**: standalone phase,
-  evaluator, artifact. Manual real-provider CI run pending.
+  evaluator, artifact. The CI result is smoke-only and does not prove downstream value or method superiority.
 - **Public artifact is aggregate-only**: `arm_results` (per-arm metrics),
   `paired_deltas` (3 contrasts), `task_family_results`, `family_signal_summary`,
   `honest_signals`, `private_score_manifest`, `private_event_manifest`,
