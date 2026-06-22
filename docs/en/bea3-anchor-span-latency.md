@@ -95,17 +95,42 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## Real bounded local run result (2026-06-21)
+## Manual CI result (run `27942492278`, 2026-06-21)
 
-5 records successful (ContextBench 3 + RepoQA 2). 45 private SCORE rows
-(5 × 9 arms). Win/tie/loss (v0.3 vs v0.2, n=5): file_recall@10 win=0
-tie=5 loss=0; mrr win=0 tie=5 loss=0; span_f0.5@10 win=0 tie=5 loss=0;
-success_rate win=0 tie=5 loss=0. v0.3 ties v0.2 on all primary metrics on
-this bounded sample.
+Fixed CI run `27942492278` passed after adding the required v0.3-vs-v0.2
+`delta_records` validation. The superseded green run `27941717490` is not used as
+the result artifact because its public delta surface was incomplete.
+
+30 records successful (ContextBench 20 + RepoQA 10). 270 private SCORE rows
+(30 × 9 arms). `forbidden_scan=pass`, `provider_calls=0`,
+`private_score_manifest.record_count=270`, `path_publicly_serialized=false`,
+`aggregate_runtime_seconds=398.532`.
+
+BEA v0.3 vs BEA v0.2 on the 30-record CI slice:
+
+```text
+file_recall@10 delta: 0.0        (win=0, tie=30, loss=0)
+mrr delta: 0.0                   (win=0, tie=30, loss=0)
+span_f0.5@10 delta: +0.00217     (win=1, tie=29, loss=0)
+success_rate delta: 0.0          (win=0, tie=30, loss=0)
+latency_seconds delta: +0.001098
+evidence_budget_used delta: 0.0
+quality_per_latency delta: +0.000292
+```
+
+BEA v0.3 vs BEA v0 / same-budget BM25 / agreement-only / RRF on the same
+slice: file_recall@10 +0.066667, mrr +0.130556, success_rate +0.066667,
+span_f0.5@10 -0.010068. Against seeded random: file_recall@10 +0.2, mrr
++0.231667, span_f0.5@10 +0.015826, success_rate +0.2.
 
 Mechanism summary: anchor_used_rate=1.0, early_stop_rate=0.0,
-mean_budget_used=5.0, mean_latency_seconds=6.8976, mean_span_extent=4.88,
-span_proxy_bucket_tight=25.
+mean_budget_used=4.333333, mean_latency_seconds=8.7516,
+mean_span_extent=4.246667.
+
+Interpretation: v0.3 did not materially improve file/MRR/success over v0.2 on
+this slice; it produced a tiny positive span/quality-per-latency signal with
+near-identical latency. This is a weak/mixed smoke result, not a method winner or
+default-policy claim.
 
 ## Caveats
 
@@ -113,9 +138,8 @@ span_proxy_bucket_tight=25.
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value claim.
 - v0.3 weights are frozen constants, NOT tuned from outcomes.
-- Bounded sample (5 records). Smoke, not rigorous evaluation.
-- v0.3 ties v0.2 on all primary metrics on this bounded sample — the
-  anchor/span/latency proxies did not change the accepted set vs v0.2 on
-  these 5 records (all candidates were tight-span, low-risk, BM25-backed).
+- Bounded CI sample (30 records). Smoke, not rigorous evaluation.
+- v0.3 is effectively tied with v0.2 on file/MRR/success, with only a tiny
+  positive span/quality-per-latency signal.
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged. BEA-0/BEA-1/BEA-2 semantics not mutated.

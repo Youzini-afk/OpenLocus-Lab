@@ -9557,116 +9557,6 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### Real bounded local run results (2026-06-21)
-
-Bounded local run (ContextBench 5 rows + RepoQA 3 needles, budget=5,
-methods bm25/regex/symbol, rrf baseline enabled) completed successfully:
-
-- `bm25_top10`: file_recall@10=0.5, mrr=0.296875, span_f0.5@10=0.035962,
-  success_rate=0.5, candidate_count_read=12.5, evidence_budget_used=6.25,
-  action_steps=6.25, latency_seconds=0.4225,
-  quality_per_candidate=0.001798.
-- `rrf_bm25_regex_symbol_top10`: file_recall@10=0.5, mrr=0.296875,
-  span_f0.5@10=0.035962, success_rate=0.5, candidate_count_read=12.5,
-  evidence_budget_used=6.25, action_steps=6.25, latency_seconds=1.42125,
-  quality_per_candidate=0.001798.
-- `bea_v0_budgeted`: file_recall@10=0.375, mrr=0.28125,
-  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.75,
-  latency_seconds=4.408469, quality_per_candidate=0.002859.
-- `same_budget_bm25_prefix`: file_recall@10=0.375, mrr=0.28125,
-  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
-  quality_per_candidate=0.002859.
-- `agreement_only_same_budget`: file_recall@10=0.375, mrr=0.28125,
-  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
-  quality_per_candidate=0.002859.
-- `seeded_random_same_budget`: file_recall@10=0.25, mrr=0.1875,
-  span_f0.5@10=0.020161, success_rate=0.25, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
-  quality_per_candidate=0.001008.
-
-Mechanism contrast records (mrr, paired `record_count=8`):
-
-- `bea_vs_same_budget_bm25`: delta(mrr)=0.0 (BEA ties same-budget BM25
-  prefix).
-- `bea_vs_agreement_only`: delta(mrr)=0.0 (BEA ties agreement-only).
-- `bea_vs_seeded_random`: delta(mrr)=+0.09375 (BEA beats seeded random).
-
-8 private per-record SCORE JSONL rows written to
-`/tmp/bea0_private_score_<pid>_<ts>/bea1.private.jsonl` (transient; never
-committed or uploaded); each row contains phase_run_id, benchmark,
-private_record_id, runtime_query_feature_summary, candidate_list,
-bea_v0_action_trace, bea_v0_budget_states, bea_v0_accepted_candidates,
-final_candidates, baseline_bm25_top10_evidence, baseline_rrf_top10_evidence,
-same_budget_bm25_prefix_evidence, agreement_only_same_budget_evidence,
-seeded_random_same_budget_evidence, same_budget_k, score_outcome (per-arm
-metrics), latency_ms, cost_usd=0.0, tokens=0, provider_calls=0,
-failure_reason.
-
-Key mechanism ablation findings (smoke-level, NOT benchmark/calibration/
-method-winner claims):
-
-- BEA v0 and `agreement_only_same_budget` produce IDENTICAL
-  file_recall@10 / mrr / span_f0.5@10 / success_rate on the paired
-  denominator, with the same `evidence_budget_used=3.125`. This suggests
-  BEA v0's gain (if any) over a pure agreement-only rank under the same
-  budget is zero on this bounded sample; BEA v0's sequential
-  coverage/defer/expand rules did not change the accepted set vs the
-  simpler agreement-only sort.
-- BEA v0 and `same_budget_bm25_prefix` also produce IDENTICAL
-  file_recall@10 / mrr / span_f0.5@10 / success_rate, suggesting BEA v0's
-  agreement-based reranking did not differ from BM25-prefix selection on
-  this bounded sample (the high-agreement spans were also the top BM25
-  spans).
-- `seeded_random_same_budget` underperforms both BEA v0 and the
-  agreement-only control by `delta(mrr)=+0.09375` in BEA v0's favor,
-  confirming that deterministic agreement-based selection beats random
-  selection under the same budget on this bounded sample.
-
-These are honest smoke-level aggregate deltas over a bounded sample, not
-benchmark results, leaderboard entries, performance claims, method-winner
-claims, calibration claims, promotions, default changes, runtime/retriever/
-pack/backend/EvidenceCore semantic changes, or downstream agent value
-claims.
-
-### Caveats
-
-- BEA-1 is the public aggregate-only mechanism ablation smoke artifact.
-  It is eval/diagnostic only. It does NOT change runtime, retriever, pack,
-  backend, or default policy; it does NOT change EvidenceCore semantics.
-  It is NOT a benchmark result, NOT a leaderboard entry, NOT a performance
-  claim, NOT a method-winner claim, NOT a calibration claim, NOT a
-  promotion, NOT a default change, NOT a runtime-clean general algorithm
-  claim, and NOT a downstream agent value claim.
-- BEA-1 does NOT emit `winner`, `best_method`, `recommended_default`,
-  `method_winner`, `calibration`, or anything implying a policy/default
-  decision.
-- BEA-1 runs NO provider calls and NO remote provider calls.
-  `provider_calls=0`, `provider_calls_made=false`,
-  `remote_provider_calls_made=false`.
-- BEA-1 uses bounded ContextBench verified Python rows (default 5; hard
-  cap 20) and bounded RepoQA Python needles (default 3; hard cap 10).
-  This is a smoke, not a rigorous benchmark evaluation. Aggregate metrics
-  are point estimates over a bounded sample.
-- BEA-1 writes private per-record SCORE JSONL ONLY under `/tmp` (or an
-  explicitly ignored private path under the gitignored `runs/` directory).
-  The private SCORE path is NEVER serialized in the public artifact, docs,
-  or CI artifacts.
-- BEA-1 does NOT silently fall back from Python to all languages.
-- BEA-1 does NOT claim external benchmark performance, method-winner, or
-  calibration. The aggregate metrics are smoke-level diagnostics.
-- BEA-1 does NOT prove downstream agent value. The mechanism ablation
-  smoke does not exercise any downstream agent.
-- BEA-1 does NOT bootstrap the BEA-0 aggregate artifact. It reruns fresh
-  external retrieval; the BEA-0 artifact is not read or relied upon.
-- All no-claim / no-runtime-change flags remain false; diagnostic flags
-  (`aggregate_only_public_artifact`, `diagnostic_only`) remain true. No
-  runtime/retriever/pack/model/backend/default-policy files were modified;
-  no promotion/default/runtime claims change. EvidenceCore semantics are
-  unchanged.
-
 ## 2026-06-21 — BEA-2 Policy v0.2 Diversity/Risk Mechanism Smoke
 
 ### Objective
@@ -9766,7 +9656,7 @@ agreement_only, seeded_random, rrf_same_budget (when available).
 
 ```text
 python3 -m py_compile eval/bea3_anchor_span_latency.py  => PASS
-python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (224/224 checks)
+python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (225/225 checks)
 python3 eval/bea3_anchor_span_latency.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 60 --contextbench-row-limit 3 \
@@ -9782,16 +9672,42 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### Real bounded local run results (2026-06-21)
+### Manual CI result (run `27942492278`, 2026-06-21)
 
-5 records successful (CB 3 + RQ 2). 45 private SCORE rows (5×9 arms).
-Win/tie/loss (v0.3 vs v0.2, n=5): file_recall@10 win=0 tie=5 loss=0; mrr
-win=0 tie=5 loss=0; span_f0.5@10 win=0 tie=5 loss=0; success_rate win=0
-tie=5 loss=0. v0.3 ties v0.2 on all primary metrics on this bounded sample.
+Fixed CI run `27942492278` passed after adding the required v0.3-vs-v0.2
+`delta_records` validation. The superseded green run `27941717490` is not used as
+the result artifact because its public delta surface was incomplete.
+
+30 records successful (ContextBench 20 + RepoQA 10). 270 private SCORE rows
+(30 × 9 arms). `forbidden_scan=pass`, `provider_calls=0`,
+`private_score_manifest.record_count=270`, `path_publicly_serialized=false`,
+`aggregate_runtime_seconds=398.532`.
+
+BEA v0.3 vs BEA v0.2 on the 30-record CI slice:
+
+```text
+file_recall@10 delta: 0.0        (win=0, tie=30, loss=0)
+mrr delta: 0.0                   (win=0, tie=30, loss=0)
+span_f0.5@10 delta: +0.00217     (win=1, tie=29, loss=0)
+success_rate delta: 0.0          (win=0, tie=30, loss=0)
+latency_seconds delta: +0.001098
+evidence_budget_used delta: 0.0
+quality_per_latency delta: +0.000292
+```
+
+BEA v0.3 vs BEA v0 / same-budget BM25 / agreement-only / RRF on the same
+slice: file_recall@10 +0.066667, mrr +0.130556, success_rate +0.066667,
+span_f0.5@10 -0.010068. Against seeded random: file_recall@10 +0.2, mrr
++0.231667, span_f0.5@10 +0.015826, success_rate +0.2.
 
 Mechanism summary: anchor_used_rate=1.0, early_stop_rate=0.0,
-mean_budget_used=5.0, mean_latency_seconds=6.7364, mean_span_extent=4.88,
-span_proxy_bucket_tight=25.
+mean_budget_used=4.333333, mean_latency_seconds=8.7516,
+mean_span_extent=4.246667.
+
+Interpretation: v0.3 did not materially improve file/MRR/success over v0.2 on
+this slice; it produced a tiny positive span/quality-per-latency signal with
+near-identical latency. This is a weak/mixed smoke result, not a method winner or
+default-policy claim.
 
 ### Caveats
 
@@ -9799,7 +9715,7 @@ span_proxy_bucket_tight=25.
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value claim.
 - v0.3 weights are frozen constants, NOT tuned from outcomes.
-- Bounded sample (5 records). v0.3 ties v0.2 on all primary metrics —
-  the anchor/span/latency proxies did not change the accepted set on these
-  5 records (all candidates were tight-span, low-risk, BM25-backed).
+- Bounded CI sample (30 records). Smoke, not rigorous evaluation.
+- v0.3 is effectively tied with v0.2 on file/MRR/success, with only a tiny
+  positive span/quality-per-latency signal.
 - BEA-0/BEA-1/BEA-2 semantics not mutated.

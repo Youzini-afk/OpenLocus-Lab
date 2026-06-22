@@ -215,36 +215,7 @@ NOT a promotion, NOT a default change, NOT a
 runtime/retriever/pack/backend/EvidenceCore semantic change, and NOT a
 downstream agent value claim. BEA-2 does NOT mutate BEA-0/BEA-1 semantics.
 No runtime/default-policy/promotion/method-winner/calibration/
-downstream-value claim is made. BEA-3 is the anchor/span/latency-aware
-policy smoke: it implements a frozen BEA v0.3 algorithmic policy
-(anchor_count=min(2,budget) reserved for BM25/agreement anchors,
-diversity/risk scoring on remaining budget, runtime-clean span/latency
-proxies: tighter line-span bonus, same-file-as-anchor support bonus, risk
-bucket penalties, weak-support + low-BM25 penalty, fixed marginal-priority
-early stop after anchors) with frozen weights (anchor=0.35, span_tight=0.15,
-anchor_file_support=0.10, weak_support_penalty=-0.20,
-early_stop_margin=0.05) that are NOT tuned from outcomes, over fresh
-heldout ContextBench verified Python rows (offset 60, limit 20) + RepoQA
-Python needles (offset 30, limit 10). 9 fixed arms (v0.3, v0.3_no_anchor,
-v0.3_no_early_stop, v0.2, v0, bm25_prefix, agreement_only, seeded_random,
-rrf_same_budget). Bounded local run (2026-06-21) with ContextBench offset
-60 limit 3 + RepoQA offset 30 limit 2, budget=5, methods
-bm25/regex/symbol, rrf baseline enabled: 5 records successful, forbidden
-scan pass, `provider_calls=0`, `private_score_manifest.record_count=45`
-(5×9 arms), `private_score_storage_class=tmp_private`,
-`private_score_path_publicly_serialized=false`. Win/tie/loss (v0.3 vs v0.2,
-n=5): all primary metrics tie=5 loss=0. v0.3 ties v0.2 on this bounded
-sample (all candidates were tight-span, low-risk, BM25-backed). New metric:
-`quality_per_latency`. New record type: `mechanism_summary_records`.
-Latency attribution fix: all arms share candidate-collection latency. Schema
-`bea3_anchor_span_latency.v1`, `claim_level=bea_v03_policy_smoke_only`,
-phase `BEA-3`, 225/225 self-test checks pass. BEA-3 is NOT a benchmark
-result, NOT a leaderboard entry, NOT a performance claim, NOT a
-method-winner claim, NOT a calibration claim, NOT a promotion, NOT a
-default change, NOT a runtime/retriever/pack/backend/EvidenceCore semantic
-change, and NOT a downstream agent value claim. BEA-3 does NOT mutate
-BEA-0/BEA-1/BEA-2 semantics. No runtime/default-policy/promotion/
-method-winner/calibration/downstream-value claim is made.
+downstream-value claim is made. BEA-3 is the anchor/span/latency-aware policy smoke over fresh heldout ContextBench verified Python rows (offset 60, limit 20) + RepoQA Python needles (offset 30, limit 10), with 9 fixed arms and private per-record SCORE JSONL under `/tmp` only. Manual CI run 27942492278 passed after adding required v0.3-vs-v0.2 delta-record validation; the earlier green run 27941717490 is superseded because its public delta surface was incomplete. The committed artifact mirrors run 27942492278: 30 records successful, `private_score_manifest.record_count=270` (30×9 arms), forbidden scan pass, `provider_calls=0`, `aggregate_runtime_seconds=398.532`. BEA v0.3 vs v0.2: file_recall@10 delta=0.0, mrr delta=0.0, span_f0.5@10 delta=+0.00217, success_rate delta=0.0, latency_seconds delta=+0.001098, quality_per_latency delta=+0.000292; win/tie/loss vs v0.2 is file/MRR/success 0/30/0 and span 1/29/0. BEA v0.3 vs v0/BM25/agreement/RRF improves file_recall@10 by +0.066667 and mrr by +0.130556 but still has span_f0.5@10 -0.010068; against seeded random it is positive on file/MRR/span/success. Interpretation: v0.3 is effectively tied with v0.2 on file/MRR/success with only a tiny span/quality per latency signal. This is weak/mixed smoke evidence, not a method-winner, default, benchmark-performance, calibration, promotion, runtime, EvidenceCore, or downstream-value claim. BEA-3 does not mutate BEA-0/BEA-1/BEA-2 semantics.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
 harness 已推进到 D4-series rollup 并收束，研究已转入 D5-A0 自动实证 E/S

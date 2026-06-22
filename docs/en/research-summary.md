@@ -3466,12 +3466,8 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   (tighter line-span bonus, same-file-as-anchor support, risk penalties,
   weak-support penalty, marginal-priority early stop). Frozen weights NOT
   tuned from outcomes. Ablations: v0_3_no_anchor, v0_3_no_early_stop.
-- **Bounded local run (2026-06-21)**: 5 records (CB 3 + RQ 2), budget=5,
-  9 arms. Win/tie/loss (v0.3 vs v0.2, n=5): all primary metrics tie=5.
-  v0.3 ties v0.2 on this bounded sample (all candidates were tight-span,
-  low-risk, BM25-backed — the span/latency proxies didn't change the
-  accepted set). 45 private SCORE rows (5×9 arms).
-- **224/224 self-test checks pass**: 30 groups.
+- **Manual CI run `27942492278` (2026-06-21)**: 30 records (ContextBench 20 + RepoQA 10), budget=5, 9 arms, 270 private SCORE rows. v0.3 vs v0.2: file_recall@10 delta=0.0, mrr delta=0.0, span_f0.5@10 delta=+0.00217, success_rate delta=0.0, latency_seconds delta=+0.001098, quality_per_latency delta=+0.000292. Win/tie/loss vs v0.2: file/MRR/success all 0/30/0, span 1/29/0. v0.3 is effectively tied with v0.2, with only a tiny span/quality-per-latency signal.
+- **225/225 self-test checks pass**: 30 groups.
 - **Strict claim boundary**: `claim_level=bea_v03_policy_smoke_only`.
   NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.

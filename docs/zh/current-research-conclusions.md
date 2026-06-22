@@ -426,6 +426,14 @@ calibration 声明。
 
 [BEA-2 详细报告](bea2-policy-v02.md)。
 
+## 2026-06-21 BEA-3 Anchor/Span/Latency-Aware Policy Smoke
+
+BEA-3 实现冻结 BEA v0.3 anchor/span/latency-aware 算法策略，针对 BEA-2 的 mixed result：为 BM25/agreement anchor 预留 `anchor_count=min(2,budget)` slot，对剩余预算应用 diversity/risk 评分，并加入 runtime-clean span/latency 代理（更紧 line-span bonus、same-file-as-anchor support bonus、risk bucket penalty、weak-support + low-BM25 penalty、anchor 后固定 marginal-priority early stop）。冻结权重 anchor=0.35、span_tight=0.15、anchor_file_support=0.10、weak_support_penalty=-0.20、early_stop_margin=0.05，均不从 outcomes 调优。9 个固定 arm：v0.3、v0.3_no_anchor、v0.3_no_early_stop、v0.2、v0、bm25_prefix、agreement_only、seeded_random、可用时 rrf_same_budget。公开 artifact records-only：`benchmark_arm_metric_records`、`delta_records`、`mechanism_contrast_records`、`win_tie_loss_records`、`mechanism_summary_records` 与 aggregate `private_score_manifest`；私有 per-record SCORE JSONL 仅写 `/tmp`，不公开路径。
+
+手动 CI run `27942492278` 已通过（较早 green run `27941717490` 因缺 v0.3-vs-v0.2 delta surface 被 supersede）：30 条记录成功（ContextBench 20 + RepoQA 10），forbidden scan pass，`provider_calls=0`，`private_score_manifest.record_count=270`（30×9 arm），`aggregate_runtime_seconds=398.532`。BEA v0.3 相对 BEA v0.2：file_recall@10 delta=0.0，mrr delta=0.0，span_f0.5@10 delta=+0.00217，success_rate delta=0.0，latency_seconds delta=+0.001098，evidence_budget_used delta=0.0，quality_per_latency delta=+0.000292；相对 v0.2 的 win/tie/loss 为 file/MRR/success 0/30/0，span 1/29/0。BEA v0.3 相对 BEA v0 / same-budget BM25 / agreement-only / RRF：file_recall@10 +0.066667、mrr +0.130556、success_rate +0.066667、span_f0.5@10 -0.010068；相对 seeded random：file_recall@10 +0.2、mrr +0.231667、span_f0.5@10 +0.015826、success_rate +0.2。结论：v0.3 在 file/MRR/success 上与 v0.2 基本持平，只产生极小 span/quality-per-latency 正信号；这是 weak/mixed smoke evidence，不是 method-winner/default/performance/calibration 声明。
+
+[BEA-3 详细报告](bea3-anchor-span-latency.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

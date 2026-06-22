@@ -92,17 +92,41 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## 真实有界本地运行结果（2026-06-21）
+## 手动 CI 结果（run `27942492278`，2026-06-21）
 
-5 条记录成功（ContextBench 3 + RepoQA 2）。45 行私有 SCORE
-（5 × 9 arm）。Win/tie/loss（v0.3 vs v0.2，n=5）：file_recall@10 win=0
-tie=5 loss=0；mrr win=0 tie=5 loss=0；span_f0.5@10 win=0 tie=5 loss=0；
-success_rate win=0 tie=5 loss=0。v0.3 在此有界样本上与 v0.2 在所有 primary
-指标上持平。
+fixed CI run `27942492278` 已通过；它是在补上必需的 v0.3-vs-v0.2
+`delta_records` 验证后得到的结果。较早 green run `27941717490` 因公开 delta
+surface 不完整，不作为结果 artifact。
+
+30 条记录成功（ContextBench 20 + RepoQA 10）。270 行私有 SCORE
+（30 × 9 arm）。`forbidden_scan=pass`、`provider_calls=0`、
+`private_score_manifest.record_count=270`、`path_publicly_serialized=false`、
+`aggregate_runtime_seconds=398.532`。
+
+在 30-record CI slice 上，BEA v0.3 相对 BEA v0.2：
+
+```text
+file_recall@10 delta: 0.0        (win=0, tie=30, loss=0)
+mrr delta: 0.0                   (win=0, tie=30, loss=0)
+span_f0.5@10 delta: +0.00217     (win=1, tie=29, loss=0)
+success_rate delta: 0.0          (win=0, tie=30, loss=0)
+latency_seconds delta: +0.001098
+evidence_budget_used delta: 0.0
+quality_per_latency delta: +0.000292
+```
+
+同一切片上，BEA v0.3 相对 BEA v0 / same-budget BM25 / agreement-only / RRF：
+file_recall@10 +0.066667、mrr +0.130556、success_rate +0.066667、
+span_f0.5@10 -0.010068。相对 seeded random：file_recall@10 +0.2、mrr
++0.231667、span_f0.5@10 +0.015826、success_rate +0.2。
 
 机制摘要：anchor_used_rate=1.0、early_stop_rate=0.0、
-mean_budget_used=5.0、mean_latency_seconds=6.8976、
-mean_span_extent=4.88、span_proxy_bucket_tight=25。
+mean_budget_used=4.333333、mean_latency_seconds=8.7516、
+mean_span_extent=4.246667。
+
+解释：v0.3 在该切片上并没有相对 v0.2 实质改善 file/MRR/success；它只给出
+极小的 span/quality-per-latency 正向信号，latency 基本相同。这是 weak/mixed
+smoke 结果，不是 method winner 或 default-policy 声明。
 
 ## Caveats
 
@@ -110,9 +134,8 @@ mean_span_extent=4.88、span_proxy_bucket_tight=25。
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value 声明。
 - v0.3 权重为冻结常量，不从 outcomes 调优。
-- 有界样本（5 条记录）。smoke，非严格评估。
-- v0.3 在此有界样本上与 v0.2 在所有 primary 指标上持平——
-  anchor/span/latency 代理未改变 accepted set（所有候选均为 tight-span、
-  low-risk、BM25-backed）。
+- 有界 CI 样本（30 条记录）。smoke，非严格评估。
+- v0.3 在 file/MRR/success 上与 v0.2 基本持平，只出现极小的
+  span/quality-per-latency 正向信号。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义不变。
   BEA-0/BEA-1/BEA-2 语义未修改。

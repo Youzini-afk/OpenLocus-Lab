@@ -8846,108 +8846,6 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### 真实有界本地运行结果（2026-06-21）
-
-有界本地运行（ContextBench 5 行 + RepoQA 3 needle，budget=5，方法
-bm25/regex/symbol，启用 rrf baseline）成功完成：
-
-- `bm25_top10`: file_recall@10=0.5, mrr=0.296875, span_f0.5@10=0.035962,
-  success_rate=0.5, candidate_count_read=12.5, evidence_budget_used=6.25,
-  action_steps=6.25, latency_seconds=0.4225,
-  quality_per_candidate=0.001798。
-- `rrf_bm25_regex_symbol_top10`: file_recall@10=0.5, mrr=0.296875,
-  span_f0.5@10=0.035962, success_rate=0.5, candidate_count_read=12.5,
-  evidence_budget_used=6.25, action_steps=6.25, latency_seconds=1.42125,
-  quality_per_candidate=0.001798。
-- `bea_v0_budgeted`: file_recall@10=0.375, mrr=0.28125,
-  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.75,
-  latency_seconds=4.408469, quality_per_candidate=0.002859。
-- `same_budget_bm25_prefix`: file_recall@10=0.375, mrr=0.28125,
-  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
-  quality_per_candidate=0.002859。
-- `agreement_only_same_budget`: file_recall@10=0.375, mrr=0.28125,
-  span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
-  quality_per_candidate=0.002859。
-- `seeded_random_same_budget`: file_recall@10=0.25, mrr=0.1875,
-  span_f0.5@10=0.020161, success_rate=0.25, candidate_count_read=12.5,
-  evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,
-  quality_per_candidate=0.001008。
-
-机制对比 records（mrr，paired `record_count=8`）：
-
-- `bea_vs_same_budget_bm25`: delta(mrr)=0.0（BEA 与 same-budget BM25 prefix
-  持平）。
-- `bea_vs_agreement_only`: delta(mrr)=0.0（BEA 与 agreement-only 持平）。
-- `bea_vs_seeded_random`: delta(mrr)=+0.09375（BEA 胜过 seeded random）。
-
-8 行私有 per-record SCORE JSONL 写入
-`/tmp/bea0_private_score_<pid>_<ts>/bea1.private.jsonl`（transient；绝不
-提交或上传）；每行含 phase_run_id、benchmark、private_record_id、
-runtime_query_feature_summary、candidate_list、bea_v0_action_trace、
-bea_v0_budget_states、bea_v0_accepted_candidates、final_candidates、
-baseline_bm25_top10_evidence、baseline_rrf_top10_evidence、
-same_budget_bm25_prefix_evidence、agreement_only_same_budget_evidence、
-seeded_random_same_budget_evidence、same_budget_k、score_outcome（per-arm
-指标）、latency_ms、cost_usd=0.0、tokens=0、provider_calls=0、
-failure_reason。
-
-关键机制消融发现（smoke 级，**非** benchmark/calibration/method-winner
-声明）：
-
-- BEA v0 与 `agreement_only_same_budget` 在 paired denominator 上产生
-  IDENTICAL 的 file_recall@10 / mrr / span_f0.5@10 / success_rate，且
-  `evidence_budget_used=3.125` 相同。这表明 BEA v0 在此有界样本上相对
-  纯 agreement-only rank（相同预算）的增益为零；BEA v0 的序贯
-  coverage/defer/expand 规则未改变 accepted set 与更简单的 agreement-only
-  排序的差异。
-- BEA v0 与 `same_budget_bm25_prefix` 也产生 IDENTICAL 的
-  file_recall@10 / mrr / span_f0.5@10 / success_rate，表明 BEA v0 的
-  基于 agreement 的 reranking 在此有界样本上与 BM25-prefix 选择无差异
-  （高 agreement span 也是 top BM25 span）。
-- `seeded_random_same_budget` 在 mrr 上以 `delta(mrr)=+0.09375` 劣于
-  BEA v0 与 agreement-only 控制，确认在此有界样本上基于确定性
-  agreement 的选择在相同预算下优于随机选择。
-
-这些是对有界样本的诚实 smoke 级聚合 delta，不是 benchmark 结果、
-leaderboard 条目、性能声明、method-winner 声明、calibration 声明、
-promotion、default 变更、runtime/retriever/pack/backend/EvidenceCore 语义
-变更，或 downstream agent 价值声明。
-
-### Caveats
-
-- BEA-1 是公开 aggregate-only 机制消融 smoke artifact。它是
-  eval/diagnostic only。它不更改 runtime、retriever、pack、backend 或
-  default policy；它不更改 EvidenceCore 语义。它不是 benchmark 结果、不是
-  leaderboard 条目、不是性能声明、不是 method-winner 声明、不是
-  calibration 声明、不是 promotion、不是 default 变更、不是
-  runtime-clean general algorithm 声明、且不是 downstream agent 价值
-  声明。
-- BEA-1 不输出 `winner`、`best_method`、`recommended_default`、
-  `method_winner`、`calibration`，或任何暗示 policy/default 决策的字段。
-- BEA-1 不运行 provider 调用，也不运行 remote provider 调用。
-  `provider_calls=0`、`provider_calls_made=false`、
-  `remote_provider_calls_made=false`。
-- BEA-1 使用有界 ContextBench verified Python 行（默认 5；硬上限 20）和
-  有界 RepoQA Python needle（默认 3；硬上限 10）。这是 smoke，不是严格
-  benchmark 评估。聚合指标为有界样本上的点估计。
-- BEA-1 仅在 `/tmp`（或显式忽略的私有路径，位于被 gitignore 的 `runs/`
-  目录下）写入私有 per-record SCORE JSONL。私有 SCORE 路径绝不序列化到
-  公开 artifact、docs 或 CI artifact。
-- BEA-1 不会从 Python 静默回退到所有语言。
-- BEA-1 不声明 external benchmark 性能、method-winner 或 calibration。
-  聚合指标为 smoke 级 diagnostic。
-- BEA-1 不证明 downstream agent 价值。机制消融 smoke 不演练任何
-  downstream agent。
-- BEA-1 不 bootstrap BEA-0 聚合 artifact。它重新运行 fresh external
-  retrieval；不读取或不依赖 BEA-0 artifact。
-- 所有 no-claim / no-runtime-change flag 保持 false；diagnostic flag
-  （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
-  未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
-  无 promotion/default/runtime claim 变更。EvidenceCore 语义不变。
-
 ## 2026-06-21 — BEA-2 Policy v0.2 Diversity/Risk 机制消融 Smoke
 
 ### 目标
@@ -9043,7 +8941,7 @@ agreement_only、seeded_random、rrf_same_budget（可用时）。
 
 ```text
 python3 -m py_compile eval/bea3_anchor_span_latency.py  => PASS
-python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (224/224 checks)
+python3 eval/bea3_anchor_span_latency.py --self-test  => PASS (225/225 checks)
 python3 eval/bea3_anchor_span_latency.py \
   --enable-external-benchmark-network \
   --contextbench-row-offset 60 --contextbench-row-limit 3 \
@@ -9059,16 +8957,41 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### 真实有界本地运行结果（2026-06-21）
+### 手动 CI 结果（run `27942492278`，2026-06-21）
 
-5 条记录成功（CB 3 + RQ 2）。45 行私有 SCORE（5×9 arm）。
-Win/tie/loss（v0.3 vs v0.2，n=5）：file_recall@10 win=0 tie=5 loss=0；
-mrr win=0 tie=5 loss=0；span_f0.5@10 win=0 tie=5 loss=0；success_rate
-win=0 tie=5 loss=0。v0.3 在此有界样本上与 v0.2 在所有 primary 指标上持平。
+fixed CI run `27942492278` 已通过；它是在补上必需的 v0.3-vs-v0.2
+`delta_records` 验证后得到的结果。较早 green run `27941717490` 因公开 delta
+surface 不完整，不作为结果 artifact。
+
+30 条记录成功（ContextBench 20 + RepoQA 10）。270 行私有 SCORE
+（30 × 9 arm）。`forbidden_scan=pass`、`provider_calls=0`、
+`private_score_manifest.record_count=270`、`path_publicly_serialized=false`、
+`aggregate_runtime_seconds=398.532`。
+
+在 30-record CI slice 上，BEA v0.3 相对 BEA v0.2：
+
+```text
+file_recall@10 delta: 0.0        (win=0, tie=30, loss=0)
+mrr delta: 0.0                   (win=0, tie=30, loss=0)
+span_f0.5@10 delta: +0.00217     (win=1, tie=29, loss=0)
+success_rate delta: 0.0          (win=0, tie=30, loss=0)
+latency_seconds delta: +0.001098
+evidence_budget_used delta: 0.0
+quality_per_latency delta: +0.000292
+```
+
+同一切片上，BEA v0.3 相对 BEA v0 / same-budget BM25 / agreement-only / RRF：
+file_recall@10 +0.066667、mrr +0.130556、success_rate +0.066667、
+span_f0.5@10 -0.010068。相对 seeded random：file_recall@10 +0.2、mrr
++0.231667、span_f0.5@10 +0.015826、success_rate +0.2。
 
 机制摘要：anchor_used_rate=1.0、early_stop_rate=0.0、
-mean_budget_used=5.0、mean_latency_seconds=6.7364、
-mean_span_extent=4.88、span_proxy_bucket_tight=25。
+mean_budget_used=4.333333、mean_latency_seconds=8.7516、
+mean_span_extent=4.246667。
+
+解释：v0.3 在该切片上并没有相对 v0.2 实质改善 file/MRR/success；它只给出
+极小的 span/quality-per-latency 正向信号，latency 基本相同。这是 weak/mixed
+smoke 结果，不是 method winner 或 default-policy 声明。
 
 ### Caveats
 
@@ -9076,6 +8999,7 @@ mean_span_extent=4.88、span_proxy_bucket_tight=25。
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value 声明。
 - v0.3 权重为冻结常量，不从 outcomes 调优。
-- 有界样本（5 条记录）。v0.3 与 v0.2 持平——anchor/span/latency 代理
-  未改变 accepted set（所有候选均为 tight-span、low-risk、BM25-backed）。
+- 有界 CI 样本（30 条记录）。smoke，非严格评估。
+- v0.3 在 file/MRR/success 上与 v0.2 基本持平，只出现极小的
+  span/quality-per-latency 正向信号。
 - BEA-0/BEA-1/BEA-2 语义未修改。

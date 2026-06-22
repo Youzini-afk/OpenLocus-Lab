@@ -2918,10 +2918,8 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   BM25/agreement anchor 预留 anchor slot，对剩余预算应用
   diversity/risk 评分，添加 runtime-clean span/latency 代理。冻结权重
   不从 outcomes 调优。消融：v0_3_no_anchor、v0_3_no_early_stop。
-- **有界本地运行（2026-06-21）**：5 条记录（CB 3 + RQ 2），budget=5，
-  9 arm。Win/tie/loss（v0.3 vs v0.2，n=5）：所有 primary 指标 tie=5。
-  v0.3 在此有界样本上与 v0.2 持平。45 行私有 SCORE（5×9 arm）。
-- **224/224 self-test 检查通过**：30 组。
+- **手动 CI run `27942492278`（2026-06-21）**：30 条记录（ContextBench 20 + RepoQA 10），budget=5，9 arm，270 行私有 SCORE。v0.3 相对 v0.2：file_recall@10 delta=0.0，mrr delta=0.0，span_f0.5@10 delta=+0.00217，success_rate delta=0.0，latency_seconds delta=+0.001098，quality_per_latency delta=+0.000292。相对 v0.2 的 win/tie/loss：file/MRR/success 均为 0/30/0，span 为 1/29/0。v0.3 与 v0.2 基本持平，只出现极小的 span/quality-per-latency 信号。
+- **225/225 self-test 检查通过**：30 组。
 - **严格 claim 边界**：`claim_level=bea_v03_policy_smoke_only`。
   非 benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
