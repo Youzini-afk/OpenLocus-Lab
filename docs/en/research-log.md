@@ -9989,3 +9989,150 @@ or downstream value proof.
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged.
 - B16-F semantics not mutated; B16-G is a standalone atom-ablation phase.
+
+## 2026-06-21 — B16-H File-Choice Atom Ablation Live-Provider Smoke
+
+### Objective
+
+Run a live-provider file-choice atom ablation to resolve the main B16-G
+confound: B16-G's structured action schema and prompt forced edits to
+`target.py`, so `support_only` solving 8/8 did not prove the support
+atom alone can guide file choice. B16-H removes that confound while
+keeping safe structured actions and private traces.
+
+### Prior result
+
+- B16-G result checkpoint: `b407622`, CI run `27947247773`.
+  `support_only`, `distractor_plus_support`, and `target_plus_support`
+  solved 8/8; `target_only` and sparse solved 0/8. This is bounded by
+  the target-file-constrained harness.
+
+### Scope
+
+- Phase: `B16-H`.
+- Evaluator: `eval/b16h_file_choice_atom_ablation.py`.
+- Artifact:
+  `artifacts/b16h_file_choice_atom_ablation/b16h_file_choice_atom_ablation_report.json`.
+- Docs:
+  `docs/en/b16h-file-choice-atom-ablation.md` and zh mirror.
+- Workflow stage in `.github/workflows/real-provider-benchmark.yml`:
+  `b16h_file_choice_atom_ablation`.
+- Manual real-provider workflow only; local/no-env mode truthfully blocks.
+- Default: 8 synthetic tasks x 5 arms = 40 live provider calls.
+
+### Arms
+
+1. `control_sparse`: task issue only, minimal context; no atoms.
+2. `file_choice_target_only`: target file cue + target symbol cue; no
+   support, no decisive cue.
+3. `file_choice_support_only`: support module cue + decisive cue; no
+   target file/symbol cue.
+4. `file_choice_distractor_plus_support`: distractor file cue + support
+   module cue + decisive cue; no target file; wrong-file cue.
+5. `file_choice_target_plus_support`: target file cue + target symbol
+   cue + support module cue + decisive cue (full pack).
+
+Primary contrasts: `file_choice_target_plus_support` vs
+`file_choice_support_only`; `file_choice_target_plus_support` vs
+`file_choice_distractor_plus_support`; `file_choice_target_only` vs
+`file_choice_support_only`. Secondary contrasts: each context arm vs
+`control_sparse`.
+
+### Harness change (file-choice confound removal)
+
+- No prompt line saying only use target.py.
+- No global `ALLOWED_EDIT_FILES = {target.py}` set.
+- Accept only the per-task safe file set: target module, distractor
+  module, and support/config/cross-file module when present.
+- Never allow arbitrary paths.
+- Record chosen file only in private event/SCORE traces.
+- Expose only aggregate file-choice rates publicly
+  (selected_target_file_rate, selected_distractor_file_rate,
+  selected_support_file_rate).
+
+### Mechanism summary records
+
+Counts-only aggregate fields:
+`support_only_sufficient_with_file_choice_count`,
+`target_atom_required_with_file_choice_count`,
+`distractor_hurts_with_file_choice_count`,
+`wrong_file_selection_count`,
+`all_arms_solved_count`,
+`sparse_solved_count`.
+
+### Private artifacts
+
+For every task x arm, B16-H writes private SCORE JSONL (atom
+composition, chosen_file, score outcome) and private event JSONL
+(prompt, response, parsed action, chosen_file, patch/diff, test
+stdout/stderr, provider metadata, tokens/cost/latency, failure reason)
+under `/tmp` only. The public artifact includes only aggregate
+manifests with record counts, schema versions,
+`storage_class=tmp_private`, `path_publicly_serialized=false`, and
+manifest hashes.
+
+### Public artifact shape
+
+Records-only aggregate public artifact: `schema_version`,
+`generated_by`, `generated_at`, `claim_level`, `status`, `mode`,
+`phase`, `model_display_category`, `input_summary` (includes
+`file_choice_confound_removed=true`), `arm_results` (per-arm aggregate
+metrics including file-choice rates), `paired_deltas` (7 contrasts: 3
+primary + 4 secondary), `task_family_results`,
+`mechanism_summary_records`, `honest_signals`, `private_score_manifest`,
+`private_event_manifest`, `forbidden_scan`, no-claim flags (including
+`bea_superiority_claimed`), `self_test_summary`/`self_test_passed`. No
+raw task text, prompts, responses, patches, paths, snippets, atom
+compositions, chosen file names, candidate traces, provider payloads,
+private paths, or per-task outcomes.
+
+### Claim boundary
+
+B16-H is a bounded synthetic live-provider file-choice atom-ablation
+smoke. It is not downstream value proof, BEA superiority, method
+winner/default, benchmark performance, real-user evidence, calibration,
+promotion, or runtime/retriever/pack/backend/default-policy/EvidenceCore
+change. Docs say "on this bounded synthetic file-choice slice" for any
+sufficiency finding.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16h_file_choice_atom_ablation.py  => PASS
+python3 eval/b16h_file_choice_atom_ablation.py --self-test  => PASS (266/266 checks)
+python3 eval/b16h_file_choice_atom_ablation.py \
+  --out artifacts/b16h_file_choice_atom_ablation/\
+b16h_file_choice_atom_ablation_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-H,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   file_choice_atom_ablation_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false,
+   bea_superiority_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+The local no-env validation path is truthful and blocked/unavailable.
+Manual real-provider CI run pending.
+
+### Caveats
+
+- B16-H is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value/BEA-superiority claim.
+- File-choice confound removed; chosen file recorded only in private
+  traces; public artifact only aggregate file-choice rates.
+- Bounded synthetic sample (8 tasks x 5 arms default). Smoke, not
+  rigorous evaluation. Sufficiency wording bounded to "on this bounded
+  synthetic file-choice slice".
+- All no-claim / no-runtime-change flags false; EvidenceCore semantics
+  unchanged.
+- B16-F/B16-G semantics not mutated; B16-H is a standalone file-choice
+  atom-ablation phase.

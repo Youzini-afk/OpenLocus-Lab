@@ -514,6 +514,55 @@ live-provider 切片上，decisive support 足以驱动解题；target-only cont
 agent 价值声明。B16-G 不修改 B16-F 语义。详见
 [B16-G 详细报告](b16g-context-pack-atom-ablation.md)。
 
+## 2026-06-21 B16-H File-Choice Atom Ablation Live-Provider Smoke
+
+B16-H 通过 live-provider file-choice atom ablation 解决 B16-G 的主要
+confound：B16-G 的结构化 action schema 和 prompt 强制编辑 target.py，
+因此 support_only 解决 8/8 并不能证明 support atom 单独能引导文件选择。
+B16-H 移除该 confound：prompt 不再说 "only use target.py"；无全局
+`ALLOWED_EDIT_FILES = {target.py}` 集合；validator 仅接受 per-task 安全
+文件集（target + distractor + support/config/cross-file module）；绝不
+接受任意路径；chosen file 仅记录在 `/tmp` 下的私有 SCORE/event JSONL
+中；公开仅暴露聚合文件选择率。五个固定 arm：`control_sparse`、
+`file_choice_target_only`、`file_choice_support_only`、
+`file_choice_distractor_plus_support`、
+`file_choice_target_plus_support`。八个固定任务族（复用 B16-F/B16-G）。
+默认 8 任务 x 5 arms = 40 次 live provider 调用。schema
+`b16h_file_choice_atom_ablation.v1`、`claim_level=
+file_choice_atom_ablation_downstream_smoke_only`、阶段 `B16-H`。
+266/266 self-test 检查通过。Atom composition per arm 为确定性且私有
+（仅写入 `/tmp` 下的私有 SCORE JSONL；绝不提交；私有路径**绝不**
+序列化）。Chosen file 仅记录在私有 SCORE/event JSONL 中（绝不发布实际
+文件名）。文件选择聚合 metrics（**绝不**实际文件名）：
+`selected_target_file_rate`、`selected_distractor_file_rate`、
+`selected_support_file_rate`、`wrong_file_edit_rate`、
+`correct_file_before_first_edit_rate`。主对比：
+`file_choice_target_plus_support` vs `file_choice_support_only`、
+`file_choice_target_plus_support` vs
+`file_choice_distractor_plus_support`、`file_choice_target_only` vs
+`file_choice_support_only`。次对比：每个 context arm vs
+`control_sparse`。`mechanism_summary_records`：
+`support_only_sufficient_with_file_choice_count`、
+`target_atom_required_with_file_choice_count`、
+`distractor_hurts_with_file_choice_count`、
+`wrong_file_selection_count`、`all_arms_solved_count`、
+`sparse_solved_count`。私有 event JSONL 仅写入 `/tmp`（prompt/response/
+chosen_file/patch/test output 绝不提交）。公开 artifact 仅聚合：
+`arm_results`（含文件选择率）、`paired_deltas`、`task_family_results`、
+`mechanism_summary_records`、`honest_signals`、`private_score_manifest`、
+`private_event_manifest`、`forbidden_scan`、no-claim flag（包括
+`bea_superiority_claimed=false`）。`input_summary.file_choice_confound_removed=true`。
+live provider 仅当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时
+使用。本地 no-env 路径真实 `blocked_remote_not_enabled`（**不**是假通过）。
+CI 通过**不**要求任何 atom 获胜；零/负 delta 有效。文档对任何
+sufficiency 发现标明 "在此有界合成 file-choice 切片上"。B16-H 不是基准
+测试结果、不是 leaderboard entry、不是性能声明、不是 method-winner 声明、
+不是 calibration 声明、不是 BEA 优越性声明、不是 promotion、不是 default
+改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是
+下游 agent 价值声明。B16-H 不修改 B16-F/B16-G 语义。手动 real-provider
+CI run 待执行。详见
+[B16-H 详细报告](b16h-file-choice-atom-ablation.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

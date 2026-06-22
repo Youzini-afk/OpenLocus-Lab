@@ -3026,3 +3026,58 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   upload；删除 plan.json；在缺失 arm、零 provider_calls、缺失主对比、
   缺失 paired_deltas、私有 manifest 计数不匹配、forbidden_scan 失败、
   bea_superiority_claimed 不为 false 时 fail-closed）。
+
+## B16-H findings
+
+- **B16-H 通过 live-provider file-choice atom ablation 解决 B16-G 的
+  主要 confound**。B16-G 的结构化 action schema 和 prompt 强制编辑
+  `target.py`，因此 `support_only` 解决 8/8 并不能证明 support atom
+  单独能引导文件选择。B16-H 移除该 confound：prompt 不再说 "only use
+  target.py"；无全局 `ALLOWED_EDIT_FILES = {target.py}` 集合；validator
+  仅接受 per-task 安全文件集（target + distractor + support/config/
+  cross-file module）；绝不接受任意路径；chosen file 仅记录在 `/tmp`
+  下的私有 SCORE/event JSONL 中；公开仅暴露聚合文件选择率。
+- **五个固定 arm**：`control_sparse`、`file_choice_target_only`、
+  `file_choice_support_only`、`file_choice_distractor_plus_support`、
+  `file_choice_target_plus_support`。八个固定任务族（复用 B16-F/B16-G）。
+  默认 8 任务 x 5 arms = 40 次 live provider 调用。
+- **主对比**：`file_choice_target_plus_support` vs
+  `file_choice_support_only`；`file_choice_target_plus_support` vs
+  `file_choice_distractor_plus_support`；`file_choice_target_only` vs
+  `file_choice_support_only`。**次对比**：每个 context arm vs
+  `control_sparse`。7 对比 x 17 metrics = 119 paired delta record。
+- **文件选择聚合 metrics**（**绝不**实际文件名）：
+  `selected_target_file_rate`、`selected_distractor_file_rate`、
+  `selected_support_file_rate`、`wrong_file_edit_rate`、
+  `correct_file_before_first_edit_rate`。
+- **机制摘要 record**（仅计数，均带 "with_file_choice" 限定符，因为
+  confound 已移除）：
+  `support_only_sufficient_with_file_choice_count`、
+  `target_atom_required_with_file_choice_count`、
+  `distractor_hurts_with_file_choice_count`、
+  `wrong_file_selection_count`、
+  `all_arms_solved_count`、`sparse_solved_count`。
+- **266/266 self-test check 通过**。本地 no-env 路径真实
+  `blocked_remote_not_enabled`（**不**是假通过）。公开 artifact 中的
+  self-test summary 仅计数。
+- **严格声明边界**：`claim_level=
+  file_choice_atom_ablation_downstream_smoke_only`。不是 benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value/BEA-优越性。CI 通过**不**要求任何
+  atom 获胜；零/负 delta 有效。`bea_superiority_claimed=false`。文档对
+  任何 sufficiency 发现标明 "在此有界合成 file-choice 切片上"。
+- **B16-H 不修改 B16-F/B16-G**：独立 phase、evaluator、artifact。手动
+  real-provider CI run 待执行。
+- **公开 artifact 仅聚合**：`arm_results`（含文件选择率）、
+  `paired_deltas`、`task_family_results`、`mechanism_summary_records`、
+  `honest_signals`、`private_score_manifest`、`private_event_manifest`、
+  `forbidden_scan`、no-claim flag。无 raw prompt/response/patch/path/
+  片段/atom composition/chosen file 名/候选 trace/per-run 行。
+  `input_summary.file_choice_confound_removed=true`。
+- **Workflow stage `b16h_file_choice_atom_ablation`** 添加到
+  `real-provider-benchmark.yml`（仅手动 `workflow_dispatch`；
+  `enable_remote_models=false` 默认；专用 sanitized upload；排除通用
+  upload；删除 plan.json；在缺失 arm、零 provider_calls、缺失主对比、
+  缺失 wrong-file/file-choice metrics、私有 manifest 计数不匹配、
+  forbidden_scan 失败、`file_choice_confound_removed` 不为 true、
+  `bea_superiority_claimed` 不为 false 时 fail-closed）。

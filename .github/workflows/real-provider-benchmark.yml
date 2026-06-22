@@ -29,6 +29,7 @@ on:
           - b16e_broader_live_provider_paired_smoke
           - b16f_bea_derived_context_pack_paired_smoke
           - b16g_context_pack_atom_ablation
+          - b16h_file_choice_atom_ablation
           - all_smoke
       enable_remote_models:
         description: 'Allow real embedding / LLM providers from production environment'
@@ -219,7 +220,7 @@ jobs:
           import re
           from pathlib import Path
 
-          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner", "b16c_live_provider_paired_smoke", "b16d_less_trivial_live_provider_paired_smoke", "b16e_broader_live_provider_paired_smoke", "b16f_bea_derived_context_pack_paired_smoke", "b16g_context_pack_atom_ablation", "all_smoke"}
+          allowed_stages = {"p2_embedding", "p3_quiver_readiness", "p4_anchor_proto", "p5_llm_stress", "p20_llm_large", "p21_embedding_context", "p21_dense_hybrid", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "p51c_planner", "b16c_live_provider_paired_smoke", "b16d_less_trivial_live_provider_paired_smoke", "b16e_broader_live_provider_paired_smoke", "b16f_bea_derived_context_pack_paired_smoke", "b16g_context_pack_atom_ablation", "b16h_file_choice_atom_ablation", "all_smoke"}
           allowed_datasets = {"self_test", "ci_smoke"}
           r32_allowed_views = {"path_plus_symbol"}
           p21_allowed_views = {
@@ -312,7 +313,7 @@ jobs:
               raise SystemExit(f"unsupported task_sample_mode: {task_sample_mode}")
 
           if remote_enabled:
-              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "b16c_live_provider_paired_smoke", "b16d_less_trivial_live_provider_paired_smoke", "b16e_broader_live_provider_paired_smoke", "b16f_bea_derived_context_pack_paired_smoke", "b16g_context_pack_atom_ablation", "all_smoke"}
+              llm_stages = {"p5_llm_stress", "p20_llm_large", "p21_llm_rich", "b3_rmc_quality", "b6_lite_policy_search", "b6b_combined_policy_search", "b6c_frozen_policy_validation", "b6f_repo_generalization_validation", "b6d_cross_adapter_frozen_validation", "b16c_live_provider_paired_smoke", "b16d_less_trivial_live_provider_paired_smoke", "b16e_broader_live_provider_paired_smoke", "b16f_bea_derived_context_pack_paired_smoke", "b16g_context_pack_atom_ablation", "b16h_file_choice_atom_ablation", "all_smoke"}
               embedding_provider = provider_aliases.get(getenv("VAR_EMBEDDING_PROVIDER", "openai_compatible"))
               if not embedding_provider:
                   raise SystemExit("unsupported embedding provider variable")
@@ -2064,6 +2065,224 @@ jobs:
           print(f"B16-G sanitized aggregate report written to {dst}")
           if data.get("status") != "context_pack_atom_ablation_smoke_pass":
               print(f"B16-G live-provider smoke did not pass: {data.get('status')}", file=sys.stderr)
+              sys.exit(1)
+          PY
+
+      - name: B16-H file-choice atom ablation live-provider smoke
+        if: ${{ inputs.stage == 'b16h_file_choice_atom_ablation' }}
+        env:
+          OPENLOCUS_ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          OPENLOCUS_LLM_WORKFLOW_DISPATCH: "1"
+          OPENLOCUS_LLM_MODEL: ${{ steps.plan.outputs.llm_model }}
+          OPENLOCUS_LLM_BASE_URL: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_BASE_URL || '' }}
+          OPENLOCUS_LLM_API_KEY: ${{ steps.plan.outputs.allow_remote == '1' && secrets.OPENLOCUS_LLM_API_KEY || '' }}
+          ALLOW_REMOTE: ${{ steps.plan.outputs.allow_remote }}
+          TASK_COUNT: "8"
+        run: |
+          # B16-H requires enable_remote_models=true via the plan step;
+          # the plan step refuses to set allow_remote=1 otherwise. No
+          # provider run if ALLOW_REMOTE != "1".
+          if [[ "$ALLOW_REMOTE" != "1" ]]; then
+            echo "B16-H requires enable_remote_models=true; skipping live run"
+            exit 1
+          fi
+          tmp_report="$RUNNER_TEMP/b16h_file_choice_atom_ablation_report.json"
+          python3 eval/b16h_file_choice_atom_ablation.py \
+            --self-test
+          python3 eval/provider_client.py --self-test
+          python3 eval/b16h_file_choice_atom_ablation.py \
+            --allow-remote --require-workflow-dispatch \
+            --task-count "$TASK_COUNT" \
+            --out "$tmp_report"
+          # Copy/sanitize into the real_provider_ci artifact dir only
+          # if the script's own scanner passed (status in the allowlist
+          # and forbidden_scan.status=pass). The script itself runs the
+          # fail-closed scanner before writing, so a successful write
+          # already guarantees aggregate-only safety.
+          mkdir -p artifacts/real_provider_ci
+          # Delete plan.json so the B16-H upload surface contains only
+          # the dedicated B16-H report.
+          rm -f artifacts/real_provider_ci/plan.json
+          python3 - <<'PY'
+          import json
+          import os
+          import pathlib
+          import re
+          import sys
+          src = pathlib.Path(os.environ["RUNNER_TEMP"]) / "b16h_file_choice_atom_ablation_report.json"
+          if not src.is_file():
+              print("B16-H temp report not found", file=sys.stderr)
+              sys.exit(1)
+          data = json.loads(src.read_text(encoding="utf-8"))
+          allowed_statuses = {
+              "file_choice_atom_ablation_smoke_pass",
+              "unavailable_no_local_provider_env",
+              "blocked_remote_not_enabled",
+              "provider_call_failed",
+              "structured_action_parse_failed",
+              "paired_run_failed",
+          }
+          if data.get("status") not in allowed_statuses:
+              print(f"B16-H unexpected status: {data.get('status')}", file=sys.stderr)
+              sys.exit(1)
+          if data.get("forbidden_scan", {}).get("status") != "pass":
+              print("B16-H forbidden_scan failed", file=sys.stderr)
+              sys.exit(1)
+          # Hard no-claim gate (includes bea_superiority_claimed).
+          for flag in (
+              "downstream_agent_value_proven",
+              "live_agent_generalization_claimed",
+              "promotion_ready",
+              "default_should_change",
+              "external_benchmark_performance_claimed",
+              "real_user_task_claimed",
+              "runtime_behavior_changed",
+              "retriever_changed",
+              "pack_builder_changed",
+              "backend_changed",
+              "default_policy_changed",
+              "evidencecore_semantics_changed",
+              "method_winner_claimed",
+              "calibration_claimed",
+              "bea_superiority_claimed",
+          ):
+              if data.get(flag) is not False:
+                  print(f"B16-H {flag} must be false", file=sys.stderr)
+                  sys.exit(1)
+          if data.get("aggregate_only_public_artifact") is not True:
+              print("B16-H aggregate_only_public_artifact must be true", file=sys.stderr)
+              sys.exit(1)
+          if data.get("diagnostic_only") is not True:
+              print("B16-H diagnostic_only must be true", file=sys.stderr)
+              sys.exit(1)
+          live_flags = (
+              "downstream_agent_runs_performed",
+              "live_llm_agent",
+              "provider_calls_made",
+              "remote_provider_calls_made",
+              "paired_run_executed",
+              "synthetic_task_family_matrix_used",
+              "real_file_edits_performed",
+              "real_test_commands_executed",
+              "agent_behavior_metrics_evaluated",
+              "file_choice_atom_ablation_executed",
+              "private_score_records_written",
+              "private_event_records_written",
+          )
+          if data.get("status") == "file_choice_atom_ablation_smoke_pass":
+              for flag in live_flags:
+                  if data.get(flag) is not True:
+                      print(f"B16-H pass status requires {flag}=true", file=sys.stderr)
+                      sys.exit(1)
+          else:
+              for flag in live_flags:
+                  if data.get(flag) is not False:
+                      print(f"B16-H non-pass status requires {flag}=false", file=sys.stderr)
+                      sys.exit(1)
+          # Final secret/URL/raw-prefix scan over the artifact text.
+          text = src.read_text(encoding="utf-8")
+          forbidden_patterns = [
+              re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
+              re.compile(r"(?i)authorization\s*[:=]"),
+              re.compile(r"(?i)bearer\s+[A-Za-z0-9_.-]{20,}"),
+              re.compile(r"https?://"),
+              re.compile(r"\[mk\]"),
+          ]
+          for pat in forbidden_patterns:
+              if pat.search(text):
+                  print(f"B16-H forbidden pattern leaked: {pat.pattern}", file=sys.stderr)
+                  sys.exit(1)
+          # Fail closed if remote enabled and provider_calls=0, missing
+          # arms/contrasts, missing wrong-file/file-choice metrics,
+          # private manifest counts mismatch, or forbidden scan fail.
+          if data.get("status") == "file_choice_atom_ablation_smoke_pass":
+              arms_seen = {r.get("arm") for r in data.get("arm_results", [])}
+              required_arms = {
+                  "control_sparse",
+                  "file_choice_target_only",
+                  "file_choice_support_only",
+                  "file_choice_distractor_plus_support",
+                  "file_choice_target_plus_support",
+              }
+              if arms_seen != required_arms:
+                  print(f"B16-H missing required arms: {required_arms - arms_seen}", file=sys.stderr)
+                  sys.exit(1)
+              if not data.get("paired_deltas"):
+                  print("B16-H paired_deltas missing", file=sys.stderr)
+                  sys.exit(1)
+              # All three primary contrasts must be present.
+              for baseline, treatment in (
+                  ("file_choice_support_only", "file_choice_target_plus_support"),
+                  ("file_choice_distractor_plus_support", "file_choice_target_plus_support"),
+                  ("file_choice_support_only", "file_choice_target_only"),
+              ):
+                  present = any(
+                      d.get("baseline_arm") == baseline
+                      and d.get("treatment_arm") == treatment
+                      for d in data.get("paired_deltas", [])
+                  )
+                  if not present:
+                      print(f"B16-H primary contrast {treatment} vs {baseline} missing", file=sys.stderr)
+                      sys.exit(1)
+              # File-choice metrics must be present in arm_results.
+              for arm_result in data.get("arm_results", []):
+                  metrics = arm_result.get("metrics", {})
+                  for fm in ("selected_target_file_rate", "selected_distractor_file_rate", "selected_support_file_rate", "wrong_file_edit_rate"):
+                      if fm not in metrics:
+                          print(f"B16-H arm {arm_result.get('arm')} missing file-choice metric {fm}", file=sys.stderr)
+                          sys.exit(1)
+              # Private manifest counts must match task_count x arm_count.
+              try:
+                  task_count = int(os.environ["TASK_COUNT"])
+              except Exception:
+                  print("B16-H TASK_COUNT env must be a positive integer", file=sys.stderr)
+                  sys.exit(1)
+              if task_count < 1 or task_count > 12:
+                  print(f"B16-H TASK_COUNT out of range: {task_count}", file=sys.stderr)
+                  sys.exit(1)
+              expected_manifest_count = task_count * len(required_arms)
+              score_count = data.get("private_score_manifest", {}).get("record_count", 0)
+              event_count = data.get("private_event_manifest", {}).get("record_count", 0)
+              if score_count != expected_manifest_count:
+                  print(f"B16-H private_score_manifest.record_count={score_count} expected {expected_manifest_count}", file=sys.stderr)
+                  sys.exit(1)
+              if event_count != expected_manifest_count:
+                  print(f"B16-H private_event_manifest.record_count={event_count} expected {expected_manifest_count}", file=sys.stderr)
+                  sys.exit(1)
+              if data.get("private_score_manifest", {}).get("path_publicly_serialized") is not False:
+                  print("B16-H private_score_manifest.path_publicly_serialized must be false", file=sys.stderr)
+                  sys.exit(1)
+              if data.get("private_event_manifest", {}).get("path_publicly_serialized") is not False:
+                  print("B16-H private_event_manifest.path_publicly_serialized must be false", file=sys.stderr)
+                  sys.exit(1)
+              # file_choice_confound_removed must be true.
+              if data.get("input_summary", {}).get("file_choice_confound_removed") is not True:
+                  print("B16-H input_summary.file_choice_confound_removed must be true", file=sys.stderr)
+                  sys.exit(1)
+              # provider_calls must be > 0.
+              total_calls = sum(
+                  r.get("provider_summary", {}).get("calls_attempted", 0)
+                  for r in data.get("arm_results", [])
+              )
+              if total_calls == 0:
+                  print("B16-H provider_calls=0 on pass status", file=sys.stderr)
+                  sys.exit(1)
+          dst = pathlib.Path("artifacts/real_provider_ci/b16h_file_choice_atom_ablation_report.json")
+          dst.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          plan_path = pathlib.Path("artifacts/real_provider_ci/plan.json")
+          if plan_path.exists():
+              plan_path.unlink()
+          json_surface = sorted(pathlib.Path("artifacts/real_provider_ci").glob("*.json"))
+          if json_surface != [dst]:
+              print(
+                  "B16-H upload surface must contain only the sanitized report: "
+                  + ", ".join(str(p) for p in json_surface),
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          print(f"B16-H sanitized aggregate report written to {dst}")
+          if data.get("status") != "file_choice_atom_ablation_smoke_pass":
+              print(f"B16-H live-provider smoke did not pass: {data.get('status')}", file=sys.stderr)
               sys.exit(1)
           PY
 
@@ -3935,7 +4154,7 @@ jobs:
           PY
 
       - name: Upload real-provider artifacts
-        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' && inputs.stage != 'b16c_live_provider_paired_smoke' && inputs.stage != 'b16d_less_trivial_live_provider_paired_smoke' && inputs.stage != 'b16e_broader_live_provider_paired_smoke' && inputs.stage != 'b16f_bea_derived_context_pack_paired_smoke' && inputs.stage != 'b16g_context_pack_atom_ablation' }}
+        if: ${{ inputs.stage != 'p51c_planner' && inputs.stage != 'b3_rmc_quality' && inputs.stage != 'b6_lite_policy_search' && inputs.stage != 'b6b_combined_policy_search' && inputs.stage != 'b6c_frozen_policy_validation' && inputs.stage != 'b6f_repo_generalization_validation' && inputs.stage != 'b6d_cross_adapter_frozen_validation' && inputs.stage != 'b16c_live_provider_paired_smoke' && inputs.stage != 'b16d_less_trivial_live_provider_paired_smoke' && inputs.stage != 'b16e_broader_live_provider_paired_smoke' && inputs.stage != 'b16f_bea_derived_context_pack_paired_smoke' && inputs.stage != 'b16g_context_pack_atom_ablation' && inputs.stage != 'b16h_file_choice_atom_ablation' }}
         uses: actions/upload-artifact@v4
         with:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
@@ -4168,6 +4387,30 @@ jobs:
           name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
           path: |
             artifacts/real_provider_ci/b16g_context_pack_atom_ablation_report.json
+            !artifacts/real_provider_ci/plan.json
+            !artifacts/real_provider_ci/**/labels/**
+            !artifacts/real_provider_ci/**/corpus/**
+            !artifacts/real_provider_ci/*label*
+            !artifacts/real_provider_ci/*private*
+            !**/*private*
+            !docs/real-provider-ci/*label*
+            !docs/real-provider-ci/*private*
+            !**/prompts/**
+            !**/responses/**
+            !**/messages/**
+            !**/provider_payload/**
+            !**/logs/**
+            !**/tmp/**
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload B16-H file-choice atom ablation artifacts
+        if: ${{ inputs.stage == 'b16h_file_choice_atom_ablation' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-provider-${{ inputs.stage }}-${{ github.run_id }}
+          path: |
+            artifacts/real_provider_ci/b16h_file_choice_atom_ablation_report.json
             !artifacts/real_provider_ci/plan.json
             !artifacts/real_provider_ci/**/labels/**
             !artifacts/real_provider_ci/**/corpus/**

@@ -9261,3 +9261,142 @@ live-provider 切片上，decisive support 足以驱动解题；target-only cont
 - 有界合成样本（默认 8 任务 x 5 arms）。smoke，非严格评估。
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义未改。
 - B16-F 语义未修改；B16-G 是独立 atom-ablation phase。
+
+## 2026-06-21 — B16-H File-Choice Atom Ablation Live-Provider Smoke
+
+### 目标
+
+运行 live-provider file-choice atom ablation，解决 B16-G 的主要
+confound：B16-G 的结构化 action schema 和 prompt 强制编辑 target.py，
+因此 support_only 解决 8/8 并不能证明 support atom 单独能引导文件选择。
+B16-H 在保持安全结构化 action 和私有 trace 的同时移除了该 confound。
+
+### 前序结果
+
+- B16-G 结果 checkpoint：`b407622`，CI run `27947247773`。
+  `support_only`、`distractor_plus_support` 和
+  `target_plus_support` 解决 8/8；`target_only` 和 sparse 解决 0/8。这
+  受限于 target-file 强制 harness。
+
+### 范围
+
+- 阶段：`B16-H`。
+- Evaluator：`eval/b16h_file_choice_atom_ablation.py`。
+- Artifact：
+  `artifacts/b16h_file_choice_atom_ablation/b16h_file_choice_atom_ablation_report.json`。
+- 文档：`docs/en/b16h-file-choice-atom-ablation.md` 和 zh 镜像。
+- `.github/workflows/real-provider-benchmark.yml` 中的 workflow stage：
+  `b16h_file_choice_atom_ablation`。
+- 仅手动 real-provider workflow；本地/no-env 模式真实阻断。
+- 默认：8 合成任务 x 5 arms = 40 次 live provider 调用。
+
+### Arms
+
+1. `control_sparse`：仅任务 issue，最小 context；无 atom。
+2. `file_choice_target_only`：target file cue + target symbol cue；无
+   support，无 decisive cue。
+3. `file_choice_support_only`：support module cue + decisive cue；无
+   target file/symbol cue。
+4. `file_choice_distractor_plus_support`：distractor file cue + support
+   module cue + decisive cue；无 target file；wrong-file cue。
+5. `file_choice_target_plus_support`：target file cue + target symbol
+   cue + support module cue + decisive cue（full pack）。
+
+主对比：`file_choice_target_plus_support` vs
+`file_choice_support_only`；`file_choice_target_plus_support` vs
+`file_choice_distractor_plus_support`；`file_choice_target_only` vs
+`file_choice_support_only`。次对比：每个 context arm vs
+`control_sparse`。
+
+### Harness 改动（文件选择 confound 移除）
+
+- prompt 不再说 only use target.py。
+- 无全局 `ALLOWED_EDIT_FILES = {target.py}` 集合。
+- 仅接受 per-task 安全文件集：target module、distractor module 和
+  support/config/cross-file module（若存在）。
+- 绝不接受任意路径。
+- chosen file 仅记录在私有 event/SCORE trace 中。
+- 公开仅暴露聚合文件选择率（selected_target_file_rate、
+  selected_distractor_file_rate、selected_support_file_rate）。
+
+### 机制摘要 record
+
+仅聚合 record 字段：
+`support_only_sufficient_with_file_choice_count`、
+`target_atom_required_with_file_choice_count`、
+`distractor_hurts_with_file_choice_count`、
+`wrong_file_selection_count`、
+`all_arms_solved_count`、
+`sparse_solved_count`。
+
+### 私有 artifact
+
+对于每个 task x arm，B16-H 写入私有 SCORE JSONL（atom composition、
+chosen_file、score outcome）和私有 event JSONL（prompt、response、
+parsed action、chosen_file、patch/diff、test stdout/stderr、provider
+metadata、tokens/cost/latency、failure reason），仅 `/tmp` 下。公开
+artifact 仅包含聚合 manifest，含 record count、schema 版本、
+`storage_class=tmp_private`、`path_publicly_serialized=false` 和
+manifest hash。
+
+### 公开 artifact 形状
+
+仅聚合 record 的公开 artifact：`schema_version`、`generated_by`、
+`generated_at`、`claim_level`、`status`、`mode`、`phase`、
+`model_display_category`、`input_summary`（含
+`file_choice_confound_removed=true`）、`arm_results`（per-arm 聚合
+metrics，含文件选择率）、`paired_deltas`（7 对比：3 主 + 4 次）、
+`task_family_results`、`mechanism_summary_records`、`honest_signals`、
+`private_score_manifest`、`private_event_manifest`、`forbidden_scan`、
+no-claim flag（包括 `bea_superiority_claimed`）、
+`self_test_summary`/`self_test_passed`。无 raw task text、prompt、
+response、patch、path、片段、atom composition、chosen file 名、候选
+trace、provider payload、私有 path 或 per-task 结果。
+
+### 声明边界
+
+B16-H 是有界合成 live-provider file-choice atom-ablation smoke。它不是
+下游价值证明、BEA 优越性、method winner/default、基准性能、真实用户
+证据、calibration、promotion 或 runtime/retriever/pack/backend/
+default-policy/EvidenceCore 改动。文档对任何 sufficiency 发现标明
+"在此有界合成 file-choice 切片上"。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16h_file_choice_atom_ablation.py  => PASS
+python3 eval/b16h_file_choice_atom_ablation.py --self-test  => PASS (266/266 checks)
+python3 eval/b16h_file_choice_atom_ablation.py \
+  --out artifacts/b16h_file_choice_atom_ablation/\
+b16h_file_choice_atom_ablation_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-H,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   file_choice_atom_ablation_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false,
+   bea_superiority_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI
+run 待执行。
+
+### Caveats
+
+- B16-H 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value/BEA-优越性 声明。
+- 文件选择 confound 已移除；chosen file 仅记录在私有 trace 中；公开
+  artifact 仅聚合文件选择率。
+- 有界合成样本（默认 8 任务 x 5 arms）。smoke，非严格评估。sufficiency
+  措辞限于 "在此有界合成 file-choice 切片上"。
+- 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义
+  未改。
+- B16-F/B16-G 语义未修改；B16-H 是独立 file-choice atom-ablation phase。

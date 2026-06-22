@@ -3584,3 +3584,64 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   arms, zero provider_calls, missing primary contrast, missing
   paired_deltas, private manifest count mismatch, forbidden_scan fail,
   bea_superiority_claimed not false).
+
+## B16-H findings
+
+- **B16-H resolves the main B16-G confound via a live-provider file-choice
+  atom ablation**. B16-G's structured action schema and prompt forced
+  edits to `target.py`, so `support_only` solving 8/8 did not prove the
+  support atom alone can guide file choice. B16-H removes that confound:
+  the prompt no longer says "only use target.py"; there is no global
+  `ALLOWED_EDIT_FILES = {target.py}` set; the validator accepts only the
+  per-task safe file set (target + distractor + support/config/cross-file
+  module); arbitrary paths are never accepted; the chosen file is
+  recorded ONLY in private SCORE/event JSONL under `/tmp`; only aggregate
+  file-choice rates are exposed publicly.
+- **Five fixed arms**: `control_sparse`, `file_choice_target_only`,
+  `file_choice_support_only`, `file_choice_distractor_plus_support`,
+  `file_choice_target_plus_support`. Eight fixed task families (reused
+  from B16-F/B16-G). Default 8 tasks x 5 arms = 40 live provider calls.
+- **Primary contrasts**: `file_choice_target_plus_support` vs
+  `file_choice_support_only`; `file_choice_target_plus_support` vs
+  `file_choice_distractor_plus_support`; `file_choice_target_only` vs
+  `file_choice_support_only`. **Secondary contrasts**: each context arm
+  vs `control_sparse`. 7 contrasts x 17 metrics = 119 paired delta
+  records.
+- **File-choice aggregate metrics** (NEVER actual filenames):
+  `selected_target_file_rate`, `selected_distractor_file_rate`,
+  `selected_support_file_rate`, `wrong_file_edit_rate`,
+  `correct_file_before_first_edit_rate`.
+- **Mechanism summary records** (counts only, all carry the
+  "with_file_choice" qualifier because the confound has been removed):
+  `support_only_sufficient_with_file_choice_count`,
+  `target_atom_required_with_file_choice_count`,
+  `distractor_hurts_with_file_choice_count`,
+  `wrong_file_selection_count`,
+  `all_arms_solved_count`, `sparse_solved_count`.
+- **266/266 self-test checks pass**. Local no-env path truthfully
+  `blocked_remote_not_enabled` (NOT a fake pass). Self-test summary is
+  counts-only in the public artifact.
+- **Strict claim boundary**: `claim_level=
+  file_choice_atom_ablation_downstream_smoke_only`. NOT benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value/BEA-superiority. CI pass does
+  NOT require any atom to win; zero/negative delta is valid.
+  `bea_superiority_claimed=false`. Docs say "on this bounded synthetic
+  file-choice slice" for any sufficiency finding.
+- **B16-H does NOT mutate B16-F/B16-G**: standalone phase, evaluator,
+  artifact. Manual real-provider CI run pending.
+- **Public artifact is aggregate-only**: `arm_results` (with file-choice
+  rates), `paired_deltas`, `task_family_results`,
+  `mechanism_summary_records`, `honest_signals`,
+  `private_score_manifest`, `private_event_manifest`, `forbidden_scan`,
+  no-claim flags. No raw prompts/responses/patches/paths/snippets/atom
+  compositions/chosen file names/candidate traces/per-run rows.
+  `input_summary.file_choice_confound_removed=true`.
+- **Workflow stage `b16h_file_choice_atom_ablation`** added to
+  `real-provider-benchmark.yml` (manual `workflow_dispatch` only;
+  `enable_remote_models=false` default; dedicated sanitized upload;
+  generic upload excluded; plan.json deleted; fail-closed on missing
+  arms, zero provider_calls, missing primary contrasts, missing
+  wrong-file/file-choice metrics, private manifest count mismatch,
+  forbidden_scan fail, `file_choice_confound_removed` not true,
+  `bea_superiority_claimed` not false).
