@@ -2850,7 +2850,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   在同一记录上均有有效指标的记录。每条 `mechanism_contrast_records` 行含
   `record_count`，以便 delta 可解释。公开产物不序列化 per-record
   inclusion masks。
-- **有界本地运行（2026-06-21）**：ContextBench 5 行 + RepoQA 3 needle，
+- **手动 CI run `27936497544`（2026-06-21）**：ContextBench 5 行 + RepoQA 3 needle，
   budget=5，方法 bm25/regex/symbol，启用 rrf baseline。8 条记录全部成功；
   `paired_exclusion_count=0`。BEA v0 与 `same_budget_bm25_prefix` 和
   `agreement_only_same_budget` 在 file_recall@10/mrr/span_f0.5@10/

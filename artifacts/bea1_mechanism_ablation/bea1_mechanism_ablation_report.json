@@ -1,7 +1,7 @@
 {
   "aggregate_metrics_publication": "aggregate_only_smoke",
   "aggregate_only_public_artifact": true,
-  "aggregate_runtime_seconds": 49.73,
+  "aggregate_runtime_seconds": 69.961,
   "arm_metric_records": [
     {
       "arm": "agreement_only_same_budget",
@@ -86,7 +86,7 @@
     {
       "arm": "bea_v0_budgeted",
       "metric": "latency_seconds",
-      "value": 3.74384
+      "value": 4.408469
     },
     {
       "arm": "bea_v0_budgeted",
@@ -131,7 +131,7 @@
     {
       "arm": "bm25_top10",
       "metric": "latency_seconds",
-      "value": 0.447125
+      "value": 0.4225
     },
     {
       "arm": "bm25_top10",
@@ -176,7 +176,7 @@
     {
       "arm": "rrf_bm25_regex_symbol_top10",
       "metric": "latency_seconds",
-      "value": 1.249875
+      "value": 1.42125
     },
     {
       "arm": "rrf_bm25_regex_symbol_top10",
@@ -311,7 +311,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": -0.447125,
+      "delta": -0.4225,
       "metric": "latency_seconds",
       "treatment_arm": "agreement_only_same_budget"
     },
@@ -365,7 +365,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": 3.296715,
+      "delta": 3.985969,
       "metric": "latency_seconds",
       "treatment_arm": "bea_v0_budgeted"
     },
@@ -419,7 +419,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": 0.80275,
+      "delta": 0.99875,
       "metric": "latency_seconds",
       "treatment_arm": "rrf_bm25_regex_symbol_top10"
     },
@@ -473,7 +473,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": -0.447125,
+      "delta": -0.4225,
       "metric": "latency_seconds",
       "treatment_arm": "same_budget_bm25_prefix"
     },
@@ -527,7 +527,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": -0.447125,
+      "delta": -0.4225,
       "metric": "latency_seconds",
       "treatment_arm": "seeded_random_same_budget"
     },
@@ -607,7 +607,7 @@
     "promotion_claimed": false,
     "signal_strength": "bea_v0_mechanism_ablation_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-22T07:20:38.198055+00:00",
+  "generated_at": "2026-06-22T07:28:31.127263+00:00",
   "generated_by": "eval/bea1_mechanism_ablation.py",
   "leaderboard_entry_claimed": false,
   "mechanism_ablation_performed": true,
@@ -647,7 +647,7 @@
     {
       "baseline_arm": "agreement_only_same_budget",
       "contrast": "bea_vs_agreement_only",
-      "delta": 3.74384,
+      "delta": 4.408469,
       "metric": "latency_seconds",
       "record_count": 8,
       "treatment_arm": "bea_v0_budgeted"
@@ -719,7 +719,7 @@
     {
       "baseline_arm": "same_budget_bm25_prefix",
       "contrast": "bea_vs_same_budget_bm25",
-      "delta": 3.74384,
+      "delta": 4.408469,
       "metric": "latency_seconds",
       "record_count": 8,
       "treatment_arm": "bea_v0_budgeted"
@@ -791,7 +791,7 @@
     {
       "baseline_arm": "seeded_random_same_budget",
       "contrast": "bea_vs_seeded_random",
-      "delta": 3.74384,
+      "delta": 4.408469,
       "metric": "latency_seconds",
       "record_count": 8,
       "treatment_arm": "bea_v0_budgeted"
@@ -838,7 +838,7 @@
   "mode": "bounded_external_retrieval_mechanism_ablation",
   "network_calls": 2,
   "network_mode": "local_explicit",
-  "openlocus_binary_source": "default",
+  "openlocus_binary_source": "explicit",
   "openlocus_retrieval_executed": true,
   "pack_builder_changed": false,
   "paired_exclusion_count": 0,

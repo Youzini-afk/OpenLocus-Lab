@@ -155,7 +155,7 @@ Same-budget controls are runtime-clean and deterministic (BM25 prefix;
 agreement-only sorted by agreement desc/min_rank asc/max_normalized_score
 desc/stable order; seeded random with fixed public seed `20240621` over
 stable-ordered deduped universe; no gold/labels/row IDs/provider/model
-fields in seed or ordering). Bounded local run (2026-06-21) with
+fields in seed or ordering). Manual CI run 27936497544 (2026-06-21) with
 ContextBench 5 rows + RepoQA 3 needles, budget=5, methods
 bm25/regex/symbol, rrf baseline enabled: 8 records successful,
 `paired_exclusion_count=0`, forbidden scan pass, `provider_calls=0`,

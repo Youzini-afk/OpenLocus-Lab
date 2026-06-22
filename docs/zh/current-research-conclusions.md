@@ -391,6 +391,14 @@ method winner、calibration、promotion/default、runtime/retriever/pack/backend
 EvidenceCore 变更，也不是 downstream agent 价值声明。详见
 [BEA-0 详细报告](bea0-budgeted-evidence-acquisition.md)。
 
+## 2026-06-21 BEA-1 机制消融 Smoke
+
+BEA-1 是 BEA v0 的第一个机制消融 smoke。它重新运行新鲜有界 ContextBench verified Python 行（默认 5）+ RepoQA Python needle（默认 3），在同一 paired denominator 下比较 `bm25_top10`、`bea_v0_budgeted`、`same_budget_bm25_prefix`、`agreement_only_same_budget`、`seeded_random_same_budget`（启用时含 `rrf_bm25_regex_symbol_top10`）。同预算 K 精确定义为 `min(len(bea_v0_budgeted.accepted_candidates), available_deduped_candidate_count)`；同预算控制不读取 gold/label/row ID/provider/model 字段。私有 per-record SCORE JSONL 仅写入 `/tmp`，公开 artifact 只保留 records-only 聚合：`arm_metric_records`、`delta_records`、`mechanism_contrast_records` 与 aggregate `private_score_manifest`，且 `path_publicly_serialized=false`。
+
+手动 CI run `27936497544` 已通过：8 条 records successful，forbidden scan pass，provider_calls=0，private SCORE manifest aggregate-only。机制结论（smoke-level）：BEA v0 在此样本上与 same-budget BM25 prefix 和 agreement-only 同分（delta(mrr)=0），但优于 seeded random same-budget（delta(mrr)=+0.09375，delta(span_f0.5@10)=+0.037013）。这说明当前 bounded 样本中收益来自确定性 agreement/budgeted selection 相对随机选择，而不是超过同预算 BM25/agreement control。该阶段不是 benchmark/performance/leaderboard/method winner/calibration/default/promotion/runtime/downstream-value 声明。
+
+[BEA-1 详细报告](bea1-mechanism-ablation.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

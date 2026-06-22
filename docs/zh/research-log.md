@@ -8853,16 +8853,16 @@ bm25/regex/symbol，启用 rrf baseline）成功完成：
 
 - `bm25_top10`: file_recall@10=0.5, mrr=0.296875, span_f0.5@10=0.035962,
   success_rate=0.5, candidate_count_read=12.5, evidence_budget_used=6.25,
-  action_steps=6.25, latency_seconds=0.447125,
+  action_steps=6.25, latency_seconds=0.4225,
   quality_per_candidate=0.001798。
 - `rrf_bm25_regex_symbol_top10`: file_recall@10=0.5, mrr=0.296875,
   span_f0.5@10=0.035962, success_rate=0.5, candidate_count_read=12.5,
-  evidence_budget_used=6.25, action_steps=6.25, latency_seconds=1.249875,
+  evidence_budget_used=6.25, action_steps=6.25, latency_seconds=1.42125,
   quality_per_candidate=0.001798。
 - `bea_v0_budgeted`: file_recall@10=0.375, mrr=0.28125,
   span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
   evidence_budget_used=3.125, action_steps=3.75,
-  latency_seconds=3.74384, quality_per_candidate=0.002859。
+  latency_seconds=4.408469, quality_per_candidate=0.002859。
 - `same_budget_bm25_prefix`: file_recall@10=0.375, mrr=0.28125,
   span_f0.5@10=0.057174, success_rate=0.375, candidate_count_read=12.5,
   evidence_budget_used=3.125, action_steps=3.125, latency_seconds=0.0,

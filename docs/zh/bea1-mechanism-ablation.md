@@ -527,23 +527,23 @@ bea1_mechanism_ablation_report.json
   => private_score_manifest.record_count: 8
   => private_score_manifest.storage_class: tmp_private
   => private_score_manifest.path_publicly_serialized: false
-  => aggregate_runtime_seconds: 49.73
+  => aggregate_runtime_seconds: 69.961
 
   arm_metric_records（8 条记录的均值）:
     bm25_top10:                    file_recall@10=0.5,    mrr=0.296875,
                                     span_f0.5@10=0.035962, success_rate=0.5,
                                     candidate_count_read=12.5, evidence_budget_used=6.25,
-                                    action_steps=6.25, latency_seconds=0.447125,
+                                    action_steps=6.25, latency_seconds=0.4225,
                                     quality_per_candidate=0.001798
     rrf_bm25_regex_symbol_top10:   file_recall@10=0.5,    mrr=0.296875,
                                     span_f0.5@10=0.035962, success_rate=0.5,
                                     candidate_count_read=12.5, evidence_budget_used=6.25,
-                                    action_steps=6.25, latency_seconds=1.249875,
+                                    action_steps=6.25, latency_seconds=1.42125,
                                     quality_per_candidate=0.001798
     bea_v0_budgeted:               file_recall@10=0.375, mrr=0.28125,
                                     span_f0.5@10=0.057174, success_rate=0.375,
                                     candidate_count_read=12.5, evidence_budget_used=3.125,
-                                    action_steps=3.75, latency_seconds=3.74384,
+                                    action_steps=3.75, latency_seconds=4.408469,
                                     quality_per_candidate=0.002859
     same_budget_bm25_prefix:       file_recall@10=0.375, mrr=0.28125,
                                     span_f0.5@10=0.057174, success_rate=0.375,

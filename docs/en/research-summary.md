@@ -3382,7 +3382,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   record. Every `mechanism_contrast_records` row includes `record_count`
   so deltas are interpretable. Public artifacts do not serialize per-record
   inclusion masks.
-- **Bounded local run (2026-06-21)**: ContextBench 5 rows + RepoQA 3
+- **Manual CI run `27936497544` (2026-06-21)**: ContextBench 5 rows + RepoQA 3
   needles, budget=5, methods bm25/regex/symbol, rrf baseline enabled.
   All 8 records successful; `paired_exclusion_count=0`. BEA v0 ties
   `same_budget_bm25_prefix` and `agreement_only_same_budget` on
