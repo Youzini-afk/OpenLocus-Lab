@@ -487,12 +487,12 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## 真实有界本地运行结果（2026-06-21）
+## 真实有界手动 CI run `27934507148`结果（2026-06-21）
 
 使用 `--contextbench-row-limit 2 --repoqa-needle-limit 1 --budget 5
 --methods bm25,regex,symbol --enable-rrf-baseline
---enable-external-benchmark-network --openlocus target/debug/openlocus`
-的有界本地运行成功完成。提交的 artifact 镜像该 sanitized aggregate
+--enable-external-benchmark-network --openlocus target/release/openlocus`
+的有界手动 CI run `27934507148`成功完成。提交的 artifact 镜像该 sanitized aggregate
 报告。
 
 ```text
@@ -500,7 +500,7 @@ python3 eval/bea0_budgeted_evidence_acquisition.py \
   --contextbench-row-limit 2 --repoqa-needle-limit 1 \
   --budget 5 --methods bm25,regex,symbol \
   --enable-rrf-baseline --enable-external-benchmark-network \
-  --openlocus target/debug/openlocus
+  --openlocus target/release/openlocus
   => status: bea_v0_smoke_pass,
      forbidden_scan: pass, self_test_passed: true
   => records_evaluated: 3, records_successful: 3, records_failed: 0
@@ -515,27 +515,27 @@ python3 eval/bea0_budgeted_evidence_acquisition.py \
   => arm_metric_records arm=bm25_top10:    file_recall@10=0.666667, mrr=0.666667,
      span_f0.5@10=0.059187, success_rate=0.666667,
      candidate_count_read=13.333333, evidence_budget_used=6.666667,
-     action_steps=6.666667, latency_seconds=0.467,
+     action_steps=6.666667, latency_seconds=0.444333,
      quality_per_candidate=0.002959
   => arm_metric_records arm=rrf_bm25_regex_symbol_top10:
      file_recall@10=0.666667, mrr=0.666667, span_f0.5@10=0.059187,
      success_rate=0.666667, candidate_count_read=13.333333,
      evidence_budget_used=6.666667, action_steps=6.666667,
-     latency_seconds=1.219, quality_per_candidate=0.002959
+     latency_seconds=1.314, quality_per_candidate=0.002959
   => arm_metric_records arm=bea_v0_budgeted: file_recall@10=0.666667,
      mrr=0.666667, span_f0.5@10=0.086849, success_rate=0.666667,
      candidate_count_read=13.333333, evidence_budget_used=3.333333,
-     action_steps=4.0, latency_seconds=3.640497,
+     action_steps=4.0, latency_seconds=4.253045,
      quality_per_candidate=0.004343
   => delta_records treatment_arm=bea_v0_budgeted（vs bm25_top10）:
      file_recall@10=0.0, mrr=0.0, span_f0.5@10=+0.027662,
      success_rate=0.0, evidence_budget_used=-3.333334,
      action_steps=-2.666667, quality_per_candidate=+0.001384,
-     latency_seconds=+3.173497, candidate_count_read=0.0
-  => aggregate_runtime_seconds: 19.641
+     latency_seconds=+3.808712, candidate_count_read=0.0
+  => aggregate_runtime_seconds: 25.65
 ```
 
-有界本地运行对 2 行 ContextBench verified Python 行 + 1 条 RepoQA
+有界手动 CI run `27934507148`对 2 行 ContextBench verified Python 行 + 1 条 RepoQA
 Python needle 重新运行检索，收集多方法候选（bm25/regex/symbol）以及可选
 rrf baseline，在 budget=5 下运行确定性 `bea_v0_budgeted` 策略，将 3 行
 私有 per-record SCORE JSONL 写入

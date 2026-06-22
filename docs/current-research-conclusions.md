@@ -122,8 +122,8 @@ publishes only aggregate per-arm metrics + baseline-vs-treatment deltas vs
 rank, score/normalized score, rank agreement across methods, duplicate
 path/span overlap, candidate count, accepted coverage, budget remaining,
 cheap path extension); verified invariant under synthetic
-gold/label/row-id/model-family/previous-outcome tainting. Bounded local
-run (2026-06-21) with ContextBench 2 rows + RepoQA 1 needle, budget=5,
+gold/label/row-id/model-family/previous-outcome tainting. Manual CI run
+27934507148 (2026-06-21) with ContextBench 2 rows + RepoQA 1 needle, budget=5,
 methods bm25/regex/symbol, rrf baseline enabled: 3 records successful,
 forbidden scan pass, provider_calls=0, private_score_record_count=3
 (matches records_successful), private_score_storage_class=tmp_private,
@@ -131,7 +131,8 @@ private_score_path_publicly_serialized=false; treatment `bea_v0_budgeted`
 preserved file_recall@10 / mrr / success_rate parity with both baselines
 while using roughly half the evidence budget (3.33 vs 6.67) and improved
 span_f0.5@10 by +0.027662 and quality_per_candidate by +0.001384 vs
-`bm25_top10`. Schema `bea0_budgeted_evidence_acquisition.v1`,
+`bm25_top10`; aggregate_runtime_seconds=25.65. Schema
+`bea0_budgeted_evidence_acquisition.v1`,
 `claim_level=bea_v0_budgeted_acquisition_smoke_only`, phase `BEA-0`,
 212/212 self-test checks pass. BEA-0 is NOT a benchmark result, NOT a
 leaderboard entry, NOT a performance claim, NOT a method-winner claim,

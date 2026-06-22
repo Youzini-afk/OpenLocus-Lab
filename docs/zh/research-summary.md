@@ -2776,7 +2776,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   artifact。公开 artifact 仅记录聚合 SCORE manifest 字段
   （records_written、record_count、schema_version、manifest_hash、
   storage_class、path_publicly_serialized=false）。
-- **有界本地运行（2026-06-21）**：ContextBench 2 行 + RepoQA 1 needle，
+- **手动 CI run `27934507148`（2026-06-21）**：ContextBench 2 行 + RepoQA 1 needle，
   budget=5，方法 bm25/regex/symbol，启用 rrf baseline。3 条记录全部成功。
   Treatment `bea_v0_budgeted` 与两条 baseline 持平 file_recall@10 / mrr
   / success_rate，同时使用约一半 evidence budget
@@ -2793,7 +2793,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   `method_winner`、`calibration`。所有 no-claim / no-runtime-change flag
   为 false；`aggregate_only_public_artifact=true`、
   `diagnostic_only=true`、`provider_calls=0`。
-- **210/210 self-test 检查通过**：26 组覆盖身份字段、safe true flag、
+- **212/212 self-test 检查通过**：26 组覆盖身份字段、safe true flag、
   no-claim false flag、license 字段、私有 SCORE manifest aggregate-only
   字段、row/needle/budget 硬上限、method 校验、path extension helper、
   BEA v0 策略机制（接受非空；首个接受为高 agreement；跳过 low_support；
@@ -2803,8 +2803,8 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   禁止 key（private_score_path、action_trace、budget_states、
   accepted_candidates、final_candidates、candidate_list、score_outcome 等）
   和 value 模式（repo URL/slug/commit SHA/file path/tmp path/multiline）、
-  扫描器允许 safe value（schema_version、methods、budget、arm_metrics、
-  deltas、private_score_manifest_hash、failure_category）、fail-closed 生成
+  扫描器允许 safe value（schema_version、methods、budget、arm_metric_records、
+  delta_records、private_score_manifest_hash、failure_category）、fail-closed 生成
   （干净报告不 raise；private_score_path raise；action_trace raise；
   accepted_candidates raise；winner raise；best_method raise；self-test 失败
   拒绝 artifact 生成）、CLI 表面、私有 SCORE writer round-trip、

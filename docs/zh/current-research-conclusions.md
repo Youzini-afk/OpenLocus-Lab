@@ -362,6 +362,35 @@ promotion/default/runtime/retriever/pack/backend/EvidenceCore 语义变
 run 实际执行时。详见
 [F1-B 详细报告](f1b-retrieval-derived-counterfactual-utility.md)。
 
+## 2026-06-21 BEA-0 Budgeted Evidence Acquisition v0
+
+BEA-0 是第一个真实算法检索/证据采集实验，带私有 per-record SCORE JSONL
+轨迹。它重新运行新鲜多方法检索（bm25/regex/symbol + 可选 rrf），覆盖有界
+真实 ContextBench verified Python 行与 RepoQA Python needle，并在 evidence budget
+下运行确定性的 `bea_v0_budgeted` policy。Policy 只读取 runtime-clean 候选特征
+（method source、rank、score/normalized score、跨方法 rank agreement、重复
+path/span overlap、candidate count、accepted coverage、budget remaining、cheap
+path extension），并在合成 gold/label/row-id/model-family/previous-outcome 污染下
+验证不变。Action trace 包含 `accept_candidate`、`skip_low_support`、
+`rerank_by_agreement`、`stop_budget_exhausted` 与可选 `expand_same_file`。
+私有 per-record SCORE JSONL 只写入 `/tmp`（或显式忽略的私有路径）；private
+SCORE path 绝不序列化到公开 artifact/docs/CI。
+
+手动 CI run `27934507148` 已通过：ContextBench 2 行 + RepoQA 1 needle，budget=5，
+methods bm25/regex/symbol，启用 rrf baseline；3 条记录成功，forbidden scan pass，
+provider_calls=0，private_score_record_count=3，`private_score_storage_class=tmp_private`，
+`private_score_path_publicly_serialized=false`。Treatment `bea_v0_budgeted` 与
+`bm25_top10` / `rrf_bm25_regex_symbol_top10` 保持 file_recall@10、mrr、success_rate
+持平，同时 evidence_budget_used 从 6.666667 降到 3.333333，action_steps 从
+6.666667 降到 4.0，span_f0.5@10 提升 +0.027662，quality_per_candidate 提升
++0.001384；aggregate_runtime_seconds=25.65。公开 artifact 仅使用 records-shaped
+`arm_metric_records` 与 `delta_records`，不发布 private SCORE 行或路径。
+
+BEA-0 是 smoke-level algorithmic delta，不是 benchmark 结果、leaderboard、性能声明、
+method winner、calibration、promotion/default、runtime/retriever/pack/backend/
+EvidenceCore 变更，也不是 downstream agent 价值声明。详见
+[BEA-0 详细报告](bea0-budgeted-evidence-acquisition.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

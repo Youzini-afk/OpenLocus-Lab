@@ -8601,7 +8601,7 @@ causal action-trace 失败模式。
 
 ```text
 python3 -m py_compile eval/bea0_budgeted_evidence_acquisition.py  => PASS
-python3 eval/bea0_budgeted_evidence_acquisition.py --self-test  => PASS (210/210 checks)
+python3 eval/bea0_budgeted_evidence_acquisition.py --self-test  => PASS (212/212 checks)
 python3 eval/bea0_budgeted_evidence_acquisition.py \
   --contextbench-row-limit 2 --repoqa-needle-limit 1 \
   --budget 5 --methods bm25,regex,symbol \
@@ -8629,32 +8629,32 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### 真实有界本地运行结果（2026-06-21）
+### 真实有界手动 CI run `27934507148`结果（2026-06-21）
 
-有界本地运行（ContextBench 2 行 + RepoQA 1 needle，budget=5，方法
+有界手动 CI run `27934507148`（ContextBench 2 行 + RepoQA 1 needle，budget=5，方法
 bm25/regex/symbol，启用 rrf baseline）成功完成：
 
-- `arm_metrics.bm25_top10`: file_recall@10=0.666667, mrr=0.666667,
+- `arm_metric_records` arm=`bm25_top10`: file_recall@10=0.666667, mrr=0.666667,
   span_f0.5@10=0.059187, success_rate=0.666667,
   candidate_count_read=13.333333, evidence_budget_used=6.666667,
-  action_steps=6.666667, latency_seconds=0.467,
+  action_steps=6.666667, latency_seconds=0.444333,
   quality_per_candidate=0.002959。
-- `arm_metrics.rrf_bm25_regex_symbol_top10`: file_recall@10=0.666667,
+- `arm_metric_records` arm=`rrf_bm25_regex_symbol_top10`: file_recall@10=0.666667,
   mrr=0.666667, span_f0.5@10=0.059187, success_rate=0.666667,
   candidate_count_read=13.333333, evidence_budget_used=6.666667,
-  action_steps=6.666667, latency_seconds=1.219,
+  action_steps=6.666667, latency_seconds=1.314,
   quality_per_candidate=0.002959。
-- `arm_metrics.bea_v0_budgeted`: file_recall@10=0.666667, mrr=0.666667,
+- `arm_metric_records` arm=`bea_v0_budgeted`: file_recall@10=0.666667, mrr=0.666667,
   span_f0.5@10=0.086849, success_rate=0.666667,
   candidate_count_read=13.333333, evidence_budget_used=3.333333,
-  action_steps=4.0, latency_seconds=3.640497,
+  action_steps=4.0, latency_seconds=4.253045,
   quality_per_candidate=0.004343。
-- `deltas.bea_v0_budgeted`（vs `bm25_top10`）: file_recall@10=0.0,
+- `delta_records` treatment_arm=`bea_v0_budgeted`（vs `bm25_top10`）: file_recall@10=0.0,
   mrr=0.0, span_f0.5@10=+0.027662, success_rate=0.0,
   evidence_budget_used=-3.333334, action_steps=-2.666667,
-  quality_per_candidate=+0.001384, latency_seconds=+3.173497,
+  quality_per_candidate=+0.001384, latency_seconds=+3.808712,
   candidate_count_read=0.0。
-- `aggregate_runtime_seconds`: 19.641。
+- `aggregate_runtime_seconds`: 25.65。
 
 Treatment 在使用约一半 evidence budget（`evidence_budget_used=3.33` vs
 `6.67`）的情况下，与两条 baseline 保持 file_recall@10 / mrr /

@@ -3299,7 +3299,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   docs, or CI artifacts. Public artifact records ONLY aggregate SCORE
   manifest fields (records_written, record_count, schema_version,
   manifest_hash, storage_class, path_publicly_serialized=false).
-- **Bounded local run (2026-06-21)**: ContextBench 2 rows + RepoQA 1
+- **Manual CI run `27934507148` (2026-06-21)**: ContextBench 2 rows + RepoQA 1
   needle, budget=5, methods bm25/regex/symbol, rrf baseline enabled. All 3
   records successful. Treatment `bea_v0_budgeted` preserved file_recall@10
   / mrr / success_rate parity with both baselines while using roughly half
@@ -3316,7 +3316,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   `recommended_default`, `method_winner`, `calibration`. All no-claim /
   no-runtime-change flags false; `aggregate_only_public_artifact=true`,
   `diagnostic_only=true`, `provider_calls=0`.
-- **210/210 self-test checks pass**: 26 groups covering identity fields,
+- **212/212 self-test checks pass**: 26 groups covering identity fields,
   safe true flags, no-claim false flags, license fields, private SCORE
   manifest aggregate-only fields, row/needle/budget hard caps, method
   validation, path extension helper, BEA v0 policy mechanics (accepts
@@ -3328,8 +3328,8 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   (private_score_path, action_trace, budget_states, accepted_candidates,
   final_candidates, candidate_list, score_outcome, etc.) and value
   patterns (repo URL/slug/commit SHA/file path/tmp path/multiline), scanner
-  allows safe values (schema_version, methods, budget, arm_metrics,
-  deltas, private_score_manifest_hash, failure_category), fail-closed
+  allows safe values (schema_version, methods, budget, arm_metric_records,
+  delta_records, private_score_manifest_hash, failure_category), fail-closed
   generation (clean report no raise; private_score_path raises;
   action_trace raises; accepted_candidates raises; winner raises;
   best_method raises; self-test failure refuses artifact generation),

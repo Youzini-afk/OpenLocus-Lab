@@ -1,7 +1,7 @@
 {
   "aggregate_metrics_publication": "aggregate_only_smoke",
   "aggregate_only_public_artifact": true,
-  "aggregate_runtime_seconds": 19.641,
+  "aggregate_runtime_seconds": 25.65,
   "arm_metric_records": [
     {
       "arm": "bea_v0_budgeted",
@@ -41,7 +41,7 @@
     {
       "arm": "bea_v0_budgeted",
       "metric": "latency_seconds",
-      "value": 3.640497
+      "value": 4.253045
     },
     {
       "arm": "bea_v0_budgeted",
@@ -86,7 +86,7 @@
     {
       "arm": "bm25_top10",
       "metric": "latency_seconds",
-      "value": 0.467
+      "value": 0.444333
     },
     {
       "arm": "bm25_top10",
@@ -131,7 +131,7 @@
     {
       "arm": "rrf_bm25_regex_symbol_top10",
       "metric": "latency_seconds",
-      "value": 1.219
+      "value": 1.314
     },
     {
       "arm": "rrf_bm25_regex_symbol_top10",
@@ -198,7 +198,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": 3.173497,
+      "delta": 3.808712,
       "metric": "latency_seconds",
       "treatment_arm": "bea_v0_budgeted"
     },
@@ -252,7 +252,7 @@
     },
     {
       "baseline_arm": "bm25_top10",
-      "delta": 0.752,
+      "delta": 0.869667,
       "metric": "latency_seconds",
       "treatment_arm": "rrf_bm25_regex_symbol_top10"
     },
@@ -305,7 +305,7 @@
     "promotion_claimed": false,
     "signal_strength": "bea_v0_budgeted_acquisition_smoke_aggregate_only"
   },
-  "generated_at": "2026-06-22T06:30:23.869518+00:00",
+  "generated_at": "2026-06-22T06:44:09.037677+00:00",
   "generated_by": "eval/bea0_budgeted_evidence_acquisition.py",
   "leaderboard_entry_claimed": false,
   "method_winner_claimed": false,
@@ -318,7 +318,7 @@
   "multi_method_candidates_collected": true,
   "network_calls": 2,
   "network_mode": "local_explicit",
-  "openlocus_binary_source": "default",
+  "openlocus_binary_source": "explicit",
   "openlocus_retrieval_executed": true,
   "pack_builder_changed": false,
   "phase": "BEA-0",
