@@ -3697,3 +3697,37 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   wrong-file/file-choice metrics, private manifest count mismatch,
   `support_cue_nondecisive` not true, `bea_superiority_claimed` not
   false, forbidden_scan fail).
+
+## B16-J findings
+
+- **B16-J is the LAST B16 atom-redesign attempt**. It constructs
+  ambiguous-support tasks where support-only cannot identify the target
+  binding by construction: each task has multiple plausible target
+  files/symbols (both target.py and distractor.py contain the same symbol),
+  and the same abstract support rule applies plausibly to multiple
+  candidates. Support-only text does NOT contain target filename, target
+  symbol, unique noun, exact answer, edit instruction, or test path/name.
+- **Five fixed arms**: `control_sparse`, `ambiguous_target_only`,
+  `ambiguous_support_only`, `ambiguous_distractor_plus_support`,
+  `ambiguous_target_plus_support`. Eight fixed task families (reused from
+  B16-F/B16-G/B16-H/B16-I). Default 8 tasks x 5 arms = 40 live provider calls.
+- **Mechanism summary records (8 counts)**:
+  `target_support_conjunction_required_count`, `support_only_sufficient_count`,
+  `target_only_sufficient_count`, `distractor_hurts_count`,
+  `ambiguous_support_wrong_binding_count`, `wrong_file_selection_count`,
+  `all_arms_solved_count`, `sparse_solved_count`.
+- **289/289 self-test checks pass**. Local no-env path truthfully
+  `blocked_remote_not_enabled`. Counts-only self-test fields
+  (`self_test_checks_total`, `self_test_checks_passed`).
+- **Strict claim boundary**: `claim_level=
+  ambiguous_support_conjunction_downstream_smoke_only`. NOT downstream
+  value/BEA superiority/method winner/default/benchmark/calibration/promotion/
+  runtime/EvidenceCore claim. `bea_superiority_claimed=false`.
+- **Stop rule**: if B16-J fails to isolate conjunction, do not run B16-K;
+  move to external BEA scale.
+- **Workflow stage `b16j_ambiguous_support_conjunction`** added to
+  `real-provider-benchmark.yml` (manual only; fail-closed on missing arms,
+  zero provider_calls, missing primary contrasts, missing mechanism fields,
+  missing file-choice metrics, `support_cue_ambiguous` not true,
+  `bea_superiority_claimed` not false, private manifest count mismatch,
+  forbidden_scan fail).

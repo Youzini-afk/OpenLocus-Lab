@@ -9509,3 +9509,61 @@ run 待执行。
   未改。
 - B16-F/B16-G/B16-H 语义未修改；B16-I 是独立 target-support conjunction
   phase。
+
+## 2026-06-21 — B16-J Ambiguous-Support Conjunction Live-Provider Smoke
+
+### 目标
+
+B16-J 是最后一个 B16 atom-redesign 尝试。它构造 ambiguous-support 任务，
+其中 support-only 在构造上无法识别 target binding：每个任务有多个
+plausible target 文件/符号，相同的抽象 support rule 适用于多个候选。如果
+support-only 仍然解决所有任务，停止 B16 atom loop，转向外部 BEA scale。
+
+### 前序结果
+
+B16-I 结果 checkpoint `f5ad8de`，CI run `27950908481`：support-only 解决
+8/8；target-support conjunction 未观察到
+（`target_support_conjunction_required_count=0`、
+`support_only_sufficient_count=8`）。
+
+### 范围
+
+- 阶段：`B16-J`。Evaluator：`eval/b16j_ambiguous_support_conjunction.py`。
+- Artifact：`artifacts/b16j_ambiguous_support_conjunction/b16j_ambiguous_support_conjunction_report.json`。
+- 文档：`docs/en/b16j-ambiguous-support-conjunction.md` 和 zh 镜像。
+- Workflow stage：`b16j_ambiguous_support_conjunction`。
+- 默认：8 任务 x 5 arms = 40 次 live provider 调用。
+
+### Arms
+
+1. `control_sparse`；2. `ambiguous_target_only`；3. `ambiguous_support_only`；
+4. `ambiguous_distractor_plus_support`；5. `ambiguous_target_plus_support`。
+
+support-only text 不包含 target 文件名、target 符号、unique noun、确切答案、
+edit 指令或 test 路径。target.py 和 distractor.py 都包含相同符号——support
+rule 适用于两者。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16j_ambiguous_support_conjunction.py  => PASS
+python3 eval/b16j_ambiguous_support_conjunction.py --self-test  => PASS (289/289 checks)
+python3 eval/b16j_ambiguous_support_conjunction.py --out ...  => PASS
+  (status: blocked_remote_not_enabled, forbidden_scan: pass,
+   self_test_passed: true, phase: B16-J,
+   bea_superiority_claimed: false, support_cue_ambiguous: true)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地 no-env 路径真实且 blocked。手动 CI 待执行。
+
+### Caveats
+
+- B16-J 是 eval/diagnostic only。不是下游价值/BEA 优越性/method winner/
+  default/benchmark/calibration/promotion/runtime/EvidenceCore 声明。
+- support cue 在构造上 ambiguous；support-only 无法在没有 target file cue
+  时识别 target binding。
+- sufficiency 限于"在此有界合成 ambiguous-support file-choice 切片上"。
+- 停止规则：如果 B16-J 未能隔离 conjunction，不运行 B16-K；转向外部 BEA
+  scale。

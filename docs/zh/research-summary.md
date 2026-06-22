@@ -3127,3 +3127,32 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   缺失 wrong-file/file-choice metrics、私有 manifest 计数不匹配、
   `support_cue_nondecisive` 不为 true、`bea_superiority_claimed` 不为
   false、forbidden_scan 失败时 fail-closed）。
+
+## B16-J findings
+
+- **B16-J 是最后一个 B16 atom-redesign 尝试**。它构造 ambiguous-support
+  任务，其中 support-only 在构造上无法识别 target binding：每个任务有多个
+  plausible target 文件/符号（target.py 和 distractor.py 都包含相同符号），
+  相同的抽象 support rule 适用于多个候选。support-only text 不包含 target
+  文件名、target 符号、unique noun、确切答案、edit 指令或 test 路径/名。
+- **五个固定 arm**：`control_sparse`、`ambiguous_target_only`、
+  `ambiguous_support_only`、`ambiguous_distractor_plus_support`、
+  `ambiguous_target_plus_support`。八个固定任务族（复用
+  B16-F/B16-G/B16-H/B16-I）。默认 8 任务 x 5 arms = 40 次 live provider
+  调用。
+- **机制摘要 record（8 个计数）**：
+  `target_support_conjunction_required_count`、
+  `support_only_sufficient_count`、`target_only_sufficient_count`、
+  `distractor_hurts_count`、`ambiguous_support_wrong_binding_count`、
+  `wrong_file_selection_count`、`all_arms_solved_count`、
+  `sparse_solved_count`。
+- **289/289 self-test check 通过**。本地 no-env 路径真实
+  `blocked_remote_not_enabled`。仅计数 self-test 字段。
+- **严格声明边界**：`claim_level=
+  ambiguous_support_conjunction_downstream_smoke_only`。不是下游价值/BEA
+  优越性/method winner/default/benchmark/calibration/promotion/runtime/
+  EvidenceCore 声明。`bea_superiority_claimed=false`。
+- **停止规则**：如果 B16-J 未能隔离 conjunction，不运行 B16-K；转向外部
+  BEA scale。
+- **Workflow stage `b16j_ambiguous_support_conjunction`** 添加到
+  `real-provider-benchmark.yml`（仅手动；fail-closed）。

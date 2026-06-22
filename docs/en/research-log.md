@@ -10252,3 +10252,63 @@ Manual real-provider CI run `27950908481` passed: 8 tasks x 5 arms = 40 live pro
   unchanged.
 - B16-F/B16-G/B16-H semantics not mutated; B16-I is a standalone
   target-support conjunction phase.
+
+## 2026-06-21 — B16-J Ambiguous-Support Conjunction Live-Provider Smoke
+
+### Objective
+
+B16-J is the LAST B16 atom-redesign attempt. It constructs ambiguous-support
+tasks where support-only cannot identify the target binding by construction:
+each task has multiple plausible target files/symbols, and the same abstract
+support rule applies plausibly to multiple candidates. If support-only still
+solves everything, stop the B16 atom loop and move to external BEA scale.
+
+### Prior result
+
+B16-I result checkpoint `f5ad8de`, CI run `27950908481`: support-only solved
+8/8; target-support conjunction was NOT observed
+(`target_support_conjunction_required_count=0`,
+`support_only_sufficient_count=8`).
+
+### Scope
+
+- Phase: `B16-J`. Evaluator: `eval/b16j_ambiguous_support_conjunction.py`.
+- Artifact: `artifacts/b16j_ambiguous_support_conjunction/b16j_ambiguous_support_conjunction_report.json`.
+- Docs: `docs/en/b16j-ambiguous-support-conjunction.md` and zh mirror.
+- Workflow stage: `b16j_ambiguous_support_conjunction`.
+- Default: 8 tasks x 5 arms = 40 live provider calls.
+
+### Arms
+
+1. `control_sparse`; 2. `ambiguous_target_only`; 3. `ambiguous_support_only`;
+4. `ambiguous_distractor_plus_support`; 5. `ambiguous_target_plus_support`.
+
+Support-only text does NOT contain target filename, target symbol, unique noun,
+exact answer, edit instruction, or test path. Both target.py and distractor.py
+contain the same symbol — support rule applies plausibly to both.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16j_ambiguous_support_conjunction.py  => PASS
+python3 eval/b16j_ambiguous_support_conjunction.py --self-test  => PASS (289/289 checks)
+python3 eval/b16j_ambiguous_support_conjunction.py --out ...  => PASS
+  (status: blocked_remote_not_enabled, forbidden_scan: pass,
+   self_test_passed: true, phase: B16-J,
+   bea_superiority_claimed: false, support_cue_ambiguous: true)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+Local no-env path truthful and blocked. Manual CI pending.
+
+### Caveats
+
+- B16-J is eval/diagnostic only. NOT downstream value/BEA superiority/method
+  winner/default/benchmark/calibration/promotion/runtime/EvidenceCore claim.
+- Support cue ambiguous by construction; support-only cannot identify target
+  binding without target file cue.
+- Sufficiency bounded to "on this bounded synthetic ambiguous-support
+  file-choice slice".
+- Stop rule: if B16-J fails to isolate conjunction, do not run B16-K; move to
+  external BEA scale.

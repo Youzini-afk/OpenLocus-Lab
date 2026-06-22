@@ -610,6 +610,40 @@ calibration 声明、不是 BEA 优越性声明、不是 promotion、不是 defa
 详见
 [B16-I 详细报告](b16i-target-support-conjunction.md)。
 
+## 2026-06-21 B16-J Ambiguous-Support Conjunction Live-Provider Smoke
+
+B16-J 是最后一个 B16 atom-redesign 尝试。它构造 ambiguous-support 任务，
+其中 support-only 在构造上无法识别 target binding：每个任务有多个
+plausible target 文件/符号，相同的抽象 support rule 适用于多个候选。
+五个固定 arm：`control_sparse`、`ambiguous_target_only`、
+`ambiguous_support_only`、`ambiguous_distractor_plus_support`、
+`ambiguous_target_plus_support`。八个固定任务族（复用
+B16-F/B16-G/B16-H/B16-I）。默认 8 任务 x 5 arms = 40 次 live provider
+调用。schema `b16j_ambiguous_support_conjunction.v1`、`claim_level=
+ambiguous_support_conjunction_downstream_smoke_only`、阶段 `B16-J`。
+289/289 self-test 检查通过。support-only text 不包含 target 文件名、
+target 符号、unique noun、确切答案、edit 指令或 test 路径/名。target.py
+和 distractor.py 都包含相同符号——support rule 适用于两者。文件选择
+confound 已移除。chosen file/symbol 仅记录在 `/tmp` 下的私有 SCORE/event
+JSONL 中。主对比：`ambiguous_target_plus_support` vs
+`ambiguous_support_only`、vs `ambiguous_target_only`、vs
+`ambiguous_distractor_plus_support`。`mechanism_summary_records`（8 个
+计数）：`target_support_conjunction_required_count`、
+`support_only_sufficient_count`、`target_only_sufficient_count`、
+`distractor_hurts_count`、`ambiguous_support_wrong_binding_count`、
+`wrong_file_selection_count`、`all_arms_solved_count`、
+`sparse_solved_count`。仅计数 self-test 字段。
+`input_summary.support_cue_ambiguous=true`。live provider 仅当
+`--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时使用。本地 no-env
+路径真实 `blocked_remote_not_enabled`。CI 通过不要求 conjunction 成立。
+B16-J 不是基准测试结果、不是 leaderboard entry、不是性能声明、不是
+method-winner 声明、不是 calibration 声明、不是 BEA 优越性声明、不是
+promotion、不是 default 改动、不是 runtime/retriever/pack/backend/
+EvidenceCore 语义改动、不是下游 agent 价值声明。停止规则：如果 B16-J
+未能隔离 conjunction，不运行 B16-K；转向外部 BEA scale。手动
+real-provider CI run 待执行。详见
+[B16-J 详细报告](b16j-ambiguous-support-conjunction.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout
