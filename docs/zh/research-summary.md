@@ -3080,3 +3080,51 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   缺失 wrong-file/file-choice metrics、私有 manifest 计数不匹配、
   forbidden_scan 失败、`file_choice_confound_removed` 不为 true、
   `bea_superiority_claimed` 不为 false 时 fail-closed）。
+
+## B16-I findings
+
+- **B16-I 测试 B16-H 暴露的机制**。B16-H 移除了文件选择 confound，但
+  support-only 仍然解决了所有任务，因为 support cue 过于 decisive。
+  B16-I 重新设计任务，使 support 单独非决定性：target binding 和
+  support rule 都应需要。
+- **五个固定 arm**：`control_sparse`、`file_choice_target_only`、
+  `file_choice_nondecisive_support_only`、
+  `file_choice_distractor_plus_nondecisive_support`、
+  `file_choice_target_plus_support`。八个固定任务族（复用
+  B16-F/B16-G/B16-H）。默认 8 任务 x 5 arms = 40 次 live provider 调用。
+- **非决定性 support cue**：给出 formula/invariant/dependency/config
+  relation，仍需要 TARGET BINDING。**不**包含确切最终答案、确切
+  target-file 指令或 target-symbol edit 指令。
+  `file_choice_target_plus_support` arm 额外给出 target binding，使完整
+  cue 成为决定性的。
+- **主对比**：`file_choice_target_plus_support` vs
+  `file_choice_target_only`；vs
+  `file_choice_nondecisive_support_only`；vs
+  `file_choice_distractor_plus_nondecisive_support`。**次对比**：
+  `file_choice_target_only` vs
+  `file_choice_nondecisive_support_only`；每个 context arm vs
+  `control_sparse`。8 对比 x 17 metrics = 136 paired delta record。
+- **机制摘要 record**（7 个计数）：
+  `target_support_conjunction_required_count`（tps 解决但 target_only
+  和 support_only 都未解决）、`support_only_sufficient_count`、
+  `target_only_sufficient_count`、`distractor_hurts_count`、
+  `wrong_file_selection_count`、`all_arms_solved_count`、
+  `sparse_solved_count`。
+- **306/306 self-test check 通过**。本地 no-env 路径真实
+  `blocked_remote_not_enabled`（**不**是假通过）。仅计数 self-test 字段
+  （`self_test_checks_total`、`self_test_checks_passed`）；**不**发布
+  `self_test_summary` 或 `self_test_checks` 列表。
+- **严格声明边界**：`claim_level=
+  target_support_conjunction_downstream_smoke_only`。不是 benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value/BEA-优越性。CI 通过**不**要求
+  conjunction 成立。`bea_superiority_claimed=false`。
+- **B16-I 不修改 B16-F/B16-G/B16-H**：独立 phase、evaluator、artifact。
+  手动 real-provider CI run 待执行。
+- **Workflow stage `b16i_target_support_conjunction`** 添加到
+  `real-provider-benchmark.yml`（仅手动 `workflow_dispatch`；
+  `enable_remote_models=false` 默认；专用 sanitized upload；排除通用
+  upload；删除 plan.json；在缺失 arm、零 provider_calls、缺失主对比、
+  缺失 wrong-file/file-choice metrics、私有 manifest 计数不匹配、
+  `support_cue_nondecisive` 不为 true、`bea_superiority_claimed` 不为
+  false、forbidden_scan 失败时 fail-closed）。

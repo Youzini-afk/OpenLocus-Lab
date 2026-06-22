@@ -10136,3 +10136,118 @@ Manual real-provider CI run `27949115076` passed: 8 tasks x 5 arms = 40 live pro
   unchanged.
 - B16-F/B16-G semantics not mutated; B16-H is a standalone file-choice
   atom-ablation phase.
+
+## 2026-06-21 — B16-I Non-Decisive Support / Target-Support Conjunction Live-Provider Smoke
+
+### Objective
+
+B16-I tests the mechanism exposed by B16-H. B16-H removed the file-choice
+confound, but support-only still solved every task because the support cue
+was too decisive. B16-I redesigns the live-provider synthetic tasks so
+support alone is non-decisive: target binding and support rule should both
+be needed.
+
+### Prior result
+
+B16-H result checkpoint `8eb150c`, manual CI run `27949115076`: 8 tasks
+x 5 arms = 40 live calls. `control_sparse` solve/test = 0.0.
+`file_choice_target_only` solve/test = 0.0 but
+selected_target_file_rate=1.0. `file_choice_support_only`,
+`file_choice_distractor_plus_support`, and
+`file_choice_target_plus_support` solve/test = 1.0.
+`support_only_sufficient_with_file_choice_count=8`,
+`target_atom_required_with_file_choice_count=0`,
+`wrong_file_selection_count=0`. Conclusion: decisive support cue was
+sufficient on that bounded slice; target-only was insufficient. Do not
+tune BEA from that yet.
+
+### Scope
+
+- Phase: `B16-I`.
+- Evaluator: `eval/b16i_target_support_conjunction.py`.
+- Artifact:
+  `artifacts/b16i_target_support_conjunction/b16i_target_support_conjunction_report.json`.
+- Docs: `docs/en/b16i-target-support-conjunction.md` and zh mirror.
+- Workflow stage: `b16i_target_support_conjunction`.
+- Manual real-provider workflow only; local/no-env mode truthfully blocks.
+- Default: 8 synthetic tasks x 5 arms = 40 live provider calls.
+
+### Arms
+
+1. `control_sparse`: task issue only, minimal context; no atoms.
+2. `file_choice_target_only`: target file cue + target symbol cue; no
+   support module, no support rule.
+3. `file_choice_nondecisive_support_only`: support module cue +
+   non-decisive support rule; no target file cue, no symbol cue. The
+   support atom must NOT contain the exact final answer, exact
+   target-file instruction, or target-symbol edit instruction.
+4. `file_choice_distractor_plus_nondecisive_support`: distractor file
+   cue + support module cue + non-decisive support rule; no target
+   file; wrong-file binding.
+5. `file_choice_target_plus_support`: target file cue + target symbol
+   cue + support module cue + non-decisive support rule (conjunction
+   arm).
+
+Primary contrasts: `file_choice_target_plus_support` vs
+`file_choice_target_only`; vs
+`file_choice_nondecisive_support_only`; vs
+`file_choice_distractor_plus_nondecisive_support`. Secondary:
+`file_choice_target_only` vs
+`file_choice_nondecisive_support_only`; each context arm vs
+`control_sparse`.
+
+### Non-decisive support cue design
+
+Support atom gives formula/invariant/dependency/config relation that
+STILL REQUIRES TARGET BINDING. It does NOT contain the exact final
+answer, the exact target-file instruction, or the target-symbol edit
+instruction. The `file_choice_target_plus_support` arm additionally
+gives the target binding, making the full cue decisive.
+
+### Mechanism summary records
+
+`target_support_conjunction_required_count`,
+`support_only_sufficient_count`, `target_only_sufficient_count`,
+`distractor_hurts_count`, `wrong_file_selection_count`,
+`all_arms_solved_count`, `sparse_solved_count`.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/b16i_target_support_conjunction.py  => PASS
+python3 eval/b16i_target_support_conjunction.py --self-test  => PASS (306/306 checks)
+python3 eval/b16i_target_support_conjunction.py \
+  --out artifacts/b16i_target_support_conjunction/\
+b16i_target_support_conjunction_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-I,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   target_support_conjunction_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false,
+   bea_superiority_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+Local no-env validation path is truthful and blocked/unavailable.
+Manual real-provider CI run pending.
+
+### Caveats
+
+- B16-I is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value/BEA-superiority claim.
+- Support cue is non-decisive; still requires target binding.
+- Bounded synthetic sample (8 tasks x 5 arms default). Smoke, not
+  rigorous evaluation. Sufficiency wording bounded to "on this bounded
+  synthetic file-choice slice".
+- All no-claim / no-runtime-change flags false; EvidenceCore semantics
+  unchanged.
+- B16-F/B16-G/B16-H semantics not mutated; B16-I is a standalone
+  target-support conjunction phase.

@@ -9399,3 +9399,112 @@ git diff --check  => PASS
 - 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义
   未改。
 - B16-F/B16-G 语义未修改；B16-H 是独立 file-choice atom-ablation phase。
+
+## 2026-06-21 — B16-I Non-Decisive Support / Target-Support Conjunction Live-Provider Smoke
+
+### 目标
+
+B16-I 测试 B16-H 暴露的机制。B16-H 移除了文件选择 confound，但
+support-only 仍然解决了所有任务，因为 support cue 过于 decisive。B16-I
+重新设计 live-provider 合成任务，使 support 单独是非 decisive 的：
+target binding 和 support rule 都应需要。
+
+### 前序结果
+
+B16-H 结果 checkpoint `8eb150c`，手动 CI run `27949115076`：8 任务 x 5
+arms = 40 live 调用。`control_sparse` solve/test = 0.0。
+`file_choice_target_only` solve/test = 0.0 但
+selected_target_file_rate=1.0。`file_choice_support_only`、
+`file_choice_distractor_plus_support` 和
+`file_choice_target_plus_support` solve/test = 1.0。
+`support_only_sufficient_with_file_choice_count=8`、
+`target_atom_required_with_file_choice_count=0`、
+`wrong_file_selection_count=0`。结论：decisive support cue 在该有界切片
+上足够；target-only 不足。暂不从该结果调优 BEA。
+
+### 范围
+
+- 阶段：`B16-I`。
+- Evaluator：`eval/b16i_target_support_conjunction.py`。
+- Artifact：
+  `artifacts/b16i_target_support_conjunction/b16i_target_support_conjunction_report.json`。
+- 文档：`docs/en/b16i-target-support-conjunction.md` 和 zh 镜像。
+- Workflow stage：`b16i_target_support_conjunction`。
+- 仅手动 real-provider workflow；本地/no-env 模式真实阻断。
+- 默认：8 合成任务 x 5 arms = 40 次 live provider 调用。
+
+### Arms
+
+1. `control_sparse`：仅任务 issue，最小 context；无 atom。
+2. `file_choice_target_only`：target file cue + target symbol cue；无
+   support module，无 support rule。
+3. `file_choice_nondecisive_support_only`：support module cue + 非决定性
+   support rule；无 target file cue，无 symbol cue。support atom **不**
+   包含确切最终答案、确切 target-file 指令或 target-symbol edit 指令。
+4. `file_choice_distractor_plus_nondecisive_support`：distractor file
+   cue + support module cue + 非决定性 support rule；无 target file；
+   wrong-file binding。
+5. `file_choice_target_plus_support`：target file cue + target symbol
+   cue + support module cue + 非决定性 support rule（conjunction arm）。
+
+主对比：`file_choice_target_plus_support` vs
+`file_choice_target_only`；vs
+`file_choice_nondecisive_support_only`；vs
+`file_choice_distractor_plus_nondecisive_support`。次对比：
+`file_choice_target_only` vs
+`file_choice_nondecisive_support_only`；每个 context arm vs
+`control_sparse`。
+
+### 非决定性 support cue 设计
+
+support atom 给出 formula/invariant/dependency/config relation，仍需要
+TARGET BINDING 才能应用。它**不**包含确切最终答案、确切 target-file
+指令或 target-symbol edit 指令。`file_choice_target_plus_support` arm
+额外给出 target binding，使完整 cue 成为决定性的。
+
+### 机制摘要 record
+
+`target_support_conjunction_required_count`、
+`support_only_sufficient_count`、`target_only_sufficient_count`、
+`distractor_hurts_count`、`wrong_file_selection_count`、
+`all_arms_solved_count`、`sparse_solved_count`。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/b16i_target_support_conjunction.py  => PASS
+python3 eval/b16i_target_support_conjunction.py --self-test  => PASS (306/306 checks)
+python3 eval/b16i_target_support_conjunction.py \
+  --out artifacts/b16i_target_support_conjunction/\
+b16i_target_support_conjunction_report.json  => PASS
+  (status: blocked_remote_not_enabled,
+   forbidden_scan: pass, self_test_passed: true,
+   mode: public_aggregate_synthetic_task_family_matrix, phase: B16-I,
+   model_display_category: unavailable,
+   live_llm_agent: false, provider_calls_made: false,
+   paired_run_executed: false,
+   target_support_conjunction_executed: false,
+   private_score_records_written: false,
+   private_event_records_written: false,
+   downstream_agent_value_proven: false, promotion_ready: false,
+   method_winner_claimed: false, calibration_claimed: false,
+   bea_superiority_claimed: false)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+本地 no-env 验证路径真实且 blocked/unavailable。手动 real-provider CI
+run 待执行。
+
+### Caveats
+
+- B16-I 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value/BEA-优越性 声明。
+- support cue 非决定性；仍需要 target binding。
+- 有界合成样本（默认 8 任务 x 5 arms）。smoke，非严格评估。sufficiency
+  措辞限于 "在此有界合成 file-choice 切片上"。
+- 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义
+  未改。
+- B16-F/B16-G/B16-H 语义未修改；B16-I 是独立 target-support conjunction
+  phase。

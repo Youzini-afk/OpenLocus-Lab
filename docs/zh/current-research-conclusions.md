@@ -565,6 +565,52 @@ CI run 待执行。详见
 
 [B16-H 详细报告](b16h-file-choice-atom-ablation.md)。
 
+## 2026-06-21 B16-I Non-Decisive Support / Target-Support Conjunction Live-Provider Smoke
+
+B16-I 测试 B16-H 暴露的机制。B16-H 移除了文件选择 confound，但
+support-only 仍然解决了所有任务，因为 support cue 过于 decisive。B16-I
+重新设计 live-provider 合成任务，使 support 单独是非 decisive 的：
+target binding 和 support rule 都应需要。五个固定 arm：`control_sparse`、
+`file_choice_target_only`、`file_choice_nondecisive_support_only`、
+`file_choice_distractor_plus_nondecisive_support`、
+`file_choice_target_plus_support`。八个固定任务族（复用
+B16-F/B16-G/B16-H）。默认 8 任务 x 5 arms = 40 次 live provider 调用。
+schema `b16i_target_support_conjunction.v1`、`claim_level=
+target_support_conjunction_downstream_smoke_only`、阶段 `B16-I`。
+306/306 self-test 检查通过。support cue 非决定性：给出
+formula/invariant/dependency/config relation，仍需要 target binding；
+**不**包含确切最终答案、确切 target-file 指令或 target-symbol edit
+指令。`file_choice_target_plus_support` arm 额外给出 target binding，使
+完整 cue 成为决定性的。文件选择 confound 已移除（从 B16-H 沿用）。
+chosen file 仅记录在 `/tmp` 下的私有 SCORE/event JSONL 中（绝不发布实际
+文件名）。主对比：`file_choice_target_plus_support` vs
+`file_choice_target_only`、vs
+`file_choice_nondecisive_support_only`、vs
+`file_choice_distractor_plus_nondecisive_support`。次对比：
+`file_choice_target_only` vs
+`file_choice_nondecisive_support_only`、每个 context arm vs
+`control_sparse`。`mechanism_summary_records`（7 个计数）：
+`target_support_conjunction_required_count`、
+`support_only_sufficient_count`、`target_only_sufficient_count`、
+`distractor_hurts_count`、`wrong_file_selection_count`、
+`all_arms_solved_count`、`sparse_solved_count`。仅计数 self-test 字段
+（`self_test_checks_total`、`self_test_checks_passed`；无
+`self_test_summary` 或 `self_test_checks` 列表）。公开 artifact 仅聚合：
+`arm_results`、`paired_deltas`、`task_family_results`、
+`mechanism_summary_records`、`honest_signals`、`private_score_manifest`、
+`private_event_manifest`、`forbidden_scan`、no-claim flag（包括
+`bea_superiority_claimed=false`）。`input_summary.support_cue_nondecisive=true`。
+live provider 仅当 `--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时
+使用。本地 no-env 路径真实 `blocked_remote_not_enabled`（**不**是假通过）。
+CI 通过**不**要求 conjunction 成立；零/负 delta 有效。sufficiency 限于
+"在此有界合成 file-choice 切片上"。B16-I 不是基准测试结果、不是
+leaderboard entry、不是性能声明、不是 method-winner 声明、不是
+calibration 声明、不是 BEA 优越性声明、不是 promotion、不是 default
+改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是
+下游 agent 价值声明。B16-I 不修改 B16-F/B16-G/B16-H 语义。手动
+real-provider CI run 待执行。详见
+[B16-I 详细报告](b16i-target-support-conjunction.md)。
+
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 
 D5-A2 验证 D5-A1 的 retrieval-derived 特征 bucket 是否在新鲜 heldout

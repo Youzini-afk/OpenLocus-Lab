@@ -3642,5 +3642,57 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   generic upload excluded; plan.json deleted; fail-closed on missing
   arms, zero provider_calls, missing primary contrasts, missing
   wrong-file/file-choice metrics, private manifest count mismatch,
-  forbidden_scan fail, `file_choice_confound_removed` not true,
+  forbidden_scan fail,   `file_choice_confound_removed` not true,
   `bea_superiority_claimed` not false).
+
+## B16-I findings
+
+- **B16-I tests the mechanism exposed by B16-H**. B16-H removed the
+  file-choice confound, but support-only still solved every task because
+  the support cue was too decisive. B16-I redesigns the tasks so support
+  alone is non-decisive: target binding and support rule should both be
+  needed.
+- **Five fixed arms**: `control_sparse`, `file_choice_target_only`,
+  `file_choice_nondecisive_support_only`,
+  `file_choice_distractor_plus_nondecisive_support`,
+  `file_choice_target_plus_support`. Eight fixed task families (reused
+  from B16-F/B16-G/B16-H). Default 8 tasks x 5 arms = 40 live provider
+  calls.
+- **Non-decisive support cue**: gives formula/invariant/dependency/
+  config relation that STILL REQUIRES TARGET BINDING. Does NOT contain
+  the exact final answer, exact target-file instruction, or
+  target-symbol edit instruction. The `file_choice_target_plus_support`
+  arm additionally gives the target binding, making the full cue
+  decisive.
+- **Primary contrasts**: `file_choice_target_plus_support` vs
+  `file_choice_target_only`; vs
+  `file_choice_nondecisive_support_only`; vs
+  `file_choice_distractor_plus_nondecisive_support`. **Secondary**:
+  `file_choice_target_only` vs
+  `file_choice_nondecisive_support_only`; each context arm vs
+  `control_sparse`. 8 contrasts x 17 metrics = 136 paired delta records.
+- **Mechanism summary records** (7 counts):
+  `target_support_conjunction_required_count` (tps solved but NEITHER
+  target_only NOR support_only solved),
+  `support_only_sufficient_count`, `target_only_sufficient_count`,
+  `distractor_hurts_count`, `wrong_file_selection_count`,
+  `all_arms_solved_count`, `sparse_solved_count`.
+- **306/306 self-test checks pass**. Local no-env path truthfully
+  `blocked_remote_not_enabled` (NOT a fake pass). Counts-only self-test
+  fields (`self_test_checks_total`, `self_test_checks_passed`); NO
+  `self_test_summary` or `self_test_checks` list published.
+- **Strict claim boundary**: `claim_level=
+  target_support_conjunction_downstream_smoke_only`. NOT benchmark/
+  leaderboard/performance/method-winner/calibration/promotion/default/
+  runtime/EvidenceCore/downstream-value/BEA-superiority. CI pass does
+  NOT require the conjunction to hold. `bea_superiority_claimed=false`.
+- **B16-I does NOT mutate B16-F/B16-G/B16-H**: standalone phase,
+  evaluator, artifact. Manual real-provider CI run pending.
+- **Workflow stage `b16i_target_support_conjunction`** added to
+  `real-provider-benchmark.yml` (manual `workflow_dispatch` only;
+  `enable_remote_models=false` default; dedicated sanitized upload;
+  generic upload excluded; plan.json deleted; fail-closed on missing
+  arms, zero provider_calls, missing primary contrasts, missing
+  wrong-file/file-choice metrics, private manifest count mismatch,
+  `support_cue_nondecisive` not true, `bea_superiority_claimed` not
+  false, forbidden_scan fail).
