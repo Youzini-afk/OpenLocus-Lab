@@ -90,7 +90,7 @@ import c5d_repoqa_bm25_retrieval_smoke as c5d  # noqa: E402
 SCHEMA_VERSION = "bea4_external_scale_smoke.v1"
 GENERATED_BY = "eval/bea4_external_scale_smoke.py"
 CLAIM_LEVEL = "bea_v03_external_scale_smoke_only"
-SELF_TEST_CHECKS_EXPECTED = 237
+SELF_TEST_CHECKS_EXPECTED = 238
 MODE = "bea_v03_external_scale_smoke"
 PHASE = "BEA-4"
 
@@ -1307,7 +1307,7 @@ def _build_pass_report(
     ]
     if enable_rrf_baseline:
         required_controls.append(ARM_RRF_SAME_BUDGET)
-    delta_records = _delta_records(arm_aggs, BASELINE_ARM, [TREATMENT_ARM])
+    delta_records: list[dict[str, Any]] = []
     for control in required_controls:
         delta_records.extend(
             _delta_records(arm_aggs, control, [TREATMENT_ARM])
@@ -1653,6 +1653,8 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         found = any(r["baseline_arm"] == control and r["treatment_arm"] == ARM_BEA_V0_3
                     for r in dr)
         checks.append(_check(f"delta_v03_vs_{control}", found))
+    delta_keys = [(r["baseline_arm"], r["treatment_arm"], r["metric"]) for r in dr]
+    checks.append(_check("delta_records_unique", len(delta_keys) == len(set(delta_keys))))
 
     # Group 11: Win/tie/loss records.
     wtl = skeleton.get("win_tie_loss_records", [])

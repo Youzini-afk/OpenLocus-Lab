@@ -232,6 +232,12 @@ jobs:
                       "mechanism_summary_records"):
               if not isinstance(report.get(key), list):
                   failures.append(f"expected {key} to be a list")
+          delta_keys = [
+              (r.get("baseline_arm"), r.get("treatment_arm"), r.get("metric"))
+              for r in (report.get("delta_records") or [])
+          ]
+          if len(delta_keys) != len(set(delta_keys)):
+              failures.append("delta_records must be unique by baseline_arm/treatment_arm/metric")
           treatment_benchmark_counts = {}
           for rec in (report.get("benchmark_arm_metric_records") or []):
               if (rec.get("arm") == "bea_v0_3_anchor_span_latency"
