@@ -1073,6 +1073,11 @@ def _evaluate_record(
         else:
             all_candidates.extend(cands)
 
+    if not all_candidates:
+        failure_reason = "no_candidates_from_any_method"
+        fcc["retrieval_failed"] = fcc.get("retrieval_failed", 0) + 1
+        return None, fcc, {}, []
+
     # RRF is REQUIRED in BEA-5 (never optional). Prefer the direct OpenLocus
     # RRF path; if it returns empty evidence while component method retrievals
     # succeeded, derive the same-budget RRF control deterministically from the
@@ -1090,10 +1095,6 @@ def _evaluate_record(
             fcc.get("rrf_required_but_missing", 0) + 1
         )
         failure_reason = "rrf_required_but_missing"
-
-    if not all_candidates:
-        failure_reason = "no_candidates_from_any_method"
-        fcc["retrieval_failed"] = fcc.get("retrieval_failed", 0) + 1
 
     if failure_reason is not None:
         return None, fcc, {}, []

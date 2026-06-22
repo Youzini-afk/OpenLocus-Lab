@@ -8,8 +8,8 @@ aggregate-only public artifact including robustness summary)
 
 BEA-5 is the **frozen-policy robustness smoke** for the frozen BEA v0.3
 policy. It runs a fresh, disjoint larger/cross-slice external robustness
-smoke (ContextBench verified Python rows offset 160 limit 120, RepoQA Python
-needles offset 80 limit 60) and tests whether BEA-4's conclusions are stable
+smoke (ContextBench verified Python rows offset 160 limit 240, RepoQA Python
+needles offset 80 limit 120) and tests whether BEA-4's conclusions are stable
 before any BEA v0.4 tuning. **The v0.3 algorithm and weights are frozen
 exactly as in BEA-3/BEA-4; this phase is robustness measurement, not a new
 algorithm.**
@@ -47,8 +47,8 @@ always required.
 
 ## Fresh disjoint larger slice
 
-- ContextBench verified Python rows: offset 160, limit 120 (hard cap 120).
-- RepoQA Python needles: offset 80, limit 60 (hard cap 60).
+- ContextBench verified Python rows: offset 160, limit 240 (hard cap 240).
+- RepoQA Python needles: offset 80, limit 120 (hard cap 120).
 - Local smoke may use smaller bounds for speed (e.g. 2+2); CI requires
   >=120 records_successful and nonzero ContextBench + RepoQA contribution.
 
@@ -168,8 +168,8 @@ tables verified unique by natural key.
 
 This is an honest smoke-level robustness result, not a method-winner,
 calibration, default, promotion, runtime/retriever/EvidenceCore, or
-downstream-agent-value claim. The full scale slice (ContextBench 120 +
-RepoQA 60) is pending manual CI run; the committed artifact reflects the
+downstream-agent-value claim. The full scale slice (ContextBench 240 +
+RepoQA 120) is pending manual CI run; the committed artifact reflects the
 local smoke only.
 
 ## Caveats
@@ -181,7 +181,7 @@ local smoke only.
   `algorithm_changed_during_bea5=false`,
   `weights_tuned_during_bea5=false` (binding).
 - Bounded local smoke used 2+2 records for speed. The full robustness slice
-  (ContextBench 120 + RepoQA 60) is pending manual CI run; the committed
+  (ContextBench 240 + RepoQA 120) is pending manual CI run; the committed
   artifact reflects the local smoke only. Local debug may use 2+2 only and
   must not be recorded as CI scale evidence.
 - RRF arm is required; CI fails if RRF is disabled/missing.

@@ -30,17 +30,17 @@ on:
         required: false
         default: '160'
       contextbench_row_limit:
-        description: 'ContextBench row limit (default 120; hard cap 120)'
+        description: 'ContextBench row limit (default 240; hard cap 240)'
         required: false
-        default: '120'
+        default: '240'
       repoqa_needle_offset:
         description: 'RepoQA needle offset (default 80)'
         required: false
         default: '80'
       repoqa_needle_limit:
-        description: 'RepoQA needle limit (default 60; hard cap 60)'
+        description: 'RepoQA needle limit (default 120; hard cap 120)'
         required: false
-        default: '60'
+        default: '120'
       budget:
         description: 'Evidence budget (default 5; hard cap 20)'
         required: false
@@ -78,9 +78,9 @@ jobs:
         run: |
           enable_network="${{ inputs.enable_external_benchmark_network }}"
           cb_offset="${{ inputs.contextbench_row_offset || '160' }}"
-          cb_limit="${{ inputs.contextbench_row_limit || '120' }}"
+          cb_limit="${{ inputs.contextbench_row_limit || '240' }}"
           rq_offset="${{ inputs.repoqa_needle_offset || '80' }}"
-          rq_limit="${{ inputs.repoqa_needle_limit || '60' }}"
+          rq_limit="${{ inputs.repoqa_needle_limit || '120' }}"
           budget="${{ inputs.budget || '5' }}"
           methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
           for var in cb_offset rq_offset; do
@@ -91,8 +91,8 @@ jobs:
             val="${!var}"
             if ! [[ "$val" =~ ^[1-9][0-9]*$ ]]; then echo "$var must be positive integer" >&2; exit 1; fi
           done
-          [[ "$cb_limit" -gt 120 ]] && echo "cb_limit exceeds cap 120" >&2
-          [[ "$rq_limit" -gt 60 ]] && echo "rq_limit exceeds cap 60" >&2
+          [[ "$cb_limit" -gt 240 ]] && echo "cb_limit exceeds cap 240" >&2
+          [[ "$rq_limit" -gt 120 ]] && echo "rq_limit exceeds cap 120" >&2
           [[ "$budget" -gt 20 ]] && echo "budget exceeds cap 20" >&2
           IFS=',' read -ra ma <<< "$methods"
           has_bm25=0
