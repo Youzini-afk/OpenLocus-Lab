@@ -131,12 +131,8 @@ the evaluator emits `blocked_remote_not_enabled` or
 `unavailable_no_local_provider_env` with live-run flags false. It is NOT a fake
 pass.
 
-Manual real-provider CI run (when executed via
-`real-provider-benchmark.yml` stage `b16h_file_choice_atom_ablation`
-with `enable_remote_models=true`, `task_count=8`) produces 40 live
-provider calls (8 tasks x 5 arms). The committed artifact will be
-updated to mirror the sanitized aggregate report from the first
-successful manual CI run.
+Manual real-provider CI run `27949115076` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 266/266 self-tests. Results: `control_sparse` solve/test=0.0; `file_choice_target_only` solve/test=0.0 but selected target file rate=1.0; `file_choice_support_only` solve/test=1.0 and selected target file rate=1.0; `file_choice_distractor_plus_support` solve/test=1.0 and selected target file rate=1.0; `file_choice_target_plus_support` solve/test=1.0 and selected target file rate=1.0. Mechanism summary: `support_only_sufficient_with_file_choice_count=8`, `target_atom_required_with_file_choice_count=0`, `distractor_hurts_with_file_choice_count=0`, `wrong_file_selection_count=0`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: on this bounded synthetic file-choice slice, the decisive support cue was still sufficient to guide file choice; target-only context was insufficient; distractor did not hurt when decisive support was present. This is not a downstream value proof, BEA superiority claim, method-winner/default claim, benchmark/performance claim, or calibration claim.
+
 
 ## Aggregate metrics
 
@@ -314,6 +310,10 @@ self-test covers:
 - CLI argument surface.
 - Remote gating.
 - Five-arm structure; default total runs = 40.
+
+## Manual CI result
+
+Manual real-provider CI run `27949115076` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 266/266 self-tests. Results: `control_sparse` solve/test=0.0; `file_choice_target_only` solve/test=0.0 but selected target file rate=1.0; `file_choice_support_only` solve/test=1.0 and selected target file rate=1.0; `file_choice_distractor_plus_support` solve/test=1.0 and selected target file rate=1.0; `file_choice_target_plus_support` solve/test=1.0 and selected target file rate=1.0. Mechanism summary: `support_only_sufficient_with_file_choice_count=8`, `target_atom_required_with_file_choice_count=0`, `distractor_hurts_with_file_choice_count=0`, `wrong_file_selection_count=0`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: on this bounded synthetic file-choice slice, the decisive support cue was still sufficient to guide file choice; target-only context was insufficient; distractor did not hurt when decisive support was present. This is not a downstream value proof, BEA superiority claim, method-winner/default claim, benchmark/performance claim, or calibration claim.
 
 ## Validation
 

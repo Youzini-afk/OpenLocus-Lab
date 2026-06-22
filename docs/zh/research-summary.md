@@ -3066,8 +3066,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   runtime/EvidenceCore/downstream-value/BEA-优越性。CI 通过**不**要求任何
   atom 获胜；零/负 delta 有效。`bea_superiority_claimed=false`。文档对
   任何 sufficiency 发现标明 "在此有界合成 file-choice 切片上"。
-- **B16-H 不修改 B16-F/B16-G**：独立 phase、evaluator、artifact。手动
-  real-provider CI run 待执行。
+- **B16-H live 结果**：手动 real-provider CI run `27949115076` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；266/266 self-test。结果：`control_sparse` solve/test=0.0；`file_choice_target_only` solve/test=0.0 但 selected target file rate=1.0；`file_choice_support_only` solve/test=1.0 且 selected target file rate=1.0；`file_choice_distractor_plus_support` solve/test=1.0 且 selected target file rate=1.0；`file_choice_target_plus_support` solve/test=1.0 且 selected target file rate=1.0。机制 summary：`support_only_sufficient_with_file_choice_count=8`、`target_atom_required_with_file_choice_count=0`、`distractor_hurts_with_file_choice_count=0`、`wrong_file_selection_count=0`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在此有界合成 file-choice 切片上，decisive support cue 仍足以引导文件选择；target-only context 不足；当 decisive support 存在时 distractor 未造成伤害。这不是下游价值证明、BEA 优越性声明、method-winner/default 声明、benchmark/performance 声明或 calibration 声明。
 - **公开 artifact 仅聚合**：`arm_results`（含文件选择率）、
   `paired_deltas`、`task_family_results`、`mechanism_summary_records`、
   `honest_signals`、`private_score_manifest`、`private_event_manifest`、

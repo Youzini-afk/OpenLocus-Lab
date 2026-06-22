@@ -1,7 +1,208 @@
 {
-  "agent_behavior_metrics_evaluated": false,
+  "agent_behavior_metrics_evaluated": true,
   "aggregate_only_public_artifact": true,
-  "arm_results": [],
+  "arm_results": [
+    {
+      "arm": "control_sparse",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 28205,
+        "context_tokens_mean": 20.0,
+        "correct_file_before_first_edit_rate": 0.625,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 24.523375,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1198,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.125,
+        "selected_support_file_rate": 0.25,
+        "selected_target_file_rate": 0.625,
+        "solve_rate": 0.0,
+        "tests_pass_rate": 0.0,
+        "wrong_file_edit_rate": 0.375
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 28205,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 195520,
+        "prompt_tokens_total": 1198,
+        "timeout_count": 0,
+        "total_tokens_total": 29403,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "file_choice_target_only",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 27240,
+        "context_tokens_mean": 48.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 22.218375,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1673,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.0,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 1.0,
+        "solve_rate": 0.0,
+        "tests_pass_rate": 0.0,
+        "wrong_file_edit_rate": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 27240,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 177082,
+        "prompt_tokens_total": 1673,
+        "timeout_count": 0,
+        "total_tokens_total": 28913,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "file_choice_support_only",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 2856,
+        "context_tokens_mean": 48.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 3.184125,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1750,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.0,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 1.0,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "wrong_file_edit_rate": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 2856,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 25352,
+        "prompt_tokens_total": 1750,
+        "timeout_count": 0,
+        "total_tokens_total": 4606,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 3767,
+        "context_tokens_mean": 64.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 3.692125,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1895,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.0,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 1.0,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "wrong_file_edit_rate": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 3767,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 29417,
+        "prompt_tokens_total": 1895,
+        "timeout_count": 0,
+        "total_tokens_total": 5662,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 780,
+        "context_tokens_mean": 64.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 1.051625,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 2024,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.0,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 1.0,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "wrong_file_edit_rate": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 780,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 8293,
+        "prompt_tokens_total": 2024,
+        "timeout_count": 0,
+        "total_tokens_total": 2804,
+        "usage_available": true
+      }
+    }
+  ],
   "backend_changed": false,
   "bea_superiority_claimed": false,
   "calibration_claimed": false,
@@ -9,19 +210,35 @@
   "default_policy_changed": false,
   "default_should_change": false,
   "diagnostic_only": true,
-  "downstream_agent_runs_performed": false,
+  "downstream_agent_runs_performed": true,
   "downstream_agent_value_proven": false,
   "evidencecore_semantics_changed": false,
   "external_benchmark_performance_claimed": false,
-  "file_choice_atom_ablation_executed": false,
+  "file_choice_atom_ablation_executed": true,
   "forbidden_scan": {
     "categories": {},
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-22T11:20:46.072896+00:00",
+  "generated_at": "2026-06-22T11:31:45.102840+00:00",
   "generated_by": "eval/b16h_file_choice_atom_ablation.py",
-  "honest_signals": {},
+  "honest_signals": {
+    "all_arms_solved_count": 0,
+    "control_sparse_solve_rate": 0.0,
+    "distractor_hurts_with_file_choice_count": 0,
+    "distractor_plus_support_selected_target_file_rate": 1.0,
+    "distractor_plus_support_solve_rate": 1.0,
+    "sparse_solved_count": 0,
+    "support_atom_signal_observed": true,
+    "support_only_solve_rate": 1.0,
+    "support_only_sufficient_with_file_choice_count": 8,
+    "target_atom_required_with_file_choice_count": 0,
+    "target_file_signal_observed": false,
+    "target_only_solve_rate": 0.0,
+    "target_plus_support_selected_target_file_rate": 1.0,
+    "target_plus_support_solve_rate": 1.0,
+    "wrong_file_selection_count": 0
+  },
   "input_summary": {
     "arms": [
       "control_sparse",
@@ -38,14 +255,14 @@
       "file_choice_target_plus_support_vs_file_choice_distractor_plus_support",
       "file_choice_target_only_vs_file_choice_support_only"
     ],
-    "run_count_per_arm": 0,
+    "run_count_per_arm": 8,
     "secondary_contrasts": [
       "file_choice_target_only_vs_control_sparse",
       "file_choice_support_only_vs_control_sparse",
       "file_choice_distractor_plus_support_vs_control_sparse",
       "file_choice_target_plus_support_vs_control_sparse"
     ],
-    "synthetic_task_count": 0,
+    "synthetic_task_count": 8,
     "task_families": [
       "same_symbol_support_relation",
       "operation_ambiguity",
@@ -57,51 +274,1036 @@
       "cross_file_symbol"
     ],
     "task_family_matrix": true,
-    "total_runs": 0,
+    "total_runs": 40,
     "transient_workspace_outputs_only": true,
     "workspace_isolation": "fresh_tmp_per_task_arm"
   },
   "live_agent_generalization_claimed": false,
-  "live_llm_agent": false,
-  "mechanism_summary_records": [],
+  "live_llm_agent": true,
+  "mechanism_summary_records": [
+    {
+      "mechanism_field": "support_only_sufficient_with_file_choice_count",
+      "record_count": 8,
+      "value": 8
+    },
+    {
+      "mechanism_field": "target_atom_required_with_file_choice_count",
+      "record_count": 8,
+      "value": 0
+    },
+    {
+      "mechanism_field": "distractor_hurts_with_file_choice_count",
+      "record_count": 8,
+      "value": 0
+    },
+    {
+      "mechanism_field": "wrong_file_selection_count",
+      "record_count": 8,
+      "value": 0
+    },
+    {
+      "mechanism_field": "all_arms_solved_count",
+      "record_count": 8,
+      "value": 0
+    },
+    {
+      "mechanism_field": "sparse_solved_count",
+      "record_count": 8,
+      "value": 0
+    }
+  ],
   "method_winner_claimed": false,
   "mode": "public_aggregate_synthetic_task_family_matrix",
-  "model_display_category": "unavailable",
+  "model_display_category": "Kimi-K2.7-Code",
   "pack_builder_changed": false,
-  "paired_deltas": [],
-  "paired_run_executed": false,
+  "paired_deltas": [
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 16.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 274.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": -2076.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": -2.1325,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 129.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": -2987.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": -2.6405,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": -1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": -1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": -77.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 24384.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 19.03425,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "file_choice_support_only",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.125,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.25,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 28.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 475.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -965.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -2.305,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.125,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.25,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 28.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 552.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -25349.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -21.33925,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.125,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.25,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 44.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 697.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -24438.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -20.83125,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.375,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.125,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.25,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 44.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 826.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -27425.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -23.47175,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "file_choice_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "file_choice_target_plus_support"
+    }
+  ],
+  "paired_run_executed": true,
   "phase": "B16-H",
   "private_event_manifest": {
     "manifest_hash": "eb85259501eec8fbb2665e39f4602d6c1177c51327c59bc9ddfc99ae9df2308a",
     "path_publicly_serialized": false,
-    "record_count": 0,
-    "records_written": false,
+    "record_count": 40,
+    "records_written": true,
     "schema_version": "b16h_private_event.v1",
     "storage_class": "tmp_private"
   },
-  "private_event_records_written": false,
+  "private_event_records_written": true,
   "private_score_manifest": {
     "manifest_hash": "f8ca5c47e80d0e7319aad158a32796fb1a437ab84c4b935f418472a8e81cfcdb",
     "path_publicly_serialized": false,
-    "record_count": 0,
-    "records_written": false,
+    "record_count": 40,
+    "records_written": true,
     "schema_version": "b16h_private_score.v1",
     "storage_class": "tmp_private"
   },
-  "private_score_records_written": false,
+  "private_score_records_written": true,
   "promotion_ready": false,
-  "provider_calls_made": false,
-  "real_file_edits_performed": false,
-  "real_test_commands_executed": false,
+  "provider_calls_made": true,
+  "real_file_edits_performed": true,
+  "real_test_commands_executed": true,
   "real_user_task_claimed": false,
-  "remote_provider_calls_made": false,
+  "remote_provider_calls_made": true,
   "retriever_changed": false,
   "runtime_behavior_changed": false,
   "schema_version": "b16h_file_choice_atom_ablation.v1",
   "self_test_checks_passed": 266,
   "self_test_checks_total": 266,
   "self_test_passed": true,
-  "status": "blocked_remote_not_enabled",
-  "synthetic_task_family_matrix_used": false,
-  "task_family_results": []
+  "status": "file_choice_atom_ablation_smoke_pass",
+  "synthetic_task_family_matrix_used": true,
+  "task_family_results": [
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "file_choice_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "file_choice_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 1.0
+    }
+  ]
 }

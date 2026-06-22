@@ -3628,8 +3628,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   NOT require any atom to win; zero/negative delta is valid.
   `bea_superiority_claimed=false`. Docs say "on this bounded synthetic
   file-choice slice" for any sufficiency finding.
-- **B16-H does NOT mutate B16-F/B16-G**: standalone phase, evaluator,
-  artifact. Manual real-provider CI run pending.
+- **B16-H live result**: Manual real-provider CI run `27949115076` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 266/266 self-tests. Results: `control_sparse` solve/test=0.0; `file_choice_target_only` solve/test=0.0 but selected target file rate=1.0; `file_choice_support_only` solve/test=1.0 and selected target file rate=1.0; `file_choice_distractor_plus_support` solve/test=1.0 and selected target file rate=1.0; `file_choice_target_plus_support` solve/test=1.0 and selected target file rate=1.0. Mechanism summary: `support_only_sufficient_with_file_choice_count=8`, `target_atom_required_with_file_choice_count=0`, `distractor_hurts_with_file_choice_count=0`, `wrong_file_selection_count=0`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: on this bounded synthetic file-choice slice, the decisive support cue was still sufficient to guide file choice; target-only context was insufficient; distractor did not hurt when decisive support was present. This is not a downstream value proof, BEA superiority claim, method-winner/default claim, benchmark/performance claim, or calibration claim.
 - **Public artifact is aggregate-only**: `arm_results` (with file-choice
   rates), `paired_deltas`, `task_family_results`,
   `mechanism_summary_records`, `honest_signals`,

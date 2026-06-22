@@ -126,11 +126,23 @@ target.py"）不同，B16-H：
 `blocked_remote_not_enabled` 或 `unavailable_no_local_provider_env`，live-run
 flag 为 false。它**不**是假通过。
 
-手动 real-provider CI run（通过 `real-provider-benchmark.yml` stage
-`b16h_file_choice_atom_ablation` 且 `enable_remote_models=true`、
-`task_count=8` 执行时）产生 40 次 live provider 调用（8 任务 x 5
-arm）。已提交 artifact 将在首次成功的手动 CI run 后更新为镜像该 run
-的 sanitized aggregate report。
+手动 real-provider CI run `27949115076` 已通过：8 任务 x 5 arms = 40 次
+live provider calls；forbidden scan pass；私有 SCORE/event manifest 各
+`record_count=40` 且 `path_publicly_serialized=false`；266/266 self-test。
+结果：`control_sparse` solve/test=0.0；`file_choice_target_only`
+solve/test=0.0 但 selected target file rate=1.0；
+`file_choice_support_only` solve/test=1.0 且 selected target file rate=1.0；
+`file_choice_distractor_plus_support` solve/test=1.0 且 selected target file
+rate=1.0；`file_choice_target_plus_support` solve/test=1.0 且 selected target
+file rate=1.0。机制 summary：
+`support_only_sufficient_with_file_choice_count=8`、
+`target_atom_required_with_file_choice_count=0`、
+`distractor_hurts_with_file_choice_count=0`、`wrong_file_selection_count=0`、
+`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在此有界合成
+file-choice 切片上，decisive support cue 仍足以引导文件选择；target-only
+context 不足；当 decisive support 存在时 distractor 未造成伤害。这不是下游
+价值证明、BEA 优越性声明、method-winner/default 声明、benchmark/
+performance 声明或 calibration 声明。
 
 ## 聚合 metrics
 
@@ -298,6 +310,10 @@ B16-H 保持 self-test 聚焦（仅计数公开摘要；详细 check 列表**不
 - CLI 参数表面。
 - Remote gating。
 - 五 arm 结构；默认 total runs = 40。
+
+## 手动 CI 结果
+
+手动 real-provider CI run `27949115076` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；266/266 self-test。结果：`control_sparse` solve/test=0.0；`file_choice_target_only` solve/test=0.0 但 selected target file rate=1.0；`file_choice_support_only` solve/test=1.0 且 selected target file rate=1.0；`file_choice_distractor_plus_support` solve/test=1.0 且 selected target file rate=1.0；`file_choice_target_plus_support` solve/test=1.0 且 selected target file rate=1.0。机制 summary：`support_only_sufficient_with_file_choice_count=8`、`target_atom_required_with_file_choice_count=0`、`distractor_hurts_with_file_choice_count=0`、`wrong_file_selection_count=0`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在此有界合成 file-choice 切片上，decisive support cue 仍足以引导文件选择；target-only context 不足；当 decisive support 存在时 distractor 未造成伤害。这不是下游价值证明、BEA 优越性声明、method-winner/default 声明、benchmark/performance 声明或 calibration 声明。
 
 ## 验证
 
