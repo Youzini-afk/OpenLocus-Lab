@@ -1,8 +1,209 @@
 {
-  "agent_behavior_metrics_evaluated": false,
+  "agent_behavior_metrics_evaluated": true,
   "aggregate_only_public_artifact": true,
-  "ambiguous_support_conjunction_executed": false,
-  "arm_results": [],
+  "ambiguous_support_conjunction_executed": true,
+  "arm_results": [
+    {
+      "arm": "control_sparse",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 19383,
+        "context_tokens_mean": 20.0,
+        "correct_file_before_first_edit_rate": 0.125,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 19.225125,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1155,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.5,
+        "selected_support_file_rate": 0.375,
+        "selected_target_file_rate": 0.125,
+        "solve_rate": 0.0,
+        "tests_pass_rate": 0.0,
+        "wrong_file_edit_rate": 0.875
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 19383,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 152963,
+        "prompt_tokens_total": 1155,
+        "timeout_count": 0,
+        "total_tokens_total": 20538,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 8503,
+        "context_tokens_mean": 48.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 6.988125,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1654,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.0,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 1.0,
+        "solve_rate": 0.0,
+        "tests_pass_rate": 0.0,
+        "wrong_file_edit_rate": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 8503,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 55075,
+        "prompt_tokens_total": 1654,
+        "timeout_count": 0,
+        "total_tokens_total": 10157,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 19089,
+        "context_tokens_mean": 48.0,
+        "correct_file_before_first_edit_rate": 0.25,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 15.87475,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 1855,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.625,
+        "selected_support_file_rate": 0.125,
+        "selected_target_file_rate": 0.25,
+        "solve_rate": 0.25,
+        "tests_pass_rate": 0.25,
+        "wrong_file_edit_rate": 0.75
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 19089,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 126337,
+        "prompt_tokens_total": 1855,
+        "timeout_count": 0,
+        "total_tokens_total": 20944,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 11775,
+        "context_tokens_mean": 64.0,
+        "correct_file_before_first_edit_rate": 0.625,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 10.29,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 2000,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.375,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 0.625,
+        "solve_rate": 0.625,
+        "tests_pass_rate": 0.625,
+        "wrong_file_edit_rate": 0.375
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 11775,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 81913,
+        "prompt_tokens_total": 2000,
+        "timeout_count": 0,
+        "total_tokens_total": 13775,
+        "usage_available": true
+      }
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "failure_category_counts": {
+        "ok": 8
+      },
+      "metrics": {
+        "completion_tokens_total": 1219,
+        "context_tokens_mean": 64.0,
+        "correct_file_before_first_edit_rate": 1.0,
+        "cost_proxy_total": 0.0,
+        "invalid_json_rate": 0.0,
+        "latency_seconds_mean": 1.4245,
+        "no_op_rate": 0.0,
+        "patch_apply_rate": 1.0,
+        "prompt_tokens_total": 2060,
+        "provider_failure_rate": 0.0,
+        "run_count": 8,
+        "selected_distractor_file_rate": 0.0,
+        "selected_support_file_rate": 0.0,
+        "selected_target_file_rate": 1.0,
+        "solve_rate": 1.0,
+        "tests_pass_rate": 1.0,
+        "wrong_file_edit_rate": 0.0
+      },
+      "provider_summary": {
+        "calls_attempted": 8,
+        "calls_failed": 0,
+        "calls_succeeded": 8,
+        "completion_tokens_total": 1219,
+        "failure_category_counts": {
+          "ok": 8
+        },
+        "invalid_json_count": 0,
+        "latency_ms_total": 11243,
+        "prompt_tokens_total": 2060,
+        "timeout_count": 0,
+        "total_tokens_total": 3279,
+        "usage_available": true
+      }
+    }
+  ],
   "backend_changed": false,
   "bea_superiority_claimed": false,
   "calibration_claimed": false,
@@ -10,7 +211,7 @@
   "default_policy_changed": false,
   "default_should_change": false,
   "diagnostic_only": true,
-  "downstream_agent_runs_performed": false,
+  "downstream_agent_runs_performed": true,
   "downstream_agent_value_proven": false,
   "evidencecore_semantics_changed": false,
   "external_benchmark_performance_claimed": false,
@@ -19,9 +220,27 @@
     "status": "pass",
     "violations_count": 0
   },
-  "generated_at": "2026-06-22T12:39:50.660292+00:00",
+  "generated_at": "2026-06-22T12:48:41.741582+00:00",
   "generated_by": "eval/b16j_ambiguous_support_conjunction.py",
-  "honest_signals": {},
+  "honest_signals": {
+    "all_arms_solved_count": 0,
+    "ambiguous_support_wrong_binding_count": 6,
+    "control_sparse_solve_rate": 0.0,
+    "distractor_hurts_count": 3,
+    "distractor_hurts_signal_observed": true,
+    "distractor_plus_support_selected_target_file_rate": 0.625,
+    "distractor_plus_support_solve_rate": 0.625,
+    "sparse_solved_count": 0,
+    "support_only_solve_rate": 0.25,
+    "support_only_sufficient_count": 2,
+    "target_only_solve_rate": 0.0,
+    "target_only_sufficient_count": 0,
+    "target_plus_support_selected_target_file_rate": 1.0,
+    "target_plus_support_solve_rate": 1.0,
+    "target_support_conjunction_required_count": 6,
+    "target_support_conjunction_signal_observed": true,
+    "wrong_file_selection_count": 6
+  },
   "input_summary": {
     "arms": [
       "control_sparse",
@@ -38,7 +257,7 @@
       "ambiguous_target_plus_support_vs_ambiguous_target_only",
       "ambiguous_target_plus_support_vs_ambiguous_distractor_plus_support"
     ],
-    "run_count_per_arm": 0,
+    "run_count_per_arm": 8,
     "secondary_contrasts": [
       "ambiguous_target_only_vs_ambiguous_support_only",
       "ambiguous_target_only_vs_control_sparse",
@@ -47,7 +266,7 @@
       "ambiguous_target_plus_support_vs_control_sparse"
     ],
     "support_cue_ambiguous": true,
-    "synthetic_task_count": 0,
+    "synthetic_task_count": 8,
     "task_families": [
       "same_symbol_support_relation",
       "operation_ambiguity",
@@ -59,51 +278,1142 @@
       "cross_file_symbol"
     ],
     "task_family_matrix": true,
-    "total_runs": 0,
+    "total_runs": 40,
     "transient_workspace_outputs_only": true,
     "workspace_isolation": "fresh_tmp_per_task_arm"
   },
   "live_agent_generalization_claimed": false,
-  "live_llm_agent": false,
-  "mechanism_summary_records": [],
+  "live_llm_agent": true,
+  "mechanism_summary_records": [
+    {
+      "mechanism_field": "target_support_conjunction_required_count",
+      "record_count": 8,
+      "value": 6
+    },
+    {
+      "mechanism_field": "support_only_sufficient_count",
+      "record_count": 8,
+      "value": 2
+    },
+    {
+      "mechanism_field": "target_only_sufficient_count",
+      "record_count": 8,
+      "value": 0
+    },
+    {
+      "mechanism_field": "distractor_hurts_count",
+      "record_count": 8,
+      "value": 3
+    },
+    {
+      "mechanism_field": "ambiguous_support_wrong_binding_count",
+      "record_count": 8,
+      "value": 6
+    },
+    {
+      "mechanism_field": "wrong_file_selection_count",
+      "record_count": 8,
+      "value": 6
+    },
+    {
+      "mechanism_field": "all_arms_solved_count",
+      "record_count": 8,
+      "value": 0
+    },
+    {
+      "mechanism_field": "sparse_solved_count",
+      "record_count": 8,
+      "value": 0
+    }
+  ],
   "method_winner_claimed": false,
   "mode": "public_aggregate_synthetic_task_family_matrix",
-  "model_display_category": "unavailable",
+  "model_display_category": "Kimi-K2.7-Code",
   "pack_builder_changed": false,
-  "paired_deltas": [],
-  "paired_run_executed": false,
+  "paired_deltas": [
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.75,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.75,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.75,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.75,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.75,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.625,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.125,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 16.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 205.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -17870.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -14.45025,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 16.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 406.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": -7284.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": -5.563625,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_target_only",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.375,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.375,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.375,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": -0.375,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.375,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": -0.375,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 60.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": -10556.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": -8.8655,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_distractor_plus_support",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.25,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.25,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.75,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.75,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.75,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.625,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -0.125,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -201.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -10586.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": -8.886625,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "ambiguous_support_only",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.875,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.875,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.875,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.5,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 28.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 499.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -10880.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -12.237,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_target_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.25,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.25,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.125,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.125,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.125,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.125,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.25,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 28.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 700.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -294.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -3.350375,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_support_only"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.625,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.625,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.5,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.5,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.5,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.125,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 44.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 845.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -7608.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -8.935125,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_distractor_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "solve_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 1.0,
+      "metric": "tests_pass_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "patch_apply_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.875,
+      "metric": "correct_file_before_first_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.875,
+      "metric": "wrong_file_edit_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.875,
+      "metric": "selected_target_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.5,
+      "metric": "selected_distractor_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -0.375,
+      "metric": "selected_support_file_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "no_op_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "invalid_json_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "provider_failure_rate",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 44.0,
+      "metric": "context_tokens_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 905.0,
+      "metric": "prompt_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -18164.0,
+      "metric": "completion_tokens_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": -17.800625,
+      "metric": "latency_seconds_mean",
+      "treatment_arm": "ambiguous_target_plus_support"
+    },
+    {
+      "baseline_arm": "control_sparse",
+      "delta": 0.0,
+      "metric": "cost_proxy_total",
+      "treatment_arm": "ambiguous_target_plus_support"
+    }
+  ],
+  "paired_run_executed": true,
   "phase": "B16-J",
   "private_event_manifest": {
     "manifest_hash": "f3176c75a5db1c7e1c0c891efaa41fdd0a710e705a4212ce00dbd2610905ba56",
     "path_publicly_serialized": false,
-    "record_count": 0,
-    "records_written": false,
+    "record_count": 40,
+    "records_written": true,
     "schema_version": "b16j_private_event.v1",
     "storage_class": "tmp_private"
   },
-  "private_event_records_written": false,
+  "private_event_records_written": true,
   "private_score_manifest": {
     "manifest_hash": "4d32fac5f6fc69695750d0b970bf305d2f4068148acaa176f34f43dc1ea58260",
     "path_publicly_serialized": false,
-    "record_count": 0,
-    "records_written": false,
+    "record_count": 40,
+    "records_written": true,
     "schema_version": "b16j_private_score.v1",
     "storage_class": "tmp_private"
   },
-  "private_score_records_written": false,
+  "private_score_records_written": true,
   "promotion_ready": false,
-  "provider_calls_made": false,
-  "real_file_edits_performed": false,
-  "real_test_commands_executed": false,
+  "provider_calls_made": true,
+  "real_file_edits_performed": true,
+  "real_test_commands_executed": true,
   "real_user_task_claimed": false,
-  "remote_provider_calls_made": false,
+  "remote_provider_calls_made": true,
   "retriever_changed": false,
   "runtime_behavior_changed": false,
   "schema_version": "b16j_ambiguous_support_conjunction.v1",
   "self_test_checks_passed": 329,
   "self_test_checks_total": 329,
   "self_test_passed": true,
-  "status": "blocked_remote_not_enabled",
-  "synthetic_task_family_matrix_used": false,
-  "task_family_results": []
+  "status": "ambiguous_support_conjunction_smoke_pass",
+  "synthetic_task_family_matrix_used": true,
+  "task_family_results": [
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "same_symbol_support_relation",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "operation_ambiguity",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "boundary_condition",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "helper_dependency_choice",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "config_or_test_mismatch",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "distractor_file",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "nearby_wrong_function",
+      "tests_pass_rate": 1.0
+    },
+    {
+      "arm": "control_sparse",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_support_only",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_distractor_plus_support",
+      "run_count": 1,
+      "solve_rate": 0.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 0.0
+    },
+    {
+      "arm": "ambiguous_target_plus_support",
+      "run_count": 1,
+      "solve_rate": 1.0,
+      "task_family": "cross_file_symbol",
+      "tests_pass_rate": 1.0
+    }
+  ]
 }

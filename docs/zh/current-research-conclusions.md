@@ -612,37 +612,11 @@ calibration 声明、不是 BEA 优越性声明、不是 promotion、不是 defa
 
 ## 2026-06-21 B16-J Ambiguous-Support Conjunction Live-Provider Smoke
 
-B16-J 是最后一个 B16 atom-redesign 尝试。它构造 ambiguous-support 任务，
-其中 support-only 在构造上无法识别 target binding：每个任务有多个
-plausible target 文件/符号，相同的抽象 support rule 适用于多个候选。
-五个固定 arm：`control_sparse`、`ambiguous_target_only`、
-`ambiguous_support_only`、`ambiguous_distractor_plus_support`、
-`ambiguous_target_plus_support`。八个固定任务族（复用
-B16-F/B16-G/B16-H/B16-I）。默认 8 任务 x 5 arms = 40 次 live provider
-调用。schema `b16j_ambiguous_support_conjunction.v1`、`claim_level=
-ambiguous_support_conjunction_downstream_smoke_only`、阶段 `B16-J`。
-289/289 self-test 检查通过。support-only text 不包含 target 文件名、
-target 符号、unique noun、确切答案、edit 指令或 test 路径/名。target.py
-和 distractor.py 都包含相同符号——support rule 适用于两者。文件选择
-confound 已移除。chosen file/symbol 仅记录在 `/tmp` 下的私有 SCORE/event
-JSONL 中。主对比：`ambiguous_target_plus_support` vs
-`ambiguous_support_only`、vs `ambiguous_target_only`、vs
-`ambiguous_distractor_plus_support`。`mechanism_summary_records`（8 个
-计数）：`target_support_conjunction_required_count`、
-`support_only_sufficient_count`、`target_only_sufficient_count`、
-`distractor_hurts_count`、`ambiguous_support_wrong_binding_count`、
-`wrong_file_selection_count`、`all_arms_solved_count`、
-`sparse_solved_count`。仅计数 self-test 字段。
-`input_summary.support_cue_ambiguous=true`。live provider 仅当
-`--allow-remote` + `OPENLOCUS_ALLOW_REMOTE=1` + env 时使用。本地 no-env
-路径真实 `blocked_remote_not_enabled`。CI 通过不要求 conjunction 成立。
-B16-J 不是基准测试结果、不是 leaderboard entry、不是性能声明、不是
-method-winner 声明、不是 calibration 声明、不是 BEA 优越性声明、不是
-promotion、不是 default 改动、不是 runtime/retriever/pack/backend/
-EvidenceCore 语义改动、不是下游 agent 价值声明。停止规则：如果 B16-J
-未能隔离 conjunction，不运行 B16-K；转向外部 BEA scale。手动
-real-provider CI run 待执行。详见
-[B16-J 详细报告](b16j-ambiguous-support-conjunction.md)。
+B16-J 是最后一个 B16 atom-redesign 尝试。它使用 role-neutral filenames 与完整 prompt 泄漏自测修复 B16-I 的失败模式：target/distractor 角色只留在私有 evaluator 结构中，support-only prompt 按自测不包含 target-role lexical cues、target filename、target symbol、unique noun、exact answer、edit instruction 或 test path/name。五个固定 arm：`control_sparse`、`ambiguous_target_only`、`ambiguous_support_only`、`ambiguous_distractor_plus_support`、`ambiguous_target_plus_support`；默认 8 任务 x 5 arms = 40 次 live provider calls。329/329 self-test 通过，本地 no-env 路径真实 `blocked_remote_not_enabled`。
+
+手动 real-provider CI run `27953321504` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；329/329 self-test。结果：`control_sparse` solve/test=0.0、selected_target_file_rate=0.125、wrong_file_edit_rate=0.875；`ambiguous_target_only` solve/test=0.0、selected_target_file_rate=1.0；`ambiguous_support_only` solve/test=0.25、selected_target_file_rate=0.25、selected_distractor_file_rate=0.625、wrong_file_edit_rate=0.75；`ambiguous_distractor_plus_support` solve/test=0.625、selected_target_file_rate=0.625、selected_distractor_file_rate=0.375；`ambiguous_target_plus_support` solve/test=1.0、selected_target_file_rate=1.0、wrong_file_edit_rate=0.0。`ambiguous_target_plus_support` 的主 delta：vs `ambiguous_support_only` solve/test delta=+0.75、wrong_file_edit_rate delta=-0.75、selected_target_file_rate delta=+0.75；vs `ambiguous_target_only` solve/test delta=+1.0；vs `ambiguous_distractor_plus_support` solve/test delta=+0.375、wrong_file_edit_rate delta=-0.375。机制 summary：`target_support_conjunction_required_count=6`、`support_only_sufficient_count=2`、`target_only_sufficient_count=0`、`distractor_hurts_count=3`、`ambiguous_support_wrong_binding_count=6`、`wrong_file_selection_count=6`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在 role-neutral 文件名和完整 prompt 泄漏自测之后，B16-J 终于在该有界合成切片上隔离出 target+support conjunction 信号；support-only 多数任务不再足够（2/8），target-only 0/8，而 ambiguous support 加 target binding 后 8/8。该结果仍只是 smoke-level 合成 live-provider 机制结果，不是下游价值证明、BEA 优越性、method-winner/default、benchmark/performance、calibration、promotion 或 runtime/EvidenceCore 改动。
+
+停止规则结果：B16-J 已隔离出有界 conjunction 信号，因此不运行 B16-K；下一步转向外部 BEA scale / 更广真实 benchmark 工作。详见 [B16-J 详细报告](b16j-ambiguous-support-conjunction.md)。
 
 ## 2026-06-21 D5-A2 Heldout 特征验证 Smoke
 

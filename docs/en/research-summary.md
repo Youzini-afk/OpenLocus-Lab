@@ -3700,34 +3700,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## B16-J findings
 
-- **B16-J is the LAST B16 atom-redesign attempt**. It constructs
-  ambiguous-support tasks where support-only cannot identify the target
-  binding by construction: each task has multiple plausible target
-  files/symbols (both target.py and distractor.py contain the same symbol),
-  and the same abstract support rule applies plausibly to multiple
-  candidates. Support-only text does NOT contain target filename, target
-  symbol, unique noun, exact answer, edit instruction, or test path/name.
-- **Five fixed arms**: `control_sparse`, `ambiguous_target_only`,
-  `ambiguous_support_only`, `ambiguous_distractor_plus_support`,
-  `ambiguous_target_plus_support`. Eight fixed task families (reused from
-  B16-F/B16-G/B16-H/B16-I). Default 8 tasks x 5 arms = 40 live provider calls.
-- **Mechanism summary records (8 counts)**:
-  `target_support_conjunction_required_count`, `support_only_sufficient_count`,
-  `target_only_sufficient_count`, `distractor_hurts_count`,
-  `ambiguous_support_wrong_binding_count`, `wrong_file_selection_count`,
-  `all_arms_solved_count`, `sparse_solved_count`.
-- **289/289 self-test checks pass**. Local no-env path truthfully
-  `blocked_remote_not_enabled`. Counts-only self-test fields
-  (`self_test_checks_total`, `self_test_checks_passed`).
-- **Strict claim boundary**: `claim_level=
-  ambiguous_support_conjunction_downstream_smoke_only`. NOT downstream
-  value/BEA superiority/method winner/default/benchmark/calibration/promotion/
-  runtime/EvidenceCore claim. `bea_superiority_claimed=false`.
-- **Stop rule**: if B16-J fails to isolate conjunction, do not run B16-K;
-  move to external BEA scale.
-- **Workflow stage `b16j_ambiguous_support_conjunction`** added to
-  `real-provider-benchmark.yml` (manual only; fail-closed on missing arms,
-  zero provider_calls, missing primary contrasts, missing mechanism fields,
-  missing file-choice metrics, `support_cue_ambiguous` not true,
-  `bea_superiority_claimed` not false, private manifest count mismatch,
-  forbidden_scan fail).
+- **B16-J is the LAST B16 atom-redesign attempt**. It fixes the B16-I failure by using role-neutral candidate filenames and full-prompt leakage self-tests; target/distractor roles stay private and public artifacts stay aggregate-only.
+- **Five fixed arms**: `control_sparse`, `ambiguous_target_only`, `ambiguous_support_only`, `ambiguous_distractor_plus_support`, `ambiguous_target_plus_support`. Eight fixed task families; default 8 tasks x 5 arms = 40 live provider calls.
+- **329/329 self-test checks pass**. Local no-env path truthfully `blocked_remote_not_enabled`. Counts-only self-test fields (`self_test_checks_total`, `self_test_checks_passed`).
+- **B16-J live result**: Manual real-provider CI run `27953321504` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 329/329 self-tests. Results: `control_sparse` solve/test=0.0, selected_target_file_rate=0.125, wrong_file_edit_rate=0.875; `ambiguous_target_only` solve/test=0.0, selected_target_file_rate=1.0; `ambiguous_support_only` solve/test=0.25, selected_target_file_rate=0.25, selected_distractor_file_rate=0.625, wrong_file_edit_rate=0.75; `ambiguous_distractor_plus_support` solve/test=0.625, selected_target_file_rate=0.625, selected_distractor_file_rate=0.375; `ambiguous_target_plus_support` solve/test=1.0, selected_target_file_rate=1.0, wrong_file_edit_rate=0.0. Primary deltas for `ambiguous_target_plus_support`: vs `ambiguous_support_only` solve/test delta=+0.75, wrong_file_edit_rate delta=-0.75, selected_target_file_rate delta=+0.75; vs `ambiguous_target_only` solve/test delta=+1.0; vs `ambiguous_distractor_plus_support` solve/test delta=+0.375, wrong_file_edit_rate delta=-0.375. Mechanism summary: `target_support_conjunction_required_count=6`, `support_only_sufficient_count=2`, `target_only_sufficient_count=0`, `distractor_hurts_count=3`, `ambiguous_support_wrong_binding_count=6`, `wrong_file_selection_count=6`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: after role-neutral filenames and full-prompt leakage tests, B16-J finally isolated a bounded target+support conjunction signal on this synthetic slice; support-only was no longer sufficient on most tasks (2/8), target-only solved 0/8, and adding target binding to ambiguous support solved 8/8. This is still a smoke-level synthetic live-provider mechanism result, not downstream value proof, BEA superiority, method-winner/default, benchmark/performance, calibration, promotion, or runtime/EvidenceCore change.
+- **Stop rule outcome**: B16-J isolated a bounded conjunction signal, so do not run B16-K; move next to external BEA scale / broader real benchmark work.
+- **Strict claim boundary**: `claim_level=ambiguous_support_conjunction_downstream_smoke_only`. NOT downstream value/BEA superiority/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore claim. `bea_superiority_claimed=false`.
