@@ -9666,3 +9666,74 @@ claims.
   runtime/retriever/pack/model/backend/default-policy files were modified;
   no promotion/default/runtime claims change. EvidenceCore semantics are
   unchanged.
+
+## 2026-06-21 — BEA-2 Policy v0.2 Diversity/Risk Mechanism Smoke
+
+### Objective
+
+Implement and test a real BEA v0.2 algorithm change. BEA-1 showed BEA v0
+ties same-budget BM25/agreement-only and only beats seeded random. BEA-2
+tests whether a deterministic gold-free diversity/risk-aware acquisition
+policy can improve over v0 and same-budget controls on fresh heldout
+external records.
+
+### Fresh heldout slice
+
+- ContextBench verified Python rows offset 40, limit 20.
+- RepoQA Python needles offset 20, limit 10.
+
+### BEA v0.2 policy (runtime-clean, deterministic)
+
+Priority score = WEIGHT_AGREEMENT(0.30) × agreement_norm +
+WEIGHT_BM25_NORM(0.20) × bm25_norm + WEIGHT_DIVERSITY(0.20) × diversity +
+WEIGHT_QUERY_PATH_OVERLAP(0.15) × query_path_overlap +
+WEIGHT_RISK_PENALTY(-0.25) × risk_penalty +
+WEIGHT_DUPLICATION_PENALTY(-0.30) × duplication_penalty.
+
+Frozen weights (not tuned from outcomes). Greedy selection by descending
+priority under budget, recompute priorities after each selection.
+
+### Fixed policy arms
+
+- `bm25_prefix_same_budget`, `agreement_only_same_budget`, `bea_v0`,
+  `bea_v0_2_diversity_risk`, `seeded_random_same_budget`; optional
+  `rrf_same_budget`.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/bea2_policy_v02.py  => PASS
+python3 eval/bea2_policy_v02.py --self-test  => PASS (321/321 checks)
+python3 eval/bea2_policy_v02.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-offset 40 --contextbench-row-limit 3 \
+  --repoqa-needle-offset 20 --repoqa-needle-limit 2 \
+  --budget 5 --methods bm25,regex,symbol --enable-rrf-baseline \
+  --out artifacts/bea2_policy_v02/bea2_policy_v02_report.json  => PASS
+  (status: bea2_policy_v02_pass, 5 records successful,
+   private_score_manifest.record_count=30 (5×6 arms),
+   private_score_storage_class=tmp_private,
+   private_score_path_publicly_serialized=false,
+   provider_calls=0, forbidden_scan=pass)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Real bounded local run results (2026-06-21)
+
+5 records successful (ContextBench 3 + RepoQA 2). Win/tie/loss (v0.2 vs
+v0, n=5): file_recall@10 win=0 tie=4 loss=1; mrr win=0 tie=4 loss=1;
+span_f0.5@10 win=0 tie=4 loss=1; success_rate win=0 tie=4 loss=1. The v0.2
+diversity/risk policy selected a different candidate set on 1/5 records,
+which hurt on this bounded sample. 30 private SCORE rows written to
+`/tmp/bea0_private_score_<pid>_<ts>/bea2.private.jsonl` (transient).
+
+### Caveats
+
+- BEA-2 is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value claim.
+- v0.2 priority weights are frozen constants, NOT tuned from outcomes.
+- Bounded sample (5 records). Smoke, not rigorous evaluation.
+- All no-claim / no-runtime-change flags false; EvidenceCore semantics
+  unchanged.

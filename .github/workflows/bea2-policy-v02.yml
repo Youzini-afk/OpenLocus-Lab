@@ -1,0 +1,294 @@
+name: bea2-policy-v02
+
+# BEA-2 Policy v0.2 Diversity/Risk Mechanism Smoke (manual opt-in).
+#
+# MANUAL OPT-IN ONLY via workflow_dispatch with
+# `enable_external_benchmark_network=true`. Does NOT run on PR/push.
+# Uses NO provider secrets/vars/model env. Uploads ONLY the aggregate
+# public report (no private SCORE, no raw repo/query/path/candidate/
+# SCORE/provider/source/stdout/stderr/row IDs/gold data).
+#
+# Claim boundary: eval/diagnostic only. claim_level =
+# `bea_v02_policy_smoke_only`. NOT a benchmark result, NOT a leaderboard,
+# NOT method winner/default, NOT calibration, NOT downstream value, NOT
+# promotion, NOT runtime/retriever/pack/backend/default-policy/EvidenceCore
+# change.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+      contextbench_row_offset:
+        description: 'ContextBench verified Python row offset (default 40)'
+        required: false
+        default: '40'
+      contextbench_row_limit:
+        description: 'ContextBench row limit (default 20; hard cap 20)'
+        required: false
+        default: '20'
+      repoqa_needle_offset:
+        description: 'RepoQA Python needle offset (default 20)'
+        required: false
+        default: '20'
+      repoqa_needle_limit:
+        description: 'RepoQA needle limit (default 10; hard cap 10)'
+        required: false
+        default: '10'
+      budget:
+        description: 'Evidence budget (default 5; hard cap 20)'
+        required: false
+        default: '5'
+      methods:
+        description: 'Comma-separated retrieval methods (default bm25,regex,symbol; bm25 required)'
+        required: false
+        default: 'bm25,regex,symbol'
+      enable_rrf_baseline:
+        description: 'Enable the rrf_same_budget arm (default false)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea2-policy-v02-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}-${{ inputs.contextbench_row_offset }}-${{ inputs.contextbench_row_limit }}-${{ inputs.repoqa_needle_offset }}-${{ inputs.repoqa_needle_limit }}-${{ inputs.budget }}
+  cancel-in-progress: false
+
+jobs:
+  bea2-policy-v02:
+    name: bea2-policy-v02-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve BEA-2 inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          contextbench_row_offset="${{ inputs.contextbench_row_offset || '40' }}"
+          contextbench_row_limit="${{ inputs.contextbench_row_limit || '20' }}"
+          repoqa_needle_offset="${{ inputs.repoqa_needle_offset || '20' }}"
+          repoqa_needle_limit="${{ inputs.repoqa_needle_limit || '10' }}"
+          budget="${{ inputs.budget || '5' }}"
+          methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
+          enable_rrf_baseline="${{ inputs.enable_rrf_baseline || 'false' }}"
+          for var in contextbench_row_offset repoqa_needle_offset; do
+            val="${!var}"
+            if ! [[ "$val" =~ ^[0-9]+$ ]]; then
+              echo "$var must be a non-negative integer: $val" >&2; exit 1
+            fi
+          done
+          for var in contextbench_row_limit repoqa_needle_limit budget; do
+            val="${!var}"
+            if ! [[ "$val" =~ ^[1-9][0-9]*$ ]]; then
+              echo "$var must be a positive integer: $val" >&2; exit 1
+            fi
+          done
+          [[ "$contextbench_row_limit" -gt 20 ]] && echo "contextbench_row_limit exceeds cap 20" >&2
+          [[ "$repoqa_needle_limit" -gt 10 ]] && echo "repoqa_needle_limit exceeds cap 10" >&2
+          [[ "$budget" -gt 20 ]] && echo "budget exceeds cap 20" >&2
+          IFS=',' read -ra method_arr <<< "$methods"
+          has_bm25=0
+          for m in "${method_arr[@]}"; do
+            m_trimmed="$(echo -n "$m" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')"
+            case "$m_trimmed" in bm25|regex|symbol) ;; *) echo "unsupported method: $m_trimmed" >&2; exit 1 ;; esac
+            [[ "$m_trimmed" == "bm25" ]] && has_bm25=1
+          done
+          [[ "$has_bm25" -eq 0 ]] && echo "methods must include bm25" >&2 && exit 1
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          [[ "$enable_rrf_baseline" == "true" ]] && enable_rrf_baseline="true" || enable_rrf_baseline="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+          echo "contextbench_row_offset=$contextbench_row_offset" >> "$GITHUB_OUTPUT"
+          echo "contextbench_row_limit=$contextbench_row_limit" >> "$GITHUB_OUTPUT"
+          echo "repoqa_needle_offset=$repoqa_needle_offset" >> "$GITHUB_OUTPUT"
+          echo "repoqa_needle_limit=$repoqa_needle_limit" >> "$GITHUB_OUTPUT"
+          echo "budget=$budget" >> "$GITHUB_OUTPUT"
+          echo "methods=$methods" >> "$GITHUB_OUTPUT"
+          echo "enable_rrf_baseline=$enable_rrf_baseline" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-2 evaluator
+        run: python3 -m py_compile eval/bea2_policy_v02.py
+
+      - name: BEA-2 self-test (no network)
+        run: python3 eval/bea2_policy_v02.py --self-test
+
+      - name: BEA-2 policy v0.2 smoke (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          CB_OFFSET: ${{ steps.resolve.outputs.contextbench_row_offset }}
+          CB_LIMIT: ${{ steps.resolve.outputs.contextbench_row_limit }}
+          RQ_OFFSET: ${{ steps.resolve.outputs.repoqa_needle_offset }}
+          RQ_LIMIT: ${{ steps.resolve.outputs.repoqa_needle_limit }}
+          BUDGET: ${{ steps.resolve.outputs.budget }}
+          METHODS: ${{ steps.resolve.outputs.methods }}
+          ENABLE_RRF: ${{ steps.resolve.outputs.enable_rrf_baseline }}
+        run: |
+          report_path="$RUNNER_TEMP/bea2_policy_v02_report.json"
+          rrf_flag=""
+          [[ "$ENABLE_RRF" == "true" ]] && rrf_flag="--enable-rrf-baseline"
+          python3 eval/bea2_policy_v02.py \
+            --enable-external-benchmark-network \
+            --contextbench-row-offset "$CB_OFFSET" \
+            --contextbench-row-limit "$CB_LIMIT" \
+            --repoqa-needle-offset "$RQ_OFFSET" \
+            --repoqa-needle-limit "$RQ_LIMIT" \
+            --budget "$BUDGET" --methods "$METHODS" \
+            $rrf_flag --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-2 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: echo "enable_external_benchmark_network is false; skipping real BEA-2 smoke."
+
+      - name: Validate BEA-2 report (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ env.report_path }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          must_be_true = {"aggregate_only_public_artifact", "diagnostic_only"}
+          must_be_false = {
+              "external_benchmark_performance_claimed", "leaderboard_entry_claimed",
+              "downstream_agent_value_proven", "calibration_claimed",
+              "method_winner_claimed", "promotion_ready", "default_should_change",
+              "runtime_behavior_changed", "retriever_changed", "pack_builder_changed",
+              "backend_changed", "default_policy_changed",
+              "evidencecore_semantics_changed", "provider_calls_made",
+              "remote_provider_calls_made",
+          }
+          failures = []
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          if status not in ("bea2_policy_v02_pass", "partial"):
+              failures.append(f"expected status in (bea2_policy_v02_pass, partial), got {status!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if report.get("records_successful", 0) < 3:
+              failures.append(f"expected records_successful >= 3, got {report.get('records_successful')!r}")
+          if report.get("provider_calls") != 0:
+              failures.append("expected provider_calls=0")
+          manifest = report.get("private_score_manifest", {})
+          if not isinstance(manifest, dict) or not manifest:
+              failures.append("expected non-empty private_score_manifest")
+          else:
+              if manifest.get("path_publicly_serialized") is not False:
+                  failures.append("expected private_score_manifest.path_publicly_serialized=false")
+              if manifest.get("records_written") is not True:
+                  failures.append("expected private_score_manifest.records_written=true")
+          if report.get("schema_version") != "bea2_policy_v02.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_v02_policy_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("mode") != "bounded_heldout_retrieval_policy_v02_smoke":
+              failures.append(f"unexpected mode: {report.get('mode')!r}")
+          if report.get("phase") != "BEA-2":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("treatment_arm") != "bea_v0_2_diversity_risk":
+              failures.append(f"unexpected treatment_arm: {report.get('treatment_arm')!r}")
+          if report.get("baseline_arm") != "bea_v0":
+              failures.append(f"unexpected baseline_arm: {report.get('baseline_arm')!r}")
+          # Check required arms present.
+          fixed_arms = report.get("fixed_arms", [])
+          for expected in ("bm25_prefix_same_budget", "agreement_only_same_budget",
+                           "bea_v0", "bea_v0_2_diversity_risk",
+                           "seeded_random_same_budget"):
+              if expected not in fixed_arms:
+                  failures.append(f"expected {expected} in fixed_arms")
+          # Check records-only public shape (no dynamic arm dicts).
+          for key in ("benchmark_arm_metric_records", "delta_records",
+                      "mechanism_contrast_records", "win_tie_loss_records"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          # Check no legacy dynamic dicts.
+          for key in ("arm_metrics", "deltas", "mechanism_contrasts",
+                      "aggregate_metrics"):
+              if key in report:
+                  failures.append(f"legacy {key} dict must not be present")
+          # Check forbidden keys absent.
+          bea2_forbidden = (
+              "private_score_path", "score_path", "action_order",
+              "priority_components", "selected_decisions", "budget_trace",
+              "stop_reason", "candidate_features", "action_trace",
+              "budget_states", "accepted_candidates", "candidate_list",
+              "score_outcome", "per_record_metrics", "runtime_query_features",
+              "winner", "best_method", "recommended_default",
+              "method_winner", "calibration",
+          )
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k in keys: found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for idx, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{idx}]"))
+              return found
+          leaked = find_keys(report, bea2_forbidden)
+          if leaked:
+              failures.append(f"forbidden fields present: {leaked}")
+          # Check mechanism contrasts have record_count >= 3.
+          for rec in (report.get("mechanism_contrast_records") or []):
+              rc = rec.get("record_count")
+              if not isinstance(rc, int) or rc < 3:
+                  failures.append(f"mechanism contrast record_count must be >= 3, got {rc!r}")
+          if failures:
+              print("BEA-2 report validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-2 report validation passed.")
+          print(f"  status={status}")
+          print(f"  records_successful={report.get('records_successful')}")
+          print(f"  private_score_record_count={manifest.get('record_count')}")
+          print(f"  benchmark_arm_metric_records={len(report.get('benchmark_arm_metric_records') or [])}")
+          print(f"  delta_records={len(report.get('delta_records') or [])}")
+          print(f"  mechanism_contrast_records={len(report.get('mechanism_contrast_records') or [])}")
+          print(f"  win_tie_loss_records={len(report.get('win_tie_loss_records') or [])}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree (no generated files committed)
+        run: git diff --check
+
+      - name: Upload BEA-2 aggregate report artifact (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea2-policy-v02-report-${{ github.run_id }}
+          path: ${{ env.report_path }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

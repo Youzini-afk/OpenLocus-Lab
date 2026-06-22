@@ -185,6 +185,35 @@ gains (if any) come from multi-source agreement / sequential budgeted
 evidence acquisition rather than merely reading fewer candidates. BEA-1
 does NOT bootstrap the BEA-0 aggregate artifact; it reruns fresh external
 retrieval. No runtime/default-policy/promotion/method-winner/calibration/
+downstream-value claim is made. BEA-2 is the policy v0.2 diversity/risk
+mechanism smoke: it implements a real algorithmic policy change (BEA v0.2)
+with frozen priority weights (agreement=0.30, bm25_norm=0.20,
+diversity=0.20, query_path_overlap=0.15, risk_penalty=-0.25,
+duplication_penalty=-0.30) that are NOT tuned from outcomes, over fresh
+heldout ContextBench verified Python rows (offset 40, limit 20) + RepoQA
+Python needles (offset 20, limit 10). v0.2 is structurally different from v0
+and agreement-only: greedy priority-scored selection with
+diversity/risk/duplication-aware recomputation after each selection. 5 fixed
+policy arms (`bm25_prefix_same_budget`, `agreement_only_same_budget`,
+`bea_v0`, `bea_v0_2_diversity_risk`, `seeded_random_same_budget`; optional
+`rrf_same_budget`). Bounded local run (2026-06-21) with ContextBench
+offset 40 limit 3 + RepoQA offset 20 limit 2, budget=5, methods
+bm25/regex/symbol, rrf baseline enabled: 5 records successful,
+`paired_exclusion_count=0`, forbidden scan pass, `provider_calls=0`,
+`private_score_manifest.record_count=30` (5 records × 6 arms),
+`private_score_storage_class=tmp_private`,
+`private_score_path_publicly_serialized=false`. Win/tie/loss (v0.2 vs v0,
+n=5): file_recall@10 win=0 tie=4 loss=1; mrr win=0 tie=4 loss=1;
+span_f0.5@10 win=0 tie=4 loss=1; success_rate win=0 tie=4 loss=1. The v0.2
+diversity/risk policy selected a different candidate set on 1/5 records,
+which hurt on this bounded sample. Schema `bea2_policy_v02.v1`,
+`claim_level=bea_v02_policy_smoke_only`, phase `BEA-2`, 321/321 self-test
+checks pass. BEA-2 is NOT a benchmark result, NOT a leaderboard entry, NOT
+a performance claim, NOT a method-winner claim, NOT a calibration claim,
+NOT a promotion, NOT a default change, NOT a
+runtime/retriever/pack/backend/EvidenceCore semantic change, and NOT a
+downstream agent value claim. BEA-2 does NOT mutate BEA-0/BEA-1 semantics.
+No runtime/default-policy/promotion/method-winner/calibration/
 downstream-value claim is made.
 
 最新状态：C4 外部 benchmark readiness 与 Step 6/D 系列 dual-rubric 控制面
@@ -307,6 +336,7 @@ Chinese 'translation pending' notice and then preserves the English source under
 - `b16e-broader-live-provider-paired-smoke.md`: [en](en/b16e-broader-live-provider-paired-smoke.md) · [zh](zh/b16e-broader-live-provider-paired-smoke.md)
 - `bea0-budgeted-evidence-acquisition.md`: [en](en/bea0-budgeted-evidence-acquisition.md) · [zh](zh/bea0-budgeted-evidence-acquisition.md)
 - `bea1-mechanism-ablation.md`: [en](en/bea1-mechanism-ablation.md) · [zh](zh/bea1-mechanism-ablation.md)
+- `bea2-policy-v02.md`: [en](en/bea2-policy-v02.md) · [zh](zh/bea2-policy-v02.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

@@ -2894,3 +2894,25 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   控制，这些控制隔离 BEA-0 的增益（若有）是否来自多源 agreement / 序贯
   预算采集而非仅仅是读取更少候选。BEA-1 不 bootstrap BEA-0 聚合 artifact；
   它重新运行 fresh external retrieval。
+
+## BEA-2 findings
+
+- **BEA-2 是 policy v0.2 diversity/risk 机制消融 smoke**：实现真正算法
+  策略变更（BEA v0.2），含冻结优先级权重（agreement=0.30、bm25_norm=0.20、
+  diversity=0.20、query_path_overlap=0.15、risk_penalty=-0.25、
+  duplication_penalty=-0.30），在全新 heldout ContextBench verified Python
+  行（offset 40）+ RepoQA Python needle（offset 20）上运行。v0.2 在结构上
+  与 v0 和 agreement-only 不同：按优先级降序贪心选择，含
+  diversity/risk/duplication-aware 重计算。
+- **有界本地运行（2026-06-21）**：5 条记录成功（CB 3 + RQ 2），budget=5，
+  方法 bm25/regex/symbol，启用 rrf baseline。Win/tie/loss（v0.2 vs v0，
+  n=5）：file_recall@10 win=0 tie=4 loss=1；mrr win=0 tie=4 loss=1；
+  span_f0.5@10 win=0 tie=4 loss=1；success_rate win=0 tie=4 loss=1。v0.2
+  diversity/risk 策略在 1/5 记录上选择了不同候选集，在此有界样本上造成了
+  损失。30 行私有 SCORE（5 条记录 × 6 arm）。这是诚实的 smoke 级结果。
+- **321/321 self-test 检查通过**：31 组。
+- **严格 claim 边界**：`claim_level=bea_v02_policy_smoke_only`。非
+  benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
+- **BEA-2 不修改 BEA-0/BEA-1**：独立 phase、独立评估器、独立 artifact。
+  BEA-0/BEA-1 语义不变。

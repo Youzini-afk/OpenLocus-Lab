@@ -3429,3 +3429,37 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   acquisition rather than merely reading fewer candidates. BEA-1 does
   NOT bootstrap the BEA-0 aggregate artifact; it reruns fresh external
   retrieval.
+
+## BEA-2 findings
+
+- **BEA-2 is the policy v0.2 diversity/risk mechanism smoke**: implements a
+  real algorithmic policy change (BEA v0.2) with frozen priority weights
+  (agreement=0.30, bm25_norm=0.20, diversity=0.20, query_path_overlap=0.15,
+  risk_penalty=-0.25, duplication_penalty=-0.30) over fresh heldout
+  ContextBench verified Python rows (offset 40) + RepoQA Python needles
+  (offset 20). v0.2 is structurally different from v0 and agreement-only:
+  greedy priority-scored selection with diversity/risk/duplication-aware
+  recomputation after each selection.
+- **Bounded local run (2026-06-21)**: 5 records successful (CB 3 + RQ 2),
+  budget=5, methods bm25/regex/symbol, rrf baseline enabled. Win/tie/loss
+  (v0.2 vs v0, n=5): file_recall@10 win=0 tie=4 loss=1; mrr win=0 tie=4
+  loss=1; span_f0.5@10 win=0 tie=4 loss=1; success_rate win=0 tie=4 loss=1.
+  The v0.2 diversity/risk policy selected a different candidate set on 1/5
+  records, which hurt on this bounded sample. 30 private SCORE rows (5
+  records × 6 arms). This is an honest smoke-level result.
+- **321/321 self-test checks pass**: 31 groups covering identity, safe-true /
+  no-claim flags, license, private SCORE manifest, heldout offset/limit hard
+  caps, budget caps, method validation, v0.2 policy mechanics (accepts
+  nonempty; respects budget; differs from v0; priority components present;
+  runtime-clean invariance), risk_bucket/diversity/query_overlap helpers,
+  same-budget K, same-budget control arms, benchmark_arm_metric_records
+  fixed shape, delta_records, mechanism_contrast_records, win_tie_loss_records,
+  failure category enum, unavailable statuses, scanner reject/allow, fail-closed
+  generation, CLI surface, private SCORE writer round-trip, paired denominator,
+  aggregate runtime, no winner/calibration anywhere, fixed arms, frozen
+  priority weights.
+- **Strict claim boundary**: `claim_level=bea_v02_policy_smoke_only`. NOT
+  benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
+- **BEA-2 does NOT mutate BEA-0/BEA-1**: standalone phase, standalone
+  evaluator, standalone artifact. BEA-0/BEA-1 semantics unchanged.

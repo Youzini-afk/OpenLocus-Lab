@@ -8947,3 +8947,72 @@ promotion、default 变更、runtime/retriever/pack/backend/EvidenceCore 语义
   （`aggregate_only_public_artifact`、`diagnostic_only`）保持 true。
   未修改任何 runtime/retriever/pack/model/backend/default-policy 文件；
   无 promotion/default/runtime claim 变更。EvidenceCore 语义不变。
+
+## 2026-06-21 — BEA-2 Policy v0.2 Diversity/Risk 机制消融 Smoke
+
+### 目标
+
+实现并测试真正的 BEA v0.2 算法变更。BEA-1 表明 BEA v0 与同预算
+BM25/agreement-only 持平，仅胜过 seeded random。BEA-2 测试确定性
+gold-free diversity/risk-aware 采集策略能否在全新 heldout external 记录上
+超越 v0 和同预算控制。
+
+### 全新 heldout 切片
+
+- ContextBench verified Python 行 offset 40、limit 20。
+- RepoQA Python needle offset 20、limit 10。
+
+### BEA v0.2 策略（runtime-clean，确定性）
+
+优先级分数 = WEIGHT_AGREEMENT(0.30) × agreement_norm +
+WEIGHT_BM25_NORM(0.20) × bm25_norm + WEIGHT_DIVERSITY(0.20) × diversity +
+WEIGHT_QUERY_PATH_OVERLAP(0.15) × query_path_overlap +
+WEIGHT_RISK_PENALTY(-0.25) × risk_penalty +
+WEIGHT_DUPLICATION_PENALTY(-0.30) × duplication_penalty。
+
+冻结权重（不从 outcomes 调优）。按优先级降序在预算下贪心选择，每次选择
+后重新计算优先级。
+
+### 固定策略 arm
+
+- `bm25_prefix_same_budget`、`agreement_only_same_budget`、`bea_v0`、
+  `bea_v0_2_diversity_risk`、`seeded_random_same_budget`；可选
+  `rrf_same_budget`。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/bea2_policy_v02.py  => PASS
+python3 eval/bea2_policy_v02.py --self-test  => PASS (321/321 checks)
+python3 eval/bea2_policy_v02.py \
+  --enable-external-benchmark-network \
+  --contextbench-row-offset 40 --contextbench-row-limit 3 \
+  --repoqa-needle-offset 20 --repoqa-needle-limit 2 \
+  --budget 5 --methods bm25,regex,symbol --enable-rrf-baseline \
+  --out artifacts/bea2_policy_v02/bea2_policy_v02_report.json  => PASS
+  (status: bea2_policy_v02_pass, 5 records successful,
+   private_score_manifest.record_count=30 (5×6 arms),
+   private_score_storage_class=tmp_private,
+   private_score_path_publicly_serialized=false,
+   provider_calls=0, forbidden_scan=pass)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### 真实有界本地运行结果（2026-06-21）
+
+5 条记录成功（ContextBench 3 + RepoQA 2）。Win/tie/loss（v0.2 vs v0，
+n=5）：file_recall@10 win=0 tie=4 loss=1；mrr win=0 tie=4 loss=1；
+span_f0.5@10 win=0 tie=4 loss=1；success_rate win=0 tie=4 loss=1。v0.2
+diversity/risk 策略在 1/5 记录上选择了不同候选集，在此有界样本上造成了
+损失。30 行私有 SCORE 写入
+`/tmp/bea0_private_score_<pid>_<ts>/bea2.private.jsonl`（transient）。
+
+### Caveats
+
+- BEA-2 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value 声明。
+- v0.2 优先级权重为冻结常量，不从 outcomes 调优。
+- 有界样本（5 条记录）。smoke，非严格评估。
+- 所有 no-claim / no-runtime-change flag 为 false；EvidenceCore 语义不变。
