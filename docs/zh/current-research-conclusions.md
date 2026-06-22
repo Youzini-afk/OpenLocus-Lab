@@ -377,7 +377,7 @@ path extension），并在合成 gold/label/row-id/model-family/previous-outcome
 SCORE path 绝不序列化到公开 artifact/docs/CI。
 
 手动 CI run `27934507148` 已通过：ContextBench 2 行 + RepoQA 1 needle，budget=5，
-methods bm25/regex/symbol，启用 rrf baseline；3 条记录成功，forbidden scan pass，
+methods bm25/regex/symbol，必需并启用 rrf baseline；3 条记录成功，forbidden scan pass，
 provider_calls=0，private_score_record_count=3，`private_score_storage_class=tmp_private`，
 `private_score_path_publicly_serialized=false`。Treatment `bea_v0_budgeted` 与
 `bm25_top10` / `rrf_bm25_regex_symbol_top10` 保持 file_recall@10、mrr、success_rate

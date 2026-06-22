@@ -3300,7 +3300,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   manifest fields (records_written, record_count, schema_version,
   manifest_hash, storage_class, path_publicly_serialized=false).
 - **Manual CI run `27934507148` (2026-06-21)**: ContextBench 2 rows + RepoQA 1
-  needle, budget=5, methods bm25/regex/symbol, rrf baseline enabled. All 3
+  needle, budget=5, methods bm25/regex/symbol, rrf baseline required and enabled. All 3
   records successful. Treatment `bea_v0_budgeted` preserved file_recall@10
   / mrr / success_rate parity with both baselines while using roughly half
   the evidence budget (`evidence_budget_used=3.33` vs `6.67`) and improved
@@ -3383,7 +3383,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   so deltas are interpretable. Public artifacts do not serialize per-record
   inclusion masks.
 - **Manual CI run `27936497544` (2026-06-21)**: ContextBench 5 rows + RepoQA 3
-  needles, budget=5, methods bm25/regex/symbol, rrf baseline enabled.
+  needles, budget=5, methods bm25/regex/symbol, rrf baseline required and enabled.
   All 8 records successful; `paired_exclusion_count=0`. BEA v0 ties
   `same_budget_bm25_prefix` and `agreement_only_same_budget` on
   file_recall@10/mrr/span_f0.5@10/success_rate with the same
@@ -3706,3 +3706,42 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **B16-J live result**: Manual real-provider CI run `27953321504` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 329/329 self-tests. Results: `control_sparse` solve/test=0.0, selected_target_file_rate=0.125, wrong_file_edit_rate=0.875; `ambiguous_target_only` solve/test=0.0, selected_target_file_rate=1.0; `ambiguous_support_only` solve/test=0.25, selected_target_file_rate=0.25, selected_distractor_file_rate=0.625, wrong_file_edit_rate=0.75; `ambiguous_distractor_plus_support` solve/test=0.625, selected_target_file_rate=0.625, selected_distractor_file_rate=0.375; `ambiguous_target_plus_support` solve/test=1.0, selected_target_file_rate=1.0, wrong_file_edit_rate=0.0. Primary deltas for `ambiguous_target_plus_support`: vs `ambiguous_support_only` solve/test delta=+0.75, wrong_file_edit_rate delta=-0.75, selected_target_file_rate delta=+0.75; vs `ambiguous_target_only` solve/test delta=+1.0; vs `ambiguous_distractor_plus_support` solve/test delta=+0.375, wrong_file_edit_rate delta=-0.375. Mechanism summary: `target_support_conjunction_required_count=6`, `support_only_sufficient_count=2`, `target_only_sufficient_count=0`, `distractor_hurts_count=3`, `ambiguous_support_wrong_binding_count=6`, `wrong_file_selection_count=6`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: after role-neutral filenames and full-prompt leakage tests, B16-J finally isolated a bounded target+support conjunction signal on this synthetic slice; support-only was no longer sufficient on most tasks (2/8), target-only solved 0/8, and adding target binding to ambiguous support solved 8/8. This is still a smoke-level synthetic live-provider mechanism result, not downstream value proof, BEA superiority, method-winner/default, benchmark/performance, calibration, promotion, or runtime/EvidenceCore change.
 - **Stop rule outcome**: B16-J isolated a bounded conjunction signal, so do not run B16-K; move next to external BEA scale / broader real benchmark work.
 - **Strict claim boundary**: `claim_level=ambiguous_support_conjunction_downstream_smoke_only`. NOT downstream value/BEA superiority/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore claim. `bea_superiority_claimed=false`.
+
+## BEA-4 findings
+
+- **BEA-4 is the external scale smoke for the frozen BEA v0.3 policy**: runs
+  a larger fresh external slice (ContextBench verified Python rows offset 80
+  limit 80; RepoQA Python needles offset 40 limit 40) with 7 fixed arms
+  (no ablations; v0.3 + v0.2 + v0 + bm25_prefix + agreement_only +
+  seeded_random + optional rrf). v0.3 algorithm/weights frozen exactly as
+  BEA-3 (`algorithm_changed_during_bea4=false`,
+  `weights_tuned_during_bea4=false` — binding).
+- **Public artifact is records-only**: `benchmark_arm_metric_records`,
+  `delta_records` (v0.3 vs bm25/agreement/rrf/v0.2/v0/random),
+  `win_tie_loss_records` (paired denominator),
+  `worst_slice_records` (7 fixed bucket labels; worst N=5 per
+  benchmark × arm, sorted ascending by span_f0.5@10),
+  `mechanism_summary_records`, aggregate-only `private_score_manifest`.
+- **Worst-slice visibility**: 7 fixed public aggregate bucket labels only
+  (`benchmark`, `query_length_bucket`, `candidate_pool_size_bucket`,
+  `budget_exhaustion_bucket`, `file_kind_mix_bucket`,
+  `method_agreement_bucket`, `rank_gap_bucket`). No row IDs, repos, paths,
+  commits, queries, labels, candidate lists, or gold/source snippets.
+- **237/237 self-test checks pass**: 28 groups covering identity, safe true
+  flags, no-claim false flags (incl. algorithm_changed_during_bea4),
+  license, scale defaults/hard caps, v0.3 frozen policy mechanics, required
+  arms (no ablations), bucket helpers, worst-slice records (max N cap,
+  7-bucket tuple), scanner rejects BEA-4 forbidden keys + worst-slice
+  private IDs, fail-closed, CLI surface, private SCORE writer.
+- **Bounded local smoke (2026-06-21)**: 5 records (CB 3 + RQ 2), budget=5,
+  7 arms. Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=1 tie=4
+  loss=0; mrr win=2 tie=3 loss=0; span_f0.5@10 win=1 tie=3 loss=1;
+  success_rate win=1 tie=4 loss=0. v0.3 ties v0.2 on all primary metrics;
+  beats v0/agreement/bm25/rrf by +0.2 file_recall/mrr/success_rate;
+  beats seeded_random by +0.4 file_recall/+0.267 mrr. 35 private SCORE
+  rows (5×7 arms).
+- **Strict claim boundary**: `claim_level=bea_v03_external_scale_smoke_only`.
+  NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
+- **BEA-4 does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3**: standalone phase,
+  evaluator, artifact. v0.3 frozen.

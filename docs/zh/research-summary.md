@@ -2777,7 +2777,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   （records_written、record_count、schema_version、manifest_hash、
   storage_class、path_publicly_serialized=false）。
 - **手动 CI run `27934507148`（2026-06-21）**：ContextBench 2 行 + RepoQA 1 needle，
-  budget=5，方法 bm25/regex/symbol，启用 rrf baseline。3 条记录全部成功。
+  budget=5，方法 bm25/regex/symbol，必需并启用 rrf baseline。3 条记录全部成功。
   Treatment `bea_v0_budgeted` 与两条 baseline 持平 file_recall@10 / mrr
   / success_rate，同时使用约一半 evidence budget
   （`evidence_budget_used=3.33` vs `6.67`），并将 `span_f0.5@10` 提升
@@ -2851,7 +2851,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   `record_count`，以便 delta 可解释。公开产物不序列化 per-record
   inclusion masks。
 - **手动 CI run `27936497544`（2026-06-21）**：ContextBench 5 行 + RepoQA 3 needle，
-  budget=5，方法 bm25/regex/symbol，启用 rrf baseline。8 条记录全部成功；
+  budget=5，方法 bm25/regex/symbol，必需并启用 rrf baseline。8 条记录全部成功；
   `paired_exclusion_count=0`。BEA v0 与 `same_budget_bm25_prefix` 和
   `agreement_only_same_budget` 在 file_recall@10/mrr/span_f0.5@10/
   success_rate 上持平，且 `evidence_budget_used=3.125` 相同；BEA v0 以
@@ -3136,3 +3136,36 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **B16-J live 结果**：手动 real-provider CI run `27953321504` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；329/329 self-test。结果：`control_sparse` solve/test=0.0、selected_target_file_rate=0.125、wrong_file_edit_rate=0.875；`ambiguous_target_only` solve/test=0.0、selected_target_file_rate=1.0；`ambiguous_support_only` solve/test=0.25、selected_target_file_rate=0.25、selected_distractor_file_rate=0.625、wrong_file_edit_rate=0.75；`ambiguous_distractor_plus_support` solve/test=0.625、selected_target_file_rate=0.625、selected_distractor_file_rate=0.375；`ambiguous_target_plus_support` solve/test=1.0、selected_target_file_rate=1.0、wrong_file_edit_rate=0.0。`ambiguous_target_plus_support` 的主 delta：vs `ambiguous_support_only` solve/test delta=+0.75、wrong_file_edit_rate delta=-0.75、selected_target_file_rate delta=+0.75；vs `ambiguous_target_only` solve/test delta=+1.0；vs `ambiguous_distractor_plus_support` solve/test delta=+0.375、wrong_file_edit_rate delta=-0.375。机制 summary：`target_support_conjunction_required_count=6`、`support_only_sufficient_count=2`、`target_only_sufficient_count=0`、`distractor_hurts_count=3`、`ambiguous_support_wrong_binding_count=6`、`wrong_file_selection_count=6`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在 role-neutral 文件名和完整 prompt 泄漏自测之后，B16-J 终于在该有界合成切片上隔离出 target+support conjunction 信号；support-only 多数任务不再足够（2/8），target-only 0/8，而 ambiguous support 加 target binding 后 8/8。该结果仍只是 smoke-level 合成 live-provider 机制结果，不是下游价值证明、BEA 优越性、method-winner/default、benchmark/performance、calibration、promotion 或 runtime/EvidenceCore 改动。
 - **停止规则结果**：B16-J 已隔离出有界 conjunction 信号，因此不运行 B16-K；下一步转向外部 BEA scale / 更广真实 benchmark 工作。
 - **严格声明边界**：`claim_level=ambiguous_support_conjunction_downstream_smoke_only`。不是下游价值/BEA 优越性/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore 声明。`bea_superiority_claimed=false`。
+
+## BEA-4 findings
+
+- **BEA-4 是冻结 BEA v0.3 策略的 external scale smoke**：在更大全新
+  external 切片（ContextBench verified Python 行 offset 80 limit 80；
+  RepoQA Python needle offset 40 limit 40）上运行 7 个固定 arm（无消融；
+  v0.3 + v0.2 + v0 + bm25_prefix + agreement_only + seeded_random + 可选
+  rrf）。v0.3 算法/权重与 BEA-3 完全一致（冻结；
+  `algorithm_changed_during_bea4=false`、
+  `weights_tuned_during_bea4=false`——绑定）。
+- **公开 artifact 为 records-only**：`benchmark_arm_metric_records`、
+  `delta_records`（v0.3 vs bm25/agreement/rrf/v0.2/v0/random）、
+  `win_tie_loss_records`（paired denominator）、
+  `worst_slice_records`（7 个固定 bucket 标签；每 benchmark × arm 取最差
+  N=5，按 span_f0.5@10 升序）、`mechanism_summary_records`、aggregate-only
+  `private_score_manifest`。
+- **Worst-slice 可见性**：仅 7 个固定公开聚合 bucket 标签（`benchmark`、
+  `query_length_bucket`、`candidate_pool_size_bucket`、
+  `budget_exhaustion_bucket`、`file_kind_mix_bucket`、
+  `method_agreement_bucket`、`rank_gap_bucket`）。无 row IDs、repos、paths、
+  commits、queries、labels、candidate lists 或 gold/source snippets。
+- **237/237 self-test 检查通过**：28 组。
+- **有界本地 smoke（2026-06-21）**：5 条记录（CB 3 + RQ 2），budget=5，
+  7 arm。Win/tie/loss（v0.3 vs v0，n=5）：file_recall@10 win=1 tie=4
+  loss=0；mrr win=2 tie=3 loss=0；span_f0.5@10 win=1 tie=3 loss=1；
+  success_rate win=1 tie=4 loss=0。v0.3 与 v0.2 在所有 primary 指标上持平；
+  胜 v0/agreement/bm25/rrf +0.2 file_recall/mrr/success_rate；胜
+  seeded_random +0.4 file_recall/+0.267 mrr。35 行私有 SCORE（5×7 arm）。
+- **严格 claim 边界**：`claim_level=bea_v03_external_scale_smoke_only`。
+  非 benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
+- **BEA-4 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、评估器、artifact。
+  v0.3 冻结。
