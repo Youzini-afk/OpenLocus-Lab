@@ -1,12 +1,4 @@
 # OpenLocus R0-R29 Research Report
-
-> 中文译本待补充。The full Chinese translation is pending.
-> 这是同名文件的占位符：保留英文原文，方便未来翻译对照。
-
-## English source / 英文原文
-
-# OpenLocus R0-R29 Research Report
-
 For the current research-conclusion synthesis through R45 and real-provider P9,
 see [`docs/en/current-research-conclusions.md`](current-research-conclusions.md)
 or the index page [`docs/current-research-conclusions.md`](../current-research-conclusions.md).

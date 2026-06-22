@@ -2170,7 +2170,7 @@ Synthesize R21/R23/R24/R25/R26 reports over the R20/R26 failure-surface datasets
 
 - Added `eval/r28_promotion_candidate_report.py`.
 - Reads already validated artifacts only: R21 auto-wide strategy matrix, R23 guard sweep, R24 dense/QuIVer/TDB probe, R25 graph+dense ablation, and R26 auto-stress static validation.
-- Produces `docs/r28-promotion-candidate-report.json` and `docs/r28-promotion-candidate-report.md`.
+- Produces `artifacts/r28_promotion_candidate/r28-promotion-candidate-report.json` and `docs/en/r28-promotion-candidate-report.md`.
 - No retrieval CLI invocation.
 - No core changes.
 - remote_calls=0.

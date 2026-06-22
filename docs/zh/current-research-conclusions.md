@@ -1,6 +1,6 @@
 # OpenLocus 当前研究结论
 
-日期：2026-06-20
+日期：2026-06-22
 
 范围：R0-R45 至 B 系列机制/策略研究、C1-C4 外部 benchmark/readiness 工作，以及 Step 6 / D 系列 dual-rubric 控制面 harness 到 D4-series rollup。
 
@@ -441,6 +441,14 @@ BEA-4 是冻结 BEA v0.3 策略的 external scale smoke，运行更大全新 ext
 手动 CI run `27957586271` 已通过完整 BEA-4 scale 切片：120 条记录成功（ContextBench 80 + RepoQA 40），`paired_exclusion_count=0`，forbidden scan pass，`provider_calls=0`，`network_calls=3`，`private_score_manifest.record_count=840`（120×7 arm），`private_score_storage_class=tmp_private`，`private_score_path_publicly_serialized=false`，`aggregate_runtime_seconds=864.538`。BEA v0.3 benchmark 指标：ContextBench file_recall@10=0.225、mrr=0.151875、span_f0.5@10=0.013607、success_rate=0.225；RepoQA file_recall@10=0.575、mrr=0.402917、span_f0.5@10=0.044761、success_rate=0.575。Delta：vs BEA v0.2，v0.3 在 file_recall/MRR/success 上持平，span 略低（-0.000075），latency 微增（+0.000831s）；vs BEA v0 / same-budget BM25 / agreement-only / RRF，v0.3 的 file_recall +0.108334，MRR +0.076945，span +0.001333，success +0.108334；vs seeded random 的 file_recall +0.175，MRR +0.139028，span +0.020195，success +0.175。Latency 与 quality-per-latency trade-off 仍 mixed，尤其 vs RRF（`quality_per_latency` delta=-0.05038）。Worst-slice 输出包含 70 条固定公开 bucket label 的聚合记录。解释：BEA v0.3 作为冻结 diagnostic policy 可在更大 scale 上运行，并在该切片上相对 v0/random 与 same-budget BM25/agreement/RRF 改善 file/MRR/success，但基本与 v0.2 持平且 latency/quality trade-off 混合。这是 scale-smoke evidence，不是 method-winner/default/benchmark-performance/calibration/promotion/runtime/EvidenceCore/downstream-value 声明。
 
 [BEA-4 详细报告](bea4-external-scale-smoke.md)。
+
+## 2026-06-21 BEA-5 Frozen-Policy Larger/Cross-Slice Robustness Smoke
+
+BEA-5 是冻结 BEA v0.3 策略的 larger/cross-slice robustness smoke，运行全新 disjoint larger external 切片：ContextBench verified Python 行 offset 160 limit 120（hard cap 120）+ RepoQA Python needle offset 80 limit 60（hard cap 60）。v0.3 算法/权重与 BEA-3/BEA-4 完全一致（`algorithm_changed_during_bea5=false`、`weights_tuned_during_bea5=false`）。7 个固定 arm（无消融；RRF 必需不可选）：`bea_v0_3_anchor_span_latency`、`bea_v0_2_diversity_risk`、`bea_v0`、`bm25_prefix_same_budget`、`agreement_only_same_budget`、`rrf_same_budget`、`seeded_random_same_budget`。schema `bea5_frozen_policy_robustness.v1`、`claim_level=bea_v03_frozen_policy_robustness_smoke_only`、阶段 `BEA-5`、385/385 self-test 检查通过。公开 artifact records-only：`benchmark_arm_metric_records`、`delta_records`、`win_tie_loss_records`、`worst_slice_records`、`mechanism_summary_records`、`robustness_summary_records`（新增：cross_slice deltas、sign stability、quality_per_latency aggregates、worst-slice cluster counts）、aggregate-only `private_score_manifest`。每个公开 record table 强制并验证 natural-key uniqueness。仅计数 self-test summary（`self_test_checks_total`/`self_test_checks_passed`；无 self_test detail list）。私有 per-record SCORE JSONL（每 record × arm 一行，7 arm）仅写 `/tmp`。所有 no-claim / no-runtime-change 标志 false。BEA-5 不是基准测试结果、不是 leaderboard entry、不是性能声明、不是 method-winner 声明、不是 calibration 声明、不是 promotion、不是 default 改动、不是 runtime/retriever/pack/backend/EvidenceCore 语义改动、不是算法改动、不是下游 agent 价值声明。BEA-5 不修改 BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 语义。
+
+有界本地 smoke（2026-06-21）：ContextBench offset 160 limit 3 + RepoQA offset 80 limit 2，budget=5，方法 bm25/regex/symbol：5 条记录成功，`paired_exclusion_count=0`，forbidden scan pass，`provider_calls=0`，`private_score_manifest.record_count=35`（5×7 arm），`private_score_storage_class=tmp_private`，`private_score_path_publicly_serialized=false`，`algorithm_changed_during_bea5=false`，`weights_tuned_during_bea5=false`，`self_test_checks_total=385`，`self_test_checks_passed=385`，`status=partial`，`quota_reached=false`，`sampling_mode=success_quota`，`target=120`，raw caps 480+240。完整 robustness 切片（ContextBench 120 + RepoQA 60）pending manual CI run；已提交 artifact 仅反映本地 smoke。
+
+[BEA-5 详细报告](bea5-frozen-policy-robustness.md)。
 
 ## 2026-06-21 B16-F BEA-Derived Context Pack Live-Provider Paired Smoke
 

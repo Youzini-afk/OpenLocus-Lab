@@ -842,12 +842,6 @@ files were modified. See
 the [C5-D detailed report](c5d-repoqa-bm25-retrieval-smoke.md).
 
 
-## Current status update — 2026-06-21 (C5-F RepoQA 10-needle method-matrix scale smoke)
-
-C5-F scales C5-E from 5 RepoQA Python needles per method to 10 needles per method while keeping C5-E unchanged. C5-F (`eval/c5f_repoqa_method_matrix_scale_smoke.py` -> `artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json`, schema `c5f_repoqa_method_matrix_scale_smoke.v1`, `claim_level=repoqa_retrieval_method_matrix_scale_smoke_only`, `status=repoqa_method_matrix_scale_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`, `mode=repoqa_bounded_10_needle_method_matrix_scale_smoke`, phase `C5-F`) runs the RepoQA method matrix over `bm25,regex,symbol`, default/hard-cap 10 Python needles per method, fixed `baseline_method=bm25`, no provider calls, aggregate-only records and deltas. 191/191 self-test checks pass; manual CI run `27909885489` saw 10 needles, 3/3 methods successful, forbidden scan pass, and provider_calls=0. Aggregate metrics: bm25 file_recall@10=0.5 / mrr=0.369216 / span_f0.5@10=0.020817 / success_rate=1.0; regex and symbol file_recall@10=0.0 / mrr=0.0 / span_f0.5@10=0.0 / success_rate=1.0.
-
-This is smoke-only. It does NOT claim an external benchmark result, leaderboard entry, performance, promotion, default change, method winner, runtime/retriever/pack/backend/EvidenceCore semantic change, or downstream agent value. It emits no `winner`, `best_method`, `recommended_default`, or policy/default recommendation fields. Raw RepoQA row/repo/needle values and generated files remain transient. See the [C5-F detailed report](c5f-repoqa-method-matrix-scale-smoke.md).
-
 ## Current status update — 2026-06-21 (C5-E RepoQA method-matrix retrieval smoke)
 
 Following D5-A0, B16-A, C5-A, C5-B, C5-C, and C5-D, C5-E produces the
@@ -902,6 +896,12 @@ smoke cannot complete, the artifact records truthful
 stale/fake pass). No runtime/retriever/pack/model/backend/default-policy
 files were modified. See
 the [C5-E detailed report](c5e-repoqa-method-matrix-smoke.md).
+
+## Current status update — 2026-06-21 (C5-F RepoQA 10-needle method-matrix scale smoke)
+
+C5-F scales C5-E from 5 RepoQA Python needles per method to 10 needles per method while keeping C5-E unchanged. C5-F (`eval/c5f_repoqa_method_matrix_scale_smoke.py` -> `artifacts/c5f_repoqa_method_matrix_scale/c5f_repoqa_method_matrix_scale_report.json`, schema `c5f_repoqa_method_matrix_scale_smoke.v1`, `claim_level=repoqa_retrieval_method_matrix_scale_smoke_only`, `status=repoqa_method_matrix_scale_smoke_pass|partial|unavailable_with_reason|fail_forbidden_scan|fail_schema_contract`, `mode=repoqa_bounded_10_needle_method_matrix_scale_smoke`, phase `C5-F`) runs the RepoQA method matrix over `bm25,regex,symbol`, default/hard-cap 10 Python needles per method, fixed `baseline_method=bm25`, no provider calls, aggregate-only records and deltas. 191/191 self-test checks pass; manual CI run `27909885489` saw 10 needles, 3/3 methods successful, forbidden scan pass, and provider_calls=0. Aggregate metrics: bm25 file_recall@10=0.5 / mrr=0.369216 / span_f0.5@10=0.020817 / success_rate=1.0; regex and symbol file_recall@10=0.0 / mrr=0.0 / span_f0.5@10=0.0 / success_rate=1.0.
+
+This is smoke-only. It does NOT claim an external benchmark result, leaderboard entry, performance, promotion, default change, method winner, runtime/retriever/pack/backend/EvidenceCore semantic change, or downstream agent value. It emits no `winner`, `best_method`, `recommended_default`, or policy/default recommendation fields. Raw RepoQA row/repo/needle values and generated files remain transient. See the [C5-F detailed report](c5f-repoqa-method-matrix-scale-smoke.md).
 
 ## Current status update — 2026-06-21 (F1 counterfactual evidence utility smoke)
 
@@ -3480,6 +3480,83 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Latency attribution fix**: all arms share candidate-collection latency
   (fair attribution); v0.3 also gets incremental policy time.
 
+## BEA-4 findings
+
+- **BEA-4 is the external scale smoke for the frozen BEA v0.3 policy**:
+  manual CI run `27957586271` completed green on a larger fresh external slice
+  (ContextBench verified Python rows offset 80 limit 80 + RepoQA Python needles
+  offset 40 limit 40) with 7 fixed arms (no ablations; v0.3 + v0.2 + v0 +
+  bm25_prefix + agreement_only + rrf + seeded_random). v0.3 algorithm/weights
+  are frozen exactly as BEA-3 (`algorithm_changed_during_bea4=false`,
+  `weights_tuned_during_bea4=false` — binding).
+- **Scale result**: 120 records successful (ContextBench 80 + RepoQA 40),
+  `private_score_manifest.record_count=840` (120×7 arms), `network_calls=3`,
+  `provider_calls=0`, forbidden scan pass, aggregate runtime 864.538s.
+- **BEA v0.3 metrics**: ContextBench file_recall@10=0.225, mrr=0.151875,
+  span_f0.5@10=0.013607, success_rate=0.225; RepoQA file_recall@10=0.575,
+  mrr=0.402917, span_f0.5@10=0.044761, success_rate=0.575.
+- **Deltas are mixed**: vs BEA v0.2, v0.3 ties file_recall/MRR/success,
+  slightly lowers span (-0.000075), and adds tiny latency (+0.000831s).
+  vs BEA v0 / same-budget BM25 / agreement-only / RRF, v0.3 improves
+  file_recall by +0.108334, MRR by +0.076945, span by +0.001333, and
+  success by +0.108334; vs seeded random it improves file_recall by +0.175,
+  MRR by +0.139028, span by +0.020195, and success by +0.175. Latency and
+  quality-per-latency trade-offs remain mixed, especially vs RRF.
+- **Public artifact is records-only**: `benchmark_arm_metric_records`,
+  `delta_records`, `win_tie_loss_records`, `worst_slice_records` (70 aggregate
+  records with 7 fixed bucket labels), `mechanism_summary_records`, and
+  aggregate-only `private_score_manifest`. No row IDs, repos, paths, commits,
+  queries, labels, candidate lists, gold/source snippets, or private SCORE paths.
+- **Strict claim boundary**: `claim_level=bea_v03_external_scale_smoke_only`.
+  NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
+- **BEA-4 does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3**: standalone phase,
+  evaluator, artifact. v0.3 frozen.
+
+## BEA-5 findings
+
+- **BEA-5 is the frozen-policy larger/cross-slice robustness smoke**: runs a
+  fresh disjoint larger external slice (ContextBench verified Python rows
+  offset 160 limit 120; RepoQA Python needles offset 80 limit 60) with 7
+  fixed arms (no ablations; v0.3 + v0.2 + v0 + bm25_prefix + agreement_only
+  + rrf_same_budget REQUIRED + seeded_random). v0.3 algorithm/weights frozen
+  exactly as BEA-3/BEA-4 (`algorithm_changed_during_bea5=false`,
+  `weights_tuned_during_bea5=false` — binding).
+- **Public artifact is records-only** with NEW `robustness_summary_records`
+  table: `benchmark_arm_metric_records`, `delta_records` (v0.3 vs
+  bm25/agreement/rrf/v0.2/v0/random), `win_tie_loss_records` (paired
+  denominator), `worst_slice_records` (7 fixed bucket labels; worst N=5 per
+  benchmark × arm, sorted ascending by span_f0.5@10),
+  `mechanism_summary_records`, `robustness_summary_records` (cross_slice
+  deltas, sign stability, quality_per_latency aggregates, worst-slice
+  cluster counts), aggregate-only `private_score_manifest`.
+- **Natural-key uniqueness**: every public record table is unique by its
+  natural key; self-tests + CI validator check uniqueness for all 6 record
+  tables.
+- **Counts-only self-test summary**: public artifact records ONLY
+  `self_test_passed`, `self_test_checks_total` (282),
+  `self_test_checks_passed`. No self_test detail list. Forbidden fields:
+  `self_test_checks`, `self_test_details`, `self_test_list`, `checks`,
+  `check_list`.
+- **282/282 self-test checks pass**: 32 groups.
+- **Bounded local smoke (2026-06-21)**: 5 records (CB 3 + RQ 2), budget=5,
+  7 arms. Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=2 tie=3 loss=0;
+  mrr win=2 tie=2 loss=1; span_f0.5@10 win=2 tie=3 loss=0; success_rate
+  win=2 tie=3 loss=0. v0.3 ties v0.2 on mrr; beats v0/agreement/bm25/rrf by
+  +0.056667 mrr; beats seeded_random by +0.09 mrr. 35 private SCORE rows
+  (5×7 arms).
+- **Robustness summary signals**: `cross_slice_v03_vs_v02_mrr_delta=0.0`,
+  `cross_slice_v03_vs_v0_mrr_delta=0.056667`,
+  `v03_vs_v02_sign_stability_mrr=1.0`,
+  `v03_vs_v0_sign_stability_mrr=0.8`,
+  `v03_vs_rrf_quality_per_latency_delta=0.045478`.
+- **Strict claim boundary**: `claim_level=
+  bea_v03_frozen_policy_robustness_smoke_only`. NOT benchmark/leaderboard/
+  performance/method-winner/calibration/promotion/default/runtime/EvidenceCore
+  /downstream-value. `provider_calls=0`.
+- **BEA-5 does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3/BEA-4**: standalone
+  phase, evaluator, artifact. v0.3 frozen.
+
 ## B16-F findings
 
 - **B16-F is the first downstream live-provider paired smoke that compares
@@ -3706,80 +3783,3 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **B16-J live result**: Manual real-provider CI run `27953321504` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 329/329 self-tests. Results: `control_sparse` solve/test=0.0, selected_target_file_rate=0.125, wrong_file_edit_rate=0.875; `ambiguous_target_only` solve/test=0.0, selected_target_file_rate=1.0; `ambiguous_support_only` solve/test=0.25, selected_target_file_rate=0.25, selected_distractor_file_rate=0.625, wrong_file_edit_rate=0.75; `ambiguous_distractor_plus_support` solve/test=0.625, selected_target_file_rate=0.625, selected_distractor_file_rate=0.375; `ambiguous_target_plus_support` solve/test=1.0, selected_target_file_rate=1.0, wrong_file_edit_rate=0.0. Primary deltas for `ambiguous_target_plus_support`: vs `ambiguous_support_only` solve/test delta=+0.75, wrong_file_edit_rate delta=-0.75, selected_target_file_rate delta=+0.75; vs `ambiguous_target_only` solve/test delta=+1.0; vs `ambiguous_distractor_plus_support` solve/test delta=+0.375, wrong_file_edit_rate delta=-0.375. Mechanism summary: `target_support_conjunction_required_count=6`, `support_only_sufficient_count=2`, `target_only_sufficient_count=0`, `distractor_hurts_count=3`, `ambiguous_support_wrong_binding_count=6`, `wrong_file_selection_count=6`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: after role-neutral filenames and full-prompt leakage tests, B16-J finally isolated a bounded target+support conjunction signal on this synthetic slice; support-only was no longer sufficient on most tasks (2/8), target-only solved 0/8, and adding target binding to ambiguous support solved 8/8. This is still a smoke-level synthetic live-provider mechanism result, not downstream value proof, BEA superiority, method-winner/default, benchmark/performance, calibration, promotion, or runtime/EvidenceCore change.
 - **Stop rule outcome**: B16-J isolated a bounded conjunction signal, so do not run B16-K; move next to external BEA scale / broader real benchmark work.
 - **Strict claim boundary**: `claim_level=ambiguous_support_conjunction_downstream_smoke_only`. NOT downstream value/BEA superiority/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore claim. `bea_superiority_claimed=false`.
-
-## BEA-4 findings
-
-- **BEA-4 is the external scale smoke for the frozen BEA v0.3 policy**:
-  manual CI run `27957586271` completed green on a larger fresh external slice
-  (ContextBench verified Python rows offset 80 limit 80 + RepoQA Python needles
-  offset 40 limit 40) with 7 fixed arms (no ablations; v0.3 + v0.2 + v0 +
-  bm25_prefix + agreement_only + rrf + seeded_random). v0.3 algorithm/weights
-  are frozen exactly as BEA-3 (`algorithm_changed_during_bea4=false`,
-  `weights_tuned_during_bea4=false` — binding).
-- **Scale result**: 120 records successful (ContextBench 80 + RepoQA 40),
-  `private_score_manifest.record_count=840` (120×7 arms), `network_calls=3`,
-  `provider_calls=0`, forbidden scan pass, aggregate runtime 864.538s.
-- **BEA v0.3 metrics**: ContextBench file_recall@10=0.225, mrr=0.151875,
-  span_f0.5@10=0.013607, success_rate=0.225; RepoQA file_recall@10=0.575,
-  mrr=0.402917, span_f0.5@10=0.044761, success_rate=0.575.
-- **Deltas are mixed**: vs BEA v0.2, v0.3 ties file_recall/MRR/success,
-  slightly lowers span (-0.000075), and adds tiny latency (+0.000831s).
-  vs BEA v0 / same-budget BM25 / agreement-only / RRF, v0.3 improves
-  file_recall by +0.108334, MRR by +0.076945, span by +0.001333, and
-  success by +0.108334; vs seeded random it improves file_recall by +0.175,
-  MRR by +0.139028, span by +0.020195, and success by +0.175. Latency and
-  quality-per-latency trade-offs remain mixed, especially vs RRF.
-- **Public artifact is records-only**: `benchmark_arm_metric_records`,
-  `delta_records`, `win_tie_loss_records`, `worst_slice_records` (70 aggregate
-  records with 7 fixed bucket labels), `mechanism_summary_records`, and
-  aggregate-only `private_score_manifest`. No row IDs, repos, paths, commits,
-  queries, labels, candidate lists, gold/source snippets, or private SCORE paths.
-- **Strict claim boundary**: `claim_level=bea_v03_external_scale_smoke_only`.
-  NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
-  default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
-- **BEA-4 does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3**: standalone phase,
-  evaluator, artifact. v0.3 frozen.
-
-## BEA-5 findings
-
-- **BEA-5 is the frozen-policy larger/cross-slice robustness smoke**: runs a
-  fresh disjoint larger external slice (ContextBench verified Python rows
-  offset 160 limit 120; RepoQA Python needles offset 80 limit 60) with 7
-  fixed arms (no ablations; v0.3 + v0.2 + v0 + bm25_prefix + agreement_only
-  + rrf_same_budget REQUIRED + seeded_random). v0.3 algorithm/weights frozen
-  exactly as BEA-3/BEA-4 (`algorithm_changed_during_bea5=false`,
-  `weights_tuned_during_bea5=false` — binding).
-- **Public artifact is records-only** with NEW `robustness_summary_records`
-  table: `benchmark_arm_metric_records`, `delta_records` (v0.3 vs
-  bm25/agreement/rrf/v0.2/v0/random), `win_tie_loss_records` (paired
-  denominator), `worst_slice_records` (7 fixed bucket labels; worst N=5 per
-  benchmark × arm, sorted ascending by span_f0.5@10),
-  `mechanism_summary_records`, `robustness_summary_records` (cross_slice
-  deltas, sign stability, quality_per_latency aggregates, worst-slice
-  cluster counts), aggregate-only `private_score_manifest`.
-- **Natural-key uniqueness**: every public record table is unique by its
-  natural key; self-tests + CI validator check uniqueness for all 6 record
-  tables.
-- **Counts-only self-test summary**: public artifact records ONLY
-  `self_test_passed`, `self_test_checks_total` (282),
-  `self_test_checks_passed`. No self_test detail list. Forbidden fields:
-  `self_test_checks`, `self_test_details`, `self_test_list`, `checks`,
-  `check_list`.
-- **282/282 self-test checks pass**: 32 groups.
-- **Bounded local smoke (2026-06-21)**: 5 records (CB 3 + RQ 2), budget=5,
-  7 arms. Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=2 tie=3 loss=0;
-  mrr win=2 tie=2 loss=1; span_f0.5@10 win=2 tie=3 loss=0; success_rate
-  win=2 tie=3 loss=0. v0.3 ties v0.2 on mrr; beats v0/agreement/bm25/rrf by
-  +0.056667 mrr; beats seeded_random by +0.09 mrr. 35 private SCORE rows
-  (5×7 arms).
-- **Robustness summary signals**: `cross_slice_v03_vs_v02_mrr_delta=0.0`,
-  `cross_slice_v03_vs_v0_mrr_delta=0.056667`,
-  `v03_vs_v02_sign_stability_mrr=1.0`,
-  `v03_vs_v0_sign_stability_mrr=0.8`,
-  `v03_vs_rrf_quality_per_latency_delta=0.045478`.
-- **Strict claim boundary**: `claim_level=
-  bea_v03_frozen_policy_robustness_smoke_only`. NOT benchmark/leaderboard/
-  performance/method-winner/calibration/promotion/default/runtime/EvidenceCore
-  /downstream-value. `provider_calls=0`.
-- **BEA-5 does NOT mutate BEA-0/BEA-1/BEA-2/BEA-3/BEA-4**: standalone
-  phase, evaluator, artifact. v0.3 frozen.
