@@ -10419,19 +10419,25 @@ change during BEA-5 (`algorithm_changed_during_bea5=false`,
 `bm25_prefix_same_budget`, `agreement_only_same_budget`, `rrf_same_budget`,
 `seeded_random_same_budget`. No ablations.
 
-### Fresh disjoint larger slice
+### Fixed protocol and final run
 
-ContextBench verified Python rows offset 160, limit 120 (hard cap 120).
-RepoQA Python needles offset 80, limit 60 (hard cap 60).
+The initial fixed-tail protocol failed to provide enough evaluable records. The
+final protocol used success-quota sampling over the full available Python frame,
+excluding BEA-2/3/4 windows, with raw caps ContextBench 480 and RepoQA 240,
+budget 5, fixed methods `bm25,regex,symbol`, and required RRF.
+
+Final CI run `28003522632` failed closed with 119/120 successful records. A
+local exact-protocol rerun reproduced the same aggregate artifact.
 
 ### Public artifact shape
 
 Records-only: `benchmark_arm_metric_records`, `delta_records` (v0.3 vs
 bm25/agreement/rrf/v0.2/v0/random), `win_tie_loss_records`,
 `worst_slice_records` (7 fixed bucket labels; worst N=5 per benchmark × arm),
-`mechanism_summary_records`, `robustness_summary_records` (NEW:
-cross_slice deltas, sign stability, quality_per_latency aggregates,
-worst-slice cluster counts), aggregate-only `private_score_manifest`.
+`mechanism_summary_records`, `robustness_summary_records` (cross_slice deltas,
+sign stability, quality_per_latency aggregates, worst-slice cluster counts),
+`benchmark_attempt_records`, aggregate-only `private_score_manifest`, and
+aggregate-only `private_attempt_manifest`.
 
 ### Natural-key uniqueness
 
@@ -10441,7 +10447,7 @@ validator check uniqueness for all 6 record tables.
 ### Counts-only self-test summary
 
 Public artifact records ONLY `self_test_passed` (bool),
-`self_test_checks_total` (int, 282), `self_test_checks_passed` (int). No
+`self_test_checks_total` (int, 435), `self_test_checks_passed` (int). No
 self_test detail list. Forbidden fields: `self_test_checks`,
 `self_test_details`, `self_test_list`, `checks`, `check_list`.
 
@@ -10449,55 +10455,40 @@ self_test detail list. Forbidden fields: `self_test_checks`,
 
 ```text
 python3 -m py_compile eval/bea5_frozen_policy_robustness.py  => PASS
-python3 eval/bea5_frozen_policy_robustness.py --self-test  => PASS (282/282 checks)
+python3 eval/bea5_frozen_policy_robustness.py --self-test  => PASS (435/435 checks)
 python3 eval/bea5_frozen_policy_robustness.py \
   --enable-external-benchmark-network \
-  --contextbench-row-offset 160 --contextbench-row-limit 3 \
-  --repoqa-needle-offset 80 --repoqa-needle-limit 2 \
+  --contextbench-row-offset 0 --contextbench-row-limit 480 \
+  --repoqa-needle-offset 0 --repoqa-needle-limit 240 \
   --budget 5 --methods bm25,regex,symbol \
   --out artifacts/bea5_frozen_policy_robustness/bea5_frozen_policy_robustness_report.json  => PASS
-  (status: bea5_frozen_policy_robustness_pass, 5 records successful,
-   private_score_manifest.record_count=35 (5×7 arms),
-   private_score_storage_class=tmp_private,
-   private_score_path_publicly_serialized=false,
+  (status: partial, records_successful=119, records_attempted_total=186,
+   records_excluded=67, quota_reached=false,
+   contextbench_successful=82, repoqa_successful=37,
+   private_score_manifest.record_count=833 (119×7 arms),
+   private_attempt_manifest.record_count=186,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea5=false, weights_tuned_during_bea5=false,
-   self_test_checks_total=282, self_test_checks_passed=282)
+   self_test_checks_total=435, self_test_checks_passed=435)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-### Real bounded local smoke result (2026-06-21)
+### Fixed-protocol near-miss result (2026-06-22)
 
-Bounded local smoke (ContextBench offset 160 limit 3 + RepoQA offset 80
-limit 2, budget=5, methods bm25/regex/symbol): 5 records successful,
-`paired_exclusion_count=0`, forbidden scan pass, `provider_calls=0`,
-`private_score_manifest.record_count=35` (5×7 arms),
-`private_score_storage_class=tmp_private`,
-`private_score_path_publicly_serialized=false`,
-`algorithm_changed_during_bea5=false`, `weights_tuned_during_bea5=false`.
+CI run `28003522632` failed closed with `records_successful=119`, one short of
+the strict `target_successful_records=120`. Local exact-protocol rerun
+reproduced the artifact: `records_attempted_total=186`, `records_excluded=67`,
+`contextbench_successful=82`, `repoqa_successful=37`,
+`failure_category_counts.retrieval_failed=67`,
+`failure_category_counts.rrf_required_but_missing=0`.
 
-Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=2 tie=3 loss=0; mrr
-win=2 tie=2 loss=1; span_f0.5@10 win=2 tie=3 loss=0; success_rate win=2
-tie=3 loss=0. v0.3 ties v0.2 on mrr (delta=0.0); beats v0/agreement/bm25/
-rrf by +0.056667 mrr; beats seeded_random by +0.09 mrr.
-
-Robustness summary (selected): `cross_slice_v03_vs_v02_mrr_delta=0.0`,
-`cross_slice_v03_vs_v0_mrr_delta=0.056667`,
-`v03_vs_v02_sign_stability_mrr=1.0`,
-`v03_vs_v0_sign_stability_mrr=0.8`,
-`v03_quality_per_latency_mean=0.054622`,
-`rrf_quality_per_latency_mean=0.009144`,
-`v03_vs_rrf_quality_per_latency_delta=0.045478`.
-
-Public record tables: 140 `benchmark_arm_metric_records`, 60 `delta_records`,
-24 `win_tie_loss_records`, 30 `worst_slice_records`, 6
-`mechanism_summary_records`, 24 `robustness_summary_records`. All record
-tables verified unique by natural key.
-
-The full robustness slice (ContextBench 120 + RepoQA 60) is pending manual
-CI run; the committed artifact reflects the local smoke only. Local debug may
-use 3+2 only and must not be recorded as CI scale evidence.
+Selected deltas from the 119 successful records: v0.3 ties v0.2 on
+file_recall@10, MRR, and success_rate; v0.3 vs v0.2 has
+`span_f0.5@10 +0.004953` and `quality_per_latency +0.002853`. v0.3 beats
+BM25/agreement/RRF on file_recall@10/MRR/success_rate by
++0.184874/+0.164566/+0.184874, but keeps latency trade-offs and cannot be
+recorded as a BEA-5 pass because the quota was missed.
 
 ### Caveats
 
@@ -10507,7 +10498,7 @@ use 3+2 only and must not be recorded as CI scale evidence.
 - v0.3 algorithm/weights frozen exactly as in BEA-3/BEA-4.
   `algorithm_changed_during_bea5=false`,
   `weights_tuned_during_bea5=false` (binding).
-- Bounded local smoke used 3+2 records for speed. Full robustness slice
-  pending manual CI.
+- Final fixed protocol missed the success quota by one record (119/120). This
+  is a No-Go / near-miss result and feeds failure decomposition.
 - RRF arm is required; CI fails if RRF is disabled/missing.
 - BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 semantics not mutated.

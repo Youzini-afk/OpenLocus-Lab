@@ -4,7 +4,7 @@ Date: 2026-06-22
 
 Status: current research-conclusion memo. This is not a promotion request, not a default-policy change request, and not a benchmark leaderboard report.
 
-Scope: empirical work through BEA-5 quota-sampling implementation in progress, B16-F through B16-J live-provider atom ablations, C5 external benchmark retrieval smokes, F1 utility smokes, and D5-A automated calibration feature extraction/heldout validation.
+Scope: empirical work through BEA-5 fixed-protocol success-quota No-Go / near-miss, B16-F through B16-J live-provider atom ablations, C5 external benchmark retrieval smokes, F1 utility smokes, and D5-A automated calibration feature extraction/heldout validation.
 
 ## 0. Reading rule
 
@@ -26,7 +26,7 @@ The strongest current conclusions are conservative:
 2. **BEA has not beaten same-budget BM25 downstream.** In B16-F, BEA v0.3 tied same-budget BM25 on solve/test outcomes and cost more tokens/latency.
 3. **The support atom is causally important, but only after confounds were removed.** B16-G/H/I initially showed support-only sufficiency because support cues were too decisive. B16-J fixed role-bearing filename leakage and finally observed a bounded target+support conjunction signal: target+support solved 8/8, support-only solved 2/8, target-only solved 0/8.
 4. **BEA v0.3 is mixed, not a winner.** BEA-2 improved file/MRR/success but hurt span/latency. BEA-3 mostly tied v0.2 with tiny span/quality-per-latency improvements. BEA-4 scaled the frozen v0.3 policy to 120 successful records and remained mixed.
-5. **BEA-5 is not complete.** Raw disjoint scale attempts failed closed because only 72 successful/evaluable records were found under the previous raw-slice design. The current fix is explicit success-quota sampling with aggregate yield/exclusion reporting. No BEA-5 scale result is claimed yet.
+5. **BEA-5 is complete as a fixed-protocol No-Go / near-miss.** The final fixed-protocol CI run `28003522632` failed closed with 119/120 successful records. A local exact rerun reproduced the artifact: 186 attempted, 119 successful, 67 excluded, ContextBench 82, RepoQA 37, private SCORE rows 833. This is failure-decomposition input, not a BEA-5 pass.
 6. **Automated E/S calibration is progressing, but human calibration is not claimed.** D5-A0/A1/A2 provide automated/proxy feature and heldout validation evidence; they do not establish human-calibrated E/S.
 
 ## 2. What is established vs not established
@@ -61,13 +61,15 @@ BEA-4 produced 120 successful records and 840 private SCORE rows. It showed v0.3
 
 ### 3.4 BEA-5
 
-BEA-5 is currently in progress. Three full CI attempts failed closed before result writeback:
+BEA-5 is complete as a strict fixed-protocol No-Go / near-miss. Earlier attempts failed closed before the final protocol:
 
 - `27962009344`: only 72 successful records and nonzero RRF-missing classification.
 - `27964243698`: still 72 successful records because evaluator hard caps were lower than workflow requests.
 - `27966269054`: RRF-missing fixed, but still 72 successful records, below the 120-record scale gate.
+- `27984961904`: fixed-tail success-quota still yielded only 72/120.
+- `28003522632`: fixed-protocol recovery scan yielded 119/120 and failed closed.
 
-The current design is explicit success-quota sampling over a larger disjoint raw scan:
+The final protocol used explicit success-quota sampling over a full available Python frame excluding BEA-2/3/4 windows:
 
 - sampling mode: `success_quota`
 - raw caps: ContextBench 480, RepoQA 240
@@ -77,7 +79,9 @@ The current design is explicit success-quota sampling over a larger disjoint raw
 - private SCORE rows remain `records_successful × 7`
 - private attempt/exclusion rows are private and only manifest counts are public
 
-No BEA-5 scale conclusion exists until this quota CI passes.
+Final artifact summary: `status=partial`, `quota_reached=false`, `records_successful=119`, `records_attempted_total=186`, `records_excluded=67`, `contextbench_successful=82`, `repoqa_successful=37`, `private_score_manifest.record_count=833`, `private_attempt_manifest.record_count=186`, `rrf_required_but_missing=0`, `forbidden_scan.status=pass`.
+
+Conclusion: BEA-5 did not pass the strict 120-record gate. The 119-record near-miss artifact should feed BEA-4/5 failure decomposition; do not keep tuning sampling or make v0.31 weight tweaks.
 
 ## 4. B16 downstream/context-pack conclusions
 
@@ -147,21 +151,15 @@ The following remain false unless a future phase explicitly validates them:
 
 ## 8. Current next work
 
-Immediate next work is BEA-5 quota-sampling completion:
+Immediate next work is BEA-4/BEA-5 per-record failure decomposition using private SCORE records:
 
-1. Finish local verification of the quota-sampling implementation.
-2. Get @oracle review.
-3. Commit the quota fix.
-4. Run full BEA-5 quota CI.
-5. If it passes, write back the result with aggregate yield/exclusion counts.
-6. If it fails, record the failure honestly; do not weaken the gate.
+1. Compare v0.3 against v0.2, v0, same-budget BM25, agreement-only, and same-budget RRF.
+2. Attribute losses to candidate-pool absence, span miss, redundancy, support/target mismatch, risk penalty, early stop, low marginal gain, and latency without quality gain.
+3. Report failure counts, metric loss contribution, win/tie/loss, ContextBench vs RepoQA buckets, and candidate-source buckets.
+4. Use this decomposition to design BEA v0.4 as setwise/complementarity-aware acquisition.
 
-After BEA-5, choose between:
-
-- broader external robustness with the frozen policy,
-- a v0.4 algorithm change targeted at observed BEA failure modes,
-- or another downstream smoke only if it tests a new mechanism rather than repeats B16-J.
+Do not run B16-K, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before this decomposition.
 
 ## 9. One-sentence conclusion
 
-OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; the immediate research problem is whether frozen BEA v0.3 remains robust under explicit success-quota external sampling.
+OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, so the immediate research problem is failure decomposition and then setwise/complementarity-aware BEA v0.4.

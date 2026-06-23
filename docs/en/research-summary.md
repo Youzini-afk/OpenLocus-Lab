@@ -3515,41 +3515,29 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-5 findings
 
-- **BEA-5 is the frozen-policy larger/cross-slice robustness smoke**: runs a
-  fresh disjoint larger external slice (ContextBench verified Python rows
-  offset 160 limit 120; RepoQA Python needles offset 80 limit 60) with 7
-  fixed arms (no ablations; v0.3 + v0.2 + v0 + bm25_prefix + agreement_only
-  + rrf_same_budget REQUIRED + seeded_random). v0.3 algorithm/weights frozen
-  exactly as BEA-3/BEA-4 (`algorithm_changed_during_bea5=false`,
-  `weights_tuned_during_bea5=false` — binding).
-- **Public artifact is records-only** with NEW `robustness_summary_records`
-  table: `benchmark_arm_metric_records`, `delta_records` (v0.3 vs
-  bm25/agreement/rrf/v0.2/v0/random), `win_tie_loss_records` (paired
-  denominator), `worst_slice_records` (7 fixed bucket labels; worst N=5 per
-  benchmark × arm, sorted ascending by span_f0.5@10),
-  `mechanism_summary_records`, `robustness_summary_records` (cross_slice
-  deltas, sign stability, quality_per_latency aggregates, worst-slice
-  cluster counts), aggregate-only `private_score_manifest`.
-- **Natural-key uniqueness**: every public record table is unique by its
-  natural key; self-tests + CI validator check uniqueness for all 6 record
-  tables.
-- **Counts-only self-test summary**: public artifact records ONLY
-  `self_test_passed`, `self_test_checks_total` (282),
-  `self_test_checks_passed`. No self_test detail list. Forbidden fields:
-  `self_test_checks`, `self_test_details`, `self_test_list`, `checks`,
-  `check_list`.
-- **282/282 self-test checks pass**: 32 groups.
-- **Bounded local smoke (2026-06-21)**: 5 records (CB 3 + RQ 2), budget=5,
-  7 arms. Win/tie/loss (v0.3 vs v0, n=5): file_recall@10 win=2 tie=3 loss=0;
-  mrr win=2 tie=2 loss=1; span_f0.5@10 win=2 tie=3 loss=0; success_rate
-  win=2 tie=3 loss=0. v0.3 ties v0.2 on mrr; beats v0/agreement/bm25/rrf by
-  +0.056667 mrr; beats seeded_random by +0.09 mrr. 35 private SCORE rows
-  (5×7 arms).
-- **Robustness summary signals**: `cross_slice_v03_vs_v02_mrr_delta=0.0`,
-  `cross_slice_v03_vs_v0_mrr_delta=0.056667`,
-  `v03_vs_v02_sign_stability_mrr=1.0`,
-  `v03_vs_v0_sign_stability_mrr=0.8`,
-  `v03_vs_rrf_quality_per_latency_delta=0.045478`.
+- **BEA-5 is complete as a fixed-protocol No-Go / near-miss**: final CI run
+  `28003522632` failed closed with `records_successful=119`, one short of
+  the predeclared 120-record quota. A local exact-protocol rerun reproduced
+  the aggregate artifact.
+- **Fixed protocol**: success-quota scan over the full available Python frame
+  excluding BEA-2/3/4 windows; raw caps ContextBench 480 and RepoQA 240;
+  minimums ContextBench >= 40, RepoQA >= 20; fixed budget 5; fixed methods
+  `bm25,regex,symbol`; RRF same-budget required.
+- **Aggregate yield**: `records_attempted_total=186`, `records_successful=119`,
+  `records_excluded=67`, `contextbench_successful=82`, `repoqa_successful=37`,
+  `quota_reached=false`, `failure_category_counts.retrieval_failed=67`,
+  `rrf_required_but_missing=0`.
+- **Private traces**: `private_score_manifest.record_count=833` (119×7 arms)
+  and `private_attempt_manifest.record_count=186`; both are `/tmp` private,
+  path not publicly serialized.
+- **119-record metric signal**: v0.3 ties v0.2 on file_recall@10, MRR, and
+  success_rate; v0.3 vs v0.2 has `span_f0.5@10 +0.004953` and
+  `quality_per_latency +0.002853`. v0.3 beats BM25/agreement/RRF on
+  file_recall/MRR/success by +0.184874/+0.164566/+0.184874, but has latency
+  costs and remains non-passing because the quota missed by one record.
+- **Interpretation**: BEA-5 is not a pass and not a benchmark/performance
+  claim. It becomes failure-decomposition input for BEA-4/5, not a reason to
+  tune v0.31 weights or keep changing sampling.
 - **Strict claim boundary**: `claim_level=
   bea_v03_frozen_policy_robustness_smoke_only`. NOT benchmark/leaderboard/
   performance/method-winner/calibration/promotion/default/runtime/EvidenceCore
