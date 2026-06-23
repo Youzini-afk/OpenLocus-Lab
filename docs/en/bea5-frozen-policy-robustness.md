@@ -1,18 +1,25 @@
 # BEA-5 Frozen-Policy Larger/Cross-Slice Robustness Smoke
 
 Date: 2026-06-21 (BEA-5 frozen-policy larger/cross-slice robustness smoke for
-the frozen BEA v0.3 policy, over a fresh disjoint larger external slice —
-ContextBench verified Python rows offset 160 + RepoQA Python needles offset
-80 — with private per-record SCORE JSONL in `/tmp` and records-shaped
-aggregate-only public artifact including robustness summary)
+the frozen BEA v0.3 policy, over a fresh disjoint larger external slice with
+**recovery success-quota sampling** — full available Python benchmark frame
+excluding BEA-2/3/4 prior windows — with private per-record SCORE JSONL in
+`/tmp` and records-shaped aggregate-only public artifact including robustness
+summary)
 
 BEA-5 is the **frozen-policy robustness smoke** for the frozen BEA v0.3
 policy. It runs a fresh, disjoint larger/cross-slice external robustness
-smoke (ContextBench verified Python rows offset 160 limit 240, RepoQA Python
-needles offset 80 limit 120) and tests whether BEA-4's conclusions are stable
-before any BEA v0.4 tuning. **The v0.3 algorithm and weights are frozen
-exactly as in BEA-3/BEA-4; this phase is robustness measurement, not a new
-algorithm.**
+smoke and tests whether BEA-4's conclusions are stable before any BEA v0.4
+tuning. **The v0.3 algorithm and weights are frozen exactly as in
+BEA-3/BEA-4; this phase is robustness measurement, not a new algorithm.**
+
+Fixed-tail CI run `27984961904` failed quota due to dataset yield: 72
+successful / 126 attempted; ContextBench 53 success; RepoQA 19 success; all
+failures `retrieval_failed`; `rrf_required_but_missing=0`; no privacy/schema/
+RRF failure. This is **not** a BEA v0.3 algorithm failure and **not** a
+BEA-5 result claim. The recovery sampling revision scans the full available
+Python frame excluding BEA-2/3/4 windows so RepoQA can reach its 20-record
+minimum.
 
 BEA-5 is explicitly **not** a benchmark result, **not** a leaderboard entry,
 **not** a performance claim, **not** a method-winner claim, **not** a
@@ -45,29 +52,42 @@ BEA-3's ablations (`bea_v0_3_no_anchor`, `bea_v0_3_no_early_stop`) are **NOT**
 in BEA-5 fixed arms. BEA-5 has NO `--enable-rrf-baseline` CLI flag; RRF is
 always required.
 
-## Fresh disjoint larger slice (success-quota sampling)
+## Fresh disjoint larger slice (recovery success-quota sampling)
 
-BEA-5 uses **success-quota sampling** over a larger disjoint raw scan. The
-same offsets as BEA-4 are kept, but raw attempt caps are larger to allow
-stopping once the target number of successful records is reached:
+BEA-5 uses **recovery success-quota sampling** over the full available
+Python benchmark frame, excluding mandatory BEA-2/3/4 prior windows. This
+replaces the fixed-tail sampling that exhausted available Python rows in CI
+run `27984961904`.
 
-- ContextBench verified Python rows: offset 160, raw attempt cap 480 (hard
-  cap 480).
-- RepoQA Python needles: offset 80, raw attempt cap 240 (hard cap 240).
-- `target_successful_records = 120`. Evaluation stops once 120 successful
-  records are collected across both benchmarks.
-- `sampling_mode = "success_quota"`.
-- Requires nonzero ContextBench + RepoQA contribution; CI gates require
-  `contextbench_successful >= 40` and `repoqa_successful >= 20`.
+- `sampling_mode = "success_quota"`
+- `sampling_protocol_version = "bea5_success_quota_disjoint_scan.v1"`
+- `sampling_frame_policy =
+  "full_available_python_excluding_bea2_bea3_bea4_windows"`
+- `excluded_prior_windows_policy =
+  "mandatory_bea2_bea3_bea4; bea0_bea1_best_effort_or_disclosed"`
+- `bea0_bea1_windows_excluded = false`
+- `bea0_bea1_overlap_policy =
+  "not_excluded; disclosed; BEA-0 and BEA-1 were small early smoke slices,
+  not frozen-v0.3 BEA-2 to BEA-4 windows"`
+- ContextBench: scan full available Python frame (offset 0, raw attempt cap
+  480), excluding mandatory windows `[40,160)` (BEA-2 `[40,60)`, BEA-3
+  `[60,80)`, BEA-4 `[80,160)`).
+- RepoQA: scan full available Python frame (offset 0, raw attempt cap 240),
+  excluding mandatory windows `[20,80)` (BEA-2 `[20,30)`, BEA-3 `[30,40)`,
+  BEA-4 `[40,80)`).
+- Python-only filtering remains.
+- Stable deterministic order (original index order within each benchmark).
+- **Deterministic interleaving**: process ContextBench and RepoQA in
+  round-robin fashion so RepoQA can reach its 20-record minimum even if
+  ContextBench yields its 40-record quota first.
+- Stop only after `total successful >= 120 AND contextbench_successful >=
+  40 AND repoqa_successful >= 20`.
 - `quota_reached` boolean records whether the target was met.
-- Local smoke may use smaller raw attempt caps for speed (e.g. 3+2); local
-  debug artifacts will truthfully show `status=partial` and
-  `quota_reached=false` until the target is reached in manual CI.
-
-This success-quota sampling is a bounded fix after CI failures on raw
-disjoint slices that produced only 72 successful records. It is NOT a silent
-cap bump and NOT a No-Go; it explicitly samples more raw attempts to reach
-the declared target of 120 successful records.
+- Raw caps 480/240 as max attempts per benchmark.
+- BEA-5 recovery is a fixed protocol: CLI/workflow inputs must be exactly
+  offset 0, caps 480/240, budget 5, and methods `bm25,regex,symbol`.
+  Smaller debug caps are intentionally rejected so public requested fields
+  cannot drift from the actual sampling frame.
 
 ## Public artifact shape
 
@@ -95,6 +115,14 @@ dynamic method maps.
 ## Success-quota public fields
 
 - `sampling_mode = "success_quota"`
+- `sampling_protocol_version = "bea5_success_quota_disjoint_scan.v1"`
+- `sampling_frame_policy =
+  "full_available_python_excluding_bea2_bea3_bea4_windows"`
+- `excluded_prior_windows_policy =
+  "mandatory_bea2_bea3_bea4; bea0_bea1_best_effort_or_disclosed"`
+- `bea0_bea1_windows_excluded = false`
+- `bea0_bea1_overlap_policy`: aggregate disclosure string for BEA-0/1 not
+  being mandatory exclusions
 - `target_successful_records = 120`
 - `raw_attempt_cap_contextbench = 480`
 - `raw_attempt_cap_repoqa = 240`
@@ -103,6 +131,12 @@ dynamic method maps.
 - `quota_reached` boolean
 - `contextbench_attempted/successful/excluded`
 - `repoqa_attempted/successful/excluded`
+- `contextbench_excluded_prior_window_count`: count of rows excluded by
+  mandatory BEA-2/3/4 windows
+- `repoqa_excluded_prior_window_count`: count of needles excluded by
+  mandatory BEA-2/3/4 windows
+- `contextbench_eligible_count`: count of rows after exclusion filtering
+- `repoqa_eligible_count`: count of needles after exclusion filtering
 - `benchmark_attempt_records`: records list with per-benchmark counts
 
 ## Private traces
@@ -160,55 +194,36 @@ Forbidden public fields: `self_test_checks`, `self_test_details`,
 
 ```text
 python3 -m py_compile eval/bea5_frozen_policy_robustness.py  => PASS
-python3 eval/bea5_frozen_policy_robustness.py --self-test  => PASS (385/385 checks)
+python3 eval/bea5_frozen_policy_robustness.py --self-test  => PASS (435/435 checks)
 python3 eval/bea5_frozen_policy_robustness.py \
-  --enable-external-benchmark-network \
-  --contextbench-row-offset 160 --contextbench-row-limit 3 \
-  --repoqa-needle-offset 80 --repoqa-needle-limit 2 \
-  --budget 5 --methods bm25,regex,symbol \
   --out artifacts/bea5_frozen_policy_robustness/bea5_frozen_policy_robustness_report.json  => PASS
-  (status: partial, 3 records successful,
-   sampling_mode=success_quota, target_successful_records=120,
-   quota_reached=false, records_attempted_total=5, records_excluded=2,
-   contextbench_attempted=3, contextbench_successful=2, contextbench_excluded=1,
-   repoqa_attempted=2, repoqa_successful=1, repoqa_excluded=1,
-   private_score_manifest.record_count=21 (3×7 arms),
-   private_attempt_manifest.record_count=5 (= records_attempted_total),
-   private_score_storage_class=tmp_private,
-   private_score_path_publicly_serialized=false,
+  (status: unavailable_with_reason, no-network artifact,
+   sampling_mode=success_quota,
+   sampling_protocol_version=bea5_success_quota_disjoint_scan.v1,
+   sampling_frame_policy=full_available_python_excluding_bea2_bea3_bea4_windows,
+   quota_reached=false, records_attempted_total=0,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea5=false, weights_tuned_during_bea5=false,
-   self_test_checks_total=385, self_test_checks_passed=385)
+   self_test_checks_total=435, self_test_checks_passed=435)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## Real bounded local smoke result (2026-06-21, success-quota fix)
+## Prior CI run and recovery sampling
 
-Bounded local smoke (ContextBench offset 160 limit 3 + RepoQA offset 80
-limit 2, budget=5, methods bm25/regex/symbol): this is a small local
-debug smoke with `status=partial` because only 3 of 120 target successful
-records were collected. `quota_reached=false`. `records_attempted_total=5`
-(3 ContextBench + 2 RepoQA), `records_successful=3`, `records_excluded=2`.
-`contextbench_successful=2`, `repoqa_successful=1`.
+Fixed-tail CI run `27984961904` failed quota due to dataset yield:
+`records_successful=72`, `records_attempted_total=126`,
+`contextbench_successful=53`, `repoqa_successful=19`, `retrieval_failed=54`,
+`rrf_required_but_missing=0`. All failures were `retrieval_failed` (repo
+clone/materialization failures on the tail slice); no privacy/schema/RRF
+failure. This is **not** a BEA v0.3 algorithm failure and **not** a BEA-5
+result claim.
 
-`private_score_manifest.record_count=21` (3×7 arms),
-`private_attempt_manifest.record_count=5` (= records_attempted_total),
-`private_score_storage_class=tmp_private`,
-`private_score_path_publicly_serialized=false`,
-`algorithm_changed_during_bea5=false`, `weights_tuned_during_bea5=false`.
-
-`benchmark_attempt_records`:
-`contextbench: attempted=3, successful=2, excluded=1`;
-`repoqa: attempted=2, successful=1, excluded=1`.
-
-This local artifact truthfully shows the success-quota sampling fields and
-is NOT a CI-scale result. The full success-quota CI run (raw attempt caps
-480+240, target 120 successful) is pending manual CI; CI will fail-closed
-unless `records_successful >= 120`, `quota_reached=true`,
-`contextbench_successful >= 40`, `repoqa_successful >= 20`,
-`private_attempt_manifest.record_count == records_attempted_total`, and
-`private_score_manifest.record_count == records_successful × 7`.
+The recovery sampling revision scans the full available Python frame
+excluding BEA-2/3/4 prior windows, with deterministic interleaving so RepoQA
+can reach its 20-record minimum. The full success-quota CI run (raw attempt
+caps 480+240, target 120 successful, min 40/20 per benchmark) is pending
+manual CI.
 
 ## Caveats
 
@@ -218,14 +233,13 @@ unless `records_successful >= 120`, `quota_reached=true`,
 - The v0.3 algorithm and weights are frozen exactly as in BEA-3/BEA-4.
   `algorithm_changed_during_bea5=false`,
   `weights_tuned_during_bea5=false` (binding).
-- Bounded local smoke used 3+2 records for speed and truthfully shows
-  `status=partial`, `quota_reached=false`. The full success-quota CI run
-  (raw attempt caps 480+240, target 120 successful) is pending manual CI;
-  the committed artifact reflects the local smoke only. Local debug may use
-  small caps but must not be recorded as CI scale evidence.
-- Success-quota sampling is an explicit bounded fix after CI failures on raw
-  disjoint slices that produced only 72 successful records. It is NOT a
-  silent cap bump and NOT a No-Go.
+- Fixed-tail CI run `27984961904` failed quota due to dataset yield (72
+  successful / 126 attempted), not an algorithm or schema failure. The
+  recovery sampling revision scans the full available Python frame excluding
+  BEA-2/3/4 windows with deterministic interleaving.
+- The full success-quota CI run (raw attempt caps 480+240, target 120
+  successful, min 40/20 per benchmark) is pending manual CI; the committed
+  artifact reflects the no-network unavailable state only.
 - RRF arm is required; CI fails if RRF is disabled/missing.
 - All no-claim / no-runtime-change flags false; EvidenceCore semantics
   unchanged. BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 semantics not mutated.

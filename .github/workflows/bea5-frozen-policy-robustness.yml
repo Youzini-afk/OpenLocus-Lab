@@ -26,27 +26,27 @@ on:
         default: false
         type: boolean
       contextbench_row_offset:
-        description: 'ContextBench row offset (default 160)'
+        description: 'BEA-5 fixed recovery protocol: must be 0'
         required: false
-        default: '160'
+        default: '0'
       contextbench_row_limit:
-        description: 'ContextBench raw attempt cap (default 480; hard cap 480; success-quota sampling stops at target_successful_records=120)'
+        description: 'BEA-5 fixed recovery protocol: must be 480'
         required: false
         default: '480'
       repoqa_needle_offset:
-        description: 'RepoQA needle offset (default 80)'
+        description: 'BEA-5 fixed recovery protocol: must be 0'
         required: false
-        default: '80'
+        default: '0'
       repoqa_needle_limit:
-        description: 'RepoQA raw attempt cap (default 240; hard cap 240; success-quota sampling stops at target_successful_records=120)'
+        description: 'BEA-5 fixed recovery protocol: must be 240'
         required: false
         default: '240'
       budget:
-        description: 'Evidence budget (default 5; hard cap 20)'
+        description: 'BEA-5 fixed recovery protocol: must be 5'
         required: false
         default: '5'
       methods:
-        description: 'Comma-separated retrieval methods (default bm25,regex,symbol; bm25 required)'
+        description: 'BEA-5 fixed recovery protocol: must be bm25,regex,symbol'
         required: false
         default: 'bm25,regex,symbol'
 
@@ -77,9 +77,9 @@ jobs:
         id: resolve
         run: |
           enable_network="${{ inputs.enable_external_benchmark_network }}"
-          cb_offset="${{ inputs.contextbench_row_offset || '160' }}"
+          cb_offset="${{ inputs.contextbench_row_offset || '0' }}"
           cb_limit="${{ inputs.contextbench_row_limit || '480' }}"
-          rq_offset="${{ inputs.repoqa_needle_offset || '80' }}"
+          rq_offset="${{ inputs.repoqa_needle_offset || '0' }}"
           rq_limit="${{ inputs.repoqa_needle_limit || '240' }}"
           budget="${{ inputs.budget || '5' }}"
           methods="${{ inputs.methods || 'bm25,regex,symbol' }}"
@@ -91,9 +91,11 @@ jobs:
             val="${!var}"
             if ! [[ "$val" =~ ^[1-9][0-9]*$ ]]; then echo "$var must be positive integer" >&2; exit 1; fi
           done
-          [[ "$cb_limit" -gt 480 ]] && echo "cb_limit exceeds cap 480" >&2
-          [[ "$rq_limit" -gt 240 ]] && echo "rq_limit exceeds cap 240" >&2
-          [[ "$budget" -gt 20 ]] && echo "budget exceeds cap 20" >&2
+          [[ "$cb_offset" != "0" ]] && echo "BEA-5 recovery requires cb_offset=0" >&2 && exit 1
+          [[ "$cb_limit" != "480" ]] && echo "BEA-5 recovery requires cb_limit=480" >&2 && exit 1
+          [[ "$rq_offset" != "0" ]] && echo "BEA-5 recovery requires rq_offset=0" >&2 && exit 1
+          [[ "$rq_limit" != "240" ]] && echo "BEA-5 recovery requires rq_limit=240" >&2 && exit 1
+          [[ "$budget" != "5" ]] && echo "BEA-5 recovery requires budget=5" >&2 && exit 1
           IFS=',' read -ra ma <<< "$methods"
           has_bm25=0
           for m in "${ma[@]}"; do
@@ -102,6 +104,7 @@ jobs:
             [[ "$mt" == "bm25" ]] && has_bm25=1
           done
           [[ "$has_bm25" -eq 0 ]] && echo "methods must include bm25" >&2 && exit 1
+          [[ "$methods" != "bm25,regex,symbol" ]] && echo "BEA-5 recovery requires methods=bm25,regex,symbol" >&2 && exit 1
           [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
           echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
           echo "cb_offset=$cb_offset" >> "$GITHUB_OUTPUT"
@@ -195,6 +198,16 @@ jobs:
           # Success-quota sampling fields (BEA-5 fix).
           if report.get("sampling_mode") != "success_quota":
               failures.append(f"expected sampling_mode=success_quota, got {report.get('sampling_mode')!r}")
+          if report.get("sampling_protocol_version") != "bea5_success_quota_disjoint_scan.v1":
+              failures.append(f"expected sampling_protocol_version=bea5_success_quota_disjoint_scan.v1, got {report.get('sampling_protocol_version')!r}")
+          if report.get("sampling_frame_policy") != "full_available_python_excluding_bea2_bea3_bea4_windows":
+              failures.append(f"expected sampling_frame_policy=full_available_python_excluding_bea2_bea3_bea4_windows, got {report.get('sampling_frame_policy')!r}")
+          if report.get("excluded_prior_windows_policy") != "mandatory_bea2_bea3_bea4; bea0_bea1_best_effort_or_disclosed":
+              failures.append(f"expected excluded_prior_windows_policy mismatch, got {report.get('excluded_prior_windows_policy')!r}")
+          if report.get("bea0_bea1_windows_excluded") is not False:
+              failures.append(f"expected bea0_bea1_windows_excluded=false, got {report.get('bea0_bea1_windows_excluded')!r}")
+          if not isinstance(report.get("bea0_bea1_overlap_policy"), str) or "not_excluded; disclosed" not in report.get("bea0_bea1_overlap_policy", ""):
+              failures.append(f"expected bea0_bea1_overlap_policy disclosure, got {report.get('bea0_bea1_overlap_policy')!r}")
           if report.get("target_successful_records") != 120:
               failures.append(f"expected target_successful_records=120, got {report.get('target_successful_records')!r}")
           if report.get("raw_attempt_cap_contextbench") != 480:

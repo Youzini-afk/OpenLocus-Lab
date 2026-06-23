@@ -114,7 +114,7 @@ import c5d_repoqa_bm25_retrieval_smoke as c5d  # noqa: E402
 SCHEMA_VERSION = "bea5_frozen_policy_robustness.v1"
 GENERATED_BY = "eval/bea5_frozen_policy_robustness.py"
 CLAIM_LEVEL = "bea_v03_frozen_policy_robustness_smoke_only"
-SELF_TEST_CHECKS_EXPECTED = 385
+SELF_TEST_CHECKS_EXPECTED = 435
 MODE = "bea_v03_frozen_policy_robustness_smoke"
 PHASE = "BEA-5"
 
@@ -128,10 +128,13 @@ PRIVATE_ATTEMPT_SCHEMA_VERSION = "bea5_private_attempt.v1"
 
 # Fresh disjoint larger slice from BEA-4. Hard caps 480/240 raw attempts;
 # success-quota sampling stops once target_successful_records is reached.
-CONTEXTBENCH_ROW_OFFSET_DEFAULT = 160
+# Recovery sampling revision: scan the FULL available Python benchmark
+# frame EXCLUDING the mandatory BEA-2/BEA-3/BEA-4 prior windows, so RepoQA
+# can reach its 20-record minimum even after ContextBench yields its quota.
+CONTEXTBENCH_ROW_OFFSET_DEFAULT = 0
 CONTEXTBENCH_ROW_LIMIT_DEFAULT = 480
 CONTEXTBENCH_ROW_LIMIT_HARD_CAP = 480
-REPOQA_NEEDLE_OFFSET_DEFAULT = 80
+REPOQA_NEEDLE_OFFSET_DEFAULT = 0
 REPOQA_NEEDLE_LIMIT_DEFAULT = 240
 REPOQA_NEEDLE_LIMIT_HARD_CAP = 240
 
@@ -141,11 +144,48 @@ REPOQA_NEEDLE_LIMIT_HARD_CAP = 240
 # nonzero both benchmarks; prefer min contextbench_successful >= 40 and
 # repoqa_successful >= 20 (implemented as public fields and CI gates).
 SAMPLING_MODE = "success_quota"
+SAMPLING_PROTOCOL_VERSION = "bea5_success_quota_disjoint_scan.v1"
+SAMPLING_FRAME_POLICY = (
+    "full_available_python_excluding_bea2_bea3_bea4_windows"
+)
+EXCLUDED_PRIOR_WINDOWS_POLICY = (
+    "mandatory_bea2_bea3_bea4; bea0_bea1_best_effort_or_disclosed"
+)
+BEA0_BEA1_WINDOWS_EXCLUDED = False
+BEA0_BEA1_OVERLAP_POLICY = (
+    "not_excluded; disclosed; BEA-0 and BEA-1 were small early smoke slices, "
+    "not frozen-v0.3 BEA-2 to BEA-4 windows"
+)
 TARGET_SUCCESSFUL_RECORDS = 120
 RAW_ATTEMPT_CAP_CONTEXTBENCH = 480
 RAW_ATTEMPT_CAP_REPOQA = 240
 MIN_CONTEXTBENCH_SUCCESSFUL = 40
 MIN_REPOQA_SUCCESSFUL = 20
+
+# Mandatory excluded index windows (Python rows/needles at these indices are
+# skipped to avoid overlap with BEA-2/BEA-3/BEA-4 evaluation slices).
+# - BEA-2: ContextBench [40, 60), RepoQA [20, 30)
+# - BEA-3: ContextBench [60, 80), RepoQA [30, 40)
+# - BEA-4: ContextBench [80, 160), RepoQA [40, 80)
+CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS: tuple[tuple[int, int], ...] = (
+    (40, 60),   # BEA-2
+    (60, 80),   # BEA-3
+    (80, 160),  # BEA-4
+)
+REPOQA_MANDATORY_EXCLUDED_WINDOWS: tuple[tuple[int, int], ...] = (
+    (20, 30),   # BEA-2
+    (30, 40),   # BEA-3
+    (40, 80),   # BEA-4
+)
+# Best-effort BEA-0/BEA-1 windows (disclosed but not hard-mandatory).
+CONTEXTBENCH_BEST_EFFORT_EXCLUDED_WINDOWS: tuple[tuple[int, int], ...] = (
+    (0, 10),    # BEA-0
+    (10, 40),   # BEA-1
+)
+REPOQA_BEST_EFFORT_EXCLUDED_WINDOWS: tuple[tuple[int, int], ...] = (
+    (0, 5),     # BEA-0
+    (5, 20),    # BEA-1
+)
 
 BUDGET_DEFAULT = 5
 BUDGET_HARD_CAP = 20
@@ -446,7 +486,7 @@ def _validate_row_limit(limit: int) -> int:
     if not isinstance(limit, int) or limit < 1:
         raise SystemExit("invalid arguments")
     if limit > CONTEXTBENCH_ROW_LIMIT_HARD_CAP:
-        return CONTEXTBENCH_ROW_LIMIT_HARD_CAP
+        raise SystemExit("invalid arguments")
     return limit
 
 
@@ -454,7 +494,7 @@ def _validate_needle_limit(limit: int) -> int:
     if not isinstance(limit, int) or limit < 1:
         raise SystemExit("invalid arguments")
     if limit > REPOQA_NEEDLE_LIMIT_HARD_CAP:
-        return REPOQA_NEEDLE_LIMIT_HARD_CAP
+        raise SystemExit("invalid arguments")
     return limit
 
 
@@ -462,12 +502,32 @@ def _validate_budget(budget: int) -> int:
     if not isinstance(budget, int) or budget < 1:
         raise SystemExit("invalid arguments")
     if budget > BUDGET_HARD_CAP:
-        return BUDGET_HARD_CAP
+        raise SystemExit("invalid arguments")
     return budget
 
 
 def _validate_methods(methods: str) -> tuple[str, ...]:
     return bea0._validate_methods(methods)
+
+
+def _validate_fixed_recovery_protocol(
+    *, contextbench_row_offset: int, contextbench_row_limit: int,
+    repoqa_needle_offset: int, repoqa_needle_limit: int, budget: int,
+    methods: tuple[str, ...],
+) -> None:
+    """BEA-5 recovery is a fixed sampling protocol, not a variable slice."""
+    if contextbench_row_offset != CONTEXTBENCH_ROW_OFFSET_DEFAULT:
+        raise SystemExit("invalid arguments")
+    if contextbench_row_limit != CONTEXTBENCH_ROW_LIMIT_DEFAULT:
+        raise SystemExit("invalid arguments")
+    if repoqa_needle_offset != REPOQA_NEEDLE_OFFSET_DEFAULT:
+        raise SystemExit("invalid arguments")
+    if repoqa_needle_limit != REPOQA_NEEDLE_LIMIT_DEFAULT:
+        raise SystemExit("invalid arguments")
+    if budget != BUDGET_DEFAULT:
+        raise SystemExit("invalid arguments")
+    if tuple(methods) != tuple(ALLOWED_METHODS):
+        raise SystemExit("invalid arguments")
 
 
 # ---------------------------------------------------------------------------
@@ -597,6 +657,31 @@ def _write_private_attempt_row(
 ) -> None:
     """Append one private attempt row (transient /tmp only)."""
     bea0._write_private_score_row(attempt_path, row)
+
+
+def _is_index_excluded(
+    index: int,
+    windows: tuple[tuple[int, int], ...],
+) -> bool:
+    """Check if a 0-based index falls within any excluded window [lo, hi)."""
+    for lo, hi in windows:
+        if lo <= index < hi:
+            return True
+    return False
+
+
+def _count_excluded_in_frame(
+    frame_size: int,
+    windows: tuple[tuple[int, int], ...],
+) -> int:
+    """Count how many indices in [0, frame_size) fall in excluded windows."""
+    count = 0
+    for lo, hi in windows:
+        effective_lo = max(0, lo)
+        effective_hi = min(frame_size, hi)
+        if effective_hi > effective_lo:
+            count += effective_hi - effective_lo
+    return count
 
 
 def _benchmark_attempt_records(
@@ -1511,6 +1596,10 @@ def _build_unavailable_report(
     repoqa_attempted: int = 0,
     repoqa_successful: int = 0,
     repoqa_excluded: int = 0,
+    contextbench_excluded_prior_window_count: int = 0,
+    repoqa_excluded_prior_window_count: int = 0,
+    contextbench_eligible_count: int = 0,
+    repoqa_eligible_count: int = 0,
     quota_reached: bool = False,
     network_calls: int = 0,
     failure_category_counts: dict[str, int] | None = None,
@@ -1572,6 +1661,11 @@ def _build_unavailable_report(
         "openlocus_binary_source": openlocus_binary_source,
         # Success-quota sampling fields (BEA-5 fix).
         "sampling_mode": SAMPLING_MODE,
+        "sampling_protocol_version": SAMPLING_PROTOCOL_VERSION,
+        "sampling_frame_policy": SAMPLING_FRAME_POLICY,
+        "excluded_prior_windows_policy": EXCLUDED_PRIOR_WINDOWS_POLICY,
+        "bea0_bea1_windows_excluded": BEA0_BEA1_WINDOWS_EXCLUDED,
+        "bea0_bea1_overlap_policy": BEA0_BEA1_OVERLAP_POLICY,
         "target_successful_records": TARGET_SUCCESSFUL_RECORDS,
         "raw_attempt_cap_contextbench": RAW_ATTEMPT_CAP_CONTEXTBENCH,
         "raw_attempt_cap_repoqa": RAW_ATTEMPT_CAP_REPOQA,
@@ -1590,6 +1684,10 @@ def _build_unavailable_report(
         "repoqa_attempted": int(repoqa_attempted),
         "repoqa_successful": int(repoqa_successful),
         "repoqa_excluded": int(repoqa_excluded),
+        "contextbench_excluded_prior_window_count": int(contextbench_excluded_prior_window_count),
+        "repoqa_excluded_prior_window_count": int(repoqa_excluded_prior_window_count),
+        "contextbench_eligible_count": int(contextbench_eligible_count),
+        "repoqa_eligible_count": int(repoqa_eligible_count),
         "quota_reached": bool(quota_reached),
         "network_calls": network_calls,
         "provider_calls": 0,
@@ -1671,6 +1769,10 @@ def _build_pass_report(
     repoqa_attempted: int,
     repoqa_successful: int,
     repoqa_excluded: int,
+    contextbench_excluded_prior_window_count: int,
+    repoqa_excluded_prior_window_count: int,
+    contextbench_eligible_count: int,
+    repoqa_eligible_count: int,
     quota_reached: bool,
     network_calls: int,
     arm_aggs: dict[str, dict[str, Any]],
@@ -1789,6 +1891,11 @@ def _build_pass_report(
         "openlocus_binary_source": openlocus_binary_source,
         # Success-quota sampling fields (BEA-5 fix).
         "sampling_mode": SAMPLING_MODE,
+        "sampling_protocol_version": SAMPLING_PROTOCOL_VERSION,
+        "sampling_frame_policy": SAMPLING_FRAME_POLICY,
+        "excluded_prior_windows_policy": EXCLUDED_PRIOR_WINDOWS_POLICY,
+        "bea0_bea1_windows_excluded": BEA0_BEA1_WINDOWS_EXCLUDED,
+        "bea0_bea1_overlap_policy": BEA0_BEA1_OVERLAP_POLICY,
         "target_successful_records": TARGET_SUCCESSFUL_RECORDS,
         "raw_attempt_cap_contextbench": RAW_ATTEMPT_CAP_CONTEXTBENCH,
         "raw_attempt_cap_repoqa": RAW_ATTEMPT_CAP_REPOQA,
@@ -1807,6 +1914,10 @@ def _build_pass_report(
         "repoqa_attempted": int(repoqa_attempted),
         "repoqa_successful": int(repoqa_successful),
         "repoqa_excluded": int(repoqa_excluded),
+        "contextbench_excluded_prior_window_count": int(contextbench_excluded_prior_window_count),
+        "repoqa_excluded_prior_window_count": int(repoqa_excluded_prior_window_count),
+        "contextbench_eligible_count": int(contextbench_eligible_count),
+        "repoqa_eligible_count": int(repoqa_eligible_count),
         "quota_reached": bool(quota_reached),
         "paired_exclusion_count": int(paired_exclusion_count),
         "network_calls": network_calls,
@@ -1988,10 +2099,10 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
 
     skeleton = _build_pass_report(
         self_test_passed=True,
-        contextbench_row_offset_requested=160,
-        contextbench_row_limit_requested=3,
-        repoqa_needle_offset_requested=80,
-        repoqa_needle_limit_requested=2,
+        contextbench_row_offset_requested=0,
+        contextbench_row_limit_requested=480,
+        repoqa_needle_offset_requested=0,
+        repoqa_needle_limit_requested=240,
         budget=5, methods=("bm25", "regex", "symbol"),
         openlocus_binary_source="self_test",
         network_mode="self_test",
@@ -2001,6 +2112,10 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         contextbench_attempted=1, contextbench_successful=1,
         contextbench_excluded=0,
         repoqa_attempted=0, repoqa_successful=0, repoqa_excluded=0,
+        contextbench_excluded_prior_window_count=0,
+        repoqa_excluded_prior_window_count=0,
+        contextbench_eligible_count=1,
+        repoqa_eligible_count=0,
         quota_reached=True,
         network_calls=0, arm_aggs=arm_aggs,
         per_record_arm_metrics=per_record_arm_metrics,
@@ -2021,10 +2136,10 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     )
     unavail = _build_unavailable_report(
         "retrieval_failed", self_test_passed=True,
-        contextbench_row_offset_requested=160,
-        contextbench_row_limit_requested=3,
-        repoqa_needle_offset_requested=80,
-        repoqa_needle_limit_requested=2,
+        contextbench_row_offset_requested=0,
+        contextbench_row_limit_requested=480,
+        repoqa_needle_offset_requested=0,
+        repoqa_needle_limit_requested=240,
         budget=5, methods=("bm25", "regex", "symbol"),
         openlocus_binary_source="self_test",
         network_mode="self_test",
@@ -2034,6 +2149,10 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         contextbench_attempted=0, contextbench_successful=0,
         contextbench_excluded=0,
         repoqa_attempted=0, repoqa_successful=0, repoqa_excluded=0,
+        contextbench_excluded_prior_window_count=0,
+        repoqa_excluded_prior_window_count=0,
+        contextbench_eligible_count=0,
+        repoqa_eligible_count=0,
         quota_reached=False,
         private_attempt_records_written=False,
         private_attempt_record_count=0,
@@ -2071,27 +2190,103 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         checks.append(_check(f"license_{field}", skeleton.get(field) == expected))
 
     # Group 5: Robustness slice defaults and hard caps.
-    checks.append(_check("cb_offset_default", CONTEXTBENCH_ROW_OFFSET_DEFAULT == 160))
+    checks.append(_check("cb_offset_default", CONTEXTBENCH_ROW_OFFSET_DEFAULT == 0))
     checks.append(_check("cb_limit_default", CONTEXTBENCH_ROW_LIMIT_DEFAULT == 480))
     checks.append(_check("cb_limit_hard_cap", CONTEXTBENCH_ROW_LIMIT_HARD_CAP == 480))
-    checks.append(_check("rq_offset_default", REPOQA_NEEDLE_OFFSET_DEFAULT == 80))
+    checks.append(_check("rq_offset_default", REPOQA_NEEDLE_OFFSET_DEFAULT == 0))
     checks.append(_check("rq_limit_default", REPOQA_NEEDLE_LIMIT_DEFAULT == 240))
     checks.append(_check("rq_limit_hard_cap", REPOQA_NEEDLE_LIMIT_HARD_CAP == 240))
     checks.append(_check("budget_default", BUDGET_DEFAULT == 5))
     checks.append(_check("budget_hard_cap", BUDGET_HARD_CAP == 20))
     checks.append(_check("ci_min_records", CI_MIN_RECORDS_SUCCESSFUL == 120))
     checks.append(_check("sampling_mode_constant", SAMPLING_MODE == "success_quota"))
+    checks.append(_check("sampling_protocol_version_constant",
+        SAMPLING_PROTOCOL_VERSION == "bea5_success_quota_disjoint_scan.v1"))
+    checks.append(_check("sampling_frame_policy_constant",
+        SAMPLING_FRAME_POLICY == "full_available_python_excluding_bea2_bea3_bea4_windows"))
+    checks.append(_check("excluded_prior_windows_policy_constant",
+        EXCLUDED_PRIOR_WINDOWS_POLICY == "mandatory_bea2_bea3_bea4; bea0_bea1_best_effort_or_disclosed"))
+    checks.append(_check("bea0_bea1_windows_excluded_false",
+        BEA0_BEA1_WINDOWS_EXCLUDED is False))
+    checks.append(_check("bea0_bea1_overlap_policy_disclosed",
+        "not_excluded; disclosed" in BEA0_BEA1_OVERLAP_POLICY))
     checks.append(_check("target_successful_records", TARGET_SUCCESSFUL_RECORDS == 120))
     checks.append(_check("raw_attempt_cap_cb", RAW_ATTEMPT_CAP_CONTEXTBENCH == 480))
     checks.append(_check("raw_attempt_cap_rq", RAW_ATTEMPT_CAP_REPOQA == 240))
     checks.append(_check("min_cb_successful", MIN_CONTEXTBENCH_SUCCESSFUL == 40))
     checks.append(_check("min_rq_successful", MIN_REPOQA_SUCCESSFUL == 20))
     checks.append(_check("private_attempt_schema_version", PRIVATE_ATTEMPT_SCHEMA_VERSION == "bea5_private_attempt.v1"))
+    # Mandatory excluded windows.
+    checks.append(_check("cb_mandatory_excluded_windows_count", len(CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS) == 3))
+    checks.append(_check("rq_mandatory_excluded_windows_count", len(REPOQA_MANDATORY_EXCLUDED_WINDOWS) == 3))
+    checks.append(_check("cb_mandatory_excluded_covers_40_to_160",
+        _is_index_excluded(40, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS) and
+        _is_index_excluded(80, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS) and
+        _is_index_excluded(159, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS) and
+        not _is_index_excluded(160, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS) and
+        not _is_index_excluded(39, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS)))
+    checks.append(_check("rq_mandatory_excluded_covers_20_to_80",
+        _is_index_excluded(20, REPOQA_MANDATORY_EXCLUDED_WINDOWS) and
+        _is_index_excluded(40, REPOQA_MANDATORY_EXCLUDED_WINDOWS) and
+        _is_index_excluded(79, REPOQA_MANDATORY_EXCLUDED_WINDOWS) and
+        not _is_index_excluded(80, REPOQA_MANDATORY_EXCLUDED_WINDOWS) and
+        not _is_index_excluded(19, REPOQA_MANDATORY_EXCLUDED_WINDOWS)))
+    # Count excluded in frame.
+    checks.append(_check("count_excluded_cb_frame", _count_excluded_in_frame(200, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS) == 120))
+    checks.append(_check("count_excluded_rq_frame", _count_excluded_in_frame(100, REPOQA_MANDATORY_EXCLUDED_WINDOWS) == 60))
 
     # Group 6: Validation caps.
-    checks.append(_check("validate_row_limit_caps", _validate_row_limit(600) == 480))
-    checks.append(_check("validate_needle_limit_caps", _validate_needle_limit(300) == 240))
-    checks.append(_check("validate_budget_caps", _validate_budget(100) == 20))
+    try:
+        _validate_row_limit(600)
+        checks.append(_check("validate_row_limit_rejects_over_cap", False))
+    except SystemExit:
+        checks.append(_check("validate_row_limit_rejects_over_cap", True))
+    try:
+        _validate_needle_limit(300)
+        checks.append(_check("validate_needle_limit_rejects_over_cap", False))
+    except SystemExit:
+        checks.append(_check("validate_needle_limit_rejects_over_cap", True))
+    try:
+        _validate_budget(100)
+        checks.append(_check("validate_budget_rejects_over_cap", False))
+    except SystemExit:
+        checks.append(_check("validate_budget_rejects_over_cap", True))
+    try:
+        _validate_fixed_recovery_protocol(
+            contextbench_row_offset=0,
+            contextbench_row_limit=480,
+            repoqa_needle_offset=0,
+            repoqa_needle_limit=240,
+            budget=5,
+            methods=ALLOWED_METHODS,
+        )
+        checks.append(_check("fixed_recovery_protocol_accepts_exact", True))
+    except SystemExit:
+        checks.append(_check("fixed_recovery_protocol_accepts_exact", False))
+    try:
+        _validate_fixed_recovery_protocol(
+            contextbench_row_offset=160,
+            contextbench_row_limit=480,
+            repoqa_needle_offset=0,
+            repoqa_needle_limit=240,
+            budget=5,
+            methods=ALLOWED_METHODS,
+        )
+        checks.append(_check("fixed_recovery_protocol_rejects_offset", False))
+    except SystemExit:
+        checks.append(_check("fixed_recovery_protocol_rejects_offset", True))
+    try:
+        _validate_fixed_recovery_protocol(
+            contextbench_row_offset=0,
+            contextbench_row_limit=480,
+            repoqa_needle_offset=0,
+            repoqa_needle_limit=240,
+            budget=5,
+            methods=("bm25", "symbol", "regex"),
+        )
+        checks.append(_check("fixed_recovery_protocol_rejects_method_order", False))
+    except SystemExit:
+        checks.append(_check("fixed_recovery_protocol_rejects_method_order", True))
     try:
         _validate_row_limit(0)
         checks.append(_check("validate_row_limit_rejects_zero", False))
@@ -2431,16 +2626,33 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("unique_validator_detects_dup", bool(_check_unique_records(dup_bamr, _bamr_natural_key, "test"))))
 
     # Group 33: Success-quota sampling fields present in pass report.
-    for field in ("sampling_mode", "target_successful_records",
+    for field in ("sampling_mode", "sampling_protocol_version",
+                  "sampling_frame_policy", "excluded_prior_windows_policy",
+                  "bea0_bea1_windows_excluded", "bea0_bea1_overlap_policy",
+                  "target_successful_records",
                   "raw_attempt_cap_contextbench", "raw_attempt_cap_repoqa",
                   "records_attempted_total", "records_excluded",
                   "contextbench_attempted", "contextbench_successful",
                   "contextbench_excluded",
                   "repoqa_attempted", "repoqa_successful", "repoqa_excluded",
+                  "contextbench_excluded_prior_window_count",
+                  "repoqa_excluded_prior_window_count",
+                  "contextbench_eligible_count",
+                  "repoqa_eligible_count",
                   "quota_reached", "benchmark_attempt_records",
                   "private_attempt_manifest"):
         checks.append(_check(f"pass_has_{field}", field in skeleton))
     checks.append(_check("pass_sampling_mode_value", skeleton.get("sampling_mode") == "success_quota"))
+    checks.append(_check("pass_sampling_protocol_version_value",
+        skeleton.get("sampling_protocol_version") == SAMPLING_PROTOCOL_VERSION))
+    checks.append(_check("pass_sampling_frame_policy_value",
+        skeleton.get("sampling_frame_policy") == SAMPLING_FRAME_POLICY))
+    checks.append(_check("pass_excluded_prior_windows_policy_value",
+        skeleton.get("excluded_prior_windows_policy") == EXCLUDED_PRIOR_WINDOWS_POLICY))
+    checks.append(_check("pass_bea0_bea1_windows_excluded_false",
+        skeleton.get("bea0_bea1_windows_excluded") is False))
+    checks.append(_check("pass_bea0_bea1_overlap_policy_value",
+        skeleton.get("bea0_bea1_overlap_policy") == BEA0_BEA1_OVERLAP_POLICY))
     checks.append(_check("pass_target_successful_value", skeleton.get("target_successful_records") == 120))
     checks.append(_check("pass_raw_attempt_cap_cb_value", skeleton.get("raw_attempt_cap_contextbench") == 480))
     checks.append(_check("pass_raw_attempt_cap_rq_value", skeleton.get("raw_attempt_cap_repoqa") == 240))
@@ -2450,22 +2662,47 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("pass_contextbench_successful_value", skeleton.get("contextbench_successful") == 1))
     checks.append(_check("pass_repoqa_attempted_value", skeleton.get("repoqa_attempted") == 0))
     checks.append(_check("pass_quota_reached_value", skeleton.get("quota_reached") is True))
+    checks.append(_check("pass_cb_excluded_prior_window_count", skeleton.get("contextbench_excluded_prior_window_count") == 0))
+    checks.append(_check("pass_rq_excluded_prior_window_count", skeleton.get("repoqa_excluded_prior_window_count") == 0))
+    checks.append(_check("pass_cb_eligible_count", skeleton.get("contextbench_eligible_count") == 1))
+    checks.append(_check("pass_rq_eligible_count", skeleton.get("repoqa_eligible_count") == 0))
 
     # Group 34: Success-quota fields present in unavailable report.
-    for field in ("sampling_mode", "target_successful_records",
+    for field in ("sampling_mode", "sampling_protocol_version",
+                  "sampling_frame_policy", "excluded_prior_windows_policy",
+                  "bea0_bea1_windows_excluded", "bea0_bea1_overlap_policy",
+                  "target_successful_records",
                   "raw_attempt_cap_contextbench", "raw_attempt_cap_repoqa",
                   "records_attempted_total", "records_excluded",
                   "contextbench_attempted", "contextbench_successful",
                   "contextbench_excluded",
                   "repoqa_attempted", "repoqa_successful", "repoqa_excluded",
+                  "contextbench_excluded_prior_window_count",
+                  "repoqa_excluded_prior_window_count",
+                  "contextbench_eligible_count",
+                  "repoqa_eligible_count",
                   "quota_reached", "benchmark_attempt_records",
                   "private_attempt_manifest"):
         checks.append(_check(f"unavail_has_{field}", field in unavail))
     checks.append(_check("unavail_sampling_mode_value", unavail.get("sampling_mode") == "success_quota"))
+    checks.append(_check("unavail_sampling_protocol_version_value",
+        unavail.get("sampling_protocol_version") == SAMPLING_PROTOCOL_VERSION))
+    checks.append(_check("unavail_sampling_frame_policy_value",
+        unavail.get("sampling_frame_policy") == SAMPLING_FRAME_POLICY))
+    checks.append(_check("unavail_excluded_prior_windows_policy_value",
+        unavail.get("excluded_prior_windows_policy") == EXCLUDED_PRIOR_WINDOWS_POLICY))
+    checks.append(_check("unavail_bea0_bea1_windows_excluded_false",
+        unavail.get("bea0_bea1_windows_excluded") is False))
+    checks.append(_check("unavail_bea0_bea1_overlap_policy_value",
+        unavail.get("bea0_bea1_overlap_policy") == BEA0_BEA1_OVERLAP_POLICY))
     checks.append(_check("unavail_target_successful_value", unavail.get("target_successful_records") == 120))
     checks.append(_check("unavail_quota_reached_value", unavail.get("quota_reached") is False))
     checks.append(_check("unavail_records_attempted_total_value", unavail.get("records_attempted_total") == 0))
     checks.append(_check("unavail_records_excluded_value", unavail.get("records_excluded") == 0))
+    checks.append(_check("unavail_cb_excluded_prior_window_count", unavail.get("contextbench_excluded_prior_window_count") == 0))
+    checks.append(_check("unavail_rq_excluded_prior_window_count", unavail.get("repoqa_excluded_prior_window_count") == 0))
+    checks.append(_check("unavail_cb_eligible_count", unavail.get("contextbench_eligible_count") == 0))
+    checks.append(_check("unavail_rq_eligible_count", unavail.get("repoqa_eligible_count") == 0))
 
     # Group 35: private_attempt_manifest shape + hash + storage class.
     attempt_manifest = skeleton.get("private_attempt_manifest", {})
@@ -2656,21 +2893,78 @@ def _run_network_smoke(
             )
 
     # ContextBench heldout robustness slice.
+    # Recovery sampling: fetch the full available Python frame (offset 0,
+    # cap = raw_attempt_cap_contextbench) then filter out mandatory
+    # excluded prior windows (BEA-2/3/4).
     cb_rows, cb_status, cb_nc, cb_fcc = _fetch_heldout_contextbench_rows(
-        contextbench_row_offset, contextbench_row_limit
+        0, RAW_ATTEMPT_CAP_CONTEXTBENCH
     )
     network_calls += cb_nc
     for k, v in cb_fcc.items():
         if k in fcc:
             fcc[k] += v
+    # Apply mandatory exclusion windows to ContextBench.
+    cb_eligible_rows: list[tuple[int, dict[str, Any]]] = []
+    cb_excluded_prior_window_count = 0
     if cb_status == "pass" and cb_rows:
         for idx, row in enumerate(cb_rows):
-            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
-                quota_reached = True
-                fcc["quota_reached_stop"] = (
-                    fcc.get("quota_reached_stop", 0) + 1
-                )
-                break
+            if _is_index_excluded(idx, CONTEXTBENCH_MANDATORY_EXCLUDED_WINDOWS):
+                cb_excluded_prior_window_count += 1
+                continue
+            cb_eligible_rows.append((idx, row))
+    cb_eligible_count = len(cb_eligible_rows)
+
+    # RepoQA heldout robustness slice.
+    # Recovery sampling: fetch the full available Python frame (offset 0,
+    # cap = raw_attempt_cap_repoqa) then filter out mandatory excluded
+    # prior windows (BEA-2/3/4).
+    rq_needles, rq_status, rq_nc, rq_fcc = _fetch_heldout_repoqa_needles(
+        0, RAW_ATTEMPT_CAP_REPOQA
+    )
+    network_calls += rq_nc
+    for k, v in rq_fcc.items():
+        if k in fcc:
+            fcc[k] += v
+    # Apply mandatory exclusion windows to RepoQA.
+    rq_eligible_needles: list[tuple[int, dict[str, Any]]] = []
+    rq_excluded_prior_window_count = 0
+    if rq_status == "pass" and rq_needles:
+        for idx, needle in enumerate(rq_needles):
+            if _is_index_excluded(idx, REPOQA_MANDATORY_EXCLUDED_WINDOWS):
+                rq_excluded_prior_window_count += 1
+                continue
+            rq_eligible_needles.append((idx, needle))
+    rq_eligible_count = len(rq_eligible_needles)
+
+    # Deterministic interleaving: process ContextBench and RepoQA in a
+    # round-robin fashion so RepoQA can reach its 20-record minimum even
+    # if ContextBench yields its 40-record quota first. Stop only after
+    # total successful >= 120 AND contextbench_successful >= 40 AND
+    # repoqa_successful >= 20.
+    cb_ptr = 0
+    rq_ptr = 0
+    cb_done = (cb_status != "pass" or not cb_eligible_rows)
+    rq_done = (rq_status != "pass" or not rq_eligible_needles)
+
+    def _quota_satisfied() -> bool:
+        return (records_successful >= TARGET_SUCCESSFUL_RECORDS
+                and contextbench_successful >= MIN_CONTEXTBENCH_SUCCESSFUL
+                and repoqa_successful >= MIN_REPOQA_SUCCESSFUL)
+
+    while not (cb_done and rq_done):
+        if _quota_satisfied():
+            quota_reached = True
+            fcc["quota_reached_stop"] = (
+                fcc.get("quota_reached_stop", 0) + 1
+            )
+            break
+
+        # Process one ContextBench record if available.
+        if not cb_done and cb_ptr < len(cb_eligible_rows):
+            idx, row = cb_eligible_rows[cb_ptr]
+            cb_ptr += 1
+            if cb_ptr >= len(cb_eligible_rows):
+                cb_done = True
             records_attempted_total += 1
             contextbench_attempted += 1
             records_evaluated += 1
@@ -2685,105 +2979,95 @@ def _run_network_smoke(
                 contextbench_excluded += 1
                 _write_attempt("contextbench", private_attempt_id,
                                "contextbench_gold_parse_failed", "gold_parse_failed")
-                continue
-            query = c5a._sanitize_query(
-                row.get("problem_statement", ""), "first_paragraph"
-            )
-            if not query:
-                fcc["contextbench_no_python_rows"] += 1
-                records_failed += 1
-                records_excluded += 1
-                contextbench_excluded += 1
-                _write_attempt("contextbench", private_attempt_id,
-                               "contextbench_no_python_rows", "no_query")
-                continue
-            repo_url = row.get("repo_url", "")
-            base_commit = row.get("base_commit", "")
-            if not isinstance(repo_url, str) or not isinstance(
-                base_commit, str
-            ) or not repo_url or not base_commit:
-                fcc["contextbench_no_python_rows"] += 1
-                records_failed += 1
-                records_excluded += 1
-                contextbench_excluded += 1
-                _write_attempt("contextbench", private_attempt_id,
-                               "contextbench_no_python_rows", "no_repo_or_commit")
-                continue
-            with tempfile.TemporaryDirectory(prefix=f"bea5_cb_{idx}_") as rds:
-                rwd = Path(rds)
-                clone_ok, _, clone_fcc = c5d._clone_and_checkout(
-                    repo_url, base_commit, rwd
+            else:
+                query = c5a._sanitize_query(
+                    row.get("problem_statement", ""), "first_paragraph"
                 )
-                for k, v in clone_fcc.items():
-                    if k in fcc:
-                        fcc[k] += v
-                if not clone_ok:
-                    fcc["materialization_failed"] = (
-                        fcc.get("materialization_failed", 0) + 1
-                    )
+                if not query:
+                    fcc["contextbench_no_python_rows"] += 1
                     records_failed += 1
                     records_excluded += 1
                     contextbench_excluded += 1
                     _write_attempt("contextbench", private_attempt_id,
-                                   "materialization_failed", "clone_or_checkout_failed")
-                    continue
-                repo_root = rwd / "repo"
-                per_arm, fcc, mech_summary, rec_buckets = _evaluate_record(
-                    openlocus_bin=openlocus_bin,
-                    benchmark="contextbench",
-                    private_record_id=private_attempt_id,
-                    task_id=f"cb_row_{idx}", query=query,
-                    gold_paths=gold_paths, gold_lines=gold_lines,
-                    repo_root=repo_root, methods=methods, budget=budget,
-                    score_path=score_file, phase_run_id=phase_run_id, fcc=fcc,
-                )
-                if per_arm is None:
-                    records_failed += 1
-                    records_excluded += 1
-                    contextbench_excluded += 1
-                    _write_attempt("contextbench", private_attempt_id,
-                                   "scoring_unavailable", "evaluate_record_failed")
-                    continue
-                per_record_arm_metrics.append(per_arm)
-                per_record_mechanism_summaries.append(mech_summary)
-                per_record_buckets.extend(rec_buckets)
-                cb_aggs = per_benchmark_arm_aggs.setdefault("contextbench", {})
-                for arm_id, metrics in per_arm.items():
-                    if arm_id not in cb_aggs:
-                        cb_aggs[arm_id] = {"__record_count__": 0}
-                    cb_aggs[arm_id]["__record_count__"] += 1
-                    for m in ARM_METRIC_ALLOWLIST:
-                        if m in metrics:
-                            cb_aggs[arm_id].setdefault(m, [])
-                            cb_aggs[arm_id][m].append(metrics[m])
-                records_successful += 1
-                contextbench_successful += 1
-                _write_attempt("contextbench", private_attempt_id,
-                               "successful", "")
-            # Check quota after each successful record.
-            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
-                quota_reached = True
-                fcc["quota_reached_stop"] = (
-                    fcc.get("quota_reached_stop", 0) + 1
-                )
-                break
+                                   "contextbench_no_python_rows", "no_query")
+                else:
+                    repo_url = row.get("repo_url", "")
+                    base_commit = row.get("base_commit", "")
+                    if not isinstance(repo_url, str) or not isinstance(
+                        base_commit, str
+                    ) or not repo_url or not base_commit:
+                        fcc["contextbench_no_python_rows"] += 1
+                        records_failed += 1
+                        records_excluded += 1
+                        contextbench_excluded += 1
+                        _write_attempt("contextbench", private_attempt_id,
+                                       "contextbench_no_python_rows", "no_repo_or_commit")
+                    else:
+                        with tempfile.TemporaryDirectory(prefix=f"bea5_cb_{idx}_") as rds:
+                            rwd = Path(rds)
+                            clone_ok, _, clone_fcc = c5d._clone_and_checkout(
+                                repo_url, base_commit, rwd
+                            )
+                            for k, v in clone_fcc.items():
+                                if k in fcc:
+                                    fcc[k] += v
+                            if not clone_ok:
+                                fcc["materialization_failed"] = (
+                                    fcc.get("materialization_failed", 0) + 1
+                                )
+                                records_failed += 1
+                                records_excluded += 1
+                                contextbench_excluded += 1
+                                _write_attempt("contextbench", private_attempt_id,
+                                               "materialization_failed", "clone_or_checkout_failed")
+                            else:
+                                repo_root = rwd / "repo"
+                                per_arm, fcc, mech_summary, rec_buckets = _evaluate_record(
+                                    openlocus_bin=openlocus_bin,
+                                    benchmark="contextbench",
+                                    private_record_id=private_attempt_id,
+                                    task_id=f"cb_row_{idx}", query=query,
+                                    gold_paths=gold_paths, gold_lines=gold_lines,
+                                    repo_root=repo_root, methods=methods, budget=budget,
+                                    score_path=score_file, phase_run_id=phase_run_id, fcc=fcc,
+                                )
+                                if per_arm is None:
+                                    records_failed += 1
+                                    records_excluded += 1
+                                    contextbench_excluded += 1
+                                    _write_attempt("contextbench", private_attempt_id,
+                                                   "scoring_unavailable", "evaluate_record_failed")
+                                else:
+                                    per_record_arm_metrics.append(per_arm)
+                                    per_record_mechanism_summaries.append(mech_summary)
+                                    per_record_buckets.extend(rec_buckets)
+                                    cb_aggs = per_benchmark_arm_aggs.setdefault("contextbench", {})
+                                    for arm_id, metrics in per_arm.items():
+                                        if arm_id not in cb_aggs:
+                                            cb_aggs[arm_id] = {"__record_count__": 0}
+                                        cb_aggs[arm_id]["__record_count__"] += 1
+                                        for m in ARM_METRIC_ALLOWLIST:
+                                            if m in metrics:
+                                                cb_aggs[arm_id].setdefault(m, [])
+                                                cb_aggs[arm_id][m].append(metrics[m])
+                                    records_successful += 1
+                                    contextbench_successful += 1
+                                    _write_attempt("contextbench", private_attempt_id,
+                                                   "successful", "")
 
-    # RepoQA heldout robustness slice.
-    rq_needles, rq_status, rq_nc, rq_fcc = _fetch_heldout_repoqa_needles(
-        repoqa_needle_offset, repoqa_needle_limit
-    )
-    network_calls += rq_nc
-    for k, v in rq_fcc.items():
-        if k in fcc:
-            fcc[k] += v
-    if rq_status == "pass" and rq_needles:
-        for idx, needle in enumerate(rq_needles):
-            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
-                quota_reached = True
-                fcc["quota_reached_stop"] = (
-                    fcc.get("quota_reached_stop", 0) + 1
-                )
-                break
+        if _quota_satisfied():
+            quota_reached = True
+            fcc["quota_reached_stop"] = (
+                fcc.get("quota_reached_stop", 0) + 1
+            )
+            break
+
+        # Process one RepoQA record if available.
+        if not rq_done and rq_ptr < len(rq_eligible_needles):
+            idx, needle = rq_eligible_needles[rq_ptr]
+            rq_ptr += 1
+            if rq_ptr >= len(rq_eligible_needles):
+                rq_done = True
             records_attempted_total += 1
             repoqa_attempted += 1
             records_evaluated += 1
@@ -2798,81 +3082,78 @@ def _run_network_smoke(
                 repoqa_excluded += 1
                 _write_attempt("repoqa", private_attempt_id,
                                "repoqa_needle_parse_failed", "no_query")
-                continue
-            repo_url = needle.get("repo_url", "")
-            commit_sha = needle.get("commit_sha", "")
-            needle_path = needle.get("needle_path", "")
-            start_line = needle.get("needle_start_line", 0)
-            end_line = needle.get("needle_end_line", 0)
-            if (not isinstance(repo_url, str) or not repo_url
-                or not isinstance(commit_sha, str) or not commit_sha
-                or not isinstance(needle_path, str) or not needle_path):
-                fcc["repoqa_needle_parse_failed"] += 1
-                records_failed += 1
-                records_excluded += 1
-                repoqa_excluded += 1
-                _write_attempt("repoqa", private_attempt_id,
-                               "repoqa_needle_parse_failed", "no_repo_or_commit_or_path")
-                continue
-            with tempfile.TemporaryDirectory(prefix=f"bea5_rq_{idx}_") as rds:
-                rwd = Path(rds)
-                clone_ok, _, clone_fcc = c5d._clone_and_checkout(
-                    repo_url, commit_sha, rwd
-                )
-                for k, v in clone_fcc.items():
-                    if k in fcc:
-                        fcc[k] += v
-                if not clone_ok:
-                    fcc["materialization_failed"] = (
-                        fcc.get("materialization_failed", 0) + 1
-                    )
+            else:
+                repo_url = needle.get("repo_url", "")
+                commit_sha = needle.get("commit_sha", "")
+                needle_path = needle.get("needle_path", "")
+                start_line = needle.get("needle_start_line", 0)
+                end_line = needle.get("needle_end_line", 0)
+                if (not isinstance(repo_url, str) or not repo_url
+                    or not isinstance(commit_sha, str) or not commit_sha
+                    or not isinstance(needle_path, str) or not needle_path):
+                    fcc["repoqa_needle_parse_failed"] += 1
                     records_failed += 1
                     records_excluded += 1
                     repoqa_excluded += 1
                     _write_attempt("repoqa", private_attempt_id,
-                                   "materialization_failed", "clone_or_checkout_failed")
-                    continue
-                repo_root = rwd / "repo"
-                per_arm, fcc, mech_summary, rec_buckets = _evaluate_record(
-                    openlocus_bin=openlocus_bin,
-                    benchmark="repoqa",
-                    private_record_id=private_attempt_id,
-                    task_id=f"rq_needle_{idx}", query=query,
-                    gold_paths=[needle_path],
-                    gold_lines=[[start_line, end_line]],
-                    repo_root=repo_root, methods=methods, budget=budget,
-                    score_path=score_file, phase_run_id=phase_run_id, fcc=fcc,
-                )
-                if per_arm is None:
-                    records_failed += 1
-                    records_excluded += 1
-                    repoqa_excluded += 1
-                    _write_attempt("repoqa", private_attempt_id,
-                                   "scoring_unavailable", "evaluate_record_failed")
-                    continue
-                per_record_arm_metrics.append(per_arm)
-                per_record_mechanism_summaries.append(mech_summary)
-                per_record_buckets.extend(rec_buckets)
-                rq_aggs = per_benchmark_arm_aggs.setdefault("repoqa", {})
-                for arm_id, metrics in per_arm.items():
-                    if arm_id not in rq_aggs:
-                        rq_aggs[arm_id] = {"__record_count__": 0}
-                    rq_aggs[arm_id]["__record_count__"] += 1
-                    for m in ARM_METRIC_ALLOWLIST:
-                        if m in metrics:
-                            rq_aggs[arm_id].setdefault(m, [])
-                            rq_aggs[arm_id][m].append(metrics[m])
-                records_successful += 1
-                repoqa_successful += 1
-                _write_attempt("repoqa", private_attempt_id,
-                               "successful", "")
-            # Check quota after each successful record.
-            if records_successful >= TARGET_SUCCESSFUL_RECORDS:
-                quota_reached = True
-                fcc["quota_reached_stop"] = (
-                    fcc.get("quota_reached_stop", 0) + 1
-                )
-                break
+                                   "repoqa_needle_parse_failed", "no_repo_or_commit_or_path")
+                else:
+                    with tempfile.TemporaryDirectory(prefix=f"bea5_rq_{idx}_") as rds:
+                        rwd = Path(rds)
+                        clone_ok, _, clone_fcc = c5d._clone_and_checkout(
+                            repo_url, commit_sha, rwd
+                        )
+                        for k, v in clone_fcc.items():
+                            if k in fcc:
+                                fcc[k] += v
+                        if not clone_ok:
+                            fcc["materialization_failed"] = (
+                                fcc.get("materialization_failed", 0) + 1
+                            )
+                            records_failed += 1
+                            records_excluded += 1
+                            repoqa_excluded += 1
+                            _write_attempt("repoqa", private_attempt_id,
+                                           "materialization_failed", "clone_or_checkout_failed")
+                        else:
+                            repo_root = rwd / "repo"
+                            per_arm, fcc, mech_summary, rec_buckets = _evaluate_record(
+                                openlocus_bin=openlocus_bin,
+                                benchmark="repoqa",
+                                private_record_id=private_attempt_id,
+                                task_id=f"rq_needle_{idx}", query=query,
+                                gold_paths=[needle_path],
+                                gold_lines=[[start_line, end_line]],
+                                repo_root=repo_root, methods=methods, budget=budget,
+                                score_path=score_file, phase_run_id=phase_run_id, fcc=fcc,
+                            )
+                            if per_arm is None:
+                                records_failed += 1
+                                records_excluded += 1
+                                repoqa_excluded += 1
+                                _write_attempt("repoqa", private_attempt_id,
+                                               "scoring_unavailable", "evaluate_record_failed")
+                            else:
+                                per_record_arm_metrics.append(per_arm)
+                                per_record_mechanism_summaries.append(mech_summary)
+                                per_record_buckets.extend(rec_buckets)
+                                rq_aggs = per_benchmark_arm_aggs.setdefault("repoqa", {})
+                                for arm_id, metrics in per_arm.items():
+                                    if arm_id not in rq_aggs:
+                                        rq_aggs[arm_id] = {"__record_count__": 0}
+                                    rq_aggs[arm_id]["__record_count__"] += 1
+                                    for m in ARM_METRIC_ALLOWLIST:
+                                        if m in metrics:
+                                            rq_aggs[arm_id].setdefault(m, [])
+                                            rq_aggs[arm_id][m].append(metrics[m])
+                                records_successful += 1
+                                repoqa_successful += 1
+                                _write_attempt("repoqa", private_attempt_id,
+                                               "successful", "")
+
+        # Safety: if both pointers are exhausted, break.
+        if cb_done and rq_done:
+            break
 
     if not per_record_arm_metrics:
         # Count private attempt rows even in unavailable case.
@@ -2911,6 +3192,10 @@ def _run_network_smoke(
             repoqa_attempted=repoqa_attempted,
             repoqa_successful=repoqa_successful,
             repoqa_excluded=repoqa_excluded,
+            contextbench_excluded_prior_window_count=cb_excluded_prior_window_count,
+            repoqa_excluded_prior_window_count=rq_excluded_prior_window_count,
+            contextbench_eligible_count=cb_eligible_count,
+            repoqa_eligible_count=rq_eligible_count,
             quota_reached=quota_reached,
             network_calls=network_calls, failure_category_counts=fcc,
         )
@@ -2996,6 +3281,10 @@ def _run_network_smoke(
             repoqa_attempted=repoqa_attempted,
             repoqa_successful=repoqa_successful,
             repoqa_excluded=repoqa_excluded,
+            contextbench_excluded_prior_window_count=cb_excluded_prior_window_count,
+            repoqa_excluded_prior_window_count=rq_excluded_prior_window_count,
+            contextbench_eligible_count=cb_eligible_count,
+            repoqa_eligible_count=rq_eligible_count,
             quota_reached=quota_reached,
             network_calls=network_calls, failure_category_counts=fcc,
         )
@@ -3037,6 +3326,10 @@ def _run_network_smoke(
         repoqa_attempted=repoqa_attempted,
         repoqa_successful=repoqa_successful,
         repoqa_excluded=repoqa_excluded,
+        contextbench_excluded_prior_window_count=cb_excluded_prior_window_count,
+        repoqa_excluded_prior_window_count=rq_excluded_prior_window_count,
+        contextbench_eligible_count=cb_eligible_count,
+        repoqa_eligible_count=rq_eligible_count,
         quota_reached=quota_reached,
         network_calls=network_calls,
         arm_aggs=arm_aggs,
@@ -3078,6 +3371,14 @@ def main() -> None:
     repoqa_needle_limit = _validate_needle_limit(args.repoqa_needle_limit)
     budget = _validate_budget(args.budget)
     methods = _validate_methods(args.methods)
+    _validate_fixed_recovery_protocol(
+        contextbench_row_offset=contextbench_row_offset,
+        contextbench_row_limit=contextbench_row_limit,
+        repoqa_needle_offset=repoqa_needle_offset,
+        repoqa_needle_limit=repoqa_needle_limit,
+        budget=budget,
+        methods=methods,
+    )
     enable_network = bool(args.enable_external_benchmark_network)
     out_path = args.out if args.out is not None else DEFAULT_OUT
 
