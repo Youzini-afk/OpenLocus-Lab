@@ -1,0 +1,331 @@
+{
+  "ablation_delta_records": [],
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "algorithm_changed_during_bea_fd2a": false,
+  "arm_delta_records": [],
+  "arm_metric_records": [],
+  "backend_changed": false,
+  "bea5_overlap_policy": "not_excluded; disclosed; BEA-5 used success-quota over the same full available Python frame and did not consume the entire frame, so overlap with BEA-5 evaluated records is possible. This is FD2-A smoke evidence, not fresh disjoint validation.",
+  "bea_v03_policy_executed": false,
+  "bea_v04_p1_overlap_policy": "not_excluded; disclosed; FD2-A reuses the P1 frame; P1+FD2-A overlap possible. Not fresh disjoint validation.",
+  "bea_v04_p2_overlap_policy": "not_excluded; disclosed; FD2-A reuses the P2 frame; P2+FD2-A overlap possible. Not fresh disjoint validation.",
+  "bea_v04_p3_overlap_policy": "not_excluded; disclosed; FD2-A reuses the P3 frame (the role-proxy line P3 stopped); P3+FD2-A overlap possible. FD2-A does NOT use role proxies. Not fresh disjoint validation.",
+  "benchmark_attempt_records": [
+    {
+      "attempted": 0,
+      "benchmark": "contextbench",
+      "excluded": 0,
+      "record_count": 0,
+      "successful": 0
+    },
+    {
+      "attempted": 0,
+      "benchmark": "repoqa",
+      "excluded": 0,
+      "record_count": 0,
+      "successful": 0
+    }
+  ],
+  "bounded_smoke_frame_read": false,
+  "budget": 5,
+  "calibration_claimed": false,
+  "claim_level": "bea_fd2a_direct_fd1_objective_setwise_smoke_only",
+  "contextbench_attempted": 0,
+  "contextbench_eligible_count": 0,
+  "contextbench_excluded": 0,
+  "contextbench_excluded_prior_window_count": 0,
+  "contextbench_row_limit_requested": 480,
+  "contextbench_row_offset_requested": 0,
+  "contextbench_successful": 0,
+  "coverage_only_arm": "fd1_coverage_only_same_budget",
+  "coverage_only_policy_executed": false,
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "delta_baseline_arm": "bea_v0_3_anchor_span_latency",
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "excluded_prior_windows_policy": "mandatory_bea2_bea3_bea4; bea5_overlap_disclosed_not_excluded; bea_v04_p1_overlap_disclosed_not_excluded; bea_v04_p2_overlap_disclosed_not_excluded; bea_v04_p3_overlap_disclosed_not_excluded; bea0_bea1_best_effort_or_disclosed",
+  "external_benchmark_performance_claimed": false,
+  "external_benchmark_rows_read": false,
+  "failure_category_count_records": [
+    {
+      "count": 1,
+      "failure_category": "contextbench_fetch_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "contextbench_label_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "contextbench_no_python_rows"
+    },
+    {
+      "count": 0,
+      "failure_category": "duplicate_record_key_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_loss_records_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_leak_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "heldout_offset_exceeds_available"
+    },
+    {
+      "count": 0,
+      "failure_category": "materialization_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "needle_limit_capped"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_decision_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_fd1_objective_feature_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_objective_config_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_posthoc_decomposition_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_score_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "quota_reached_stop"
+    },
+    {
+      "count": 0,
+      "failure_category": "record_excluded_from_paired_denominator"
+    },
+    {
+      "count": 0,
+      "failure_category": "repo_checkout_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repo_clone_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_asset_decompress_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_asset_download_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_asset_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_needle_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_no_python_needles"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "row_limit_capped"
+    },
+    {
+      "count": 0,
+      "failure_category": "rrf_required_but_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "scanner_self_test_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "score_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "scoring_unavailable"
+    },
+    {
+      "count": 0,
+      "failure_category": "unexpected_exception"
+    }
+  ],
+  "failure_reason_category": "contextbench_fetch_failed",
+  "fd1_artifact_modified": false,
+  "fd1_artifact_read": false,
+  "fd1_category_loss_records": [],
+  "fd1_category_rate_records": [],
+  "fd1_objective_component_records": [],
+  "fd1_overlap_policy": "fd1_artifact_read_only_input; FD2-A reads ONLY the public aggregate category_metric_loss_records from the committed FD1 artifact to derive frozen category weights before evaluation. No private decomposition rows, gold labels, or per-record data are read. The FD1 artifact is NOT modified.",
+  "fd1_weights_derived": false,
+  "fd2a_policy_executed": false,
+  "fixed_arms": [
+    "bm25_prefix_same_budget",
+    "rrf_same_budget",
+    "bea_v0_3_anchor_span_latency",
+    "fd1_coverage_only_same_budget",
+    "fd1_loss_weighted_setwise_same_budget"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_v04_full_matrix": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_fd2a_smoke_unavailable"
+  },
+  "generated_at": "2026-06-23T12:08:25.755604+00:00",
+  "generated_by": "eval/bea_fd2a_direct_fd1_objective_setwise_smoke.py",
+  "gold_labels_used_for_selection": false,
+  "hard_gate_records": [],
+  "leaderboard_entry_claimed": false,
+  "manifests": [
+    {
+      "manifest_hash": "88dbc0a756dac7e140e20b6791c4d5cd1101fe677606915bd9d0753f2036f883",
+      "manifest_name": "private_score_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_fd2a_private_score.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "dea6b317460dd65fdfc78fed0b9f290fd8c77792f6e81defd69ce3c76154d043",
+      "manifest_name": "private_decision_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_fd2a_private_decision.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "d5e1d4ef48f80b007cc60c8d4ba062737c7957fc77108bbd760c696fa082e947",
+      "manifest_name": "private_fd1_objective_feature_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_fd2a_private_fd1_objective_feature.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "610e92d148d05fcd4f5323393b29a0f8789deedbdd79ab7aab20f23fe352a417",
+      "manifest_name": "private_posthoc_decomposition_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_fd2a_private_posthoc_decomposition.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "5bdff5965d0357bd4cea16b9abf2d0eb28b3222baade37d6b13c16ac86d1be71",
+      "manifest_name": "private_objective_config_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_fd2a_private_objective_config.v1",
+      "storage_class": "tmp_private"
+    }
+  ],
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "min_contextbench_successful": 20,
+  "min_repoqa_successful": 10,
+  "mode": "bea_fd2a_direct_fd1_objective_setwise_smoke",
+  "network_calls": 0,
+  "network_mode": "disabled_opt_in",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": false,
+  "pack_builder_changed": false,
+  "phase": "BEA-FD2-A",
+  "posthoc_threshold_search": false,
+  "private_decision_records_written": false,
+  "private_decomposition_used_for_selection": false,
+  "private_fd1_objective_feature_records_written": false,
+  "private_objective_config_written": false,
+  "private_posthoc_decomposition_records_written": false,
+  "private_score_records_written": false,
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "quality_baseline_arm": "bea_v0_3_anchor_span_latency",
+  "quota_reached": false,
+  "raw_attempt_cap_contextbench": 480,
+  "raw_attempt_cap_repoqa": 240,
+  "records_attempted_total": 0,
+  "records_evaluated": 0,
+  "records_excluded": 0,
+  "records_failed": 0,
+  "records_successful": 0,
+  "remote_provider_calls_made": false,
+  "repoqa_attempted": 0,
+  "repoqa_eligible_count": 0,
+  "repoqa_excluded": 0,
+  "repoqa_excluded_prior_window_count": 0,
+  "repoqa_needle_limit_requested": 240,
+  "repoqa_needle_offset_requested": 0,
+  "repoqa_successful": 0,
+  "retriever_changed": false,
+  "role_proxy_assigned": false,
+  "role_proxy_used": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "sampling_frame_policy": "full_available_python_excluding_bea2_bea3_bea4_mandatory_windows; bea5_overlap_disclosed_not_excluded; bea_v04_p1_overlap_disclosed; bea_v04_p2_overlap_disclosed; bea_v04_p3_overlap_disclosed; bea_fd2a_reuses_p1_p2_p3_success_quota_frame",
+  "sampling_mode": "success_quota",
+  "sampling_protocol_version": "bea_fd2a_direct_fd1_objective_smoke.v1",
+  "schema_version": "bea_fd2a_direct_fd1_objective_setwise_smoke.v1",
+  "score_py_metrics_computed": false,
+  "self_test_checks_passed": 373,
+  "self_test_checks_total": 373,
+  "self_test_passed": true,
+  "setwise_behavior_records": [],
+  "setwise_selection_performed": false,
+  "source_run_records": [],
+  "status": "unavailable_with_reason",
+  "target_successful_records": 38,
+  "target_support_proxy_used": false,
+  "treatment_arm": "fd1_loss_weighted_setwise_same_budget",
+  "v03_tuned_during_bea_fd2a": false,
+  "v04_full_matrix_claimed": false,
+  "weights_tuned_during_bea_fd2a": false,
+  "win_tie_loss_records": []
+}
