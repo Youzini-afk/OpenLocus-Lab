@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any, NoReturn
 
@@ -119,6 +120,8 @@ SOURCE_PHASE_CONFIGS = (
         "evaluator": "eval/bea4_external_scale_smoke.py",
         "expected_successful_records": 120,
         "expected_private_score_count": 840,
+        "expected_contextbench_successful": 80,
+        "expected_repoqa_successful": 40,
         "extra_args": [
             "--contextbench-row-offset", "80",
             "--contextbench-row-limit", "80",
@@ -134,6 +137,8 @@ SOURCE_PHASE_CONFIGS = (
         "evaluator": "eval/bea5_frozen_policy_robustness.py",
         "expected_successful_records": 119,
         "expected_private_score_count": 833,
+        "expected_contextbench_successful": 82,
+        "expected_repoqa_successful": 37,
         "extra_args": [
             "--contextbench-row-offset", "0",
             "--contextbench-row-limit", "480",
@@ -826,6 +831,10 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("bea5_expected_119", SOURCE_PHASE_CONFIGS[1]["expected_successful_records"] == 119))
     checks.append(_check("bea4_expected_840", SOURCE_PHASE_CONFIGS[0]["expected_private_score_count"] == 840))
     checks.append(_check("bea5_expected_833", SOURCE_PHASE_CONFIGS[1]["expected_private_score_count"] == 833))
+    checks.append(_check("bea4_expected_contextbench_80", SOURCE_PHASE_CONFIGS[0]["expected_contextbench_successful"] == 80))
+    checks.append(_check("bea4_expected_repoqa_40", SOURCE_PHASE_CONFIGS[0]["expected_repoqa_successful"] == 40))
+    checks.append(_check("bea5_expected_contextbench_82", SOURCE_PHASE_CONFIGS[1]["expected_contextbench_successful"] == 82))
+    checks.append(_check("bea5_expected_repoqa_37", SOURCE_PHASE_CONFIGS[1]["expected_repoqa_successful"] == 37))
     checks.append(_check("expected_decomposed_records_239", EXPECTED_DECOMPOSED_RECORDS == 239))
     checks.append(_check("expected_private_decomp_rows_86040", EXPECTED_PRIVATE_DECOMP_ROWS == 86040))
     for cfg in SOURCE_PHASE_CONFIGS:
@@ -1107,6 +1116,14 @@ def _run_decomposition(
             )
 
         by_record_for_check = _group_private_rows_by_record(parsed_rows)
+        benchmark_record_counts = Counter(
+            (rows[0].get("benchmark", "unknown") if rows else "unknown")
+            for rows in by_record_for_check.values()
+        )
+        cb_succ = int(benchmark_record_counts.get("contextbench", 0))
+        rq_succ = int(benchmark_record_counts.get("repoqa", 0))
+        source_run_records[-1]["contextbench_successful"] = cb_succ
+        source_run_records[-1]["repoqa_successful"] = rq_succ
         coverage_failures = _required_arm_coverage_failures(by_record_for_check)
         completeness_reasons: list[str] = []
         if parse_failures:
@@ -1121,6 +1138,14 @@ def _run_decomposition(
             )
         if coverage_failures:
             completeness_reasons.append(f"required_arm_coverage_failures_{coverage_failures}")
+        if cb_succ != int(config["expected_contextbench_successful"]):
+            completeness_reasons.append(
+                f"contextbench_successful_{cb_succ}_vs_{config['expected_contextbench_successful']}"
+            )
+        if rq_succ != int(config["expected_repoqa_successful"]):
+            completeness_reasons.append(
+                f"repoqa_successful_{rq_succ}_vs_{config['expected_repoqa_successful']}"
+            )
 
         if completeness_reasons:
             fcc["replay_mismatch"] = fcc.get("replay_mismatch", 0) + 1

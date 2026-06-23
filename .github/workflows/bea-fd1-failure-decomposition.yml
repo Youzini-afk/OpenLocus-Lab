@@ -235,6 +235,16 @@ jobs:
           for r in srr:
               if not r.get("replay_protocol_match", False):
                   failures.append(f"replay mismatch for {r.get('source_phase')}: {r.get('replay_mismatch_reason')}")
+              if r.get("source_phase") == "BEA-4":
+                  if r.get("contextbench_successful") != 80:
+                      failures.append(f"expected BEA-4 contextbench_successful=80, got {r.get('contextbench_successful')!r}")
+                  if r.get("repoqa_successful") != 40:
+                      failures.append(f"expected BEA-4 repoqa_successful=40, got {r.get('repoqa_successful')!r}")
+              if r.get("source_phase") == "BEA-5":
+                  if r.get("contextbench_successful") != 82:
+                      failures.append(f"expected BEA-5 contextbench_successful=82, got {r.get('contextbench_successful')!r}")
+                  if r.get("repoqa_successful") != 37:
+                      failures.append(f"expected BEA-5 repoqa_successful=37, got {r.get('repoqa_successful')!r}")
           if report.get("records_decomposed") != 239:
               failures.append(f"expected records_decomposed=239, got {report.get('records_decomposed')!r}")
           fcc = report.get("failure_category_counts") or {}
