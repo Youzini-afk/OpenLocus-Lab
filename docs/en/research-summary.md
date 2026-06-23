@@ -3850,3 +3850,23 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   default/runtime/EvidenceCore/downstream-value. NOT v0.4 proof. NOT the
   full v0.4 matrix. `provider_calls=0`.
 - **Manual CI run `28017063082` passed fail-closed and produced a P1 No-Go / weak negative**: status `no_go_proxy_unavailable`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, private SCORE rows=228, decision rows=190, role-proxy rows=760. The current role proxies assigned every candidate but produced target_proxy_available_rate=0.0 and setwise_selection_diff_rate_vs_v03=0.105263 (<0.25). Quality did not catastrophically regress versus v0.3, but did not improve: file_recall@10 and MRR deltas are 0.0, span_f0.5@10 delta=-0.003036, latency delta=+0.001686s, quality_per_latency delta=-0.000809. Do not advance this target-role proxy design to a full v0.4 matrix without improving target-role features.
+
+## BEA-v0.4-P2 findings
+
+- **BEA-v0.4-P2 target-role proxy repair smoke completed**: local checkpoint
+  `d59492f`, manual CI run `28020331024`.
+- **Result is a valid P2 No-Go, not a v0.4 proof**: status
+  `no_go_target_proxy_still_unavailable`, records_successful=38
+  (ContextBench 20, RepoQA 18), attempted=46, excluded=8,
+  forbidden_scan=pass, self-test 335/335, private SCORE rows=228,
+  decision rows=190, role-proxy rows=760, target-feature rows=760.
+- **Target-role repair worked but did not make setwise selection useful**:
+  target_proxy_available_rate improved from 0.0 to 1.0 and
+  target_proxy_selected_rate_p2=1.0, but support_proxy_available_rate_p2=0.0.
+  P2-vs-P1 selection difference remained 0.0; P2-vs-v0.3 selection
+  difference remained 0.105263 (<0.25).
+- **Quality safety held, but no algorithmic advance**: versus v0.3,
+  file_recall@10 and MRR deltas are 0.0, span_f0.5@10 delta=-0.003036,
+  latency delta=+0.001789s, quality_per_latency delta=-0.000857. Do not
+  advance to the full v0.4 matrix until a support/complementarity proxy
+  produces nonzero support availability and materially changes selection.

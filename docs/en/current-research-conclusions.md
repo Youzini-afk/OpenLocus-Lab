@@ -153,12 +153,14 @@ The following remain false unless a future phase explicitly validates them:
 
 BEA-v0.4-P1 setwise role-proxy smoke is complete as a valid P1 No-Go / weak negative. Manual CI run `28017063082` passed fail-closed with 38 successful records (ContextBench 20, RepoQA 18), but status was `no_go_proxy_unavailable`: target_proxy_available_rate=0.0 and setwise_selection_diff_rate_vs_v03=0.105263 (<0.25). Quality did not catastrophically regress, but v0.4-P1 did not improve over v0.3. See `docs/en/bea-v04-p1-setwise-role-proxy-smoke.md`.
 
+BEA-v0.4-P2 target-role proxy repair smoke is also complete as a valid No-Go. Manual CI run `28020331024` passed fail-closed with 38 successful records. P2 repaired target_proxy_available_rate from 0.0 to 1.0, but support_proxy_available_rate fell to 0.0, P2-vs-P1 selection difference was 0.0, and P2-vs-v0.3 selection difference stayed 0.105263 (<0.25). Quality safety held, but P2 does not justify full v0.4 matrix entry. See `docs/en/bea-v04-p2-target-role-proxy-repair-smoke.md`.
+
 BEA-FD1 failure decomposition is complete. Manual CI run `28011901294` replayed BEA-4 and BEA-5 exactly, decomposed 239 successful records, wrote 86040 private decomposition rows, and published records-only aggregate tables. See `docs/en/bea-fd1-failure-decomposition.md`.
 
-Immediate next work is to redesign target-role proxy features before any full v0.4 matrix. FD1 points to low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span as concrete failure families; P1 shows the first runtime-clean role proxies failed to expose target evidence and changed v0.3 selections too rarely.
+Immediate next work is to repair support/complementarity proxy behavior or stop the current role-proxy design. FD1 points to low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span as concrete failure families; P1/P2 show runtime-clean role proxies can assign target-like candidates but still do not produce target+support complementarity or materially change v0.3 selections.
 
 Do not run B16-K, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before the v0.4 setwise/complementarity plan.
 
 ## 9. One-sentence conclusion
 
-OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 decomposed BEA-4/5 failures, and BEA-v0.4-P1 produced a No-Go showing current target-role proxies are insufficient for full v0.4.
+OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 decomposed BEA-4/5 failures, and BEA-v0.4-P1/P2 show that current runtime-clean role proxies still fail to create useful target+support complementarity.

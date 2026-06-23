@@ -168,7 +168,7 @@ if private writes are incomplete.
 
 ```text
 python3 -m py_compile eval/bea_v04_p2_target_role_proxy_repair_smoke.py  => PASS
-python3 eval/bea_v04_p2_target_role_proxy_repair_smoke.py --self-test  => PASS (339/339 checks)
+python3 eval/bea_v04_p2_target_role_proxy_repair_smoke.py --self-test  => PASS (335/335 checks)
 python3 eval/bea_v04_p2_target_role_proxy_repair_smoke.py \
   --out artifacts/bea_v04_p2_target_role_proxy_repair/\
 bea_v04_p2_target_role_proxy_repair_smoke_report.json  => PASS
@@ -179,15 +179,26 @@ bea_v04_p2_target_role_proxy_repair_smoke_report.json  => PASS
    v03_tuned_during_bea_v04_p2=false,
    p1_artifact_modified=false,
    v04_full_matrix_claimed=false,
-   self_test_checks_total=339, self_test_checks_passed=339)
+   self_test_checks_total=335, self_test_checks_passed=335)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-The committed default artifact is the truthful no-network
-`unavailable_with_reason` result; it does not fake a pass. A real
-network-enabled CI result (manual `workflow_dispatch` with
-`enable_external_benchmark_network=true`) supersedes it.
+Manual CI run `28020331024` passed the fail-closed workflow and supersedes
+the default no-network artifact. The result is a valid P2 No-Go: status
+`no_go_target_proxy_still_unavailable`, records_successful=38
+(ContextBench 20, RepoQA 18), attempted=46, excluded=8, forbidden_scan=pass,
+private SCORE rows=228, decision rows=190, role-proxy rows=760, and
+target-feature rows=760.
+
+P2 fixed the target-role proxy availability failure from P1: target proxy
+availability moved from 0.0 to 1.0 and target-selected rate was 1.0. But the
+repair exposed a new blocker: support proxy availability fell from 1.0 to 0.0,
+P2-vs-P1 selection difference remained 0.0, and P2-vs-v0.3 selection
+difference remained only 0.105263 (<0.25). Quality did not catastrophically
+regress versus v0.3 (file_recall@10 and MRR deltas 0.0, span_f0.5@10
+-0.003036, latency +0.001789s, quality_per_latency -0.000857), but P2 does
+not justify entering the full v0.4 matrix.
 
 ## Caveats
 

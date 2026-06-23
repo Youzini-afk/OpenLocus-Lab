@@ -3260,3 +3260,21 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   default/runtime/EvidenceCore/downstream-value。不是 v0.4 证明。不是完整
   v0.4 矩阵。`provider_calls=0`。
 - **Manual CI run `28017063082` 通过 fail-closed，并产生 P1 No-Go / 弱负向结果**：status `no_go_proxy_unavailable`，records_successful=38（ContextBench 20、RepoQA 18），attempted=46，excluded=8，private SCORE rows=228，decision rows=190，role-proxy rows=760。当前 role proxies 给所有 candidate 分配了角色，但 target_proxy_available_rate=0.0，setwise_selection_diff_rate_vs_v03=0.105263（低于 0.25）。相对 v0.3 没有灾难性质量退化，但也没有改进：file_recall@10 和 MRR delta 为 0.0，span_f0.5@10 delta=-0.003036，latency delta=+0.001686s，quality_per_latency delta=-0.000809。除非先改进 target-role 特征，否则不要把这个 target-role proxy 设计推进到完整 v0.4 矩阵。
+
+## BEA-v0.4-P2 发现
+
+- **BEA-v0.4-P2 目标角色代理修复冒烟已完成**：local checkpoint
+  `d59492f`，manual CI run `28020331024`。
+- **结果是有效 P2 No-Go，不是 v0.4 证明**：status
+  `no_go_target_proxy_still_unavailable`，records_successful=38
+  （ContextBench 20、RepoQA 18），attempted=46，excluded=8，
+  forbidden_scan=pass，self-test 335/335，private SCORE rows=228，
+  decision rows=190，role-proxy rows=760，target-feature rows=760。
+- **target-role 修复有效，但未让 setwise selection 有用**：
+  target_proxy_available_rate 从 0.0 提升到 1.0，target_proxy_selected_rate_p2=1.0，
+  但 support_proxy_available_rate_p2=0.0。P2-vs-P1 selection difference 仍为
+  0.0；P2-vs-v0.3 selection difference 仍为 0.105263（低于 0.25）。
+- **质量安全通过，但没有算法推进**：相对 v0.3，file_recall@10 与 MRR delta 为
+  0.0，span_f0.5@10 delta=-0.003036，latency delta=+0.001789s，
+  quality_per_latency delta=-0.000857。在 support/complementarity proxy 产生非零
+  support availability 并实质改变 selection 前，不进入完整 v0.4 矩阵。

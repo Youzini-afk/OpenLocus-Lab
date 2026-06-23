@@ -9888,3 +9888,25 @@ Manual CI run `28017063082` 通过 fail-closed workflow，并产生有效 P1 No-
 - 私有 score/decision/role-proxy JSONL 文件仅写入 `/tmp` 且永不上传。
 - 离线 BEA-4/5 反事实重放是未来扩展（私有轨迹缺少完整候选列表，
   因此无法在同一候选上重新运行 v0.4 P1 选择）。
+
+## 2026-06-23 — BEA-v0.4-P2：目标角色代理修复冒烟
+
+### 目标
+
+修复 P1 的具体 target-role proxy 失败（`target_proxy_available_rate=0.0`），但不进入完整 v0.4 矩阵。问题是运行时清洁的 target-role proxy 特征能否产生非零 target availability，并相对 v0.3 与冻结 P1 实质改变 setwise selection。
+
+### 实现 / 验证
+
+- Local checkpoint `d59492f` 新增 standalone evaluator `eval/bea_v04_p2_target_role_proxy_repair_smoke.py`、docs、artifact 与 manual CI workflow。
+- P2 保持 v0.3 冻结，复用 P1 frame，排除 BEA-2/3/4 windows，披露 BEA-5/P1 overlap，并仅在 `/tmp` 写入私有 score/decision/role-proxy/target-feature JSONL。
+- Self-test 335/335；public artifact 保持 records-only；local checkpoint 前已移除 top-level manifest dict mirrors。
+
+### Manual CI 结果
+
+Manual CI run `28020331024` 通过 fail-closed，并产生有效 P2 No-Go：status `no_go_target_proxy_still_unavailable`，records_successful=38（ContextBench 20、RepoQA 18），attempted=46，excluded=8，private SCORE rows=228，decision rows=190，role-proxy rows=760，target-feature rows=760，forbidden_scan=pass。
+
+P2 修复了 target availability 问题：target_proxy_available_rate 从 0.0 升至 1.0，target_proxy_selected_rate_p2=1.0。但 support_proxy_available_rate_p2=0.0，selection_diff_rate_p2_vs_p1=0.0，selection_diff_rate_p2_vs_v03=0.105263（低于 0.25）。相对 v0.3 的质量安全通过（file_recall@10 与 MRR delta 为 0.0，span_f0.5@10 delta=-0.003036，latency +0.001789s），但没有算法推进。
+
+### 决定
+
+不能从 P2 进入完整 v0.4 矩阵。下一步必须修复 support/complementarity proxy 行为或停止当前 role-proxy 设计；不做 v0.31/v0.32 权重微调，也不跑 B16-K。

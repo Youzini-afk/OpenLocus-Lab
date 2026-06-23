@@ -10654,3 +10654,25 @@ Manual CI run `28017063082` passed the fail-closed workflow and produced a valid
 - Offline BEA-4/5 counterfactual replay is a future extension (private
   traces lack full candidate lists, so v0.4 P1 selection cannot be
   re-run on the same candidates).
+
+## 2026-06-23 — BEA-v0.4-P2: Target-Role Proxy Repair Smoke
+
+### Objective
+
+Repair the concrete P1 target-role proxy failure (`target_proxy_available_rate=0.0`) without entering the full v0.4 matrix. The question is whether runtime-clean target-role proxy features can produce nonzero target availability and materially change setwise selection versus both v0.3 and frozen P1.
+
+### Implementation / validation
+
+- Local checkpoint `d59492f` added standalone evaluator `eval/bea_v04_p2_target_role_proxy_repair_smoke.py`, docs, artifact, and manual CI workflow.
+- P2 keeps v0.3 frozen, reuses the P1 frame, excludes BEA-2/3/4 windows, discloses BEA-5/P1 overlap, and writes private score/decision/role-proxy/target-feature JSONL files under `/tmp` only.
+- Self-test 335/335; public artifact remains records-only; top-level manifest dict mirrors were removed before local checkpoint.
+
+### Manual CI result
+
+Manual CI run `28020331024` passed fail-closed and produced a valid P2 No-Go: status `no_go_target_proxy_still_unavailable`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, private SCORE rows=228, decision rows=190, role-proxy rows=760, target-feature rows=760, forbidden_scan=pass.
+
+P2 fixed the target availability problem: target_proxy_available_rate moved from 0.0 to 1.0 and target_proxy_selected_rate_p2=1.0. But support_proxy_available_rate_p2=0.0, selection_diff_rate_p2_vs_p1=0.0, and selection_diff_rate_p2_vs_v03=0.105263 (<0.25). Quality safety held versus v0.3 (file_recall@10 and MRR deltas 0.0, span_f0.5@10 delta=-0.003036, latency +0.001789s), but there is no algorithmic advance.
+
+### Decision
+
+Do not enter the full v0.4 matrix from P2. Next step must repair support/complementarity proxy behavior or stop the current role-proxy design; no v0.31/v0.32 weight tweaks and no B16-K.

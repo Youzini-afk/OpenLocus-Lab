@@ -147,7 +147,7 @@ accepted action 一条；期望数量记录在 `source_run_records`）、role-pr
 
 ```text
 python3 -m py_compile eval/bea_v04_p2_target_role_proxy_repair_smoke.py  => PASS
-python3 eval/bea_v04_p2_target_role_proxy_repair_smoke.py --self-test  => PASS (339/339 checks)
+python3 eval/bea_v04_p2_target_role_proxy_repair_smoke.py --self-test  => PASS (335/335 checks)
 python3 eval/bea_v04_p2_target_role_proxy_repair_smoke.py \
   --out artifacts/bea_v04_p2_target_role_proxy_repair/\
 bea_v04_p2_target_role_proxy_repair_smoke_report.json  => PASS
@@ -158,14 +158,24 @@ bea_v04_p2_target_role_proxy_repair_smoke_report.json  => PASS
    v03_tuned_during_bea_v04_p2=false,
    p1_artifact_modified=false,
    v04_full_matrix_claimed=false,
-   self_test_checks_total=339, self_test_checks_passed=339)
+   self_test_checks_total=335, self_test_checks_passed=335)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-已提交的默认 artifact 为真实的无网络 `unavailable_with_reason` 结果；它不伪造通过。
-真实启用网络的 CI 结果（手动 `workflow_dispatch` 且
-`enable_external_benchmark_network=true`）将取代它。
+Manual CI run `28020331024` 通过 fail-closed workflow，并取代默认无网络 artifact。
+结果是有效的 P2 No-Go：status `no_go_target_proxy_still_unavailable`，
+records_successful=38（ContextBench 20、RepoQA 18），attempted=46，excluded=8，
+forbidden_scan=pass，private SCORE rows=228，decision rows=190，role-proxy rows=760，
+target-feature rows=760。
+
+P2 修复了 P1 的 target-role proxy 可用性失败：target proxy availability 从 0.0
+升至 1.0，target-selected rate 为 1.0。但该修复暴露了新的 blocker：support proxy
+availability 从 1.0 降为 0.0，P2-vs-P1 selection difference 仍为 0.0，
+P2-vs-v0.3 selection difference 仍只有 0.105263（低于 0.25）。相对 v0.3 没有
+灾难性质量退化（file_recall@10 和 MRR delta 为 0.0，span_f0.5@10 -0.003036，
+latency +0.001789s，quality_per_latency -0.000857），但 P2 不足以支持进入完整
+v0.4 矩阵。
 
 ## 注意事项
 
