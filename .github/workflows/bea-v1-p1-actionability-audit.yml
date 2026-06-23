@@ -82,14 +82,16 @@ jobs:
       - name: Regenerate FD1 private decomposition (only when explicitly enabled)
         if: ${{ steps.resolve.outputs.enable_network == 'true' }}
         run: |
-          mkdir -p "$RUNNER_TEMP/fd1_private"
+          fd1_private_dir="/tmp/bea_v1_p1_fd1_private_${GITHUB_RUN_ID:-manual}"
+          rm -rf "$fd1_private_dir"
+          mkdir -p "$fd1_private_dir"
           python3 eval/bea_fd1_failure_decomposition.py \
             --enable-external-benchmark-network \
-            --private-decomposition-dir "$RUNNER_TEMP/fd1_private" \
+            --private-decomposition-dir "$fd1_private_dir" \
             --openlocus target/release/openlocus \
             --out "$RUNNER_TEMP/fd1_replay_report.json"
           # Verify the private decomposition JSONL exists with 86040 rows.
-          jsonl_path="$RUNNER_TEMP/fd1_private/bea_fd1.decomposition.jsonl"
+          jsonl_path="$fd1_private_dir/bea_fd1.decomposition.jsonl"
           if [[ ! -f "$jsonl_path" ]]; then
             echo "ERROR: FD1 private decomposition JSONL not found at $jsonl_path" >&2
             exit 1
