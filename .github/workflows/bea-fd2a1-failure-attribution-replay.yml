@@ -1,0 +1,361 @@
+name: bea-fd2a1-failure-attribution-replay
+
+# BEA-FD2-A1 Direct FD1 Objective Failure Attribution Replay
+# (fixed-protocol, manual opt-in). MANUAL OPT-IN ONLY via workflow_dispatch
+# with enable_external_benchmark_network=true. Does NOT run on PR/push.
+# Uses NO provider secrets/vars/model env. Uploads ONLY the aggregate
+# public report.
+#
+# This is a failure-mechanism attribution replay after the BEA-FD2-A
+# No-Go. It is NOT a new selector/acquisition phase, NOT FD2-B, NOT
+# P4/P5, and NOT v0.31/v0.32 tuning. It reruns FD2-A verbatim over the
+# same fixed 38-record frame, parses FD2-A private traces under /tmp,
+# and attributes regressions into aggregate mechanism buckets only.
+#
+# FD2-A policy / weights / thresholds / arms / budget / methods are
+# UNCHANGED. The committed FD2-A public artifact and FD1 aggregate
+# artifact are read-only inputs. Private JSONL/JSON files are NEVER
+# uploaded. The public artifact is aggregate-only and records-only.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-fd2a1-failure-attribution-replay-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-fd2a1-failure-attribution-replay:
+    name: bea-fd2a1-failure-attribution-replay
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-FD2-A1 evaluator
+        run: python3 -m py_compile eval/bea_fd2a1_failure_attribution_replay.py
+
+      - name: BEA-FD2-A1 self-test (no network)
+        run: python3 eval/bea_fd2a1_failure_attribution_replay.py --self-test
+
+      - name: BEA-FD2-A1 replay (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_fd2a1_failure_attribution_replay_report.json"
+          python3 eval/bea_fd2a1_failure_attribution_replay.py \
+            --enable-external-benchmark-network \
+            --openlocus target/release/openlocus \
+            --fd2a-artifact artifacts/bea_fd2a_direct_fd1_objective/bea_fd2a_direct_fd1_objective_setwise_smoke_report.json \
+            --fd1-artifact artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-FD2-A1 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: echo "enable_external_benchmark_network is false; skipping real BEA-FD2-A1 replay."
+
+      - name: Validate BEA-FD2-A1 report (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ runner.temp }}/bea_fd2a1_failure_attribution_replay_report.json
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          must_be_true = {"aggregate_only_public_artifact", "diagnostic_only"}
+          must_be_false = {
+              "external_benchmark_performance_claimed", "leaderboard_entry_claimed",
+              "downstream_agent_value_proven", "calibration_claimed",
+              "method_winner_claimed", "promotion_ready", "default_should_change",
+              "runtime_behavior_changed", "retriever_changed", "pack_builder_changed",
+              "backend_changed", "default_policy_changed",
+              "evidencecore_semantics_changed", "provider_calls_made",
+              "remote_provider_calls_made",
+              "algorithm_changed_during_bea_fd2a1",
+              "weights_tuned_during_bea_fd2a1",
+              "v04_full_matrix_claimed",
+              "v03_tuned_during_bea_fd2a1",
+              "fd2a_policy_changed_during_bea_fd2a1",
+              "fd2a_weights_changed_during_bea_fd2a1",
+              "fd2a_thresholds_changed_during_bea_fd2a1",
+              "fd2a_artifact_modified",
+              "fd1_artifact_modified",
+              "role_proxy_assigned",
+              "posthoc_threshold_search",
+              "private_decomposition_used_for_selection",
+              "gold_labels_used_for_selection",
+              "new_records_added_during_bea_fd2a1",
+              "heldout_validation_claimed",
+          }
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          # Allowed statuses: pass OR No-Go variants, but ONLY if replay
+          # matched the committed FD2-A outcome AND denominator passed.
+          allowed_statuses = {
+              "bea_fd2a1_attribution_replay_pass",
+              "no_go_mechanism_diffuse",
+              "no_go_candidate_availability_limit",
+          }
+          if status not in allowed_statuses:
+              failures.append(f"unexpected status: {status!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if report.get("schema_version") != "bea_fd2a1_failure_attribution_replay.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_fd2a1_failure_attribution_replay_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("phase") != "BEA-FD2-A1":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("budget") != 5:
+              failures.append(f"expected budget=5, got {report.get('budget')!r}")
+          if report.get("methods") != ["bm25", "regex", "symbol"]:
+              failures.append(f"expected methods=[bm25,regex,symbol], got {report.get('methods')!r}")
+          # records_attributed == 38 (every record must be attributed).
+          ra = report.get("records_attributed", 0)
+          if ra != 38:
+              failures.append(f"expected records_attributed==38, got {ra}")
+          # Private trace counts exact: 190/190/190/950/1.
+          src = (report.get("source_run_records") or [{}])[0] if report.get("source_run_records") else {}
+          expected_counts = {
+              "private_score_manifest": 190,
+              "private_decision_manifest": 190,
+              "private_fd1_objective_feature_manifest": 190,
+              "private_posthoc_decomposition_manifest": 950,
+              "private_objective_config_manifest": 1,
+          }
+          pm = {r.get("manifest_name"): r
+                for r in (report.get("private_manifest_records") or [])
+                if isinstance(r, dict)}
+          for name, expected in expected_counts.items():
+              got = pm.get(name, {}).get("record_count")
+              if got != expected:
+                  failures.append(f"expected {name}.record_count={expected}, got {got!r}")
+          # Parse failure counts zero.
+          gate_names = {g.get("gate"): g for g in (report.get("gate_records") or []) if isinstance(g, dict)}
+          pf = gate_names.get("parse_failure_count", {}).get("value")
+          if pf != 0.0:
+              failures.append(f"expected parse_failure_count=0, got {pf!r}")
+          # Private trace counts match expected (190/190/190/950/1).
+          if gate_names.get("private_score_count", {}).get("value") != 190.0:
+              failures.append("expected private_score_count gate value=190")
+          if gate_names.get("private_decision_count", {}).get("value") != 190.0:
+              failures.append("expected private_decision_count gate value=190")
+          if gate_names.get("private_fd1_objective_feature_count", {}).get("value") != 190.0:
+              failures.append("expected private_fd1_objective_feature_count gate value=190")
+          if gate_names.get("private_posthoc_decomposition_count", {}).get("value") != 950.0:
+              failures.append("expected private_posthoc_decomposition_count gate value=950")
+          if gate_names.get("private_objective_config_count", {}).get("value") != 1.0:
+              failures.append("expected private_objective_config_count gate value=1")
+          # records_attributed gate == 38.
+          if gate_names.get("records_attributed", {}).get("value") != 38.0:
+              failures.append("expected records_attributed gate value=38")
+          # forbidden_scan_pass gate passed.
+          if gate_names.get("forbidden_scan_pass", {}).get("passed") is not True:
+              failures.append("expected forbidden_scan_pass gate passed=true")
+          # replay_protocol_match gate passed (real run only).
+          if gate_names.get("replay_protocol_match", {}).get("passed") is not True:
+              failures.append("expected replay_protocol_match gate passed=true")
+          # Status must NOT be unavailable when network was enabled and
+          # replay ran. unavailable_with_reason is only valid for the
+          # default no-network artifact.
+          if status == "unavailable_with_reason":
+              failures.append("expected non-unavailable status for real replay run")
+          # Records-only public shape (no dynamic dict mirrors).
+          for key in ("source_run_records", "pairwise_outcome_delta_records",
+                      "mechanism_bucket_records", "component_delta_records",
+                      "counterfactual_availability_records",
+                      "category_collision_records", "gate_records",
+                      "private_manifest_records",
+                      "failure_category_count_records"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          # Forbidden top-level fields (private / per-record / claim).
+          for key in ("private_trace_dir", "private_score_dir",
+                      "per_record_buckets", "per_record_attribution",
+                      "objective_config_payload", "fd1_category_weights_payload",
+                      "candidate_paths", "candidate_keys", "query_text",
+                      "queries", "gold_paths", "gold_lines", "gold_spans",
+                      "gold_content", "snippets", "selected_order",
+                      "private_record_ids", "record_ids",
+                      "raw_score_row", "raw_decision_row",
+                      "weight_derivation_payload",
+                      "per_record_collisions", "per_record_counterfactual",
+                      "counterfactual_records",
+                      "fd2a_source_artifact_path", "fd1_source_artifact_path",
+                      "winner", "calibration", "method_winner",
+                      "recommended_default", "recommended_method",
+                      "preferred_method", "default_method", "policy_decision",
+                      "decision", "ranking", "rank", "leaderboard", "promotion",
+                      "role_proxy", "role_proxy_assignment", "target_proxy",
+                      "support_proxy", "role_proxy_summary",
+                      "hard_gates", "failure_category_counts",
+                      "mechanism_bucket_counts", "pairwise_deltas",
+                      "component_deltas", "counterfactual_counts",
+                      "category_collision_counts",
+                      "self_test_checks", "self_test_details", "self_test_list",
+                      "checks", "check_list",
+                      "private_score_manifest", "private_decision_manifest",
+                      "private_fd1_objective_feature_manifest",
+                      "private_posthoc_decomposition_manifest",
+                      "private_objective_config_manifest",
+                      "role_proxy_used", "target_support_proxy_used"):
+              if key in report:
+                  failures.append(f"forbidden field present: {key}")
+          # Counts-only self-test.
+          if "self_test_checks_total" not in report:
+              failures.append("expected self_test_checks_total")
+          if "self_test_checks_passed" not in report:
+              failures.append("expected self_test_checks_passed")
+          for ff in ("self_test_checks", "self_test_details", "self_test_list", "checks", "check_list"):
+              if ff in report:
+                  failures.append(f"forbidden self-test detail field: {ff}")
+          # Fixed arms unchanged (5; no role-proxy arms).
+          expected_arms = {
+              "bm25_prefix_same_budget", "rrf_same_budget",
+              "bea_v0_3_anchor_span_latency",
+              "fd1_coverage_only_same_budget",
+              "fd1_loss_weighted_setwise_same_budget",
+          }
+          if set(report.get("fixed_arms", [])) != expected_arms:
+              failures.append(f"expected exactly 5 fixed arms, got {report.get('fixed_arms')!r}")
+          # Private manifest path never serialized.
+          for manifest_name in expected_counts:
+              m = pm.get(manifest_name, {})
+              if m.get("path_publicly_serialized") is not False:
+                  failures.append(f"expected {manifest_name}.path_publicly_serialized=false")
+              if m.get("records_written") is not True:
+                  failures.append(f"expected {manifest_name}.records_written=true")
+          # Failure category counts: blocking categories must be zero.
+          fcc = {r.get("failure_category"): r.get("count")
+                 for r in (report.get("failure_category_count_records") or [])
+                 if isinstance(r, dict)}
+          for cat in ("forbidden_leak_blocked", "unexpected_exception",
+                      "private_trace_dir_missing",
+                      "private_score_parse_failed",
+                      "private_decision_parse_failed",
+                      "private_fd1_objective_feature_parse_failed",
+                      "private_posthoc_decomposition_parse_failed",
+                      "private_objective_config_parse_failed",
+                      "fd2a_replay_run_failed"):
+              if fcc.get(cat, 0) != 0:
+                  failures.append(f"expected {cat}=0, got {fcc.get(cat)!r}")
+          # Natural-key uniqueness for every public record table.
+          def check_unique(records, key_fn, table_name):
+              seen = set()
+              for i, rec in enumerate(records):
+                  try:
+                      key = key_fn(rec)
+                  except (KeyError, TypeError):
+                      failures.append(f"{table_name}[{i}] missing natural key")
+                      continue
+                  if key in seen:
+                      failures.append(f"{table_name}[{i}] duplicate natural key: {key!r}")
+                  else:
+                      seen.add(key)
+          check_unique(report.get("source_run_records") or [],
+                       lambda r: (r["source_phase"], r["source_ci_run_id"]),
+                       "source_run_records")
+          check_unique(report.get("pairwise_outcome_delta_records") or [],
+                       lambda r: (r["baseline_arm"], r["treatment_arm"], r["metric"]),
+                       "pairwise_outcome_delta_records")
+          check_unique(report.get("mechanism_bucket_records") or [],
+                       lambda r: (r["mechanism_bucket"],), "mechanism_bucket_records")
+          check_unique(report.get("component_delta_records") or [],
+                       lambda r: (r["component"], r["baseline_arm"], r["treatment_arm"]),
+                       "component_delta_records")
+          check_unique(report.get("counterfactual_availability_records") or [],
+                       lambda r: (r["counterfactual_bucket"],),
+                       "counterfactual_availability_records")
+          check_unique(report.get("category_collision_records") or [],
+                       lambda r: (r["collision_pair"],),
+                       "category_collision_records")
+          check_unique(report.get("gate_records") or [],
+                       lambda r: (r["gate"],), "gate_records")
+          check_unique(report.get("private_manifest_records") or [],
+                       lambda r: (r["manifest_name"],),
+                       "private_manifest_records")
+          check_unique(report.get("failure_category_count_records") or [],
+                       lambda r: (r["failure_category"],),
+                       "failure_category_count_records")
+          # Mechanism bucket records: all 8 buckets present.
+          mbr_buckets = {r.get("mechanism_bucket")
+                         for r in (report.get("mechanism_bucket_records") or [])}
+          for b in ("gold_file_displacement", "correct_file_rank_worsened",
+                    "correct_file_span_worsened", "redundancy_overcorrection",
+                    "latency_category_non_actionable_or_dominating",
+                    "aggregate_weight_category_collision",
+                    "candidate_availability_limit", "diffuse_or_unclassified"):
+              if b not in mbr_buckets:
+                  failures.append(f"expected mechanism_bucket_records to include {b}")
+          # Sum of mechanism bucket record_count >= records_attributed
+          # (records can fall into multiple buckets).
+          total_assignments = sum(r.get("record_count", 0)
+                                  for r in (report.get("mechanism_bucket_records") or []))
+          if total_assignments < ra:
+              failures.append(f"expected mechanism bucket assignments >= {ra}, got {total_assignments}")
+          if failures:
+              print("BEA-FD2-A1 report validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-FD2-A1 report validation passed.")
+          print(f"  status={status}")
+          print(f"  records_attributed={ra}")
+          print(f"  records_regressed={report.get('records_regressed', 0)}")
+          print(f"  actionable_concentration={report.get('actionable_concentration', 0.0)}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree
+        run: git diff --check
+
+      - name: Upload BEA-FD2-A1 aggregate report (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-fd2a1-failure-attribution-replay-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_fd2a1_failure_attribution_replay_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

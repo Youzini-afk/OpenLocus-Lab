@@ -82,6 +82,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v04-p2-target-role-proxy-repair-smoke.md`: [en](en/bea-v04-p2-target-role-proxy-repair-smoke.md) · [zh](zh/bea-v04-p2-target-role-proxy-repair-smoke.md)
 - `bea-v04-p3-support-complementarity-repair-smoke.md`: [en](en/bea-v04-p3-support-complementarity-repair-smoke.md) · [zh](zh/bea-v04-p3-support-complementarity-repair-smoke.md)
 - `bea-fd2a-direct-fd1-objective-setwise-smoke.md`: [en](en/bea-fd2a-direct-fd1-objective-setwise-smoke.md) · [zh](zh/bea-fd2a-direct-fd1-objective-setwise-smoke.md)
+- `bea-fd2a1-failure-attribution-replay.md`: [en](en/bea-fd2a1-failure-attribution-replay.md) · [zh](zh/bea-fd2a1-failure-attribution-replay.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)
