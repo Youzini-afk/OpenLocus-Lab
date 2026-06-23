@@ -151,12 +151,14 @@ The following remain false unless a future phase explicitly validates them:
 
 ## 8. Current next work
 
+BEA-v0.4-P1 setwise role-proxy smoke is implemented. The default no-network artifact is truthfully `unavailable_with_reason`; manual CI (network-enabled) is required to produce real P1 smoke evidence. The implementation answers whether deterministic role-proxy setwise selection changes BEA v0.3 behavior and reduces FD1 failure families without catastrophic quality regression. See `docs/en/bea-v04-p1-setwise-role-proxy-smoke.md`.
+
 BEA-FD1 failure decomposition is complete. Manual CI run `28011901294` replayed BEA-4 and BEA-5 exactly, decomposed 239 successful records, wrote 86040 private decomposition rows, and published records-only aggregate tables. See `docs/en/bea-fd1-failure-decomposition.md`.
 
-Immediate next work is to use FD1 evidence to freeze the BEA v0.4 hypothesis and ablation design. The current decomposition points to low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span as concrete failure families; support-target role categories remain unavailable until private SCORE includes role labels.
+Immediate next work is to use FD1 + v0.4-P1 evidence to freeze the BEA v0.4 hypothesis and ablation design. The current decomposition points to low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span as concrete failure families; v0.4-P1 adds deterministic role-proxy setwise selection as a minimal complementarity probe.
 
 Do not run B16-K, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before the v0.4 setwise/complementarity plan.
 
 ## 9. One-sentence conclusion
 
-OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, and BEA-FD1 has now decomposed BEA-4/5 failures; the immediate research problem is setwise/complementarity-aware BEA v0.4.
+OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 has decomposed BEA-4/5 failures, and BEA-v0.4-P1 now probes deterministic role-proxy setwise selection as minimal P1 smoke evidence (not v0.4 proof).

@@ -3794,3 +3794,58 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Strict claim boundary**: `claim_level=bea_fd1_failure_decomposition_smoke_only`.
   NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
+## BEA-v0.4-P1 findings
+
+- **BEA-v0.4-P1 setwise role-proxy smoke implemented**: eval-local
+  deterministic role-proxy setwise selection policy
+  (`setwise_complementarity_v0_4_p1`) compared against BEA v0.3 and
+  same-budget controls on a fresh small external smoke slice. P1 smoke
+  evidence only, NOT v0.4 proof/winner/default/calibration.
+- **259/259 self-test checks pass**.
+- **Required arms (6; RRF cheap + stable)**: `bm25_prefix_same_budget`,
+  `bea_v0_3_anchor_span_latency`, `role_proxy_only_same_budget`,
+  `setwise_complementarity_v0_4_p1`, `seeded_random_same_budget`,
+  `rrf_same_budget`. Treatment: `setwise_complementarity_v0_4_p1`.
+- **Role-proxy fixed enum (deterministic, runtime-clean)**:
+  `target_proxy`, `support_proxy`, `unknown`. No gold/private labels.
+  Signals: method agreement, BM25/RRF/regex/symbol source, query/path
+  token overlap, AST/path role heuristics, span tightness, same-file/
+  cross-file relation, source diversity.
+- **v0.4 P1 setwise selection rules (frozen, no post-hoc tuning)**:
+  at least one target_proxy if available; prefer support_proxy from a
+  different file/symbol family; penalize repeated same-file selections;
+  reward novelty/source diversity/span tightness. Frozen weights:
+  target=0.40, support_cross_file=0.20, source_diversity=0.15,
+  span_tight=0.10, novelty=0.10, dup_file_penalty=-0.35,
+  weak_support_penalty=-0.15.
+- **Fresh small external smoke protocol (success-quota)**:
+  records_successful>=30, contextbench_successful>=20,
+  repoqa_successful>=10. Mandatory excluded windows BEA-2/3/4
+  (ContextBench [40,160), RepoQA [20,80)). BEA-5 overlap disclosed not
+  excluded. This is P1 smoke evidence, not fresh disjoint validation.
+- **Hard gates**: role_proxy_assignment_rate>=0.70,
+  target_proxy_available_rate>=0.50, support_proxy_available_rate>=0.30,
+  unknown_only_record_rate<=0.30, setwise_selection_diff_rate_vs_v03>=0.25,
+  mean_duplicate_file_count_v04<=v03,
+  mean_candidate_source_diversity_v04>=v03, quality safety
+  (file_recall/mrr within 0.05, span within 0.02, latency within 1.25x),
+  at least one directional improvement.
+- **Public artifact records-only** with natural keys:
+  `source_run_records`, `arm_metric_records`, `arm_delta_records`,
+  `role_proxy_summary_records`, `setwise_behavior_records`,
+  `failure_family_records`, `win_tie_loss_records`,
+  `availability_records`, aggregate-only
+  `private_score_manifest`/`private_decision_manifest`/
+  `private_role_proxy_manifest`, `hard_gates`, `forbidden_scan`.
+- **Statuses**: `bea_v04_p1_smoke_pass`, `partial_directional_signal`,
+  `no_go_proxy_unavailable`, `no_go_no_selection_change`,
+  `no_go_quality_regression`, `unavailable_with_reason`,
+  `offline_counterfactual_replay`, `fail_forbidden_scan`,
+  `fail_schema_contract`.
+- **Default no-network artifact truthfully `unavailable_with_reason`**:
+  provider_calls=0, forbidden_scan=pass, self_test_checks_total=259,
+  self_test_checks_passed=259, empty record tables.
+- **Strict claim boundary**: `claim_level=bea_v04_p1_setwise_role_proxy_smoke_only`.
+  NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value. NOT v0.4 proof. NOT the
+  full v0.4 matrix. `provider_calls=0`.

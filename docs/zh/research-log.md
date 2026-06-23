@@ -9792,3 +9792,96 @@ git diff --check  => PASS
   `unavailable_missing_trace`。
 - Manual BEA-FD1 CI run `28011901294` 通过：status `bea_fd1_decomposition_pass`，records_decomposed=239，private decomposition rows=86040，forbidden_scan=pass。
 - 结果解释：主导的 available 类别是 low marginal gain / latency cost、gold-file absence、correct-file/wrong-span；support-target 类别在私有 SCORE 尚无 role labels 前仍为 unavailable。
+
+## 2026-06-23 — BEA-v0.4-P1：集合角色代理冒烟
+
+### 目标
+
+在 BEA-FD1 失败分解之后，为集合/互补感知 BEA 策略产生最小真实算法证据，
+不声称 v0.4 已被证明。问题：确定性角色代理集合选择能否改变 BEA v0.3 行为，
+并在不发生灾难性质量损失的前提下减少 FD1 失败家族？
+
+### 范围（绑定）
+
+- 仅评估本地。不更改 runtime/default/EvidenceCore。
+- 不运行 B16-K，不调优 v0.31/v0.32 权重，不扩展 dense/graph/QuIVer/provider
+  范围。
+- 预算固定为 5。方法固定为 `bm25,regex,symbol`。
+- 角色代理为确定性运行时清洁，无 gold/私有标签：
+  固定枚举 `target_proxy`、`support_proxy`、`unknown`。
+
+### 必需臂（6 个；RRF 廉价且稳定）
+
+`bm25_prefix_same_budget`、`bea_v0_3_anchor_span_latency`、
+`role_proxy_only_same_budget`、`setwise_complementarity_v0_4_p1`、
+`seeded_random_same_budget`、`rrf_same_budget`。处理臂：
+`setwise_complementarity_v0_4_p1`。质量基线：v0.3。
+
+### v0.4 P1 集合选择规则（冻结、无事后调优）
+
+- 如果可用，至少选择一个 `target_proxy`（预留目标槽位）。
+- 优先选择来自不同文件/符号家族的 `support_proxy`。
+- 惩罚重复同文件选择（强惩罚 -0.35）。
+- 奖励新颖性/来源多样性/span 紧致度。
+- 冻结权重：target=0.40、support_cross_file=0.20、
+  source_diversity=0.15、span_tight=0.10、novelty=0.10、
+  weak_support_penalty=-0.15。
+
+### 数据集 / 协议
+
+新鲜小规模外部冒烟（成功配额），失败即关闭：
+records_successful>=30、contextbench_successful>=20、repoqa_successful>=10。
+原始尝试上限 ContextBench 480 / RepoQA 240。强制排除窗口：BEA-2/3/4
+（ContextBench [40,160)、RepoQA [20,80)）。BEA-5 重叠已披露但不排除
+（BEA-5 在同一完整帧上使用成功配额且未消耗全部帧）。这是 P1 冒烟证据，
+不是新鲜不相交验证。
+
+### 硬门控
+
+角色代理可行性：assignment_rate>=0.70、target_available>=0.50、
+support_available>=0.30、unknown_only<=0.30。行为：
+setwise_diff_vs_v03>=0.25、dup_file_v04<=dup_file_v03、
+source_diversity_v04>=source_diversity_v03。质量安全：
+file_recall@10/mrr 在 0.05 内、span 在 0.02 内、延迟在 1.25x 内。
+至少一个方向性改进。
+
+### 公开产物形态
+
+仅记录：`source_run_records`、`arm_metric_records`、`arm_delta_records`、
+`role_proxy_summary_records`、`setwise_behavior_records`、
+`failure_family_records`、`win_tie_loss_records`、`availability_records`、
+`benchmark_attempt_records`，仅聚合
+`private_score_manifest`/`private_decision_manifest`/
+`private_role_proxy_manifest`、`hard_gates`、`forbidden_scan`。无公开
+记录 ID、仓库 URL、提交、路径、查询、gold 标签、span、片段、候选文件、
+决策顺序、分数组件或每条记录角色标签。
+
+### 验证结果
+
+```text
+python3 -m py_compile eval/bea_v04_p1_setwise_role_proxy_smoke.py  => PASS
+python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py --self-test  => PASS (259/259 checks)
+python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py \
+  --out artifacts/bea_v04_p1_setwise_role_proxy/bea_v04_p1_setwise_role_proxy_smoke_report.json  => PASS
+  (status: unavailable_with_reason, no-network artifact,
+   provider_calls=0, forbidden_scan=pass,
+   algorithm_changed_during_bea_v04_p1=false, weights_tuned_during_bea_v04_p1=false,
+   v04_full_matrix_claimed=false,
+   self_test_checks_total=259, self_test_checks_passed=259)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### 注意事项
+
+- BEA-v0.4-P1 仅为评估/诊断。不是 benchmark/leaderboard/
+  performance/method-winner/calibration/promotion/default/runtime/
+  EvidenceCore/downstream-value 声明。不是 v0.4 证明。不是完整 v0.4 矩阵。
+- v0.3 算法/权重冻结；`algorithm_changed_during_bea_v04_p1=false`。
+- 角色代理为确定性运行时清洁，无 gold/私有标签。
+- 新鲜冒烟协议披露 BEA-5 重叠（不是新鲜不相交验证）。默认无网络产物
+  真实地为 `unavailable_with_reason`；手动 CI（启用网络）是产生真实冒烟
+  证据的必要条件。
+- 私有 score/decision/role-proxy JSONL 文件仅写入 `/tmp` 且永不上传。
+- 离线 BEA-4/5 反事实重放是未来扩展（私有轨迹缺少完整候选列表，
+  因此无法在同一候选上重新运行 v0.4 P1 选择）。

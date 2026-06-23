@@ -3206,3 +3206,56 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **严格 claim 边界**：`claim_level=bea_fd1_failure_decomposition_smoke_only`。
   非 benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
+
+## BEA-v0.4-P1 发现
+
+- **BEA-v0.4-P1 集合角色代理冒烟已实现**：在新鲜小规模外部冒烟切片上，
+  将评估本地的确定性角色代理集合选择策略
+  （`setwise_complementarity_v0_4_p1`）与 BEA v0.3 及同预算对照组比较。
+  仅为 P1 冒烟证据，不是 v0.4 证明/胜者/默认/校准。
+- **259/259 自测检查通过**。
+- **必需臂（6 个；RRF 廉价且稳定）**：`bm25_prefix_same_budget`、
+  `bea_v0_3_anchor_span_latency`、`role_proxy_only_same_budget`、
+  `setwise_complementarity_v0_4_p1`、`seeded_random_same_budget`、
+  `rrf_same_budget`。处理臂：`setwise_complementarity_v0_4_p1`。
+- **角色代理固定枚举（确定性、运行时清洁）**：
+  `target_proxy`、`support_proxy`、`unknown`。无 gold/私有标签。
+  信号：方法一致性、BM25/RRF/regex/symbol 来源、查询/路径 token 重叠、
+  AST/路径角色启发式、span 紧致度、同文件/跨文件关系、来源多样性。
+- **v0.4 P1 集合选择规则（冻结、无事后调优）**：
+  如果可用至少一个 target_proxy；优先选择来自不同文件/符号家族的
+  support_proxy；惩罚重复同文件选择；奖励新颖性/来源多样性/span 紧致度。
+  冻结权重：target=0.40、support_cross_file=0.20、source_diversity=0.15、
+  span_tight=0.10、novelty=0.10、dup_file_penalty=-0.35、
+  weak_support_penalty=-0.15。
+- **新鲜小规模外部冒烟协议（成功配额）**：
+  records_successful>=30、contextbench_successful>=20、
+  repoqa_successful>=10。强制排除窗口 BEA-2/3/4
+  （ContextBench [40,160)、RepoQA [20,80)）。BEA-5 重叠已披露但不排除。
+  这是 P1 冒烟证据，不是新鲜不相交验证。
+- **硬门控**：role_proxy_assignment_rate>=0.70、
+  target_proxy_available_rate>=0.50、support_proxy_available_rate>=0.30、
+  unknown_only_record_rate<=0.30、setwise_selection_diff_rate_vs_v03>=0.25、
+  mean_duplicate_file_count_v04<=v03、
+  mean_candidate_source_diversity_v04>=v03、质量安全
+  （file_recall/mrr 在 0.05 内、span 在 0.02 内、延迟在 1.25x 内）、
+  至少一个方向性改进。
+- **公开产物仅记录**，带自然键：
+  `source_run_records`、`arm_metric_records`、`arm_delta_records`、
+  `role_proxy_summary_records`、`setwise_behavior_records`、
+  `failure_family_records`、`win_tie_loss_records`、
+  `availability_records`，仅聚合
+  `private_score_manifest`/`private_decision_manifest`/
+  `private_role_proxy_manifest`、`hard_gates`、`forbidden_scan`。
+- **状态**：`bea_v04_p1_smoke_pass`、`partial_directional_signal`、
+  `no_go_proxy_unavailable`、`no_go_no_selection_change`、
+  `no_go_quality_regression`、`unavailable_with_reason`、
+  `offline_counterfactual_replay`、`fail_forbidden_scan`、
+  `fail_schema_contract`。
+- **默认无网络产物真实地为 `unavailable_with_reason`**：
+  provider_calls=0、forbidden_scan=pass、self_test_checks_total=259、
+  self_test_checks_passed=259、空记录表。
+- **严格声明边界**：`claim_level=bea_v04_p1_setwise_role_proxy_smoke_only`。
+  不是 benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value。不是 v0.4 证明。不是完整
+  v0.4 矩阵。`provider_calls=0`。

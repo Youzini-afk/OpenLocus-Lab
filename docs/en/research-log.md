@@ -10549,3 +10549,105 @@ git diff --check  => PASS
   categories marked `unavailable_missing_trace`.
 - Manual BEA-FD1 CI run `28011901294` passed: status `bea_fd1_decomposition_pass`, records_decomposed=239, private decomposition rows=86040, forbidden_scan=pass.
 - Result interpretation: dominant available categories are low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span; support-target categories remain unavailable until role labels exist in private SCORE.
+
+## 2026-06-23 — BEA-v0.4-P1: Setwise Role-Proxy Smoke
+
+### Objective
+
+After BEA-FD1 failure decomposition, produce minimal real algorithmic
+evidence for a setwise / complementarity-aware BEA policy without
+claiming v0.4 is proven. Question: can deterministic role-proxy setwise
+selection change BEA v0.3 behavior and reduce FD1 failure families
+without catastrophic quality loss?
+
+### Scope (binding)
+
+- Eval-local only. No runtime/default/EvidenceCore changes.
+- No B16-K, no v0.31/v0.32 weight tuning, no dense/graph/QuIVer/provider
+  scope.
+- Budget fixed at 5. Methods fixed to `bm25,regex,symbol`.
+- Role proxies deterministic runtime-clean, no gold/private labels:
+  fixed enums `target_proxy`, `support_proxy`, `unknown`.
+
+### Required arms (6; RRF cheap + stable)
+
+`bm25_prefix_same_budget`, `bea_v0_3_anchor_span_latency`,
+`role_proxy_only_same_budget`, `setwise_complementarity_v0_4_p1`,
+`seeded_random_same_budget`, `rrf_same_budget`. Treatment:
+`setwise_complementarity_v0_4_p1`. Quality baseline: v0.3.
+
+### v0.4 P1 setwise selection rules (frozen, no post-hoc tuning)
+
+- At least one `target_proxy` if available (reserved target slot).
+- Prefer `support_proxy` from a different file/symbol family.
+- Penalize repeated same-file selections (strong penalty -0.35).
+- Reward novelty / source diversity / span tightness.
+- Frozen weights: target=0.40, support_cross_file=0.20,
+  source_diversity=0.15, span_tight=0.10, novelty=0.10,
+  weak_support_penalty=-0.15.
+
+### Dataset / protocol
+
+Fresh small external smoke (success-quota), fail-closed:
+records_successful>=30, contextbench_successful>=20, repoqa_successful>=10.
+Raw attempt caps ContextBench 480 / RepoQA 240. Mandatory excluded
+windows: BEA-2/3/4 (ContextBench [40,160), RepoQA [20,80)). BEA-5
+overlap disclosed not excluded (BEA-5 used success-quota over the same
+full frame and did not consume it entirely). This is P1 smoke evidence,
+not fresh disjoint validation.
+
+### Hard gates
+
+Role-proxy feasibility: assignment_rate>=0.70, target_available>=0.50,
+support_available>=0.30, unknown_only<=0.30. Behavior:
+setwise_diff_vs_v03>=0.25, dup_file_v04<=dup_file_v03,
+source_diversity_v04>=source_diversity_v03. Quality safety:
+file_recall@10/mrr within 0.05, span within 0.02, latency within 1.25x.
+At least one directional improvement.
+
+### Public artifact shape
+
+Records-only: `source_run_records`, `arm_metric_records`,
+`arm_delta_records`, `role_proxy_summary_records`,
+`setwise_behavior_records`, `failure_family_records`,
+`win_tie_loss_records`, `availability_records`,
+`benchmark_attempt_records`, aggregate-only
+`private_score_manifest`/`private_decision_manifest`/
+`private_role_proxy_manifest`, `hard_gates`, `forbidden_scan`. No public
+record IDs, repo URLs, commits, paths, queries, gold labels, spans,
+snippets, candidate files, decision order, score components, or
+per-record role labels.
+
+### Validation results
+
+```text
+python3 -m py_compile eval/bea_v04_p1_setwise_role_proxy_smoke.py  => PASS
+python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py --self-test  => PASS (259/259 checks)
+python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py \
+  --out artifacts/bea_v04_p1_setwise_role_proxy/bea_v04_p1_setwise_role_proxy_smoke_report.json  => PASS
+  (status: unavailable_with_reason, no-network artifact,
+   provider_calls=0, forbidden_scan=pass,
+   algorithm_changed_during_bea_v04_p1=false, weights_tuned_during_bea_v04_p1=false,
+   v04_full_matrix_claimed=false,
+   self_test_checks_total=259, self_test_checks_passed=259)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Caveats
+
+- BEA-v0.4-P1 is eval/diagnostic only. NOT benchmark/leaderboard/
+  performance/method-winner/calibration/promotion/default/runtime/
+  EvidenceCore/downstream-value claim. NOT v0.4 proof. NOT the full
+  v0.4 matrix.
+- v0.3 algorithm/weights frozen; `algorithm_changed_during_bea_v04_p1=false`.
+- Role proxies deterministic runtime-clean, no gold/private labels.
+- Fresh smoke protocol discloses BEA-5 overlap (not fresh disjoint
+  validation). Default no-network artifact is truthfully
+  `unavailable_with_reason`; manual CI (network-enabled) required for
+  real smoke evidence.
+- Private score/decision/role-proxy JSONL files written ONLY under
+  `/tmp` and NEVER uploaded.
+- Offline BEA-4/5 counterfactual replay is a future extension (private
+  traces lack full candidate lists, so v0.4 P1 selection cannot be
+  re-run on the same candidates).
