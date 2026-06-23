@@ -158,28 +158,41 @@ python3 -m py_compile eval/bea_fd2a1_failure_attribution_replay.py  => PASS
 python3 eval/bea_fd2a1_failure_attribution_replay.py --self-test  => PASS (404/404 checks)
 python3 eval/bea_fd2a1_failure_attribution_replay.py \
   --out artifacts/bea_fd2a1_failure_attribution/bea_fd2a1_failure_attribution_replay_report.json  => PASS
-  (status: unavailable_with_reason, no-network artifact,
-   provider_calls_made=false, forbidden_scan=pass,
-   role_proxy_assigned=false, records_attributed=0,
-   self_test_checks_total=404, self_test_checks_passed=404)
+  (default no-network status: unavailable_with_reason, forbidden_scan=pass)
+gh workflow run bea-fd2a1-failure-attribution-replay.yml \
+  -f enable_external_benchmark_network=true  => PASS (run 28027342996,
+  status: bea_fd2a1_attribution_replay_pass, records_attributed=38,
+  dominant bucket: latency_category_non_actionable_or_dominating=38/38)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+## Manual CI result
+
+Manual CI run `28027342996` completed green in 10m42s with `status = bea_fd2a1_attribution_replay_pass`.
+The replay matched the committed FD2-A outcome and attributed all 38 successful/regressing records:
+
+- records_attributed: 38
+- records_regressed: 38
+- private trace counts: score 190, decision 190, FD1-objective feature 190, post-hoc decomposition 950, objective config 1
+- forbidden_scan: pass
+- dominant mechanism bucket: `latency_category_non_actionable_or_dominating` = 38/38 records (rate 1.0)
+- secondary buckets: `redundancy_overcorrection` = 4/38, `gold_file_displacement` = 3/38, `aggregate_weight_category_collision` = 3/38
+- candidate availability was not the limiting factor: `candidate_availability_limit` = 0/38, and better candidates existed in the pool above both budget and 2×budget for 38/38 records.
+
+Interpretation: FD2-A failed because the frozen FD1 objective put decisive weight on a latency-loss category that is not actionable by the candidate-level proxy used during selection. The treatment changed selection, but the latency category fired for every regressed record, while smaller gold-file displacement and redundancy-overcorrection effects further hurt file recall/MRR. This justifies a new structural objective only if it removes/decouples non-actionable latency pressure and protects file-recall/gold-file utility; it does not justify FD2-B from the failed FD2-A objective, role proxies, or v0.31/v0.32 weight tweaks.
 
 ## Caveats
 
 - BEA-FD2-A1 is eval/diagnostic only. NOT benchmark/leaderboard/
   performance/method-winner/calibration/promotion/default/runtime/
   EvidenceCore/downstream-value claim.
-- The default no-network artifact is honestly `unavailable_with_reason`
+- The default no-network path remains honestly `unavailable_with_reason`
   with `provider_calls_made=false` and `records_attributed=0`; it is NOT
-  a fake pass. The committed FD2-A public artifact is read for
-  replay-match context (status / schema / hash only); no private traces
-  are parsed in the default no-network path.
-- A real replay requires public network + the committed FD1 artifact +
-  a built OpenLocus binary; it reruns FD2-A verbatim under `/tmp` and
-  parses the resulting private traces. Private traces are NEVER committed
-  or uploaded.
+  a fake pass. The committed artifact now records the manual CI replay result.
+- The real replay used public network + the committed FD1 artifact +
+  a built OpenLocus binary; it reran FD2-A verbatim under `/tmp` and
+  parsed private traces. Private traces were NEVER committed or uploaded.
 - FD2-A policy / weights / thresholds are UNCHANGED in FD2-A1; the rerun
   reuses `bea_fd2a_direct_fd1_objective_setwise_smoke` verbatim.
 - This is the same P1/P2/P3 success-quota frame with disclosed overlap;

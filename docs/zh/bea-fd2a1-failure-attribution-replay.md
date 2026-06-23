@@ -134,23 +134,38 @@ python3 -m py_compile eval/bea_fd2a1_failure_attribution_replay.py  => PASS
 python3 eval/bea_fd2a1_failure_attribution_replay.py --self-test  => PASS (404/404 checks)
 python3 eval/bea_fd2a1_failure_attribution_replay.py \
   --out artifacts/bea_fd2a1_failure_attribution/bea_fd2a1_failure_attribution_replay_report.json  => PASS
-  (status: unavailable_with_reason, 无网络工件,
-   provider_calls_made=false, forbidden_scan=pass,
-   role_proxy_assigned=false, records_attributed=0,
-   self_test_checks_total=404, self_test_checks_passed=404)
+  (默认无网络 status: unavailable_with_reason, forbidden_scan=pass)
+gh workflow run bea-fd2a1-failure-attribution-replay.yml \
+  -f enable_external_benchmark_network=true  => PASS (run 28027342996,
+  status: bea_fd2a1_attribution_replay_pass, records_attributed=38,
+  主导桶: latency_category_non_actionable_or_dominating=38/38)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+## Manual CI 结果
+
+Manual CI run `28027342996` 10m42s 绿色完成，`status = bea_fd2a1_attribution_replay_pass`。
+重放匹配已提交 FD2-A 结果，并归因全部 38 条成功/退化记录：
+
+- records_attributed：38
+- records_regressed：38
+- 私有 trace 计数：score 190、decision 190、FD1-objective feature 190、post-hoc decomposition 950、objective config 1
+- forbidden_scan：pass
+- 主导机制桶：`latency_category_non_actionable_or_dominating` = 38/38 条记录（rate 1.0）
+- 次级桶：`redundancy_overcorrection` = 4/38，`gold_file_displacement` = 3/38，`aggregate_weight_category_collision` = 3/38
+- 候选可用性不是限制：`candidate_availability_limit` = 0/38，且 38/38 记录在 budget 和 2×budget 以上的池中都有更好候选。
+
+解释：FD2-A 失败是因为冻结 FD1 objective 把决定性权重放在一个 candidate-level selection 阶段不可操作的 latency-loss 类别上。Treatment 确实改变了 selection，但 latency 类别在所有退化记录上都触发；同时较小的 gold-file displacement 与 redundancy-overcorrection 进一步伤害 file recall/MRR。这个结果只支持设计新的结构性 objective：去掉或解耦不可操作的 latency 压力，并保护 file-recall/gold-file utility；它不支持从失败的 FD2-A objective 进入 FD2-B，不支持复活 role proxy，也不支持 v0.31/v0.32 权重微调。
 
 ## 注意事项
 
 - BEA-FD2-A1 仅为 eval/diagnostic。不是 benchmark/leaderboard/性能/
   方法赢家/校准/晋升/默认/运行时/EvidenceCore/下游价值声明。
-- 默认无网络工件如实地为 `unavailable_with_reason`,且
-  `provider_calls_made=false`、`records_attributed=0`;它**不是**假通过。
-  默认无网络路径会读取已提交 FD2-A 公共工件作为重放匹配上下文(仅状态/
-  schema/哈希);不解析任何私有 trace。
-- 真实重放需要公共网络 + 已提交 FD1 工件 + 已构建 OpenLocus 二进制;它
+- 默认无网络路径仍如实地为 `unavailable_with_reason`，且
+  `provider_calls_made=false`、`records_attributed=0`；它**不是**假通过。
+  已提交 artifact 现在记录 manual CI 重放结果。
+- 真实重放使用公共网络 + 已提交 FD1 工件 + 已构建 OpenLocus 二进制；它
   在 `/tmp` 下原样重跑 FD2-A 并解析生成的私有 trace。私有 trace **绝不**
   提交或上传。
 - FD2-A 策略/权重/阈值在 FD2-A1 中**不变**;重放原样复用

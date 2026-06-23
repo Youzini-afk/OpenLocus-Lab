@@ -3887,3 +3887,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Selection changed strongly but the objective failed**: FD1-weighted selection differed from v0.3 at 0.710526 and from coverage-only at 0.684211, so the treatment was not a no-op.
 - **Composite loss and quality regressed**: composite FD1 loss worsened to 0.756181 versus v0.3 0.397802 and coverage-only 0.748783; file_recall@10 fell to 0.684211 versus v0.3 0.763158, and MRR fell to 0.516228 versus v0.3 0.569737. Span and latency gates passed, but FD1-loss and quality gates failed.
 - **Decision**: do not run FD2-B from this objective, do not tune v0.31/v0.32 weights, and do not resurrect role proxies. The direct FD1-weighted objective must be treated as a failed algorithm hypothesis on this bounded frame.
+
+## BEA-FD2-A1 findings
+
+- **BEA-FD2-A1 failure attribution replay completed**: local checkpoint `67a6d61`, manual CI run `28027342996`.
+- **Replay matched and attribution passed**: status `bea_fd2a1_attribution_replay_pass`, records_attributed=38, records_regressed=38, private trace counts exact (190/190/190/950/1), forbidden_scan=pass, self-test 404/404.
+- **Dominant mechanism**: `latency_category_non_actionable_or_dominating` fired on 38/38 regressed records. Secondary mechanisms were much smaller: redundancy_overcorrection 4/38, gold_file_displacement 3/38, aggregate_weight_category_collision 3/38.
+- **Candidate availability is not the blocker**: `candidate_availability_limit=0/38`; better candidates existed above budget and 2×budget for 38/38 records.
+- **Decision**: FD2-A failed because its objective optimized a latency-loss category that was not actionable by the candidate-level proxy. Next objective work must remove/decouple non-actionable latency pressure and protect file-recall/gold-file utility; do not run FD2-B from FD2-A, do not revive role proxies, and do not tune v0.31/v0.32 weights.

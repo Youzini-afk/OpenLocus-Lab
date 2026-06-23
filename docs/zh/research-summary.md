@@ -3295,3 +3295,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **选择强烈改变，但目标失败**：FD1-weighted selection 相对 v0.3 diff=0.710526、相对 coverage-only diff=0.684211，因此 treatment 不是 no-op。
 - **Composite loss 与质量退化**：composite FD1 loss 退化到 0.756181，而 v0.3 为 0.397802、coverage-only 为 0.748783；file_recall@10 降到 0.684211（v0.3 为 0.763158），MRR 降到 0.516228（v0.3 为 0.569737）。Span 与 latency gate 通过，但 FD1-loss 与 quality gate 失败。
 - **决定**：不要从这个 objective 进入 FD2-B，不要调 v0.31/v0.32 权重，也不要复活 role proxy。直接 FD1-weighted objective 在这个 bounded frame 上应视为失败算法假设。
+
+## BEA-FD2-A1 发现
+
+- **BEA-FD2-A1 failure attribution replay 已完成**：local checkpoint `67a6d61`，manual CI run `28027342996`。
+- **重放匹配且归因通过**：status `bea_fd2a1_attribution_replay_pass`，records_attributed=38，records_regressed=38，私有 trace 计数精确（190/190/190/950/1），forbidden_scan=pass，self-test 404/404。
+- **主导机制**：`latency_category_non_actionable_or_dominating` 在 38/38 条退化记录上触发。次级机制小很多：redundancy_overcorrection 4/38，gold_file_displacement 3/38，aggregate_weight_category_collision 3/38。
+- **候选可用性不是 blocker**：`candidate_availability_limit=0/38`；38/38 记录在 budget 与 2×budget 以上的池中都有更好候选。
+- **决定**：FD2-A 失败是因为 objective 优化了一个 candidate-level proxy 不可操作的 latency-loss 类别。下一步 objective 工作必须去掉或解耦不可操作的 latency 压力，并保护 file-recall/gold-file utility；不要从 FD2-A 进入 FD2-B，不要复活 role proxy，不要调 v0.31/v0.32 权重。

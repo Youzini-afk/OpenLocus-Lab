@@ -10722,3 +10722,25 @@ The FD1-weighted treatment materially changed selection (diff vs v0.3=0.710526, 
 ### Decision
 
 Do not run FD2-B from this objective. Do not tune v0.31/v0.32 weights. Do not resurrect role proxies. Treat the direct FD1-weighted objective as a failed algorithm hypothesis on this bounded frame; the next algorithm step must explain why optimizing aggregate FD1 losses selected worse evidence sets before proposing a new objective.
+
+## 2026-06-23 — BEA-FD2-A1: Direct FD1 Objective Failure Attribution Replay
+
+### Objective
+
+Explain why BEA-FD2-A direct aggregate-FD1-loss weighting selected worse evidence sets. This phase is a replay-only mechanism attribution, not a new selector, not FD2-B, not P4/P5, and not v0.31/v0.32 tuning.
+
+### Implementation / validation
+
+- Local checkpoint `67a6d61` added standalone evaluator `eval/bea_fd2a1_failure_attribution_replay.py`, manual workflow, aggregate artifact, and en/zh docs.
+- The evaluator reruns FD2-A verbatim under `/tmp`, parses private score/decision/FD1-objective feature/post-hoc decomposition/objective-config traces, and publishes only aggregate records-only mechanism tables.
+- Self-test 404/404; default no-network artifact is truthful `unavailable_with_reason`.
+
+### Manual CI result
+
+Manual CI run `28027342996` completed green in 10m42s. The replay matched FD2-A: records_attributed=38, records_regressed=38, private trace counts 190/190/190/950/1, forbidden_scan=pass, status `bea_fd2a1_attribution_replay_pass`.
+
+The dominant mechanism is decisive: `latency_category_non_actionable_or_dominating` fired on 38/38 regressed records. Secondary mechanisms were redundancy_overcorrection 4/38, gold_file_displacement 3/38, and aggregate_weight_category_collision 3/38. Candidate availability was not the blocker: `candidate_availability_limit=0/38`, and better candidates existed above both budget and 2×budget for 38/38 records.
+
+### Decision
+
+FD2-A failed because its aggregate FD1-loss objective put decisive pressure on a latency-loss category that the candidate-level proxy could not act on. The next objective design should remove/decouple non-actionable latency pressure and protect file-recall/gold-file utility. Do not run FD2-B from FD2-A, do not resurrect role proxies, and do not tune v0.31/v0.32 weights.
