@@ -1,0 +1,572 @@
+name: bea-v1-p1-actionability-audit
+
+# BEA-v1-P1 FD1 Actionability and Oracle Ceiling Audit
+# (manual opt-in). MANUAL ONLY via workflow_dispatch. Does NOT run on
+# PR/push. Uses NO provider secrets/vars/model env. Regenerates the FD1
+# private decomposition under $RUNNER_TEMP (deterministic replay) so the
+# audit can compute a real file-selector oracle ceiling lower bound;
+# the private JSONL is NEVER uploaded. Uploads ONLY the aggregate
+# public report.
+#
+# This is the first BEA v1 phase after FD2-A1. It is NOT BEA v0.4
+# repair, NOT FD2-B / FD2-C, NOT P4 / P5, NOT v0.31 / v0.32 tuning,
+# NOT B16-K, and NOT a re-run of FD2-A1. It audits the full FD1
+# 239-record frame and computes honest oracle ceilings.
+#
+# After @oracle No-Go: the public aggregate upper bound alone is
+# explicitly insufficient to authorize v1-A. The workflow MUST
+# regenerate the FD1 private decomposition replay and pass it via
+# --fd1-private-decomposition-jsonl so the file-selector lower bound
+# can be computed. Without it the audit honestly No-Gos to
+# no_go_ceiling_unavailable with stop_go_decision
+# needs_fd1_private_replay_before_v1_a.
+#
+# claim_level = bea_v1_p1_actionability_audit_only.
+# provider_calls_made=false is binding (the FD1 replay uses no
+# provider calls either — it reruns frozen BEA-4/BEA-5 protocols).
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access for FD1 private decomposition replay (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-p1-actionability-audit-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-v1-p1-actionability-audit:
+    name: bea-v1-p1-actionability-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-v1-P1 evaluator
+        run: python3 -m py_compile eval/bea_v1_p1_actionability_audit.py
+
+      - name: py_compile BEA-FD1 evaluator
+        run: python3 -m py_compile eval/bea_fd1_failure_decomposition.py
+
+      - name: BEA-v1-P1 self-test (no network)
+        run: python3 eval/bea_v1_p1_actionability_audit.py --self-test
+
+      - name: BEA-FD1 self-test (no network)
+        run: python3 eval/bea_fd1_failure_decomposition.py --self-test
+
+      - name: Regenerate FD1 private decomposition (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/fd1_private"
+          python3 eval/bea_fd1_failure_decomposition.py \
+            --enable-external-benchmark-network \
+            --private-decomposition-dir "$RUNNER_TEMP/fd1_private" \
+            --openlocus target/release/openlocus \
+            --out "$RUNNER_TEMP/fd1_replay_report.json"
+          # Verify the private decomposition JSONL exists with 86040 rows.
+          jsonl_path="$RUNNER_TEMP/fd1_private/bea_fd1.decomposition.jsonl"
+          if [[ ! -f "$jsonl_path" ]]; then
+            echo "ERROR: FD1 private decomposition JSONL not found at $jsonl_path" >&2
+            exit 1
+          fi
+          row_count=$(wc -l < "$jsonl_path")
+          if [[ "$row_count" -ne 86040 ]]; then
+            echo "ERROR: expected 86040 FD1 private decomposition rows, got $row_count" >&2
+            exit 1
+          fi
+          # Validate the FD1 replay report before trusting the JSONL
+          # (fail-closed; @oracle second No-Go). The audit evaluator
+          # re-validates this, but we check here too so the workflow
+          # fails fast on a bad replay.
+          replay_report="$RUNNER_TEMP/fd1_replay_report.json"
+          if [[ ! -f "$replay_report" ]]; then
+            echo "ERROR: FD1 replay report not found at $replay_report" >&2
+            exit 1
+          fi
+          python3 - "$replay_report" <<'PY'
+          import json, sys
+          path = sys.argv[1]
+          with open(path) as f:
+              r = json.load(f)
+          if r.get("schema_version") != "bea_fd1_failure_decomposition.v1":
+              print(f'ERROR: replay schema_version mismatch: {r.get("schema_version")!r}', file=sys.stderr); sys.exit(1)
+          if r.get("status") != "bea_fd1_decomposition_pass":
+              print(f'ERROR: replay status mismatch: {r.get("status")!r}', file=sys.stderr); sys.exit(1)
+          if r.get("records_decomposed") != 239:
+              print(f'ERROR: replay records_decomposed mismatch: {r.get("records_decomposed")!r}', file=sys.stderr); sys.exit(1)
+          m = r.get("private_decomposition_manifest", {})
+          if m.get("schema_version") != "bea_fd1_private_decomposition.v1":
+              print(f'ERROR: replay manifest schema_version mismatch: {m.get("schema_version")!r}', file=sys.stderr); sys.exit(1)
+          if m.get("record_count") != 86040:
+              print(f'ERROR: replay manifest record_count mismatch: {m.get("record_count")!r}', file=sys.stderr); sys.exit(1)
+          if m.get("records_written") is not True:
+              print(f'ERROR: replay manifest records_written not true: {m.get("records_written")!r}', file=sys.stderr); sys.exit(1)
+          if m.get("path_publicly_serialized") is not False:
+              print(f'ERROR: replay manifest path_publicly_serialized not false: {m.get("path_publicly_serialized")!r}', file=sys.stderr); sys.exit(1)
+          if r.get("forbidden_scan", {}).get("status") != "pass":
+              print(f'ERROR: replay forbidden_scan failed: {r.get("forbidden_scan")!r}', file=sys.stderr); sys.exit(1)
+          # Manifest hash must match the committed FD1 artifact.
+          with open("artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json") as f:
+              committed = json.load(f)
+          committed_hash = committed.get("private_decomposition_manifest", {}).get("manifest_hash", "")
+          replay_hash = m.get("manifest_hash", "")
+          if not committed_hash or replay_hash != committed_hash:
+              print(f'ERROR: replay manifest_hash mismatch: replay={replay_hash!r} committed={committed_hash!r}', file=sys.stderr); sys.exit(1)
+          print("FD1 replay report validation passed.")
+          PY
+          echo "fd1_private_jsonl=$jsonl_path" >> "$GITHUB_ENV"
+          echo "fd1_replay_report=$replay_report" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-P1 audit (only when FD1 private replay succeeded)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_p1_actionability_audit_report.json"
+          python3 eval/bea_v1_p1_actionability_audit.py \
+            --fd1-artifact artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json \
+            --fd2a1-artifact artifacts/bea_fd2a1_failure_attribution/bea_fd2a1_failure_attribution_replay_report.json \
+            --fd1-private-decomposition-jsonl "$fd1_private_jsonl" \
+            --fd1-replay-artifact "$fd1_replay_report" \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-P1 audit (no-network default — honest no_go)
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_p1_actionability_audit_report.json"
+          python3 eval/bea_v1_p1_actionability_audit.py \
+            --fd1-artifact artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json \
+            --fd2a1-artifact artifacts/bea_fd2a1_failure_attribution/bea_fd2a1_failure_attribution_replay_report.json \
+            --out "$report_path"
+          # Without --fd1-private-decomposition-jsonl the audit
+          # honestly No-Gos to no_go_ceiling_unavailable. This is NOT
+          # a CI failure — it is the truthful no-replay default.
+          status=$(python3 -c "import json; print(json.load(open('$report_path'))['status'])")
+          if [[ "$status" != "no_go_ceiling_unavailable" ]]; then
+            echo "WARNING: expected no_go_ceiling_unavailable for no-network default, got $status" >&2
+          fi
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate BEA-v1-P1 report (fail-closed)
+        env:
+          REPORT_PATH: ${{ runner.temp }}/bea_v1_p1_actionability_audit_report.json
+          ENABLE_NETWORK: ${{ steps.resolve.outputs.enable_network }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          enable_network = os.environ.get("ENABLE_NETWORK") == "true"
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          must_be_true = {"aggregate_only_public_artifact", "diagnostic_only",
+                          "bea_v1_p1_audit_evaluator_no_replay_executed",
+                          "bea_v1_p1_audit_evaluator_no_selector_executed",
+                          "bea_v1_p1_audit_evaluator_no_retrieval_executed",
+                          "bea_v1_p1_audit_evaluator_no_provider_calls",
+                          "bea_v1_p1_audit_evaluator_no_weight_tuning",
+                          "bea_v1_p1_audit_evaluator_no_role_proxy"}
+          must_be_false = {
+              "external_benchmark_performance_claimed", "leaderboard_entry_claimed",
+              "downstream_agent_value_proven", "calibration_claimed",
+              "method_winner_claimed", "promotion_ready", "default_should_change",
+              "runtime_behavior_changed", "retriever_changed", "pack_builder_changed",
+              "backend_changed", "default_policy_changed",
+              "evidencecore_semantics_changed", "provider_calls_made",
+              "remote_provider_calls_made",
+              "algorithm_changed_during_bea_v1_p1",
+              "weights_tuned_during_bea_v1_p1",
+              "v04_full_matrix_claimed",
+              "v03_tuned_during_bea_v1_p1",
+              "v1_a_selector_executed",
+              "v1_a_coverage_preserving_selector_promoted",
+              "fd2b_executed", "fd2c_executed",
+              "p4_executed", "p5_executed",
+              "v031_tuning_executed", "v032_tuning_executed",
+              "b16k_executed",
+              "role_proxy_assigned", "posthoc_threshold_search",
+              "private_decomposition_used_for_selection",
+              "gold_labels_used_for_selection",
+              "new_records_added_during_bea_v1_p1",
+              "heldout_validation_claimed",
+              "fd1_artifact_modified", "fd2a1_artifact_modified",
+          }
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          # Allowed real-run statuses only (per plan).
+          allowed_statuses = {
+              "bea_v1_p1_actionability_audit_pass",
+              "no_go_no_file_selector_ceiling",
+              "no_go_retrieval_availability_limit",
+              "no_go_span_or_stopping_dominates",
+              "no_go_ceiling_unavailable",
+          }
+          if status not in allowed_statuses:
+              failures.append(f"unexpected status: {status!r} (allowed: {sorted(allowed_statuses)})")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if report.get("schema_version") != "bea_v1_p1_actionability_audit.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_v1_p1_actionability_audit_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("phase") != "BEA-v1-P1":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("mode") != "bea_v1_p1_actionability_audit":
+              failures.append(f"unexpected mode: {report.get('mode')!r}")
+          if report.get("budget") != 5:
+              failures.append(f"expected budget=5, got {report.get('budget')!r}")
+          if report.get("methods") != ["bm25", "regex", "symbol"]:
+              failures.append(f"expected methods=[bm25,regex,symbol], got {report.get('methods')!r}")
+          # FD1 count match: 239 and 86040.
+          if report.get("records_decomposed") != 239:
+              failures.append(f"expected records_decomposed=239, got {report.get('records_decomposed')!r}")
+          if report.get("private_manifest_record_count") != 86040:
+              failures.append(f"expected private_manifest_record_count=86040, got {report.get('private_manifest_record_count')!r}")
+          # Records-only public shape.
+          for key in ("source_run_records", "failure_category_records",
+                      "actionability_matrix_records", "oracle_ceiling_records",
+                      "candidate_availability_records", "unavailable_ceiling_records",
+                      "redundancy_tradeoff_records", "stop_go_records",
+                      "gate_records", "private_manifest_records",
+                      "failure_category_count_records"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          # All 12 FD1 categories in actionability_matrix_records.
+          amr_cats = {r.get("failure_category")
+                      for r in (report.get("actionability_matrix_records") or [])
+                      if isinstance(r, dict)}
+          fd1_categories = (
+              "gold_file_absent", "gold_span_absent", "correct_file_wrong_span",
+              "redundant_same_file_candidates", "too_many_anchor_slots",
+              "missing_support_candidate", "support_selected_without_target",
+              "target_selected_without_support", "risk_penalty_removed_gold",
+              "early_stop_too_early", "budget_spent_on_low_marginal_gain",
+              "latency_without_quality_gain",
+          )
+          for cat in fd1_categories:
+              if cat not in amr_cats:
+                  failures.append(f"actionability_matrix_records missing category: {cat}")
+          # 72 rows = 12 x 6.
+          if len(report.get("actionability_matrix_records", [])) != 72:
+              failures.append(f"expected actionability_matrix_records to have 72 rows, got {len(report.get('actionability_matrix_records', []))}")
+          # fd1_private_decomposition_parsed flag must be True for pass/go
+          # statuses when the network was enabled (real replay ran). The
+          # replay artifact must also be supplied and validated, and the
+          # manifest hash must match the committed FD1 artifact.
+          if enable_network:
+              # Replay provenance flags must be true when network enabled.
+              if report.get("fd1_private_decomposition_replay_supplied") is not True:
+                  failures.append("expected fd1_private_decomposition_replay_supplied=true when network enabled")
+              if report.get("fd1_private_decomposition_replay_validated") is not True:
+                  failures.append("expected fd1_private_decomposition_replay_validated=true when network enabled")
+              if report.get("fd1_private_decomposition_replay_executed_by_workflow") is not True:
+                  failures.append("expected fd1_private_decomposition_replay_executed_by_workflow=true when network enabled")
+              if status in {"bea_v1_p1_actionability_audit_pass",
+                            "no_go_no_file_selector_ceiling",
+                            "no_go_retrieval_availability_limit",
+                            "no_go_span_or_stopping_dominates"}:
+                  if report.get("fd1_private_decomposition_parsed") is not True:
+                      failures.append(
+                          f"expected fd1_private_decomposition_parsed=true for status={status} (real replay ran)"
+                      )
+                  # Private row count 86040 and grouped record count 239.
+                  srr = (report.get("source_run_records") or [{}])[0] if report.get("source_run_records") else {}
+                  if srr.get("fd1_private_decomposition_row_count") != 86040:
+                      failures.append(
+                          f"expected fd1_private_decomposition_row_count=86040, got {srr.get('fd1_private_decomposition_row_count')!r}"
+                      )
+                  if srr.get("fd1_private_decomposition_group_count") != 239:
+                      failures.append(
+                          f"expected fd1_private_decomposition_group_count=239, got {srr.get('fd1_private_decomposition_group_count')!r}"
+                      )
+                  if srr.get("fd1_private_decomposition_parsed") is not True:
+                      failures.append("expected source_run_records fd1_private_decomposition_parsed=true")
+                  # Replay artifact validation fields must be true/valid.
+                  if srr.get("replay_artifact_supplied") is not True:
+                      failures.append("expected source_run_records replay_artifact_supplied=true")
+                  if srr.get("replay_artifact_parsed") is not True:
+                      failures.append("expected source_run_records replay_artifact_parsed=true")
+                  if srr.get("replay_artifact_validated") is not True:
+                      failures.append("expected source_run_records replay_artifact_validated=true")
+                  if srr.get("replay_artifact_manifest_hash_match") is not True:
+                      failures.append("expected source_run_records replay_artifact_manifest_hash_match=true")
+                  if srr.get("replay_artifact_forbidden_scan_pass") is not True:
+                      failures.append("expected source_run_records replay_artifact_forbidden_scan_pass=true")
+                  if srr.get("replay_artifact_manifest_records_written") is not True:
+                      failures.append("expected source_run_records replay_artifact_manifest_records_written=true")
+                  if srr.get("replay_artifact_manifest_path_publicly_serialized") is not False:
+                      failures.append("expected source_run_records replay_artifact_manifest_path_publicly_serialized=false")
+                  if srr.get("replay_artifact_failure_category") != "":
+                      failures.append(f"expected replay_artifact_failure_category empty, got {srr.get('replay_artifact_failure_category')!r}")
+              # File-selector ceiling class private lower+public upper when
+              # oracle_ceiling_records has a file_selector row.
+              ocr_rows = report.get("oracle_ceiling_records", [])
+              fs_rows = [r for r in ocr_rows if r.get("ceiling_name") == "file_selector"]
+              if status == "bea_v1_p1_actionability_audit_pass":
+                  if len(fs_rows) != 1:
+                      failures.append("expected file_selector oracle ceiling row when status is pass")
+                  else:
+                      fs = fs_rows[0]
+                      if fs.get("ceiling_class") != "computed_private_lower_bound_and_public_upper_bound":
+                          failures.append(f"expected file_selector ceiling_class=computed_private_lower_bound_and_public_upper_bound, got {fs.get('ceiling_class')!r}")
+                      if fs.get("ceiling_basis") != "fd1_private_decomposition_replay":
+                          failures.append(f"expected file_selector ceiling_basis=fd1_private_decomposition_replay, got {fs.get('ceiling_basis')!r}")
+                      if fs.get("recoverable_count_lower_bound") is None:
+                          failures.append("expected recoverable_count_lower_bound not null when status is pass")
+                  # stop_go decision not go if lower_bound is null.
+                  sgr = (report.get("stop_go_records") or [{}])[0] if report.get("stop_go_records") else {}
+                  if sgr.get("file_selector_lower_bound") is None and sgr.get("stop_go_decision") == "go_v1_a_coverage_preserving_selector":
+                      failures.append("stop_go_decision must NOT be go when file_selector_lower_bound is null")
+              # gate_records: fd1_private_decomposition_parsed gate
+              # must pass when network was enabled.
+              gate_names = {r.get("gate"): r for r in (report.get("gate_records") or []) if isinstance(r, dict)}
+              pdg = gate_names.get("fd1_private_decomposition_parsed", {})
+              if pdg.get("passed") is not True:
+                  failures.append("expected fd1_private_decomposition_parsed gate to pass when network enabled")
+              rcount = gate_names.get("fd1_private_decomposition_row_count", {})
+              if rcount.get("value") != 86040.0:
+                  failures.append(f"expected fd1_private_decomposition_row_count gate value=86040, got {rcount.get('value')!r}")
+              gcount = gate_names.get("fd1_private_decomposition_group_count", {})
+              if gcount.get("value") != 239.0:
+                  failures.append(f"expected fd1_private_decomposition_group_count gate value=239, got {gcount.get('value')!r}")
+          else:
+              # No network: status MUST be no_go_ceiling_unavailable and
+              # stop_go must be needs_fd1_private_replay_before_v1_a.
+              if status != "no_go_ceiling_unavailable":
+                  failures.append(
+                      f"expected no_go_ceiling_unavailable for no-network default, got {status!r}"
+                  )
+              sgr = (report.get("stop_go_records") or [{}])[0] if report.get("stop_go_records") else {}
+              if sgr.get("stop_go_decision") != "needs_fd1_private_replay_before_v1_a":
+                  failures.append(
+                      f"expected stop_go_decision=needs_fd1_private_replay_before_v1_a for no-network default, got {sgr.get('stop_go_decision')!r}"
+                  )
+          # Span / stopping either computed or explicit unavailable.
+          ucr_names = {r.get("ceiling_name")
+                       for r in (report.get("unavailable_ceiling_records") or [])
+                       if isinstance(r, dict)}
+          for name in ("span_refiner", "setwise_packer_redundancy",
+                       "stopping_scheduler"):
+              if name not in ucr_names:
+                  failures.append(f"expected unavailable ceiling row for {name}")
+          # Forbidden top-level fields.
+          for key in ("private_trace_dir", "per_record_buckets",
+                      "per_record_attribution", "per_record_matrix",
+                      "objective_config_payload", "fd1_category_weights_payload",
+                      "candidate_paths", "candidate_keys", "query_text",
+                      "gold_paths", "gold_lines", "gold_spans", "gold_content",
+                      "snippets", "selected_order", "private_record_id",
+                      "phase_run_id", "run_id", "benchmark_row_id",
+                      "fd1_source_artifact_path", "fd2a1_source_artifact_path",
+                      "winner", "calibration", "method_winner",
+                      "recommended_default", "ranking", "decision",
+                      "hard_gates", "failure_category_counts",
+                      "actionability_matrix_counts", "oracle_ceiling_counts",
+                      "self_test_checks", "self_test_details", "checks",
+                      "role_proxy_used", "target_support_proxy_used",
+                      "is_v04_repair", "is_fd2_b", "is_fd2_c",
+                      "is_p4", "is_p5", "is_v031_tuning", "is_b16k"):
+              if key in report:
+                  failures.append(f"forbidden field present: {key}")
+          # Counts-only self-test.
+          if "self_test_checks_total" not in report:
+              failures.append("expected self_test_checks_total")
+          if "self_test_checks_passed" not in report:
+              failures.append("expected self_test_checks_passed")
+          for ff in ("self_test_checks", "self_test_details", "self_test_list",
+                      "checks", "check_list"):
+              if ff in report:
+                  failures.append(f"forbidden self-test detail field: {ff}")
+          # Natural-key uniqueness for every public record table.
+          def check_unique(records, key_fn, table_name):
+              seen = set()
+              for i, rec in enumerate(records):
+                  try:
+                      key = key_fn(rec)
+                  except (KeyError, TypeError):
+                      failures.append(f"{table_name}[{i}] missing natural key")
+                      continue
+                  if key in seen:
+                      failures.append(f"{table_name}[{i}] duplicate natural key: {key!r}")
+                  else:
+                      seen.add(key)
+          check_unique(report.get("source_run_records") or [],
+                       lambda r: (r["source_phase"], r["source_ci_run_id"]),
+                       "source_run_records")
+          check_unique(report.get("failure_category_records") or [],
+                       lambda r: (r["failure_category"],),
+                       "failure_category_records")
+          check_unique(report.get("actionability_matrix_records") or [],
+                       lambda r: (r["failure_category"], r["action_layer"]),
+                       "actionability_matrix_records")
+          check_unique(report.get("oracle_ceiling_records") or [],
+                       lambda r: (r["ceiling_name"],),
+                       "oracle_ceiling_records")
+          check_unique(report.get("candidate_availability_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["failure_category"]),
+                       "candidate_availability_records")
+          check_unique(report.get("unavailable_ceiling_records") or [],
+                       lambda r: (r["ceiling_name"],),
+                       "unavailable_ceiling_records")
+          check_unique(report.get("redundancy_tradeoff_records") or [],
+                       lambda r: (r["tradeoff_axis"],),
+                       "redundancy_tradeoff_records")
+          check_unique(report.get("stop_go_records") or [],
+                       lambda r: (r["stop_go_decision"],),
+                       "stop_go_records")
+          check_unique(report.get("gate_records") or [],
+                       lambda r: (r["gate"],),
+                       "gate_records")
+          check_unique(report.get("private_manifest_records") or [],
+                       lambda r: (r["manifest_name"],),
+                       "private_manifest_records")
+          check_unique(report.get("failure_category_count_records") or [],
+                       lambda r: (r["failure_category"],),
+                       "failure_category_count_records")
+          # Private manifest path never serialized.
+          for r in (report.get("private_manifest_records") or []):
+              if r.get("path_publicly_serialized") is not False:
+                  failures.append("expected private_manifest path_publicly_serialized=false")
+          if report.get("provider_calls_made") is not False:
+              failures.append("expected provider_calls_made=false")
+          # Forbidden scan recursive scan.
+          fd1_forbidden = (
+              "decomposition_path", "private_decomposition_path",
+              "private_decomposition_file", "private_record_id",
+              "decomposition_record_id", "per_record_decomposition",
+              "decomposition_rows", "candidate_features",
+              "accepted_candidates", "gold_paths", "gold_lines",
+              "gold_spans", "gold_content", "action_order",
+              "priority_components", "priority_score",
+              "selected_decisions", "budget_trace", "stop_reason",
+              "anchor_eligibility", "anchor_slots", "early_stop_reason",
+              "score_outcome", "action_trace", "budget_state",
+              "candidate_list", "candidates", "final_candidates",
+              "per_record_metrics", "runtime_query_features",
+              "query_feature_summary", "query_features",
+              "benchmark_row_id", "phase_run_id", "run_id",
+              "task_id", "row_id", "needle_id", "instance_id",
+              "provider_name", "model_name", "provider_payload",
+              "calibration", "method_winner", "best_method",
+              "recommended_default", "winner", "leaderboard", "promotion",
+              "self_test_checks", "self_test_details", "checks", "check_list",
+              "comparison_arm", "bucket", "candidate_source",
+          )
+          v1_p1_forbidden = (
+              "private_trace_dir", "private_score_dir", "private_audit_dir",
+              "per_record_buckets", "per_record_attribution", "per_record_matrix",
+              "objective_config_payload", "fd1_category_weights_payload",
+              "weight_derivation_payload", "frozen_weights_payload",
+              "raw_score_row", "raw_decision_row", "raw_feature_row",
+              "raw_decomposition_row",
+              "candidate_paths", "candidate_keys", "query_text",
+              "gold_paths", "gold_lines", "gold_spans", "gold_content",
+              "snippets", "selected_paths", "selected_order",
+              "private_record_ids", "private_record_id",
+              "fd1_source_artifact_path", "fd2a1_source_artifact_path",
+              "fd2a_source_artifact_path",
+              "recommended_default", "recommended_method", "preferred_method",
+              "default_method", "policy_decision", "decision", "ranking",
+              "rank", "winner", "leaderboard", "promotion", "calibration",
+              "method_winner", "best_method",
+              "self_test_checks", "self_test_details", "self_test_list",
+              "checks", "check_list",
+              "hard_gates", "failure_category_counts",
+              "actionability_matrix_counts", "oracle_ceiling_counts",
+              "candidate_availability_counts", "unavailable_ceiling_counts",
+              "redundancy_tradeoff_counts", "stop_go_counts",
+              "is_v04_repair", "is_fd2_b", "is_fd2_c", "is_p4", "is_p5",
+              "is_v031_tuning", "is_v032_tuning", "is_b16k",
+              "is_selector_phase", "is_acquisition_phase",
+              "role_proxy", "role_proxy_assignment", "target_proxy",
+              "support_proxy", "target_anchor", "target_support_pair",
+              "role_proxy_used", "target_support_proxy_used",
+          )
+          all_forbidden = set(fd1_forbidden) | set(v1_p1_forbidden)
+          container_keys = {
+              "source_run_records", "failure_category_records",
+              "actionability_matrix_records", "oracle_ceiling_records",
+              "candidate_availability_records", "unavailable_ceiling_records",
+              "redundancy_tradeoff_records", "stop_go_records",
+              "gate_records", "private_manifest_records",
+              "failure_category_count_records", "framing",
+              "availability_records", "category_summary_records",
+              "bucket_category_records", "candidate_source_category_records",
+          }
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      parent = path.rsplit(".", 1)[-1].split("[")[0]
+                      is_container_child = parent in container_keys
+                      if k in keys and not is_container_child:
+                          found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for i, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{i}]"))
+              return found
+          leaked = find_keys(report, all_forbidden)
+          if leaked:
+              failures.append(f"forbidden fields present: {leaked}")
+          if failures:
+              print("BEA-v1-P1 report validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-v1-P1 report validation passed.")
+          print(f"  status={status}")
+          print(f"  records_decomposed={report.get('records_decomposed')}")
+          print(f"  private_manifest_record_count={report.get('private_manifest_record_count')}")
+          print(f"  fd1_private_decomposition_parsed={report.get('fd1_private_decomposition_parsed')}")
+          sgr = (report.get("stop_go_records") or [{}])[0] if report.get("stop_go_records") else {}
+          print(f"  stop_go_decision={sgr.get('stop_go_decision')}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree
+        run: git diff --check
+
+      - name: Upload BEA-v1-P1 aggregate report (aggregate only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-p1-actionability-audit-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_p1_actionability_audit_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false
