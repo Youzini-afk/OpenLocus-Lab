@@ -3879,3 +3879,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Support/complementarity repair over-corrected**: target and support availability/selection all reached 1.0, and target-support pairs reached 1.0, but support was degenerate: support_proxy_available_rate_p3=1.0 (above <=0.90 gate) and mean_support_candidates_per_record_p3=18.289474 (above <=8.0 gate).
 - **Selection changed but quality regressed**: P3 selection differed from v0.3/P2/P1 at 0.5/0.394737/0.394737, but versus v0.3 file_recall@10 delta=-0.052632, MRR delta=-0.155263, span_f0.5@10 delta=-0.003531, latency +0.001730s, quality_per_latency 0.015992 vs 0.016856.
 - **Stop rule triggered**: do not run P4/P5, do not enter the full v0.4 matrix from this role-proxy design, and do not tune v0.31/v0.32. Next algorithm work should pivot to direct FD1-objective setwise acquisition.
+
+## BEA-FD2-A findings
+
+- **BEA-FD2-A direct FD1-objective setwise smoke completed**: local checkpoint `709b0cb`, manual CI run `28025382422`.
+- **Result is a bounded No-Go, not a v0.4 advance**: status `no_go_no_fd1_loss_reduction`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, forbidden_scan=pass, self-test 373/373.
+- **Selection changed strongly but the objective failed**: FD1-weighted selection differed from v0.3 at 0.710526 and from coverage-only at 0.684211, so the treatment was not a no-op.
+- **Composite loss and quality regressed**: composite FD1 loss worsened to 0.756181 versus v0.3 0.397802 and coverage-only 0.748783; file_recall@10 fell to 0.684211 versus v0.3 0.763158, and MRR fell to 0.516228 versus v0.3 0.569737. Span and latency gates passed, but FD1-loss and quality gates failed.
+- **Decision**: do not run FD2-B from this objective, do not tune v0.31/v0.32 weights, and do not resurrect role proxies. The direct FD1-weighted objective must be treated as a failed algorithm hypothesis on this bounded frame.

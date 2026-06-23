@@ -159,10 +159,12 @@ BEA-v0.4-P3 support/complementarity proxy 修复冒烟已完成为最终有界 r
 
 BEA-FD1 failure decomposition 已完成。Manual CI run `28011901294` 精确重放 BEA-4 和 BEA-5，分解 239 条成功记录，写入 86040 条私有 decomposition rows，并发布 records-only 聚合表。
 
-下一步不再修 proxy。转向直接 FD1-objective setwise acquisition：直接使用 decomposition losses 与 marginal utility，而不是再做 runtime-clean target/support proxy smoke。FD1 指向 low marginal gain / latency cost、label-file absence、correct-file/wrong-span，P1/P2/P3 则显示 runtime-clean role proxies 可以被制造为 available，但没有形成有用的 target+support complementarity algorithm。
+BEA-FD2-A 直接 FD1-objective setwise acquisition 冒烟已完成为 bounded No-Go。Manual CI run `28025382422` 通过 fail-closed，成功记录 38 条，status 为 `no_go_no_fd1_loss_reduction`：FD1-weighted treatment 强烈改变 selection（相对 v0.3 diff=0.710526），但 composite FD1 loss 增加（0.756181 vs v0.3 0.397802、coverage-only 0.748783），且 file_recall@10/MRR 相对 v0.3 退化。不要从这个 objective 进入 FD2-B。参见 `docs/zh/bea-fd2a-direct-fd1-objective-setwise-smoke.md`。
 
-在 direct FD1-objective setwise plan 前，不跑 B16-K、P4/P5、v0.31/v0.32 权重微调、D5-A readiness 扩张、QuIVer/dense/graph quality 实验，或另一个 BEA scale smoke。
+下一步不再修 proxy，也不再做直接 aggregate-FD1-loss weighting。下一步算法工作必须解释为什么 FD2-A objective 明明改变了 selection 却选出更差 evidence set，然后重新设计能区分 candidate availability、marginal utility、redundancy、span risk 与 latency cost 的 setwise objective；不能复活 role proxy，也不能做 v0.31/v0.32 权重微调。
+
+在解释 FD2-A failure mode 前，不跑 B16-K、P4/P5、基于失败 FD2-A objective 的 FD2-B、v0.31/v0.32 权重微调、D5-A readiness 扩张、QuIVer/dense/graph quality 实验，或另一个 BEA scale smoke。
 
 ## 9. 一句话结论
 
-OpenLocus 现在已有真实实证管线和 bounded target+support downstream signal，但 BEA 仍是 mixed 且不是默认/winner；BEA-5 固定 quota 少 1 条成功记录，BEA-FD1 已完成 BEA-4/5 failure decomposition，BEA-v0.4-P1/P2/P3 显示当前 runtime-clean role proxies 仍未形成有用的 target+support complementarity。
+OpenLocus 现在已有真实实证管线和 bounded target+support downstream signal，但 BEA 仍是 mixed 且不是默认/winner；BEA-5 固定 quota 少 1 条成功记录，BEA-FD1 已完成 BEA-4/5 failure decomposition，P1/P2/P3 关闭了 role-proxy 路线，FD2-A 又显示 naive direct FD1-loss weighting 在 bounded frame 上也失败。

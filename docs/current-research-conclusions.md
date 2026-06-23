@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date: 2026-06-21
+Date: 2026-06-23
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -81,6 +81,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v04-p1-setwise-role-proxy-smoke.md`: [en](en/bea-v04-p1-setwise-role-proxy-smoke.md) · [zh](zh/bea-v04-p1-setwise-role-proxy-smoke.md)
 - `bea-v04-p2-target-role-proxy-repair-smoke.md`: [en](en/bea-v04-p2-target-role-proxy-repair-smoke.md) · [zh](zh/bea-v04-p2-target-role-proxy-repair-smoke.md)
 - `bea-v04-p3-support-complementarity-repair-smoke.md`: [en](en/bea-v04-p3-support-complementarity-repair-smoke.md) · [zh](zh/bea-v04-p3-support-complementarity-repair-smoke.md)
+- `bea-fd2a-direct-fd1-objective-setwise-smoke.md`: [en](en/bea-fd2a-direct-fd1-objective-setwise-smoke.md) · [zh](zh/bea-fd2a-direct-fd1-objective-setwise-smoke.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

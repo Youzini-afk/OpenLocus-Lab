@@ -159,10 +159,12 @@ BEA-v0.4-P3 support/complementarity proxy repair smoke is complete as the final 
 
 BEA-FD1 failure decomposition is complete. Manual CI run `28011901294` replayed BEA-4 and BEA-5 exactly, decomposed 239 successful records, wrote 86040 private decomposition rows, and published records-only aggregate tables. See `docs/en/bea-fd1-failure-decomposition.md`.
 
-Immediate next work is no longer proxy repair. Pivot to direct FD1-objective setwise acquisition: use decomposition losses and marginal utility directly, rather than trying another runtime-clean target/support proxy smoke. FD1 points to low marginal gain / latency cost, label-file absence, and correct-file/wrong-span as concrete failure families; P1/P2/P3 show runtime-clean role proxies can be made available but do not yield a useful target+support complementarity algorithm.
+BEA-FD2-A direct FD1-objective setwise acquisition smoke is complete as a bounded No-Go. Manual CI run `28025382422` passed fail-closed with 38 successful records and status `no_go_no_fd1_loss_reduction`: the FD1-weighted treatment changed selection strongly (diff vs v0.3=0.710526), but increased composite FD1 loss (0.756181 vs v0.3 0.397802 and coverage-only 0.748783) and regressed file_recall@10/MRR versus v0.3. Do not run FD2-B from this objective. See `docs/en/bea-fd2a-direct-fd1-objective-setwise-smoke.md`.
 
-Do not run B16-K, P4/P5, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before the direct FD1-objective setwise plan.
+Immediate next work is no longer proxy repair or direct aggregate-FD1-loss weighting. The next algorithm step must explain why the FD2-A objective selected worse evidence sets despite changing selection, then design a new setwise objective that separates candidate availability, marginal utility, redundancy, span risk, and latency cost without role-proxy resurrection or v0.31/v0.32 weight tweaks.
+
+Do not run B16-K, P4/P5, FD2-B from the failed FD2-A objective, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before explaining the FD2-A failure mode.
 
 ## 9. One-sentence conclusion
 
-OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 decomposed BEA-4/5 failures, and BEA-v0.4-P1/P2/P3 show that current runtime-clean role proxies still fail to create useful target+support complementarity.
+OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 decomposed BEA-4/5 failures, P1/P2/P3 closed the role-proxy line, and FD2-A showed that naive direct FD1-loss weighting also fails on the bounded frame.

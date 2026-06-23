@@ -1,8 +1,8 @@
 # BEA-FD2-A：直接 FD1 目标 Setwise 采集冒烟
 
 日期：2026-06-23（BEA-FD2-A 直接 FD1 目标 setwise 采集冒烟——在
-BEA-v0.4-P3 停止角色代理路线之后的直接算法后续。一个 setwise 选择器直接
-优化从已提交的 FD1 聚合产物派生的冻结 FD1 失败损失缩减，不使用
+BEA-v0.4-P3 停止角色代理路线之后的直接算法后续。它测试一个 setwise 选择器
+是否能直接优化从已提交的 FD1 聚合产物派生的冻结 FD1 失败损失缩减，同时不使用
 target/support 代理且不产生质量回退。）
 
 BEA-FD2-A 不是 P4/P5，不是完整 v0.4 矩阵，不是 v0.31/v0.32 权重微调，
@@ -81,7 +81,7 @@ fd1_objective = w_gold_file_absent * file_reach
 
 38 条记录目标（ContextBench >=20，RepoQA >=10），带 BEA-2/3/4 强制排除窗口
 和 BEA-5/P1/P2/P3 重叠披露。这不是新鲜不相交验证——它隔离了角色代理修复
-失败的算法变更。如果 FD2-A 通过，heldout/不相交 FD2-B 可随后进行。
+失败的算法变更。若通过本可进入 heldout/不相交 FD2-B，但下面的 CI 结果并未通过。
 
 ## 门控
 
@@ -145,6 +145,22 @@ python3 eval/bea_fd2a_direct_fd1_objective_setwise_smoke.py \
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+## Manual CI 结果
+
+Manual CI run `28025382422` 9m06s 绿色完成，产出有效的 bounded No-Go 结果：
+
+- status：`no_go_no_fd1_loss_reduction`
+- records_successful：38（ContextBench 20，RepoQA 18）
+- records_attempted_total：46；records_excluded：8
+- private manifests：SCORE 190，decision 190，FD1-objective feature 190，post-hoc decomposition 950，objective config 1
+- forbidden_scan：pass
+- selection_diff_rate_fd1lw_vs_v03：0.710526（通过）
+- selection_diff_rate_fd1lw_vs_coverage：0.684211（通过）
+- composite FD1 loss：v0.3 0.397802，coverage-only 0.748783，FD1-weighted 0.756181（两个机制 gate 均失败）
+- 质量：file_recall@10 0.684211 vs v0.3 0.763158（质量安全失败），MRR 0.516228 vs v0.3 0.569737（质量安全失败），span_f0.5@10 与 latency gate 通过
+
+解释：FD1-weighted setwise objective 强烈改变了选择，但增加了 available FD1 composite loss，并且相对 frozen v0.3 与 coverage-only 退化 file recall/MRR。这是负向算法结果，不是 pass，也不支持进入 FD2-B。
 
 ## 停止规则
 

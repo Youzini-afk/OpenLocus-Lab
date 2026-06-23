@@ -10699,3 +10699,26 @@ P3 fixed support collapse too aggressively: target proxy available/selected rate
 ### Decision
 
 Stop the role-proxy repair line. Do not run P4/P5. Do not enter the full v0.4 matrix from the current role-proxy design. Do not tune v0.31/v0.32 weights. Next algorithm work must pivot to direct FD1-objective setwise acquisition using the decomposition losses directly, rather than continuing target/support proxy repairs.
+
+## 2026-06-23 — BEA-FD2-A: Direct FD1-Objective Setwise Acquisition Smoke
+
+### Objective
+
+After P1/P2/P3 closed the role-proxy line, test one direct alternative: use FD1 aggregate failure-decomposition losses as a frozen setwise objective. The treatment is not a role proxy, not P4/P5, not a full v0.4 matrix, and not a v0.31/v0.32 weight tweak. It uses the same bounded 38-record P1/P2/P3 frame to answer whether a direct FD1-weighted objective can beat frozen v0.3 and coverage-only before any heldout FD2-B.
+
+### Implementation / validation
+
+- Local checkpoint `709b0cb` added standalone evaluator `eval/bea_fd2a_direct_fd1_objective_setwise_smoke.py`, docs, aggregate artifact, and manual CI workflow.
+- FD2-A uses 5 arms: same-budget BM25, same-budget RRF, frozen v0.3, coverage-only setwise, and FD1-weighted setwise.
+- It writes private score/decision/FD1-objective feature/post-hoc decomposition/objective-config JSONL under `/tmp`; public artifact is aggregate-only records tables.
+- Self-test 373/373; role proxies are explicitly unused.
+
+### Manual CI result
+
+Manual CI run `28025382422` passed fail-closed and produced a valid bounded No-Go: status `no_go_no_fd1_loss_reduction`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, private SCORE rows=190, decision rows=190, FD1-objective feature rows=190, post-hoc decomposition rows=950, objective config rows=1, forbidden_scan=pass.
+
+The FD1-weighted treatment materially changed selection (diff vs v0.3=0.710526, diff vs coverage-only=0.684211), but it made the objective worse: composite FD1 loss was 0.756181 versus v0.3 0.397802 and coverage-only 0.748783. Quality also regressed: file_recall@10 0.684211 versus v0.3 0.763158, and MRR 0.516228 versus v0.3 0.569737. Span_f0.5@10 and latency gates passed, but FD1-loss and quality gates failed.
+
+### Decision
+
+Do not run FD2-B from this objective. Do not tune v0.31/v0.32 weights. Do not resurrect role proxies. Treat the direct FD1-weighted objective as a failed algorithm hypothesis on this bounded frame; the next algorithm step must explain why optimizing aggregate FD1 losses selected worse evidence sets before proposing a new objective.

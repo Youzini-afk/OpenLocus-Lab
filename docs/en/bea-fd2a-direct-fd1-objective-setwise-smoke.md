@@ -2,9 +2,9 @@
 
 Date: 2026-06-23 (BEA-FD2-A direct FD1-objective setwise acquisition smoke
 — the direct algorithmic follow-on after BEA-v0.4-P3 stopped the role-proxy
-line. A setwise selector directly optimizes frozen FD1 failure-loss
-reduction derived from the committed FD1 aggregate artifact, without
-target/support proxies and without quality regression.)
+line. It tests whether a setwise selector can directly optimize frozen FD1
+failure-loss reduction derived from the committed FD1 aggregate artifact,
+without target/support proxies and without quality regression.)
 
 BEA-FD2-A is NOT P4/P5, NOT a full v0.4 matrix, NOT a v0.31/v0.32 weight
 tweak, and NOT fresh disjoint validation. It is one bounded algorithm-change
@@ -92,7 +92,7 @@ priority (no FD1 weights), isolating the FD1 weight contribution.
 38 records target (ContextBench >=20, RepoQA >=10) with BEA-2/3/4 mandatory
 exclusion windows and BEA-5/P1/P2/P3 overlap disclosed. This is NOT fresh
 disjoint validation — it isolates the algorithm change where role-proxy
-repair failed. If FD2-A passes, heldout/disjoint FD2-B can follow.
+repair failed. A pass would have justified heldout/disjoint FD2-B, but the CI result below did not pass.
 
 ## Gates
 
@@ -156,6 +156,22 @@ python3 eval/bea_fd2a_direct_fd1_objective_setwise_smoke.py \
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+## Manual CI result
+
+Manual CI run `28025382422` completed green in 9m06s with a valid bounded No-Go result:
+
+- status: `no_go_no_fd1_loss_reduction`
+- records_successful: 38 (ContextBench 20, RepoQA 18)
+- records_attempted_total: 46; records_excluded: 8
+- private manifests: SCORE 190, decision 190, FD1-objective feature 190, post-hoc decomposition 950, objective config 1
+- forbidden_scan: pass
+- selection_diff_rate_fd1lw_vs_v03: 0.710526 (passes)
+- selection_diff_rate_fd1lw_vs_coverage: 0.684211 (passes)
+- composite FD1 loss: v0.3 0.397802, coverage-only 0.748783, FD1-weighted 0.756181 (fails both mechanism gates)
+- quality: file_recall@10 0.684211 vs v0.3 0.763158 (fails safety), MRR 0.516228 vs v0.3 0.569737 (fails safety), span_f0.5@10 and latency gates pass
+
+Interpretation: the FD1-weighted setwise objective strongly changed selection, but it increased available FD1 composite loss and regressed file recall/MRR versus both frozen v0.3 and coverage-only. This is a negative algorithmic result, not a pass and not a basis for FD2-B.
 
 ## Stop rules
 

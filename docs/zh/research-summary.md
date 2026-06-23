@@ -3287,3 +3287,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **support/complementarity repair 过度修复**：target 与 support 的 availability/selection 都达到 1.0，target-support pair 也达到 1.0，但 support 退化：support_proxy_available_rate_p3=1.0（高于 <=0.90 gate），mean_support_candidates_per_record_p3=18.289474（高于 <=8.0 gate）。
 - **选择改变但质量退化**：P3 相对 v0.3/P2/P1 的 selection diff 为 0.5/0.394737/0.394737，但相对 v0.3，file_recall@10 delta=-0.052632，MRR delta=-0.155263，span_f0.5@10 delta=-0.003531，latency +0.001730s，quality_per_latency 0.015992 vs 0.016856。
 - **触发 stop rule**：不要运行 P4/P5，不要从当前 role-proxy 设计进入完整 v0.4 矩阵，不要调 v0.31/v0.32。下一步算法工作应转向直接 FD1-objective setwise acquisition。
+
+## BEA-FD2-A 发现
+
+- **BEA-FD2-A 直接 FD1 目标 setwise 冒烟已完成**：local checkpoint `709b0cb`，manual CI run `28025382422`。
+- **结果是有界 No-Go，不是 v0.4 推进**：status `no_go_no_fd1_loss_reduction`，records_successful=38（ContextBench 20，RepoQA 18），attempted=46，excluded=8，forbidden_scan=pass，self-test 373/373。
+- **选择强烈改变，但目标失败**：FD1-weighted selection 相对 v0.3 diff=0.710526、相对 coverage-only diff=0.684211，因此 treatment 不是 no-op。
+- **Composite loss 与质量退化**：composite FD1 loss 退化到 0.756181，而 v0.3 为 0.397802、coverage-only 为 0.748783；file_recall@10 降到 0.684211（v0.3 为 0.763158），MRR 降到 0.516228（v0.3 为 0.569737）。Span 与 latency gate 通过，但 FD1-loss 与 quality gate 失败。
+- **决定**：不要从这个 objective 进入 FD2-B，不要调 v0.31/v0.32 权重，也不要复活 role proxy。直接 FD1-weighted objective 在这个 bounded frame 上应视为失败算法假设。
