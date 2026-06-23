@@ -1125,8 +1125,9 @@ def _total_records_per_source_phase(
 class ParsedPrivateDecomposition:
     """Container for parsed FD1 private decomposition rows.
 
-    All per-record fields (``private_record_id``, candidate values, etc.)
-    are kept in-memory only; the public artifact never serializes them.
+    All per-record fields (``source_phase``, ``private_record_id``,
+    candidate values, etc.) are kept in-memory only; the public artifact
+    never serializes them.
     Only aggregate counts and rates derived from this object are
     published.
     """
@@ -1166,9 +1167,11 @@ def _parse_private_decomposition_jsonl(
     category_availability, latency_ms, cost_usd, tokens,
     provider_calls``.
 
-    Only ``private_record_id``, ``metric``, ``treatment_value``,
-    ``baseline_value``, and ``baseline_arm`` are read for the
-    file-selector lower bound; nothing else is retained.
+    Only ``source_phase``, ``private_record_id``, ``metric``,
+    ``treatment_value``, ``baseline_value``, and ``baseline_arm`` are read
+    for the file-selector lower bound; nothing else is retained. Record
+    identity is the composite ``(source_phase, private_record_id)`` because
+    BEA-4 and BEA-5 replay rows use overlapping private record ids.
     """
     pt = ParsedPrivateDecomposition()
     if path is None:
@@ -1195,12 +1198,15 @@ def _parse_private_decomposition_jsonl(
     except OSError:
         pt.parse_failures += 1
     pt.row_count = len(pt.rows)
-    # Group rows by private_record_id (in-memory; never serialized).
-    by_record: set[str] = set()
+    # Group rows by (source_phase, private_record_id) in-memory; never
+    # serialize either component in the public artifact. BEA-4 and BEA-5
+    # private ids can overlap, so private_record_id alone undercounts.
+    by_record: set[tuple[str, str]] = set()
     for row in pt.rows:
+        phase = str(row.get("source_phase", "") or "")
         rid = str(row.get("private_record_id", "") or "")
-        if rid:
-            by_record.add(rid)
+        if phase and rid:
+            by_record.add((phase, rid))
     pt.group_count = len(by_record)
     return pt
 
@@ -1211,7 +1217,7 @@ def _compute_file_selector_lower_bound(
     """Compute the file-selector oracle ceiling lower bound from the
     parsed FD1 private decomposition rows.
 
-    For each record (grouped by ``private_record_id``):
+    For each record (grouped by ``(source_phase, private_record_id)``):
 
     * v0.3 ``file_recall@10`` = ``treatment_value`` for metric
       ``file_recall@10`` (the treatment arm is always
@@ -1235,17 +1241,19 @@ def _compute_file_selector_lower_bound(
     """
     if not pt.rows:
         return
-    # Index treatment_value by (private_record_id, metric) — only the
-    # metrics we need. Collect baseline_value per record for
-    # file_recall@10 (one value per baseline_arm row).
-    treatment_lookup: dict[tuple[str, str], float] = {}
-    baseline_file_recall: dict[str, list[float]] = {}
-    all_rids: set[str] = set()
+    # Index treatment_value by ((source_phase, private_record_id), metric) —
+    # only the metrics we need. Collect baseline_value per composite record
+    # for file_recall@10 (one value per baseline_arm row).
+    treatment_lookup: dict[tuple[tuple[str, str], str], float] = {}
+    baseline_file_recall: dict[tuple[str, str], list[float]] = {}
+    all_rids: set[tuple[str, str]] = set()
     for row in pt.rows:
+        phase = str(row.get("source_phase", "") or "")
         rid = str(row.get("private_record_id", "") or "")
-        if not rid:
+        if not phase or not rid:
             continue
-        all_rids.add(rid)
+        rec_key = (phase, rid)
+        all_rids.add(rec_key)
         metric = str(row.get("metric", "") or "")
         try:
             t_val = float(row.get("treatment_value", 0.0) or 0.0)
@@ -1255,10 +1263,10 @@ def _compute_file_selector_lower_bound(
         if metric == "file_recall@10":
             # treatment_value is v0.3 file_recall (same for all 5
             # baselines × 12 categories = 60 rows for this record/metric).
-            treatment_lookup.setdefault((rid, "file_recall@10"), t_val)
-            baseline_file_recall.setdefault(rid, []).append(b_val)
+            treatment_lookup.setdefault((rec_key, "file_recall@10"), t_val)
+            baseline_file_recall.setdefault(rec_key, []).append(b_val)
         elif metric == "success_rate":
-            treatment_lookup.setdefault((rid, "success_rate"), t_val)
+            treatment_lookup.setdefault((rec_key, "success_rate"), t_val)
 
     denominator = 0
     lower_bound = 0
