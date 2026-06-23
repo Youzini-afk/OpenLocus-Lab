@@ -1,0 +1,270 @@
+name: bea-fd1-failure-decomposition
+
+# BEA-FD1 Failure Decomposition (fixed-protocol, manual opt-in).
+# MANUAL OPT-IN ONLY via workflow_dispatch with
+# enable_external_benchmark_network=true. Does NOT run on PR/push.
+# Uses NO provider secrets/vars/model env. Uploads ONLY the aggregate
+# public report.
+#
+# Fixed protocol: NO budget/methods inputs. Exact BEA-4/5 defaults.
+# claim_level = bea_fd1_failure_decomposition_smoke_only.
+# Does NOT change BEA v0.3, sampling, gates, arms, or weights.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-fd1-failure-decomposition-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-fd1-failure-decomposition:
+    name: bea-fd1-failure-decomposition
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-FD1 evaluator
+        run: python3 -m py_compile eval/bea_fd1_failure_decomposition.py
+
+      - name: BEA-FD1 self-test (no network)
+        run: python3 eval/bea_fd1_failure_decomposition.py --self-test
+
+      - name: BEA-FD1 decomposition (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_fd1_failure_decomposition_report.json"
+          python3 eval/bea_fd1_failure_decomposition.py \
+            --enable-external-benchmark-network \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-FD1 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: echo "enable_external_benchmark_network is false; skipping real BEA-FD1 decomposition."
+
+      - name: Validate BEA-FD1 report (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ runner.temp }}/bea_fd1_failure_decomposition_report.json
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          must_be_true = {"aggregate_only_public_artifact", "diagnostic_only"}
+          must_be_false = {
+              "external_benchmark_performance_claimed", "leaderboard_entry_claimed",
+              "downstream_agent_value_proven", "calibration_claimed",
+              "method_winner_claimed", "promotion_ready", "default_should_change",
+              "runtime_behavior_changed", "retriever_changed", "pack_builder_changed",
+              "backend_changed", "default_policy_changed",
+              "evidencecore_semantics_changed", "provider_calls_made",
+              "remote_provider_calls_made",
+              "algorithm_changed_during_bea_fd1", "weights_tuned_during_bea_fd1",
+          }
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          if status != "bea_fd1_decomposition_pass":
+              failures.append(f"expected status bea_fd1_decomposition_pass, got {status!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if report.get("provider_calls") != 0:
+              failures.append("expected provider_calls=0")
+          if report.get("schema_version") != "bea_fd1_failure_decomposition.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_fd1_failure_decomposition_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("phase") != "BEA-FD1":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          # Records-only public shape.
+          for key in ("source_run_records", "category_summary_records",
+                      "category_metric_loss_records", "category_win_tie_loss_records",
+                      "bucket_category_records", "candidate_source_category_records",
+                      "availability_records"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          # No dynamic dict mirrors.
+          for key in ("arm_metrics", "deltas", "aggregate_metrics",
+                      "per_record_decomposition", "decomposition_rows",
+                      "comparison_arm", "bucket", "candidate_source"):
+              if key in report:
+                  failures.append(f"forbidden field present: {key}")
+          # Counts-only self-test.
+          if "self_test_checks_total" not in report:
+              failures.append("expected self_test_checks_total")
+          if "self_test_checks_passed" not in report:
+              failures.append("expected self_test_checks_passed")
+          for ff in ("self_test_checks", "self_test_details", "checks", "check_list"):
+              if ff in report:
+                  failures.append(f"forbidden self-test detail field: {ff}")
+          # Fixed protocol: no budget/methods inputs.
+          if report.get("budget") != 5:
+              failures.append(f"expected budget=5, got {report.get('budget')!r}")
+          if report.get("methods") != ["bm25", "regex", "symbol"]:
+              failures.append(f"expected methods=[bm25,regex,symbol], got {report.get('methods')!r}")
+          # BEA-FD1 forbidden keys.
+          fd1_forbidden = (
+              "decomposition_path", "private_decomposition_path",
+              "private_decomposition_file", "private_record_id",
+              "decomposition_record_id", "per_record_decomposition",
+              "decomposition_rows", "candidate_features",
+              "accepted_candidates", "gold_paths", "gold_lines",
+              "gold_spans", "gold_content", "action_order",
+              "priority_components", "priority_score",
+              "selected_decisions", "budget_trace", "stop_reason",
+              "anchor_eligibility", "anchor_slots", "early_stop_reason",
+              "score_outcome", "action_trace", "budget_state",
+              "candidate_list", "candidates", "final_candidates",
+              "per_record_metrics", "runtime_query_features",
+              "query_feature_summary", "query_features",
+              "benchmark_row_id", "phase_run_id", "run_id",
+              "task_id", "row_id", "needle_id", "instance_id",
+              "provider_name", "model_name", "provider_payload",
+              "calibration", "method_winner", "best_method",
+              "recommended_default", "winner", "leaderboard", "promotion",
+              "self_test_checks", "self_test_details", "checks", "check_list",
+              "comparison_arm", "bucket", "candidate_source",
+          )
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k in keys: found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for i, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{i}]"))
+              return found
+          leaked = find_keys(report, fd1_forbidden)
+          if leaked:
+              failures.append(f"forbidden fields present: {leaked}")
+          # Natural-key uniqueness for every public record table.
+          def check_unique(records, key_fn, table_name):
+              seen = set()
+              for i, rec in enumerate(records):
+                  try:
+                      key = key_fn(rec)
+                  except (KeyError, TypeError):
+                      failures.append(f"{table_name}[{i}] missing natural key")
+                      continue
+                  if key in seen:
+                      failures.append(f"{table_name}[{i}] duplicate natural key: {key!r}")
+                  else:
+                      seen.add(key)
+          check_unique(report.get("source_run_records") or [],
+                       lambda r: (r["source_phase"], r["source_ci_run_id"]),
+                       "source_run_records")
+          check_unique(report.get("category_summary_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["category"], r["category_availability"]),
+                       "category_summary_records")
+          check_unique(report.get("category_metric_loss_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["category"], r["baseline_arm"], r["treatment_arm"], r["metric"]),
+                       "category_metric_loss_records")
+          check_unique(report.get("category_win_tie_loss_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["category"], r["baseline_arm"], r["treatment_arm"], r["metric"]),
+                       "category_win_tie_loss_records")
+          check_unique(report.get("bucket_category_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["bucket_type"], r["bucket_value"], r["category"]),
+                       "bucket_category_records")
+          check_unique(report.get("candidate_source_category_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["candidate_source_bucket"], r["category"]),
+                       "candidate_source_category_records")
+          check_unique(report.get("availability_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"], r["category"], r["category_availability"]),
+                       "availability_records")
+          # Private decomposition manifest.
+          manifest = report.get("private_decomposition_manifest", {})
+          if not isinstance(manifest, dict) or not manifest:
+              failures.append("expected non-empty private_decomposition_manifest")
+          else:
+              if manifest.get("path_publicly_serialized") is not False:
+                  failures.append("expected path_publicly_serialized=false")
+              if manifest.get("records_written") is not True:
+                  failures.append("expected records_written=true")
+              if manifest.get("record_count") != 86040:
+                  failures.append(f"expected private decomposition record_count=86040, got {manifest.get('record_count')!r}")
+          # Replay agreement: both source phases present.
+          srr = report.get("source_run_records") or []
+          phases_present = {r.get("source_phase") for r in srr}
+          if "BEA-4" not in phases_present:
+              failures.append("expected BEA-4 in source_run_records")
+          if "BEA-5" not in phases_present:
+              failures.append("expected BEA-5 in source_run_records")
+          # Replay mismatch check.
+          for r in srr:
+              if not r.get("replay_protocol_match", False):
+                  failures.append(f"replay mismatch for {r.get('source_phase')}: {r.get('replay_mismatch_reason')}")
+          if report.get("records_decomposed") != 239:
+              failures.append(f"expected records_decomposed=239, got {report.get('records_decomposed')!r}")
+          fcc = report.get("failure_category_counts") or {}
+          for key in ("private_decomposition_write_failed", "private_score_parse_failed",
+                      "replay_mismatch", "replay_subprocess_failed"):
+              if fcc.get(key, 0) != 0:
+                  failures.append(f"expected {key}=0, got {fcc.get(key)!r}")
+          if failures:
+              print("BEA-FD1 report validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-FD1 report validation passed.")
+          print(f"  status={status}")
+          print(f"  records_decomposed={report.get('records_decomposed')}")
+          print(f"  source_run_records={len(srr)}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree
+        run: git diff --check
+
+      - name: Upload BEA-FD1 aggregate report (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-fd1-failure-decomposition-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_fd1_failure_decomposition_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

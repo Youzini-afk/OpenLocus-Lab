@@ -3191,3 +3191,19 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **B16-J live 结果**：手动 real-provider CI run `27953321504` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；329/329 self-test。结果：`control_sparse` solve/test=0.0、selected_target_file_rate=0.125、wrong_file_edit_rate=0.875；`ambiguous_target_only` solve/test=0.0、selected_target_file_rate=1.0；`ambiguous_support_only` solve/test=0.25、selected_target_file_rate=0.25、selected_distractor_file_rate=0.625、wrong_file_edit_rate=0.75；`ambiguous_distractor_plus_support` solve/test=0.625、selected_target_file_rate=0.625、selected_distractor_file_rate=0.375；`ambiguous_target_plus_support` solve/test=1.0、selected_target_file_rate=1.0、wrong_file_edit_rate=0.0。`ambiguous_target_plus_support` 的主 delta：vs `ambiguous_support_only` solve/test delta=+0.75、wrong_file_edit_rate delta=-0.75、selected_target_file_rate delta=+0.75；vs `ambiguous_target_only` solve/test delta=+1.0；vs `ambiguous_distractor_plus_support` solve/test delta=+0.375、wrong_file_edit_rate delta=-0.375。机制 summary：`target_support_conjunction_required_count=6`、`support_only_sufficient_count=2`、`target_only_sufficient_count=0`、`distractor_hurts_count=3`、`ambiguous_support_wrong_binding_count=6`、`wrong_file_selection_count=6`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在 role-neutral 文件名和完整 prompt 泄漏自测之后，B16-J 终于在该有界合成切片上隔离出 target+support conjunction 信号；support-only 多数任务不再足够（2/8），target-only 0/8，而 ambiguous support 加 target binding 后 8/8。该结果仍只是 smoke-level 合成 live-provider 机制结果，不是下游价值证明、BEA 优越性、method-winner/default、benchmark/performance、calibration、promotion 或 runtime/EvidenceCore 改动。
 - **停止规则结果**：B16-J 已隔离出有界 conjunction 信号，因此不运行 B16-K；下一步转向外部 BEA scale / 更广真实 benchmark 工作。
 - **严格声明边界**：`claim_level=ambiguous_support_conjunction_downstream_smoke_only`。不是下游价值/BEA 优越性/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore 声明。`bea_superiority_claimed=false`。
+
+## BEA-FD1 findings
+
+- **BEA-FD1 通过子进程精确重放 BEA-4/5 协议**：BEA-4（CI 27957586271，
+  预期 120/840）和 BEA-5（CI 28003522632，预期 119/833）。解析私有 SCORE
+  JSONL 文件，将 v0.3 结果分类到 12 固定类别，发布 records-only 聚合分解
+  表。固定协议：无 budget/methods CLI 输入。
+- **162/162 self-test 检查通过**。
+- **公开 artifact 为 records-only**，natural key 按 oracle 指引。
+- **指标损失**：质量 = max(0, baseline-treatment)；延迟 = max(0,
+  treatment-baseline)。
+- **完整 BEA-4/BEA-5 重放 CI 待运行**；已提交 artifact 仅反映 no-network
+  unavailable 状态。
+- **严格 claim 边界**：`claim_level=bea_fd1_failure_decomposition_smoke_only`。
+  非 benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。

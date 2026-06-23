@@ -10502,3 +10502,50 @@ recorded as a BEA-5 pass because the quota was missed.
   is a No-Go / near-miss result and feeds failure decomposition.
 - RRF arm is required; CI fails if RRF is disabled/missing.
 - BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 semantics not mutated.
+
+## 2026-06-22 — BEA-FD1: BEA-4/5 Frozen Replay Failure Decomposition
+
+### Objective
+
+After BEA-5 near-miss (`records_successful=119`, `status=partial`, CI
+`28003522632`), run per-record failure decomposition before BEA v0.4. Replays
+frozen BEA-4/5 protocols to regenerate per-record private decomposition rows
+under `/tmp`, classifies v0.3 treatment outcomes into a fixed category enum,
+and publishes records-only aggregate decomposition tables. Does NOT change
+BEA v0.3, sampling, gates, arms, or weights. Does NOT implement v0.4.
+
+### Fixed category enum
+
+`gold_file_absent`, `gold_span_absent`, `correct_file_wrong_span`,
+`redundant_same_file_candidates`, `too_many_anchor_slots`,
+`missing_support_candidate`, `support_selected_without_target`,
+`target_selected_without_support`, `risk_penalty_removed_gold`,
+`early_stop_too_early`, `budget_spent_on_low_marginal_gain`,
+`latency_without_quality_gain`.
+
+### Validation
+
+```text
+python3 -m py_compile eval/bea_fd1_failure_decomposition.py  => PASS
+python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (218/218 checks)
+python3 eval/bea_fd1_failure_decomposition.py \
+  --out artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json  => PASS
+  (status: unavailable_with_reason, no-network artifact,
+   provider_calls=0, forbidden_scan=pass,
+   algorithm_changed_during_bea_fd1=false, weights_tuned_during_bea_fd1=false,
+   self_test_checks_total=218, self_test_checks_passed=218)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Caveats
+
+- BEA-FD1 is eval/diagnostic only. NOT benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value claim.
+- v0.3 algorithm/weights frozen; `algorithm_changed_during_bea_fd1=false`,
+  `weights_tuned_during_bea_fd1=false` (binding).
+- First implementation computes a subset of categories; trace-missing
+  categories marked `unavailable_missing_trace`.
+- Full BEA-4/BEA-5 replay CI pending; committed artifact reflects no-network
+  unavailable state only.

@@ -77,6 +77,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea3-anchor-span-latency.md`: [en](en/bea3-anchor-span-latency.md) · [zh](zh/bea3-anchor-span-latency.md)
 - `bea4-external-scale-smoke.md`: [en](en/bea4-external-scale-smoke.md) · [zh](zh/bea4-external-scale-smoke.md)
 - `bea5-frozen-policy-robustness.md`: [en](en/bea5-frozen-policy-robustness.md) · [zh](zh/bea5-frozen-policy-robustness.md)
+- `bea-fd1-failure-decomposition.md`: [en](en/bea-fd1-failure-decomposition.md) · [zh](zh/bea-fd1-failure-decomposition.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

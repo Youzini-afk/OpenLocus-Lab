@@ -9746,3 +9746,49 @@ latency trade-off，且因为 quota 未达成不能记录为 BEA-5 pass。
   作为 failure decomposition 输入。
 - RRF arm 必需；CI 在 RRF 禁用/缺失时失败。
 - BEA-0/BEA-1/BEA-2/BEA-3/BEA-4 语义未修改。
+
+## 2026-06-22 — BEA-FD1: BEA-4/5 冻结重放失败分解
+
+### 目标
+
+BEA-5 近似未达（`records_successful=119`，`status=partial`，CI
+`28003522632`）后，在 BEA v0.4 前运行 per-record 失败分解。重放冻结
+BEA-4/5 协议以在 `/tmp` 下重新生成 per-record 私有分解行，将 v0.3 treatment
+结果分类到固定类别 enum，并发布 records-only 聚合分解表。不更改 BEA v0.3、
+采样、gate、arm 或权重。不实现 v0.4。
+
+### 固定类别 enum
+
+`gold_file_absent`、`gold_span_absent`、`correct_file_wrong_span`、
+`redundant_same_file_candidates`、`too_many_anchor_slots`、
+`missing_support_candidate`、`support_selected_without_target`、
+`target_selected_without_support`、`risk_penalty_removed_gold`、
+`early_stop_too_early`、`budget_spent_on_low_marginal_gain`、
+`latency_without_quality_gain`。
+
+### 验证
+
+```text
+python3 -m py_compile eval/bea_fd1_failure_decomposition.py  => PASS
+python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (218/218 checks)
+python3 eval/bea_fd1_failure_decomposition.py \
+  --out artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json  => PASS
+  (status: unavailable_with_reason, no-network artifact,
+   provider_calls=0, forbidden_scan=pass,
+   algorithm_changed_during_bea_fd1=false, weights_tuned_during_bea_fd1=false,
+   self_test_checks_total=218, self_test_checks_passed=218)
+python3 scripts/validate_docs_i18n.py  => PASS
+git diff --check  => PASS
+```
+
+### Caveats
+
+- BEA-FD1 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
+  method-winner/calibration/promotion/default/runtime/EvidenceCore/
+  downstream-value 声明。
+- v0.3 算法/权重冻结；`algorithm_changed_during_bea_fd1=false`、
+  `weights_tuned_during_bea_fd1=false`（绑定）。
+- 首次实现计算类别子集；trace-missing 类别标记为
+  `unavailable_missing_trace`。
+- 完整 BEA-4/BEA-5 重放 CI 待运行；已提交 artifact 仅反映 no-network
+  unavailable 状态。

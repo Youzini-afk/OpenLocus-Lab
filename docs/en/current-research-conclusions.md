@@ -151,7 +151,14 @@ The following remain false unless a future phase explicitly validates them:
 
 ## 8. Current next work
 
-Immediate next work is BEA-4/BEA-5 per-record failure decomposition using private SCORE records:
+BEA-FD1 failure decomposition is now implemented as
+`eval/bea_fd1_failure_decomposition.py` with a 12-category fixed enum, 5
+required comparison arms, records-only aggregate tables, and 218/218 self-test
+checks. The no-network artifact is truthful `unavailable_with_reason`. Full
+BEA-4/BEA-5 replay CI is pending. See
+`docs/en/bea-fd1-failure-decomposition.md`.
+
+Immediate next work is the full BEA-4/BEA-5 replay decomposition CI run:
 
 1. Compare v0.3 against v0.2, v0, same-budget BM25, agreement-only, and same-budget RRF.
 2. Attribute losses to candidate-pool absence, span miss, redundancy, support/target mismatch, risk penalty, early stop, low marginal gain, and latency without quality gain.

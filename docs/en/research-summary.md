@@ -3771,3 +3771,27 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **B16-J live result**: Manual real-provider CI run `27953321504` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 329/329 self-tests. Results: `control_sparse` solve/test=0.0, selected_target_file_rate=0.125, wrong_file_edit_rate=0.875; `ambiguous_target_only` solve/test=0.0, selected_target_file_rate=1.0; `ambiguous_support_only` solve/test=0.25, selected_target_file_rate=0.25, selected_distractor_file_rate=0.625, wrong_file_edit_rate=0.75; `ambiguous_distractor_plus_support` solve/test=0.625, selected_target_file_rate=0.625, selected_distractor_file_rate=0.375; `ambiguous_target_plus_support` solve/test=1.0, selected_target_file_rate=1.0, wrong_file_edit_rate=0.0. Primary deltas for `ambiguous_target_plus_support`: vs `ambiguous_support_only` solve/test delta=+0.75, wrong_file_edit_rate delta=-0.75, selected_target_file_rate delta=+0.75; vs `ambiguous_target_only` solve/test delta=+1.0; vs `ambiguous_distractor_plus_support` solve/test delta=+0.375, wrong_file_edit_rate delta=-0.375. Mechanism summary: `target_support_conjunction_required_count=6`, `support_only_sufficient_count=2`, `target_only_sufficient_count=0`, `distractor_hurts_count=3`, `ambiguous_support_wrong_binding_count=6`, `wrong_file_selection_count=6`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: after role-neutral filenames and full-prompt leakage tests, B16-J finally isolated a bounded target+support conjunction signal on this synthetic slice; support-only was no longer sufficient on most tasks (2/8), target-only solved 0/8, and adding target binding to ambiguous support solved 8/8. This is still a smoke-level synthetic live-provider mechanism result, not downstream value proof, BEA superiority, method-winner/default, benchmark/performance, calibration, promotion, or runtime/EvidenceCore change.
 - **Stop rule outcome**: B16-J isolated a bounded conjunction signal, so do not run B16-K; move next to external BEA scale / broader real benchmark work.
 - **Strict claim boundary**: `claim_level=ambiguous_support_conjunction_downstream_smoke_only`. NOT downstream value/BEA superiority/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore claim. `bea_superiority_claimed=false`.
+
+## BEA-FD1 findings
+
+- **BEA-FD1 replays both exact BEA-4/5 protocols via subprocess**: BEA-4
+  (CI 27957586271, expected 120/840) and BEA-5 (CI 28003522632, expected
+  119/833). Parses private SCORE JSONL files, classifies v0.3 outcomes into
+  12 fixed categories, publishes records-only aggregate decomposition tables.
+  Fixed protocol: no budget/methods CLI inputs.
+- **162/162 self-test checks pass**.
+- **Public artifact records-only** with natural keys per oracle guidance:
+  (source_phase, benchmark, category, category_availability), etc.
+- **Metric loss**: quality = max(0, baseline-treatment); latency = max(0,
+  treatment-baseline). Records include loss_sum/loss_mean/delta_mean.
+- **Available categories**: gold_file_absent, correct_file_wrong_span,
+  too_many_anchor_slots, early_stop_too_early, budget_spent_on_low_marginal_gain,
+  latency_without_quality_gain. **Unavailable**: redundant_same_file_candidates
+  (missing_trace), risk_penalty_removed_gold (missing_trace),
+  missing_support_candidate/support_selected_without_target/target_selected_without_support
+  (no_support_label).
+- **Full BEA-4/BEA-5 replay CI pending**; committed artifact reflects
+  no-network unavailable state only.
+- **Strict claim boundary**: `claim_level=bea_fd1_failure_decomposition_smoke_only`.
+  NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
+  default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.
