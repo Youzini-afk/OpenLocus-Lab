@@ -3779,7 +3779,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   119/833). Parses private SCORE JSONL files, classifies v0.3 outcomes into
   12 fixed categories, publishes records-only aggregate decomposition tables.
   Fixed protocol: no budget/methods CLI inputs.
-- **162/162 self-test checks pass**.
+- **174/174 self-test checks pass**.
 - **Public artifact records-only** with natural keys per oracle guidance:
   (source_phase, benchmark, category, category_availability), etc.
 - **Metric loss**: quality = max(0, baseline-treatment); latency = max(0,
@@ -3790,8 +3790,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   (missing_trace), risk_penalty_removed_gold (missing_trace),
   missing_support_candidate/support_selected_without_target/target_selected_without_support
   (no_support_label).
-- **Full BEA-4/BEA-5 replay CI pending**; committed artifact reflects
-  no-network unavailable state only.
+- **Manual BEA-FD1 CI run `28011901294` passed**: status `bea_fd1_decomposition_pass`, records_decomposed=239, private decomposition rows=86040, forbidden_scan=pass. Aggregate tables expose category counts, metric-loss, win/tie/loss, benchmark buckets, and candidate-source buckets without private rows. Dominant available categories are low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span; support-target categories remain unavailable until private SCORE has role labels.
 - **Strict claim boundary**: `claim_level=bea_fd1_failure_decomposition_smoke_only`.
   NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value. `provider_calls=0`.

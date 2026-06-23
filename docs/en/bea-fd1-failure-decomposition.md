@@ -76,16 +76,31 @@ rrf_same_budget.
 
 ```text
 python3 -m py_compile eval/bea_fd1_failure_decomposition.py  => PASS
-python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (170/170 checks)
+python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (174/174 checks)
 python3 eval/bea_fd1_failure_decomposition.py \
   --out artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json  => PASS
   (status: unavailable_with_reason, no-network artifact,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea_fd1=false, weights_tuned_during_bea_fd1=false,
-   self_test_checks_total=170, self_test_checks_passed=170)
+   self_test_checks_total=174, self_test_checks_passed=174)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+
+## Manual CI result
+
+Manual CI run `28011901294` passed in 54m52s. The public aggregate artifact is now the CI result:
+
+- `status = bea_fd1_decomposition_pass`
+- `records_decomposed = 239` (BEA-4 120 + BEA-5 119)
+- `private_decomposition_manifest.record_count = 86040`
+- `source_run_records`: BEA-4 replay matched run `27957586271` (120/840); BEA-5 replay matched run `28003522632` (119/833)
+- Run `28011901294` supersedes earlier FD1 run `28008602265`, whose public `source_run_records` incorrectly reported BEA-4 benchmark contribution counts as 0/0.
+- aggregate table counts: category_summary=16, category_metric_loss=480, category_win_tie_loss=480, bucket_category=16, candidate_source_category=16, availability=48
+- strongest aggregate categories are budget spent on low marginal gain, latency without quality gain, gold file absent, and correct file / wrong span; support-target categories remain unavailable because the current private SCORE schema has no support/target labels.
+
+This is failure-mechanism evidence for v0.4 design, not a benchmark performance, winner, default, calibration, or downstream-value claim.
 
 ## Caveats
 
@@ -94,8 +109,7 @@ git diff --check  => PASS
   downstream-value claim.
 - v0.3 algorithm/weights frozen; `algorithm_changed_during_bea_fd1=false`.
 - Fixed protocol: no budget/methods CLI inputs; exact BEA-4/5 defaults.
-- Full BEA-4/BEA-5 replay CI pending; committed artifact reflects no-network
-  unavailable state only.
+- Manual CI run `28011901294` completed the full BEA-4/BEA-5 replay: status `bea_fd1_decomposition_pass`, records_decomposed=239, private_decomposition_manifest.record_count=86040, forbidden_scan=pass.
 - `redundant_same_file_candidates` and `risk_penalty_removed_gold` marked
   `unavailable_missing_trace` in first implementation.
 - `missing_support_candidate`, `support_selected_without_target`,

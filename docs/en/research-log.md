@@ -10527,13 +10527,13 @@ BEA v0.3, sampling, gates, arms, or weights. Does NOT implement v0.4.
 
 ```text
 python3 -m py_compile eval/bea_fd1_failure_decomposition.py  => PASS
-python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (218/218 checks)
+python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (174/174 checks)
 python3 eval/bea_fd1_failure_decomposition.py \
   --out artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json  => PASS
   (status: unavailable_with_reason, no-network artifact,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea_fd1=false, weights_tuned_during_bea_fd1=false,
-   self_test_checks_total=218, self_test_checks_passed=218)
+   self_test_checks_total=174, self_test_checks_passed=174)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
@@ -10547,5 +10547,5 @@ git diff --check  => PASS
   `weights_tuned_during_bea_fd1=false` (binding).
 - First implementation computes a subset of categories; trace-missing
   categories marked `unavailable_missing_trace`.
-- Full BEA-4/BEA-5 replay CI pending; committed artifact reflects no-network
-  unavailable state only.
+- Manual BEA-FD1 CI run `28011901294` passed: status `bea_fd1_decomposition_pass`, records_decomposed=239, private decomposition rows=86040, forbidden_scan=pass.
+- Result interpretation: dominant available categories are low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span; support-target categories remain unavailable until role labels exist in private SCORE.

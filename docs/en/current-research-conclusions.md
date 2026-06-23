@@ -151,22 +151,12 @@ The following remain false unless a future phase explicitly validates them:
 
 ## 8. Current next work
 
-BEA-FD1 failure decomposition is now implemented as
-`eval/bea_fd1_failure_decomposition.py` with a 12-category fixed enum, 5
-required comparison arms, records-only aggregate tables, and 218/218 self-test
-checks. The no-network artifact is truthful `unavailable_with_reason`. Full
-BEA-4/BEA-5 replay CI is pending. See
-`docs/en/bea-fd1-failure-decomposition.md`.
+BEA-FD1 failure decomposition is complete. Manual CI run `28011901294` replayed BEA-4 and BEA-5 exactly, decomposed 239 successful records, wrote 86040 private decomposition rows, and published records-only aggregate tables. See `docs/en/bea-fd1-failure-decomposition.md`.
 
-Immediate next work is the full BEA-4/BEA-5 replay decomposition CI run:
+Immediate next work is to use FD1 evidence to freeze the BEA v0.4 hypothesis and ablation design. The current decomposition points to low marginal gain / latency cost, gold-file absence, and correct-file/wrong-span as concrete failure families; support-target role categories remain unavailable until private SCORE includes role labels.
 
-1. Compare v0.3 against v0.2, v0, same-budget BM25, agreement-only, and same-budget RRF.
-2. Attribute losses to candidate-pool absence, span miss, redundancy, support/target mismatch, risk penalty, early stop, low marginal gain, and latency without quality gain.
-3. Report failure counts, metric loss contribution, win/tie/loss, ContextBench vs RepoQA buckets, and candidate-source buckets.
-4. Use this decomposition to design BEA v0.4 as setwise/complementarity-aware acquisition.
-
-Do not run B16-K, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before this decomposition.
+Do not run B16-K, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before the v0.4 setwise/complementarity plan.
 
 ## 9. One-sentence conclusion
 
-OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, so the immediate research problem is failure decomposition and then setwise/complementarity-aware BEA v0.4.
+OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, and BEA-FD1 has now decomposed BEA-4/5 failures; the immediate research problem is setwise/complementarity-aware BEA v0.4.

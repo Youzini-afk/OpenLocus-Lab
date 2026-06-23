@@ -310,7 +310,7 @@ Implement a local-only, deterministic, depth=1 semantic graph scaffold. No LSP/S
 4. Materialization via StoreHit gate is essential: graph edges carry build-time sha, and `materialize_evidence` rejects stale/invalid hits. This means graph-derived evidence is always citation-valid.
 5. Graph is rebuilt on each command (not persisted). Stale records are caught at build time.
 
-### Caveats
+### 限制
 
 - This is a Level0 deterministic scaffold only. Not a precise call graph, type graph, or dependency graph.
 - Import parsing is line-based heuristic, not a full parser. It will miss multi-line imports and macro-generated code.
@@ -9770,13 +9770,13 @@ BEA-4/5 协议以在 `/tmp` 下重新生成 per-record 私有分解行，将 v0.
 
 ```text
 python3 -m py_compile eval/bea_fd1_failure_decomposition.py  => PASS
-python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (218/218 checks)
+python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (174/174 checks)
 python3 eval/bea_fd1_failure_decomposition.py \
   --out artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json  => PASS
   (status: unavailable_with_reason, no-network artifact,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea_fd1=false, weights_tuned_during_bea_fd1=false,
-   self_test_checks_total=218, self_test_checks_passed=218)
+   self_test_checks_total=174, self_test_checks_passed=174)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
@@ -9790,5 +9790,5 @@ git diff --check  => PASS
   `weights_tuned_during_bea_fd1=false`（绑定）。
 - 首次实现计算类别子集；trace-missing 类别标记为
   `unavailable_missing_trace`。
-- 完整 BEA-4/BEA-5 重放 CI 待运行；已提交 artifact 仅反映 no-network
-  unavailable 状态。
+- Manual BEA-FD1 CI run `28011901294` 通过：status `bea_fd1_decomposition_pass`，records_decomposed=239，private decomposition rows=86040，forbidden_scan=pass。
+- 结果解释：主导的 available 类别是 low marginal gain / latency cost、gold-file absence、correct-file/wrong-span；support-target 类别在私有 SCORE 尚无 role labels 前仍为 unavailable。

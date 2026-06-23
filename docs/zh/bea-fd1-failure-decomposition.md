@@ -74,26 +74,40 @@ agreement_only_same_budget、rrf_same_budget。
 
 ```text
 python3 -m py_compile eval/bea_fd1_failure_decomposition.py  => PASS
-python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (170/170 checks)
+python3 eval/bea_fd1_failure_decomposition.py --self-test  => PASS (174/174 checks)
 python3 eval/bea_fd1_failure_decomposition.py \
   --out artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json  => PASS
   (status: unavailable_with_reason, no-network artifact,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea_fd1=false, weights_tuned_during_bea_fd1=false,
-   self_test_checks_total=170, self_test_checks_passed=170)
+   self_test_checks_total=174, self_test_checks_passed=174)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-## Caveats
+
+## Manual CI 结果
+
+Manual CI run `28011901294` 通过，用时 54m52s。公开聚合 artifact 已替换为 CI 结果：
+
+- `status = bea_fd1_decomposition_pass`
+- `records_decomposed = 239`（BEA-4 120 + BEA-5 119）
+- `private_decomposition_manifest.record_count = 86040`
+- `source_run_records`：BEA-4 replay 匹配 run `27957586271`（120/840）；BEA-5 replay 匹配 run `28003522632`（119/833）
+- Run `28011901294` 取代较早 FD1 run `28008602265`；后者的公开 `source_run_records` 曾把 BEA-4 benchmark contribution counts 误写为 0/0。
+- 聚合表规模：category_summary=16，category_metric_loss=480，category_win_tie_loss=480，bucket_category=16，candidate_source_category=16，availability=48
+- 最强聚合类别是 budget spent on low marginal gain、latency without quality gain、gold file absent、correct file / wrong span；support-target 类别仍为 unavailable，因为当前私有 SCORE schema 没有 support/target 标签。
+
+这是用于 v0.4 设计的 failure-mechanism evidence，不是 benchmark performance、winner、default、calibration 或 downstream-value 声明。
+
+## 限制
 
 - BEA-FD1 是 eval/diagnostic only。不是 benchmark/leaderboard/performance/
   method-winner/calibration/promotion/default/runtime/EvidenceCore/
   downstream-value 声明。
 - v0.3 算法/权重冻结；`algorithm_changed_during_bea_fd1=false`。
 - 固定协议：无 budget/methods CLI 输入；使用精确 BEA-4/5 默认值。
-- 完整 BEA-4/BEA-5 重放 CI 待运行；已提交 artifact 仅反映 no-network
-  unavailable 状态。
+- Manual CI run `28011901294` 已完成完整 BEA-4/BEA-5 replay：status `bea_fd1_decomposition_pass`，records_decomposed=239，private_decomposition_manifest.record_count=86040，forbidden_scan=pass。
 - `redundant_same_file_candidates` 和 `risk_penalty_removed_gold` 标记为
   `unavailable_missing_trace`。
 - `missing_support_candidate`、`support_selected_without_target`、

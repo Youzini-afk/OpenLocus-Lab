@@ -3192,18 +3192,17 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **停止规则结果**：B16-J 已隔离出有界 conjunction 信号，因此不运行 B16-K；下一步转向外部 BEA scale / 更广真实 benchmark 工作。
 - **严格声明边界**：`claim_level=ambiguous_support_conjunction_downstream_smoke_only`。不是下游价值/BEA 优越性/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore 声明。`bea_superiority_claimed=false`。
 
-## BEA-FD1 findings
+## BEA-FD1 发现
 
 - **BEA-FD1 通过子进程精确重放 BEA-4/5 协议**：BEA-4（CI 27957586271，
   预期 120/840）和 BEA-5（CI 28003522632，预期 119/833）。解析私有 SCORE
   JSONL 文件，将 v0.3 结果分类到 12 固定类别，发布 records-only 聚合分解
   表。固定协议：无 budget/methods CLI 输入。
-- **162/162 self-test 检查通过**。
+- **174/174 self-test 检查通过**。
 - **公开 artifact 为 records-only**，natural key 按 oracle 指引。
 - **指标损失**：质量 = max(0, baseline-treatment)；延迟 = max(0,
   treatment-baseline)。
-- **完整 BEA-4/BEA-5 重放 CI 待运行**；已提交 artifact 仅反映 no-network
-  unavailable 状态。
+- **Manual BEA-FD1 CI run `28011901294` 通过**：status `bea_fd1_decomposition_pass`，records_decomposed=239，private decomposition rows=86040，forbidden_scan=pass。聚合表公开 category counts、metric-loss、win/tie/loss、benchmark buckets 和 candidate-source buckets，不公开私有行。主导的 available 类别是 low marginal gain / latency cost、gold-file absence、correct-file/wrong-span；support-target 类别在私有 SCORE 有 role labels 前仍为 unavailable。
 - **严格 claim 边界**：`claim_level=bea_fd1_failure_decomposition_smoke_only`。
   非 benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value。`provider_calls=0`。
