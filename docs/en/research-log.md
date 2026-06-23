@@ -10676,3 +10676,26 @@ P2 fixed the target availability problem: target_proxy_available_rate moved from
 ### Decision
 
 Do not enter the full v0.4 matrix from P2. Next step must repair support/complementarity proxy behavior or stop the current role-proxy design; no v0.31/v0.32 weight tweaks and no B16-K.
+
+
+## 2026-06-23 — BEA-v0.4-P3: Support/Complementarity Proxy Repair Smoke
+
+### Objective
+
+Run exactly one final bounded repair after P2: condition support/complementarity proxies on the repaired P2 target anchor, test whether support availability becomes non-degenerate, whether P3 materially changes selections versus v0.3/P2/P1, and whether quality remains safe. This is not the full v0.4 matrix and not a v0.4 proof.
+
+### Implementation / validation
+
+- Local checkpoint `7f58f66` added standalone evaluator `eval/bea_v04_p3_support_complementarity_repair_smoke.py`, docs, aggregate artifact, and manual CI workflow.
+- P3 uses the same P1/P2 frame, keeps v0.3/P1/P2 frozen, uses 7 arms only, writes private score/decision/role-proxy/support-feature/pair-feature JSONL under `/tmp`, and publishes records-only aggregate tables.
+- Self-test 400/400; public artifact has no top-level manifest dict mirrors and no dynamic `hard_gates`/`failure_category_counts` dicts.
+
+### Manual CI result
+
+Manual CI run `28022595796` passed fail-closed and produced a valid P3 No-Go: status `no_go_support_proxy_degenerate`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, private SCORE rows=266, decision rows=190, role-proxy rows=760, support-feature rows=760, pair-feature rows=38, forbidden_scan=pass.
+
+P3 fixed support collapse too aggressively: target proxy available/selected rates are 1.0, support proxy available/selected rates are 1.0, and target-support pair available/selected rates are 1.0, but `support_proxy_available_rate_p3=1.0` exceeds the <=0.90 gate and `mean_support_candidates_per_record_p3=18.289474` exceeds the <=8.0 non-degeneracy gate. P3 changed selections (diff vs v0.3=0.5, vs P2=0.394737, vs P1=0.394737), but quality regressed versus v0.3: file_recall@10 delta -0.052632, MRR delta -0.155263, span_f0.5@10 delta -0.003531, latency +0.001730s, quality_per_latency 0.015992 vs 0.016856.
+
+### Decision
+
+Stop the role-proxy repair line. Do not run P4/P5. Do not enter the full v0.4 matrix from the current role-proxy design. Do not tune v0.31/v0.32 weights. Next algorithm work must pivot to direct FD1-objective setwise acquisition using the decomposition losses directly, rather than continuing target/support proxy repairs.

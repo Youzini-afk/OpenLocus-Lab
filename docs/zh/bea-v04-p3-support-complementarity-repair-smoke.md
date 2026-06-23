@@ -187,11 +187,31 @@ git diff --check  => PASS
 ```
 
 默认无网络 artifact 诚实地返回 `unavailable_with_reason`
-（`network_mode=disabled_opt_in`）。真实冒烟运行需要显式
-`--enable-external-benchmark-network` 与公开网络访问（仅手动 CI
-`workflow_dispatch`）。若 P3 通过，下一步是冻结的完整 v0.4 矩阵设计。若 P3
-支持可用性失败、支持退化、未改变选择或质量回归，则角色代理线停止，项目转向
-直接 FD1 目标集合获取。无 P4/P5 代理修复。
+（`network_mode=disabled_opt_in`）。真实冒烟证据来自 manual CI run
+`28022595796`。
+
+## Manual CI 结果
+
+Manual CI run `28022595796` 通过 fail-closed workflow，并产生有效 P3 No-Go：
+status `no_go_support_proxy_degenerate`，records_successful=38（ContextBench
+20、RepoQA 18），attempted=46，excluded=8，forbidden_scan=pass，self-test
+400/400。私有 manifest 仅写入 `/tmp`：score rows=266，decision rows=190，
+role-proxy rows=760，support-feature rows=760，pair-feature rows=38。
+
+P3 过度修复了 P2 的 support-collapse 失败：target proxy available/selected
+rate 都为 1.0，support proxy available/selected rate 都为 1.0，target-support
+pair available/selected rate 都为 1.0。但 support proxy 已退化：
+`support_proxy_available_rate_p3=1.0` 超过 <=0.90 gate，且
+`mean_support_candidates_per_record_p3=18.289474` 超过 <=8.0 gate。P3
+确实相对 v0.3/P2/P1 实质改变 selection（diff rate 0.5 / 0.394737 /
+0.394737），但质量相对 v0.3 退化：file_recall@10 0.710526 vs 0.763158
+（delta -0.052632），MRR 0.414474 vs 0.569737（delta -0.155263），
+span_f0.5@10 0.035311 vs 0.038842，latency +0.001730s，
+quality_per_latency 0.015992 vs 0.016856。
+
+决定：P3 是最后一个有界 role-proxy repair。不要运行 P4/P5，不要从当前
+role-proxy 设计进入完整 v0.4 矩阵，也不要做 v0.31/v0.32 权重微调。下一步
+算法工作必须转向直接 FD1-objective setwise acquisition，而不是继续修代理。
 
 ## 注意事项
 

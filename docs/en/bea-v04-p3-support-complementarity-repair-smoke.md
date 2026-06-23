@@ -212,13 +212,33 @@ git diff --check  => PASS
 ```
 
 The default no-network artifact honestly returns `unavailable_with_reason`
-(`network_mode=disabled_opt_in`). A real smoke run requires explicit
-`--enable-external-benchmark-network` and public network access (manual CI
-`workflow_dispatch` only). If P3 passes, next step is a frozen full v0.4
-matrix design. If P3 fails support availability, is support-degenerate,
-does not change selections, or regresses quality, the role-proxy line stops
-and the project pivots to direct FD1-objective setwise acquisition. No
-P4/P5 proxy repair.
+(`network_mode=disabled_opt_in`). Real smoke evidence is from manual CI run
+`28022595796`.
+
+## Manual CI result
+
+Manual CI run `28022595796` passed the fail-closed workflow and produced a
+valid P3 No-Go: status `no_go_support_proxy_degenerate`,
+records_successful=38 (ContextBench 20, RepoQA 18), attempted=46,
+excluded=8, forbidden_scan=pass, self-test 400/400. Private manifests were
+written under `/tmp` only: score rows=266, decision rows=190, role-proxy
+rows=760, support-feature rows=760, pair-feature rows=38.
+
+P3 fixed the P2 support-collapse failure too aggressively: target proxy
+available/selected rates are both 1.0, support proxy available/selected rates
+are both 1.0, and target-support pair available/selected rates are both 1.0.
+However the support proxy is degenerate: `support_proxy_available_rate_p3=1.0`
+exceeds the <=0.90 gate and `mean_support_candidates_per_record_p3=18.289474`
+exceeds the <=8.0 gate. Selection did materially change versus v0.3/P2/P1
+(diff rates 0.5 / 0.394737 / 0.394737), but quality regressed versus v0.3:
+file_recall@10 0.710526 vs 0.763158 (delta -0.052632), MRR 0.414474 vs
+0.569737 (delta -0.155263), span_f0.5@10 0.035311 vs 0.038842, latency
++0.001730s, quality_per_latency 0.015992 vs 0.016856.
+
+Decision: P3 is the final bounded role-proxy repair. Do not run P4/P5, do
+not enter the full v0.4 matrix from the role-proxy design, and do not tune
+v0.31/v0.32 weights. The next algorithm work must pivot to direct
+FD1-objective setwise acquisition rather than proxy repair.
 
 ## Caveats
 

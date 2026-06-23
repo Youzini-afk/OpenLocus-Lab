@@ -3870,3 +3870,12 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   latency delta=+0.001789s, quality_per_latency delta=-0.000857. Do not
   advance to the full v0.4 matrix until a support/complementarity proxy
   produces nonzero support availability and materially changes selection.
+
+
+## BEA-v0.4-P3 findings
+
+- **BEA-v0.4-P3 support/complementarity proxy repair smoke completed**: local checkpoint `7f58f66`, manual CI run `28022595796`.
+- **Result is a valid final role-proxy No-Go, not a v0.4 proof**: status `no_go_support_proxy_degenerate`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, forbidden_scan=pass, self-test 400/400, private SCORE rows=266, decision rows=190, role-proxy rows=760, support-feature rows=760, pair-feature rows=38.
+- **Support/complementarity repair over-corrected**: target and support availability/selection all reached 1.0, and target-support pairs reached 1.0, but support was degenerate: support_proxy_available_rate_p3=1.0 (above <=0.90 gate) and mean_support_candidates_per_record_p3=18.289474 (above <=8.0 gate).
+- **Selection changed but quality regressed**: P3 selection differed from v0.3/P2/P1 at 0.5/0.394737/0.394737, but versus v0.3 file_recall@10 delta=-0.052632, MRR delta=-0.155263, span_f0.5@10 delta=-0.003531, latency +0.001730s, quality_per_latency 0.015992 vs 0.016856.
+- **Stop rule triggered**: do not run P4/P5, do not enter the full v0.4 matrix from this role-proxy design, and do not tune v0.31/v0.32. Next algorithm work should pivot to direct FD1-objective setwise acquisition.
