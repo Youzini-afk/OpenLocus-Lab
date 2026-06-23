@@ -3213,7 +3213,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   将评估本地的确定性角色代理集合选择策略
   （`setwise_complementarity_v0_4_p1`）与 BEA v0.3 及同预算对照组比较。
   仅为 P1 冒烟证据，不是 v0.4 证明/胜者/默认/校准。
-- **259/259 自测检查通过**。
+- **269/269 自测检查通过**。
 - **必需臂（6 个；RRF 廉价且稳定）**：`bm25_prefix_same_budget`、
   `bea_v0_3_anchor_span_latency`、`role_proxy_only_same_budget`、
   `setwise_complementarity_v0_4_p1`、`seeded_random_same_budget`、
@@ -3246,16 +3246,17 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   `failure_family_records`、`win_tie_loss_records`、
   `availability_records`，仅聚合
   `private_score_manifest`/`private_decision_manifest`/
-  `private_role_proxy_manifest`、`hard_gates`、`forbidden_scan`。
+  `private_role_proxy_manifest`、`hard_gate_records`、`failure_category_count_records`、`forbidden_scan`。
 - **状态**：`bea_v04_p1_smoke_pass`、`partial_directional_signal`、
   `no_go_proxy_unavailable`、`no_go_no_selection_change`、
   `no_go_quality_regression`、`unavailable_with_reason`、
   `offline_counterfactual_replay`、`fail_forbidden_scan`、
   `fail_schema_contract`。
 - **默认无网络产物真实地为 `unavailable_with_reason`**：
-  provider_calls=0、forbidden_scan=pass、self_test_checks_total=259、
-  self_test_checks_passed=259、空记录表。
+  provider_calls=0、forbidden_scan=pass、self_test_checks_total=269、
+  self_test_checks_passed=269、空记录表。
 - **严格声明边界**：`claim_level=bea_v04_p1_setwise_role_proxy_smoke_only`。
   不是 benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value。不是 v0.4 证明。不是完整
   v0.4 矩阵。`provider_calls=0`。
+- **Manual CI run `28017063082` 通过 fail-closed，并产生 P1 No-Go / 弱负向结果**：status `no_go_proxy_unavailable`，records_successful=38（ContextBench 20、RepoQA 18），attempted=46，excluded=8，private SCORE rows=228，decision rows=190，role-proxy rows=760。当前 role proxies 给所有 candidate 分配了角色，但 target_proxy_available_rate=0.0，setwise_selection_diff_rate_vs_v03=0.105263（低于 0.25）。相对 v0.3 没有灾难性质量退化，但也没有改进：file_recall@10 和 MRR delta 为 0.0，span_f0.5@10 delta=-0.003036，latency delta=+0.001686s，quality_per_latency delta=-0.000809。除非先改进 target-role 特征，否则不要把这个 target-role proxy 设计推进到完整 v0.4 矩阵。

@@ -3801,7 +3801,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   (`setwise_complementarity_v0_4_p1`) compared against BEA v0.3 and
   same-budget controls on a fresh small external smoke slice. P1 smoke
   evidence only, NOT v0.4 proof/winner/default/calibration.
-- **259/259 self-test checks pass**.
+- **269/269 self-test checks pass**.
 - **Required arms (6; RRF cheap + stable)**: `bm25_prefix_same_budget`,
   `bea_v0_3_anchor_span_latency`, `role_proxy_only_same_budget`,
   `setwise_complementarity_v0_4_p1`, `seeded_random_same_budget`,
@@ -3836,16 +3836,17 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   `failure_family_records`, `win_tie_loss_records`,
   `availability_records`, aggregate-only
   `private_score_manifest`/`private_decision_manifest`/
-  `private_role_proxy_manifest`, `hard_gates`, `forbidden_scan`.
+  `private_role_proxy_manifest`, `hard_gate_records`, `failure_category_count_records`, `forbidden_scan`.
 - **Statuses**: `bea_v04_p1_smoke_pass`, `partial_directional_signal`,
   `no_go_proxy_unavailable`, `no_go_no_selection_change`,
   `no_go_quality_regression`, `unavailable_with_reason`,
   `offline_counterfactual_replay`, `fail_forbidden_scan`,
   `fail_schema_contract`.
 - **Default no-network artifact truthfully `unavailable_with_reason`**:
-  provider_calls=0, forbidden_scan=pass, self_test_checks_total=259,
-  self_test_checks_passed=259, empty record tables.
+  provider_calls=0, forbidden_scan=pass, self_test_checks_total=269,
+  self_test_checks_passed=269, empty record tables.
 - **Strict claim boundary**: `claim_level=bea_v04_p1_setwise_role_proxy_smoke_only`.
   NOT benchmark/leaderboard/performance/method-winner/calibration/promotion/
   default/runtime/EvidenceCore/downstream-value. NOT v0.4 proof. NOT the
   full v0.4 matrix. `provider_calls=0`.
+- **Manual CI run `28017063082` passed fail-closed and produced a P1 No-Go / weak negative**: status `no_go_proxy_unavailable`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, private SCORE rows=228, decision rows=190, role-proxy rows=760. The current role proxies assigned every candidate but produced target_proxy_available_rate=0.0 and setwise_selection_diff_rate_vs_v03=0.105263 (<0.25). Quality did not catastrophically regress versus v0.3, but did not improve: file_recall@10 and MRR deltas are 0.0, span_f0.5@10 delta=-0.003036, latency delta=+0.001686s, quality_per_latency delta=-0.000809. Do not advance this target-role proxy design to a full v0.4 matrix without improving target-role features.

@@ -152,6 +152,31 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+## Manual CI result — run `28017063082`
+
+Manual network-enabled CI passed the fail-closed workflow and produced a valid
+P1 smoke result, but the result is a **No-Go / weak negative** for the current
+role-proxy mechanism:
+
+- Status: `no_go_proxy_unavailable`.
+- Denominator: 38 successful records (ContextBench 20, RepoQA 18), 46 attempted,
+  8 excluded.
+- Private traces: SCORE rows = 228 (`38 × 6 arms`), decision rows = 190,
+  role-proxy rows = 760; all private manifests are `/tmp` only.
+- Role proxy assignment rate = 1.0, support-proxy availability = 1.0, but
+  target-proxy availability = 0.0, so the proxy gate failed.
+- Setwise-vs-v0.3 selection-diff rate = 0.105263, below the 0.25 behavior gate.
+- Quality did not catastrophically regress versus v0.3, but it also did not
+  improve: file_recall@10 and MRR deltas are 0.0, span_f0.5@10 delta is
+  -0.003036, latency delta is +0.001686s, quality_per_latency delta is
+  -0.000809.
+
+Interpretation: this P1 confirms that the deterministic setwise machinery can
+run end-to-end with private traces and records-only public artifacts, but the
+current runtime-clean role proxies do **not** expose target evidence on this
+slice and do **not** change v0.3 selection often enough. Do not advance this
+role-proxy design to a full v0.4 matrix without improving target-role features.
+
 ## Caveats
 
 - BEA-v0.4-P1 is eval/diagnostic only. NOT benchmark/leaderboard/
@@ -161,9 +186,7 @@ git diff --check  => PASS
 - v0.3 algorithm/weights frozen; `algorithm_changed_during_bea_v04_p1=false`.
 - Role proxies are deterministic runtime-clean, no gold/private labels.
 - Fresh smoke protocol discloses BEA-5 overlap (not fresh disjoint
-  validation). If fresh yield is infeasible, status is
-  `unavailable_with_reason`.
-- Manual CI (network-enabled) is required to produce real smoke evidence;
-  the default no-network artifact is truthfully `unavailable_with_reason`.
+  validation). CI run `28017063082` is the real smoke result; the default
+  no-network artifact has been superseded.
 - Private score / decision / role-proxy JSONL files are written ONLY
   under `/tmp` and NEVER uploaded.

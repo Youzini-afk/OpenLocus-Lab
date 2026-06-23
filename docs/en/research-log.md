@@ -10613,7 +10613,7 @@ Records-only: `source_run_records`, `arm_metric_records`,
 `win_tie_loss_records`, `availability_records`,
 `benchmark_attempt_records`, aggregate-only
 `private_score_manifest`/`private_decision_manifest`/
-`private_role_proxy_manifest`, `hard_gates`, `forbidden_scan`. No public
+`private_role_proxy_manifest`, `hard_gate_records`, `failure_category_count_records`, `forbidden_scan`. No public
 record IDs, repo URLs, commits, paths, queries, gold labels, spans,
 snippets, candidate files, decision order, score components, or
 per-record role labels.
@@ -10622,17 +10622,21 @@ per-record role labels.
 
 ```text
 python3 -m py_compile eval/bea_v04_p1_setwise_role_proxy_smoke.py  => PASS
-python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py --self-test  => PASS (259/259 checks)
+python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py --self-test  => PASS (269/269 checks)
 python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py \
   --out artifacts/bea_v04_p1_setwise_role_proxy/bea_v04_p1_setwise_role_proxy_smoke_report.json  => PASS
   (status: unavailable_with_reason, no-network artifact,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea_v04_p1=false, weights_tuned_during_bea_v04_p1=false,
    v04_full_matrix_claimed=false,
-   self_test_checks_total=259, self_test_checks_passed=259)
+   self_test_checks_total=269, self_test_checks_passed=269)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+### Manual CI result
+
+Manual CI run `28017063082` passed the fail-closed workflow and produced a valid P1 No-Go / weak negative: status `no_go_proxy_unavailable`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, private SCORE rows=228, decision rows=190, role-proxy rows=760. The current role proxies assigned every candidate but target_proxy_available_rate=0.0 and setwise_selection_diff_rate_vs_v03=0.105263 (<0.25). Quality did not catastrophically regress versus v0.3, but did not improve: file_recall@10 and MRR deltas are 0.0, span_f0.5@10 delta=-0.003036, latency delta=+0.001686s, quality_per_latency delta=-0.000809.
 
 ### Caveats
 
@@ -10643,9 +10647,8 @@ git diff --check  => PASS
 - v0.3 algorithm/weights frozen; `algorithm_changed_during_bea_v04_p1=false`.
 - Role proxies deterministic runtime-clean, no gold/private labels.
 - Fresh smoke protocol discloses BEA-5 overlap (not fresh disjoint
-  validation). Default no-network artifact is truthfully
-  `unavailable_with_reason`; manual CI (network-enabled) required for
-  real smoke evidence.
+  validation). CI run `28017063082` is the real P1 smoke result; the
+  default no-network artifact is superseded.
 - Private score/decision/role-proxy JSONL files written ONLY under
   `/tmp` and NEVER uploaded.
 - Offline BEA-4/5 counterfactual replay is a future extension (private

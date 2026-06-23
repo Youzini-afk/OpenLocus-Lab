@@ -9852,7 +9852,7 @@ file_recall@10/mrr 在 0.05 内、span 在 0.02 内、延迟在 1.25x 内。
 `failure_family_records`、`win_tie_loss_records`、`availability_records`、
 `benchmark_attempt_records`，仅聚合
 `private_score_manifest`/`private_decision_manifest`/
-`private_role_proxy_manifest`、`hard_gates`、`forbidden_scan`。无公开
+`private_role_proxy_manifest`、`hard_gate_records`、`failure_category_count_records`、`forbidden_scan`。无公开
 记录 ID、仓库 URL、提交、路径、查询、gold 标签、span、片段、候选文件、
 决策顺序、分数组件或每条记录角色标签。
 
@@ -9860,17 +9860,21 @@ file_recall@10/mrr 在 0.05 内、span 在 0.02 内、延迟在 1.25x 内。
 
 ```text
 python3 -m py_compile eval/bea_v04_p1_setwise_role_proxy_smoke.py  => PASS
-python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py --self-test  => PASS (259/259 checks)
+python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py --self-test  => PASS (269/269 checks)
 python3 eval/bea_v04_p1_setwise_role_proxy_smoke.py \
   --out artifacts/bea_v04_p1_setwise_role_proxy/bea_v04_p1_setwise_role_proxy_smoke_report.json  => PASS
   (status: unavailable_with_reason, no-network artifact,
    provider_calls=0, forbidden_scan=pass,
    algorithm_changed_during_bea_v04_p1=false, weights_tuned_during_bea_v04_p1=false,
    v04_full_matrix_claimed=false,
-   self_test_checks_total=259, self_test_checks_passed=259)
+   self_test_checks_total=269, self_test_checks_passed=269)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
+
+### Manual CI 结果
+
+Manual CI run `28017063082` 通过 fail-closed workflow，并产生有效 P1 No-Go / 弱负向结果：status `no_go_proxy_unavailable`，records_successful=38（ContextBench 20、RepoQA 18），attempted=46，excluded=8，private SCORE rows=228，decision rows=190，role-proxy rows=760。当前 role proxies 给所有 candidate 分配了角色，但 target_proxy_available_rate=0.0，setwise_selection_diff_rate_vs_v03=0.105263（低于 0.25）。相对 v0.3 没有灾难性质量退化，但也没有改进：file_recall@10 和 MRR delta 为 0.0，span_f0.5@10 delta=-0.003036，latency delta=+0.001686s，quality_per_latency delta=-0.000809。
 
 ### 注意事项
 
@@ -9879,9 +9883,8 @@ git diff --check  => PASS
   EvidenceCore/downstream-value 声明。不是 v0.4 证明。不是完整 v0.4 矩阵。
 - v0.3 算法/权重冻结；`algorithm_changed_during_bea_v04_p1=false`。
 - 角色代理为确定性运行时清洁，无 gold/私有标签。
-- 新鲜冒烟协议披露 BEA-5 重叠（不是新鲜不相交验证）。默认无网络产物
-  真实地为 `unavailable_with_reason`；手动 CI（启用网络）是产生真实冒烟
-  证据的必要条件。
+- 新鲜冒烟协议披露 BEA-5 重叠（不是新鲜不相交验证）。CI run `28017063082`
+  是真实 P1 冒烟结果；默认无网络 artifact 已被 supersede。
 - 私有 score/decision/role-proxy JSONL 文件仅写入 `/tmp` 且永不上传。
 - 离线 BEA-4/5 反事实重放是未来扩展（私有轨迹缺少完整候选列表，
   因此无法在同一候选上重新运行 v0.4 P1 选择）。

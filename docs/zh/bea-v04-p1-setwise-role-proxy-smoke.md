@@ -144,6 +144,26 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
+## Manual CI 结果 — run `28017063082`
+
+启用网络的手动 CI 通过 fail-closed workflow，并产生了有效 P1 冒烟结果；但该结果对当前
+role-proxy 机制是 **No-Go / 弱负向**：
+
+- 状态：`no_go_proxy_unavailable`。
+- 分母：38 条成功记录（ContextBench 20、RepoQA 18），46 条 attempted，8 条 excluded。
+- 私有轨迹：SCORE rows = 228（`38 × 6 arms`），decision rows = 190，
+  role-proxy rows = 760；所有私有 manifest 仅在 `/tmp`。
+- Role proxy assignment rate = 1.0，support-proxy availability = 1.0，但
+  target-proxy availability = 0.0，因此 proxy gate 失败。
+- Setwise-vs-v0.3 selection-diff rate = 0.105263，低于 0.25 behavior gate。
+- 相对 v0.3 没有灾难性质量退化，但也没有改进：file_recall@10 和 MRR delta 为 0.0，
+  span_f0.5@10 delta 为 -0.003036，latency delta 为 +0.001686s，
+  quality_per_latency delta 为 -0.000809。
+
+解释：P1 证明 deterministic setwise machinery 能端到端运行，并保留私有轨迹与 records-only
+公开 artifact；但当前 runtime-clean role proxies 在该切片上没有暴露 target evidence，且没有足够改变
+v0.3 selection。除非先改进 target-role 特征，否则不要把这个 role-proxy 设计推进到完整 v0.4 矩阵。
+
 ## 注意事项
 
 - BEA-v0.4-P1 仅为评估/诊断。不是 benchmark/leaderboard/
@@ -151,8 +171,6 @@ git diff --check  => PASS
   EvidenceCore/downstream-value 声明。不是 v0.4 证明。不是完整 v0.4 矩阵。
 - v0.3 算法/权重冻结；`algorithm_changed_during_bea_v04_p1=false`。
 - 角色代理为确定性运行时清洁，无 gold/私有标签。
-- 新鲜冒烟协议披露 BEA-5 重叠（不是新鲜不相交验证）。如果新鲜产量不可行，
-  状态为 `unavailable_with_reason`。
-- 手动 CI（启用网络）是产生真实冒烟证据的必要条件；
-  默认无网络产物真实地为 `unavailable_with_reason`。
+- 新鲜冒烟协议披露 BEA-5 重叠（不是新鲜不相交验证）。CI run `28017063082`
+  是真实冒烟结果；默认无网络 artifact 已被 supersede。
 - 私有 score/decision/role-proxy JSONL 文件仅写入 `/tmp` 且永不上传。
