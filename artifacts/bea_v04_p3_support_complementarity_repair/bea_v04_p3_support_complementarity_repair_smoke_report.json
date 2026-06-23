@@ -1,0 +1,322 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_smoke",
+  "aggregate_only_public_artifact": true,
+  "algorithm_changed_during_bea_v04_p3": false,
+  "arm_delta_records": [],
+  "arm_metric_records": [],
+  "availability_records": [],
+  "backend_changed": false,
+  "bea5_overlap_policy": "not_excluded; disclosed; BEA-5 used success-quota over the same full available Python frame and did not consume the entire frame, so overlap with BEA-5 evaluated records is possible. This is P3 smoke evidence, not fresh disjoint validation.",
+  "bea_v03_policy_executed": false,
+  "bea_v04_p1_overlap_policy": "not_excluded; disclosed; P3 reuses the P1 frame and re-runs candidate pools and arms in one process; does NOT infer from the P1 aggregate. P1+P3 overlap possible. Not fresh disjoint validation.",
+  "bea_v04_p1_policy_executed": false,
+  "bea_v04_p2_overlap_policy": "not_excluded; disclosed; P3 reuses the P2 frame (budget=5, methods bm25 regex symbol, same caps and windows) and reuses the P2 repaired target anchor; does NOT infer from the P2 aggregate. P2+P3 overlap possible. Not fresh disjoint validation.",
+  "bea_v04_p2_policy_executed": false,
+  "bea_v04_p3_policy_executed": false,
+  "benchmark_attempt_records": [
+    {
+      "attempted": 0,
+      "benchmark": "contextbench",
+      "excluded": 0,
+      "record_count": 0,
+      "successful": 0
+    },
+    {
+      "attempted": 0,
+      "benchmark": "repoqa",
+      "excluded": 0,
+      "record_count": 0,
+      "successful": 0
+    }
+  ],
+  "budget": 5,
+  "calibration_claimed": false,
+  "claim_level": "bea_v04_p3_support_complementarity_repair_smoke_only",
+  "contextbench_attempted": 0,
+  "contextbench_eligible_count": 0,
+  "contextbench_excluded": 0,
+  "contextbench_excluded_prior_window_count": 0,
+  "contextbench_row_limit_requested": 480,
+  "contextbench_row_offset_requested": 0,
+  "contextbench_successful": 0,
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "delta_baseline_arm": "bea_v0_3_anchor_span_latency",
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "excluded_prior_windows_policy": "mandatory_bea2_bea3_bea4; bea5_overlap_disclosed_not_excluded; bea_v04_p1_overlap_disclosed_not_excluded; bea_v04_p2_overlap_disclosed_not_excluded; bea0_bea1_best_effort_or_disclosed",
+  "external_benchmark_performance_claimed": false,
+  "external_benchmark_rows_read": false,
+  "failure_category_count_records": [
+    {
+      "count": 1,
+      "failure_category": "contextbench_fetch_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "contextbench_label_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "contextbench_no_python_rows"
+    },
+    {
+      "count": 0,
+      "failure_category": "duplicate_record_key_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_leak_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "heldout_offset_exceeds_available"
+    },
+    {
+      "count": 0,
+      "failure_category": "materialization_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "needle_limit_capped"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_decision_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_pair_feature_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_role_proxy_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_score_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_support_feature_write_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "quota_reached_stop"
+    },
+    {
+      "count": 0,
+      "failure_category": "record_excluded_from_paired_denominator"
+    },
+    {
+      "count": 0,
+      "failure_category": "repo_checkout_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repo_clone_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_asset_decompress_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_asset_download_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_asset_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_needle_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "repoqa_no_python_needles"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "role_proxy_unavailable"
+    },
+    {
+      "count": 0,
+      "failure_category": "row_limit_capped"
+    },
+    {
+      "count": 0,
+      "failure_category": "rrf_required_but_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "scanner_self_test_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "score_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "scoring_unavailable"
+    },
+    {
+      "count": 0,
+      "failure_category": "unexpected_exception"
+    }
+  ],
+  "failure_family_records": [],
+  "failure_reason_category": "contextbench_fetch_failed",
+  "fixed_arms": [
+    "bea_v0_3_anchor_span_latency",
+    "setwise_complementarity_v0_4_p1",
+    "setwise_complementarity_v0_4_p2_target_repair",
+    "support_complementarity_repair_only_same_budget",
+    "setwise_complementarity_v0_4_p3_support_repair",
+    "bm25_prefix_same_budget",
+    "rrf_same_budget"
+  ],
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_v04_full_matrix": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_v04_p3_smoke_unavailable"
+  },
+  "fresh_smoke_slice_read": false,
+  "generated_at": "2026-06-23T11:21:28.465538+00:00",
+  "generated_by": "eval/bea_v04_p3_support_complementarity_repair_smoke.py",
+  "hard_gate_records": [],
+  "leaderboard_entry_claimed": false,
+  "manifests": [
+    {
+      "manifest_hash": "e1093b190f831e9e3b16c556d341c17756dacfb6b7c52445d1d9be91aca4014f",
+      "manifest_name": "private_score_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_v04_p3_private_score.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "95c6a00bab72ef1ba961b227b1ceca7f509635a904a3f020f189d66ed2636fca",
+      "manifest_name": "private_decision_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_v04_p3_private_decision.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "01508bf0c334f8089f5ca2620521fba3d39900c89fd79271e8aede22d8edd805",
+      "manifest_name": "private_role_proxy_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_v04_p3_private_role_proxy.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "4c0e25b2e44e8274ffb116f3628eac31409724650dc6ff47a46ce910a811cac3",
+      "manifest_name": "private_support_feature_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_v04_p3_private_support_feature.v1",
+      "storage_class": "tmp_private"
+    },
+    {
+      "manifest_hash": "c57600dbffeddc4c1a752e53861eccaaf36cabf55cd119be3fe3b61f2ef5ec8d",
+      "manifest_name": "private_pair_feature_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_v04_p3_private_pair_feature.v1",
+      "storage_class": "tmp_private"
+    }
+  ],
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "min_contextbench_successful": 20,
+  "min_repoqa_successful": 10,
+  "mode": "bea_v04_p3_support_complementarity_repair_smoke",
+  "network_calls": 0,
+  "network_mode": "disabled_opt_in",
+  "openlocus_binary_source": "default",
+  "openlocus_retrieval_executed": false,
+  "p1_artifact_modified": false,
+  "p2_artifact_modified": false,
+  "pack_builder_changed": false,
+  "phase": "BEA-v0.4-P3",
+  "private_decision_records_written": false,
+  "private_pair_feature_records_written": false,
+  "private_role_proxy_records_written": false,
+  "private_score_records_written": false,
+  "private_support_feature_records_written": false,
+  "promotion_ready": false,
+  "provider_calls": 0,
+  "provider_calls_made": false,
+  "quality_baseline_arm": "bea_v0_3_anchor_span_latency",
+  "quota_reached": false,
+  "raw_attempt_cap_contextbench": 480,
+  "raw_attempt_cap_repoqa": 240,
+  "records_attempted_total": 0,
+  "records_evaluated": 0,
+  "records_excluded": 0,
+  "records_failed": 0,
+  "records_successful": 0,
+  "remote_provider_calls_made": false,
+  "repoqa_attempted": 0,
+  "repoqa_eligible_count": 0,
+  "repoqa_excluded": 0,
+  "repoqa_excluded_prior_window_count": 0,
+  "repoqa_needle_limit_requested": 240,
+  "repoqa_needle_offset_requested": 0,
+  "repoqa_successful": 0,
+  "retriever_changed": false,
+  "role_proxy_assigned": false,
+  "role_proxy_summary_records": [],
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "sampling_frame_policy": "full_available_python_excluding_bea2_bea3_bea4_mandatory_windows; bea5_overlap_disclosed_not_excluded; bea_v04_p1_overlap_disclosed; bea_v04_p2_overlap_disclosed",
+  "sampling_mode": "success_quota",
+  "sampling_protocol_version": "bea_v04_p3_fresh_smoke.v1",
+  "schema_version": "bea_v04_p3_support_complementarity_repair_smoke.v1",
+  "score_py_metrics_computed": false,
+  "self_test_checks_passed": 400,
+  "self_test_checks_total": 400,
+  "self_test_passed": true,
+  "setwise_behavior_records": [],
+  "setwise_selection_performed": false,
+  "source_run_records": [],
+  "status": "unavailable_with_reason",
+  "support_complementarity_records": [],
+  "support_complementarity_repair_executed": false,
+  "target_successful_records": 30,
+  "treatment_arm": "setwise_complementarity_v0_4_p3_support_repair",
+  "v03_tuned_during_bea_v04_p3": false,
+  "v04_full_matrix_claimed": false,
+  "weights_tuned_during_bea_v04_p3": false,
+  "win_tie_loss_records": []
+}

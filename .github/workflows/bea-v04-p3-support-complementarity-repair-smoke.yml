@@ -1,0 +1,363 @@
+name: bea-v04-p3-support-complementarity-repair-smoke
+
+# BEA-v0.4-P3 Support/Complementarity Proxy Repair Smoke
+# (fixed-protocol, manual opt-in). MANUAL OPT-IN ONLY via workflow_dispatch
+# with enable_external_benchmark_network=true. Does NOT run on PR/push.
+# Uses NO provider secrets/vars/model env. Uploads ONLY the aggregate
+# public report.
+#
+# Fixed protocol: budget 5, methods bm25,regex,symbol.
+# claim_level = bea_v04_p3_support_complementarity_repair_smoke_only.
+# P3 support/complementarity repair evidence only, NOT v0.4 proof/winner/
+# default/calibration. Does NOT touch runtime/default/EvidenceCore. Does
+# NOT modify P1/P2 result files/artifacts.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v04-p3-support-complementarity-repair-smoke-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-v04-p3-support-complementarity-repair-smoke:
+    name: bea-v04-p3-support-complementarity-repair-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-v0.4-P3 evaluator
+        run: python3 -m py_compile eval/bea_v04_p3_support_complementarity_repair_smoke.py
+
+      - name: BEA-v0.4-P3 self-test (no network)
+        run: python3 eval/bea_v04_p3_support_complementarity_repair_smoke.py --self-test
+
+      - name: BEA-v0.4-P3 smoke (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v04_p3_support_complementarity_repair_smoke_report.json"
+          python3 eval/bea_v04_p3_support_complementarity_repair_smoke.py \
+            --enable-external-benchmark-network \
+            --openlocus target/release/openlocus \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-v0.4-P3 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: echo "enable_external_benchmark_network is false; skipping real BEA-v0.4-P3 smoke."
+
+      - name: Validate BEA-v0.4-P3 report (fail-closed)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        env:
+          REPORT_PATH: ${{ runner.temp }}/bea_v04_p3_support_complementarity_repair_smoke_report.json
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          must_be_true = {"aggregate_only_public_artifact", "diagnostic_only"}
+          must_be_false = {
+              "external_benchmark_performance_claimed", "leaderboard_entry_claimed",
+              "downstream_agent_value_proven", "calibration_claimed",
+              "method_winner_claimed", "promotion_ready", "default_should_change",
+              "runtime_behavior_changed", "retriever_changed", "pack_builder_changed",
+              "backend_changed", "default_policy_changed",
+              "evidencecore_semantics_changed", "provider_calls_made",
+              "remote_provider_calls_made",
+              "algorithm_changed_during_bea_v04_p3",
+              "weights_tuned_during_bea_v04_p3",
+              "v04_full_matrix_claimed",
+              "v03_tuned_during_bea_v04_p3",
+              "p1_artifact_modified", "p2_artifact_modified",
+          }
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          valid_statuses = {
+              "bea_v04_p3_support_complementarity_repair_pass",
+              "partial_support_proxy_signal",
+              "no_go_support_proxy_still_unavailable",
+              "no_go_support_proxy_degenerate",
+              "no_go_no_selection_change",
+              "no_go_quality_regression", "unavailable_with_reason",
+              "fail_forbidden_scan", "fail_schema_contract",
+          }
+          if status not in valid_statuses:
+              failures.append(f"unexpected status: {status!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if report.get("provider_calls") != 0:
+              failures.append("expected provider_calls=0")
+          if report.get("schema_version") != "bea_v04_p3_support_complementarity_repair_smoke.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_v04_p3_support_complementarity_repair_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("phase") != "BEA-v0.4-P3":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          # Records-only public shape (no dynamic dict mirrors).
+          for key in ("source_run_records", "arm_metric_records", "arm_delta_records",
+                      "role_proxy_summary_records", "setwise_behavior_records",
+                      "support_complementarity_records", "failure_family_records",
+                      "win_tie_loss_records", "availability_records",
+                      "benchmark_attempt_records", "failure_category_count_records",
+                      "hard_gate_records", "manifests"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          for key in ("arm_metrics", "deltas", "aggregate_metrics",
+                      "per_record_role_labels", "role_proxy_assignment",
+                      "decision", "ranking", "winner",
+                      "hard_gates", "failure_category_counts",
+                      "private_score_manifest", "private_decision_manifest",
+                      "private_role_proxy_manifest",
+                      "private_support_feature_manifest",
+                      "private_pair_feature_manifest",
+                      "target_proxy_repair_records"):
+              if key in report:
+                  failures.append(f"forbidden field present: {key}")
+          # Counts-only self-test.
+          if "self_test_checks_total" not in report:
+              failures.append("expected self_test_checks_total")
+          if "self_test_checks_passed" not in report:
+              failures.append("expected self_test_checks_passed")
+          for ff in ("self_test_checks", "self_test_details", "checks", "check_list"):
+              if ff in report:
+                  failures.append(f"forbidden self-test detail field: {ff}")
+          # Fixed protocol.
+          if report.get("budget") != 5:
+              failures.append(f"expected budget=5, got {report.get('budget')!r}")
+          if report.get("methods") != ["bm25", "regex", "symbol"]:
+              failures.append(f"expected methods=[bm25,regex,symbol], got {report.get('methods')!r}")
+          if "seeded_random_same_budget" in report.get("fixed_arms", []):
+              failures.append("seeded_random arm must NOT be present in P3")
+          if "setwise_complementarity_v0_2" in report.get("fixed_arms", []):
+              failures.append("v0.2 arm must NOT be present in P3")
+          # Exactly 7 fixed arms.
+          expected_arms = {
+              "bea_v0_3_anchor_span_latency",
+              "setwise_complementarity_v0_4_p1",
+              "setwise_complementarity_v0_4_p2_target_repair",
+              "support_complementarity_repair_only_same_budget",
+              "setwise_complementarity_v0_4_p3_support_repair",
+              "bm25_prefix_same_budget", "rrf_same_budget",
+          }
+          if set(report.get("fixed_arms", [])) != expected_arms:
+              failures.append(f"expected exactly 7 fixed arms, got {report.get('fixed_arms')!r}")
+          # Fail-closed on denominator + hard gates.
+          rs = report.get("records_successful", 0)
+          cb = report.get("contextbench_successful", 0)
+          rq = report.get("repoqa_successful", 0)
+          if status in ("bea_v04_p3_support_complementarity_repair_pass",
+                        "partial_support_proxy_signal",
+                        "no_go_support_proxy_still_unavailable",
+                        "no_go_support_proxy_degenerate",
+                        "no_go_no_selection_change",
+                        "no_go_quality_regression"):
+              if rs < 30:
+                  failures.append(f"expected records_successful>=30, got {rs}")
+              if cb < 20:
+                  failures.append(f"expected contextbench_successful>=20, got {cb}")
+              if rq < 10:
+                  failures.append(f"expected repoqa_successful>=10, got {rq}")
+          # Private manifests: path never serialized; records_written matches count.
+          manifests = {r.get("manifest_name"): r
+                       for r in (report.get("manifests") or [])
+                       if isinstance(r, dict)}
+          for manifest_name in ("private_score_manifest", "private_decision_manifest",
+                                "private_role_proxy_manifest",
+                                "private_support_feature_manifest",
+                                "private_pair_feature_manifest"):
+              m = manifests.get(manifest_name, {})
+              if m.get("path_publicly_serialized") is not False:
+                  failures.append(f"expected {manifest_name}.path_publicly_serialized=false")
+              if m.get("records_written") is not True and rs > 0:
+                  failures.append(f"expected {manifest_name}.records_written=true when records_successful>0")
+          source_records = report.get("source_run_records") or []
+          src0 = source_records[0] if source_records else {}
+          expected_manifest_counts = {
+              "private_score_manifest": rs * len(report.get("fixed_arms", [])),
+              "private_decision_manifest": src0.get("expected_private_decision_count"),
+              "private_role_proxy_manifest": src0.get("expected_private_role_proxy_count"),
+              "private_support_feature_manifest": src0.get("expected_private_support_feature_count"),
+              "private_pair_feature_manifest": src0.get("expected_private_pair_feature_count"),
+          }
+          for manifest_name, expected_count in expected_manifest_counts.items():
+              if rs > 0 and manifests.get(manifest_name, {}).get("record_count") != expected_count:
+                  failures.append(
+                      f"expected {manifest_name}.record_count={expected_count}, "
+                      f"got {manifests.get(manifest_name, {}).get('record_count')!r}"
+                  )
+          fcc = {r.get("failure_category"): r.get("count")
+                 for r in (report.get("failure_category_count_records") or [])
+                 if isinstance(r, dict)}
+          for cat in ("private_score_write_failed", "private_decision_write_failed",
+                      "private_role_proxy_write_failed",
+                      "private_support_feature_write_failed",
+                      "private_pair_feature_write_failed",
+                      "forbidden_leak_blocked", "unexpected_exception"):
+              if fcc.get(cat, 0) != 0:
+                  failures.append(f"expected {cat}=0, got {fcc.get(cat)!r}")
+          # Hard gates present as records-only table.
+          hg = report.get("hard_gate_records", [])
+          if not isinstance(hg, list) or not hg:
+              failures.append("expected non-empty hard_gate_records")
+          gate_names = {r.get("gate") for r in hg if isinstance(r, dict)}
+          for gate in ("target_proxy_available_rate_p3", "target_proxy_selected_rate_p3",
+                       "support_proxy_available_rate_p3_min",
+                       "support_proxy_available_rate_p3_max",
+                       "support_proxy_selected_rate_p3",
+                       "target_support_pair_available_rate_p3",
+                       "target_support_pair_selected_rate_p3",
+                       "unknown_only_record_rate_p3",
+                       "mean_support_candidates_per_record_p3_min",
+                       "mean_support_candidates_per_record_p3_max",
+                       "same_file_support_rate_p3",
+                       "selection_diff_rate_p3_vs_v03",
+                       "selection_diff_rate_p3_vs_p2",
+                       "selection_diff_rate_p3_vs_p1",
+                       "proxy_ok", "support_degenerate", "behavior_ok",
+                       "quality_ok", "directional_improvement"):
+              if gate not in gate_names:
+                  failures.append(f"expected hard_gate_records gate {gate}")
+          # BEA-v0.4-P3 forbidden keys (subset).
+          v04p3_forbidden = (
+              "private_score_path", "action_order", "priority_components",
+              "selected_decisions", "budget_trace", "stop_reason",
+              "candidate_features", "anchor_eligibility", "score_outcome",
+              "private_decision_path", "private_role_proxy_path",
+              "private_support_feature_path", "private_pair_feature_path",
+              "anchor_path", "anchor_methods", "support_feature_components",
+              "pair_feature_components", "role_proxy_assignment",
+              "per_record_role_labels", "winner", "calibration",
+              "method_winner", "self_test_checks", "checks",
+              "p3_role_assignment",
+          )
+          def find_keys(obj, keys, path="$"):
+              found = []
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k in keys: found.append(f"{path}.{k}")
+                      found.extend(find_keys(v, keys, f"{path}.{k}"))
+              elif isinstance(obj, list):
+                  for i, v in enumerate(obj):
+                      found.extend(find_keys(v, keys, f"{path}[{i}]"))
+              return found
+          leaked = find_keys(report, v04p3_forbidden)
+          if leaked:
+              failures.append(f"forbidden fields present: {leaked}")
+          # Natural-key uniqueness for every public record table.
+          def check_unique(records, key_fn, table_name):
+              seen = set()
+              for i, rec in enumerate(records):
+                  try:
+                      key = key_fn(rec)
+                  except (KeyError, TypeError):
+                      failures.append(f"{table_name}[{i}] missing natural key")
+                      continue
+                  if key in seen:
+                      failures.append(f"{table_name}[{i}] duplicate natural key: {key!r}")
+                  else:
+                      seen.add(key)
+          check_unique(report.get("source_run_records") or [],
+                       lambda r: (r["source_phase"], r["source_ci_run_id"]),
+                       "source_run_records")
+          check_unique(report.get("arm_metric_records") or [],
+                       lambda r: (r["arm"], r["metric"]),
+                       "arm_metric_records")
+          check_unique(report.get("arm_delta_records") or [],
+                       lambda r: (r["baseline_arm"], r["treatment_arm"], r["metric"]),
+                       "arm_delta_records")
+          check_unique(report.get("win_tie_loss_records") or [],
+                       lambda r: (r["baseline_arm"], r["treatment_arm"], r["metric"]),
+                       "win_tie_loss_records")
+          check_unique(report.get("role_proxy_summary_records") or [],
+                       lambda r: (r["role_proxy"], r["summary_field"]),
+                       "role_proxy_summary_records")
+          check_unique(report.get("setwise_behavior_records") or [],
+                       lambda r: (r["behavior_field"],),
+                       "setwise_behavior_records")
+          check_unique(report.get("support_complementarity_records") or [],
+                       lambda r: (r["support_field"],),
+                       "support_complementarity_records")
+          check_unique(report.get("failure_family_records") or [],
+                       lambda r: (r["failure_family"], r["policy_arm"], r["availability"]),
+                       "failure_family_records")
+          check_unique(report.get("availability_records") or [],
+                       lambda r: (r["category"], r["availability"]),
+                       "availability_records")
+          check_unique(report.get("benchmark_attempt_records") or [],
+                       lambda r: (r["benchmark"],),
+                       "benchmark_attempt_records")
+          check_unique(report.get("failure_category_count_records") or [],
+                       lambda r: (r["failure_category"],),
+                       "failure_category_count_records")
+          check_unique(report.get("hard_gate_records") or [],
+                       lambda r: (r["gate"],),
+                       "hard_gate_records")
+          check_unique(report.get("manifests") or [],
+                       lambda r: (r["manifest_name"],),
+                       "manifests")
+          if failures:
+              print("BEA-v0.4-P3 report validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-v0.4-P3 report validation passed.")
+          print(f"  status={status}")
+          print(f"  records_successful={rs}")
+          print(f"  contextbench_successful={cb}")
+          print(f"  repoqa_successful={rq}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree
+        run: git diff --check
+
+      - name: Upload BEA-v0.4-P3 aggregate report (aggregate only)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v04-p3-support-complementarity-repair-smoke-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v04_p3_support_complementarity_repair_smoke_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false
