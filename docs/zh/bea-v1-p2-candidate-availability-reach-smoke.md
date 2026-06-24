@@ -147,9 +147,29 @@ git diff --check  => PASS
 
 ## Manual CI 结果
 
-CI 待定 —— 手动 CI workflow 必须以 `enable_external_benchmark_network=true`
-触发，以重新生成 FD1 私有分解、验证 replay 报告并重放 P2 检索可达性冒烟。
-在此之前，committed artifact 保持诚实的 `unavailable_with_reason` 默认。
+Manual CI run `28093864524` 在两次 fail-closed 检索安全修复
+(`d0daee7`, `d4de762`) 后完成 green。workflow 在 `/tmp` 下重建 FD1
+private decomposition，验证 replay report，在 119 条 `gold_file_absent`
+分母上运行全部 4 个 P2 retrieval-reach arms，写出 476 条私有 reach 行，
+且只上传 aggregate public artifact。
+
+Public status 是 `no_go_retrieval_reach_latency_or_pool_cost`，不是 pass。
+runtime-clean retrieval expansion 假设得到部分支持，但还不能授权 selector：
+
+- baseline current pool：32/119 文件可达，mean pool 19.98，mean latency
+  1.804s；
+- depth-only expansion：59/119 可达，新增 27 条，availability lift
+  0.226891，mean pool 68.18（3.41×），mean latency 2.120s（1.18×）；
+- query-anchor variants：60/119 可达，新增 28 条，但 mean pool
+  100.72（5.04×），mean latency 6.158s（3.41×）；
+- depth + query-anchor combined：81/119 可达，新增 49 条，但 mean pool
+  202.38（10.13×），mean latency 7.025s（3.89×）。
+
+决策：不要从 combined expansion 启动 BEA-v1-A selector。Candidate
+availability 不再是纯粹 blocker —— runtime-clean retrieval 能额外找回
+27–49 个文件 —— 但最强 arm 违反 pool/latency safety。下一步 empirical
+工作应是 constrained retrieval policy：保留 depth-only 的增益，同时控制
+pool size 和 latency；latency 仍不得进入 candidate relevance scoring。
 
 ## 限制
 

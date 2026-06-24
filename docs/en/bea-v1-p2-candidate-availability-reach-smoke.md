@@ -164,11 +164,34 @@ git diff --check  => PASS
 
 ## Manual CI result
 
-CI pending — the manual CI workflow must be triggered with
-`enable_external_benchmark_network=true` to regenerate the FD1 private
-decomposition, validate the replay report, and rerun the P2 retrieval
-reach smoke. Until then, the committed artifact remains the honest
-`unavailable_with_reason` default.
+Manual CI run `28093864524` completed green after two fail-closed
+retrieval-safety fixes (`d0daee7`, `d4de762`). The workflow regenerated
+FD1 private decomposition under `/tmp`, validated the replay report, ran
+all four P2 retrieval-reach arms over the 119-record `gold_file_absent`
+denominator, wrote 476 private reach rows, and uploaded only the
+aggregate public artifact.
+
+Public status is `no_go_retrieval_reach_latency_or_pool_cost`, not pass.
+The runtime-clean retrieval expansion hypothesis is partially supported
+but not yet a selector authorization:
+
+- baseline current pool: 32/119 files available, mean pool 19.98, mean
+  latency 1.804s;
+- depth-only expansion: 59/119 available, +27 newly reachable,
+  availability lift 0.226891, mean pool 68.18 (3.41×), mean latency
+  2.120s (1.18×);
+- query-anchor variants: 60/119 available, +28 newly reachable, but
+  mean pool 100.72 (5.04×) and mean latency 6.158s (3.41×);
+- depth + query-anchor combined: 81/119 available, +49 newly reachable,
+  but mean pool 202.38 (10.13×) and mean latency 7.025s (3.89×).
+
+Decision: do not start BEA-v1-A selector from the combined expansion.
+Candidate availability is no longer a pure blocker — runtime-clean
+retrieval can recover 27–49 additional files — but the strongest arm
+violates pool/latency safety. The next empirical step should be a
+constrained retrieval policy that keeps the depth-only gain while
+controlling pool size and latency; latency still must not enter candidate
+relevance scoring.
 
 ## Caveats
 

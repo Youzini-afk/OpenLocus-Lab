@@ -10767,3 +10767,26 @@ Status is `no_go_retrieval_availability_limit`. The actionability matrix covers 
 ### Decision
 
 Do not start BEA-v1-A coverage-preserving selector from this evidence. Selector-only optimization has too little demonstrated lower-bound upside on the FD1 frame; the dominant issue is candidate availability / retrieval reach, while span/refiner and stopping ceilings remain honestly unavailable because FD1 lacks the necessary trace fields.
+
+## 2026-06-24 — BEA-v1-P2: Candidate Availability / Retrieval Reach Smoke
+
+### Objective
+
+Respond to BEA-v1-P1's retrieval-availability No-Go by testing whether runtime-clean retrieval expansion can make the 119 `gold_file_absent` denominator files reachable. This is not a selector, not FD2-B, not v0.4 repair, not a provider/model experiment, and not a latency-weighted candidate score.
+
+### Implementation / validation
+
+- Local checkpoint `2940750` added `eval/bea_v1_p2_candidate_availability_reach_smoke.py`, manual workflow, aggregate artifact, and en/zh docs.
+- CI fix `d0daee7` corrected the RRF retrieval flag (`openlocus retrieve --max-results`, not `--limit`).
+- CI fix `d4de762` hardened runtime-safe queries: regex uses literal-escaped public task text, symbol uses a safe identifier token, and RRF is derived from bm25/regex/symbol ranks rather than feeding raw issue text into `openlocus retrieve`.
+- Self-test 278/278; default no-network artifact remains truthful `unavailable_with_reason`.
+
+### Manual CI result
+
+Manual CI run `28093864524` completed green. The workflow regenerated FD1 private decomposition under `/tmp`, validated the replay, ran 4 retrieval-reach arms over the 119-record `gold_file_absent` denominator, wrote 476 private reach rows, and uploaded only the aggregate public artifact.
+
+Status is `no_go_retrieval_reach_latency_or_pool_cost`. Baseline current pool reached 32/119 files. Depth-only expansion reached 59/119 (+27; availability lift 0.226891; pool 3.41×; latency 1.18×). Query-anchor variants reached 60/119 (+28) but exceeded pool/latency safety. Combined depth+query reached 81/119 (+49; lift 0.411765), but pool 10.13× and latency 3.89× exceeded safety gates.
+
+### Decision
+
+Candidate availability is empirically improvable, but naive broad expansion is too costly. Do not start BEA-v1-A selector from the combined arm. The next BEA v1 step should be a constrained retrieval policy that preserves the depth-only gain while bounding pool size and latency. Latency remains outside candidate relevance scoring; it belongs to retrieval/action scheduling safety, not candidate scoring.

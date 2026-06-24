@@ -3311,3 +3311,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **可行动性结果**：全部 12 个 FD1 failure categories 映射到 6 个 action layers（72 cells）。`latency_without_quality_gain` 明确不是 candidate selection 可行动目标，归入 `non_actionable_accounting`，保留 FD2-A1 的教训。
 - **File-selector 上限结果**：`gold_file_absent` denominator=119，但 private lower-bound recoverable count 只有 1。Lower-bound rate=0.004184（低于 0.05 gate），unrecoverable candidate-unavailable lower-bound count=118，retrieval-availability rate=0.991597。公开上界仍为 119/239=0.497908，但不足以授权 v1-A。
 - **决定**：不要基于这份 FD1 evidence 启动 BEA-v1-A coverage-preserving selector。下一步 BEA v1 工作应先处理 candidate availability / retrieval expansion 证据，或收集 span/stopping ceiling 所需 trace 字段，而不是做 selector-only optimization。
+
+## BEA-v1-P2 发现
+
+- **BEA-v1-P2 Candidate Availability / Retrieval Reach Smoke 已完成**：local checkpoint `2940750`，retrieval flag 修复 `d0daee7`，runtime-safe retrieval hardening `d4de762`，manual CI run `28093864524`。
+- **状态**：`no_go_retrieval_reach_latency_or_pool_cost`。workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 `gold_file_absent` 分母上运行 4 个 retrieval-reach arms，写出 476 条私有 reach 行，并只发布 aggregate-only 表。
+- **可达性结果**：baseline current pool 达到 32/119 文件。depth-only expansion 达到 59/119（新增 27，availability lift 0.226891）且成本未越界；query-anchor 达到 60/119（新增 28）但成本越界；combined depth+query 达到 81/119（新增 49），但 mean pool 202.38（10.13×）与 latency 7.025s（3.89×）违反 safety gate。
+- **决策**：candidate availability 可被实证改善，因此 v1-P1 的纯 retrieval-unavailable 叙述需要细化。但 naive broad expansion 不可接受。不要从 combined arm 启动 BEA-v1-A selector。下一步 BEA v1 应做 constrained retrieval policy：保留 depth-only reach 增益，同时约束 pool/latency，并继续把 latency 排除在 candidate relevance scoring 之外。

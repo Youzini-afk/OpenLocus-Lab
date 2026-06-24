@@ -10001,3 +10001,26 @@ Status 为 `no_go_retrieval_availability_limit`。Actionability matrix 覆盖全
 ### 决定
 
 不要基于这份 evidence 启动 BEA-v1-A coverage-preserving selector。Selector-only optimization 在 FD1 frame 上缺少足够 lower-bound upside；主导问题是 candidate availability / retrieval reach，而 span/refiner 与 stopping ceilings 仍诚实不可用，因为 FD1 缺少必要 trace 字段。
+
+## 2026-06-24 — BEA-v1-P2：候选可用性 / 检索可达性冒烟
+
+### 目标
+
+回应 BEA-v1-P1 的 retrieval-availability No-Go：测试 runtime-clean retrieval expansion 是否能让 119 条 `gold_file_absent` 分母中的文件变得可达。这不是 selector，不是 FD2-B，不是 v0.4 repair，不是 provider/model 实验，也不是 latency-weighted candidate score。
+
+### 实现 / 验证
+
+- Local checkpoint `2940750` 增加 `eval/bea_v1_p2_candidate_availability_reach_smoke.py`、manual workflow、aggregate artifact 与 en/zh docs。
+- CI 修复 `d0daee7` 更正 RRF retrieval flag（`openlocus retrieve --max-results`，不是 `--limit`）。
+- CI 修复 `d4de762` 强化 runtime-safe queries：regex 使用 literal-escaped public task text，symbol 使用安全 identifier token，RRF 从 bm25/regex/symbol ranks 派生，而不是把原始 issue text 传给 `openlocus retrieve`。
+- Self-test 278/278；默认无网络 artifact 仍诚实为 `unavailable_with_reason`。
+
+### Manual CI 结果
+
+Manual CI run `28093864524` 完成 green。workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 `gold_file_absent` 分母上运行 4 个 retrieval-reach arms，写出 476 条私有 reach 行，并只上传 aggregate public artifact。
+
+状态为 `no_go_retrieval_reach_latency_or_pool_cost`。Baseline current pool 达到 32/119 文件。Depth-only expansion 达到 59/119（新增 27；availability lift 0.226891；pool 3.41×；latency 1.18×）。Query-anchor variants 达到 60/119（新增 28）但违反 pool/latency safety。Combined depth+query 达到 81/119（新增 49；lift 0.411765），但 pool 10.13×、latency 3.89×，违反 safety gate。
+
+### 决策
+
+Candidate availability 可被实证改善，但 naive broad expansion 成本过高。不要从 combined arm 启动 BEA-v1-A selector。下一步 BEA v1 应是 constrained retrieval policy：保留 depth-only 增益，同时约束 pool size 和 latency。Latency 继续不进入 candidate relevance scoring；它属于 retrieval/action scheduling safety，而不是 candidate scoring。
