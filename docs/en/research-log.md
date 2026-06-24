@@ -10744,3 +10744,26 @@ The dominant mechanism is decisive: `latency_category_non_actionable_or_dominati
 ### Decision
 
 FD2-A failed because its aggregate FD1-loss objective put decisive pressure on a latency-loss category that the candidate-level proxy could not act on. The next objective design should remove/decouple non-actionable latency pressure and protect file-recall/gold-file utility. Do not run FD2-B from FD2-A, do not resurrect role proxies, and do not tune v0.31/v0.32 weights.
+
+## 2026-06-24 — BEA-v1-P1: Actionability Audit and Oracle Ceiling Check
+
+### Objective
+
+Start BEA v1 as a hierarchical/actionability-aware research line, not as another BEA v0.4 repair. Map FD1 failure categories to the action layers that can causally affect them and compute honest oracle ceilings from FD1 evidence. Do not run a selector, do not tune weights, do not resurrect role proxies, and do not infer ceilings from aggregate latency.
+
+### Implementation / validation
+
+- Local checkpoint `6e661f1` added `eval/bea_v1_p1_actionability_audit.py`, manual workflow, aggregate artifact, and en/zh docs.
+- CI fix `b63db2a` moved FD1 private replay output from `$RUNNER_TEMP` to `/tmp/...` to satisfy the existing private-dir safety rule.
+- CI fix `9c72ae2` changed FD1 private decomposition grouping from `private_record_id` alone to `(source_phase, private_record_id)`, avoiding BEA-4/BEA-5 ID collision (192 false groups -> 239 correct groups).
+- Self-test 596/596; default no-private artifact is truthful `no_go_ceiling_unavailable`.
+
+### Manual CI result
+
+Manual CI run `28076434237` completed green. The workflow regenerated FD1 private decomposition under `/tmp/bea_v1_p1_fd1_private_28076434237`, validated the FD1 replay artifact (`bea_fd1_decomposition_pass`), parsed 86040 private decomposition rows, recovered 239 composite record groups, and published an aggregate-only public artifact.
+
+Status is `no_go_retrieval_availability_limit`. The actionability matrix covers all 12 FD1 categories over 6 action layers. The file-selector ceiling is computed as a private lower bound plus public upper bound: `gold_file_absent` denominator=119, recoverable lower-bound count=1, lower-bound rate=0.004184, upper-bound count=119, upper-bound rate=0.497908, unrecoverable candidate-unavailable lower-bound count=118, retrieval-availability rate=0.991597.
+
+### Decision
+
+Do not start BEA-v1-A coverage-preserving selector from this evidence. Selector-only optimization has too little demonstrated lower-bound upside on the FD1 frame; the dominant issue is candidate availability / retrieval reach, while span/refiner and stopping ceilings remain honestly unavailable because FD1 lacks the necessary trace fields.

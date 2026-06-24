@@ -1,10 +1,10 @@
 # OpenLocus Current Research Conclusions
 
-Date: 2026-06-22
+Date: 2026-06-24
 
 Status: current research-conclusion memo. This is not a promotion request, not a default-policy change request, and not a benchmark leaderboard report.
 
-Scope: empirical work through BEA-5 fixed-protocol success-quota No-Go / near-miss, B16-F through B16-J live-provider atom ablations, C5 external benchmark retrieval smokes, F1 utility smokes, and D5-A automated calibration feature extraction/heldout validation.
+Scope: empirical work through BEA-v1-P1 Actionability Audit, BEA-FD1/FD2-A/FD2-A1, BEA-5 fixed-protocol success-quota No-Go / near-miss, B16-F through B16-J live-provider atom ablations, C5 external benchmark retrieval smokes, F1 utility smokes, and D5-A automated calibration feature extraction/heldout validation.
 
 ## 0. Reading rule
 
@@ -27,7 +27,8 @@ The strongest current conclusions are conservative:
 3. **The support atom is causally important, but only after confounds were removed.** B16-G/H/I initially showed support-only sufficiency because support cues were too decisive. B16-J fixed role-bearing filename leakage and finally observed a bounded target+support conjunction signal: target+support solved 8/8, support-only solved 2/8, target-only solved 0/8.
 4. **BEA v0.3 is mixed, not a winner.** BEA-2 improved file/MRR/success but hurt span/latency. BEA-3 mostly tied v0.2 with tiny span/quality-per-latency improvements. BEA-4 scaled the frozen v0.3 policy to 120 successful records and remained mixed.
 5. **BEA-5 is complete as a fixed-protocol No-Go / near-miss.** The final fixed-protocol CI run `28003522632` failed closed with 119/120 successful records. A local exact rerun reproduced the artifact: 186 attempted, 119 successful, 67 excluded, ContextBench 82, RepoQA 37, private SCORE rows 833. This is failure-decomposition input, not a BEA-5 pass.
-6. **Automated E/S calibration is progressing, but human calibration is not claimed.** D5-A0/A1/A2 provide automated/proxy feature and heldout validation evidence; they do not establish human-calibrated E/S.
+6. **BEA v1 is now an actionability-aware line, but v1-A selector is not authorized.** BEA-FD2-A1 established that latency loss was non-actionable at candidate-selection time; BEA-v1-P1 then replayed FD1 private decomposition and found selector-only lower-bound recoverability of only 1/119 for `gold_file_absent`, so retrieval availability dominates.
+7. **Automated E/S calibration is progressing, but human calibration is not claimed.** D5-A0/A1/A2 provide automated/proxy feature and heldout validation evidence; they do not establish human-calibrated E/S.
 
 ## 2. What is established vs not established
 
@@ -35,6 +36,7 @@ The strongest current conclusions are conservative:
 |---|---|---|
 | External retrieval benchmarks | ContextBench and RepoQA smoke/matrix/scale runs execute in CI with aggregate-only artifacts. | No benchmark leaderboard or general performance claim. |
 | BEA algorithm | BEA policies run on real external benchmark data with private SCORE traces. BEA v0.3 has mixed evidence. | No winner/default/promotion claim. |
+| BEA v1 actionability | FD1 failure categories are mapped to action layers; FD1 private replay supports an honest file-selector lower bound. | BEA-v1-A selector is not authorized because retrieval availability dominates. |
 | Downstream live-provider behavior | Context packs improve bounded synthetic coding-agent tasks versus sparse prompts. B16-J isolates a target+support conjunction signal after removing confounds. | No real-user downstream value proof. No BEA-over-BM25 downstream advantage. |
 | Automated calibration | Automated/proxy calibration artifacts and heldout feature checks exist. | No human-calibrated E/S claim. |
 | Privacy/artifact discipline | Public artifacts are aggregate-only; private SCORE/event traces stay under `/tmp` or ignored locations. | No raw prompts, responses, paths, snippets, provider payloads, gold labels, or per-record rows are public. |
@@ -163,10 +165,12 @@ BEA-FD2-A direct FD1-objective setwise acquisition smoke is complete as a bounde
 
 BEA-FD2-A1 failure attribution replay is complete. Manual CI run `28027342996` replayed FD2-A and attributed 38/38 regressed records. The dominant mechanism was `latency_category_non_actionable_or_dominating` on 38/38 records; candidate availability was not limiting (`candidate_availability_limit=0/38`, better candidates existed for 38/38). See `docs/en/bea-fd2a1-failure-attribution-replay.md`.
 
-Immediate next work is no longer proxy repair, direct aggregate-FD1-loss weighting, or diagnosis of FD2-A. FD2-A1 explains the failure: the objective over-optimized a latency-loss category that candidate-level selection could not act on. The next objective must remove/decouple non-actionable latency pressure, protect file-recall/gold-file utility, and still model marginal utility/redundancy without role-proxy resurrection or v0.31/v0.32 weight tweaks.
+BEA-v1-P1 Actionability Audit is complete. Manual CI run `28076434237` regenerated and validated FD1 private decomposition (86040 rows, 239 composite record groups) and published status `no_go_retrieval_availability_limit`. The audit mapped all 12 FD1 categories over 6 action layers and computed the file-selector ceiling from private replay: `gold_file_absent` denominator=119, lower-bound recoverable count=1, lower-bound rate=0.004184, unrecoverable candidate-unavailable lower-bound count=118, retrieval-availability rate=0.991597. Do not start BEA-v1-A coverage-preserving selector from this evidence.
 
-Do not run B16-K, P4/P5, FD2-B from the failed FD2-A objective, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, or another BEA scale smoke before proposing a structurally different objective that addresses the FD2-A1 latency-proxy failure.
+Immediate next work is no longer proxy repair, direct aggregate-FD1-loss weighting, FD2-A diagnosis, or selector-only v1-A. FD2-A1 explains the latency-objective failure, and v1-P1 shows that on the FD1 frame selector-only file coverage has too little demonstrated lower-bound upside. The next BEA v1 work should target candidate availability / retrieval reach or add trace fields needed to compute span/stopping ceilings, while keeping latency outside candidate scoring.
+
+Do not run B16-K, P4/P5, FD2-B from the failed FD2-A objective, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, another BEA scale smoke, or BEA-v1-A selector-only implementation before addressing the v1-P1 retrieval-availability No-Go.
 
 ## 9. One-sentence conclusion
 
-OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 decomposed BEA-4/5 failures, P1/P2/P3 closed the role-proxy line, FD2-A showed that naive direct FD1-loss weighting fails, and FD2-A1 traced that failure to a non-actionable latency-loss objective dominating all regressed records.
+OpenLocus now has real empirical evidence pipelines and a bounded target+support downstream signal, but BEA is still mixed and not a default/winner; BEA-5 missed the fixed quota by one record, BEA-FD1 decomposed BEA-4/5 failures, P1/P2/P3 closed the role-proxy line, FD2-A/FD2-A1 closed direct FD1-loss weighting, and BEA-v1-P1 shows selector-only v1-A is not justified because retrieval availability dominates the file-miss denominator.

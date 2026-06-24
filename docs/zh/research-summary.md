@@ -3303,3 +3303,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **主导机制**：`latency_category_non_actionable_or_dominating` 在 38/38 条退化记录上触发。次级机制小很多：redundancy_overcorrection 4/38，gold_file_displacement 3/38，aggregate_weight_category_collision 3/38。
 - **候选可用性不是 blocker**：`candidate_availability_limit=0/38`；38/38 记录在 budget 与 2×budget 以上的池中都有更好候选。
 - **决定**：FD2-A 失败是因为 objective 优化了一个 candidate-level proxy 不可操作的 latency-loss 类别。下一步 objective 工作必须去掉或解耦不可操作的 latency 压力，并保护 file-recall/gold-file utility；不要从 FD2-A 进入 FD2-B，不要复活 role proxy，不要调 v0.31/v0.32 权重。
+
+## BEA-v1-P1 发现
+
+- **BEA-v1-P1 Actionability Audit 已完成**：local checkpoint `6e661f1`，CI 修复 commits `b63db2a` 与 `9c72ae2`，manual CI run `28076434237`。
+- **审计重放通过，但 v1-A 被拒绝**：workflow 在 `/tmp` 重新生成 FD1 private decomposition，验证 FD1 replay artifact，解析 86040 条 private decomposition rows，并恢复 239 个 composite `(source_phase, private_record_id)` group。公开 artifact status 为 `no_go_retrieval_availability_limit`，不是 pass。
+- **可行动性结果**：全部 12 个 FD1 failure categories 映射到 6 个 action layers（72 cells）。`latency_without_quality_gain` 明确不是 candidate selection 可行动目标，归入 `non_actionable_accounting`，保留 FD2-A1 的教训。
+- **File-selector 上限结果**：`gold_file_absent` denominator=119，但 private lower-bound recoverable count 只有 1。Lower-bound rate=0.004184（低于 0.05 gate），unrecoverable candidate-unavailable lower-bound count=118，retrieval-availability rate=0.991597。公开上界仍为 119/239=0.497908，但不足以授权 v1-A。
+- **决定**：不要基于这份 FD1 evidence 启动 BEA-v1-A coverage-preserving selector。下一步 BEA v1 工作应先处理 candidate availability / retrieval expansion 证据，或收集 span/stopping ceiling 所需 trace 字段，而不是做 selector-only optimization。

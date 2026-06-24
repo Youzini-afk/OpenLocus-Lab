@@ -3895,3 +3895,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Dominant mechanism**: `latency_category_non_actionable_or_dominating` fired on 38/38 regressed records. Secondary mechanisms were much smaller: redundancy_overcorrection 4/38, gold_file_displacement 3/38, aggregate_weight_category_collision 3/38.
 - **Candidate availability is not the blocker**: `candidate_availability_limit=0/38`; better candidates existed above budget and 2×budget for 38/38 records.
 - **Decision**: FD2-A failed because its objective optimized a latency-loss category that was not actionable by the candidate-level proxy. Next objective work must remove/decouple non-actionable latency pressure and protect file-recall/gold-file utility; do not run FD2-B from FD2-A, do not revive role proxies, and do not tune v0.31/v0.32 weights.
+
+## BEA-v1-P1 findings
+
+- **BEA-v1-P1 Actionability Audit completed**: local checkpoint `6e661f1`, CI fix commits `b63db2a` and `9c72ae2`, manual CI run `28076434237`.
+- **Audit replay passed but v1-A was rejected**: the workflow regenerated the FD1 private decomposition under `/tmp`, validated the FD1 replay artifact, parsed 86040 private decomposition rows, and recovered 239 composite `(source_phase, private_record_id)` groups. Public artifact status is `no_go_retrieval_availability_limit`, not pass.
+- **Actionability result**: all 12 FD1 failure categories were mapped over 6 action layers (72 cells). `latency_without_quality_gain` is explicitly non-actionable by candidate selection and belongs to `non_actionable_accounting`, preserving the FD2-A1 lesson.
+- **File-selector ceiling result**: `gold_file_absent` denominator=119, but the private lower-bound recoverable count is only 1. Lower-bound rate=0.004184 (<0.05 gate), unrecoverable candidate-unavailable lower-bound count=118, retrieval-availability rate=0.991597. The public upper bound remains 119/239=0.497908 but is not sufficient to authorize v1-A.
+- **Decision**: do not start BEA-v1-A coverage-preserving selector on this FD1 evidence. The next BEA v1 work should target candidate availability / retrieval expansion evidence (or collect trace fields needed for span/stopping ceilings) before selector-only optimization.

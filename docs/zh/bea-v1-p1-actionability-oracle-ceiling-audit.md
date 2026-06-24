@@ -247,9 +247,9 @@ candidate key、selected order、私有 trace 路径或私有 row payload。
 ## CI gate（fail-closed）
 
 手动 CI workflow `bea-v1-p1-actionability-audit.yml` 仅在
-`workflow_dispatch` 上运行。CI workflow 在 `$RUNNER_TEMP/fd1_private`
-下重新生成 FD1 私有分解（通过
-`bea_fd1_failure_decomposition --enable-external-benchmark-network
+`workflow_dispatch` 上运行。CI workflow 在临时
+`/tmp/bea_v1_p1_fd1_private_<run_id>` 目录下重新生成 FD1 私有分解
+（通过 `bea_fd1_failure_decomposition --enable-external-benchmark-network
 --private-decomposition-dir` 的确定性重放），并通过
 `--fd1-private-decomposition-jsonl` 将 JSONL 路径传给审计。私有 JSONL
 绝不上传。无 provider secret/var/model env；FD1 重放使用冻结 BEA-4/5
@@ -363,15 +363,30 @@ python3 eval/bea_v1_p1_actionability_audit.py \
 `stop_go_decision = needs_fd1_private_replay_before_v1_a` —— 这是未运行
 FD1 私有分解重放时的真实状态。审计不从公开聚合上界单独伪造 pass。
 
-当 CI workflow 以 `enable_external_benchmark_network=true` 运行时，它在
-`$RUNNER_TEMP/fd1_private` 重新生成 FD1 私有分解（冻结 BEA-4/5 协议的
-确定性重放，无 provider call），将 JSONL 路径传给审计，审计计算真实的
-file-selector 下界。status 与 stop_go 决策随后取决于计算出的下界 rate
-vs materiality 阈值（0.05）以及 retrieval availability rate vs
-dominance 阈值（0.50）。
+Manual CI run `28076434237` 已完成并通过 workflow gate。该 run 在
+`/tmp/bea_v1_p1_fd1_private_28076434237` 下重新生成 FD1 私有分解并验证
+replay artifact；私有 JSONL 保留在 CI 临时文件系统中，未上传。公开聚合
+artifact 现在是 CI 结果，而不是默认无私有 artifact：
 
-真实重放运行后此 Manual CI 结果将填入；在此之前，committed artifact
-保持诚实的 `no_go_ceiling_unavailable` 默认。
+- status: `no_go_retrieval_availability_limit`
+- `records_decomposed=239`
+- `fd1_private_decomposition_row_count=86040`
+- `fd1_private_decomposition_group_count=239`
+- replay artifact status: `bea_fd1_decomposition_pass`
+- replay manifest hash 与 committed FD1 artifact manifest hash 匹配
+- `forbidden_scan.status=pass`
+- file-selector denominator: `119`（`gold_file_absent` affected records）
+- file-selector lower-bound recoverable count: `1`
+- file-selector lower-bound rate: `0.004184`
+- file-selector upper-bound recoverable count: `119`
+- file-selector upper-bound rate（相对完整 FD1 frame）: `0.497908`
+- unrecoverable candidate-unavailable lower-bound count: `118`
+- retrieval-availability rate（在 file-selector denominator 内）: `0.991597`
+
+因此审计拒绝把 BEA-v1-A coverage-preserving selector 作为下一阶段：
+在 119 条 `gold_file_absent` 记录中，只有 1 条有同帧 baseline 表明正确文件
+已在 candidate pool 中；诚实下界 selector upside 低于 0.05 materiality gate，
+且 retrieval availability 主导。
 
 ## 限制
 
@@ -384,7 +399,7 @@ dominance 阈值（0.50）。
   授权 v1-A —— 无私有重放且无已验证 replay artifact 时，审计诚实 No-Go
   至 `no_go_ceiling_unavailable`。
 - 审计 *evaluator* 不重放 FD1、不运行 retrieval/selector/provider call。
-  手动 CI workflow 在 `$RUNNER_TEMP` 重新生成 FD1 私有分解（冻结 BEA-4/5
+  手动 CI workflow 在 `/tmp` 重新生成 FD1 私有分解（冻结 BEA-4/5
   确定性重放，无 provider call）并写入 FD1 replay 报告；审计 evaluator
   读取两者。`bea_v1_p1_audit_evaluator_no_replay_executed=true` flag 跟踪
   evaluator 的 no-replay 不变量；`fd1_private_decomposition_replay_*`

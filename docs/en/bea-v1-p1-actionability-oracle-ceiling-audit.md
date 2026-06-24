@@ -284,10 +284,11 @@ Required public tables (records-only, natural keys):
 
 The manual CI workflow `bea-v1-p1-actionability-audit.yml` runs only
 on `workflow_dispatch`. The CI workflow regenerates the FD1 private
-decomposition under `$RUNNER_TEMP/fd1_private` (deterministic replay
-via `bea_fd1_failure_decomposition --enable-external-benchmark-network
---private-decomposition-dir`) and passes the JSONL path to the audit
-via `--fd1-private-decomposition-jsonl`. The private JSONL is NEVER
+decomposition under a temporary `/tmp/bea_v1_p1_fd1_private_<run_id>`
+directory (deterministic replay via `bea_fd1_failure_decomposition
+--enable-external-benchmark-network --private-decomposition-dir`) and
+passes the JSONL path to the audit via
+`--fd1-private-decomposition-jsonl`. The private JSONL is NEVER
 uploaded. No provider secrets/vars/model env; the FD1 replay reruns
 frozen BEA-4/5 protocols with no provider calls.
 
@@ -405,17 +406,33 @@ the truthful state when no FD1 private decomposition replay has been
 run. The audit does NOT fake a pass from the public aggregate upper
 bound alone.
 
-When the CI workflow runs with `enable_external_benchmark_network=true`,
-it regenerates the FD1 private decomposition under `$RUNNER_TEMP/fd1_private`
-(deterministic replay of frozen BEA-4/5 protocols, no provider calls),
-passes the JSONL path to the audit, and the audit computes the real
-file-selector lower bound. The status and stop_go decision then depend
-on the computed lower bound rate vs the materiality threshold (0.05)
-and the retrieval availability rate vs the dominance threshold (0.50).
+Manual CI run `28076434237` completed green after regenerating the FD1
+private decomposition under `/tmp/bea_v1_p1_fd1_private_28076434237`
+and validating the replay artifact. The private JSONL stayed in the CI
+temporary filesystem and was not uploaded. The public aggregate artifact
+is now the CI result, not the default no-private artifact:
 
-This manual CI result will be filled in once the real replay has run;
-until then the committed artifact remains the honest
-`no_go_ceiling_unavailable` default.
+- status: `no_go_retrieval_availability_limit`
+- `records_decomposed=239`
+- `fd1_private_decomposition_row_count=86040`
+- `fd1_private_decomposition_group_count=239`
+- replay artifact status: `bea_fd1_decomposition_pass`
+- replay manifest hash matches the committed FD1 artifact manifest hash
+- `forbidden_scan.status=pass`
+- file-selector denominator: `119` (`gold_file_absent` affected records)
+- file-selector lower-bound recoverable count: `1`
+- file-selector lower-bound rate: `0.004184`
+- file-selector upper-bound recoverable count: `119`
+- file-selector upper-bound rate over the full FD1 frame: `0.497908`
+- unrecoverable candidate-unavailable lower-bound count: `118`
+- retrieval-availability rate within the file-selector denominator:
+  `0.991597`
+
+The audit therefore rejects BEA-v1-A coverage-preserving selector as the
+next phase on this evidence: only 1/119 `gold_file_absent` records has a
+same-frame baseline indicating the correct file was available in the
+candidate pool, so the honest lower-bound selector upside is below the
+0.05 materiality gate and retrieval availability dominates.
 
 ## Caveats
 
@@ -431,9 +448,9 @@ until then the committed artifact remains the honest
   audit honestly No-Gos to `no_go_ceiling_unavailable`.
 - The audit *evaluator* does not rerun FD1, does not run
   retrieval/selector/provider calls. The manual CI workflow
-  regenerates the FD1 private decomposition under `$RUNNER_TEMP`
-  (deterministic frozen BEA-4/5 replay with no provider calls) and
-  writes the FD1 replay report; the audit evaluator reads both. The
+  regenerates the FD1 private decomposition under `/tmp` (deterministic
+  frozen BEA-4/5 replay with no provider calls) and writes the FD1
+  replay report; the audit evaluator reads both. The
   `bea_v1_p1_audit_evaluator_no_replay_executed=true` flag tracks the
   evaluator's no-replay invariant; the
   `fd1_private_decomposition_replay_*` flags track the workflow's

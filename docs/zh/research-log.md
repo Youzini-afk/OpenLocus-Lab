@@ -9978,3 +9978,26 @@ Manual CI run `28027342996` 10m42s 绿色完成。Replay 匹配 FD2-A：records_
 ### 决定
 
 FD2-A 失败是因为 aggregate FD1-loss objective 对 candidate-level proxy 无法操作的 latency-loss 类别施加了决定性压力。下一步 objective 设计应去掉或解耦不可操作的 latency 压力，并保护 file-recall/gold-file utility。不要从 FD2-A 运行 FD2-B，不要复活 role proxy，不要调 v0.31/v0.32 权重。
+
+## 2026-06-24 — BEA-v1-P1：可行动性审计与 Oracle 上限检查
+
+### 目标
+
+正式以 hierarchical/actionability-aware 研究线启动 BEA v1，而不是继续修 BEA v0.4。将 FD1 failure categories 映射到真正能因果影响它们的 action layers，并从 FD1 evidence 计算诚实 oracle ceilings。不运行 selector，不调权重，不复活 role proxy，也不从聚合 latency 推断上限。
+
+### 实现 / 验证
+
+- Local checkpoint `6e661f1` 新增 `eval/bea_v1_p1_actionability_audit.py`、manual workflow、aggregate artifact 与 en/zh docs。
+- CI 修复 `b63db2a` 将 FD1 private replay 输出从 `$RUNNER_TEMP` 改到 `/tmp/...`，以满足已有 private-dir safety rule。
+- CI 修复 `9c72ae2` 将 FD1 private decomposition 分组从单独 `private_record_id` 改为 `(source_phase, private_record_id)`，避免 BEA-4/BEA-5 ID 碰撞（错误 192 组 -> 正确 239 组）。
+- Self-test 596/596；默认无私有 artifact 如实为 `no_go_ceiling_unavailable`。
+
+### Manual CI 结果
+
+Manual CI run `28076434237` 绿色完成。Workflow 在 `/tmp/bea_v1_p1_fd1_private_28076434237` 重新生成 FD1 private decomposition，验证 FD1 replay artifact（`bea_fd1_decomposition_pass`），解析 86040 条 private decomposition rows，恢复 239 个 composite record groups，并发布 aggregate-only public artifact。
+
+Status 为 `no_go_retrieval_availability_limit`。Actionability matrix 覆盖全部 12 个 FD1 categories × 6 个 action layers。File-selector ceiling 计算为 private lower bound + public upper bound：`gold_file_absent` denominator=119，recoverable lower-bound count=1，lower-bound rate=0.004184，upper-bound count=119，upper-bound rate=0.497908，unrecoverable candidate-unavailable lower-bound count=118，retrieval-availability rate=0.991597。
+
+### 决定
+
+不要基于这份 evidence 启动 BEA-v1-A coverage-preserving selector。Selector-only optimization 在 FD1 frame 上缺少足够 lower-bound upside；主导问题是 candidate availability / retrieval reach，而 span/refiner 与 stopping ceilings 仍诚实不可用，因为 FD1 缺少必要 trace 字段。
