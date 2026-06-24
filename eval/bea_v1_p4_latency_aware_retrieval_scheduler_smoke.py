@@ -4143,7 +4143,13 @@ def main() -> None:
           f"{report['forbidden_scan']['status']}, "
           f"status={report['status']}, phase={report['phase']}, "
           f"denominator_count={report.get('denominator_count', 0)}, "
-          f"stop_go_decision={sgr.get('stop_go_decision', '')})")
+          f"stop_go_decision={sgr.get('stop_go_decision', '')}, "
+          f"baseline_reach_observed={sgr.get('baseline_reach_observed', '')}, "
+          f"depth_reference_reach_observed={sgr.get('depth_reference_reach_observed', '')}, "
+          f"p3_reference_reach_observed={sgr.get('p3_reference_reach_observed', '')}, "
+          f"baseline_reach_drift={sgr.get('baseline_reach_drift', '')}, "
+          f"depth_reference_reach_drift={sgr.get('depth_reference_reach_drift', '')}, "
+          f"p3_reference_reach_drift={sgr.get('p3_reference_reach_drift', '')})")
 
 
 if __name__ == "__main__":

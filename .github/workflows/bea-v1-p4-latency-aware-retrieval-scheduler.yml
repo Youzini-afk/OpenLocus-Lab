@@ -156,6 +156,16 @@ jobs:
             --out "$report_path"
           echo "report_path=$report_path" >> "$GITHUB_ENV"
 
+      - name: Upload BEA-v1-P4 prevalidation aggregate report (aggregate only)
+        if: ${{ always() && steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-p4-latency-aware-retrieval-scheduler-prevalidation-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_p4_scheduler_smoke_report.json
+          retention-days: 7
+          if-no-files-found: ignore
+          include-hidden-files: false
+
       - name: BEA-v1-P4 no-op when network not enabled
         if: ${{ steps.resolve.outputs.enable_network != 'true' }}
         run: |
