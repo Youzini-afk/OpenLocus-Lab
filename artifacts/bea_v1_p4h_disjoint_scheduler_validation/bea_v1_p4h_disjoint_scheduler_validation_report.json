@@ -1,0 +1,1052 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_p4h_disjoint_scheduler_validation",
+  "aggregate_only_public_artifact": true,
+  "aggregate_runtime_seconds": 0.0,
+  "algorithm_changed_during_bea_v1_p4h": false,
+  "arm_action_records": [
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "record_count": 0,
+      "scheduler_action": "baseline_only"
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "record_count": 0,
+      "scheduler_action": "extra_depth_selected"
+    }
+  ],
+  "arm_cost_records": [
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "cost_axis": "latency_multiplier",
+      "cost_class": "no_data",
+      "threshold": 2.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "cost_axis": "pool_size_multiplier",
+      "cost_class": "no_data",
+      "threshold": 4.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "cost_axis": "latency_multiplier",
+      "cost_class": "no_data",
+      "threshold": 2.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "cost_axis": "pool_size_multiplier",
+      "cost_class": "no_data",
+      "threshold": 4.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "cost_axis": "latency_multiplier",
+      "cost_class": "no_data",
+      "threshold": 2.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "cost_axis": "pool_size_multiplier",
+      "cost_class": "no_data",
+      "threshold": 4.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "cost_axis": "hard_cap_violation_count",
+      "cost_class": "ok",
+      "threshold": 0.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "cost_axis": "latency_multiplier",
+      "cost_class": "no_data",
+      "threshold": 2.0,
+      "value": 0.0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "cost_axis": "pool_size_multiplier",
+      "cost_class": "no_data",
+      "threshold": 4.0,
+      "value": 0.0
+    }
+  ],
+  "arm_delta_records": [
+    {
+      "arm_name": "p2_depth_only_reference",
+      "available_delta": 0,
+      "available_lift_rate": 0.0,
+      "latency_multiplier": 0.0,
+      "pool_size_multiplier": 0.0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "available_delta": 0,
+      "available_lift_rate": 0.0,
+      "latency_multiplier": 0.0,
+      "pool_size_multiplier": 0.0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "available_delta": 0,
+      "available_lift_rate": 0.0,
+      "latency_multiplier": 0.0,
+      "pool_size_multiplier": 0.0
+    }
+  ],
+  "arm_reach_records": [
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "candidate_pool_size_mean": 0.0,
+      "denominator_record_count": 0,
+      "duplicate_file_rate": 0.0,
+      "first_gold_file_rank_mean": 0.0,
+      "first_gold_file_rank_median": 0.0,
+      "gold_file_available_any_pool": 0,
+      "gold_file_available_at_100": 0,
+      "gold_file_available_at_200": 0,
+      "gold_file_available_at_50": 0,
+      "gold_file_available_rate": 0.0,
+      "newly_reachable_count": 0,
+      "retrieval_latency_mean_seconds": 0.0,
+      "still_unavailable_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "candidate_pool_size_mean": 0.0,
+      "denominator_record_count": 0,
+      "duplicate_file_rate": 0.0,
+      "first_gold_file_rank_mean": 0.0,
+      "first_gold_file_rank_median": 0.0,
+      "gold_file_available_any_pool": 0,
+      "gold_file_available_at_100": 0,
+      "gold_file_available_at_200": 0,
+      "gold_file_available_at_50": 0,
+      "gold_file_available_rate": 0.0,
+      "newly_reachable_count": 0,
+      "retrieval_latency_mean_seconds": 0.0,
+      "still_unavailable_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "candidate_pool_size_mean": 0.0,
+      "denominator_record_count": 0,
+      "duplicate_file_rate": 0.0,
+      "first_gold_file_rank_mean": 0.0,
+      "first_gold_file_rank_median": 0.0,
+      "gold_file_available_any_pool": 0,
+      "gold_file_available_at_100": 0,
+      "gold_file_available_at_200": 0,
+      "gold_file_available_at_50": 0,
+      "gold_file_available_rate": 0.0,
+      "newly_reachable_count": 0,
+      "retrieval_latency_mean_seconds": 0.0,
+      "still_unavailable_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "candidate_pool_size_mean": 0.0,
+      "denominator_record_count": 0,
+      "duplicate_file_rate": 0.0,
+      "first_gold_file_rank_mean": 0.0,
+      "first_gold_file_rank_median": 0.0,
+      "gold_file_available_any_pool": 0,
+      "gold_file_available_at_100": 0,
+      "gold_file_available_at_200": 0,
+      "gold_file_available_at_50": 0,
+      "gold_file_available_rate": 0.0,
+      "newly_reachable_count": 0,
+      "retrieval_latency_mean_seconds": 0.0,
+      "still_unavailable_count": 0
+    }
+  ],
+  "b16k_executed": false,
+  "backend_changed": false,
+  "bea_v1_p4h_audit_evaluator_latency_not_in_relevance": true,
+  "bea_v1_p4h_audit_evaluator_no_provider_calls": true,
+  "bea_v1_p4h_audit_evaluator_no_role_proxy": true,
+  "bea_v1_p4h_audit_evaluator_no_selector_executed": true,
+  "bea_v1_p4h_audit_evaluator_no_weight_tuning": true,
+  "budget": 5,
+  "calibration_claimed": false,
+  "channel_action_records": [
+    {
+      "channel_action": "baseline_collected",
+      "channel_name": "bm25",
+      "record_count": 0
+    },
+    {
+      "channel_action": "baseline_collected",
+      "channel_name": "regex",
+      "record_count": 0
+    },
+    {
+      "channel_action": "baseline_collected",
+      "channel_name": "symbol",
+      "record_count": 0
+    }
+  ],
+  "claim_level": "bea_v1_p4h_disjoint_scheduler_validation_only",
+  "cost_safety_records": [
+    {
+      "cost_safety_axis": "max_latency_multiplier",
+      "cost_safety_class": "ok",
+      "threshold": 2.0,
+      "value": 0.0
+    },
+    {
+      "cost_safety_axis": "max_pool_size_multiplier",
+      "cost_safety_class": "ok",
+      "threshold": 4.0,
+      "value": 0.0
+    }
+  ],
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "denominator_constructed_before_scheduler_outcomes": true,
+  "denominator_count": 0,
+  "denominator_disjoint_from_prior": true,
+  "denominator_records": [],
+  "denominator_scan_records": [],
+  "denominator_source_gold_file_absent_count": 0,
+  "denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1",
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_only": true,
+  "downstream_agent_value_proven": false,
+  "efficiency_records": [
+    {
+      "efficiency_axis": "p2_depth_only_reference_newly_per_added_candidate",
+      "efficiency_class": "no_data",
+      "p2_combined_efficiency": 0.268648,
+      "p2_depth_efficiency": 0.560146,
+      "p3_efficiency": 1.208122,
+      "value": 0.0
+    },
+    {
+      "efficiency_axis": "p3_constrained_depth_policy_reference_newly_per_added_candidate",
+      "efficiency_class": "no_data",
+      "p2_combined_efficiency": 0.268648,
+      "p2_depth_efficiency": 0.560146,
+      "p3_efficiency": 1.208122,
+      "value": 0.0
+    },
+    {
+      "efficiency_axis": "p4_latency_aware_action_scheduler_frozen_newly_per_added_candidate",
+      "efficiency_class": "no_data",
+      "p2_combined_efficiency": 0.268648,
+      "p2_depth_efficiency": 0.560146,
+      "p3_efficiency": 1.208122,
+      "value": 0.0
+    }
+  ],
+  "evidencecore_semantics_changed": false,
+  "excluded_prior_windows_count": 0,
+  "external_benchmark_performance_claimed": false,
+  "failure_category_count_records": [
+    {
+      "count": 0,
+      "failure_category": "baseline_reach_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "denominator_mapping_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "denominator_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "depth_reference_reach_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "duplicate_record_key_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_availability_table_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_category_summary_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_count_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_group_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_manifest_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_records_decomposed_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_forbidden_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_manifest_hash_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_manifest_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_records_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_schema_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_schema_version_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_leak_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "heldout_denominator_insufficient"
+    },
+    {
+      "count": 0,
+      "failure_category": "heldout_denominator_not_disjoint"
+    },
+    {
+      "count": 1,
+      "failure_category": "network_required_but_disabled"
+    },
+    {
+      "count": 0,
+      "failure_category": "openlocus_binary_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "p3_reference_reach_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "prior_denominator_key_collision"
+    },
+    {
+      "count": 0,
+      "failure_category": "private_scheduler_rows_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "rank_budget_audit_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_clone_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_scan_not_attempted"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_policy_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "scanner_self_test_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "subgroup_collapse"
+    },
+    {
+      "count": 0,
+      "failure_category": "unexpected_exception"
+    }
+  ],
+  "failure_reason_category": "network_required_but_disabled",
+  "fd1_artifact_modified": false,
+  "fd1_artifact_read": false,
+  "fd1_private_decomposition_parsed": false,
+  "fd1_private_decomposition_replay_executed_by_workflow": false,
+  "fd1_private_decomposition_replay_supplied": false,
+  "fd1_private_decomposition_replay_validated": false,
+  "fd2b_executed": false,
+  "fd2c_executed": false,
+  "forbidden_scan": {
+    "categories": {},
+    "status": "pass",
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "heldout_validation_claimed": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_latency_aware_retrieval_scheduler_validation": true,
+    "is_latency_in_relevance": false,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "promotion_claimed": false,
+    "signal_strength": "bea_v1_p4h_disjoint_scheduler_validation_aggregate_only"
+  },
+  "frozen_p4_scheduler_equivalence_explicit": true,
+  "gate_records": [
+    {
+      "gate": "fd1_records_decomposed",
+      "passed": false,
+      "threshold_relation": "==",
+      "threshold_value": 239.0,
+      "value": 0.0
+    },
+    {
+      "gate": "fd1_private_manifest_record_count",
+      "passed": false,
+      "threshold_relation": "==",
+      "threshold_value": 86040.0,
+      "value": 0.0
+    },
+    {
+      "gate": "fd1_private_decomposition_parsed",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    },
+    {
+      "gate": "replay_artifact_validated",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    },
+    {
+      "gate": "raw_denominator_scan_attempted",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    },
+    {
+      "gate": "raw_denominator_attempted_records",
+      "passed": true,
+      "threshold_relation": ">=",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "prior_raw_windows_excluded",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 1.0
+    },
+    {
+      "gate": "denominator_disjoint_from_prior",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 1.0
+    },
+    {
+      "gate": "denominator_count_min",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 80.0,
+      "value": 0.0
+    },
+    {
+      "gate": "private_scheduler_rows",
+      "passed": true,
+      "threshold_relation": "==",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "forbidden_scan_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 1.0
+    },
+    {
+      "gate": "provider_calls_made",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "latency_in_candidate_relevance",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "retrieval_policy_executed",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    },
+    {
+      "gate": "blocking_failure_count",
+      "passed": true,
+      "threshold_relation": "==",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "subgroup_safety_passed",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    }
+  ],
+  "generated_at": "2026-06-24T20:08:47.593230+00:00",
+  "generated_by": "eval/bea_v1_p4h_disjoint_scheduler_validation.py",
+  "gold_labels_used_for_policy": false,
+  "gold_labels_used_for_query_construction": false,
+  "gold_labels_used_for_selection": false,
+  "heldout_validation": true,
+  "latency_decomposition_records": [
+    {
+      "latency_axis": "p4_baseline_latency_mean_seconds",
+      "latency_class": "no_data",
+      "value": 0.0
+    },
+    {
+      "latency_axis": "p4_extra_depth_latency_mean_seconds",
+      "latency_class": "no_data",
+      "value": 0.0
+    },
+    {
+      "latency_axis": "p4_extra_depth_latency_share",
+      "latency_class": "no_data",
+      "value": 0.0
+    }
+  ],
+  "latency_in_candidate_relevance": false,
+  "leaderboard_entry_claimed": false,
+  "legacy_role_proxy_p4_executed": false,
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "bea_v1_p4h_disjoint_scheduler_validation",
+  "network_mode": "disabled_opt_in",
+  "new_records_added_during_bea_v1_p4h": false,
+  "openlocus_binary_source": "default",
+  "p5_executed": false,
+  "pack_builder_changed": false,
+  "phase": "BEA-v1-P4H",
+  "policy_arms": [
+    "current_bea_candidate_pool_replay",
+    "p2_depth_only_reference",
+    "p3_constrained_depth_policy_reference",
+    "p4_latency_aware_action_scheduler_frozen"
+  ],
+  "posthoc_threshold_search": false,
+  "prior_fd1_denominator_reused": false,
+  "prior_raw_windows_excluded": true,
+  "private_decomposition_used_for_selection": false,
+  "private_key_hashes_publicly_serialized": false,
+  "private_manifest_record_count": 0,
+  "private_manifest_records": [
+    {
+      "manifest_hash": "",
+      "manifest_name": "fd1_private_decomposition_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "",
+      "storage_class": "fd1_committed_artifact"
+    }
+  ],
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "query_anchors_used_in_p4_arm": false,
+  "rank_band_records": [
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "rank_band": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "rank_band": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "rank_band": "rank_le_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "rank_band": "rank_le_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "rank_band": "rank_le_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "rank_band": "rank_le_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "rank_band": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "rank_band": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "rank_band": "rank_le_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "rank_band": "rank_le_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "rank_band": "rank_le_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "rank_band": "rank_le_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "rank_band": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "rank_band": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "rank_band": "rank_le_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "rank_band": "rank_le_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "rank_band": "rank_le_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "rank_band": "rank_le_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "rank_band": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "rank_band": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "rank_band": "rank_le_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "rank_band": "rank_le_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "rank_band": "rank_le_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "rank_band": "rank_le_50",
+      "record_count": 0
+    }
+  ],
+  "rank_budget_audit_records": [
+    {
+      "audit_name": "p4h_rank_budget_bottleneck",
+      "denominator_record_count": 0,
+      "first_reachable_gold_rank_mean": 0.0,
+      "mean_rank_threshold": 5.0,
+      "rank_budget": 5,
+      "rank_budget_bottleneck_confirmed": false,
+      "records_above_budget_threshold": 1,
+      "records_first_reachable_gold_rank_above_budget": 0,
+      "selector_phase_justified": false,
+      "treatment_arm": "p4_latency_aware_action_scheduler_frozen"
+    }
+  ],
+  "raw_denominator_scan_attempted": false,
+  "raw_scan_attempted_records": 0,
+  "raw_scan_yield_file_miss_records": 0,
+  "reach_bucket_records": [
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "reach_bucket": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "reach_bucket": "rank_101_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "reach_bucket": "rank_11_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "reach_bucket": "rank_1_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "reach_bucket": "rank_51_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "current_bea_candidate_pool_replay",
+      "reach_bucket": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "reach_bucket": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "reach_bucket": "rank_101_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "reach_bucket": "rank_11_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "reach_bucket": "rank_1_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "reach_bucket": "rank_51_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "reach_bucket": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "reach_bucket": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "reach_bucket": "rank_101_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "reach_bucket": "rank_11_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "reach_bucket": "rank_1_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "reach_bucket": "rank_51_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "reach_bucket": "rank_above_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "reach_bucket": "not_found",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "reach_bucket": "rank_101_200",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "reach_bucket": "rank_11_50",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "reach_bucket": "rank_1_10",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "reach_bucket": "rank_51_100",
+      "record_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "reach_bucket": "rank_above_200",
+      "record_count": 0
+    }
+  ],
+  "records_decomposed": 0,
+  "records_only_public_artifact": true,
+  "remote_provider_calls_made": false,
+  "retrieval_policy_executed": false,
+  "retriever_changed": false,
+  "role_proxy_assigned": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "scheduler_stop_reason_records": [
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "baseline_arm"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "baseline_no_extra"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "depth_reference_arm"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "extra_depth_actions_executed"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "hard_candidate_cap_reached"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "no_eligible_channels"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "p3_reference"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "retrieval_failed"
+    },
+    {
+      "record_count": 0,
+      "scheduler_stop_reason": "unique_file_cap_reached"
+    }
+  ],
+  "schema_version": "bea_v1_p4h_disjoint_scheduler_validation.v1",
+  "selector_or_reranker_changed": false,
+  "self_test_checks_passed": 58,
+  "self_test_checks_total": 58,
+  "self_test_passed": true,
+  "source_run_records": [
+    {
+      "audited_private_manifest_record_count": 0,
+      "audited_records_decomposed": 0,
+      "config_hash": "fd8f9289e4b2783964999c270c48a64624998f0cc517eb83f5ee83ad30902253",
+      "denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1",
+      "expected_private_manifest_record_count": 86040,
+      "expected_records_decomposed": 239,
+      "fd1_private_decomposition_group_count": 0,
+      "fd1_private_decomposition_parsed": false,
+      "fd1_private_decomposition_row_count": 0,
+      "fd1_private_decomposition_supplied": false,
+      "fd1_source_artifact_hash": "",
+      "fd1_source_schema_version": "",
+      "prior_fd1_denominator_reused": false,
+      "raw_contextbench_limit_requested": 240,
+      "raw_contextbench_offset_requested": 480,
+      "raw_denominator_target_count": 80,
+      "raw_repoqa_limit_requested": 120,
+      "raw_repoqa_offset_requested": 240,
+      "replay_artifact_failure_category": "",
+      "replay_artifact_forbidden_scan_pass": false,
+      "replay_artifact_manifest_hash": "",
+      "replay_artifact_manifest_hash_match": false,
+      "replay_artifact_manifest_path_publicly_serialized": true,
+      "replay_artifact_manifest_record_count": 0,
+      "replay_artifact_manifest_records_written": false,
+      "replay_artifact_manifest_schema_version": "",
+      "replay_artifact_parsed": false,
+      "replay_artifact_records_decomposed": 0,
+      "replay_artifact_schema_version": "",
+      "replay_artifact_status": "",
+      "replay_artifact_supplied": false,
+      "replay_artifact_validated": false,
+      "replay_match_basis": "fd1_committed_aggregate_only_no_validated_private_replay",
+      "replay_mismatch_reason": "",
+      "replay_protocol_match": false,
+      "source_artifact_status": "audit_mismatch",
+      "source_checkpoint": "f0e99ca",
+      "source_phase": "BEA-v1-P4",
+      "source_sampling_protocol": "bea_fd1_failure_decomposition.v1",
+      "source_status": "bea_fd1_decomposition_pass",
+      "v1_p4_baseline_reach": 32,
+      "v1_p4_hard_cap_violations": 0,
+      "v1_p4_latency_multiplier": 1.749695,
+      "v1_p4_latency_reduction_vs_p3": 0.193806,
+      "v1_p4_p2_depth_reach": 59,
+      "v1_p4_p3_reference_reach": 58,
+      "v1_p4_pool_multiplier": 2.05635,
+      "v1_p4_reach": 56,
+      "v1_p4_result_checkpoint": "f0e99ca",
+      "v1_p4_result_status": "bea_v1_p4_latency_aware_retrieval_scheduler_pass"
+    }
+  ],
+  "source_sampling_protocol": "bea_fd1_failure_decomposition.v1",
+  "status": "unavailable_with_reason",
+  "stop_go_records": [
+    {
+      "action_reduction_material": false,
+      "action_reduction_records_min": 0,
+      "action_reduction_share_min": 0.25,
+      "action_share_reduced": 0.0,
+      "baseline_reach": 0,
+      "cost_safe": false,
+      "denominator_disjoint_from_prior": true,
+      "denominator_min": 80,
+      "denominator_record_count": 0,
+      "expected_private_scheduler_rows": 0,
+      "hard_cap_violation_count": 0,
+      "hard_cap_violation_max": 0,
+      "latency_fixed": false,
+      "latency_mult_max": 2.0,
+      "latency_vs_p3_improvement": 0.0,
+      "latency_vs_p3_improvement_min": 0.1,
+      "p2_depth_reach": 0,
+      "p2_newly_reachable_count": 0,
+      "p3_mean_extra_depth_actions": 0.0,
+      "p3_newly_reachable_count": 0,
+      "p3_reference_reach": 0,
+      "p4_frozen_reach": 0,
+      "p4_latency_multiplier": 0.0,
+      "p4_mean_extra_depth_actions": 0.0,
+      "p4_newly_reachable_count": 0,
+      "p4_pool_multiplier": 0.0,
+      "p4_reach_abs_min": 0,
+      "pool_mult_max": 4.0,
+      "private_scheduler_rows": 0,
+      "rank_budget_bottleneck_confirmed": false,
+      "raw_denominator_scan_attempted": false,
+      "reach_p2_ratio_min": 0.75,
+      "reach_p3_ratio_min": 0.9,
+      "reach_replicated": false,
+      "records_with_fewer_actions": 0,
+      "selector_phase_justified": false,
+      "stop_go_decision": "no_go_p4h_replay_mismatch",
+      "stop_go_reason": "retrieval_not_executed_or_replay_not_validated_or_denominator_not_disjoint_or_raw_scan_not_attempted",
+      "subgroup_safety_passed": false
+    }
+  ],
+  "subgroup_safety_records": [],
+  "v031_tuning_executed": false,
+  "v032_tuning_executed": false,
+  "v03_tuned_during_bea_v1_p4h": false,
+  "v04_full_matrix_claimed": false,
+  "v1_a_coverage_preserving_selector_promoted": false,
+  "v1_a_selector_executed": false,
+  "weights_tuned_during_bea_v1_p4h": false
+}
