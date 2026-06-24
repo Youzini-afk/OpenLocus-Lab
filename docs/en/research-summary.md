@@ -3878,7 +3878,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Result is a valid final role-proxy No-Go, not a v0.4 proof**: status `no_go_support_proxy_degenerate`, records_successful=38 (ContextBench 20, RepoQA 18), attempted=46, excluded=8, forbidden_scan=pass, self-test 400/400, private SCORE rows=266, decision rows=190, role-proxy rows=760, support-feature rows=760, pair-feature rows=38.
 - **Support/complementarity repair over-corrected**: target and support availability/selection all reached 1.0, and target-support pairs reached 1.0, but support was degenerate: support_proxy_available_rate_p3=1.0 (above <=0.90 gate) and mean_support_candidates_per_record_p3=18.289474 (above <=8.0 gate).
 - **Selection changed but quality regressed**: P3 selection differed from v0.3/P2/P1 at 0.5/0.394737/0.394737, but versus v0.3 file_recall@10 delta=-0.052632, MRR delta=-0.155263, span_f0.5@10 delta=-0.003531, latency +0.001730s, quality_per_latency 0.015992 vs 0.016856.
-- **Stop rule triggered**: do not run P4/P5, do not enter the full v0.4 matrix from this role-proxy design, and do not tune v0.31/v0.32. Next algorithm work should pivot to direct FD1-objective setwise acquisition.
+- **Role-proxy stop rule triggered**: do not run legacy role-proxy P4/P5, do not enter the full v0.4 matrix from this role-proxy design, and do not tune v0.31/v0.32. Next algorithm work should pivot to direct FD1-objective setwise acquisition.
 
 ## BEA-FD2-A findings
 
@@ -3918,3 +3918,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Mechanism result**: P3 retained almost all P2 depth-only reach (58/119 vs 59/119; +26 newly reachable vs +27) while reducing mean pool from 68.18 to 41.50 (2.08× baseline vs 3.41× for P2 depth). Efficiency improved to 1.208122 newly reachable per added candidate, above P2 depth-only and combined.
 - **No-Go reason**: latency safety failed. P3 mean latency was 3.645s, 2.17× baseline, above the 2.0× gate. This indicates the next bottleneck is retrieval-action scheduling latency, not candidate relevance scoring.
 - **Decision**: do not promote this scheduler to v1-A input. If BEA v1 continues, isolate latency overhead from sequential/repeated retrieval actions and test a latency-aware action scheduler at the retrieval-action layer, still keeping latency outside candidate relevance scoring.
+
+## BEA-v1-P4 findings
+
+- **BEA-v1-P4 Latency-Aware Retrieval Action Scheduler Smoke completed**: local checkpoint `87a266a`, diagnostic upload patch `3ffeb23`, manual CI run `28118888584`.
+- **Status**: `bea_v1_p4_latency_aware_retrieval_scheduler_pass`. The workflow regenerated FD1 private decomposition under `/tmp`, validated replay, ran 4 fixed P4 arms over the 119-record file-miss denominator, wrote 476 private scheduler rows, and published aggregate-only tables.
+- **Mechanism result**: baseline reached 32/119. P2 depth reached 59/119 (+27) with 3.41× pool and 1.18× latency. P3 reference reached 58/119 (+26) with 2.17× latency. P4 reached 56/119 (+24), preserving >=75% of P2 depth gain, with pool 2.056×, latency 1.750×, and 19.38% lower latency than P3. Hard-cap violations were 0 and action count was reduced on 119/119 records.
+- **Decision**: P4 validates the retrieval-action scheduling layer as a runtime-clean candidate-availability lever. It still is not a default-policy, method-winner, benchmark-performance, or runtime-promotion claim; selector relevance remains unresolved (mean first-gold rank 25.625; 48 records above budget). Next work should be reviewed as a bounded follow-on from this scheduler pass, not as broad retrieval expansion or latency-in-relevance scoring.

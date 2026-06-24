@@ -10698,7 +10698,7 @@ P3 fixed support collapse too aggressively: target proxy available/selected rate
 
 ### Decision
 
-Stop the role-proxy repair line. Do not run P4/P5. Do not enter the full v0.4 matrix from the current role-proxy design. Do not tune v0.31/v0.32 weights. Next algorithm work must pivot to direct FD1-objective setwise acquisition using the decomposition losses directly, rather than continuing target/support proxy repairs.
+Stop the role-proxy repair line. Do not run legacy role-proxy P4/P5. Do not enter the full v0.4 matrix from the current role-proxy design. Do not tune v0.31/v0.32 weights. Next algorithm work must pivot to direct FD1-objective setwise acquisition using the decomposition losses directly, rather than continuing target/support proxy repairs.
 
 ## 2026-06-23 — BEA-FD2-A: Direct FD1-Objective Setwise Acquisition Smoke
 
@@ -10810,3 +10810,40 @@ Status is `no_go_p3_cost_exceeded`. Baseline reached 32/119 (mean pool 19.98, la
 ### Decision
 
 Constrained retrieval-action scheduling is promising on reach and pool efficiency, but this exact sequential scheduler fails latency safety. Do not promote it to v1-A input. Next work should isolate why fewer candidates still cost more time and test a latency-aware action scheduler at the retrieval-action layer, without putting latency into candidate relevance scoring.
+
+## 2026-06-24 — BEA-v1-P4: Latency-Aware Retrieval Action Scheduler Smoke
+
+BEA-v1-P4 was run after P3 showed a real constrained-retrieval mechanism
+but failed latency safety. The phase kept the 119-record FD1
+`gold_file_absent` denominator and compared four fixed arms: current pool,
+P2 depth-only reference, P3 constrained reference, and a P4 runtime-clean
+latency-aware action scheduler. Latency was used only for retrieval-action
+scheduling / stop and cost gates, never for candidate relevance scoring.
+
+Local checkpoint `87a266a` added the evaluator/workflow/docs. Commit
+`3ffeb23` added diagnostic prevalidation upload after an earlier fail-closed
+run proved the need to retain aggregate reports even when validators reject.
+Manual CI run `28118888584` completed green in 1h23m50s, regenerating FD1
+private decomposition under `/tmp`, validating 239 / 86040 replay rows,
+running the P4 scheduler smoke, writing 476 private scheduler rows under
+`/tmp`, and publishing only aggregate records.
+
+Result status: `bea_v1_p4_latency_aware_retrieval_scheduler_pass`.
+
+Observed reach/cost:
+
+- Baseline: 32/119 reachable, pool 19.983193, latency 1.799924s.
+- P2 depth-only reference: 59/119 reachable (+27), pool 68.184874
+  (3.412111×), latency 2.124798s (1.180493×).
+- P3 constrained reference: 58/119 reachable (+26), pool 41.512605
+  (2.077376×), latency 3.906403s (2.170315×), reproducing the P3 failure.
+- P4 scheduler: 56/119 reachable (+24), availability lift 0.201681,
+  pool 41.092437 (2.056350×), latency 3.149319s (1.749695×), hard-cap
+  violations 0.
+
+Interpretation: P4 preserved at least 75% of P2 depth-only reach gain while
+fixing the P3 latency failure (19.3806% lower latency vs P3 and below 2.0×
+baseline). This validates retrieval-action scheduling as a runtime-clean
+candidate-availability lever. It is still not a method-winner/default/
+runtime-promotion claim and does not solve selector relevance: mean first
+reachable gold rank remains 25.625 and 48 records remain above budget.

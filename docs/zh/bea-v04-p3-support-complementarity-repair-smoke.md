@@ -11,7 +11,7 @@ BEA-v0.4-P3 **仅为支持/互补修复证据**，不是 v0.4 证明，不是完
 不相交验证。它不修改 P1/P2 结果文件/artifact；冻结 P1 与 P2 代理原样复用为
 `setwise_complementarity_v0_4_p1` 与 `setwise_complementarity_v0_4_p2_target_repair`
 对照臂。它不事后调优 v0.3 或 v0.4 权重，不运行完整 v0.4 矩阵，不扩展
-dense/graph/QuIVer/provider 范围。这是最后一个有界角色代理修复冒烟；无 P4/P5。
+dense/graph/QuIVer/provider 范围。这是最后一个有界角色代理修复冒烟；无 legacy role-proxy P4/P5。
 
 > `claim_level = bea_v04_p3_support_complementarity_repair_smoke_only`。所有
 > 无声明/无运行时变更标志为 false。
@@ -209,7 +209,7 @@ pair available/selected rate 都为 1.0。但 support proxy 已退化：
 span_f0.5@10 0.035311 vs 0.038842，latency +0.001730s，
 quality_per_latency 0.015992 vs 0.016856。
 
-决定：P3 是最后一个有界 role-proxy repair。不要运行 P4/P5，不要从当前
+决定：P3 是最后一个有界 role-proxy repair。不要运行 legacy role-proxy P4/P5，不要从当前
 role-proxy 设计进入完整 v0.4 矩阵，也不要做 v0.31/v0.32 权重微调。下一步
 算法工作必须转向直接 FD1-objective setwise acquisition，而不是继续修代理。
 

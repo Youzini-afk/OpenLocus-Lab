@@ -3286,7 +3286,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **结果是有效的最终 role-proxy No-Go，不是 v0.4 证明**：status `no_go_support_proxy_degenerate`，records_successful=38（ContextBench 20、RepoQA 18），attempted=46，excluded=8，forbidden_scan=pass，self-test 400/400，private SCORE rows=266，decision rows=190，role-proxy rows=760，support-feature rows=760，pair-feature rows=38。
 - **support/complementarity repair 过度修复**：target 与 support 的 availability/selection 都达到 1.0，target-support pair 也达到 1.0，但 support 退化：support_proxy_available_rate_p3=1.0（高于 <=0.90 gate），mean_support_candidates_per_record_p3=18.289474（高于 <=8.0 gate）。
 - **选择改变但质量退化**：P3 相对 v0.3/P2/P1 的 selection diff 为 0.5/0.394737/0.394737，但相对 v0.3，file_recall@10 delta=-0.052632，MRR delta=-0.155263，span_f0.5@10 delta=-0.003531，latency +0.001730s，quality_per_latency 0.015992 vs 0.016856。
-- **触发 stop rule**：不要运行 P4/P5，不要从当前 role-proxy 设计进入完整 v0.4 矩阵，不要调 v0.31/v0.32。下一步算法工作应转向直接 FD1-objective setwise acquisition。
+- **触发 role-proxy stop rule**：不要运行 legacy role-proxy P4/P5，不要从当前 role-proxy 设计进入完整 v0.4 矩阵，不要调 v0.31/v0.32。下一步算法工作应转向直接 FD1-objective setwise acquisition。
 
 ## BEA-FD2-A 发现
 
@@ -3326,3 +3326,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **机制结果**：P3 几乎保留了 P2 depth-only reach（58/119 vs 59/119；新增 26 vs 27），同时把 mean pool 从 68.18 降到 41.50（相对 baseline 2.08×，而 P2 depth 为 3.41×）。Efficiency 提升到 1.208122 newly reachable per added candidate，高于 P2 depth-only 与 combined。
 - **No-Go 原因**：latency safety 失败。P3 mean latency 为 3.645s，是 baseline 的 2.17×，高于 2.0× gate。这说明下一瓶颈是 retrieval-action scheduling latency，而不是 candidate relevance scoring。
 - **决策**：不要把这个 scheduler 推进为 v1-A 输入。若 BEA v1 继续，应隔离 sequential/repeated retrieval actions 的 latency overhead，并在 retrieval-action 层测试 latency-aware action scheduler，同时继续把 latency 排除在 candidate relevance scoring 之外。
+
+## BEA-v1-P4 发现
+
+- **BEA-v1-P4 Latency-Aware Retrieval Action Scheduler Smoke 已完成**：local checkpoint `87a266a`，diagnostic upload patch `3ffeb23`，manual CI run `28118888584`。
+- **状态**：`bea_v1_p4_latency_aware_retrieval_scheduler_pass`。workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 file-miss 分母上运行 4 个固定 P4 arms，写出 476 条私有 scheduler rows，并只发布 aggregate-only 表。
+- **机制结果**：baseline 达到 32/119。P2 depth 达到 59/119（新增 27），pool 3.41×、latency 1.18×。P3 reference 达到 58/119（新增 26），latency 2.17×。P4 达到 56/119（新增 24），保留 P2 depth 增益的 >=75%，pool 2.056×，latency 1.750×，并比 P3 latency 低 19.38%。Hard-cap violations 为 0，119/119 条记录 action count 降低。
+- **决策**：P4 验证 retrieval-action scheduling layer 是 runtime-clean candidate-availability lever。它仍不是 default-policy、method-winner、benchmark-performance 或 runtime-promotion 声明；selector relevance 仍未解决（mean first-gold rank 25.625；48 条记录超出 budget）。下一步应作为该 scheduler pass 的有界 follow-on 交由 review，而不是 broad retrieval expansion 或 latency-in-relevance scoring。

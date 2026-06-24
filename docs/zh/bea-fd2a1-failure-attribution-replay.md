@@ -1,7 +1,7 @@
 # BEA-FD2-A1:直接 FD1 目标失败归因重放
 
 日期:2026-06-23(BEA-FD2-A No-Go 之后的失败机制归因重放。它不是新的
-选择/获取阶段,不是 FD2-B,不是 P4/P5,也不是 v0.31/v0.32 调参。它解释
+选择/获取阶段,不是 FD2-B,不是 legacy role-proxy P4/P5,也不是 v0.31/v0.32 调参。它解释
 *为什么* 直接聚合 FD1 损失加权在同一个有界 FD2-A 帧上选出了更差的证据集。)
 
 > `claim_level = bea_fd2a1_failure_attribution_replay_only`。所有 no-claim /

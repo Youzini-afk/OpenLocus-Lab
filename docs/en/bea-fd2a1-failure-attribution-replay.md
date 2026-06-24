@@ -2,7 +2,7 @@
 
 Date: 2026-06-23 (BEA-FD2-A1 failure-mechanism attribution replay after the
 BEA-FD2-A No-Go. It is NOT a new selector/acquisition phase, NOT FD2-B,
-NOT P4/P5, and NOT v0.31/v0.32 tuning. It explains *why* direct
+NOT legacy role-proxy P4/P5, and NOT v0.31/v0.32 tuning. It explains *why* direct
 aggregate-FD1-loss weighting selected worse evidence sets on the same
 bounded FD2-A frame.)
 

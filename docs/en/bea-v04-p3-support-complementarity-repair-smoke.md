@@ -17,7 +17,7 @@ the frozen P1 and P2 proxies are reused as-is for the
 `setwise_complementarity_v0_4_p2_target_repair` control arms. It does NOT
 tune v0.3 or v0.4 weights post hoc, does NOT run the full v0.4 matrix, and
 does NOT add dense/graph/QuIVer/provider scope. This is the last bounded
-role-proxy repair smoke; no P4/P5.
+role-proxy repair smoke; no legacy role-proxy P4/P5.
 
 > `claim_level = bea_v04_p3_support_complementarity_repair_smoke_only`. All
 > no-claim / no-runtime-change flags false.
@@ -235,7 +235,7 @@ file_recall@10 0.710526 vs 0.763158 (delta -0.052632), MRR 0.414474 vs
 0.569737 (delta -0.155263), span_f0.5@10 0.035311 vs 0.038842, latency
 +0.001730s, quality_per_latency 0.015992 vs 0.016856.
 
-Decision: P3 is the final bounded role-proxy repair. Do not run P4/P5, do
+Decision: P3 is the final bounded role-proxy repair. Do not run legacy role-proxy P4/P5, do
 not enter the full v0.4 matrix from the role-proxy design, and do not tune
 v0.31/v0.32 weights. The next algorithm work must pivot to direct
 FD1-objective setwise acquisition rather than proxy repair.

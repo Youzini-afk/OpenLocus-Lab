@@ -246,9 +246,38 @@ Fail-closed 验证：
 
 ## Manual CI 结果
 
-（完整结果写回等待 CI。默认无网络 artifact 为
-`unavailable_with_reason`，`stop_go_decision=no_go_p4_replay_mismatch`；
-self-test 通过 378/378 checks。）
+Manual CI run `28118888584` 以 1h23m50s 完成 green。它在 `/tmp`
+下重新生成 FD1 private decomposition，验证 replay artifact（239 records /
+86040 private rows），在 119 条 `gold_file_absent` 分母上运行 4 个固定
+P4 arms，在 `/tmp` 下写出 476 条私有 scheduler rows，并只上传聚合公开
+artifact。
+
+最终公开 status：
+`bea_v1_p4_latency_aware_retrieval_scheduler_pass`。
+
+观测 arms：
+
+- Baseline current pool：32/119 reachable，mean pool 19.983193，mean
+  latency 1.799924s。
+- P2 depth-only reference：59/119 reachable（新增 27），mean pool
+  68.184874（3.412111×），mean latency 2.124798s（1.180493×）。
+- P3 constrained reference：58/119 reachable（新增 26），mean pool
+  41.512605（2.077376×），mean latency 3.906403s（2.170315×）。这复现了
+  P3 latency failure reference。
+- P4 latency-aware action scheduler：56/119 reachable（新增 24），
+  availability lift 0.201681，mean pool 41.092437（2.056350×），mean
+  latency 3.149319s（1.749695×），hard-cap violations 为 0。
+
+P4 通过预注册 gate：它保留了 P2 depth-only 增益的 >=75%，latency 低于
+2.0× baseline，相比 P3 latency 降低 19.3806%，pool 低于 4.0× baseline，
+在 119/119 条记录上减少 action，并且 selector relevance 仍未解决（mean
+first-gold rank 25.625；48 条记录超出 budget）。这是 retrieval-action
+scheduler smoke pass，不是 default-policy、benchmark-performance、
+method-winner 或 runtime promotion 声明。
+
+早先诊断尝试已被 supersede：run `28110294227` 在最终 schema 收敛前
+fail-closed，run `28116719071` 在 FD1 replay 前置步骤只得到 201/239
+records 而失败。固定后的 green run 是 `28118888584`。
 
 ## 验证
 
@@ -263,7 +292,7 @@ python3 eval/bea_v1_p4_latency_aware_retrieval_scheduler_smoke.py \
    provider_calls_made=false,
    latency_in_candidate_relevance=false,
    query_anchors_used_in_p4_arm=false,
-   self_test_checks_total=375, self_test_checks_passed=375)
+   self_test_checks_total=378, self_test_checks_passed=378)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```

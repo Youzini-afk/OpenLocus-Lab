@@ -6,7 +6,7 @@ line. It tests whether a setwise selector can directly optimize frozen FD1
 failure-loss reduction derived from the committed FD1 aggregate artifact,
 without target/support proxies and without quality regression.)
 
-BEA-FD2-A is NOT P4/P5, NOT a full v0.4 matrix, NOT a v0.31/v0.32 weight
+BEA-FD2-A is NOT legacy role-proxy P4/P5, NOT a full v0.4 matrix, NOT a v0.31/v0.32 weight
 tweak, and NOT fresh disjoint validation. It is one bounded algorithm-change
 smoke on the same P1/P2/P3 success-quota frame.
 

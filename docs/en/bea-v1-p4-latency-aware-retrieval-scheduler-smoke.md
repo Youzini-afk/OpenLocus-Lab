@@ -261,9 +261,40 @@ Fail-closed validation:
 
 ## Manual CI result
 
-(Full result writeback waits until CI. The default no-network artifact
-is `unavailable_with_reason` with `stop_go_decision=no_go_p4_replay_mismatch`;
-self-test passes with 378/378 checks.)
+Manual CI run `28118888584` completed green in 1h23m50s. It
+regenerated FD1 private decomposition under `/tmp`, validated the replay
+artifact (239 records / 86040 private rows), ran the 4 fixed P4 arms over
+the 119-record `gold_file_absent` denominator, wrote 476 private scheduler
+rows under `/tmp`, and uploaded only aggregate public artifacts.
+
+Final public status:
+`bea_v1_p4_latency_aware_retrieval_scheduler_pass`.
+
+Observed arms:
+
+- Baseline current pool: 32/119 reachable, mean pool 19.983193, mean
+  latency 1.799924s.
+- P2 depth-only reference: 59/119 reachable (+27), mean pool 68.184874
+  (3.412111×), mean latency 2.124798s (1.180493×).
+- P3 constrained reference: 58/119 reachable (+26), mean pool 41.512605
+  (2.077376×), mean latency 3.906403s (2.170315×). This reproduces the
+  P3 latency failure reference.
+- P4 latency-aware action scheduler: 56/119 reachable (+24), availability
+  lift 0.201681, mean pool 41.092437 (2.056350×), mean latency 3.149319s
+  (1.749695×), hard-cap violations 0.
+
+P4 passes the predeclared gates: it preserves >=75% of P2 depth-only gain,
+keeps latency below 2.0× baseline, reduces latency by 19.3806% vs P3,
+keeps pool below 4.0× baseline, reduces actions on 119/119 records, and
+keeps selector relevance unresolved (mean first-gold rank 25.625; 48
+records above budget). This is a retrieval-action scheduler smoke pass,
+not a default-policy, benchmark-performance, method-winner, or runtime
+promotion claim.
+
+Earlier diagnostic attempts are superseded: run `28110294227` failed
+fail-closed before final schema convergence, and run `28116719071` failed
+in the FD1 replay prerequisite with only 201/239 records. The fixed green
+run is `28118888584`.
 
 ## Validation
 
@@ -278,7 +309,7 @@ python3 eval/bea_v1_p4_latency_aware_retrieval_scheduler_smoke.py \
    provider_calls_made=false,
    latency_in_candidate_relevance=false,
    query_anchors_used_in_p4_arm=false,
-   self_test_checks_total=375, self_test_checks_passed=375)
+   self_test_checks_total=378, self_test_checks_passed=378)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
