@@ -1,0 +1,391 @@
+name: bea-v1-p2-candidate-availability-reach
+
+# BEA-v1-P2 Candidate Availability / Retrieval Reach Smoke
+# (manual opt-in). MANUAL ONLY via workflow_dispatch. Does NOT run on
+# PR/push. Uses NO provider secrets/vars/model env. Regenerates the FD1
+# private decomposition under /tmp, validates the replay report,
+# reruns the P2 retrieval reach smoke (network + OpenLocus binary, no
+# provider secrets), and uploads ONLY the aggregate public report.
+#
+# This is the second BEA v1 phase after BEA-v1-P1 result checkpoint
+# d96e860 (no_go_retrieval_availability_limit). It is NOT BEA v0.4
+# repair, NOT FD2-B / FD2-C, NOT P4 / P5, NOT v0.31 / v0.32 tuning,
+# NOT B16-K, NOT dense/graph/QuIVer quality mixing, and NOT a selector
+# / acquisition phase.
+#
+# claim_level = bea_v1_p2_candidate_availability_reach_smoke_only.
+# provider_calls_made=false is binding.
+# gold_labels_used_for_query_construction=false is binding.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real HuggingFace + GitHub network access for FD1 replay + P2 retrieval reach (no provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-p2-candidate-availability-reach-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-v1-p2-candidate-availability-reach:
+    name: bea-v1-p2-candidate-availability-reach
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-v1-P2 evaluator
+        run: python3 -m py_compile eval/bea_v1_p2_candidate_availability_reach_smoke.py
+
+      - name: py_compile BEA-FD1 evaluator
+        run: python3 -m py_compile eval/bea_fd1_failure_decomposition.py
+
+      - name: BEA-v1-P2 self-test (no network)
+        run: python3 eval/bea_v1_p2_candidate_availability_reach_smoke.py --self-test
+
+      - name: BEA-FD1 self-test (no network)
+        run: python3 eval/bea_fd1_failure_decomposition.py --self-test
+
+      - name: Regenerate FD1 private decomposition (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          fd1_private_dir="/tmp/bea_v1_p2_fd1_private_${GITHUB_RUN_ID:-manual}"
+          rm -rf "$fd1_private_dir"
+          mkdir -p "$fd1_private_dir"
+          python3 eval/bea_fd1_failure_decomposition.py \
+            --enable-external-benchmark-network \
+            --private-decomposition-dir "$fd1_private_dir" \
+            --openlocus target/release/openlocus \
+            --out "$RUNNER_TEMP/fd1_replay_report.json"
+          # Verify the private decomposition JSONL exists with 86040 rows.
+          jsonl_path="$fd1_private_dir/bea_fd1.decomposition.jsonl"
+          if [[ ! -f "$jsonl_path" ]]; then
+            echo "ERROR: FD1 private decomposition JSONL not found at $jsonl_path" >&2
+            exit 1
+          fi
+          row_count=$(wc -l < "$jsonl_path")
+          if [[ "$row_count" -ne 86040 ]]; then
+            echo "ERROR: expected 86040 FD1 private decomposition rows, got $row_count" >&2
+            exit 1
+          fi
+          # Validate the FD1 replay report (fail-closed).
+          replay_report="$RUNNER_TEMP/fd1_replay_report.json"
+          if [[ ! -f "$replay_report" ]]; then
+            echo "ERROR: FD1 replay report not found at $replay_report" >&2
+            exit 1
+          fi
+          python3 - "$replay_report" <<'PY'
+          import json, sys
+          path = sys.argv[1]
+          with open(path) as f:
+              r = json.load(f)
+          if r.get("schema_version") != "bea_fd1_failure_decomposition.v1":
+              print(f'ERROR: replay schema_version mismatch: {r.get("schema_version")!r}', file=sys.stderr); sys.exit(1)
+          if r.get("status") != "bea_fd1_decomposition_pass":
+              print(f'ERROR: replay status mismatch: {r.get("status")!r}', file=sys.stderr); sys.exit(1)
+          if r.get("records_decomposed") != 239:
+              print(f'ERROR: replay records_decomposed mismatch: {r.get("records_decomposed")!r}', file=sys.stderr); sys.exit(1)
+          m = r.get("private_decomposition_manifest", {})
+          if m.get("schema_version") != "bea_fd1_private_decomposition.v1":
+              print(f'ERROR: replay manifest schema_version mismatch: {m.get("schema_version")!r}', file=sys.stderr); sys.exit(1)
+          if m.get("record_count") != 86040:
+              print(f'ERROR: replay manifest record_count mismatch: {m.get("record_count")!r}', file=sys.stderr); sys.exit(1)
+          if m.get("records_written") is not True:
+              print(f'ERROR: replay manifest records_written not true: {m.get("records_written")!r}', file=sys.stderr); sys.exit(1)
+          if m.get("path_publicly_serialized") is not False:
+              print(f'ERROR: replay manifest path_publicly_serialized not false: {m.get("path_publicly_serialized")!r}', file=sys.stderr); sys.exit(1)
+          if r.get("forbidden_scan", {}).get("status") != "pass":
+              print(f'ERROR: replay forbidden_scan failed: {r.get("forbidden_scan")!r}', file=sys.stderr); sys.exit(1)
+          with open("artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json") as f:
+              committed = json.load(f)
+          committed_hash = committed.get("private_decomposition_manifest", {}).get("manifest_hash", "")
+          replay_hash = m.get("manifest_hash", "")
+          if not committed_hash or replay_hash != committed_hash:
+              print(f'ERROR: replay manifest_hash mismatch: replay={replay_hash!r} committed={committed_hash!r}', file=sys.stderr); sys.exit(1)
+          print("FD1 replay report validation passed.")
+          PY
+          echo "fd1_private_jsonl=$jsonl_path" >> "$GITHUB_ENV"
+          echo "fd1_replay_report=$replay_report" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-P2 retrieval reach smoke (only when FD1 replay succeeded)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_p2_reach_smoke_report.json"
+          python3 eval/bea_v1_p2_candidate_availability_reach_smoke.py \
+            --enable-external-benchmark-network \
+            --openlocus target/release/openlocus \
+            --fd1-artifact artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json \
+            --fd1-private-decomposition-jsonl "$fd1_private_jsonl" \
+            --fd1-replay-artifact "$fd1_replay_report" \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-P2 no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_p2_reach_smoke_report.json"
+          python3 eval/bea_v1_p2_candidate_availability_reach_smoke.py \
+            --out "$report_path"
+          # Without network, the audit honestly reports unavailable_with_reason.
+          status=$(python3 -c "import json; print(json.load(open('$report_path'))['status'])")
+          if [[ "$status" != "unavailable_with_reason" ]]; then
+            echo "WARNING: expected unavailable_with_reason for no-network default, got $status" >&2
+          fi
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate BEA-v1-P2 report (fail-closed)
+        env:
+          REPORT_PATH: ${{ runner.temp }}/bea_v1_p2_reach_smoke_report.json
+          ENABLE_NETWORK: ${{ steps.resolve.outputs.enable_network }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          path = os.environ["REPORT_PATH"]
+          enable_network = os.environ.get("ENABLE_NETWORK") == "true"
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          must_be_true = {"aggregate_only_public_artifact", "diagnostic_only",
+                          "bea_v1_p2_audit_evaluator_no_provider_calls",
+                          "bea_v1_p2_audit_evaluator_no_selector_executed",
+                          "bea_v1_p2_audit_evaluator_no_weight_tuning",
+                          "bea_v1_p2_audit_evaluator_no_role_proxy"}
+          must_be_false = {
+              "external_benchmark_performance_claimed", "leaderboard_entry_claimed",
+              "downstream_agent_value_proven", "calibration_claimed",
+              "method_winner_claimed", "promotion_ready", "default_should_change",
+              "runtime_behavior_changed", "retriever_changed", "pack_builder_changed",
+              "backend_changed", "default_policy_changed",
+              "evidencecore_semantics_changed", "provider_calls_made",
+              "remote_provider_calls_made",
+              "algorithm_changed_during_bea_v1_p2",
+              "weights_tuned_during_bea_v1_p2",
+              "v04_full_matrix_claimed",
+              "v1_a_selector_executed",
+              "v1_a_coverage_preserving_selector_promoted",
+              "fd2b_executed", "fd2c_executed",
+              "p4_executed", "p5_executed",
+              "v031_tuning_executed", "v032_tuning_executed",
+              "b16k_executed",
+              "role_proxy_assigned", "posthoc_threshold_search",
+              "gold_labels_used_for_query_construction",
+              "gold_labels_used_for_selection",
+              "new_records_added_during_bea_v1_p2",
+              "heldout_validation_claimed",
+              "fd1_artifact_modified",
+          }
+          for flag in must_be_true:
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true, got {report.get(flag)!r}")
+          for flag in must_be_false:
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          status = report.get("status")
+          allowed_statuses = {
+              "bea_v1_p2_retrieval_reach_pass",
+              "no_go_retrieval_reach_insufficient",
+              "no_go_retrieval_reach_latency_or_pool_cost",
+              "no_go_replay_mismatch",
+              "unavailable_with_reason",
+          }
+          if status not in allowed_statuses:
+              failures.append(f"unexpected status: {status!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if report.get("schema_version") != "bea_v1_p2_candidate_availability_reach_smoke.v1":
+              failures.append(f"unexpected schema_version: {report.get('schema_version')!r}")
+          if report.get("claim_level") != "bea_v1_p2_candidate_availability_reach_smoke_only":
+              failures.append(f"unexpected claim_level: {report.get('claim_level')!r}")
+          if report.get("phase") != "BEA-v1-P2":
+              failures.append(f"unexpected phase: {report.get('phase')!r}")
+          if report.get("budget") != 5:
+              failures.append(f"expected budget=5, got {report.get('budget')!r}")
+          if report.get("methods") != ["bm25", "regex", "symbol"]:
+              failures.append(f"expected methods=[bm25,regex,symbol], got {report.get('methods')!r}")
+          # Records-only public shape.
+          for key in ("source_run_records", "denominator_records",
+                      "arm_reach_records", "arm_delta_records",
+                      "reach_bucket_records", "rank_band_records",
+                      "cost_safety_records", "stop_go_records",
+                      "gate_records", "private_manifest_records",
+                      "failure_category_count_records"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          # When network enabled: real-run validation.
+          if enable_network:
+              if status == "unavailable_with_reason":
+                  failures.append("network-enabled run must not pass with unavailable_with_reason")
+              if status in {"bea_v1_p2_retrieval_reach_pass",
+                            "no_go_retrieval_reach_insufficient",
+                            "no_go_retrieval_reach_latency_or_pool_cost"}:
+                  if report.get("fd1_private_decomposition_parsed") is not True:
+                      failures.append("expected fd1_private_decomposition_parsed=true")
+                  srr = (report.get("source_run_records") or [{}])[0] if report.get("source_run_records") else {}
+                  if srr.get("replay_artifact_validated") is not True:
+                      failures.append("expected replay_artifact_validated=true")
+                  if report.get("denominator_count") != 119:
+                      failures.append(f"expected denominator_count=119, got {report.get('denominator_count')!r}")
+                  for rec in report.get("arm_reach_records") or []:
+                      if not isinstance(rec, dict):
+                          continue
+                      if rec.get("candidate_pool_size_mean", 0) <= 0:
+                          failures.append(
+                              f"expected non-empty candidate_pool_size_mean for "
+                              f"arm {rec.get('arm_name')!r}, got "
+                              f"{rec.get('candidate_pool_size_mean')!r}"
+                          )
+                  manifests = {m.get("manifest_name"): m for m in (report.get("private_manifest_records") or []) if isinstance(m, dict)}
+                  p2_manifest = manifests.get("bea_v1_p2_private_reach_manifest")
+                  expected_reach_rows = report.get("denominator_count", 0) * len(report.get("reach_arms") or [])
+                  if not p2_manifest:
+                      failures.append("expected bea_v1_p2_private_reach_manifest in private_manifest_records")
+                  else:
+                      if p2_manifest.get("path_publicly_serialized") is not False:
+                          failures.append("expected P2 reach manifest path_publicly_serialized=false")
+                      if p2_manifest.get("record_count") != expected_reach_rows:
+                          failures.append(
+                              f"expected P2 reach manifest record_count={expected_reach_rows}, "
+                              f"got {p2_manifest.get('record_count')!r}"
+                          )
+                      if p2_manifest.get("records_written") is not True:
+                          failures.append("expected P2 reach manifest records_written=true")
+                  fcc = {r.get("failure_category"): r.get("count") for r in (report.get("failure_category_count_records") or []) if isinstance(r, dict)}
+                  for cat in ("retrieval_smoke_failed", "unexpected_exception", "forbidden_leak_blocked"):
+                      if fcc.get(cat, 0) != 0:
+                          failures.append(f"expected {cat}=0, got {fcc.get(cat)!r}")
+          else:
+              # No network: status must be unavailable_with_reason.
+              if status != "unavailable_with_reason":
+                  failures.append(f"expected unavailable_with_reason for no-network default, got {status!r}")
+          # Forbidden top-level fields.
+          for key in ("private_trace_dir", "per_record_reach",
+                      "per_record_candidates", "candidate_paths",
+                      "candidate_keys", "candidate_list", "candidates",
+                      "query_text", "queries", "query_variants",
+                      "gold_paths", "gold_lines", "gold_files",
+                      "snippets", "selected_order", "private_record_id",
+                      "repo_url", "base_commit",
+                      "fd1_replay_artifact_path", "reach_results_path",
+                      "winner", "calibration", "method_winner",
+                      "hard_gates", "failure_category_counts",
+                      "self_test_checks",
+                      "role_proxy_used", "target_support_proxy_used",
+                      "is_v04_repair", "is_fd2_b", "is_fd2_c",
+                      "is_p4", "is_p5", "is_b16k",
+                      "is_dense_quality_mixing", "is_quiver_quality_mixing"):
+              if key in report:
+                  failures.append(f"forbidden field present: {key}")
+          # Counts-only self-test.
+          if "self_test_checks_total" not in report:
+              failures.append("expected self_test_checks_total")
+          if "self_test_checks_passed" not in report:
+              failures.append("expected self_test_checks_passed")
+          for ff in ("self_test_checks", "self_test_details", "self_test_list",
+                      "checks", "check_list"):
+              if ff in report:
+                  failures.append(f"forbidden self-test detail field: {ff}")
+          # Natural-key uniqueness.
+          def check_unique(records, key_fn, table_name):
+              seen = set()
+              for i, rec in enumerate(records):
+                  try:
+                      key = key_fn(rec)
+                  except (KeyError, TypeError):
+                      failures.append(f"{table_name}[{i}] missing natural key")
+                      continue
+                  if key in seen:
+                      failures.append(f"{table_name}[{i}] duplicate natural key: {key!r}")
+                  else:
+                      seen.add(key)
+          check_unique(report.get("source_run_records") or [],
+                       lambda r: (r["source_phase"], r["source_ci_run_id"]),
+                       "source_run_records")
+          check_unique(report.get("denominator_records") or [],
+                       lambda r: (r["source_phase"], r["benchmark"]),
+                       "denominator_records")
+          check_unique(report.get("arm_reach_records") or [],
+                       lambda r: (r["arm_name"],),
+                       "arm_reach_records")
+          check_unique(report.get("arm_delta_records") or [],
+                       lambda r: (r["arm_name"],),
+                       "arm_delta_records")
+          check_unique(report.get("reach_bucket_records") or [],
+                       lambda r: (r["arm_name"], r["reach_bucket"]),
+                       "reach_bucket_records")
+          check_unique(report.get("rank_band_records") or [],
+                       lambda r: (r["arm_name"], r["rank_band"]),
+                       "rank_band_records")
+          check_unique(report.get("cost_safety_records") or [],
+                       lambda r: (r["cost_safety_axis"],),
+                       "cost_safety_records")
+          check_unique(report.get("stop_go_records") or [],
+                       lambda r: (r["stop_go_decision"],),
+                       "stop_go_records")
+          check_unique(report.get("gate_records") or [],
+                       lambda r: (r["gate"],),
+                       "gate_records")
+          check_unique(report.get("private_manifest_records") or [],
+                       lambda r: (r["manifest_name"],),
+                       "private_manifest_records")
+          check_unique(report.get("failure_category_count_records") or [],
+                       lambda r: (r["failure_category"],),
+                       "failure_category_count_records")
+          if report.get("provider_calls_made") is not False:
+              failures.append("expected provider_calls_made=false")
+          if report.get("gold_labels_used_for_query_construction") is not False:
+              failures.append("expected gold_labels_used_for_query_construction=false")
+          if failures:
+              print("BEA-v1-P2 report validation FAILED:", file=sys.stderr)
+              for f in failures: print(f"  - {f}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-v1-P2 report validation passed.")
+          print(f"  status={status}")
+          print(f"  denominator_count={report.get('denominator_count')}")
+          sgr = (report.get("stop_go_records") or [{}])[0] if report.get("stop_go_records") else {}
+          print(f"  stop_go_decision={sgr.get('stop_go_decision')}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree
+        run: git diff --check
+
+      - name: Upload BEA-v1-P2 aggregate report (aggregate only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-p2-candidate-availability-reach-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_p2_reach_smoke_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false
