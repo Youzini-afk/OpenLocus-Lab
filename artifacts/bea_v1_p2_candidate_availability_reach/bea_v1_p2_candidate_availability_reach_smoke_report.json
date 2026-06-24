@@ -257,7 +257,7 @@
       "value": 0.0
     }
   ],
-  "generated_at": "2026-06-24T06:46:57.743766+00:00",
+  "generated_at": "2026-06-24T08:33:46.968570+00:00",
   "generated_by": "eval/bea_v1_p2_candidate_availability_reach_smoke.py",
   "gold_labels_used_for_query_construction": false,
   "gold_labels_used_for_selection": false,

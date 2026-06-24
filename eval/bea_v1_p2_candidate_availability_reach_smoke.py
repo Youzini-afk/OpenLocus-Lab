@@ -830,7 +830,7 @@ def _collect_rrf_candidates_limited(
 ) -> tuple[list[dict[str, Any]], int, str]:
     cmd = [
         openlocus_bin, "retrieve", query, "--json", "--channels",
-        "regex,bm25,symbol", "--limit", str(int(limit)),
+        "regex,bm25,symbol", "--max-results", str(int(limit)),
     ]
     t0 = time.perf_counter()
     try:
