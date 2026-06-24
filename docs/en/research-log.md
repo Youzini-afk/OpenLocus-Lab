@@ -10847,3 +10847,50 @@ baseline). This validates retrieval-action scheduling as a runtime-clean
 candidate-availability lever. It is still not a method-winner/default/
 runtime-promotion claim and does not solve selector relevance: mean first
 reachable gold rank remains 25.625 and 48 records remain above budget.
+
+## 2026-06-24 — BEA-v1-P4H: Disjoint Scheduler Validation
+
+### Objective
+
+Validate the frozen P4 latency-aware retrieval-action scheduler on a disjoint
+raw external heldout file-miss denominator. This is not a selector/reranker
+phase, not P5, and not a default/promotion claim. Latency remains a
+retrieval-action scheduling/cost signal only, never candidate relevance.
+
+### Implementation / validation
+
+Local checkpoint `dee1ce1` added `eval/bea_v1_p4h_disjoint_scheduler_validation.py`,
+a manual workflow, aggregate artifact, and en/zh docs. The first fixed-tail CI
+attempt failed because ContextBench offset 480 and RepoQA offset 240 returned no
+raw rows. Commit `0dfeb27` replaced that with a full-frame disjoint success-quota
+scan: start from available raw rows, exclude exact BEA-4/5 prior raw keys from
+FD1 private replay, build the baseline file-miss denominator before treatment
+arms, and fail closed if fewer than 80 heldout file-miss records exist.
+
+### Manual CI result
+
+Manual CI run `28132121958` completed green and produced a valid aggregate
+No-Go artifact. Status is `no_go_p4h_insufficient_denominator`, not a scheduler
+pass.
+
+The workflow regenerated FD1 private decomposition under `/tmp`, validated the
+239 / 86040 replay, and ran the full-frame raw external disjoint scan. Exact
+prior-key exclusion removed 239 BEA-4/5 raw records. The scan fetched 266
+ContextBench rows and 100 RepoQA rows, excluded 162 ContextBench + 77 RepoQA
+exact prior records, attempted 104 ContextBench + 23 RepoQA rows, and found only
+73 baseline file-miss heldout denominator records: 61 ContextBench and 12
+RepoQA.
+
+The hard P4H denominator gate remained 80, so the evaluator did not run the
+P2/P3/P4 scheduler arms: `retrieval_policy_executed=false`, `private_scheduler_rows=0`,
+`expected_private_scheduler_rows=0`. `forbidden_scan.status=pass`, self-test
+was 69/69, and no provider calls were made.
+
+### Decision
+
+P4H does not validate P4 on a disjoint heldout denominator. It also does not
+contradict P4's 119-record same-frame pass: the No-Go is specifically that the
+available disjoint ContextBench/RepoQA frame yielded only 73/80 baseline
+file-miss heldout records after exact prior exclusion. Do not enter P5
+selector/reranker work, BEA-v1-A, runtime promotion, method-winner claims, or
+broad retrieval expansion from P4H.

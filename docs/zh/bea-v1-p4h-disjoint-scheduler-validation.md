@@ -1,8 +1,9 @@
 # BEA-v1-P4H：不相交调度器验证
 
-日期：2026-06-24。BEA-v1-P4H 在不相交 raw external heldout 文件缺失分母上，
-验证 checkpoint `f0e99ca` 中冻结的 BEA-v1-P4 延迟感知检索动作调度器。它是
-经验验证和 rank-budget audit，不是控制面变更。
+日期：2026-06-24。BEA-v1-P4H 评估 checkpoint `f0e99ca` 中冻结的 BEA-v1-P4
+延迟感知检索动作调度器是否能在不相交 raw external heldout 文件缺失分母上通过
+验证。它是经验验证尝试和 rank-budget audit，不是控制面变更。下面的最终 CI 结果是
+`no_go_p4h_insufficient_denominator`，不是 scheduler pass。
 
 > `claim_level = bea_v1_p4h_disjoint_scheduler_validation_only`。
 > `provider_calls_made=false`、`gold_labels_used_for_query_construction=false`、
@@ -141,7 +142,9 @@ budget，则确认 bottleneck。该 audit 本身不会使 scheduler 失败；它
 - `framing`
 - `forbidden_scan`
 
-不序列化动态 per-record detail、公开私有 hash 或私有路径。
+不序列化动态 per-record detail、私有 row/key/path hash 或私有路径。
+`private_manifest_records` 中的聚合 manifest hash 仅作为 row-count 完整性的
+provenance 检查，不暴露 row id、raw key、path、query、candidate list 或 trace location。
 
 ## Workflow
 
@@ -166,7 +169,37 @@ python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py \
    self_test_checks_total=69, self_test_checks_passed=69)
 ```
 
-CI 结果在手动网络 workflow 运行前保持 pending。
+## CI 结果
+
+Manual CI run `28132121958` 在 full-frame 不相交扫描修复（`0dfeb27`）后绿色完成，
+但产出的是有效 No-Go，而不是 scheduler pass。公开 artifact status 为
+`no_go_p4h_insufficient_denominator`。
+
+Workflow 在 `/tmp` 下重新生成 FD1 private decomposition，验证 239 / 86040 replay，
+并运行 raw external 不相交分母扫描。在排除 FD1 private replay 中的 BEA-4/5 精确 raw
+key 后，扫描取到 266 条 ContextBench rows 和 100 条 RepoQA rows，排除 162 条
+ContextBench + 77 条 RepoQA prior exact records，尝试 104 条 ContextBench + 23 条
+RepoQA candidate rows，最终只找到 73 条 baseline file-miss heldout records
+（ContextBench 61、RepoQA 12）。硬性分母 gate 是 80，未降低，因此 P4H 在运行
+P2/P3/P4 scheduler arms 之前停止。
+
+聚合 CI 指标：
+
+- `status=no_go_p4h_insufficient_denominator`
+- `denominator_count=73`，低于 `denominator_min=80`
+- `raw_scan_attempted_records=127`
+- `raw_scan_yield_file_miss_records=73`
+- `raw_scan_prior_exact_excluded_records=239`
+- `raw_scan_prior_window_excluded_records=0`
+- `private_scheduler_rows=0`，`expected_private_scheduler_rows=0`
+- `retrieval_policy_executed=false`
+- `self_test_checks_total=69`，`self_test_checks_passed=69`
+- `forbidden_scan.status=pass`
+
+这是针对计划 P4H validation frame 的经验性分母可用性 No-Go。它不推翻 P4 的
+119-record pass，但也没有在不相交 heldout 分母上验证 P4。P4 仍是 bounded same-frame
+scheduler smoke；P4H 不授权 BEA-v1-A、P5 selector、runtime promotion、method-winner
+声明或 broad retrieval expansion。
 
 ## 限制
 

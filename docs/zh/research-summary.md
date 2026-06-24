@@ -3333,3 +3333,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`bea_v1_p4_latency_aware_retrieval_scheduler_pass`。workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 file-miss 分母上运行 4 个固定 P4 arms，写出 476 条私有 scheduler rows，并只发布 aggregate-only 表。
 - **机制结果**：baseline 达到 32/119。P2 depth 达到 59/119（新增 27），pool 3.41×、latency 1.18×。P3 reference 达到 58/119（新增 26），latency 2.17×。P4 达到 56/119（新增 24），保留 P2 depth 增益的 >=75%，pool 2.056×，latency 1.750×，并比 P3 latency 低 19.38%。Hard-cap violations 为 0，119/119 条记录 action count 降低。
 - **决策**：P4 验证 retrieval-action scheduling layer 是 runtime-clean candidate-availability lever。它仍不是 default-policy、method-winner、benchmark-performance 或 runtime-promotion 声明；selector relevance 仍未解决（mean first-gold rank 25.625；48 条记录超出 budget）。下一步应作为该 scheduler pass 的有界 follow-on 交由 review，而不是 broad retrieval expansion 或 latency-in-relevance scoring。
+
+## BEA-v1-P4H 发现
+
+- **BEA-v1-P4H Disjoint Scheduler Validation 已完成为分母 No-Go**：local checkpoint `dee1ce1`，full-frame scan 修复 `0dfeb27`，manual CI run `28132121958`。
+- **状态**：`no_go_p4h_insufficient_denominator`。Workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 239 / 86040 replay，并运行 raw external full-frame 不相交分母扫描。它产出了有效聚合 artifact，但 heldout 分母只有 73/80，因此未运行 scheduler arms。
+- **分母结果**：基于 FD1 private raw-key 的精确排除移除了 239 条 BEA-4/5 prior records。扫描取到 266 条 ContextBench 和 100 条 RepoQA rows，排除 162 条 ContextBench + 77 条 RepoQA exact prior rows，尝试 104 条 ContextBench + 23 条 RepoQA candidate rows，找到 61 条 ContextBench + 12 条 RepoQA baseline file-miss records。`raw_scan_attempted_records=127`，`raw_scan_yield_file_miss_records=73`，`private_scheduler_rows=0`，`retrieval_policy_executed=false`。
+- **决策**：P4H 未能在不相交 heldout 分母上验证 P4，也不授权 P5 selector/reranker、BEA-v1-A、runtime promotion 或 broad retrieval expansion。P4 仍是 bounded same-frame scheduler pass；当前直接 blocker 是现有 ContextBench/RepoQA frame 下不相交 heldout file-miss 分母不足。

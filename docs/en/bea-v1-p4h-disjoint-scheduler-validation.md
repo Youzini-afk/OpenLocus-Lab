@@ -1,9 +1,10 @@
 # BEA-v1-P4H: Disjoint Scheduler Validation
 
-Date: 2026-06-24. BEA-v1-P4H validates the frozen BEA-v1-P4 latency-aware
-retrieval-action scheduler from checkpoint `f0e99ca` on a disjoint raw external
-heldout file-miss denominator. It is an empirical validation and rank-budget
-audit, not a control-plane change.
+Date: 2026-06-24. BEA-v1-P4H evaluates whether the frozen BEA-v1-P4
+latency-aware retrieval-action scheduler from checkpoint `f0e99ca` can validate
+on a disjoint raw external heldout file-miss denominator. It is an empirical
+validation attempt and rank-budget audit, not a control-plane change. The final
+CI result below is `no_go_p4h_insufficient_denominator`, not a scheduler pass.
 
 > `claim_level = bea_v1_p4h_disjoint_scheduler_validation_only`.
 > `provider_calls_made=false`, `gold_labels_used_for_query_construction=false`,
@@ -152,8 +153,10 @@ Required aggregate-only record tables:
 - `framing`
 - `forbidden_scan`
 
-No dynamic per-record detail, no public private hashes, and no private paths are
-serialized.
+No dynamic per-record detail, no private row/key/path hashes, and no private
+paths are serialized. Aggregate manifest hashes in `private_manifest_records`
+are provenance-only row-count integrity checks and do not expose row ids, raw
+keys, paths, queries, candidate lists, or trace locations.
 
 ## Workflow
 
@@ -179,7 +182,39 @@ python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py \
    self_test_checks_total=69, self_test_checks_passed=69)
 ```
 
-CI result is pending until the manual network workflow is run.
+## CI result
+
+Manual CI run `28132121958` completed green after the fixed full-frame
+disjoint scan (`0dfeb27`) but produced a valid No-Go, not a scheduler pass.
+The public artifact status is `no_go_p4h_insufficient_denominator`.
+
+The workflow regenerated FD1 private decomposition under `/tmp`, validated the
+239 / 86040 replay, and ran the raw external disjoint denominator scan. After
+excluding exact BEA-4/5 raw keys from FD1 private replay, the scan fetched 266
+ContextBench rows and 100 RepoQA rows, excluded 162 ContextBench + 77 RepoQA
+prior exact records, attempted 104 ContextBench + 23 RepoQA candidate rows, and
+found only 73 baseline file-miss heldout records (61 ContextBench, 12 RepoQA).
+The hard denominator gate is 80 and was not lowered, so P4H stopped before
+running the P2/P3/P4 scheduler arms.
+
+Aggregate CI metrics:
+
+- `status=no_go_p4h_insufficient_denominator`
+- `denominator_count=73` versus `denominator_min=80`
+- `raw_scan_attempted_records=127`
+- `raw_scan_yield_file_miss_records=73`
+- `raw_scan_prior_exact_excluded_records=239`
+- `raw_scan_prior_window_excluded_records=0`
+- `private_scheduler_rows=0` and `expected_private_scheduler_rows=0`
+- `retrieval_policy_executed=false`
+- `self_test_checks_total=69`, `self_test_checks_passed=69`
+- `forbidden_scan.status=pass`
+
+This is an empirical denominator-availability No-Go for the planned P4H
+validation frame. It does not contradict the P4 119-record pass, but it also
+does not validate P4 on a disjoint heldout denominator. P4 remains a bounded
+same-frame scheduler smoke; P4H does not authorize BEA-v1-A, P5 selector work,
+runtime promotion, method-winner claims, or broad retrieval expansion.
 
 ## Caveats
 
