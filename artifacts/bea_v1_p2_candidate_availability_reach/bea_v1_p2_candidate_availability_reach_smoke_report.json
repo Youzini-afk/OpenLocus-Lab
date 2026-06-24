@@ -257,7 +257,7 @@
       "value": 0.0
     }
   ],
-  "generated_at": "2026-06-24T08:33:46.968570+00:00",
+  "generated_at": "2026-06-24T11:00:17.463422+00:00",
   "generated_by": "eval/bea_v1_p2_candidate_availability_reach_smoke.py",
   "gold_labels_used_for_query_construction": false,
   "gold_labels_used_for_selection": false,
@@ -309,8 +309,8 @@
   "row_level_redistribution_allowed": false,
   "runtime_behavior_changed": false,
   "schema_version": "bea_v1_p2_candidate_availability_reach_smoke.v1",
-  "self_test_checks_passed": 274,
-  "self_test_checks_total": 274,
+  "self_test_checks_passed": 278,
+  "self_test_checks_total": 278,
   "self_test_passed": true,
   "source_run_records": [
     {

@@ -150,14 +150,14 @@ Fail-closed validation:
 
 ```text
 python3 -m py_compile eval/bea_v1_p2_candidate_availability_reach_smoke.py  => PASS
-python3 eval/bea_v1_p2_candidate_availability_reach_smoke.py --self-test  => PASS (274/274 checks)
+python3 eval/bea_v1_p2_candidate_availability_reach_smoke.py --self-test  => PASS (278/278 checks)
 python3 eval/bea_v1_p2_candidate_availability_reach_smoke.py \
   --out artifacts/bea_v1_p2_candidate_availability_reach/bea_v1_p2_candidate_availability_reach_smoke_report.json  => PASS
   (default no-network status: unavailable_with_reason,
    stop_go_decision: no_go_replay_mismatch,
    forbidden_scan=pass, denominator_count=0,
    provider_calls_made=false,
-   self_test_checks_total=274, self_test_checks_passed=274)
+   self_test_checks_total=278, self_test_checks_passed=278)
 python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```

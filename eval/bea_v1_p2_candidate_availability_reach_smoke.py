@@ -68,7 +68,7 @@ Network / CI policy (binding)
   (self-test uses synthetic FD1 aggregate and synthetic reach rows).
 * Default no-network / no-private-JSONL artifact is truthfully
   ``no_go_replay_mismatch`` (no fake pass). The CI workflow
-  regenerates the FD1 private decomposition under ``$RUNNER_TEMP``,
+  regenerates the FD1 private decomposition under ``/tmp``,
   validates it, reruns the P2 retrieval smoke, and passes the JSONL +
   replay report + reach results via CLI args.
 * CI is a separate explicit workflow_dispatch job; it must NOT run on
@@ -763,6 +763,28 @@ def _build_query_variants(query: str) -> list[str]:
     return variants
 
 
+def _regex_safe_query(query: str) -> str:
+    """Return a literal regex pattern for runtime-clean task text."""
+    return re.escape(str(query or "")[:512])
+
+
+def _symbol_safe_query(query: str) -> str:
+    """Return a regex-safe symbol-ish query token.
+
+    Symbol search mode can fall back to regex internally. Feeding the raw
+    public issue text can fail on unmatched brackets or other regex syntax.
+    This helper keeps the source runtime-clean while preventing query syntax
+    from becoming a retrieval failure.
+    """
+    tokens = re.findall(r"[A-Za-z_][A-Za-z0-9_]{1,80}", str(query or ""))
+    if tokens:
+        return re.escape(tokens[0])
+    words = re.findall(r"[A-Za-z0-9_]{2,80}", str(query or ""))
+    if words:
+        return re.escape(words[0])
+    return re.escape(str(query or "")[:80]) or r"$^"
+
+
 def _collect_method_candidates_limited(
     openlocus_bin: str,
     method: str,
@@ -779,7 +801,7 @@ def _collect_method_candidates_limited(
     default.
     """
     if method == "regex":
-        cmd = [openlocus_bin, "search", "regex", query, "--json"]
+        cmd = [openlocus_bin, "search", "regex", _regex_safe_query(query), "--json"]
     elif method == "bm25":
         cmd = [
             openlocus_bin, "search", "bm25", query, "--json",
@@ -787,7 +809,7 @@ def _collect_method_candidates_limited(
         ]
     elif method == "symbol":
         cmd = [
-            openlocus_bin, "search", "symbol", query, "--json",
+            openlocus_bin, "search", "symbol", _symbol_safe_query(query), "--json",
             "--limit", str(int(limit)),
         ]
     else:
@@ -820,6 +842,49 @@ def _collect_method_candidates_limited(
             for cand in candidates:
                 cand["normalized_score"] = round(cand["score"] / max_score, 6)
     return candidates, latency_ms, (proc.stderr[:500] if proc.stderr else "")
+
+
+def _derive_rrf_candidates_from_candidates(
+    candidates: list[dict[str, Any]],
+    limit: int,
+) -> list[dict[str, Any]]:
+    """Derive RRF candidates from already-collected method ranks.
+
+    The CLI ``retrieve`` path runs a regex channel internally. Some public
+    task text contains regex metacharacters, so P2 derives the required RRF
+    baseline from the bm25/regex/symbol result lists after method-specific
+    runtime-safe query normalization instead of invoking raw ``retrieve``.
+    """
+    fused: dict[tuple[str, int, int, str], dict[str, Any]] = {}
+    for cand in candidates:
+        key = (
+            str(cand.get("path", "") or ""),
+            int(cand.get("start_line", 0) or 0),
+            int(cand.get("end_line", 0) or 0),
+            str(cand.get("content_sha", "") or ""),
+        )
+        if not key[0]:
+            continue
+        rank = max(1, int(cand.get("rank", 0) or 1))
+        rec = fused.setdefault(key, {
+            "method": "rrf",
+            "rank": 0,
+            "score": 0.0,
+            "normalized_score": 0.0,
+            "path": key[0],
+            "start_line": key[1],
+            "end_line": key[2],
+            "content_sha": key[3],
+            "extension": bea0._path_extension(key[0]),
+        })
+        rec["score"] = float(rec.get("score", 0.0) or 0.0) + 1.0 / (60.0 + rank)
+    ordered = sorted(fused.values(), key=lambda r: (-float(r.get("score", 0.0)), str(r.get("path", ""))))
+    top = ordered[: max(0, int(limit))]
+    max_score = max((float(c.get("score", 0.0) or 0.0) for c in top), default=0.0)
+    for idx, cand in enumerate(top, start=1):
+        cand["rank"] = idx
+        cand["normalized_score"] = round(float(cand.get("score", 0.0) or 0.0) / max_score, 6) if max_score > 0 else 0.0
+    return top
 
 
 def _collect_rrf_candidates_limited(
@@ -940,18 +1005,11 @@ def _run_reach_for_record(
                     rr.retrieval_error = True
                 total_latency_ms += latency_ms
                 all_candidates.extend(cands)
-        # Collect RRF candidates for every arm with the same query/depth
-        # expansion, preserving the current pool as the baseline when
-        # depth_multiplier=1 and no query variants are supplied.
-        for q in queries:
-            rrf_cands, latency_ms, err = _collect_rrf_candidates_limited(
-                openlocus_bin, q, repo_root, limit,
-            )
-            if (err in {"retrieval_failed", "invalid_json"}
-                    or err.startswith("returncode_")):
-                rr.retrieval_error = True
-            total_latency_ms += latency_ms
-            all_candidates.extend(rrf_cands)
+        # Derive RRF from the runtime-safe method result lists instead of
+        # invoking raw ``openlocus retrieve`` with regex-unsafe task text.
+        all_candidates.extend(
+            _derive_rrf_candidates_from_candidates(all_candidates, limit)
+        )
         # Deduplicate candidates (reuse BEA-1's dedup).
         deduped = bea1._dedup_candidates(all_candidates)
         rr.candidate_pool_size = len(deduped)
@@ -2587,6 +2645,20 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     # is the only source).
     checks.append(_check("variants_deduplicated",
         len(variants) == len(set(variants))))
+    checks.append(_check("regex_safe_escapes_brackets",
+        _regex_safe_query("foo[bar]") == r"foo\[bar\]"))
+    checks.append(_check("symbol_safe_returns_identifier",
+        _symbol_safe_query("Fix FooBar [broken]") == "Fix"))
+    rrf = _derive_rrf_candidates_from_candidates([
+        {"method": "bm25", "rank": 1, "score": 1.0, "path": "a.py",
+         "start_line": 1, "end_line": 2, "content_sha": ""},
+        {"method": "regex", "rank": 1, "score": 1.0, "path": "a.py",
+         "start_line": 1, "end_line": 2, "content_sha": ""},
+        {"method": "symbol", "rank": 2, "score": 0.5, "path": "b.py",
+         "start_line": 3, "end_line": 4, "content_sha": ""},
+    ], 2)
+    checks.append(_check("derived_rrf_nonempty", len(rrf) == 2))
+    checks.append(_check("derived_rrf_agreement_first", rrf[0].get("path") == "a.py"))
 
     # --- G9: Denominator extraction ---
     # Build a synthetic private decomposition with 119 gold_file_absent.
