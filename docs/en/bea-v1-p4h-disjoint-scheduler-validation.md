@@ -29,11 +29,15 @@ audit, not a control-plane change.
 - The P4H denominator is **not** the FD1 `gold_file_absent` tail. The committed
   FD1 artifact has exactly 119 `gold_file_absent` records, so reusing records
   after the first 119 would produce an empty heldout denominator.
-- P4H instead performs a raw external disjoint scan with explicit windows beyond
-  prior BEA-4 / BEA-5 / P1-P4 caps:
-  - ContextBench: `offset=480`, `limit=240`.
-  - RepoQA: `offset=240`, `limit=120`.
-- The scan uses stable raw order. For each raw row, P4H clones the repository,
+- P4H instead performs a full-frame raw external disjoint success-quota scan over
+  the available Python frames:
+  - ContextBench: `offset=0`, `limit=480`.
+  - RepoQA: `offset=0`, `limit=240`.
+- Known BEA-4/5/P1/P2/P3/P4 prior records are excluded using exact private FD1
+  raw keys when available. If exact keys are unavailable, the public aggregate
+  artifact discloses explicit benchmark/index exclusion windows (for example the
+  older fixed BEA-2/3/4 windows) without publishing private row ids.
+- The scan uses stable raw order after exclusions. For each raw row, P4H clones the repository,
   runs only `current_bea_candidate_pool_replay`, and selects the row for the
   denominator only when the baseline/current candidate pool misses the gold
   file (`gold_file_available=false`).
@@ -127,6 +131,7 @@ Required aggregate-only record tables:
 - `source_run_records`
 - `denominator_records`
 - `denominator_scan_records`
+- `prior_raw_exclusion_records`
 - `arm_reach_records`
 - `arm_delta_records`
 - `arm_cost_records`
@@ -164,14 +169,14 @@ aggregate report. Private JSONL/JSON traces are not uploaded.
 
 ```text
 python3 -m py_compile eval/bea_v1_p4h_disjoint_scheduler_validation.py  => PASS
-python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py --self-test  => PASS (58/58 checks)
+python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py --self-test  => PASS (69/69 checks)
 python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py \
   --out artifacts/bea_v1_p4h_disjoint_scheduler_validation/bea_v1_p4h_disjoint_scheduler_validation_report.json  => PASS
   (default no-network status: unavailable_with_reason,
    stop_go_decision: no_go_p4h_replay_mismatch,
    forbidden_scan=pass, denominator_count=0,
    raw_denominator_scan_attempted=false,
-   self_test_checks_total=58, self_test_checks_passed=58)
+   self_test_checks_total=69, self_test_checks_passed=69)
 ```
 
 CI result is pending until the manual network workflow is run.

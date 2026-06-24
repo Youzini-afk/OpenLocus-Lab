@@ -226,7 +226,7 @@ jobs:
                        "fd2b_executed", "fd2c_executed", "p5_executed", "b16k_executed"):
               if report.get(flag) is not False:
                   failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
-          if report.get("denominator_source_protocol") != "raw_external_disjoint_baseline_file_miss_scan.v1":
+          if report.get("denominator_source_protocol") != "raw_external_full_frame_disjoint_success_quota_scan.v1":
               failures.append("unexpected denominator_source_protocol")
           if report.get("prior_fd1_denominator_reused") is not False:
               failures.append("expected prior_fd1_denominator_reused=false")
@@ -234,6 +234,7 @@ jobs:
               failures.append("expected prior_raw_windows_excluded=true")
           required_tables = ("source_run_records", "denominator_records",
               "denominator_scan_records",
+              "prior_raw_exclusion_records",
               "arm_reach_records", "arm_delta_records", "arm_cost_records",
               "arm_action_records", "channel_action_records",
               "scheduler_stop_reason_records", "latency_decomposition_records",
@@ -249,9 +250,13 @@ jobs:
               scan_expected_rows = 0
               for row in report.get("denominator_scan_records") or []:
                   if isinstance(row, dict):
+                      if row.get("scan_protocol") != "full_frame_disjoint_success_quota":
+                          failures.append("expected full-frame disjoint scan_protocol")
                       scan_expected_rows += int(row.get("raw_rows_file_miss_selected", 0) or 0)
                       scan_expected_rows += int(row.get("raw_rows_baseline_reached_excluded", 0) or 0)
                       scan_expected_rows += int(row.get("raw_rows_baseline_error_excluded", 0) or 0)
+              if not isinstance(report.get("prior_raw_exclusion_records"), list) or not report.get("prior_raw_exclusion_records"):
+                  failures.append("expected prior_raw_exclusion_records")
               manifests = {m.get("manifest_name"): m for m in (report.get("private_manifest_records") or []) if isinstance(m, dict)}
               scan_manifest = manifests.get("bea_v1_p4h_private_denominator_scan_manifest")
               if not scan_manifest:

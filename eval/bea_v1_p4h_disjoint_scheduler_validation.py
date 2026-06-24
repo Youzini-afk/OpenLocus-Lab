@@ -105,22 +105,22 @@ P4H_SUBGROUP_MIN_N = 20
 P4H_SUBGROUP_P2_GAIN_RATIO_MIN = 0.50
 P4H_RANK_BUDGET_MEAN_RANK_MIN = 5
 P4H_RANK_BUDGET_RECORDS_AT_119 = 25
-P4H_RAW_CONTEXTBENCH_OFFSET = 480
-P4H_RAW_CONTEXTBENCH_LIMIT = 240
-P4H_RAW_REPOQA_OFFSET = 240
-P4H_RAW_REPOQA_LIMIT = 120
+P4H_RAW_CONTEXTBENCH_OFFSET = 0
+P4H_RAW_CONTEXTBENCH_LIMIT = 480
+P4H_RAW_REPOQA_OFFSET = 0
+P4H_RAW_REPOQA_LIMIT = 240
 P4H_RAW_DENOMINATOR_TARGET_COUNT = 80
 P4H_RAW_SOURCE_PHASE = "P4H-RAW"
 P4H_RAW_WINDOWS = (
     {
         "benchmark": "contextbench",
-        "window_name": "contextbench_raw_disjoint_after_480",
+        "window_name": "contextbench_raw_full_frame_disjoint_scan",
         "raw_offset_requested": P4H_RAW_CONTEXTBENCH_OFFSET,
         "raw_limit_requested": P4H_RAW_CONTEXTBENCH_LIMIT,
     },
     {
         "benchmark": "repoqa",
-        "window_name": "repoqa_raw_disjoint_after_240",
+        "window_name": "repoqa_raw_full_frame_disjoint_scan",
         "raw_offset_requested": P4H_RAW_REPOQA_OFFSET,
         "raw_limit_requested": P4H_RAW_REPOQA_LIMIT,
     },
@@ -260,6 +260,81 @@ def _stable_private_hash(key: str) -> str:
     return hashlib.sha256(key.encode("utf-8")).hexdigest()
 
 
+def _raw_prior_exclusion_windows(benchmark: str) -> tuple[tuple[int, int, str], ...]:
+    """Explicit public aggregate row-index windows excluded from P4H.
+
+    These cover older fixed development/evaluation windows. BEA-4/BEA-5/P1-P4
+    exact prior raw records are excluded from the FD1 private decomposition
+    when available; exact private row ids are not published.
+    """
+    if benchmark == "contextbench":
+        return (
+            (40, 60, "BEA-2 ContextBench fixed window"),
+            (60, 80, "BEA-3 ContextBench fixed window"),
+            (80, 160, "BEA-4 ContextBench fixed window"),
+        )
+    if benchmark == "repoqa":
+        return (
+            (20, 30, "BEA-2 RepoQA fixed window"),
+            (30, 40, "BEA-3 RepoQA fixed window"),
+            (40, 80, "BEA-4 RepoQA fixed window"),
+        )
+    return ()
+
+
+def _raw_index_exclusion_reason(benchmark: str, record_index: int) -> str:
+    for start, end, label in _raw_prior_exclusion_windows(benchmark):
+        if start <= record_index < end:
+            return label
+    return ""
+
+
+def _prior_raw_keys_from_fd1_private(
+    pt: p4.bea_v1_p1.ParsedPrivateDecomposition | None,
+) -> tuple[set[tuple[str, int]], list[dict[str, Any]]]:
+    """Return exact private prior raw keys plus public aggregate disclosures.
+
+    The key set is private/in-memory only. Public records disclose only counts by
+    source phase and benchmark plus the raw-index transform used for disjointness.
+    """
+    keys: set[tuple[str, int]] = set()
+    by_group: dict[tuple[str, str, str], set[int]] = {}
+    if pt is None or not getattr(pt, "computed", False):
+        return keys, []
+    all_record_keys: set[tuple[str, str]] = set()
+    for row in getattr(pt, "rows", []):
+        sp = str(row.get("source_phase", "") or "")
+        rid = str(row.get("private_record_id", "") or "")
+        if sp and rid:
+            all_record_keys.add((sp, rid))
+    for sp, rid in sorted(all_record_keys):
+        parsed = p4.bea_v1_p2._parse_record_id(rid)
+        if parsed is None:
+            continue
+        benchmark, local_idx = parsed
+        if sp == "BEA-4":
+            raw_idx = local_idx + (80 if benchmark == "contextbench" else 40)
+            basis = "fd1_private_decomposition_exact_bea4_offset"
+        elif sp == "BEA-5":
+            raw_idx = local_idx
+            basis = "fd1_private_decomposition_exact_bea5_raw_index"
+        else:
+            continue
+        keys.add((benchmark, raw_idx))
+        by_group.setdefault((sp, benchmark, basis), set()).add(raw_idx)
+    records: list[dict[str, Any]] = []
+    for (sp, benchmark, basis), idxs in sorted(by_group.items()):
+        records.append({
+            "source_phase": P4H_RAW_SOURCE_PHASE,
+            "benchmark": benchmark,
+            "exclusion_source_phase": sp,
+            "exclusion_basis": basis,
+            "excluded_raw_record_count": len(idxs),
+            "private_row_ids_publicly_serialized": False,
+        })
+    return keys, records
+
+
 def _extract_disjoint_heldout_denominator(
     pt: p4.bea_v1_p1.ParsedPrivateDecomposition,
 ) -> tuple[list[p4.bea_v1_p2.DenominatorRecord], dict[str, Any]]:
@@ -329,7 +404,7 @@ def _source_run_records(
         "source_status": fd1_status or p4.FD1_SOURCE_STATUS,
         "source_artifact_status": "audit_match" if audit_match else "audit_mismatch",
         "source_sampling_protocol": "bea_fd1_failure_decomposition.v1",
-        "denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1",
+        "denominator_source_protocol": "raw_external_full_frame_disjoint_success_quota_scan.v1",
         "prior_fd1_denominator_reused": False,
         "raw_contextbench_offset_requested": P4H_RAW_CONTEXTBENCH_OFFSET,
         "raw_contextbench_limit_requested": P4H_RAW_CONTEXTBENCH_LIMIT,
@@ -394,6 +469,11 @@ def _denominator_records(denominator: list[Any]) -> list[dict[str, Any]]:
 
 def _denominator_scan_records(meta: dict[str, Any]) -> list[dict[str, Any]]:
     rows = meta.get("denominator_scan_records", [])
+    return list(rows) if isinstance(rows, list) else []
+
+
+def _prior_raw_exclusion_records(meta: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = meta.get("prior_raw_exclusion_records", [])
     return list(rows) if isinstance(rows, list) else []
 
 
@@ -785,7 +865,7 @@ def _base_report(
 ) -> dict[str, Any]:
     fd1_artifact = fd1_artifact or {}
     denominator = denominator or []
-    denominator_meta = denominator_meta or {"denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1", "raw_denominator_scan_attempted": False, "raw_scan_attempted_records": 0, "raw_scan_yield_file_miss_records": len(denominator), "prior_fd1_denominator_reused": False, "prior_raw_windows_excluded": True, "heldout_denominator_count": len(denominator), "disjoint_from_prior": True, "private_key_hashes_publicly_serialized": False, "denominator_constructed_before_scheduler_outcomes": True, "denominator_scan_records": []}
+    denominator_meta = denominator_meta or {"denominator_source_protocol": "raw_external_full_frame_disjoint_success_quota_scan.v1", "raw_denominator_scan_attempted": False, "raw_scan_attempted_records": 0, "raw_scan_yield_file_miss_records": len(denominator), "prior_fd1_denominator_reused": False, "prior_raw_windows_excluded": True, "heldout_denominator_count": len(denominator), "disjoint_from_prior": True, "private_key_hashes_publicly_serialized": False, "denominator_constructed_before_scheduler_outcomes": True, "denominator_scan_records": [], "prior_raw_exclusion_records": []}
     arm_results = arm_results or {a: [] for a in POLICY_ARMS}
     fcc = {c: 0 for c in FAILURE_CATEGORIES_AUDIT}
     for k, v in (fcc_in or {}).items():
@@ -838,7 +918,7 @@ def _base_report(
         "network_mode": network_mode,
         "openlocus_binary_source": openlocus_binary_source,
         "source_sampling_protocol": "bea_fd1_failure_decomposition.v1",
-        "denominator_source_protocol": str(denominator_meta.get("denominator_source_protocol", "raw_external_disjoint_baseline_file_miss_scan.v1")),
+        "denominator_source_protocol": str(denominator_meta.get("denominator_source_protocol", "raw_external_full_frame_disjoint_success_quota_scan.v1")),
         "records_decomposed": int(fd1_records),
         "private_manifest_record_count": int(fd1_manifest_count),
         "denominator_count": int(len(denominator)),
@@ -846,6 +926,7 @@ def _base_report(
         "source_run_records": _source_run_records(fd1_schema_version=fd1_schema, fd1_source_artifact_hash=fd1_hash, fd1_status=fd1_status, fd1_records_decomposed=fd1_records, fd1_private_manifest_record_count=fd1_manifest_count, pt=pt, rav=rav, audit_match=audit_match, audit_mismatch_reason=audit_mismatch_reason),
         "denominator_records": _denominator_records(denominator),
         "denominator_scan_records": _denominator_scan_records(denominator_meta),
+        "prior_raw_exclusion_records": _prior_raw_exclusion_records(denominator_meta),
         "arm_reach_records": _arm_reach_records(arm_results, len(denominator)),
         "arm_delta_records": _arm_delta_records(arm_results),
         "arm_cost_records": _arm_cost_records(arm_results),
@@ -866,7 +947,10 @@ def _base_report(
         "aggregate_runtime_seconds": round(float(aggregate_runtime_seconds), 3),
         "raw_denominator_scan_attempted": bool(denominator_meta.get("raw_denominator_scan_attempted", False)),
         "raw_scan_attempted_records": int(denominator_meta.get("raw_scan_attempted_records", 0)),
+        "raw_scan_prior_exact_excluded_records": int(denominator_meta.get("raw_scan_prior_exact_excluded_records", 0)),
+        "raw_scan_prior_window_excluded_records": int(denominator_meta.get("raw_scan_prior_window_excluded_records", 0)),
         "raw_scan_yield_file_miss_records": int(denominator_meta.get("raw_scan_yield_file_miss_records", 0)),
+        "prior_raw_exclusion_mode": str(denominator_meta.get("prior_raw_exclusion_mode", "not_attempted")),
         "prior_fd1_denominator_reused": False,
         "prior_raw_windows_excluded": bool(denominator_meta.get("prior_raw_windows_excluded", True)),
         "denominator_source_gold_file_absent_count": int(denominator_meta.get("source_gold_file_absent_count", 0)),
@@ -938,8 +1022,11 @@ def _initial_raw_scan_rows() -> list[dict[str, Any]]:
         "denominator_window": str(w["window_name"]),
         "raw_offset_requested": int(w["raw_offset_requested"]),
         "raw_limit_requested": int(w["raw_limit_requested"]),
+        "scan_protocol": "full_frame_disjoint_success_quota",
         "raw_rows_fetched": 0,
         "raw_rows_attempted": 0,
+        "raw_rows_prior_exact_excluded": 0,
+        "raw_rows_prior_window_excluded": 0,
         "raw_rows_parse_excluded": 0,
         "raw_rows_clone_excluded": 0,
         "raw_rows_baseline_reached_excluded": 0,
@@ -950,9 +1037,9 @@ def _initial_raw_scan_rows() -> list[dict[str, Any]]:
 
 
 def _scan_raw_heldout_denominator(
-    *, openlocus_bin: str,
+    *, openlocus_bin: str, pt: p4.bea_v1_p1.ParsedPrivateDecomposition | None,
 ) -> tuple[list[RawHeldoutDenominatorRecord], dict[str, int], dict[str, Any], dict[str, Any]]:
-    """Scan raw disjoint windows with the baseline arm only.
+    """Scan full available raw frames with the baseline arm only.
 
     P2/P3/P4 treatment arms are not run here. The baseline result is cached on
     each selected denominator record and reused by the scheduler phase.
@@ -967,6 +1054,25 @@ def _scan_raw_heldout_denominator(
         private_path.unlink()
     attempted_total = 0
     fetched_total = 0
+    excluded_prior_exact_total = 0
+    excluded_prior_window_total = 0
+    prior_raw_keys, exact_exclusion_records = _prior_raw_keys_from_fd1_private(pt)
+    use_exact_prior_keys = bool(prior_raw_keys)
+    explicit_window_records: list[dict[str, Any]] = []
+    for w in P4H_RAW_WINDOWS:
+        bm = str(w["benchmark"])
+        for start, end, label in _raw_prior_exclusion_windows(bm):
+            explicit_window_records.append({
+                "source_phase": P4H_RAW_SOURCE_PHASE,
+                "benchmark": bm,
+                "exclusion_source_phase": "prior_fixed_window",
+                "exclusion_basis": label,
+                "excluded_window_start_inclusive": start,
+                "excluded_window_end_exclusive": end,
+                "exclusion_window_publicly_disclosed": True,
+                "used_for_exclusion": not use_exact_prior_keys,
+                "private_row_ids_publicly_serialized": False,
+            })
     for w in P4H_RAW_WINDOWS:
         bm = str(w["benchmark"])
         window = str(w["window_name"])
@@ -992,15 +1098,24 @@ def _scan_raw_heldout_denominator(
             if len(denominator) >= P4H_RAW_DENOMINATOR_TARGET_COUNT:
                 srow["target_reached_in_window"] = True
                 break
+            raw_idx = offset + local_idx
+            if use_exact_prior_keys and (bm, raw_idx) in prior_raw_keys:
+                srow["raw_rows_prior_exact_excluded"] += 1
+                excluded_prior_exact_total += 1
+                continue
+            if not use_exact_prior_keys and _raw_index_exclusion_reason(bm, raw_idx):
+                srow["raw_rows_prior_window_excluded"] += 1
+                excluded_prior_window_total += 1
+                continue
             attempted_total += 1
             srow["raw_rows_attempted"] += 1
             query, gold_paths, repo_url, base_commit, ok = _parse_raw_row_for_retrieval(bm, row)
-            private_record_id = f"{bm}-raw-{offset + local_idx}"
+            private_record_id = f"{bm}-raw-{raw_idx}"
             if not ok:
                 srow["raw_rows_parse_excluded"] += 1
                 fcc["raw_denominator_parse_failed"] += 1
                 continue
-            with tempfile.TemporaryDirectory(prefix=f"v1p4h_scan_{bm}_{offset + local_idx}_") as tmp:
+            with tempfile.TemporaryDirectory(prefix=f"v1p4h_scan_{bm}_{raw_idx}_") as tmp:
                 work = Path(tmp)
                 clone_ok, _, clone_fcc = p4.c5d._clone_and_checkout(repo_url, base_commit, work)
                 for k, v in clone_fcc.items():
@@ -1022,7 +1137,7 @@ def _scan_raw_heldout_denominator(
                     "source_phase": P4H_RAW_SOURCE_PHASE,
                     "benchmark": bm,
                     "window_name": window,
-                    "raw_record_index_private": offset + local_idx,
+                    "raw_record_index_private": raw_idx,
                     "private_record_id": private_record_id,
                     "query_private": query[:200],
                     "repo_url_private": repo_url,
@@ -1042,7 +1157,7 @@ def _scan_raw_heldout_denominator(
                 denominator.append(RawHeldoutDenominatorRecord(
                     private_record_id=private_record_id,
                     benchmark=bm,
-                    record_index=offset + local_idx,
+                    record_index=raw_idx,
                     window_name=window,
                     raw_window_offset=offset,
                     raw_window_limit=limit,
@@ -1055,21 +1170,25 @@ def _scan_raw_heldout_denominator(
         if len(denominator) >= P4H_RAW_DENOMINATOR_TARGET_COUNT:
             break
     meta = {
-        "denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1",
+        "denominator_source_protocol": "raw_external_full_frame_disjoint_success_quota_scan.v1",
         "source_gold_file_absent_count": 0,
         "excluded_prior_window_count": ORIGINAL_P1234_DENOMINATOR_COUNT,
         "heldout_denominator_count": len(denominator),
         "raw_denominator_scan_attempted": True,
         "raw_scan_fetched_records": int(fetched_total),
         "raw_scan_attempted_records": int(attempted_total),
+        "raw_scan_prior_exact_excluded_records": int(excluded_prior_exact_total),
+        "raw_scan_prior_window_excluded_records": int(excluded_prior_window_total),
         "raw_scan_yield_file_miss_records": int(len(denominator)),
         "raw_scan_target_count": P4H_RAW_DENOMINATOR_TARGET_COUNT,
         "prior_fd1_denominator_reused": False,
         "prior_raw_windows_excluded": True,
+        "prior_raw_exclusion_mode": "fd1_private_exact_raw_keys" if use_exact_prior_keys else "explicit_public_index_windows",
         "disjoint_from_prior": True,
         "private_key_hashes_publicly_serialized": False,
         "denominator_constructed_before_scheduler_outcomes": True,
         "denominator_scan_records": scan_rows,
+        "prior_raw_exclusion_records": exact_exclusion_records + explicit_window_records,
     }
     manifest = p4._private_file_manifest(private_path, manifest_name="bea_v1_p4h_private_denominator_scan_manifest", schema_version="bea_v1_p4h_private_denominator_scan.v1")
     return denominator, fcc, meta, manifest
@@ -1178,28 +1297,32 @@ def _run_scheduler_validation(
         fcc[rav.failure_category] = max(fcc.get(rav.failure_category, 0), 1)
     denominator: list[RawHeldoutDenominatorRecord] = []
     denominator_meta: dict[str, Any] = {
-        "denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1",
+        "denominator_source_protocol": "raw_external_full_frame_disjoint_success_quota_scan.v1",
         "source_gold_file_absent_count": 0,
         "excluded_prior_window_count": ORIGINAL_P1234_DENOMINATOR_COUNT,
         "heldout_denominator_count": 0,
         "raw_denominator_scan_attempted": False,
         "raw_scan_fetched_records": 0,
         "raw_scan_attempted_records": 0,
+        "raw_scan_prior_exact_excluded_records": 0,
+        "raw_scan_prior_window_excluded_records": 0,
         "raw_scan_yield_file_miss_records": 0,
         "raw_scan_target_count": P4H_RAW_DENOMINATOR_TARGET_COUNT,
         "prior_fd1_denominator_reused": False,
         "prior_raw_windows_excluded": True,
+        "prior_raw_exclusion_mode": "not_attempted",
         "disjoint_from_prior": True,
         "private_key_hashes_publicly_serialized": False,
         "denominator_constructed_before_scheduler_outcomes": True,
         "denominator_scan_records": _initial_raw_scan_rows(),
+        "prior_raw_exclusion_records": [],
     }
     arm_results = {a: [] for a in POLICY_ARMS}
     retrieval_policy_executed = False
     manifests: list[dict[str, Any]] = []
     if enable_network and audit_match and pt.computed and rav.validated:
         try:
-            denominator, scan_fcc, denominator_meta, scan_manifest = _scan_raw_heldout_denominator(openlocus_bin=openlocus_bin)
+            denominator, scan_fcc, denominator_meta, scan_manifest = _scan_raw_heldout_denominator(openlocus_bin=openlocus_bin, pt=pt)
             manifests.append(scan_manifest)
             for k, v in scan_fcc.items():
                 if k in fcc:
@@ -1235,7 +1358,7 @@ def _build_synthetic_raw_denominator(count: int = 80) -> tuple[list[RawHeldoutDe
         bm = "contextbench" if i < count // 2 else "repoqa"
         offset = P4H_RAW_CONTEXTBENCH_OFFSET if bm == "contextbench" else P4H_RAW_REPOQA_OFFSET
         limit = P4H_RAW_CONTEXTBENCH_LIMIT if bm == "contextbench" else P4H_RAW_REPOQA_LIMIT
-        window = "contextbench_raw_disjoint_after_480" if bm == "contextbench" else "repoqa_raw_disjoint_after_240"
+        window = "contextbench_raw_full_frame_disjoint_scan" if bm == "contextbench" else "repoqa_raw_full_frame_disjoint_scan"
         denominator.append(RawHeldoutDenominatorRecord(
             private_record_id=f"{bm}-raw-{offset + i}",
             benchmark=bm,
@@ -1251,22 +1374,40 @@ def _build_synthetic_raw_denominator(count: int = 80) -> tuple[list[RawHeldoutDe
         row["raw_rows_attempted"] = selected
         row["raw_rows_file_miss_selected"] = selected
         row["target_reached_in_window"] = len(denominator) >= P4H_RAW_DENOMINATOR_TARGET_COUNT
+    prior_rows = []
+    for bm in ("contextbench", "repoqa"):
+        for start, end, label in _raw_prior_exclusion_windows(bm):
+            prior_rows.append({
+                "source_phase": P4H_RAW_SOURCE_PHASE,
+                "benchmark": bm,
+                "exclusion_source_phase": "prior_fixed_window",
+                "exclusion_basis": label,
+                "excluded_window_start_inclusive": start,
+                "excluded_window_end_exclusive": end,
+                "exclusion_window_publicly_disclosed": True,
+                "used_for_exclusion": False,
+                "private_row_ids_publicly_serialized": False,
+            })
     meta = {
-        "denominator_source_protocol": "raw_external_disjoint_baseline_file_miss_scan.v1",
+        "denominator_source_protocol": "raw_external_full_frame_disjoint_success_quota_scan.v1",
         "source_gold_file_absent_count": 0,
         "excluded_prior_window_count": ORIGINAL_P1234_DENOMINATOR_COUNT,
         "heldout_denominator_count": len(denominator),
         "raw_denominator_scan_attempted": True,
         "raw_scan_fetched_records": P4H_RAW_CONTEXTBENCH_LIMIT + P4H_RAW_REPOQA_LIMIT,
         "raw_scan_attempted_records": len(denominator),
+        "raw_scan_prior_exact_excluded_records": ORIGINAL_P1234_DENOMINATOR_COUNT,
+        "raw_scan_prior_window_excluded_records": 0,
         "raw_scan_yield_file_miss_records": len(denominator),
         "raw_scan_target_count": P4H_RAW_DENOMINATOR_TARGET_COUNT,
         "prior_fd1_denominator_reused": False,
         "prior_raw_windows_excluded": True,
+        "prior_raw_exclusion_mode": "fd1_private_exact_raw_keys",
         "disjoint_from_prior": True,
         "private_key_hashes_publicly_serialized": False,
         "denominator_constructed_before_scheduler_outcomes": True,
         "denominator_scan_records": scan_rows,
+        "prior_raw_exclusion_records": prior_rows,
     }
     return denominator, meta
 
@@ -1295,6 +1436,11 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("frozen_treatment_name", P4H_TREATMENT_ARM in POLICY_ARMS))
     checks.append(_check("p4_checkpoint", V1_P4_RESULT_CHECKPOINT == "f0e99ca"))
     checks.append(_check("min_denominator_80", P4H_MIN_DENOMINATOR_COUNT == 80))
+    checks.append(_check("full_frame_contextbench_offset_0", P4H_RAW_CONTEXTBENCH_OFFSET == 0))
+    checks.append(_check("full_frame_contextbench_limit_480", P4H_RAW_CONTEXTBENCH_LIMIT == 480))
+    checks.append(_check("full_frame_repoqa_offset_0", P4H_RAW_REPOQA_OFFSET == 0))
+    checks.append(_check("full_frame_repoqa_limit_240", P4H_RAW_REPOQA_LIMIT == 240))
+    checks.append(_check("no_fixed_tail_window_names", all("after_" not in str(w.get("window_name", "")) for w in P4H_RAW_WINDOWS)))
     checks.append(_check("latency_not_in_relevance_false", DEFAULT_FALSE_FLAGS["latency_in_candidate_relevance"] is False))
     checks.append(_check("no_selector_change", DEFAULT_FALSE_FLAGS["selector_or_reranker_changed"] is False))
     with tempfile.TemporaryDirectory(prefix="v1p4h_st_") as sd:
@@ -1314,10 +1460,39 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         checks.append(_check("fd1_tail_119_not_sufficient_for_p4h", len(fd1_tail_119) == 0))
         denominator, meta = _build_synthetic_raw_denominator(80)
         checks.append(_check("raw_denominator_80", len(denominator) == 80))
-        checks.append(_check("raw_source_protocol", meta.get("denominator_source_protocol") == "raw_external_disjoint_baseline_file_miss_scan.v1"))
+        checks.append(_check("raw_source_protocol", meta.get("denominator_source_protocol") == "raw_external_full_frame_disjoint_success_quota_scan.v1"))
         checks.append(_check("raw_scan_attempted", meta.get("raw_denominator_scan_attempted") is True))
         checks.append(_check("prior_fd1_not_reused", meta.get("prior_fd1_denominator_reused") is False))
         checks.append(_check("raw_windows_excluded_prior", meta.get("prior_raw_windows_excluded") is True))
+        checks.append(_check("prior_raw_exclusion_records_public_aggregate", len(meta.get("prior_raw_exclusion_records", [])) >= 2))
+        checks.append(_check("scan_rows_disclose_full_frame_ranges", all("raw_offset_requested" in r and "raw_limit_requested" in r and "raw_rows_fetched" in r for r in meta.get("denominator_scan_records", []))))
+        checks.append(_check("scan_rows_no_private_ids", all("private_record_id" not in r and "record_ids" not in r for r in meta.get("denominator_scan_records", []))))
+        empty_fixed_tail_meta = {
+            **meta,
+            "heldout_denominator_count": 0,
+            "raw_denominator_scan_attempted": True,
+            "raw_scan_fetched_records": 0,
+            "raw_scan_attempted_records": 0,
+            "raw_scan_yield_file_miss_records": 0,
+            "denominator_scan_records": [{
+                "source_phase": P4H_RAW_SOURCE_PHASE,
+                "benchmark": "contextbench",
+                "denominator_window": "obsolete_fixed_tail_window_simulation",
+                "raw_offset_requested": 480,
+                "raw_limit_requested": 240,
+                "scan_protocol": "obsolete_fixed_tail_simulation",
+                "raw_rows_fetched": 0,
+                "raw_rows_attempted": 0,
+                "raw_rows_prior_exact_excluded": 0,
+                "raw_rows_prior_window_excluded": 0,
+                "raw_rows_parse_excluded": 0,
+                "raw_rows_clone_excluded": 0,
+                "raw_rows_baseline_reached_excluded": 0,
+                "raw_rows_baseline_error_excluded": 0,
+                "raw_rows_file_miss_selected": 0,
+                "target_reached_in_window": False,
+            }],
+        }
         checks.append(_check("raw_scan_failures_are_blocking",
             "raw_denominator_scan_failed" in BLOCKING_FAILURE_CATEGORIES))
         checks.append(_check("raw_clone_failures_are_blocking",
@@ -1330,7 +1505,7 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         fd1_art = p4._build_synthetic_fd1_artifact()
         arm_results = _build_synthetic_scheduler_results(denominator)
         report = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, denominator=denominator, denominator_meta=meta, arm_results=arm_results, retrieval_policy_executed=True, audit_match=True, aggregate_runtime_seconds=0.5)
-        required = ("source_run_records", "denominator_records", "denominator_scan_records", "arm_reach_records", "arm_delta_records", "arm_cost_records", "arm_action_records", "channel_action_records", "scheduler_stop_reason_records", "latency_decomposition_records", "efficiency_records", "reach_bucket_records", "rank_band_records", "cost_safety_records", "subgroup_safety_records", "rank_budget_audit_records", "stop_go_records", "gate_records", "private_manifest_records", "failure_category_count_records")
+        required = ("source_run_records", "denominator_records", "denominator_scan_records", "prior_raw_exclusion_records", "arm_reach_records", "arm_delta_records", "arm_cost_records", "arm_action_records", "channel_action_records", "scheduler_stop_reason_records", "latency_decomposition_records", "efficiency_records", "reach_bucket_records", "rank_band_records", "cost_safety_records", "subgroup_safety_records", "rank_budget_audit_records", "stop_go_records", "gate_records", "private_manifest_records", "failure_category_count_records")
         for table in required:
             checks.append(_check(f"table_{table}_is_list", isinstance(report.get(table), list)))
         checks.append(_check("synthetic_status_pass", report.get("status") == "bea_v1_p4h_disjoint_scheduler_validation_pass"))
@@ -1339,9 +1514,12 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         checks.append(_check("rank_budget_confirmed", report.get("rank_budget_audit_records", [{}])[0].get("rank_budget_bottleneck_confirmed") is True))
         checks.append(_check("subgroup_records_present", len(report.get("subgroup_safety_records", [])) > 0))
         checks.append(_check("report_raw_scan_records_present", len(report.get("denominator_scan_records", [])) == 2))
+        checks.append(_check("report_prior_exclusion_records_present", len(report.get("prior_raw_exclusion_records", [])) >= 2))
         checks.append(_check("report_prior_fd1_not_reused", report.get("prior_fd1_denominator_reused") is False))
         bad_report = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, denominator=denominator[:79], denominator_meta={**meta, "heldout_denominator_count": 79}, arm_results={a: [] for a in POLICY_ARMS}, retrieval_policy_executed=False, audit_match=True, aggregate_runtime_seconds=0.5)
         checks.append(_check("insufficient_denominator_status", bad_report.get("status") == "no_go_p4h_insufficient_denominator"))
+        empty_fixed_tail_report = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, denominator=[], denominator_meta=empty_fixed_tail_meta, arm_results={a: [] for a in POLICY_ARMS}, retrieval_policy_executed=False, audit_match=True, aggregate_runtime_seconds=0.5)
+        checks.append(_check("empty_fixed_tail_simulation_no_schema_contract", empty_fixed_tail_report.get("status") == "no_go_p4h_insufficient_denominator"))
         scan_fail_report = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, denominator=denominator[:79], denominator_meta={**meta, "heldout_denominator_count": 79}, arm_results={a: [] for a in POLICY_ARMS}, retrieval_policy_executed=False, audit_match=True, fcc_in={"raw_denominator_scan_failed": 1}, aggregate_runtime_seconds=0.5)
         checks.append(_check("scan_failure_not_insufficient_no_go",
             scan_fail_report.get("status") == "fail_schema_contract"))
