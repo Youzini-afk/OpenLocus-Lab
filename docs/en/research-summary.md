@@ -3910,3 +3910,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Status**: `no_go_retrieval_reach_latency_or_pool_cost`. The workflow regenerated FD1 private decomposition under `/tmp`, validated the replay, ran 4 retrieval-reach arms over the 119-record `gold_file_absent` denominator, wrote 476 private reach rows, and published aggregate-only tables.
 - **Availability result**: baseline current pool reached 32/119 files. Depth-only expansion reached 59/119 (+27, availability lift 0.226891) within cost thresholds; query-anchor reached 60/119 (+28) but exceeded cost; combined depth+query reached 81/119 (+49) but mean pool 202.38 (10.13×) and latency 7.025s (3.89×) exceeded safety gates.
 - **Decision**: candidate availability is empirically improvable, so the v1-P1 pure retrieval-unavailable story is refined. However, naive broad expansion is not acceptable. Do not start BEA-v1-A selector from the combined arm. The next BEA v1 step should be a constrained retrieval policy that preserves depth-only reach gains while bounding pool/latency, with latency outside candidate relevance scoring.
+
+## BEA-v1-P3 findings
+
+- **BEA-v1-P3 Constrained Retrieval Policy Smoke completed**: local checkpoint `6801e2b`, manual CI run `28102428194`.
+- **Status**: `no_go_p3_cost_exceeded`. The workflow regenerated FD1 private decomposition under `/tmp`, validated replay, ran 3 retrieval-policy arms over the 119-record file-miss denominator, wrote 357 private policy rows, and published aggregate-only tables.
+- **Mechanism result**: P3 retained almost all P2 depth-only reach (58/119 vs 59/119; +26 newly reachable vs +27) while reducing mean pool from 68.18 to 41.50 (2.08× baseline vs 3.41× for P2 depth). Efficiency improved to 1.208122 newly reachable per added candidate, above P2 depth-only and combined.
+- **No-Go reason**: latency safety failed. P3 mean latency was 3.645s, 2.17× baseline, above the 2.0× gate. This indicates the next bottleneck is retrieval-action scheduling latency, not candidate relevance scoring.
+- **Decision**: do not promote this scheduler to v1-A input. If BEA v1 continues, isolate latency overhead from sequential/repeated retrieval actions and test a latency-aware action scheduler at the retrieval-action layer, still keeping latency outside candidate relevance scoring.

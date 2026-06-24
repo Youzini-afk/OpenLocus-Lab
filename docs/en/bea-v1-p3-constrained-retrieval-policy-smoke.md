@@ -228,6 +228,43 @@ Fail-closed validation:
 - `unavailable_with_reason` — default no-network artifact.
 - `fail_forbidden_scan` / `fail_schema_contract` — schema/leak failure.
 
+
+## Manual CI result
+
+Manual CI run `28102428194` completed green in 1h22m03s. The workflow
+regenerated FD1 private decomposition under `/tmp`, validated the replay,
+ran all 3 P3 arms over the 119-record `gold_file_absent` denominator,
+wrote 357 private policy rows, and uploaded only the aggregate public
+artifact.
+
+Public status is `no_go_p3_cost_exceeded`, not pass. The constrained
+policy produced a strong retrieval-action mechanism signal but missed the
+predeclared latency safety gate:
+
+- baseline current pool: 32/119 files available, mean pool 19.98, mean
+  latency 1.677s;
+- P2 depth-only reference: 59/119 available, +27 newly reachable, mean
+  pool 68.18 (3.41×), mean latency 1.991s (1.19×);
+- P3 constrained depth policy: 58/119 available, +26 newly reachable,
+  availability lift 0.218487, mean pool 41.50 (2.08×), mean latency
+  3.645s (2.17×).
+
+P3 retained 26/27 of the P2 depth-only newly reachable files and cut mean
+pool size from 68.18 to 41.50 while improving newly-reachable-per-added
+candidate efficiency to 1.208122 (above both P2 depth-only and combined).
+It also preserved the downstream selector problem: mean first-gold rank
+25.69, with 50 records above the budget. However, mean latency was
+2.17× baseline, above the 2.0× gate, so the phase is a bounded No-Go on
+cost safety.
+
+Decision: the constrained retrieval-action policy idea is not rejected on
+reach or pool efficiency, but this exact scheduler cannot be promoted to
+v1-A input because latency safety failed. The next BEA v1 step, if any,
+should isolate why latency rose despite fewer candidates (sequential
+extra-depth scheduling / repeated channel calls) and test a latency-aware
+action scheduler at the retrieval-action layer, still without putting
+latency into candidate relevance scoring.
+
 ## Validation
 
 ```text

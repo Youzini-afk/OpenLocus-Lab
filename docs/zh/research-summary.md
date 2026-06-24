@@ -3318,3 +3318,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`no_go_retrieval_reach_latency_or_pool_cost`。workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 `gold_file_absent` 分母上运行 4 个 retrieval-reach arms，写出 476 条私有 reach 行，并只发布 aggregate-only 表。
 - **可达性结果**：baseline current pool 达到 32/119 文件。depth-only expansion 达到 59/119（新增 27，availability lift 0.226891）且成本未越界；query-anchor 达到 60/119（新增 28）但成本越界；combined depth+query 达到 81/119（新增 49），但 mean pool 202.38（10.13×）与 latency 7.025s（3.89×）违反 safety gate。
 - **决策**：candidate availability 可被实证改善，因此 v1-P1 的纯 retrieval-unavailable 叙述需要细化。但 naive broad expansion 不可接受。不要从 combined arm 启动 BEA-v1-A selector。下一步 BEA v1 应做 constrained retrieval policy：保留 depth-only reach 增益，同时约束 pool/latency，并继续把 latency 排除在 candidate relevance scoring 之外。
+
+## BEA-v1-P3 发现
+
+- **BEA-v1-P3 Constrained Retrieval Policy Smoke 已完成**：local checkpoint `6801e2b`，manual CI run `28102428194`。
+- **状态**：`no_go_p3_cost_exceeded`。workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 file-miss 分母上运行 3 个 retrieval-policy arms，写出 357 条私有 policy 行，并只发布 aggregate-only 表。
+- **机制结果**：P3 几乎保留了 P2 depth-only reach（58/119 vs 59/119；新增 26 vs 27），同时把 mean pool 从 68.18 降到 41.50（相对 baseline 2.08×，而 P2 depth 为 3.41×）。Efficiency 提升到 1.208122 newly reachable per added candidate，高于 P2 depth-only 与 combined。
+- **No-Go 原因**：latency safety 失败。P3 mean latency 为 3.645s，是 baseline 的 2.17×，高于 2.0× gate。这说明下一瓶颈是 retrieval-action scheduling latency，而不是 candidate relevance scoring。
+- **决策**：不要把这个 scheduler 推进为 v1-A 输入。若 BEA v1 继续，应隔离 sequential/repeated retrieval actions 的 latency overhead，并在 retrieval-action 层测试 latency-aware action scheduler，同时继续把 latency 排除在 candidate relevance scoring 之外。

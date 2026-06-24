@@ -10790,3 +10790,23 @@ Status is `no_go_retrieval_reach_latency_or_pool_cost`. Baseline current pool re
 ### Decision
 
 Candidate availability is empirically improvable, but naive broad expansion is too costly. Do not start BEA-v1-A selector from the combined arm. The next BEA v1 step should be a constrained retrieval policy that preserves the depth-only gain while bounding pool size and latency. Latency remains outside candidate relevance scoring; it belongs to retrieval/action scheduling safety, not candidate scoring.
+
+## 2026-06-24 — BEA-v1-P3: Constrained Retrieval Policy Smoke
+
+### Objective
+
+Test the first real BEA v1 retrieval-action policy after P2: preserve most of the P2 depth-only candidate-availability gain while bounding pool/latency. This is not a selector, not default/promotion, not FD2-B/v0.4 repair, and latency is not used as candidate relevance.
+
+### Implementation / validation
+
+Local checkpoint `6801e2b` added `eval/bea_v1_p3_constrained_retrieval_policy_smoke.py`, a manual CI workflow, default honest no-network artifact, and en/zh docs. @oracle blocked the first local review because `no_go_p3_replay_mismatch` was still listed as CI-valid; the fix removed it from real-run statuses, updated self-test to 365/365, and documented replay mismatch as default/replay failure only.
+
+### Manual CI result
+
+Manual CI run `28102428194` completed green in 1h22m03s. It regenerated FD1 private decomposition under `/tmp`, validated replay, ran 3 P3 arms over the 119-record `gold_file_absent` denominator, wrote 357 private policy rows, and uploaded only the aggregate public artifact.
+
+Status is `no_go_p3_cost_exceeded`. Baseline reached 32/119 (mean pool 19.98, latency 1.677s). P2 depth reference reached 59/119 (+27, pool 68.18 / 3.41×, latency 1.991s / 1.19×). P3 constrained policy reached 58/119 (+26, availability lift 0.218487) with mean pool 41.50 (2.08×) and latency 3.645s (2.17×). Pool safety passed; latency safety failed. P3 efficiency was strong (1.208122), and selector relevance remained (mean first-gold rank 25.69; 50 records above budget).
+
+### Decision
+
+Constrained retrieval-action scheduling is promising on reach and pool efficiency, but this exact sequential scheduler fails latency safety. Do not promote it to v1-A input. Next work should isolate why fewer candidates still cost more time and test a latency-aware action scheduler at the retrieval-action layer, without putting latency into candidate relevance scoring.

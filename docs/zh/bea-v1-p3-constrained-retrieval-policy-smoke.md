@@ -207,6 +207,38 @@ Fail-closed 验证：
 - `unavailable_with_reason` —— 默认无网络 artifact。
 - `fail_forbidden_scan` / `fail_schema_contract` —— schema/leak 失败。
 
+
+## Manual CI 结果
+
+Manual CI run `28102428194` 以 1h22m03s 完成 green。workflow 在 `/tmp`
+下重建 FD1 private decomposition，验证 replay，在 119 条
+`gold_file_absent` 分母上运行全部 3 个 P3 arms，写出 357 条私有 policy
+行，并只上传 aggregate public artifact。
+
+Public status 是 `no_go_p3_cost_exceeded`，不是 pass。受约束策略产生了
+很强的 retrieval-action 机制信号，但没有通过预声明 latency safety gate：
+
+- baseline current pool：32/119 文件可达，mean pool 19.98，mean latency
+  1.677s；
+- P2 depth-only reference：59/119 可达，新增 27 条，mean pool 68.18
+  (3.41×)，mean latency 1.991s (1.19×)；
+- P3 constrained depth policy：58/119 可达，新增 26 条，availability lift
+  0.218487，mean pool 41.50 (2.08×)，mean latency 3.645s (2.17×)。
+
+P3 保留了 P2 depth-only 新增可达文件中的 26/27，并把 mean pool 从
+68.18 降到 41.50，同时把 newly-reachable-per-added-candidate efficiency
+提升到 1.208122（高于 P2 depth-only 与 combined）。它也保留了后续
+selector 问题：mean first-gold rank 25.69，50 条记录位于 budget 之后。
+但 mean latency 是 baseline 的 2.17×，超过 2.0× gate，因此本阶段是
+cost safety 上的 bounded No-Go。
+
+决策：constrained retrieval-action policy 思路没有在 reach 或 pool
+efficiency 上被否定，但这个具体 scheduler 不能作为 v1-A 输入，因为
+latency safety 失败。下一步 BEA v1 若继续，应隔离为什么候选更少但
+latency 上升（sequential extra-depth scheduling / repeated channel calls），
+并在 retrieval-action 层测试 latency-aware action scheduler，仍然不能把
+latency 放进 candidate relevance scoring。
+
 ## 验证
 
 ```text

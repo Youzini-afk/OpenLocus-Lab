@@ -10024,3 +10024,23 @@ Manual CI run `28093864524` 完成 green。workflow 在 `/tmp` 下重建 FD1 pri
 ### 决策
 
 Candidate availability 可被实证改善，但 naive broad expansion 成本过高。不要从 combined arm 启动 BEA-v1-A selector。下一步 BEA v1 应是 constrained retrieval policy：保留 depth-only 增益，同时约束 pool size 和 latency。Latency 继续不进入 candidate relevance scoring；它属于 retrieval/action scheduling safety，而不是 candidate scoring。
+
+## 2026-06-24 — BEA-v1-P3：受约束检索策略冒烟
+
+### 目标
+
+测试 P2 之后第一个真正的 BEA v1 retrieval-action policy：保留大部分 P2 depth-only candidate-availability 增益，同时约束 pool/latency。这不是 selector，不是 default/promotion，不是 FD2-B/v0.4 repair，latency 也不作为 candidate relevance。
+
+### 实现 / 验证
+
+Local checkpoint `6801e2b` 增加 `eval/bea_v1_p3_constrained_retrieval_policy_smoke.py`、manual CI workflow、默认诚实 no-network artifact 与 en/zh docs。@oracle 在第一次本地 review 中阻塞，因为 `no_go_p3_replay_mismatch` 仍被列为 CI-valid；修复后它已从 real-run statuses 移除，self-test 更新为 365/365，并被文档定义为 default/replay failure only。
+
+### Manual CI 结果
+
+Manual CI run `28102428194` 以 1h22m03s 完成 green。它在 `/tmp` 下重建 FD1 private decomposition，验证 replay，在 119 条 `gold_file_absent` 分母上运行 3 个 P3 arms，写出 357 条私有 policy 行，并只上传 aggregate public artifact。
+
+状态是 `no_go_p3_cost_exceeded`。Baseline 达到 32/119（mean pool 19.98，latency 1.677s）。P2 depth reference 达到 59/119（新增 27，pool 68.18 / 3.41×，latency 1.991s / 1.19×）。P3 constrained policy 达到 58/119（新增 26，availability lift 0.218487），mean pool 41.50（2.08×），latency 3.645s（2.17×）。Pool safety 通过；latency safety 失败。P3 efficiency 很强（1.208122），并保留 selector relevance（mean first-gold rank 25.69；50 条记录超过 budget）。
+
+### 决策
+
+Constrained retrieval-action scheduling 在 reach 与 pool efficiency 上有希望，但这个具体 sequential scheduler 失败于 latency safety。不要将其推进为 v1-A 输入。下一步应隔离为何候选更少仍耗时更高，并在 retrieval-action 层测试 latency-aware action scheduler，同时不把 latency 放入 candidate relevance scoring。
