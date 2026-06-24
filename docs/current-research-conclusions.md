@@ -86,6 +86,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p1-actionability-oracle-ceiling-audit.md`: [en](en/bea-v1-p1-actionability-oracle-ceiling-audit.md) · [zh](zh/bea-v1-p1-actionability-oracle-ceiling-audit.md)
 - `bea-v1-p2-candidate-availability-reach-smoke.md`: [en](en/bea-v1-p2-candidate-availability-reach-smoke.md) · [zh](zh/bea-v1-p2-candidate-availability-reach-smoke.md)
 - `bea-v1-p3-constrained-retrieval-policy-smoke.md`: [en](en/bea-v1-p3-constrained-retrieval-policy-smoke.md) · [zh](zh/bea-v1-p3-constrained-retrieval-policy-smoke.md)
+- `bea-v1-p4-latency-aware-retrieval-scheduler-smoke.md`: [en](en/bea-v1-p4-latency-aware-retrieval-scheduler-smoke.md) · [zh](zh/bea-v1-p4-latency-aware-retrieval-scheduler-smoke.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

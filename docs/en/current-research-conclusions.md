@@ -171,6 +171,8 @@ BEA-v1-P2 Candidate Availability / Retrieval Reach Smoke is complete. Manual CI 
 
 Immediate next work is no longer proxy repair, direct aggregate-FD1-loss weighting, FD2-A diagnosis, selector-only v1-A, or naive broad retrieval expansion. FD2-A1 explains the latency-objective failure, v1-P1 shows selector-only file coverage is under-justified, and v1-P2 shows candidate availability can improve only if retrieval expansion is constrained. BEA-v1-P3 Constrained Retrieval Policy Smoke is complete: run `28102428194` preserved nearly all P2 depth-only reach (58/119 vs 59/119) and cut pool cost, but failed latency safety (`no_go_p3_cost_exceeded`, 2.17× latency vs 2.0× gate). The next BEA v1 question is latency-aware retrieval-action scheduling, still with latency outside candidate relevance scoring. See `docs/en/bea-v1-p3-constrained-retrieval-policy-smoke.md`.
 
+BEA-v1-P4 Latency-Aware Retrieval Action Scheduler Smoke is the next local checkpoint after P3 result `eda2087`: it isolates whether P3's latency failure came from avoidable sequential / redundant retrieval actions and tests one runtime-clean scheduler fix (per-channel extra-depth action selection instead of P3's full extra-depth round) that reduces latency while preserving P3 / P2 reach. The default no-network artifact is `unavailable_with_reason` (no fake pass); full result writeback waits until CI. See `docs/en/bea-v1-p4-latency-aware-retrieval-scheduler-smoke.md`.
+
 Do not run B16-K, P4/P5, FD2-B from the failed FD2-A objective, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, another BEA scale smoke, BEA-v1-A selector-only implementation, or unconstrained broad retrieval expansion.
 
 ## 9. One-sentence conclusion

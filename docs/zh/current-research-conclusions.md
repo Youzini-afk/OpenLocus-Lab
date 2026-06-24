@@ -171,6 +171,8 @@ BEA-v1-P2 Candidate Availability / Retrieval Reach Smoke 已完成。Manual CI r
 
 下一步不再修 proxy、不再做直接 aggregate-FD1-loss weighting，也不再诊断 FD2-A、做 selector-only v1-A 或 naive broad retrieval expansion。FD2-A1 已解释 latency-objective failure；v1-P1 显示 selector-only file coverage 缺少足够依据；v1-P2 显示 candidate availability 可以改善，但必须约束 retrieval expansion。BEA-v1-P3 Constrained Retrieval Policy Smoke 已完成：run `28102428194` 几乎保留了 P2 depth-only reach（58/119 vs 59/119）并降低 pool cost，但 latency safety 失败（`no_go_p3_cost_exceeded`，latency 2.17×，gate 2.0×）。下一步 BEA v1 问题是 latency-aware retrieval-action scheduling，latency 仍不得进入 candidate relevance scoring。参见 `docs/zh/bea-v1-p3-constrained-retrieval-policy-smoke.md`。
 
+BEA-v1-P4 Latency-Aware Retrieval Action Scheduler Smoke 是 P3 结果 `eda2087` 之后的下一个本地 checkpoint：它隔离 P3 的 latency 失败是否来自可避免的 sequential / redundant retrieval actions，并测试一个 runtime-clean scheduler 修复方案（per-channel extra-depth action 选择，而非 P3 的全 channel extra-depth round），在保留 P3 / P2 reach 的同时降低 latency。默认无网络 artifact 为 `unavailable_with_reason`（不伪造 pass）；完整结果写回等待 CI。参见 `docs/zh/bea-v1-p4-latency-aware-retrieval-scheduler-smoke.md`。
+
 不要运行 B16-K、P4/P5、从失败 FD2-A objective 继续 FD2-B、v0.31/v0.32 权重微调、D5-A readiness 扩展、QuIVer/dense/graph quality experiments、另一个 BEA scale smoke、BEA-v1-A selector-only implementation，或 unconstrained broad retrieval expansion。
 
 ## 9. 一句话结论
