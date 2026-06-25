@@ -3,6 +3,7 @@
   "aggregate_only_public_artifact": true,
   "aggregate_runtime_seconds": 0.0,
   "algorithm_changed_during_bea_v1_p4l": false,
+  "all_arm_hard_cap_violation_count_total": 0,
   "arm_metrics_records": [],
   "b16k_executed": false,
   "backend_changed": false,
@@ -334,7 +335,7 @@
       "value": 0.0
     },
     {
-      "gate": "hard_cap_violations_zero",
+      "gate": "p4_treatment_hard_cap_violations_zero",
       "passed": true,
       "threshold_relation": "==",
       "threshold_value": 0.0,
@@ -397,7 +398,7 @@
       "value": 0.0
     }
   ],
-  "generated_at": "2026-06-25T11:15:43.771741+00:00",
+  "generated_at": "2026-06-25T14:02:58.369984+00:00",
   "generated_by": "eval/bea_v1_p4l_locked_non_python_scheduler_validation.py",
   "gold_labels_used_for_policy": false,
   "gold_labels_used_for_query_construction": false,
@@ -428,6 +429,7 @@
   "p4_latency_reduction_vs_p3": 0.0,
   "p4_pool_growth_ratio": 0.0,
   "p4_retained_gain_ratio": 0.0,
+  "p4_treatment_hard_cap_violation_count": 0,
   "p4_vs_p3_latency_ratio": 0.0,
   "p4h_artifact_read": false,
   "p4i_artifact_read": false,
@@ -468,6 +470,7 @@
   "query_anchors_used_in_p4_arm": false,
   "records_decomposed": 0,
   "records_only_public_artifact": true,
+  "reference_arm_hard_cap_violation_count_total": 0,
   "remote_provider_calls_made": false,
   "retrieval_policy_executed": false,
   "retriever_changed": false,
@@ -480,8 +483,8 @@
   "schema_version": "bea_v1_p4l_locked_non_python_scheduler_validation.v1",
   "selector_or_reranker_changed": false,
   "selector_or_reranker_executed": false,
-  "self_test_checks_passed": 120,
-  "self_test_checks_total": 120,
+  "self_test_checks_passed": 122,
+  "self_test_checks_total": 122,
   "self_test_passed": true,
   "source_run_records": [
     {
@@ -529,6 +532,7 @@
   "status": "unavailable_with_reason",
   "stop_go_records": [
     {
+      "all_arm_hard_cap_violation_count_total": 0,
       "baseline_reach": 0,
       "broad_retrieval_expansion_authorized": false,
       "denominator_exact_match": false,
@@ -547,12 +551,14 @@
       "p4_pool_growth_ratio": 0.0,
       "p4_reach": 0,
       "p4_retained_gain_ratio": 0.0,
+      "p4_treatment_hard_cap_violation_count": 0,
       "p4_vs_p3_latency_ratio": 0.0,
       "p4j_reconstructed_non_python_count": 0,
       "p4j_reconstructed_python_count": 0,
       "p4j_reconstructed_upper_bound_count": 0,
       "p4l_locked_scheduler_validation_executed": false,
       "p5_authorized": false,
+      "reference_arm_hard_cap_violation_count_total": 0,
       "runtime_promotion_authorized": false,
       "scheduler_arms_executed": false,
       "stop_go_decision": "unavailable_with_reason",

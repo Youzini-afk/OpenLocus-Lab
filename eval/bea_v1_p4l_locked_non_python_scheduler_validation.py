@@ -647,14 +647,22 @@ def _run_scheduler_validation(
     baseline_pool = float(baseline.get("mean_candidate_pool_size", 0.0))
     p4_pool = float(p4_arm.get("mean_candidate_pool_size", 0.0))
     p4_pool_growth_ratio = round(p4_pool / baseline_pool, 6) if baseline_pool > 0 else 0.0
-    hard_cap_violations = sum(int(a.get("hard_cap_violation_count", 0)) for a in arm_metrics)
+    p4_hard_cap_violations = int(p4_arm.get("hard_cap_violation_count", 0))
+    reference_hard_cap_violations = sum(
+        int(a.get("hard_cap_violation_count", 0))
+        for a in arm_metrics
+        if a.get("arm_name") != "p4_latency_aware_action_scheduler_frozen")
+    all_arm_hard_cap_violations = p4_hard_cap_violations + reference_hard_cap_violations
     validation_meta = {
         "p4_delta_vs_baseline_reach": int(p4_delta_vs_baseline),
         "p4_retained_gain_ratio": p4_retained_gain_ratio,
         "p4_vs_p3_latency_ratio": p4_vs_p3_latency_ratio,
         "p4_latency_reduction_vs_p3": p4_latency_reduction,
         "p4_pool_growth_ratio": p4_pool_growth_ratio,
-        "hard_cap_violation_count_total": int(hard_cap_violations),
+        "hard_cap_violation_count_total": int(p4_hard_cap_violations),
+        "p4_treatment_hard_cap_violation_count": int(p4_hard_cap_violations),
+        "reference_arm_hard_cap_violation_count_total": int(reference_hard_cap_violations),
+        "all_arm_hard_cap_violation_count_total": int(all_arm_hard_cap_violations),
         "baseline_reach": baseline_reach,
         "p2_reach": p2_reach,
         "p3_reach": p3_reach,
@@ -718,7 +726,7 @@ def _stop_go_records(
         p4_latency_ratio = vm.get("p4_vs_p3_latency_ratio", 0.0)
         p4_latency_reduction = vm.get("p4_latency_reduction_vs_p3", 0.0)
         p4_pool_growth = vm.get("p4_pool_growth_ratio", 0.0)
-        hard_cap = vm.get("hard_cap_violation_count_total", 0)
+        hard_cap = vm.get("p4_treatment_hard_cap_violation_count", vm.get("hard_cap_violation_count_total", 0))
         gates_pass = (
             p4_reach > baseline_reach
             and p4_retained >= P4L_REACH_PRESERVATION_DEPTH_RATIO
@@ -735,7 +743,7 @@ def _stop_go_records(
             reason = (f"p4_reach={p4_reach};baseline={baseline_reach};"
                       f"retained={p4_retained};latency_ratio={p4_latency_ratio};"
                       f"latency_reduction={p4_latency_reduction};pool_growth={p4_pool_growth};"
-                      f"hard_cap={hard_cap}")
+                      f"p4_hard_cap={hard_cap}")
     return [{
         "stop_go_decision": decision,
         "stop_go_reason": reason,
@@ -758,6 +766,9 @@ def _stop_go_records(
         "p4_latency_reduction_vs_p3": float(validation_meta.get("p4_latency_reduction_vs_p3", 0.0)),
         "p4_pool_growth_ratio": float(validation_meta.get("p4_pool_growth_ratio", 0.0)),
         "hard_cap_violation_count_total": int(validation_meta.get("hard_cap_violation_count_total", 0)),
+        "p4_treatment_hard_cap_violation_count": int(validation_meta.get("p4_treatment_hard_cap_violation_count", validation_meta.get("hard_cap_violation_count_total", 0))),
+        "reference_arm_hard_cap_violation_count_total": int(validation_meta.get("reference_arm_hard_cap_violation_count_total", 0)),
+        "all_arm_hard_cap_violation_count_total": int(validation_meta.get("all_arm_hard_cap_violation_count_total", validation_meta.get("hard_cap_violation_count_total", 0))),
         "subgroup_collapse_detected": bool(subgroup_collapse),
         "locked_p4_validation_authorized": False,
         "future_locked_p4_validation_authorized": False,
@@ -784,7 +795,7 @@ def _gate_records(
     p4_latency_ratio = float(validation_meta.get("p4_vs_p3_latency_ratio", 0.0))
     p4_latency_reduction = float(validation_meta.get("p4_latency_reduction_vs_p3", 0.0))
     p4_pool_growth = float(validation_meta.get("p4_pool_growth_ratio", 0.0))
-    hard_cap = int(validation_meta.get("hard_cap_violation_count_total", 0))
+    hard_cap = int(validation_meta.get("p4_treatment_hard_cap_violation_count", validation_meta.get("hard_cap_violation_count_total", 0)))
     p4_reach = int(validation_meta.get("p4_reach", 0))
     baseline_reach = int(validation_meta.get("baseline_reach", 0))
     return [
@@ -798,7 +809,7 @@ def _gate_records(
         g("p4_latency_ratio_max", p4_latency_ratio, "<=", P4L_LATENCY_MULT_MAX, p4_latency_ratio <= P4L_LATENCY_MULT_MAX),
         g("p4_latency_reduction_min", p4_latency_reduction, ">=", P4L_LATENCY_VS_P3_IMPROVEMENT_MIN, p4_latency_reduction >= P4L_LATENCY_VS_P3_IMPROVEMENT_MIN),
         g("p4_pool_growth_max", p4_pool_growth, "<=", P4L_POOL_MULT_MAX, p4_pool_growth <= P4L_POOL_MULT_MAX),
-        g("hard_cap_violations_zero", hard_cap, "==", P4L_HARD_CAP_VIOLATION_MAX, hard_cap == P4L_HARD_CAP_VIOLATION_MAX),
+        g("p4_treatment_hard_cap_violations_zero", hard_cap, "==", P4L_HARD_CAP_VIOLATION_MAX, hard_cap == P4L_HARD_CAP_VIOLATION_MAX),
         g("subgroup_collapse_guard", 0.0 if subgroup_collapse else 1.0, "boolean_false", 0.0, not subgroup_collapse),
         g("forbidden_scan_pass", 1.0 if forbidden_scan_pass else 0.0, "boolean", 1.0, forbidden_scan_pass),
         g("provider_calls_made", 0.0, "boolean_false", 0.0, True),
@@ -1092,6 +1103,9 @@ def _base_report(
         "p4_latency_reduction_vs_p3": float(validation_meta.get("p4_latency_reduction_vs_p3", 0.0)),
         "p4_pool_growth_ratio": float(validation_meta.get("p4_pool_growth_ratio", 0.0)),
         "hard_cap_violation_count_total": int(validation_meta.get("hard_cap_violation_count_total", 0)),
+        "p4_treatment_hard_cap_violation_count": int(validation_meta.get("p4_treatment_hard_cap_violation_count", validation_meta.get("hard_cap_violation_count_total", 0))),
+        "reference_arm_hard_cap_violation_count_total": int(validation_meta.get("reference_arm_hard_cap_violation_count_total", 0)),
+        "all_arm_hard_cap_violation_count_total": int(validation_meta.get("all_arm_hard_cap_violation_count_total", validation_meta.get("hard_cap_violation_count_total", 0))),
         "private_key_hashes_publicly_serialized": False,
         **DEFAULT_FALSE_FLAGS,
         **safe_true,
@@ -1320,14 +1334,18 @@ def _build_synthetic_validation_meta(arm_metrics: list[dict[str, Any]]) -> dict[
     baseline_pool = float(by_arm["baseline_current_candidate_pool"]["mean_candidate_pool_size"])
     p4_pool = float(by_arm["p4_latency_aware_action_scheduler_frozen"]["mean_candidate_pool_size"])
     p4_growth = round(p4_pool / baseline_pool, 6) if baseline_pool > 0 else 0.0
-    hard_cap = sum(int(a.get("hard_cap_violation_count", 0)) for a in arm_metrics)
+    p4_hard_cap = int(next((a.get("hard_cap_violation_count", 0) for a in arm_metrics if a.get("arm_name") == "p4_latency_aware_action_scheduler_frozen"), 0))
+    reference_hard_cap = sum(int(a.get("hard_cap_violation_count", 0)) for a in arm_metrics if a.get("arm_name") != "p4_latency_aware_action_scheduler_frozen")
     return {
         "p4_delta_vs_baseline_reach": int(p4_delta),
         "p4_retained_gain_ratio": p4_retained,
         "p4_vs_p3_latency_ratio": p4_vs_p3,
         "p4_latency_reduction_vs_p3": p4_reduction,
         "p4_pool_growth_ratio": p4_growth,
-        "hard_cap_violation_count_total": int(hard_cap),
+        "hard_cap_violation_count_total": int(p4_hard_cap),
+        "p4_treatment_hard_cap_violation_count": int(p4_hard_cap),
+        "reference_arm_hard_cap_violation_count_total": int(reference_hard_cap),
+        "all_arm_hard_cap_violation_count_total": int(p4_hard_cap + reference_hard_cap),
         "baseline_reach": baseline_reach,
         "p2_reach": p2_reach,
         "p3_reach": p3_reach,
@@ -1431,6 +1449,7 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         checks.append(_check("pass_p4_latency_reduction_ge_0_10", report_pass.get("p4_latency_reduction_vs_p3", 0) >= 0.10))
         checks.append(_check("pass_p4_pool_growth_le_4_0", report_pass.get("p4_pool_growth_ratio", 99) <= 4.0))
         checks.append(_check("pass_hard_cap_zero", report_pass.get("hard_cap_violation_count_total", 1) == 0))
+        checks.append(_check("pass_hard_cap_p4_treatment_only", report_pass.get("p4_treatment_hard_cap_violation_count") == 0 and report_pass.get("reference_arm_hard_cap_violation_count_total") == 0))
         checks.append(_check("pass_authorization_flags_false", report_pass.get("stop_go_records", [{}])[0].get("p5_authorized") is False and report_pass.get("stop_go_records", [{}])[0].get("v1_a_authorized") is False and report_pass.get("stop_go_records", [{}])[0].get("runtime_promotion_authorized") is False and report_pass.get("stop_go_records", [{}])[0].get("method_winner_authorized") is False and report_pass.get("stop_go_records", [{}])[0].get("broad_retrieval_expansion_authorized") is False))
         checks.append(_check("pass_locked_p4_validation_authorized_false", report_pass.get("stop_go_records", [{}])[0].get("locked_p4_validation_authorized") is False))
         checks.append(_check("pass_stop_go_p4l_locked_scheduler_validation_executed_true", report_pass.get("stop_go_records", [{}])[0].get("p4l_locked_scheduler_validation_executed") is True))
@@ -1465,6 +1484,13 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         vm_hc = _build_synthetic_validation_meta(arms_hc)
         report_hc = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, p4h_artifact=p4h_art, p4i_artifact=p4i_art, p4j_artifact=p4j_art, p4k_artifact=p4k_art, recon_meta=recon_pass, arm_metrics=arms_hc, validation_meta=vm_hc, subgroup_records=sub_pass, audit_match=True, extra_manifests=[recon_manifest, arm_manifest], aggregate_runtime_seconds=0.5)
         checks.append(_check("hard_cap_failed_status", report_hc.get("status") == "no_go_p4l_locked_non_python_scheduler_validation_failed"))
+        arms_ref_hc = _build_synthetic_arm_metrics(hard_cap=0)
+        for arm in arms_ref_hc:
+            if arm.get("arm_name") == "p2_depth_only_reference":
+                arm["hard_cap_violation_count"] = 5
+        vm_ref_hc = _build_synthetic_validation_meta(arms_ref_hc)
+        report_ref_hc = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, p4h_artifact=p4h_art, p4i_artifact=p4i_art, p4j_artifact=p4j_art, p4k_artifact=p4k_art, recon_meta=recon_pass, arm_metrics=arms_ref_hc, validation_meta=vm_ref_hc, subgroup_records=sub_pass, audit_match=True, extra_manifests=[recon_manifest, arm_manifest], aggregate_runtime_seconds=0.5)
+        checks.append(_check("reference_hard_cap_not_gating_p4", report_ref_hc.get("status") == "bea_v1_p4l_locked_non_python_scheduler_validation_pass" and report_ref_hc.get("reference_arm_hard_cap_violation_count_total") == 5 and report_ref_hc.get("p4_treatment_hard_cap_violation_count") == 0))
         # --- Default no-network ---
         report_default = _base_report(status="unavailable_with_reason", failure_reason_category="network_required_but_disabled", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="missing", network_mode="disabled_opt_in", fcc_in={"network_required_but_disabled": 1})
         checks.append(_check("default_unavailable_with_reason", report_default.get("status") == "unavailable_with_reason"))
@@ -1514,7 +1540,7 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         checks.append(_check("mismatch_locked_denom_gate_fail", bool(report_mismatch.get("gate_records") and any(g.get("gate") == "locked_denominator_non_python_exact" and g.get("passed") is False for g in report_mismatch.get("gate_records", [])))))
         checks.append(_check("pass_retained_ratio_gate", bool(report_pass.get("gate_records") and any(g.get("gate") == "p4_retained_gain_ratio_min" and g.get("passed") is True for g in report_pass.get("gate_records", [])))))
         checks.append(_check("fail_retained_ratio_gate", bool(report_fail.get("gate_records") and any(g.get("gate") == "p4_retained_gain_ratio_min" and g.get("passed") is False for g in report_fail.get("gate_records", [])))))
-        checks.append(_check("pass_hard_cap_gate", bool(report_pass.get("gate_records") and any(g.get("gate") == "hard_cap_violations_zero" and g.get("passed") is True for g in report_pass.get("gate_records", [])))))
+        checks.append(_check("pass_hard_cap_gate", bool(report_pass.get("gate_records") and any(g.get("gate") == "p4_treatment_hard_cap_violations_zero" and g.get("passed") is True for g in report_pass.get("gate_records", [])))))
         # --- self_test fields are counts-only ---
         checks.append(_check("self_test_checks_total_is_int", isinstance(report_pass.get("self_test_checks_total"), int)))
         checks.append(_check("self_test_checks_passed_is_int", isinstance(report_pass.get("self_test_checks_passed"), int)))

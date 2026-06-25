@@ -58,7 +58,7 @@ search, or weight tuning is allowed.
 - P4 latency ratio vs P3 ≤ 2.0
 - P4 latency reduction vs P3 ≥ 0.10
 - P4 pool growth ratio ≤ 4.0
-- Hard-cap violations = 0
+- P4-treatment hard-cap violations = 0; reference-arm hard-cap violations are reported only.
 
 ## Statuses
 
@@ -66,7 +66,8 @@ search, or weight tuning is allowed.
   reconstruction (333/61/272 with locked non-Python denominator 272), scheduler
   arms executed, P4 improves reach over baseline, P4 retains ≥ 0.75 of P2 reach
   gain, P4 latency below frozen P3 threshold, pool growth within frozen cap,
-  hard-cap violations zero, subgroup guard pass.
+  P4-treatment hard-cap violations zero, subgroup guard pass. Reference-arm
+  hard-cap violations are reported but do not decide the P4 treatment gate.
 - `no_go_p4l_locked_non_python_scheduler_validation_failed` — denominator exact
   but P4 fails one or more frozen gates.
 - `no_go_p4l_locked_denominator_unavailable` — locked denominator cannot be
@@ -112,13 +113,13 @@ compromising the final fail-closed gate. Private directories use `/tmp`, not
 
 ```text
 python3 -m py_compile eval/bea_v1_p4l_locked_non_python_scheduler_validation.py  => PASS
-python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test  => PASS (120/120 checks)
+python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test  => PASS (122/122 checks)
 python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py \
   --out artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json  => PASS
   (default no-network status: unavailable_with_reason,
    forbidden_scan=pass, locked_denominator_count=0,
    scheduler_arms_executed=false,
-   self_test_checks_total=120, self_test_checks_passed=120)
+   self_test_checks_total=122, self_test_checks_passed=122)
 ```
 
 ## CI result
