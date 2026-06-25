@@ -1,0 +1,353 @@
+name: bea-v1-n1-frozen-p4-span-refiner-smoke
+
+# BEA-v1-N1 Frozen P4 + Span-Refiner Smoke (manual opt-in).
+# MANUAL ONLY via workflow_dispatch. Does NOT run on PR/push. Uses no
+# model/provider secrets. Network-enabled mode regenerates FD1 private
+# decomposition under /tmp, validates the 239-record / 86040-row replay,
+# reconstructs the P4L locked non-Python denominator (272 records), replays the
+# frozen P4 scheduler with private candidate ranges, forms D1, and uploads only
+# a scanner-validated public aggregate report.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real external benchmark + repository network access for FD1 replay + P4L locked denominator reconstruction + N1 frozen-P4 span replay (no model/provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-n1-frozen-p4-span-refiner-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-v1-n1-frozen-p4-span-refiner-smoke:
+    name: bea-v1-n1-frozen-p4-span-refiner-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-v1-N1 evaluator
+        run: python3 -m py_compile eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py
+
+      - name: py_compile BEA-v1-P4L evaluator
+        run: python3 -m py_compile eval/bea_v1_p4l_locked_non_python_scheduler_validation.py
+
+      - name: py_compile BEA-v1-P4K evaluator
+        run: python3 -m py_compile eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py
+
+      - name: py_compile BEA-v1-P4J evaluator
+        run: python3 -m py_compile eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py
+
+      - name: py_compile BEA-v1-P4I evaluator
+        run: python3 -m py_compile eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py
+
+      - name: py_compile BEA-v1-P4H evaluator
+        run: python3 -m py_compile eval/bea_v1_p4h_disjoint_scheduler_validation.py
+
+      - name: py_compile BEA-FD1 evaluator
+        run: python3 -m py_compile eval/bea_fd1_failure_decomposition.py
+
+      - name: BEA-v1-N1 self-test (no network)
+        run: python3 eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py --self-test
+
+      - name: BEA-v1-P4L self-test (no network)
+        run: python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test
+
+      - name: BEA-v1-P4K self-test (no network)
+        run: python3 eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py --self-test
+
+      - name: BEA-v1-P4J self-test (no network)
+        run: python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py --self-test
+
+      - name: BEA-v1-P4I self-test (no network)
+        run: python3 eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py --self-test
+
+      - name: BEA-v1-P4H self-test (no network)
+        run: python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py --self-test
+
+      - name: BEA-FD1 self-test (no network)
+        run: python3 eval/bea_fd1_failure_decomposition.py --self-test
+
+      - name: Regenerate FD1 private decomposition (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          # Private directories MUST live under /tmp, NOT $RUNNER_TEMP.
+          fd1_private_dir="/tmp/bea_v1_n1_fd1_private_${GITHUB_RUN_ID:-manual}"
+          fd1_replay_report="/tmp/bea_v1_n1_fd1_replay_report_${GITHUB_RUN_ID:-manual}.json"
+          rm -rf "$fd1_private_dir"
+          mkdir -p "$fd1_private_dir"
+          python3 eval/bea_fd1_failure_decomposition.py \
+            --enable-external-benchmark-network \
+            --private-decomposition-dir "$fd1_private_dir" \
+            --openlocus target/release/openlocus \
+            --out "$fd1_replay_report"
+          jsonl_path="$fd1_private_dir/bea_fd1.decomposition.jsonl"
+          if [[ ! -f "$jsonl_path" ]]; then
+            echo "ERROR: FD1 private decomposition JSONL not found" >&2
+            exit 1
+          fi
+          row_count=$(wc -l < "$jsonl_path")
+          if [[ "$row_count" -ne 86040 ]]; then
+            echo "ERROR: expected 86040 FD1 private decomposition rows, got $row_count" >&2
+            exit 1
+          fi
+          if [[ ! -f "$fd1_replay_report" ]]; then
+            echo "ERROR: FD1 replay report not found" >&2
+            exit 1
+          fi
+          python3 - "$fd1_replay_report" <<'PY'
+          import json, sys
+          path = sys.argv[1]
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          if report.get("schema_version") != "bea_fd1_failure_decomposition.v1":
+              failures.append(f"schema_version={report.get('schema_version')!r}")
+          if report.get("status") != "bea_fd1_decomposition_pass":
+              failures.append(f"status={report.get('status')!r}")
+          if report.get("records_decomposed") != 239:
+              failures.append(f"records_decomposed={report.get('records_decomposed')!r}")
+          manifest = report.get("private_decomposition_manifest", {})
+          if manifest.get("schema_version") != "bea_fd1_private_decomposition.v1":
+              failures.append(f"manifest.schema_version={manifest.get('schema_version')!r}")
+          if manifest.get("record_count") != 86040:
+              failures.append(f"manifest.record_count={manifest.get('record_count')!r}")
+          if manifest.get("records_written") is not True:
+              failures.append("manifest.records_written is not true")
+          if manifest.get("path_publicly_serialized") is not False:
+              failures.append("manifest.path_publicly_serialized is not false")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("forbidden_scan.status is not pass")
+          with open("artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json", encoding="utf-8") as f:
+              committed = json.load(f)
+          committed_hash = committed.get("private_decomposition_manifest", {}).get("manifest_hash", "")
+          replay_hash = manifest.get("manifest_hash", "")
+          if not committed_hash or replay_hash != committed_hash:
+              failures.append("manifest_hash mismatch")
+          if failures:
+              for failure in failures:
+                  print(f"ERROR: {failure}", file=sys.stderr)
+              sys.exit(1)
+          print("FD1 replay report validation passed.")
+          PY
+          echo "fd1_private_jsonl=$jsonl_path" >> "$GITHUB_ENV"
+          echo "fd1_replay_report=$fd1_replay_report" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-N1 frozen P4 span replay (only when FD1 replay succeeded)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          export REPORT_PATH="$RUNNER_TEMP/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json"
+          export OPENLOCUS_BEA_V1_N1_PRIVATE_DIR="/tmp/bea_v1_n1_private_${GITHUB_RUN_ID:-manual}"
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+          import time
+
+          cmd = [
+              "python3", "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
+              "--enable-external-benchmark-network",
+              "--openlocus", "target/release/openlocus",
+              "--fd1-artifact", "artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json",
+              "--fd1-private-decomposition-jsonl", os.environ["fd1_private_jsonl"],
+              "--fd1-replay-artifact", os.environ["fd1_replay_report"],
+              "--p4h-artifact", "artifacts/bea_v1_p4h_disjoint_scheduler_validation/bea_v1_p4h_disjoint_scheduler_validation_report.json",
+              "--p4i-artifact", "artifacts/bea_v1_p4i_disjoint_denominator_reservoir_audit/bea_v1_p4i_disjoint_denominator_reservoir_audit_report.json",
+              "--p4j-artifact", "artifacts/bea_v1_p4j_cross_source_reservoir_unlock_audit/bea_v1_p4j_cross_source_reservoir_unlock_audit_report.json",
+              "--p4k-artifact", "artifacts/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit_report.json",
+              "--out", os.environ["REPORT_PATH"],
+          ]
+          proc = subprocess.Popen(cmd)
+          while True:
+              rc = proc.poll()
+              if rc is not None:
+                  sys.exit(rc)
+              print(f"N1 evaluator heartbeat: still running at {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}", flush=True)
+              time.sleep(60)
+          PY
+          echo "report_path=$REPORT_PATH" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-N1 default unavailable artifact (network disabled)
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json"
+          python3 eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py --out "$report_path"
+          status=$(python3 -c "import json; print(json.load(open('$report_path'))['status'])")
+          if [[ "$status" != "unavailable_with_reason" ]]; then
+            echo "ERROR: expected unavailable_with_reason without network, got $status" >&2
+            exit 1
+          fi
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate BEA-v1-N1 public report contract
+        env:
+          ENABLE_NETWORK: ${{ steps.resolve.outputs.enable_network }}
+        run: |
+          python3 - "$RUNNER_TEMP/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json" "$ENABLE_NETWORK" <<'PY'
+          import json, os, sys
+          path = sys.argv[1]
+          enable_network = sys.argv[2] == "true"
+          if not os.path.isfile(path):
+              print("ERROR: report missing", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          status = report.get("status")
+          allowed_network = {
+              "bea_v1_n1_frozen_p4_span_refiner_pass",
+              "n1_preflight_pass_wrong_span_denominator_adequate",
+              "n1_exploratory_insufficient_power",
+              "no_go_n1_locked_denominator_unavailable",
+              "no_go_n1_inadequate_wrong_span_denominator",
+          }
+          if enable_network:
+              if status not in allowed_network:
+                  failures.append(f"network-enabled run must be a valid research outcome, got status: {status!r}")
+              if str(status).startswith("fail_"):
+                  failures.append(f"fail_* status {status!r} is not CI-valid for a network-enabled real run")
+              if status == "unavailable_with_reason":
+                  failures.append("network-enabled run cannot be unavailable_with_reason")
+          else:
+              if status != "unavailable_with_reason":
+                  failures.append(f"expected unavailable_with_reason without network, got {status!r}")
+          if report.get("schema_version") != "bea_v1_n1_frozen_p4_span_refiner_smoke.v1":
+              failures.append("unexpected schema_version")
+          if report.get("claim_level") != "bea_v1_n1_frozen_p4_span_refiner_smoke_only":
+              failures.append("unexpected claim_level")
+          if report.get("aggregate_plus_sanitized_records_public_artifact") is not True:
+              failures.append("aggregate_plus_sanitized_records_public_artifact must be true")
+          if report.get("aggregate_only_public_artifact") is not False:
+              failures.append("aggregate_only_public_artifact must be false for N1 sanitized-row policy")
+          if report.get("raw_records_publicly_serialized") is not False:
+              failures.append("raw_records_publicly_serialized must be false")
+          if report.get("phase") != "BEA-v1-N1":
+              failures.append("unexpected phase")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("forbidden_scan.status must be pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("self_test_passed must be true")
+          if "self_test_checks" in report:
+              failures.append("self_test_checks list must not be public")
+          required_tables = (
+              "d0_scheduler_preservation_records", "d1_span_efficacy_records",
+              "sanitized_analysis_records", "gate_records", "private_manifest_records",
+              "failure_category_count_records",
+          )
+          for key in required_tables:
+              if not isinstance(report.get(key), list):
+                  failures.append(f"{key} must be a list")
+          forbidden = (
+              "path", "start_line", "end_line", "gold_lines", "gold_paths",
+              "candidate_list", "candidates", "raw_trace", "raw_prompt", "raw_response",
+              "provider_payload", "repo_url", "task_id", "row_id", "content_sha",
+          )
+          for key in forbidden:
+              if key in report:
+                  failures.append(f"forbidden public top-level key: {key}")
+          row_allow = {
+              "anonymous_local_id", "denominator", "arm", "source_bucket",
+              "language_bucket", "pre_span_bucket", "post_span_bucket",
+              "span_delta_bucket", "file_reach_preserved", "evidencecore_valid",
+              "hard_cap_violation",
+          }
+          for i, row in enumerate(report.get("sanitized_analysis_records", [])):
+              if set(row) - row_allow:
+                  failures.append(f"sanitized row {i} has non-allowlist keys")
+          if enable_network:
+              manifests = {m.get("manifest_name"): m for m in (report.get("private_manifest_records") or []) if isinstance(m, dict)}
+              expected_manifest_names = ["bea_v1_n1_p4l_private_reconstruction_manifest"]
+              if status != "no_go_n1_locked_denominator_unavailable":
+                  expected_manifest_names.extend([
+                      "bea_v1_n1_p4l_private_arm_outcomes_manifest",
+                      "bea_v1_n1_private_span_rows_manifest",
+                      "bea_v1_n1_private_candidate_gold_trace_manifest",
+                  ])
+              for mname in expected_manifest_names:
+                  if mname not in manifests:
+                      failures.append(f"expected {mname}")
+                  elif manifests[mname].get("path_publicly_serialized") is not False:
+                      failures.append(f"expected {mname} path_publicly_serialized=false")
+              if status == "no_go_n1_locked_denominator_unavailable":
+                  fc = {r.get("failure_category"): r.get("count") for r in report.get("failure_category_count_records", []) if isinstance(r, dict)}
+                  if int(fc.get("locked_denominator_mismatch", 0) or 0) <= 0:
+                      failures.append("locked-denominator No-Go requires locked_denominator_mismatch count >0")
+                  for blocker in (
+                      "fd1_artifact_missing",
+                      "fd1_artifact_parse_failed",
+                      "fd1_schema_version_mismatch",
+                      "fd1_status_mismatch",
+                      "fd1_private_decomposition_missing",
+                      "fd1_private_decomposition_parse_failed",
+                      "fd1_replay_artifact_missing",
+                      "fd1_replay_artifact_parse_failed",
+                      "fd1_replay_artifact_status_mismatch",
+                      "p4k_artifact_missing",
+                      "p4k_artifact_status_mismatch",
+                      "p4k_locked_count_mismatch",
+                      "p4k_split_or_overlap_mismatch",
+                      "raw_denominator_parse_failed",
+                      "raw_denominator_clone_failed",
+                      "raw_denominator_scan_failed",
+                      "p4l_scan_failed",
+                      "cross_source_asset_download_failed",
+                      "cross_source_asset_decompress_failed",
+                      "retrieval_policy_failed",
+                      "d1_private_write_error",
+                      "unexpected_exception",
+                  ):
+                      if int(fc.get(blocker, 0) or 0) != 0:
+                          failures.append(f"locked-denominator No-Go cannot mask blocking failure {blocker}")
+              if report.get("d0_scheduler_preservation_denominator_count") != 272:
+                  failures.append("expected D0 denominator count=272")
+              d0 = report.get("d0_scheduler_preservation_records") or []
+              if status != "no_go_n1_locked_denominator_unavailable" and (not d0 or any(r.get("passed") is not True for r in d0)):
+                  failures.append("network run requires D0 scheduler preservation records passed=true")
+          if failures:
+              print("BEA-v1-N1 report validation FAILED:", file=sys.stderr)
+              for failure in failures:
+                  print(f"  - {failure}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-v1-N1 report validation passed.")
+          print(f"  status={status}")
+          print(f"  d1={report.get('d1_wrong_span_denominator_count')}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree whitespace
+        run: git diff --check
+
+      - name: Upload BEA-v1-N1 public aggregate report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-n1-frozen-p4-span-refiner-smoke-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

@@ -1,0 +1,371 @@
+{
+  "aggregate_only_public_artifact": false,
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.0,
+  "bea_v1_n1_evaluator_latency_not_in_candidate_relevance": true,
+  "bea_v1_n1_evaluator_no_p5": true,
+  "bea_v1_n1_evaluator_no_provider_calls": true,
+  "bea_v1_n1_evaluator_no_reranker_executed": true,
+  "bea_v1_n1_evaluator_no_selector_executed": true,
+  "bea_v1_n1_evaluator_no_v1_a": true,
+  "calibration_claimed": false,
+  "claim_level": "bea_v1_n1_frozen_p4_span_refiner_smoke_only",
+  "d0_scheduler_preservation_denominator_count": 272,
+  "d0_scheduler_preservation_records": [
+    {
+      "expected_value": 272,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "denominator_count",
+      "passed": false,
+      "value": -1
+    },
+    {
+      "expected_value": 0,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "baseline_reach",
+      "passed": false,
+      "value": -1
+    },
+    {
+      "expected_value": 55,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "p2_reach",
+      "passed": false,
+      "value": -1
+    },
+    {
+      "expected_value": 55,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "p3_reach",
+      "passed": false,
+      "value": -1
+    },
+    {
+      "expected_value": 52,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "p4_reach",
+      "passed": false,
+      "value": -1
+    },
+    {
+      "expected_value": 0,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "p4_treatment_hard_cap",
+      "passed": false,
+      "value": -1
+    },
+    {
+      "expected_value": 0.656763,
+      "metric_block": "D0_scheduler_preservation",
+      "metric_name": "p4_p3_latency_ratio_observed",
+      "passed": true,
+      "value": 0.0
+    }
+  ],
+  "d1_span_efficacy_records": [
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "d1_denominator_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "pre_span_f0_5_at_10",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "post_span_f0_5_at_10",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "pre_wrong_span_rate_at_10",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "post_wrong_span_rate_at_10",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "pre_zero_overlap_evidence_rate_at_10",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "post_zero_overlap_evidence_rate_at_10",
+      "value": 0
+    }
+  ],
+  "d1_wrong_span_denominator_count": 0,
+  "default_should_change": false,
+  "downstream_agent_value_proven": false,
+  "exact_spans_publicly_serialized": false,
+  "external_benchmark_performance_claimed": false,
+  "failure_category_count_records": [
+    {
+      "count": 0,
+      "failure_category": "candidate_span_reconstruction_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "cross_source_asset_decompress_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "cross_source_asset_download_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "d0_scheduler_preservation_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "d0_scheduler_preservation_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "d1_private_span_rows_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "d1_private_span_rows_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "d1_private_write_error"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_schema_version_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_leak_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "gold_span_reconstruction_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "locked_denominator_mismatch"
+    },
+    {
+      "count": 1,
+      "failure_category": "network_required_but_disabled"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_locked_count_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_split_or_overlap_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4l_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_clone_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "refiner_file_preservation_violation"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_policy_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "unexpected_exception"
+    }
+  ],
+  "failure_reason_category": "network_required_but_disabled",
+  "files_added_by_refiner": false,
+  "files_evicted_by_refiner": false,
+  "files_reordered_by_refiner": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "framing": {
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "method_winner_claimed": false,
+    "p5_executed": false,
+    "retrieval_layer_span_smoke_only": true,
+    "scheduler_preservation_claimed": false,
+    "selector_or_reranker_executed": false,
+    "signal_strength": "bea_v1_n1_retrieval_layer_span_smoke_only",
+    "span_refiner_claimed": false,
+    "v1_a_selector_executed": false
+  },
+  "gate_records": [
+    {
+      "gate": "d0_scheduler_preservation",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "d1_wrong_span_denominator_adequate",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 20,
+      "value": 0
+    },
+    {
+      "gate": "d1_wrong_span_denominator_exploratory_min",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 10,
+      "value": 0
+    },
+    {
+      "gate": "post_span_f0_5_improved",
+      "passed": false,
+      "threshold_relation": ">",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "wrong_span_rate_reduced",
+      "passed": false,
+      "threshold_relation": "<",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "zero_overlap_rate_not_increased",
+      "passed": false,
+      "threshold_relation": "<=",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "refiner_file_preserving_invariant",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "forbidden_scan_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-25T21:36:42Z",
+  "generated_by": "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
+  "gold_labels_used_for_policy": false,
+  "gold_labels_used_for_query_construction": false,
+  "gold_labels_used_for_selection": false,
+  "gold_lines_publicly_serialized": false,
+  "gold_lines_used_for_refinement": false,
+  "latency_in_candidate_relevance": false,
+  "leaderboard_entry_claimed": false,
+  "method_winner_authorized": false,
+  "method_winner_claimed": false,
+  "mode": "bea_v1_n1_frozen_p4_span_refiner_smoke",
+  "network_mode": "disabled_opt_in",
+  "new_records_added_during_bea_v1_n1": false,
+  "openlocus_binary_source": "missing",
+  "p5_authorized": false,
+  "p5_executed": false,
+  "phase": "BEA-v1-N1",
+  "post_p4_file_preserving_refiner_only": true,
+  "private_manifest_records": [],
+  "private_paths_publicly_serialized": false,
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "raw_candidate_lists_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "records_only_public_artifact": true,
+  "remote_provider_calls_made": false,
+  "retrieval_layer_span_smoke_only": true,
+  "runtime_behavior_changed": false,
+  "runtime_promotion_authorized": false,
+  "sanitized_analysis_records": [],
+  "scheduler_actions_changed_by_refiner": false,
+  "scheduler_preservation_denominator_is_d0_only": true,
+  "schema_version": "bea_v1_n1_frozen_p4_span_refiner_smoke.v1",
+  "selector_or_reranker_changed": false,
+  "selector_or_reranker_executed": false,
+  "self_test_checks_passed": 44,
+  "self_test_checks_total": 44,
+  "self_test_passed": true,
+  "source_checkpoint": "f1bac81",
+  "source_ci_run_id": "28184096209",
+  "span_success_denominator_is_d1_only": true,
+  "status": "unavailable_with_reason",
+  "status_vocabulary": [
+    "bea_v1_n1_frozen_p4_span_refiner_pass",
+    "n1_preflight_pass_wrong_span_denominator_adequate",
+    "n1_exploratory_insufficient_power",
+    "no_go_n1_locked_denominator_unavailable",
+    "no_go_n1_inadequate_wrong_span_denominator",
+    "unavailable_with_reason",
+    "fail_schema_contract",
+    "fail_forbidden_scan"
+  ],
+  "v1_a_authorized": false,
+  "v1_a_selector_executed": false
+}
