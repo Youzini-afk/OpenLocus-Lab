@@ -220,21 +220,45 @@ python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py \
 
 ## CI 结果
 
-待定。网络-enabled 的 CI 运行尚未执行。默认无网络 artifact 为
-`unavailable_with_reason`（诚实，非 pass）。需要真实网络-enabled 运行才能产出
-研究结果。
+Manual network-enabled CI run `28146407493` 在 diagnostic/fail-closed patch
+`18126f4` 后绿色完成。它产出了有效 aggregate-only 研究结果，status 为
+`no_go_cross_source_reservoir_unqualified`。
 
-预期的现实结果为以下之一：
-- `no_go_cross_source_file_miss_reservoir_insufficient`（跨来源蓄水池上界
-  `< 80`），或
-- `no_go_cross_source_reservoir_unqualified`（上界 `>= 80` 但 P4H/P4I 重叠未
-  解决）。
+P4J 成功显示：alternative already-supported cross-source frames 中存在较大的
+FD1-excluded file-miss reservoir upper bound；但该 reservoir 还不具备 locked P4
+validation 资格，因为 P4H/P4I exact selected keys 不可用，overlap 未解决。
 
-`cross_source_reservoir_ready_for_locked_p4_validation_design` 状态需要既具备
-`>= 80` 的 all-prior-disjoint 蓄水池资格，又已解决 P4H/P4I 重叠；由于 P4H/P4I
-精确选定 key 除非在 `/tmp` 下重新生成否则不可用，除非 workflow 重新生成
-P4H/P4I 精确 key 并解决重叠（超出 P4J 范围），否则该状态不会来自默认
-网络-enabled 运行。
+聚合 CI 指标：
+
+- `status=no_go_cross_source_reservoir_unqualified`
+- `denominator_count=333`，`reservoir_upper_bound_count=333`
+- `qualified_cross_source_reservoir_count=0`
+- `cross_source_non_python_reservoir_count=272`
+- `cross_source_python_reservoir_count=61`
+- `raw_scan_fetched_records=780`
+- `raw_scan_attempted_records=618`
+- `raw_scan_prior_exact_excluded_records=162`
+- `raw_scan_by_construction_disjoint_records=514`
+- `raw_scan_yield_file_miss_records=333`
+- `raw_scan_baseline_reached_records=285`
+- `raw_scan_baseline_error_records=0`
+- `exact_prior_exclusion_used=true`
+- `p4h_p4i_overlap_resolved=false`
+- `private_manifest_records`：FD1 replay 86040 rows，P4J private reservoir scan 618 rows
+- `scan_diagnostic_records=[]`
+- `self_test_checks_total=118`，`self_test_checks_passed=118`
+- `forbidden_scan.status=pass`
+
+Frame-level result：
+
+- ContextBench all-language frame：取到 480 rows，排除 162 条 FD1 BEA-4/5 exact
+  prior rows，尝试 318 rows，选出 197 条 file-miss records。
+- RepoQA non-Python frame：在 cpp/go/java/rust/typescript 上取到并尝试 300 rows，
+  选出 136 条 file-miss records。
+
+这不是 `cross_source_reservoir_ready_for_locked_p4_validation_design`。P4J 不授权
+locked-P4 scheduler validation、frozen P4 rerun、P5 selector/reranker、BEA-v1-A、
+runtime promotion、method-winner 声明或 broad retrieval expansion。
 
 ## 注意事项
 

@@ -251,22 +251,47 @@ python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py \
 
 ## CI result
 
-Pending. The network-enabled CI run has not yet been executed. The default
-no-network artifact is `unavailable_with_reason` (honest, not a pass). A real
-network-enabled run is required to produce a research outcome.
+Manual network-enabled CI run `28146407493` completed green after the
+diagnostic/fail-closed patch `18126f4`. It produced a valid aggregate-only
+research result with status `no_go_cross_source_reservoir_unqualified`.
 
-The realistic empirical outcome is expected to be one of:
-- `no_go_cross_source_file_miss_reservoir_insufficient` (cross-source reservoir
-  upper bound `< 80`), or
-- `no_go_cross_source_reservoir_unqualified` (upper bound `>= 80` but P4H/P4I
-  overlap unresolved).
+P4J successfully showed that alternative already-supported cross-source frames
+contain a large FD1-excluded file-miss reservoir upper bound, but the reservoir
+is not qualified for locked P4 validation because P4H/P4I exact selected keys
+remain unavailable and overlap is unresolved.
 
-The `cross_source_reservoir_ready_for_locked_p4_validation_design` status
-requires both a qualified `>= 80` all-prior-disjoint reservoir AND resolved
-P4H/P4I overlap; since P4H/P4I exact selected keys remain unavailable unless
-regenerated under `/tmp`, this status is not expected from a default
-network-enabled run unless the workflow regenerates P4H/P4I exact keys and
-resolves the overlap, which is out of P4J scope.
+Aggregate CI metrics:
+
+- `status=no_go_cross_source_reservoir_unqualified`
+- `denominator_count=333`, `reservoir_upper_bound_count=333`
+- `qualified_cross_source_reservoir_count=0`
+- `cross_source_non_python_reservoir_count=272`
+- `cross_source_python_reservoir_count=61`
+- `raw_scan_fetched_records=780`
+- `raw_scan_attempted_records=618`
+- `raw_scan_prior_exact_excluded_records=162`
+- `raw_scan_by_construction_disjoint_records=514`
+- `raw_scan_yield_file_miss_records=333`
+- `raw_scan_baseline_reached_records=285`
+- `raw_scan_baseline_error_records=0`
+- `exact_prior_exclusion_used=true`
+- `p4h_p4i_overlap_resolved=false`
+- `private_manifest_records`: FD1 replay 86040 rows, P4J private reservoir scan 618 rows
+- `scan_diagnostic_records=[]`
+- `self_test_checks_total=118`, `self_test_checks_passed=118`
+- `forbidden_scan.status=pass`
+
+Frame-level result:
+
+- ContextBench all-language frame: fetched 480 rows, excluded 162 exact FD1
+  BEA-4/5 prior rows, attempted 318 rows, selected 197 file-miss records.
+- RepoQA non-Python frame: fetched/attempted 300 rows across cpp/go/java/rust/
+  typescript, selected 136 file-miss records.
+
+This is not `cross_source_reservoir_ready_for_locked_p4_validation_design`.
+P4J does not authorize locked-P4 scheduler validation, frozen P4 rerun,
+P5 selector/reranker work, BEA-v1-A, runtime promotion, method-winner claims,
+or broad retrieval expansion.
 
 ## Caveats
 

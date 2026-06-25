@@ -3347,3 +3347,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`no_go_disjoint_denominator_reservoir_insufficient`。P4I 只用 baseline/current candidate-pool diagnostic arm 扫描受支持 ContextBench/RepoQA Python frame，没有运行 P2/P3/P4 scheduler arms、selector/reranker 逻辑、retrieval expansion 或 provider calls。
 - **Reservoir 结果**：审计取到 366 条 raw rows，从 FD1 private replay 精确排除 239 条 BEA-4/5 prior raw keys，尝试 127 条非 prior candidate rows，观察到 54 条 baseline-reached rows，只找到 73 条 FD1-excluded file-miss reservoir records。`reservoir_upper_bound_count=73`，`qualified_denominator_reservoir_count=0`，`p4h_overlap_resolved=false`，因为 P4H exact selected keys 没有提交。
 - **决策**：P4H 的 denominator blocker 被确认为当前受支持 ContextBench/RepoQA Python frame 的 source/reservoir limitation，不只是 fixed-tail sampling error。不要从 P4I 进入 frozen P4H rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。
+
+## BEA-v1-P4J 发现
+
+- **BEA-v1-P4J Cross-Source File-Miss Reservoir Unlock Audit 已完成为 unqualified No-Go**：local checkpoint `18671d8`，diagnostic/fail-closed patch `18126f4`，manual CI run `28146407493`。
+- **状态**：`no_go_cross_source_reservoir_unqualified`。P4J 只用 baseline/current candidate-pool replay diagnostic arm 扫描已支持的 cross-source frames：ContextBench `contextbench_verified/train` + `language_filter=all`，以及 RepoQA non-Python asset languages。它没有运行 scheduler arms、selector/reranker、provider calls、frozen P4 rerun、P5 或 BEA-v1-A。
+- **Reservoir 结果**：P4J 找到较大的 FD1-excluded upper-bound file-miss reservoir：`denominator_count=333`，`reservoir_upper_bound_count=333`，`cross_source_non_python_reservoir_count=272`，`cross_source_python_reservoir_count=61`。它取到 780 rows，尝试 618 rows，排除 162 条 FD1 BEA-4/5 exact prior raw keys，选出 333 条 file-miss records，并只在 `/tmp` 写出 618 条 private reservoir scan rows。
+- **Unqualified 原因**：`qualified_cross_source_reservoir_count=0`，`p4h_p4i_overlap_resolved=false`，因为 P4H/P4I exact selected keys 仍不可用/仅 aggregate-only。333-record count 是 upper bound，不是 locked all-prior-disjoint denominator。
+- **决策**：P4J 证明当前 Python-frame reservoir shortage 不是完整 source story，但它仍不授权 locked-P4 validation、frozen P4 rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。任何下一阶段必须先解决/锁定 P4H/P4I exact overlap，或定义新的严格有界 source-audit contract；不能把 333 upper-bound reservoir 当作 ready。

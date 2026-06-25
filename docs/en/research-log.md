@@ -10934,3 +10934,53 @@ currently supported ContextBench/RepoQA Python frame still yields only 73/80
 FD1-excluded file-miss reservoir records after exact prior exclusion. Do not run
 frozen P4H rerun, P5 selector/reranker, BEA-v1-A, runtime promotion,
 method-winner claims, or broad retrieval expansion from P4I.
+
+## 2026-06-24 — BEA-v1-P4J: Cross-Source File-Miss Reservoir Unlock Audit
+
+### Objective
+
+Audit whether the P4H/P4I denominator blocker is specific to the currently
+supported ContextBench/RepoQA Python frame, or whether already-supported
+cross-source frames can unlock a larger file-miss reservoir. P4J is a
+source/denominator audit only. It does not run scheduler arms, selector/reranker
+logic, retrieval expansion, provider calls, frozen P4 rerun, P5, or BEA-v1-A.
+
+### Implementation / validation
+
+Local checkpoint `18671d8` added
+`eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py`, the manual workflow,
+aggregate artifact, and bilingual docs. The audit uses only two already-supported
+source frames: ContextBench `contextbench_verified/train` with
+`language_filter=all`, and RepoQA non-Python asset languages parsed directly
+because the c5d CLI only allows Python.
+
+The first network run `28141276171` failed closed because the evaluator swallowed
+an internal scan exception into `unexpected_exception` without useful aggregate
+diagnostics. Commit `18126f4` added safe scan diagnostic records and row/frame
+fail-closed handling without lowering the validator: network-enabled valid
+statuses still exclude `fail_schema_contract` and `unavailable_with_reason`.
+
+### Manual CI result
+
+Manual network-enabled CI run `28146407493` completed green in 1h46m38s. The
+public artifact is a valid aggregate No-Go with
+`status=no_go_cross_source_reservoir_unqualified`.
+
+P4J found a large FD1-excluded upper-bound file-miss reservoir: it fetched 780
+rows, attempted 618 rows, excluded 162 exact FD1 BEA-4/5 prior raw keys, observed
+285 baseline-reached rows, and selected 333 file-miss rows. The upper-bound
+reservoir consists of 197 ContextBench all-language records plus 136 RepoQA
+non-Python records (`cross_source_non_python_reservoir_count=272`,
+`cross_source_python_reservoir_count=61`). Private reservoir scan rows were
+written under `/tmp` only (`record_count=618`); the public artifact remains
+aggregate-only and `forbidden_scan.status=pass`.
+
+### Decision
+
+P4J proves the source story is broader than the current Python frame: there is a
+333-record cross-source upper-bound reservoir. But it is not qualified for locked
+P4 validation because P4H/P4I exact selected keys remain unavailable/aggregate-
+only (`p4h_p4i_overlap_resolved=false`, `qualified_cross_source_reservoir_count=0`).
+Therefore P4J does not authorize locked-P4 scheduler validation, frozen P4 rerun,
+P5 selector/reranker, BEA-v1-A, runtime promotion, method-winner claims, or broad
+retrieval expansion.
