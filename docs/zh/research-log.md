@@ -10200,3 +10200,41 @@ reservoir。但它不具备 locked P4 validation 资格，因为 P4H/P4I exact s
 `qualified_cross_source_reservoir_count=0`）。因此 P4J 不授权 locked-P4 scheduler
 validation、frozen P4 rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、
 method-winner 声明或 broad retrieval expansion。
+
+## 2026-06-25 — BEA-v1-P4K：Exact Overlap Resolution & Locked Reservoir Audit
+
+### 目标
+
+通过从相同确定性协议和 FD1 private replay 重建 P4H、P4I、P4J 的 exact selected
+raw-key sets，解决 P4J 的唯一 blocker：P4H/P4I exact-overlap uncertainty。P4K 仅是
+overlap/locked-reservoir audit；不运行 scheduler arms、selector/reranker、retrieval
+expansion、provider calls、frozen P4 rerun、P5 或 BEA-v1-A。
+
+### 实现 / 验证
+
+Local checkpoint `c6b7fc9` 新增
+`eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py`、manual CI
+workflow、聚合 artifact 与双语 docs。Local review 移除了 hardcoded locked-count
+expectation，要求 P4J reconstruction 匹配 committed 333 total 与 61 Python / 272
+non-Python split，将 raw parse / clone / retrieval / unexpected failures 设为 blocking
+fail-closed，并稳定 ready status/authorization fields。Self-tests 为 106/106。
+
+### Manual CI 结果
+
+Manual network-enabled CI run `28151914531` 绿色完成（1h50m01s）。公开 artifact
+status 为 `cross_source_locked_reservoir_ready_for_locked_p4_validation_design`。
+
+P4K 重建 P4H `73/73`、P4I `73/73`、P4J `333/333`，split 为 61 Python + 272
+non-Python。Exact overlap 发现 P4J 的 61 条 Python rows 全部与 P4H/P4I Python-frame
+reservoir 重叠，留下 post-overlap locked cross-source reservoir `272/80`，全部来自
+non-Python。Artifact `forbidden_scan.status=pass`，exact keys/private reconstruction
+rows 只保存在 `/tmp`。
+
+### 决策
+
+P4K 解决了 P4J 的 unqualified-reservoir blocker，并且只授权设计后续
+locked-denominator P4 validation phase。它没有执行该 validation：
+`scheduler_validation_authorized=false`，`locked_p4_validation_executed=false`，
+`frozen_p4_rerun_authorized=false`，`p5_authorized=false`，`v1_a_authorized=false`。
+不要从 P4K 进入 P5、BEA-v1-A、runtime promotion、method-winner 声明或 broad
+retrieval expansion。

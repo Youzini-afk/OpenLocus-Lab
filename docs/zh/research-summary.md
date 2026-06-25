@@ -3355,3 +3355,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Reservoir 结果**：P4J 找到较大的 FD1-excluded upper-bound file-miss reservoir：`denominator_count=333`，`reservoir_upper_bound_count=333`，`cross_source_non_python_reservoir_count=272`，`cross_source_python_reservoir_count=61`。它取到 780 rows，尝试 618 rows，排除 162 条 FD1 BEA-4/5 exact prior raw keys，选出 333 条 file-miss records，并只在 `/tmp` 写出 618 条 private reservoir scan rows。
 - **Unqualified 原因**：`qualified_cross_source_reservoir_count=0`，`p4h_p4i_overlap_resolved=false`，因为 P4H/P4I exact selected keys 仍不可用/仅 aggregate-only。333-record count 是 upper bound，不是 locked all-prior-disjoint denominator。
 - **决策**：P4J 证明当前 Python-frame reservoir shortage 不是完整 source story，但它仍不授权 locked-P4 validation、frozen P4 rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。任何下一阶段必须先解决/锁定 P4H/P4I exact overlap，或定义新的严格有界 source-audit contract；不能把 333 upper-bound reservoir 当作 ready。
+
+## BEA-v1-P4K 发现
+
+- **BEA-v1-P4K Exact Overlap Resolution & Locked Reservoir Audit 已完成为 locked-reservoir-ready（仅 design）**：local checkpoint `c6b7fc9`，manual CI run `28151914531`。
+- **状态**：`cross_source_locked_reservoir_ready_for_locked_p4_validation_design`。P4K 在 `/tmp` 下 rerun exact reconstruction audit，重建 P4H `73/73`、P4I `73/73`、P4J `333/333`，并复现 committed split `61` Python + `272` non-Python。
+- **Overlap 结果**：P4J 的 61 条 Python rows 与 P4H/P4I 重叠；post-overlap locked cross-source reservoir 为 `272/80`，全部来自 non-Python（`non_python_locked_reservoir_count=272`，`python_locked_reservoir_count=0`）。
+- **边界**：这解决了 P4J 的 unqualified-reservoir blocker，并且只授权设计后续 locked-denominator P4 validation phase。P4K 没有运行 scheduler arms，也不授权 locked/frozen P4 validation execution、frozen P4 rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。

@@ -202,16 +202,42 @@ python3 eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py \
 
 ## CI result
 
-Pending. The network-enabled CI run has not yet been executed. The default
-no-network artifact is `unavailable_with_reason` (honest, not a pass). A real
-network-enabled run is required to produce a research outcome.
+Manual network-enabled CI run `28151914531` completed green in 1h50m01s.
+The public artifact status is
+`cross_source_locked_reservoir_ready_for_locked_p4_validation_design`.
 
-If reconstruction succeeds and the post-exclusion locked count is at least 80,
-the status will be `cross_source_locked_reservoir_ready_for_locked_p4_validation_design`.
-The P4J committed split to reproduce is 333 total = 61 Python + 272 non-Python,
-but the locked count is computed from exact private overlap rather than
-predeclared in the docs. If deterministic reconstruction yields different
-counts, the status will be `no_go_exact_overlap_resolution_unavailable`.
+P4K successfully reconstructed the exact selected raw-key sets for P4H, P4I,
+and P4J using FD1 private replay under `/tmp`: P4H `73/73`, P4I `73/73`, and
+P4J `333/333` with the committed split `61` Python + `272` non-Python. Exact
+overlap showed that all 61 P4J Python rows overlapped the P4H/P4I Python-frame
+reservoir; after subtracting overlap, the locked cross-source reservoir is
+`272/80`, entirely from the non-Python cross-source frame.
+
+Aggregate CI metrics:
+
+- `status=cross_source_locked_reservoir_ready_for_locked_p4_validation_design`
+- `locked_cross_source_reservoir_count=272`
+- `non_python_locked_reservoir_count=272`
+- `python_locked_reservoir_count=0`
+- `p4h_reconstructed_denominator_count=73`
+- `p4i_reconstructed_reservoir_count=73`
+- `p4j_reconstructed_upper_bound_count=333`
+- `p4j_reconstructed_python_count=61`
+- `p4j_reconstructed_non_python_count=272`
+- `p4j_overlap_with_p4h_count=61`
+- `p4j_overlap_with_p4i_count=61`
+- `locked_p4_validation_design_authorized=true` only inside
+  `stop_go_records`
+- `scheduler_validation_authorized=false`, `locked_p4_validation_executed=false`,
+  `frozen_p4_rerun_authorized=false`, `p5_authorized=false`, and
+  `v1_a_authorized=false`
+- `self_test_checks_total=106`, `self_test_checks_passed=106`
+- `forbidden_scan.status=pass`
+
+This resolves the P4J unqualified-reservoir blocker and authorizes only the
+design of a subsequent locked-denominator P4 validation phase. P4K itself did
+not run scheduler arms and does not authorize P5, BEA-v1-A, runtime promotion,
+method-winner claims, frozen P4 rerun, or broad retrieval expansion.
 
 ## Caveats
 
@@ -221,9 +247,10 @@ counts, the status will be `no_go_exact_overlap_resolution_unavailable`.
   frozen-P4-validation, frozen-P4-rerun, or runtime/default-promotion
   authorization claim.
 - `cross_source_locked_reservoir_ready_for_locked_p4_validation_design` does NOT
-  authorize frozen P4 rerun (`frozen_p4_rerun_authorized=false`) or frozen P4
-  validation (`frozen_p4_validation_executed=false`); it authorizes only
-  designing a later locked-denominator validation phase.
+  authorize frozen P4 rerun (`frozen_p4_rerun_authorized=false`) or execute
+  frozen/locked P4 validation (`frozen_p4_validation_executed=false`,
+  `locked_p4_validation_executed=false`); it authorizes only designing a later
+  locked-denominator validation phase.
 - The reconstruction re-runs the same deterministic scans. If source ordering
   or baseline results drift between the original P4H/P4I/P4J runs and the P4K
   reconstruction, counts may not match, yielding

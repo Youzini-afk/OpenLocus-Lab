@@ -10984,3 +10984,46 @@ only (`p4h_p4i_overlap_resolved=false`, `qualified_cross_source_reservoir_count=
 Therefore P4J does not authorize locked-P4 scheduler validation, frozen P4 rerun,
 P5 selector/reranker, BEA-v1-A, runtime promotion, method-winner claims, or broad
 retrieval expansion.
+
+## 2026-06-25 — BEA-v1-P4K: Exact Overlap Resolution & Locked Reservoir Audit
+
+### Objective
+
+Resolve P4J's only blocker — P4H/P4I exact-overlap uncertainty — by
+reconstructing the exact selected raw-key sets for P4H, P4I, and P4J from the
+same deterministic protocols and FD1 private replay. P4K is an overlap/locked-
+reservoir audit only. It does not run scheduler arms, selector/reranker logic,
+retrieval expansion, provider calls, frozen P4 rerun, P5, or BEA-v1-A.
+
+### Implementation / validation
+
+Local checkpoint `c6b7fc9` added
+`eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py`, the manual
+CI workflow, aggregate artifact, and bilingual docs. Local review removed a
+hardcoded locked-count expectation, required P4J reconstruction to match the
+committed 333 total with split 61 Python / 272 non-Python, made raw parse / clone /
+retrieval / unexpected failures blocking fail-closed, and stabilized the ready
+status/authorization fields. Self-tests are 106/106.
+
+### Manual CI result
+
+Manual network-enabled CI run `28151914531` completed green in 1h50m01s. The
+public artifact status is
+`cross_source_locked_reservoir_ready_for_locked_p4_validation_design`.
+
+P4K reconstructed P4H `73/73`, P4I `73/73`, and P4J `333/333` with split 61
+Python + 272 non-Python. Exact overlap found all 61 P4J Python rows overlap with
+the P4H/P4I Python-frame reservoir, leaving a locked post-overlap cross-source
+reservoir of 272/80, entirely non-Python. The artifact has
+`forbidden_scan.status=pass` and keeps exact keys/private reconstruction rows
+under `/tmp` only.
+
+### Decision
+
+P4K resolves the P4J unqualified-reservoir blocker and authorizes only the
+design of a later locked-denominator P4 validation phase. It does not execute
+that validation: `scheduler_validation_authorized=false`,
+`locked_p4_validation_executed=false`, `frozen_p4_rerun_authorized=false`,
+`p5_authorized=false`, and `v1_a_authorized=false`. Do not enter P5,
+BEA-v1-A, runtime promotion, method-winner claims, or broad retrieval expansion
+from P4K.

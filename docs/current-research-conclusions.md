@@ -90,6 +90,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p4h-disjoint-scheduler-validation.md`: [en](en/bea-v1-p4h-disjoint-scheduler-validation.md) · [zh](zh/bea-v1-p4h-disjoint-scheduler-validation.md)
 - `bea-v1-p4i-disjoint-denominator-reservoir-audit.md`: [en](en/bea-v1-p4i-disjoint-denominator-reservoir-audit.md) · [zh](zh/bea-v1-p4i-disjoint-denominator-reservoir-audit.md)
 - `bea-v1-p4j-cross-source-reservoir-unlock-audit.md`: [en](en/bea-v1-p4j-cross-source-reservoir-unlock-audit.md) · [zh](zh/bea-v1-p4j-cross-source-reservoir-unlock-audit.md)
+- `bea-v1-p4k-exact-overlap-resolution-locked-reservoir-audit.md`: [en](en/bea-v1-p4k-exact-overlap-resolution-locked-reservoir-audit.md) · [zh](zh/bea-v1-p4k-exact-overlap-resolution-locked-reservoir-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
 - `f1c-cross-benchmark-retrieval-utility.md`: [en](en/f1c-cross-benchmark-retrieval-utility.md) · [zh](zh/f1c-cross-benchmark-retrieval-utility.md)

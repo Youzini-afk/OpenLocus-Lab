@@ -178,15 +178,38 @@ python3 eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py \
 
 ## CI 结果
 
-待定。网络-enabled 的 CI 运行尚未执行。默认无网络 artifact 为
-`unavailable_with_reason`（诚实，非 pass）。需要真实网络-enabled 运行才能产出
-研究结果。
+Manual network-enabled CI run `28151914531` 绿色完成（1h50m01s）。公开 artifact
+status 为 `cross_source_locked_reservoir_ready_for_locked_p4_validation_design`。
 
-若重建成功且 post-exclusion locked count 至少为 80，状态将为
-`cross_source_locked_reservoir_ready_for_locked_p4_validation_design`。需要复现的 P4J committed
-split 是 333 total = 61 Python + 272 non-Python，但 locked count 由私有 exact overlap
-计算，而不是在文档中预先声明。若确定性重建产生不同计数，状态将为
-`no_go_exact_overlap_resolution_unavailable`。
+P4K 使用 `/tmp` 下的 FD1 private replay 成功重建 P4H、P4I、P4J 的 exact selected
+raw-key sets：P4H `73/73`，P4I `73/73`，P4J `333/333`，并复现 committed split
+`61` Python + `272` non-Python。Exact overlap 显示 P4J 的 61 条 Python rows 全部与
+P4H/P4I Python-frame reservoir 重叠；扣除 overlap 后，locked cross-source reservoir
+为 `272/80`，全部来自 non-Python cross-source frame。
+
+聚合 CI 指标：
+
+- `status=cross_source_locked_reservoir_ready_for_locked_p4_validation_design`
+- `locked_cross_source_reservoir_count=272`
+- `non_python_locked_reservoir_count=272`
+- `python_locked_reservoir_count=0`
+- `p4h_reconstructed_denominator_count=73`
+- `p4i_reconstructed_reservoir_count=73`
+- `p4j_reconstructed_upper_bound_count=333`
+- `p4j_reconstructed_python_count=61`
+- `p4j_reconstructed_non_python_count=272`
+- `p4j_overlap_with_p4h_count=61`
+- `p4j_overlap_with_p4i_count=61`
+- `locked_p4_validation_design_authorized=true` 仅在 `stop_go_records` 内表达
+- `scheduler_validation_authorized=false`，`locked_p4_validation_executed=false`，
+  `frozen_p4_rerun_authorized=false`，`p5_authorized=false`，`v1_a_authorized=false`
+- `self_test_checks_total=106`，`self_test_checks_passed=106`
+- `forbidden_scan.status=pass`
+
+这解决了 P4J 的 unqualified-reservoir blocker，并且只授权设计后续
+locked-denominator P4 validation phase。P4K 本身没有运行 scheduler arms，也不授权
+P5、BEA-v1-A、runtime promotion、method-winner 声明、frozen P4 rerun 或 broad
+retrieval expansion。
 
 ## 注意事项
 
@@ -195,9 +218,9 @@ split 是 333 total = 61 Python + 272 non-Python，但 locked count 由私有 ex
   检索扩展、selector/reranker、frozen-P4-validation、frozen-P4-rerun 或
   runtime/default 提升授权主张。
 - `cross_source_locked_reservoir_ready_for_locked_p4_validation_design` **不**授权
-  frozen P4 重跑（`frozen_p4_rerun_authorized=false`）或 frozen P4 验证
-  （`frozen_p4_validation_executed=false`）；它仅授权设计后续的
-  locked-denominator 验证阶段。
+  frozen P4 重跑（`frozen_p4_rerun_authorized=false`），也没有执行 frozen/locked P4
+  验证（`frozen_p4_validation_executed=false`，`locked_p4_validation_executed=false`）；
+  它仅授权设计后续的 locked-denominator 验证阶段。
 - 重建重新运行相同的确定性扫描。若原始 P4H/P4I/P4J 运行与 P4K 重建之间的来源
   排序或 baseline 结果漂移，计数可能不匹配，产生
   `no_go_exact_overlap_resolution_unavailable`。
