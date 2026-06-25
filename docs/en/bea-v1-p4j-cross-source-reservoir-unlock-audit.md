@@ -240,13 +240,13 @@ only the final public report is staged at `$RUNNER_TEMP` for upload.
 
 ```text
 python3 -m py_compile eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py  => PASS
-python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py --self-test  => PASS (117/117 checks)
+python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py --self-test  => PASS (118/118 checks)
 python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py \
   --out artifacts/bea_v1_p4j_cross_source_reservoir_unlock_audit/bea_v1_p4j_cross_source_reservoir_unlock_audit_report.json  => PASS
   (default no-network status: unavailable_with_reason,
    forbidden_scan=pass, denominator_count=0,
    cross_source_reservoir_scan_attempted=false,
-   self_test_checks_total=117, self_test_checks_passed=117)
+   self_test_checks_total=118, self_test_checks_passed=118)
 ```
 
 ## CI result

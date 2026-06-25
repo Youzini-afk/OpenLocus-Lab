@@ -56,6 +56,7 @@ import hashlib
 import io
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import time
@@ -732,6 +733,30 @@ def _scan_repoqa_non_python_frame(
             parse_excluded, clone_excluded, baseline_reached, baseline_error)
 
 
+def _sanitize_exception_category(exc: BaseException) -> str:
+    """Return a safe public exception category with no message/path values."""
+    if isinstance(exc, json.JSONDecodeError):
+        return "json_decode_error"
+    if isinstance(exc, (OSError, IOError)):
+        return "os_error"
+    if isinstance(exc, subprocess.SubprocessError):
+        return "subprocess_error"
+    if isinstance(exc, TimeoutError):
+        return "timeout_error"
+    if isinstance(exc, (TypeError, ValueError, KeyError, IndexError)):
+        return type(exc).__name__.lower()
+    return "unexpected_exception_type"
+
+
+def _scan_exception_record(phase: str, exc: BaseException) -> dict[str, Any]:
+    return {
+        "scan_phase": str(phase),
+        "exception_category": _sanitize_exception_category(exc),
+        "private_exception_message_publicly_serialized": False,
+        "private_path_publicly_serialized": False,
+    }
+
+
 def _scan_cross_source_reservoir(
     *, openlocus_bin: str, pt: p4.bea_v1_p1.ParsedPrivateDecomposition | None,
 ) -> tuple[list[ReservoirRecord], dict[str, int], dict[str, Any], dict[str, Any]]:
@@ -754,58 +779,90 @@ def _scan_cross_source_reservoir(
     by_construction_total = parse_total = clone_total = 0
     baseline_reached_total = baseline_error_total = 0
     per_language_records: list[dict[str, Any]] = []
+    scan_diagnostic_records: list[dict[str, Any]] = []
 
     # --- Frame 1: ContextBench "all" languages ---
     cb_row = row_by_frame[P4J_CONTEXTBENCH_ALL_FRAME]
-    (cb_fetched, cb_attempted, cb_prior, cb_bcd, cb_parse, cb_clone,
-     cb_reached, cb_error) = _scan_contextbench_all_frame(
-        openlocus_bin=openlocus_bin, prior_raw_keys=prior_raw_keys,
-        use_exact_prior_keys=use_exact_prior_keys, srow=cb_row,
-        private_path=private_path, fcc=fcc, reservoir=reservoir)
-    fetched_total += cb_fetched
-    attempted_total += cb_attempted
-    prior_exact_total += cb_prior
-    by_construction_total += cb_bcd
-    parse_total += cb_parse
-    clone_total += cb_clone
-    baseline_reached_total += cb_reached
-    baseline_error_total += cb_error
+    try:
+        (cb_fetched, cb_attempted, cb_prior, cb_bcd, cb_parse, cb_clone,
+         cb_reached, cb_error) = _scan_contextbench_all_frame(
+            openlocus_bin=openlocus_bin, prior_raw_keys=prior_raw_keys,
+            use_exact_prior_keys=use_exact_prior_keys, srow=cb_row,
+            private_path=private_path, fcc=fcc, reservoir=reservoir)
+        fetched_total += cb_fetched
+        attempted_total += cb_attempted
+        prior_exact_total += cb_prior
+        by_construction_total += cb_bcd
+        parse_total += cb_parse
+        clone_total += cb_clone
+        baseline_reached_total += cb_reached
+        baseline_error_total += cb_error
+    except Exception as exc:
+        # Fail closed, but keep aggregate scan state for diagnosis.  No private
+        # exception message, path, row id, query, repo, or gold value is exposed.
+        fcc["cross_source_reservoir_scan_failed"] = (
+            fcc.get("cross_source_reservoir_scan_failed", 0) + 1)
+        fcc["unexpected_exception"] = fcc.get("unexpected_exception", 0) + 1
+        scan_diagnostic_records.append(
+            _scan_exception_record("contextbench_all_languages_frame", exc))
+        fetched_total += int(cb_row.get("raw_rows_fetched", 0) or 0)
+        attempted_total += int(cb_row.get("raw_rows_attempted", 0) or 0)
+        prior_exact_total += int(cb_row.get("raw_rows_prior_exact_excluded", 0) or 0)
+        by_construction_total += int(cb_row.get("raw_rows_by_construction_disjoint_records", 0) or 0)
+        parse_total += int(cb_row.get("raw_rows_parse_excluded", 0) or 0)
+        clone_total += int(cb_row.get("raw_rows_clone_excluded", 0) or 0)
+        baseline_reached_total += int(cb_row.get("raw_rows_baseline_reached_excluded", 0) or 0)
+        baseline_error_total += int(cb_row.get("raw_rows_baseline_error_excluded", 0) or 0)
 
     # --- Frame 2: RepoQA non-Python asset languages ---
     rq_row = row_by_frame[P4J_REPOQA_NON_PYTHON_FRAME]
-    asset_bytes, dl_status, dl_fcc = p4.c5d._download_asset_to_bytes(p4.c5d.ASSET_URL)
-    for k, v in dl_fcc.items():
-        if k in fcc:
-            fcc[k] += int(v)
-    if dl_status != "pass" or not asset_bytes:
-        fcc["cross_source_asset_download_failed"] = (
-            fcc.get("cross_source_asset_download_failed", 0) + 1)
-        fcc["cross_source_reservoir_scan_failed"] = (
-            fcc.get("cross_source_reservoir_scan_failed", 0) + 1)
-    else:
-        parsed_asset, parse_status, parse_fcc = p4.c5d._decompress_asset(asset_bytes)
-        del asset_bytes
-        for k, v in parse_fcc.items():
+    try:
+        asset_bytes, dl_status, dl_fcc = p4.c5d._download_asset_to_bytes(p4.c5d.ASSET_URL)
+        for k, v in dl_fcc.items():
             if k in fcc:
                 fcc[k] += int(v)
-        if parse_status != "pass" or parsed_asset is None:
-            fcc["cross_source_asset_decompress_failed"] = (
-                fcc.get("cross_source_asset_decompress_failed", 0) + 1)
+        if dl_status != "pass" or not asset_bytes:
+            fcc["cross_source_asset_download_failed"] = (
+                fcc.get("cross_source_asset_download_failed", 0) + 1)
             fcc["cross_source_reservoir_scan_failed"] = (
                 fcc.get("cross_source_reservoir_scan_failed", 0) + 1)
         else:
-            (rq_per_lang, rq_fetched, rq_attempted, rq_bcd, rq_parse,
-             rq_clone, rq_reached, rq_error) = _scan_repoqa_non_python_frame(
-                openlocus_bin=openlocus_bin, parsed_asset=parsed_asset,
-                srow=rq_row, private_path=private_path, fcc=fcc, reservoir=reservoir)
-            per_language_records = rq_per_lang
-            fetched_total += rq_fetched
-            attempted_total += rq_attempted
-            by_construction_total += rq_bcd
-            parse_total += rq_parse
-            clone_total += rq_clone
-            baseline_reached_total += rq_reached
-            baseline_error_total += rq_error
+            parsed_asset, parse_status, parse_fcc = p4.c5d._decompress_asset(asset_bytes)
+            del asset_bytes
+            for k, v in parse_fcc.items():
+                if k in fcc:
+                    fcc[k] += int(v)
+            if parse_status != "pass" or parsed_asset is None:
+                fcc["cross_source_asset_decompress_failed"] = (
+                    fcc.get("cross_source_asset_decompress_failed", 0) + 1)
+                fcc["cross_source_reservoir_scan_failed"] = (
+                    fcc.get("cross_source_reservoir_scan_failed", 0) + 1)
+            else:
+                (rq_per_lang, rq_fetched, rq_attempted, rq_bcd, rq_parse,
+                 rq_clone, rq_reached, rq_error) = _scan_repoqa_non_python_frame(
+                    openlocus_bin=openlocus_bin, parsed_asset=parsed_asset,
+                    srow=rq_row, private_path=private_path, fcc=fcc, reservoir=reservoir)
+                per_language_records = rq_per_lang
+                fetched_total += rq_fetched
+                attempted_total += rq_attempted
+                by_construction_total += rq_bcd
+                parse_total += rq_parse
+                clone_total += rq_clone
+                baseline_reached_total += rq_reached
+                baseline_error_total += rq_error
+    except Exception as exc:
+        fcc["cross_source_reservoir_scan_failed"] = (
+            fcc.get("cross_source_reservoir_scan_failed", 0) + 1)
+        fcc["unexpected_exception"] = fcc.get("unexpected_exception", 0) + 1
+        scan_diagnostic_records.append(
+            _scan_exception_record("repoqa_non_python_languages_frame", exc))
+        fetched_total += int(rq_row.get("raw_rows_fetched", 0) or 0)
+        attempted_total += int(rq_row.get("raw_rows_attempted", 0) or 0)
+        by_construction_total += int(rq_row.get("raw_rows_by_construction_disjoint_records", 0) or 0)
+        parse_total += int(rq_row.get("raw_rows_parse_excluded", 0) or 0)
+        clone_total += int(rq_row.get("raw_rows_clone_excluded", 0) or 0)
+        baseline_reached_total += int(rq_row.get("raw_rows_baseline_reached_excluded", 0) or 0)
+        baseline_error_total += int(rq_row.get("raw_rows_baseline_error_excluded", 0) or 0)
 
     for r in scan_rows:
         r["target_reached_in_window"] = len(reservoir) >= P4J_RESERVOIR_MIN_COUNT
@@ -852,11 +909,28 @@ def _scan_cross_source_reservoir(
         "denominator_scan_records": scan_rows,
         "cross_source_frame_records": per_language_records,
         "prior_raw_exclusion_records": disclosure_records,
+        "scan_diagnostic_records": scan_diagnostic_records,
     }
-    manifest = p4._private_file_manifest(
-        private_path,
-        manifest_name="bea_v1_p4j_private_reservoir_scan_manifest",
-        schema_version="bea_v1_p4j_private_reservoir_scan.v1")
+    try:
+        manifest = p4._private_file_manifest(
+            private_path,
+            manifest_name="bea_v1_p4j_private_reservoir_scan_manifest",
+            schema_version="bea_v1_p4j_private_reservoir_scan.v1")
+    except Exception as exc:
+        fcc["cross_source_reservoir_scan_failed"] = (
+            fcc.get("cross_source_reservoir_scan_failed", 0) + 1)
+        fcc["unexpected_exception"] = fcc.get("unexpected_exception", 0) + 1
+        scan_diagnostic_records.append(
+            _scan_exception_record("private_reservoir_manifest", exc))
+        manifest = {
+            "manifest_name": "bea_v1_p4j_private_reservoir_scan_manifest",
+            "schema_version": "bea_v1_p4j_private_reservoir_scan.v1",
+            "storage_class": "private_tmp_only",
+            "record_count": 0,
+            "records_written": False,
+            "path_publicly_serialized": False,
+            "manifest_hash": "",
+        }
     return reservoir, fcc, meta, manifest
 
 
@@ -1173,6 +1247,7 @@ def _base_report(
         "denominator_scan_records": _initial_cross_source_scan_rows(),
         "cross_source_frame_records": [],
         "prior_raw_exclusion_records": [],
+        "scan_diagnostic_records": [],
     }
     fcc = {c: 0 for c in FAILURE_CATEGORIES_AUDIT}
     for k, v in (fcc_in or {}).items():
@@ -1260,6 +1335,7 @@ def _base_report(
         "cross_source_frame_records": _cross_source_frame_records(reservoir_meta),
         "excluded_source_frame_records": _excluded_source_frame_records(),
         "prior_raw_exclusion_records": _prior_raw_exclusion_records(reservoir_meta),
+        "scan_diagnostic_records": list(reservoir_meta.get("scan_diagnostic_records", []) or []),
         "subgroup_reservoir_records": _subgroup_reservoir_records(reservoir),
         "stop_go_records": stop_go,
         "gate_records": _gate_records(fd1_records_decomposed=fd1_records, fd1_private_manifest_record_count=fd1_manifest_count, denominator_meta=reservoir_meta, reservoir_count=len(reservoir), fd1_private_decomposition_parsed=fd1_private_parsed, replay_artifact_validated=replay_validated, forbidden_scan_pass=True, blocking_failure_count=blocking, exact_prior_exclusion_used=exact_prior_exclusion_used),
@@ -1437,9 +1513,16 @@ def _run_reservoir_audit(
                 fcc["exact_prior_exclusion_unavailable"] = 1
             if not reservoir_meta.get("p4h_p4i_overlap_resolved"):
                 fcc["p4h_p4i_overlap_not_resolved"] = 1
-        except Exception:
-            fcc["retrieval_policy_failed"] = 1
+        except Exception as exc:
+            fcc["cross_source_reservoir_scan_failed"] = 1
             fcc["unexpected_exception"] = 1
+            reservoir_meta = {
+                **reservoir_meta,
+                "cross_source_reservoir_scan_attempted": True,
+                "scan_diagnostic_records": [
+                    _scan_exception_record("cross_source_reservoir_scan", exc)
+                ],
+            }
     elif enable_network:
         fcc["cross_source_reservoir_scan_not_attempted"] = 1
     else:
@@ -1587,6 +1670,7 @@ METRIC_TABLE_KEYS = (
     "source_run_records", "denominator_reservoir_records",
     "denominator_scan_records", "cross_source_frame_records",
     "excluded_source_frame_records", "prior_raw_exclusion_records",
+    "scan_diagnostic_records",
     "subgroup_reservoir_records", "stop_go_records", "gate_records",
     "private_manifest_records", "failure_category_count_records",
 )
