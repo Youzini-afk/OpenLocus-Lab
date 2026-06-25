@@ -381,8 +381,10 @@ jobs:
                   if sgr.get("frozen_p4_rerun_authorized") is not False:
                       failures.append("pass status must NOT authorize frozen p4 rerun")
               if status == "no_go_p4l_locked_denominator_unavailable":
-                  if report.get("locked_denominator_count") == 272:
-                      failures.append("denominator unavailable status requires locked count != 272")
+                  if report.get("denominator_exact_match") is True:
+                      failures.append("denominator unavailable status requires denominator_exact_match=false")
+                  if report.get("p4l_locked_scheduler_validation_executed") is not False:
+                      failures.append("denominator unavailable status must not execute P4L locked scheduler validation")
               if status == "no_go_p4l_locked_non_python_scheduler_validation_failed":
                   if report.get("denominator_exact_match") is not True:
                       failures.append("validation failed status still requires denominator exact")

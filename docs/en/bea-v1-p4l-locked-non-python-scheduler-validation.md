@@ -112,13 +112,13 @@ compromising the final fail-closed gate. Private directories use `/tmp`, not
 
 ```text
 python3 -m py_compile eval/bea_v1_p4l_locked_non_python_scheduler_validation.py  => PASS
-python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test  => PASS (119/119 checks)
+python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test  => PASS (120/120 checks)
 python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py \
   --out artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json  => PASS
   (default no-network status: unavailable_with_reason,
    forbidden_scan=pass, locked_denominator_count=0,
    scheduler_arms_executed=false,
-   self_test_checks_total=119, self_test_checks_passed=119)
+   self_test_checks_total=120, self_test_checks_passed=120)
 ```
 
 ## CI result

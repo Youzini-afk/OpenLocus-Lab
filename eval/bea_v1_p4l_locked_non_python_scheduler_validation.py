@@ -270,7 +270,6 @@ BLOCKING_FAILURE_CATEGORIES = tuple(dict.fromkeys((
     "raw_denominator_scan_failed",
     "raw_denominator_scan_not_attempted",
     "raw_denominator_clone_failed",
-    "locked_denominator_mismatch",
     "retrieval_policy_failed",
     "unexpected_exception",
 )))
@@ -1459,6 +1458,8 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         report_split_mismatch = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, p4h_artifact=p4h_art, p4i_artifact=p4i_art, p4j_artifact=p4j_art, p4k_artifact=p4k_art, recon_meta=recon_split_mismatch, audit_match=True, extra_manifests=[recon_manifest], aggregate_runtime_seconds=0.5)
         checks.append(_check("split_mismatch_denominator_unavailable", report_split_mismatch.get("status") == "no_go_p4l_locked_denominator_unavailable"))
         checks.append(_check("split_mismatch_denominator_exact_false", report_split_mismatch.get("denominator_exact_match") is False))
+        report_count_drift = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, openlocus_binary_source="self_test", network_mode="self_test", fd1_artifact=fd1_art, fd1_schema=p4.FD1_SOURCE_SCHEMA_VERSION, fd1_hash="b" * 64, pt=pt, rav=rav, p4h_artifact=p4h_art, p4i_artifact=p4i_art, p4j_artifact=p4j_art, p4k_artifact=p4k_art, recon_meta={**_build_synthetic_recon_meta(non_python_locked=273), "python_locked_count": 61, "p4j_reconstructed_upper_bound_count": 334}, audit_match=True, fcc_in={"locked_denominator_mismatch": 1}, extra_manifests=[recon_manifest], aggregate_runtime_seconds=0.5)
+        checks.append(_check("count_drift_denominator_unavailable_not_schema_fail", report_count_drift.get("status") == "no_go_p4l_locked_denominator_unavailable"))
         # --- Hard cap violation -> failed ---
         arms_hc = _build_synthetic_arm_metrics(hard_cap=5)
         vm_hc = _build_synthetic_validation_meta(arms_hc)

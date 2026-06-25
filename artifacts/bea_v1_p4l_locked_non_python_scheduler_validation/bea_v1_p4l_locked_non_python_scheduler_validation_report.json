@@ -397,7 +397,7 @@
       "value": 0.0
     }
   ],
-  "generated_at": "2026-06-25T09:16:58.242010+00:00",
+  "generated_at": "2026-06-25T11:15:43.771741+00:00",
   "generated_by": "eval/bea_v1_p4l_locked_non_python_scheduler_validation.py",
   "gold_labels_used_for_policy": false,
   "gold_labels_used_for_query_construction": false,
@@ -480,8 +480,8 @@
   "schema_version": "bea_v1_p4l_locked_non_python_scheduler_validation.v1",
   "selector_or_reranker_changed": false,
   "selector_or_reranker_executed": false,
-  "self_test_checks_passed": 119,
-  "self_test_checks_total": 119,
+  "self_test_checks_passed": 120,
+  "self_test_checks_total": 120,
   "self_test_passed": true,
   "source_run_records": [
     {
