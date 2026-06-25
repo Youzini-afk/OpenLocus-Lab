@@ -136,9 +136,14 @@ OpenLocus currently does **not** claim:
 - dense/graph/LLM-derived content as Evidence,
 - or any change to `EvidenceCore` semantics.
 
-All public research artifacts are aggregate-only unless explicitly marked
-otherwise. Raw prompts, responses, snippets, gold labels, provider keys, API
-keys, and private per-record records must not be committed.
+Public research artifacts default to aggregate-only, but mechanism-analysis
+phases may publish **sanitized per-record analysis records** when they are
+explicitly scanner-validated and contain only non-identifying fields such as
+anonymous record ids, benchmark/language/source buckets, arm names, hit/miss
+booleans, rank buckets, latency/pool buckets, disagreement categories, and risk
+classes. Raw prompts, responses, snippets, provider payloads, exact paths/spans,
+gold labels, raw candidate lists, provider keys, API keys, and unsanitized
+private per-record rows must not be committed.
 
 ## Quick start
 
