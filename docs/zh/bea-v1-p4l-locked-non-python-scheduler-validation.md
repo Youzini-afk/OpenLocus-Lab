@@ -112,16 +112,43 @@ python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py \
 
 ## CI 结果
 
-待定。网络-enabled 的 CI 运行尚未执行。默认无网络 artifact 为
-`unavailable_with_reason`（诚实，非 pass）。
+Manual network-enabled CI run `28184096209` 在 heartbeat workflow patch `e98839b`
+之后绿色完成（2h33m08s）。早期尝试均被 supersede：
+
+- `28160078060` 暴露了一个 false No-Go：reference-arm hard-cap violations 被错误
+  加到 P4 treatment gate。
+- `28166304912` 在修正 classifier 后，将 live reconstruction drift 正确报告为
+  denominator No-Go。
+- `28175852713` 在 P4L 前置阶段失败，因为 FD1 replay 只重建 215/239 groups。
+- `28178712989` 成功重新生成 FD1，但 evaluator step 没有产出 artifact；因此
+  `e98839b` 加入 CI heartbeat wrapper，未改变 validator。
+
+最终 status：`bea_v1_p4l_locked_non_python_scheduler_validation_pass`。
+
+最终 artifact 精确重建 P4J/P4K（`333/61/272`）以及 locked non-Python denominator
+（`272`）。所有 scheduler arms 均执行，private arm outcomes 仅写入 `/tmp`
+（`record_count=1088`）。公开聚合 metrics：
+
+| Arm | Reach | Mean pool | Mean latency | Hard-cap violations |
+|---|---:|---:|---:|---:|
+| baseline current pool | 0/272 | 13.871324 | 2.059338s | 0 |
+| P2 depth-only reference | 55/272 | 53.084559 | 1.863294s | 3 |
+| P3 constrained reference | 55/272 | 31.058824 | 3.626279s | 0 |
+| frozen P4 latency-aware scheduler | 52/272 | 30.194853 | 2.381607s | 0 |
+
+P4 保留 P2 depth-only reach gain 的 `0.945455`，相对 baseline 提升 52 条 reach，
+相对 P3 降低 latency `0.343237`（`p4_vs_p3_latency_ratio=0.656763`），pool growth
+在 cap 内（`2.176782`），并且 P4-treatment hard-cap violations 为 0。P2 上的 3 次
+hard-cap violations 只是 reference-arm diagnostics。`forbidden_scan.status=pass`。
 
 ## 注意事项
 
 - P4L 是调度器验证阶段。它不是 benchmark/leaderboard、default-policy、
   method-winner、runtime-promotion、downstream-value、P5、BEA-v1-A、检索扩展、
   selector/reranker、参数调优、阈值搜索、新臂或 runtime/default 提升授权主张。
-- pass 状态表示本 P4L locked scheduler validation 已运行并通过 frozen gates。它**不**
-  授权 P5、BEA-v1-A、runtime 提升、method-winner 主张、broad retrieval 扩展、
-  selector/reranker 执行、frozen P4 重跑或任何未来 locked-P4 validation/promotion step。
+- pass 状态表示本 P4L locked scheduler validation 已在 272-record non-Python
+  denominator 上运行并通过 frozen gates。它**不**授权 P5、BEA-v1-A、runtime 提升、
+  method-winner 主张、broad retrieval 扩展、selector/reranker 执行、frozen P4 rerun
+  或任何未来 locked-P4 promotion/default step。
 - frozen 阈值来自先前 P4；无事后调优。
 - Gold/private label 仅用于评估/scoring 文件缺失。

@@ -11027,3 +11027,55 @@ that validation: `scheduler_validation_authorized=false`,
 `p5_authorized=false`, and `v1_a_authorized=false`. Do not enter P5,
 BEA-v1-A, runtime promotion, method-winner claims, or broad retrieval expansion
 from P4K.
+
+## 2026-06-25 — BEA-v1-P4L: Locked Non-Python P4 Scheduler Validation
+
+### Objective
+
+Validate whether the frozen BEA-v1-P4 retrieval-action scheduler generalizes to
+the P4K-locked non-Python cross-source denominator. P4L is scheduler validation
+only: no selector/reranker, no P5, no BEA-v1-A, no provider calls, no parameter
+tuning, no threshold search, no new arms, no broad retrieval expansion, and no
+runtime/default promotion.
+
+### Implementation / validation
+
+Local checkpoint `5922826` added
+`eval/bea_v1_p4l_locked_non_python_scheduler_validation.py`, its manual workflow,
+aggregate default artifact, and bilingual docs. Follow-up checkpoint `251ae2b`
+classified live denominator drift as the valid No-Go
+`no_go_p4l_locked_denominator_unavailable`. Checkpoint `6034b3d` fixed the
+P4-treatment hard-cap gate: P4L reports reference-arm hard-cap violations, but
+the frozen P4 gate only constrains the P4 treatment arm. Checkpoint `e98839b`
+added a CI heartbeat wrapper after a prior run produced no artifact/output from
+the long evaluator step. Self-tests are 122/122.
+
+### Manual CI result
+
+Manual network-enabled CI run `28184096209` completed green in 2h33m08s with
+status `bea_v1_p4l_locked_non_python_scheduler_validation_pass`.
+
+P4L exactly reconstructed P4J/P4K (`333/61/272`) and locked the non-Python
+denominator at 272. It executed the four frozen arms and wrote 1088 private
+arm-outcome rows under `/tmp` only. Public aggregate arm metrics:
+
+| Arm | Reach | Mean pool | Mean latency | Hard-cap violations |
+|---|---:|---:|---:|---:|
+| baseline current pool | 0/272 | 13.871324 | 2.059338s | 0 |
+| P2 depth-only reference | 55/272 | 53.084559 | 1.863294s | 3 |
+| P3 constrained reference | 55/272 | 31.058824 | 3.626279s | 0 |
+| frozen P4 latency-aware scheduler | 52/272 | 30.194853 | 2.381607s | 0 |
+
+The frozen P4 scheduler retained `0.945455` of the P2 depth-only reach gain,
+reduced latency versus P3 (`p4_vs_p3_latency_ratio=0.656763`,
+`p4_latency_reduction_vs_p3=0.343237`), stayed within the pool gate
+(`p4_pool_growth_ratio=2.176782`), and had zero P4-treatment hard-cap
+violations. P2's three hard-cap violations are reference diagnostics only.
+`forbidden_scan.status=pass`.
+
+### Decision
+
+P4L validates the frozen P4 retrieval-action scheduler on the locked non-Python
+denominator. It still does not authorize P5 selector/reranker, BEA-v1-A,
+runtime/default promotion, method-winner claims, frozen P4 reruns, or broad
+retrieval expansion.

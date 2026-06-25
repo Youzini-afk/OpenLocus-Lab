@@ -3361,4 +3361,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P4K Exact Overlap Resolution & Locked Reservoir Audit 已完成为 locked-reservoir-ready（仅 design）**：local checkpoint `c6b7fc9`，manual CI run `28151914531`。
 - **状态**：`cross_source_locked_reservoir_ready_for_locked_p4_validation_design`。P4K 在 `/tmp` 下 rerun exact reconstruction audit，重建 P4H `73/73`、P4I `73/73`、P4J `333/333`，并复现 committed split `61` Python + `272` non-Python。
 - **Overlap 结果**：P4J 的 61 条 Python rows 与 P4H/P4I 重叠；post-overlap locked cross-source reservoir 为 `272/80`，全部来自 non-Python（`non_python_locked_reservoir_count=272`，`python_locked_reservoir_count=0`）。
-- **边界**：这解决了 P4J 的 unqualified-reservoir blocker，并且只授权设计后续 locked-denominator P4 validation phase。P4K 没有运行 scheduler arms，也不授权 locked/frozen P4 validation execution、frozen P4 rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。
+- **边界**：这解决了 P4J 的 unqualified-reservoir blocker，并且只授权设计后续 locked-denominator P4 validation phase。P4K 本身没有运行 scheduler arms；后续单独的 P4L phase 执行了 locked scheduler validation。P4K 不授权 frozen P4 rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。
+
+## BEA-v1-P4L 发现
+
+- **BEA-v1-P4L Locked Non-Python P4 Scheduler Validation 已完成为 scheduler-validation pass**：local checkpoint `5922826`，denominator-drift classifier fix `251ae2b`，P4 treatment hard-cap gate fix `6034b3d`，heartbeat workflow patch `e98839b`，manual CI run `28184096209`。
+- **状态**：`bea_v1_p4l_locked_non_python_scheduler_validation_pass`。P4L 精确重建完整 P4J/P4K split（`333/61/272`），将 locked non-Python denominator 固定为 `272`，执行四个 frozen scheduler arms，并只在 `/tmp` 写出 1088 条 private arm-outcome rows。
+- **Scheduler 结果**：baseline current pool reach 为 `0/272`；P2 depth-only reference 为 `55/272`；P3 constrained reference 为 `55/272`；frozen P4 latency-aware scheduler 为 `52/272`。P4 保留 P2 gain 的 `0.945455`，`p4_vs_p3_latency_ratio=0.656763`，`p4_latency_reduction_vs_p3=0.343237`，`p4_pool_growth_ratio=2.176782`，并且 P4-treatment hard-cap violations 为 0。P2 有 3 次 hard-cap violations，但这只是 reference diagnostics。
+- **边界**：P4L 验证了 frozen P4 retrieval-action scheduler 在 locked non-Python denominator 上成立。它不授权 P5 selector/reranker、BEA-v1-A selector work、runtime/default promotion、method-winner 声明、broad retrieval expansion、frozen P4 rerun 或任何未来 locked-P4 promotion/default step。

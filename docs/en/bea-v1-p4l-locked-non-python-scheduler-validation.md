@@ -124,8 +124,38 @@ python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py \
 
 ## CI result
 
-Pending. The network-enabled CI run has not yet been executed. The default
-no-network artifact is `unavailable_with_reason` (honest, not a pass).
+Manual network-enabled CI run `28184096209` completed green in 2h33m08s after
+the heartbeat workflow patch `e98839b`. Earlier attempts are superseded:
+
+- `28160078060` exposed a false No-Go caused by summing reference-arm hard-cap
+  violations into the P4 treatment gate.
+- `28166304912` correctly reported live reconstruction drift as a denominator
+  No-Go under the corrected classifier.
+- `28175852713` failed before P4L because FD1 replay only rebuilt 215/239
+  groups.
+- `28178712989` regenerated FD1 successfully but the evaluator step produced no
+  artifact, so `e98839b` added a CI heartbeat wrapper without changing the
+  validator.
+
+Final status: `bea_v1_p4l_locked_non_python_scheduler_validation_pass`.
+
+The final artifact exactly reconstructs P4J/P4K (`333/61/272`) and the locked
+non-Python denominator (`272`). All scheduler arms executed and private arm
+outcomes were written under `/tmp` only (`record_count=1088`). Public aggregate
+metrics:
+
+| Arm | Reach | Mean pool | Mean latency | Hard-cap violations |
+|---|---:|---:|---:|---:|
+| baseline current pool | 0/272 | 13.871324 | 2.059338s | 0 |
+| P2 depth-only reference | 55/272 | 53.084559 | 1.863294s | 3 |
+| P3 constrained reference | 55/272 | 31.058824 | 3.626279s | 0 |
+| frozen P4 latency-aware scheduler | 52/272 | 30.194853 | 2.381607s | 0 |
+
+P4 preserved `0.945455` of the P2 depth-only reach gain, improved reach by 52
+over baseline, reduced latency versus P3 by `0.343237` (`p4_vs_p3_latency_ratio=0.656763`),
+kept pool growth within cap (`2.176782`), and had zero P4-treatment hard-cap
+violations. The 3 hard-cap violations on P2 are reference-arm diagnostics only.
+`forbidden_scan.status=pass`.
 
 ## Caveats
 
@@ -134,8 +164,9 @@ no-network artifact is `unavailable_with_reason` (honest, not a pass).
   BEA-v1-A, retrieval-expansion, selector/reranker, parameter-tuning,
   threshold-search, new-arms, or runtime/default-promotion authorization claim.
 - The pass status means this P4L locked scheduler validation ran and passed its
-  frozen gates. It does NOT authorize P5, BEA-v1-A, runtime promotion,
-  method-winner claims, broad retrieval expansion, selector/reranker execution,
-  frozen P4 rerun, or any future locked-P4 validation/promotion step.
+  frozen gates on the 272-record non-Python denominator. It does NOT authorize
+  P5, BEA-v1-A, runtime promotion, method-winner claims, broad retrieval
+  expansion, selector/reranker execution, frozen P4 reruns, or any future
+  locked-P4 promotion/default step.
 - The frozen thresholds are from prior P4; no post-hoc tuning.
 - Gold/private labels are used only for evaluation/scoring file-miss.

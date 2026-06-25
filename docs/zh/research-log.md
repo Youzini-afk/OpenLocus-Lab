@@ -10238,3 +10238,50 @@ locked-denominator P4 validation phase。它没有执行该 validation：
 `frozen_p4_rerun_authorized=false`，`p5_authorized=false`，`v1_a_authorized=false`。
 不要从 P4K 进入 P5、BEA-v1-A、runtime promotion、method-winner 声明或 broad
 retrieval expansion。
+
+## 2026-06-25 — BEA-v1-P4L：Locked Non-Python P4 Scheduler Validation
+
+### 目标
+
+验证 frozen BEA-v1-P4 retrieval-action scheduler 是否能泛化到 P4K 锁定的 non-Python
+cross-source denominator。P4L 仅是 scheduler validation：不做 selector/reranker、P5、
+BEA-v1-A、provider calls、参数调优、阈值搜索、新 arms、broad retrieval expansion，
+也不做 runtime/default promotion。
+
+### 实现 / 验证
+
+Local checkpoint `5922826` 新增
+`eval/bea_v1_p4l_locked_non_python_scheduler_validation.py`、manual workflow、聚合默认
+artifact 与双语 docs。Follow-up checkpoint `251ae2b` 将 live denominator drift 分类为
+有效 No-Go `no_go_p4l_locked_denominator_unavailable`。Checkpoint `6034b3d` 修正
+P4-treatment hard-cap gate：P4L 会报告 reference-arm hard-cap violations，但 frozen P4
+gate 只约束 P4 treatment arm。Checkpoint `e98839b` 在一次长 evaluator step 没有 artifact/
+output 后加入 CI heartbeat wrapper。Self-tests 为 122/122。
+
+### Manual CI 结果
+
+Manual network-enabled CI run `28184096209` 绿色完成（2h33m08s），status 为
+`bea_v1_p4l_locked_non_python_scheduler_validation_pass`。
+
+P4L 精确重建 P4J/P4K（`333/61/272`），并将 non-Python denominator 锁定为 272。它执行
+四个 frozen arms，并只在 `/tmp` 写出 1088 条 private arm-outcome rows。公开聚合 arm
+metrics：
+
+| Arm | Reach | Mean pool | Mean latency | Hard-cap violations |
+|---|---:|---:|---:|---:|
+| baseline current pool | 0/272 | 13.871324 | 2.059338s | 0 |
+| P2 depth-only reference | 55/272 | 53.084559 | 1.863294s | 3 |
+| P3 constrained reference | 55/272 | 31.058824 | 3.626279s | 0 |
+| frozen P4 latency-aware scheduler | 52/272 | 30.194853 | 2.381607s | 0 |
+
+Frozen P4 scheduler 保留 P2 depth-only reach gain 的 `0.945455`，相对 P3 降低 latency
+（`p4_vs_p3_latency_ratio=0.656763`，`p4_latency_reduction_vs_p3=0.343237`），保持在
+pool gate 内（`p4_pool_growth_ratio=2.176782`），并且 P4-treatment hard-cap violations
+为 0。P2 的 3 次 hard-cap violations 只是 reference diagnostics。
+`forbidden_scan.status=pass`。
+
+### 决策
+
+P4L 验证 frozen P4 retrieval-action scheduler 在 locked non-Python denominator 上成立。
+它仍不授权 P5 selector/reranker、BEA-v1-A、runtime/default promotion、method-winner
+声明、frozen P4 rerun 或 broad retrieval expansion。
