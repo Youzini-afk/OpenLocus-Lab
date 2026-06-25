@@ -10120,3 +10120,40 @@ P4H 没有在不相交 heldout 分母上验证 P4。它也不推翻 P4 的 119-r
 本次 No-Go 的具体含义是，在精确排除 prior 后，可用的不相交 ContextBench/RepoQA frame
 只产出 73/80 条 baseline file-miss heldout records。不要从 P4H 进入 P5 selector/
 reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。
+
+## 2026-06-24 — BEA-v1-P4I：不相交分母蓄水池审计
+
+### 目标
+
+审计 P4H denominator blocker 是 sampling artifact，还是当前受支持 ContextBench/RepoQA
+Python frame 中真实的 source/reservoir limitation。P4I 仅是 denominator/source audit。
+它不运行 scheduler arms、selector/reranker 逻辑、retrieval expansion、provider calls 或
+P5/v1-A。
+
+### 实现 / 验证
+
+Local checkpoint `a834733` 新增 `eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py`、
+manual CI workflow、aggregate artifact 与双语 docs。Local review 期间，审计被收紧：
+network-enabled run 必须使用 FD1 中的 exact BEA-4/5 prior exclusion；P4H exact-key
+overlap 被显式标为 unresolved（`p4h_overlap_resolved=false`）；除非 reservoir 被证明为
+qualified all-prior-disjoint，否则 reservoir upper bound 不能授权 frozen P4H rerun。
+Self-test count 为 88/88。
+
+### Manual CI 结果
+
+Manual CI run `28137455572` 绿色完成，用时 1h09m47s。公开 artifact 是有效 aggregate
+No-Go，`status=no_go_disjoint_denominator_reservoir_insufficient`。
+
+Workflow 在 `/tmp` 下重新生成 FD1 private decomposition，验证 239 / 86040 replay，并运行
+P4I full-frame reservoir audit。它取到 366 条 raw rows，从 FD1 精确排除 239 条 BEA-4/5
+prior raw keys，尝试 127 条非 prior candidate rows，观察到 54 条 baseline-reached rows，
+只找到 73 条 FD1-excluded file-miss reservoir records。FD1-excluded upper bound 为
+73/80；`qualified_denominator_reservoir_count=0`，因为 P4H 的 73 条 exact selected keys
+没有提交，overlap 仍未解决。`forbidden_scan.status=pass`。
+
+### 决策
+
+P4I 确认 P4H denominator blocker 不只是 fixed-tail sampling。当前受支持
+ContextBench/RepoQA Python frame 在 exact prior exclusion 后仍只产出 73/80 条
+FD1-excluded file-miss reservoir records。不要从 P4I 运行 frozen P4H rerun、P5
+selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。

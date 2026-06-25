@@ -10894,3 +10894,43 @@ available disjoint ContextBench/RepoQA frame yielded only 73/80 baseline
 file-miss heldout records after exact prior exclusion. Do not enter P5
 selector/reranker work, BEA-v1-A, runtime promotion, method-winner claims, or
 broad retrieval expansion from P4H.
+
+## 2026-06-24 — BEA-v1-P4I: Disjoint Denominator Reservoir Audit
+
+### Objective
+
+Audit whether the P4H denominator blocker is a sampling artifact or a genuine
+source/reservoir limitation in the currently supported ContextBench/RepoQA
+Python frame. P4I is a denominator/source audit only. It does not run scheduler
+arms, selector/reranker logic, retrieval expansion, provider calls, or P5/v1-A.
+
+### Implementation / validation
+
+Local checkpoint `a834733` added `eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py`,
+a manual CI workflow, aggregate artifact, and bilingual docs. During local
+review, the audit was tightened so exact BEA-4/5 prior exclusion from FD1 must
+be used for network-enabled runs, P4H exact-key overlap is explicitly unresolved
+(`p4h_overlap_resolved=false`), and a reservoir upper bound cannot authorize a
+frozen P4H rerun unless it is qualified as all-prior-disjoint. Self-test count is
+88/88.
+
+### Manual CI result
+
+Manual CI run `28137455572` completed green in 1h09m47s. The public artifact is
+a valid aggregate No-Go with `status=no_go_disjoint_denominator_reservoir_insufficient`.
+
+The workflow regenerated FD1 private decomposition under `/tmp`, validated the
+239 / 86040 replay, and ran the P4I full-frame reservoir audit. It fetched 366
+raw rows, excluded 239 exact BEA-4/5 prior raw keys from FD1, attempted 127
+non-prior candidate rows, observed 54 baseline-reached rows, and found only 73
+FD1-excluded file-miss reservoir records. The FD1-excluded upper bound is 73/80;
+`qualified_denominator_reservoir_count=0` because P4H's exact 73 selected keys
+are not committed and overlap remains unresolved. `forbidden_scan.status=pass`.
+
+### Decision
+
+P4I confirms the P4H denominator blocker is not merely fixed-tail sampling. The
+currently supported ContextBench/RepoQA Python frame still yields only 73/80
+FD1-excluded file-miss reservoir records after exact prior exclusion. Do not run
+frozen P4H rerun, P5 selector/reranker, BEA-v1-A, runtime promotion,
+method-winner claims, or broad retrieval expansion from P4I.

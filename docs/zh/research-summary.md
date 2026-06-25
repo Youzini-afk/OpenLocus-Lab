@@ -3340,3 +3340,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`no_go_p4h_insufficient_denominator`。Workflow 在 `/tmp` 下重建 FD1 private decomposition，验证 239 / 86040 replay，并运行 raw external full-frame 不相交分母扫描。它产出了有效聚合 artifact，但 heldout 分母只有 73/80，因此未运行 scheduler arms。
 - **分母结果**：基于 FD1 private raw-key 的精确排除移除了 239 条 BEA-4/5 prior records。扫描取到 266 条 ContextBench 和 100 条 RepoQA rows，排除 162 条 ContextBench + 77 条 RepoQA exact prior rows，尝试 104 条 ContextBench + 23 条 RepoQA candidate rows，找到 61 条 ContextBench + 12 条 RepoQA baseline file-miss records。`raw_scan_attempted_records=127`，`raw_scan_yield_file_miss_records=73`，`private_scheduler_rows=0`，`retrieval_policy_executed=false`。
 - **决策**：P4H 未能在不相交 heldout 分母上验证 P4，也不授权 P5 selector/reranker、BEA-v1-A、runtime promotion 或 broad retrieval expansion。P4 仍是 bounded same-frame scheduler pass；当前直接 blocker 是现有 ContextBench/RepoQA frame 下不相交 heldout file-miss 分母不足。
+
+## BEA-v1-P4I 发现
+
+- **BEA-v1-P4I Disjoint Denominator Reservoir Audit 已完成为 reservoir No-Go**：local checkpoint `a834733`，manual CI run `28137455572`。
+- **状态**：`no_go_disjoint_denominator_reservoir_insufficient`。P4I 只用 baseline/current candidate-pool diagnostic arm 扫描受支持 ContextBench/RepoQA Python frame，没有运行 P2/P3/P4 scheduler arms、selector/reranker 逻辑、retrieval expansion 或 provider calls。
+- **Reservoir 结果**：审计取到 366 条 raw rows，从 FD1 private replay 精确排除 239 条 BEA-4/5 prior raw keys，尝试 127 条非 prior candidate rows，观察到 54 条 baseline-reached rows，只找到 73 条 FD1-excluded file-miss reservoir records。`reservoir_upper_bound_count=73`，`qualified_denominator_reservoir_count=0`，`p4h_overlap_resolved=false`，因为 P4H exact selected keys 没有提交。
+- **决策**：P4H 的 denominator blocker 被确认为当前受支持 ContextBench/RepoQA Python frame 的 source/reservoir limitation，不只是 fixed-tail sampling error。不要从 P4I 进入 frozen P4H rerun、P5 selector/reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。

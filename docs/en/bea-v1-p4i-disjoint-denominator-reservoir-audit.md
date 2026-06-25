@@ -202,6 +202,42 @@ python3 eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py \
    self_test_checks_total=88, self_test_checks_passed=88)
 ```
 
+## CI result
+
+Manual CI run `28137455572` completed green in 1h09m47s and produced a valid
+aggregate No-Go artifact, not a reservoir-ready result. Status is
+`no_go_disjoint_denominator_reservoir_insufficient`.
+
+The workflow regenerated FD1 private decomposition under `/tmp`, validated the
+239 / 86040 replay, and ran the P4I full-frame reservoir audit over the
+supported ContextBench/RepoQA Python frames. The audit fetched 366 raw rows
+(266 ContextBench + 100 RepoQA), excluded 239 exact BEA-4/5 prior raw keys from
+FD1, attempted 127 non-prior candidate rows, observed 54 baseline-reached rows,
+and found only 73 FD1-excluded file-miss reservoir records. The upper-bound
+reservoir is therefore 73/80; qualified all-prior-disjoint reservoir remains 0
+because P4H's 73 exact selected keys are aggregate-only/private and overlap is
+not resolved.
+
+Aggregate CI metrics:
+
+- `status=no_go_disjoint_denominator_reservoir_insufficient`
+- `denominator_count=73`
+- `reservoir_upper_bound_count=73`
+- `qualified_denominator_reservoir_count=0`
+- `p4h_overlap_resolved=false`
+- `raw_scan_fetched_records=366`
+- `raw_scan_attempted_records=127`
+- `raw_scan_yield_file_miss_records=73`
+- `raw_scan_prior_exact_excluded_records=239`
+- `raw_scan_baseline_reached_records=54`
+- `self_test_checks_total=88`, `self_test_checks_passed=88`
+- `forbidden_scan.status=pass`
+
+This confirms the P4H blocker is a reservoir/source limitation in the currently
+supported ContextBench/RepoQA Python frame, not merely a fixed-tail sampling
+mistake. P4I does not authorize frozen P4H rerun, P5 selector/reranker,
+BEA-v1-A, runtime promotion, method-winner claims, or broad retrieval expansion.
+
 ## Caveats
 
 - P4I is a denominator/source audit only. It is not a benchmark/leaderboard,

@@ -176,6 +176,39 @@ python3 eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py \
    self_test_checks_total=88, self_test_checks_passed=88)
 ```
 
+## CI 结果
+
+Manual CI run `28137455572` 绿色完成，用时 1h09m47s，并产出有效 aggregate No-Go
+artifact，不是 reservoir-ready 结果。Status 为
+`no_go_disjoint_denominator_reservoir_insufficient`。
+
+Workflow 在 `/tmp` 下重新生成 FD1 private decomposition，验证 239 / 86040 replay，
+并在受支持 ContextBench/RepoQA Python frame 上运行 P4I full-frame reservoir audit。
+审计取到 366 条 raw rows（ContextBench 266 + RepoQA 100），从 FD1 中精确排除 239 条
+BEA-4/5 prior raw keys，尝试 127 条非 prior candidate rows，观察到 54 条
+baseline-reached rows，只找到 73 条 FD1-excluded file-miss reservoir records。因此
+upper-bound reservoir 为 73/80；qualified all-prior-disjoint reservoir 仍为 0，原因是
+P4H 的 73 条 exact selected keys 只有 aggregate/private 信息，overlap 未解决。
+
+聚合 CI 指标：
+
+- `status=no_go_disjoint_denominator_reservoir_insufficient`
+- `denominator_count=73`
+- `reservoir_upper_bound_count=73`
+- `qualified_denominator_reservoir_count=0`
+- `p4h_overlap_resolved=false`
+- `raw_scan_fetched_records=366`
+- `raw_scan_attempted_records=127`
+- `raw_scan_yield_file_miss_records=73`
+- `raw_scan_prior_exact_excluded_records=239`
+- `raw_scan_baseline_reached_records=54`
+- `self_test_checks_total=88`，`self_test_checks_passed=88`
+- `forbidden_scan.status=pass`
+
+这确认 P4H blocker 是当前受支持 ContextBench/RepoQA Python frame 的 reservoir/source
+限制，而不只是 fixed-tail sampling mistake。P4I 不授权 frozen P4H rerun、P5 selector/
+reranker、BEA-v1-A、runtime promotion、method-winner 声明或 broad retrieval expansion。
+
 ## 注意事项
 
 - P4I 仅是分母/来源审计。它不是 benchmark/leaderboard、default-policy、
