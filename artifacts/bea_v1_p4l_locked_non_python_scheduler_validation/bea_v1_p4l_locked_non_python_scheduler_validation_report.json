@@ -1,0 +1,574 @@
+{
+  "aggregate_metrics_publication": "aggregate_only_p4l_locked_non_python_scheduler_validation",
+  "aggregate_only_public_artifact": true,
+  "aggregate_runtime_seconds": 0.0,
+  "algorithm_changed_during_bea_v1_p4l": false,
+  "arm_metrics_records": [],
+  "b16k_executed": false,
+  "backend_changed": false,
+  "bea_v1_p4l_audit_evaluator_latency_not_in_relevance": true,
+  "bea_v1_p4l_audit_evaluator_no_broad_retrieval_expansion": true,
+  "bea_v1_p4l_audit_evaluator_no_new_arms": true,
+  "bea_v1_p4l_audit_evaluator_no_p5_selector": true,
+  "bea_v1_p4l_audit_evaluator_no_parameter_tuning": true,
+  "bea_v1_p4l_audit_evaluator_no_provider_calls": true,
+  "bea_v1_p4l_audit_evaluator_no_role_proxy": true,
+  "bea_v1_p4l_audit_evaluator_no_runtime_default_promotion": true,
+  "bea_v1_p4l_audit_evaluator_no_selector_executed": true,
+  "bea_v1_p4l_audit_evaluator_no_threshold_search": true,
+  "bea_v1_p4l_audit_evaluator_no_v1_a": true,
+  "bea_v1_p4l_audit_evaluator_no_weight_tuning": true,
+  "broad_retrieval_expansion_authorized": false,
+  "budget": 5,
+  "calibration_claimed": false,
+  "claim_level": "bea_v1_p4l_locked_non_python_scheduler_validation_only",
+  "dataset_license_status": "unknown_dataset_license",
+  "default_policy_changed": false,
+  "default_should_change": false,
+  "denominator_exact_match": false,
+  "denominator_source_protocol": "locked_non_python_scheduler_validation.v1",
+  "derived_row_level_publication_allowed": false,
+  "diagnostic_arm": "current_bea_candidate_pool_replay",
+  "downstream_agent_value_proven": false,
+  "evidencecore_semantics_changed": false,
+  "exact_prior_exclusion_used": false,
+  "expected_locked_denominator_count": 272,
+  "expected_p4j_reconstructed_non_python_count": 272,
+  "expected_p4j_reconstructed_python_count": 61,
+  "expected_p4j_reconstructed_upper_bound_count": 333,
+  "external_benchmark_performance_claimed": false,
+  "failure_category_count_records": [
+    {
+      "count": 0,
+      "failure_category": "baseline_reach_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "cross_source_asset_decompress_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "cross_source_asset_download_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "denominator_mapping_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "denominator_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "depth_reference_reach_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "duplicate_record_key_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_availability_table_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_category_summary_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_count_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_group_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_manifest_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_records_decomposed_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_forbidden_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_manifest_hash_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_manifest_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_records_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_schema_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_schema_version_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_leak_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "locked_denominator_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "locked_denominator_unavailable"
+    },
+    {
+      "count": 1,
+      "failure_category": "network_required_but_disabled"
+    },
+    {
+      "count": 0,
+      "failure_category": "openlocus_binary_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "p3_reference_reach_drift"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_locked_count_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_split_or_overlap_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4l_arms_not_executed"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4l_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4l_scan_not_attempted"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4l_scheduler_validation_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_clone_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_scan_not_attempted"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_policy_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "scanner_self_test_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "unexpected_exception"
+    }
+  ],
+  "failure_reason_category": "network_required_but_disabled",
+  "fd1_artifact_modified": false,
+  "fd1_artifact_read": false,
+  "fd1_private_decomposition_parsed": false,
+  "fd1_private_decomposition_replay_executed_by_workflow": false,
+  "fd1_private_decomposition_replay_supplied": false,
+  "fd1_private_decomposition_replay_validated": false,
+  "fd2b_executed": false,
+  "fd2c_executed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "framing": {
+    "calibration_claimed": false,
+    "default_change_claimed": false,
+    "downstream_agent_value_claimed": false,
+    "external_benchmark_performance_claimed": false,
+    "future_locked_p4_validation_authorized": false,
+    "is_full_external_benchmark_evaluation": false,
+    "is_latency_in_relevance": false,
+    "is_locked_non_python_scheduler_validation": true,
+    "leaderboard_entry_claimed": false,
+    "method_winner_claimed": false,
+    "p4l_locked_scheduler_validation_executed": false,
+    "promotion_claimed": false,
+    "retrieval_expansion_claimed": false,
+    "scheduler_validation_claimed": false,
+    "selector_or_reranker_executed": false,
+    "signal_strength": "bea_v1_p4l_locked_non_python_scheduler_validation_aggregate_only"
+  },
+  "frozen_p4_rerun_authorized": false,
+  "frozen_p4_validation_executed": false,
+  "future_locked_p4_validation_authorized": false,
+  "gate_records": [
+    {
+      "gate": "p4j_reconstructed_upper_bound_exact",
+      "passed": false,
+      "threshold_relation": "==",
+      "threshold_value": 333.0,
+      "value": 0.0
+    },
+    {
+      "gate": "p4j_reconstructed_python_split_exact",
+      "passed": false,
+      "threshold_relation": "==",
+      "threshold_value": 61.0,
+      "value": 0.0
+    },
+    {
+      "gate": "locked_denominator_non_python_exact",
+      "passed": false,
+      "threshold_relation": "==",
+      "threshold_value": 272.0,
+      "value": 0.0
+    },
+    {
+      "gate": "exact_prior_exclusion_used",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    },
+    {
+      "gate": "scheduler_arms_executed",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 0.0
+    },
+    {
+      "gate": "p4_reach_gt_baseline",
+      "passed": false,
+      "threshold_relation": ">",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "p4_retained_gain_ratio_min",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 0.75,
+      "value": 0.0
+    },
+    {
+      "gate": "p4_latency_ratio_max",
+      "passed": true,
+      "threshold_relation": "<=",
+      "threshold_value": 2.0,
+      "value": 0.0
+    },
+    {
+      "gate": "p4_latency_reduction_min",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 0.1,
+      "value": 0.0
+    },
+    {
+      "gate": "p4_pool_growth_max",
+      "passed": true,
+      "threshold_relation": "<=",
+      "threshold_value": 4.0,
+      "value": 0.0
+    },
+    {
+      "gate": "hard_cap_violations_zero",
+      "passed": true,
+      "threshold_relation": "==",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "subgroup_collapse_guard",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 1.0
+    },
+    {
+      "gate": "forbidden_scan_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1.0,
+      "value": 1.0
+    },
+    {
+      "gate": "provider_calls_made",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "latency_in_candidate_relevance",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "selector_or_reranker_executed",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "method_winner_logic_executed",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "parameter_tuning_executed",
+      "passed": true,
+      "threshold_relation": "boolean_false",
+      "threshold_value": 0.0,
+      "value": 0.0
+    },
+    {
+      "gate": "blocking_failure_count",
+      "passed": true,
+      "threshold_relation": "==",
+      "threshold_value": 0.0,
+      "value": 0.0
+    }
+  ],
+  "generated_at": "2026-06-25T09:16:58.242010+00:00",
+  "generated_by": "eval/bea_v1_p4l_locked_non_python_scheduler_validation.py",
+  "gold_labels_used_for_policy": false,
+  "gold_labels_used_for_query_construction": false,
+  "gold_labels_used_for_selection": false,
+  "hard_cap_violation_count_total": 0,
+  "latency_in_candidate_relevance": false,
+  "leaderboard_entry_claimed": false,
+  "legacy_role_proxy_p4_executed": false,
+  "locked_denominator_count": 0,
+  "locked_non_python_scheduler_validation_only": true,
+  "locked_p4_validation_authorized": false,
+  "method_winner_authorized": false,
+  "method_winner_claimed": false,
+  "methods": [
+    "bm25",
+    "regex",
+    "symbol"
+  ],
+  "mode": "bea_v1_p4l_locked_non_python_scheduler_validation",
+  "network_mode": "disabled_opt_in",
+  "new_arms_added": false,
+  "new_records_added_during_bea_v1_p4l": false,
+  "openlocus_binary_source": "default",
+  "p2_depth_only_reference_executed": false,
+  "p3_constrained_depth_policy_reference_executed": false,
+  "p4_delta_vs_baseline_reach": 0,
+  "p4_latency_aware_action_scheduler_executed": false,
+  "p4_latency_reduction_vs_p3": 0.0,
+  "p4_pool_growth_ratio": 0.0,
+  "p4_retained_gain_ratio": 0.0,
+  "p4_vs_p3_latency_ratio": 0.0,
+  "p4h_artifact_read": false,
+  "p4i_artifact_read": false,
+  "p4j_artifact_read": false,
+  "p4j_reconstructed_non_python_count": 0,
+  "p4j_reconstructed_python_count": 0,
+  "p4j_reconstructed_upper_bound_count": 0,
+  "p4k_artifact_read": false,
+  "p4l_locked_scheduler_validation_executed": false,
+  "p5_authorized": false,
+  "p5_executed": false,
+  "pack_builder_changed": false,
+  "parameter_tuning_executed": false,
+  "phase": "BEA-v1-P4L",
+  "policy_arms": [
+    "baseline_current_candidate_pool",
+    "p2_depth_only_reference",
+    "p3_constrained_depth_policy_reference",
+    "p4_latency_aware_action_scheduler_frozen"
+  ],
+  "posthoc_threshold_search": false,
+  "private_decomposition_used_for_selection": false,
+  "private_key_hashes_publicly_serialized": false,
+  "private_manifest_record_count": 0,
+  "private_manifest_records": [
+    {
+      "manifest_hash": "",
+      "manifest_name": "fd1_private_decomposition_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "",
+      "storage_class": "fd1_committed_artifact"
+    }
+  ],
+  "promotion_ready": false,
+  "provider_calls_made": false,
+  "query_anchors_used_in_p4_arm": false,
+  "records_decomposed": 0,
+  "records_only_public_artifact": true,
+  "remote_provider_calls_made": false,
+  "retrieval_policy_executed": false,
+  "retriever_changed": false,
+  "role_proxy_assigned": false,
+  "row_level_redistribution_allowed": false,
+  "runtime_behavior_changed": false,
+  "runtime_promotion_authorized": false,
+  "scheduler_arms_executed": false,
+  "scheduler_validation_only": true,
+  "schema_version": "bea_v1_p4l_locked_non_python_scheduler_validation.v1",
+  "selector_or_reranker_changed": false,
+  "selector_or_reranker_executed": false,
+  "self_test_checks_passed": 119,
+  "self_test_checks_total": 119,
+  "self_test_passed": true,
+  "source_run_records": [
+    {
+      "audit_objective": "validate_frozen_p4_scheduler_generalizes_to_locked_non_python_denominator",
+      "audited_private_manifest_record_count": 0,
+      "audited_records_decomposed": 0,
+      "config_hash": "fd8f9289e4b2783964999c270c48a64624998f0cc517eb83f5ee83ad30902253",
+      "denominator_source_protocol": "locked_non_python_scheduler_validation.v1",
+      "expected_private_manifest_record_count": 86040,
+      "expected_records_decomposed": 239,
+      "fd1_private_decomposition_group_count": 0,
+      "fd1_private_decomposition_parsed": false,
+      "fd1_private_decomposition_row_count": 0,
+      "fd1_private_decomposition_supplied": false,
+      "fd1_source_artifact_hash": "",
+      "fd1_source_schema_version": "",
+      "locked_denominator_count": 272,
+      "p4h_artifact_read": false,
+      "p4i_artifact_read": false,
+      "p4j_artifact_read": false,
+      "p4k_artifact_read": false,
+      "p4k_committed_locked_count": 272,
+      "p4k_committed_status": "",
+      "p4k_p4h_reconstructed_count": 73,
+      "p4k_p4i_reconstructed_count": 73,
+      "p4k_p4j_non_python_split": 272,
+      "p4k_p4j_overlap": 61,
+      "p4k_p4j_python_split": 61,
+      "p4k_p4j_reconstructed_count": 333,
+      "replay_artifact_supplied": false,
+      "replay_artifact_validated": false,
+      "replay_mismatch_reason": "",
+      "replay_protocol_match": false,
+      "source_checkpoint": "dccfb64",
+      "source_ci_run_id": "28151914531",
+      "source_locked_denominator_count": 272,
+      "source_phase": "BEA-v1-P4K",
+      "source_sampling_protocol": "bea_fd1_failure_decomposition.v1",
+      "source_status": "cross_source_locked_reservoir_ready_for_locked_p4_validation_design",
+      "v1_p4_result_checkpoint": "f0e99ca",
+      "v1_p4_result_status": "bea_v1_p4_latency_aware_retrieval_scheduler_pass"
+    }
+  ],
+  "source_sampling_protocol": "bea_fd1_failure_decomposition.v1",
+  "status": "unavailable_with_reason",
+  "stop_go_records": [
+    {
+      "baseline_reach": 0,
+      "broad_retrieval_expansion_authorized": false,
+      "denominator_exact_match": false,
+      "exact_prior_exclusion_used": false,
+      "expected_locked_denominator_count": 272,
+      "expected_p4j_reconstructed_non_python_count": 272,
+      "expected_p4j_reconstructed_python_count": 61,
+      "expected_p4j_reconstructed_upper_bound_count": 333,
+      "frozen_p4_rerun_authorized": false,
+      "future_locked_p4_validation_authorized": false,
+      "hard_cap_violation_count_total": 0,
+      "locked_denominator_count": 0,
+      "locked_p4_validation_authorized": false,
+      "method_winner_authorized": false,
+      "p4_latency_reduction_vs_p3": 0.0,
+      "p4_pool_growth_ratio": 0.0,
+      "p4_reach": 0,
+      "p4_retained_gain_ratio": 0.0,
+      "p4_vs_p3_latency_ratio": 0.0,
+      "p4j_reconstructed_non_python_count": 0,
+      "p4j_reconstructed_python_count": 0,
+      "p4j_reconstructed_upper_bound_count": 0,
+      "p4l_locked_scheduler_validation_executed": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "scheduler_arms_executed": false,
+      "stop_go_decision": "unavailable_with_reason",
+      "stop_go_reason": "network_required_but_disabled",
+      "subgroup_collapse_detected": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "subgroup_records": [],
+  "threshold_search_executed": false,
+  "v031_tuning_executed": false,
+  "v032_tuning_executed": false,
+  "v03_tuned_during_bea_v1_p4l": false,
+  "v04_full_matrix_claimed": false,
+  "v1_a_authorized": false,
+  "v1_a_coverage_preserving_selector_promoted": false,
+  "v1_a_selector_executed": false,
+  "weights_tuned_during_bea_v1_p4l": false
+}

@@ -1,0 +1,418 @@
+name: bea-v1-p4l-locked-non-python-scheduler-validation
+
+# BEA-v1-P4L Locked Non-Python P4 Scheduler Validation (manual opt-in).
+# MANUAL ONLY via workflow_dispatch. Does NOT run on PR/push. Uses no
+# model/provider secrets. Regenerates the FD1 private decomposition under
+# /tmp, validates the 239-record / 86040-row replay, reconstructs the P4K
+# locked non-Python denominator (272 records), runs the 4 frozen scheduler
+# arms (baseline, P2 depth, P3 constrained, P4 latency-aware frozen), validates
+# the report fail-closed, and uploads only the public aggregate report.
+#
+# P4L is a bounded scheduler-validation phase after the P4K result (checkpoint
+# dccfb64, CI 28151914531, locked non-Python denominator 272). It does NOT run
+# P5, BEA-v1-A, selector/reranker, runtime/default promotion, method-winner
+# logic, parameter tuning, threshold search, new arms, broad retrieval
+# expansion, or frozen P4 rerun on the old Python denominator.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real external benchmark + repository network access for FD1 replay + P4L locked denominator reconstruction + scheduler validation (no model/provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-p4l-locked-non-python-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-v1-p4l-locked-non-python-scheduler-validation:
+    name: bea-v1-p4l-locked-non-python-scheduler-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile BEA-v1-P4L evaluator
+        run: python3 -m py_compile eval/bea_v1_p4l_locked_non_python_scheduler_validation.py
+
+      - name: py_compile BEA-v1-P4K evaluator
+        run: python3 -m py_compile eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py
+
+      - name: py_compile BEA-v1-P4J evaluator
+        run: python3 -m py_compile eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py
+
+      - name: py_compile BEA-v1-P4I evaluator
+        run: python3 -m py_compile eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py
+
+      - name: py_compile BEA-v1-P4H evaluator
+        run: python3 -m py_compile eval/bea_v1_p4h_disjoint_scheduler_validation.py
+
+      - name: py_compile BEA-FD1 evaluator
+        run: python3 -m py_compile eval/bea_fd1_failure_decomposition.py
+
+      - name: BEA-v1-P4L self-test (no network)
+        run: python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test
+
+      - name: BEA-v1-P4K self-test (no network)
+        run: python3 eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py --self-test
+
+      - name: BEA-v1-P4J self-test (no network)
+        run: python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py --self-test
+
+      - name: BEA-v1-P4I self-test (no network)
+        run: python3 eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py --self-test
+
+      - name: BEA-v1-P4H self-test (no network)
+        run: python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py --self-test
+
+      - name: BEA-FD1 self-test (no network)
+        run: python3 eval/bea_fd1_failure_decomposition.py --self-test
+
+      - name: Regenerate FD1 private decomposition (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          # Private directories MUST live under /tmp, NOT $RUNNER_TEMP.
+          fd1_private_dir="/tmp/bea_v1_p4l_fd1_private_${GITHUB_RUN_ID:-manual}"
+          fd1_replay_report="/tmp/bea_v1_p4l_fd1_replay_report_${GITHUB_RUN_ID:-manual}.json"
+          rm -rf "$fd1_private_dir"
+          mkdir -p "$fd1_private_dir"
+          python3 eval/bea_fd1_failure_decomposition.py \
+            --enable-external-benchmark-network \
+            --private-decomposition-dir "$fd1_private_dir" \
+            --openlocus target/release/openlocus \
+            --out "$fd1_replay_report"
+          jsonl_path="$fd1_private_dir/bea_fd1.decomposition.jsonl"
+          if [[ ! -f "$jsonl_path" ]]; then
+            echo "ERROR: FD1 private decomposition JSONL not found" >&2
+            exit 1
+          fi
+          row_count=$(wc -l < "$jsonl_path")
+          if [[ "$row_count" -ne 86040 ]]; then
+            echo "ERROR: expected 86040 FD1 private decomposition rows, got $row_count" >&2
+            exit 1
+          fi
+          if [[ ! -f "$fd1_replay_report" ]]; then
+            echo "ERROR: FD1 replay report not found" >&2
+            exit 1
+          fi
+          python3 - "$fd1_replay_report" <<'PY'
+          import json, sys
+          path = sys.argv[1]
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          if report.get("schema_version") != "bea_fd1_failure_decomposition.v1":
+              failures.append(f"schema_version={report.get('schema_version')!r}")
+          if report.get("status") != "bea_fd1_decomposition_pass":
+              failures.append(f"status={report.get('status')!r}")
+          if report.get("records_decomposed") != 239:
+              failures.append(f"records_decomposed={report.get('records_decomposed')!r}")
+          manifest = report.get("private_decomposition_manifest", {})
+          if manifest.get("schema_version") != "bea_fd1_private_decomposition.v1":
+              failures.append(f"manifest.schema_version={manifest.get('schema_version')!r}")
+          if manifest.get("record_count") != 86040:
+              failures.append(f"manifest.record_count={manifest.get('record_count')!r}")
+          if manifest.get("records_written") is not True:
+              failures.append("manifest.records_written is not true")
+          if manifest.get("path_publicly_serialized") is not False:
+              failures.append("manifest.path_publicly_serialized is not false")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("forbidden_scan.status is not pass")
+          with open("artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json", encoding="utf-8") as f:
+              committed = json.load(f)
+          committed_hash = committed.get("private_decomposition_manifest", {}).get("manifest_hash", "")
+          replay_hash = manifest.get("manifest_hash", "")
+          if not committed_hash or replay_hash != committed_hash:
+              failures.append("manifest_hash mismatch")
+          if failures:
+              for failure in failures:
+                  print(f"ERROR: {failure}", file=sys.stderr)
+              sys.exit(1)
+          print("FD1 replay report validation passed.")
+          PY
+          echo "fd1_private_jsonl=$jsonl_path" >> "$GITHUB_ENV"
+          echo "fd1_replay_report=$fd1_replay_report" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-P4L locked non-Python scheduler validation (only when FD1 replay succeeded)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_p4l_locked_non_python_scheduler_validation_report.json"
+          python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py \
+            --enable-external-benchmark-network \
+            --openlocus target/release/openlocus \
+            --fd1-artifact artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json \
+            --fd1-private-decomposition-jsonl "$fd1_private_jsonl" \
+            --fd1-replay-artifact "$fd1_replay_report" \
+            --p4h-artifact artifacts/bea_v1_p4h_disjoint_scheduler_validation/bea_v1_p4h_disjoint_scheduler_validation_report.json \
+            --p4i-artifact artifacts/bea_v1_p4i_disjoint_denominator_reservoir_audit/bea_v1_p4i_disjoint_denominator_reservoir_audit_report.json \
+            --p4j-artifact artifacts/bea_v1_p4j_cross_source_reservoir_unlock_audit/bea_v1_p4j_cross_source_reservoir_unlock_audit_report.json \
+            --p4k-artifact artifacts/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit_report.json \
+            --out "$report_path"
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Upload BEA-v1-P4L prevalidation aggregate report (aggregate only, always)
+        if: ${{ always() && steps.resolve.outputs.enable_network == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-p4l-prevalidation-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_p4l_locked_non_python_scheduler_validation_report.json
+          retention-days: 7
+          if-no-files-found: ignore
+          include-hidden-files: false
+
+      - name: BEA-v1-P4L no-op when network not enabled
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_p4l_locked_non_python_scheduler_validation_report.json"
+          python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --out "$report_path"
+          status=$(python3 -c "import json; print(json.load(open('$report_path'))['status'])")
+          if [[ "$status" != "unavailable_with_reason" ]]; then
+            echo "WARNING: expected unavailable_with_reason for no-network default, got $status" >&2
+          fi
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate BEA-v1-P4L report (fail-closed)
+        env:
+          ENABLE_NETWORK: ${{ steps.resolve.outputs.enable_network }}
+        run: |
+          python3 - "$RUNNER_TEMP/bea_v1_p4l_locked_non_python_scheduler_validation_report.json" "$ENABLE_NETWORK" <<'PY'
+          import json, os, sys
+          path = sys.argv[1]
+          enable_network = sys.argv[2] == "true"
+          if not os.path.isfile(path):
+              print("ERROR: report not found", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          status = report.get("status")
+          allowed_network = {
+              "bea_v1_p4l_locked_non_python_scheduler_validation_pass",
+              "no_go_p4l_locked_non_python_scheduler_validation_failed",
+              "no_go_p4l_locked_denominator_unavailable",
+          }
+          if enable_network:
+              if status not in allowed_network:
+                  failures.append(f"network-enabled run must be a valid research outcome, got status: {status!r}")
+              if status.startswith("fail_"):
+                  failures.append(f"fail_* status {status!r} is not CI-valid for a network-enabled real run")
+              if status == "unavailable_with_reason":
+                  failures.append("network-enabled run cannot be unavailable_with_reason")
+          else:
+              if status != "unavailable_with_reason":
+                  failures.append(f"expected unavailable_with_reason without network, got {status!r}")
+          if report.get("schema_version") != "bea_v1_p4l_locked_non_python_scheduler_validation.v1":
+              failures.append("unexpected schema_version")
+          if report.get("claim_level") != "bea_v1_p4l_locked_non_python_scheduler_validation_only":
+              failures.append("unexpected claim_level")
+          if report.get("phase") != "BEA-v1-P4L":
+              failures.append("unexpected phase")
+          if report.get("diagnostic_arm") != "current_bea_candidate_pool_replay":
+              failures.append("unexpected diagnostic_arm")
+          expected_arms = ["baseline_current_candidate_pool", "p2_depth_only_reference", "p3_constrained_depth_policy_reference", "p4_latency_aware_action_scheduler_frozen"]
+          if report.get("policy_arms") != expected_arms:
+              failures.append(f"unexpected policy_arms: {report.get('policy_arms')!r}")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("expected forbidden_scan.status=pass")
+          if report.get("self_test_passed") is not True:
+              failures.append("expected self_test_passed=true")
+          if not isinstance(report.get("self_test_checks_total"), int):
+              failures.append("expected self_test_checks_total to be int")
+          if not isinstance(report.get("self_test_checks_passed"), int):
+              failures.append("expected self_test_checks_passed to be int")
+          if "self_test_checks" in report:
+              failures.append("self_test_checks list field must NOT be present (counts-only)")
+          for flag in ("aggregate_only_public_artifact", "records_only_public_artifact",
+                       "scheduler_validation_only", "locked_non_python_scheduler_validation_only",
+                       "bea_v1_p4l_audit_evaluator_no_provider_calls",
+                       "bea_v1_p4l_audit_evaluator_no_selector_executed",
+                       "bea_v1_p4l_audit_evaluator_latency_not_in_relevance",
+                       "bea_v1_p4l_audit_evaluator_no_p5_selector",
+                       "bea_v1_p4l_audit_evaluator_no_v1_a",
+                       "bea_v1_p4l_audit_evaluator_no_broad_retrieval_expansion",
+                       "bea_v1_p4l_audit_evaluator_no_threshold_search",
+                       "bea_v1_p4l_audit_evaluator_no_parameter_tuning",
+                       "bea_v1_p4l_audit_evaluator_no_new_arms",
+                       "bea_v1_p4l_audit_evaluator_no_runtime_default_promotion"):
+              if report.get(flag) is not True:
+                  failures.append(f"expected {flag}=true")
+          for flag in ("provider_calls_made", "remote_provider_calls_made",
+                       "gold_labels_used_for_query_construction",
+                       "gold_labels_used_for_selection", "gold_labels_used_for_policy",
+                       "latency_in_candidate_relevance", "query_anchors_used_in_p4_arm",
+                       "selector_or_reranker_changed", "selector_or_reranker_executed",
+                       "default_should_change", "runtime_behavior_changed",
+                       "promotion_ready", "method_winner_claimed",
+                       "v1_a_selector_executed",
+                       "p5_executed", "p5_authorized", "v1_a_authorized",
+                       "runtime_promotion_authorized", "method_winner_authorized",
+                       "broad_retrieval_expansion_authorized",
+                       "frozen_p4_rerun_authorized", "frozen_p4_validation_executed",
+                       "locked_p4_validation_authorized", "future_locked_p4_validation_authorized",
+                       "parameter_tuning_executed", "threshold_search_executed",
+                       "new_arms_added", "b16k_executed"):
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false, got {report.get(flag)!r}")
+          if report.get("denominator_source_protocol") != "locked_non_python_scheduler_validation.v1":
+              failures.append("unexpected denominator_source_protocol")
+          if report.get("private_key_hashes_publicly_serialized") is not False:
+              failures.append("expected private_key_hashes_publicly_serialized=false")
+          required_tables = ("source_run_records", "arm_metrics_records", "subgroup_records",
+              "stop_go_records", "gate_records", "private_manifest_records",
+              "failure_category_count_records")
+          for key in required_tables:
+              if not isinstance(report.get(key), list):
+                  failures.append(f"expected {key} to be a list")
+          for k, v in report.items():
+              if k in ("framing", "forbidden_scan"):
+                  continue
+              if isinstance(v, dict):
+                  failures.append(f"unexpected dynamic dict field: {k}")
+          if isinstance(report.get("forbidden_scan", {}).get("violation_categories"), dict):
+              failures.append("forbidden_scan.violation_categories must be a list")
+          forbidden = ("private_record_id", "record_ids", "repo_url", "base_commit",
+                       "exact_raw_keys", "canonical_keys", "denominator_records_private",
+                       "arm_outcomes_private", "scheduler_traces_private",
+                       "reconstruction_private_path", "validation_private_path",
+                       "candidate_paths", "candidate_keys", "query_text", "queries",
+                       "gold_paths", "gold_files", "snippets", "winner", "calibration",
+                       "method_winner", "hard_gates", "failure_category_counts",
+                       "self_test_checks", "self_test_details", "role_proxy_used",
+                       "repo_url_private", "base_commit_private", "gold_paths_private",
+                       "candidate_paths_private", "query_private", "python_ordinal_private")
+          for key in forbidden:
+              if key in report:
+                  failures.append(f"forbidden field present: {key}")
+          if enable_network:
+              if report.get("exact_prior_exclusion_used") is not True:
+                  failures.append("expected exact_prior_exclusion_used=true")
+              if report.get("fd1_private_decomposition_parsed") is not True:
+                  failures.append("expected fd1_private_decomposition_parsed=true")
+              srr = (report.get("source_run_records") or [{}])[0] if report.get("source_run_records") else {}
+              if srr.get("replay_artifact_validated") is not True:
+                  failures.append("expected replay_artifact_validated=true")
+              manifests = {m.get("manifest_name"): m for m in (report.get("private_manifest_records") or []) if isinstance(m, dict)}
+              for mname in ("bea_v1_p4l_private_reconstruction_manifest", "bea_v1_p4l_private_arm_outcomes_manifest"):
+                  if mname not in manifests:
+                      failures.append(f"expected {mname}")
+                  else:
+                      m = manifests[mname]
+                      if m.get("path_publicly_serialized") is not False:
+                          failures.append(f"expected {mname} path_publicly_serialized=false")
+                      for mk in m:
+                          if mk.endswith("_hash") and mk != "manifest_hash":
+                              failures.append(f"forbidden manifest hash field: {mk}")
+              recon_manifest = manifests.get("bea_v1_p4l_private_reconstruction_manifest", {})
+              arm_manifest = manifests.get("bea_v1_p4l_private_arm_outcomes_manifest", {})
+              if status in {"bea_v1_p4l_locked_non_python_scheduler_validation_pass", "no_go_p4l_locked_non_python_scheduler_validation_failed"}:
+                  if int(recon_manifest.get("record_count", 0) or 0) < 272:
+                      failures.append("scheduler validation status requires reconstruction manifest record_count >=272")
+                  if int(arm_manifest.get("record_count", 0) or 0) != 1088:
+                      failures.append("scheduler validation status requires arm manifest record_count=1088")
+                  if report.get("p4j_reconstructed_upper_bound_count") != 333:
+                      failures.append("scheduler validation status requires p4j_reconstructed_upper_bound_count=333")
+                  if report.get("p4j_reconstructed_python_count") != 61:
+                      failures.append("scheduler validation status requires p4j_reconstructed_python_count=61")
+                  if report.get("p4j_reconstructed_non_python_count") != 272:
+                      failures.append("scheduler validation status requires p4j_reconstructed_non_python_count=272")
+                  if report.get("p2_depth_only_reference_executed") is not True:
+                      failures.append("scheduler validation status requires p2_depth_only_reference_executed=true")
+                  if report.get("p3_constrained_depth_policy_reference_executed") is not True:
+                      failures.append("scheduler validation status requires p3_constrained_depth_policy_reference_executed=true")
+                  if report.get("p4_latency_aware_action_scheduler_executed") is not True:
+                      failures.append("scheduler validation status requires p4_latency_aware_action_scheduler_executed=true")
+                  if report.get("p4l_locked_scheduler_validation_executed") is not True:
+                      failures.append("scheduler validation status requires p4l_locked_scheduler_validation_executed=true")
+              if status == "bea_v1_p4l_locked_non_python_scheduler_validation_pass":
+                  if report.get("locked_denominator_count") != 272:
+                      failures.append("pass status requires locked_denominator_count=272")
+                  if report.get("p4j_reconstructed_upper_bound_count") != 333:
+                      failures.append("pass status requires full P4J reconstruction count=333")
+                  if report.get("p4j_reconstructed_python_count") != 61:
+                      failures.append("pass status requires P4J python split=61")
+                  if report.get("p4j_reconstructed_non_python_count") != 272:
+                      failures.append("pass status requires P4J non-python split=272")
+                  if report.get("denominator_exact_match") is not True:
+                      failures.append("pass status requires denominator_exact_match=true")
+                  if report.get("scheduler_arms_executed") is not True:
+                      failures.append("pass status requires scheduler_arms_executed=true")
+                  if report.get("p4_delta_vs_baseline_reach", 0) <= 0:
+                      failures.append("pass status requires p4 reach > baseline")
+                  if report.get("p4_retained_gain_ratio", 0) < 0.75:
+                      failures.append("pass status requires p4_retained_gain_ratio >= 0.75")
+                  if report.get("p4_vs_p3_latency_ratio", 99) > 2.0:
+                      failures.append("pass status requires p4_vs_p3_latency_ratio <= 2.0")
+                  if report.get("p4_latency_reduction_vs_p3", 0) < 0.10:
+                      failures.append("pass status requires p4_latency_reduction_vs_p3 >= 0.10")
+                  if report.get("p4_pool_growth_ratio", 99) > 4.0:
+                      failures.append("pass status requires p4_pool_growth_ratio <= 4.0")
+                  if report.get("hard_cap_violation_count_total", 1) != 0:
+                      failures.append("pass status requires hard_cap_violation_count_total=0")
+                  sgr = (report.get("stop_go_records") or [{}])[0] if report.get("stop_go_records") else {}
+                  if sgr.get("locked_p4_validation_authorized") is not False:
+                      failures.append("pass status must NOT authorize locked p4 validation")
+                  if sgr.get("future_locked_p4_validation_authorized") is not False:
+                      failures.append("pass status must NOT authorize future locked p4 validation")
+                  if sgr.get("p4l_locked_scheduler_validation_executed") is not True:
+                      failures.append("pass status requires P4L locked scheduler validation executed")
+                  if sgr.get("frozen_p4_rerun_authorized") is not False:
+                      failures.append("pass status must NOT authorize frozen p4 rerun")
+              if status == "no_go_p4l_locked_denominator_unavailable":
+                  if report.get("locked_denominator_count") == 272:
+                      failures.append("denominator unavailable status requires locked count != 272")
+              if status == "no_go_p4l_locked_non_python_scheduler_validation_failed":
+                  if report.get("denominator_exact_match") is not True:
+                      failures.append("validation failed status still requires denominator exact")
+          if failures:
+              print("BEA-v1-P4L report validation FAILED:", file=sys.stderr)
+              for failure in failures:
+                  print(f"  - {failure}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-v1-P4L report validation passed.")
+          print(f"  status={status}")
+          print(f"  locked_denominator_count={report.get('locked_denominator_count')}")
+          print(f"  scheduler_arms_executed={report.get('scheduler_arms_executed')}")
+          print(f"  p4_delta_vs_baseline_reach={report.get('p4_delta_vs_baseline_reach')}")
+          print(f"  p4_retained_gain_ratio={report.get('p4_retained_gain_ratio')}")
+          sgr = (report.get("stop_go_records") or [{}])[0] if report.get("stop_go_records") else {}
+          print(f"  stop_go_decision={sgr.get('stop_go_decision')}")
+          print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree whitespace
+        run: git diff --check
+
+      - name: Upload BEA-v1-P4L aggregate report (aggregate only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-p4l-locked-non-python-scheduler-validation-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_p4l_locked_non_python_scheduler_validation_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false
