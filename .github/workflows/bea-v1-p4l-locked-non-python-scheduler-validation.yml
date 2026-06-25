@@ -160,19 +160,35 @@ jobs:
       - name: BEA-v1-P4L locked non-Python scheduler validation (only when FD1 replay succeeded)
         if: ${{ steps.resolve.outputs.enable_network == 'true' }}
         run: |
-          report_path="$RUNNER_TEMP/bea_v1_p4l_locked_non_python_scheduler_validation_report.json"
-          python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py \
-            --enable-external-benchmark-network \
-            --openlocus target/release/openlocus \
-            --fd1-artifact artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json \
-            --fd1-private-decomposition-jsonl "$fd1_private_jsonl" \
-            --fd1-replay-artifact "$fd1_replay_report" \
-            --p4h-artifact artifacts/bea_v1_p4h_disjoint_scheduler_validation/bea_v1_p4h_disjoint_scheduler_validation_report.json \
-            --p4i-artifact artifacts/bea_v1_p4i_disjoint_denominator_reservoir_audit/bea_v1_p4i_disjoint_denominator_reservoir_audit_report.json \
-            --p4j-artifact artifacts/bea_v1_p4j_cross_source_reservoir_unlock_audit/bea_v1_p4j_cross_source_reservoir_unlock_audit_report.json \
-            --p4k-artifact artifacts/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit_report.json \
-            --out "$report_path"
-          echo "report_path=$report_path" >> "$GITHUB_ENV"
+          export REPORT_PATH="$RUNNER_TEMP/bea_v1_p4l_locked_non_python_scheduler_validation_report.json"
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+          import time
+
+          cmd = [
+              "python3", "eval/bea_v1_p4l_locked_non_python_scheduler_validation.py",
+              "--enable-external-benchmark-network",
+              "--openlocus", "target/release/openlocus",
+              "--fd1-artifact", "artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json",
+              "--fd1-private-decomposition-jsonl", os.environ["fd1_private_jsonl"],
+              "--fd1-replay-artifact", os.environ["fd1_replay_report"],
+              "--p4h-artifact", "artifacts/bea_v1_p4h_disjoint_scheduler_validation/bea_v1_p4h_disjoint_scheduler_validation_report.json",
+              "--p4i-artifact", "artifacts/bea_v1_p4i_disjoint_denominator_reservoir_audit/bea_v1_p4i_disjoint_denominator_reservoir_audit_report.json",
+              "--p4j-artifact", "artifacts/bea_v1_p4j_cross_source_reservoir_unlock_audit/bea_v1_p4j_cross_source_reservoir_unlock_audit_report.json",
+              "--p4k-artifact", "artifacts/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit_report.json",
+              "--out", os.environ["REPORT_PATH"],
+          ]
+          proc = subprocess.Popen(cmd)
+          while True:
+              rc = proc.poll()
+              if rc is not None:
+                  sys.exit(rc)
+              print(f"P4L evaluator heartbeat: still running at {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}", flush=True)
+              time.sleep(60)
+          PY
+          echo "report_path=$REPORT_PATH" >> "$GITHUB_ENV"
 
       - name: Upload BEA-v1-P4L prevalidation aggregate report (aggregate only, always)
         if: ${{ always() && steps.resolve.outputs.enable_network == 'true' }}
