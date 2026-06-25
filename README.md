@@ -19,29 +19,62 @@ abstain / request more context. Candidate is not fact.
 
 ## Current research status
 
-Status date: **2026-06-19**.
+Status date: **2026-06-25**.
 
-OpenLocus is now in the **Candidate-to-Evidence Conversion** phase. The current
-question is no longer “which retrieval channel is globally strongest?”; it is:
+OpenLocus is now in the **BEA v1 actionability / retrieval-action scheduling**
+line. The current question is no longer “which retrieval channel is globally
+strongest?”; it is:
 
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest research sprint is **B10-B19: Prospective Model-Robust Evidence
-Conversion**, culminating in the theoretical synthesis:
+The latest closed phase is **BEA-v1-P4L: Locked Non-Python P4 Scheduler
+Validation**:
 
 ```text
-Model-Robust Selective Evidence Conversion
+checkpoint: f1bac81
+CI run:     28184096209
+status:     bea_v1_p4l_locked_non_python_scheduler_validation_pass
 ```
 
-High-level status after B10-B19:
+P4L validated the frozen P4 retrieval-action scheduler on a locked non-Python
+denominator derived from P4K:
+
+```text
+locked denominator: 272 non-Python records
+baseline reach:     0 / 272
+P2 depth-only:      55 / 272
+P3 constrained:     55 / 272
+frozen P4:          52 / 272
+
+P4 retained P2 gain ratio: 0.945455
+P4 vs P3 latency ratio:   0.656763
+P4 hard-cap violations:   0
+```
+
+This is a scheduler-validation result only. It does **not** authorize P5,
+BEA-v1-A, runtime/default promotion, method-winner claims, broad retrieval
+expansion, or downstream-value claims.
+
+Current next bounded step: **P4L-D Private-Arm Disagreement / Rank-Risk
+Decomposition**. A proposed locked downstream smoke is currently blocked as a
+small phase because the repo has no non-Python downstream solve/test oracle for
+the locked denominator; retrieval reach must not be relabeled as downstream
+success.
+
+High-level guardrail status:
 
 ```text
 promotion_ready=false
 default_should_change=false
 evidencecore_semantics_changed=false
-runtime_clean_policy_supported=false
+runtime_clean_general_algorithm_claimed=false
 downstream_agent_value_proven=false
+method_winner_claimed=false
+benchmark_performance_claimed=false
+bea_v1_a_authorized=false
+p5_selector_reranker_authorized=false
+broad_retrieval_expansion_authorized=false
 ood_temporal_supported=false
 quiver_systems_supported=false
 ```
@@ -52,126 +85,40 @@ See the current report index:
 - [`docs/en/current-research-conclusions.md`](docs/en/current-research-conclusions.md)
 - [`docs/zh/current-research-conclusions.md`](docs/zh/current-research-conclusions.md)
 
-## B10-B19 snapshot
+## BEA v1 snapshot
 
-### B10 / B10B: balanced policy is promising, but not runtime-clean yet
+### What is established
 
-B10 froze the algorithm spec `balanced_policy_v1_benchmark_routed`. It is a
-**benchmark-routed research spec**, not a runtime-clean default policy:
+- **BEA v0.3 remains mixed, not a winner.** BEA-4 scaled frozen v0.3 to
+  120 successful records, and BEA-5 ended as a strict fixed-protocol No-Go /
+  near-miss at 119/120.
+- **Failure decomposition changed the direction.** BEA-FD1 decomposed BEA-4/5
+  failures; FD2-A and FD2-A1 showed that directly weighting aggregate FD1 loss
+  let non-actionable latency dominate candidate selection.
+- **Selector-only BEA-v1-A is under-justified.** BEA-v1-P1 found the
+  file-selector lower-bound recoverability for `gold_file_absent` was only
+  1/119.
+- **Retrieval-action scheduling is the viable BEA v1 lever so far.** P2/P3/P4
+  showed candidate availability can improve when retrieval expansion is
+  constrained and latency is handled at the action-scheduler layer, not inside
+  candidate relevance scoring.
+- **The disjoint denominator is now locked.** P4H/P4I showed the supported
+  Python frame only had 73/80 file-miss records; P4J found a 333-record
+  cross-source upper-bound reservoir; P4K resolved exact overlap and locked a
+  272-record non-Python denominator; P4L validated the frozen P4 scheduler on
+  that locked denominator.
 
-```text
-runtime_clean=false
-runtime_feature_only_mode_supported=false
-```
+### What remains unresolved
 
-B10B introduced the runtime-shadow replay scaffold for the ambiguous branch:
-
-```text
-runtime_shadow_ambiguous =
-  query_noise OR (candidate_support_exists AND anchor_disagreement_proxy)
-
-anchor_disagreement_proxy = local_anchor AND NOT rrf_backed_by_anchor
-```
-
-B10B is mechanics-validated and wired into CI, but empirical support is still
-pending. The hard denominator gate is:
-
-```text
-label_driven_ambiguous_min_denominator = 10
-```
-
-Across the B11 matrix, the maximum observed label-driven denominator was `3`, so
-B10B remains `empirical_replay_support_pending`.
-
-### B11: official integrated prospective matrix
-
-B11 ran the first integrated prospective matrix over:
-
-```text
-32/32 final cells
-384 records
-8 public repo slices
-4 model families
-```
-
-Aggregate verdict:
-
-```text
-partial_with_failure
-success 8 / partial 23 / failure 1
-```
-
-Balanced v1 vs P25 weighted deltas over 384 records:
-
-```text
-Δgold_span   = -0.002604
-ΔSpanF0.5    = -0.001899
-Δfalse_span  = -0.054688
-ΔPFP         = -0.020833
-Δmodel_calls = -0.354167
-```
-
-Interpretation: balanced v1 preserves near-parity gold / SpanF0.5 while reducing
-false spans, primary false positives, and model calls on average. However, one
-Kimi `py_fastapi` slice failed the frozen SpanF0.5 threshold, so the result is a
-strengthened algorithm-candidate signal, **not** promotion and not a default
-change.
-
-### B12-B18: why most later phases are no-go screens today
-
-The later phases intentionally do not overclaim from public aggregates:
-
-- **B12** mechanism decomposition cannot be identified from the public B11
-  aggregate; it needs per-record strategy/action outcomes.
-- **B13** distributionally robust policy search cannot run from aggregate means;
-  it needs per-record grouped action outcomes.
-- **B14** uncertainty calibration needs per-record uncertainty/outcome pairs.
-- **B15** context-pack policy needs per-record pack-atom flags and outcomes.
-- **B16** downstream coding-agent value needs a fixed agent harness with patch,
-  test, solve-rate, wrong-file-edit, token, latency, and cost outcomes.
-- **B17** QuIVer systems work is systems-only; current artifacts report QuIVer
-  graph/vector backend missing.
-- **B18** OOD/temporal evaluation needs per-record records with a real time axis,
-  commit chronology, repo/language/model-family cells, and adversarial/temporal
-  holdout outcomes.
-
-### B19: theoretical synthesis
-
-B19 defines **Model-Robust Selective Evidence Conversion** as the synthesis of
-B10-B18:
-
-```text
-inputs:
-  query
-  local_candidate_pool
-  runtime_observable_uncertainty
-  model_capability_profile
-  latency_cost_budget
-
-actions:
-  local_only
-  weak/supporting
-  LLM span-narrow
-  LLM filter
-  abstain
-  request-more-context
-  EvidenceCore materialization
-```
-
-Core principles:
-
-1. Recall and Evidence admission are decoupled.
-2. LLMs are routed by role, not used as universal arbiters.
-3. `algorithm_spec` is separated from `model_adapter`.
-4. Runtime-clean policy may use only runtime-observable features.
-5. Optimization should be worst-group / cross-model robust, not average-only.
-6. Every candidate must materialize into current-source `EvidenceCore`.
-
-Detailed synthesis:
-
-- [`docs/en/b19-theoretical-synthesis.md`](docs/en/b19-theoretical-synthesis.md)
-- [`docs/zh/b19-theoretical-synthesis.md`](docs/zh/b19-theoretical-synthesis.md)
-- [`artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json`](artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json)
+- P4L hit fewer files than P2/P3 (`52/272` vs `55/272`). The immediate next
+  empirical question is whether those 3 lost hits are high-risk concentrated
+  regressions or mostly boundary/tail effects.
+- The repo does **not** currently contain a real non-Python downstream solve/test
+  harness for the locked denominator. Existing B16 downstream harnesses are
+  synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
+  provide retrieval-reach / gold-path signals, not downstream task success.
+- Therefore P4L is not downstream-value evidence. The next bounded step is
+  **P4L-D rank-risk decomposition**, not a mislabeled downstream smoke.
 
 ## What OpenLocus does **not** claim today
 
@@ -179,7 +126,10 @@ OpenLocus currently does **not** claim:
 
 - a promoted retrieval policy,
 - a default policy change,
-- a runtime-clean balanced policy,
+- a method winner,
+- BEA-v1-A selector readiness,
+- P5 selector/reranker authorization,
+- broad retrieval expansion readiness,
 - downstream coding-agent solve-rate improvement,
 - OOD/temporal generalization,
 - QuIVer systems readiness,
@@ -281,6 +231,10 @@ eval/b18_ood_temporal_evaluation.py
 
 eval/b19_theoretical_synthesis.py
   B19 Model-Robust Selective Evidence Conversion synthesis.
+
+eval/bea_v1_p4l_locked_non_python_scheduler_validation.py
+  Locked non-Python frozen-P4 scheduler validation over the 272-record P4K
+  denominator.
 ```
 
 Key reports:
@@ -288,6 +242,7 @@ Key reports:
 - [`artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json`](artifacts/b11_prospective_matrix/b11_prospective_matrix_aggregate_report.json)
 - [`artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json`](artifacts/b12_mechanism_decomposition/b12_public_aggregate_screen_report.json)
 - [`artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json`](artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json)
+- [`artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json`](artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json)
 
 Documentation mirror check:
 
