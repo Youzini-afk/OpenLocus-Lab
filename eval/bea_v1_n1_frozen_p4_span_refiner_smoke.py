@@ -17,6 +17,7 @@ emits an empirical pass/exploratory/no-go result or fail-closes on infra errors.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import json
 import os
@@ -72,6 +73,8 @@ P4L_TREATMENT_HARD_CAP = 0
 
 D1_ADEQUATE_MIN = 20
 D1_EXPLORATORY_MIN = 10
+D1_TOP10_ACTIONABLE_ADEQUATE_MIN = 20
+D1_TOP10_ACTIONABLE_EXPLORATORY_MIN = 10
 SPAN_INADEQUATE_OVERLAP_RATIO_MAX = 0.20
 SPAN_REFINER_WINDOW_RADIUS = 3
 SPAN_REFINER_MAX_FILE_LINES = 4000
@@ -82,6 +85,7 @@ STATUSES = (
     "n1_exploratory_insufficient_power",
     "no_go_n1_locked_denominator_unavailable",
     "no_go_n1_inadequate_wrong_span_denominator",
+    "no_go_n1_inadequate_top10_actionable_denominator",
     "unavailable_with_reason",
     "fail_schema_contract",
     "fail_forbidden_scan",
@@ -208,6 +212,8 @@ SANITIZED_ROW_ALLOWLIST = frozenset({
     "pre_span_bucket",
     "post_span_bucket",
     "span_delta_bucket",
+    "local_span_delta_bucket",
+    "rank_actionability_bucket",
     "file_reach_preserved",
     "evidencecore_valid",
     "hard_cap_violation",
@@ -232,7 +238,8 @@ SAFE_VALUE_KEYS = frozenset({
     "status_vocabulary", "metric_block", "metric_name", "gate", "threshold_relation",
     "manifest_name", "schema_version", "storage_class", "source_bucket",
     "language_bucket", "pre_span_bucket", "post_span_bucket", "span_delta_bucket",
-    "denominator", "arm", "stop_go_decision", "stop_go_reason", "signal_strength",
+    "local_span_delta_bucket", "rank_actionability_bucket", "denominator", "arm",
+    "stop_go_decision", "stop_go_reason", "signal_strength",
 })
 
 
@@ -266,6 +273,8 @@ def _safe_status_diagnostics(report: dict[str, Any]) -> dict[str, Any]:
         "status": report.get("status"),
         "failure_reason_category": report.get("failure_reason_category"),
         "d1_wrong_span_denominator_count": report.get("d1_wrong_span_denominator_count"),
+        "d1_top10_actionable_count": report.get("d1_top10_actionable_count"),
+        "d1_rank_blocked_count": report.get("d1_rank_blocked_count"),
         "nonzero_failure_categories": nonzero_failures,
         "d0_records": d0,
         "private_manifests": manifests,
@@ -830,12 +839,18 @@ def _selected_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _form_d1_and_refine(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
-    pre_predictions: list[dict[str, Any]] = []
-    post_predictions: list[dict[str, Any]] = []
-    gold: dict[str, dict[str, Any]] = {}
+    pre_predictions_top10: list[dict[str, Any]] = []
+    post_predictions_top10: list[dict[str, Any]] = []
+    gold_top10: dict[str, dict[str, Any]] = {}
     public_rows: list[dict[str, Any]] = []
     file_preserved = True
     considered = 0
+    top10_actionable = 0
+    rank_blocked = 0
+    local_delta_counts: Counter[str] = Counter()
+    local_pre_counts: Counter[str] = Counter()
+    local_post_counts: Counter[str] = Counter()
+    rank_split_contract_violations = 0
     for idx, row in enumerate(rows):
         local_id = f"n1r{idx:05d}"
         task = _candidate_gold_task(row, local_id)
@@ -863,9 +878,24 @@ def _form_d1_and_refine(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]
             file_preserved = False
         post_gold_file = [e for e in refined if str(e.get("path", "")) in gold_paths]
         post_bucket = _best_span_bucket(post_gold_file, task)
-        pre_predictions.append({"task_id": local_id, "evidence": evidence})
-        post_predictions.append({"task_id": local_id, "evidence": refined})
-        gold[local_id] = task
+        local_delta = _span_delta_bucket(pre_bucket, post_bucket)
+        local_delta_counts[local_delta] += 1
+        local_pre_counts[pre_bucket] += 1
+        local_post_counts[post_bucket] += 1
+        top10_gold_file = [e for e in evidence[:10] if str(e.get("path", "")) in gold_paths]
+        rank_bucket = "top10_actionable" if top10_gold_file else "rank_blocked_after_top10"
+        if top10_gold_file:
+            top10_pre_bucket = _best_span_bucket(top10_gold_file, task)
+            if top10_pre_bucket in {"zero_overlap", "inadequate_overlap", "invalid"}:
+                top10_actionable += 1
+                pre_predictions_top10.append({"task_id": local_id, "evidence": evidence[:10]})
+                post_predictions_top10.append({"task_id": local_id, "evidence": refined[:10]})
+                gold_top10[local_id] = task
+            else:
+                rank_split_contract_violations += 1
+                continue
+        else:
+            rank_blocked += 1
         public_rows.append({
             "anonymous_local_id": local_id,
             "denominator": "D1_p4_compatible_wrong_span",
@@ -874,15 +904,28 @@ def _form_d1_and_refine(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]
             "language_bucket": str(row.get("language_bucket", "unknown_language_bucket")),
             "pre_span_bucket": pre_bucket,
             "post_span_bucket": post_bucket,
-            "span_delta_bucket": _span_delta_bucket(pre_bucket, post_bucket),
+            "span_delta_bucket": local_delta,
+            "local_span_delta_bucket": local_delta,
+            "rank_actionability_bucket": rank_bucket,
             "file_reach_preserved": True,
             "evidencecore_valid": structural_validity([{"evidence": refined}]) == 1.0,
             "hard_cap_violation": bool(row.get("hard_cap_violation", False)),
         })
-    metrics = _span_metrics(pre_predictions, post_predictions, gold)
+    metrics = _span_metrics(pre_predictions_top10, post_predictions_top10, gold_top10)
+    metrics["d1_total_count"] = considered
+    metrics["d1_denominator_count"] = considered
+    metrics["d1_top10_actionable_count"] = top10_actionable
+    metrics["d1_rank_blocked_count"] = rank_blocked
+    metrics["d1_rank_split_invariant_violation_count"] = rank_split_contract_violations
+    metrics["local_gold_file_span_improved_count"] = int(local_delta_counts.get("improved", 0))
+    metrics["local_gold_file_span_unchanged_count"] = int(local_delta_counts.get("unchanged", 0))
+    metrics["local_gold_file_span_regressed_count"] = int(local_delta_counts.get("regressed", 0))
+    for bucket in ("invalid", "zero_overlap", "inadequate_overlap", "partial_overlap", "adequate_overlap"):
+        metrics[f"local_pre_{bucket}_count"] = int(local_pre_counts.get(bucket, 0))
+        metrics[f"local_post_{bucket}_count"] = int(local_post_counts.get(bucket, 0))
     metrics["d1_candidate_records_considered"] = considered
     metrics["refiner_file_preserving_invariant_passed"] = file_preserved
-    return public_rows, [{"pre": pre_predictions, "post": post_predictions}], metrics
+    return public_rows, [{"pre_top10": pre_predictions_top10, "post_top10": post_predictions_top10}], metrics
 
 
 def _span_metrics(pre: list[dict[str, Any]], post: list[dict[str, Any]], gold: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -1099,22 +1142,32 @@ def _d0_records(d0: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _d1_records(metrics: dict[str, Any]) -> list[dict[str, Any]]:
     names = [
+        "d1_total_count", "d1_top10_actionable_count", "d1_rank_blocked_count",
         "d1_denominator_count", "pre_span_f0_5_at_10", "post_span_f0_5_at_10",
         "pre_wrong_span_rate_at_10", "post_wrong_span_rate_at_10",
         "pre_zero_overlap_evidence_rate_at_10", "post_zero_overlap_evidence_rate_at_10",
+        "local_gold_file_span_improved_count", "local_gold_file_span_unchanged_count",
+        "local_gold_file_span_regressed_count", "local_pre_zero_overlap_count",
+        "local_pre_inadequate_overlap_count", "local_pre_partial_overlap_count",
+        "local_pre_adequate_overlap_count", "local_post_zero_overlap_count",
+        "local_post_inadequate_overlap_count", "local_post_partial_overlap_count",
+        "local_post_adequate_overlap_count", "d1_rank_split_invariant_violation_count",
     ]
     return [{"metric_block": "D1_span_efficacy", "metric_name": n, "value": metrics.get(n, 0)} for n in names]
 
 
 def _gate_records(d0: dict[str, Any], metrics: dict[str, Any], scan_pass: bool) -> list[dict[str, Any]]:
-    d1_n = int(metrics.get("d1_denominator_count", 0))
+    d1_n = int(metrics.get("d1_total_count", metrics.get("d1_denominator_count", 0)))
+    top10_n = int(metrics.get("d1_top10_actionable_count", 0))
     improved = float(metrics.get("post_span_f0_5_at_10", 0.0)) > float(metrics.get("pre_span_f0_5_at_10", 0.0))
-    wrong_down = float(metrics.get("post_wrong_span_rate_at_10", 1.0)) < float(metrics.get("pre_wrong_span_rate_at_10", 1.0)) if d1_n else False
-    zero_down = float(metrics.get("post_zero_overlap_evidence_rate_at_10", 1.0)) <= float(metrics.get("pre_zero_overlap_evidence_rate_at_10", 1.0)) if d1_n else False
+    wrong_down = float(metrics.get("post_wrong_span_rate_at_10", 1.0)) < float(metrics.get("pre_wrong_span_rate_at_10", 1.0)) if top10_n else False
+    zero_down = float(metrics.get("post_zero_overlap_evidence_rate_at_10", 1.0)) <= float(metrics.get("pre_zero_overlap_evidence_rate_at_10", 1.0)) if top10_n else False
     return [
         {"gate": "d0_scheduler_preservation", "value": 1 if d0.get("passed") else 0, "threshold_relation": "boolean", "threshold_value": 1, "passed": bool(d0.get("passed"))},
         {"gate": "d1_wrong_span_denominator_adequate", "value": d1_n, "threshold_relation": ">=", "threshold_value": D1_ADEQUATE_MIN, "passed": d1_n >= D1_ADEQUATE_MIN},
         {"gate": "d1_wrong_span_denominator_exploratory_min", "value": d1_n, "threshold_relation": ">=", "threshold_value": D1_EXPLORATORY_MIN, "passed": d1_n >= D1_EXPLORATORY_MIN},
+        {"gate": "d1_top10_actionable_denominator_adequate", "value": top10_n, "threshold_relation": ">=", "threshold_value": D1_TOP10_ACTIONABLE_ADEQUATE_MIN, "passed": top10_n >= D1_TOP10_ACTIONABLE_ADEQUATE_MIN},
+        {"gate": "d1_top10_actionable_denominator_exploratory_min", "value": top10_n, "threshold_relation": ">=", "threshold_value": D1_TOP10_ACTIONABLE_EXPLORATORY_MIN, "passed": top10_n >= D1_TOP10_ACTIONABLE_EXPLORATORY_MIN},
         {"gate": "post_span_f0_5_improved", "value": metrics.get("post_span_f0_5_at_10", 0.0), "threshold_relation": ">", "threshold_value": metrics.get("pre_span_f0_5_at_10", 0.0), "passed": improved},
         {"gate": "wrong_span_rate_reduced", "value": metrics.get("post_wrong_span_rate_at_10", 0.0), "threshold_relation": "<", "threshold_value": metrics.get("pre_wrong_span_rate_at_10", 0.0), "passed": wrong_down},
         {"gate": "zero_overlap_rate_not_increased", "value": metrics.get("post_zero_overlap_evidence_rate_at_10", 0.0), "threshold_relation": "<=", "threshold_value": metrics.get("pre_zero_overlap_evidence_rate_at_10", 0.0), "passed": zero_down},
@@ -1131,11 +1184,16 @@ def _status_from(d0: dict[str, Any], metrics: dict[str, Any], fcc: dict[str, int
         return "no_go_n1_locked_denominator_unavailable", "locked_denominator_mismatch"
     if blocking or not d0.get("passed", False):
         return "fail_schema_contract", str(d0.get("failure") or "blocking_failure_present")
-    n = int(metrics.get("d1_denominator_count", 0))
+    if int(metrics.get("d1_rank_split_invariant_violation_count", 0)):
+        return "fail_schema_contract", "d1_rank_split_invariant_violation"
+    n = int(metrics.get("d1_total_count", metrics.get("d1_denominator_count", 0)))
     if n < D1_EXPLORATORY_MIN:
         return "no_go_n1_inadequate_wrong_span_denominator", "d1_denominator_lt_10"
-    if n < D1_ADEQUATE_MIN:
-        return "n1_exploratory_insufficient_power", "d1_denominator_10_to_19"
+    top10_n = int(metrics.get("d1_top10_actionable_count", 0))
+    if top10_n < D1_TOP10_ACTIONABLE_EXPLORATORY_MIN:
+        return "no_go_n1_inadequate_top10_actionable_denominator", "d1_top10_actionable_denominator_lt_10"
+    if top10_n < D1_TOP10_ACTIONABLE_ADEQUATE_MIN:
+        return "n1_exploratory_insufficient_power", "d1_top10_actionable_denominator_10_to_19"
     improved = float(metrics.get("post_span_f0_5_at_10", 0.0)) > float(metrics.get("pre_span_f0_5_at_10", 0.0))
     wrong_down = float(metrics.get("post_wrong_span_rate_at_10", 1.0)) < float(metrics.get("pre_wrong_span_rate_at_10", 1.0))
     if improved and wrong_down and metrics.get("refiner_file_preserving_invariant_passed", False):
@@ -1166,7 +1224,7 @@ def _base_report(
     if failure_reason_category in fcc:
         fcc[failure_reason_category] = max(1, fcc[failure_reason_category])
     d0 = d0 or {"passed": False, "failure": "d0_scheduler_preservation_missing", "checks": {}}
-    metrics = metrics or {"d1_denominator_count": 0, "refiner_file_preserving_invariant_passed": False}
+    metrics = metrics or {"d1_denominator_count": 0, "d1_total_count": 0, "d1_top10_actionable_count": 0, "d1_rank_blocked_count": 0, "refiner_file_preserving_invariant_passed": False}
     if status == "auto":
         status, failure_reason_category = _status_from(d0, metrics, fcc)
     report: dict[str, Any] = {
@@ -1184,6 +1242,12 @@ def _base_report(
         "source_ci_run_id": P4L_CI_RUN_ID,
         "d0_scheduler_preservation_denominator_count": P4L_LOCKED_NON_PYTHON_DENOMINATOR,
         "d1_wrong_span_denominator_count": int(metrics.get("d1_denominator_count", 0)),
+        "d1_total_count": int(metrics.get("d1_total_count", metrics.get("d1_denominator_count", 0))),
+        "d1_top10_actionable_count": int(metrics.get("d1_top10_actionable_count", 0)),
+        "d1_rank_blocked_count": int(metrics.get("d1_rank_blocked_count", 0)),
+        "local_gold_file_span_improved_count": int(metrics.get("local_gold_file_span_improved_count", 0)),
+        "local_gold_file_span_unchanged_count": int(metrics.get("local_gold_file_span_unchanged_count", 0)),
+        "local_gold_file_span_regressed_count": int(metrics.get("local_gold_file_span_regressed_count", 0)),
         "status_vocabulary": list(STATUSES),
         "d0_scheduler_preservation_records": _d0_records(d0),
         "d1_span_efficacy_records": _d1_records(metrics),
@@ -1432,10 +1496,48 @@ def _self_test_refiner_caps_window_to_file_bounds() -> bool:
     return refined.get("end_line") == 3 and refined.get("start_line") == 1
 
 
+def _self_test_rank_blocked_d1_total_not_pass_gate() -> bool:
+    rows = _synthetic_private_rows(D1_ADEQUATE_MIN)
+    for row in rows:
+        gold_ev = row["p4_evidence"][0]
+        blockers = [
+            {
+                "path": f"src/non_gold_{i}.py",
+                "start_line": 1,
+                "end_line": 3,
+                "content_sha": "private",
+                "content_lines": [{"line": 1, "text": "ordinary filler"}],
+                "file_content_lines": [{"line": 1, "text": "ordinary filler"}],
+            }
+            for i in range(10)
+        ]
+        row["p4_evidence"] = blockers + [gold_ev]
+    public_rows, _, metrics = _form_d1_and_refine(rows)
+    report = _base_report(
+        status="auto",
+        failure_reason_category="",
+        self_test_passed=True,
+        self_test_checks_total=0,
+        self_test_checks_passed=None,
+        network_mode="self_test",
+        openlocus_binary_source="self_test",
+        d0=_evaluate_d0(_synthetic_d0_summary()),
+        metrics=metrics,
+        sanitized_rows=public_rows,
+    )
+    return (
+        metrics.get("d1_total_count") == D1_ADEQUATE_MIN
+        and metrics.get("d1_top10_actionable_count") == 0
+        and metrics.get("d1_rank_blocked_count") == D1_ADEQUATE_MIN
+        and report.get("status") == "no_go_n1_inadequate_top10_actionable_denominator"
+        and all(r.get("rank_actionability_bucket") == "rank_blocked_after_top10" for r in public_rows)
+    )
+
+
 def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks: list[dict[str, Any]] = []
     checks.append(_check("schema_identity", SCHEMA_VERSION == "bea_v1_n1_frozen_p4_span_refiner_smoke.v1"))
-    checks.append(_check("status_vocab_contains_required", all(s in STATUSES for s in ("unavailable_with_reason", "fail_schema_contract", "n1_preflight_pass_wrong_span_denominator_adequate", "n1_exploratory_insufficient_power", "no_go_n1_locked_denominator_unavailable", "no_go_n1_inadequate_wrong_span_denominator", "bea_v1_n1_frozen_p4_span_refiner_pass"))))
+    checks.append(_check("status_vocab_contains_required", all(s in STATUSES for s in ("unavailable_with_reason", "fail_schema_contract", "n1_preflight_pass_wrong_span_denominator_adequate", "n1_exploratory_insufficient_power", "no_go_n1_locked_denominator_unavailable", "no_go_n1_inadequate_wrong_span_denominator", "no_go_n1_inadequate_top10_actionable_denominator", "bea_v1_n1_frozen_p4_span_refiner_pass"))))
     checks.append(_check("d0_locked_denominator_272", P4L_LOCKED_NON_PYTHON_DENOMINATOR == 272))
     d0_pass = _evaluate_d0(_synthetic_d0_summary())
     checks.append(_check("d0_preservation_pass_path", d0_pass["passed"] is True))
@@ -1455,6 +1557,7 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
         checks.append(_check(f"d1_{label}", report["status"] == expected))
         if n == 20:
             checks.append(_check("d1_metrics_improve", metrics["post_span_f0_5_at_10"] > metrics["pre_span_f0_5_at_10"] and metrics["post_wrong_span_rate_at_10"] < metrics["pre_wrong_span_rate_at_10"]))
+            checks.append(_check("d1_top10_actionable_gate_present", metrics["d1_top10_actionable_count"] == D1_ADEQUATE_MIN and metrics["d1_rank_blocked_count"] == 0))
             checks.append(_check("sanitized_rows_allowlist", all(set(r) <= SANITIZED_ROW_ALLOWLIST for r in public_rows)))
             checks.append(_check("refiner_file_preserving_invariant", metrics["refiner_file_preserving_invariant_passed"] is True and all(r["file_reach_preserved"] for r in public_rows)))
             observed_record = next(r for r in report["d0_scheduler_preservation_records"] if r["metric_name"] == "p4_reach")
@@ -1502,6 +1605,9 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("full_file_refiner_moves_beyond_local_candidate", _self_test_full_file_refiner_moves_beyond_local_candidate()))
     checks.append(_check("file_read_containment_and_regular_file", _self_test_file_read_containment_and_regular_file()))
     checks.append(_check("refiner_caps_window_to_file_bounds", _self_test_refiner_caps_window_to_file_bounds()))
+    checks.append(_check("rank_blocked_d1_total_not_pass_gate", _self_test_rank_blocked_d1_total_not_pass_gate()))
+    report_rank_violation = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, network_mode="self_test", openlocus_binary_source="self_test", d0=d0_pass, metrics={"d1_total_count": 1, "d1_denominator_count": 1, "d1_top10_actionable_count": 0, "d1_rank_blocked_count": 0, "d1_rank_split_invariant_violation_count": 1, "refiner_file_preserving_invariant_passed": True})
+    checks.append(_check("rank_split_violation_fails_closed", report_rank_violation.get("status") == "fail_schema_contract"))
     return checks, all(c["passed"] for c in checks)
 
 

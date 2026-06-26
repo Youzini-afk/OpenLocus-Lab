@@ -223,6 +223,7 @@ jobs:
               "n1_exploratory_insufficient_power",
               "no_go_n1_locked_denominator_unavailable",
               "no_go_n1_inadequate_wrong_span_denominator",
+              "no_go_n1_inadequate_top10_actionable_denominator",
           }
           if enable_network:
               if status not in allowed_network:
@@ -264,6 +265,7 @@ jobs:
               "path", "start_line", "end_line", "gold_lines", "gold_paths",
               "candidate_list", "candidates", "raw_trace", "raw_prompt", "raw_response",
               "provider_payload", "repo_url", "task_id", "row_id", "content_sha",
+              "content_lines", "file_content_lines", "text", "raw_text",
           )
           for key in forbidden:
               if key in report:
@@ -271,12 +273,14 @@ jobs:
           row_allow = {
               "anonymous_local_id", "denominator", "arm", "source_bucket",
               "language_bucket", "pre_span_bucket", "post_span_bucket",
-              "span_delta_bucket", "file_reach_preserved", "evidencecore_valid",
-              "hard_cap_violation",
+              "span_delta_bucket", "local_span_delta_bucket", "rank_actionability_bucket",
+              "file_reach_preserved", "evidencecore_valid", "hard_cap_violation",
           }
           for i, row in enumerate(report.get("sanitized_analysis_records", [])):
               if set(row) - row_allow:
                   failures.append(f"sanitized row {i} has non-allowlist keys")
+              if row.get("rank_actionability_bucket") not in {"top10_actionable", "rank_blocked_after_top10"}:
+                  failures.append(f"sanitized row {i} has invalid rank_actionability_bucket")
           if enable_network:
               manifests = {m.get("manifest_name"): m for m in (report.get("private_manifest_records") or []) if isinstance(m, dict)}
               expected_manifest_names = ["bea_v1_n1_p4l_private_reconstruction_manifest"]
@@ -326,6 +330,25 @@ jobs:
               d0 = report.get("d0_scheduler_preservation_records") or []
               if status != "no_go_n1_locked_denominator_unavailable" and (not d0 or any(r.get("passed") is not True for r in d0)):
                   failures.append("network run requires D0 scheduler preservation records passed=true")
+              d1_total = int(report.get("d1_total_count", report.get("d1_wrong_span_denominator_count", 0)) or 0)
+              d1_top10 = int(report.get("d1_top10_actionable_count", 0) or 0)
+              d1_rank_blocked = int(report.get("d1_rank_blocked_count", 0) or 0)
+              if d1_rank_blocked < 0 or d1_top10 < 0 or d1_total < 0:
+                  failures.append("D1 rank-aware counts must be non-negative")
+              if d1_top10 + d1_rank_blocked != d1_total:
+                  failures.append("D1 top10 + rank-blocked count must equal D1 total")
+              if len(report.get("sanitized_analysis_records", [])) != d1_total:
+                  failures.append("sanitized D1 row count must equal D1 total")
+              if status == "bea_v1_n1_frozen_p4_span_refiner_pass" and d1_top10 < 20:
+                  failures.append("N1 pass requires D1_top10_actionable_count >= 20")
+              if status == "n1_preflight_pass_wrong_span_denominator_adequate" and d1_top10 < 20:
+                  failures.append("N1 adequate preflight requires D1_top10_actionable_count >= 20")
+              if status == "n1_exploratory_insufficient_power" and not (10 <= d1_top10 < 20):
+                  failures.append("N1 exploratory status requires 10 <= D1_top10_actionable_count < 20")
+              if status == "no_go_n1_inadequate_top10_actionable_denominator" and d1_top10 >= 10:
+                  failures.append("top10-actionable No-Go requires D1_top10_actionable_count < 10")
+              if status == "no_go_n1_inadequate_wrong_span_denominator" and d1_total >= 10:
+                  failures.append("wrong-span denominator No-Go requires D1_total_count < 10")
           if failures:
               print("BEA-v1-N1 report validation FAILED:", file=sys.stderr)
               for failure in failures:
@@ -334,6 +357,8 @@ jobs:
           print("BEA-v1-N1 report validation passed.")
           print(f"  status={status}")
           print(f"  d1={report.get('d1_wrong_span_denominator_count')}")
+          print(f"  d1_top10_actionable={report.get('d1_top10_actionable_count')}")
+          print(f"  d1_rank_blocked={report.get('d1_rank_blocked_count')}")
           print(f"  self_test_checks_total={report.get('self_test_checks_total')}")
           PY
 

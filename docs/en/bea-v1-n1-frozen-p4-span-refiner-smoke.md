@@ -18,9 +18,11 @@ Network-enabled N1 is a real empirical replay, not a manual-row control plane. I
 ## Two-denominator design
 
 - **D0 scheduler-preservation denominator** = P4L locked non-Python 272. D0 proves N1 instrumentation/wrapping preserves frozen scheduler behavior. It is **not** the span-success denominator.
-- **D1 P4-compatible wrong-span denominator** = private records where gold line ranges are reconstructable, frozen P4 reaches a gold file, frozen P4 has candidate `start_line`/`end_line` for selected or packed evidence, and pre-refiner P4 evidence on the gold file has zero or inadequate line overlap.
+- **D1 total / pool span-opportunity denominator** = private records where gold line ranges are reconstructable, frozen P4 reaches a gold file somewhere in its final candidate pool, frozen P4 has candidate `start_line`/`end_line` for selected or packed evidence, and pre-refiner P4 evidence on the gold file has zero or inadequate line overlap.
+- **D1 top-10 actionable denominator** = D1 subset where the gold-file evidence is already in the top-10 evidence pack and its top-10 gold-file span is zero or inadequate. Only this denominator can gate canonical `SpanF0.5@10` pass/fail because N1 is forbidden to reorder evidence.
+- **D1 rank-blocked denominator** = D1 records where the gold-file evidence exists only after top 10. These are scheduler/rank-layer blocked, not span-refiner failures.
 
-D1 adequacy: pass/preflight adequate at `>=20`, exploratory at `10-19`, No-Go at `<10`.
+D1 total adequacy: pool span-opportunity adequate at `>=20`, exploratory at `10-19`, No-Go at `<10`. N1 pass additionally requires D1 top-10 actionable `>=20`; if D1 total is adequate but top-10 actionable is `<10`, the result is `no_go_n1_inadequate_top10_actionable_denominator` rather than “refiner failed.”
 
 ## Refiner constraints
 
@@ -38,6 +40,8 @@ The public report contains aggregate metrics plus scanner-validated sanitized pe
 - `pre_span_bucket`
 - `post_span_bucket`
 - `span_delta_bucket`
+- `local_span_delta_bucket`
+- `rank_actionability_bucket`
 - `file_reach_preserved`
 - `evidencecore_valid`
 - `hard_cap_violation`
@@ -50,6 +54,7 @@ Forbidden in public artifacts: raw prompts/responses/snippets/provider payloads,
 - `fail_schema_contract` — fail-closed instrumentation, parser, replay, private-write, or invariant failure.
 - `fail_forbidden_scan` — public artifact privacy scanner blocked serialization.
 - `no_go_n1_locked_denominator_unavailable` — the live P4L/P4K locked-denominator reconstruction drifted, so N1 did not run span claims.
+- `no_go_n1_inadequate_top10_actionable_denominator` — D1 total exists, but too few records have top-10 actionable gold-file evidence for canonical `SpanF0.5@10` gating.
 - `n1_preflight_pass_wrong_span_denominator_adequate` — D0 preserved and D1 is adequate, but refiner improvement gates did not establish a positive span result.
 - `n1_exploratory_insufficient_power` — D0 preserved but D1 is only 10-19.
 - `no_go_n1_inadequate_wrong_span_denominator` — D0 preserved but D1 is below 10.
@@ -60,7 +65,7 @@ Forbidden in public artifacts: raw prompts/responses/snippets/provider payloads,
 Public metric tables are split into:
 
 1. `d0_scheduler_preservation_records` — frozen P4L scheduler-preservation aggregates over the 272-record denominator.
-2. `d1_span_efficacy_records` — pre/post retrieval span metrics on the D1 wrong-span denominator using canonical span metrics from `eval/score.py`.
+2. `d1_span_efficacy_records` — rank-aware D1 counts, canonical pre/post `@10` metrics on the D1 top-10 actionable denominator, and local same-file gold-span diagnostic counts over D1 total.
 
 ## Explicit non-claims
 

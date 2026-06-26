@@ -62,7 +62,23 @@
       "value": 0.0
     }
   ],
+  "d1_rank_blocked_count": 0,
   "d1_span_efficacy_records": [
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "d1_total_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "d1_top10_actionable_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "d1_rank_blocked_count",
+      "value": 0
+    },
     {
       "metric_block": "D1_span_efficacy",
       "metric_name": "d1_denominator_count",
@@ -97,8 +113,70 @@
       "metric_block": "D1_span_efficacy",
       "metric_name": "post_zero_overlap_evidence_rate_at_10",
       "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_gold_file_span_improved_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_gold_file_span_unchanged_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_gold_file_span_regressed_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_pre_zero_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_pre_inadequate_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_pre_partial_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_pre_adequate_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_post_zero_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_post_inadequate_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_post_partial_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "local_post_adequate_overlap_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D1_span_efficacy",
+      "metric_name": "d1_rank_split_invariant_violation_count",
+      "value": 0
     }
   ],
+  "d1_top10_actionable_count": 0,
+  "d1_total_count": 0,
   "d1_wrong_span_denominator_count": 0,
   "default_should_change": false,
   "downstream_agent_value_proven": false,
@@ -278,6 +356,20 @@
       "value": 0
     },
     {
+      "gate": "d1_top10_actionable_denominator_adequate",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 20,
+      "value": 0
+    },
+    {
+      "gate": "d1_top10_actionable_denominator_exploratory_min",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 10,
+      "value": 0
+    },
+    {
       "gate": "post_span_f0_5_improved",
       "passed": false,
       "threshold_relation": ">",
@@ -313,7 +405,7 @@
       "value": 1
     }
   ],
-  "generated_at": "2026-06-26T08:29:17Z",
+  "generated_at": "2026-06-26T11:41:40Z",
   "generated_by": "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
   "gold_labels_used_for_policy": false,
   "gold_labels_used_for_query_construction": false,
@@ -322,6 +414,9 @@
   "gold_lines_used_for_refinement": false,
   "latency_in_candidate_relevance": false,
   "leaderboard_entry_claimed": false,
+  "local_gold_file_span_improved_count": 0,
+  "local_gold_file_span_regressed_count": 0,
+  "local_gold_file_span_unchanged_count": 0,
   "method_winner_authorized": false,
   "method_winner_claimed": false,
   "mode": "bea_v1_n1_frozen_p4_span_refiner_smoke",
@@ -349,8 +444,8 @@
   "schema_version": "bea_v1_n1_frozen_p4_span_refiner_smoke.v1",
   "selector_or_reranker_changed": false,
   "selector_or_reranker_executed": false,
-  "self_test_checks_passed": 48,
-  "self_test_checks_total": 48,
+  "self_test_checks_passed": 51,
+  "self_test_checks_total": 51,
   "self_test_passed": true,
   "source_checkpoint": "f1bac81",
   "source_ci_run_id": "28184096209",
@@ -362,6 +457,7 @@
     "n1_exploratory_insufficient_power",
     "no_go_n1_locked_denominator_unavailable",
     "no_go_n1_inadequate_wrong_span_denominator",
+    "no_go_n1_inadequate_top10_actionable_denominator",
     "unavailable_with_reason",
     "fail_schema_contract",
     "fail_forbidden_scan"
