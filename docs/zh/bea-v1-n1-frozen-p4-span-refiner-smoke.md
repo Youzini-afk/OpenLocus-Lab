@@ -1,8 +1,32 @@
 # BEA-v1-N1：冻结 P4 + Span-Refiner 冒烟实验
 
-日期：2026-06-25
+日期：2026-06-26
 
 BEA-v1-N1 是 BEA v1 层级化可行动证据获取（Report 4）的第一个 span 阶段。它只是**检索层 span 冒烟实验**：重新生成/重放 FD1 与冻结 P4L locked denominator，验证文件与调度行为保持不变，私下构造 wrong-span 分母，并测试一个只能在冻结 P4 已选中文件内调整行范围的 post-P4 span refiner。
+
+## 结果
+
+Manual network-enabled CI run `28245155237` 在 checkpoint `0ddc2e8` 上 green，但研究结论是有效 No-Go，不是 span-refiner pass：
+
+```text
+status: no_go_n1_inadequate_top10_actionable_denominator
+failure_reason_category: d1_top10_actionable_denominator_lt_10
+
+D0 scheduler preservation: pass
+D0 denominator: 272
+D0 reach replay: baseline 0, P2 55, P3 55, P4 52
+
+D1 total / pool span-opportunity: 40
+D1 top-10 actionable: 0
+D1 rank-blocked: 40
+local same-file span improved: 8
+local same-file span unchanged: 32
+local same-file span regressed: 0
+forbidden_scan.status: pass
+self-test: 52/52
+```
+
+解释：N1 成功重放冻结 P4 scheduler，并找到充分的 D1 pool span-opportunity 分母。全文件、同文件 span refiner 在私有局部诊断上改善了 8/40 个 gold-file span。但 40 个 D1 opportunity 全部是 rank-blocked：gold-file evidence 只出现在 top-10 evidence pack 之后。由于 N1 明确禁止 evidence reorder，canonical `SpanF0.5@10` 不能公平评估这个分母上的 span refiner。因此该结果把下一步指向 rank/pack actionability，而不是继续做纯 span-only refinement。
 
 ## 绑定来源上下文
 

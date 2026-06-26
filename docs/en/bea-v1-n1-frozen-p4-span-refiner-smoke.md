@@ -1,8 +1,32 @@
 # BEA-v1-N1: Frozen P4 + Span-Refiner Smoke
 
-Date: 2026-06-25
+Date: 2026-06-26
 
 BEA-v1-N1 is the first Report-4 span phase for BEA v1 hierarchical actionable evidence acquisition. It is a **retrieval-layer span smoke only**: regenerate/replay FD1 plus the frozen P4L locked denominator, preserve file/scheduler behavior, form a private wrong-span denominator, and test a post-P4 span refiner that may only adjust line ranges inside files already selected by frozen P4.
+
+## Result
+
+Manual network-enabled CI run `28245155237` completed green on checkpoint `0ddc2e8`, but the research result is a valid No-Go, not a span-refiner pass:
+
+```text
+status: no_go_n1_inadequate_top10_actionable_denominator
+failure_reason_category: d1_top10_actionable_denominator_lt_10
+
+D0 scheduler preservation: pass
+D0 denominator: 272
+D0 reach replay: baseline 0, P2 55, P3 55, P4 52
+
+D1 total / pool span-opportunity: 40
+D1 top-10 actionable: 0
+D1 rank-blocked: 40
+local same-file span improved: 8
+local same-file span unchanged: 32
+local same-file span regressed: 0
+forbidden_scan.status: pass
+self-test: 52/52
+```
+
+Interpretation: N1 successfully replayed the frozen P4 scheduler and found an adequate D1 pool span-opportunity denominator. The full-file, same-file span refiner improved 8/40 local gold-file spans privately. However, all 40 D1 opportunities were rank-blocked: the gold-file evidence existed only after the top-10 evidence pack. Because N1 is explicitly forbidden to reorder evidence, canonical `SpanF0.5@10` cannot fairly evaluate the span refiner on this denominator. The result therefore routes the next work to rank/pack actionability rather than more span-only refinement.
 
 ## Binding source context
 

@@ -3369,3 +3369,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`bea_v1_p4l_locked_non_python_scheduler_validation_pass`。P4L 精确重建完整 P4J/P4K split（`333/61/272`），将 locked non-Python denominator 固定为 `272`，执行四个 frozen scheduler arms，并只在 `/tmp` 写出 1088 条 private arm-outcome rows。
 - **Scheduler 结果**：baseline current pool reach 为 `0/272`；P2 depth-only reference 为 `55/272`；P3 constrained reference 为 `55/272`；frozen P4 latency-aware scheduler 为 `52/272`。P4 保留 P2 gain 的 `0.945455`，`p4_vs_p3_latency_ratio=0.656763`，`p4_latency_reduction_vs_p3=0.343237`，`p4_pool_growth_ratio=2.176782`，并且 P4-treatment hard-cap violations 为 0。P2 有 3 次 hard-cap violations，但这只是 reference diagnostics。
 - **边界**：P4L 验证了 frozen P4 retrieval-action scheduler 在 locked non-Python denominator 上成立。它不授权 P5 selector/reranker、BEA-v1-A selector work、runtime/default promotion、method-winner 声明、broad retrieval expansion、frozen P4 rerun 或任何未来 locked-P4 promotion/default step。
+
+## BEA-v1-N1 发现
+
+- **BEA-v1-N1 Frozen P4 + Span-Refiner Smoke 已完成为 rank-blocked No-Go**：local checkpoint `c77f8d1`，diagnostics patch `9c6cd41`，openlocus binary fix `c51d20b`，full-file refiner checkpoint `e04b2fa`，rank-aware D1 checkpoint `6b152d2`，auxiliary line-lookup fix `0ddc2e8`，manual CI run `28245155237`。
+- **状态**：`no_go_n1_inadequate_top10_actionable_denominator`。N1 重放 FD1 private decomposition，重建 frozen P4L/P4K denominator，并在 locked 272-record non-Python denominator 上验证 D0 scheduler preservation：baseline `0`，P2 `55`，P3 `55`，P4 `52`，P4 treatment hard-cap `0`。
+- **Span 结果**：D1 total / pool span-opportunity denominator 充分，为 `40`，但 D1 top-10 actionable 为 `0`，D1 rank-blocked 为 `40`。全文件同文件 refiner 在局部 gold-file 诊断上改善 8/40、退化 0/40，但这些记录全部在 top-10 之外；由于 N1 禁止 evidence reorder，不能用 canonical `SpanF0.5@10` 声明 span 改善。
+- **决策**：N1 不验证 span-only repair。下一步有界 BEA-v1 工作应研究 rank/pack actionability：如何把 gold-file evidence 移入 actionable top-10 pack，同时在另行授权前继续保持 no-P5/no-BEA-v1-A/no-default-promotion 边界。

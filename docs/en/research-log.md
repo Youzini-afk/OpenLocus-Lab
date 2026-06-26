@@ -11079,3 +11079,45 @@ P4L validates the frozen P4 retrieval-action scheduler on the locked non-Python
 denominator. It still does not authorize P5 selector/reranker, BEA-v1-A,
 runtime/default promotion, method-winner claims, frozen P4 reruns, or broad
 retrieval expansion.
+
+## 2026-06-26 — BEA-v1-N1: Frozen P4 + Span-Refiner Smoke
+
+### Objective
+
+Execute the first Report-4 span phase without changing the frozen P4 scheduler:
+replay FD1, reconstruct the P4L/P4K locked non-Python denominator, verify D0
+scheduler preservation, form a private rank-aware wrong-span denominator, and
+test a file-preserving post-P4 span refiner. N1 is not a selector/reranker, P5,
+BEA-v1-A, downstream-agent evaluation, runtime promotion, or method-winner claim.
+
+### Implementation / validation
+
+Local checkpoint `c77f8d1` added
+`eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py`, its manual workflow, aggregate
+default artifact, and bilingual docs. Follow-up checkpoints added safe failure
+diagnostics (`9c6cd41`), absolute openlocus binary resolution (`c51d20b`), a
+full-file same-file line-window refiner (`e04b2fa`), rank-aware D1
+total/top-10/rank-blocked accounting (`6b152d2`), and an auxiliary line-label
+lookup classification fix (`0ddc2e8`). Self-tests are 52/52.
+
+### Manual CI result
+
+Manual network-enabled CI run `28245155237` completed green in 2h33m52s with
+status `no_go_n1_inadequate_top10_actionable_denominator`.
+
+D0 replay reproduced the P4L scheduler result on the locked 272-record non-Python
+denominator: baseline `0`, P2 `55`, P3 `55`, P4 `52`, and P4 treatment hard-cap
+violations `0`. D1 total / pool span-opportunity was adequate at `40`, but D1
+top-10 actionable was `0` and D1 rank-blocked was `40`. The full-file same-file
+refiner improved 8/40 local gold-file spans and regressed 0/40, but all 40 were
+outside top-10. Public sanitized rows were anonymous/bucketed only;
+`forbidden_scan.status=pass`.
+
+### Decision
+
+N1 is a valid No-Go for span-only repair, not a refiner pass. The bottleneck has
+moved from same-file line refinement to rank/pack actionability: gold-file
+evidence must be moved into the actionable top-10 pack before canonical
+`SpanF0.5@10` can credit a file-preserving span refiner. Do not jump from N1 to
+P5 selector/reranker, BEA-v1-A, runtime/default promotion, method-winner claims,
+or broad retrieval expansion.

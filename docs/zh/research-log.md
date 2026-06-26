@@ -10285,3 +10285,42 @@ pool gate 内（`p4_pool_growth_ratio=2.176782`），并且 P4-treatment hard-ca
 P4L 验证 frozen P4 retrieval-action scheduler 在 locked non-Python denominator 上成立。
 它仍不授权 P5 selector/reranker、BEA-v1-A、runtime/default promotion、method-winner
 声明、frozen P4 rerun 或 broad retrieval expansion。
+
+## 2026-06-26 — BEA-v1-N1：Frozen P4 + Span-Refiner Smoke
+
+### 目标
+
+执行 Report 4 的第一个 span 阶段，同时不改变 frozen P4 scheduler：重放 FD1，重建
+P4L/P4K locked non-Python denominator，验证 D0 scheduler preservation，形成私有
+rank-aware wrong-span denominator，并测试 file-preserving post-P4 span refiner。N1
+不是 selector/reranker、P5、BEA-v1-A、downstream-agent evaluation、runtime promotion
+或 method-winner 声明。
+
+### 实现 / 验证
+
+Local checkpoint `c77f8d1` 新增
+`eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py`、manual workflow、聚合默认 artifact
+与双语 docs。后续 checkpoint 依次加入 safe failure diagnostics（`9c6cd41`）、绝对
+openlocus binary 解析（`c51d20b`）、全文件同文件 line-window refiner（`e04b2fa`）、
+rank-aware D1 total/top-10/rank-blocked accounting（`6b152d2`），以及 auxiliary
+line-label lookup 分类修复（`0ddc2e8`）。Self-tests 为 52/52。
+
+### Manual CI 结果
+
+Manual network-enabled CI run `28245155237` 绿色完成（2h33m52s），status 为
+`no_go_n1_inadequate_top10_actionable_denominator`。
+
+D0 replay 在 locked 272-record non-Python denominator 上复现 P4L scheduler 结果：
+baseline `0`，P2 `55`，P3 `55`，P4 `52`，P4 treatment hard-cap violations `0`。
+D1 total / pool span-opportunity 充分，为 `40`，但 D1 top-10 actionable 为 `0`，D1
+rank-blocked 为 `40`。全文件同文件 refiner 在局部 gold-file span 上改善 8/40，退化
+0/40，但 40 条全部在 top-10 之外。公开 sanitized rows 仅匿名/桶化；
+`forbidden_scan.status=pass`。
+
+### 决策
+
+N1 是 span-only repair 的有效 No-Go，不是 refiner pass。瓶颈已经从同文件 line
+refinement 转移到 rank/pack actionability：必须先把 gold-file evidence 移入 actionable
+top-10 pack，canonical `SpanF0.5@10` 才能给 file-preserving span refiner 记功。不要从
+N1 跳到 P5 selector/reranker、BEA-v1-A、runtime/default promotion、method-winner 声明
+或 broad retrieval expansion。

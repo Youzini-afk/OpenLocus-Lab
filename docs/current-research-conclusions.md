@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date: 2026-06-25
+Date: 2026-06-26
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
