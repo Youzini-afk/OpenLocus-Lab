@@ -24,7 +24,7 @@ D1 充分性：`>=20` 为充分/可进入 pass preflight，`10-19` 为 explorato
 
 ## Refiner 约束
 
-N1 refiner 只能在 P4 之后运行，并且必须保持文件集合不变。它只能在冻结 P4 已选择/已 reach 的文件内部收窄或扩展行范围。它不得添加、剔除或重排文件；不得改变调度动作；不得使用 gold lines 做 refinement；不得运行 selector/reranker/P5/BEA-v1-A；不得把 latency 放入 candidate relevance。
+N1 refiner 只能在 P4 之后运行，并且必须保持文件集合不变。它只能在冻结 P4 已选择/已 reach 的文件内部，使用 public query terms 与同文件源码文本选择有界 line window，从而收窄或扩展行范围。它不得添加、剔除或重排文件；不得改变调度动作；不得使用 gold lines 做 refinement；不得运行 selector/reranker/P5/BEA-v1-A；不得把 latency 放入 candidate relevance。
 
 ## 公共 artifact 合约
 

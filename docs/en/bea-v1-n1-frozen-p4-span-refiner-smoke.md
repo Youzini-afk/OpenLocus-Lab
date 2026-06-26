@@ -24,7 +24,7 @@ D1 adequacy: pass/preflight adequate at `>=20`, exploratory at `10-19`, No-Go at
 
 ## Refiner constraints
 
-The N1 refiner is post-P4 and file-preserving only. It can narrow or expand line ranges inside files already selected/reached by frozen P4. It must not add, evict, or reorder files; change scheduler actions; use gold lines for refinement; run selector/reranker/P5/BEA-v1-A; or place latency in candidate relevance.
+The N1 refiner is post-P4 and file-preserving only. It can narrow or expand line ranges inside files already selected/reached by frozen P4, using public query terms and same-file source text to choose a bounded line window. It must not add, evict, or reorder files; change scheduler actions; use gold lines for refinement; run selector/reranker/P5/BEA-v1-A; or place latency in candidate relevance.
 
 ## Public artifact contract
 

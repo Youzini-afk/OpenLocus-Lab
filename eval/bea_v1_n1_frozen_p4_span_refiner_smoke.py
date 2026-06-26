@@ -22,6 +22,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, NoReturn
@@ -72,6 +73,8 @@ P4L_TREATMENT_HARD_CAP = 0
 D1_ADEQUATE_MIN = 20
 D1_EXPLORATORY_MIN = 10
 SPAN_INADEQUATE_OVERLAP_RATIO_MAX = 0.20
+SPAN_REFINER_WINDOW_RADIUS = 3
+SPAN_REFINER_MAX_FILE_LINES = 4000
 
 STATUSES = (
     "bea_v1_n1_frozen_p4_span_refiner_pass",
@@ -216,7 +219,8 @@ FORBIDDEN_PUBLIC_KEYS = frozenset({
     "gold", "gold_paths", "gold_lines", "gold_spans", "gold_labels",
     "candidate", "candidates", "candidate_list", "candidate_paths",
     "raw", "raw_trace", "raw_prompt", "raw_response", "provider_payload",
-    "snippet", "snippets", "content", "content_sha", "task_id", "row_id",
+    "snippet", "snippets", "content", "content_lines", "file_content_lines",
+    "text", "raw_text", "content_sha", "task_id", "row_id",
     "repo_name", "repo_slug", "repo_url", "base_commit", "private_record_id",
     "record_ids", "self_test_checks", "self_test_details", "checks",
 })
@@ -421,35 +425,77 @@ def _query_terms(text: str) -> list[str]:
     return [t for t in terms if t not in stop][:20]
 
 
+def _line_text_terms(text: str) -> set[str]:
+    stop = {"the", "and", "for", "with", "that", "this", "from", "function", "class", "return"}
+    return {
+        t.lower()
+        for t in re.findall(r"[A-Za-z_][A-Za-z0-9_]{2,}", text or "")
+        if t.lower() not in stop
+    }
+
+
+def _score_refiner_line(txt: str, query_terms: list[str], anchor_terms: set[str]) -> int:
+    lower = (txt or "").lower()
+    terms = _line_text_terms(lower)
+    score = 0
+    for term in query_terms:
+        if term in lower:
+            score += 4
+        if term in terms:
+            score += 2
+    score += min(4, len(terms & anchor_terms))
+    if re.search(r"\b(def|class|function|func|method|struct|interface|enum)\b", lower):
+        score += 1
+    return score
+
+
 def _refine_evidence_file_preserving(e: dict[str, Any], query: str) -> dict[str, Any]:
     """Post-P4 span-only refiner: same file, no add/evict/reorder, no gold use.
 
-    It looks only at the existing candidate's local text lines plus public query
-    terms and selects the tightest matching local window.  If no local line text
-    is supplied, the refiner returns the original range unchanged.
+    It uses public query terms plus text from the already selected file and
+    selects a tight line window inside that same file.  It never adds, removes,
+    or reorders files and never reads gold labels.  If file text is unavailable,
+    the refiner returns the original range unchanged.
     """
     out = dict(e)
-    lines = e.get("content_lines")
+    lines = e.get("file_content_lines") or e.get("content_lines")
     terms = _query_terms(query)
     if not isinstance(lines, list) or not terms:
         return out
+    available_line_numbers = [int(item["line"]) for item in lines if isinstance(item, dict) and isinstance(item.get("line"), int)]
+    if not available_line_numbers:
+        return out
+    max_available_line = max(available_line_numbers)
+    local_anchor_terms: set[str] = set()
+    for item in e.get("content_lines", []) if isinstance(e.get("content_lines"), list) else []:
+        if isinstance(item, dict):
+            local_anchor_terms |= _line_text_terms(str(item.get("text", "") or ""))
     scored: list[tuple[int, int]] = []
     for item in lines:
         if not isinstance(item, dict):
             continue
         ln = item.get("line")
-        txt = str(item.get("text", "") or "").lower()
+        txt = str(item.get("text", "") or "")
         if not isinstance(ln, int):
             continue
-        score = sum(1 for term in terms if term in txt)
+        score = _score_refiner_line(txt, terms, local_anchor_terms)
         if score:
             scored.append((score, ln))
     if not scored:
         return out
     max_score = max(s for s, _ in scored)
     hit_lines = sorted(ln for s, ln in scored if s == max_score)
-    start = max(1, min(hit_lines) - 1)
-    end = max(hit_lines) + 1
+    # Ties are common in repetitive code. Choose the highest-density local
+    # cluster rather than the first matching line.
+    best_center = hit_lines[0]
+    best_cluster = -1
+    for ln in hit_lines:
+        cluster = sum(s for s, other_ln in scored if abs(other_ln - ln) <= SPAN_REFINER_WINDOW_RADIUS)
+        if cluster > best_cluster:
+            best_cluster = cluster
+            best_center = ln
+    start = max(1, best_center - SPAN_REFINER_WINDOW_RADIUS)
+    end = min(max_available_line, best_center + SPAN_REFINER_WINDOW_RADIUS)
     out["start_line"] = start
     out["end_line"] = end
     return out
@@ -558,8 +604,9 @@ def _read_candidate_content_lines(repo_root: Path, cand: dict[str, Any]) -> list
     if not path or start is None or end is None or end < start:
         return []
     try:
-        full = (repo_root / path).resolve()
-        if not str(full).startswith(str(repo_root.resolve())):
+        root = repo_root.resolve()
+        full = (root / path).resolve()
+        if not full.is_relative_to(root) or not full.is_file():
             return []
         text = full.read_text(encoding="utf-8", errors="ignore")
     except OSError:
@@ -569,6 +616,23 @@ def _read_candidate_content_lines(repo_root: Path, cand: dict[str, Any]) -> list
     for ln in range(max(1, start), min(end, len(lines)) + 1):
         out.append({"line": ln, "text": lines[ln - 1]})
     return out
+
+
+def _read_file_content_lines(repo_root: Path, path: str) -> list[dict[str, Any]]:
+    if not path:
+        return []
+    try:
+        root = repo_root.resolve()
+        full = (root / path).resolve()
+        if not full.is_relative_to(root) or not full.is_file():
+            return []
+        text = full.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return []
+    lines = text.splitlines()
+    if len(lines) > SPAN_REFINER_MAX_FILE_LINES:
+        return []
+    return [{"line": i + 1, "text": line} for i, line in enumerate(lines)]
 
 
 def _gold_from_locked_record(rec: dict[str, Any]) -> tuple[list[str], list[list[int]], bool]:
@@ -719,6 +783,7 @@ def _private_span_row_from_locked_record(
         }
         if isinstance(repo_root, Path):
             ev["content_lines"] = _read_candidate_content_lines(repo_root, cand)
+            ev["file_content_lines"] = _read_file_content_lines(repo_root, ev["path"])
         evidence.append(ev)
     if not evidence:
         return None
@@ -1302,6 +1367,71 @@ def _self_test_gold_line_enrichment_order_mismatch() -> bool:
         _contextbench_gold_lookup_by_raw_idx = orig_cb  # type: ignore[assignment]
 
 
+def _self_test_full_file_refiner_moves_beyond_local_candidate() -> bool:
+    path = "src/full_file_refiner.py"
+    file_lines = [{"line": ln, "text": "ordinary filler"} for ln in range(1, 80)]
+    file_lines[49] = {"line": 50, "text": "def target_symbol_behavior():"}
+    file_lines[50] = {"line": 51, "text": "    important behavior lives here"}
+    file_lines[51] = {"line": 52, "text": "    return target_symbol_behavior"}
+    rows = [{
+        "query": "Where is target_symbol important behavior implemented?",
+        "gold_paths": [path],
+        "gold_lines": [[50, 52]],
+        "p4_reaches_gold_file": True,
+        "p4_evidence": [{
+            "path": path,
+            "start_line": 1,
+            "end_line": 5,
+            "content_sha": "private",
+            "content_lines": [{"line": ln, "text": "wrong local candidate"} for ln in range(1, 6)],
+            "file_content_lines": file_lines,
+        }],
+        "source_bucket": "synthetic_contextbench",
+        "language_bucket": "python_like",
+        "hard_cap_violation": False,
+    }]
+    public_rows, _, metrics = _form_d1_and_refine(rows)
+    return (
+        metrics.get("d1_denominator_count") == 1
+        and metrics.get("post_span_f0_5_at_10", 0.0) > metrics.get("pre_span_f0_5_at_10", 0.0)
+        and bool(public_rows)
+        and public_rows[0].get("span_delta_bucket") == "improved"
+        and public_rows[0].get("file_reach_preserved") is True
+    )
+
+
+def _self_test_file_read_containment_and_regular_file() -> bool:
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        repo = base / "repo"
+        sibling = base / "repo_evil"
+        repo.mkdir()
+        sibling.mkdir()
+        (repo / "safe.py").write_text("safe\n", encoding="utf-8")
+        (sibling / "evil.py").write_text("evil\n", encoding="utf-8")
+        inside = _read_file_content_lines(repo, "safe.py")
+        traversal = _read_file_content_lines(repo, "../repo_evil/evil.py")
+        directory = _read_file_content_lines(repo, ".")
+        cand_traversal = _read_candidate_content_lines(repo, {"path": "../repo_evil/evil.py", "start_line": 1, "end_line": 1})
+        return inside == [{"line": 1, "text": "safe"}] and traversal == [] and directory == [] and cand_traversal == []
+
+
+def _self_test_refiner_caps_window_to_file_bounds() -> bool:
+    e = {
+        "path": "src/eof.py",
+        "start_line": 1,
+        "end_line": 2,
+        "content_sha": "private",
+        "file_content_lines": [
+            {"line": 1, "text": "ordinary"},
+            {"line": 2, "text": "ordinary"},
+            {"line": 3, "text": "target_symbol important behavior"},
+        ],
+    }
+    refined = _refine_evidence_file_preserving(e, "target_symbol important behavior")
+    return refined.get("end_line") == 3 and refined.get("start_line") == 1
+
+
 def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks: list[dict[str, Any]] = []
     checks.append(_check("schema_identity", SCHEMA_VERSION == "bea_v1_n1_frozen_p4_span_refiner_smoke.v1"))
@@ -1345,6 +1475,9 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     leaked3 = dict(default_report)
     leaked3["raw_trace"] = "provider payload"
     checks.append(_check("scanner_rejects_raw_trace", _scan_summary(leaked3)["status"] == "fail"))
+    leaked4 = dict(default_report)
+    leaked4["file_content_lines"] = [{"line": 1, "text": "private source"}]
+    checks.append(_check("scanner_rejects_file_content_lines", _scan_summary(leaked4)["status"] == "fail"))
     ok_public_rows, _, ok_metrics = _form_d1_and_refine(_synthetic_private_rows(20))
     ok_report = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=None, network_mode="self_test", openlocus_binary_source="self_test", d0=d0_pass, metrics=ok_metrics, sanitized_rows=ok_public_rows)
     checks.append(_check("scanner_allows_sanitized_buckets", ok_report["forbidden_scan"]["status"] == "pass"))
@@ -1366,6 +1499,9 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("gold_line_enrichment_from_raw_frames", _self_test_gold_line_enrichment()))
     checks.append(_check("gold_line_enrichment_path_mismatch_skips_d1", _self_test_gold_line_enrichment_path_mismatch()))
     checks.append(_check("gold_line_enrichment_order_mismatch_skips_d1", _self_test_gold_line_enrichment_order_mismatch()))
+    checks.append(_check("full_file_refiner_moves_beyond_local_candidate", _self_test_full_file_refiner_moves_beyond_local_candidate()))
+    checks.append(_check("file_read_containment_and_regular_file", _self_test_file_read_containment_and_regular_file()))
+    checks.append(_check("refiner_caps_window_to_file_bounds", _self_test_refiner_caps_window_to_file_bounds()))
     return checks, all(c["passed"] for c in checks)
 
 
