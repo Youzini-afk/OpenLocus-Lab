@@ -313,7 +313,7 @@
       "value": 1
     }
   ],
-  "generated_at": "2026-06-25T21:36:42Z",
+  "generated_at": "2026-06-26T04:26:02Z",
   "generated_by": "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
   "gold_labels_used_for_policy": false,
   "gold_labels_used_for_query_construction": false,

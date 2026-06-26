@@ -241,6 +241,33 @@ def _write_json(path: Path, obj: Any) -> None:
     path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _safe_status_diagnostics(report: dict[str, Any]) -> dict[str, Any]:
+    """Return log-safe aggregate diagnostics with no paths, snippets, or rows."""
+    nonzero_failures = [
+        {"failure_category": r.get("failure_category"), "count": int(r.get("count", 0) or 0)}
+        for r in report.get("failure_category_count_records", [])
+        if isinstance(r, dict) and int(r.get("count", 0) or 0) != 0
+    ]
+    d0 = [
+        {"metric_name": r.get("metric_name"), "value": r.get("value"), "expected_value": r.get("expected_value"), "passed": r.get("passed")}
+        for r in report.get("d0_scheduler_preservation_records", [])
+        if isinstance(r, dict)
+    ]
+    manifests = [
+        {"manifest_name": r.get("manifest_name"), "record_count": r.get("record_count"), "exists": r.get("exists")}
+        for r in report.get("private_manifest_records", [])
+        if isinstance(r, dict)
+    ]
+    return {
+        "status": report.get("status"),
+        "failure_reason_category": report.get("failure_reason_category"),
+        "d1_wrong_span_denominator_count": report.get("d1_wrong_span_denominator_count"),
+        "nonzero_failure_categories": nonzero_failures,
+        "d0_records": d0,
+        "private_manifests": manifests,
+    }
+
+
 def _check(name: str, ok: bool) -> dict[str, bool | str]:
     return {"check": name, "passed": bool(ok)}
 
@@ -1420,6 +1447,7 @@ def main() -> None:
     _enforce_no_forbidden(report)
     _write_json(args.out, report)
     print(f"wrote artifact (forbidden_scan={report['forbidden_scan']['status']}, status={report['status']}, phase={report['phase']}, d1={report.get('d1_wrong_span_denominator_count', 0)})")
+    print("safe_status_diagnostics=" + json.dumps(_safe_status_diagnostics(report), sort_keys=True))
     if not args.enable_external_benchmark_network:
         print("enable_external_benchmark_network is false; writing unavailable_with_reason default artifact.")
 
