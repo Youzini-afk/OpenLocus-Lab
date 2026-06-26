@@ -1,0 +1,305 @@
+name: bea-v1-n2-rank-pack-actionability-decomposition
+
+# BEA-v1-N2 Rank/Pack Actionability Decomposition (manual opt-in).
+# MANUAL ONLY via workflow_dispatch. Does NOT run on PR/push. Uses no
+# model/provider secrets. Network-enabled mode regenerates FD1 private
+# decomposition under /tmp, validates the 239-record / 86040-row replay, reruns
+# the N1/P4L locked denominator reconstruction, calls frozen P4 with ordered
+# candidates, forms D2, and uploads only the validated public aggregate report.
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_external_benchmark_network:
+        description: 'Allow real external benchmark + repository network access for FD1 replay + N2 rank/pack decomposition (no model/provider secrets)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-n2-rank-pack-actionability-${{ github.ref }}-${{ inputs.enable_external_benchmark_network }}
+  cancel-in-progress: false
+
+jobs:
+  bea-v1-n2-rank-pack-actionability-decomposition:
+    name: bea-v1-n2-rank-pack-actionability-decomposition
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          enable_network="${{ inputs.enable_external_benchmark_network }}"
+          [[ "$enable_network" == "true" ]] && enable_network="true" || enable_network="false"
+          echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenLocus CLI (release)
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: py_compile prerequisite evaluators
+        run: |
+          python3 -m py_compile eval/bea_fd1_failure_decomposition.py
+          python3 -m py_compile eval/bea_v1_p4h_disjoint_scheduler_validation.py
+          python3 -m py_compile eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py
+          python3 -m py_compile eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py
+          python3 -m py_compile eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py
+          python3 -m py_compile eval/bea_v1_p4l_locked_non_python_scheduler_validation.py
+          python3 -m py_compile eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py
+          python3 -m py_compile eval/bea_v1_n2_rank_pack_actionability_decomposition.py
+
+      - name: Self-tests (no network)
+        run: |
+          python3 eval/bea_fd1_failure_decomposition.py --self-test
+          python3 eval/bea_v1_p4h_disjoint_scheduler_validation.py --self-test
+          python3 eval/bea_v1_p4i_disjoint_denominator_reservoir_audit.py --self-test
+          python3 eval/bea_v1_p4j_cross_source_reservoir_unlock_audit.py --self-test
+          python3 eval/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit.py --self-test
+          python3 eval/bea_v1_p4l_locked_non_python_scheduler_validation.py --self-test
+          python3 eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py --self-test
+          python3 eval/bea_v1_n2_rank_pack_actionability_decomposition.py --self-test
+
+      - name: Regenerate FD1 private decomposition (only when explicitly enabled)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          fd1_private_dir="/tmp/bea_v1_n2_fd1_private_${GITHUB_RUN_ID:-manual}"
+          fd1_replay_report="/tmp/bea_v1_n2_fd1_replay_report_${GITHUB_RUN_ID:-manual}.json"
+          rm -rf "$fd1_private_dir"
+          mkdir -p "$fd1_private_dir"
+          python3 eval/bea_fd1_failure_decomposition.py \
+            --enable-external-benchmark-network \
+            --private-decomposition-dir "$fd1_private_dir" \
+            --openlocus "$GITHUB_WORKSPACE/target/release/openlocus" \
+            --out "$fd1_replay_report"
+          jsonl_path="$fd1_private_dir/bea_fd1.decomposition.jsonl"
+          if [[ ! -f "$jsonl_path" ]]; then
+            echo "ERROR: FD1 private decomposition JSONL not found" >&2
+            exit 1
+          fi
+          row_count=$(wc -l < "$jsonl_path")
+          if [[ "$row_count" -ne 86040 ]]; then
+            echo "ERROR: expected 86040 FD1 private decomposition rows, got $row_count" >&2
+            exit 1
+          fi
+          python3 - "$fd1_replay_report" <<'PY'
+          import json, sys
+          path = sys.argv[1]
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          if report.get("schema_version") != "bea_fd1_failure_decomposition.v1":
+              failures.append("schema_version")
+          if report.get("status") != "bea_fd1_decomposition_pass":
+              failures.append("status")
+          if report.get("records_decomposed") != 239:
+              failures.append("records_decomposed")
+          manifest = report.get("private_decomposition_manifest", {})
+          if manifest.get("record_count") != 86040:
+              failures.append("manifest.record_count")
+          with open("artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json", encoding="utf-8") as f:
+              committed = json.load(f)
+          if manifest.get("manifest_hash") != committed.get("private_decomposition_manifest", {}).get("manifest_hash"):
+              failures.append("manifest_hash")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("forbidden_scan")
+          if failures:
+              for failure in failures:
+                  print(f"ERROR: {failure}", file=sys.stderr)
+              sys.exit(1)
+          print("FD1 replay report validation passed.")
+          PY
+          echo "fd1_private_jsonl=$jsonl_path" >> "$GITHUB_ENV"
+          echo "fd1_replay_report=$fd1_replay_report" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-N2 rank/pack decomposition (only when FD1 replay succeeded)
+        if: ${{ steps.resolve.outputs.enable_network == 'true' }}
+        run: |
+          export REPORT_PATH="$RUNNER_TEMP/bea_v1_n2_rank_pack_actionability_decomposition_report.json"
+          export OPENLOCUS_BEA_V1_N2_PRIVATE_DIR="/tmp/bea_v1_n2_private_${GITHUB_RUN_ID:-manual}"
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+          import time
+
+          cmd = [
+              "python3", "eval/bea_v1_n2_rank_pack_actionability_decomposition.py",
+              "--enable-external-benchmark-network",
+              "--openlocus", os.path.join(os.environ["GITHUB_WORKSPACE"], "target/release/openlocus"),
+              "--n1-artifact", "artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json",
+              "--fd1-artifact", "artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json",
+              "--fd1-private-decomposition-jsonl", os.environ["fd1_private_jsonl"],
+              "--fd1-replay-artifact", os.environ["fd1_replay_report"],
+              "--p4h-artifact", "artifacts/bea_v1_p4h_disjoint_scheduler_validation/bea_v1_p4h_disjoint_scheduler_validation_report.json",
+              "--p4i-artifact", "artifacts/bea_v1_p4i_disjoint_denominator_reservoir_audit/bea_v1_p4i_disjoint_denominator_reservoir_audit_report.json",
+              "--p4j-artifact", "artifacts/bea_v1_p4j_cross_source_reservoir_unlock_audit/bea_v1_p4j_cross_source_reservoir_unlock_audit_report.json",
+              "--p4k-artifact", "artifacts/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit/bea_v1_p4k_exact_overlap_resolution_locked_reservoir_audit_report.json",
+              "--out", os.environ["REPORT_PATH"],
+          ]
+          proc = subprocess.Popen(cmd)
+          while True:
+              rc = proc.poll()
+              if rc is not None:
+                  sys.exit(rc)
+              print(f"N2 evaluator heartbeat: still running at {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}", flush=True)
+              time.sleep(60)
+          PY
+          echo "report_path=$REPORT_PATH" >> "$GITHUB_ENV"
+
+      - name: BEA-v1-N2 default unavailable artifact (network disabled)
+        if: ${{ steps.resolve.outputs.enable_network != 'true' }}
+        run: |
+          report_path="$RUNNER_TEMP/bea_v1_n2_rank_pack_actionability_decomposition_report.json"
+          python3 eval/bea_v1_n2_rank_pack_actionability_decomposition.py --out "$report_path"
+          status=$(python3 -c "import json; print(json.load(open('$report_path'))['status'])")
+          if [[ "$status" != "unavailable_with_reason" ]]; then
+            echo "ERROR: expected unavailable_with_reason without network, got $status" >&2
+            exit 1
+          fi
+          echo "report_path=$report_path" >> "$GITHUB_ENV"
+
+      - name: Validate BEA-v1-N2 public report contract
+        env:
+          ENABLE_NETWORK: ${{ steps.resolve.outputs.enable_network }}
+        run: |
+          python3 - "$RUNNER_TEMP/bea_v1_n2_rank_pack_actionability_decomposition_report.json" "$ENABLE_NETWORK" <<'PY'
+          import json, os, sys
+          path = sys.argv[1]
+          enable_network = sys.argv[2] == "true"
+          if not os.path.isfile(path):
+              print("ERROR: report missing", file=sys.stderr); sys.exit(1)
+          with open(path, encoding="utf-8") as f:
+              report = json.load(f)
+          failures = []
+          status = report.get("status")
+          allowed_network = {
+              "no_go_n2_n1_artifact_or_trace_unavailable",
+              "no_go_n2_insufficient_rank_blocked_denominator",
+              "n2_rank_pack_decomposition_exploratory",
+              "n2_rank_pack_mechanism_inconclusive",
+              "n2_rank_pack_actionability_decomposition_pass",
+          }
+          if enable_network:
+              if status not in allowed_network:
+                  failures.append(f"network-enabled run must be a valid N2 outcome, got {status!r}")
+              if str(status).startswith("fail_") or status == "unavailable_with_reason":
+                  failures.append(f"network-enabled run cannot use infra/default status {status!r}")
+          else:
+              if status != "unavailable_with_reason":
+                  failures.append(f"expected unavailable_with_reason without network, got {status!r}")
+          if report.get("schema_version") != "bea_v1_n2_rank_pack_actionability_decomposition.v1":
+              failures.append("unexpected schema_version")
+          if report.get("claim_level") != "bea_v1_n2_rank_pack_actionability_decomposition_only":
+              failures.append("unexpected claim_level")
+          if report.get("phase") != "BEA-v1-N2":
+              failures.append("unexpected phase")
+          design_scopes = {"none", "pack_budget_design_only", "rank_preserving_pack_design_only", "extra_depth_merge_order_design_only", "evidence_materialization_design_only", "mixed_design_audit_only"}
+          design_scope = report.get("design_authorized_scope")
+          design_authorized = report.get("design_authorized")
+          if design_scope not in design_scopes:
+              failures.append("invalid design_authorized_scope")
+          if report.get("forbidden_scan", {}).get("status") != "pass":
+              failures.append("forbidden_scan.status must be pass")
+          for flag in ("implementation_authorized", "p5_authorized", "v1_a_authorized", "selector_or_reranker_authorized", "runtime_promotion_authorized", "broad_retrieval_expansion_authorized"):
+              if report.get(flag) is not False:
+                  failures.append(f"expected {flag}=false")
+          for key in ("d0_scheduler_preservation_records", "d2_rank_pack_decomposition_records", "sanitized_analysis_records", "gate_records", "private_manifest_records", "failure_category_count_records"):
+              if not isinstance(report.get(key), list):
+                  failures.append(f"{key} must be a list")
+          row_allow = {
+              "anonymous_local_id", "denominator", "source_bucket", "language_bucket",
+              "first_gold_rank_bucket", "primary_blocker_bucket", "top20_recovery_bucket",
+              "top50_recovery_bucket", "top100_recovery_bucket", "unique_file_top10_recovery_bucket",
+              "duplicate_pressure_bucket", "evidencecore_materializable", "hard_cap_violation",
+          }
+          rank_buckets = {"rank_11_20", "rank_21_50", "rank_51_100", "rank_gt_100", "rank_missing_or_invalid"}
+          blocker_buckets = {"pack_budget_only", "duplicate_file_pack_waste", "extra_depth_append_blocked", "candidate_order_blocked", "scheduler_cap_or_stop_blocked", "evidence_materialization_blocked", "mixed_or_unclassified"}
+          recovery_buckets = {"recovered", "not_recovered"}
+          duplicate_buckets = {"none", "low", "medium", "high"}
+          for row in report.get("sanitized_analysis_records", []):
+              if set(row) != row_allow:
+                  failures.append("sanitized row schema mismatch")
+              if row.get("denominator") != "D2_rank_blocked":
+                  failures.append("sanitized row denominator mismatch")
+              if row.get("first_gold_rank_bucket") not in rank_buckets:
+                  failures.append("invalid first_gold_rank_bucket")
+              if row.get("primary_blocker_bucket") not in blocker_buckets:
+                  failures.append("invalid primary_blocker_bucket")
+              for k in ("top20_recovery_bucket", "top50_recovery_bucket", "top100_recovery_bucket", "unique_file_top10_recovery_bucket"):
+                  if row.get(k) not in recovery_buckets:
+                      failures.append(f"invalid {k}")
+              if row.get("duplicate_pressure_bucket") not in duplicate_buckets:
+                  failures.append("invalid duplicate_pressure_bucket")
+              if not isinstance(row.get("evidencecore_materializable"), bool):
+                  failures.append("evidencecore_materializable must be boolean")
+              if not isinstance(row.get("hard_cap_violation"), bool):
+                  failures.append("hard_cap_violation must be boolean")
+          if enable_network and status not in {"no_go_n2_n1_artifact_or_trace_unavailable"}:
+              if report.get("closed_n1_artifact_validated") is not True:
+                  failures.append("expected closed_n1_artifact_validated=true")
+              if report.get("d0_scheduler_preservation_denominator_count") != 272:
+                  failures.append("expected D0 denominator 272")
+              if report.get("d2_rank_blocked_denominator_count") != 40:
+                  failures.append("D2 must reconstruct closed N1 rank-blocked denominator=40")
+              if len(report.get("sanitized_analysis_records", [])) != report.get("d2_rank_blocked_denominator_count"):
+                  failures.append("sanitized row count must equal D2 denominator count")
+              classified = next((r.get("value") for r in report.get("d2_rank_pack_decomposition_records", []) if r.get("metric_name") == "d2_classified_count"), None)
+              if classified != report.get("d2_rank_blocked_denominator_count"):
+                  failures.append("classified count must equal D2 denominator count")
+          d2 = int(report.get("d2_rank_blocked_denominator_count") or 0)
+          if status == "n2_rank_pack_actionability_decomposition_pass":
+              if d2 < 20:
+                  failures.append("pass requires D2 >= 20")
+              if design_authorized is not True:
+                  failures.append("pass requires design_authorized=true")
+              if design_scope == "none":
+                  failures.append("pass requires non-none design scope")
+              if report.get("implementation_authorized") is not False:
+                  failures.append("pass must not authorize implementation")
+          if status == "n2_rank_pack_mechanism_inconclusive":
+              if d2 < 20:
+                  failures.append("inconclusive requires D2 >= 20")
+              if design_authorized is not False:
+                  failures.append("inconclusive requires design_authorized=false")
+              if design_scope != "none":
+                  failures.append("inconclusive requires design scope none")
+          if status == "n2_rank_pack_decomposition_exploratory" and not (10 <= d2 < 20):
+              failures.append("exploratory requires 10 <= D2 < 20")
+          if status == "no_go_n2_insufficient_rank_blocked_denominator" and d2 >= 10:
+              failures.append("insufficient denominator No-Go requires D2 < 10")
+          if failures:
+              print("BEA-v1-N2 report validation FAILED:", file=sys.stderr)
+              for failure in failures:
+                  print(f"  - {failure}", file=sys.stderr)
+              sys.exit(1)
+          print("BEA-v1-N2 report validation passed.")
+          print(f"  status={status}")
+          print(f"  d2={report.get('d2_rank_blocked_denominator_count')}")
+          PY
+
+      - name: Validate docs i18n mirror
+        run: python3 scripts/validate_docs_i18n.py
+
+      - name: Check working tree whitespace
+        run: git diff --check
+
+      - name: Upload BEA-v1-N2 public aggregate report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-n2-rank-pack-actionability-decomposition-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/bea_v1_n2_rank_pack_actionability_decomposition_report.json
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: false

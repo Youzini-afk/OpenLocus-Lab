@@ -4,7 +4,7 @@
 
 状态：当前研究结论备忘录。本文不是 promotion request，不是默认策略变更申请，也不是 benchmark leaderboard 报告。
 
-范围：覆盖 BEA-v1-N1 Frozen P4 + Span-Refiner Smoke、BEA-v1-P4L Locked Non-Python P4 Scheduler Validation、BEA-v1-P1 可行动性审计、BEA-FD1/FD2-A/FD2-A1、BEA-5 固定协议 success-quota No-Go / near-miss、B16-F 至 B16-J live-provider atom ablation、C5 外部 benchmark 检索 smoke、F1 utility smoke，以及 D5-A 自动化校准特征提取/heldout 验证。
+范围：覆盖 BEA-v1-N1 Frozen P4 + Span-Refiner Smoke、implementation-pending-CI 的 BEA-v1-N2 Rank/Pack Actionability Decomposition、BEA-v1-P4L Locked Non-Python P4 Scheduler Validation、BEA-v1-P1 可行动性审计、BEA-FD1/FD2-A/FD2-A1、BEA-5 固定协议 success-quota No-Go / near-miss、B16-F 至 B16-J live-provider atom ablation、C5 外部 benchmark 检索 smoke、F1 utility smoke，以及 D5-A 自动化校准特征提取/heldout 验证。
 
 ## 0. 阅读规则
 
@@ -184,6 +184,8 @@ BEA-v1-P4K Exact Overlap Resolution & Locked Reservoir Audit 已完成为 design
 BEA-v1-P4L Locked Non-Python P4 Scheduler Validation 已完成为 scheduler-validation pass。Manual CI run `28184096209` 在 heartbeat workflow patch `e98839b` 和 P4-treatment hard-cap gate fix `6034b3d` 后通过 fail-closed。P4L 精确重建 locked denominator（`333/61/272`，non-Python locked denominator `272`），执行四个 frozen scheduler arms，并只在 `/tmp` 写出 1088 条 private arm-outcome rows。Baseline reach 为 `0/272`，P2 depth-only reference 为 `55/272`，P3 constrained reference 为 `55/272`，frozen P4 latency-aware scheduler 为 `52/272`。P4 保留 P2 gain 的 `0.945455`，`p4_vs_p3_latency_ratio=0.656763`，`p4_latency_reduction_vs_p3=0.343237`，`p4_pool_growth_ratio=2.176782`，且 P4-treatment hard-cap violations 为 0。这验证 frozen P4 retrieval-action scheduler 在 locked non-Python denominator 上成立，但仍不授权 P5、BEA-v1-A selector/reranker work、runtime/default promotion、method-winner 声明、broad retrieval expansion 或 frozen P4 rerun。参见 `docs/zh/bea-v1-p4l-locked-non-python-scheduler-validation.md`。
 
 BEA-v1-N1 Frozen P4 + Span-Refiner Smoke 已完成为 rank-blocked No-Go。Manual CI run `28245155237` 在 checkpoint `0ddc2e8` 上通过 fail-closed，status 为 `no_go_n1_inadequate_top10_actionable_denominator`。N1 重放 FD1 private decomposition，重建 frozen P4L/P4K denominator，并在 locked 272-record non-Python denominator 上通过 D0 scheduler preservation：baseline `0`，P2 `55`，P3 `55`，P4 `52`，P4 treatment hard-cap `0`。D1 total / pool span-opportunity 充分，为 `40`，但 D1 top-10 actionable 为 `0`，D1 rank-blocked 为 `40`。全文件同文件 refiner 在局部 gold-file span 上改善 8/40、退化 0/40，但 40 条全部在 top-10 之外；因为 N1 禁止 reorder，canonical `SpanF0.5@10` 不能给 span refinement 记功。这把下一步 BEA-v1 问题转向 rank/pack actionability，而不是 span-only refinement、P5、BEA-v1-A 或 runtime promotion。参见 `docs/zh/bea-v1-n1-frozen-p4-span-refiner-smoke.md`。
+
+BEA-v1-N2 Rank/Pack Actionability Decomposition 已实现并等待 manual network CI。它仅用于分解 N1 的 40 条 rank-blocked records：通过重新运行 private N1/P4 reconstruction，对 first gold-file rank、pack recovery、duplicate pressure、evidence materialization 与 primary blocker mechanisms 做 bucket 化分析。若 thresholds crossed，最多只授权 design-only follow-up；仍不授权 implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion 或 downstream-value 声明。参见 `docs/zh/bea-v1-n2-rank-pack-actionability-decomposition.md`。
 
 不要运行 B16-K、legacy role-proxy P4/P5、从失败 FD2-A objective 继续 FD2-B、v0.31/v0.32 权重微调、D5-A readiness 扩展、QuIVer/dense/graph quality experiments、另一个 BEA scale smoke、BEA-v1-A selector-only implementation、从 P4L/N1 进入 P5 selector/reranker、runtime/default promotion、method-winner 声明、frozen P4 rerun 或 unconstrained broad retrieval expansion。
 
