@@ -3,9 +3,9 @@ name: bea-v1-n2-rank-pack-actionability-decomposition
 # BEA-v1-N2 Rank/Pack Actionability Decomposition (manual opt-in).
 # MANUAL ONLY via workflow_dispatch. Does NOT run on PR/push. Uses no
 # model/provider secrets. Network-enabled mode regenerates FD1 private
-# decomposition under /tmp, validates the 239-record / 86040-row replay, reruns
-# the N1/P4L locked denominator reconstruction, calls frozen P4 with ordered
-# candidates, forms D2, and uploads only the validated public aggregate report.
+# decomposition under /tmp, validates the 239-record / 86040-row replay, binds
+# closed N1 D0, reconstructs the locked denominator, calls frozen P4 only for
+# D2 ordered candidates, forms D2, and uploads only the validated public report.
 
 on:
   workflow_dispatch:
@@ -47,7 +47,11 @@ jobs:
           echo "enable_network=$enable_network" >> "$GITHUB_OUTPUT"
 
       - name: Build OpenLocus CLI (release)
-        run: cargo build --locked --release -p openlocus-cli
+        run: |
+          cargo build --locked --release -p openlocus-cli
+          cp "$GITHUB_WORKSPACE/target/release/openlocus" /tmp/openlocus_n2_binary
+          chmod +x /tmp/openlocus_n2_binary
+          rm -rf "$GITHUB_WORKSPACE/target"
 
       - name: py_compile prerequisite evaluators
         run: |
@@ -81,7 +85,7 @@ jobs:
           python3 eval/bea_fd1_failure_decomposition.py \
             --enable-external-benchmark-network \
             --private-decomposition-dir "$fd1_private_dir" \
-            --openlocus "$GITHUB_WORKSPACE/target/release/openlocus" \
+            --openlocus "/tmp/openlocus_n2_binary" \
             --out "$fd1_replay_report"
           jsonl_path="$fd1_private_dir/bea_fd1.decomposition.jsonl"
           if [[ ! -f "$jsonl_path" ]]; then
@@ -137,7 +141,7 @@ jobs:
           cmd = [
               "python3", "eval/bea_v1_n2_rank_pack_actionability_decomposition.py",
               "--enable-external-benchmark-network",
-              "--openlocus", os.path.join(os.environ["GITHUB_WORKSPACE"], "target/release/openlocus"),
+              "--openlocus", "/tmp/openlocus_n2_binary",
               "--n1-artifact", "artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json",
               "--fd1-artifact", "artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json",
               "--fd1-private-decomposition-jsonl", os.environ["fd1_private_jsonl"],

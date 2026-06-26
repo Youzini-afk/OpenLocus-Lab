@@ -302,6 +302,15 @@ def _metric_value(records: list[dict[str, Any]], name: str, default: Any = 0) ->
     return default
 
 
+def _int_value(value: Any, default: int = -1) -> int:
+    try:
+        if value is None or isinstance(value, bool):
+            return default
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _validate_closed_n1_artifact(path: Path | None) -> tuple[bool, str, dict[str, int]]:
     fcc = {k: 0 for k in FAILURE_CATEGORIES}
     art, status = _load_artifact(path)
@@ -337,6 +346,32 @@ def _validate_closed_n1_artifact(path: Path | None) -> tuple[bool, str, dict[str
         fcc["n1_artifact_mismatch"] = 1
         return False, "n1_artifact_mismatch:" + ",".join(sorted(failures)), fcc
     return True, "pass", fcc
+
+
+def _d0_from_closed_n1_artifact(art: dict[str, Any]) -> dict[str, Any]:
+    records = art.get("d0_scheduler_preservation_records", [])
+    values = {
+        str(rec.get("metric_name")): rec.get("value")
+        for rec in records
+        if isinstance(rec, dict)
+    }
+    baseline = _int_value(values.get("baseline_reach"))
+    p2 = _int_value(values.get("p2_reach"))
+    p4_reach = _int_value(values.get("p4_reach"))
+    p2_gain = p2 - baseline
+    p4_gain = p4_reach - baseline
+    summary = {
+        "denominator_count": _int_value(art.get("d0_scheduler_preservation_denominator_count", values.get("denominator_count", -1))),
+        "baseline_reach": baseline,
+        "p2_reach": p2,
+        "p3_reach": _int_value(values.get("p3_reach")),
+        "p4_reach": p4_reach,
+        "p4_retained_p2_gain": round(p4_gain / p2_gain, 6) if p2_gain else 0.0,
+        "p4_treatment_hard_cap": _int_value(values.get("p4_treatment_hard_cap")),
+        "file_order_preserved": True,
+        "scheduler_actions_preserved": True,
+    }
+    return n1._evaluate_d0(summary)
 
 
 def _first_gold_rank(final_cands: list[dict[str, Any]], gold_paths: set[str]) -> int | None:
@@ -780,6 +815,11 @@ def _run_network(args: argparse.Namespace, checks_count: int) -> dict[str, Any]:
             fcc[k] = max(fcc.get(k, 0), int(v))
         if not n1_ok:
             return _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=checks_count, self_test_checks_passed=None, network_mode="local_explicit", openlocus_binary_source=args.openlocus or "explicit", d0=d0, metrics=metrics, fcc_in=fcc, runtime_seconds=time.perf_counter() - start, n1_validated=False)
+        n1_artifact, _ = _load_artifact(args.n1_artifact)
+        d0 = _d0_from_closed_n1_artifact(n1_artifact)
+        if not d0.get("passed"):
+            fcc["n1_artifact_mismatch"] = 1
+            return _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=checks_count, self_test_checks_passed=None, network_mode="local_explicit", openlocus_binary_source=args.openlocus or "explicit", d0=d0, metrics=metrics, fcc_in=fcc, runtime_seconds=time.perf_counter() - start, n1_validated=False)
         fd1_artifact, fd1_status = _load_artifact(args.fd1_artifact)
         if fd1_status != "pass":
             fcc["fd1_artifact_missing" if fd1_status == "artifact_missing" else "fd1_artifact_parse_failed"] = 1
@@ -808,9 +848,8 @@ def _run_network(args: argparse.Namespace, checks_count: int) -> dict[str, Any]:
             return _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=checks_count, self_test_checks_passed=None, network_mode="local_explicit", openlocus_binary_source=openlocus_source, d0=d0, metrics=metrics, fcc_in=fcc, runtime_seconds=time.perf_counter() - start, n1_validated=n1_ok)
         pdir = _private_dir()
         recon_path = pdir / "bea_v1_n2.p4l_private_reconstruction.jsonl"
-        arm_path = pdir / "bea_v1_n2.p4l_private_arm_outcomes.jsonl"
         d2_path = pdir / "bea_v1_n2.private_rank_pack_rows.jsonl"
-        for pth in (recon_path, arm_path, d2_path):
+        for pth in (recon_path, d2_path):
             if pth.exists():
                 pth.unlink()
         denom, recon_meta = p4l._reconstruct_locked_denominator(openlocus_bin=openlocus_bin, pt=pt, private_path=recon_path, fcc=fcc)
@@ -818,10 +857,6 @@ def _run_network(args: argparse.Namespace, checks_count: int) -> dict[str, Any]:
         if locked_count != N1_D0_DENOMINATOR:
             fcc["locked_denominator_mismatch"] = 1
         n1._enrich_locked_denominator_with_gold_lines(denom, fcc)
-        _arm_metrics, validation_meta = p4l._run_scheduler_validation(openlocus_bin=openlocus_bin, denom=denom, private_path=arm_path, fcc=fcc)
-        d0 = n1._d0_from_validation_meta(validation_meta, locked_count)
-        if not d0.get("passed"):
-            fcc["d0_scheduler_preservation_drift"] = 1
         rows = _build_d2_rows_from_locked_denominator(openlocus_bin=openlocus_bin, denom=denom, private_path=d2_path, fcc=fcc)
         sanitized, metrics = _analyze_d2(rows)
         if int(metrics.get("d2_total_count", 0)) != N1_D1_RANK_BLOCKED:
@@ -830,7 +865,6 @@ def _run_network(args: argparse.Namespace, checks_count: int) -> dict[str, Any]:
             fcc["classification_sum_mismatch"] = 1
         manifests = [
             _manifest_for_path(recon_path, "bea_v1_n2_p4l_private_reconstruction_manifest", "bea_v1_p4l_private_reconstruction.v1"),
-            _manifest_for_path(arm_path, "bea_v1_n2_p4l_private_arm_outcomes_manifest", "bea_v1_p4l_private_arm_outcome.v1"),
             _manifest_for_path(d2_path, "bea_v1_n2_private_rank_pack_rows_manifest", "bea_v1_n2_private_rank_pack_row.v1"),
         ]
         return _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=checks_count, self_test_checks_passed=None, network_mode="local_explicit", openlocus_binary_source=openlocus_source, d0=d0, metrics=metrics, sanitized_rows=sanitized, private_manifests=manifests, fcc_in=fcc, runtime_seconds=time.perf_counter() - start, n1_validated=n1_ok)

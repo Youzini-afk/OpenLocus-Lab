@@ -19,7 +19,7 @@ Evaluator 会验证 result checkpoint `e6772dc` / CI `28245155237` 的 closed N1
 - D1 rank-blocked：40；
 - public forbidden scan：pass。
 
-Network-enabled N2 不只依赖 N1 public artifact。它会在 `/tmp` 下重新生成 FD1 private decomposition，验证 private replay，重建 P4L locked denominator，并直接调用 `n1._run_frozen_p4_with_candidates(...)`，以保留 ordered final candidates 的私有 rank/score/method 字段。Private rank/pack rows 只写入 `/tmp`。
+Network-enabled N2 不只依赖 N1 public artifact，但也不重复运行完整四臂 P4L scheduler validation。它绑定 closed N1 的 D0 scheduler-preservation artifact，在 `/tmp` 下重新生成 FD1 private decomposition，验证 private replay，重建 P4L locked denominator，并直接调用 `n1._run_frozen_p4_with_candidates(...)`，以保留 ordered final candidates 的私有 rank/score/method 字段。Private rank/pack rows 只写入 `/tmp`。
 
 默认无网络 artifact 会诚实输出 `unavailable_with_reason`，不是实证结果。
 
@@ -72,7 +72,7 @@ N2 最多只能授权后续 design work，不能授权 implementation。Design-o
 - `no_go_n2_insufficient_rank_blocked_denominator` — `D2_total < 10`。
 - `n2_rank_pack_decomposition_exploratory` — `10 <= D2_total < 20`。
 - `n2_rank_pack_mechanism_inconclusive` — D2 adequate 且完成分类，但没有 design threshold crossed。
-- `n2_rank_pack_actionability_decomposition_pass` — D2 adequate、D0/N1 preserved、所有 rows 已分类、scanner passed，且至少一个 design-only threshold crossed。
+- `n2_rank_pack_actionability_decomposition_pass` — D2 adequate、closed N1 D0 已绑定、所有 rows 已分类、scanner passed，且至少一个 design-only threshold crossed。
 
 ## 隐私边界
 

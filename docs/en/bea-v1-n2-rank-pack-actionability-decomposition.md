@@ -19,7 +19,7 @@ The evaluator validates the closed N1 public artifact from result checkpoint `e6
 - D1 rank-blocked: 40;
 - public forbidden scan: pass.
 
-Network-enabled N2 does not rely on the N1 public artifact alone. It regenerates FD1 private decomposition under `/tmp`, validates the private replay, reconstructs the P4L locked denominator, and calls `n1._run_frozen_p4_with_candidates(...)` directly so ordered final candidates retain private rank/score/method fields. Private rank/pack rows are written only under `/tmp`.
+Network-enabled N2 does not rely on the N1 public artifact alone, but it also does not rerun the full four-arm P4L scheduler validation. It binds closed N1's D0 scheduler-preservation artifact, regenerates FD1 private decomposition under `/tmp`, validates the private replay, reconstructs the P4L locked denominator, and calls `n1._run_frozen_p4_with_candidates(...)` directly so ordered final candidates retain private rank/score/method fields. Private rank/pack rows are written only under `/tmp`.
 
 The default no-network artifact is intentionally `unavailable_with_reason` and is not an empirical result.
 
@@ -72,7 +72,7 @@ If one or more thresholds cross, `design_authorized=true` and `design_authorized
 - `no_go_n2_insufficient_rank_blocked_denominator` — `D2_total < 10`.
 - `n2_rank_pack_decomposition_exploratory` — `10 <= D2_total < 20`.
 - `n2_rank_pack_mechanism_inconclusive` — D2 adequate and classified, but no design threshold crossed.
-- `n2_rank_pack_actionability_decomposition_pass` — D2 adequate, D0/N1 preserved, all rows classified, scanner passed, and at least one design-only threshold crossed.
+- `n2_rank_pack_actionability_decomposition_pass` — D2 adequate, closed N1 D0 is bound, all rows classified, scanner passed, and at least one design-only threshold crossed.
 
 ## Privacy boundary
 
