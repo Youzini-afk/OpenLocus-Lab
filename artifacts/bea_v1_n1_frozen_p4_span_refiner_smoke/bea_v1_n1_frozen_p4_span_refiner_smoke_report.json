@@ -313,7 +313,7 @@
       "value": 1
     }
   ],
-  "generated_at": "2026-06-26T04:26:02Z",
+  "generated_at": "2026-06-26T05:46:18Z",
   "generated_by": "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
   "gold_labels_used_for_policy": false,
   "gold_labels_used_for_query_construction": false,
@@ -327,7 +327,7 @@
   "mode": "bea_v1_n1_frozen_p4_span_refiner_smoke",
   "network_mode": "disabled_opt_in",
   "new_records_added_during_bea_v1_n1": false,
-  "openlocus_binary_source": "missing",
+  "openlocus_binary_source": "default",
   "p5_authorized": false,
   "p5_executed": false,
   "phase": "BEA-v1-N1",

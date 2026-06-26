@@ -171,7 +171,7 @@ jobs:
           cmd = [
               "python3", "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
               "--enable-external-benchmark-network",
-              "--openlocus", "target/release/openlocus",
+              "--openlocus", os.path.join(os.environ["GITHUB_WORKSPACE"], "target/release/openlocus"),
               "--fd1-artifact", "artifacts/bea_fd1_failure_decomposition/bea_fd1_failure_decomposition_report.json",
               "--fd1-private-decomposition-jsonl", os.environ["fd1_private_jsonl"],
               "--fd1-replay-artifact", os.environ["fd1_replay_report"],

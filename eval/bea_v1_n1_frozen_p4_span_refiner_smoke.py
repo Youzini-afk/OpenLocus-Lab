@@ -1438,11 +1438,16 @@ def main() -> None:
     if not passed:
         print("error: self-test failed; refusing to write artifact", file=sys.stderr)
         sys.exit(1)
+    openlocus_bin, openlocus_source = p4.c5a._resolve_openlocus_binary(args.openlocus)
     if not args.enable_external_benchmark_network:
-        report = _base_report(status="unavailable_with_reason", failure_reason_category="network_required_but_disabled", self_test_passed=True, self_test_checks_total=len(checks), self_test_checks_passed=None, network_mode="disabled_opt_in", openlocus_binary_source=args.openlocus or "missing", fcc_in={"network_required_but_disabled": 1})
+        report = _base_report(status="unavailable_with_reason", failure_reason_category="network_required_but_disabled", self_test_passed=True, self_test_checks_total=len(checks), self_test_checks_passed=None, network_mode="disabled_opt_in", openlocus_binary_source=openlocus_source or "missing", fcc_in={"network_required_but_disabled": 1})
+    elif openlocus_bin is None:
+        report = _base_report(status="fail_schema_contract", failure_reason_category="retrieval_policy_failed", self_test_passed=True, self_test_checks_total=len(checks), self_test_checks_passed=None, network_mode="local_explicit", openlocus_binary_source=openlocus_source or "missing", fcc_in={"retrieval_policy_failed": 1})
     elif args.debug_use_manual_private_inputs:
+        args.openlocus = openlocus_bin
         report = _run_private_path(args, len(checks))
     else:
+        args.openlocus = openlocus_bin
         report = _run_real_network_replay(args, len(checks))
     _enforce_no_forbidden(report)
     _write_json(args.out, report)
