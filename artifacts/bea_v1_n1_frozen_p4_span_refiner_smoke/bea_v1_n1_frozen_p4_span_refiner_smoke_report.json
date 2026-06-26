@@ -405,7 +405,7 @@
       "value": 1
     }
   ],
-  "generated_at": "2026-06-26T11:41:40Z",
+  "generated_at": "2026-06-26T14:38:17Z",
   "generated_by": "eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py",
   "gold_labels_used_for_policy": false,
   "gold_labels_used_for_query_construction": false,
@@ -444,8 +444,8 @@
   "schema_version": "bea_v1_n1_frozen_p4_span_refiner_smoke.v1",
   "selector_or_reranker_changed": false,
   "selector_or_reranker_executed": false,
-  "self_test_checks_passed": 51,
-  "self_test_checks_total": 51,
+  "self_test_checks_passed": 52,
+  "self_test_checks_total": 52,
   "self_test_passed": true,
   "source_checkpoint": "f1bac81",
   "source_ci_run_id": "28184096209",

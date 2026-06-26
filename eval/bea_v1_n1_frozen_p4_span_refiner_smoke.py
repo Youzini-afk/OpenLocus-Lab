@@ -676,9 +676,23 @@ def _line_number(value: Any) -> int | None:
 def _contextbench_gold_lookup_by_raw_idx(fcc: dict[str, int] | None = None) -> dict[int, tuple[list[str], list[list[int]]]] | None:
     """Private ContextBench raw-index -> gold lines lookup for N1 only."""
     out: dict[int, tuple[list[str], list[list[int]]]] = {}
-    rows, status, _, _ = p4.c5a._fetch_contextbench_rows(
-        p4l.p4j.P4J_CONTEXTBENCH_ALL_LIMIT, "all")
-    if status != "pass":
+    rows: list[dict[str, Any]] = []
+    status = "unavailable"
+    # This lookup is auxiliary to D1 line-label formation.  The locked raw
+    # denominator itself has already been reconstructed by P4L in D0.  Retry a
+    # transient partial/unavailable fetch, but if we still have a non-empty
+    # partial frame, use it as a conservative lower-bound lookup and let missing
+    # labels reduce D1 rather than falsely failing the raw-denominator contract.
+    for _attempt in range(3):
+        rows, status, _, _ = p4.c5a._fetch_contextbench_rows(
+            p4l.p4j.P4J_CONTEXTBENCH_ALL_LIMIT, "all")
+        if status == "pass":
+            break
+        if rows:
+            # Keep the best non-empty partial frame; another retry may still
+            # upgrade it to pass.
+            continue
+    if status == "unavailable" or not rows:
         if fcc is not None:
             fcc["raw_denominator_scan_failed"] = fcc.get("raw_denominator_scan_failed", 0) + 1
         return None
@@ -1431,6 +1445,25 @@ def _self_test_gold_line_enrichment_order_mismatch() -> bool:
         _contextbench_gold_lookup_by_raw_idx = orig_cb  # type: ignore[assignment]
 
 
+def _self_test_contextbench_gold_lookup_partial_is_nonblocking() -> bool:
+    orig_fetch = p4.c5a._fetch_contextbench_rows
+    try:
+        row = {
+            "gold_context": json.dumps([
+                {"file": "src/a.rs", "start_line": 3, "end_line": 4},
+            ]),
+        }
+        p4.c5a._fetch_contextbench_rows = lambda limit, language_filter: ([row], "partial", 1, {})  # type: ignore[assignment]
+        fcc: dict[str, int] = {}
+        lookup = _contextbench_gold_lookup_by_raw_idx(fcc)
+        return (
+            lookup == {0: (["src/a.rs"], [[3, 4]])}
+            and fcc.get("raw_denominator_scan_failed", 0) == 0
+        )
+    finally:
+        p4.c5a._fetch_contextbench_rows = orig_fetch  # type: ignore[assignment]
+
+
 def _self_test_full_file_refiner_moves_beyond_local_candidate() -> bool:
     path = "src/full_file_refiner.py"
     file_lines = [{"line": ln, "text": "ordinary filler"} for ln in range(1, 80)]
@@ -1602,6 +1635,7 @@ def run_self_test_checks() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("gold_line_enrichment_from_raw_frames", _self_test_gold_line_enrichment()))
     checks.append(_check("gold_line_enrichment_path_mismatch_skips_d1", _self_test_gold_line_enrichment_path_mismatch()))
     checks.append(_check("gold_line_enrichment_order_mismatch_skips_d1", _self_test_gold_line_enrichment_order_mismatch()))
+    checks.append(_check("contextbench_gold_lookup_partial_is_nonblocking", _self_test_contextbench_gold_lookup_partial_is_nonblocking()))
     checks.append(_check("full_file_refiner_moves_beyond_local_candidate", _self_test_full_file_refiner_moves_beyond_local_candidate()))
     checks.append(_check("file_read_containment_and_regular_file", _self_test_file_read_containment_and_regular_file()))
     checks.append(_check("refiner_caps_window_to_file_bounds", _self_test_refiner_caps_window_to_file_bounds()))
