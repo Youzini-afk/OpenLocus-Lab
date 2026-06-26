@@ -1017,6 +1017,30 @@ def main() -> None:
         print("enable_external_benchmark_network is false; writing unavailable_with_reason default artifact.", file=sys.stderr)
     else:
         report = _run_network(args, len(checks))
+    safe_diagnostic = {
+        "status": report.get("status"),
+        "failure_reason_category": report.get("failure_reason_category"),
+        "d0_denominator": report.get("d0_scheduler_preservation_denominator_count"),
+        "d0_passed": all(bool(r.get("passed")) for r in report.get("d0_scheduler_preservation_records", [])),
+        "d2_denominator": report.get("d2_rank_blocked_denominator_count"),
+        "d2_classified": next((r.get("value") for r in report.get("d2_rank_pack_decomposition_records", []) if r.get("metric_name") == "d2_classified_count"), None),
+        "design_authorized": report.get("design_authorized"),
+        "design_authorized_scope": report.get("design_authorized_scope"),
+        "nonzero_failure_categories": {
+            str(r.get("failure_category")): int(r.get("count", 0))
+            for r in report.get("failure_category_count_records", [])
+            if int(r.get("count", 0))
+        },
+        "private_manifest_records": [
+            {
+                "manifest_name": r.get("manifest_name"),
+                "record_count": r.get("record_count"),
+                "records_written": r.get("records_written"),
+            }
+            for r in report.get("private_manifest_records", [])
+        ],
+    }
+    print("safe_diagnostic=" + json.dumps(safe_diagnostic, sort_keys=True), file=sys.stderr)
     _enforce_no_forbidden(report)
     _write_json(args.out, report)
     print(f"wrote artifact (forbidden_scan={report['forbidden_scan']['status']}, status={report['status']}, phase={PHASE}, d2={report.get('d2_rank_blocked_denominator_count')})")
