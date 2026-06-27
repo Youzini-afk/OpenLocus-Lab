@@ -19,7 +19,7 @@ abstain / request more context. Candidate is not fact.
 
 ## Current research status
 
-Status date: **2026-06-26**.
+Status date: **2026-06-27**.
 
 OpenLocus is now in the **BEA v1 actionability / retrieval-action scheduling**
 line. The current question is no longer “which retrieval channel is globally
@@ -28,40 +28,43 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N1: Frozen P4 + Span-Refiner Smoke**:
+The latest closed phase is **BEA-v1-N2: Rank/Pack Actionability Decomposition**:
 
 ```text
-checkpoint: 0ddc2e8
-CI run:     28245155237
-status:     no_go_n1_inadequate_top10_actionable_denominator
+empirical CI source: 28272769423
+source checkpoint:   7c90213
+correction checkpoint: a5b519b
+status:              n2_rank_pack_actionability_decomposition_pass
 ```
 
-N1 replayed the frozen P4 scheduler from P4L and tested a file-preserving,
-same-file span refiner without changing file selection, ranking, scheduler
-actions, or retrieval policy:
+N1 first showed that span-only repair was rank-blocked: D1 total / pool
+span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
+rank-blocked records without implementing a selector/reranker:
 
 ```text
-D0 scheduler preservation: pass
-D0 denominator:             272
-D0 reach replay:            baseline 0, P2 55, P3 55, P4 52
+D2 rank-blocked denominator: 40
+classified rows:             40 / 40
+first gold-file rank bucket: rank_21_50 = 40 / 40
 
-D1 total span opportunity: 40
-D1 top-10 actionable:      0
-D1 rank-blocked:           40
-local same-file improved:  8 / 40
+top20 recovery:             0 / 40
+top50 recovery:             40 / 40
+top100 recovery:            40 / 40
+unique-file top10 recovery: 0 / 40
+
+primary blocker:            extra_depth_append_blocked = 40 / 40
+evidence materializable:    40 / 40
+hard-cap violations:        0
 ```
 
-N1 is a valid No-Go, not a span-refiner pass: all wrong-span opportunities were
-rank-blocked outside top-10, so a span-only refiner that is forbidden to reorder
-evidence cannot improve canonical `SpanF0.5@10` on this denominator. This does
-**not** authorize P5, BEA-v1-A, runtime/default promotion, method-winner claims,
-broad retrieval expansion, downstream-value claims, or a scheduler/default
-change.
+N2 authorizes only **extra-depth merge-order design** as the next bounded design
+problem. It does **not** authorize implementation, P5, BEA-v1-A,
+selector/reranker execution, runtime/default promotion, method-winner claims,
+broad retrieval expansion, downstream-value claims, or a frozen P4 rerun.
 
-Current next bounded direction: rank/pack actionability decomposition after N1.
-The immediate question is how to move gold-file evidence into the actionable
-top-10 pack without violating the frozen scheduler evidence boundary; this is not
-permission to jump to P5/BEA-v1-A.
+Provenance note: the empirical N2 result is CI `28272769423`; the committed
+public artifact includes a local records-only correction of one non-gating D0
+latency display field from the closed N1 artifact. The code fix for that display
+bug is checkpoint `a5b519b`.
 
 High-level guardrail status:
 
@@ -103,20 +106,19 @@ See the current report index:
   showed candidate availability can improve when retrieval expansion is
   constrained and latency is handled at the action-scheduler layer, not inside
   candidate relevance scoring.
-- **The disjoint denominator is now locked and span-only N1 is rank-blocked.** P4H/P4I showed the supported
+- **The disjoint denominator is now locked; N1 is rank-blocked; N2 localizes the blocker.** P4H/P4I showed the supported
   Python frame only had 73/80 file-miss records; P4J found a 333-record
   cross-source upper-bound reservoir; P4K resolved exact overlap and locked a
   272-record non-Python denominator; P4L validated the frozen P4 scheduler on
   that locked denominator; N1 then found D1_total=40 but D1_top10_actionable=0,
-  so the immediate blocker is pack/rank actionability, not same-file span
-  refinement alone.
+  and N2 classified all 40 as extra-depth append/merge-order blocked.
 
 ### What remains unresolved
 
-- N1 found 40 wrong-span pool opportunities after frozen P4, but all 40 were
-  rank-blocked outside top-10. The immediate next empirical question is how to
-  diagnose or repair top-10 pack/rank actionability without changing scheduler
-  claims prematurely.
+- N2 authorizes only design of an extra-depth merge-order actionability follow-up.
+  The immediate next empirical question is whether a frozen, bounded merge-order
+  design can move those rank_21_50 gold-file candidates into the actionable pack
+  without turning into P5/BEA-v1-A selector/reranker work.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -249,6 +251,10 @@ eval/bea_v1_p4l_locked_non_python_scheduler_validation.py
 eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py
   Frozen-P4 span-refiner smoke with D0 scheduler preservation and rank-aware D1
   total/top-10/rank-blocked denominators.
+
+eval/bea_v1_n2_rank_pack_actionability_decomposition.py
+  Rank/pack decomposition for N1's 40 rank-blocked records; authorizes only
+  extra-depth merge-order design.
 ```
 
 Key reports:
@@ -258,6 +264,7 @@ Key reports:
 - [`artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json`](artifacts/b19_theoretical_synthesis/b19_theoretical_synthesis_report.json)
 - [`artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json`](artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json)
 - [`artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json`](artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json)
+- [`artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json`](artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json)
 
 Documentation mirror check:
 

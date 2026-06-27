@@ -1,6 +1,6 @@
 # BEA-v1-N2 Rank/Pack Actionability Decomposition
 
-Date: 2026-06-26
+Date: 2026-06-27
 
 BEA-v1-N2 is an empirical decomposition stage after BEA-v1-N1. N1 closed as a rank-blocked No-Go (`no_go_n1_inadequate_top10_actionable_denominator`): D0 scheduler preservation passed on the locked 272-record non-Python denominator, but all 40 D1 span opportunities were outside the actionable top-10 pack.
 
@@ -83,6 +83,41 @@ If one or more thresholds cross, `design_authorized=true` and `design_authorized
 
 Public artifacts may include aggregate metrics plus scanner-validated sanitized rows only. They must not include raw paths, exact ranks, exact spans, gold lines, snippets/content, raw candidate lists, repo/task ids, private trace paths, prompts/responses, provider payloads, scores, or source-linkable hashes.
 
-## Current state
+## Result
 
-Implementation is present and pending manual network CI. No final N2 empirical CI result is claimed by this document.
+N2 is complete as a bounded empirical decomposition pass.
+
+```text
+empirical CI source: 28272769423
+source checkpoint:   7c90213
+status:              n2_rank_pack_actionability_decomposition_pass
+D2 denominator:      40
+design scope:        extra_depth_merge_order_design_only
+```
+
+The public artifact was copied from CI `28272769423` and then locally corrected
+only for one non-gating D0 display field: `p4_p3_latency_ratio_observed` now
+matches the closed N1 artifact value `0.662177`. The code fix for this display
+bug is checkpoint `a5b519b`. Later reruns `28275921872` and `28277110197` did
+not produce contradictory N2 evidence; they failed before a valid N2 artifact due
+to transient locked-denominator reconstruction / FD1 prerequisite failure.
+
+Key N2 findings:
+
+- D2 reconstructed exactly: `40/40`.
+- All D2 rows were classified: `40/40`.
+- First gold-file rank bucket: `rank_21_50 = 40/40`.
+- Top-20 recovery: `0/40`.
+- Top-50 recovery: `40/40`.
+- Top-100 recovery: `40/40`.
+- Unique-file top-10 recovery: `0/40`.
+- Primary blocker: `extra_depth_append_blocked = 40/40`.
+- Evidence materializable: `40/40`.
+- Hard-cap violations: `0`.
+- Public forbidden scan: `pass`.
+
+Decision: N2 authorizes only **extra-depth merge-order design** as the next
+bounded research design problem. It does not authorize implementation, P5,
+BEA-v1-A, selector/reranker execution, runtime/default promotion,
+method-winner claims, broad retrieval expansion, downstream-value claims, or a
+frozen P4 rerun.

@@ -11121,3 +11121,49 @@ evidence must be moved into the actionable top-10 pack before canonical
 `SpanF0.5@10` can credit a file-preserving span refiner. Do not jump from N1 to
 P5 selector/reranker, BEA-v1-A, runtime/default promotion, method-winner claims,
 or broad retrieval expansion.
+
+## 2026-06-27 — BEA-v1-N2: Rank/Pack Actionability Decomposition
+
+### Objective
+
+Decompose N1's 40 rank-blocked records without implementing a selector/reranker
+or changing frozen P4. N2 binds the closed N1 D0 scheduler-preservation artifact,
+regenerates FD1 private traces under `/tmp`, reconstructs the locked denominator,
+and reruns only the ordered frozen-P4 candidate path needed for D2.
+
+### Implementation / validation
+
+Local checkpoints: `e4c4d54` (N2 implementation), `e1406a5` (CI disk-stability
+fix: bind N1 D0 and avoid repeating full P4L four-arm validation), `7c90213`
+(candidate-order-unavailable is diagnostic when D2=40 is complete), and
+`a5b519b` (non-gating D0 latency display inherited from N1 artifact). Self-tests
+are 28/28.
+
+### Manual CI result and correction provenance
+
+Manual CI run `28272769423` produced the valid empirical N2 artifact at
+checkpoint `7c90213`. Before result writeback, a public D0 display bug was found:
+`p4_p3_latency_ratio_observed` was printed as `0.0` even though the closed N1
+artifact records `0.662177`. The committed artifact applies only this records-only,
+non-gating correction; no D2 counts, sanitized rows, design scope, failure
+categories, or manifests were changed. Code checkpoint `a5b519b` fixes the bug.
+Reruns `28275921872` and `28277110197` failed before producing a valid N2 result
+due transient locked-denominator reconstruction / FD1 prerequisite failures, so
+they do not contradict CI `28272769423`.
+
+### Result
+
+Status: `n2_rank_pack_actionability_decomposition_pass`. D2 reconstructed exactly
+(`40/40`) and all rows were classified. First gold-file rank bucket was
+`rank_21_50=40/40`. Top-20 recovery was `0/40`; top-50 and top-100 recovery were
+`40/40`; unique-file top-10 recovery was `0/40`; evidence was materializable for
+`40/40`; hard-cap violations were `0`; scanner status was `pass`.
+
+Primary blocker: `extra_depth_append_blocked=40/40`.
+
+### Decision
+
+N2 authorizes only extra-depth merge-order design. It does not authorize
+implementation, P5 selector/reranker, BEA-v1-A, selector/reranker execution,
+runtime/default promotion, method-winner claims, broad retrieval expansion,
+downstream-value claims, or frozen P4 rerun.

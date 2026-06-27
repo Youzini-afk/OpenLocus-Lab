@@ -1,72 +1,72 @@
 {
   "aggregate_plus_sanitized_records_public_artifact": true,
-  "aggregate_runtime_seconds": 0.0,
+  "aggregate_runtime_seconds": 3906.258,
   "broad_retrieval_expansion_authorized": false,
   "claim_level": "bea_v1_n2_rank_pack_actionability_decomposition_only",
-  "closed_n1_artifact_validated": false,
+  "closed_n1_artifact_validated": true,
   "d0_scheduler_preservation_denominator_count": 272,
   "d0_scheduler_preservation_records": [
     {
       "expected_value": 272,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "denominator_count",
-      "passed": false,
-      "value": -1
+      "passed": true,
+      "value": 272
     },
     {
       "expected_value": 0,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "baseline_reach",
-      "passed": false,
-      "value": -1
+      "passed": true,
+      "value": 0
     },
     {
       "expected_value": 55,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "p2_reach",
-      "passed": false,
-      "value": -1
+      "passed": true,
+      "value": 55
     },
     {
       "expected_value": 55,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "p3_reach",
-      "passed": false,
-      "value": -1
+      "passed": true,
+      "value": 55
     },
     {
       "expected_value": 52,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "p4_reach",
-      "passed": false,
-      "value": -1
+      "passed": true,
+      "value": 52
     },
     {
       "expected_value": 0,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "p4_treatment_hard_cap",
-      "passed": false,
-      "value": -1
+      "passed": true,
+      "value": 0
     },
     {
       "expected_value": 0.656763,
       "metric_block": "D0_scheduler_preservation",
       "metric_name": "p4_p3_latency_ratio_observed",
       "passed": true,
-      "value": 0.0
+      "value": 0.662177
     }
   ],
-  "d2_rank_blocked_denominator_count": 0,
+  "d2_rank_blocked_denominator_count": 40,
   "d2_rank_pack_decomposition_records": [
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "d2_total_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "d2_classified_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -76,27 +76,27 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "top50_recovery_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "top100_recovery_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "top20_recovery_rate",
-      "value": 0
+      "value": 0.0
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "top50_recovery_rate",
-      "value": 0
+      "value": 1.0
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "top100_recovery_rate",
-      "value": 0
+      "value": 1.0
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -106,12 +106,12 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "unique_file_pack_recovery_at10",
-      "value": 0
+      "value": 0.0
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "evidence_materializable_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -121,17 +121,17 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "evidence_materialization_blocked_rate",
-      "value": 0
+      "value": 0.0
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "extra_depth_append_blocked_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "extra_depth_append_blocked_rate",
-      "value": 0
+      "value": 1.0
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -141,7 +141,7 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "design_thresholds_crossed_count",
-      "value": 0
+      "value": 1
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -151,7 +151,7 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "first_gold_rank_bucket_rank_21_50_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -181,7 +181,7 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "primary_blocker_extra_depth_append_blocked_count",
-      "value": 0
+      "value": 40
     },
     {
       "metric_block": "D2_rank_pack_actionability",
@@ -206,27 +206,27 @@
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "duplicate_pressure_none_count",
-      "value": 0
+      "value": 1
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "duplicate_pressure_low_count",
-      "value": 0
+      "value": 1
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "duplicate_pressure_medium_count",
-      "value": 0
+      "value": 10
     },
     {
       "metric_block": "D2_rank_pack_actionability",
       "metric_name": "duplicate_pressure_high_count",
-      "value": 0
+      "value": 28
     }
   ],
   "default_should_change": false,
-  "design_authorized": false,
-  "design_authorized_scope": "none",
+  "design_authorized": true,
+  "design_authorized_scope": "extra_depth_merge_order_design_only",
   "design_authorized_scope_vocabulary": [
     "none",
     "pack_budget_design_only",
@@ -241,7 +241,7 @@
   "exact_spans_publicly_serialized": false,
   "failure_category_count_records": [
     {
-      "count": 0,
+      "count": 59,
       "failure_category": "candidate_order_unavailable"
     },
     {
@@ -321,7 +321,7 @@
       "failure_category": "n1_artifact_parse_failed"
     },
     {
-      "count": 1,
+      "count": 0,
       "failure_category": "network_required_but_disabled"
     },
     {
@@ -353,7 +353,7 @@
       "failure_category": "unexpected_exception"
     }
   ],
-  "failure_reason_category": "network_required_but_disabled",
+  "failure_reason_category": "design_threshold_crossed",
   "forbidden_scan": {
     "status": "pass",
     "violation_categories": [],
@@ -362,52 +362,52 @@
   "gate_records": [
     {
       "gate": "closed_n1_artifact_validated",
-      "passed": false,
+      "passed": true,
       "threshold_relation": "boolean",
       "threshold_value": 1,
-      "value": 0
+      "value": 1
     },
     {
       "gate": "d0_scheduler_preservation",
-      "passed": false,
+      "passed": true,
       "threshold_relation": "boolean",
       "threshold_value": 1,
-      "value": 0
+      "value": 1
     },
     {
       "gate": "d2_rank_blocked_denominator_adequate",
-      "passed": false,
+      "passed": true,
       "threshold_relation": ">=",
       "threshold_value": 20,
-      "value": 0
+      "value": 40
     },
     {
       "gate": "d2_rank_blocked_denominator_exploratory_min",
-      "passed": false,
+      "passed": true,
       "threshold_relation": ">=",
       "threshold_value": 10,
-      "value": 0
+      "value": 40
     },
     {
       "gate": "d2_reconstructs_closed_n1_rank_blocked_denominator",
-      "passed": false,
+      "passed": true,
       "threshold_relation": "==",
       "threshold_value": 40,
-      "value": 0
+      "value": 40
     },
     {
       "gate": "classification_count_equals_d2",
       "passed": true,
       "threshold_relation": "==",
-      "threshold_value": 0,
-      "value": 0
+      "threshold_value": 40,
+      "value": 40
     },
     {
       "gate": "design_threshold_crossed",
-      "passed": false,
+      "passed": true,
       "threshold_relation": "boolean",
       "threshold_value": 1,
-      "value": 0
+      "value": 1
     },
     {
       "gate": "forbidden_scan_pass",
@@ -417,15 +417,29 @@
       "value": 1
     }
   ],
-  "generated_at": "2026-06-27T02:29:23Z",
+  "generated_at": "2026-06-27T02:25:46Z",
   "generated_by": "eval/bea_v1_n2_rank_pack_actionability_decomposition.py",
   "implementation_authorized": false,
   "mode": "bea_v1_n2_rank_pack_actionability_decomposition",
-  "network_mode": "disabled_opt_in",
-  "openlocus_binary_source": "missing",
+  "network_mode": "local_explicit",
+  "non_contradictory_rerun_records": [
+    {
+      "outcome": "no_valid_n2_artifact_reconstruction_fail_closed",
+      "run_id": "28275921872"
+    },
+    {
+      "outcome": "no_valid_n2_artifact_fd1_prerequisite_failed",
+      "run_id": "28277110197"
+    }
+  ],
+  "openlocus_binary_source": "explicit",
   "p5_authorized": false,
   "p5_executed": false,
   "phase": "BEA-v1-N2",
+  "post_ci_correction_checkpoint": "a5b519b",
+  "post_ci_correction_scope": "non_gating_d0_latency_record_only",
+  "post_ci_correction_validated_locally": true,
+  "post_ci_records_only_correction": "d0_latency_display_from_closed_n1_artifact",
   "primary_blocker_vocabulary": [
     "pack_budget_only",
     "duplicate_file_pack_waste",
@@ -436,25 +450,645 @@
     "mixed_or_unclassified"
   ],
   "private_jsonl_under_tmp_only": true,
-  "private_manifest_records": [],
+  "private_manifest_records": [
+    {
+      "manifest_hash": "c3e8482057ecd1cab7c9ba69bf274799de55744c1cc17315cfe9381c547f887e",
+      "manifest_name": "bea_v1_n2_p4l_private_reconstruction_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 618,
+      "records_written": true,
+      "schema_version": "bea_v1_p4l_private_reconstruction.v1",
+      "storage_class": "private_jsonl_under_tmp"
+    },
+    {
+      "manifest_hash": "dcc45a0e7adc999ad6b0213593c69e0167b0aced458515efeb305afc8b48a6c9",
+      "manifest_name": "bea_v1_n2_private_rank_pack_rows_manifest",
+      "path_publicly_serialized": false,
+      "record_count": 40,
+      "records_written": true,
+      "schema_version": "bea_v1_n2_private_rank_pack_row.v1",
+      "storage_class": "private_jsonl_under_tmp"
+    }
+  ],
   "provider_calls_made": false,
   "rank_pack_decomposition_only": true,
   "raw_records_publicly_serialized": false,
   "remote_provider_calls_made": false,
   "runtime_behavior_changed": false,
   "runtime_promotion_authorized": false,
-  "sanitized_analysis_records": [],
+  "sanitized_analysis_records": [
+    {
+      "anonymous_local_id": "n2r00000",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "javascript",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00001",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "c",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00002",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "c",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00003",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "c",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00004",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00005",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00006",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "javascript",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "contextbench_all_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00007",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00008",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00009",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00010",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "low",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00011",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00012",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00013",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00014",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00015",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "none",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "cpp",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00016",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00017",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00018",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00019",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00020",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00021",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00022",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "go",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00023",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00024",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00025",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00026",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00027",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00028",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00029",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "medium",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "java",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00030",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "rust",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00031",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "rust",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00032",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "rust",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00033",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "rust",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00034",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "rust",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00035",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "rust",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00036",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "typescript",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00037",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "typescript",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00038",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "typescript",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    },
+    {
+      "anonymous_local_id": "n2r00039",
+      "denominator": "D2_rank_blocked",
+      "duplicate_pressure_bucket": "high",
+      "evidencecore_materializable": true,
+      "first_gold_rank_bucket": "rank_21_50",
+      "hard_cap_violation": false,
+      "language_bucket": "typescript",
+      "primary_blocker_bucket": "extra_depth_append_blocked",
+      "source_bucket": "repoqa_non_python_languages",
+      "top100_recovery_bucket": "recovered",
+      "top20_recovery_bucket": "not_recovered",
+      "top50_recovery_bucket": "recovered",
+      "unique_file_top10_recovery_bucket": "not_recovered"
+    }
+  ],
   "schema_version": "bea_v1_n2_rank_pack_actionability_decomposition.v1",
   "scores_publicly_serialized": false,
   "selector_or_reranker_authorized": false,
   "selector_or_reranker_executed": false,
   "selector_or_reranker_implemented": false,
-  "self_test_checks_passed": 28,
-  "self_test_checks_total": 28,
+  "self_test_checks_passed": 27,
+  "self_test_checks_total": 27,
   "self_test_passed": true,
-  "source_checkpoint": "e6772dc",
-  "source_ci_run_id": "28245155237",
-  "status": "unavailable_with_reason",
+  "source_checkpoint": "7c90213",
+  "source_ci_run_id": "28272769423",
+  "status": "n2_rank_pack_actionability_decomposition_pass",
   "status_vocabulary": [
     "unavailable_with_reason",
     "fail_schema_contract",

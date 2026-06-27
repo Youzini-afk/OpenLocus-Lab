@@ -3376,3 +3376,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`no_go_n1_inadequate_top10_actionable_denominator`。N1 重放 FD1 private decomposition，重建 frozen P4L/P4K denominator，并在 locked 272-record non-Python denominator 上验证 D0 scheduler preservation：baseline `0`，P2 `55`，P3 `55`，P4 `52`，P4 treatment hard-cap `0`。
 - **Span 结果**：D1 total / pool span-opportunity denominator 充分，为 `40`，但 D1 top-10 actionable 为 `0`，D1 rank-blocked 为 `40`。全文件同文件 refiner 在局部 gold-file 诊断上改善 8/40、退化 0/40，但这些记录全部在 top-10 之外；由于 N1 禁止 evidence reorder，不能用 canonical `SpanF0.5@10` 声明 span 改善。
 - **决策**：N1 不验证 span-only repair。下一步有界 BEA-v1 工作应研究 rank/pack actionability：如何把 gold-file evidence 移入 actionable top-10 pack，同时在另行授权前继续保持 no-P5/no-BEA-v1-A/no-default-promotion 边界。
+
+## BEA-v1-N2 发现
+
+- **BEA-v1-N2 Rank/Pack Actionability Decomposition 已完成为 decomposition pass**：local checkpoint `e4c4d54`，stability checkpoint `e1406a5`，candidate-order classification fix `7c90213`，D0 latency display fix `a5b519b`，empirical CI source `28272769423`。
+- **Artifact provenance**：公开 artifact 使用 CI `28272769423` 的已验证结果，并仅对一个非 gating 的 D0 latency 展示字段做本地 records-only 修正（`p4_p3_latency_ratio_observed=0.662177`），该值来自 closed N1 artifact。后续 rerun `28275921872` 与 `28277110197` 未产生相反 N2 evidence，因为它们在有效 N2 artifact 生成前失败。
+- **状态**：`n2_rank_pack_actionability_decomposition_pass`。D2 精确重建（`40/40`），全部 rows 完成分类（`40/40`）。First gold-file rank bucket 为 `rank_21_50=40/40`；top-20 recovery 为 `0/40`，top-50/top-100 recovery 为 `40/40`，unique-file top-10 recovery 为 `0/40`，evidence materializable 为 `40/40`，hard-cap violations 为 `0`，public scanner 为 `pass`。
+- **机制**：primary blocker 是 `extra_depth_append_blocked=40/40`。因此 N1 的 span bottleneck 实际是 rank/pack actionability 问题：gold file 稳定存在于更深 pool，但没有被 append/merge 到 actionable pack。
+- **决策**：N2 只授权 extra-depth merge-order design。它不授权 implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。

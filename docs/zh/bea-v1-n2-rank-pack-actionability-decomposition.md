@@ -1,6 +1,6 @@
 # BEA-v1-N2 Rank/Pack Actionability Decomposition
 
-日期：2026-06-26
+日期：2026-06-27
 
 BEA-v1-N2 是 BEA-v1-N1 之后的实证 decomposition 阶段。N1 已以 rank-blocked No-Go 关闭（`no_go_n1_inadequate_top10_actionable_denominator`）：D0 scheduler preservation 在 locked 272-record non-Python denominator 上通过，但 40 条 D1 span 机会全部位于 actionable top-10 pack 之外。
 
@@ -81,6 +81,38 @@ N2 最多只能授权后续 design work，不能授权 implementation。Design-o
 
 Public artifacts 只能包含 aggregate metrics 与经过 scanner 验证的 sanitized rows。不得包含 raw paths、exact ranks、exact spans、gold lines、snippets/content、raw candidate lists、repo/task ids、private trace paths、prompts/responses、provider payloads、scores 或 source-linkable hashes。
 
-## 当前状态
+## 结果
 
-实现已就绪，等待 manual network CI。本文档不声明最终 N2 empirical CI result。
+N2 已完成为有界 empirical decomposition pass。
+
+```text
+empirical CI source: 28272769423
+source checkpoint:   7c90213
+status:              n2_rank_pack_actionability_decomposition_pass
+D2 denominator:      40
+design scope:        extra_depth_merge_order_design_only
+```
+
+公开 artifact 来自 CI `28272769423`，之后只对一个非 gating 的 D0 展示字段做本地修正：
+`p4_p3_latency_ratio_observed` 现在与 closed N1 artifact 的 `0.662177` 一致。该展示
+bug 的代码修复 checkpoint 是 `a5b519b`。后续 rerun `28275921872` 与 `28277110197`
+没有产生相反的 N2 evidence；它们分别在 transient locked-denominator reconstruction / FD1
+前置阶段失败，未产出有效 N2 artifact。
+
+N2 关键发现：
+
+- D2 精确重建：`40/40`。
+- 所有 D2 rows 都已分类：`40/40`。
+- First gold-file rank bucket：`rank_21_50 = 40/40`。
+- Top-20 recovery：`0/40`。
+- Top-50 recovery：`40/40`。
+- Top-100 recovery：`40/40`。
+- Unique-file top-10 recovery：`0/40`。
+- Primary blocker：`extra_depth_append_blocked = 40/40`。
+- Evidence materializable：`40/40`。
+- Hard-cap violations：`0`。
+- Public forbidden scan：`pass`。
+
+决策：N2 只授权下一步研究设计问题为 **extra-depth merge-order design**。它不授权
+implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、
+method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。
