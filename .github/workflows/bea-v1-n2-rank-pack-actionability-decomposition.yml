@@ -78,8 +78,9 @@ jobs:
       - name: Regenerate FD1 private decomposition (only when explicitly enabled)
         if: ${{ steps.resolve.outputs.enable_network == 'true' }}
         run: |
-          fd1_private_dir="/tmp/bea_v1_n2_fd1_private_${GITHUB_RUN_ID:-manual}"
-          fd1_replay_report="/tmp/bea_v1_n2_fd1_replay_report_${GITHUB_RUN_ID:-manual}.json"
+          private_root="$GITHUB_WORKSPACE/.openlocus/research-private/bea_v1_n2_${GITHUB_RUN_ID:-manual}"
+          fd1_private_dir="$private_root/fd1_private"
+          fd1_replay_report="$private_root/fd1_replay_report.json"
           rm -rf "$fd1_private_dir"
           mkdir -p "$fd1_private_dir"
           python3 eval/bea_fd1_failure_decomposition.py \
@@ -131,7 +132,7 @@ jobs:
         if: ${{ steps.resolve.outputs.enable_network == 'true' }}
         run: |
           export REPORT_PATH="$RUNNER_TEMP/bea_v1_n2_rank_pack_actionability_decomposition_report.json"
-          export OPENLOCUS_BEA_V1_N2_PRIVATE_DIR="/tmp/bea_v1_n2_private_${GITHUB_RUN_ID:-manual}"
+          export OPENLOCUS_BEA_V1_N2_PRIVATE_DIR="$GITHUB_WORKSPACE/.openlocus/research-private/bea_v1_n2_${GITHUB_RUN_ID:-manual}/n2_private"
           python3 - <<'PY'
           import os
           import subprocess

@@ -289,9 +289,11 @@ def _check(name: str, ok: bool) -> dict[str, bool | str]:
 
 def _resolve_private_validation_dir() -> Path:
     raw = os.environ.get("OPENLOCUS_BEA_V1_P4L_PRIVATE_VALIDATION_DIR", "")
-    base = Path(raw) if raw else Path(f"/tmp/openlocus_bea_v1_p4l_validation_{os.getpid()}")
+    project_private = Path(__file__).resolve().parents[1] / ".openlocus" / "research-private"
+    base = Path(raw) if raw else project_private / f"bea_v1_p4l_validation_{os.getpid()}"
     resolved = base.resolve()
-    if not str(resolved).startswith("/tmp/"):
+    allowed_project = project_private.resolve()
+    if not (str(resolved).startswith(str(allowed_project)) or str(resolved).startswith("/tmp/")):
         raise ValueError("invalid private validation dir")
     resolved.mkdir(parents=True, exist_ok=True)
     return resolved

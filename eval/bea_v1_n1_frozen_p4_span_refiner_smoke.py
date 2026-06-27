@@ -324,9 +324,11 @@ def _append_private_jsonl(path: Path, row: dict[str, Any]) -> None:
 
 def _resolve_private_n1_dir() -> Path:
     raw = os.environ.get("OPENLOCUS_BEA_V1_N1_PRIVATE_DIR", "")
-    base = Path(raw) if raw else Path(f"/tmp/openlocus_bea_v1_n1_{os.getpid()}")
+    project_private = Path(__file__).resolve().parents[1] / ".openlocus" / "research-private"
+    base = Path(raw) if raw else project_private / f"bea_v1_n1_{os.getpid()}"
     resolved = base.resolve()
-    if not str(resolved).startswith("/tmp/"):
+    allowed_project = project_private.resolve()
+    if not (str(resolved).startswith(str(allowed_project)) or str(resolved).startswith("/tmp/")):
         raise ValueError("invalid private N1 dir")
     resolved.mkdir(parents=True, exist_ok=True)
     return resolved

@@ -203,9 +203,11 @@ def _append_private_jsonl(path: Path, row: dict[str, Any]) -> None:
 
 def _private_dir() -> Path:
     raw = os.environ.get("OPENLOCUS_BEA_V1_N2_PRIVATE_DIR", "")
-    base = Path(raw) if raw else Path(f"/tmp/openlocus_bea_v1_n2_{os.getpid()}")
+    project_private = Path(__file__).resolve().parents[1] / ".openlocus" / "research-private"
+    base = Path(raw) if raw else project_private / f"bea_v1_n2_{os.getpid()}"
     resolved = base.resolve()
-    if not str(resolved).startswith("/tmp/"):
+    allowed_project = project_private.resolve()
+    if not (str(resolved).startswith(str(allowed_project)) or str(resolved).startswith("/tmp/")):
         raise ValueError("invalid private N2 dir")
     resolved.mkdir(parents=True, exist_ok=True)
     return resolved
@@ -223,7 +225,7 @@ def _manifest_for_path(path: Path | None, name: str, schema: str) -> dict[str, A
     return {
         "manifest_name": name,
         "schema_version": schema,
-        "storage_class": "private_jsonl_under_tmp",
+        "storage_class": "private_jsonl_under_project_private",
         "record_count": count,
         "records_written": bool(count),
         "path_publicly_serialized": False,
