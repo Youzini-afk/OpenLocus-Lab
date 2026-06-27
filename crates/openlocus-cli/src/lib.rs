@@ -630,7 +630,7 @@ pub fn run() -> Result<()> {
             }
             if channel_list.iter().any(|c| c == "symbol") {
                 let ev = symbol_search(&repo_root, &records, &query, max_results)?;
-                channel_evidence.push((ev, Channel::Regex)); // symbol uses Regex channel
+                channel_evidence.push((ev, Channel::TreeSitter));
             }
 
             let fused = rrf_combine(channel_evidence);
