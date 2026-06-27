@@ -10545,3 +10545,21 @@ P0-5 只授权 private support labeling 或 private label validation。它不授
 ### 决策
 
 P0-6/7/8 只授权 trace-surface review 或 private trace validation。它们不授权 policy tuning、counterfactual execution、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion 或 downstream-value 声明。
+
+---
+
+## 2026-06-27 — BEA-v1-P0-9：Readiness Consolidation
+
+### 目标
+
+将 P0-1 到 P0-8 汇总为单一 next-experiment gate，并防止 contract-pass artifacts 被误认为已填充的 mechanism evidence。
+
+### 结果
+
+`eval/bea_v1_p0_9_readiness_consolidation.py` 生成 `artifacts/bea_v1_p0_9_readiness_consolidation/bea_v1_p0_9_readiness_consolidation_report.json`，status 为 `readiness_consolidation_pass_labeling_authorized_only`。Self-test 通过 `5/5`，forbidden scan 通过，检查 8 个 P0 inputs。
+
+所有 P0 inputs 都可以加载、status 符合预期，并通过 scanner。但是后段 P0 surfaces 仍为 contract-only：scheduler private arm rows、support labels、same-file redundancy traces、risk-penalty traces 与 ordered-prefix stop traces 尚未填充为 private rows。
+
+### 决策
+
+P0-9 只授权 private labeling 或 private trace validation。它不授权 support counterfactual execution、trace counterfactuals、policy tuning、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

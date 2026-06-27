@@ -3426,3 +3426,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-6/7/8 Parallel Trace Surfaces 已完成为 contract exports**：P0-6 status `same_file_redundancy_trace_surface_contract_pass`，P0-7 status `risk_penalty_trace_surface_contract_pass`，P0-8 status `ordered_prefix_stop_trace_surface_contract_pass`，self-test `5/5`，三个 reports forbidden scan 均 `pass`。
 - **结果**：每个 trace surface 包含 6 条 scanner-validated contract records 与一个 optional private-trace schema。本轮未提供 private trace rows。
 - **决策**：P0-6/7/8 只授权 trace-surface review 或 private trace validation。它们不授权 policy tuning、counterfactual execution、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P0-9 readiness-consolidation 发现
+
+- **BEA-v1-P0-9 Readiness Consolidation 已完成为 next-experiment gate**：status `readiness_consolidation_pass_labeling_authorized_only`，self-test `5/5`，forbidden scan `pass`。
+- **结果**：全部 8 个 P0 inputs 都可加载、status 符合预期，并通过 scanner；后段 P0 surfaces 仍为 contract-only，因为 private rows 尚未填充。
+- **决策**：P0-9 只授权 private labeling 或 private trace validation。它不授权 support counterfactual execution、trace counterfactuals、policy tuning、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

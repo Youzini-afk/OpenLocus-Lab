@@ -1,0 +1,224 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.006,
+  "claim_level": "bea_v1_p0_9_readiness_consolidation_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "all_p0_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "all_p0_statuses_expected",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "all_p0_scanners_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_rows_populated_for_counterfactual",
+      "passed": false,
+      "threshold_relation": "boolean_required_for_counterfactual",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-27T19:25:45Z",
+  "generated_by": "eval/bea_v1_p0_9_readiness_consolidation.py",
+  "input_artifact_records": [
+    {
+      "contract_or_analysis_record_count": 47,
+      "expected_status": "trace_gap_audit_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_1_trace_gap_audit",
+      "load_status": "pass",
+      "readiness_kind": "trace_gap_audit",
+      "source_schema": "bea_v1_trace_gap_audit.v1",
+      "source_status": "trace_gap_audit_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 316,
+      "expected_status": "actionability_matrix_refresh_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_2_actionability_matrix_refresh",
+      "load_status": "pass",
+      "readiness_kind": "matrix_refresh",
+      "source_schema": "bea_v1_p0_2_actionability_matrix_refresh.v1",
+      "source_status": "actionability_matrix_refresh_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 48,
+      "expected_status": "scheduler_dataset_export_contract_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_3_scheduler_dataset_export",
+      "load_status": "pass",
+      "readiness_kind": "contract_only",
+      "source_schema": "bea_v1_p0_3_scheduler_dataset_export.v1",
+      "source_status": "scheduler_dataset_export_contract_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 45,
+      "expected_status": "support_link_input_design_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_4_support_link_input_design",
+      "load_status": "pass",
+      "readiness_kind": "contract_only",
+      "source_schema": "bea_v1_p0_4_support_link_input_design.v1",
+      "source_status": "support_link_input_design_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 25,
+      "expected_status": "support_link_labeling_harness_contract_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_5_support_link_labeling_harness",
+      "load_status": "pass",
+      "readiness_kind": "contract_only",
+      "source_schema": "bea_v1_p0_5_support_link_labeling_harness.v1",
+      "source_status": "support_link_labeling_harness_contract_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 21,
+      "expected_status": "same_file_redundancy_trace_surface_contract_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_6_same_file_redundancy_trace_surface",
+      "load_status": "pass",
+      "readiness_kind": "contract_only",
+      "source_schema": "bea_v1_p0_6_same_file_redundancy_trace_surface.v1",
+      "source_status": "same_file_redundancy_trace_surface_contract_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 21,
+      "expected_status": "risk_penalty_trace_surface_contract_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_7_risk_penalty_trace_surface",
+      "load_status": "pass",
+      "readiness_kind": "contract_only",
+      "source_schema": "bea_v1_p0_7_risk_penalty_trace_surface.v1",
+      "source_status": "risk_penalty_trace_surface_contract_pass",
+      "status_matches_expected": true
+    },
+    {
+      "contract_or_analysis_record_count": 21,
+      "expected_status": "ordered_prefix_stop_trace_surface_contract_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_8_ordered_prefix_stop_trace_surface",
+      "load_status": "pass",
+      "readiness_kind": "contract_only",
+      "source_schema": "bea_v1_p0_8_ordered_prefix_stop_trace_surface.v1",
+      "source_status": "ordered_prefix_stop_trace_surface_contract_pass",
+      "status_matches_expected": true
+    }
+  ],
+  "mode": "bea_v1_p0_9_readiness_consolidation",
+  "next_experiment_decision_records": [
+    {
+      "counterfactual_execution_authorized": false,
+      "decision": "authorized_private_labeling_only",
+      "decision_id": "next_support_labeling",
+      "policy_tuning_authorized": false,
+      "required_private_rows": "not_required_to_start_labeling",
+      "required_ready_surfaces": "p0_4_p0_5"
+    },
+    {
+      "counterfactual_execution_authorized": false,
+      "decision": "blocked_missing_private_support_labels",
+      "decision_id": "next_support_counterfactual",
+      "policy_tuning_authorized": false,
+      "required_private_rows": "support_link_private_labels",
+      "required_ready_surfaces": "p0_4_p0_5_private_labels_full_valid"
+    },
+    {
+      "counterfactual_execution_authorized": false,
+      "decision": "blocked_missing_private_trace_rows",
+      "decision_id": "next_trace_counterfactuals",
+      "policy_tuning_authorized": false,
+      "required_private_rows": "redundancy_risk_stop_private_traces",
+      "required_ready_surfaces": "p0_6_p0_7_p0_8_private_rows_full_valid"
+    },
+    {
+      "contract_only_surface_count": 6,
+      "counterfactual_execution_authorized": false,
+      "decision": "blocked_contracts_are_not_mechanism_evidence",
+      "decision_id": "next_policy_or_runtime_experiment",
+      "policy_tuning_authorized": false,
+      "populated_private_surface_count": 0
+    }
+  ],
+  "phase": "BEA-v1-P0-9",
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "readiness_summary_records": [
+    {
+      "count": 6,
+      "readiness_kind": "contract_only"
+    },
+    {
+      "count": 1,
+      "readiness_kind": "matrix_refresh"
+    },
+    {
+      "count": 1,
+      "readiness_kind": "trace_gap_audit"
+    }
+  ],
+  "scan_summary_records": [
+    {
+      "count": 8,
+      "forbidden_scan_status": "pass"
+    }
+  ],
+  "schema_version": "bea_v1_p0_9_readiness_consolidation.v1",
+  "self_test_checks_passed": 5,
+  "self_test_checks_total": 5,
+  "self_test_passed": true,
+  "status": "readiness_consolidation_pass_labeling_authorized_only",
+  "status_vocabulary": [
+    "readiness_consolidation_pass_no_experiment_authorized",
+    "readiness_consolidation_pass_labeling_authorized_only",
+    "no_go_readiness_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "private_labeling_and_private_trace_validation_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "readiness_consolidation_pass_labeling_authorized_only",
+      "stop_go_reason": "p0_contracts_consolidated_private_labeling_only",
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": true,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

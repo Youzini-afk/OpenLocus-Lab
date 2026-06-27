@@ -11356,3 +11356,21 @@ The reports define private schemas and public-safe bucket fields, but they do no
 ### Decision
 
 P0-6/7/8 authorize only trace-surface review or private trace validation. They do not authorize policy tuning, counterfactual execution, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, or downstream-value claims.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-9: Readiness Consolidation
+
+### Objective
+
+Consolidate P0-1 through P0-8 into a single next-experiment gate and prevent contract-pass artifacts from being mistaken for populated mechanism evidence.
+
+### Result
+
+`eval/bea_v1_p0_9_readiness_consolidation.py` generated `artifacts/bea_v1_p0_9_readiness_consolidation/bea_v1_p0_9_readiness_consolidation_report.json` with status `readiness_consolidation_pass_labeling_authorized_only`. Self-test passed `5/5`, forbidden scan passed, and 8 P0 inputs were checked.
+
+All P0 inputs load, match expected statuses, and pass scanners. However, late P0 surfaces remain contract-only: scheduler private arm rows, support labels, same-file redundancy traces, risk-penalty traces, and ordered-prefix stop traces are not populated as private rows.
+
+### Decision
+
+P0-9 authorizes only private labeling or private trace validation. It does not authorize support counterfactual execution, trace counterfactuals, policy tuning, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
