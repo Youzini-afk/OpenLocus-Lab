@@ -28,13 +28,13 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P0-9: Readiness Consolidation**:
+The latest closed phase is **BEA-v1-P1-0: Support-Label Validator Dry Run**:
 
 ```text
-status: readiness_consolidation_pass_labeling_authorized_only
-self-test: 5 / 5
+status: support_label_validator_dry_run_pass
+self-test: 6 / 6
 forbidden scan: pass
-inputs checked: 8
+synthetic labels validated: 18
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -98,6 +98,11 @@ P0-9 consolidated P0-1 through P0-8 into a single next-experiment gate. All P0
 artifacts load and pass scanners, but most late surfaces are still contract-only;
 the only newly allowed next action is private labeling or private trace
 validation.
+
+P1-0 validated the P0-5 private support-label harness end to end with a synthetic
+private fixture under `.openlocus/research-private/`. This proves the label
+validator path works, but does not create real labels and does not authorize a
+support counterfactual.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -173,6 +178,9 @@ See the current report index:
 - P0-9 prevents contract-pass artifacts from being read as populated mechanism
   evidence. Support counterfactuals, trace counterfactuals, policy tuning, P5,
   and BEA-v1-A all remain blocked.
+- P1-0 authorizes real private support labeling using the validated schema and
+  harness. Support counterfactual execution remains blocked until real private
+  labels are complete and scanner-validated.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

@@ -10563,3 +10563,19 @@ P0-6/7/8 只授权 trace-surface review 或 private trace validation。它们不
 ### 决策
 
 P0-9 只授权 private labeling 或 private trace validation。它不授权 support counterfactual execution、trace counterfactuals、policy tuning、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+---
+
+## 2026-06-27 — BEA-v1-P1-0：Support-Label Validator Dry Run
+
+### 目标
+
+在任何真实 private support labeling 或 support counterfactual work 前，用 synthetic private fixture 端到端验证 P0-5 private support-label harness。
+
+### 结果
+
+`eval/bea_v1_p1_0_support_label_validator_dry_run.py` 生成 `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json`，status 为 `support_label_validator_dry_run_pass`。Self-test 通过 `6/6`，forbidden scan 通过，18 条 synthetic private labels 通过 harness 验证。Synthetic fixture 写入 `.openlocus/research-private/`，并明确不是真实 label data。
+
+### 决策
+
+P1-0 授权使用已验证 schema 与 harness 进行真实 private support labeling。Support counterfactual execution 仍被阻断，直到真实 private labels 完整且 scanner-validated。P1-0 不授权 P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明、downstream-value 声明、support counterfactual execution 或 support marginal-utility 声明。

@@ -11374,3 +11374,19 @@ All P0 inputs load, match expected statuses, and pass scanners. However, late P0
 ### Decision
 
 P0-9 authorizes only private labeling or private trace validation. It does not authorize support counterfactual execution, trace counterfactuals, policy tuning, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+---
+
+## 2026-06-27 — BEA-v1-P1-0: Support-Label Validator Dry Run
+
+### Objective
+
+Validate the P0-5 private support-label harness end to end with a synthetic private fixture before any real private support labeling or support counterfactual work.
+
+### Result
+
+`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `6/6`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
+
+### Decision
+
+P1-0 authorizes real private support labeling using the validated schema and harness. Support counterfactual execution remains blocked until real private labels are complete and scanner-validated. P1-0 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, downstream-value claims, support counterfactual execution, or support marginal-utility claims.

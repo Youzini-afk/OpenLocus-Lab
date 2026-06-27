@@ -1,0 +1,332 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.006,
+  "claim_level": "bea_v1_p1_0_support_label_validator_dry_run_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p0_4_design_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "synthetic_private_fixture_validates",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "real_private_labels_available",
+      "passed": false,
+      "threshold_relation": "boolean_required_for_counterfactual",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-27T19:33:28Z",
+  "generated_by": "eval/bea_v1_p1_0_support_label_validator_dry_run.py",
+  "label_conjunction_summary_records": [
+    {
+      "conjunction_bucket": "neither",
+      "count": 4
+    },
+    {
+      "conjunction_bucket": "support_only",
+      "count": 4
+    },
+    {
+      "conjunction_bucket": "target_and_support_hit",
+      "count": 5
+    },
+    {
+      "conjunction_bucket": "target_only",
+      "count": 5
+    }
+  ],
+  "label_relation_summary_records": [
+    {
+      "count": 6,
+      "support_relation_bucket": "missing_support_candidate"
+    },
+    {
+      "count": 6,
+      "support_relation_bucket": "support_without_target"
+    },
+    {
+      "count": 6,
+      "support_relation_bucket": "target_without_support"
+    }
+  ],
+  "label_risk_summary_records": [
+    {
+      "count": 9,
+      "leakage_risk_bucket": "safe_ambiguous_support"
+    },
+    {
+      "count": 5,
+      "leakage_risk_bucket": "support_overbroad_risk"
+    },
+    {
+      "count": 4,
+      "leakage_risk_bucket": "target_binding_leak_risk"
+    }
+  ],
+  "mode": "bea_v1_p1_0_support_label_validator_dry_run",
+  "phase": "BEA-v1-P1-0",
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "sanitized_synthetic_label_records": [
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0000",
+      "conjunction_bucket": "target_and_support_hit",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "precondition",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0001",
+      "conjunction_bucket": "target_only",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0002",
+      "conjunction_bucket": "support_only",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_evidence_role_bucket": "cross_file_dependency",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0003",
+      "conjunction_bucket": "neither",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "usage_example",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0004",
+      "conjunction_bucket": "target_and_support_hit",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "precondition",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0005",
+      "conjunction_bucket": "target_only",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0006",
+      "conjunction_bucket": "support_only",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_evidence_role_bucket": "cross_file_dependency",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0007",
+      "conjunction_bucket": "neither",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "usage_example",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0008",
+      "conjunction_bucket": "target_and_support_hit",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "precondition",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0009",
+      "conjunction_bucket": "target_only",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0010",
+      "conjunction_bucket": "support_only",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_evidence_role_bucket": "cross_file_dependency",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0011",
+      "conjunction_bucket": "neither",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "usage_example",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0012",
+      "conjunction_bucket": "target_and_support_hit",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "precondition",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0013",
+      "conjunction_bucket": "target_only",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0014",
+      "conjunction_bucket": "support_only",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_evidence_role_bucket": "cross_file_dependency",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0015",
+      "conjunction_bucket": "neither",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "usage_example",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "miss"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0016",
+      "conjunction_bucket": "target_and_support_hit",
+      "leakage_risk_bucket": "safe_ambiguous_support",
+      "support_evidence_role_bucket": "precondition",
+      "support_hit_bucket": "hit",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "hit"
+    },
+    {
+      "annotation_status_bucket": "synthetic_fixture_labeled",
+      "anonymous_label_id": "lbl0017",
+      "conjunction_bucket": "target_only",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "miss",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "hit"
+    }
+  ],
+  "schema_version": "bea_v1_p1_0_support_label_validator_dry_run.v1",
+  "self_test_checks_passed": 6,
+  "self_test_checks_total": 6,
+  "self_test_passed": true,
+  "source_join_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_4_support_link_input_design",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p0_4_support_link_input_design.v1",
+      "source_status": "support_link_input_design_pass"
+    }
+  ],
+  "status": "support_label_validator_dry_run_pass",
+  "status_vocabulary": [
+    "support_label_validator_dry_run_pass",
+    "no_go_support_label_validator_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "validator_path_test_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "p5_authorized": false,
+      "real_private_labeling_authorized": true,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "support_label_validator_dry_run_pass",
+      "stop_go_reason": "synthetic_validator_path_passed_real_labels_still_required",
+      "support_counterfactual_execution_authorized": false,
+      "support_marginal_utility_claimed": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "synthetic_private_fixture_manifest_records": [
+    {
+      "manifest_name": "bea_v1_p1_0_synthetic_support_label_fixture",
+      "path_publicly_serialized": false,
+      "record_count": 18,
+      "records_written": true,
+      "schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "storage_class": "project_ignored_synthetic_private_jsonl",
+      "write_status": "written_project_private"
+    }
+  ],
+  "validator_dry_run_records": [
+    {
+      "counterfactual_ready": false,
+      "design_row_count": 18,
+      "error_count": 0,
+      "fixture_is_real_label_data": false,
+      "row_kind": "synthetic_fixture_validation_summary",
+      "surface": "support_label_private_validator",
+      "synthetic_private_row_count": 18,
+      "valid_private_row_count": 18
+    }
+  ]
+}

@@ -3432,3 +3432,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-9 Readiness Consolidation 已完成为 next-experiment gate**：status `readiness_consolidation_pass_labeling_authorized_only`，self-test `5/5`，forbidden scan `pass`。
 - **结果**：全部 8 个 P0 inputs 都可加载、status 符合预期，并通过 scanner；后段 P0 surfaces 仍为 contract-only，因为 private rows 尚未填充。
 - **决策**：P0-9 只授权 private labeling 或 private trace validation。它不授权 support counterfactual execution、trace counterfactuals、policy tuning、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P1-0 support-label validator dry-run 发现
+
+- **BEA-v1-P1-0 Support-Label Validator Dry Run 已完成**：status `support_label_validator_dry_run_pass`，self-test `6/6`，forbidden scan `pass`。
+- **结果**：18 条 synthetic private labels 通过 P0-5 harness 验证，证明 schema validation、conjunction derivation、sanitizer 与 public summary path 可端到端工作。该 fixture 不是真实 label data。
+- **决策**：P1-0 授权使用已验证 schema 与 harness 进行真实 private support labeling。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

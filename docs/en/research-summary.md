@@ -4024,3 +4024,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-9 Readiness Consolidation completed as a next-experiment gate**: status `readiness_consolidation_pass_labeling_authorized_only`, self-test `5/5`, forbidden scan `pass`.
 - **Result**: all 8 P0 inputs load, match expected statuses, and pass scanners; late P0 surfaces remain contract-only because private rows are not populated.
 - **Decision**: P0-9 authorizes only private labeling or private trace validation. It does not authorize support counterfactual execution, trace counterfactuals, policy tuning, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P1-0 support-label validator dry-run findings
+
+- **BEA-v1-P1-0 Support-Label Validator Dry Run completed**: status `support_label_validator_dry_run_pass`, self-test `6/6`, forbidden scan `pass`.
+- **Result**: 18 synthetic private labels validated through the P0-5 harness, proving schema validation, conjunction derivation, sanitizer, and public summary path work end to end. The fixture is not real label data.
+- **Decision**: P1-0 authorizes real private support labeling with the validated schema and harness. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
