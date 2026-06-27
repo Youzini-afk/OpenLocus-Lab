@@ -3408,3 +3408,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-3 Scheduler Dataset Export 已完成为 contract export**：status `scheduler_dataset_export_contract_pass`，self-test `8/8`，forbidden scan `pass`。
 - **结果**：public artifact 包含 4 条 sanitized aggregate scheduler arm rows、12 条 sanitized subgroup denominator rows、P0-2 action-cost join rows，以及未来 full export 可用的 optional private-row schema。本轮未提供 private arm rows，因为历史 P4L private JSONL 是在之前环境生成的。
 - **决策**：P0-3 补齐 aggregate scheduler/action-cost surface，但没有补齐 full private arm-row export。下一步应在 `.openlocus/research-private/` 下恢复/重跑 P4L private arm rows，或转向 support-link input design。它不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P0-4 support-link input-design 发现
+
+- **BEA-v1-P0-4 Support-Link Input Design 已完成为 labeling-contract phase**：status `support_link_input_design_pass`，self-test `8/8`，forbidden scan `pass`。
+- **结果**：artifact 包含 18 条 sanitized support-link design records 与 6 个 label contract fields。它将 P0-1 的 `support_link_trace` gaps 与 P0-2 的 `blocked_missing_label` cells join 起来，但所有 target/support hit states 仍为 `unknown_not_labeled`。
+- **决策**：P0-4 只授权 support-link labeling input work。它不执行 support counterfactual，也不声明 support marginal utility。它不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

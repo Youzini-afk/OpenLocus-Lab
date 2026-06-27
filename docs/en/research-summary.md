@@ -4000,3 +4000,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-3 Scheduler Dataset Export completed as a contract export**: status `scheduler_dataset_export_contract_pass`, self-test `8/8`, forbidden scan `pass`.
 - **Result**: the public artifact contains 4 sanitized aggregate scheduler arm rows, 12 sanitized subgroup denominator rows, P0-2 action-cost join rows, and an optional private-row schema for future full export. Private arm rows were not supplied because the historical P4L private JSONL was generated in a previous environment.
 - **Decision**: P0-3 closes the aggregate scheduler/action-cost surface but not the full private arm-row export. Next work should either recover/rerun P4L private arm rows under `.openlocus/research-private/` or move to support-link input design. It does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P0-4 support-link input-design findings
+
+- **BEA-v1-P0-4 Support-Link Input Design completed as a labeling-contract phase**: status `support_link_input_design_pass`, self-test `8/8`, forbidden scan `pass`.
+- **Result**: the artifact contains 18 sanitized support-link design records and 6 label contract fields. It joins P0-1 `support_link_trace` gaps with P0-2 `blocked_missing_label` cells, but all target/support hit states remain `unknown_not_labeled`.
+- **Decision**: P0-4 authorizes only support-link labeling input work. It does not execute a support counterfactual and does not claim support marginal utility. It does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

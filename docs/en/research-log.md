@@ -11302,3 +11302,21 @@ The full private arm-row export remains optional and was not satisfied in this r
 ### Decision
 
 P0-3 closes the aggregate scheduler/action-cost contract. The remaining practical fork is either to recover/rerun P4L private arm rows under the project-local private directory or to move to support-link input design for the 18 `blocked_missing_label` cells. P0-3 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or frozen P4 rerun as a quality claim.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-4: Support-Link Input Design
+
+### Objective
+
+Convert the P0-1/P0-2 support-link missing-label gap into a scanner-validated labeling input contract. This phase joins P0-1 `support_link_trace` gaps with P0-2 `blocked_missing_label` cells. It does not label private rows, run retrieval, call providers, execute counterfactuals, run selectors/rerankers, or implement a policy.
+
+### Result
+
+`eval/bea_v1_p0_4_support_link_input_design.py` generated `artifacts/bea_v1_p0_4_support_link_input_design/bea_v1_p0_4_support_link_input_design_report.json` with status `support_link_input_design_pass`. Self-test passed `8/8`, forbidden scan passed, and the artifact contains 18 sanitized support-link design records plus 6 labeling contract fields.
+
+All target/support hit states remain `unknown_not_labeled`; the artifact is an input contract, not a labeled dataset and not a support marginal-utility result.
+
+### Decision
+
+P0-4 authorizes only support-link labeling input work. A later phase may use the contract to label private rows and then decide whether support counterfactual execution is justified. P0-4 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or support counterfactual execution.

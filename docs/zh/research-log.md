@@ -10491,3 +10491,21 @@ Full private arm-row export 仍为 optional，本轮没有满足，因为历史 
 ### 决策
 
 P0-3 补齐了 aggregate scheduler/action-cost contract。剩余实践分叉是：在项目内 private directory 恢复/重跑 P4L private arm rows，或转向 18 个 `blocked_missing_label` cells 的 support-link input design。P0-3 不授权 P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或作为质量声明的 frozen P4 rerun。
+
+---
+
+## 2026-06-27 — BEA-v1-P0-4：Support-Link Input Design
+
+### 目标
+
+将 P0-1/P0-2 的 support-link missing-label 缺口转换为 scanner-validated labeling input contract。本阶段 join P0-1 的 `support_link_trace` gaps 与 P0-2 的 `blocked_missing_label` cells。它不标注 private rows，不运行 retrieval，不调用 provider，不执行 counterfactual，不运行 selector/reranker，也不实现 policy。
+
+### 结果
+
+`eval/bea_v1_p0_4_support_link_input_design.py` 生成 `artifacts/bea_v1_p0_4_support_link_input_design/bea_v1_p0_4_support_link_input_design_report.json`，status 为 `support_link_input_design_pass`。Self-test 通过 `8/8`，forbidden scan 通过，artifact 包含 18 条 sanitized support-link design records 与 6 个 labeling contract fields。
+
+所有 target/support hit states 仍为 `unknown_not_labeled`；该 artifact 是 input contract，不是 labeled dataset，也不是 support marginal-utility result。
+
+### 决策
+
+P0-4 只授权 support-link labeling input work。后续 phase 可以使用该 contract 标注 private rows，然后再判断是否执行 support counterfactual。P0-4 不授权 P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或 support counterfactual execution。
