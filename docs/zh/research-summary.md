@@ -3414,3 +3414,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-4 Support-Link Input Design 已完成为 labeling-contract phase**：status `support_link_input_design_pass`，self-test `8/8`，forbidden scan `pass`。
 - **结果**：artifact 包含 18 条 sanitized support-link design records 与 6 个 label contract fields。它将 P0-1 的 `support_link_trace` gaps 与 P0-2 的 `blocked_missing_label` cells join 起来，但所有 target/support hit states 仍为 `unknown_not_labeled`。
 - **决策**：P0-4 只授权 support-link labeling input work。它不执行 support counterfactual，也不声明 support marginal utility。它不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P0-5 support-link labeling-harness 发现
+
+- **BEA-v1-P0-5 Support-Link Labeling Harness 已完成为 private-labeling harness contract**：status `support_link_labeling_harness_contract_pass`，self-test `9/9`，forbidden scan `pass`。
+- **结果**：public artifact 包含 18 条 sanitized harness records、private-template manifest 与 validation gates。未标注 private JSONL template 已生成到 `.openlocus/research-private/`，但本轮未提供 private labels。
+- **决策**：P0-5 只授权 private support labeling 或 private label validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

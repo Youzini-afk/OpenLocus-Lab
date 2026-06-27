@@ -11320,3 +11320,21 @@ All target/support hit states remain `unknown_not_labeled`; the artifact is an i
 ### Decision
 
 P0-4 authorizes only support-link labeling input work. A later phase may use the contract to label private rows and then decide whether support counterfactual execution is justified. P0-4 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or support counterfactual execution.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-5: Support-Link Labeling Harness
+
+### Objective
+
+Turn the P0-4 support-link input contract into a private labeling harness. The harness can emit an unlabeled project-local private JSONL template and validate a completed private label JSONL without serializing private paths, raw rows, snippets, candidates, ranks, scores, or source-linkable data into the public artifact.
+
+### Result
+
+`eval/bea_v1_p0_5_support_link_labeling_harness.py` generated `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json` with status `support_link_labeling_harness_contract_pass`. Self-test passed `9/9`, forbidden scan passed, and the public artifact contains 18 sanitized harness records plus a private-template manifest. The private template was emitted under `.openlocus/research-private/`, which is ignored by git.
+
+Private labels were not supplied in this run, so the optional full private-label validation gate remains false.
+
+### Decision
+
+P0-5 authorizes only private support labeling or private label validation. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, or downstream-value claims.

@@ -1,0 +1,254 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.005,
+  "claim_level": "bea_v1_p0_5_support_link_labeling_harness_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p0_4_design_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "design_records_available",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "private_template_rows_buildable",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "private_label_rows_full_valid",
+      "passed": false,
+      "threshold_relation": "boolean_optional",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-27T18:50:28Z",
+  "generated_by": "eval/bea_v1_p0_5_support_link_labeling_harness.py",
+  "label_conjunction_summary_records": [],
+  "label_relation_summary_records": [],
+  "label_risk_summary_records": [],
+  "mode": "bea_v1_p0_5_support_link_labeling_harness",
+  "phase": "BEA-v1-P0-5",
+  "private_label_error_summary_records": [],
+  "private_label_input_status": "not_supplied",
+  "private_label_rows_error_count": 0,
+  "private_label_rows_supplied": false,
+  "private_label_rows_valid_count": 0,
+  "private_paths_publicly_serialized": false,
+  "private_template_manifest_records": [
+    {
+      "manifest_name": "bea_v1_p0_5_support_link_private_label_template",
+      "path_publicly_serialized": false,
+      "record_count": 18,
+      "records_written": true,
+      "schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "storage_class": "project_ignored_private_jsonl",
+      "write_status": "written_project_private"
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p0_5_support_link_labeling_harness.v1",
+  "self_test_checks_passed": 9,
+  "self_test_checks_total": 9,
+  "self_test_passed": true,
+  "source_join_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_4_support_link_input_design",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p0_4_support_link_input_design.v1",
+      "source_status": "support_link_input_design_pass"
+    }
+  ],
+  "status": "support_link_labeling_harness_contract_pass",
+  "status_vocabulary": [
+    "support_link_labeling_harness_contract_pass",
+    "support_link_labeling_harness_private_labels_pass",
+    "no_go_support_link_labeling_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "private_support_labeling_or_label_validation_only",
+      "broad_retrieval_expansion_authorized": false,
+      "counterfactual_execution_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "support_link_labeling_harness_contract_pass",
+      "stop_go_reason": "private_label_template_contract_ready_without_counterfactual",
+      "support_marginal_utility_claimed": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "support_link_labeling_harness_records": [
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "anonymous_harness_id": "sl0000",
+      "failure_category": "missing_support_candidate",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "file_selector",
+      "anonymous_harness_id": "sl0001",
+      "failure_category": "missing_support_candidate",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "anonymous_harness_id": "sl0002",
+      "failure_category": "missing_support_candidate",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "anonymous_harness_id": "sl0003",
+      "failure_category": "missing_support_candidate",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "span_refiner",
+      "anonymous_harness_id": "sl0004",
+      "failure_category": "missing_support_candidate",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "anonymous_harness_id": "sl0005",
+      "failure_category": "missing_support_candidate",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "anonymous_harness_id": "sl0006",
+      "failure_category": "support_selected_without_target",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "file_selector",
+      "anonymous_harness_id": "sl0007",
+      "failure_category": "support_selected_without_target",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "anonymous_harness_id": "sl0008",
+      "failure_category": "support_selected_without_target",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "anonymous_harness_id": "sl0009",
+      "failure_category": "support_selected_without_target",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "span_refiner",
+      "anonymous_harness_id": "sl0010",
+      "failure_category": "support_selected_without_target",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "anonymous_harness_id": "sl0011",
+      "failure_category": "support_selected_without_target",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "anonymous_harness_id": "sl0012",
+      "failure_category": "target_selected_without_support",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "file_selector",
+      "anonymous_harness_id": "sl0013",
+      "failure_category": "target_selected_without_support",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "anonymous_harness_id": "sl0014",
+      "failure_category": "target_selected_without_support",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "anonymous_harness_id": "sl0015",
+      "failure_category": "target_selected_without_support",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "span_refiner",
+      "anonymous_harness_id": "sl0016",
+      "failure_category": "target_selected_without_support",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "anonymous_harness_id": "sl0017",
+      "failure_category": "target_selected_without_support",
+      "public_release_boundary": "sanitized_bucket_summaries_only",
+      "required_private_schema": "bea_v1_p0_5_support_link_private_label.v1",
+      "template_row_status": "ready_unlabeled_template"
+    }
+  ],
+  "support_link_sanitized_label_records": []
+}

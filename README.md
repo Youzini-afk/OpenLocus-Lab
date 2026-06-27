@@ -28,14 +28,14 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P0-4: Support-Link Input Design**:
+The latest closed phase is **BEA-v1-P0-5: Support-Link Labeling Harness**:
 
 ```text
-status: support_link_input_design_pass
-self-test: 8 / 8
+status: support_link_labeling_harness_contract_pass
+self-test: 9 / 9
 forbidden scan: pass
-support-link design records: 18
-label contract fields: 6
+harness records: 18
+private template rows: 18
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -84,6 +84,11 @@ P0-4 converted the `support_link_trace` gap into a scanner-validated labeling
 input contract. It publishes 18 sanitized support-link design rows and six label
 fields, but keeps all target/support hit states unlabeled and does not execute a
 support counterfactual.
+
+P0-5 turned the P0-4 contract into a private labeling harness. It can emit an
+unlabeled JSONL template under `.openlocus/research-private/` and validate a
+completed private label JSONL, while public artifacts contain only sanitized
+manifests, harness rows, and summaries.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -150,6 +155,9 @@ See the current report index:
 - P0-4 has closed the support-link input-design contract. The next support phase
   must either create scanner-validated private labels under this contract or stay
   at design level; it still cannot claim support marginal utility.
+- P0-5 has closed the private labeling harness contract, but private labels are
+  not yet supplied. Support counterfactual execution remains unauthorized until
+  those labels are complete and scanner-validated.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
