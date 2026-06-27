@@ -4012,3 +4012,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-5 Support-Link Labeling Harness completed as a private-labeling harness contract**: status `support_link_labeling_harness_contract_pass`, self-test `9/9`, forbidden scan `pass`.
 - **Result**: the public artifact contains 18 sanitized harness records, a private-template manifest, and validation gates. The unlabeled private JSONL template was emitted under `.openlocus/research-private/`, but private labels were not supplied in this run.
 - **Decision**: P0-5 authorizes only private support labeling or private label validation. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P0-6/7/8 parallel trace-surface findings
+
+- **BEA-v1-P0-6/7/8 Parallel Trace Surfaces completed as contract exports**: P0-6 status `same_file_redundancy_trace_surface_contract_pass`, P0-7 status `risk_penalty_trace_surface_contract_pass`, P0-8 status `ordered_prefix_stop_trace_surface_contract_pass`, self-test `5/5`, forbidden scan `pass` for all three reports.
+- **Result**: each trace surface contains 6 scanner-validated contract records and an optional private-trace schema. Private trace rows were not supplied in this run.
+- **Decision**: P0-6/7/8 authorize only trace-surface review or private trace validation. They do not authorize policy tuning, counterfactual execution, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

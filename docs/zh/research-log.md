@@ -10527,3 +10527,21 @@ P0-4 只授权 support-link labeling input work。后续 phase 可以使用该 c
 ### 决策
 
 P0-5 只授权 private support labeling 或 private label validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion 或 downstream-value 声明。
+
+---
+
+## 2026-06-27 — BEA-v1-P0-6/7/8：Parallel Trace Surfaces
+
+### 目标
+
+并行关闭剩余 P0 trace-surface contracts：same-file redundancy、risk-penalty removal 与 ordered-prefix stop decisions。本阶段读取 P0-1/P0-2 artifacts，输出 scanner-validated contract rows，并保持 private trace rows 为 optional 且本轮 absent。
+
+### 结果
+
+`eval/bea_v1_p0_6_7_8_parallel_trace_surfaces.py` 生成三个 reports：P0-6 status 为 `same_file_redundancy_trace_surface_contract_pass`，P0-7 status 为 `risk_penalty_trace_surface_contract_pass`，P0-8 status 为 `ordered_prefix_stop_trace_surface_contract_pass`。Self-test 通过 `5/5`，三个 reports scanner 均通过，每个 trace surface 包含 6 条 contract records。
+
+这些 reports 定义 private schemas 与 public-safe bucket fields，但不填充 private trace rows。
+
+### 决策
+
+P0-6/7/8 只授权 trace-surface review 或 private trace validation。它们不授权 policy tuning、counterfactual execution、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion 或 downstream-value 声明。

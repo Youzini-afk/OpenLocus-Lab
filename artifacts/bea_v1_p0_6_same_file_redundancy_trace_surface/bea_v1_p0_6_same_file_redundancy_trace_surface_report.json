@@ -1,0 +1,257 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.002,
+  "claim_level": "bea_v1_p0_6_same_file_redundancy_trace_surface_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p0_1_trace_gap_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p0_2_matrix_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "trace_contract_records_buildable",
+      "passed": true,
+      "threshold_relation": "nonzero",
+      "threshold_value": 1,
+      "value": 6
+    },
+    {
+      "gate": "private_trace_rows_full_valid",
+      "passed": false,
+      "threshold_relation": "boolean_optional",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-27T19:16:35Z",
+  "generated_by": "eval/bea_v1_p0_6_7_8_parallel_trace_surfaces.py",
+  "input_artifact_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_1_trace_gap_audit",
+      "load_status": "pass",
+      "source_schema": "bea_v1_trace_gap_audit.v1",
+      "source_status": "trace_gap_audit_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_2_actionability_matrix_refresh",
+      "load_status": "pass",
+      "source_schema": "bea_v1_p0_2_actionability_matrix_refresh.v1",
+      "source_status": "actionability_matrix_refresh_pass"
+    }
+  ],
+  "mode": "bea_v1_p0_6_same_file_redundancy_trace_surface",
+  "phase": "BEA-v1-P0-6",
+  "private_paths_publicly_serialized": false,
+  "private_trace_manifest_records": [
+    {
+      "manifest_name": "bea_v1_p0_6_same_file_redundancy_trace_surface_private_trace_input",
+      "path_publicly_serialized": false,
+      "record_count": 0,
+      "records_written": false,
+      "schema_version": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "storage_class": "project_ignored_private_jsonl_optional"
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "same_file_redundancy_summary_records": [
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "count": 1
+    },
+    {
+      "action_layer": "file_selector",
+      "count": 1
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "count": 1
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "count": 1
+    },
+    {
+      "action_layer": "span_refiner",
+      "count": 1
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "count": 1
+    }
+  ],
+  "same_file_redundancy_trace_contract_records": [
+    {
+      "action_arm": "unknown_not_exported",
+      "action_layer": "candidate_availability_retrieval",
+      "anonymous_contract_id": "p06_0000",
+      "cell_blocker_reason": "requires_same_file_redundancy_trace",
+      "cell_readiness_class": "blocked_missing_trace",
+      "duplicate_pressure_bucket": "unknown_missing_private_trace",
+      "failure_category": "redundant_same_file_candidates",
+      "gold_file_displacement_bucket": "unknown_missing_private_trace",
+      "marginal_utility_bucket": "unknown_missing_private_trace",
+      "private_schema_required": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "row_kind": "trace_surface_contract_unpopulated",
+      "same_file_candidate_count_bucket": "unknown_missing_private_trace",
+      "source_language_bucket": "unknown_not_exported",
+      "topk_file_diversity_bucket": "unknown_missing_private_trace",
+      "trace_basis": "contract_from_p0_1_p0_2_no_private_rows_supplied",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_arm": "unknown_not_exported",
+      "action_layer": "file_selector",
+      "anonymous_contract_id": "p06_0001",
+      "cell_blocker_reason": "requires_same_file_redundancy_trace",
+      "cell_readiness_class": "blocked_missing_trace",
+      "duplicate_pressure_bucket": "unknown_missing_private_trace",
+      "failure_category": "redundant_same_file_candidates",
+      "gold_file_displacement_bucket": "unknown_missing_private_trace",
+      "marginal_utility_bucket": "unknown_missing_private_trace",
+      "private_schema_required": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "row_kind": "trace_surface_contract_unpopulated",
+      "same_file_candidate_count_bucket": "unknown_missing_private_trace",
+      "source_language_bucket": "unknown_not_exported",
+      "topk_file_diversity_bucket": "unknown_missing_private_trace",
+      "trace_basis": "contract_from_p0_1_p0_2_no_private_rows_supplied",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_arm": "unknown_not_exported",
+      "action_layer": "non_actionable_accounting",
+      "anonymous_contract_id": "p06_0002",
+      "cell_blocker_reason": "requires_same_file_redundancy_trace",
+      "cell_readiness_class": "blocked_missing_trace",
+      "duplicate_pressure_bucket": "unknown_missing_private_trace",
+      "failure_category": "redundant_same_file_candidates",
+      "gold_file_displacement_bucket": "unknown_missing_private_trace",
+      "marginal_utility_bucket": "unknown_missing_private_trace",
+      "private_schema_required": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "row_kind": "trace_surface_contract_unpopulated",
+      "same_file_candidate_count_bucket": "unknown_missing_private_trace",
+      "source_language_bucket": "unknown_not_exported",
+      "topk_file_diversity_bucket": "unknown_missing_private_trace",
+      "trace_basis": "contract_from_p0_1_p0_2_no_private_rows_supplied",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_arm": "unknown_not_exported",
+      "action_layer": "setwise_packer_redundancy",
+      "anonymous_contract_id": "p06_0003",
+      "cell_blocker_reason": "requires_same_file_redundancy_trace",
+      "cell_readiness_class": "blocked_missing_trace",
+      "duplicate_pressure_bucket": "unknown_missing_private_trace",
+      "failure_category": "redundant_same_file_candidates",
+      "gold_file_displacement_bucket": "unknown_missing_private_trace",
+      "marginal_utility_bucket": "unknown_missing_private_trace",
+      "private_schema_required": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "row_kind": "trace_surface_contract_unpopulated",
+      "same_file_candidate_count_bucket": "unknown_missing_private_trace",
+      "source_language_bucket": "unknown_not_exported",
+      "topk_file_diversity_bucket": "unknown_missing_private_trace",
+      "trace_basis": "contract_from_p0_1_p0_2_no_private_rows_supplied",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_arm": "unknown_not_exported",
+      "action_layer": "span_refiner",
+      "anonymous_contract_id": "p06_0004",
+      "cell_blocker_reason": "requires_same_file_redundancy_trace",
+      "cell_readiness_class": "blocked_missing_trace",
+      "duplicate_pressure_bucket": "unknown_missing_private_trace",
+      "failure_category": "redundant_same_file_candidates",
+      "gold_file_displacement_bucket": "unknown_missing_private_trace",
+      "marginal_utility_bucket": "unknown_missing_private_trace",
+      "private_schema_required": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "row_kind": "trace_surface_contract_unpopulated",
+      "same_file_candidate_count_bucket": "unknown_missing_private_trace",
+      "source_language_bucket": "unknown_not_exported",
+      "topk_file_diversity_bucket": "unknown_missing_private_trace",
+      "trace_basis": "contract_from_p0_1_p0_2_no_private_rows_supplied",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_arm": "unknown_not_exported",
+      "action_layer": "stopping_scheduler",
+      "anonymous_contract_id": "p06_0005",
+      "cell_blocker_reason": "requires_same_file_redundancy_trace",
+      "cell_readiness_class": "blocked_missing_trace",
+      "duplicate_pressure_bucket": "unknown_missing_private_trace",
+      "failure_category": "redundant_same_file_candidates",
+      "gold_file_displacement_bucket": "unknown_missing_private_trace",
+      "marginal_utility_bucket": "unknown_missing_private_trace",
+      "private_schema_required": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "row_kind": "trace_surface_contract_unpopulated",
+      "same_file_candidate_count_bucket": "unknown_missing_private_trace",
+      "source_language_bucket": "unknown_not_exported",
+      "topk_file_diversity_bucket": "unknown_missing_private_trace",
+      "trace_basis": "contract_from_p0_1_p0_2_no_private_rows_supplied",
+      "trace_field": "same_file_redundancy_trace"
+    }
+  ],
+  "schema_version": "bea_v1_p0_6_same_file_redundancy_trace_surface.v1",
+  "self_test_checks_passed": 5,
+  "self_test_checks_total": 5,
+  "self_test_passed": true,
+  "status": "same_file_redundancy_trace_surface_contract_pass",
+  "status_vocabulary": [
+    "same_file_redundancy_trace_surface_contract_pass",
+    "same_file_redundancy_trace_surface_private_rows_pass",
+    "no_go_same_file_redundancy_trace_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "same_file_redundancy_trace_surface_or_private_trace_validation_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "same_file_redundancy_trace_surface_contract_pass",
+      "stop_go_reason": "trace_surface_contract_ready_without_private_rows",
+      "v1_a_authorized": false
+    }
+  ],
+  "trace_aliases": [],
+  "trace_field": "same_file_redundancy_trace",
+  "trace_requirement_records": [
+    {
+      "failure_category": "redundant_same_file_candidates",
+      "minimum_public_shape": "anonymous_record_id plus source_language_bucket plus duplicate_pressure_bucket plus action_arm plus topk_file_diversity_bucket",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "trace_availability": "missing_trace",
+      "trace_evidence_basis": "unavailable_missing_trace",
+      "trace_field": "same_file_redundancy_trace"
+    }
+  ]
+}

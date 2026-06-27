@@ -3420,3 +3420,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-5 Support-Link Labeling Harness 已完成为 private-labeling harness contract**：status `support_link_labeling_harness_contract_pass`，self-test `9/9`，forbidden scan `pass`。
 - **结果**：public artifact 包含 18 条 sanitized harness records、private-template manifest 与 validation gates。未标注 private JSONL template 已生成到 `.openlocus/research-private/`，但本轮未提供 private labels。
 - **决策**：P0-5 只授权 private support labeling 或 private label validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P0-6/7/8 parallel trace-surface 发现
+
+- **BEA-v1-P0-6/7/8 Parallel Trace Surfaces 已完成为 contract exports**：P0-6 status `same_file_redundancy_trace_surface_contract_pass`，P0-7 status `risk_penalty_trace_surface_contract_pass`，P0-8 status `ordered_prefix_stop_trace_surface_contract_pass`，self-test `5/5`，三个 reports forbidden scan 均 `pass`。
+- **结果**：每个 trace surface 包含 6 条 scanner-validated contract records 与一个 optional private-trace schema。本轮未提供 private trace rows。
+- **决策**：P0-6/7/8 只授权 trace-surface review 或 private trace validation。它们不授权 policy tuning、counterfactual execution、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

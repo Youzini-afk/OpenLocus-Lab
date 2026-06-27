@@ -28,14 +28,14 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P0-5: Support-Link Labeling Harness**:
+The latest closed phase is **BEA-v1-P0-6/7/8: Parallel Trace Surfaces**:
 
 ```text
-status: support_link_labeling_harness_contract_pass
-self-test: 9 / 9
-forbidden scan: pass
-harness records: 18
-private template rows: 18
+P0-6 status: same_file_redundancy_trace_surface_contract_pass
+P0-7 status: risk_penalty_trace_surface_contract_pass
+P0-8 status: ordered_prefix_stop_trace_surface_contract_pass
+self-test: 5 / 5
+forbidden scan: pass for all three reports
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -89,6 +89,11 @@ P0-5 turned the P0-4 contract into a private labeling harness. It can emit an
 unlabeled JSONL template under `.openlocus/research-private/` and validate a
 completed private label JSONL, while public artifacts contain only sanitized
 manifests, harness rows, and summaries.
+
+P0-6/7/8 then closed the remaining parallel trace-surface contracts for
+same-file redundancy, risk-penalty removal, and ordered-prefix stop decisions.
+These are scanner-validated contract exports only; no private trace rows are
+populated yet.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -158,6 +163,9 @@ See the current report index:
 - P0-5 has closed the private labeling harness contract, but private labels are
   not yet supplied. Support counterfactual execution remains unauthorized until
   those labels are complete and scanner-validated.
+- P0-6/7/8 have closed the remaining trace-surface contracts, but they are not
+  populated private trace exports. Policy tuning and counterfactual execution
+  remain unauthorized until project-local private rows validate cleanly.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

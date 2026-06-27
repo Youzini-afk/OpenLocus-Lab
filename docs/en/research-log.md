@@ -11338,3 +11338,21 @@ Private labels were not supplied in this run, so the optional full private-label
 ### Decision
 
 P0-5 authorizes only private support labeling or private label validation. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, or downstream-value claims.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-6/7/8: Parallel Trace Surfaces
+
+### Objective
+
+Close the remaining P0 trace-surface contracts in parallel: same-file redundancy, risk-penalty removal, and ordered-prefix stop decisions. This phase reads P0-1/P0-2 artifacts, emits scanner-validated contract rows, and keeps private trace rows optional and absent in this run.
+
+### Result
+
+`eval/bea_v1_p0_6_7_8_parallel_trace_surfaces.py` generated three reports: P0-6 status `same_file_redundancy_trace_surface_contract_pass`, P0-7 status `risk_penalty_trace_surface_contract_pass`, and P0-8 status `ordered_prefix_stop_trace_surface_contract_pass`. Self-test passed `5/5`, scanner passed for all reports, and each trace surface contains 6 contract records.
+
+The reports define private schemas and public-safe bucket fields, but they do not populate private trace rows.
+
+### Decision
+
+P0-6/7/8 authorize only trace-surface review or private trace validation. They do not authorize policy tuning, counterfactual execution, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, or downstream-value claims.
