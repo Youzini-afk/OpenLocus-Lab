@@ -4,7 +4,7 @@ Date: 2026-06-27
 
 Status: current research-conclusion memo. This is not a promotion request, not a default-policy change request, and not a benchmark leaderboard report.
 
-Scope: empirical work through BEA-v1-N2 Rank/Pack Actionability Decomposition, BEA-v1-N1 Frozen P4 + Span-Refiner Smoke, BEA-v1-P4L Locked Non-Python P4 Scheduler Validation, BEA-v1-P1 Actionability Audit, BEA-FD1/FD2-A/FD2-A1, BEA-5 fixed-protocol success-quota No-Go / near-miss, B16-F through B16-J live-provider atom ablations, C5 external benchmark retrieval smokes, F1 utility smokes, and D5-A automated calibration feature extraction/heldout validation.
+Scope: empirical work through BEA-v1-N2 Rank/Pack Actionability Decomposition, implementation-pending-CI BEA-v1-N3 Extra-Depth Merge-Order Design Simulation, BEA-v1-N1 Frozen P4 + Span-Refiner Smoke, BEA-v1-P4L Locked Non-Python P4 Scheduler Validation, BEA-v1-P1 Actionability Audit, BEA-FD1/FD2-A/FD2-A1, BEA-5 fixed-protocol success-quota No-Go / near-miss, B16-F through B16-J live-provider atom ablations, C5 external benchmark retrieval smokes, F1 utility smokes, and D5-A automated calibration feature extraction/heldout validation.
 
 ## 0. Reading rule
 
@@ -187,7 +187,9 @@ BEA-v1-N1 Frozen P4 + Span-Refiner Smoke is complete as a rank-blocked No-Go. Ma
 
 BEA-v1-N2 Rank/Pack Actionability Decomposition is complete as a bounded decomposition pass. The empirical source is CI `28272769423` at checkpoint `7c90213`; the committed public artifact includes only a local records-only correction of the non-gating D0 latency display field from the closed N1 artifact, with code fix `a5b519b`. N2 reconstructed the closed N1 rank-blocked denominator exactly (`D2=40`), classified all 40 rows, found first gold-file rank bucket `rank_21_50=40/40`, top-20 recovery `0/40`, top-50/top-100 recovery `40/40`, unique-file top-10 recovery `0/40`, evidence materializable `40/40`, hard-cap violations `0`, and primary blocker `extra_depth_append_blocked=40/40`. This authorizes only extra-depth merge-order **design**, not implementation, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or frozen P4 rerun. See `docs/en/bea-v1-n2-rank-pack-actionability-decomposition.md`.
 
-Do not run B16-K, legacy role-proxy P4/P5, FD2-B from the failed FD2-A objective, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, another BEA scale smoke, BEA-v1-A selector-only implementation, P5 selector/reranker from P4L/N1/N2, runtime/default promotion, method-winner claims, frozen P4 reruns, or unconstrained broad retrieval expansion.
+BEA-v1-N3 Extra-Depth Merge-Order Design Simulation is implemented and pending manual network CI. It is scoped to deterministic offline simulation over the closed N2 D2=40 private candidate rows, using the same candidate pool and predeclared merge-order arms only. It does not authorize implementation, new retrieval, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, or downstream-value claims. See `docs/en/bea-v1-n3-extra-depth-merge-order-design-simulation.md`.
+
+Do not run B16-K, legacy role-proxy P4/P5, FD2-B from the failed FD2-A objective, v0.31/v0.32 weight tweaks, D5-A readiness expansions, QuIVer/dense/graph quality experiments, another BEA scale smoke, BEA-v1-A selector-only implementation, P5 selector/reranker from P4L/N1/N2/N3, runtime/default promotion, method-winner claims, frozen P4 reruns, or unconstrained broad retrieval expansion.
 
 ## 9. One-sentence conclusion
 

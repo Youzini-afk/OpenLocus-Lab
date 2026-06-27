@@ -4,7 +4,7 @@
 
 状态：当前研究结论备忘录。本文不是 promotion request，不是默认策略变更申请，也不是 benchmark leaderboard 报告。
 
-范围：覆盖 BEA-v1-N2 Rank/Pack Actionability Decomposition、BEA-v1-N1 Frozen P4 + Span-Refiner Smoke、BEA-v1-P4L Locked Non-Python P4 Scheduler Validation、BEA-v1-P1 可行动性审计、BEA-FD1/FD2-A/FD2-A1、BEA-5 固定协议 success-quota No-Go / near-miss、B16-F 至 B16-J live-provider atom ablation、C5 外部 benchmark 检索 smoke、F1 utility smoke，以及 D5-A 自动化校准特征提取/heldout 验证。
+范围：覆盖 BEA-v1-N2 Rank/Pack Actionability Decomposition、implementation-pending-CI 的 BEA-v1-N3 Extra-Depth Merge-Order Design Simulation、BEA-v1-N1 Frozen P4 + Span-Refiner Smoke、BEA-v1-P4L Locked Non-Python P4 Scheduler Validation、BEA-v1-P1 可行动性审计、BEA-FD1/FD2-A/FD2-A1、BEA-5 固定协议 success-quota No-Go / near-miss、B16-F 至 B16-J live-provider atom ablation、C5 外部 benchmark 检索 smoke、F1 utility smoke，以及 D5-A 自动化校准特征提取/heldout 验证。
 
 ## 0. 阅读规则
 
@@ -187,7 +187,9 @@ BEA-v1-N1 Frozen P4 + Span-Refiner Smoke 已完成为 rank-blocked No-Go。Manua
 
 BEA-v1-N2 Rank/Pack Actionability Decomposition 已完成为有界 decomposition pass。实证来源是 CI `28272769423`（checkpoint `7c90213`）；提交的公开 artifact 只对 closed N1 artifact 中非 gating 的 D0 latency 展示字段做了本地 records-only 修正，代码修复为 `a5b519b`。N2 精确重建 closed N1 rank-blocked denominator（`D2=40`），分类全部 40 条 records，发现 first gold-file rank bucket 为 `rank_21_50=40/40`，top-20 recovery `0/40`，top-50/top-100 recovery `40/40`，unique-file top-10 recovery `0/40`，evidence materializable `40/40`，hard-cap violations `0`，primary blocker 为 `extra_depth_append_blocked=40/40`。这只授权 extra-depth merge-order **design**，不授权 implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。参见 `docs/zh/bea-v1-n2-rank-pack-actionability-decomposition.md`。
 
-不要运行 B16-K、legacy role-proxy P4/P5、从失败 FD2-A objective 继续 FD2-B、v0.31/v0.32 权重微调、D5-A readiness 扩展、QuIVer/dense/graph quality experiments、另一个 BEA scale smoke、BEA-v1-A selector-only implementation、从 P4L/N1/N2 进入 P5 selector/reranker、runtime/default promotion、method-winner 声明、frozen P4 rerun 或 unconstrained broad retrieval expansion。
+BEA-v1-N3 Extra-Depth Merge-Order Design Simulation 已实现并等待 manual network CI。它仅在 closed N2 D2=40 private candidate rows 上做 deterministic offline simulation，使用同一 candidate pool 与预声明 merge-order arms。它不授权 implementation、新 retrieval、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion 或 downstream-value 声明。参见 `docs/zh/bea-v1-n3-extra-depth-merge-order-design-simulation.md`。
+
+不要运行 B16-K、legacy role-proxy P4/P5、从失败 FD2-A objective 继续 FD2-B、v0.31/v0.32 权重微调、D5-A readiness 扩展、QuIVer/dense/graph quality experiments、另一个 BEA scale smoke、BEA-v1-A selector-only implementation、从 P4L/N1/N2/N3 进入 P5 selector/reranker、runtime/default promotion、method-winner 声明、frozen P4 rerun 或 unconstrained broad retrieval expansion。
 
 ## 9. 一句话结论
 

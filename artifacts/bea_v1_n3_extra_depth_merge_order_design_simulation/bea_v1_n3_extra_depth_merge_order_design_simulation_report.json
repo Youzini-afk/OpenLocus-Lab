@@ -1,0 +1,421 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.0,
+  "candidate_pool_changed": false,
+  "candidate_scoring_model_used": false,
+  "claim_level": "bea_v1_n3_extra_depth_merge_order_design_simulation_only",
+  "closed_n2_artifact_validated": false,
+  "d3_design_denominator_count": 0,
+  "d3_merge_order_simulation_records": [
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "d3_total_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "candidate_pool_changed",
+      "value": false
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "retrieval_expansion_used",
+      "value": false
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "gold_labels_used_in_policy",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "forbidden_policy_path_executed",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "pass_eligible_nonbaseline_arm_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "tradeoff_nonbaseline_arm_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_top10_gold_file_recovery_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_top10_gold_file_recovery_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_recovered_evidence_materializable_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_recovered_evidence_materializable_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_original_top10_file_retention_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_top10_unique_file_count_mean_bucket",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "frozen_p4_order_hard_cap_violation_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_top10_gold_file_recovery_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_top10_gold_file_recovery_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_recovered_evidence_materializable_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_recovered_evidence_materializable_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_original_top10_file_retention_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_top10_unique_file_count_mean_bucket",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "fixed_interleave_2_primary_1_extra_after_4_hard_cap_violation_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_top10_gold_file_recovery_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_top10_gold_file_recovery_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_recovered_evidence_materializable_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_recovered_evidence_materializable_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_original_top10_file_retention_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_top10_unique_file_count_mean_bucket",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "early_extra_depth_quota_3_hard_cap_violation_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_top10_gold_file_recovery_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_top10_gold_file_recovery_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_recovered_evidence_materializable_count",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_recovered_evidence_materializable_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_original_top10_file_retention_rate",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_top10_unique_file_count_mean_bucket",
+      "value": 0
+    },
+    {
+      "metric_block": "D3_extra_depth_merge_order_design",
+      "metric_name": "bounded_promotion_after_primary_prefix_4_3_hard_cap_violation_count",
+      "value": 0
+    }
+  ],
+  "default_should_change": false,
+  "downstream_agent_value_proven": false,
+  "exact_paths_publicly_serialized": false,
+  "exact_ranks_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "extra_depth_merge_order_implementation_smoke_design_authorized": false,
+  "failure_category_count_records": [
+    {
+      "count": 0,
+      "failure_category": "candidate_order_unavailable"
+    },
+    {
+      "count": 0,
+      "failure_category": "candidate_pool_changed"
+    },
+    {
+      "count": 0,
+      "failure_category": "cross_source_asset_decompress_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "cross_source_asset_download_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "d3_private_write_error"
+    },
+    {
+      "count": 0,
+      "failure_category": "d3_reconstruction_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_private_decomposition_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "fd1_replay_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_leak_blocked"
+    },
+    {
+      "count": 0,
+      "failure_category": "forbidden_policy_path_executed"
+    },
+    {
+      "count": 0,
+      "failure_category": "gold_span_reconstruction_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "locked_denominator_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "n2_artifact_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "n2_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "n2_artifact_parse_failed"
+    },
+    {
+      "count": 1,
+      "failure_category": "network_required_but_disabled"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_artifact_missing"
+    },
+    {
+      "count": 0,
+      "failure_category": "p4k_artifact_status_mismatch"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_clone_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_parse_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "raw_denominator_scan_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_expansion_used"
+    },
+    {
+      "count": 0,
+      "failure_category": "retrieval_policy_failed"
+    },
+    {
+      "count": 0,
+      "failure_category": "unexpected_exception"
+    }
+  ],
+  "failure_reason_category": "network_required_but_disabled",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "closed_n2_artifact_validated",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "d3_total_exact",
+      "passed": false,
+      "threshold_relation": "==",
+      "threshold_value": 40,
+      "value": 0
+    },
+    {
+      "gate": "candidate_pool_unchanged",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "retrieval_expansion_not_used",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "nonbaseline_arm_pass_eligible",
+      "passed": false,
+      "threshold_relation": ">=",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "forbidden_scan_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-27T04:30:41Z",
+  "generated_by": "eval/bea_v1_n3_extra_depth_merge_order_design_simulation.py",
+  "gold_labels_used_in_policy": false,
+  "implementation_authorized": false,
+  "learned_weights_used": false,
+  "method_winner_claimed": false,
+  "mode": "bea_v1_n3_extra_depth_merge_order_design_simulation",
+  "n2_empirical_ci_run_id": "28272769423",
+  "n2_result_checkpoint": "ce47caf",
+  "n3_empirical_ci_run_id": "",
+  "n3_result_checkpoint": "",
+  "network_mode": "disabled_opt_in",
+  "new_files_added": false,
+  "new_retrieval_used": false,
+  "offline_deterministic_simulation_only": true,
+  "openlocus_binary_source": "missing",
+  "p5_authorized": false,
+  "p5_executed": false,
+  "phase": "BEA-v1-N3",
+  "private_jsonl_under_tmp_only": true,
+  "private_manifest_records": [],
+  "provider_calls_made": false,
+  "raw_records_publicly_serialized": false,
+  "remote_provider_calls_made": false,
+  "retrieval_expansion_used": false,
+  "runtime_behavior_changed": false,
+  "runtime_promotion_authorized": false,
+  "sanitized_analysis_records": [],
+  "schema_version": "bea_v1_n3_extra_depth_merge_order_design_simulation.v1",
+  "scores_publicly_serialized": false,
+  "selector_or_reranker_authorized": false,
+  "selector_or_reranker_executed": false,
+  "self_test_checks_passed": 23,
+  "self_test_checks_total": 23,
+  "self_test_passed": true,
+  "sim_arm_vocabulary": [
+    "frozen_p4_order",
+    "fixed_interleave_2_primary_1_extra_after_4",
+    "early_extra_depth_quota_3",
+    "bounded_promotion_after_primary_prefix_4_3"
+  ],
+  "snippet_content_relevance_scoring_used": false,
+  "source_checkpoint": "7c90213",
+  "source_ci_run_id": "28272769423",
+  "source_empirical_ci_run_id": "28272769423",
+  "source_result_checkpoint": "ce47caf",
+  "status": "unavailable_with_reason",
+  "status_vocabulary": [
+    "unavailable_with_reason",
+    "fail_schema_contract",
+    "fail_forbidden_scan",
+    "no_go_n3_n2_artifact_or_trace_unavailable",
+    "no_go_n3_insufficient_design_denominator",
+    "no_go_n3_incomplete_closed_n2_reconstruction",
+    "n3_merge_order_design_exploratory",
+    "n3_merge_order_design_inconclusive",
+    "n3_merge_order_tradeoff_no_go",
+    "n3_merge_order_design_simulation_pass"
+  ],
+  "v1_a_authorized": false,
+  "v1_a_selector_executed": false
+}
