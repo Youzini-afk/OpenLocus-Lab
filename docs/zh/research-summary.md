@@ -3390,3 +3390,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-N3 Extra-Depth Merge-Order Design Simulation 已完成为 inconclusive design result**：local checkpoint `76ebd32`，manual CI `28278662782`，status `n3_merge_order_design_inconclusive`。
 - **结果**：D3 精确重建（`40/40`）且 scanner 通过。Frozen P4 order recovery 为 `0/40`；fixed interleave recovery 为 `8/40`；early extra-depth quota 3 recovery 为 `10/40`；bounded promotion after primary prefix 4/3 recovery 为 `10/40`。最佳 recovery rate 为 `0.25`，低于预声明 `0.50` pass gate。最佳 arms 的 top-10 retention 为 `0.975`、recovered evidence materialized rate 为 `1.0`、hard-cap violations 为 `0`，但 recovery 没有跨过 gate。
 - **决策**：这些简单 bounded merge-order designs 没有解决 N2 rank/pack blocker。N3 不授权 implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。
+
+## BEA-v1-P0-1 trace-gap audit 发现
+
+- **BEA-v1-P0-1 Trace Gap Audit 已完成为 scanner-validated trace-surface phase**：status `trace_gap_audit_pass`，self-test `5/5`，forbidden scan `pass`。
+- **结果**：该审计读取已提交的 FD1、P1、FD2-A1、P4L、N2 与 N3 artifacts，并为全部 12 个 FD1 categories 发布 sanitized per-gap records。Trace availability 为 `sanitized_available=3`、`private_only_needs_public_export=3`、`missing_label=3`、`missing_trace=2`、`aggregate_only_insufficient_for_deep_research=1`。
+- **决策**：下一步应先补齐数据面，而不是实现 policy。授权的 follow-ups 是 actionability-matrix refresh、sanitized scheduler dataset export、support-link labeling inputs，以及 redundancy/risk/stop trace preservation。P0-1 不授权 P5、BEA-v1-A、selector/reranker execution、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

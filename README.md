@@ -28,12 +28,12 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N3: Extra-Depth Merge-Order Design Simulation**:
+The latest closed phase is **BEA-v1-P0-1: Trace Gap Audit**:
 
 ```text
-local checkpoint: 76ebd32
-manual CI:        28278662782
-status:           n3_merge_order_design_inconclusive
+status: trace_gap_audit_pass
+self-test: 5 / 5
+forbidden scan: pass
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -58,6 +58,13 @@ designs do not solve the N2 blocker. It does **not** authorize implementation,
 P5, BEA-v1-A, selector/reranker execution, runtime/default promotion,
 method-winner claims, broad retrieval expansion, downstream-value claims, or a
 frozen P4 rerun.
+
+The follow-up trace-gap audit converted the post-N3 state into explicit trace
+requirements for deep research agents. Rank/pack and merge-order review already
+have sanitized rows from N2/N3, but the BEA-v1 mechanism surface still needs
+sanitized public exports or new labels for action-cost, support-link, same-file
+redundancy, risk-penalty, and ordered-prefix stop traces before new policy
+experiments.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -113,9 +120,10 @@ See the current report index:
 
 ### What remains unresolved
 
-- N3 did not find a passing merge-order design. The immediate next empirical
-  question must be separately scoped; N3 itself does not authorize implementation
-  or escalation to P5/BEA-v1-A selector/reranker work.
+- N3 did not find a passing merge-order design, and the P0-1 trace-gap audit now
+  shows the next empirical question must first expose the missing trace surface:
+  sanitized scheduler/action-cost rows, support-link labels, same-file
+  redundancy trace, risk-penalty trace, and ordered-prefix stop trace.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

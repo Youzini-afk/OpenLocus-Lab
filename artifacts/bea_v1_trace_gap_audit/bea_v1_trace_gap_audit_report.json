@@ -1,0 +1,489 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.011,
+  "claim_level": "bea_v1_trace_gap_audit_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "fd1_pass_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p1_actionability_audit_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "n2_rank_pack_sanitized_rows_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "n3_merge_order_sanitized_rows_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-27T16:40:00Z",
+  "generated_by": "eval/bea_v1_trace_gap_audit.py",
+  "input_artifact_records": [
+    {
+      "artifact_key": "fd1",
+      "artifact_status": "pass",
+      "forbidden_scan_status": "pass",
+      "private_manifest_record_count": 0,
+      "sanitized_analysis_record_count": 0,
+      "source_schema": "bea_fd1_failure_decomposition.v1",
+      "source_status": "bea_fd1_decomposition_pass"
+    },
+    {
+      "artifact_key": "p1",
+      "artifact_status": "pass",
+      "forbidden_scan_status": "pass",
+      "private_manifest_record_count": 86040,
+      "sanitized_analysis_record_count": 0,
+      "source_schema": "bea_v1_p1_actionability_audit.v1",
+      "source_status": "no_go_retrieval_availability_limit"
+    },
+    {
+      "artifact_key": "fd2a1",
+      "artifact_status": "pass",
+      "forbidden_scan_status": "pass",
+      "private_manifest_record_count": 1521,
+      "sanitized_analysis_record_count": 0,
+      "source_schema": "bea_fd2a1_failure_attribution_replay.v1",
+      "source_status": "bea_fd2a1_attribution_replay_pass"
+    },
+    {
+      "artifact_key": "p4l",
+      "artifact_status": "pass",
+      "forbidden_scan_status": "pass",
+      "private_manifest_record_count": 87746,
+      "sanitized_analysis_record_count": 0,
+      "source_schema": "bea_v1_p4l_locked_non_python_scheduler_validation.v1",
+      "source_status": "bea_v1_p4l_locked_non_python_scheduler_validation_pass"
+    },
+    {
+      "artifact_key": "n2",
+      "artifact_status": "pass",
+      "forbidden_scan_status": "pass",
+      "private_manifest_record_count": 658,
+      "sanitized_analysis_record_count": 40,
+      "source_schema": "bea_v1_n2_rank_pack_actionability_decomposition.v1",
+      "source_status": "n2_rank_pack_actionability_decomposition_pass"
+    },
+    {
+      "artifact_key": "n3",
+      "artifact_status": "pass",
+      "forbidden_scan_status": "pass",
+      "private_manifest_record_count": 818,
+      "sanitized_analysis_record_count": 160,
+      "source_schema": "bea_v1_n3_extra_depth_merge_order_design_simulation.v1",
+      "source_status": "n3_merge_order_design_inconclusive"
+    }
+  ],
+  "mode": "bea_v1_trace_gap_audit",
+  "phase": "BEA-v1-P0-1",
+  "priority_gap_summary_records": [
+    {
+      "count": 8,
+      "priority": "P0"
+    },
+    {
+      "count": 1,
+      "priority": "P1"
+    }
+  ],
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "sanitized_analysis_records": [
+    {
+      "action_layer": "action_scheduler",
+      "anonymous_local_id": "tg00000",
+      "category": "budget_spent_on_low_marginal_gain",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "scheduler_dataset_export_and_cost_aware_policy_comparison",
+      "risk_class": "partially_private_only",
+      "trace_availability": "private_only_needs_public_export",
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "action_layer": "rank_pack_materialization",
+      "anonymous_local_id": "tg00001",
+      "category": "correct_file_wrong_span",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "rank_blocker_and_pack_budget_actionability",
+      "risk_class": "sanitized_available",
+      "trace_availability": "sanitized_available",
+      "trace_field": "rank_pack_trace"
+    },
+    {
+      "action_layer": "action_scheduler",
+      "anonymous_local_id": "tg00002",
+      "category": "early_stop_too_early",
+      "priority": "P1",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "stop_decision_counterfactual_and_early_stop_diagnosis",
+      "risk_class": "trace_insufficient",
+      "trace_availability": "aggregate_only_insufficient_for_deep_research",
+      "trace_field": "ordered_prefix_stop_trace"
+    },
+    {
+      "action_layer": "action_scheduler",
+      "anonymous_local_id": "tg00003",
+      "category": "gold_file_absent",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "scheduler_dataset_export_and_cost_aware_policy_comparison",
+      "risk_class": "partially_private_only",
+      "trace_availability": "private_only_needs_public_export",
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "action_layer": "rank_pack_materialization",
+      "anonymous_local_id": "tg00004",
+      "category": "gold_span_absent",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "rank_blocker_and_pack_budget_actionability",
+      "risk_class": "sanitized_available",
+      "trace_availability": "sanitized_available",
+      "trace_field": "rank_pack_trace"
+    },
+    {
+      "action_layer": "action_scheduler",
+      "anonymous_local_id": "tg00005",
+      "category": "latency_without_quality_gain",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "scheduler_dataset_export_and_cost_aware_policy_comparison",
+      "risk_class": "partially_private_only",
+      "trace_availability": "private_only_needs_public_export",
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "action_layer": "conditional_support_expansion",
+      "anonymous_local_id": "tg00006",
+      "category": "missing_support_candidate",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "target_support_counterfactual_and_support_marginal_utility",
+      "risk_class": "label_absent",
+      "trace_availability": "missing_label",
+      "trace_field": "support_link_trace"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "anonymous_local_id": "tg00007",
+      "category": "redundant_same_file_candidates",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "duplicate_waste_and_marginal_pack_utility",
+      "risk_class": "mechanism_blind_spot",
+      "trace_availability": "missing_trace",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_layer": "file_selector_or_risk_accounting",
+      "anonymous_local_id": "tg00008",
+      "category": "risk_penalty_removed_gold",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "detect_gold_removed_by_risk_penalty_without_treating_risk_as_relevance",
+      "risk_class": "mechanism_blind_spot",
+      "trace_availability": "missing_trace",
+      "trace_field": "risk_penalty_trace"
+    },
+    {
+      "action_layer": "conditional_support_expansion",
+      "anonymous_local_id": "tg00009",
+      "category": "support_selected_without_target",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "target_support_counterfactual_and_support_marginal_utility",
+      "risk_class": "label_absent",
+      "trace_availability": "missing_label",
+      "trace_field": "support_link_trace"
+    },
+    {
+      "action_layer": "conditional_support_expansion",
+      "anonymous_local_id": "tg00010",
+      "category": "target_selected_without_support",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "target_support_counterfactual_and_support_marginal_utility",
+      "risk_class": "label_absent",
+      "trace_availability": "missing_label",
+      "trace_field": "support_link_trace"
+    },
+    {
+      "action_layer": "rank_pack_materialization",
+      "anonymous_local_id": "tg00011",
+      "category": "too_many_anchor_slots",
+      "priority": "P0",
+      "publication_boundary": "sanitized_per_gap_record",
+      "required_for": "rank_blocker_and_pack_budget_actionability",
+      "risk_class": "sanitized_available",
+      "trace_availability": "sanitized_available",
+      "trace_field": "rank_pack_trace"
+    }
+  ],
+  "schema_version": "bea_v1_trace_gap_audit.v1",
+  "self_test_checks_passed": 5,
+  "self_test_checks_total": 5,
+  "self_test_passed": true,
+  "status": "trace_gap_audit_pass",
+  "status_vocabulary": [
+    "trace_gap_audit_pass",
+    "no_go_trace_gap_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "actionability_matrix_and_scheduler_dataset_export_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "trace_gap_audit_pass",
+      "stop_go_reason": "trace_gaps_are_now_explicit_and_do_not_authorize_policy_implementation",
+      "v1_a_authorized": false
+    }
+  ],
+  "trace_availability_summary_records": [
+    {
+      "count": 1,
+      "trace_availability": "aggregate_only_insufficient_for_deep_research"
+    },
+    {
+      "count": 3,
+      "trace_availability": "missing_label"
+    },
+    {
+      "count": 2,
+      "trace_availability": "missing_trace"
+    },
+    {
+      "count": 3,
+      "trace_availability": "private_only_needs_public_export"
+    },
+    {
+      "count": 3,
+      "trace_availability": "sanitized_available"
+    }
+  ],
+  "trace_field_gap_summary_records": [
+    {
+      "count": 3,
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "count": 1,
+      "trace_field": "ordered_prefix_stop_trace"
+    },
+    {
+      "count": 1,
+      "trace_field": "risk_penalty_trace"
+    },
+    {
+      "count": 1,
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "count": 3,
+      "trace_field": "support_link_trace"
+    }
+  ],
+  "trace_gap_records": [
+    {
+      "action_layer": "action_scheduler",
+      "category": "budget_spent_on_low_marginal_gain",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus state_bucket plus action_arm plus latency_bucket plus pool_delta_bucket plus hard_cap_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "scheduler_dataset_export_and_cost_aware_policy_comparison",
+      "risk_class": "partially_private_only",
+      "trace_availability": "private_only_needs_public_export",
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "action_layer": "rank_pack_materialization",
+      "category": "correct_file_wrong_span",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus rank_bucket plus blocker_bucket plus topk_recovery_bucket plus materializable_bucket",
+      "next_step": "reuse_existing_sanitized_rows",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "rank_blocker_and_pack_budget_actionability",
+      "risk_class": "sanitized_available",
+      "trace_availability": "sanitized_available",
+      "trace_field": "rank_pack_trace"
+    },
+    {
+      "action_layer": "action_scheduler",
+      "category": "early_stop_too_early",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus arm_name plus stop_reason plus prefix_cost_bucket plus marginal_gain_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P1",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "stop_decision_counterfactual_and_early_stop_diagnosis",
+      "risk_class": "trace_insufficient",
+      "trace_availability": "aggregate_only_insufficient_for_deep_research",
+      "trace_field": "ordered_prefix_stop_trace"
+    },
+    {
+      "action_layer": "action_scheduler",
+      "category": "gold_file_absent",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus state_bucket plus action_arm plus latency_bucket plus pool_delta_bucket plus hard_cap_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "scheduler_dataset_export_and_cost_aware_policy_comparison",
+      "risk_class": "partially_private_only",
+      "trace_availability": "private_only_needs_public_export",
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "action_layer": "rank_pack_materialization",
+      "category": "gold_span_absent",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus rank_bucket plus blocker_bucket plus topk_recovery_bucket plus materializable_bucket",
+      "next_step": "reuse_existing_sanitized_rows",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "rank_blocker_and_pack_budget_actionability",
+      "risk_class": "sanitized_available",
+      "trace_availability": "sanitized_available",
+      "trace_field": "rank_pack_trace"
+    },
+    {
+      "action_layer": "action_scheduler",
+      "category": "latency_without_quality_gain",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus state_bucket plus action_arm plus latency_bucket plus pool_delta_bucket plus hard_cap_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "scheduler_dataset_export_and_cost_aware_policy_comparison",
+      "risk_class": "partially_private_only",
+      "trace_availability": "private_only_needs_public_export",
+      "trace_field": "action_cost_trace"
+    },
+    {
+      "action_layer": "conditional_support_expansion",
+      "category": "missing_support_candidate",
+      "evidence_basis": "unavailable_no_support_label",
+      "minimum_public_shape": "anonymous_record_id plus support_relation_bucket plus target_hit_bucket plus support_hit_bucket plus conjunction_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "target_support_counterfactual_and_support_marginal_utility",
+      "risk_class": "label_absent",
+      "trace_availability": "missing_label",
+      "trace_field": "support_link_trace"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "category": "redundant_same_file_candidates",
+      "evidence_basis": "unavailable_missing_trace",
+      "minimum_public_shape": "anonymous_record_id plus source_language_bucket plus duplicate_pressure_bucket plus action_arm plus topk_file_diversity_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "duplicate_waste_and_marginal_pack_utility",
+      "risk_class": "mechanism_blind_spot",
+      "trace_availability": "missing_trace",
+      "trace_field": "same_file_redundancy_trace"
+    },
+    {
+      "action_layer": "file_selector_or_risk_accounting",
+      "category": "risk_penalty_removed_gold",
+      "evidence_basis": "unavailable_missing_trace",
+      "minimum_public_shape": "anonymous_record_id plus risk_class plus removed_gold_bucket plus replacement_bucket plus action_arm",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "detect_gold_removed_by_risk_penalty_without_treating_risk_as_relevance",
+      "risk_class": "mechanism_blind_spot",
+      "trace_availability": "missing_trace",
+      "trace_field": "risk_penalty_trace"
+    },
+    {
+      "action_layer": "conditional_support_expansion",
+      "category": "support_selected_without_target",
+      "evidence_basis": "unavailable_no_support_label",
+      "minimum_public_shape": "anonymous_record_id plus support_relation_bucket plus target_hit_bucket plus support_hit_bucket plus conjunction_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "target_support_counterfactual_and_support_marginal_utility",
+      "risk_class": "label_absent",
+      "trace_availability": "missing_label",
+      "trace_field": "support_link_trace"
+    },
+    {
+      "action_layer": "conditional_support_expansion",
+      "category": "target_selected_without_support",
+      "evidence_basis": "unavailable_no_support_label",
+      "minimum_public_shape": "anonymous_record_id plus support_relation_bucket plus target_hit_bucket plus support_hit_bucket plus conjunction_bucket",
+      "next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "target_support_counterfactual_and_support_marginal_utility",
+      "risk_class": "label_absent",
+      "trace_availability": "missing_label",
+      "trace_field": "support_link_trace"
+    },
+    {
+      "action_layer": "rank_pack_materialization",
+      "category": "too_many_anchor_slots",
+      "evidence_basis": "available",
+      "minimum_public_shape": "anonymous_record_id plus rank_bucket plus blocker_bucket plus topk_recovery_bucket plus materializable_bucket",
+      "next_step": "reuse_existing_sanitized_rows",
+      "priority": "P0",
+      "publication_boundary": "scanner_validated_sanitized_rows_without_source_linkable_payloads",
+      "record_count": 239,
+      "required_for": "rank_blocker_and_pack_budget_actionability",
+      "risk_class": "sanitized_available",
+      "trace_availability": "sanitized_available",
+      "trace_field": "rank_pack_trace"
+    }
+  ]
+}

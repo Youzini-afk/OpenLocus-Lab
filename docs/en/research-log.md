@@ -11204,3 +11204,46 @@ selector/reranker execution, runtime/default promotion, method-winner claims,
 broad retrieval expansion, downstream-value claims, or frozen P4 rerun. The
 simple bounded merge-order designs tested in N3 are insufficient for the N2
 rank/pack blocker.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-1: Trace Gap Audit
+
+### Objective
+
+Convert the post-N3 state into an explicit trace-surface audit for follow-up
+research agents. This phase reads only committed FD1, P1, FD2-A1, P4L, N2, and
+N3 public artifacts and publishes scanner-validated sanitized per-gap rows. It
+does not run retrieval, providers, selectors, rerankers, P5, BEA-v1-A, runtime
+promotion, broad retrieval expansion, or downstream-value evaluation.
+
+### Result
+
+`eval/bea_v1_trace_gap_audit.py` generated
+`artifacts/bea_v1_trace_gap_audit/bea_v1_trace_gap_audit_report.json` with
+status `trace_gap_audit_pass`. Self-test passed `5/5`, forbidden scan passed,
+and the audit covered all 12 FD1 categories.
+
+Trace availability summary:
+
+- `sanitized_available`: 3;
+- `private_only_needs_public_export`: 3;
+- `missing_label`: 3;
+- `missing_trace`: 2;
+- `aggregate_only_insufficient_for_deep_research`: 1.
+
+### Interpretation
+
+N2/N3 already provide sanitized rank/pack and merge-order rows, but the broader
+BEA-v1 mechanism surface remains trace-incomplete. The immediate data-surface
+gaps are action-cost scheduler export, support-link labels, same-file redundancy
+trace, risk-penalty trace, and ordered-prefix stop trace.
+
+### Decision
+
+P0-1 authorizes only trace/data-surface work: actionability-matrix refresh,
+sanitized P4/P4L scheduler dataset export, support-link labeling inputs, and
+preservation/export of redundancy, risk-penalty, and ordered-prefix stop traces.
+It does not authorize implementation, P5, BEA-v1-A, selector/reranker execution,
+runtime/default promotion, method-winner claims, broad retrieval expansion,
+downstream-value claims, or frozen P4 rerun.

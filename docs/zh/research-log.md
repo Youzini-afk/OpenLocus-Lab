@@ -10399,3 +10399,43 @@ N3 不是 pass，不授权 implementation、P5、BEA-v1-A、selector/reranker ex
 runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value
 声明或 frozen P4 rerun。N3 测试的简单 bounded merge-order designs 对 N2 rank/pack
 blocker 不足。
+
+---
+
+## 2026-06-27 — BEA-v1-P0-1：Trace Gap Audit
+
+### 目标
+
+将 N3 之后的状态转换为后续研究 agent 可直接复盘的 trace-surface audit。本阶段只读取已提交的
+FD1、P1、FD2-A1、P4L、N2 与 N3 public artifacts，并发布经过 scanner 验证的 sanitized
+per-gap rows。它不运行 retrieval、provider、selector、reranker、P5、BEA-v1-A、runtime
+promotion、broad retrieval expansion 或 downstream-value evaluation。
+
+### 结果
+
+`eval/bea_v1_trace_gap_audit.py` 生成
+`artifacts/bea_v1_trace_gap_audit/bea_v1_trace_gap_audit_report.json`，status 为
+`trace_gap_audit_pass`。Self-test 通过 `5/5`，forbidden scan 通过，并覆盖全部 12 个
+FD1 categories。
+
+Trace availability summary：
+
+- `sanitized_available`：3；
+- `private_only_needs_public_export`：3；
+- `missing_label`：3；
+- `missing_trace`：2；
+- `aggregate_only_insufficient_for_deep_research`：1。
+
+### 解释
+
+N2/N3 已为 rank/pack 与 merge-order 复盘提供 sanitized rows，但更完整的 BEA-v1 机制面仍然
+trace 不完整。当前直接数据面缺口是 action-cost scheduler export、support-link labels、same-file
+redundancy trace、risk-penalty trace 与 ordered-prefix stop trace。
+
+### 决策
+
+P0-1 只授权 trace/data-surface 工作：actionability-matrix refresh、sanitized P4/P4L scheduler
+dataset export、support-link labeling inputs，以及 redundancy、risk-penalty、ordered-prefix stop
+traces 的保留/导出。它不授权 implementation、P5、BEA-v1-A、selector/reranker execution、
+runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明
+或 frozen P4 rerun。
