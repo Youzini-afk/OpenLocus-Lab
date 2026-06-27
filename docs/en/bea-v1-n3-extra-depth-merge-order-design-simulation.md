@@ -75,6 +75,41 @@ Forbidden publicly: raw paths, exact ranks, exact spans, gold lines, snippets/co
 - `n3_merge_order_tradeoff_no_go`
 - `n3_merge_order_design_simulation_pass`
 
-## Current state
+## Result
 
-Implementation is present and pending manual network CI. This document does not claim final N3 empirical CI results.
+N3 is complete as a bounded design-simulation run.
+
+```text
+local checkpoint: 76ebd32
+manual CI:        28278662782
+status:           n3_merge_order_design_inconclusive
+D3 denominator:   40
+```
+
+The workflow passed, but the research result is **not** an N3 pass. D3
+reconstructed exactly (`40/40`), the public forbidden scan passed, and the
+simulation remained offline/deterministic with no candidate-pool changes, no new
+retrieval, no selector/reranker, no P5, no BEA-v1-A, and no provider calls. The
+predeclared merge-order arms did not reach the pass threshold:
+
+```text
+frozen_p4_order recovery:                       0 / 40
+fixed_interleave_2_primary_1_extra_after_4:     8 / 40
+early_extra_depth_quota_3:                     10 / 40
+bounded_promotion_after_primary_prefix_4_3:    10 / 40
+
+pass_eligible_nonbaseline_arm_count: 0
+tradeoff_nonbaseline_arm_count:      0
+```
+
+The best recovery rate was `0.25`, below the predeclared `0.50` pass gate. The
+two strongest arms preserved original top-10 file retention at `0.975`, recovered
+evidence materializable rate was `1.0`, and hard-cap violations were `0`, but the
+recovery threshold did not cross. Therefore N3 authorizes no implementation
+smoke, no P5 selector/reranker, no BEA-v1-A, no runtime/default promotion, no
+method-winner claim, no broad retrieval expansion, no downstream-value claim, and
+no frozen P4 rerun.
+
+Interpretation: the N2 blocker is not solved by these simple extra-depth
+merge-order designs. The next research step, if any, must be separately scoped;
+N3 itself only says these three bounded merge-order designs are insufficient.

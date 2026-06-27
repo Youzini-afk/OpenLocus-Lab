@@ -11167,3 +11167,40 @@ N2 authorizes only extra-depth merge-order design. It does not authorize
 implementation, P5 selector/reranker, BEA-v1-A, selector/reranker execution,
 runtime/default promotion, method-winner claims, broad retrieval expansion,
 downstream-value claims, or frozen P4 rerun.
+
+## 2026-06-27 — BEA-v1-N3: Extra-Depth Merge-Order Design Simulation
+
+### Objective
+
+Test the design-only follow-up authorized by N2: whether simple frozen,
+deterministic extra-depth merge-order simulations can move the 40 D2 records from
+rank 21-50 into top-10 without changing the candidate pool or running new
+retrieval, selectors, rerankers, P5, BEA-v1-A, provider calls, learned weights,
+or gold-based policy.
+
+### Manual CI result
+
+Local checkpoint `76ebd32` added the evaluator/workflow/default artifact/docs.
+Manual CI `28278662782` completed green with public status
+`n3_merge_order_design_inconclusive`.
+
+The validated artifact reconstructed D3 exactly (`40/40`), wrote private
+manifests under `/tmp` only, and passed public scanning. Simulation outcomes:
+
+- frozen P4 order: `0/40` recovered into top-10;
+- fixed interleave 2-primary/1-extra after 4: `8/40`;
+- early extra-depth quota 3: `10/40`;
+- bounded promotion after primary prefix 4/3: `10/40`.
+
+Best recovery rate was `0.25`, below the `0.50` pass gate. The two strongest
+arms had retention `0.975`, recovered materialization rate `1.0`, and hard-cap
+violations `0`, so cost/retention were not the blocker; recovery was simply too
+low.
+
+### Decision
+
+N3 is not a pass and does not authorize implementation, P5, BEA-v1-A,
+selector/reranker execution, runtime/default promotion, method-winner claims,
+broad retrieval expansion, downstream-value claims, or frozen P4 rerun. The
+simple bounded merge-order designs tested in N3 are insufficient for the N2
+rank/pack blocker.

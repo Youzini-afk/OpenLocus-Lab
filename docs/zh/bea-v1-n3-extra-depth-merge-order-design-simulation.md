@@ -75,6 +75,37 @@ Public artifacts 只能包含 aggregate metrics 与经过 scanner 验证的 sani
 - `n3_merge_order_tradeoff_no_go`
 - `n3_merge_order_design_simulation_pass`
 
-## 当前状态
+## 结果
 
-实现已就绪，等待 manual network CI。本文档不声明最终 N3 empirical CI results。
+N3 已完成为有界 design-simulation run。
+
+```text
+local checkpoint: 76ebd32
+manual CI:        28278662782
+status:           n3_merge_order_design_inconclusive
+D3 denominator:   40
+```
+
+Workflow 通过，但研究结果**不是** N3 pass。D3 精确重建（`40/40`），public forbidden
+scan 通过，并且 simulation 保持 offline/deterministic：无 candidate-pool changes、无新
+retrieval、无 selector/reranker、无 P5、无 BEA-v1-A、无 provider calls。预声明的
+merge-order arms 未达到 pass threshold：
+
+```text
+frozen_p4_order recovery:                       0 / 40
+fixed_interleave_2_primary_1_extra_after_4:     8 / 40
+early_extra_depth_quota_3:                     10 / 40
+bounded_promotion_after_primary_prefix_4_3:    10 / 40
+
+pass_eligible_nonbaseline_arm_count: 0
+tradeoff_nonbaseline_arm_count:      0
+```
+
+最佳 recovery rate 是 `0.25`，低于预声明 `0.50` pass gate。两个最强 arms 的 original
+top-10 file retention 为 `0.975`，recovered evidence materializable rate 为 `1.0`，
+hard-cap violations 为 `0`，但 recovery threshold 没有跨过。因此 N3 不授权
+implementation smoke、P5 selector/reranker、BEA-v1-A、runtime/default promotion、
+method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。
+
+解释：N2 blocker 没有被这些简单 extra-depth merge-order designs 解决。若继续推进，
+下一步必须重新单独 scoped；N3 自身只说明这三种 bounded merge-order designs 不足。

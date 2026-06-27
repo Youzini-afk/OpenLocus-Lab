@@ -28,43 +28,40 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N2: Rank/Pack Actionability Decomposition**:
+The latest closed phase is **BEA-v1-N3: Extra-Depth Merge-Order Design Simulation**:
 
 ```text
-empirical CI source: 28272769423
-source checkpoint:   7c90213
-correction checkpoint: a5b519b
-status:              n2_rank_pack_actionability_decomposition_pass
+local checkpoint: 76ebd32
+manual CI:        28278662782
+status:           n3_merge_order_design_inconclusive
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
-rank-blocked records without implementing a selector/reranker:
+rank-blocked records and localized the blocker to extra-depth append/merge-order.
+N3 then tested three frozen, deterministic merge-order designs without new
+retrieval, selectors, rerankers, P5, or BEA-v1-A:
 
 ```text
-D2 rank-blocked denominator: 40
-classified rows:             40 / 40
-first gold-file rank bucket: rank_21_50 = 40 / 40
+D3 design denominator: 40
 
-top20 recovery:             0 / 40
-top50 recovery:             40 / 40
-top100 recovery:            40 / 40
-unique-file top10 recovery: 0 / 40
+frozen P4 order:                            0 / 40
+fixed interleave 2-primary/1-extra after 4: 8 / 40
+early extra-depth quota 3:                 10 / 40
+bounded promotion after prefix 4/3:        10 / 40
 
-primary blocker:            extra_depth_append_blocked = 40 / 40
-evidence materializable:    40 / 40
-hard-cap violations:        0
+best recovery rate: 0.25 < 0.50 pass gate
 ```
 
-N2 authorizes only **extra-depth merge-order design** as the next bounded design
-problem. It does **not** authorize implementation, P5, BEA-v1-A,
-selector/reranker execution, runtime/default promotion, method-winner claims,
-broad retrieval expansion, downstream-value claims, or a frozen P4 rerun.
+N3 is an inconclusive/negative design result: the simple bounded merge-order
+designs do not solve the N2 blocker. It does **not** authorize implementation,
+P5, BEA-v1-A, selector/reranker execution, runtime/default promotion,
+method-winner claims, broad retrieval expansion, downstream-value claims, or a
+frozen P4 rerun.
 
-Provenance note: the empirical N2 result is CI `28272769423`; the committed
-public artifact includes a local records-only correction of one non-gating D0
-latency display field from the closed N1 artifact. The code fix for that display
-bug is checkpoint `a5b519b`.
+Provenance note: N2 remains the source decomposition (`28272769423`, result
+checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
+D2 denominator.
 
 High-level guardrail status:
 
@@ -106,26 +103,25 @@ See the current report index:
   showed candidate availability can improve when retrieval expansion is
   constrained and latency is handled at the action-scheduler layer, not inside
   candidate relevance scoring.
-- **The disjoint denominator is now locked; N1 is rank-blocked; N2 localizes the blocker.** P4H/P4I showed the supported
+- **The disjoint denominator is now locked; N1 is rank-blocked; N2 localizes the blocker; N3 simple designs are insufficient.** P4H/P4I showed the supported
   Python frame only had 73/80 file-miss records; P4J found a 333-record
   cross-source upper-bound reservoir; P4K resolved exact overlap and locked a
   272-record non-Python denominator; P4L validated the frozen P4 scheduler on
   that locked denominator; N1 then found D1_total=40 but D1_top10_actionable=0,
-  and N2 classified all 40 as extra-depth append/merge-order blocked.
+  N2 classified all 40 as extra-depth append/merge-order blocked, and N3 tested
+  three bounded merge-order designs but only recovered 8/40 or 10/40.
 
 ### What remains unresolved
 
-- N2 authorizes only design of an extra-depth merge-order actionability follow-up.
-  The immediate next empirical question is whether a frozen, bounded merge-order
-  design can move those rank_21_50 gold-file candidates into the actionable pack
-  without turning into P5/BEA-v1-A selector/reranker work.
+- N3 did not find a passing merge-order design. The immediate next empirical
+  question must be separately scoped; N3 itself does not authorize implementation
+  or escalation to P5/BEA-v1-A selector/reranker work.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
   provide retrieval-reach / gold-path signals, not downstream task success.
-- Therefore P4L/N1 are not downstream-value evidence. The next bounded step is
-  rank/pack actionability decomposition, not a mislabeled downstream smoke or an
-  immediate P5/v1-A selector.
+- Therefore P4L/N1/N2/N3 are not downstream-value evidence. The next bounded step
+  must not be a mislabeled downstream smoke or an immediate P5/v1-A selector.
 
 ## What OpenLocus does **not** claim today
 
@@ -143,14 +139,18 @@ OpenLocus currently does **not** claim:
 - dense/graph/LLM-derived content as Evidence,
 - or any change to `EvidenceCore` semantics.
 
-Public research artifacts default to aggregate-only, but mechanism-analysis
-phases may publish **sanitized per-record analysis records** when they are
-explicitly scanner-validated and contain only non-identifying fields such as
-anonymous record ids, benchmark/language/source buckets, arm names, hit/miss
-booleans, rank buckets, latency/pool buckets, disagreement categories, and risk
-classes. Raw prompts, responses, snippets, provider payloads, exact paths/spans,
-gold labels, raw candidate lists, provider keys, API keys, and unsanitized
-private per-record rows must not be committed.
+Research artifacts are no longer assumed to be aggregate-only. New mechanism
+and actionability phases should publish **scanner-validated, deep-research-agent
+readable per-record analysis artifacts** whenever the data license and safety
+boundary allow it. These artifacts should expose enough structure for follow-up
+research agents to audit mechanisms: anonymous record ids, benchmark/language/
+source buckets, arm names, action/state features, hit/miss booleans, rank or
+rank-bucket fields, latency/pool/action-cost buckets, disagreement categories,
+risk classes, and sanitized trace-gap/actionability fields. Aggregate-only output
+is still appropriate for external datasets or provider runs whose redistribution
+rules forbid row-level release. Raw prompts, responses, snippets, provider
+payloads, secrets, provider keys, API keys, unsanitized private rows, and any
+source-linkable private data must not be committed.
 
 ## Quick start
 

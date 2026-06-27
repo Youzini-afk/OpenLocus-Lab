@@ -3384,3 +3384,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **状态**：`n2_rank_pack_actionability_decomposition_pass`。D2 精确重建（`40/40`），全部 rows 完成分类（`40/40`）。First gold-file rank bucket 为 `rank_21_50=40/40`；top-20 recovery 为 `0/40`，top-50/top-100 recovery 为 `40/40`，unique-file top-10 recovery 为 `0/40`，evidence materializable 为 `40/40`，hard-cap violations 为 `0`，public scanner 为 `pass`。
 - **机制**：primary blocker 是 `extra_depth_append_blocked=40/40`。因此 N1 的 span bottleneck 实际是 rank/pack actionability 问题：gold file 稳定存在于更深 pool，但没有被 append/merge 到 actionable pack。
 - **决策**：N2 只授权 extra-depth merge-order design。它不授权 implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。
+
+## BEA-v1-N3 发现
+
+- **BEA-v1-N3 Extra-Depth Merge-Order Design Simulation 已完成为 inconclusive design result**：local checkpoint `76ebd32`，manual CI `28278662782`，status `n3_merge_order_design_inconclusive`。
+- **结果**：D3 精确重建（`40/40`）且 scanner 通过。Frozen P4 order recovery 为 `0/40`；fixed interleave recovery 为 `8/40`；early extra-depth quota 3 recovery 为 `10/40`；bounded promotion after primary prefix 4/3 recovery 为 `10/40`。最佳 recovery rate 为 `0.25`，低于预声明 `0.50` pass gate。最佳 arms 的 top-10 retention 为 `0.975`、recovered evidence materialized rate 为 `1.0`、hard-cap violations 为 `0`，但 recovery 没有跨过 gate。
+- **决策**：这些简单 bounded merge-order designs 没有解决 N2 rank/pack blocker。N3 不授权 implementation、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。

@@ -3976,3 +3976,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Status**: `n2_rank_pack_actionability_decomposition_pass`. D2 reconstructed exactly (`40/40`) and all rows were classified (`40/40`). First gold-file rank bucket was `rank_21_50=40/40`; top-20 recovery was `0/40`, top-50/top-100 recovery `40/40`, unique-file top-10 recovery `0/40`, evidence materializable `40/40`, hard-cap violations `0`, and public scanner `pass`.
 - **Mechanism**: primary blocker was `extra_depth_append_blocked=40/40`. The N1 span bottleneck is therefore a rank/pack actionability problem where the gold file is consistently available in the deeper pool but not appended/merged into the actionable pack.
 - **Decision**: N2 authorizes only extra-depth merge-order design. It does not authorize implementation, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or frozen P4 rerun.
+
+## BEA-v1-N3 findings
+
+- **BEA-v1-N3 Extra-Depth Merge-Order Design Simulation completed as inconclusive design result**: local checkpoint `76ebd32`, manual CI `28278662782`, status `n3_merge_order_design_inconclusive`.
+- **Result**: D3 reconstructed exactly (`40/40`) and scanner passed. Frozen P4 order recovered `0/40`; fixed interleave recovered `8/40`; early extra-depth quota 3 recovered `10/40`; bounded promotion after primary prefix 4/3 recovered `10/40`. Best recovery rate was `0.25`, below the predeclared `0.50` pass gate. The best arms preserved top-10 retention (`0.975`), materialized recovered evidence (`1.0`), and had hard-cap violations `0`, but recovery did not cross.
+- **Decision**: these simple bounded merge-order designs do not solve the N2 rank/pack blocker. N3 does not authorize implementation, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or frozen P4 rerun.

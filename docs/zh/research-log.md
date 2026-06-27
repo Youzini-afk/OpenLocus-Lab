@@ -10366,3 +10366,36 @@ Primary blocker：`extra_depth_append_blocked=40/40`。
 N2 只授权 extra-depth merge-order design。它不授权 implementation、P5 selector/reranker、
 BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、
 broad retrieval expansion、downstream-value 声明或 frozen P4 rerun。
+
+## 2026-06-27 — BEA-v1-N3：Extra-Depth Merge-Order Design Simulation
+
+### 目标
+
+测试 N2 授权的 design-only follow-up：简单 frozen、deterministic extra-depth merge-order
+simulations 能否在不改变 candidate pool、不运行新 retrieval、selector、reranker、P5、
+BEA-v1-A、provider calls、learned weights 或 gold-based policy 的前提下，把 40 条 D2
+records 从 rank 21-50 移入 top-10。
+
+### Manual CI 结果
+
+Local checkpoint `76ebd32` 新增 evaluator/workflow/default artifact/docs。Manual CI
+`28278662782` 绿色完成，public status 为 `n3_merge_order_design_inconclusive`。
+
+Validated artifact 精确重建 D3（`40/40`），private manifests 只写在 `/tmp`，public scan
+通过。Simulation outcomes：
+
+- frozen P4 order：`0/40` recovered into top-10；
+- fixed interleave 2-primary/1-extra after 4：`8/40`；
+- early extra-depth quota 3：`10/40`；
+- bounded promotion after primary prefix 4/3：`10/40`。
+
+最佳 recovery rate 为 `0.25`，低于 `0.50` pass gate。两个最强 arms 的 retention 为
+`0.975`，recovered materialization rate 为 `1.0`，hard-cap violations 为 `0`，所以
+cost/retention 不是 blocker；recovery 本身太低。
+
+### 决策
+
+N3 不是 pass，不授权 implementation、P5、BEA-v1-A、selector/reranker execution、
+runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value
+声明或 frozen P4 rerun。N3 测试的简单 bounded merge-order designs 对 N2 rank/pack
+blocker 不足。
