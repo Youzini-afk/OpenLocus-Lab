@@ -31,7 +31,8 @@ Network-enabled N2 不只依赖 N1 public artifact，但也不重复运行完整
 - frozen P4 在 final pool 中某处到达 gold file；
 - pre-refiner gold-file span 为 zero 或 inadequate overlap；
 - first gold-file evidence 不在 top-10；
-- candidate order/rank 可私下获得。
+- candidate order/rank 可在 D2 row 上私下获得。D2=40 分母之外的 candidate-order
+  miss 只作为诊断记录，不阻断机制分解。
 
 Adequacy gates：
 
@@ -50,7 +51,9 @@ Adequacy gates：
 - evidence materialization boolean；
 - primary blocker bucket，必须且只能是 `pack_budget_only`、`duplicate_file_pack_waste`、`extra_depth_append_blocked`、`candidate_order_blocked`、`scheduler_cap_or_stop_blocked`、`evidence_materialization_blocked` 或 `mixed_or_unclassified` 之一。
 
-Classification counts 必须等于 `D2_total`；否则 run fail-close。
+Classification counts 必须等于 `D2_total`；否则 run fail-close。Closed N1 的 D2 分母
+精确为 40；如果 candidate-order loss 导致无法重建这 40 条，run 必须 fail-close，而不是发布
+partial mechanism claim。
 
 ## Design-only 授权
 

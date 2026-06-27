@@ -31,7 +31,9 @@ The default no-network artifact is intentionally `unavailable_with_reason` and i
 - frozen P4 reaches the gold file somewhere in the final pool;
 - the pre-refiner gold-file span has zero or inadequate overlap;
 - the first gold-file evidence is not in top-10;
-- candidate order/rank is privately available.
+- candidate order/rank is privately available for the D2 row. Candidate-order
+  misses outside the reconstructed D2=40 denominator are reported as diagnostics
+  and do not block the mechanism decomposition.
 
 Adequacy gates:
 
@@ -51,6 +53,9 @@ For each D2 row, N2 computes private exact diagnostics and publishes only saniti
 - primary blocker bucket, exactly one of `pack_budget_only`, `duplicate_file_pack_waste`, `extra_depth_append_blocked`, `candidate_order_blocked`, `scheduler_cap_or_stop_blocked`, `evidence_materialization_blocked`, or `mixed_or_unclassified`.
 
 Classification counts must sum to `D2_total`; otherwise the run fail-closes.
+The closed N1 D2 denominator is exactly 40; if candidate-order loss prevents
+reconstructing those 40 rows, the run fail-closes rather than publishing a
+partial mechanism claim.
 
 ## Design-only authorization
 

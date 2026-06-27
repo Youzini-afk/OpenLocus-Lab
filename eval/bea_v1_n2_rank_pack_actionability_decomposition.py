@@ -181,7 +181,6 @@ BLOCKING_FAILURES = {
     "retrieval_policy_failed",
     "d0_scheduler_preservation_drift",
     "d2_private_write_error",
-    "candidate_order_unavailable",
     "classification_sum_mismatch",
     "unexpected_exception",
 }
@@ -696,6 +695,8 @@ def _gate_records(d0: dict[str, Any], metrics: dict[str, Any], scan_pass: bool, 
 def _status_from(d0: dict[str, Any], metrics: dict[str, Any], fcc: dict[str, int], *, unavailable: bool = False, n1_validated: bool = False) -> tuple[str, str]:
     if unavailable:
         return "unavailable_with_reason", "network_required_but_disabled"
+    if int(fcc.get("d2_rank_blocked_reconstruction_mismatch", 0)) and int(fcc.get("candidate_order_unavailable", 0)):
+        return "fail_schema_contract", "candidate_order_unavailable"
     if int(fcc.get("n1_artifact_missing", 0)) or int(fcc.get("fd1_artifact_missing", 0)) or int(fcc.get("fd1_private_decomposition_missing", 0)) or int(fcc.get("p4k_artifact_missing", 0)):
         return "no_go_n2_n1_artifact_or_trace_unavailable", "n1_artifact_or_trace_unavailable"
     if sum(int(fcc.get(k, 0)) for k in BLOCKING_FAILURES) or not d0.get("passed", False) or not n1_validated:
@@ -977,6 +978,8 @@ def run_self_test() -> tuple[list[dict[str, Any]], bool]:
     checks.append(_check("d2_mismatch_trace_unavailable_no_go", mismatch_rep["status"] == "no_go_n2_n1_artifact_or_trace_unavailable"))
     mismatch_blocking_rep = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=0, network_mode="self_test", openlocus_binary_source="self_test", d0=d0_pass, metrics=mismatch_m, fcc_in={"d2_rank_blocked_reconstruction_mismatch": 1, "candidate_order_unavailable": 1}, n1_validated=True)
     checks.append(_check("d2_mismatch_with_order_loss_fail_schema", mismatch_blocking_rep["status"] == "fail_schema_contract"))
+    order_diag_rep = _base_report(status="auto", failure_reason_category="", self_test_passed=True, self_test_checks_total=0, self_test_checks_passed=0, network_mode="self_test", openlocus_binary_source="self_test", d0=d0_pass, metrics=mixed_m, fcc_in={"candidate_order_unavailable": 7}, n1_validated=True)
+    checks.append(_check("candidate_order_unavailable_nonblocking_when_d2_complete", order_diag_rep["status"] == "n2_rank_pack_actionability_decomposition_pass"))
     checks.append(_check("sanitized_rows_allowlist", all(set(r) <= SANITIZED_ROW_ALLOWLIST for r in pub)))
     checks.append(_check("sanitized_rows_exact_schema", all(set(r) == SANITIZED_ROW_ALLOWLIST for r in pub)))
     checks.append(_check("sanitized_rows_contract_names", bool(pub) and "first_gold_rank_bucket" in pub[0] and "first_rank_bucket" not in pub[0] and "evidencecore_materializable" in pub[0] and "evidence_materializable" not in pub[0]))

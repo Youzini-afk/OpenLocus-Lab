@@ -417,7 +417,7 @@
       "value": 1
     }
   ],
-  "generated_at": "2026-06-26T22:21:41Z",
+  "generated_at": "2026-06-27T00:25:27Z",
   "generated_by": "eval/bea_v1_n2_rank_pack_actionability_decomposition.py",
   "implementation_authorized": false,
   "mode": "bea_v1_n2_rank_pack_actionability_decomposition",
@@ -449,8 +449,8 @@
   "selector_or_reranker_authorized": false,
   "selector_or_reranker_executed": false,
   "selector_or_reranker_implemented": false,
-  "self_test_checks_passed": 26,
-  "self_test_checks_total": 26,
+  "self_test_checks_passed": 27,
+  "self_test_checks_total": 27,
   "self_test_passed": true,
   "source_checkpoint": "e6772dc",
   "source_ci_run_id": "28245155237",
