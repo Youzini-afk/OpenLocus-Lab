@@ -11247,3 +11247,40 @@ preservation/export of redundancy, risk-penalty, and ordered-prefix stop traces.
 It does not authorize implementation, P5, BEA-v1-A, selector/reranker execution,
 runtime/default promotion, method-winner claims, broad retrieval expansion,
 downstream-value claims, or frozen P4 rerun.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-2: Actionability Matrix Refresh
+
+### Objective
+
+Refresh the P1 12-category by 6-action-layer actionability matrix with P0-1
+trace-readiness evidence, while preserving P1 as the causal matrix source. This
+phase is an artifact join only: no retrieval, provider calls, selector/reranker
+execution, FD1 replay, runtime change, or policy implementation.
+
+### Result
+
+`eval/bea_v1_p0_2_actionability_matrix_refresh.py` generated
+`artifacts/bea_v1_p0_2_actionability_matrix_refresh/bea_v1_p0_2_actionability_matrix_refresh_report.json`
+with status `actionability_matrix_refresh_pass`. Self-test passed `6/6`,
+forbidden scan passed, all 72 matrix cells were refreshed, and the causal P1
+cell classes were not mutated.
+
+Cell readiness summary:
+
+- `ready_sanitized_trace`: 10;
+- `blocked_private_export`: 11;
+- `blocked_missing_label`: 18;
+- `blocked_missing_trace`: 12;
+- `blocked_aggregate_only`: 3;
+- `not_applicable_by_layer`: 18.
+
+### Decision
+
+P0-2 confirms the next BEA-v1 work is trace/data-surface work, not a policy
+implementation. Authorized follow-ups are sanitized scheduler dataset export,
+support-link input design, and redundancy/risk/ordered-prefix stop trace
+preservation. P0-2 does not authorize P5, BEA-v1-A, selector/reranker execution,
+runtime/default promotion, method-winner claims, broad retrieval expansion,
+downstream-value claims, or frozen P4 rerun.

@@ -3988,3 +3988,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-1 Trace Gap Audit completed as a scanner-validated trace-surface phase**: status `trace_gap_audit_pass`, self-test `5/5`, forbidden scan `pass`.
 - **Result**: the audit reads committed FD1, P1, FD2-A1, P4L, N2, and N3 artifacts and publishes sanitized per-gap records for all 12 FD1 categories. Trace availability is `sanitized_available=3`, `private_only_needs_public_export=3`, `missing_label=3`, `missing_trace=2`, and `aggregate_only_insufficient_for_deep_research=1`.
 - **Decision**: next work should close the data surface, not implement a policy. Authorized follow-ups are actionability-matrix refresh, sanitized scheduler dataset export, support-link labeling inputs, and redundancy/risk/stop trace preservation. P0-1 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P0-2 actionability-matrix refresh findings
+
+- **BEA-v1-P0-2 Actionability Matrix Refresh completed as a records-only join**: status `actionability_matrix_refresh_pass`, self-test `6/6`, forbidden scan `pass`, refreshed cells `72/72`, causal P1 cell classes unchanged.
+- **Result**: readiness summary is `ready_sanitized_trace=10`, `blocked_private_export=11`, `blocked_missing_label=18`, `blocked_missing_trace=12`, `blocked_aggregate_only=3`, and `not_applicable_by_layer=18`.
+- **Decision**: P0-2 confirms that the next BEA-v1 phase should export or design trace inputs before any new policy experiment. It authorizes scheduler dataset export and support/redundancy/risk/stop trace-surface work only; it does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

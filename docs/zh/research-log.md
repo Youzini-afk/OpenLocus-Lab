@@ -10439,3 +10439,37 @@ dataset export、support-link labeling inputs，以及 redundancy、risk-penalty
 traces 的保留/导出。它不授权 implementation、P5、BEA-v1-A、selector/reranker execution、
 runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明
 或 frozen P4 rerun。
+
+---
+
+## 2026-06-27 — BEA-v1-P0-2：Actionability Matrix Refresh
+
+### 目标
+
+用 P0-1 trace-readiness evidence 刷新 P1 的 12-category × 6-action-layer actionability
+matrix，同时保持 P1 是 causal matrix 来源。本阶段只是 artifact join：不运行 retrieval、provider
+calls、selector/reranker execution、FD1 replay、runtime change 或 policy implementation。
+
+### 结果
+
+`eval/bea_v1_p0_2_actionability_matrix_refresh.py` 生成
+`artifacts/bea_v1_p0_2_actionability_matrix_refresh/bea_v1_p0_2_actionability_matrix_refresh_report.json`，
+status 为 `actionability_matrix_refresh_pass`。Self-test 通过 `6/6`，forbidden scan 通过，
+全部 72 个 matrix cells 已刷新，且 P1 causal cell classes 未被修改。
+
+Cell readiness summary：
+
+- `ready_sanitized_trace`：10；
+- `blocked_private_export`：11；
+- `blocked_missing_label`：18；
+- `blocked_missing_trace`：12；
+- `blocked_aggregate_only`：3；
+- `not_applicable_by_layer`：18。
+
+### 决策
+
+P0-2 确认下一步 BEA-v1 工作是 trace/data-surface work，而不是 policy implementation。授权的
+follow-ups 是 sanitized scheduler dataset export、support-link input design，以及 redundancy/risk/
+ordered-prefix stop trace preservation。P0-2 不授权 P5、BEA-v1-A、selector/reranker execution、
+runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或
+frozen P4 rerun。

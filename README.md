@@ -28,12 +28,13 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P0-1: Trace Gap Audit**:
+The latest closed phase is **BEA-v1-P0-2: Actionability Matrix Refresh**:
 
 ```text
-status: trace_gap_audit_pass
-self-test: 5 / 5
+status: actionability_matrix_refresh_pass
+self-test: 6 / 6
 forbidden scan: pass
+refreshed matrix cells: 72
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -65,6 +66,11 @@ have sanitized rows from N2/N3, but the BEA-v1 mechanism surface still needs
 sanitized public exports or new labels for action-cost, support-link, same-file
 redundancy, risk-penalty, and ordered-prefix stop traces before new policy
 experiments.
+
+P0-2 then refreshed the P1 actionability matrix with P0-1 trace readiness without
+mutating P1 causal cell classes. The result confirms the next work is data-surface
+work: scheduler/action-cost export, support-link labeling input, same-file
+redundancy trace, risk-penalty trace, and ordered-prefix stop trace.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -120,10 +126,10 @@ See the current report index:
 
 ### What remains unresolved
 
-- N3 did not find a passing merge-order design, and the P0-1 trace-gap audit now
-  shows the next empirical question must first expose the missing trace surface:
-  sanitized scheduler/action-cost rows, support-link labels, same-file
-  redundancy trace, risk-penalty trace, and ordered-prefix stop trace.
+- N3 did not find a passing merge-order design, and P0-1/P0-2 now show the next
+  empirical question must first expose the missing trace surface: sanitized
+  scheduler/action-cost rows, support-link labels, same-file redundancy trace,
+  risk-penalty trace, and ordered-prefix stop trace.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

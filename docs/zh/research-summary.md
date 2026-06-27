@@ -3396,3 +3396,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-1 Trace Gap Audit 已完成为 scanner-validated trace-surface phase**：status `trace_gap_audit_pass`，self-test `5/5`，forbidden scan `pass`。
 - **结果**：该审计读取已提交的 FD1、P1、FD2-A1、P4L、N2 与 N3 artifacts，并为全部 12 个 FD1 categories 发布 sanitized per-gap records。Trace availability 为 `sanitized_available=3`、`private_only_needs_public_export=3`、`missing_label=3`、`missing_trace=2`、`aggregate_only_insufficient_for_deep_research=1`。
 - **决策**：下一步应先补齐数据面，而不是实现 policy。授权的 follow-ups 是 actionability-matrix refresh、sanitized scheduler dataset export、support-link labeling inputs，以及 redundancy/risk/stop trace preservation。P0-1 不授权 P5、BEA-v1-A、selector/reranker execution、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P0-2 actionability-matrix refresh 发现
+
+- **BEA-v1-P0-2 Actionability Matrix Refresh 已完成为 records-only join**：status `actionability_matrix_refresh_pass`，self-test `6/6`，forbidden scan `pass`，refreshed cells `72/72`，P1 causal cell classes 未改变。
+- **结果**：readiness summary 为 `ready_sanitized_trace=10`、`blocked_private_export=11`、`blocked_missing_label=18`、`blocked_missing_trace=12`、`blocked_aggregate_only=3`、`not_applicable_by_layer=18`。
+- **决策**：P0-2 确认下一步 BEA-v1 phase 应在任何新 policy experiment 前先导出或设计 trace inputs。它只授权 scheduler dataset export 与 support/redundancy/risk/stop trace-surface work；不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
