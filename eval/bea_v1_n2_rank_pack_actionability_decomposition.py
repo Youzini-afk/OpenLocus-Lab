@@ -366,6 +366,7 @@ def _d0_from_closed_n1_artifact(art: dict[str, Any]) -> dict[str, Any]:
         "p3_reach": _int_value(values.get("p3_reach")),
         "p4_reach": p4_reach,
         "p4_retained_p2_gain": round(p4_gain / p2_gain, 6) if p2_gain else 0.0,
+        "p4_p3_latency_ratio": float(values.get("p4_p3_latency_ratio_observed", 0.0) or 0.0),
         "p4_treatment_hard_cap": _int_value(values.get("p4_treatment_hard_cap")),
         "file_order_preserved": True,
         "scheduler_actions_preserved": True,
@@ -936,6 +937,7 @@ def _synthetic_n1_artifact(**overrides: Any) -> dict[str, Any]:
             {"metric_name": "p3_reach", "value": 55, "passed": True},
             {"metric_name": "p4_reach", "value": 52, "passed": True},
             {"metric_name": "p4_treatment_hard_cap", "value": 0, "passed": True},
+            {"metric_name": "p4_p3_latency_ratio_observed", "value": 0.662177, "passed": True},
         ],
         "d1_total_count": 40,
         "d1_top10_actionable_count": 0,
@@ -999,6 +1001,10 @@ def run_self_test() -> tuple[list[dict[str, Any]], bool]:
     with _TempJson(_synthetic_n1_artifact()) as pth:
         ok, _, _ = _validate_closed_n1_artifact(pth)
         checks.append(_check("closed_n1_artifact_validation_pass", ok))
+        art, _ = _load_artifact(pth)
+        d0_from_artifact = _d0_from_closed_n1_artifact(art)
+        latency_row = next((r for r in _d0_records(d0_from_artifact) if r.get("metric_name") == "p4_p3_latency_ratio_observed"), {})
+        checks.append(_check("closed_n1_d0_preserves_latency_observation", latency_row.get("value") == 0.662177))
     with _TempJson(_synthetic_n1_artifact(status="wrong")) as pth:
         ok, _, _ = _validate_closed_n1_artifact(pth)
         checks.append(_check("closed_n1_artifact_validation_fail", not ok))
