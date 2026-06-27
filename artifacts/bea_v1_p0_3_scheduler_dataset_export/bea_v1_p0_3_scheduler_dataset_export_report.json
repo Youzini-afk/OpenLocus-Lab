@@ -1,0 +1,414 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.002,
+  "arm_name_summary_records": [
+    {
+      "arm_name": "baseline_current_candidate_pool",
+      "count": 1
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "count": 1
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "count": 1
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "count": 1
+    }
+  ],
+  "claim_level": "bea_v1_p0_3_scheduler_dataset_export_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p4l_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p0_2_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "aggregate_scheduler_surface_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_arm_rows_full_export_available",
+      "passed": false,
+      "threshold_relation": "boolean_optional",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-27T18:09:23Z",
+  "generated_by": "eval/bea_v1_p0_3_scheduler_dataset_export.py",
+  "input_artifact_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p4l_locked_scheduler_validation",
+      "load_status": "pass",
+      "source_schema": "bea_v1_p4l_locked_non_python_scheduler_validation.v1",
+      "source_status": "bea_v1_p4l_locked_non_python_scheduler_validation_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_2_actionability_matrix_refresh",
+      "load_status": "pass",
+      "source_schema": "bea_v1_p0_2_actionability_matrix_refresh.v1",
+      "source_status": "actionability_matrix_refresh_pass"
+    }
+  ],
+  "mode": "bea_v1_p0_3_scheduler_dataset_export",
+  "phase": "BEA-v1-P0-3",
+  "private_arm_outcomes_expected_record_count": 1088,
+  "private_arm_outcomes_input_status": "not_supplied",
+  "private_arm_outcomes_manifest_record": {
+    "manifest_name": "bea_v1_p4l_private_arm_outcomes_manifest",
+    "path_publicly_serialized": false,
+    "record_count": 1088,
+    "records_written": true,
+    "schema_version": "bea_v1_p4l_private_arm_outcome.v1",
+    "storage_class": "private_tmp_only"
+  },
+  "private_arm_outcomes_sanitized_record_count": 0,
+  "private_arm_outcomes_supplied": false,
+  "private_latency_bucket_summary_records": [],
+  "private_paths_publicly_serialized": false,
+  "private_pool_bucket_summary_records": [],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "scheduler_actionability_join_records": [
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "budget_spent_on_low_marginal_gain"
+    },
+    {
+      "action_layer": "file_selector",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "budget_spent_on_low_marginal_gain"
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "budget_spent_on_low_marginal_gain"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "budget_spent_on_low_marginal_gain"
+    },
+    {
+      "action_layer": "span_refiner",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "budget_spent_on_low_marginal_gain"
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "budget_spent_on_low_marginal_gain"
+    },
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "gold_file_absent"
+    },
+    {
+      "action_layer": "file_selector",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "gold_file_absent"
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "gold_file_absent"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "gold_file_absent"
+    },
+    {
+      "action_layer": "span_refiner",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "gold_file_absent"
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "gold_file_absent"
+    },
+    {
+      "action_layer": "candidate_availability_retrieval",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "latency_without_quality_gain"
+    },
+    {
+      "action_layer": "file_selector",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "latency_without_quality_gain"
+    },
+    {
+      "action_layer": "non_actionable_accounting",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "latency_without_quality_gain"
+    },
+    {
+      "action_layer": "setwise_packer_redundancy",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "latency_without_quality_gain"
+    },
+    {
+      "action_layer": "span_refiner",
+      "authorized_next_step": "no_action_for_non_actionable_cell",
+      "cell_blocker_reason": "",
+      "cell_readiness_class": "not_applicable_by_layer",
+      "failure_category": "latency_without_quality_gain"
+    },
+    {
+      "action_layer": "stopping_scheduler",
+      "authorized_next_step": "export_or_preserve_trace_before_new_policy_experiment",
+      "cell_blocker_reason": "requires_scheduler_sanitized_export",
+      "cell_readiness_class": "blocked_private_export",
+      "failure_category": "latency_without_quality_gain"
+    }
+  ],
+  "scheduler_arm_dataset_records": [
+    {
+      "arm_name": "baseline_current_candidate_pool",
+      "dataset_row_kind": "arm_aggregate_sanitized",
+      "delta_reach_vs_baseline": 0,
+      "denominator_count": 272,
+      "file_reach_count": 0,
+      "file_reach_rate_bucket": "reach_zero",
+      "hard_cap_violation_count": 0,
+      "latency_vs_baseline_bucket": "latency_lower_or_equal_baseline",
+      "mean_latency_bucket": "latency_1_2p5s",
+      "mean_pool_bucket": "pool_le_15",
+      "pool_vs_baseline_bucket": "pool_lower_or_equal_baseline",
+      "retrieval_error_count": 0
+    },
+    {
+      "arm_name": "p2_depth_only_reference",
+      "dataset_row_kind": "arm_aggregate_sanitized",
+      "delta_reach_vs_baseline": 55,
+      "denominator_count": 272,
+      "file_reach_count": 55,
+      "file_reach_rate_bucket": "reach_nonzero",
+      "hard_cap_violation_count": 3,
+      "latency_vs_baseline_bucket": "latency_lower_or_equal_baseline",
+      "mean_latency_bucket": "latency_1_2p5s",
+      "mean_pool_bucket": "pool_33_64",
+      "pool_vs_baseline_bucket": "pool_higher_than_baseline",
+      "retrieval_error_count": 0
+    },
+    {
+      "arm_name": "p3_constrained_depth_policy_reference",
+      "dataset_row_kind": "arm_aggregate_sanitized",
+      "delta_reach_vs_baseline": 55,
+      "denominator_count": 272,
+      "file_reach_count": 55,
+      "file_reach_rate_bucket": "reach_nonzero",
+      "hard_cap_violation_count": 0,
+      "latency_vs_baseline_bucket": "latency_higher_than_baseline",
+      "mean_latency_bucket": "latency_2p5_5s",
+      "mean_pool_bucket": "pool_16_32",
+      "pool_vs_baseline_bucket": "pool_higher_than_baseline",
+      "retrieval_error_count": 0
+    },
+    {
+      "arm_name": "p4_latency_aware_action_scheduler_frozen",
+      "dataset_row_kind": "arm_aggregate_sanitized",
+      "delta_reach_vs_baseline": 52,
+      "denominator_count": 272,
+      "file_reach_count": 52,
+      "file_reach_rate_bucket": "reach_nonzero",
+      "hard_cap_violation_count": 0,
+      "latency_vs_baseline_bucket": "latency_higher_than_baseline",
+      "mean_latency_bucket": "latency_1_2p5s",
+      "mean_pool_bucket": "pool_16_32",
+      "pool_vs_baseline_bucket": "pool_higher_than_baseline",
+      "retrieval_error_count": 0
+    }
+  ],
+  "scheduler_dataset_readiness_records": [
+    {
+      "dataset_surface": "aggregate_arm_metrics",
+      "readiness": "available",
+      "record_count": 4
+    },
+    {
+      "dataset_surface": "subgroup_denominator_buckets",
+      "readiness": "available",
+      "record_count": 12
+    },
+    {
+      "dataset_surface": "private_arm_outcome_rows",
+      "readiness": "manifest_only_or_not_supplied",
+      "record_count": 0
+    }
+  ],
+  "scheduler_private_arm_sanitized_records": [],
+  "scheduler_subgroup_dataset_records": [
+    {
+      "anonymous_local_id": "sg000",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_16_32",
+      "language_bucket": "c",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg001",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_le_15",
+      "language_bucket": "cpp",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg002",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_16_32",
+      "language_bucket": "go",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg003",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_le_15",
+      "language_bucket": "java",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg004",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_33_64",
+      "language_bucket": "javascript",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg005",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_le_15",
+      "language_bucket": "rust",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg006",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_16_32",
+      "language_bucket": "typescript",
+      "source_bucket": "contextbench_all_languages"
+    },
+    {
+      "anonymous_local_id": "sg007",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_33_64",
+      "language_bucket": "cpp",
+      "source_bucket": "repoqa_non_python_languages"
+    },
+    {
+      "anonymous_local_id": "sg008",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_33_64",
+      "language_bucket": "go",
+      "source_bucket": "repoqa_non_python_languages"
+    },
+    {
+      "anonymous_local_id": "sg009",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_16_32",
+      "language_bucket": "java",
+      "source_bucket": "repoqa_non_python_languages"
+    },
+    {
+      "anonymous_local_id": "sg010",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_16_32",
+      "language_bucket": "rust",
+      "source_bucket": "repoqa_non_python_languages"
+    },
+    {
+      "anonymous_local_id": "sg011",
+      "dataset_row_kind": "subgroup_denominator_sanitized",
+      "denominator_count_bucket": "pool_16_32",
+      "language_bucket": "typescript",
+      "source_bucket": "repoqa_non_python_languages"
+    }
+  ],
+  "schema_version": "bea_v1_p0_3_scheduler_dataset_export.v1",
+  "self_test_checks_passed": 8,
+  "self_test_checks_total": 8,
+  "self_test_passed": true,
+  "status": "scheduler_dataset_export_contract_pass",
+  "status_vocabulary": [
+    "scheduler_dataset_export_contract_pass",
+    "scheduler_dataset_export_full_pass",
+    "no_go_scheduler_dataset_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "support_link_input_design_or_private_arm_row_full_export_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "scheduler_dataset_export_contract_pass",
+      "stop_go_reason": "scheduler_dataset_contract_exported_private_rows_optional",
+      "v1_a_authorized": false
+    }
+  ]
+}

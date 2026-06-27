@@ -10473,3 +10473,21 @@ follow-ups 是 sanitized scheduler dataset export、support-link input design，
 ordered-prefix stop trace preservation。P0-2 不授权 P5、BEA-v1-A、selector/reranker execution、
 runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或
 frozen P4 rerun。
+
+---
+
+## 2026-06-27 — BEA-v1-P0-3：Scheduler Dataset Export
+
+### 目标
+
+导出 P0-1/P0-2 要求的 scheduler/action-cost data surface。本阶段 join 已提交的 P4L 与 P0-2 artifacts，并可选接受项目内 ignored directory 中匹配的 private P4L arm rows。它不运行 retrieval、provider calls、selector、reranker、threshold tuning、runtime changes 或 policy implementation。
+
+### 结果
+
+`eval/bea_v1_p0_3_scheduler_dataset_export.py` 生成 `artifacts/bea_v1_p0_3_scheduler_dataset_export/bea_v1_p0_3_scheduler_dataset_export_report.json`，status 为 `scheduler_dataset_export_contract_pass`。Self-test 通过 `8/8`，forbidden scan 通过，artifact 包含 4 条 sanitized aggregate scheduler arm rows、12 条 sanitized subgroup denominator rows，以及 P0-2 action-cost join rows。
+
+Full private arm-row export 仍为 optional，本轮没有满足，因为历史 P4L private JSONL 是在之前环境生成的。后续 private rows 应在 `.openlocus/research-private/` 下生成或恢复，并通过 `--private-arm-outcomes-jsonl` 提供。
+
+### 决策
+
+P0-3 补齐了 aggregate scheduler/action-cost contract。剩余实践分叉是：在项目内 private directory 恢复/重跑 P4L private arm rows，或转向 18 个 `blocked_missing_label` cells 的 support-link input design。P0-3 不授权 P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、method-winner 声明、broad retrieval expansion、downstream-value 声明或作为质量声明的 frozen P4 rerun。

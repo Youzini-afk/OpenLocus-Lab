@@ -3402,3 +3402,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-2 Actionability Matrix Refresh 已完成为 records-only join**：status `actionability_matrix_refresh_pass`，self-test `6/6`，forbidden scan `pass`，refreshed cells `72/72`，P1 causal cell classes 未改变。
 - **结果**：readiness summary 为 `ready_sanitized_trace=10`、`blocked_private_export=11`、`blocked_missing_label=18`、`blocked_missing_trace=12`、`blocked_aggregate_only=3`、`not_applicable_by_layer=18`。
 - **决策**：P0-2 确认下一步 BEA-v1 phase 应在任何新 policy experiment 前先导出或设计 trace inputs。它只授权 scheduler dataset export 与 support/redundancy/risk/stop trace-surface work；不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P0-3 scheduler-dataset export 发现
+
+- **BEA-v1-P0-3 Scheduler Dataset Export 已完成为 contract export**：status `scheduler_dataset_export_contract_pass`，self-test `8/8`，forbidden scan `pass`。
+- **结果**：public artifact 包含 4 条 sanitized aggregate scheduler arm rows、12 条 sanitized subgroup denominator rows、P0-2 action-cost join rows，以及未来 full export 可用的 optional private-row schema。本轮未提供 private arm rows，因为历史 P4L private JSONL 是在之前环境生成的。
+- **决策**：P0-3 补齐 aggregate scheduler/action-cost surface，但没有补齐 full private arm-row export。下一步应在 `.openlocus/research-private/` 下恢复/重跑 P4L private arm rows，或转向 support-link input design。它不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

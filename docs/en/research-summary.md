@@ -3994,3 +3994,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P0-2 Actionability Matrix Refresh completed as a records-only join**: status `actionability_matrix_refresh_pass`, self-test `6/6`, forbidden scan `pass`, refreshed cells `72/72`, causal P1 cell classes unchanged.
 - **Result**: readiness summary is `ready_sanitized_trace=10`, `blocked_private_export=11`, `blocked_missing_label=18`, `blocked_missing_trace=12`, `blocked_aggregate_only=3`, and `not_applicable_by_layer=18`.
 - **Decision**: P0-2 confirms that the next BEA-v1 phase should export or design trace inputs before any new policy experiment. It authorizes scheduler dataset export and support/redundancy/risk/stop trace-surface work only; it does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P0-3 scheduler-dataset export findings
+
+- **BEA-v1-P0-3 Scheduler Dataset Export completed as a contract export**: status `scheduler_dataset_export_contract_pass`, self-test `8/8`, forbidden scan `pass`.
+- **Result**: the public artifact contains 4 sanitized aggregate scheduler arm rows, 12 sanitized subgroup denominator rows, P0-2 action-cost join rows, and an optional private-row schema for future full export. Private arm rows were not supplied because the historical P4L private JSONL was generated in a previous environment.
+- **Decision**: P0-3 closes the aggregate scheduler/action-cost surface but not the full private arm-row export. Next work should either recover/rerun P4L private arm rows under `.openlocus/research-private/` or move to support-link input design. It does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

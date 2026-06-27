@@ -28,13 +28,14 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P0-2: Actionability Matrix Refresh**:
+The latest closed phase is **BEA-v1-P0-3: Scheduler Dataset Export**:
 
 ```text
-status: actionability_matrix_refresh_pass
-self-test: 6 / 6
+status: scheduler_dataset_export_contract_pass
+self-test: 8 / 8
 forbidden scan: pass
-refreshed matrix cells: 72
+aggregate scheduler arms: 4
+subgroup denominator rows: 12
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -71,6 +72,13 @@ P0-2 then refreshed the P1 actionability matrix with P0-1 trace readiness withou
 mutating P1 causal cell classes. The result confirms the next work is data-surface
 work: scheduler/action-cost export, support-link labeling input, same-file
 redundancy trace, risk-penalty trace, and ordered-prefix stop trace.
+
+P0-3 exported the scheduler/action-cost dataset contract from committed P4L and
+P0-2 artifacts. Aggregate scheduler arms and subgroup denominator buckets are now
+public as sanitized rows. Full per-arm private export remains optional because
+the historical P4L private JSONL was generated in a previous environment; future
+private rows should live under `.openlocus/research-private/` and be supplied via
+`--private-arm-outcomes-jsonl`.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -130,6 +138,10 @@ See the current report index:
   empirical question must first expose the missing trace surface: sanitized
   scheduler/action-cost rows, support-link labels, same-file redundancy trace,
   risk-penalty trace, and ordered-prefix stop trace.
+- P0-3 has closed the aggregate scheduler/action-cost export contract, but not a
+  full private arm-row export. The remaining practical fork is either to recover
+  or rerun P4L private arm rows under `.openlocus/research-private/`, or move to
+  support-link input design for the `blocked_missing_label` cells.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

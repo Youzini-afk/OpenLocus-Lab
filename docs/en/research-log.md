@@ -11284,3 +11284,21 @@ support-link input design, and redundancy/risk/ordered-prefix stop trace
 preservation. P0-2 does not authorize P5, BEA-v1-A, selector/reranker execution,
 runtime/default promotion, method-winner claims, broad retrieval expansion,
 downstream-value claims, or frozen P4 rerun.
+
+---
+
+## 2026-06-27 — BEA-v1-P0-3: Scheduler Dataset Export
+
+### Objective
+
+Export the scheduler/action-cost data surface requested by P0-1/P0-2. This phase joins committed P4L and P0-2 artifacts and optionally accepts matching private P4L arm rows from the project-local ignored directory. It does not run retrieval, provider calls, selectors, rerankers, threshold tuning, runtime changes, or policy implementation.
+
+### Result
+
+`eval/bea_v1_p0_3_scheduler_dataset_export.py` generated `artifacts/bea_v1_p0_3_scheduler_dataset_export/bea_v1_p0_3_scheduler_dataset_export_report.json` with status `scheduler_dataset_export_contract_pass`. Self-test passed `8/8`, forbidden scan passed, and the artifact contains 4 sanitized aggregate scheduler arm rows, 12 sanitized subgroup denominator rows, and the P0-2 action-cost join rows.
+
+The full private arm-row export remains optional and was not satisfied in this run because the historical P4L private JSONL was generated in a previous environment. Future private rows should be generated or recovered under `.openlocus/research-private/` and supplied via `--private-arm-outcomes-jsonl`.
+
+### Decision
+
+P0-3 closes the aggregate scheduler/action-cost contract. The remaining practical fork is either to recover/rerun P4L private arm rows under the project-local private directory or to move to support-link input design for the 18 `blocked_missing_label` cells. P0-3 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, method-winner claims, broad retrieval expansion, downstream-value claims, or frozen P4 rerun as a quality claim.
