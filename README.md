@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8PS: Empirical Event Source Discovery Audit**:
+The latest closed phase is **BEA-v1-N4: Fixed-Pool Rank-Blocker Denominator Audit**:
 
 ```text
-status: no_go_p3_8ps_no_existing_empirical_event_source
-self-test: 14 / 14
+status: fixed_pool_rank_blocker_denominator_audit_pass_n5_authorized
+self-test: 12 / 12
 forbidden scan: pass
-valid empirical source count: 0
-surface empirical coverage: 0 / 5
-P3-8Q declaration authoring authorized: false
-private read/write: false
-capture/retrieval/rerun: false
+sanitized rank cases: 40
+fixed-pool deeper-present cases: 40
+top-10 miss but deeper-present cases: 40
+N5 fixed-pool rank-order preflight authorized: true
+new retrieval/rerun: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -287,6 +287,12 @@ finds none: current surfaces are proxy-only, aggregate-only, contract-only, or
 blocked by missing private traces/context. No next phase is authorized until a
 real empirical event source is created or supplied.
 
+N4 returns to the public N1/N2/N3/P4L rank-blocker evidence after the P3 trace
+source route stopped. It finds 40 scanner-safe rank-blocked cases with fixed-pool
+deeper evidence and non-inconclusive merge/order signal, so it authorizes only N5
+fixed-pool rank-order experiment preflight using existing pools and no new
+retrieval.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -484,6 +490,10 @@ See the current report index:
   declaration generation, fixture generation, capture execution, private reads or
   writes, retrieval/reruns, support labeling, counterfactuals, policy tuning,
   runtime/default promotion, P5, or v1-A.
+- N4 authorizes only N5 fixed-pool rank-order experiment preflight. It does not
+  authorize new retrieval, reruns, selector/reranker execution, P5, BEA-v1-A,
+  counterfactual execution, policy tuning, runtime/default promotion,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
