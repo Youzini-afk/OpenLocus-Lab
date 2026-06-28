@@ -130,6 +130,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p3-8m-empirical-fixture-acquisition-design.md`: [en](en/bea-v1-p3-8m-empirical-fixture-acquisition-design.md) · [zh](zh/bea-v1-p3-8m-empirical-fixture-acquisition-design.md)
 - `bea-v1-p3-8n-empirical-fixture-acquisition-preflight.md`: [en](en/bea-v1-p3-8n-empirical-fixture-acquisition-preflight.md) · [zh](zh/bea-v1-p3-8n-empirical-fixture-acquisition-preflight.md)
 - `bea-v1-p3-8o-empirical-event-source-declaration-design.md`: [en](en/bea-v1-p3-8o-empirical-event-source-declaration-design.md) · [zh](zh/bea-v1-p3-8o-empirical-event-source-declaration-design.md)
+- `bea-v1-p3-8p-empirical-event-source-declaration-intake-preflight.md`: [en](en/bea-v1-p3-8p-empirical-event-source-declaration-intake-preflight.md) · [zh](zh/bea-v1-p3-8p-empirical-event-source-declaration-intake-preflight.md)
 - `bea-v1-trace-gap-audit.md`: [en](en/bea-v1-trace-gap-audit.md) · [zh](zh/bea-v1-trace-gap-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
