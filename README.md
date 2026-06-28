@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-1: Frozen Upstream Trace-Capture Harness Dry-Run Preflight**:
+The latest closed phase is **BEA-v1-P3-2: Frozen Trace Logger Patch Design**:
 
 ```text
-status: frozen_trace_capture_preflight_pass_patch_design_authorized
-self-test: 13 / 13
+status: frozen_trace_logger_patch_design_pass_p3_3_authorized
+self-test: 12 / 12
 forbidden scan: pass
-surface preflight records: 5
-static anchor records: 7
-P3-2 patch design authorized: true
-patch application authorized: false
+surface patch design records: 5
+helper signature records: 5
+writer contract records: 5
+P3-3 helper patch review authorized: true
 trace capture execution authorized: false
+private trace row write authorized: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -166,6 +167,12 @@ It authorizes only P3-2 frozen trace logger patch design; patch application,
 trace capture execution, private row writes, retrieval, reruns, and runtime
 behavior changes remain blocked.
 
+P3-2 designs isolated frozen trace logger helpers, writer contracts, behavior
+preservation gates, and synthetic tests for the five surfaces. It does not apply
+patches or hook evaluators. It authorizes only P3-3 isolated helper patch review;
+trace capture execution, private row writes, retrieval, reruns, and runtime
+behavior changes remain blocked.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -280,6 +287,10 @@ See the current report index:
   patch design phase. It does not authorize patch application, trace capture
   execution, private trace row writes, retrieval, reruns, policy changes,
   implementation, runtime promotion, P5, or v1-A.
+- P3-2 authorizes only isolated frozen trace logger helper patch review and
+  synthetic tests in a separate P3-3 phase. It does not authorize evaluator
+  hook-in, trace capture execution, private row writes, retrieval, reruns, policy
+  changes, runtime promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
