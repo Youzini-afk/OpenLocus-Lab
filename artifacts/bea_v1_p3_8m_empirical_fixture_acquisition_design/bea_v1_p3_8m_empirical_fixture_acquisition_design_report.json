@@ -1,0 +1,398 @@
+{
+  "acquisition_preflight_plan_records": [
+    {
+      "anonymous_acquisition_preflight_plan_id": "p38map0000",
+      "capture_execution_authorized_bool": false,
+      "capture_execution_authorized_in_next_phase_bool": false,
+      "fixture_generation_authorized_bool": false,
+      "fixture_generation_authorized_in_next_phase_bool": false,
+      "next_allowed_phase": "BEA-v1-P3-8N Empirical Fixture Acquisition Preflight \u2014 preflight only, no capture execution",
+      "next_allowed_scope_bucket": "preflight_only_no_capture_execution",
+      "p3_8n_preflight_authorized_bool": true,
+      "preflight_plan_complete_bool": true,
+      "private_write_authorized_bool": false,
+      "private_write_authorized_in_next_phase_bool": false,
+      "retrieval_or_rerun_authorized_in_next_phase_bool": false
+    }
+  ],
+  "aggregate_runtime_seconds": 0.007,
+  "capture_precondition_records": [
+    {
+      "anonymous_capture_precondition_id": "p38mcp0000",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "frozen_denominator_declared",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    },
+    {
+      "anonymous_capture_precondition_id": "p38mcp0001",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "event_source_declared",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    },
+    {
+      "anonymous_capture_precondition_id": "p38mcp0002",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "existing_materialized_log_or_explicit_capture_mode_declared",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    },
+    {
+      "anonymous_capture_precondition_id": "p38mcp0003",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "no_retrieval_ranking_packing_selection_policy_mutation",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    },
+    {
+      "anonymous_capture_precondition_id": "p38mcp0004",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "private_output_root_ignored",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    },
+    {
+      "anonymous_capture_precondition_id": "p38mcp0005",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "public_scanner_defined",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    },
+    {
+      "anonymous_capture_precondition_id": "p38mcp0006",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "future_phase_bucket": "BEA-v1-P3-8N",
+      "precondition_bucket": "fail_closed_if_empirical_field_missing",
+      "precondition_required_for_future_execution_bool": true,
+      "private_write_authorized_in_p3_8m_bool": false,
+      "retrieval_rerun_authorized_in_p3_8m_bool": false,
+      "target_import_authorized_in_p3_8m_bool": false
+    }
+  ],
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38mcf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "p3_8l_helper_p3_8_target_source_or_runtime_modified_bool": false,
+      "private_file_modification_count": 0,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "empirical_fixture_acquisition_design_only",
+  "empirical_fixture_source_design_records": [
+    {
+      "allowed_source_mode_bucket": "future_explicit_empirical_capture_or_existing_materialized_event_log",
+      "anonymous_source_design_id": "p38msd0000",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "proxy_or_contract_source_allowed_bool": false,
+      "proxy_or_contract_template_allowed_bool": false,
+      "required_fixture_source_bucket": "future_frozen_materialized_support_pair_event",
+      "retrieval_rerun_required_in_p3_8m_bool": false,
+      "source_design_complete_bool": true,
+      "surface_bucket": "support_link"
+    },
+    {
+      "allowed_source_mode_bucket": "future_explicit_empirical_capture_or_existing_materialized_event_log",
+      "anonymous_source_design_id": "p38msd0001",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "proxy_or_contract_source_allowed_bool": false,
+      "proxy_or_contract_template_allowed_bool": false,
+      "required_fixture_source_bucket": "future_frozen_materialized_scheduler_arm_event",
+      "retrieval_rerun_required_in_p3_8m_bool": false,
+      "source_design_complete_bool": true,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "allowed_source_mode_bucket": "future_explicit_empirical_capture_or_existing_materialized_event_log",
+      "anonymous_source_design_id": "p38msd0002",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "proxy_or_contract_source_allowed_bool": false,
+      "proxy_or_contract_template_allowed_bool": false,
+      "required_fixture_source_bucket": "future_frozen_materialized_ordered_prefix_event",
+      "retrieval_rerun_required_in_p3_8m_bool": false,
+      "source_design_complete_bool": true,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "allowed_source_mode_bucket": "future_explicit_empirical_capture_or_existing_materialized_event_log",
+      "anonymous_source_design_id": "p38msd0003",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "proxy_or_contract_source_allowed_bool": false,
+      "proxy_or_contract_template_allowed_bool": false,
+      "required_fixture_source_bucket": "future_frozen_materialized_candidate_pool_event",
+      "retrieval_rerun_required_in_p3_8m_bool": false,
+      "source_design_complete_bool": true,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "allowed_source_mode_bucket": "future_explicit_empirical_capture_or_existing_materialized_event_log",
+      "anonymous_source_design_id": "p38msd0004",
+      "capture_execution_authorized_in_p3_8m_bool": false,
+      "proxy_or_contract_source_allowed_bool": false,
+      "proxy_or_contract_template_allowed_bool": false,
+      "required_fixture_source_bucket": "future_frozen_materialized_risk_decision_event",
+      "retrieval_rerun_required_in_p3_8m_bool": false,
+      "source_design_complete_bool": true,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_8l_input_pass",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "empirical_source_design_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "surface_field_requirements_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_or_precondition_design_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_scope_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_read_write_import_and_execution_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "fixture_generation_capture_and_private_write_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T20:33:50Z",
+  "generated_by": "bea_v1_p3_8m_empirical_fixture_acquisition_design",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "p38mi0000",
+      "capture_authorized_bool": false,
+      "empirical_fixture_required_bool": true,
+      "expected_status": "proxy_route_closure_empirical_fixtures_required",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8l_projection_field_adequacy_decision",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "proxy_route_closure_empirical_fixtures_required",
+      "p3_8m_authorized_bool": true,
+      "private_trace_write_authorized_bool": false,
+      "proxy_fixtures_sufficient_bool": false,
+      "proxy_route_closed_for_mechanism_work": true
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "p38mne0000",
+      "counterfactual_execution_count": 0,
+      "fixture_generation_count": 0,
+      "helper_import_count": 0,
+      "no_execution_boundary_passed_bool": true,
+      "p3_8_import_count": 0,
+      "p4l_n1_n2_execution_count": 0,
+      "policy_tuning_execution_count": 0,
+      "private_read_count": 0,
+      "private_write_count": 0,
+      "retrieval_execution_count": 0,
+      "support_labeling_execution_count": 0,
+      "target_evaluator_import_count": 0,
+      "trace_capture_execution_count": 0
+    }
+  ],
+  "per_surface_empirical_field_requirement_records": [
+    {
+      "anonymous_field_requirement_id": "p38mfr0000",
+      "field_requirement_complete_bool": true,
+      "proxy_unknown_field_allowed_bool": false,
+      "required_empirical_field_count": 6,
+      "required_field_bucket_list_public": [
+        "target_context_ref_bucket",
+        "support_context_ref_bucket",
+        "target_hit_observed_bucket",
+        "support_hit_observed_bucket",
+        "relation_observed_bucket",
+        "leakage_observed_bucket"
+      ],
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_field_requirement_id": "p38mfr0001",
+      "field_requirement_complete_bool": true,
+      "proxy_unknown_field_allowed_bool": false,
+      "required_empirical_field_count": 7,
+      "required_field_bucket_list_public": [
+        "frozen_denominator_ref_bucket",
+        "arm_bucket",
+        "observed_action_sequence_bucket",
+        "observed_pool_size_bucket",
+        "observed_latency_bucket",
+        "observed_file_reach_bucket",
+        "observed_hard_cap_bucket"
+      ],
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_field_requirement_id": "p38mfr0002",
+      "field_requirement_complete_bool": true,
+      "proxy_unknown_field_allowed_bool": false,
+      "required_empirical_field_count": 6,
+      "required_field_bucket_list_public": [
+        "frozen_run_ref_bucket",
+        "observed_prefix_position_bucket",
+        "observed_prefix_cost_bucket",
+        "observed_budget_remaining_bucket",
+        "observed_stop_reason_bucket",
+        "observed_continue_reference_bucket"
+      ],
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_field_requirement_id": "p38mfr0003",
+      "field_requirement_complete_bool": true,
+      "proxy_unknown_field_allowed_bool": false,
+      "required_empirical_field_count": 5,
+      "required_field_bucket_list_public": [
+        "frozen_candidate_pool_ref_bucket",
+        "observed_same_file_count_bucket",
+        "observed_duplicate_pressure_bucket",
+        "observed_file_diversity_bucket",
+        "observed_gold_displacement_bucket"
+      ],
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_field_requirement_id": "p38mfr0004",
+      "field_requirement_complete_bool": true,
+      "proxy_unknown_field_allowed_bool": false,
+      "required_empirical_field_count": 5,
+      "required_field_bucket_list_public": [
+        "frozen_risk_decision_ref_bucket",
+        "observed_risk_class_bucket",
+        "observed_policy_action_bucket",
+        "observed_removed_or_demoted_gold_bucket",
+        "observed_replacement_bucket"
+      ],
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "phase": "BEA-v1-P3-8M",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "p38mpb0000",
+      "candidate_lists_publicly_serialized_bool": false,
+      "privacy_boundary_complete_bool": true,
+      "private_fixture_payloads_publicly_serialized_bool": false,
+      "private_paths_publicly_serialized_bool": false,
+      "provider_payloads_publicly_serialized_bool": false,
+      "public_summary_bucketed_only_bool": true,
+      "raw_event_payloads_publicly_serialized_bool": false,
+      "source_paths_spans_snippets_publicly_serialized_bool": false
+    }
+  ],
+  "private_filenames_publicly_serialized": false,
+  "private_paths_publicly_serialized": false,
+  "raw_fixture_payloads_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8m_empirical_fixture_acquisition_design.v1",
+  "self_test_checks_passed": 12,
+  "self_test_checks_total": 12,
+  "self_test_passed": true,
+  "status": "empirical_fixture_acquisition_design_pass_p3_8n_authorized",
+  "status_vocabulary": [
+    "empirical_fixture_acquisition_design_pass_p3_8n_authorized",
+    "no_go_p3_8m_required_inputs_unavailable",
+    "no_go_p3_8m_empirical_source_design_incomplete",
+    "no_go_p3_8m_surface_field_requirements_incomplete",
+    "no_go_p3_8m_privacy_or_precondition_design_incomplete",
+    "no_go_p3_8m_changed_file_scope_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "empirical_fixture_acquisition_design_only",
+      "broad_retrieval_expansion_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "empirical_fixture_files_write_authorized": false,
+      "empirical_trace_capture_authorized": false,
+      "fixture_generation_authorized": false,
+      "fixture_generation_authorized_in_p3_8m": false,
+      "fixture_generation_authorized_in_p3_8n": false,
+      "helper_import_authorized": false,
+      "mechanism_evidence_claimed": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-8N Empirical Fixture Acquisition Preflight \u2014 preflight only, no capture execution",
+      "next_allowed_scope_bucket": "preflight_only_no_capture_execution",
+      "p3_8_capture_execution_authorized": false,
+      "p3_8_code_change_authorized": false,
+      "p3_8n_empirical_fixture_acquisition_preflight_authorized": true,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_fixture_read_authorized": false,
+      "private_fixture_write_authorized": false,
+      "private_trace_row_write_authorized": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "target_evaluator_import_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

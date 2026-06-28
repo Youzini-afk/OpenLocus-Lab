@@ -28,14 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8L: Projection Field Adequacy Decision**:
+The latest closed phase is **BEA-v1-P3-8M: Empirical Fixture Acquisition Design**:
 
 ```text
-status: proxy_route_closure_empirical_fixtures_required
-self-test: 11 / 11
+status: empirical_fixture_acquisition_design_pass_p3_8n_authorized
+self-test: 12 / 12
 forbidden scan: pass
-proxy route closed: true
-P3-8M empirical fixture acquisition design authorized: true
+empirical source designs: 5
+field requirement rows: 5
+capture preconditions: 7
+P3-8N empirical fixture acquisition preflight authorized: true
+fixture generation authorized: false
 trace capture execution authorized: false
 private trace row write authorized: false
 ```
@@ -258,6 +261,13 @@ not sufficient for denominator audits, counterfactuals, or mechanism claims. The
 only authorized next step is P3-8M empirical frozen event fixture acquisition
 design; no capture execution or private trace writes are authorized.
 
+P3-8M designs the empirical frozen/materialized event fixture acquisition route
+for the five surfaces. It reads only the P3-8L public artifact, produces
+design-only acquisition and schema records, and authorizes only P3-8N preflight.
+It does not generate fixtures, execute capture, write private rows, import helper
+or target evaluators, run retrieval/reruns/counterfactuals, tune policy, or
+promote runtime/default behavior.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -430,6 +440,11 @@ See the current report index:
   imports, trace capture execution, private trace writes, retrieval, P4L/N1/N2
   reruns, support labeling, counterfactuals, policy tuning, runtime/default
   promotion, P5, or v1-A.
+- P3-8M authorizes only P3-8N empirical fixture acquisition preflight. It does
+  not authorize fixture generation, capture execution, private fixture or trace
+  writes, helper imports, target evaluator imports, retrieval, P4L/N1/N2 reruns,
+  support labeling, counterfactuals, policy tuning, runtime/default promotion,
+  P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
