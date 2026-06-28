@@ -28,16 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P2-0: Scheduler Private Arm-Row Recovery**:
+The latest closed phase is **BEA-v1-P2-1: Ordered-Prefix Stop Evidence Surface**:
 
 ```text
-status: no_go_p2_0_private_arm_rows_unavailable
-self-test: 11 / 11
+status: no_go_p2_1_ordered_prefix_only_aggregate
+self-test: 8 / 8
 forbidden scan: pass
-P4L artifact: pass
-locked denominator: exact match
-private arm rows: unavailable locally
-P0-3 full private-row export: not run
+sanitized stop evidence rows: 196
+source artifact coverage: 8
+early-stop failure-category rows: 196
+private-trace readiness: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -138,6 +138,11 @@ exported through the P0-3 scheduler/action-cost contract. The committed P4L
 manifest records 1,088 private rows, but the local private JSONL is absent, so
 P2-0 is a No-Go and does not guess or rerun arms by default.
 
+P2-1 extracts committed ordered-prefix / early-stop evidence into scanner-safe
+public rows. It finds useful aggregate evidence across eight sources, but no
+local private ordered-prefix trace, so row-level private-trace readiness remains
+blocked and no stop-policy change is authorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -235,6 +240,9 @@ See the current report index:
   It found no local P4L private arm rows, does not tune policy, does not run broad
   network replay by default, and does not authorize implementation/runtime
   promotion.
+- P2-1 authorizes only ordered-prefix stop evidence surface extraction. It is
+  aggregate-only locally and does not authorize stop-policy changes,
+  counterfactual execution, implementation, or runtime promotion.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
