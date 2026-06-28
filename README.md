@@ -28,15 +28,15 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8I: Explicit Proxy Fixture Logger Smoke Design**:
+The latest closed phase is **BEA-v1-P3-8J: Explicit Proxy Fixture Logger Smoke**:
 
 ```text
-status: explicit_proxy_fixture_logger_smoke_design_pass_p3_8j_authorized
-self-test: 9 / 9
+status: explicit_proxy_fixture_logger_smoke_pass_p3_8k_authorized
+self-test: 11 / 11
 forbidden scan: pass
-helper capture plans: 5
-P3-8 empirical mode unchanged: true
-P3-8J evaluator implementation authorized: true
+proxy fixture events: 5
+public projections: 5
+P3-8K public projection audit authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -237,6 +237,12 @@ projection only. It authorizes only P3-8J separate evaluator implementation; no
 P3-8 modification, capture, private trace rows, target evaluator calls,
 retrieval, reruns, policy, P5, v1-A, or runtime/default promotion is authorized.
 
+P3-8J implements that separate proxy smoke evaluator. It reads existing ignored
+P3-8G private proxy fixtures, imports only the helper module, validates helper
+build/validate/sanitize/public-projection for all five surfaces, and emits only
+sanitized public projection rows. It does not modify private files or write
+private trace rows, and it authorizes only P3-8K public projection audit.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -395,6 +401,10 @@ See the current report index:
   empirical capture, private trace rows, target evaluator imports/calls,
   retrieval, P4L/N1/N2 reruns, support labeling, counterfactuals, policy tuning,
   runtime/default promotion, P5, or v1-A.
+- P3-8J authorizes only P3-8K proxy fixture smoke public projection audit. It
+  does not authorize P3-8 changes, empirical capture, private trace rows, target
+  evaluator imports/calls, retrieval, P4L/N1/N2 reruns, support labeling,
+  counterfactuals, policy tuning, runtime/default promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
