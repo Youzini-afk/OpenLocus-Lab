@@ -28,16 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P2-3: Late Trace Surface Closure**:
+The latest closed phase is **BEA-v1-P3-0: Frozen Upstream Trace-Capture Harness Design**:
 
 ```text
-status: late_trace_surface_closure_no_go
-self-test: 9 / 9
+status: frozen_upstream_trace_capture_harness_design_pass
+self-test: 12 / 12
 forbidden scan: pass
-surfaces checked: 5
-blocked surfaces: 5
-decision reason: upstream_trace_capture_required
-next allowed phase: frozen_upstream_trace_capture_harness_design_only
+trace schema records: 5
+instrumentation point records: 5
+P3-1 preflight authorized: true
+trace capture execution authorized: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -153,6 +153,12 @@ P2-2. All five late surfaces remain blocked, so the only allowed next step is
 P3-0 frozen upstream trace-capture harness design: schema/instrumentation
 planning only, not execution, policy, or retrieval.
 
+P3-0 designs the frozen upstream trace-capture harness for all five blocked
+surfaces. It defines private schemas, public projections, instrumentation target
+buckets, frozen replay requirements, and fail-closed validation gates, but it
+does not execute trace capture, retrieval, reruns, counterfactuals, policy, or
+runtime changes. It authorizes only P3-1 dry-run preflight as a separate phase.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -259,6 +265,10 @@ See the current report index:
 - P2-3 authorizes only late trace surface closure and the next-experiment decision.
   It allows only P3-0 frozen upstream trace-capture harness design; all execution,
   counterfactual, policy, implementation, runtime, P5, and v1-A flags remain false.
+- P3-0 authorizes only frozen upstream trace-capture harness schema and
+  instrumentation planning. It allows P3-1 dry-run preflight only; actual trace
+  capture, retrieval execution, reruns, counterfactuals, policy tuning,
+  implementation, runtime promotion, P5, and v1-A remain unauthorized.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

@@ -1,0 +1,568 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.0,
+  "claim_level": "frozen_upstream_trace_capture_harness_design_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "fail_closed_validation_gate_records": [
+    {
+      "anonymous_validation_gate_id": "p30g0000",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "p2_3_input_status_and_scan_pass"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0001",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "private_schema_version_present"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0002",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "public_projection_scanner_pass"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0003",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "no_public_source_location_or_span"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0004",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "no_public_payload_or_candidate_list"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0005",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "capture_phase_separate_from_execution"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0006",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "frozen_denominator_declared_before_capture"
+    },
+    {
+      "anonymous_validation_gate_id": "p30g0007",
+      "execution_in_p3_0_bool": false,
+      "fail_closed_bool": true,
+      "gate_bucket": "p3_1_preflight_required_before_any_capture"
+    }
+  ],
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "frozen_replay_requirement_records": [
+    {
+      "anonymous_frozen_replay_requirement_id": "p30r0000",
+      "denominator_declared_before_capture_bool": false,
+      "denominator_must_be_declared_before_p3_1_execution_bool": true,
+      "denominator_source_bucket": "p1_1_support_labeling_queue_or_future_frozen_trace_denominator",
+      "expected_private_row_count": 0,
+      "frozen_arm_count": 0,
+      "locked_denominator_count": 0,
+      "n1_n2_rerun_allowed_bool": false,
+      "p4l_rerun_allowed_bool": false,
+      "policy_mutation_allowed_bool": false,
+      "provider_execution_allowed_bool": false,
+      "retrieval_expansion_allowed_bool": false,
+      "runtime_promotion_allowed_bool": false,
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_frozen_replay_requirement_id": "p30r0001",
+      "denominator_declared_before_capture_bool": true,
+      "denominator_must_be_declared_before_p3_1_execution_bool": true,
+      "denominator_source_bucket": "p4l_locked_non_python_denominator_272",
+      "expected_private_row_count": 1088,
+      "frozen_arm_count": 4,
+      "locked_denominator_count": 272,
+      "n1_n2_rerun_allowed_bool": false,
+      "p4l_rerun_allowed_bool": false,
+      "policy_mutation_allowed_bool": false,
+      "provider_execution_allowed_bool": false,
+      "retrieval_expansion_allowed_bool": false,
+      "runtime_promotion_allowed_bool": false,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_frozen_replay_requirement_id": "p30r0002",
+      "denominator_declared_before_capture_bool": false,
+      "denominator_must_be_declared_before_p3_1_execution_bool": true,
+      "denominator_source_bucket": "future_frozen_ordered_prefix_trace_denominator_declared_before_capture",
+      "expected_private_row_count": 0,
+      "frozen_arm_count": 0,
+      "locked_denominator_count": 0,
+      "n1_n2_rerun_allowed_bool": false,
+      "p4l_rerun_allowed_bool": false,
+      "policy_mutation_allowed_bool": false,
+      "provider_execution_allowed_bool": false,
+      "retrieval_expansion_allowed_bool": false,
+      "runtime_promotion_allowed_bool": false,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_frozen_replay_requirement_id": "p30r0003",
+      "denominator_declared_before_capture_bool": false,
+      "denominator_must_be_declared_before_p3_1_execution_bool": true,
+      "denominator_source_bucket": "future_frozen_redundancy_trace_denominator_declared_before_capture",
+      "expected_private_row_count": 0,
+      "frozen_arm_count": 0,
+      "locked_denominator_count": 0,
+      "n1_n2_rerun_allowed_bool": false,
+      "p4l_rerun_allowed_bool": false,
+      "policy_mutation_allowed_bool": false,
+      "provider_execution_allowed_bool": false,
+      "retrieval_expansion_allowed_bool": false,
+      "runtime_promotion_allowed_bool": false,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_frozen_replay_requirement_id": "p30r0004",
+      "denominator_declared_before_capture_bool": false,
+      "denominator_must_be_declared_before_p3_1_execution_bool": true,
+      "denominator_source_bucket": "future_frozen_risk_trace_denominator_declared_before_capture",
+      "expected_private_row_count": 0,
+      "frozen_arm_count": 0,
+      "locked_denominator_count": 0,
+      "n1_n2_rerun_allowed_bool": false,
+      "p4l_rerun_allowed_bool": false,
+      "policy_mutation_allowed_bool": false,
+      "provider_execution_allowed_bool": false,
+      "retrieval_expansion_allowed_bool": false,
+      "runtime_promotion_allowed_bool": false,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "gate_records": [
+    {
+      "gate": "p2_3_input_status_and_scan_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "five_trace_schema_records",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "five_instrumentation_point_records",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "execution_not_in_p3_0",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p3_1_preflight_authorized",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-28T16:41:22Z",
+  "generated_by": "eval/bea_v1_p3_0_frozen_upstream_trace_capture_harness_design.py",
+  "input_artifact_records": [
+    {
+      "expected_status": "late_trace_surface_closure_no_go",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_3_late_trace_surface_closure",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "late_trace_surface_closure_no_go",
+      "source_phase_bucket": "BEA-v1-P2-3"
+    }
+  ],
+  "instrumentation_point_records": [
+    {
+      "anonymous_instrumentation_point_id": "p30i0000",
+      "capture_moment_bucket": "after_target_and_support_candidate_materialization_before_pack_mutation",
+      "execution_in_p3_0_bool": false,
+      "existing_eval_or_helper_bucket": "p0_4_support_link_input_design_and_p1_2_private_label_intake_validator",
+      "mutation_allowed_bool": false,
+      "private_output_schema_bucket": "bea_v1_support_link_trace_capture.v1",
+      "public_projection_schema_bucket": "scanner_safe_bucketed_public_projection",
+      "retrieval_execution_authorized_bool": false,
+      "static_target_bucket": "support_candidate_selection_and_context_pack_join",
+      "surface_bucket": "support_link",
+      "target_implementation_bucket": "future_frozen_trace_logger_required",
+      "trace_capture_execution_authorized_bool": false
+    },
+    {
+      "anonymous_instrumentation_point_id": "p30i0001",
+      "capture_moment_bucket": "after_each_frozen_scheduler_arm_before_aggregate_export",
+      "execution_in_p3_0_bool": false,
+      "existing_eval_or_helper_bucket": "p4l_locked_non_python_scheduler_validation_and_p0_3_scheduler_dataset_export",
+      "mutation_allowed_bool": false,
+      "private_output_schema_bucket": "bea_v1_scheduler_action_cost_trace_capture.v1",
+      "public_projection_schema_bucket": "scanner_safe_bucketed_public_projection",
+      "retrieval_execution_authorized_bool": false,
+      "static_target_bucket": "p4l_frozen_action_scheduler_arm_evaluation",
+      "surface_bucket": "scheduler_action_cost",
+      "target_implementation_bucket": "future_frozen_trace_logger_required",
+      "trace_capture_execution_authorized_bool": false
+    },
+    {
+      "anonymous_instrumentation_point_id": "p30i0002",
+      "capture_moment_bucket": "at_each_prefix_boundary_before_stop_or_continue_decision",
+      "execution_in_p3_0_bool": false,
+      "existing_eval_or_helper_bucket": "p0_6_7_8_parallel_trace_surfaces_and_future_frozen_replay_logger",
+      "mutation_allowed_bool": false,
+      "private_output_schema_bucket": "bea_v1_ordered_prefix_stop_trace_capture.v1",
+      "public_projection_schema_bucket": "scanner_safe_bucketed_public_projection",
+      "retrieval_execution_authorized_bool": false,
+      "static_target_bucket": "ordered_prefix_scheduler_stop_decision",
+      "surface_bucket": "ordered_prefix_stop",
+      "target_implementation_bucket": "future_frozen_trace_logger_required",
+      "trace_capture_execution_authorized_bool": false
+    },
+    {
+      "anonymous_instrumentation_point_id": "p30i0003",
+      "capture_moment_bucket": "after_candidate_pool_materialization_before_final_pack_selection",
+      "execution_in_p3_0_bool": false,
+      "existing_eval_or_helper_bucket": "p0_6_7_8_parallel_trace_surfaces_and_future_frozen_pack_logger",
+      "mutation_allowed_bool": false,
+      "private_output_schema_bucket": "bea_v1_same_file_redundancy_trace_capture.v1",
+      "public_projection_schema_bucket": "scanner_safe_bucketed_public_projection",
+      "retrieval_execution_authorized_bool": false,
+      "static_target_bucket": "rank_pack_materialization_and_setwise_packer_redundancy",
+      "surface_bucket": "same_file_redundancy",
+      "target_implementation_bucket": "future_frozen_trace_logger_required",
+      "trace_capture_execution_authorized_bool": false
+    },
+    {
+      "anonymous_instrumentation_point_id": "p30i0004",
+      "capture_moment_bucket": "at_risk_penalty_decision_before_filter_output_is_materialized",
+      "execution_in_p3_0_bool": false,
+      "existing_eval_or_helper_bucket": "p0_6_7_8_parallel_trace_surfaces_and_future_risk_policy_logger",
+      "mutation_allowed_bool": false,
+      "private_output_schema_bucket": "bea_v1_risk_penalty_trace_capture.v1",
+      "public_projection_schema_bucket": "scanner_safe_bucketed_public_projection",
+      "retrieval_execution_authorized_bool": false,
+      "static_target_bucket": "file_selector_or_risk_accounting_filter",
+      "surface_bucket": "risk_penalty",
+      "target_implementation_bucket": "future_frozen_trace_logger_required",
+      "trace_capture_execution_authorized_bool": false
+    }
+  ],
+  "mode": "bea_v1_p3_0_frozen_upstream_trace_capture_harness_design",
+  "p3_1_handoff_records": [
+    {
+      "anonymous_handoff_id": "p30h0000",
+      "authorization_bucket": "p3_1_preflight_authorized_design_only",
+      "handoff_bucket": "p3_1_frozen_upstream_trace_capture_harness_dry_run_preflight",
+      "p3_1_preflight_authorized": true,
+      "p3_1_scope_bucket": "dry_run_preflight_design_only",
+      "policy_mutation_authorized_bool": false,
+      "requires_separate_phase_bool": true,
+      "retrieval_execution_authorized_bool": false,
+      "trace_capture_execution_authorized_bool": false
+    }
+  ],
+  "phase": "BEA-v1-P3-0",
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "public_private_boundary_records": [
+    {
+      "anonymous_boundary_id": "p30b0000",
+      "candidate_list_public_bool": false,
+      "digest_public_bool": false,
+      "private_location_public_bool": false,
+      "private_storage_bucket": "project_ignored_research_private_jsonl",
+      "provider_payload_public_bool": false,
+      "public_projection_bucket": "aggregate_and_bucketed_rows_only",
+      "raw_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "source_location_public_bool": false,
+      "source_span_public_bool": false,
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_boundary_id": "p30b0001",
+      "candidate_list_public_bool": false,
+      "digest_public_bool": false,
+      "private_location_public_bool": false,
+      "private_storage_bucket": "project_ignored_research_private_jsonl",
+      "provider_payload_public_bool": false,
+      "public_projection_bucket": "aggregate_and_bucketed_rows_only",
+      "raw_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "source_location_public_bool": false,
+      "source_span_public_bool": false,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_boundary_id": "p30b0002",
+      "candidate_list_public_bool": false,
+      "digest_public_bool": false,
+      "private_location_public_bool": false,
+      "private_storage_bucket": "project_ignored_research_private_jsonl",
+      "provider_payload_public_bool": false,
+      "public_projection_bucket": "aggregate_and_bucketed_rows_only",
+      "raw_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "source_location_public_bool": false,
+      "source_span_public_bool": false,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_boundary_id": "p30b0003",
+      "candidate_list_public_bool": false,
+      "digest_public_bool": false,
+      "private_location_public_bool": false,
+      "private_storage_bucket": "project_ignored_research_private_jsonl",
+      "provider_payload_public_bool": false,
+      "public_projection_bucket": "aggregate_and_bucketed_rows_only",
+      "raw_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "source_location_public_bool": false,
+      "source_span_public_bool": false,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_boundary_id": "p30b0004",
+      "candidate_list_public_bool": false,
+      "digest_public_bool": false,
+      "private_location_public_bool": false,
+      "private_storage_bucket": "project_ignored_research_private_jsonl",
+      "provider_payload_public_bool": false,
+      "public_projection_bucket": "aggregate_and_bucketed_rows_only",
+      "raw_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "source_location_public_bool": false,
+      "source_span_public_bool": false,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_0_frozen_upstream_trace_capture_harness_design.v1",
+  "self_test_checks_passed": 12,
+  "self_test_checks_total": 12,
+  "self_test_passed": true,
+  "status": "frozen_upstream_trace_capture_harness_design_pass",
+  "status_vocabulary": [
+    "frozen_upstream_trace_capture_harness_design_pass",
+    "no_go_p3_0_required_inputs_unavailable",
+    "no_go_p3_0_surface_mapping_incomplete",
+    "no_go_p3_0_instrumentation_plan_incomplete",
+    "no_go_p3_0_privacy_boundary_incomplete",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "frozen_upstream_trace_capture_harness_design_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-1 Frozen Upstream Trace-Capture Harness Dry-Run Preflight",
+      "p3_1_preflight_authorized": true,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "frozen_upstream_trace_capture_harness_design_pass",
+      "stop_go_reason": "frozen_upstream_trace_capture_harness_design_ready",
+      "support_counterfactual_execution_authorized": false,
+      "trace_capture_execution_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "trace_schema_records": [
+    {
+      "anonymous_trace_schema_id": "p30s0000",
+      "private_required_field_buckets": [
+        "anonymous_design_join_key",
+        "queue_item_join_key",
+        "support_relation_bucket",
+        "target_hit_bucket",
+        "support_hit_bucket",
+        "conjunction_bucket",
+        "evidence_role_bucket",
+        "leakage_risk_bucket",
+        "source_context_linkage_bucket",
+        "capture_phase_bucket",
+        "trace_logger_version_bucket",
+        "validation_status_bucket"
+      ],
+      "private_required_field_count": 12,
+      "public_projection_field_buckets": [
+        "surface_bucket",
+        "relation_bucket",
+        "target_hit_bucket",
+        "support_hit_bucket",
+        "conjunction_bucket",
+        "role_bucket",
+        "risk_bucket",
+        "trace_completeness_bucket"
+      ],
+      "public_projection_field_count": 8,
+      "schema_scope_bucket": "private_trace_rows_with_scanner_safe_public_projection",
+      "schema_status_bucket": "design_only_not_executed",
+      "schema_version_bucket": "bea_v1_support_link_trace_capture.v1",
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_trace_schema_id": "p30s0001",
+      "private_required_field_buckets": [
+        "locked_denominator_join_key",
+        "arm_bucket",
+        "action_sequence_bucket",
+        "latency_bucket",
+        "pool_size_bucket",
+        "pool_delta_bucket",
+        "hard_cap_bucket",
+        "file_reach_bucket",
+        "cost_state_bucket",
+        "scheduler_state_bucket",
+        "capture_phase_bucket",
+        "trace_logger_version_bucket",
+        "validation_status_bucket",
+        "replay_freeze_bucket"
+      ],
+      "private_required_field_count": 14,
+      "public_projection_field_buckets": [
+        "surface_bucket",
+        "arm_bucket",
+        "latency_bucket",
+        "pool_delta_bucket",
+        "hard_cap_bucket",
+        "file_reach_bucket",
+        "cost_state_bucket",
+        "trace_completeness_bucket",
+        "replay_freeze_bucket"
+      ],
+      "public_projection_field_count": 9,
+      "schema_scope_bucket": "private_trace_rows_with_scanner_safe_public_projection",
+      "schema_status_bucket": "design_only_not_executed",
+      "schema_version_bucket": "bea_v1_scheduler_action_cost_trace_capture.v1",
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_trace_schema_id": "p30s0002",
+      "private_required_field_buckets": [
+        "prefix_join_key",
+        "arm_bucket",
+        "prefix_position_bucket",
+        "prefix_cost_bucket",
+        "budget_remaining_bucket",
+        "marginal_gain_bucket",
+        "stop_policy_bucket",
+        "continue_reference_bucket",
+        "early_stop_signal_bucket",
+        "capture_phase_bucket",
+        "trace_logger_version_bucket",
+        "validation_status_bucket",
+        "replay_freeze_bucket"
+      ],
+      "private_required_field_count": 13,
+      "public_projection_field_buckets": [
+        "surface_bucket",
+        "arm_bucket",
+        "prefix_position_bucket",
+        "prefix_cost_bucket",
+        "budget_remaining_bucket",
+        "marginal_gain_bucket",
+        "stop_policy_bucket",
+        "continue_bucket",
+        "trace_completeness_bucket"
+      ],
+      "public_projection_field_count": 9,
+      "schema_scope_bucket": "private_trace_rows_with_scanner_safe_public_projection",
+      "schema_status_bucket": "design_only_not_executed",
+      "schema_version_bucket": "bea_v1_ordered_prefix_stop_trace_capture.v1",
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_trace_schema_id": "p30s0003",
+      "private_required_field_buckets": [
+        "redundancy_join_key",
+        "action_layer_bucket",
+        "action_arm_bucket",
+        "duplicate_pressure_bucket",
+        "same_file_candidate_count_bucket",
+        "topk_file_diversity_bucket",
+        "gold_file_displacement_bucket",
+        "marginal_utility_bucket",
+        "capture_phase_bucket",
+        "trace_logger_version_bucket",
+        "validation_status_bucket",
+        "replay_freeze_bucket"
+      ],
+      "private_required_field_count": 12,
+      "public_projection_field_buckets": [
+        "surface_bucket",
+        "action_layer_bucket",
+        "action_arm_bucket",
+        "duplicate_pressure_bucket",
+        "same_file_count_bucket",
+        "diversity_bucket",
+        "gold_effect_bucket",
+        "trace_completeness_bucket"
+      ],
+      "public_projection_field_count": 8,
+      "schema_scope_bucket": "private_trace_rows_with_scanner_safe_public_projection",
+      "schema_status_bucket": "design_only_not_executed",
+      "schema_version_bucket": "bea_v1_same_file_redundancy_trace_capture.v1",
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_trace_schema_id": "p30s0004",
+      "private_required_field_buckets": [
+        "risk_join_key",
+        "action_layer_bucket",
+        "action_arm_bucket",
+        "risk_class_bucket",
+        "risk_policy_bucket",
+        "removed_gold_bucket",
+        "replacement_bucket",
+        "topk_effect_bucket",
+        "counterfactual_keep_bucket",
+        "capture_phase_bucket",
+        "trace_logger_version_bucket",
+        "validation_status_bucket"
+      ],
+      "private_required_field_count": 12,
+      "public_projection_field_buckets": [
+        "surface_bucket",
+        "action_layer_bucket",
+        "action_arm_bucket",
+        "risk_class_bucket",
+        "risk_policy_bucket",
+        "removed_gold_bucket",
+        "replacement_bucket",
+        "counterfactual_keep_bucket",
+        "trace_completeness_bucket"
+      ],
+      "public_projection_field_count": 9,
+      "schema_scope_bucket": "private_trace_rows_with_scanner_safe_public_projection",
+      "schema_status_bucket": "design_only_not_executed",
+      "schema_version_bucket": "bea_v1_risk_penalty_trace_capture.v1",
+      "surface_bucket": "risk_penalty"
+    }
+  ]
+}

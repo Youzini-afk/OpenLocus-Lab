@@ -111,6 +111,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p2-1-ordered-prefix-stop-evidence-surface.md`: [en](en/bea-v1-p2-1-ordered-prefix-stop-evidence-surface.md) · [zh](zh/bea-v1-p2-1-ordered-prefix-stop-evidence-surface.md)
 - `bea-v1-p2-2-redundancy-risk-trace-availability.md`: [en](en/bea-v1-p2-2-redundancy-risk-trace-availability.md) · [zh](zh/bea-v1-p2-2-redundancy-risk-trace-availability.md)
 - `bea-v1-p2-3-late-trace-surface-closure.md`: [en](en/bea-v1-p2-3-late-trace-surface-closure.md) · [zh](zh/bea-v1-p2-3-late-trace-surface-closure.md)
+- `bea-v1-p3-0-frozen-upstream-trace-capture-harness-design.md`: [en](en/bea-v1-p3-0-frozen-upstream-trace-capture-harness-design.md) · [zh](zh/bea-v1-p3-0-frozen-upstream-trace-capture-harness-design.md)
 - `bea-v1-trace-gap-audit.md`: [en](en/bea-v1-trace-gap-audit.md) · [zh](zh/bea-v1-trace-gap-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
