@@ -28,18 +28,15 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-7: Frozen Trace Logger Capture Execution Preflight**:
+The latest closed phase is **BEA-v1-P3-8: Frozen Trace Logger Explicit Capture Smoke**:
 
 ```text
-status: frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized
-self-test: 16 / 16
+status: no_go_p3_8_frozen_event_fixtures_unavailable
+self-test: 15 / 15
 forbidden scan: pass
-surface readiness records: 5
-synthetic helper preflight records: 5
-target evaluator imports: 0
-hook shim executions: 0
-private writes: 0
-P3-8 explicit capture smoke authorized: true
+fixture events loaded: 0
+private rows written: 0
+P3-9 manifest audit authorized: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -207,6 +204,11 @@ evaluators or calling hook shims. It authorizes only P3-8 explicit capture smoke
 over predeclared frozen/materialized fixtures; no retrieval, reruns, private row
 writes, policy, P5, v1-A, or runtime/default promotion is authorized.
 
+P3-8 checks for the predeclared frozen/materialized event fixture manifest and
+events required for explicit capture smoke. The current workspace has no such
+fixtures, so P3-8 is a No-Go before private writes: no private rows or private
+manifest are created, and P3-9 manifest audit is not authorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -343,6 +345,10 @@ See the current report index:
   predeclared frozen/materialized event fixtures. It does not authorize retrieval,
   P4L/N1/N2 reruns, support labeling, counterfactuals, policy changes, runtime
   promotion, P5, or v1-A.
+- P3-8 authorizes no next phase in the current workspace because required frozen
+  event fixtures are unavailable. It does not write private rows, run retrieval,
+  rerun P4L/N1/N2, run support labeling, execute counterfactuals, tune policy,
+  promote runtime/default behavior, authorize P5, or authorize v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

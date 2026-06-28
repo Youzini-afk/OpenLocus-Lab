@@ -1,0 +1,368 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.008,
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38cf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "helper_or_target_modified_bool": false,
+      "runtime_retrieval_selector_or_config_modified_bool": false,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "frozen_trace_logger_explicit_capture_smoke_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "frozen_event_fixtures_unavailable",
+  "fixture_event_intake_records": [
+    {
+      "anonymous_fixture_event_intake_id": "p38fe0000",
+      "event_count": 0,
+      "event_error_count": 0,
+      "events_load_status": "missing",
+      "events_path_under_research_private_bool": true,
+      "fixture_events_bucket": "p3_8_default_frozen_event_jsonl",
+      "fixture_events_schema_valid_bool": false,
+      "schema_valid_event_count": 0
+    }
+  ],
+  "fixture_manifest_intake_records": [
+    {
+      "anonymous_fixture_manifest_intake_id": "p38fm0000",
+      "fixture_event_count": 0,
+      "fixture_manifest_bucket": "p3_8_default_frozen_event_manifest",
+      "fixtures_frozen_bool": false,
+      "manifest_error_count": 1,
+      "manifest_load_status": "missing",
+      "manifest_path_under_research_private_bool": true,
+      "manifest_schema_valid_bool": false,
+      "requires_forbidden_execution_bool": false,
+      "surface_count": 0
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_7_input_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_files_subset_allowlist",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "fixture_manifest_present_and_valid",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "fixture_events_present_and_valid",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "fixture_surface_coverage_5_of_5",
+      "passed": false,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 0
+    },
+    {
+      "gate": "private_root_ready",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "helper_capture_pass",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "private_rows_written_equals_fixture_count",
+      "passed": false,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "forbidden_execution_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T18:42:57Z",
+  "generated_by": "eval/bea_v1_p3_8_frozen_trace_logger_explicit_capture_smoke.py",
+  "helper_capture_records": [
+    {
+      "anonymous_helper_capture_id": "p38hc0000",
+      "helper_capture_mode_bucket": "not_attempted_no_go",
+      "helper_capture_passed_bool": false,
+      "hook_shim_called_bool": false,
+      "private_validation_status_bucket": "not_run",
+      "public_projection_scan_status": "not_run",
+      "public_validation_status_bucket": "not_run",
+      "surface_bucket": "support_link",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_helper_capture_id": "p38hc0001",
+      "helper_capture_mode_bucket": "not_attempted_no_go",
+      "helper_capture_passed_bool": false,
+      "hook_shim_called_bool": false,
+      "private_validation_status_bucket": "not_run",
+      "public_projection_scan_status": "not_run",
+      "public_validation_status_bucket": "not_run",
+      "surface_bucket": "scheduler_action_cost",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_helper_capture_id": "p38hc0002",
+      "helper_capture_mode_bucket": "not_attempted_no_go",
+      "helper_capture_passed_bool": false,
+      "hook_shim_called_bool": false,
+      "private_validation_status_bucket": "not_run",
+      "public_projection_scan_status": "not_run",
+      "public_validation_status_bucket": "not_run",
+      "surface_bucket": "ordered_prefix_stop",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_helper_capture_id": "p38hc0003",
+      "helper_capture_mode_bucket": "not_attempted_no_go",
+      "helper_capture_passed_bool": false,
+      "hook_shim_called_bool": false,
+      "private_validation_status_bucket": "not_run",
+      "public_projection_scan_status": "not_run",
+      "public_validation_status_bucket": "not_run",
+      "surface_bucket": "same_file_redundancy",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_helper_capture_id": "p38hc0004",
+      "helper_capture_mode_bucket": "not_attempted_no_go",
+      "helper_capture_passed_bool": false,
+      "hook_shim_called_bool": false,
+      "private_validation_status_bucket": "not_run",
+      "public_projection_scan_status": "not_run",
+      "public_validation_status_bucket": "not_run",
+      "surface_bucket": "risk_penalty",
+      "target_evaluator_imported_bool": false
+    }
+  ],
+  "hook_shim_smoke_records": [
+    {
+      "anonymous_hook_shim_smoke_id": "p38hs0000",
+      "capture_mode_bucket": "helper_only_no_target_hook_shim",
+      "hook_shim_called_bool": false,
+      "hook_shim_smoke_passed_bool": true,
+      "surface_bucket": "support_link",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_hook_shim_smoke_id": "p38hs0001",
+      "capture_mode_bucket": "helper_only_no_target_hook_shim",
+      "hook_shim_called_bool": false,
+      "hook_shim_smoke_passed_bool": true,
+      "surface_bucket": "scheduler_action_cost",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_hook_shim_smoke_id": "p38hs0002",
+      "capture_mode_bucket": "helper_only_no_target_hook_shim",
+      "hook_shim_called_bool": false,
+      "hook_shim_smoke_passed_bool": true,
+      "surface_bucket": "ordered_prefix_stop",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_hook_shim_smoke_id": "p38hs0003",
+      "capture_mode_bucket": "helper_only_no_target_hook_shim",
+      "hook_shim_called_bool": false,
+      "hook_shim_smoke_passed_bool": true,
+      "surface_bucket": "same_file_redundancy",
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_hook_shim_smoke_id": "p38hs0004",
+      "capture_mode_bucket": "helper_only_no_target_hook_shim",
+      "hook_shim_called_bool": false,
+      "hook_shim_smoke_passed_bool": true,
+      "surface_bucket": "risk_penalty",
+      "target_evaluator_imported_bool": false
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "expected_status": "frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_7_frozen_trace_logger_capture_execution_preflight",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized",
+      "source_phase_bucket": "BEA-v1-P3-7"
+    }
+  ],
+  "no_retrieval_execution_records": [
+    {
+      "anonymous_no_retrieval_execution_id": "p38nr0000",
+      "counterfactual_execution_count": 0,
+      "n1_n2_execution_count": 0,
+      "no_forbidden_execution_passed_bool": true,
+      "p4l_execution_count": 0,
+      "policy_tuning_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_promotion_count": 0,
+      "selector_or_reranker_execution_count": 0,
+      "support_label_execution_count": 0
+    }
+  ],
+  "p3_9_handoff_records": [
+    {
+      "additional_capture_authorized_bool": false,
+      "anonymous_handoff_id": "p38h0000",
+      "counterfactual_execution_authorized_bool": false,
+      "handoff_bucket": "BEA-v1-P3-9 Frozen Trace Capture Manifest Audit",
+      "p3_9_manifest_audit_authorized": false,
+      "p3_9_scope": "audit only, no additional capture/retrieval/reruns/counterfactual/policy",
+      "policy_tuning_authorized_bool": false,
+      "requires_separate_phase_bool": true,
+      "retrieval_execution_authorized_bool": false
+    }
+  ],
+  "per_surface_fixture_coverage_records": [
+    {
+      "anonymous_surface_fixture_coverage_id": "p38fc0000",
+      "coverage_present_bool": false,
+      "fixture_event_count": 0,
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_surface_fixture_coverage_id": "p38fc0001",
+      "coverage_present_bool": false,
+      "fixture_event_count": 0,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_surface_fixture_coverage_id": "p38fc0002",
+      "coverage_present_bool": false,
+      "fixture_event_count": 0,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_surface_fixture_coverage_id": "p38fc0003",
+      "coverage_present_bool": false,
+      "fixture_event_count": 0,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_surface_fixture_coverage_id": "p38fc0004",
+      "coverage_present_bool": false,
+      "fixture_event_count": 0,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "phase": "BEA-v1-P3-8",
+  "private_manifest_summary_records": [
+    {
+      "anonymous_private_manifest_summary_id": "p38pm0000",
+      "manifest_schema_version_bucket": "bea_v1_p3_8_frozen_trace_capture_private_manifest.v1",
+      "private_manifest_schema_valid_bool": false,
+      "private_manifest_written_bool": false
+    }
+  ],
+  "private_write_summary_records": [
+    {
+      "anonymous_private_write_summary_id": "p38pw0000",
+      "private_output_root_bucket": "openlocus_research_private",
+      "private_output_under_research_private_bool": true,
+      "private_rows_written_count": 0,
+      "private_trace_row_write_authorized_in_p3_8_bool": false,
+      "private_write_status_bucket": "not_attempted",
+      "root_exists_bool": true,
+      "root_gitignored_bool": true
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "public_projection_summary_records": [
+    {
+      "anonymous_public_projection_summary_id": "p38pp0000",
+      "public_projection_count": 0,
+      "public_projection_scan_passed_bool": false,
+      "public_projection_scan_status": "not_run"
+    }
+  ],
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8_frozen_trace_logger_explicit_capture_smoke.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "source_snippets_publicly_serialized": false,
+  "status": "no_go_p3_8_frozen_event_fixtures_unavailable",
+  "status_vocabulary": [
+    "frozen_trace_logger_explicit_capture_smoke_pass_p3_9_authorized",
+    "no_go_p3_8_required_inputs_unavailable",
+    "no_go_p3_8_changed_file_scope_invalid",
+    "no_go_p3_8_frozen_event_fixtures_unavailable",
+    "no_go_p3_8_fixture_schema_invalid",
+    "no_go_p3_8_fixture_surface_coverage_incomplete",
+    "no_go_p3_8_private_output_root_not_ready",
+    "no_go_p3_8_helper_or_hook_capture_failed",
+    "no_go_p3_8_private_write_failed",
+    "no_go_p3_8_public_projection_scan_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "frozen_trace_logger_explicit_capture_smoke_only",
+      "broad_retrieval_expansion_authorized": false,
+      "counterfactual_execution_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "fixture_trace_capture_execution_authorized_in_p3_8": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-9 Frozen Trace Capture Manifest Audit \u2014 audit only, no additional capture or retrieval",
+      "p3_9_manifest_audit_authorized": false,
+      "p4l_n1_n2_rerun_authorized": false,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_trace_row_write_authorized_in_p3_8": false,
+      "real_evaluator_trace_capture_execution_authorized": false,
+      "retrieval_backed_trace_capture_authorized": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "no_go_p3_8_frozen_event_fixtures_unavailable",
+      "stop_go_reason": "explicit_capture_smoke_blocked_before_private_write",
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
