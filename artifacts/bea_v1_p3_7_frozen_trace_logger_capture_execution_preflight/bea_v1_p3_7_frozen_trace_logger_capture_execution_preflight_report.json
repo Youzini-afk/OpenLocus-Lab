@@ -1,0 +1,445 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.01,
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p37cf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "helper_or_forbidden_target_modified_bool": false,
+      "runtime_retrieval_selector_or_config_modified_bool": false,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "frozen_trace_logger_capture_execution_preflight_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "explicit_enable_contract_records": [
+    {
+      "anonymous_enable_contract_id": "p37ec0000",
+      "enablement_mode_bucket": "explicit_p3_8_evaluator_argument_only",
+      "explicit_enable_contract_complete_bool": true,
+      "no_env_var_enablement_bool": true,
+      "no_existing_evaluator_cli_enablement_bool": true,
+      "no_global_default_enablement_bool": true,
+      "private_output_arg_allowed_only_in_p3_8_evaluator_bool": true,
+      "safe_parser_hides_unknown_argument_values_bool": true
+    }
+  ],
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_6_input_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_files_subset_allowlist",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "hook_static_readiness_5_of_5",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "explicit_enable_contract_complete",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_output_root_ready",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "manifest_schema_defined",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "synthetic_helper_preflight_5_of_5",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "no_execution_boundary_zero_counts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "p3_8_handoff_preflight_only",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-28T18:29:13Z",
+  "generated_by": "eval/bea_v1_p3_7_frozen_trace_logger_capture_execution_preflight.py",
+  "input_artifact_records": [
+    {
+      "default_off_gate_record_count": 5,
+      "expected_status": "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized",
+      "forbidden_scan_status": "pass",
+      "helper_module_modified_bool": false,
+      "input_artifact_bucket": "p3_6_frozen_trace_logger_limited_hook_application_patch",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized",
+      "source_phase_bucket": "BEA-v1-P3-6",
+      "target_hook_wiring_record_count": 5
+    }
+  ],
+  "no_execution_boundary_records": [
+    {
+      "anonymous_no_execution_boundary_id": "p37ne0000",
+      "counterfactual_execution_count": 0,
+      "denominator_audit_execution_count": 0,
+      "hook_shim_execution_count": 0,
+      "n1_n2_execution_count": 0,
+      "no_execution_boundary_passed_bool": true,
+      "p4l_execution_count": 0,
+      "private_write_count": 0,
+      "real_capture_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "support_label_execution_count": 0,
+      "target_evaluator_execution_count": 0,
+      "target_evaluator_import_count": 0
+    }
+  ],
+  "p3_8_handoff_records": [
+    {
+      "anonymous_handoff_id": "p37h0000",
+      "capture_execution_authorized_in_p3_7_bool": false,
+      "handoff_bucket": "BEA-v1-P3-8 Frozen Trace Logger Explicit Capture Smoke",
+      "p3_8_explicit_capture_smoke_authorized": true,
+      "p3_8_scope": "BEA-v1-P3-8 Frozen Trace Logger Explicit Capture Smoke \u2014 explicitly enabled separate-phase smoke using predeclared frozen/materialized event fixtures only; no retrieval/P4L/N1/N2 reruns/support labeling/counterfactuals/policy/P5/v1-A/runtime/default promotion/broad retrieval.",
+      "p4l_n1_n2_rerun_authorized_bool": false,
+      "private_trace_row_write_authorized_in_p3_7_bool": false,
+      "requires_separate_phase_bool": true,
+      "retrieval_execution_authorized_bool": false
+    }
+  ],
+  "per_surface_capture_readiness_records": [
+    {
+      "anonymous_surface_capture_readiness_id": "p37cr0000",
+      "capture_execution_authorized_in_p3_7_bool": false,
+      "capture_execution_ready_for_p3_8_preflight_bool": true,
+      "default_off_gate_present_bool": true,
+      "default_path_call_absent_bool": true,
+      "future_event_source_required_bool": true,
+      "future_private_manifest_required_bool": true,
+      "helper_contract_validated_synthetically_bool": true,
+      "hook_shim_present_bool": true,
+      "manifest_schema_passed_bool": true,
+      "private_root_preflight_passed_bool": true,
+      "ready_for_p3_8_explicit_capture_smoke_bool": true,
+      "static_readiness_passed_bool": true,
+      "surface_bucket": "support_link",
+      "synthetic_helper_preflight_passed_bool": true
+    },
+    {
+      "anonymous_surface_capture_readiness_id": "p37cr0001",
+      "capture_execution_authorized_in_p3_7_bool": false,
+      "capture_execution_ready_for_p3_8_preflight_bool": true,
+      "default_off_gate_present_bool": true,
+      "default_path_call_absent_bool": true,
+      "future_event_source_required_bool": true,
+      "future_private_manifest_required_bool": true,
+      "helper_contract_validated_synthetically_bool": true,
+      "hook_shim_present_bool": true,
+      "manifest_schema_passed_bool": true,
+      "private_root_preflight_passed_bool": true,
+      "ready_for_p3_8_explicit_capture_smoke_bool": true,
+      "static_readiness_passed_bool": true,
+      "surface_bucket": "scheduler_action_cost",
+      "synthetic_helper_preflight_passed_bool": true
+    },
+    {
+      "anonymous_surface_capture_readiness_id": "p37cr0002",
+      "capture_execution_authorized_in_p3_7_bool": false,
+      "capture_execution_ready_for_p3_8_preflight_bool": true,
+      "default_off_gate_present_bool": true,
+      "default_path_call_absent_bool": true,
+      "future_event_source_required_bool": true,
+      "future_private_manifest_required_bool": true,
+      "helper_contract_validated_synthetically_bool": true,
+      "hook_shim_present_bool": true,
+      "manifest_schema_passed_bool": true,
+      "private_root_preflight_passed_bool": true,
+      "ready_for_p3_8_explicit_capture_smoke_bool": true,
+      "static_readiness_passed_bool": true,
+      "surface_bucket": "ordered_prefix_stop",
+      "synthetic_helper_preflight_passed_bool": true
+    },
+    {
+      "anonymous_surface_capture_readiness_id": "p37cr0003",
+      "capture_execution_authorized_in_p3_7_bool": false,
+      "capture_execution_ready_for_p3_8_preflight_bool": true,
+      "default_off_gate_present_bool": true,
+      "default_path_call_absent_bool": true,
+      "future_event_source_required_bool": true,
+      "future_private_manifest_required_bool": true,
+      "helper_contract_validated_synthetically_bool": true,
+      "hook_shim_present_bool": true,
+      "manifest_schema_passed_bool": true,
+      "private_root_preflight_passed_bool": true,
+      "ready_for_p3_8_explicit_capture_smoke_bool": true,
+      "static_readiness_passed_bool": true,
+      "surface_bucket": "same_file_redundancy",
+      "synthetic_helper_preflight_passed_bool": true
+    },
+    {
+      "anonymous_surface_capture_readiness_id": "p37cr0004",
+      "capture_execution_authorized_in_p3_7_bool": false,
+      "capture_execution_ready_for_p3_8_preflight_bool": true,
+      "default_off_gate_present_bool": true,
+      "default_path_call_absent_bool": true,
+      "future_event_source_required_bool": true,
+      "future_private_manifest_required_bool": true,
+      "helper_contract_validated_synthetically_bool": true,
+      "hook_shim_present_bool": true,
+      "manifest_schema_passed_bool": true,
+      "private_root_preflight_passed_bool": true,
+      "ready_for_p3_8_explicit_capture_smoke_bool": true,
+      "static_readiness_passed_bool": true,
+      "surface_bucket": "risk_penalty",
+      "synthetic_helper_preflight_passed_bool": true
+    }
+  ],
+  "phase": "BEA-v1-P3-7",
+  "private_manifest_schema_records": [
+    {
+      "anonymous_manifest_schema_id": "p37ms0000",
+      "manifest_schema_version": "bea_v1_p3_8_frozen_trace_capture_private_manifest.v1",
+      "private_manifest_schema_complete_bool": true,
+      "private_manifest_write_authorized_in_p3_7_bool": false,
+      "required_field_buckets": [
+        "capture_run_id_bucket",
+        "surface_bucket",
+        "private_jsonl_rel_bucket",
+        "row_count",
+        "schema_valid_count",
+        "scanner_public_projection_status",
+        "frozen_event_source_bucket",
+        "capture_execution_mode_bucket"
+      ],
+      "required_field_count": 8
+    }
+  ],
+  "private_output_root_preflight_records": [
+    {
+      "anonymous_private_root_preflight_id": "p37pr0000",
+      "private_manifest_schema_defined_bool": true,
+      "private_output_path_publicly_serialized_bool": false,
+      "private_output_root_preflight_passed_bool": true,
+      "private_write_permitted_in_p3_7_bool": false,
+      "research_private_root_bucket": "openlocus_research_private",
+      "root_exists_bool": true,
+      "root_gitignored_bool": true
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_7_frozen_trace_logger_capture_execution_preflight.v1",
+  "self_test_checks_passed": 16,
+  "self_test_checks_total": 16,
+  "self_test_passed": true,
+  "source_snippets_publicly_serialized": false,
+  "status": "frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized",
+  "status_vocabulary": [
+    "frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized",
+    "no_go_p3_7_required_inputs_unavailable",
+    "no_go_p3_7_changed_file_scope_invalid",
+    "no_go_p3_7_hook_static_readiness_failed",
+    "no_go_p3_7_explicit_enable_contract_incomplete",
+    "no_go_p3_7_private_output_root_not_ready",
+    "no_go_p3_7_manifest_schema_incomplete",
+    "no_go_p3_7_synthetic_helper_preflight_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "frozen_trace_logger_capture_execution_preflight_only",
+      "broad_retrieval_expansion_authorized": false,
+      "capture_execution_authorized_in_p3_7": false,
+      "current_phase_private_trace_row_write_authorized": false,
+      "current_phase_trace_capture_execution_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "hook_shim_execution_authorized_in_p3_7": false,
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-8 Frozen Trace Logger Explicit Capture Smoke \u2014 explicitly enabled separate-phase smoke using predeclared frozen/materialized event fixtures only",
+      "p3_8_explicit_capture_smoke_authorized": true,
+      "p3_8_scope": "BEA-v1-P3-8 Frozen Trace Logger Explicit Capture Smoke \u2014 explicitly enabled separate-phase smoke using predeclared frozen/materialized event fixtures only; no retrieval/P4L/N1/N2 reruns/support labeling/counterfactuals/policy/P5/v1-A/runtime/default promotion/broad retrieval.",
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_trace_row_write_authorized_in_p3_7": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized",
+      "stop_go_reason": "capture_execution_preflight_complete",
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "target_evaluator_execution_authorized": false,
+      "target_evaluator_import_authorized": false,
+      "target_hook_shim_call_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "synthetic_helper_preflight_records": [
+    {
+      "anonymous_synthetic_helper_preflight_id": "p37hp0000",
+      "helper_only_synthetic_in_memory_bool": true,
+      "hook_shim_called_bool": false,
+      "private_row_written_bool": false,
+      "private_validation_status_bucket": "pass",
+      "public_validation_status_bucket": "pass",
+      "real_capture_execution_bool": false,
+      "surface_bucket": "support_link",
+      "synthetic_helper_preflight_passed_bool": true,
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_synthetic_helper_preflight_id": "p37hp0001",
+      "helper_only_synthetic_in_memory_bool": true,
+      "hook_shim_called_bool": false,
+      "private_row_written_bool": false,
+      "private_validation_status_bucket": "pass",
+      "public_validation_status_bucket": "pass",
+      "real_capture_execution_bool": false,
+      "surface_bucket": "scheduler_action_cost",
+      "synthetic_helper_preflight_passed_bool": true,
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_synthetic_helper_preflight_id": "p37hp0002",
+      "helper_only_synthetic_in_memory_bool": true,
+      "hook_shim_called_bool": false,
+      "private_row_written_bool": false,
+      "private_validation_status_bucket": "pass",
+      "public_validation_status_bucket": "pass",
+      "real_capture_execution_bool": false,
+      "surface_bucket": "ordered_prefix_stop",
+      "synthetic_helper_preflight_passed_bool": true,
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_synthetic_helper_preflight_id": "p37hp0003",
+      "helper_only_synthetic_in_memory_bool": true,
+      "hook_shim_called_bool": false,
+      "private_row_written_bool": false,
+      "private_validation_status_bucket": "pass",
+      "public_validation_status_bucket": "pass",
+      "real_capture_execution_bool": false,
+      "surface_bucket": "same_file_redundancy",
+      "synthetic_helper_preflight_passed_bool": true,
+      "target_evaluator_imported_bool": false
+    },
+    {
+      "anonymous_synthetic_helper_preflight_id": "p37hp0004",
+      "helper_only_synthetic_in_memory_bool": true,
+      "hook_shim_called_bool": false,
+      "private_row_written_bool": false,
+      "private_validation_status_bucket": "pass",
+      "public_validation_status_bucket": "pass",
+      "real_capture_execution_bool": false,
+      "surface_bucket": "risk_penalty",
+      "synthetic_helper_preflight_passed_bool": true,
+      "target_evaluator_imported_bool": false
+    }
+  ],
+  "target_hook_static_readiness_records": [
+    {
+      "anonymous_static_readiness_id": "p37sr0000",
+      "default_off_bool": true,
+      "env_cli_private_path_enablement_present_bool": false,
+      "helper_refs_present_bool": true,
+      "hook_static_readiness_passed_bool": true,
+      "keyword_only_enabled_arg_bool": true,
+      "no_default_path_call_bool": true,
+      "shim_present_bool": true,
+      "surface_bucket": "support_link",
+      "target_bucket": "support_link_target"
+    },
+    {
+      "anonymous_static_readiness_id": "p37sr0001",
+      "default_off_bool": true,
+      "env_cli_private_path_enablement_present_bool": false,
+      "helper_refs_present_bool": true,
+      "hook_static_readiness_passed_bool": true,
+      "keyword_only_enabled_arg_bool": true,
+      "no_default_path_call_bool": true,
+      "shim_present_bool": true,
+      "surface_bucket": "scheduler_action_cost",
+      "target_bucket": "scheduler_action_cost_target"
+    },
+    {
+      "anonymous_static_readiness_id": "p37sr0002",
+      "default_off_bool": true,
+      "env_cli_private_path_enablement_present_bool": false,
+      "helper_refs_present_bool": true,
+      "hook_static_readiness_passed_bool": true,
+      "keyword_only_enabled_arg_bool": true,
+      "no_default_path_call_bool": true,
+      "shim_present_bool": true,
+      "surface_bucket": "ordered_prefix_stop",
+      "target_bucket": "ordered_prefix_stop_target"
+    },
+    {
+      "anonymous_static_readiness_id": "p37sr0003",
+      "default_off_bool": true,
+      "env_cli_private_path_enablement_present_bool": false,
+      "helper_refs_present_bool": true,
+      "hook_static_readiness_passed_bool": true,
+      "keyword_only_enabled_arg_bool": true,
+      "no_default_path_call_bool": true,
+      "shim_present_bool": true,
+      "surface_bucket": "same_file_redundancy",
+      "target_bucket": "same_file_redundancy_target"
+    },
+    {
+      "anonymous_static_readiness_id": "p37sr0004",
+      "default_off_bool": true,
+      "env_cli_private_path_enablement_present_bool": false,
+      "helper_refs_present_bool": true,
+      "hook_static_readiness_passed_bool": true,
+      "keyword_only_enabled_arg_bool": true,
+      "no_default_path_call_bool": true,
+      "shim_present_bool": true,
+      "surface_bucket": "risk_penalty",
+      "target_bucket": "risk_penalty_target"
+    }
+  ]
+}

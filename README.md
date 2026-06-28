@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-6: Frozen Trace Logger Limited Hook Application Patch**:
+The latest closed phase is **BEA-v1-P3-7: Frozen Trace Logger Capture Execution Preflight**:
 
 ```text
-status: frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized
-self-test: 15 / 15
+status: frozen_trace_logger_capture_execution_preflight_pass_p3_8_authorized
+self-test: 16 / 16
 forbidden scan: pass
-hook wiring records: 5
-default enabled count: 0
-real capture execution count: 0
-private writer count: 0
-P3-7 capture execution preflight authorized: true
+surface readiness records: 5
+synthetic helper preflight records: 5
+target evaluator imports: 0
+hook shim executions: 0
+private writes: 0
+P3-8 explicit capture smoke authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -199,6 +200,13 @@ enablement, add no private-path arguments, and perform no writes. P3-6 authorize
 only P3-7 capture-execution preflight; it still does not execute trace capture,
 write private rows, run retrieval, rerun P4L/N1/N2, or change runtime behavior.
 
+P3-7 performs capture-execution preflight only. It validates static hook
+readiness, the explicit enablement contract, the project-private root, the P3-8
+manifest schema, and helper-only synthetic fixtures without importing target
+evaluators or calling hook shims. It authorizes only P3-8 explicit capture smoke
+over predeclared frozen/materialized fixtures; no retrieval, reruns, private row
+writes, policy, P5, v1-A, or runtime/default promotion is authorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -331,6 +339,10 @@ See the current report index:
 - P3-6 authorizes only P3-7 frozen trace logger capture execution preflight. It
   does not authorize capture execution, private row writes, retrieval,
   P4L/N1/N2 reruns, policy changes, runtime promotion, P5, or v1-A.
+- P3-7 authorizes only P3-8 frozen trace logger explicit capture smoke over
+  predeclared frozen/materialized event fixtures. It does not authorize retrieval,
+  P4L/N1/N2 reruns, support labeling, counterfactuals, policy changes, runtime
+  promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
