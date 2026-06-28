@@ -4030,3 +4030,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P1-0 Support-Label Validator Dry Run completed**: status `support_label_validator_dry_run_pass`, self-test `6/6`, forbidden scan `pass`.
 - **Result**: 18 synthetic private labels validated through the P0-5 harness, proving schema validation, conjunction derivation, sanitizer, and public summary path work end to end. The fixture is not real label data.
 - **Decision**: P1-0 authorizes real private support labeling with the validated schema and harness. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P1-1 private-labeling queue findings
+
+- **BEA-v1-P1-1 Private Labeling Queue Preparation completed**: status `private_labeling_queue_preparation_pass`, self-test `7/7`, forbidden scan `pass`.
+- **Result**: 18 project-private queue records were generated under `.openlocus/research-private/`; the public artifact exposes only sanitized queue buckets and manifests.
+- **Decision**: P1-1 authorizes real private support labeling against the generated queue. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

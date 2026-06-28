@@ -11390,3 +11390,19 @@ Validate the P0-5 private support-label harness end to end with a synthetic priv
 ### Decision
 
 P1-0 authorizes real private support labeling using the validated schema and harness. Support counterfactual execution remains blocked until real private labels are complete and scanner-validated. P1-0 does not authorize P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, downstream-value claims, support counterfactual execution, or support marginal-utility claims.
+
+---
+
+## 2026-06-28 — BEA-v1-P1-1: Private Labeling Queue Preparation
+
+### Objective
+
+Prepare a real project-private support-labeling queue from P0-4 design records and the P1-0 validated harness path, while publishing only scanner-safe queue manifests and buckets.
+
+### Result
+
+`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `7/7`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
+
+### Decision
+
+P1-1 authorizes real private support labeling against the generated queue. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

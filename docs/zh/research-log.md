@@ -10579,3 +10579,19 @@ P0-9 只授权 private labeling 或 private trace validation。它不授权 supp
 ### 决策
 
 P1-0 授权使用已验证 schema 与 harness 进行真实 private support labeling。Support counterfactual execution 仍被阻断，直到真实 private labels 完整且 scanner-validated。P1-0 不授权 P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明、downstream-value 声明、support counterfactual execution 或 support marginal-utility 声明。
+
+---
+
+## 2026-06-28 — BEA-v1-P1-1：Private Labeling Queue Preparation
+
+### 目标
+
+基于 P0-4 design records 与 P1-0 已验证的 harness path，准备真实 project-private support-labeling queue，同时只发布 scanner-safe queue manifests 与 buckets。
+
+### 结果
+
+`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` 生成 `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json`，status 为 `private_labeling_queue_preparation_pass`。Self-test 通过 `7/7`，forbidden scan 通过，并在 `.openlocus/research-private/` 下写入 18 条 queue records。
+
+### 决策
+
+P1-1 授权基于生成 queue 进行真实 private support labeling。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

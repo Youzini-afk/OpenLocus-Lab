@@ -102,6 +102,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p0-6-7-8-parallel-trace-surfaces.md`: [en](en/bea-v1-p0-6-7-8-parallel-trace-surfaces.md) · [zh](zh/bea-v1-p0-6-7-8-parallel-trace-surfaces.md)
 - `bea-v1-p0-9-readiness-consolidation.md`: [en](en/bea-v1-p0-9-readiness-consolidation.md) · [zh](zh/bea-v1-p0-9-readiness-consolidation.md)
 - `bea-v1-p1-0-support-label-validator-dry-run.md`: [en](en/bea-v1-p1-0-support-label-validator-dry-run.md) · [zh](zh/bea-v1-p1-0-support-label-validator-dry-run.md)
+- `bea-v1-p1-1-private-labeling-queue-preparation.md`: [en](en/bea-v1-p1-1-private-labeling-queue-preparation.md) · [zh](zh/bea-v1-p1-1-private-labeling-queue-preparation.md)
 - `bea-v1-trace-gap-audit.md`: [en](en/bea-v1-trace-gap-audit.md) · [zh](zh/bea-v1-trace-gap-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)

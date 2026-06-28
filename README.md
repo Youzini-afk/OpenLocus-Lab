@@ -28,13 +28,13 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P1-0: Support-Label Validator Dry Run**:
+The latest closed phase is **BEA-v1-P1-1: Private Labeling Queue Preparation**:
 
 ```text
-status: support_label_validator_dry_run_pass
-self-test: 6 / 6
+status: private_labeling_queue_preparation_pass
+self-test: 7 / 7
 forbidden scan: pass
-synthetic labels validated: 18
+queue records: 18
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -103,6 +103,10 @@ P1-0 validated the P0-5 private support-label harness end to end with a syntheti
 private fixture under `.openlocus/research-private/`. This proves the label
 validator path works, but does not create real labels and does not authorize a
 support counterfactual.
+
+P1-1 prepared the real private support-labeling queue under
+`.openlocus/research-private/`. The public artifact exposes only sanitized queue
+buckets and confirms the queue is ready for private labeling.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -181,6 +185,9 @@ See the current report index:
 - P1-0 authorizes real private support labeling using the validated schema and
   harness. Support counterfactual execution remains blocked until real private
   labels are complete and scanner-validated.
+- P1-1 authorizes labeling against the generated project-private queue. It still
+  does not authorize support counterfactual execution or support marginal-utility
+  claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
