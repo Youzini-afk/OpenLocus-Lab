@@ -28,17 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P1-5R: Improved Automated Support Label Feasibility**:
+The latest closed phase is **BEA-v1-P2-0: Scheduler Private Arm-Row Recovery**:
 
 ```text
-status: no_go_p1_5r_private_context_unavailable
-self-test: 8 / 8
+status: no_go_p2_0_private_arm_rows_unavailable
+self-test: 11 / 11
 forbidden scan: pass
-direct P1-2 intake: pass
-P1-4 reliability artifact: available
-reconstructable context fields: 0
-improved label generation attempted: false
-guessed labels generated: false
+P4L artifact: pass
+locked denominator: exact match
+private arm rows: unavailable locally
+P0-3 full private-row export: not run
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -133,6 +132,12 @@ linkage to improve automated labels without guessing. They do not: the available
 rows contain only bucket/proxy fields, so no improved labels are generated and
 P1-5 remains unauthorized.
 
+P2-0 checks whether the P4L private arm-outcome rows can be recovered from local
+project-private storage or an explicitly supplied private `/tmp` JSONL and
+exported through the P0-3 scheduler/action-cost contract. The committed P4L
+manifest records 1,088 private rows, but the local private JSONL is absent, so
+P2-0 is a No-Go and does not guess or rerun arms by default.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -226,6 +231,10 @@ See the current report index:
 - P1-5R authorizes only feasibility auditing for improved automated support
   labels. It found no reconstructable private source context and does not
   generate guessed labels or authorize P1-5/support counterfactuals.
+- P2-0 authorizes only scheduler private arm-row recovery and sanitized export.
+  It found no local P4L private arm rows, does not tune policy, does not run broad
+  network replay by default, and does not authorize implementation/runtime
+  promotion.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
