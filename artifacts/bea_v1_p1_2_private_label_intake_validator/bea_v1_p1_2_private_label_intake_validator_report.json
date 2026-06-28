@@ -1,0 +1,136 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.005,
+  "claim_level": "bea_v1_p1_2_private_label_intake_validator_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p0_4_design_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p1_1_queue_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_queue_rows_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "public_private_queue_shapes_join",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "real_private_label_rows_full_valid",
+      "passed": false,
+      "threshold_relation": "boolean_required_for_counterfactual",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T12:09:25Z",
+  "generated_by": "eval/bea_v1_p1_2_private_label_intake_validator.py",
+  "label_conjunction_summary_records": [],
+  "label_intake_error_summary_records": [],
+  "label_relation_summary_records": [],
+  "label_risk_summary_records": [],
+  "mode": "bea_v1_p1_2_private_label_intake_validator",
+  "phase": "BEA-v1-P1-2",
+  "private_label_intake_manifest_records": [
+    {
+      "error_count": 0,
+      "manifest_name": "bea_v1_p1_2_support_label_intake",
+      "path_publicly_serialized": false,
+      "read_status": "not_supplied",
+      "record_count": 0,
+      "schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "source_queue_schema_version": "bea_v1_p1_1_support_labeling_queue.v1",
+      "storage_class": "project_ignored_private_jsonl",
+      "valid_record_count": 0
+    }
+  ],
+  "private_paths_publicly_serialized": false,
+  "private_queue_intake_manifest_records": [
+    {
+      "error_count": 0,
+      "manifest_name": "bea_v1_p1_1_support_labeling_queue",
+      "path_publicly_serialized": false,
+      "read_status": "pass",
+      "record_count": 18,
+      "required_output_schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "schema_version": "bea_v1_p1_1_support_labeling_queue.v1",
+      "storage_class": "project_ignored_private_jsonl",
+      "valid_record_count": 18
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "queue_intake_error_summary_records": [],
+  "raw_records_publicly_serialized": false,
+  "sanitized_real_label_intake_records": [],
+  "schema_version": "bea_v1_p1_2_private_label_intake_validator.v1",
+  "self_test_checks_passed": 8,
+  "self_test_checks_total": 8,
+  "self_test_passed": true,
+  "source_join_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_4_support_link_input_design",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p0_4_support_link_input_design.v1",
+      "source_status": "support_link_input_design_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_1_private_labeling_queue_preparation",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_1_private_labeling_queue_preparation.v1",
+      "source_status": "private_labeling_queue_preparation_pass"
+    }
+  ],
+  "status": "private_label_intake_validator_contract_pass",
+  "status_vocabulary": [
+    "private_label_intake_validator_contract_pass",
+    "private_label_intake_validator_real_labels_pass",
+    "no_go_private_label_intake_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "private_support_label_intake_validation_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "p5_authorized": false,
+      "real_private_labels_validated": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "private_label_intake_validator_contract_pass",
+      "stop_go_reason": "intake_validator_ready_real_labels_still_required",
+      "support_counterfactual_execution_authorized": false,
+      "support_marginal_utility_claimed": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

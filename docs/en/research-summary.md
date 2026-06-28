@@ -4036,3 +4036,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P1-1 Private Labeling Queue Preparation completed**: status `private_labeling_queue_preparation_pass`, self-test `7/7`, forbidden scan `pass`.
 - **Result**: 18 project-private queue records were generated under `.openlocus/research-private/`; the public artifact exposes only sanitized queue buckets and manifests.
 - **Decision**: P1-1 authorizes real private support labeling against the generated queue. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+## BEA-v1-P1-2 private-label intake validator findings
+
+- **BEA-v1-P1-2 Private Label Intake Validator completed as a contract pass**: status `private_label_intake_validator_contract_pass`, self-test `8/8`, forbidden scan `pass`.
+- **Result**: 18 project-private queue records validated from `.openlocus/research-private/`; no real private label file was supplied, so valid real labels remain `0/18` and sanitized real-label records are empty.
+- **Decision**: P1-2 authorizes only private support-label intake validation. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.

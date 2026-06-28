@@ -3444,3 +3444,9 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P1-1 Private Labeling Queue Preparation 已完成**：status `private_labeling_queue_preparation_pass`，self-test `7/7`，forbidden scan `pass`。
 - **结果**：18 条 project-private queue records 已生成到 `.openlocus/research-private/`；public artifact 只暴露 sanitized queue buckets 与 manifests。
 - **决策**：P1-1 授权基于生成 queue 进行真实 private support labeling。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-P1-2 private-label intake validator 发现
+
+- **BEA-v1-P1-2 Private Label Intake Validator 已完成为 contract pass**：status `private_label_intake_validator_contract_pass`，self-test `8/8`，forbidden scan `pass`。
+- **结果**：从 `.openlocus/research-private/` 验证了 18 条 project-private queue records；本轮未提供真实 private label 文件，因此有效真实 labels 仍为 `0/18`，sanitized real-label records 为空。
+- **决策**：P1-2 只授权 private support-label intake validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

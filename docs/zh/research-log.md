@@ -10595,3 +10595,21 @@ P1-0 授权使用已验证 schema 与 harness 进行真实 private support label
 ### 决策
 
 P1-1 授权基于生成 queue 进行真实 private support labeling。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+---
+
+## 2026-06-28 — BEA-v1-P1-2：Private Label Intake Validator
+
+### 目标
+
+为 P1-1 project-private queue 增加 fail-closed 的真实 private support labels intake validator，同时不伪造 labels，也不执行任何 support counterfactual。
+
+### 结果
+
+`eval/bea_v1_p1_2_private_label_intake_validator.py` 生成 `artifacts/bea_v1_p1_2_private_label_intake_validator/bea_v1_p1_2_private_label_intake_validator_report.json`，status 为 `private_label_intake_validator_contract_pass`。Self-test 通过 `8/8`，forbidden scan 通过，并从 `.openlocus/research-private/` 验证了 18 条 private queue records。
+
+本轮未提供真实 private labels，因此有效真实 labels 仍为 `0/18`，counterfactual gate 仍保持 blocked。
+
+### 决策
+
+P1-2 只授权 private support-label intake validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、runtime/default promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。

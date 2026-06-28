@@ -28,13 +28,14 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P1-1: Private Labeling Queue Preparation**:
+The latest closed phase is **BEA-v1-P1-2: Private Label Intake Validator**:
 
 ```text
-status: private_labeling_queue_preparation_pass
-self-test: 7 / 7
+status: private_label_intake_validator_contract_pass
+self-test: 8 / 8
 forbidden scan: pass
-queue records: 18
+valid private queue records: 18
+valid real labels: 0
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -107,6 +108,11 @@ support counterfactual.
 P1-1 prepared the real private support-labeling queue under
 `.openlocus/research-private/`. The public artifact exposes only sanitized queue
 buckets and confirms the queue is ready for private labeling.
+
+P1-2 adds a private label intake validator over the P1-1 queue. In the current
+run it validates the queue contract and public/private shape join, but no real
+private labels were supplied, so support counterfactual execution remains
+blocked.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2

@@ -11406,3 +11406,21 @@ Prepare a real project-private support-labeling queue from P0-4 design records a
 ### Decision
 
 P1-1 authorizes real private support labeling against the generated queue. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+---
+
+## 2026-06-28 — BEA-v1-P1-2: Private Label Intake Validator
+
+### Objective
+
+Add a fail-closed intake validator for real private support labels against the P1-1 project-private queue, without fabricating labels or executing any support counterfactual.
+
+### Result
+
+`eval/bea_v1_p1_2_private_label_intake_validator.py` generated `artifacts/bea_v1_p1_2_private_label_intake_validator/bea_v1_p1_2_private_label_intake_validator_report.json` with status `private_label_intake_validator_contract_pass`. Self-test passed `8/8`, forbidden scan passed, and 18 private queue records validated from `.openlocus/research-private/`.
+
+No real private labels were supplied in this run, so valid real labels remain `0/18` and the counterfactual gate remains blocked.
+
+### Decision
+
+P1-2 authorizes only private support-label intake validation. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
