@@ -19,7 +19,7 @@ abstain / request more context. Candidate is not fact.
 
 ## Current research status
 
-Status date: **2026-06-27**.
+Status date: **2026-06-28**.
 
 OpenLocus is now in the **BEA v1 actionability / retrieval-action scheduling**
 line. The current question is no longer “which retrieval channel is globally
@@ -28,14 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P1-2: Private Label Intake Validator**:
+The latest closed phase is **BEA-v1-P1-3: Agent-Generated Support Label Fill**:
 
 ```text
-status: private_label_intake_validator_contract_pass
-self-test: 8 / 8
+status: agent_generated_support_label_fill_pass
+self-test: 10 / 10
 forbidden scan: pass
-valid private queue records: 18
-valid real labels: 0
+private queue rows read: 18
+agent-generated private labels written: 18
+P0-5-compatible labels: 18
+P1-2 intake-valid labels: 18
+label errors: 0
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -114,6 +117,12 @@ run it validates the queue contract and public/private shape join, but no real
 private labels were supplied, so support counterfactual execution remains
 blocked.
 
+P1-3 fills that queue with deterministic agent-generated private proxy labels
+under `.openlocus/research-private/` and validates them through P0-5/P1-2. The
+labels are explicitly not human labels, not human-calibrated E/S, not support
+utility evidence, and not mechanism evidence; support counterfactual execution
+remains blocked.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -179,21 +188,28 @@ See the current report index:
 - P0-4 has closed the support-link input-design contract. The next support phase
   must either create scanner-validated private labels under this contract or stay
   at design level; it still cannot claim support marginal utility.
-- P0-5 has closed the private labeling harness contract, but private labels are
-  not yet supplied. Support counterfactual execution remains unauthorized until
-  those labels are complete and scanner-validated.
+- P0-5 has closed the private labeling harness contract, and P1-3 now supplies
+  scanner-validated agent-generated private proxy labels. These are not human
+  labels or mechanism evidence, so support counterfactual execution remains
+  unauthorized.
 - P0-6/7/8 have closed the remaining trace-surface contracts, but they are not
   populated private trace exports. Policy tuning and counterfactual execution
   remain unauthorized until project-local private rows validate cleanly.
 - P0-9 prevents contract-pass artifacts from being read as populated mechanism
   evidence. Support counterfactuals, trace counterfactuals, policy tuning, P5,
   and BEA-v1-A all remain blocked.
-- P1-0 authorizes real private support labeling using the validated schema and
-  harness. Support counterfactual execution remains blocked until real private
-  labels are complete and scanner-validated.
+- P1-0 authorizes private support labeling using the validated schema and
+  harness. P1-3 completed an automated/agent-generated fill, but support
+  counterfactual execution remains blocked because these are queue/design-field
+  proxy labels with unknown target/support hit buckets, and no P1-4 reliability
+  audit or P1-5 denominator gate has passed. No human-calibrated claim is made or
+  required.
 - P1-1 authorizes labeling against the generated project-private queue. It still
   does not authorize support counterfactual execution or support marginal-utility
   claims.
+- P1-3 authorizes only automated private support-label fill and P1-2 intake
+  validation. It does not authorize support counterfactual execution, support
+  marginal-utility claims, mechanism evidence claims, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

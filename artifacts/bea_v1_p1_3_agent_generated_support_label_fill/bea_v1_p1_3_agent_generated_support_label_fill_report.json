@@ -1,0 +1,514 @@
+{
+  "agent_generated_label_manifest_records": [
+    {
+      "human_calibrated": false,
+      "label_error_count": 0,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "manifest_name": "bea_v1_p1_3_agent_generated_support_labels",
+      "p0_5_compatible_record_count": 18,
+      "p1_2_intake_valid_record_count": 18,
+      "path_publicly_serialized": false,
+      "record_count": 18,
+      "records_written": true,
+      "schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "source_queue_schema_version": "bea_v1_p1_1_support_labeling_queue.v1",
+      "storage_class": "project_ignored_private_jsonl",
+      "write_status": "written_project_private"
+    }
+  ],
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.002,
+  "claim_level": "automated_private_support_label_fill_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p0_4_design_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p1_1_queue_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_queue_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "private_queue_rows_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "agent_generated_label_rows_written",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "p0_5_compatible_rows",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "p1_2_intake_valid_rows",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "label_errors_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "support_counterfactual_execution_not_run",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-28T15:03:31Z",
+  "generated_by": "eval/bea_v1_p1_3_agent_generated_support_label_fill.py",
+  "label_conjunction_summary_records": [
+    {
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "count": 18
+    }
+  ],
+  "label_error_summary_records": [],
+  "label_origin_summary_records": [
+    {
+      "count": 18,
+      "label_origin_bucket": "agent_generated"
+    }
+  ],
+  "label_relation_summary_records": [
+    {
+      "count": 6,
+      "support_relation_bucket": "missing_support_candidate"
+    },
+    {
+      "count": 6,
+      "support_relation_bucket": "support_without_target"
+    },
+    {
+      "count": 6,
+      "support_relation_bucket": "target_without_support"
+    }
+  ],
+  "label_risk_summary_records": [
+    {
+      "count": 6,
+      "leakage_risk_bucket": "support_overbroad_risk"
+    },
+    {
+      "count": 6,
+      "leakage_risk_bucket": "target_binding_leak_risk"
+    },
+    {
+      "count": 6,
+      "leakage_risk_bucket": "unknown_not_labeled"
+    }
+  ],
+  "label_role_summary_records": [
+    {
+      "count": 12,
+      "support_evidence_role_bucket": "ambiguous_or_unknown"
+    },
+    {
+      "count": 6,
+      "support_evidence_role_bucket": "constraint"
+    }
+  ],
+  "mode": "bea_v1_p1_3_agent_generated_support_label_fill",
+  "phase": "BEA-v1-P1-3",
+  "private_paths_publicly_serialized": false,
+  "private_queue_read_manifest_records": [
+    {
+      "error_count": 0,
+      "manifest_name": "bea_v1_p1_1_support_labeling_queue",
+      "path_publicly_serialized": false,
+      "read_status": "pass",
+      "record_count": 18,
+      "schema_version": "bea_v1_p1_1_support_labeling_queue.v1",
+      "storage_class": "project_ignored_private_jsonl",
+      "valid_record_count": 18
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "sanitized_agent_generated_label_records": [
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0000",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0001",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0002",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0003",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0004",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0005",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "missing_support_candidate",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0006",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0007",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0008",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0009",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0010",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0011",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "ambiguous_or_unknown",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "support_without_target",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0012",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0013",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0014",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0015",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0016",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "unknown_not_labeled"
+    },
+    {
+      "annotation_status_bucket": "labeled",
+      "anonymous_generated_label_id": "aglbl0017",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "counterfactual_ready_after_fill": false,
+      "human_calibrated": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "provider_call_used": false,
+      "raw_source_used": false,
+      "support_evidence_role_bucket": "constraint",
+      "support_hit_bucket": "unknown_not_labeled",
+      "support_relation_bucket": "target_without_support",
+      "target_hit_bucket": "unknown_not_labeled"
+    }
+  ],
+  "schema_version": "bea_v1_p1_3_agent_generated_support_label_fill.v1",
+  "self_test_checks_passed": 10,
+  "self_test_checks_total": 10,
+  "self_test_passed": true,
+  "source_join_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_4_support_link_input_design",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p0_4_support_link_input_design.v1",
+      "source_status": "support_link_input_design_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_1_private_labeling_queue_preparation",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_1_private_labeling_queue_preparation.v1",
+      "source_status": "private_labeling_queue_preparation_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_2_private_label_intake_validator",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_2_private_label_intake_validator.v1",
+      "source_status": "private_label_intake_validator_real_labels_pass"
+    }
+  ],
+  "status": "agent_generated_support_label_fill_pass",
+  "status_vocabulary": [
+    "agent_generated_support_label_fill_pass",
+    "no_go_agent_generated_support_label_fill_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "automated_private_support_label_fill_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "human_calibrated_e_s_claimed": false,
+      "human_labels_claimed": false,
+      "implementation_authorized": false,
+      "label_origin_claim": "agent_generated_only",
+      "mechanism_evidence_claimed": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "agent_generated_support_label_fill_pass",
+      "stop_go_reason": "agent_generated_private_labels_validated_without_counterfactual",
+      "support_counterfactual_executed": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_marginal_utility_claimed": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
