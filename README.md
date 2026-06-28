@@ -28,16 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P2-2: Redundancy + Risk Trace Availability**:
+The latest closed phase is **BEA-v1-P2-3: Late Trace Surface Closure**:
 
 ```text
-status: no_go_p2_2_redundancy_risk_traces_unavailable
-self-test: 8 / 8
+status: late_trace_surface_closure_no_go
+self-test: 9 / 9
 forbidden scan: pass
-P0-6 contract rows: 6
-P0-7 contract rows: 6
-same-file valid private rows: 0
-risk-penalty valid private rows: 0
+surfaces checked: 5
+blocked surfaces: 5
+decision reason: upstream_trace_capture_required
+next allowed phase: frozen_upstream_trace_capture_harness_design_only
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -148,6 +148,11 @@ Both P0-6 and P0-7 contracts are present with six rows each, but no local privat
 trace JSONL is available for either surface; trace counterfactuals and policy
 tuning remain blocked.
 
+P2-3 closes the current late trace route by consolidating P1-5R, P2-0, P2-1, and
+P2-2. All five late surfaces remain blocked, so the only allowed next step is
+P3-0 frozen upstream trace-capture harness design: schema/instrumentation
+planning only, not execution, policy, or retrieval.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -251,6 +256,9 @@ See the current report index:
 - P2-2 authorizes only redundancy/risk trace availability auditing. It found no
   local private trace rows and does not authorize trace counterfactuals, policy
   tuning, implementation, or runtime promotion.
+- P2-3 authorizes only late trace surface closure and the next-experiment decision.
+  It allows only P3-0 frozen upstream trace-capture harness design; all execution,
+  counterfactual, policy, implementation, runtime, P5, and v1-A flags remain false.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

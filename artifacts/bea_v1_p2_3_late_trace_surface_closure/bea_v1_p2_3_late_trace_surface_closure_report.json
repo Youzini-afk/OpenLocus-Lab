@@ -1,0 +1,279 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.001,
+  "claim_level": "late_trace_surface_closure_and_next_experiment_decision_only",
+  "decision_summary_records": [
+    {
+      "all_late_trace_surfaces_blocked": true,
+      "blocked_surface_count": 5,
+      "decision_bucket": "late_trace_surface_closure_no_go",
+      "decision_reason_bucket": "upstream_trace_capture_required",
+      "execution_authorized": false,
+      "next_allowed_phase": "frozen_upstream_trace_capture_harness_design_only",
+      "schema_and_instrumentation_planning_only": true,
+      "total_surface_count": 5
+    }
+  ],
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "upstream_trace_capture_required",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "required_input_statuses_and_scans_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "five_required_surfaces_mapped",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "all_surfaces_blocked",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_denominator_audit_authorized",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_counterfactual_authorized",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "next_allowed_phase_is_design_only",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": "frozen_upstream_trace_capture_harness_design_only",
+      "value": "frozen_upstream_trace_capture_harness_design_only"
+    }
+  ],
+  "generated_at": "2026-06-28T16:25:45Z",
+  "generated_by": "eval/bea_v1_p2_3_late_trace_surface_closure.py",
+  "input_artifact_records": [
+    {
+      "expected_status": "no_go_p1_5r_private_context_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p1_5r_support_link",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p1_5r_private_context_unavailable",
+      "source_phase_bucket": "BEA-v1-P1-5R"
+    },
+    {
+      "expected_status": "no_go_p2_0_private_arm_rows_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_0_scheduler_action_cost",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p2_0_private_arm_rows_unavailable",
+      "source_phase_bucket": "BEA-v1-P2-0"
+    },
+    {
+      "expected_status": "no_go_p2_1_ordered_prefix_only_aggregate",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_1_ordered_prefix_stop",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p2_1_ordered_prefix_only_aggregate",
+      "source_phase_bucket": "BEA-v1-P2-1"
+    },
+    {
+      "expected_status": "no_go_p2_2_redundancy_risk_traces_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_2_redundancy_risk",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p2_2_redundancy_risk_traces_unavailable",
+      "source_phase_bucket": "BEA-v1-P2-2"
+    }
+  ],
+  "mode": "bea_v1_p2_3_late_trace_surface_closure",
+  "phase": "BEA-v1-P2-3",
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p2_3_late_trace_surface_closure.v1",
+  "self_test_checks_passed": 9,
+  "self_test_checks_total": 9,
+  "self_test_passed": true,
+  "status": "late_trace_surface_closure_no_go",
+  "status_vocabulary": [
+    "late_trace_surface_closure_no_go",
+    "late_trace_surface_closure_partial_trace_ready",
+    "late_trace_surface_closure_denominator_audit_authorized",
+    "no_go_p2_3_required_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "broad_retrieval_expansion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "next_allowed_phase": "frozen_upstream_trace_capture_harness_design_only",
+      "ordered_prefix_stop_policy_change_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "schema_and_instrumentation_planning_only": true,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "late_trace_surface_closure_no_go",
+      "stop_go_reason": "upstream_trace_capture_required",
+      "support_counterfactual_execution_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "upstream_trace_capture_required": true,
+      "v1_a_authorized": false
+    }
+  ],
+  "surface_blocker_summary_records": [
+    {
+      "count": 1,
+      "surface_state_bucket": "aggregate_only_private_trace_missing"
+    },
+    {
+      "count": 1,
+      "surface_state_bucket": "blocked_no_reconstructable_private_context"
+    },
+    {
+      "count": 1,
+      "surface_state_bucket": "blocked_private_arm_rows_unavailable_locally"
+    },
+    {
+      "count": 2,
+      "surface_state_bucket": "contract_only_missing_private_trace"
+    }
+  ],
+  "surface_closure_records": [
+    {
+      "anonymous_surface_closure_id": "ltsc0000",
+      "broad_retrieval_expansion_authorized": false,
+      "closure_bucket": "blocked_requires_upstream_trace_capture",
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "evidence_level_bucket": "schema_valid_proxy_only",
+      "evidence_source_bucket": "p1_5r_support_link",
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "next_required_input_bucket": "upstream_source_context_linkage_or_private_trace_capture",
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "source_phase_bucket": "BEA-v1-P1-5R",
+      "source_status": "no_go_p1_5r_private_context_unavailable",
+      "support_counterfactual_execution_authorized": false,
+      "surface_bucket": "support_link",
+      "surface_state_bucket": "blocked_no_reconstructable_private_context",
+      "trace_counterfactual_execution_authorized": false,
+      "valid_private_row_count_bucket": "zero"
+    },
+    {
+      "anonymous_surface_closure_id": "ltsc0001",
+      "broad_retrieval_expansion_authorized": false,
+      "closure_bucket": "blocked_requires_upstream_trace_capture",
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "evidence_level_bucket": "private_rows_missing",
+      "evidence_source_bucket": "p2_0_scheduler_action_cost",
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "next_required_input_bucket": "upstream_scheduler_arm_trace_capture",
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "source_phase_bucket": "BEA-v1-P2-0",
+      "source_status": "no_go_p2_0_private_arm_rows_unavailable",
+      "support_counterfactual_execution_authorized": false,
+      "surface_bucket": "scheduler_action_cost",
+      "surface_state_bucket": "blocked_private_arm_rows_unavailable_locally",
+      "trace_counterfactual_execution_authorized": false,
+      "valid_private_row_count_bucket": "zero"
+    },
+    {
+      "anonymous_surface_closure_id": "ltsc0002",
+      "broad_retrieval_expansion_authorized": false,
+      "closure_bucket": "blocked_requires_upstream_trace_capture",
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "evidence_level_bucket": "aggregate_only",
+      "evidence_source_bucket": "p2_1_ordered_prefix_stop",
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "next_required_input_bucket": "upstream_ordered_prefix_private_trace_capture",
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "source_phase_bucket": "BEA-v1-P2-1",
+      "source_status": "no_go_p2_1_ordered_prefix_only_aggregate",
+      "support_counterfactual_execution_authorized": false,
+      "surface_bucket": "ordered_prefix_stop",
+      "surface_state_bucket": "aggregate_only_private_trace_missing",
+      "trace_counterfactual_execution_authorized": false,
+      "valid_private_row_count_bucket": "zero"
+    },
+    {
+      "anonymous_surface_closure_id": "ltsc0003",
+      "broad_retrieval_expansion_authorized": false,
+      "closure_bucket": "blocked_requires_upstream_trace_capture",
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "evidence_level_bucket": "contract_only",
+      "evidence_source_bucket": "p2_2_redundancy_risk",
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "next_required_input_bucket": "upstream_same_file_redundancy_trace_capture",
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "source_phase_bucket": "BEA-v1-P2-2",
+      "source_status": "no_go_p2_2_redundancy_risk_traces_unavailable",
+      "support_counterfactual_execution_authorized": false,
+      "surface_bucket": "same_file_redundancy",
+      "surface_state_bucket": "contract_only_missing_private_trace",
+      "trace_counterfactual_execution_authorized": false,
+      "valid_private_row_count_bucket": "zero"
+    },
+    {
+      "anonymous_surface_closure_id": "ltsc0004",
+      "broad_retrieval_expansion_authorized": false,
+      "closure_bucket": "blocked_requires_upstream_trace_capture",
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "evidence_level_bucket": "contract_only",
+      "evidence_source_bucket": "p2_2_redundancy_risk",
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "next_required_input_bucket": "upstream_risk_penalty_trace_capture",
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "source_phase_bucket": "BEA-v1-P2-2",
+      "source_status": "no_go_p2_2_redundancy_risk_traces_unavailable",
+      "support_counterfactual_execution_authorized": false,
+      "surface_bucket": "risk_penalty",
+      "surface_state_bucket": "contract_only_missing_private_trace",
+      "trace_counterfactual_execution_authorized": false,
+      "valid_private_row_count_bucket": "zero"
+    }
+  ]
+}
