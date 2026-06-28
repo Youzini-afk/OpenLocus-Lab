@@ -28,18 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-4: Frozen Trace Logger Hook-In Preflight Design**:
+The latest closed phase is **BEA-v1-P3-5: Frozen Trace Logger Hook-In Patch Plan Review**:
 
 ```text
-status: frozen_trace_logger_hook_in_preflight_design_pass_p3_5_authorized
+status: frozen_trace_logger_hook_in_patch_plan_review_pass_p3_6_authorized
 self-test: 13 / 13
 forbidden scan: pass
-static targets inspected: 6
-surface hook designs: 5
-P3-5 patch-plan review authorized: true
-hook application authorized: false
-trace capture execution authorized: false
-private trace row write authorized: false
+surface patch plans: 5
+feature gates default-enabled: 0
+private writes authorized in P3-5/P3-6: 0
+P3-6 limited hook application patch authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -188,6 +186,12 @@ boundaries, and behavior-preservation gates. It authorizes only P3-5 static
 patch-plan review; hook application, hook execution, trace capture, private row
 writes, retrieval, reruns, and runtime behavior changes remain blocked.
 
+P3-5 reviews the frozen trace logger hook-in patch plan as bucketed records only.
+It plans default-off logging-only hook wiring and synthetic/no-execution
+validation for a future P3-6 phase, but does not apply patches, execute hooks,
+capture traces, write private rows, run retrieval, rerun P4L/N1/N2, or change
+runtime behavior.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -312,6 +316,10 @@ See the current report index:
 - P3-4 authorizes only P3-5 frozen trace logger hook-in patch-plan review. It
   does not authorize patch application, hook execution, trace capture execution,
   private row writes, retrieval, reruns, policy changes, runtime promotion, P5,
+  or v1-A.
+- P3-5 authorizes only P3-6 default-off logging-only hook wiring with
+  synthetic/no-execution validation. It does not authorize trace capture, private
+  row writes, retrieval, P4L/N1/N2 reruns, policy changes, runtime promotion, P5,
   or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are

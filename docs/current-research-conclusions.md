@@ -116,6 +116,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p3-2-frozen-trace-logger-patch-design.md`: [en](en/bea-v1-p3-2-frozen-trace-logger-patch-design.md) · [zh](zh/bea-v1-p3-2-frozen-trace-logger-patch-design.md)
 - `bea-v1-p3-3-frozen-trace-logger-isolated-helper-patch-review.md`: [en](en/bea-v1-p3-3-frozen-trace-logger-isolated-helper-patch-review.md) · [zh](zh/bea-v1-p3-3-frozen-trace-logger-isolated-helper-patch-review.md)
 - `bea-v1-p3-4-frozen-trace-logger-hook-in-preflight-design.md`: [en](en/bea-v1-p3-4-frozen-trace-logger-hook-in-preflight-design.md) · [zh](zh/bea-v1-p3-4-frozen-trace-logger-hook-in-preflight-design.md)
+- `bea-v1-p3-5-frozen-trace-logger-hook-in-patch-plan-review.md`: [en](en/bea-v1-p3-5-frozen-trace-logger-hook-in-patch-plan-review.md) · [zh](zh/bea-v1-p3-5-frozen-trace-logger-hook-in-patch-plan-review.md)
 - `bea-v1-trace-gap-audit.md`: [en](en/bea-v1-trace-gap-audit.md) · [zh](zh/bea-v1-trace-gap-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
