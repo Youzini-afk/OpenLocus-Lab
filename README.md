@@ -28,15 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8N: Empirical Fixture Acquisition Preflight**:
+The latest closed phase is **BEA-v1-P3-8O: Empirical Event Source Declaration Design**:
 
 ```text
-status: no_go_p3_8n_empirical_event_source_not_declared
-self-test: 13 / 13
+status: empirical_event_source_declaration_design_pass_p3_8p_authorized
+self-test: 14 / 14
 forbidden scan: pass
-surface field spec records: 5
-empirical event source declared: false
-P3-8O source declaration design authorized: true
+future declaration fields: 14
+surface source requirement records: 5
+validation rules: 11
+P3-8P declaration intake preflight authorized: true
 fixture generation authorized: false
 trace capture execution authorized: false
 private write authorized: false
@@ -272,6 +273,11 @@ because no empirical event source is declared. It reads only the P3-8M public
 artifact and gitignore metadata; it performs no private inventory read and no
 private reads/writes. It authorizes only P3-8O source declaration design.
 
+P3-8O designs the future empirical event source declaration schema and validation
+rules. It allows only existing materialized event logs or explicit future capture
+mode plans as source modes; proxy fixtures, aggregate proxies, and contract
+templates are rejected. It authorizes only P3-8P declaration intake preflight.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -454,6 +460,11 @@ See the current report index:
   helper imports, target evaluator imports, retrieval, P4L/N1/N2 reruns, support
   labeling, counterfactuals, policy tuning, runtime/default promotion, P5, or
   v1-A.
+- P3-8O authorizes only P3-8P empirical event source declaration intake preflight.
+  It does not authorize fixture generation, capture execution, private reads or
+  writes, helper imports, target evaluator imports, retrieval, P4L/N1/N2 reruns,
+  support labeling, counterfactuals, policy tuning, runtime/default promotion,
+  P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
