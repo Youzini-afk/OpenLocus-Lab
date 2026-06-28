@@ -97,6 +97,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n3-extra-depth-merge-order-design-simulation.md`: [en](en/bea-v1-n3-extra-depth-merge-order-design-simulation.md) · [zh](zh/bea-v1-n3-extra-depth-merge-order-design-simulation.md)
 - `bea-v1-n4-fixed-pool-rank-blocker-denominator-audit.md`: [en](en/bea-v1-n4-fixed-pool-rank-blocker-denominator-audit.md) · [zh](zh/bea-v1-n4-fixed-pool-rank-blocker-denominator-audit.md)
 - `bea-v1-n5-fixed-pool-rank-order-experiment-preflight.md`: [en](en/bea-v1-n5-fixed-pool-rank-order-experiment-preflight.md) · [zh](zh/bea-v1-n5-fixed-pool-rank-order-experiment-preflight.md)
+- `bea-v1-n6-fixed-pool-rank-order-experiment.md`: [en](en/bea-v1-n6-fixed-pool-rank-order-experiment.md) · [zh](zh/bea-v1-n6-fixed-pool-rank-order-experiment.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
 - `bea-v1-p0-4-support-link-input-design.md`: [en](en/bea-v1-p0-4-support-link-input-design.md) · [zh](zh/bea-v1-p0-4-support-link-input-design.md)

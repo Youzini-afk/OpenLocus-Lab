@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N5: Fixed-Pool Rank-Order Experiment Preflight**:
+The latest closed phase is **BEA-v1-N6: Fixed-Pool Rank-Order Experiment**:
 
 ```text
-status: fixed_pool_rank_order_experiment_preflight_pass_n6_authorized
-self-test: 15 / 15
+status: no_go_n6_public_fixed_pool_arm_fields_insufficient
+self-test: 16 / 16
 forbidden scan: pass
-eligible fixed-pool rank cases: 40
-fixed order-transform arms: 4
-primary N6 metric: top10_recovery_count_over_40_fixed_cases
-pass threshold: top10_recovery_ge_16_and_regressions_le_2
-N6 fixed-pool rank-order experiment authorized: true
+fixed case set consistent: true
+N5 arms checked: 4
+exact public per-case arm mappings: 0 / 4
+per-case arm outcome rows evaluated: 0
+N7 result audit authorized: false
 new retrieval/rerun: false
 ```
 
@@ -304,6 +304,12 @@ fixed public N2/N3 pool fields; it still forbids new retrieval, P4L/N1/N2/N3
 reruns, selector/reranker execution, private reads, policy/runtime changes,
 counterfactuals, method-winner claims, and downstream-value claims.
 
+N6 attempts the authorized fixed-pool rank-order experiment using only committed
+public N5/N4/N2/N3/P4L artifacts, but correctly stops as No-Go because exact
+per-case public outcome fields for the four N5/N6 arms are unavailable. N3 has
+analogous design-arm rows, but their names and semantics are not exact N6 arms,
+so N6 does not map them as results and does not infer from aggregate counts.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -510,6 +516,10 @@ See the current report index:
   It does not authorize candidate-pool mutation, new retrieval, reruns,
   selector/reranker execution, private reads, policy/runtime changes,
   counterfactuals, method-winner claims, or downstream-value claims.
+- N6 is a No-Go for missing exact public per-case arm outcome fields. It does not
+  authorize N7 result audit, candidate-pool mutation, new retrieval, reruns,
+  selector/reranker execution, private reads, policy/runtime changes,
+  counterfactuals, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -653,6 +663,10 @@ eval/bea_v1_n2_rank_pack_actionability_decomposition.py
 eval/bea_v1_n5_fixed_pool_rank_order_experiment_preflight.py
   No-execution fixed-pool rank-order experiment preflight freezing 40 N4 cases,
   four order-transform arms, N6 metrics, and pass gates.
+
+eval/bea_v1_n6_fixed_pool_rank_order_experiment.py
+  Public-artifact fixed-pool rank-order experiment evaluator; No-Go when exact
+  public per-case fields for the N5/N6 arms are unavailable.
 ```
 
 Key reports:
@@ -664,6 +678,7 @@ Key reports:
 - [`artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json`](artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json)
 - [`artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json`](artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json)
 - [`artifacts/bea_v1_n5_fixed_pool_rank_order_experiment_preflight/bea_v1_n5_fixed_pool_rank_order_experiment_preflight_report.json`](artifacts/bea_v1_n5_fixed_pool_rank_order_experiment_preflight/bea_v1_n5_fixed_pool_rank_order_experiment_preflight_report.json)
+- [`artifacts/bea_v1_n6_fixed_pool_rank_order_experiment/bea_v1_n6_fixed_pool_rank_order_experiment_report.json`](artifacts/bea_v1_n6_fixed_pool_rank_order_experiment/bea_v1_n6_fixed_pool_rank_order_experiment_report.json)
 
 Documentation mirror check:
 
