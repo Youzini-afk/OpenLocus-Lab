@@ -1,0 +1,262 @@
+{
+  "aggregate_runtime_seconds": 0.009,
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38gcf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "expected_private_fixture_file_count_seen": 2,
+      "git_status_available_bool": true,
+      "helper_p3_8_target_or_runtime_modified_bool": false,
+      "unexpected_research_private_file_count": 0,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "frozen_event_proxy_fixture_materialization_smoke_only",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_8f_input_pass",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "proxy_source_mapping_valid_5_of_5",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "changed_file_scope_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_output_root_ready",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "proxy_fixture_schema_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p3_8_default_fixture_files_absent",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "private_fixture_write_pass",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_execution_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T19:15:18Z",
+  "generated_by": "eval/bea_v1_p3_8g_frozen_event_proxy_fixture_materialization_smoke.py",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "p38gi0000",
+      "empirical_mapping_count": 0,
+      "expected_status": "frozen_event_fixture_materialization_preflight_pass_p3_8g_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8f_frozen_event_fixture_materialization_preflight",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "frozen_event_fixture_materialization_preflight_pass_p3_8g_authorized",
+      "p3_8f_private_fixture_write_count": 0,
+      "p3_8g_authorized_bool": true,
+      "safe_proxy_mapping_count": 5
+    }
+  ],
+  "p3_8_compatibility_records": [
+    {
+      "anonymous_p3_8_compatibility_id": "p38gpc0000",
+      "compatibility_gap_is_failure_bool": false,
+      "p3_8_compatibility_action_bucket": "requires_p3_8h_proxy_mode_or_rejection_decision",
+      "p3_8_current_schema_accepts_proxy_fixtures_bool": false
+    }
+  ],
+  "p3_8_default_fixture_files_written": false,
+  "p3_8h_handoff_records": [
+    {
+      "anonymous_p3_8h_handoff_id": "p38gh0000",
+      "capture_execution_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-P3-8H Proxy Fixture Compatibility Preflight \u2014 no capture execution",
+      "p3_8h_proxy_fixture_compatibility_preflight_authorized": true,
+      "requires_separate_phase_bool": true
+    }
+  ],
+  "per_surface_proxy_fixture_records": [
+    {
+      "anonymous_per_surface_proxy_fixture_id": "p38gps0000",
+      "empirical_origin_value_used_bool": false,
+      "fixture_kind_bucket": "proxy_fixture_only",
+      "helper_required_field_count": 12,
+      "helper_required_fields_present_bool": true,
+      "missing_empirical_field_count": 3,
+      "proxy_safe_bucket_values_bool": true,
+      "source_artifact_bucket": "p1_3_agent_generated_support_label_fill",
+      "source_mapping_bucket": "committed_proxy_label_summary",
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_per_surface_proxy_fixture_id": "p38gps0001",
+      "empirical_origin_value_used_bool": false,
+      "fixture_kind_bucket": "schema_smoke_fixture_only_not_arm_outcome_evidence",
+      "helper_required_field_count": 14,
+      "helper_required_fields_present_bool": true,
+      "missing_empirical_field_count": 5,
+      "proxy_safe_bucket_values_bool": true,
+      "source_artifact_bucket": "p0_3_scheduler_dataset_export",
+      "source_mapping_bucket": "committed_contract_template",
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_per_surface_proxy_fixture_id": "p38gps0002",
+      "empirical_origin_value_used_bool": false,
+      "fixture_kind_bucket": "aggregate_proxy_fixture_not_row_level_stop_trace",
+      "helper_required_field_count": 13,
+      "helper_required_fields_present_bool": true,
+      "missing_empirical_field_count": 6,
+      "proxy_safe_bucket_values_bool": true,
+      "source_artifact_bucket": "p2_1_ordered_prefix_stop_evidence_surface",
+      "source_mapping_bucket": "committed_aggregate_proxy",
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_per_surface_proxy_fixture_id": "p38gps0003",
+      "empirical_origin_value_used_bool": false,
+      "fixture_kind_bucket": "schema_smoke_fixture_only",
+      "helper_required_field_count": 12,
+      "helper_required_fields_present_bool": true,
+      "missing_empirical_field_count": 8,
+      "proxy_safe_bucket_values_bool": true,
+      "source_artifact_bucket": "p0_6_same_file_redundancy_trace_surface",
+      "source_mapping_bucket": "committed_contract_template",
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_per_surface_proxy_fixture_id": "p38gps0004",
+      "empirical_origin_value_used_bool": false,
+      "fixture_kind_bucket": "schema_smoke_fixture_only",
+      "helper_required_field_count": 12,
+      "helper_required_fields_present_bool": true,
+      "missing_empirical_field_count": 7,
+      "proxy_safe_bucket_values_bool": true,
+      "source_artifact_bucket": "p0_7_risk_penalty_trace_surface",
+      "source_mapping_bucket": "committed_contract_template",
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "phase": "BEA-v1-P3-8G",
+  "private_paths_publicly_serialized": false,
+  "private_write_summary_records": [
+    {
+      "anonymous_private_write_summary_id": "p38gpw0000",
+      "event_schema_valid_count": 5,
+      "manifest_schema_valid_count": 1,
+      "p3_8_default_fixture_filename_count": 0,
+      "p3_8_default_fixture_filenames_written_bool": false,
+      "private_file_write_attempted_bool": true,
+      "private_files_written_count": 2,
+      "private_fixture_write_passed_bool": true,
+      "private_output_root_bucket": "openlocus_research_private",
+      "private_paths_publicly_serialized_bool": false,
+      "proxy_events_bucket": "p3_8g_proxy_fixture_events_private",
+      "proxy_manifest_bucket": "p3_8g_proxy_fixture_manifest_private"
+    }
+  ],
+  "proxy_fixture_event_summary_records": [
+    {
+      "anonymous_proxy_event_summary_id": "p38ges0000",
+      "empirical_trace_capture_event_count": 0,
+      "event_count": 5,
+      "proxy_events_bucket": "p3_8g_proxy_fixture_events_private",
+      "proxy_fixture_event_count": 5,
+      "schema_valid_event_count": 5,
+      "surface_count": 5
+    }
+  ],
+  "proxy_fixture_manifest_summary_records": [
+    {
+      "anonymous_proxy_manifest_summary_id": "p38gms0000",
+      "empirical_trace_capture_bool": false,
+      "fixture_event_count": 5,
+      "fixture_origin_bucket": "proxy_fixture_materialized_from_committed_artifact_summaries",
+      "manifest_schema_valid_bool": true,
+      "proxy_fixture_bool": true,
+      "proxy_manifest_bucket": "p3_8g_proxy_fixture_manifest_private",
+      "schema_version_bucket": "bea_v1_p3_8g_proxy_fixture_manifest.v1",
+      "surface_count": 5
+    }
+  ],
+  "raw_fixture_payloads_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8g_frozen_event_proxy_fixture_materialization_smoke.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "frozen_event_proxy_fixture_materialization_smoke_pass_p3_8h_authorized",
+  "status_vocabulary": [
+    "frozen_event_proxy_fixture_materialization_smoke_pass_p3_8h_authorized",
+    "no_go_p3_8g_required_inputs_unavailable",
+    "no_go_p3_8g_proxy_source_mapping_invalid",
+    "no_go_p3_8g_changed_file_scope_invalid",
+    "no_go_p3_8g_private_output_root_not_ready",
+    "no_go_p3_8g_proxy_fixture_schema_invalid",
+    "no_go_p3_8g_private_fixture_write_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "frozen_event_proxy_fixture_materialization_smoke_only",
+      "broad_retrieval_expansion_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "empirical_trace_fixture_claimed": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-8H Proxy Fixture Compatibility Preflight \u2014 no capture execution",
+      "p3_8_capture_execution_authorized": false,
+      "p3_8h_proxy_fixture_compatibility_preflight_authorized": true,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_trace_row_write_authorized": false,
+      "proxy_fixture_files_written": true,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
