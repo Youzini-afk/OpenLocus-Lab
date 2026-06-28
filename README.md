@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8P: Empirical Event Source Declaration Intake Preflight**:
+The latest closed phase is **BEA-v1-P3-8PS: Empirical Event Source Discovery Audit**:
 
 ```text
-status: no_go_p3_8p_empirical_source_declaration_missing
-self-test: 13 / 13
+status: no_go_p3_8ps_no_existing_empirical_event_source
+self-test: 14 / 14
 forbidden scan: pass
-declaration supplied: false
-P3-8Q fixture acquisition plan preflight authorized: false
-fixture generation authorized: false
-trace capture execution authorized: false
-private write authorized: false
+valid empirical source count: 0
+surface empirical coverage: 0 / 5
+P3-8Q declaration authoring authorized: false
+private read/write: false
+capture/retrieval/rerun: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -281,6 +281,12 @@ P3-8P performs declaration intake preflight. The default local run has no explic
 private writes, fixture generation, or capture execution. P3-8Q is not authorized
 until a future explicit declaration passes all intake gates.
 
+P3-8PS audits committed public artifacts for any existing legitimate empirical
+frozen/materialized event source that could support declaration authoring. It
+finds none: current surfaces are proxy-only, aggregate-only, contract-only, or
+blocked by missing private traces/context. No next phase is authorized until a
+real empirical event source is created or supplied.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -473,6 +479,11 @@ See the current report index:
   generation, capture execution, private writes, helper imports, target evaluator
   imports, retrieval, P4L/N1/N2 reruns, support labeling, counterfactuals, policy
   tuning, runtime/default promotion, P5, or v1-A.
+- P3-8PS authorizes no next phase because committed public artifacts contain no
+  legitimate empirical frozen/materialized event source. It does not authorize
+  declaration generation, fixture generation, capture execution, private reads or
+  writes, retrieval/reruns, support labeling, counterfactuals, policy tuning,
+  runtime/default promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

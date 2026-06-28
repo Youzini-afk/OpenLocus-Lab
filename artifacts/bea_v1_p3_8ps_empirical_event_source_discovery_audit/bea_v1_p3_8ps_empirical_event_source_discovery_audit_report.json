@@ -1,0 +1,471 @@
+{
+  "aggregate_runtime_seconds": 0.01,
+  "candidate_source_inventory_records": [
+    {
+      "anonymous_candidate_source_id": "p38psc0000",
+      "candidate_source_availability_bucket": "blocked_private_context_unavailable",
+      "candidate_source_bucket": "p1_5r_support_context_feasibility",
+      "capture_execution_performed_bool": false,
+      "empirical_materialized_event_source_bool": false,
+      "legitimate_empirical_event_source_bool": false,
+      "private_read_performed_bool": false,
+      "private_source_required_bool": true,
+      "proxy_or_aggregate_only_bool": true,
+      "source_kind_bucket": "committed_public_artifact",
+      "usable_for_p3_8p_declaration_bool": false
+    },
+    {
+      "anonymous_candidate_source_id": "p38psc0001",
+      "candidate_source_availability_bucket": "blocked_private_arm_rows_unavailable",
+      "candidate_source_bucket": "p2_0_scheduler_private_arm_rows",
+      "capture_execution_performed_bool": false,
+      "empirical_materialized_event_source_bool": false,
+      "legitimate_empirical_event_source_bool": false,
+      "private_read_performed_bool": false,
+      "private_source_required_bool": true,
+      "proxy_or_aggregate_only_bool": true,
+      "source_kind_bucket": "committed_public_artifact",
+      "usable_for_p3_8p_declaration_bool": false
+    },
+    {
+      "anonymous_candidate_source_id": "p38psc0002",
+      "candidate_source_availability_bucket": "aggregate_only_not_row_level_empirical_source",
+      "candidate_source_bucket": "p2_1_ordered_prefix_stop_surface",
+      "capture_execution_performed_bool": false,
+      "empirical_materialized_event_source_bool": false,
+      "legitimate_empirical_event_source_bool": false,
+      "private_read_performed_bool": false,
+      "private_source_required_bool": false,
+      "proxy_or_aggregate_only_bool": true,
+      "source_kind_bucket": "committed_public_artifact",
+      "usable_for_p3_8p_declaration_bool": false
+    },
+    {
+      "anonymous_candidate_source_id": "p38psc0003",
+      "candidate_source_availability_bucket": "contract_only_missing_private_trace",
+      "candidate_source_bucket": "p2_2_same_file_redundancy_surface",
+      "capture_execution_performed_bool": false,
+      "empirical_materialized_event_source_bool": false,
+      "legitimate_empirical_event_source_bool": false,
+      "private_read_performed_bool": false,
+      "private_source_required_bool": true,
+      "proxy_or_aggregate_only_bool": true,
+      "source_kind_bucket": "committed_public_artifact",
+      "usable_for_p3_8p_declaration_bool": false
+    },
+    {
+      "anonymous_candidate_source_id": "p38psc0004",
+      "candidate_source_availability_bucket": "contract_only_missing_private_trace",
+      "candidate_source_bucket": "p2_2_risk_penalty_surface",
+      "capture_execution_performed_bool": false,
+      "empirical_materialized_event_source_bool": false,
+      "legitimate_empirical_event_source_bool": false,
+      "private_read_performed_bool": false,
+      "private_source_required_bool": true,
+      "proxy_or_aggregate_only_bool": true,
+      "source_kind_bucket": "committed_public_artifact",
+      "usable_for_p3_8p_declaration_bool": false
+    }
+  ],
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38pscf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "helper_p3_8_target_source_or_runtime_modified_bool": false,
+      "private_file_modification_count": 0,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "empirical_event_source_discovery_audit_only",
+  "declaration_feasibility_records": [
+    {
+      "all_required_empirical_fields_covered_bool": false,
+      "anonymous_declaration_feasibility_id": "p38psd0000",
+      "declaration_json_authoring_feasible_bool": false,
+      "feasibility_decision_bucket": "not_feasible_no_existing_empirical_event_source",
+      "p3_8p_declaration_authoring_feasible_bool": false,
+      "proxy_or_contract_source_used_as_empirical_bool": false,
+      "reason_bucket": "no_existing_empirical_materialized_event_source",
+      "surface_coverage_count": 0,
+      "valid_existing_empirical_source_count": 0
+    }
+  ],
+  "empirical_field_coverage_records": [
+    {
+      "anonymous_field_coverage_id": "p38psf0000",
+      "coverage_sufficient_for_declaration_bool": false,
+      "covered_empirical_field_count": 0,
+      "field_coverage_passed_bool": false,
+      "proxy_unknown_fields_present_bool": true,
+      "required_empirical_field_count": 6,
+      "required_empirical_field_coverage_bucket": "not_covered_by_existing_public_artifacts",
+      "required_empirical_fields_covered_bool": false,
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_field_coverage_id": "p38psf0001",
+      "coverage_sufficient_for_declaration_bool": false,
+      "covered_empirical_field_count": 0,
+      "field_coverage_passed_bool": false,
+      "proxy_unknown_fields_present_bool": true,
+      "required_empirical_field_count": 7,
+      "required_empirical_field_coverage_bucket": "not_covered_by_existing_public_artifacts",
+      "required_empirical_fields_covered_bool": false,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_field_coverage_id": "p38psf0002",
+      "coverage_sufficient_for_declaration_bool": false,
+      "covered_empirical_field_count": 0,
+      "field_coverage_passed_bool": false,
+      "proxy_unknown_fields_present_bool": true,
+      "required_empirical_field_count": 7,
+      "required_empirical_field_coverage_bucket": "not_covered_by_existing_public_artifacts",
+      "required_empirical_fields_covered_bool": false,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_field_coverage_id": "p38psf0003",
+      "coverage_sufficient_for_declaration_bool": false,
+      "covered_empirical_field_count": 0,
+      "field_coverage_passed_bool": false,
+      "proxy_unknown_fields_present_bool": true,
+      "required_empirical_field_count": 6,
+      "required_empirical_field_coverage_bucket": "not_covered_by_existing_public_artifacts",
+      "required_empirical_fields_covered_bool": false,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_field_coverage_id": "p38psf0004",
+      "coverage_sufficient_for_declaration_bool": false,
+      "covered_empirical_field_count": 0,
+      "field_coverage_passed_bool": false,
+      "proxy_unknown_fields_present_bool": true,
+      "required_empirical_field_count": 5,
+      "required_empirical_field_coverage_bucket": "not_covered_by_existing_public_artifacts",
+      "required_empirical_fields_covered_bool": false,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "required_inputs_available",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "valid_existing_empirical_source_count",
+      "passed": false,
+      "threshold_relation": "greater_or_equal",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "surface_coverage_count",
+      "passed": false,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 0
+    },
+    {
+      "gate": "empirical_field_coverage",
+      "passed": false,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "proxy_sources_rejected",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_scope_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-28T21:29:14Z",
+  "generated_by": "bea_v1_p3_8ps_empirical_event_source_discovery_audit",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "p38psi0000",
+      "expected_status": "no_go_p3_8p_empirical_source_declaration_missing",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8p_declaration_intake_preflight",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p3_8p_empirical_source_declaration_missing"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0001",
+      "expected_status": "empirical_event_source_declaration_design_pass_p3_8p_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8o_declaration_design",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "empirical_event_source_declaration_design_pass_p3_8p_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0002",
+      "expected_status": "empirical_fixture_acquisition_design_pass_p3_8n_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8m_fixture_acquisition_design",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "empirical_fixture_acquisition_design_pass_p3_8n_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0003",
+      "expected_status": "no_go_p3_8n_empirical_event_source_not_declared",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8n_fixture_acquisition_preflight",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p3_8n_empirical_event_source_not_declared"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0004",
+      "expected_status": "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_6_limited_hook_application_patch",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0005",
+      "expected_status": "no_go_p2_0_private_arm_rows_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_0_scheduler_private_arm_row_recovery",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p2_0_private_arm_rows_unavailable"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0006",
+      "expected_status": "no_go_p2_1_ordered_prefix_only_aggregate",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_1_ordered_prefix_stop_evidence_surface",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p2_1_ordered_prefix_only_aggregate"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0007",
+      "expected_status": "no_go_p2_2_redundancy_risk_traces_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p2_2_redundancy_risk_trace_availability",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p2_2_redundancy_risk_traces_unavailable"
+    },
+    {
+      "anonymous_input_artifact_id": "p38psi0008",
+      "expected_status": "no_go_p1_5r_private_context_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p1_5r_improved_automated_support_label_feasibility",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_p1_5r_private_context_unavailable"
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "p38psne0000",
+      "counterfactual_execution_count": 0,
+      "declaration_generation_count": 0,
+      "fixture_generation_count": 0,
+      "helper_import_count": 0,
+      "no_execution_boundary_passed_bool": true,
+      "openlocus_scan_count": 0,
+      "p3_8_import_count": 0,
+      "p4l_n1_n2_execution_count": 0,
+      "policy_tuning_execution_count": 0,
+      "private_read_count": 0,
+      "private_write_count": 0,
+      "retrieval_execution_count": 0,
+      "support_labeling_execution_count": 0,
+      "target_evaluator_import_count": 0,
+      "trace_capture_execution_count": 0
+    }
+  ],
+  "per_surface_source_availability_records": [
+    {
+      "anonymous_surface_availability_id": "p38psa0000",
+      "best_available_source_bucket": "no_reconstructable_private_context",
+      "best_available_source_kind_bucket": "missing_private_context_or_proxy_label_only",
+      "empirical_event_source_available_bool": false,
+      "existing_empirical_source_found_bool": false,
+      "proxy_or_contract_only_bool": true,
+      "proxy_or_contract_substitute_rejected_bool": true,
+      "required_empirical_source_bucket": "frozen_materialized_support_link_event_source",
+      "source_availability_bucket": "no_reconstructable_private_context",
+      "surface_bucket": "support_link",
+      "surface_empirical_coverage_bool": false
+    },
+    {
+      "anonymous_surface_availability_id": "p38psa0001",
+      "best_available_source_bucket": "private_arm_rows_unavailable",
+      "best_available_source_kind_bucket": "missing_private_rows_or_contract_only",
+      "empirical_event_source_available_bool": false,
+      "existing_empirical_source_found_bool": false,
+      "proxy_or_contract_only_bool": true,
+      "proxy_or_contract_substitute_rejected_bool": true,
+      "required_empirical_source_bucket": "frozen_materialized_scheduler_arm_event_source",
+      "source_availability_bucket": "private_arm_rows_unavailable",
+      "surface_bucket": "scheduler_action_cost",
+      "surface_empirical_coverage_bool": false
+    },
+    {
+      "anonymous_surface_availability_id": "p38psa0002",
+      "best_available_source_bucket": "aggregate_only_private_trace_missing",
+      "best_available_source_kind_bucket": "aggregate_only_not_materialized_event_source",
+      "empirical_event_source_available_bool": false,
+      "existing_empirical_source_found_bool": false,
+      "proxy_or_contract_only_bool": true,
+      "proxy_or_contract_substitute_rejected_bool": true,
+      "required_empirical_source_bucket": "frozen_materialized_ordered_prefix_event_source",
+      "source_availability_bucket": "aggregate_only_private_trace_missing",
+      "surface_bucket": "ordered_prefix_stop",
+      "surface_empirical_coverage_bool": false
+    },
+    {
+      "anonymous_surface_availability_id": "p38psa0003",
+      "best_available_source_bucket": "contract_only_missing_private_trace",
+      "best_available_source_kind_bucket": "contract_only_missing_private_trace",
+      "empirical_event_source_available_bool": false,
+      "existing_empirical_source_found_bool": false,
+      "proxy_or_contract_only_bool": true,
+      "proxy_or_contract_substitute_rejected_bool": true,
+      "required_empirical_source_bucket": "frozen_materialized_same_file_redundancy_event_source",
+      "source_availability_bucket": "contract_only_missing_private_trace",
+      "surface_bucket": "same_file_redundancy",
+      "surface_empirical_coverage_bool": false
+    },
+    {
+      "anonymous_surface_availability_id": "p38psa0004",
+      "best_available_source_bucket": "contract_only_missing_private_trace",
+      "best_available_source_kind_bucket": "contract_only_missing_private_trace",
+      "empirical_event_source_available_bool": false,
+      "existing_empirical_source_found_bool": false,
+      "proxy_or_contract_only_bool": true,
+      "proxy_or_contract_substitute_rejected_bool": true,
+      "required_empirical_source_bucket": "frozen_materialized_risk_penalty_event_source",
+      "source_availability_bucket": "contract_only_missing_private_trace",
+      "surface_bucket": "risk_penalty",
+      "surface_empirical_coverage_bool": false
+    }
+  ],
+  "phase": "BEA-v1-P3-8PS",
+  "private_filenames_publicly_serialized": false,
+  "private_paths_publicly_serialized": false,
+  "proxy_rejection_records": [
+    {
+      "anonymous_proxy_rejection_id": "p38psr0000",
+      "candidate_source_bucket": "p1_5r_support_context_feasibility",
+      "proxy_or_contract_source_rejected_as_empirical_bool": true,
+      "rejection_reason_bucket": "not_legitimate_empirical_frozen_materialized_event_source"
+    },
+    {
+      "anonymous_proxy_rejection_id": "p38psr0001",
+      "candidate_source_bucket": "p2_0_scheduler_private_arm_rows",
+      "proxy_or_contract_source_rejected_as_empirical_bool": true,
+      "rejection_reason_bucket": "not_legitimate_empirical_frozen_materialized_event_source"
+    },
+    {
+      "anonymous_proxy_rejection_id": "p38psr0002",
+      "candidate_source_bucket": "p2_1_ordered_prefix_stop_surface",
+      "proxy_or_contract_source_rejected_as_empirical_bool": true,
+      "rejection_reason_bucket": "not_legitimate_empirical_frozen_materialized_event_source"
+    },
+    {
+      "anonymous_proxy_rejection_id": "p38psr0003",
+      "candidate_source_bucket": "p2_2_same_file_redundancy_surface",
+      "proxy_or_contract_source_rejected_as_empirical_bool": true,
+      "rejection_reason_bucket": "not_legitimate_empirical_frozen_materialized_event_source"
+    },
+    {
+      "anonymous_proxy_rejection_id": "p38psr0004",
+      "candidate_source_bucket": "p2_2_risk_penalty_surface",
+      "proxy_or_contract_source_rejected_as_empirical_bool": true,
+      "rejection_reason_bucket": "not_legitimate_empirical_frozen_materialized_event_source"
+    }
+  ],
+  "raw_candidate_payloads_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8ps_empirical_event_source_discovery_audit.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "no_go_p3_8ps_no_existing_empirical_event_source",
+  "status_vocabulary": [
+    "empirical_event_source_discovery_audit_pass_p3_8q_declaration_authoring_authorized",
+    "no_go_p3_8ps_required_inputs_unavailable",
+    "no_go_p3_8ps_no_existing_empirical_event_source",
+    "no_go_p3_8ps_candidate_sources_incomplete_or_proxy_only",
+    "no_go_p3_8ps_privacy_or_claim_boundary_invalid",
+    "no_go_p3_8ps_changed_file_scope_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "empirical_event_source_discovery_audit_only",
+      "broad_retrieval_expansion_authorized": false,
+      "declaration_generation_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "empirical_event_source_found": false,
+      "fixture_generation_authorized": false,
+      "helper_import_authorized": false,
+      "mechanism_evidence_claimed": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "none_until_real_empirical_event_source_is_created_or_supplied",
+      "next_allowed_scope_bucket": "no_next_phase_authorized",
+      "p3_8q_declaration_authoring_authorized": false,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_fixture_write_authorized": false,
+      "private_read_authorized": false,
+      "private_trace_row_write_authorized": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "trace_capture_execution_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
