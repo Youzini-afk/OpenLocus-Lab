@@ -1,0 +1,270 @@
+{
+  "aggregate_runtime_seconds": 0.008,
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38icf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "p3_8_p3_8g_p3_8h_helper_target_or_runtime_modified_bool": false,
+      "private_file_modification_count": 0,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "explicit_proxy_fixture_logger_smoke_design_only",
+  "default_mode_isolation_records": [
+    {
+      "anonymous_default_mode_isolation_id": "p38idmi0000",
+      "default_mode_isolation_complete_bool": true,
+      "p3_8_code_change_authorized_bool": false,
+      "p3_8_empirical_mode_change_authorized_bool": false,
+      "proxy_mode_requires_separate_evaluator_bool": true,
+      "runtime_default_change_authorized_bool": false
+    }
+  ],
+  "execution_boundary_records": [
+    {
+      "anonymous_execution_boundary_id": "p38ieb0000",
+      "counterfactual_execution_count": 0,
+      "execution_boundary_complete_bool": true,
+      "p4l_n1_n2_execution_count": 0,
+      "p5_or_v1_a_execution_count": 0,
+      "policy_tuning_execution_count": 0,
+      "private_file_read_count_in_p3_8i": 0,
+      "private_file_write_count_in_p3_8i": 0,
+      "retrieval_execution_count": 0,
+      "support_labeling_execution_count": 0,
+      "trace_capture_execution_count": 0
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "required_inputs_available",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "proxy_mode_design_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "boundary_and_default_mode_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_scope_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_execution_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T19:40:19Z",
+  "generated_by": "eval/bea_v1_p3_8i_explicit_proxy_fixture_logger_smoke_design.py",
+  "helper_capture_plan_records": [
+    {
+      "anonymous_helper_capture_plan_id": "p38ihp0000",
+      "helper_capture_mode_bucket": "helper_only_proxy_fixture_capture",
+      "helper_capture_plan_complete_bool": true,
+      "helper_module_import_authorized_in_p3_8j_bool": true,
+      "p3_8_import_authorized_bool": false,
+      "private_trace_row_write_authorized_in_p3_8i_bool": false,
+      "private_trace_row_write_authorized_in_p3_8j_bool": false,
+      "public_projection_only_in_p3_8j_bool": true,
+      "surface_bucket": "support_link",
+      "target_evaluator_import_authorized_bool": false
+    },
+    {
+      "anonymous_helper_capture_plan_id": "p38ihp0001",
+      "helper_capture_mode_bucket": "helper_only_proxy_fixture_capture",
+      "helper_capture_plan_complete_bool": true,
+      "helper_module_import_authorized_in_p3_8j_bool": true,
+      "p3_8_import_authorized_bool": false,
+      "private_trace_row_write_authorized_in_p3_8i_bool": false,
+      "private_trace_row_write_authorized_in_p3_8j_bool": false,
+      "public_projection_only_in_p3_8j_bool": true,
+      "surface_bucket": "scheduler_action_cost",
+      "target_evaluator_import_authorized_bool": false
+    },
+    {
+      "anonymous_helper_capture_plan_id": "p38ihp0002",
+      "helper_capture_mode_bucket": "helper_only_proxy_fixture_capture",
+      "helper_capture_plan_complete_bool": true,
+      "helper_module_import_authorized_in_p3_8j_bool": true,
+      "p3_8_import_authorized_bool": false,
+      "private_trace_row_write_authorized_in_p3_8i_bool": false,
+      "private_trace_row_write_authorized_in_p3_8j_bool": false,
+      "public_projection_only_in_p3_8j_bool": true,
+      "surface_bucket": "ordered_prefix_stop",
+      "target_evaluator_import_authorized_bool": false
+    },
+    {
+      "anonymous_helper_capture_plan_id": "p38ihp0003",
+      "helper_capture_mode_bucket": "helper_only_proxy_fixture_capture",
+      "helper_capture_plan_complete_bool": true,
+      "helper_module_import_authorized_in_p3_8j_bool": true,
+      "p3_8_import_authorized_bool": false,
+      "private_trace_row_write_authorized_in_p3_8i_bool": false,
+      "private_trace_row_write_authorized_in_p3_8j_bool": false,
+      "public_projection_only_in_p3_8j_bool": true,
+      "surface_bucket": "same_file_redundancy",
+      "target_evaluator_import_authorized_bool": false
+    },
+    {
+      "anonymous_helper_capture_plan_id": "p38ihp0004",
+      "helper_capture_mode_bucket": "helper_only_proxy_fixture_capture",
+      "helper_capture_plan_complete_bool": true,
+      "helper_module_import_authorized_in_p3_8j_bool": true,
+      "p3_8_import_authorized_bool": false,
+      "private_trace_row_write_authorized_in_p3_8i_bool": false,
+      "private_trace_row_write_authorized_in_p3_8j_bool": false,
+      "public_projection_only_in_p3_8j_bool": true,
+      "surface_bucket": "risk_penalty",
+      "target_evaluator_import_authorized_bool": false
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "p38ii0000",
+      "expected_status": "proxy_fixture_compatibility_preflight_pass_p3_8i_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8h_proxy_fixture_compatibility_preflight",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "proxy_fixture_compatibility_preflight_pass_p3_8i_authorized",
+      "p3_8_capture_execution_authorized_bool": false,
+      "p3_8_code_change_authorized_bool": false,
+      "p3_8i_authorized_bool": true,
+      "private_trace_row_write_authorized_bool": false,
+      "proxy_mode_accepted_for_logger_smoke_only_bool": true
+    },
+    {
+      "anonymous_input_artifact_id": "p38ii0001",
+      "empirical_trace_fixture_claimed_bool": false,
+      "expected_status": "frozen_event_proxy_fixture_materialization_smoke_pass_p3_8h_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8g_proxy_fixture_materialization_smoke",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "frozen_event_proxy_fixture_materialization_smoke_pass_p3_8h_authorized",
+      "private_proxy_files_written_count": 2,
+      "proxy_event_count": 5
+    }
+  ],
+  "p3_8j_handoff_records": [
+    {
+      "anonymous_p3_8j_handoff_id": "p38ijh0000",
+      "empirical_capture_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-P3-8J Explicit Proxy Fixture Logger Smoke Evaluator Implementation \u2014 separate evaluator only, no empirical capture",
+      "p3_8_modification_authorized_bool": false,
+      "p3_8j_proxy_smoke_evaluator_authorized": true,
+      "private_trace_row_write_authorized_bool": false,
+      "separate_evaluator_only_bool": true
+    }
+  ],
+  "phase": "BEA-v1-P3-8I",
+  "private_filenames_publicly_serialized": false,
+  "private_paths_publicly_serialized": false,
+  "proxy_fixture_input_contract_records": [
+    {
+      "anonymous_proxy_fixture_input_contract_id": "p38ific0000",
+      "input_contract_complete_bool": true,
+      "private_filenames_publicly_serialized_bool": false,
+      "private_paths_publicly_serialized_bool": false,
+      "proxy_events_bucket": "p3_8g_proxy_fixture_events_private",
+      "proxy_manifest_bucket": "p3_8g_proxy_fixture_manifest_private",
+      "raw_fixture_payloads_publicly_serialized_bool": false,
+      "required_proxy_event_count": 5,
+      "required_surface_coverage_count": 5
+    }
+  ],
+  "proxy_mode_design_records": [
+    {
+      "anonymous_proxy_mode_design_id": "p38ipm0000",
+      "capture_scope_bucket": "proxy_fixture_logger_smoke_only",
+      "empirical_trace_capture_claimed_bool": false,
+      "explicit_proxy_mode_argument_required_bool": true,
+      "p3_8_empirical_mode_unchanged_bool": true,
+      "proxy_fixtures_required_bool": true,
+      "proxy_mode_default_enabled_bool": false,
+      "proxy_mode_design_complete_bool": true,
+      "proxy_mode_name_bucket": "explicit_proxy_fixture_logger_smoke_mode",
+      "separate_evaluator_required_bool": true
+    }
+  ],
+  "public_projection_plan_records": [
+    {
+      "anonymous_public_projection_plan_id": "p38ipp0000",
+      "private_paths_publicly_serialized_bool": false,
+      "projection_scope_bucket": "sanitized_public_summary_only",
+      "public_projection_only_in_p3_8j_bool": true,
+      "public_projection_plan_complete_bool": true,
+      "public_scanner_required_bool": true,
+      "queue_or_design_ids_publicly_serialized_bool": false,
+      "raw_fixture_payloads_publicly_serialized_bool": false
+    }
+  ],
+  "raw_fixture_payloads_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8i_explicit_proxy_fixture_logger_smoke_design.v1",
+  "self_test_checks_passed": 9,
+  "self_test_checks_total": 9,
+  "self_test_passed": true,
+  "status": "explicit_proxy_fixture_logger_smoke_design_pass_p3_8j_authorized",
+  "status_vocabulary": [
+    "explicit_proxy_fixture_logger_smoke_design_pass_p3_8j_authorized",
+    "no_go_p3_8i_required_inputs_unavailable",
+    "no_go_p3_8i_proxy_mode_design_incomplete",
+    "no_go_p3_8i_boundary_or_default_mode_incomplete",
+    "no_go_p3_8i_changed_file_scope_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "explicit_proxy_fixture_logger_smoke_design_only",
+      "broad_retrieval_expansion_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "empirical_trace_capture_authorized": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-8J Explicit Proxy Fixture Logger Smoke Evaluator Implementation \u2014 separate evaluator only, no empirical capture",
+      "p3_8_capture_execution_authorized": false,
+      "p3_8_code_change_authorized": false,
+      "p3_8j_proxy_smoke_evaluator_authorized": true,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_trace_row_write_authorized": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "target_evaluator_import_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

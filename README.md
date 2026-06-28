@@ -28,16 +28,15 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8H: Proxy Fixture Compatibility Preflight**:
+The latest closed phase is **BEA-v1-P3-8I: Explicit Proxy Fixture Logger Smoke Design**:
 
 ```text
-status: proxy_fixture_compatibility_preflight_pass_p3_8i_authorized
-self-test: 13 / 13
+status: explicit_proxy_fixture_logger_smoke_design_pass_p3_8j_authorized
+self-test: 9 / 9
 forbidden scan: pass
-valid proxy events: 5
-surface coverage: 5
-P3-8 empirical schema accepts proxy fixtures: false
-P3-8I design authorized: true
+helper capture plans: 5
+P3-8 empirical mode unchanged: true
+P3-8J evaluator implementation authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -231,6 +230,13 @@ false. P3-8H authorizes only P3-8I explicit proxy fixture logger smoke design;
 no P3-8 code change, capture, private trace rows, retrieval, reruns, policy, P5,
 v1-A, or runtime/default promotion is authorized.
 
+P3-8I designs a separate explicit proxy fixture logger smoke evaluator. It keeps
+P3-8 empirical mode unchanged, requires default-disabled explicit proxy mode, and
+plans helper-only proxy fixture build/validate/sanitize with sanitized public
+projection only. It authorizes only P3-8J separate evaluator implementation; no
+P3-8 modification, capture, private trace rows, target evaluator calls,
+retrieval, reruns, policy, P5, v1-A, or runtime/default promotion is authorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -384,6 +390,11 @@ See the current report index:
   not authorize P3-8 code changes, P3-8 capture execution, private trace rows,
   retrieval, P4L/N1/N2 reruns, support labeling, counterfactuals, denominator
   audits, policy tuning, runtime/default promotion, P5, or v1-A.
+- P3-8I authorizes only P3-8J explicit proxy fixture logger smoke evaluator
+  implementation as a separate evaluator. It does not authorize P3-8 changes,
+  empirical capture, private trace rows, target evaluator imports/calls,
+  retrieval, P4L/N1/N2 reruns, support labeling, counterfactuals, policy tuning,
+  runtime/default promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
