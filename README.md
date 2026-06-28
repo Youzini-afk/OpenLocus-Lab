@@ -28,15 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8: Frozen Trace Logger Explicit Capture Smoke**:
+The latest closed phase is **BEA-v1-P3-8F: Frozen Event Fixture Materialization Preflight**:
 
 ```text
-status: no_go_p3_8_frozen_event_fixtures_unavailable
-self-test: 15 / 15
+status: frozen_event_fixture_materialization_preflight_pass_p3_8g_authorized
+self-test: 11 / 11
 forbidden scan: pass
-fixture events loaded: 0
-private rows written: 0
-P3-9 manifest audit authorized: false
+fixture source mappings: 5 / 5
+safe proxy source mappings: 5 / 5
+private files written in P3-8F: 0
+P3-8G proxy fixture materialization authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -209,6 +210,13 @@ events required for explicit capture smoke. The current workspace has no such
 fixtures, so P3-8 is a No-Go before private writes: no private rows or private
 manifest are created, and P3-9 manifest audit is not authorized.
 
+P3-8F designs and preflights proxy fixture materialization after the P3-8 No-Go.
+It maps all five surfaces to committed proxy/contract sources and records the
+missing empirical fields, but writes no fixture files and no private trace rows.
+It authorizes only P3-8G proxy fixture materialization smoke, with no trace
+capture, retrieval, reruns, counterfactuals, policy, P5, v1-A, or runtime/default
+promotion.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -349,6 +357,11 @@ See the current report index:
   event fixtures are unavailable. It does not write private rows, run retrieval,
   rerun P4L/N1/N2, run support labeling, execute counterfactuals, tune policy,
   promote runtime/default behavior, authorize P5, or authorize v1-A.
+- P3-8F authorizes only P3-8G proxy fixture materialization smoke. P3-8F itself
+  writes no private files, and P3-8G remains limited to proxy fixture files only:
+  no trace capture, private trace rows, retrieval, P4L/N1/N2 reruns, support
+  labeling, counterfactuals, denominator audit, policy tuning, runtime/default
+  promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
