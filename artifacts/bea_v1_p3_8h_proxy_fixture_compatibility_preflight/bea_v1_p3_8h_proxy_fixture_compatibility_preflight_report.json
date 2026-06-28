@@ -1,0 +1,217 @@
+{
+  "aggregate_runtime_seconds": 0.009,
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38hcf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "helper_p3_8_target_or_runtime_modified_bool": false,
+      "private_file_modification_count": 0,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "proxy_fixture_compatibility_preflight_only",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_8g_input_pass",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_proxy_fixtures_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "proxy_origin_boundary_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_scope_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution_and_no_private_write",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_execution_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T19:28:21Z",
+  "generated_by": "eval/bea_v1_p3_8h_proxy_fixture_compatibility_preflight.py",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "p38hi0000",
+      "empirical_trace_fixture_claimed_bool": false,
+      "expected_status": "frozen_event_proxy_fixture_materialization_smoke_pass_p3_8h_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8g_proxy_fixture_materialization_smoke",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "frozen_event_proxy_fixture_materialization_smoke_pass_p3_8h_authorized",
+      "p3_8_capture_execution_authorized_bool": false,
+      "p3_8h_authorized_bool": true,
+      "proxy_files_written_count": 2
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "p38hne0000",
+      "counterfactual_execution_count": 0,
+      "no_execution_boundary_passed_bool": true,
+      "p4l_n1_n2_execution_count": 0,
+      "policy_tuning_execution_count": 0,
+      "private_proxy_fixture_files_modified_in_p3_8h_count": 0,
+      "private_research_inventory_modified_in_p3_8h_count": 0,
+      "private_trace_rows_written_count": 0,
+      "retrieval_execution_count": 0,
+      "support_labeling_execution_count": 0,
+      "trace_capture_execution_count": 0
+    }
+  ],
+  "p3_8_schema_compatibility_records": [
+    {
+      "anonymous_p3_8_schema_compatibility_id": "p38hsc0000",
+      "compatibility_decision_bucket": "accept_proxy_only_in_explicit_proxy_mode",
+      "compatibility_gap_is_failure_bool": false,
+      "p3_8_compatibility_action_bucket": "requires_p3_8i_explicit_proxy_fixture_logger_smoke_design",
+      "p3_8_current_schema_accepts_proxy_fixtures_bool": false,
+      "p3_8_default_empirical_mode_must_remain_unchanged_bool": true,
+      "proxy_mode_required_bool": true,
+      "schema_valid_proxy_event_count": 5,
+      "surface_count": 5
+    }
+  ],
+  "p3_8i_handoff_records": [
+    {
+      "anonymous_p3_8i_handoff_id": "p38hh0000",
+      "capture_execution_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-P3-8I Explicit Proxy Fixture Logger Smoke Design \u2014 no capture execution",
+      "p3_8_code_change_authorized_bool": false,
+      "p3_8i_explicit_proxy_fixture_logger_smoke_design_authorized": true,
+      "requires_separate_phase_bool": true
+    }
+  ],
+  "phase": "BEA-v1-P3-8H",
+  "private_filenames_publicly_serialized": false,
+  "private_paths_publicly_serialized": false,
+  "private_proxy_fixture_intake_records": [
+    {
+      "anonymous_private_proxy_fixture_intake_id": "p38hpi0000",
+      "event_count": 5,
+      "event_schema_error_count": 0,
+      "events_load_status": "pass",
+      "events_present_bool": true,
+      "manifest_load_status": "pass",
+      "manifest_present_bool": true,
+      "manifest_schema_error_count": 0,
+      "manifest_schema_valid_bool": true,
+      "private_paths_publicly_serialized_bool": false,
+      "private_proxy_fixture_intake_passed_bool": true,
+      "private_proxy_fixtures_present_bool": true,
+      "proxy_events_bucket": "p3_8g_proxy_fixture_events_private",
+      "proxy_manifest_bucket": "p3_8g_proxy_fixture_manifest_private",
+      "raw_fixture_payloads_publicly_serialized_bool": false,
+      "schema_valid_event_count": 5,
+      "surface_count": 5,
+      "surface_coverage_count": 5
+    }
+  ],
+  "proxy_mode_acceptance_records": [
+    {
+      "acceptance_scope_bucket": "explicit_proxy_fixture_logger_smoke_design_only",
+      "anonymous_proxy_mode_acceptance_id": "p38hpa0000",
+      "counterfactual_authorized_bool": false,
+      "denominator_audit_authorized_bool": false,
+      "empirical_capture_mode_accepts_proxy_fixtures_bool": false,
+      "empirical_trace_capture_claimed_bool": false,
+      "future_proxy_mode_default_enabled_bool": false,
+      "future_proxy_mode_requires_explicit_flag_bool": true,
+      "private_trace_row_write_authorized_in_p3_8h_bool": false,
+      "proxy_mode_acceptance_decision": "accepted_for_logger_smoke_only",
+      "proxy_mode_preflight_accepts_private_proxy_fixtures_bool": true,
+      "requires_capture_execution_bool": false,
+      "requires_p3_8_code_change_bool": false
+    }
+  ],
+  "proxy_origin_boundary_records": [
+    {
+      "anonymous_proxy_origin_boundary_id": "p38hob0000",
+      "empirical_trace_capture_claim_count": 0,
+      "forbidden_execution_required_count": 0,
+      "p3_8_empirical_origin_string_count": 0,
+      "private_trace_row_write_count": 0,
+      "proxy_fixture_origin_count": 5,
+      "proxy_origin_boundary_valid_bool": true,
+      "trace_capture_execution_count": 0
+    }
+  ],
+  "raw_fixture_payloads_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8h_proxy_fixture_compatibility_preflight.v1",
+  "self_test_checks_passed": 13,
+  "self_test_checks_total": 13,
+  "self_test_passed": true,
+  "status": "proxy_fixture_compatibility_preflight_pass_p3_8i_authorized",
+  "status_vocabulary": [
+    "proxy_fixture_compatibility_preflight_pass_p3_8i_authorized",
+    "no_go_p3_8h_required_inputs_unavailable",
+    "no_go_p3_8h_private_proxy_fixtures_missing",
+    "no_go_p3_8h_proxy_fixture_schema_invalid",
+    "no_go_p3_8h_proxy_origin_boundary_invalid",
+    "no_go_p3_8h_changed_file_scope_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "proxy_fixture_compatibility_preflight_only",
+      "broad_retrieval_expansion_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-8I Explicit Proxy Fixture Logger Smoke Design \u2014 no capture execution",
+      "p3_8_capture_execution_authorized": false,
+      "p3_8_code_change_authorized": false,
+      "p3_8_default_empirical_mode_change_authorized": false,
+      "p3_8i_explicit_proxy_fixture_logger_smoke_design_authorized": true,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_trace_row_write_authorized": false,
+      "proxy_mode_accepted_for_logger_smoke_only": true,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
