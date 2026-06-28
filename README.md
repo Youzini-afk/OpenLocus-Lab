@@ -28,16 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N4: Fixed-Pool Rank-Blocker Denominator Audit**:
+The latest closed phase is **BEA-v1-N5: Fixed-Pool Rank-Order Experiment Preflight**:
 
 ```text
-status: fixed_pool_rank_blocker_denominator_audit_pass_n5_authorized
-self-test: 12 / 12
+status: fixed_pool_rank_order_experiment_preflight_pass_n6_authorized
+self-test: 15 / 15
 forbidden scan: pass
-sanitized rank cases: 40
-fixed-pool deeper-present cases: 40
-top-10 miss but deeper-present cases: 40
-N5 fixed-pool rank-order preflight authorized: true
+eligible fixed-pool rank cases: 40
+fixed order-transform arms: 4
+primary N6 metric: top10_recovery_count_over_40_fixed_cases
+pass threshold: top10_recovery_ge_16_and_regressions_le_2
+N6 fixed-pool rank-order experiment authorized: true
 new retrieval/rerun: false
 ```
 
@@ -293,6 +294,16 @@ deeper evidence and non-inconclusive merge/order signal, so it authorizes only N
 fixed-pool rank-order experiment preflight using existing pools and no new
 retrieval.
 
+N5 completes that preflight without execution. It freezes the 40 N4 sanitized
+rank-blocker cases, declares exactly four fixed-pool order-transform arms
+(`baseline_n2_order`, `extra_depth_promote_before_primary_prefix_4`,
+`bounded_interleave_primary2_extra1`, and
+`late_extra_depth_demote_after_primary_prefix_8`), and defines N6 metrics and pass
+gates. N5 authorizes only BEA-v1-N6 execution of those predeclared arms over the
+fixed public N2/N3 pool fields; it still forbids new retrieval, P4L/N1/N2/N3
+reruns, selector/reranker execution, private reads, policy/runtime changes,
+counterfactuals, method-winner claims, and downstream-value claims.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -494,6 +505,11 @@ See the current report index:
   authorize new retrieval, reruns, selector/reranker execution, P5, BEA-v1-A,
   counterfactual execution, policy tuning, runtime/default promotion,
   method-winner claims, or downstream-value claims.
+- N5 authorizes only N6 fixed-pool rank-order experiment execution over the 40
+  frozen N4 sanitized cases and four predeclared fixed-pool order-transform arms.
+  It does not authorize candidate-pool mutation, new retrieval, reruns,
+  selector/reranker execution, private reads, policy/runtime changes,
+  counterfactuals, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -633,6 +649,10 @@ eval/bea_v1_n1_frozen_p4_span_refiner_smoke.py
 eval/bea_v1_n2_rank_pack_actionability_decomposition.py
   Rank/pack decomposition for N1's 40 rank-blocked records; authorizes only
   extra-depth merge-order design.
+
+eval/bea_v1_n5_fixed_pool_rank_order_experiment_preflight.py
+  No-execution fixed-pool rank-order experiment preflight freezing 40 N4 cases,
+  four order-transform arms, N6 metrics, and pass gates.
 ```
 
 Key reports:
@@ -643,6 +663,7 @@ Key reports:
 - [`artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json`](artifacts/bea_v1_p4l_locked_non_python_scheduler_validation/bea_v1_p4l_locked_non_python_scheduler_validation_report.json)
 - [`artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json`](artifacts/bea_v1_n1_frozen_p4_span_refiner_smoke/bea_v1_n1_frozen_p4_span_refiner_smoke_report.json)
 - [`artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json`](artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json)
+- [`artifacts/bea_v1_n5_fixed_pool_rank_order_experiment_preflight/bea_v1_n5_fixed_pool_rank_order_experiment_preflight_report.json`](artifacts/bea_v1_n5_fixed_pool_rank_order_experiment_preflight/bea_v1_n5_fixed_pool_rank_order_experiment_preflight_report.json)
 
 Documentation mirror check:
 

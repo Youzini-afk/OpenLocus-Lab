@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date: 2026-06-27
+Date: 2026-06-28
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -96,6 +96,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n2-rank-pack-actionability-decomposition.md`: [en](en/bea-v1-n2-rank-pack-actionability-decomposition.md) · [zh](zh/bea-v1-n2-rank-pack-actionability-decomposition.md)
 - `bea-v1-n3-extra-depth-merge-order-design-simulation.md`: [en](en/bea-v1-n3-extra-depth-merge-order-design-simulation.md) · [zh](zh/bea-v1-n3-extra-depth-merge-order-design-simulation.md)
 - `bea-v1-n4-fixed-pool-rank-blocker-denominator-audit.md`: [en](en/bea-v1-n4-fixed-pool-rank-blocker-denominator-audit.md) · [zh](zh/bea-v1-n4-fixed-pool-rank-blocker-denominator-audit.md)
+- `bea-v1-n5-fixed-pool-rank-order-experiment-preflight.md`: [en](en/bea-v1-n5-fixed-pool-rank-order-experiment-preflight.md) · [zh](zh/bea-v1-n5-fixed-pool-rank-order-experiment-preflight.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
 - `bea-v1-p0-4-support-link-input-design.md`: [en](en/bea-v1-p0-4-support-link-input-design.md) · [zh](zh/bea-v1-p0-4-support-link-input-design.md)
