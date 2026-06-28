@@ -126,6 +126,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p3-8i-explicit-proxy-fixture-logger-smoke-design.md`: [en](en/bea-v1-p3-8i-explicit-proxy-fixture-logger-smoke-design.md) · [zh](zh/bea-v1-p3-8i-explicit-proxy-fixture-logger-smoke-design.md)
 - `bea-v1-p3-8j-explicit-proxy-fixture-logger-smoke.md`: [en](en/bea-v1-p3-8j-explicit-proxy-fixture-logger-smoke.md) · [zh](zh/bea-v1-p3-8j-explicit-proxy-fixture-logger-smoke.md)
 - `bea-v1-p3-8k-proxy-fixture-public-projection-audit.md`: [en](en/bea-v1-p3-8k-proxy-fixture-public-projection-audit.md) · [zh](zh/bea-v1-p3-8k-proxy-fixture-public-projection-audit.md)
+- `bea-v1-p3-8l-projection-field-adequacy-decision.md`: [en](en/bea-v1-p3-8l-projection-field-adequacy-decision.md) · [zh](zh/bea-v1-p3-8l-projection-field-adequacy-decision.md)
 - `bea-v1-trace-gap-audit.md`: [en](en/bea-v1-trace-gap-audit.md) · [zh](zh/bea-v1-trace-gap-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)

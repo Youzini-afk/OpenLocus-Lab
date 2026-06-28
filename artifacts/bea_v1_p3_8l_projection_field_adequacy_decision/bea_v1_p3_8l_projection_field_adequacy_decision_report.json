@@ -1,0 +1,205 @@
+{
+  "aggregate_runtime_seconds": 0.007,
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p38lcf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "p3_8k_p3_8j_helper_p3_8_target_source_or_runtime_modified_bool": false,
+      "private_file_modification_count": 0,
+      "workspace_change_count": 8
+    }
+  ],
+  "claim_level": "projection_field_adequacy_decision_only",
+  "closed_authorization_records": [
+    {
+      "anonymous_closed_authorization_id": "p38lca0000",
+      "closed_authorization_record_complete_bool": true,
+      "counterfactual_authorized_bool": false,
+      "denominator_audit_authorized_bool": false,
+      "empirical_trace_capture_authorized_bool": false,
+      "mechanism_evidence_claimed_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "proxy_route_further_smoke_authorized_bool": false
+    }
+  ],
+  "empirical_fixture_requirement_records": [
+    {
+      "anonymous_empirical_fixture_requirement_id": "p38lefr0000",
+      "committed_aggregate_proxy_sufficient_bool": false,
+      "contract_template_sufficient_bool": false,
+      "empirical_fixture_required_bool": true,
+      "private_trace_capture_required_before_mechanism_work_bool": true,
+      "proxy_fixtures_sufficient_bool": false,
+      "required_next_input_bucket": "true_empirical_frozen_materialized_event_fixtures",
+      "requirement_record_complete_bool": true
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_8k_input_pass",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "proxy_boundary_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "decision_records_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_scope_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_execution_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T20:21:41Z",
+  "generated_by": "bea_v1_p3_8l_projection_field_adequacy_decision",
+  "input_artifact_records": [
+    {
+      "adequacy_decision_bucket": "shape_valid_proxy_only_not_empirical",
+      "anonymous_input_artifact_id": "p38li0000",
+      "counterfactual_adequate_bool": false,
+      "denominator_audit_adequate_bool": false,
+      "empirical_trace_adequate_bool": false,
+      "expected_status": "proxy_fixture_public_projection_audit_pass_p3_8l_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_8k_proxy_fixture_public_projection_audit",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "logger_smoke_adequate_bool": true,
+      "observed_status": "proxy_fixture_public_projection_audit_pass_p3_8l_authorized",
+      "p3_8l_authorized_bool": true,
+      "proxy_boundary_audit_passed_bool": true,
+      "public_projection_count": 5,
+      "surface_coverage_count": 5
+    }
+  ],
+  "next_experiment_design_records": [
+    {
+      "anonymous_next_experiment_design_id": "p38lnx0000",
+      "capture_execution_authorized_in_next_phase_bool": false,
+      "empirical_fixture_acquisition_design_authorized_bool": true,
+      "next_allowed_phase": "BEA-v1-P3-8M Empirical Frozen Event Fixture Acquisition Design \u2014 design only, no capture execution",
+      "next_allowed_scope_bucket": "design_only_no_capture_execution",
+      "next_experiment_design_record_complete_bool": true,
+      "private_write_authorized_in_next_phase_bool": false
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "p38lne0000",
+      "counterfactual_execution_count": 0,
+      "helper_import_count": 0,
+      "no_execution_boundary_passed_bool": true,
+      "p3_8_import_count": 0,
+      "p4l_n1_n2_execution_count": 0,
+      "policy_tuning_execution_count": 0,
+      "private_read_count": 0,
+      "private_write_count": 0,
+      "retrieval_execution_count": 0,
+      "support_labeling_execution_count": 0,
+      "target_evaluator_import_count": 0,
+      "trace_capture_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-P3-8L",
+  "private_filenames_publicly_serialized": false,
+  "private_paths_publicly_serialized": false,
+  "proxy_route_decision_records": [
+    {
+      "anonymous_proxy_route_decision_id": "p38lrd0000",
+      "decision_bucket": "proxy_route_closed_for_mechanism_work",
+      "proxy_projection_adequate_for_counterfactual_bool": false,
+      "proxy_projection_adequate_for_denominator_audit_bool": false,
+      "proxy_projection_adequate_for_empirical_trace_claim_bool": false,
+      "proxy_projection_adequate_for_logger_smoke_bool": true,
+      "proxy_projection_empirical_bool": false,
+      "proxy_projection_shape_valid_bool": true,
+      "proxy_route_closure_reason_bucket": "shape_valid_proxy_only_not_empirical",
+      "proxy_route_decision_complete_bool": true
+    }
+  ],
+  "raw_projection_payloads_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_8l_projection_field_adequacy_decision.v1",
+  "self_test_checks_passed": 11,
+  "self_test_checks_total": 11,
+  "self_test_passed": true,
+  "status": "proxy_route_closure_empirical_fixtures_required",
+  "status_vocabulary": [
+    "proxy_route_closure_empirical_fixtures_required",
+    "no_go_p3_8l_required_inputs_unavailable",
+    "no_go_p3_8l_proxy_boundary_invalid",
+    "no_go_p3_8l_decision_record_incomplete",
+    "no_go_p3_8l_changed_file_scope_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "projection_field_adequacy_decision_only",
+      "broad_retrieval_expansion_authorized": false,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "empirical_trace_capture_authorized": false,
+      "helper_import_authorized": false,
+      "mechanism_evidence_claimed": false,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-8M Empirical Frozen Event Fixture Acquisition Design \u2014 design only, no capture execution",
+      "next_allowed_scope_bucket": "design_only_no_capture_execution",
+      "p3_8_capture_execution_authorized": false,
+      "p3_8_code_change_authorized": false,
+      "p3_8m_empirical_fixture_acquisition_design_authorized": true,
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "private_fixture_read_authorized": false,
+      "private_fixture_write_authorized": false,
+      "private_trace_row_write_authorized": false,
+      "proxy_fixture_smoke_route_authorized": false,
+      "proxy_route_closed_for_mechanism_work": true,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "target_evaluator_import_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
