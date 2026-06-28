@@ -28,15 +28,15 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-8J: Explicit Proxy Fixture Logger Smoke**:
+The latest closed phase is **BEA-v1-P3-8K: Proxy Fixture Smoke Public Projection Audit**:
 
 ```text
-status: explicit_proxy_fixture_logger_smoke_pass_p3_8k_authorized
-self-test: 11 / 11
+status: proxy_fixture_public_projection_audit_pass_p3_8l_authorized
+self-test: 10 / 10
 forbidden scan: pass
-proxy fixture events: 5
 public projections: 5
-P3-8K public projection audit authorized: true
+surface coverage: 5
+P3-8L field adequacy decision authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -243,6 +243,14 @@ build/validate/sanitize/public-projection for all five surfaces, and emits only
 sanitized public projection rows. It does not modify private files or write
 private trace rows, and it authorizes only P3-8K public projection audit.
 
+P3-8K audits only those P3-8J sanitized public projections. It confirms shape
+and proxy boundary validity for five surfaces while recording that the projection
+is proxy-only, not empirical evidence, and not adequate for denominator or
+counterfactual claims. It authorizes only P3-8L projection field adequacy and
+empirical fixture requirement decision; no private reads, helper imports, capture,
+private writes, retrieval, reruns, policy, P5, v1-A, or runtime/default promotion
+is authorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -405,6 +413,11 @@ See the current report index:
   does not authorize P3-8 changes, empirical capture, private trace rows, target
   evaluator imports/calls, retrieval, P4L/N1/N2 reruns, support labeling,
   counterfactuals, policy tuning, runtime/default promotion, P5, or v1-A.
+- P3-8K authorizes only P3-8L projection field adequacy and empirical fixture
+  requirement decision. It does not authorize private fixture reads, helper
+  imports, P3-8 changes, empirical capture, private trace rows, retrieval,
+  P4L/N1/N2 reruns, support labeling, counterfactuals, policy tuning,
+  runtime/default promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
