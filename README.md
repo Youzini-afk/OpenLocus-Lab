@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N6: Fixed-Pool Rank-Order Experiment**:
+The latest closed phase is **BEA-v1-N6F: Fixed-Pool Public Arm-Field Materialization Design**:
 
 ```text
-status: no_go_n6_public_fixed_pool_arm_fields_insufficient
+status: fixed_pool_public_arm_field_materialization_design_pass
 self-test: 16 / 16
 forbidden scan: pass
-fixed case set consistent: true
-N5 arms checked: 4
-exact public per-case arm mappings: 0 / 4
-per-case arm outcome rows evaluated: 0
-N7 result audit authorized: false
-new retrieval/rerun: false
+required public rows: 160
+case count: 40
+arm count: 4
+private reads / execution: 0
+N6G source discovery audit authorized: true
+generation/materialization/N6 rerun: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -310,6 +310,14 @@ per-case public outcome fields for the four N5/N6 arms are unavailable. N3 has
 analogous design-arm rows, but their names and semantics are not exact N6 arms,
 so N6 does not map them as results and does not infer from aggregate counts.
 
+N6F closes the N6 public-field gap as a design-only phase. It defines the required
+bucket-only public schema for future arm outcome materialization: 160 rows (40
+fixed cases × four exact N6 arms) with anonymous case/arm ids, exact-arm semantics
+boolean, no candidate-pool/new-retrieval/selector-reranker booleans, recovery
+buckets, rank-shift bucket, regression bucket, hard-cap bucket, and materialized
+boolean. It authorizes only N6G read-only public source discovery, not generation
+or an N6 rerun.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -520,6 +528,10 @@ See the current report index:
   authorize N7 result audit, candidate-pool mutation, new retrieval, reruns,
   selector/reranker execution, private reads, policy/runtime changes,
   counterfactuals, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N6F authorizes only N6G read-only public arm-field source discovery. It does not
+  authorize N6 rerun, field generation/materialization, private reads,
+  retrieval/reruns, selector/reranker execution, policy/runtime changes,
+  counterfactuals, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -667,6 +679,10 @@ eval/bea_v1_n5_fixed_pool_rank_order_experiment_preflight.py
 eval/bea_v1_n6_fixed_pool_rank_order_experiment.py
   Public-artifact fixed-pool rank-order experiment evaluator; No-Go when exact
   public per-case fields for the N5/N6 arms are unavailable.
+
+eval/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design.py
+  Design-only public arm-field schema closure for future fixed-pool arm outcome
+  materialization; authorizes only N6G read-only public source discovery.
 ```
 
 Key reports:
@@ -679,6 +695,7 @@ Key reports:
 - [`artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json`](artifacts/bea_v1_n2_rank_pack_actionability_decomposition/bea_v1_n2_rank_pack_actionability_decomposition_report.json)
 - [`artifacts/bea_v1_n5_fixed_pool_rank_order_experiment_preflight/bea_v1_n5_fixed_pool_rank_order_experiment_preflight_report.json`](artifacts/bea_v1_n5_fixed_pool_rank_order_experiment_preflight/bea_v1_n5_fixed_pool_rank_order_experiment_preflight_report.json)
 - [`artifacts/bea_v1_n6_fixed_pool_rank_order_experiment/bea_v1_n6_fixed_pool_rank_order_experiment_report.json`](artifacts/bea_v1_n6_fixed_pool_rank_order_experiment/bea_v1_n6_fixed_pool_rank_order_experiment_report.json)
+- [`artifacts/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design_report.json`](artifacts/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design_report.json)
 
 Documentation mirror check:
 
