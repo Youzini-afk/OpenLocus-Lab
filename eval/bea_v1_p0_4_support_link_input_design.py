@@ -6,7 +6,7 @@ from collections import Counter
 import json
 import time
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, Mapping, NoReturn
 
 import sys
 
@@ -54,6 +54,35 @@ LABEL_CONTRACT = (
     ("support_evidence_role_bucket", "enum", "precondition|constraint|cross_file_dependency|usage_example|ambiguous_or_unknown", True, True, True, "label_support_role_without_raw_snippet"),
     ("leakage_risk_bucket", "enum", "target_binding_leak_risk|support_overbroad_risk|safe_ambiguous_support|unknown_not_labeled", True, True, True, "guard_against_b16j_style_support_only_leakage"),
 )
+
+BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED = False
+
+
+def _bea_v1_support_link_trace_hook(
+    event: Mapping[str, Any], *, enabled: bool = BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED
+) -> dict[str, Any]:
+    if not enabled:
+        return {"trace_logger_enabled": False, "trace_capture_attempted": False, "private_trace_row_written": False}
+    from bea_v1_frozen_trace_logger_helpers import (  # noqa: WPS433
+        build_support_link_trace_capture_row_private,
+        sanitize_support_link_trace_capture_row_public,
+        validate_support_link_trace_capture_row_private,
+        validate_support_link_trace_capture_row_public_projection,
+    )
+
+    private_row = build_support_link_trace_capture_row_private(event)
+    private_validation = validate_support_link_trace_capture_row_private(private_row)
+    public_row = sanitize_support_link_trace_capture_row_public(private_row)
+    public_validation = validate_support_link_trace_capture_row_public_projection(public_row)
+    return {
+        "trace_logger_enabled": True,
+        "trace_capture_attempted": False,
+        "private_trace_row_written": False,
+        "surface_bucket": "support_link",
+        "private_validation_status": private_validation.get("validation_status"),
+        "public_validation_status": public_validation.get("validation_status"),
+        "public_projection": public_row,
+    }
 
 
 def _now_iso() -> str:

@@ -7,13 +7,72 @@ import json
 from pathlib import Path
 import sys
 import time
-from typing import Any, NoReturn
+from typing import Any, Mapping, NoReturn
 
 _EVAL_DIR = Path(__file__).resolve().parent
 if str(_EVAL_DIR) not in sys.path:
     sys.path.insert(0, str(_EVAL_DIR))
 
 import bea_v1_trace_gap_audit as tg  # noqa: E402
+
+BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED = False
+
+
+def _bea_v1_ordered_prefix_stop_trace_hook(
+    event: Mapping[str, Any], *, enabled: bool = BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED
+) -> dict[str, Any]:
+    if not enabled:
+        return {"trace_logger_enabled": False, "trace_capture_attempted": False, "private_trace_row_written": False}
+    from bea_v1_frozen_trace_logger_helpers import (  # noqa: WPS433
+        build_ordered_prefix_stop_trace_capture_row_private,
+        sanitize_ordered_prefix_stop_trace_capture_row_public,
+        validate_ordered_prefix_stop_trace_capture_row_private,
+        validate_ordered_prefix_stop_trace_capture_row_public_projection,
+    )
+
+    private_row = build_ordered_prefix_stop_trace_capture_row_private(event)
+    private_validation = validate_ordered_prefix_stop_trace_capture_row_private(private_row)
+    public_row = sanitize_ordered_prefix_stop_trace_capture_row_public(private_row)
+    public_validation = validate_ordered_prefix_stop_trace_capture_row_public_projection(public_row)
+    return {"trace_logger_enabled": True, "trace_capture_attempted": False, "private_trace_row_written": False, "surface_bucket": "ordered_prefix_stop", "private_validation_status": private_validation.get("validation_status"), "public_validation_status": public_validation.get("validation_status"), "public_projection": public_row}
+
+
+def _bea_v1_same_file_redundancy_trace_hook(
+    event: Mapping[str, Any], *, enabled: bool = BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED
+) -> dict[str, Any]:
+    if not enabled:
+        return {"trace_logger_enabled": False, "trace_capture_attempted": False, "private_trace_row_written": False}
+    from bea_v1_frozen_trace_logger_helpers import (  # noqa: WPS433
+        build_same_file_redundancy_trace_capture_row_private,
+        sanitize_same_file_redundancy_trace_capture_row_public,
+        validate_same_file_redundancy_trace_capture_row_private,
+        validate_same_file_redundancy_trace_capture_row_public_projection,
+    )
+
+    private_row = build_same_file_redundancy_trace_capture_row_private(event)
+    private_validation = validate_same_file_redundancy_trace_capture_row_private(private_row)
+    public_row = sanitize_same_file_redundancy_trace_capture_row_public(private_row)
+    public_validation = validate_same_file_redundancy_trace_capture_row_public_projection(public_row)
+    return {"trace_logger_enabled": True, "trace_capture_attempted": False, "private_trace_row_written": False, "surface_bucket": "same_file_redundancy", "private_validation_status": private_validation.get("validation_status"), "public_validation_status": public_validation.get("validation_status"), "public_projection": public_row}
+
+
+def _bea_v1_risk_penalty_trace_hook(
+    event: Mapping[str, Any], *, enabled: bool = BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED
+) -> dict[str, Any]:
+    if not enabled:
+        return {"trace_logger_enabled": False, "trace_capture_attempted": False, "private_trace_row_written": False}
+    from bea_v1_frozen_trace_logger_helpers import (  # noqa: WPS433
+        build_risk_penalty_trace_capture_row_private,
+        sanitize_risk_penalty_trace_capture_row_public,
+        validate_risk_penalty_trace_capture_row_private,
+        validate_risk_penalty_trace_capture_row_public_projection,
+    )
+
+    private_row = build_risk_penalty_trace_capture_row_private(event)
+    private_validation = validate_risk_penalty_trace_capture_row_private(private_row)
+    public_row = sanitize_risk_penalty_trace_capture_row_public(private_row)
+    public_validation = validate_risk_penalty_trace_capture_row_public_projection(public_row)
+    return {"trace_logger_enabled": True, "trace_capture_attempted": False, "private_trace_row_written": False, "surface_bucket": "risk_penalty", "private_validation_status": private_validation.get("validation_status"), "public_validation_status": public_validation.get("validation_status"), "public_projection": public_row}
 
 
 DEFAULT_TRACE_GAP = Path("artifacts/bea_v1_trace_gap_audit/bea_v1_trace_gap_audit_report.json")

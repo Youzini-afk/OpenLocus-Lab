@@ -28,16 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-5: Frozen Trace Logger Hook-In Patch Plan Review**:
+The latest closed phase is **BEA-v1-P3-6: Frozen Trace Logger Limited Hook Application Patch**:
 
 ```text
-status: frozen_trace_logger_hook_in_patch_plan_review_pass_p3_6_authorized
-self-test: 13 / 13
+status: frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized
+self-test: 15 / 15
 forbidden scan: pass
-surface patch plans: 5
-feature gates default-enabled: 0
-private writes authorized in P3-5/P3-6: 0
-P3-6 limited hook application patch authorized: true
+hook wiring records: 5
+default enabled count: 0
+real capture execution count: 0
+private writer count: 0
+P3-7 capture execution preflight authorized: true
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -192,6 +193,12 @@ validation for a future P3-6 phase, but does not apply patches, execute hooks,
 capture traces, write private rows, run retrieval, rerun P4L/N1/N2, or change
 runtime behavior.
 
+P3-6 applies only default-off, logging-only hook shims to selected evaluator
+files. The shims are not called by default, expose no CLI or environment
+enablement, add no private-path arguments, and perform no writes. P3-6 authorizes
+only P3-7 capture-execution preflight; it still does not execute trace capture,
+write private rows, run retrieval, rerun P4L/N1/N2, or change runtime behavior.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -321,6 +328,9 @@ See the current report index:
   synthetic/no-execution validation. It does not authorize trace capture, private
   row writes, retrieval, P4L/N1/N2 reruns, policy changes, runtime promotion, P5,
   or v1-A.
+- P3-6 authorizes only P3-7 frozen trace logger capture execution preflight. It
+  does not authorize capture execution, private row writes, retrieval,
+  P4L/N1/N2 reruns, policy changes, runtime promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

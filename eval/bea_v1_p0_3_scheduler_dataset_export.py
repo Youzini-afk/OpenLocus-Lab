@@ -6,7 +6,7 @@ from collections import Counter
 import json
 import time
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, Mapping, NoReturn
 
 import sys
 
@@ -39,6 +39,34 @@ P4L_EXPECTED_STATUS = "bea_v1_p4l_locked_non_python_scheduler_validation_pass"
 P0_2_EXPECTED_STATUS = "actionability_matrix_refresh_pass"
 PRIVATE_ARM_SCHEMA = "bea_v1_p4l_private_arm_outcome.v1"
 EXPECTED_PRIVATE_ARM_ROWS = 1088
+BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED = False
+
+
+def _bea_v1_scheduler_action_cost_trace_hook(
+    event: Mapping[str, Any], *, enabled: bool = BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED
+) -> dict[str, Any]:
+    if not enabled:
+        return {"trace_logger_enabled": False, "trace_capture_attempted": False, "private_trace_row_written": False}
+    from bea_v1_frozen_trace_logger_helpers import (  # noqa: WPS433
+        build_scheduler_action_cost_trace_capture_row_private,
+        sanitize_scheduler_action_cost_trace_capture_row_public,
+        validate_scheduler_action_cost_trace_capture_row_private,
+        validate_scheduler_action_cost_trace_capture_row_public_projection,
+    )
+
+    private_row = build_scheduler_action_cost_trace_capture_row_private(event)
+    private_validation = validate_scheduler_action_cost_trace_capture_row_private(private_row)
+    public_row = sanitize_scheduler_action_cost_trace_capture_row_public(private_row)
+    public_validation = validate_scheduler_action_cost_trace_capture_row_public_projection(public_row)
+    return {
+        "trace_logger_enabled": True,
+        "trace_capture_attempted": False,
+        "private_trace_row_written": False,
+        "surface_bucket": "scheduler_action_cost",
+        "private_validation_status": private_validation.get("validation_status"),
+        "public_validation_status": public_validation.get("validation_status"),
+        "public_projection": public_row,
+    }
 
 
 def _now_iso() -> str:

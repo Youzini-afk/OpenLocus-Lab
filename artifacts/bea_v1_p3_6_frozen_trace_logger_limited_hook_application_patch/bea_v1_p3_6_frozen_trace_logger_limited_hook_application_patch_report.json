@@ -1,0 +1,545 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.062,
+  "behavior_preservation_records": [
+    {
+      "anonymous_behavior_preservation_id": "p36bp0000",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "default_disabled_noop_behavior",
+      "default_disabled_noop_bool": true,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0001",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_output_mutation",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0002",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_retrieval_mutation",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0003",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_ranking_mutation",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0004",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_packing_mutation",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0005",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_selection_mutation",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0006",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_policy_mutation",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0007",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_private_writes",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0008",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "no_trace_capture_execution",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    },
+    {
+      "anonymous_behavior_preservation_id": "p36bp0009",
+      "behavior_mutation_authorized_bool": false,
+      "behavior_preservation_bucket": "fail_closed_on_helper_validation_error",
+      "default_disabled_noop_bool": false,
+      "execution_authorized_bool": false,
+      "review_complete_bool": true
+    }
+  ],
+  "changed_file_allowlist_records": [
+    {
+      "anonymous_changed_file_allowlist_id": "p36cf0000",
+      "changed_file_scope_valid_bool": true,
+      "disallowed_changed_file_count": 0,
+      "git_status_available_bool": true,
+      "helper_module_modified_bool": false,
+      "runtime_retrieval_selector_or_config_modified_bool": false,
+      "workspace_change_count": 12
+    }
+  ],
+  "claim_level": "frozen_trace_logger_limited_hook_application_patch_only",
+  "default_off_gate_records": [
+    {
+      "anonymous_default_off_gate_id": "p36dg0000",
+      "cli_enablement_present_bool": false,
+      "default_enabled_bool": false,
+      "default_off_gate_complete_bool": true,
+      "default_path_behavior_changed_bool": false,
+      "env_var_enablement_present_bool": false,
+      "gate_type_bucket": "keyword_only_enabled_argument",
+      "private_path_argument_present_bool": false,
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_default_off_gate_id": "p36dg0001",
+      "cli_enablement_present_bool": false,
+      "default_enabled_bool": false,
+      "default_off_gate_complete_bool": true,
+      "default_path_behavior_changed_bool": false,
+      "env_var_enablement_present_bool": false,
+      "gate_type_bucket": "keyword_only_enabled_argument",
+      "private_path_argument_present_bool": false,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_default_off_gate_id": "p36dg0002",
+      "cli_enablement_present_bool": false,
+      "default_enabled_bool": false,
+      "default_off_gate_complete_bool": true,
+      "default_path_behavior_changed_bool": false,
+      "env_var_enablement_present_bool": false,
+      "gate_type_bucket": "keyword_only_enabled_argument",
+      "private_path_argument_present_bool": false,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_default_off_gate_id": "p36dg0003",
+      "cli_enablement_present_bool": false,
+      "default_enabled_bool": false,
+      "default_off_gate_complete_bool": true,
+      "default_path_behavior_changed_bool": false,
+      "env_var_enablement_present_bool": false,
+      "gate_type_bucket": "keyword_only_enabled_argument",
+      "private_path_argument_present_bool": false,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_default_off_gate_id": "p36dg0004",
+      "cli_enablement_present_bool": false,
+      "default_enabled_bool": false,
+      "default_off_gate_complete_bool": true,
+      "default_path_behavior_changed_bool": false,
+      "env_var_enablement_present_bool": false,
+      "gate_type_bucket": "keyword_only_enabled_argument",
+      "private_path_argument_present_bool": false,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "diff_safety_review_records": [
+    {
+      "allowed_change_bucket": "default_off_logging_only_hook_shim",
+      "anonymous_diff_safety_review_id": "p36ds0000",
+      "behavior_mutation_risk_bucket": "none_detected",
+      "changed_file_bucket": "p0_3_scheduler_dataset_export",
+      "diff_review_passed_bool": true,
+      "forbidden_token_count_in_added_hunks": 0,
+      "line_numbers_publicly_serialized_bool": false,
+      "raw_diff_publicly_serialized_bool": false,
+      "source_snippets_publicly_serialized_bool": false
+    },
+    {
+      "allowed_change_bucket": "default_off_logging_only_hook_shim",
+      "anonymous_diff_safety_review_id": "p36ds0001",
+      "behavior_mutation_risk_bucket": "none_detected",
+      "changed_file_bucket": "p0_4_support_link_input_design",
+      "diff_review_passed_bool": true,
+      "forbidden_token_count_in_added_hunks": 0,
+      "line_numbers_publicly_serialized_bool": false,
+      "raw_diff_publicly_serialized_bool": false,
+      "source_snippets_publicly_serialized_bool": false
+    },
+    {
+      "allowed_change_bucket": "default_off_logging_only_hook_shim",
+      "anonymous_diff_safety_review_id": "p36ds0002",
+      "behavior_mutation_risk_bucket": "none_detected",
+      "changed_file_bucket": "p0_6_7_8_parallel_trace_surfaces",
+      "diff_review_passed_bool": true,
+      "forbidden_token_count_in_added_hunks": 0,
+      "line_numbers_publicly_serialized_bool": false,
+      "raw_diff_publicly_serialized_bool": false,
+      "source_snippets_publicly_serialized_bool": false
+    },
+    {
+      "allowed_change_bucket": "default_off_logging_only_hook_shim",
+      "anonymous_diff_safety_review_id": "p36ds0003",
+      "behavior_mutation_risk_bucket": "none_detected",
+      "changed_file_bucket": "p1_2_private_label_intake_validator",
+      "diff_review_passed_bool": true,
+      "forbidden_token_count_in_added_hunks": 0,
+      "line_numbers_publicly_serialized_bool": false,
+      "raw_diff_publicly_serialized_bool": false,
+      "source_snippets_publicly_serialized_bool": false
+    }
+  ],
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p3_5_input_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_files_subset_allowlist",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "helper_module_modified_false",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "five_hook_wiring_records_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "default_off_gate_records_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 5,
+      "value": 5
+    },
+    {
+      "gate": "capture_and_private_write_counts_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "behavior_preservation_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p3_7_preflight_only_handoff",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-28T18:12:16Z",
+  "generated_by": "eval/bea_v1_p3_6_frozen_trace_logger_limited_hook_application_patch.py",
+  "helper_import_review_records": [
+    {
+      "anonymous_helper_import_review_id": "p36hi0000",
+      "helper_import_review_passed_bool": true,
+      "helper_module_bucket": "bea_v1_frozen_trace_logger_helpers",
+      "helper_module_modified_bool": false,
+      "helper_module_referenced_from_target_count": 4,
+      "local_default_off_branch_import_only_bool": true,
+      "top_level_import_added_bool": false
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "expected_status": "frozen_trace_logger_hook_in_patch_plan_review_pass_p3_6_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "p3_5_frozen_trace_logger_hook_in_patch_plan_review",
+      "input_gate_passed": true,
+      "load_status": "pass",
+      "observed_status": "frozen_trace_logger_hook_in_patch_plan_review_pass_p3_6_authorized",
+      "source_phase_bucket": "BEA-v1-P3-5"
+    }
+  ],
+  "p3_7_handoff_records": [
+    {
+      "anonymous_handoff_id": "p36h0000",
+      "capture_execution_authorized_bool": false,
+      "handoff_bucket": "p3_7_frozen_trace_logger_capture_execution_preflight",
+      "next_allowed_phase": "BEA-v1-P3-7 Frozen Trace Logger Capture Execution Preflight \u2014 preflight only, no capture execution or private row writes",
+      "p3_7_capture_execution_preflight_authorized": true,
+      "p3_7_scope": "preflight only for future explicitly enabled frozen trace-capture run; no capture execution/private writes/retrieval/P4L/N1/N2 reruns",
+      "p4l_n1_n2_rerun_authorized_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "requires_separate_phase_bool": true,
+      "retrieval_execution_authorized_bool": false
+    }
+  ],
+  "phase": "BEA-v1-P3-6",
+  "private_writer_absence_records": [
+    {
+      "anonymous_private_writer_absence_id": "p36pw0000",
+      "open_write_added_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "private_writer_absence_passed_bool": true,
+      "private_writer_added_bool": false,
+      "research_private_path_added_bool": false,
+      "surface_bucket": "support_link"
+    },
+    {
+      "anonymous_private_writer_absence_id": "p36pw0001",
+      "open_write_added_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "private_writer_absence_passed_bool": true,
+      "private_writer_added_bool": false,
+      "research_private_path_added_bool": false,
+      "surface_bucket": "scheduler_action_cost"
+    },
+    {
+      "anonymous_private_writer_absence_id": "p36pw0002",
+      "open_write_added_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "private_writer_absence_passed_bool": true,
+      "private_writer_added_bool": false,
+      "research_private_path_added_bool": false,
+      "surface_bucket": "ordered_prefix_stop"
+    },
+    {
+      "anonymous_private_writer_absence_id": "p36pw0003",
+      "open_write_added_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "private_writer_absence_passed_bool": true,
+      "private_writer_added_bool": false,
+      "research_private_path_added_bool": false,
+      "surface_bucket": "same_file_redundancy"
+    },
+    {
+      "anonymous_private_writer_absence_id": "p36pw0004",
+      "open_write_added_bool": false,
+      "private_trace_row_write_authorized_bool": false,
+      "private_writer_absence_passed_bool": true,
+      "private_writer_added_bool": false,
+      "research_private_path_added_bool": false,
+      "surface_bucket": "risk_penalty"
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p3_6_frozen_trace_logger_limited_hook_application_patch.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "source_snippets_publicly_serialized": false,
+  "status": "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized",
+  "status_vocabulary": [
+    "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized",
+    "no_go_p3_6_required_inputs_unavailable",
+    "no_go_p3_6_changed_file_scope_invalid",
+    "no_go_p3_6_hook_wiring_incomplete",
+    "no_go_p3_6_default_off_gate_missing",
+    "no_go_p3_6_behavior_mutation_risk",
+    "no_go_p3_6_private_writer_or_capture_detected",
+    "no_go_p3_6_helper_module_modified",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "frozen_trace_logger_limited_hook_application_patch_only",
+      "broad_retrieval_expansion_authorized": false,
+      "current_phase_private_trace_row_write_authorized": false,
+      "current_phase_trace_capture_execution_authorized": false,
+      "default_off_logging_hook_wiring_applied": true,
+      "default_promotion_authorized": false,
+      "denominator_audit_authorized": false,
+      "downstream_value_claimed": false,
+      "future_runtime_implementation_authorized": false,
+      "implementation_authorized": false,
+      "limited_hook_patch_applied_in_p3_6": true,
+      "method_winner_claimed": false,
+      "n1_n2_rerun_authorized": false,
+      "next_allowed_phase": "BEA-v1-P3-7 Frozen Trace Logger Capture Execution Preflight \u2014 preflight only, no capture execution or private row writes",
+      "p3_7_capture_execution_preflight_authorized": true,
+      "p3_7_scope": "preflight only for future explicitly enabled frozen trace-capture run; no capture execution/private writes/retrieval/P4L/N1/N2 reruns",
+      "p4l_rerun_authorized": false,
+      "p5_authorized": false,
+      "patch_application_authorized_in_p3_6": true,
+      "policy_tuning_authorized": false,
+      "retrieval_execution_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "frozen_trace_logger_limited_hook_application_patch_pass_p3_7_preflight_authorized",
+      "stop_go_reason": "limited_hook_application_patch_complete",
+      "support_counterfactual_execution_authorized": false,
+      "support_labeling_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "synthetic_no_execution_validation_records": [
+    {
+      "anonymous_synthetic_validation_id": "p36sv0000",
+      "hook_shim_executed_bool": false,
+      "p4l_n1_n2_rerun_allowed_bool": false,
+      "private_rows_used_bool": false,
+      "private_rows_written_bool": false,
+      "real_retrieval_execution_allowed_bool": false,
+      "support_labeling_execution_allowed_bool": false,
+      "surface_bucket": "support_link",
+      "synthetic_no_execution_validation_bool": true,
+      "synthetic_validation_passed_bool": true,
+      "target_evaluator_imported_or_executed_bool": false
+    },
+    {
+      "anonymous_synthetic_validation_id": "p36sv0001",
+      "hook_shim_executed_bool": false,
+      "p4l_n1_n2_rerun_allowed_bool": false,
+      "private_rows_used_bool": false,
+      "private_rows_written_bool": false,
+      "real_retrieval_execution_allowed_bool": false,
+      "support_labeling_execution_allowed_bool": false,
+      "surface_bucket": "scheduler_action_cost",
+      "synthetic_no_execution_validation_bool": true,
+      "synthetic_validation_passed_bool": true,
+      "target_evaluator_imported_or_executed_bool": false
+    },
+    {
+      "anonymous_synthetic_validation_id": "p36sv0002",
+      "hook_shim_executed_bool": false,
+      "p4l_n1_n2_rerun_allowed_bool": false,
+      "private_rows_used_bool": false,
+      "private_rows_written_bool": false,
+      "real_retrieval_execution_allowed_bool": false,
+      "support_labeling_execution_allowed_bool": false,
+      "surface_bucket": "ordered_prefix_stop",
+      "synthetic_no_execution_validation_bool": true,
+      "synthetic_validation_passed_bool": true,
+      "target_evaluator_imported_or_executed_bool": false
+    },
+    {
+      "anonymous_synthetic_validation_id": "p36sv0003",
+      "hook_shim_executed_bool": false,
+      "p4l_n1_n2_rerun_allowed_bool": false,
+      "private_rows_used_bool": false,
+      "private_rows_written_bool": false,
+      "real_retrieval_execution_allowed_bool": false,
+      "support_labeling_execution_allowed_bool": false,
+      "surface_bucket": "same_file_redundancy",
+      "synthetic_no_execution_validation_bool": true,
+      "synthetic_validation_passed_bool": true,
+      "target_evaluator_imported_or_executed_bool": false
+    },
+    {
+      "anonymous_synthetic_validation_id": "p36sv0004",
+      "hook_shim_executed_bool": false,
+      "p4l_n1_n2_rerun_allowed_bool": false,
+      "private_rows_used_bool": false,
+      "private_rows_written_bool": false,
+      "real_retrieval_execution_allowed_bool": false,
+      "support_labeling_execution_allowed_bool": false,
+      "surface_bucket": "risk_penalty",
+      "synthetic_no_execution_validation_bool": true,
+      "synthetic_validation_passed_bool": true,
+      "target_evaluator_imported_or_executed_bool": false
+    }
+  ],
+  "target_hook_wiring_records": [
+    {
+      "anonymous_target_hook_wiring_id": "p36hw0000",
+      "default_off_gate_present_bool": true,
+      "helper_builder_referenced_bool": true,
+      "helper_sanitizer_referenced_bool": true,
+      "helper_validator_referenced_bool": true,
+      "hook_called_from_default_path_bool": false,
+      "hook_shim_present_bool": true,
+      "hook_wiring_complete_bool": true,
+      "private_write_in_p3_6_bool": false,
+      "real_capture_execution_in_p3_6_bool": false,
+      "surface_bucket": "support_link",
+      "target_bucket": "p0_4_support_link_input_design"
+    },
+    {
+      "anonymous_target_hook_wiring_id": "p36hw0001",
+      "default_off_gate_present_bool": true,
+      "helper_builder_referenced_bool": true,
+      "helper_sanitizer_referenced_bool": true,
+      "helper_validator_referenced_bool": true,
+      "hook_called_from_default_path_bool": false,
+      "hook_shim_present_bool": true,
+      "hook_wiring_complete_bool": true,
+      "private_write_in_p3_6_bool": false,
+      "real_capture_execution_in_p3_6_bool": false,
+      "surface_bucket": "scheduler_action_cost",
+      "target_bucket": "p0_3_scheduler_dataset_export"
+    },
+    {
+      "anonymous_target_hook_wiring_id": "p36hw0002",
+      "default_off_gate_present_bool": true,
+      "helper_builder_referenced_bool": true,
+      "helper_sanitizer_referenced_bool": true,
+      "helper_validator_referenced_bool": true,
+      "hook_called_from_default_path_bool": false,
+      "hook_shim_present_bool": true,
+      "hook_wiring_complete_bool": true,
+      "private_write_in_p3_6_bool": false,
+      "real_capture_execution_in_p3_6_bool": false,
+      "surface_bucket": "ordered_prefix_stop",
+      "target_bucket": "p0_6_7_8_parallel_trace_surfaces"
+    },
+    {
+      "anonymous_target_hook_wiring_id": "p36hw0003",
+      "default_off_gate_present_bool": true,
+      "helper_builder_referenced_bool": true,
+      "helper_sanitizer_referenced_bool": true,
+      "helper_validator_referenced_bool": true,
+      "hook_called_from_default_path_bool": false,
+      "hook_shim_present_bool": true,
+      "hook_wiring_complete_bool": true,
+      "private_write_in_p3_6_bool": false,
+      "real_capture_execution_in_p3_6_bool": false,
+      "surface_bucket": "same_file_redundancy",
+      "target_bucket": "p0_6_7_8_parallel_trace_surfaces"
+    },
+    {
+      "anonymous_target_hook_wiring_id": "p36hw0004",
+      "default_off_gate_present_bool": true,
+      "helper_builder_referenced_bool": true,
+      "helper_sanitizer_referenced_bool": true,
+      "helper_validator_referenced_bool": true,
+      "hook_called_from_default_path_bool": false,
+      "hook_shim_present_bool": true,
+      "hook_wiring_complete_bool": true,
+      "private_write_in_p3_6_bool": false,
+      "real_capture_execution_in_p3_6_bool": false,
+      "surface_bucket": "risk_penalty",
+      "target_bucket": "p0_6_7_8_parallel_trace_surfaces"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import sys
 import time
-from typing import Any, NoReturn
+from typing import Any, Mapping, NoReturn
 
 _EVAL_DIR = Path(__file__).resolve().parent
 if str(_EVAL_DIR) not in sys.path:
@@ -38,6 +38,34 @@ STATUSES = (
 
 QUEUE_STATUS = "ready_for_private_labeling"
 OUTPUT_STATUS = "labeled"
+BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED = False
+
+
+def _bea_v1_support_label_intake_trace_hook(
+    event: Mapping[str, Any], *, enabled: bool = BEA_V1_TRACE_LOGGER_DEFAULT_ENABLED
+) -> dict[str, Any]:
+    if not enabled:
+        return {"trace_logger_enabled": False, "trace_capture_attempted": False, "private_trace_row_written": False}
+    from bea_v1_frozen_trace_logger_helpers import (  # noqa: WPS433
+        build_support_link_trace_capture_row_private,
+        sanitize_support_link_trace_capture_row_public,
+        validate_support_link_trace_capture_row_private,
+        validate_support_link_trace_capture_row_public_projection,
+    )
+
+    private_row = build_support_link_trace_capture_row_private(event)
+    private_validation = validate_support_link_trace_capture_row_private(private_row)
+    public_row = sanitize_support_link_trace_capture_row_public(private_row)
+    public_validation = validate_support_link_trace_capture_row_public_projection(public_row)
+    return {
+        "trace_logger_enabled": True,
+        "trace_capture_attempted": False,
+        "private_trace_row_written": False,
+        "surface_bucket": "support_link",
+        "private_validation_status": private_validation.get("validation_status"),
+        "public_validation_status": public_validation.get("validation_status"),
+        "public_projection": public_row,
+    }
 
 
 def _now_iso() -> str:
