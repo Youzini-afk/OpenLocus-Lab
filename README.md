@@ -28,15 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P3-0: Frozen Upstream Trace-Capture Harness Design**:
+The latest closed phase is **BEA-v1-P3-1: Frozen Upstream Trace-Capture Harness Dry-Run Preflight**:
 
 ```text
-status: frozen_upstream_trace_capture_harness_design_pass
-self-test: 12 / 12
+status: frozen_trace_capture_preflight_pass_patch_design_authorized
+self-test: 13 / 13
 forbidden scan: pass
-trace schema records: 5
-instrumentation point records: 5
-P3-1 preflight authorized: true
+surface preflight records: 5
+static anchor records: 7
+P3-2 patch design authorized: true
+patch application authorized: false
 trace capture execution authorized: false
 ```
 
@@ -159,6 +160,12 @@ buckets, frozen replay requirements, and fail-closed validation gates, but it
 does not execute trace capture, retrieval, reruns, counterfactuals, policy, or
 runtime changes. It authorizes only P3-1 dry-run preflight as a separate phase.
 
+P3-1 performs the static dry-run preflight for that harness. Required evaluator
+anchors are checked by file existence/text only, with no imports or execution.
+It authorizes only P3-2 frozen trace logger patch design; patch application,
+trace capture execution, private row writes, retrieval, reruns, and runtime
+behavior changes remain blocked.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -269,6 +276,10 @@ See the current report index:
   instrumentation planning. It allows P3-1 dry-run preflight only; actual trace
   capture, retrieval execution, reruns, counterfactuals, policy tuning,
   implementation, runtime promotion, P5, and v1-A remain unauthorized.
+- P3-1 authorizes only static dry-run preflight and the next P3-2 logging-only
+  patch design phase. It does not authorize patch application, trace capture
+  execution, private trace row writes, retrieval, reruns, policy changes,
+  implementation, runtime promotion, P5, or v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
