@@ -1,0 +1,193 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.002,
+  "availability_summary_records": [
+    {
+      "availability_bucket": "contract_only_private_trace_unavailable",
+      "contract_record_count": 6,
+      "p0_contract_private_manifest_zero": true,
+      "private_trace_read_status": "missing",
+      "surface_bucket": "same_file_redundancy",
+      "valid_private_trace_count": 0
+    },
+    {
+      "availability_bucket": "contract_only_private_trace_unavailable",
+      "contract_record_count": 6,
+      "p0_contract_private_manifest_zero": true,
+      "private_trace_read_status": "missing",
+      "surface_bucket": "risk_penalty",
+      "valid_private_trace_count": 0
+    }
+  ],
+  "claim_level": "redundancy_risk_trace_availability_feasibility_audit_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "traces_unavailable",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "required_artifacts_load_and_scan",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p0_6_contract_records_six",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 6,
+      "value": 6
+    },
+    {
+      "gate": "p0_7_contract_records_six",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 6,
+      "value": 6
+    },
+    {
+      "gate": "p0_private_manifest_counts_zero",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p0_trace_gap_missing_trace_confirmed",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "same_file_valid_private_rows",
+      "passed": false,
+      "threshold_relation": "greater_or_equal",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "risk_penalty_valid_private_rows",
+      "passed": false,
+      "threshold_relation": "greater_or_equal",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T16:15:28Z",
+  "generated_by": "eval/bea_v1_p2_2_redundancy_risk_trace_availability.py",
+  "input_artifact_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_6_same_file_redundancy_trace_surface",
+      "load_status": "pass",
+      "source_schema": "bea_v1_p0_6_same_file_redundancy_trace_surface.v1",
+      "source_status": "same_file_redundancy_trace_surface_contract_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_7_risk_penalty_trace_surface",
+      "load_status": "pass",
+      "source_schema": "bea_v1_p0_7_risk_penalty_trace_surface.v1",
+      "source_status": "risk_penalty_trace_surface_contract_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_1_trace_gap_audit",
+      "load_status": "pass",
+      "source_schema": "bea_v1_trace_gap_audit.v1",
+      "source_status": "trace_gap_audit_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_2_actionability_matrix_refresh",
+      "load_status": "pass",
+      "source_schema": "bea_v1_p0_2_actionability_matrix_refresh.v1",
+      "source_status": "actionability_matrix_refresh_pass"
+    }
+  ],
+  "mode": "bea_v1_p2_2_redundancy_risk_trace_availability",
+  "phase": "BEA-v1-P2-2",
+  "private_paths_publicly_serialized": false,
+  "private_trace_error_summary_records": [],
+  "private_trace_manifest_records": [
+    {
+      "error_count": 0,
+      "path_publicly_serialized": false,
+      "read_status": "missing",
+      "record_count": 0,
+      "schema_version": "bea_v1_p0_6_same_file_redundancy_private_trace.v1",
+      "storage_class": "project_ignored_private_or_explicit_tmp_jsonl",
+      "surface_bucket": "same_file_redundancy",
+      "valid_record_count": 0
+    },
+    {
+      "error_count": 0,
+      "path_publicly_serialized": false,
+      "read_status": "missing",
+      "record_count": 0,
+      "schema_version": "bea_v1_p0_7_risk_penalty_private_trace.v1",
+      "storage_class": "project_ignored_private_or_explicit_tmp_jsonl",
+      "surface_bucket": "risk_penalty",
+      "valid_record_count": 0
+    }
+  ],
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "sanitized_private_trace_bucket_records": [],
+  "schema_version": "bea_v1_p2_2_redundancy_risk_trace_availability.v1",
+  "self_test_checks_passed": 8,
+  "self_test_checks_total": 8,
+  "self_test_passed": true,
+  "status": "no_go_p2_2_redundancy_risk_traces_unavailable",
+  "status_vocabulary": [
+    "redundancy_risk_trace_availability_pass",
+    "same_file_redundancy_private_trace_pass",
+    "risk_penalty_private_trace_pass",
+    "partial_redundancy_or_risk_trace_available",
+    "no_go_p2_2_redundancy_risk_traces_unavailable",
+    "no_go_p2_2_private_trace_schema_invalid",
+    "no_go_p2_2_required_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "redundancy_risk_trace_availability_feasibility_audit_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "implementation_authorized": false,
+      "method_winner_claimed": false,
+      "p5_authorized": false,
+      "policy_tuning_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "no_go_p2_2_redundancy_risk_traces_unavailable",
+      "stop_go_reason": "both_private_trace_surfaces_unavailable",
+      "support_counterfactual_execution_authorized": false,
+      "trace_counterfactual_execution_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "trace_gap_confirmation_records": [
+    {
+      "failure_category_bucket": "redundant_same_file_candidates",
+      "p0_trace_availability_bucket": "missing_trace",
+      "surface_bucket": "same_file_redundancy",
+      "trace_evidence_basis_bucket": "unavailable_missing_trace",
+      "trace_field_bucket": "same_file_redundancy_trace"
+    },
+    {
+      "failure_category_bucket": "risk_penalty_removed_gold",
+      "p0_trace_availability_bucket": "missing_trace",
+      "surface_bucket": "risk_penalty",
+      "trace_evidence_basis_bucket": "unavailable_missing_trace",
+      "trace_field_bucket": "risk_penalty_trace"
+    }
+  ]
+}
