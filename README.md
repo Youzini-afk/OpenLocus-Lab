@@ -28,18 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P1-4: Automated-Label Reliability Audit**:
+The latest closed phase is **BEA-v1-P1-5R: Improved Automated Support Label Feasibility**:
 
 ```text
-status: no_go_p1_4_low_evidence_labels
-self-test: 10 / 10
+status: no_go_p1_5r_private_context_unavailable
+self-test: 8 / 8
 forbidden scan: pass
-private label rows: 18
-P1-2 intake-valid rows: 18
-label errors: 0
-informative labels: 0 / 18
-known conjunction labels: 0 / 18
-unknown-both-hit labels: 18 / 18
+direct P1-2 intake: pass
+P1-4 reliability artifact: available
+reconstructable context fields: 0
+improved label generation attempted: false
+guessed labels generated: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -128,6 +127,11 @@ P1-4 audits those automated labels through direct P1-2 intake and verifies their
 origin metadata, but returns `no_go_p1_4_low_evidence_labels`: all 18 labels keep
 target/support hit buckets unknown and conjunction ambiguous. P1-5 denominator
 audit and support counterfactual execution remain unauthorized.
+
+P1-5R checks whether existing support-label surfaces contain source/context
+linkage to improve automated labels without guessing. They do not: the available
+rows contain only bucket/proxy fields, so no improved labels are generated and
+P1-5 remains unauthorized.
 
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
@@ -219,6 +223,9 @@ See the current report index:
 - P1-4 authorizes only automated-label reliability auditing. It does not
   authorize P1-5, support counterfactual execution, support marginal-utility
   claims, mechanism evidence claims, P5, or BEA-v1-A.
+- P1-5R authorizes only feasibility auditing for improved automated support
+  labels. It found no reconstructable private source context and does not
+  generate guessed labels or authorize P1-5/support counterfactuals.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

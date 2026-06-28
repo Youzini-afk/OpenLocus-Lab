@@ -1,0 +1,300 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.005,
+  "claim_level": "improved_automated_support_label_feasibility_audit_only",
+  "context_linkage_summary_records": [
+    {
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "count": 6
+    }
+  ],
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "private_context_unavailable",
+  "feasibility_summary_records": [
+    {
+      "all_required_linkage_categories_missing": true,
+      "guessed_labels_generated": false,
+      "improved_label_generation_attempted": false,
+      "inspected_row_count": 108,
+      "inspected_surface_count": 6,
+      "reconstructable_context_field_count": 0,
+      "source_context_available_for_improved_labels": false
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "direct_p1_2_intake_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p1_4_reliability_artifact_available",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "reconstructable_source_context_available",
+      "passed": false,
+      "threshold_relation": "greater_than",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "improved_label_generation_not_guessed",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "p1_5_denominator_audit_authorized",
+      "passed": false,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 0
+    }
+  ],
+  "generated_at": "2026-06-28T15:26:27Z",
+  "generated_by": "eval/bea_v1_p1_5r_improved_automated_support_label_feasibility.py",
+  "missing_context_linkage_summary_records": [
+    {
+      "linkage_category_bucket": "source_location_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    },
+    {
+      "linkage_category_bucket": "source_span_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    },
+    {
+      "linkage_category_bucket": "gold_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    },
+    {
+      "linkage_category_bucket": "candidate_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    },
+    {
+      "linkage_category_bucket": "task_or_repo_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    },
+    {
+      "linkage_category_bucket": "trace_foreign_key_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    },
+    {
+      "linkage_category_bucket": "provider_or_private_payload_reference",
+      "missing_bucket": "missing_from_all_inspected_surfaces",
+      "present_count": 0
+    }
+  ],
+  "mode": "bea_v1_p1_5r_improved_automated_support_label_feasibility",
+  "phase": "BEA-v1-P1-5R",
+  "private_input_manifest_records": [
+    {
+      "manifest_name": "bea_v1_p1_1_support_labeling_queue",
+      "path_publicly_serialized": false,
+      "read_status": "pass",
+      "record_count": 18,
+      "schema_version": "bea_v1_p1_1_support_labeling_queue.v1",
+      "storage_class": "project_ignored_private_jsonl"
+    },
+    {
+      "manifest_name": "bea_v1_p1_3_agent_generated_support_labels",
+      "p1_2_label_error_count": 0,
+      "p1_2_valid_record_count": 18,
+      "path_publicly_serialized": false,
+      "read_status": "pass",
+      "record_count": 18,
+      "schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "storage_class": "project_ignored_private_jsonl"
+    }
+  ],
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "schema_version": "bea_v1_p1_5r_improved_automated_support_label_feasibility.v1",
+  "self_test_checks_passed": 8,
+  "self_test_checks_total": 8,
+  "self_test_passed": true,
+  "source_context_linkage_field_presence_records": [
+    {
+      "anonymous_presence_id": "scp0000",
+      "candidate_reference_count": 0,
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "gold_reference_count": 0,
+      "inspected_field_count": 270,
+      "provider_or_private_payload_reference_count": 0,
+      "reconstructable_context_field_count": 0,
+      "row_count": 18,
+      "source_location_reference_count": 0,
+      "source_span_reference_count": 0,
+      "source_surface_bucket": "p0_4_support_link_input_design_rows",
+      "task_or_repo_reference_count": 0,
+      "trace_foreign_key_reference_count": 0
+    },
+    {
+      "anonymous_presence_id": "scp0001",
+      "candidate_reference_count": 0,
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "gold_reference_count": 0,
+      "inspected_field_count": 144,
+      "provider_or_private_payload_reference_count": 0,
+      "reconstructable_context_field_count": 0,
+      "row_count": 18,
+      "source_location_reference_count": 0,
+      "source_span_reference_count": 0,
+      "source_surface_bucket": "p1_1_public_queue_rows",
+      "task_or_repo_reference_count": 0,
+      "trace_foreign_key_reference_count": 0
+    },
+    {
+      "anonymous_presence_id": "scp0002",
+      "candidate_reference_count": 0,
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "gold_reference_count": 0,
+      "inspected_field_count": 342,
+      "provider_or_private_payload_reference_count": 0,
+      "reconstructable_context_field_count": 0,
+      "row_count": 18,
+      "source_location_reference_count": 0,
+      "source_span_reference_count": 0,
+      "source_surface_bucket": "p1_1_private_queue_rows",
+      "task_or_repo_reference_count": 0,
+      "trace_foreign_key_reference_count": 0
+    },
+    {
+      "anonymous_presence_id": "scp0003",
+      "candidate_reference_count": 0,
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "gold_reference_count": 0,
+      "inspected_field_count": 252,
+      "provider_or_private_payload_reference_count": 0,
+      "reconstructable_context_field_count": 0,
+      "row_count": 18,
+      "source_location_reference_count": 0,
+      "source_span_reference_count": 0,
+      "source_surface_bucket": "p1_3_public_label_rows",
+      "task_or_repo_reference_count": 0,
+      "trace_foreign_key_reference_count": 0
+    },
+    {
+      "anonymous_presence_id": "scp0004",
+      "candidate_reference_count": 0,
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "gold_reference_count": 0,
+      "inspected_field_count": 306,
+      "provider_or_private_payload_reference_count": 0,
+      "reconstructable_context_field_count": 0,
+      "row_count": 18,
+      "source_location_reference_count": 0,
+      "source_span_reference_count": 0,
+      "source_surface_bucket": "p1_3_private_label_rows",
+      "task_or_repo_reference_count": 0,
+      "trace_foreign_key_reference_count": 0
+    },
+    {
+      "anonymous_presence_id": "scp0005",
+      "candidate_reference_count": 0,
+      "context_linkage_bucket": "no_reconstructable_context_fields",
+      "gold_reference_count": 0,
+      "inspected_field_count": 216,
+      "provider_or_private_payload_reference_count": 0,
+      "reconstructable_context_field_count": 0,
+      "row_count": 18,
+      "source_location_reference_count": 0,
+      "source_span_reference_count": 0,
+      "source_surface_bucket": "p1_4_public_audit_rows",
+      "task_or_repo_reference_count": 0,
+      "trace_foreign_key_reference_count": 0
+    }
+  ],
+  "source_join_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p0_4_support_link_input_design",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p0_4_support_link_input_design.v1",
+      "source_status": "support_link_input_design_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_1_private_labeling_queue_preparation",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_1_private_labeling_queue_preparation.v1",
+      "source_status": "private_labeling_queue_preparation_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_3_agent_generated_support_label_fill",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_3_agent_generated_support_label_fill.v1",
+      "source_status": "agent_generated_support_label_fill_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_4_automated_label_reliability_audit",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_4_automated_label_reliability_audit.v1",
+      "source_status": "no_go_p1_4_low_evidence_labels"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_2_direct_private_label_intake",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_2_private_label_intake_validator.v1",
+      "source_status": "private_label_intake_validator_real_labels_pass"
+    }
+  ],
+  "status": "no_go_p1_5r_private_context_unavailable",
+  "status_vocabulary": [
+    "source_context_support_label_fill_pass",
+    "no_go_p1_5r_private_context_unavailable",
+    "no_go_p1_5r_label_generation_low_informative_yield",
+    "no_go_p1_5r_p1_2_intake_failed",
+    "no_go_p1_5r_p1_4_reliability_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "improved_automated_support_label_feasibility_audit_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "human_calibrated": false,
+      "human_labels_claimed": false,
+      "implementation_authorized": false,
+      "mechanism_evidence_claimed": false,
+      "p1_5_denominator_audit_authorized": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "no_go_p1_5r_private_context_unavailable",
+      "stop_go_reason": "private_context_linkage_absent_no_improved_labels_generated",
+      "support_counterfactual_executed": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_marginal_utility_claimed": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

@@ -106,6 +106,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-p1-2-private-label-intake-validator.md`: [en](en/bea-v1-p1-2-private-label-intake-validator.md) · [zh](zh/bea-v1-p1-2-private-label-intake-validator.md)
 - `bea-v1-p1-3-agent-generated-support-label-fill.md`: [en](en/bea-v1-p1-3-agent-generated-support-label-fill.md) · [zh](zh/bea-v1-p1-3-agent-generated-support-label-fill.md)
 - `bea-v1-p1-4-automated-label-reliability-audit.md`: [en](en/bea-v1-p1-4-automated-label-reliability-audit.md) · [zh](zh/bea-v1-p1-4-automated-label-reliability-audit.md)
+- `bea-v1-p1-5r-improved-automated-support-label-feasibility.md`: [en](en/bea-v1-p1-5r-improved-automated-support-label-feasibility.md) · [zh](zh/bea-v1-p1-5r-improved-automated-support-label-feasibility.md)
 - `bea-v1-trace-gap-audit.md`: [en](en/bea-v1-trace-gap-audit.md) · [zh](zh/bea-v1-trace-gap-audit.md)
 - `f1-counterfactual-evidence-utility.md`: [en](en/f1-counterfactual-evidence-utility.md) · [zh](zh/f1-counterfactual-evidence-utility.md)
 - `f1b-retrieval-derived-counterfactual-utility.md`: [en](en/f1b-retrieval-derived-counterfactual-utility.md) · [zh](zh/f1b-retrieval-derived-counterfactual-utility.md)
