@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-P1-3: Agent-Generated Support Label Fill**:
+The latest closed phase is **BEA-v1-P1-4: Automated-Label Reliability Audit**:
 
 ```text
-status: agent_generated_support_label_fill_pass
+status: no_go_p1_4_low_evidence_labels
 self-test: 10 / 10
 forbidden scan: pass
-private queue rows read: 18
-agent-generated private labels written: 18
-P0-5-compatible labels: 18
-P1-2 intake-valid labels: 18
+private label rows: 18
+P1-2 intake-valid rows: 18
 label errors: 0
+informative labels: 0 / 18
+known conjunction labels: 0 / 18
+unknown-both-hit labels: 18 / 18
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -123,6 +124,11 @@ labels are explicitly not human labels, not human-calibrated E/S, not support
 utility evidence, and not mechanism evidence; support counterfactual execution
 remains blocked.
 
+P1-4 audits those automated labels through direct P1-2 intake and verifies their
+origin metadata, but returns `no_go_p1_4_low_evidence_labels`: all 18 labels keep
+target/support hit buckets unknown and conjunction ambiguous. P1-5 denominator
+audit and support counterfactual execution remain unauthorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -201,15 +207,18 @@ See the current report index:
 - P1-0 authorizes private support labeling using the validated schema and
   harness. P1-3 completed an automated/agent-generated fill, but support
   counterfactual execution remains blocked because these are queue/design-field
-  proxy labels with unknown target/support hit buckets, and no P1-4 reliability
-  audit or P1-5 denominator gate has passed. No human-calibrated claim is made or
-  required.
+  proxy labels with unknown target/support hit buckets. P1-4 confirms they are
+  intake-valid but too low-evidence for a P1-5 denominator audit. No
+  human-calibrated claim is made or required.
 - P1-1 authorizes labeling against the generated project-private queue. It still
   does not authorize support counterfactual execution or support marginal-utility
   claims.
 - P1-3 authorizes only automated private support-label fill and P1-2 intake
   validation. It does not authorize support counterfactual execution, support
   marginal-utility claims, mechanism evidence claims, P5, or BEA-v1-A.
+- P1-4 authorizes only automated-label reliability auditing. It does not
+  authorize P1-5, support counterfactual execution, support marginal-utility
+  claims, mechanism evidence claims, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently

@@ -1,0 +1,500 @@
+{
+  "aggregate_plus_sanitized_records_public_artifact": true,
+  "aggregate_runtime_seconds": 0.002,
+  "automated_label_input_manifest_records": [
+    {
+      "label_error_count": 0,
+      "manifest_name": "bea_v1_p1_3_agent_generated_support_labels",
+      "p1_2_valid_record_count": 18,
+      "path_publicly_serialized": false,
+      "read_status": "pass",
+      "record_count": 18,
+      "schema_version": "bea_v1_p0_5_support_link_private_label.v1",
+      "source_queue_schema_version": "bea_v1_p1_1_support_labeling_queue.v1",
+      "storage_class": "project_ignored_private_jsonl"
+    }
+  ],
+  "claim_level": "automated_label_reliability_audit_only",
+  "exact_paths_publicly_serialized": false,
+  "exact_spans_publicly_serialized": false,
+  "failure_reason_category": "low_evidence_labels",
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "p1_3_artifact_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "direct_p1_2_intake_pass",
+      "passed": true,
+      "threshold_relation": "boolean",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_label_rows",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "p1_2_valid_rows",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "label_errors_zero",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "origin_agent_generated_all",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "method_deterministic_all",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "human_calibrated_false_all",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 18,
+      "value": 18
+    },
+    {
+      "gate": "informative_label_rate_for_p1_5",
+      "passed": false,
+      "threshold_relation": "greater_or_equal",
+      "threshold_value": 0.5,
+      "value": 0.0
+    },
+    {
+      "gate": "known_conjunction_rate_for_p1_5",
+      "passed": false,
+      "threshold_relation": "greater_or_equal",
+      "threshold_value": 0.25,
+      "value": 0.0
+    },
+    {
+      "gate": "unknown_both_hit_rate_for_p1_5",
+      "passed": false,
+      "threshold_relation": "less_or_equal",
+      "threshold_value": 0.5,
+      "value": 1.0
+    }
+  ],
+  "generated_at": "2026-06-28T15:13:33Z",
+  "generated_by": "eval/bea_v1_p1_4_automated_label_reliability_audit.py",
+  "label_conjunction_summary_records": [
+    {
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "count": 18
+    }
+  ],
+  "label_error_summary_records": [],
+  "label_informativeness_summary_records": [
+    {
+      "count": 0,
+      "informativeness_bucket": "informative_label",
+      "rate": 0.0
+    },
+    {
+      "count": 0,
+      "informativeness_bucket": "known_target_or_support_hit",
+      "rate": 0.0
+    },
+    {
+      "count": 0,
+      "informativeness_bucket": "known_conjunction",
+      "rate": 0.0
+    },
+    {
+      "count": 18,
+      "informativeness_bucket": "unknown_both_hit",
+      "rate": 1.0
+    }
+  ],
+  "label_method_summary_records": [
+    {
+      "count": 18,
+      "label_method_bucket": "deterministic_queue_field_heuristic"
+    }
+  ],
+  "label_origin_summary_records": [
+    {
+      "count": 18,
+      "label_origin_bucket": "agent_generated"
+    }
+  ],
+  "label_risk_summary_records": [
+    {
+      "count": 6,
+      "leakage_risk_bucket": "support_overbroad_risk"
+    },
+    {
+      "count": 6,
+      "leakage_risk_bucket": "target_binding_leak_risk"
+    },
+    {
+      "count": 6,
+      "leakage_risk_bucket": "unknown_not_labeled"
+    }
+  ],
+  "mode": "bea_v1_p1_4_automated_label_reliability_audit",
+  "origin_validation_records": [
+    {
+      "human_calibrated_false_count": 18,
+      "label_count": 18,
+      "label_method_deterministic_count": 18,
+      "label_method_required_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_agent_generated_count": 18,
+      "label_origin_required_bucket": "agent_generated",
+      "origin_gate_passed": true
+    }
+  ],
+  "phase": "BEA-v1-P1-4",
+  "private_paths_publicly_serialized": false,
+  "provider_payloads_publicly_serialized": false,
+  "raw_records_publicly_serialized": false,
+  "reliability_metric_records": [
+    {
+      "informative_label_count": 0,
+      "informative_label_rate": 0.0,
+      "informative_label_rate_threshold": 0.5,
+      "known_conjunction_count": 0,
+      "known_conjunction_rate": 0.0,
+      "known_conjunction_rate_threshold": 0.25,
+      "known_target_or_support_hit_count": 0,
+      "known_target_or_support_hit_rate": 0.0,
+      "label_count": 18,
+      "p1_5_denominator_audit_authorized": false,
+      "unknown_both_hit_count": 18,
+      "unknown_both_hit_rate": 1.0,
+      "unknown_both_hit_rate_max_threshold": 0.5
+    }
+  ],
+  "sanitized_automated_label_audit_records": [
+    {
+      "anonymous_audit_label_id": "alra0000",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0001",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0002",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0003",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0004",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0005",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "unknown_not_labeled",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0006",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0007",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0008",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0009",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0010",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0011",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "target_binding_leak_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0012",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0013",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0014",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0015",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0016",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    },
+    {
+      "anonymous_audit_label_id": "alra0017",
+      "conjunction_bucket": "ambiguous_unlabeled",
+      "human_calibrated": false,
+      "informative_label": false,
+      "known_conjunction": false,
+      "known_target_or_support_hit": false,
+      "label_method_bucket": "deterministic_queue_field_heuristic",
+      "label_origin_bucket": "agent_generated",
+      "leakage_risk_bucket": "support_overbroad_risk",
+      "support_hit_bucket": "unknown_not_labeled",
+      "target_hit_bucket": "unknown_not_labeled",
+      "unknown_both_hit": true
+    }
+  ],
+  "schema_version": "bea_v1_p1_4_automated_label_reliability_audit.v1",
+  "self_test_checks_passed": 10,
+  "self_test_checks_total": 10,
+  "self_test_passed": true,
+  "source_join_records": [
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_3_agent_generated_support_label_fill",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_3_agent_generated_support_label_fill.v1",
+      "source_status": "agent_generated_support_label_fill_pass"
+    },
+    {
+      "forbidden_scan_status": "pass",
+      "input_artifact": "p1_2_direct_private_label_intake",
+      "load_status": "pass",
+      "record_count": 18,
+      "source_schema": "bea_v1_p1_2_private_label_intake_validator.v1",
+      "source_status": "private_label_intake_validator_real_labels_pass"
+    }
+  ],
+  "status": "no_go_p1_4_low_evidence_labels",
+  "status_vocabulary": [
+    "automated_label_reliability_audit_pass",
+    "no_go_p1_4_low_evidence_labels",
+    "no_go_p1_4_intake_or_origin_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "automated_label_reliability_audit_only",
+      "broad_retrieval_expansion_authorized": false,
+      "downstream_value_claimed": false,
+      "human_calibrated_e_s_claimed": false,
+      "human_labels_claimed": false,
+      "implementation_authorized": false,
+      "mechanism_evidence_claimed": false,
+      "p1_5_denominator_audit_authorized": false,
+      "p5_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "stop_go_decision": "no_go_p1_4_low_evidence_labels",
+      "stop_go_reason": "automated_labels_too_uninformative_for_denominator_audit",
+      "support_counterfactual_executed": false,
+      "support_counterfactual_execution_authorized": false,
+      "support_marginal_utility_claimed": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
