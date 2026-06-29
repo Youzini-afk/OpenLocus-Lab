@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AW: Cost-Sensitive Span-Window Frontier Mechanism Decomposition**:
+The latest closed phase is **BEA-v1-N10AX: Cost-Sensitive Frontier Claim Package**:
 
 ```text
-status: cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized
+status: cost_sensitive_frontier_claim_package_complete_n10ay_authorized
 self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
-frontier chain consistent: true
-result accounting valid: true
-frontier deltas: baseline 9; pm30 +9; before25_after75 +2; pm75 +1; pm200 +4
-next allowed phase: BEA-v1-N10AX Cost-Sensitive Frontier Claim Package
+private reads: 0
+recomputes: 0
+new variants: 0
+frontier package: baseline 9/10; pm30 18/22 low; before25_after75 20/24 medium; pm75 21/25 medium; pm200 25/30 very_high
+next allowed phase: BEA-v1-N10AY Cost-Aware Adapter Frontier Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -580,6 +580,13 @@ and 1 after, before25_after75 adds 2 before, pm75 adds 1 after, and pm200 adds 3
 before and 1 after. The max-recall pm200 gains are wider recovery of the same
 before/after miss pattern, not a qualitatively different late-rank mechanism.
 
+N10AX packages that frontier and mechanism boundary publicly without private reads
+or recompute. It locks the allowed claim to scoped same-source N1 span-surface
+proxy cost-sensitive evidence: pm200 is a very-high-cost max-recall point, and its
+extra gains remain before/after gold-window gap recovery. It authorizes only N10AY
+cost-aware adapter frontier smoke over the same scoped rows and adapter/helper
+imports.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1006,6 +1013,11 @@ See the current report index:
   heldout/generalization claims, runtime/default changes, retrieval/rerun,
   candidate generation, selector/reranker execution, P5, BEA-v1-A, method-winner
   claims, or downstream-value claims.
+- N10AX authorizes only N10AY cost-aware adapter frontier smoke over the same scoped
+  N1 rows with adapter/helper imports only. It does not authorize runtime/default,
+  heldout/generalization, method-winner/downstream claims, retrieval/rerun,
+  candidate generation/materialization, selector/reranker execution, P5, BEA-v1-A,
+  new variants, or adaptive tuning.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1338,6 +1350,10 @@ eval/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition.py
   Cost-sensitive decomposition of the locked frontier tiers; finds incremental
   pm200 gains are same before/after gold-window miss recovery and authorizes only
   N10AX public claim package.
+
+eval/bea_v1_n10ax_cost_sensitive_frontier_claim_package.py
+  Public claim package for N10AW/N10AV/N10AU/N10AS cost-sensitive frontier facts;
+  authorizes only N10AY cost-aware adapter frontier smoke.
 ```
 
 Key reports:
@@ -1394,6 +1410,7 @@ Key reports:
 - [`artifacts/bea_v1_n10au_independent_recompute_span_window_variant_sweep/bea_v1_n10au_independent_recompute_span_window_variant_sweep_report.json`](artifacts/bea_v1_n10au_independent_recompute_span_window_variant_sweep/bea_v1_n10au_independent_recompute_span_window_variant_sweep_report.json)
 - [`artifacts/bea_v1_n10av_exploratory_span_window_sweep_replication_package/bea_v1_n10av_exploratory_span_window_sweep_replication_package_report.json`](artifacts/bea_v1_n10av_exploratory_span_window_sweep_replication_package/bea_v1_n10av_exploratory_span_window_sweep_replication_package_report.json)
 - [`artifacts/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition_report.json`](artifacts/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition_report.json)
+- [`artifacts/bea_v1_n10ax_cost_sensitive_frontier_claim_package/bea_v1_n10ax_cost_sensitive_frontier_claim_package_report.json`](artifacts/bea_v1_n10ax_cost_sensitive_frontier_claim_package/bea_v1_n10ax_cost_sensitive_frontier_claim_package_report.json)
 
 Documentation mirror check:
 
