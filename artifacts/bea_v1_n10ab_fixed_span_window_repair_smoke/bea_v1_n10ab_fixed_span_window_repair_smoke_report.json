@@ -1,0 +1,319 @@
+{
+  "aggregate_runtime_seconds": 2.123,
+  "claim_level": "fixed_span_window_repair_smoke_only",
+  "downstream_value_claimed": false,
+  "expansion_overreach_bucket_records": [
+    {
+      "anonymous_expansion_overreach_bucket_id": "n10abover0000",
+      "case_count": 15,
+      "overreach_bucket": "top10_file_hit_without_expanded_span_overlap",
+      "variant_bucket": "fixed_symmetric_span_expansion_pm50_lines"
+    },
+    {
+      "anonymous_expansion_overreach_bucket_id": "n10abover0001",
+      "case_count": 19,
+      "overreach_bucket": "top10_file_hit_without_expanded_span_overlap",
+      "variant_bucket": "fixed_symmetric_span_expansion_pm20_lines"
+    },
+    {
+      "anonymous_expansion_overreach_bucket_id": "n10abover0002",
+      "case_count": 13,
+      "overreach_bucket": "top10_file_hit_without_expanded_span_overlap",
+      "variant_bucket": "fixed_symmetric_span_expansion_pm100_lines"
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "n10aa_preflight_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 213,
+      "value": 213
+    },
+    {
+      "gate": "baseline_metrics_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "smoke_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T15:45:57Z",
+  "generated_by": "bea_v1_n10ab_fixed_span_window_repair_smoke",
+  "gold_free_execution_boundary_records": [
+    {
+      "anonymous_gold_free_execution_boundary_id": "n10abgold0000",
+      "boundary_complete_bool": true,
+      "candidate_add_remove_bool": false,
+      "content_aware_adjustment_bool": false,
+      "gold_only_for_evaluation_bool": true,
+      "gold_signal_used_for_window_bool": false,
+      "miss_direction_used_for_window_bool": false,
+      "path_change_bool": false,
+      "policy_bucket": "fixed_windows_no_gold_no_direction_no_content_adjustment"
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10abin0000",
+      "expected_status": "span_window_repair_preflight_pass_n10ab_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aa_repair_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "span_window_repair_preflight_pass_n10ab_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10abin0001",
+      "expected_status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10z_failure_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10abin0002",
+      "expected_status": "n1_span_surface_span_level_utility_validation_complete_below_threshold",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10x_span_level_validation_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_span_level_utility_validation_complete_below_threshold"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ac_handoff_records": [
+    {
+      "anonymous_n10ac_handoff_id": "n10abhandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10ac_handoff_bucket": "n10ac_public_repair_smoke_audit_authorized",
+      "n10ac_public_repair_smoke_audit_authorized_bool": true,
+      "public_audit_scope_only_bool": true,
+      "runtime_default_promotion_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n10abnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "counterfactual_execution_count": 0,
+      "default_change_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "single_private_span_read_fixed_window_smoke_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p4l_n1_n2_n3_rerun_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AB Fixed Span-Window Repair Smoke",
+  "primary_decision_records": [
+    {
+      "anonymous_primary_decision_id": "n10abdecision0000",
+      "baseline_unexpanded_top10_span_overlap_count": 9,
+      "decision_bucket": "pm50_pass",
+      "delta_top10_vs_unexpanded_best_arm": 10,
+      "metric_bucket": "top10_expanded_span_overlap_count_pm50",
+      "observed_top10_expanded_span_overlap_count": 19,
+      "observed_top20_expanded_span_overlap_count": 23,
+      "original_span_hit_lost_count": 0,
+      "pass_threshold_count": 11,
+      "primary_pass_bool": true
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10abprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_counts_only_no_private_surface_details",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_span_input_intake_records": [
+    {
+      "anonymous_private_span_input_intake_id": "n10abpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "schema_valid_bool": true,
+      "single_scoped_private_input_read_bool": true
+    }
+  ],
+  "repair_variant_execution_records": [
+    {
+      "anonymous_repair_variant_execution_id": "n10abvar0000",
+      "baseline_unexpanded_top10_span_overlap_count": 9,
+      "baseline_unexpanded_top20_span_overlap_count": 10,
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "content_aware_adjustment_bool": false,
+      "delta_top10_vs_unexpanded_best_arm": 10,
+      "eligible_denominator_count": 213,
+      "execution_bucket": "fixed_symmetric_expansion_evaluated_on_existing_top10_evidence",
+      "expansion_each_side_count": 50,
+      "gold_signal_used_for_window_bool": false,
+      "miss_direction_used_for_window_bool": false,
+      "original_span_hit_lost_count": 0,
+      "top10_expanded_span_overlap_count": 19,
+      "top10_file_hit_count": 34,
+      "top20_expanded_span_overlap_count": 23,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm50_lines",
+      "variant_role_bucket": "primary"
+    },
+    {
+      "anonymous_repair_variant_execution_id": "n10abvar0001",
+      "baseline_unexpanded_top10_span_overlap_count": 9,
+      "baseline_unexpanded_top20_span_overlap_count": 10,
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "content_aware_adjustment_bool": false,
+      "delta_top10_vs_unexpanded_best_arm": 6,
+      "eligible_denominator_count": 213,
+      "execution_bucket": "fixed_symmetric_expansion_evaluated_on_existing_top10_evidence",
+      "expansion_each_side_count": 20,
+      "gold_signal_used_for_window_bool": false,
+      "miss_direction_used_for_window_bool": false,
+      "original_span_hit_lost_count": 0,
+      "top10_expanded_span_overlap_count": 15,
+      "top10_file_hit_count": 34,
+      "top20_expanded_span_overlap_count": 19,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm20_lines",
+      "variant_role_bucket": "secondary_sensitivity"
+    },
+    {
+      "anonymous_repair_variant_execution_id": "n10abvar0002",
+      "baseline_unexpanded_top10_span_overlap_count": 9,
+      "baseline_unexpanded_top20_span_overlap_count": 10,
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "content_aware_adjustment_bool": false,
+      "delta_top10_vs_unexpanded_best_arm": 12,
+      "eligible_denominator_count": 213,
+      "execution_bucket": "fixed_symmetric_expansion_evaluated_on_existing_top10_evidence",
+      "expansion_each_side_count": 100,
+      "gold_signal_used_for_window_bool": false,
+      "miss_direction_used_for_window_bool": false,
+      "original_span_hit_lost_count": 0,
+      "top10_expanded_span_overlap_count": 21,
+      "top10_file_hit_count": 34,
+      "top20_expanded_span_overlap_count": 25,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm100_lines",
+      "variant_role_bucket": "secondary_sensitivity"
+    }
+  ],
+  "schema_version": "bea_v1_n10ab_fixed_span_window_repair_smoke.v1",
+  "self_test_checks_passed": 16,
+  "self_test_checks_total": 16,
+  "self_test_passed": true,
+  "status": "fixed_span_window_repair_smoke_pass_n10ac_authorized",
+  "status_vocabulary": [
+    "fixed_span_window_repair_smoke_pass_n10ac_authorized",
+    "fixed_span_window_repair_smoke_complete_below_threshold",
+    "no_go_n10ab_required_inputs_unavailable",
+    "no_go_n10ab_private_span_rows_missing",
+    "no_go_n10ab_n10aa_preflight_invalid",
+    "no_go_n10ab_span_schema_invalid",
+    "no_go_n10ab_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10ac_public_repair_smoke_audit_authorized",
+      "candidate_generation_authorized": false,
+      "candidate_materialization_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10ac_public_audit_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AC Fixed Span-Window Repair Smoke Result Audit",
+      "next_allowed_scope_bucket": "public_audit_only_no_promotion",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
