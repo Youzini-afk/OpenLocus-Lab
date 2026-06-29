@@ -28,21 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CL: Winning Hybrid Adapter Smoke Public Package**:
+The latest closed phase is **BEA-v1-N10CM: Winning Hybrid Cost-Reduction Refinement Sweep**:
 
 ```text
-status: winning_hybrid_adapter_package_complete_n10cm_authorized
-self-test: 13 / 13
+status: winning_hybrid_cost_reduction_refinement_sweep_complete_n10cn_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10CL: 0
-recomputes in N10CL: 0
 winning hybrid: short75_225_top3_all_pm200
-top10/top20 span overlap: 25 / 31
-cost10/cost20: 3300 / 6300
-lost short75/225 hits: 0
-file-hit top10 count: 34
-candidate pool/order changed: false
-next allowed phase: BEA-v1-N10CM Winning Hybrid Next-Step Decision
+variant count: 12
+winning reference: 25 / 31 at cost10/cost20 3300 / 6300
+preserves winning at lower cost: 1 (short75_225_top2_all_pm200, 3200 / 6200)
+improves winning: 0
+near winning cost-saving tradeoffs: 7
+next allowed phase: BEA-v1-N10CN Winning Hybrid Cost-Reduction Refinement Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -827,6 +825,12 @@ that default/runtime settings and existing evaluator hooks remain unchanged, and
 authorizes only N10CM next-step decision between continued mechanism exploration
 and a formal default-off variant evaluator.
 
+N10CM continues with a same-source fixed-variant refinement sweep of the winning
+hybrid. It finds one lower-cost preservation: `short75_225_top2_all_pm200`
+preserves 25/31 at cost10/cost20 3200/6200, saving 100/100 versus the top3 pm200
+winning rule. No variant improves beyond 25/31. This authorizes only N10CN public
+audit/package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1467,6 +1471,11 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
   value claims.
+- N10CM authorizes only N10CN public cost-reduction refinement audit package. It
+  does not authorize additional private reads, recompute, new variants,
+  runtime/default enablement, existing evaluator hook-in, heldout/generalization
+  claims, retrieval/rerun, candidate generation/add/remove/reorder, adaptive
+  tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1963,6 +1972,10 @@ eval/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke.py
 
 eval/bea_v1_n10cl_winning_hybrid_adapter_smoke_package.py
   Public package of N10CK adapter smoke; authorizes only N10CM next-step decision.
+
+eval/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep.py
+  Same-source fixed-variant refinement of the winning hybrid; finds one lower-cost
+  preserving variant and authorizes only N10CN public audit/package.
 ```
 
 Key reports:
@@ -2060,6 +2073,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cj_winning_hybrid_replication_package/bea_v1_n10cj_winning_hybrid_replication_package_report.json`](artifacts/bea_v1_n10cj_winning_hybrid_replication_package/bea_v1_n10cj_winning_hybrid_replication_package_report.json)
 - [`artifacts/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke_report.json`](artifacts/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke_report.json)
 - [`artifacts/bea_v1_n10cl_winning_hybrid_adapter_smoke_package/bea_v1_n10cl_winning_hybrid_adapter_smoke_package_report.json`](artifacts/bea_v1_n10cl_winning_hybrid_adapter_smoke_package/bea_v1_n10cl_winning_hybrid_adapter_smoke_package_report.json)
+- [`artifacts/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep_report.json`](artifacts/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep_report.json)
 
 Documentation mirror check:
 
