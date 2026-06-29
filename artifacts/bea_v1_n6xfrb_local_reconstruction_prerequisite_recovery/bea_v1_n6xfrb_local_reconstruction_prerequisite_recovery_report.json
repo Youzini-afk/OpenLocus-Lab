@@ -1,0 +1,232 @@
+{
+  "aggregate_runtime_seconds": 0.001,
+  "binary_availability_records": [
+    {
+      "anonymous_binary_availability_id": "n6xfrbbin0000",
+      "binary_available_after_phase_bool": false,
+      "binary_built_in_phase_bool": false,
+      "existing_release_binary_available_bool": false
+    }
+  ],
+  "build_metadata_records": [
+    {
+      "anonymous_build_metadata_id": "n6xfrbbuild0000",
+      "binary_bucket": "openlocus",
+      "binary_openlocus_declared_bool": true,
+      "build_command_bucket": "cargo_build_locked_release_openlocus_cli",
+      "cargo_lock_present_bool": true,
+      "cargo_toml_present_bool": true,
+      "no_git_dependencies_detected_bool": true,
+      "output_binary_bucket": "target_release_openlocus",
+      "package_bucket": "openlocus_cli",
+      "package_openlocus_cli_present_bool": true,
+      "rust_version_bucket": "rustc_1_96_satisfies_1_95",
+      "workspace_present_bool": true
+    }
+  ],
+  "cargo_network_preflight_records": [
+    {
+      "anonymous_cargo_network_preflight_id": "n6xfrbcargo0000",
+      "build_attempted_bool": false,
+      "build_blocked_reason_bucket": "dependency_fetch_network_not_preapproved",
+      "build_network_authorized_bool": false,
+      "cargo_registry_cache_available_bool": false,
+      "crates_io_network_required_bool": true
+    }
+  ],
+  "claim_level": "local_reconstruction_prerequisite_recovery_smoke_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "required_inputs_load_and_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "build_metadata_available",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "cargo_build_requires_unapproved_network",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "existing_or_built_binary_available",
+      "passed": false,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "private_inputs_available",
+      "passed": false,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 0
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "scanner_pass",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T03:08:44Z",
+  "generated_by": "bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n6xfrbin0000",
+      "expected_status": "no_go_n6xfr_local_prerequisites_unavailable",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n6xfr_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_n6xfr_local_prerequisites_unavailable"
+    },
+    {
+      "anonymous_input_artifact_id": "n6xfrbin0001",
+      "expected_status": "no_go_n6xr_requires_full_rerun_or_unavailable_mapping",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n6xr_bounded_recapture_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_n6xr_requires_full_rerun_or_unavailable_mapping"
+    },
+    {
+      "anonymous_input_artifact_id": "n6xfrbin0002",
+      "expected_status": "no_go_n6g_candidate_sources_inexact_or_aggregate_only",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n6g_source_discovery_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_n6g_candidate_sources_inexact_or_aggregate_only"
+    }
+  ],
+  "method_winner_claimed": false,
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n6xfrbnoexec0000",
+      "cargo_build_execution_count": 0,
+      "counterfactual_execution_count": 0,
+      "default_change_count": 0,
+      "git_clone_count": 0,
+      "n1_n2_n3_rerun_count": 0,
+      "network_execution_count": 0,
+      "no_execution_boundary_bucket": "local_prerequisite_recovery_preflight_no_build",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_binary_execution_count": 0,
+      "p4l_rerun_count": 0,
+      "p5_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N6XFR-B",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n6xfrbpb0000",
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_bucket_only_prerequisite_recovery",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_path_or_filename_public_bool": false,
+      "provider_payload_public_bool": false,
+      "public_artifact_bucket": "buckets_counts_booleans_only",
+      "raw_candidate_public_bool": false,
+      "raw_rank_public_bool": false,
+      "source_span_public_bool": false
+    }
+  ],
+  "private_input_availability_records": [
+    {
+      "anonymous_private_input_availability_id": "n6xfrbpriv0000",
+      "fd1_private_decomposition_available_bool": false,
+      "n_series_candidate_pool_source_available_bool": false,
+      "p4l_private_source_available_bool": false,
+      "private_content_read_bool": false,
+      "private_path_or_filename_public_bool": false
+    }
+  ],
+  "recovery_decision_records": [
+    {
+      "anonymous_recovery_decision_id": "n6xfrbdec0000",
+      "binary_available_bool": false,
+      "n6xfr_canary_authorized_bool": false,
+      "next_required_input_bucket": "preapproved_cargo_dependency_cache_or_release_binary_and_fd1_p4l_private_inputs",
+      "private_inputs_available_bool": false,
+      "recovery_status_bucket": "build_requires_unapproved_network_and_private_inputs_missing"
+    }
+  ],
+  "schema_version": "bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "no_go_n6xfrb_build_requires_unapproved_network",
+  "status_vocabulary": [
+    "local_reconstruction_prerequisite_recovery_pass_n6xfr_canary_authorized",
+    "partial_n6xfrb_binary_built_private_inputs_missing",
+    "no_go_n6xfrb_openlocus_build_unavailable",
+    "no_go_n6xfrb_build_requires_unapproved_network",
+    "no_go_n6xfrb_private_inputs_unavailable",
+    "no_go_n6xfrb_required_inputs_unavailable",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "local_reconstruction_prerequisite_recovery_no_go",
+      "cargo_build_authorized": false,
+      "counterfactual_authorized": false,
+      "default_promotion_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "full_rerun_authorized": false,
+      "git_clone_authorized": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n6xfr_canary_authorized": false,
+      "n6xfr_full40_authorized": false,
+      "network_authorized": false,
+      "next_allowed_phase": "none_until_release_binary_or_preapproved_cargo_cache_and_fd1_p4l_private_inputs_exist",
+      "next_allowed_scope_bucket": "no_next_phase_build_network_or_private_inputs_missing",
+      "openlocus_binary_execution_authorized": false,
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_policy_change_authorized": false,
+      "runtime_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
