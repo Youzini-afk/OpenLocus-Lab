@@ -28,21 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AB: Fixed Span-Window Repair Smoke**:
+The latest closed phase is **BEA-v1-N10AC: Fixed Span-Window Repair Smoke Result Audit**:
 
 ```text
-status: fixed_span_window_repair_smoke_pass_n10ac_authorized
-self-test: 16 / 16
+status: fixed_span_window_repair_smoke_result_audit_complete_n10ad_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
 baseline unexpanded top10/top20 span overlap: 9 / 10
-top10 file-hit reference: 34
 pm20 top10/top20 expanded span overlap: 15 / 19
 pm50 top10/top20 expanded span overlap: 19 / 23
 pm100 top10/top20 expanded span overlap: 21 / 25
 pm50 delta top10 vs unexpanded: 10
+pm50 threshold: 11
 original span hit lost count: 0
-next allowed phase: BEA-v1-N10AC Fixed Span-Window Repair Smoke Result Audit
+next allowed phase: BEA-v1-N10AD Independent Recompute Fixed Span-Window Repair Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -456,6 +455,12 @@ of 11, and loses zero original span hits. This remains a span-surface repair smo
 not runtime/default policy or downstream-value evidence, and authorizes only N10AC
 public repair-smoke audit.
 
+N10AC audits the N10AB public repair-smoke result without private reads or
+recompute. It confirms pm50 top-10/top-20 expanded span overlap 19/23, pm20
+15/19, pm100 21/25, baseline 9/10, delta +10, threshold 11, zero original span-hit
+loss, unchanged candidate pool, no candidate add/remove, and gold-only evaluation.
+It authorizes only N10AD independent recompute over the same private span rows.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -771,6 +776,11 @@ See the current report index:
   authorize runtime/default promotion, P5, BEA-v1-A, selector/reranker execution,
   retrieval/reruns, new-arm search, method-winner claims, or downstream-value
   claims.
+- N10AC authorizes only N10AD independent recompute over the same private span
+  rows. It does not authorize broad private reads, runtime/default promotion,
+  retrieval/reruns, candidate generation/materialization, new-arm search,
+  selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1010,6 +1020,10 @@ eval/bea_v1_n10aa_span_window_repair_preflight.py
 eval/bea_v1_n10ab_fixed_span_window_repair_smoke.py
   Executes fixed symmetric span-window repair smoke over the scoped N1 span rows;
   pm50 passes and authorizes only N10AC public audit.
+
+eval/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit.py
+  Public audit of the N10AB repair-smoke result; confirms pm50 pass and authorizes
+  only N10AD independent recompute.
 ```
 
 Key reports:
@@ -1045,6 +1059,7 @@ Key reports:
 - [`artifacts/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition_report.json`](artifacts/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition_report.json)
 - [`artifacts/bea_v1_n10aa_span_window_repair_preflight/bea_v1_n10aa_span_window_repair_preflight_report.json`](artifacts/bea_v1_n10aa_span_window_repair_preflight/bea_v1_n10aa_span_window_repair_preflight_report.json)
 - [`artifacts/bea_v1_n10ab_fixed_span_window_repair_smoke/bea_v1_n10ab_fixed_span_window_repair_smoke_report.json`](artifacts/bea_v1_n10ab_fixed_span_window_repair_smoke/bea_v1_n10ab_fixed_span_window_repair_smoke_report.json)
+- [`artifacts/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit_report.json`](artifacts/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit_report.json)
 
 Documentation mirror check:
 
