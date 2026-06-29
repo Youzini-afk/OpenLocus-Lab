@@ -110,6 +110,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n8-independent-recompute-same-private-rows-same-four-arms.md`: [en](en/bea-v1-n8-independent-recompute-same-private-rows-same-four-arms.md) · [zh](zh/bea-v1-n8-independent-recompute-same-private-rows-same-four-arms.md)
 - `bea-v1-n9-recovered-fixed-pool-result-replication-package.md`: [en](en/bea-v1-n9-recovered-fixed-pool-result-replication-package.md) · [zh](zh/bea-v1-n9-recovered-fixed-pool-result-replication-package.md)
 - `bea-v1-n10-broader-frozen-denominator-validation-preflight.md`: [en](en/bea-v1-n10-broader-frozen-denominator-validation-preflight.md) · [zh](zh/bea-v1-n10-broader-frozen-denominator-validation-preflight.md)
+- `bea-v1-n10r-targeted-n2-rank-pack-generation-preflight.md`: [en](en/bea-v1-n10r-targeted-n2-rank-pack-generation-preflight.md) · [zh](zh/bea-v1-n10r-targeted-n2-rank-pack-generation-preflight.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

@@ -28,17 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10: Broader Frozen Denominator Validation Preflight**:
+The latest closed phase is **BEA-v1-N10R: Targeted N2 Rank-Pack Row Generation Preflight**:
 
 ```text
-status: no_go_n10_broader_rank_pack_denominator_unavailable
-self-test: 14 / 14
+status: no_go_n10r_target_denominator_insufficient
+self-test: 15 / 15
 forbidden scan: pass
-recovered result: 25 / 40 top-10, 34 / 40 top-20, 0 regressions
-candidate denominators checked: 4
-broader N2-equivalent rank-pack rows available: false
-blocker: no_broader_n2_equivalent_rank_pack_rows
-next allowed phase: none_until_broader_n2_equivalent_rank_pack_rows_exist
+known-good N2 rows: 40
+N1 span rows: 213
+N1 candidate/gold trace rows: 272
+P4L private arm outcome rows: 1088
+targeted denominator filter supported: false
+can run without full P4L rerun: false
+next allowed phase: none_for_n2_equivalent_broader_validation_without_new_denominator_definition
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -392,6 +394,13 @@ broader context buckets but not N2-equivalent rank-pack rows under the current
 public/metadata-only boundary. N10 therefore closes as No-Go until broader
 N2-equivalent rank-pack rows exist.
 
+N10R then checks whether the existing N2 builder can target additional rows
+without a full P4L rerun. Scoped private schema counts are available, and the N2
+row builder helper exists, but the current N2 CLI is monolithic full
+locked-denominator reconstruction with no targeted denominator filter. N10R does
+not materialize rows and closes as No-Go until a targeted builder or explicit full
+rerun is authorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -664,6 +673,10 @@ See the current report index:
   retrieval/reruns, candidate generation/materialization, selector/reranker
   execution, P5, BEA-v1-A, runtime/default promotion, method-winner claims, or
   downstream-value claims.
+- N10R authorizes no N10S. It does not authorize materializing broader rows from
+  N1 span evidence, OpenLocus/N2/P4L execution, retrieval/reruns, generated
+  private rows, selector/reranker execution, P5, BEA-v1-A, runtime/default
+  promotion, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -863,6 +876,10 @@ eval/bea_v1_n9_recovered_fixed_pool_result_replication_package.py
 eval/bea_v1_n10_broader_frozen_denominator_validation_preflight.py
   Preflight for broader frozen-denominator validation; No-Go because broader
   N2-equivalent rank-pack rows are unavailable.
+
+eval/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight.py
+  Preflight for targeted N2 row generation; No-Go because the existing N2 builder
+  lacks targeted denominator filtering and requires full reconstruction.
 ```
 
 Key reports:
@@ -888,6 +905,7 @@ Key reports:
 - [`artifacts/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms_report.json`](artifacts/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms_report.json)
 - [`artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json`](artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json)
 - [`artifacts/bea_v1_n10_broader_frozen_denominator_validation_preflight/bea_v1_n10_broader_frozen_denominator_validation_preflight_report.json`](artifacts/bea_v1_n10_broader_frozen_denominator_validation_preflight/bea_v1_n10_broader_frozen_denominator_validation_preflight_report.json)
+- [`artifacts/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight_report.json`](artifacts/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight_report.json)
 
 Documentation mirror check:
 
