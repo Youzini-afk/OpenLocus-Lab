@@ -28,15 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1 Final Mechanism Route Synthesis**:
+The latest closed phase is **BEA-v1-N6XFR-E: Recovered Fixed-Pool Rank-Order Experiment**:
 
 ```text
-status: bea_v1_mechanism_route_synthesis_complete_blocked_on_external_empirical_inputs
+status: recovered_fixed_pool_rank_order_experiment_pass_n7_authorized
 self-test: 14 / 14
 forbidden scan: pass
-route closures: 4 / 4
-next allowed phase: await_external_empirical_inputs_or_new_research_directive
-autonomous next experiment authorized: false
+private rank-pack rows read: 40
+fixed arms: 4
+public sanitized arm outcome rows: 160
+best top10 recovery: 25 / 40
+threshold: top10 >= 16 and regressions <= 2
+next allowed phase: BEA-v1-N7 Recovered Fixed-Pool Rank-Order Result Audit
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -361,6 +364,12 @@ the support-label, trace-surface, fixed-pool rank-order, and full-frozen
 reconstruction routes are all blocked on missing real empirical/private inputs,
 and authorizes no autonomous next experiment from current artifacts.
 
+N6XFR-E then reopens the fixed-pool rank-order route under a new explicit local
+recovery directive using recovered private N2 rank-pack rows. It computes all 160
+N6F-schema public arm outcomes for the four N5 fixed-pool transforms, but the
+best arm recovers 25/40 into top-10 versus the N5 pass threshold of 16/40,
+so the recovered fixed-pool rank-order experiment passes its predeclared gate.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -613,6 +622,10 @@ See the current report index:
   OpenLocus binary execution, retrieval, reruns, candidate generation or
   materialization, selector/reranker execution, policy/runtime changes,
   counterfactuals, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N6XFR-E authorizes only N7 recovered result audit. It does not authorize
+  runtime/default promotion, policy changes, retrieval/reruns, candidate-pool
+  generation/materialization, selector/reranker execution, counterfactuals, P5,
+  BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -792,6 +805,10 @@ eval/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit.py
 eval/bea_v1_final_mechanism_route_synthesis.py
   Final public-artifact synthesis closing the autonomous BEA-v1 mechanism route;
   blocked on external empirical/private inputs.
+
+eval/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment.py
+  Recovered fixed-pool rank-order experiment over 40 private N2 rank-pack rows;
+  passes with best top-10 recovery 25/40.
 ```
 
 Key reports:
@@ -812,6 +829,7 @@ Key reports:
 - [`artifacts/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery_report.json`](artifacts/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery_report.json)
 - [`artifacts/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit_report.json`](artifacts/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit_report.json)
 - [`artifacts/bea_v1_final_mechanism_route_synthesis/bea_v1_final_mechanism_route_synthesis_report.json`](artifacts/bea_v1_final_mechanism_route_synthesis/bea_v1_final_mechanism_route_synthesis_report.json)
+- [`artifacts/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment_report.json`](artifacts/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment_report.json)
 
 Documentation mirror check:
 
