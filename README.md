@@ -28,14 +28,15 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10V: Independent Recompute N1 Span-Surface Proxy**:
+The latest closed phase is **BEA-v1-N10W: N1 Span-Surface Proxy Replication Package**:
 
 ```text
-status: independent_recompute_n1_span_surface_proxy_pass_n10w_authorized
+status: n1_span_surface_proxy_replication_package_complete
 self-test: 15 / 15
 forbidden scan: pass
-private span rows read: 213
-other private files read: 0
+chain: N10T pass -> N10U audit pass -> N10V recompute pass
+surface: n1_span_p4_evidence_order_proxy
+N2-equivalent validation: false
 eligible denominator: 213
 reachable in pool: 52
 best arm: span_extra_depth_promote_before_primary_prefix_4
@@ -43,8 +44,7 @@ best top10 file reach: 34
 best top20 file reach: 44
 best delta top10 vs baseline: 34
 best regressions vs baseline: 0
-comparison to N10T: match
-next allowed phase: BEA-v1-N10W N1 Span-Surface Proxy Replication Package
+next allowed phase: BEA-v1-N10X N1 Span-Surface Stronger Validation Preflight
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -425,6 +425,12 @@ N10T exactly: eligible denominator 213, reachable-in-pool 52, best arm
 regressions 0, and threshold pass. It authorizes only N10W public replication
 package.
 
+N10W packages the N10T/N10U/N10V proxy chain using public artifacts only. It
+confirms stable metrics across validation, audit, and independent recompute, and
+records the claim boundary: proxy/span-surface only, not N2-equivalent, not
+runtime/default policy, not a method winner, and not downstream-value evidence.
+It authorizes only N10X stronger-validation preflight with no execution.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -715,6 +721,10 @@ See the current report index:
   broad private reads, runtime/default promotion, method-winner claims,
   downstream-value claims, P5, BEA-v1-A, selector/reranker execution,
   retrieval/reruns, new-arm search, counterfactuals, or policy changes.
+- N10W authorizes only N10X stronger-validation preflight. It does not authorize
+  execution, private reads, recompute, runtime/default promotion, P5, BEA-v1-A,
+  selector/reranker execution, retrieval/reruns, new-arm search, method-winner
+  claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -930,6 +940,10 @@ eval/bea_v1_n10u_n1_span_surface_proxy_result_audit.py
 eval/bea_v1_n10v_independent_recompute_n1_span_surface_proxy.py
   Independent recompute of the N10T span-surface proxy over the same scoped
   private rows; matches N10T and authorizes only N10W public package.
+
+eval/bea_v1_n10w_n1_span_surface_proxy_replication_package.py
+  Public replication package for the N10T/N10U/N10V proxy chain; authorizes only
+  N10X stronger-validation preflight with no execution.
 ```
 
 Key reports:
@@ -959,6 +973,7 @@ Key reports:
 - [`artifacts/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation_report.json`](artifacts/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation_report.json)
 - [`artifacts/bea_v1_n10u_n1_span_surface_proxy_result_audit/bea_v1_n10u_n1_span_surface_proxy_result_audit_report.json`](artifacts/bea_v1_n10u_n1_span_surface_proxy_result_audit/bea_v1_n10u_n1_span_surface_proxy_result_audit_report.json)
 - [`artifacts/bea_v1_n10v_independent_recompute_n1_span_surface_proxy/bea_v1_n10v_independent_recompute_n1_span_surface_proxy_report.json`](artifacts/bea_v1_n10v_independent_recompute_n1_span_surface_proxy/bea_v1_n10v_independent_recompute_n1_span_surface_proxy_report.json)
+- [`artifacts/bea_v1_n10w_n1_span_surface_proxy_replication_package/bea_v1_n10w_n1_span_surface_proxy_replication_package_report.json`](artifacts/bea_v1_n10w_n1_span_surface_proxy_replication_package/bea_v1_n10w_n1_span_surface_proxy_replication_package_report.json)
 
 Documentation mirror check:
 
