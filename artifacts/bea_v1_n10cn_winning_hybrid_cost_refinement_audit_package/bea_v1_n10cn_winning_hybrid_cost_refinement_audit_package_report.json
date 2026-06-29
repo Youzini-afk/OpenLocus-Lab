@@ -1,0 +1,304 @@
+{
+  "claim_boundary_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_claim_boundary_id": "n10cnclaim0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "claim_boundary_bucket": "same_source_refinement_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "existing_evaluator_hook_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_claim_bool": false
+    }
+  ],
+  "claim_level": "public_winning_hybrid_cost_refinement_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "refinement_chain",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "refined_result",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "tradeoff_facts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "policy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T23:33:55Z",
+  "generated_by": "bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10cnin0000",
+      "expected_status": "winning_hybrid_cost_reduction_refinement_sweep_complete_n10cn_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cm_refinement_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_cost_reduction_refinement_sweep_complete_n10cn_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cnin0001",
+      "expected_status": "winning_hybrid_adapter_package_complete_n10cm_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cl_adapter_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_adapter_package_complete_n10cm_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cnin0002",
+      "expected_status": "winning_hybrid_replication_package_complete_n10ck_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cj_winning_hybrid_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_replication_package_complete_n10ck_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cnin0003",
+      "expected_status": "observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cg_observable_hybrid_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10co_handoff_records": [
+    {
+      "adapter_smoke_only_bool": true,
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10co_handoff_id": "n10cnhandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "existing_evaluator_hook_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10co_authorized_bool": true,
+      "n10co_handoff_bucket": "n10co_default_off_adapter_smoke_refined_hybrid_authorized",
+      "p5_v1a_authorized_bool": false,
+      "refined_hybrid_variant_bucket": "short75_225_top2_all_pm200",
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10cnnorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "existing_evaluator_hook_count": 0,
+      "heldout_claim_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_package_no_private_read_no_recompute",
+      "no_recompute_boundary_valid_bool": true,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CN Winning Hybrid Cost-Reduction Refinement Audit Package",
+  "policy_boundary_records": [
+    {
+      "anonymous_policy_boundary_id": "n10cnpolicy0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "content_used_for_policy_bool": false,
+      "file_identity_used_for_policy_bool": false,
+      "gold_used_for_policy_bool": false,
+      "miss_direction_used_for_policy_bool": false,
+      "observable_span_length_and_position_only_bool": true,
+      "outcome_used_for_policy_bool": false,
+      "policy_boundary_bucket": "same_source_observable_fixed_variant_package_only",
+      "policy_boundary_valid_bool": true,
+      "same_source_n1_proxy_only_bool": true
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10cnprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "public_refinement_package_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "refined_result_records": [
+    {
+      "anonymous_refined_result_id": "n10cnrefined0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "comparison_bucket": "refined_vs_winning_reference",
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "cost_savings_vs_winning_top10": 100,
+      "cost_savings_vs_winning_top20": 100,
+      "decision_bucket": "preserves_winning_at_lower_cost",
+      "lost_winning_top10_hits": 0,
+      "refined_result_valid_bool": true,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "short75_225_top2_all_pm200"
+    }
+  ],
+  "refinement_chain_records": [
+    {
+      "anonymous_chain_id": "n10cnchain0000",
+      "chain_bucket": "n10cm_public_refinement_chain",
+      "chain_consistent_bool": true,
+      "improves_winning_count": 0,
+      "n10cm_complete_bool": true,
+      "near_winning_cost_saving_tradeoff_count": 7,
+      "preserves_winning_at_lower_cost_count": 1,
+      "winning_reference_cost10": 3300,
+      "winning_reference_cost20": 6300,
+      "winning_reference_top10": 25,
+      "winning_reference_top20": 31,
+      "winning_reference_variant_bucket": "short75_225_top3_all_pm200"
+    }
+  ],
+  "schema_version": "bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "winning_hybrid_cost_refinement_package_complete_n10co_authorized",
+  "status_vocabulary": [
+    "winning_hybrid_cost_refinement_package_complete_n10co_authorized",
+    "no_go_n10cn_required_public_inputs_unavailable",
+    "no_go_n10cn_refinement_chain_mismatch",
+    "no_go_n10cn_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10co_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10co_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CO Default-Off Adapter Smoke for Refined Hybrid short75_225_top2_all_pm200",
+      "next_allowed_scope_bucket": "default_off_adapter_smoke_only",
+      "p5_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "tradeoff_result_records": [
+    {
+      "anonymous_tradeoff_id": "n10cntradeoff0000",
+      "decision_bucket": "near_winning_cost_saving_tradeoff",
+      "lost_winning_top10_hits": 1,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "tradeoff_valid_bool": true,
+      "variant_bucket": "short75_225_top1_all_pm200"
+    },
+    {
+      "anonymous_tradeoff_id": "n10cntradeoff0001",
+      "decision_bucket": "near_winning_cost_saving_tradeoff",
+      "lost_winning_top10_hits": 1,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "tradeoff_valid_bool": true,
+      "variant_bucket": "short75_225_top3_all_pm150"
+    },
+    {
+      "anonymous_tradeoff_id": "n10cntradeoff0002",
+      "decision_bucket": "near_winning_cost_saving_tradeoff",
+      "lost_winning_top10_hits": 1,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "tradeoff_valid_bool": true,
+      "variant_bucket": "short75_225_top3_all_pm175"
+    }
+  ]
+}
