@@ -1,0 +1,650 @@
+{
+  "aggregate_match_records": [
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0000",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 0,
+      "top10_span_overlap_count": 9,
+      "top20_span_overlap_count": 10,
+      "variant_bucket": "pm0"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0001",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 200,
+      "top10_span_overlap_count": 13,
+      "top20_span_overlap_count": 15,
+      "variant_bucket": "pm10"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0002",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 400,
+      "top10_span_overlap_count": 15,
+      "top20_span_overlap_count": 19,
+      "variant_bucket": "pm20"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0003",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 600,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0004",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 23,
+      "variant_bucket": "pm50"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0005",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm75"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0006",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_value": 2000,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm100"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0007",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 3000,
+      "top10_span_overlap_count": 23,
+      "top20_span_overlap_count": 28,
+      "variant_bucket": "pm150"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0008",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 4000,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0009",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "before75_after25"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0010",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before100_after50"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0011",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_value": 2000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before150_after50"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0012",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0013",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before50_after100"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10aumatch0014",
+      "match_status_bucket": "match",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_value": 2000,
+      "top10_span_overlap_count": 22,
+      "top20_span_overlap_count": 27,
+      "variant_bucket": "before50_after150"
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10auclaim0000",
+      "claim_boundary_bucket": "independent_recompute_same_source_exploratory_n1_proxy_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n1_span_surface_proxy_only_bool": true,
+      "n2_equivalent_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "same_source_only_bool": true,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "independent_recompute_same_source_exploratory_n1_proxy_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "frontier_match_records": [
+    {
+      "anonymous_frontier_match_id": "n10aufront0000",
+      "frontier_match_bool": true,
+      "frontier_tier_bucket": "low_cost",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "low",
+      "top10_cost_proxy_value": 600,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_frontier_match_id": "n10aufront0001",
+      "frontier_match_bool": true,
+      "frontier_tier_bucket": "balanced",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_frontier_match_id": "n10aufront0002",
+      "frontier_match_bool": true,
+      "frontier_tier_bucket": "balanced",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm75"
+    },
+    {
+      "anonymous_frontier_match_id": "n10aufront0003",
+      "frontier_match_bool": true,
+      "frontier_tier_bucket": "max_recall",
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "very_high",
+      "top10_cost_proxy_value": 4000,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    }
+  ],
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read_213",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "independent_implementation",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "all_15_variant_aggregates_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "frontier_tiers_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T18:29:50Z",
+  "generated_by": "bea_v1_n10au_independent_recompute_span_window_variant_sweep",
+  "independent_implementation_records": [
+    {
+      "anonymous_independent_implementation_id": "n10auimpl0000",
+      "extra_variant_count": 0,
+      "implementation_boundary_bucket": "independent_local_logic_no_n10as_import_or_call",
+      "independent_order_logic_bool": true,
+      "independent_overlap_logic_bool": true,
+      "independent_parsing_bool": true,
+      "independent_window_logic_bool": true,
+      "n10as_evaluator_called_bool": false,
+      "n10as_evaluator_imported_bool": false,
+      "n10as_transform_reused_bool": false,
+      "variant_count": 15
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10auin0000",
+      "expected_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10as_exploratory_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10auin0001",
+      "expected_status": "exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10at_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10av_handoff_records": [
+    {
+      "anonymous_n10av_handoff_id": "n10auhandoff0000",
+      "extra_sweep_authorized_bool": false,
+      "heldout_validation_claim_authorized_bool": false,
+      "n10av_handoff_bucket": "n10av_public_replication_package_authorized",
+      "n10av_public_replication_package_authorized_bool": true,
+      "private_read_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n10aunoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_order_changed_count": 0,
+      "candidate_pool_changed_count": 0,
+      "candidate_removal_count": 0,
+      "downstream_value_claim_count": 0,
+      "extra_variant_count": 0,
+      "gold_used_for_window_selection_count": 0,
+      "method_winner_claim_count": 0,
+      "no_execution_boundary_bucket": "same_scoped_rows_independent_recompute_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "order_arm_sweep_count": 0,
+      "p5_execution_count": 0,
+      "per_record_adaptive_window_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AU Independent Recompute Exploratory Span-Window Variant Sweep",
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10aupriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "schema_valid_bool": true,
+      "usable_private_span_rows": 213
+    }
+  ],
+  "recomputed_variant_result_records": [
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "no_positive_delta",
+      "delta_top10_vs_unexpanded_count": 0,
+      "delta_top20_vs_unexpanded_count": 0,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "zero",
+      "top10_cost_proxy_value": 0,
+      "top10_span_overlap_count": 9,
+      "top20_span_overlap_count": 10,
+      "variant_bucket": "pm0",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "low",
+      "delta_top10_vs_unexpanded_count": 4,
+      "delta_top20_vs_unexpanded_count": 5,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "low",
+      "top10_cost_proxy_value": 200,
+      "top10_span_overlap_count": 13,
+      "top20_span_overlap_count": 15,
+      "variant_bucket": "pm10",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "low",
+      "delta_top10_vs_unexpanded_count": 6,
+      "delta_top20_vs_unexpanded_count": 9,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "low",
+      "top10_cost_proxy_value": 400,
+      "top10_span_overlap_count": 15,
+      "top20_span_overlap_count": 19,
+      "variant_bucket": "pm20",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "low",
+      "delta_top10_vs_unexpanded_count": 9,
+      "delta_top20_vs_unexpanded_count": 12,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "low",
+      "top10_cost_proxy_value": 600,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "low",
+      "delta_top10_vs_unexpanded_count": 10,
+      "delta_top20_vs_unexpanded_count": 13,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 23,
+      "variant_bucket": "pm50",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0005",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 12,
+      "delta_top20_vs_unexpanded_count": 15,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm75",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0006",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 12,
+      "delta_top20_vs_unexpanded_count": 15,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_bucket": "high",
+      "top10_cost_proxy_value": 2000,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm100",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0007",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "high",
+      "delta_top10_vs_unexpanded_count": 14,
+      "delta_top20_vs_unexpanded_count": 18,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "high",
+      "top10_cost_proxy_value": 3000,
+      "top10_span_overlap_count": 23,
+      "top20_span_overlap_count": 28,
+      "variant_bucket": "pm150",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0008",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "high",
+      "delta_top10_vs_unexpanded_count": 16,
+      "delta_top20_vs_unexpanded_count": 20,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "very_high",
+      "top10_cost_proxy_value": 4000,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200",
+      "variant_family_bucket": "symmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0009",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 9,
+      "delta_top20_vs_unexpanded_count": 12,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "before75_after25",
+      "variant_family_bucket": "asymmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0010",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 11,
+      "delta_top20_vs_unexpanded_count": 14,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before100_after50",
+      "variant_family_bucket": "asymmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0011",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 11,
+      "delta_top20_vs_unexpanded_count": 14,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_bucket": "high",
+      "top10_cost_proxy_value": 2000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before150_after50",
+      "variant_family_bucket": "asymmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0012",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "low",
+      "delta_top10_vs_unexpanded_count": 11,
+      "delta_top20_vs_unexpanded_count": 14,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75",
+      "variant_family_bucket": "asymmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0013",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 11,
+      "delta_top20_vs_unexpanded_count": 14,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": false,
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before50_after100",
+      "variant_family_bucket": "asymmetric"
+    },
+    {
+      "anonymous_recomputed_variant_result_id": "n10auvar0014",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_per_additional_hit_bucket": "medium",
+      "delta_top10_vs_unexpanded_count": 13,
+      "delta_top20_vs_unexpanded_count": 17,
+      "original_span_hit_lost_count": 0,
+      "pareto_frontier_bool": true,
+      "top10_cost_proxy_bucket": "high",
+      "top10_cost_proxy_value": 2000,
+      "top10_span_overlap_count": 22,
+      "top20_span_overlap_count": 27,
+      "variant_bucket": "before50_after150",
+      "variant_family_bucket": "asymmetric"
+    }
+  ],
+  "schema_version": "bea_v1_n10au_independent_recompute_span_window_variant_sweep.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "independent_recompute_span_window_variant_sweep_pass_n10av_authorized",
+  "status_vocabulary": [
+    "independent_recompute_span_window_variant_sweep_pass_n10av_authorized",
+    "no_go_n10au_required_inputs_unavailable",
+    "no_go_n10au_private_span_rows_missing",
+    "no_go_n10au_private_span_rows_schema_invalid",
+    "no_go_n10au_recompute_mismatch",
+    "no_go_n10au_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10av_public_replication_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "extra_sweep_authorized": false,
+      "heldout_validation_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10av_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AV Exploratory Span-Window Variant Sweep Replication Package",
+      "next_allowed_scope_bucket": "public_replication_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
