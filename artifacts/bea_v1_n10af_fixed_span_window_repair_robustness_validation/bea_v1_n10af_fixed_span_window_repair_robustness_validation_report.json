@@ -1,0 +1,593 @@
+{
+  "aggregate_runtime_seconds": 2.199,
+  "claim_level": "subgroup_robustness_validation_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 213,
+      "value": 213
+    },
+    {
+      "gate": "global_matches_n10ae",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "robustness_decision_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T16:17:14Z",
+  "generated_by": "bea_v1_n10af_fixed_span_window_repair_robustness_validation",
+  "global_result_reproduction_records": [
+    {
+      "anonymous_global_result_reproduction_id": "n10afglobal0000",
+      "baseline_top10_span_overlap_count": 9,
+      "delta_top10_span_overlap_count": 10,
+      "eligible_denominator_count": 213,
+      "global_matches_n10ae_bool": true,
+      "pm50_file_top10_count": 34,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 19,
+      "repair_variant_bucket": "fixed_symmetric_span_expansion_pm50_lines",
+      "target_arm_bucket": "span_extra_depth_promote_before_primary_prefix_4"
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10afin0000",
+      "expected_status": "fixed_span_window_repair_replication_package_complete_n10af_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ae_replication_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_replication_package_complete_n10af_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10afin0001",
+      "expected_status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ad_independent_recompute_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10afin0002",
+      "expected_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ab_repair_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10afin0003",
+      "expected_status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10z_failure_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ag_handoff_records": [
+    {
+      "anonymous_n10ag_handoff_id": "n10afhandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10ag_handoff_bucket": "n10ag_public_claim_boundary_audit_package_authorized",
+      "n10ag_public_claim_boundary_audit_package_authorized_bool": true,
+      "private_read_authorized_bool": false,
+      "runtime_default_promotion_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_window_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10afnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "counterfactual_execution_count": 0,
+      "default_change_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "single_scoped_private_read_subgroup_validation_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "overreach_proxy_records": [
+    {
+      "anonymous_overreach_proxy_id": "n10afover0000",
+      "case_count": 8,
+      "overreach_proxy_bucket": "pm50_file_hit_without_pm50_span_overlap",
+      "subgroup_bucket": "before_gold",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_overreach_proxy_id": "n10afover0001",
+      "case_count": 7,
+      "overreach_proxy_bucket": "pm50_file_hit_without_pm50_span_overlap",
+      "subgroup_bucket": "after_gold",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_overreach_proxy_id": "n10afover0002",
+      "case_count": 0,
+      "overreach_proxy_bucket": "pm50_file_hit_without_pm50_span_overlap",
+      "subgroup_bucket": "already_overlap",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_overreach_proxy_id": "n10afover0003",
+      "case_count": 0,
+      "overreach_proxy_bucket": "pm50_file_hit_without_pm50_span_overlap",
+      "subgroup_bucket": "no_top10_file_hit",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    }
+  ],
+  "phase": "BEA-v1-N10AF Fixed Span-Window Repair Robustness/Subgroup Validation",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10afprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_subgroup_counts_only_no_private_surface_details",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10afpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "schema_valid_bool": true
+    }
+  ],
+  "robustness_decision_records": [
+    {
+      "anonymous_robustness_decision_id": "n10afdecision0000",
+      "baseline_span_hit_negative_delta_count": 0,
+      "concentrated_effect_bool": false,
+      "decision_bucket": "robustness_pass",
+      "global_matches_n10ae_bool": true,
+      "pm50_lost_original_span_hit_count": 0,
+      "positive_delta_subgroup_count": 7,
+      "required_positive_delta_subgroup_count": 2,
+      "robustness_pass_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10af_fixed_span_window_repair_robustness_validation.v1",
+  "self_test_checks_passed": 16,
+  "self_test_checks_total": 16,
+  "self_test_passed": true,
+  "status": "fixed_span_window_repair_robustness_validation_pass_n10ag_authorized",
+  "status_vocabulary": [
+    "fixed_span_window_repair_robustness_validation_pass_n10ag_authorized",
+    "fixed_span_window_repair_robustness_complete_concentrated_effect",
+    "no_go_n10af_required_inputs_unavailable",
+    "no_go_n10af_private_span_rows_missing",
+    "no_go_n10af_result_mismatch",
+    "no_go_n10af_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10ag_public_claim_boundary_audit_package_authorized",
+      "candidate_generation_authorized": false,
+      "candidate_materialization_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10ag_public_claim_boundary_audit_package_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AG Fixed Span-Window Repair Claim-Boundary Audit Package",
+      "next_allowed_scope_bucket": "public_claim_boundary_audit_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "subgroup_definition_records": [
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0000",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "baseline_span_hit_top10",
+      "subgroup_family_bucket": "baseline_span_status"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0001",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "baseline_file_hit_no_span_top10",
+      "subgroup_family_bucket": "baseline_span_status"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0002",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "no_baseline_file_hit_top10",
+      "subgroup_family_bucket": "baseline_span_status"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0003",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "pm50_file_hit_top10",
+      "subgroup_family_bucket": "pm50_file_status"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0004",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "no_pm50_file_hit_top10",
+      "subgroup_family_bucket": "pm50_file_status"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0005",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "rank_1_10",
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0006",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "rank_11_20",
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0007",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "rank_21_50",
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0008",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "rank_gt50",
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0009",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "not_span_reachable",
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0010",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "before_gold",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0011",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "after_gold",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0012",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "already_overlap",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0013",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "no_top10_file_hit",
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0014",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "1_10",
+      "subgroup_family_bucket": "evidence_count_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0015",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "11_20",
+      "subgroup_family_bucket": "evidence_count_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0016",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "21_50",
+      "subgroup_family_bucket": "evidence_count_bucket"
+    },
+    {
+      "anonymous_subgroup_definition_id": "n10afdef0017",
+      "predeclared_bool": true,
+      "repo_language_path_source_bucket_used_bool": false,
+      "subgroup_bucket": "gt50",
+      "subgroup_family_bucket": "evidence_count_bucket"
+    }
+  ],
+  "subgroup_robustness_records": [
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0000",
+      "baseline_top10_span_overlap_count": 9,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 9,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 9,
+      "subgroup_bucket": "baseline_span_hit_top10",
+      "subgroup_count": 9,
+      "subgroup_family_bucket": "baseline_span_status"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0001",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 10,
+      "pm50_file_top10_count": 25,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 10,
+      "subgroup_bucket": "baseline_file_hit_no_span_top10",
+      "subgroup_count": 25,
+      "subgroup_family_bucket": "baseline_span_status"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0002",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "no_baseline_file_hit_top10",
+      "subgroup_count": 179,
+      "subgroup_family_bucket": "baseline_span_status"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0003",
+      "baseline_top10_span_overlap_count": 9,
+      "delta_top10_span_overlap_count": 10,
+      "pm50_file_top10_count": 34,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 19,
+      "subgroup_bucket": "pm50_file_hit_top10",
+      "subgroup_count": 34,
+      "subgroup_family_bucket": "pm50_file_status"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0004",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "no_pm50_file_hit_top10",
+      "subgroup_count": 179,
+      "subgroup_family_bucket": "pm50_file_status"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0005",
+      "baseline_top10_span_overlap_count": 9,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 9,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 9,
+      "subgroup_bucket": "rank_1_10",
+      "subgroup_count": 9,
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0006",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "rank_11_20",
+      "subgroup_count": 1,
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0007",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "rank_21_50",
+      "subgroup_count": 2,
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0008",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "rank_gt50",
+      "subgroup_count": 0,
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0009",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 10,
+      "pm50_file_top10_count": 25,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 10,
+      "subgroup_bucket": "not_span_reachable",
+      "subgroup_count": 201,
+      "subgroup_family_bucket": "original_span_reach_rank_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0010",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 9,
+      "pm50_file_top10_count": 17,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 9,
+      "subgroup_bucket": "before_gold",
+      "subgroup_count": 17,
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0011",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 1,
+      "pm50_file_top10_count": 8,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 1,
+      "subgroup_bucket": "after_gold",
+      "subgroup_count": 8,
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0012",
+      "baseline_top10_span_overlap_count": 9,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 9,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 9,
+      "subgroup_bucket": "already_overlap",
+      "subgroup_count": 9,
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0013",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "no_top10_file_hit",
+      "subgroup_count": 179,
+      "subgroup_family_bucket": "miss_direction_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0014",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "1_10",
+      "subgroup_count": 35,
+      "subgroup_family_bucket": "evidence_count_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0015",
+      "baseline_top10_span_overlap_count": 0,
+      "delta_top10_span_overlap_count": 0,
+      "pm50_file_top10_count": 0,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 0,
+      "subgroup_bucket": "11_20",
+      "subgroup_count": 15,
+      "subgroup_family_bucket": "evidence_count_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0016",
+      "baseline_top10_span_overlap_count": 5,
+      "delta_top10_span_overlap_count": 8,
+      "pm50_file_top10_count": 25,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 13,
+      "subgroup_bucket": "21_50",
+      "subgroup_count": 101,
+      "subgroup_family_bucket": "evidence_count_bucket"
+    },
+    {
+      "anonymous_subgroup_robustness_id": "n10afsub0017",
+      "baseline_top10_span_overlap_count": 4,
+      "delta_top10_span_overlap_count": 2,
+      "pm50_file_top10_count": 9,
+      "pm50_lost_original_span_hit_count": 0,
+      "pm50_top10_span_overlap_count": 6,
+      "subgroup_bucket": "gt50",
+      "subgroup_count": 62,
+      "subgroup_family_bucket": "evidence_count_bucket"
+    }
+  ]
+}
