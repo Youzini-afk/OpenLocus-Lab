@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BS: Boundary-Cost Refinement Sweep**:
+The latest closed phase is **BEA-v1-N10BT: Boundary-Cost Package**:
 
 ```text
-status: boundary_cost_refinement_sweep_complete_n10bt_authorized
-self-test: 17 / 17
+status: boundary_cost_package_complete_n10bu_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
-variant count: 7
+private reads in N10BT: 0
+recomputes in N10BT: 0
 minimum preserving cost: 80
 first failing below boundary: 75
 boundary margin: 5
-next allowed phase: BEA-v1-N10BT Boundary-Cost Package
+next allowed phase: BEA-v1-N10BU Boundary Case Mechanism Decomposition
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -709,6 +709,12 @@ lost plateau core. The minimum preserving cost remains 80 and the boundary margi
 from the first failing value below it is 5. It authorizes only N10BT public
 boundary-cost package.
 
+N10BT packages the N10BS boundary-cost result publicly without private reads or
+recompute. It locks fixed 25/75 costs 65/70/75/80/85/90/95, the minimum preserving
+cost 80, first failing cost 75, margin 5, and chosen research point
+`cost80_before25_after75`. It authorizes only N10BU boundary-case mechanism
+decomposition of cost75 vs cost80.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1250,6 +1256,11 @@ See the current report index:
   runtime/default behavior, heldout/generalization claims, method/downstream
   claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
   or BEA-v1-A.
+- N10BT authorizes only N10BU boundary-case mechanism decomposition over the same
+  scoped rows comparing fixed 25/75 costs 75 and 80. It does not authorize new
+  variants, adaptive tuning, runtime/default behavior, heldout/generalization
+  claims, method/downstream claims, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1670,6 +1681,10 @@ eval/bea_v1_n10br_cost_minimization_package.py
 eval/bea_v1_n10bs_boundary_cost_refinement_sweep.py
   Direct fixed-ratio boundary-cost refinement sweep over costs 65..95; authorizes
   only N10BT public boundary-cost package.
+
+eval/bea_v1_n10bt_boundary_cost_package.py
+  Public package of N10BS boundary-cost facts; authorizes only N10BU boundary-case
+  mechanism decomposition.
 ```
 
 Key reports:
@@ -1748,6 +1763,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json`](artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json)
 - [`artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json`](artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json)
 - [`artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json`](artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json)
+- [`artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json`](artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json)
 
 Documentation mirror check:
 
