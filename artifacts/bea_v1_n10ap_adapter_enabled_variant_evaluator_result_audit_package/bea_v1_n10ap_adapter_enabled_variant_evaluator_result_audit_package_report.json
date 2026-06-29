@@ -1,0 +1,241 @@
+{
+  "aggregate_runtime_seconds": 0.001,
+  "claim_level": "public_adapter_enabled_variant_result_audit_package_only",
+  "default_off_claim_records": [
+    {
+      "allowed_claim_bool": true,
+      "anonymous_default_off_claim_id": "n10apdefault0000",
+      "default_enabled_bool": false,
+      "default_off_claim_bucket": "explicit_enablement_only_default_off_variant",
+      "default_off_claim_valid_bool": true,
+      "existing_evaluator_hook_in_bool": false,
+      "metric_recompute_by_default_bool": false,
+      "private_read_by_default_bool": false,
+      "runtime_default_enablement_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_claim_records": [
+    {
+      "anonymous_forbidden_claim_id": "n10apclaim0000",
+      "candidate_generation_claim_bool": false,
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "existing_evaluator_hook_in_claim_bool": false,
+      "forbidden_claim_bucket": "no_runtime_no_existing_hook_no_generalization_claims",
+      "method_winner_claim_bool": false,
+      "modify_existing_validator_claim_bool": false,
+      "new_window_tuning_claim_bool": false,
+      "p5_v1a_claim_bool": false,
+      "retrieval_rerun_claim_bool": false,
+      "runtime_default_promotion_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "variant_chain",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "variant_result",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "default_off_claim",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T17:34:27Z",
+  "generated_by": "bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10apin0000",
+      "expected_status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ao_variant_evaluator_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10apin0001",
+      "expected_status": "default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10an_hook_feasibility_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10apin0002",
+      "expected_status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10am_adapter_integration_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10apin0003",
+      "expected_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10al_adapter_integration_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10apin0004",
+      "expected_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aj_adapter_patch_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10aq_handoff_records": [
+    {
+      "anonymous_n10aq_handoff_id": "n10aphandoff0000",
+      "direct_experiment_execution_authorized_bool": false,
+      "n10aq_handoff_bucket": "n10aq_heldout_external_validation_source_discovery_preflight_authorized",
+      "n10aq_public_source_discovery_preflight_authorized_bool": true,
+      "private_read_authorized_bool": false,
+      "retrieval_or_rerun_authorized_bool": false,
+      "runtime_default_enablement_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10apnoexec0000",
+      "candidate_generation_count": 0,
+      "empirical_recompute_count": 0,
+      "existing_evaluator_hook_in_count": 0,
+      "new_arm_or_window_tuning_count": 0,
+      "no_private_recompute_bucket": "public_audit_package_only_no_private_read_no_recompute",
+      "no_private_recompute_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "private_scan_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AP Adapter-Enabled Variant Evaluator Result Audit Package",
+  "schema_version": "bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "adapter_enabled_variant_evaluator_result_audit_package_complete_n10aq_authorized",
+  "status_vocabulary": [
+    "adapter_enabled_variant_evaluator_result_audit_package_complete_n10aq_authorized",
+    "no_go_n10ap_required_public_inputs_unavailable",
+    "no_go_n10ap_variant_chain_mismatch",
+    "no_go_n10ap_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10aq_public_source_discovery_preflight_authorized",
+      "candidate_generation_authorized": false,
+      "direct_experiment_execution_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "method_winner_claim_authorized": false,
+      "modify_existing_validated_evaluator_authorized": false,
+      "n10aq_preflight_authorized": true,
+      "new_arm_or_window_tuning_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AQ Heldout External Validation Source-Discovery Preflight",
+      "next_allowed_scope_bucket": "public_source_discovery_preflight_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_enablement_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "variant_chain_records": [
+    {
+      "anonymous_variant_chain_id": "n10apchain0000",
+      "comparison_to_n10al_passed_bool": true,
+      "default_enabled_bool": false,
+      "existing_evaluator_imported_bool": false,
+      "explicit_enablement_used_bool": true,
+      "modify_existing_validated_evaluator_bool": false,
+      "n10aj_status_valid_bool": true,
+      "n10al_status_valid_bool": true,
+      "n10am_status_valid_bool": true,
+      "n10an_strategy_valid_bool": true,
+      "n10ao_status_valid_bool": true,
+      "private_read_by_default_bool": false,
+      "variant_chain_bucket": "n10an_strategy_n10ao_variant_n10al_match",
+      "variant_chain_valid_bool": true
+    }
+  ],
+  "variant_result_records": [
+    {
+      "anonymous_variant_result_id": "n10apresult0000",
+      "baseline_top10_span_overlap_count": 9,
+      "baseline_top20_span_overlap_count": 10,
+      "candidate_pool_changed_bool": false,
+      "delta_top10_vs_baseline_count": 10,
+      "eligible_denominator_count": 213,
+      "order_changed_bool": false,
+      "original_span_hit_lost_count": 0,
+      "pm50_top10_span_overlap_count": 19,
+      "pm50_top20_span_overlap_count": 23,
+      "private_span_rows_read": 213,
+      "variant_result_bucket": "new_eval_only_variant_reproduces_scoped_n1_pm50_aggregate",
+      "variant_result_valid_bool": true
+    }
+  ]
+}
