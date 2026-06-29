@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BT: Boundary-Cost Package**:
+The latest closed phase is **BEA-v1-N10BU: Boundary Case Mechanism Decomposition**:
 
 ```text
-status: boundary_cost_package_complete_n10bu_authorized
-self-test: 14 / 14
+status: boundary_case_mechanism_decomposition_complete_n10bv_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10BT: 0
-recomputes in N10BT: 0
-minimum preserving cost: 80
-first failing below boundary: 75
-boundary margin: 5
-next allowed phase: BEA-v1-N10BU Boundary Case Mechanism Decomposition
+private span rows read: 213
+cost75/cost80 top10-top20: 19/23 -> 20/24
+recovered-at-80/missed-at-75 cases: 1
+gap bucket: before_gold_gap
+distance bucket: near_1_5
+next allowed phase: BEA-v1-N10BV Boundary Case Mechanism Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -715,6 +715,12 @@ cost 80, first failing cost 75, margin 5, and chosen research point
 `cost80_before25_after75`. It authorizes only N10BU boundary-case mechanism
 decomposition of cost75 vs cost80.
 
+N10BU decomposes the one plateau-core case that cost75 misses but cost80 recovers.
+The file hit remains top10 at both costs, and the recovered span is bucketed as a
+near `before_gold_gap` just outside the 75-cost window. This explains the observed
+cost boundary without publishing paths, lines, spans, snippets, gold, candidates,
+or exact ranks. It authorizes only N10BV public boundary-case mechanism package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1261,6 +1267,11 @@ See the current report index:
   variants, adaptive tuning, runtime/default behavior, heldout/generalization
   claims, method/downstream claims, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, or BEA-v1-A.
+- N10BU authorizes only N10BV public boundary-case mechanism package. It does not
+  authorize private reads, new variants, adaptive tuning, runtime/default
+  behavior, heldout/generalization claims, method/downstream claims,
+  retrieval/rerun, candidate generation, selector/reranker execution, P5, or
+  BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1685,6 +1696,10 @@ eval/bea_v1_n10bs_boundary_cost_refinement_sweep.py
 eval/bea_v1_n10bt_boundary_cost_package.py
   Public package of N10BS boundary-cost facts; authorizes only N10BU boundary-case
   mechanism decomposition.
+
+eval/bea_v1_n10bu_boundary_case_mechanism_decomposition.py
+  Direct one-case decomposition of the cost75/cost80 boundary; authorizes only
+  N10BV public boundary-case mechanism package.
 ```
 
 Key reports:
@@ -1764,6 +1779,7 @@ Key reports:
 - [`artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json`](artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json)
 - [`artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json`](artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json)
 - [`artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json`](artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json)
+- [`artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json)
 
 Documentation mirror check:
 
