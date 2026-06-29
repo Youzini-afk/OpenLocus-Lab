@@ -28,20 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N8: Independent Recompute Same Private Rows Same Four Arms**:
+The latest closed phase is **BEA-v1-N9: Recovered Fixed-Pool Result Replication Package**:
 
 ```text
-status: independent_recompute_same_private_rows_pass_n9_authorized
-self-test: 14 / 14
+status: recovered_fixed_pool_result_replication_package_complete
+self-test: 15 / 15
 forbidden scan: pass
-private rank-pack rows read: 40
-other private files read: 0
-arms recomputed: 4
+case count: 40
+arm count: 4
+public rows: 160
 best arm: extra_depth_promote_before_primary_prefix_4
 best top10 recovery: 25 / 40
 best top20 recovery: 34 / 40
-threshold reproduced: true
-next allowed phase: BEA-v1-N9 Recovered Fixed-Pool Result Replication Package
+threshold passed: true
+next allowed phase: BEA-v1-N10 Broader Frozen Denominator Validation Preflight
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -384,6 +384,11 @@ top-10/top-20/regression counts exactly and reproduces the threshold pass:
 `extra_depth_promote_before_primary_prefix_4` reaches 25/40 top-10 and 34/40
 top-20 with 0 regressions. It authorizes only N9 replication package.
 
+N9 packages the public replication chain and claim boundary. It reads public
+artifacts only, confirms N6XFR-E -> N7 -> N8 consistency, records that recompute
+still requires the same uncommitted recovered N2 rank-pack rows, and authorizes
+only N10 broader frozen denominator validation preflight.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -648,6 +653,10 @@ See the current report index:
   P5, BEA-v1-A, selector/reranker execution, retrieval expansion, additional
   reruns, runtime/default promotion, policy changes, counterfactuals,
   method-winner claims, or downstream-value claims.
+- N9 authorizes only N10 broader frozen denominator validation preflight. It does
+  not authorize capture, private reads, recompute, retrieval/reruns, new-arm
+  search, selector/reranker execution, P5, BEA-v1-A, runtime/default promotion,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -839,6 +848,10 @@ eval/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit.py
 eval/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms.py
   Independent recompute of the same private rows and four fixed-pool arms;
   matches N6XFR-E and authorizes only N9 replication package.
+
+eval/bea_v1_n9_recovered_fixed_pool_result_replication_package.py
+  Public replication package for the recovered fixed-pool result; authorizes only
+  N10 broader frozen denominator validation preflight.
 ```
 
 Key reports:
@@ -862,6 +875,7 @@ Key reports:
 - [`artifacts/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment_report.json`](artifacts/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment_report.json)
 - [`artifacts/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit_report.json`](artifacts/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit_report.json)
 - [`artifacts/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms_report.json`](artifacts/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms_report.json)
+- [`artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json`](artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json)
 
 Documentation mirror check:
 

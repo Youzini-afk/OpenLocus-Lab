@@ -1,0 +1,384 @@
+{
+  "aggregate_runtime_seconds": 0.001,
+  "artifact_manifest_records": [
+    {
+      "anonymous_artifact_manifest_id": "n9manifest0000",
+      "artifact_bucket": "n6xfre_recovered_experiment_artifact",
+      "artifact_role_bucket": "source_result",
+      "path_public_bool": false,
+      "private_content_public_bool": false
+    },
+    {
+      "anonymous_artifact_manifest_id": "n9manifest0001",
+      "artifact_bucket": "n7_public_audit_artifact",
+      "artifact_role_bucket": "public_audit",
+      "path_public_bool": false,
+      "private_content_public_bool": false
+    },
+    {
+      "anonymous_artifact_manifest_id": "n9manifest0002",
+      "artifact_bucket": "n8_independent_recompute_artifact",
+      "artifact_role_bucket": "independent_recompute",
+      "path_public_bool": false,
+      "private_content_public_bool": false
+    },
+    {
+      "anonymous_artifact_manifest_id": "n9manifest0003",
+      "artifact_bucket": "n5_preflight_artifact",
+      "artifact_role_bucket": "arm_and_threshold_contract",
+      "path_public_bool": false,
+      "private_content_public_bool": false
+    },
+    {
+      "anonymous_artifact_manifest_id": "n9manifest0004",
+      "artifact_bucket": "n6f_materialization_design_artifact",
+      "artifact_role_bucket": "public_schema_contract",
+      "path_public_bool": false,
+      "private_content_public_bool": false
+    },
+    {
+      "anonymous_artifact_manifest_id": "n9manifest0005",
+      "artifact_bucket": "n9_replication_package_artifact",
+      "artifact_role_bucket": "public_replication_package",
+      "path_public_bool": false,
+      "private_content_public_bool": false
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n9claim0000",
+      "claim_boundary_bucket": "replication_package_only_no_promotion_no_winner",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "new_arm_search_authorized_bool": false,
+      "p5_authorized_bool": false,
+      "rerun_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_default_promotion_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "v1_a_authorized_bool": false
+    }
+  ],
+  "claim_level": "public_replication_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "replication_chain_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "case_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 40,
+      "value": 40
+    },
+    {
+      "gate": "arm_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 4,
+      "value": 4
+    },
+    {
+      "gate": "public_arm_outcome_rows",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 160,
+      "value": 160
+    },
+    {
+      "gate": "best_top10_recovery_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 25,
+      "value": 25
+    },
+    {
+      "gate": "best_top20_recovery_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 34,
+      "value": 34
+    },
+    {
+      "gate": "best_case_regression_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "threshold_passed",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T13:48:23Z",
+  "generated_by": "bea_v1_n9_recovered_fixed_pool_result_replication_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n9in0000",
+      "expected_status": "recovered_fixed_pool_rank_order_experiment_pass_n7_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n6xfre_recovered_experiment_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "recovered_fixed_pool_rank_order_experiment_pass_n7_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n9in0001",
+      "expected_status": "recovered_fixed_pool_rank_order_result_audit_pass_n8_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n7_public_audit_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "recovered_fixed_pool_rank_order_result_audit_pass_n8_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n9in0002",
+      "expected_status": "independent_recompute_same_private_rows_pass_n9_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n8_independent_recompute_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "independent_recompute_same_private_rows_pass_n9_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n9in0003",
+      "expected_status": "fixed_pool_rank_order_experiment_preflight_pass_n6_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n5_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_pool_rank_order_experiment_preflight_pass_n6_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n9in0004",
+      "expected_status": "fixed_pool_public_arm_field_materialization_design_pass",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n6f_materialization_design_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_pool_public_arm_field_materialization_design_pass"
+    }
+  ],
+  "limitation_records": [
+    {
+      "anonymous_limitation_id": "n9limit0000",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "single_recovered_40_case_denominator"
+    },
+    {
+      "anonymous_limitation_id": "n9limit0001",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "private_local_rows_required_for_recompute"
+    },
+    {
+      "anonymous_limitation_id": "n9limit0002",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "not_validated_on_broader_denominator"
+    },
+    {
+      "anonymous_limitation_id": "n9limit0003",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "not_runtime_or_default_policy"
+    },
+    {
+      "anonymous_limitation_id": "n9limit0004",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "not_selector_or_reranker"
+    },
+    {
+      "anonymous_limitation_id": "n9limit0005",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "not_downstream_value_evidence"
+    },
+    {
+      "anonymous_limitation_id": "n9limit0006",
+      "limitation_acknowledged_bool": true,
+      "limitation_bucket": "arm_semantics_depend_on_rank20_primary_extra_depth_decomposition"
+    }
+  ],
+  "method_winner_claimed": false,
+  "next_empirical_requirement_records": [
+    {
+      "anonymous_next_empirical_requirement_id": "n9next0000",
+      "next_requirement_bucket": "broader_frozen_denominator_validation_preflight",
+      "requires_new_private_capture_bool": false,
+      "requires_p5_or_v1a_bool": false,
+      "requires_runtime_promotion_bool": false,
+      "requires_selector_reranker_bool": false
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "n9noexec0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "default_change_count": 0,
+      "downstream_claim_count": 0,
+      "method_claim_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "public_replication_package_no_private_read_no_recompute",
+      "no_execution_complete_bool": true,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "private_scan_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N9 Recovered Fixed-Pool Result Replication Package",
+  "private_input_requirement_records": [
+    {
+      "anonymous_private_input_requirement_id": "n9privreq0000",
+      "candidate_list_public_bool": false,
+      "committed_public_bool": false,
+      "content_public_bool": false,
+      "exact_rank_public_bool": false,
+      "filename_public_bool": false,
+      "gold_path_public_bool": false,
+      "path_public_bool": false,
+      "private_input_bucket": "same_recovered_n2_rank_pack_rows",
+      "required_for_recompute_bool": true,
+      "storage_requirement_bucket": "ignored_project_private_storage_required"
+    }
+  ],
+  "public_row_availability_records": [
+    {
+      "anonymous_public_row_availability_id": "n9rows0000",
+      "arm_count": 4,
+      "availability_bucket": "n6f_public_schema_bucketed_rows_available",
+      "bucketed_rows_public_bool": true,
+      "candidate_lists_public_bool": false,
+      "case_count": 40,
+      "exact_ranks_public_bool": false,
+      "gold_paths_public_bool": false,
+      "public_arm_outcome_rows": 160,
+      "raw_rows_public_bool": false
+    }
+  ],
+  "replication_chain_records": [
+    {
+      "anonymous_replication_chain_id": "n9chain0000",
+      "chain_status_bucket": "source_result_pass",
+      "chain_step_valid_bool": true,
+      "replication_chain_bucket": "n6xfre_recovered_experiment"
+    },
+    {
+      "anonymous_replication_chain_id": "n9chain0001",
+      "chain_status_bucket": "public_audit_pass",
+      "chain_step_valid_bool": true,
+      "replication_chain_bucket": "n7_public_result_audit"
+    },
+    {
+      "anonymous_replication_chain_id": "n9chain0002",
+      "chain_status_bucket": "independent_recompute_match",
+      "chain_step_valid_bool": true,
+      "replication_chain_bucket": "n8_independent_recompute"
+    },
+    {
+      "anonymous_replication_chain_id": "n9chain0003",
+      "chain_status_bucket": "public_package_only",
+      "chain_step_valid_bool": true,
+      "replication_chain_bucket": "n9_replication_package"
+    }
+  ],
+  "schema_version": "bea_v1_n9_recovered_fixed_pool_result_replication_package.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "recovered_fixed_pool_result_replication_package_complete",
+  "status_vocabulary": [
+    "recovered_fixed_pool_result_replication_package_complete",
+    "no_go_n9_required_inputs_unavailable",
+    "no_go_n9_replication_chain_invalid",
+    "no_go_n9_metric_summary_mismatch",
+    "no_go_n9_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10_broader_frozen_denominator_validation_preflight_authorized",
+      "capture_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10_preflight_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10 Broader Frozen Denominator Validation Preflight",
+      "next_allowed_scope_bucket": "n10_preflight_only_no_capture_or_rerun",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "recompute_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "validated_metric_summary_records": [
+    {
+      "anonymous_validated_metric_summary_id": "n9metric0000",
+      "arm_count": 4,
+      "best_arm_bucket": "extra_depth_promote_before_primary_prefix_4",
+      "best_case_regression_count": 0,
+      "best_top10_recovery_count": 25,
+      "best_top20_recovery_count": 34,
+      "case_count": 40,
+      "metric_summary_validated_bool": true,
+      "public_arm_outcome_rows": 160,
+      "threshold_bucket": "top10_recovery_ge_16_and_regressions_le_2",
+      "threshold_case_regression_count": 2,
+      "threshold_passed_bool": true,
+      "threshold_top10_recovery_count": 16
+    }
+  ]
+}
