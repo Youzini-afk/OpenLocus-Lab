@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BM: After-Heavy Local Asymmetry Refinement Sweep**:
+The latest closed phase is **BEA-v1-N10BN: After-Heavy Local Asymmetry Refinement Package**:
 
 ```text
-status: after_heavy_local_asymmetry_refinement_complete_n10bn_authorized
-self-test: 16 / 16
+status: local_refinement_package_complete_n10bo_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
-variant count: 7
+private reads in N10BN: 0
+recomputes in N10BN: 0
 fixed total cost proxy: 100
-local optimum plateau includes: before20_after80 through before40_after60
-next allowed phase: BEA-v1-N10BN After-Heavy Local Asymmetry Refinement Package
+plateau: before20_after80 through before40_after60
+next allowed phase: BEA-v1-N10BO Plateau Mechanism Decomposition
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -671,6 +671,12 @@ while `before10_after90` and `before15_after85` score 20/23. No prior hits are
 lost relative to before25_after75 or pm50 in top-10. It authorizes only N10BN
 public local-refinement package.
 
+N10BN packages the N10BM local-refinement result publicly without private reads or
+recompute. It locks the top10-primary/top20-tiebreak winner rule and the plateau
+from `before20_after80` through `before40_after60`, concluding that
+`before25_after75` is a plateau member rather than a unique magic value. It
+authorizes only N10BO plateau mechanism decomposition.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1179,6 +1185,12 @@ See the current report index:
   budgets, runtime/default behavior, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, heldout/generalization claims,
   method-winner claims, or downstream-value claims.
+- N10BN authorizes only N10BO plateau mechanism decomposition over the same scoped
+  rows and plateau variants (`20/80`, `25/75`, `30/70`, `35/65`, `40/60`). It
+  does not authorize other variants, adaptive per-row choice, new cost budgets,
+  runtime/default behavior, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, heldout/generalization claims,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1575,6 +1587,10 @@ eval/bea_v1_n10bl_direction_sensitivity_package.py
 eval/bea_v1_n10bm_after_heavy_local_asymmetry_refinement.py
   Direct fixed-cost after-heavy local refinement sweep; authorizes only N10BN
   public local-refinement package.
+
+eval/bea_v1_n10bn_local_refinement_package.py
+  Public package of N10BM local-refinement facts; authorizes only N10BO plateau
+  mechanism decomposition.
 ```
 
 Key reports:
@@ -1647,6 +1663,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bk_neighboring_asymmetry_micro_sweep/bea_v1_n10bk_neighboring_asymmetry_micro_sweep_report.json`](artifacts/bea_v1_n10bk_neighboring_asymmetry_micro_sweep/bea_v1_n10bk_neighboring_asymmetry_micro_sweep_report.json)
 - [`artifacts/bea_v1_n10bl_direction_sensitivity_package/bea_v1_n10bl_direction_sensitivity_package_report.json`](artifacts/bea_v1_n10bl_direction_sensitivity_package/bea_v1_n10bl_direction_sensitivity_package_report.json)
 - [`artifacts/bea_v1_n10bm_after_heavy_local_asymmetry_refinement/bea_v1_n10bm_after_heavy_local_asymmetry_refinement_report.json`](artifacts/bea_v1_n10bm_after_heavy_local_asymmetry_refinement/bea_v1_n10bm_after_heavy_local_asymmetry_refinement_report.json)
+- [`artifacts/bea_v1_n10bn_local_refinement_package/bea_v1_n10bn_local_refinement_package_report.json`](artifacts/bea_v1_n10bn_local_refinement_package/bea_v1_n10bn_local_refinement_package_report.json)
 
 Documentation mirror check:
 
