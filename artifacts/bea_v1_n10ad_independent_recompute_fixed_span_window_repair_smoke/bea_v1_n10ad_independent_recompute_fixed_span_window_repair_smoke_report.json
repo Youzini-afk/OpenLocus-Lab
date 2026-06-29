@@ -1,0 +1,323 @@
+{
+  "aggregate_match_records": [
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10admatch0000",
+      "independent_delta_top10_vs_unexpanded_best_arm": 0,
+      "independent_top10_span_overlap_count": 9,
+      "independent_top20_span_overlap_count": 10,
+      "match_bucket": "matches_n10ab_expected_aggregate",
+      "n10ab_delta_top10_vs_unexpanded_best_arm": 0,
+      "n10ab_top10_span_overlap_count": 9,
+      "n10ab_top20_span_overlap_count": 10,
+      "original_span_hit_lost_count": 0,
+      "variant_bucket": "unexpanded_best_arm"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10admatch0001",
+      "independent_delta_top10_vs_unexpanded_best_arm": 6,
+      "independent_top10_span_overlap_count": 15,
+      "independent_top20_span_overlap_count": 19,
+      "match_bucket": "matches_n10ab_expected_aggregate",
+      "n10ab_delta_top10_vs_unexpanded_best_arm": 6,
+      "n10ab_top10_span_overlap_count": 15,
+      "n10ab_top20_span_overlap_count": 19,
+      "original_span_hit_lost_count": 0,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm20_lines"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10admatch0002",
+      "independent_delta_top10_vs_unexpanded_best_arm": 10,
+      "independent_top10_span_overlap_count": 19,
+      "independent_top20_span_overlap_count": 23,
+      "match_bucket": "matches_n10ab_expected_aggregate",
+      "n10ab_delta_top10_vs_unexpanded_best_arm": 10,
+      "n10ab_top10_span_overlap_count": 19,
+      "n10ab_top20_span_overlap_count": 23,
+      "original_span_hit_lost_count": 0,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm50_lines"
+    },
+    {
+      "aggregate_match_bool": true,
+      "anonymous_aggregate_match_id": "n10admatch0003",
+      "independent_delta_top10_vs_unexpanded_best_arm": 12,
+      "independent_top10_span_overlap_count": 21,
+      "independent_top20_span_overlap_count": 25,
+      "match_bucket": "matches_n10ab_expected_aggregate",
+      "n10ab_delta_top10_vs_unexpanded_best_arm": 12,
+      "n10ab_top10_span_overlap_count": 21,
+      "n10ab_top20_span_overlap_count": 25,
+      "original_span_hit_lost_count": 0,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm100_lines"
+    }
+  ],
+  "aggregate_runtime_seconds": 2.125,
+  "claim_level": "independent_recompute_repair_smoke_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 213,
+      "value": 213
+    },
+    {
+      "gate": "aggregate_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "independence_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T16:01:06Z",
+  "generated_by": "bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke",
+  "independence_boundary_records": [
+    {
+      "anonymous_independence_boundary_id": "n10adind0000",
+      "expected_public_aggregates_used_for_comparison_only_bool": true,
+      "independence_boundary_valid_bool": true,
+      "independence_bucket": "direct_local_reimplementation_no_n10ab_import_or_call",
+      "independent_logic_implemented_bool": true,
+      "n10ab_code_call_count": 0,
+      "n10ab_transform_function_imported_bool": false
+    }
+  ],
+  "independent_recompute_records": [
+    {
+      "anonymous_independent_recompute_id": "n10adrec0000",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "delta_top10_vs_unexpanded_best_arm": 0,
+      "eligible_denominator_count": 213,
+      "gold_used_for_window_choice_bool": false,
+      "miss_direction_used_for_window_choice_bool": false,
+      "original_span_hit_lost_count": 0,
+      "recompute_bucket": "independent_fixed_window_recompute",
+      "top10_span_overlap_count": 9,
+      "top20_span_overlap_count": 10,
+      "variant_bucket": "unexpanded_best_arm",
+      "variant_role_bucket": "baseline",
+      "window_each_side_count": 0
+    },
+    {
+      "anonymous_independent_recompute_id": "n10adrec0001",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "delta_top10_vs_unexpanded_best_arm": 6,
+      "eligible_denominator_count": 213,
+      "gold_used_for_window_choice_bool": false,
+      "miss_direction_used_for_window_choice_bool": false,
+      "original_span_hit_lost_count": 0,
+      "recompute_bucket": "independent_fixed_window_recompute",
+      "top10_span_overlap_count": 15,
+      "top20_span_overlap_count": 19,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm20_lines",
+      "variant_role_bucket": "secondary_sensitivity",
+      "window_each_side_count": 20
+    },
+    {
+      "anonymous_independent_recompute_id": "n10adrec0002",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "delta_top10_vs_unexpanded_best_arm": 10,
+      "eligible_denominator_count": 213,
+      "gold_used_for_window_choice_bool": false,
+      "miss_direction_used_for_window_choice_bool": false,
+      "original_span_hit_lost_count": 0,
+      "recompute_bucket": "independent_fixed_window_recompute",
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 23,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm50_lines",
+      "variant_role_bucket": "primary",
+      "window_each_side_count": 50
+    },
+    {
+      "anonymous_independent_recompute_id": "n10adrec0003",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "delta_top10_vs_unexpanded_best_arm": 12,
+      "eligible_denominator_count": 213,
+      "gold_used_for_window_choice_bool": false,
+      "miss_direction_used_for_window_choice_bool": false,
+      "original_span_hit_lost_count": 0,
+      "recompute_bucket": "independent_fixed_window_recompute",
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "fixed_symmetric_span_expansion_pm100_lines",
+      "variant_role_bucket": "secondary_sensitivity",
+      "window_each_side_count": 100
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10adin0000",
+      "expected_status": "fixed_span_window_repair_smoke_result_audit_complete_n10ad_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ac_public_audit_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_smoke_result_audit_complete_n10ad_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10adin0001",
+      "expected_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ab_repair_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ae_handoff_records": [
+    {
+      "anonymous_n10ae_handoff_id": "n10adhandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10ae_handoff_bucket": "n10ae_public_replication_package_authorized",
+      "n10ae_public_replication_package_authorized_bool": true,
+      "private_read_authorized_bool": false,
+      "runtime_default_promotion_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n10adnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "default_change_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "single_scoped_private_read_independent_recompute_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AD Independent Recompute Fixed Span-Window Repair Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10adprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_aggregates_only_no_private_surface_details",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_span_input_intake_records": [
+    {
+      "anonymous_private_span_input_intake_id": "n10adpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "schema_valid_bool": true,
+      "single_scoped_private_input_read_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke.v1",
+  "self_test_checks_passed": 17,
+  "self_test_checks_total": 17,
+  "self_test_passed": true,
+  "status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized",
+  "status_vocabulary": [
+    "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized",
+    "independent_recompute_fixed_span_window_repair_smoke_mismatch",
+    "no_go_n10ad_required_inputs_unavailable",
+    "no_go_n10ad_private_span_rows_missing",
+    "no_go_n10ad_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10ae_public_replication_package_authorized",
+      "candidate_generation_authorized": false,
+      "candidate_materialization_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10ae_public_replication_package_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AE Fixed Span-Window Repair Replication Package",
+      "next_allowed_scope_bucket": "public_replication_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
