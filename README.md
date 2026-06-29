@@ -28,23 +28,23 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AN: Default-Off Existing-Evaluator Hook Feasibility Preflight**:
+The latest closed phase is **BEA-v1-N10AO: Default-Off Adapter-Enabled Variant Evaluator Patch**:
 
 ```text
-status: default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized
-self-test: 14 / 14
+status: default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized
+self-test: 16 / 16
 forbidden scan: pass
-selected strategy: new_adapter_enabled_variant_evaluator
-direct existing-evaluator hook recommended: false
-modify existing validated evaluator: false
-runtime path hook: false
-eval-only: true
-default-off required: true
-private reads: 0
-candidate evaluator imports: 0
-candidate evaluator executions: 0
-hook patches: 0
-next allowed phase: BEA-v1-N10AO Default-Off Adapter-Enabled Variant Evaluator Patch
+explicit enablement used: true
+default enabled: false
+private read by default: false
+private span rows read: 213
+baseline top10/top20 span overlap: 9 / 10
+pm50 top10/top20 span overlap: 19 / 23
+delta top10 vs baseline: 10
+original span-hit lost: 0
+candidate pool changed: false
+order changed: false
+next allowed phase: BEA-v1-N10AP Adapter-Enabled Variant Evaluator Result Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -527,6 +527,13 @@ importing or executing them. Because direct hook-in would mutate existing
 validated evaluators, it selects `new_adapter_enabled_variant_evaluator` for
 N10AO and authorizes only a new default-off eval-only variant evaluator patch.
 
+N10AO adds that new eval-only variant evaluator without modifying existing
+validated evaluators or runtime code. The generated artifact used explicit scoped
+enablement to read the same recovered N1 span rows and reproduced the pm50
+aggregate: baseline top10/top20 9/10, pm50 top10/top20 19/23, delta +10, and 0
+original span-hit losses, with candidate pool/order unchanged. Default mode still
+performs no private read or metric recompute.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -898,6 +905,12 @@ See the current report index:
   evaluators, runtime/default enablement, retrieval/rerun, candidate generation,
   new arms/window tuning, selector/reranker execution, P5, BEA-v1-A,
   method-winner claims, or downstream-value claims.
+- N10AO authorizes only N10AP adapter-enabled variant evaluator result audit
+  package. It does not authorize additional private reads, existing evaluator
+  hook-in, modifying existing validated evaluators, runtime/default enablement,
+  retrieval/rerun, candidate generation, new arms/window tuning,
+  selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1192,6 +1205,10 @@ eval/bea_v1_n10am_eval_only_adapter_integration_result_audit_package.py
 eval/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight.py
   Static preflight selecting a new adapter-enabled eval-only variant evaluator;
   authorizes only N10AO and does not hook existing validated evaluators.
+
+eval/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator.py
+  New default-off eval-only variant evaluator importing the adapter; explicit
+  scoped enablement reproduces pm50 and authorizes only N10AP audit/package.
 ```
 
 Key reports:
@@ -1239,6 +1256,7 @@ Key reports:
 - [`artifacts/bea_v1_n10al_scoped_eval_only_adapter_integration_smoke/bea_v1_n10al_scoped_eval_only_adapter_integration_smoke_report.json`](artifacts/bea_v1_n10al_scoped_eval_only_adapter_integration_smoke/bea_v1_n10al_scoped_eval_only_adapter_integration_smoke_report.json)
 - [`artifacts/bea_v1_n10am_eval_only_adapter_integration_result_audit_package/bea_v1_n10am_eval_only_adapter_integration_result_audit_package_report.json`](artifacts/bea_v1_n10am_eval_only_adapter_integration_result_audit_package/bea_v1_n10am_eval_only_adapter_integration_result_audit_package_report.json)
 - [`artifacts/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight_report.json`](artifacts/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight_report.json)
+- [`artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json`](artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json)
 
 Documentation mirror check:
 

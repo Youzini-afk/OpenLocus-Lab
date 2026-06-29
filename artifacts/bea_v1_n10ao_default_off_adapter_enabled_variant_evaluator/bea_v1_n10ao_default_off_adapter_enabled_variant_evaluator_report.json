@@ -1,0 +1,351 @@
+{
+  "adapter_variant_result_records": [
+    {
+      "anonymous_adapter_variant_result_id": "n10aoresult0000",
+      "baseline_top10_span_overlap_count": 9,
+      "baseline_top20_span_overlap_count": 10,
+      "candidate_pool_changed_bool": false,
+      "delta_top10_vs_baseline_count": 10,
+      "eligible_denominator_count": 213,
+      "order_changed_bool": false,
+      "original_span_hit_lost_count": 0,
+      "pm50_top10_span_overlap_count": 19,
+      "pm50_top20_span_overlap_count": 23,
+      "private_span_rows_read": 213,
+      "variant_result_bucket": "adapter_enabled_variant_reproduces_pm50_aggregate",
+      "variant_result_valid_bool": true
+    }
+  ],
+  "aggregate_runtime_seconds": 2.117,
+  "claim_level": "default_off_eval_only_variant_evaluator_patch",
+  "comparison_to_n10al_records": [
+    {
+      "anonymous_comparison_to_n10al_id": "n10aocompare0000",
+      "comparison_bucket": "variant_matches_n10al_and_indirect_n10ab_n10ad_aggregates",
+      "comparison_passed_bool": true,
+      "n10ab_n10ad_indirect_match_bool": true,
+      "n10al_aggregate_match_bool": true,
+      "n10al_status_valid_bool": true
+    }
+  ],
+  "default_off_mode_records": [
+    {
+      "adapter_projection_enabled_by_default_bool": false,
+      "anonymous_default_off_mode_id": "n10aodefault0000",
+      "default_enabled_bool": false,
+      "disabled_mode_valid_bool": true,
+      "disabled_private_read_count": 0,
+      "disabled_projection_changed_bool": false,
+      "disabled_projection_count": 2,
+      "metric_recompute_by_default_bool": false,
+      "mode_bucket": "default_disabled_no_private_read_no_metric_recompute",
+      "private_read_by_default_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "explicit_enablement_records": [
+    {
+      "adapter_projection_enabled_bool": true,
+      "anonymous_explicit_enablement_id": "n10aoenable0000",
+      "default_enabled_bool": false,
+      "enablement_bucket": "explicit_scoped_private_span_rows_enablement_used",
+      "explicit_enablement_used_bool": true,
+      "private_read_by_default_bool": false,
+      "scoped_private_read_enabled_bool": true
+    }
+  ],
+  "forbidden_code_touch_records": [
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0000",
+      "changed_file_bucket": "README_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0001",
+      "changed_file_bucket": "docs_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0002",
+      "changed_file_bucket": "docs_en_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0003",
+      "changed_file_bucket": "docs_zh_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0004",
+      "changed_file_bucket": "artifacts_bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0005",
+      "changed_file_bucket": "docs_en_bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0006",
+      "changed_file_bucket": "docs_zh_bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch0007",
+      "changed_file_bucket": "eval_bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_py"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10aotouch9999",
+      "changed_file_bucket": "import_boundary",
+      "existing_evaluator_imported_bool": false,
+      "runtime_retrieval_selector_imported_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "variant_contract",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "default_off_mode",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "explicit_enablement",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "scoped_private_input",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_variant_result",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "comparison_to_n10al",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_code_touch",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T17:28:16Z",
+  "generated_by": "bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10aoin0000",
+      "expected_status": "default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10an_hook_feasibility_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aoin0001",
+      "expected_status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10am_adapter_integration_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aoin0002",
+      "expected_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10al_adapter_integration_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aoin0003",
+      "expected_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aj_adapter_patch_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ap_handoff_records": [
+    {
+      "additional_private_read_authorized_bool": false,
+      "anonymous_n10ap_handoff_id": "n10aohandoff0000",
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "n10ap_handoff_bucket": "n10ap_public_audit_package_authorized",
+      "n10ap_public_audit_package_authorized_bool": true,
+      "private_read_authorized_bool": false,
+      "retrieval_or_rerun_authorized_bool": false,
+      "runtime_default_enablement_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n10aonoexec0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "downstream_value_claim_count": 0,
+      "existing_evaluator_hook_in_count": 0,
+      "method_winner_claim_count": 0,
+      "modify_existing_validated_evaluator_count": 0,
+      "new_arm_or_window_tuning_count": 0,
+      "no_execution_boundary_bucket": "new_eval_only_variant_no_runtime_no_existing_hook",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_enablement_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AO Default-Off Adapter-Enabled Variant Evaluator Patch",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10aoprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_aggregate_counts_only_no_private_surface_details",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_rows_read_count": 213,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator.v1",
+  "scoped_private_input_records": [
+    {
+      "anonymous_scoped_private_input_id": "n10aopriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_rows_read": 213,
+      "private_span_rows_read": 213,
+      "schema_valid_bool": true
+    }
+  ],
+  "self_test_checks_passed": 16,
+  "self_test_checks_total": 16,
+  "self_test_passed": true,
+  "status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized",
+  "status_vocabulary": [
+    "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized",
+    "no_go_n10ao_required_inputs_unavailable",
+    "no_go_n10ao_explicit_enablement_required",
+    "no_go_n10ao_variant_result_mismatch",
+    "no_go_n10ao_forbidden_code_touch_detected",
+    "no_go_n10ao_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "additional_private_read_authorized": false,
+      "authorization": "n10ap_public_audit_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "method_winner_claim_authorized": false,
+      "modify_existing_validated_evaluator_authorized": false,
+      "n10ap_public_audit_package_authorized": true,
+      "new_arm_or_window_tuning_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AP Adapter-Enabled Variant Evaluator Result Audit Package",
+      "next_allowed_scope_bucket": "public_audit_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_enablement_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "variant_evaluator_contract_records": [
+    {
+      "adapter_imported_bool": true,
+      "anonymous_variant_evaluator_contract_id": "n10aocontract0000",
+      "contract_bucket": "new_eval_only_variant_evaluator_imports_adapter_only",
+      "contract_valid_bool": true,
+      "default_off_flag_required_bool": true,
+      "existing_validated_evaluator_imported_bool": false,
+      "fixed_pm50_window_bool": true,
+      "new_arm_or_window_tuning_bool": false,
+      "private_read_requires_explicit_enablement_bool": true,
+      "runtime_retrieval_selector_imported_bool": false
+    }
+  ]
+}
