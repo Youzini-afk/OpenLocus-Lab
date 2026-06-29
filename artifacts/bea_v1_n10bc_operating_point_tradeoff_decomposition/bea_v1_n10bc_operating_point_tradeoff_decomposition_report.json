@@ -1,0 +1,415 @@
+{
+  "claim_level": "same_source_operating_point_tradeoff_decomposition_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "tradeoff_accounting",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "mechanism_continuity",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T19:28:05Z",
+  "generated_by": "bea_v1_n10bc_operating_point_tradeoff_decomposition",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bcin0000",
+      "expected_status": "cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bb_selection_rule_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bcin0001",
+      "expected_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ba_selection_rule_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bcin0002",
+      "expected_status": "cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aw_mechanism_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bcin0003",
+      "expected_status": "exploratory_span_window_sweep_replication_package_complete_n10aw_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10av_replication_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_sweep_replication_package_complete_n10aw_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bcin0004",
+      "expected_status": "cost_sensitive_frontier_claim_package_complete_n10ay_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ax_claim_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_sensitive_frontier_claim_package_complete_n10ay_authorized"
+    }
+  ],
+  "mechanism_bucket_records": [
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00000000",
+      "mechanism_bucket": "before_gold_gap",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "baseline",
+      "previous_operating_point_bucket": "none"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00000001",
+      "mechanism_bucket": "after_gold_gap",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "baseline",
+      "previous_operating_point_bucket": "none"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00000002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "baseline",
+      "previous_operating_point_bucket": "none"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00000003",
+      "mechanism_bucket": "other_bucketed",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "baseline",
+      "previous_operating_point_bucket": "none"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00010000",
+      "mechanism_bucket": "before_gold_gap",
+      "new_top10_hit_count": 8,
+      "operating_point_bucket": "low_cost",
+      "previous_operating_point_bucket": "baseline"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00010001",
+      "mechanism_bucket": "after_gold_gap",
+      "new_top10_hit_count": 1,
+      "operating_point_bucket": "low_cost",
+      "previous_operating_point_bucket": "baseline"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00010002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "low_cost",
+      "previous_operating_point_bucket": "baseline"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00010003",
+      "mechanism_bucket": "other_bucketed",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "low_cost",
+      "previous_operating_point_bucket": "baseline"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00020000",
+      "mechanism_bucket": "before_gold_gap",
+      "new_top10_hit_count": 2,
+      "operating_point_bucket": "balanced",
+      "previous_operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00020001",
+      "mechanism_bucket": "after_gold_gap",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "balanced",
+      "previous_operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00020002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "balanced",
+      "previous_operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00020003",
+      "mechanism_bucket": "other_bucketed",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "balanced",
+      "previous_operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00030000",
+      "mechanism_bucket": "before_gold_gap",
+      "new_top10_hit_count": 3,
+      "operating_point_bucket": "max_recall",
+      "previous_operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00030001",
+      "mechanism_bucket": "after_gold_gap",
+      "new_top10_hit_count": 2,
+      "operating_point_bucket": "max_recall",
+      "previous_operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00030002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "max_recall",
+      "previous_operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_bucket_id": "n10bcmech00030003",
+      "mechanism_bucket": "other_bucketed",
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "max_recall",
+      "previous_operating_point_bucket": "balanced"
+    }
+  ],
+  "mechanism_continuity_records": [
+    {
+      "anonymous_mechanism_continuity_id": "n10bccontinuity0000",
+      "max_recall_before_after_gap_new_hit_count": 5,
+      "max_recall_gains_same_mechanism_as_lower_cost_bool": true,
+      "max_recall_late_or_other_new_hit_count": 0,
+      "mechanism_continuity_bucket": "max_recall_same_before_after_gold_window_gap_mechanism",
+      "qualitatively_new_max_recall_mechanism_bool": false
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bd_handoff_records": [
+    {
+      "adaptive_selection_authorized_bool": false,
+      "anonymous_n10bd_handoff_id": "n10bchandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bd_handoff_bucket": "n10bd_public_tradeoff_package_authorized",
+      "n10bd_public_tradeoff_package_authorized_bool": true,
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_selection_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10bcnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_order_change_count": 0,
+      "candidate_removal_count": 0,
+      "downstream_value_claim_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_variant_count": 0,
+      "no_execution_boundary_bucket": "operating_point_tradeoff_same_scoped_rows_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "operating_point_tradeoff_records": [
+    {
+      "anonymous_tradeoff_id": "n10bctrade0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_cost_proxy": 0,
+      "cumulative_top10_span_overlap_count": 9,
+      "cumulative_top20_span_overlap_count": 10,
+      "expected_top10_span_overlap_count": 9,
+      "expected_top20_span_overlap_count": 10,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "baseline",
+      "marginal_cost_proxy": 0,
+      "marginal_top10_gain": 9,
+      "marginal_top20_gain": 10,
+      "operating_point_bucket": "baseline",
+      "previous_operating_point_bucket": "none",
+      "variant_bucket": "baseline"
+    },
+    {
+      "anonymous_tradeoff_id": "n10bctrade0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_cost_proxy": 600,
+      "cumulative_top10_span_overlap_count": 18,
+      "cumulative_top20_span_overlap_count": 22,
+      "expected_top10_span_overlap_count": 18,
+      "expected_top20_span_overlap_count": 22,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "low",
+      "marginal_cost_proxy": 600,
+      "marginal_top10_gain": 9,
+      "marginal_top20_gain": 12,
+      "operating_point_bucket": "low_cost",
+      "previous_operating_point_bucket": "baseline",
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_tradeoff_id": "n10bctrade0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_cost_proxy": 1000,
+      "cumulative_top10_span_overlap_count": 20,
+      "cumulative_top20_span_overlap_count": 24,
+      "expected_top10_span_overlap_count": 20,
+      "expected_top20_span_overlap_count": 24,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "medium",
+      "marginal_cost_proxy": 400,
+      "marginal_top10_gain": 2,
+      "marginal_top20_gain": 2,
+      "operating_point_bucket": "balanced",
+      "previous_operating_point_bucket": "low_cost",
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_tradeoff_id": "n10bctrade0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_cost_proxy": 4000,
+      "cumulative_top10_span_overlap_count": 25,
+      "cumulative_top20_span_overlap_count": 30,
+      "expected_top10_span_overlap_count": 25,
+      "expected_top20_span_overlap_count": 30,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "very_high",
+      "marginal_cost_proxy": 3000,
+      "marginal_top10_gain": 5,
+      "marginal_top20_gain": 6,
+      "operating_point_bucket": "max_recall",
+      "previous_operating_point_bucket": "balanced",
+      "variant_bucket": "pm200"
+    }
+  ],
+  "phase": "BEA-v1-N10BC Operating-Point Tradeoff Decomposition",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10bcprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "hash_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_bucket_counts_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10bcpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "single_scoped_private_input_read_bool": true,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10bc_operating_point_tradeoff_decomposition.v1",
+  "self_test_checks_passed": 16,
+  "self_test_checks_total": 16,
+  "self_test_passed": true,
+  "status": "operating_point_tradeoff_decomposition_complete_n10bd_authorized",
+  "status_vocabulary": [
+    "operating_point_tradeoff_decomposition_complete_n10bd_authorized",
+    "no_go_n10bc_required_inputs_unavailable",
+    "no_go_n10bc_private_span_rows_missing",
+    "no_go_n10bc_operating_point_accounting_invalid",
+    "no_go_n10bc_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_selection_authorized": false,
+      "authorization": "n10bd_public_tradeoff_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bd_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BD Operating-Point Tradeoff Decomposition Audit Package",
+      "next_allowed_scope_bucket": "public_tradeoff_package_only",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

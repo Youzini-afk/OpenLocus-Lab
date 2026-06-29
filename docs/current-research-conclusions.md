@@ -146,6 +146,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10az-cost-aware-adapter-frontier-smoke-audit-package.md`: [en](en/bea-v1-n10az-cost-aware-adapter-frontier-smoke-audit-package.md) · [zh](zh/bea-v1-n10az-cost-aware-adapter-frontier-smoke-audit-package.md)
 - `bea-v1-n10ba-cost-aware-span-window-selection-rule-smoke.md`: [en](en/bea-v1-n10ba-cost-aware-span-window-selection-rule-smoke.md) · [zh](zh/bea-v1-n10ba-cost-aware-span-window-selection-rule-smoke.md)
 - `bea-v1-n10bb-cost-aware-selection-rule-smoke-audit-package.md`: [en](en/bea-v1-n10bb-cost-aware-selection-rule-smoke-audit-package.md) · [zh](zh/bea-v1-n10bb-cost-aware-selection-rule-smoke-audit-package.md)
+- `bea-v1-n10bc-operating-point-tradeoff-decomposition.md`: [en](en/bea-v1-n10bc-operating-point-tradeoff-decomposition.md) · [zh](zh/bea-v1-n10bc-operating-point-tradeoff-decomposition.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

@@ -28,16 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BB: Cost-Aware Span-Window Selection Rule Smoke Audit Package**:
+The latest closed phase is **BEA-v1-N10BC: Operating-Point Tradeoff Decomposition**:
 
 ```text
-status: cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized
+status: operating_point_tradeoff_decomposition_complete_n10bd_authorized
 self-test: 16 / 16
 forbidden scan: pass
-private reads in N10BB: 0
-recomputes in N10BB: 0
-packaged operating points: low_cost pm30 18/22; balanced before25_after75 20/24; max_recall pm200 25/30
-next allowed phase: BEA-v1-N10BC Operating-Point Tradeoff Decomposition
+private span rows read: 213
+progression: baseline 9/10 -> low_cost pm30 18/22 -> balanced before25_after75 20/24 -> max_recall pm200 25/30
+max_recall mechanism: same before/after gold-window gap mechanism
+next allowed phase: BEA-v1-N10BD Operating-Point Tradeoff Decomposition Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -610,6 +610,13 @@ hits, unchanged candidate pool/order, adapter/helper-only path, no existing
 evaluator hook-in, and no runtime/default hook. It authorizes only N10BC
 operating-point tradeoff decomposition over the same scoped rows.
 
+N10BC decomposes the tradeoff across baseline, low_cost, balanced, and max_recall
+on the same scoped rows. It confirms marginal top-10 gains of +9, +2, and +5 for
+low_cost, balanced, and max_recall respectively, with lost previous hits 0 at all
+steps. The marginal max_recall gains are still before/after gold-window gap
+recoveries, not a qualitatively new mechanism. It authorizes only N10BD public
+tradeoff package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1062,6 +1069,10 @@ See the current report index:
   heldout/generalization, method-winner/downstream claims, retrieval/rerun,
   candidate generation, selector/reranker execution, P5, BEA-v1-A, or adaptive
   selection.
+- N10BC authorizes only N10BD public tradeoff package. It does not authorize
+  private reads, runtime/default, new variants, adaptive selection,
+  heldout/generalization, method-winner/downstream claims, retrieval/rerun,
+  candidate generation, selector/reranker execution, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1414,6 +1425,10 @@ eval/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke.py
 eval/bea_v1_n10bb_cost_aware_selection_rule_smoke_audit_package.py
   Public audit package for N10BA operating points; authorizes only N10BC
   operating-point tradeoff decomposition.
+
+eval/bea_v1_n10bc_operating_point_tradeoff_decomposition.py
+  Direct decomposition of low/balanced/max-recall operating-point tradeoffs;
+  authorizes only N10BD public tradeoff package.
 ```
 
 Key reports:
@@ -1475,6 +1490,7 @@ Key reports:
 - [`artifacts/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package_report.json`](artifacts/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package_report.json)
 - [`artifacts/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke_report.json`](artifacts/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke_report.json)
 - [`artifacts/bea_v1_n10bb_cost_aware_selection_rule_smoke_audit_package/bea_v1_n10bb_cost_aware_selection_rule_smoke_audit_package_report.json`](artifacts/bea_v1_n10bb_cost_aware_selection_rule_smoke_audit_package/bea_v1_n10bb_cost_aware_selection_rule_smoke_audit_package_report.json)
+- [`artifacts/bea_v1_n10bc_operating_point_tradeoff_decomposition/bea_v1_n10bc_operating_point_tradeoff_decomposition_report.json`](artifacts/bea_v1_n10bc_operating_point_tradeoff_decomposition/bea_v1_n10bc_operating_point_tradeoff_decomposition_report.json)
 
 Documentation mirror check:
 
