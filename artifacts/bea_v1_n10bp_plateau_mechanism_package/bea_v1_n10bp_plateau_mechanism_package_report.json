@@ -1,0 +1,286 @@
+{
+  "claim_boundary_records": [
+    {
+      "adaptive_per_row_choice_count": 0,
+      "anonymous_claim_boundary_id": "n10bpclaim0000",
+      "claim_boundary_bucket": "public_plateau_mechanism_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_cost_budget_count": 0,
+      "new_variant_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "runtime_default_promotion_bool": false,
+      "runtime_default_recommendation_bool": false
+    }
+  ],
+  "claim_level": "public_plateau_mechanism_package_only",
+  "common_core_package_records": [
+    {
+      "anonymous_common_core_package_id": "n10bpcore0000",
+      "case_set_bucket": "plateau_common_equals_union",
+      "lost_pm50_max_count": 0,
+      "n10bo_match_bool": true,
+      "stability_bucket": "genuinely_stable_plateau",
+      "top10_case_swap_count": 0,
+      "top10_common_across_all_plateau_count": 20,
+      "top10_union_across_plateau_count": 20,
+      "top20_case_swap_count": 0,
+      "top20_common_across_all_plateau_count": 24,
+      "top20_union_across_plateau_count": 24,
+      "unique_case_count": 0
+    }
+  ],
+  "direction_bucket_package_records": [
+    {
+      "after_gold_gap_count": 1,
+      "already_overlap_count": 9,
+      "anonymous_direction_bucket_package_id": "n10bpdir0000",
+      "before_gold_gap_count": 10,
+      "case_count": 20,
+      "case_set_bucket": "common_top10_all_plateau",
+      "direction_bucket": "before_after_overlap_mix",
+      "n10bo_match_bool": true,
+      "other_count": 0
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "plateau_variant_facts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "common_core_stability",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "direction_bucket_facts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T20:54:53Z",
+  "generated_by": "bea_v1_n10bp_plateau_mechanism_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bpin0000",
+      "expected_status": "plateau_mechanism_decomposition_complete_n10bp_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bo_plateau_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "plateau_mechanism_decomposition_complete_n10bp_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bpin0001",
+      "expected_status": "local_refinement_package_complete_n10bo_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bn_local_refinement_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "local_refinement_package_complete_n10bo_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bpin0002",
+      "expected_status": "after_heavy_local_asymmetry_refinement_complete_n10bn_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bm_local_refinement_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "after_heavy_local_asymmetry_refinement_complete_n10bn_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bq_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10bq_handoff_id": "n10bphandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "fixed_ratio_family_only_bool": true,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bq_authorized_bool": true,
+      "n10bq_handoff_bucket": "n10bq_plateau_cost_minimization_sweep_authorized",
+      "new_ratio_outside_family_authorized_bool": false,
+      "predeclared_variant_count": 20,
+      "private_read_beyond_same_scoped_rows_authorized_bool": false,
+      "public_aggregate_only_bool": true,
+      "runtime_default_authorized_bool": false,
+      "same_scoped_n1_rows_authorized_bool": true,
+      "total_cost_values_count": 4
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "anonymous_no_recompute_id": "n10bpnorecompute0000",
+      "candidate_generation_count": 0,
+      "no_recompute_boundary_bucket": "public_plateau_mechanism_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BP Plateau Mechanism Package",
+  "plateau_fact_package_records": [
+    {
+      "anonymous_plateau_fact_id": "n10bpvar0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "common_top10_with_all_plateau_count": 20,
+      "common_top20_with_all_plateau_count": 24,
+      "lost_pm50_top10_count": 0,
+      "n10bo_match_bool": true,
+      "package_bucket": "stable_plateau_variant",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "unique_top10_count": 0,
+      "unique_top20_count": 0,
+      "variant_bucket": "before20_after80"
+    },
+    {
+      "anonymous_plateau_fact_id": "n10bpvar0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "common_top10_with_all_plateau_count": 20,
+      "common_top20_with_all_plateau_count": 24,
+      "lost_pm50_top10_count": 0,
+      "n10bo_match_bool": true,
+      "package_bucket": "stable_plateau_variant",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "unique_top10_count": 0,
+      "unique_top20_count": 0,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_plateau_fact_id": "n10bpvar0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "common_top10_with_all_plateau_count": 20,
+      "common_top20_with_all_plateau_count": 24,
+      "lost_pm50_top10_count": 0,
+      "n10bo_match_bool": true,
+      "package_bucket": "stable_plateau_variant",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "unique_top10_count": 0,
+      "unique_top20_count": 0,
+      "variant_bucket": "before30_after70"
+    },
+    {
+      "anonymous_plateau_fact_id": "n10bpvar0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "common_top10_with_all_plateau_count": 20,
+      "common_top20_with_all_plateau_count": 24,
+      "lost_pm50_top10_count": 0,
+      "n10bo_match_bool": true,
+      "package_bucket": "stable_plateau_variant",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "unique_top10_count": 0,
+      "unique_top20_count": 0,
+      "variant_bucket": "before35_after65"
+    },
+    {
+      "anonymous_plateau_fact_id": "n10bpvar0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "common_top10_with_all_plateau_count": 20,
+      "common_top20_with_all_plateau_count": 24,
+      "lost_pm50_top10_count": 0,
+      "n10bo_match_bool": true,
+      "package_bucket": "stable_plateau_variant",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "unique_top10_count": 0,
+      "unique_top20_count": 0,
+      "variant_bucket": "before40_after60"
+    }
+  ],
+  "schema_version": "bea_v1_n10bp_plateau_mechanism_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "plateau_mechanism_package_complete_n10bq_authorized",
+  "status_vocabulary": [
+    "plateau_mechanism_package_complete_n10bq_authorized",
+    "no_go_n10bp_required_public_inputs_unavailable",
+    "no_go_n10bp_plateau_chain_mismatch",
+    "no_go_n10bp_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10bq_plateau_cost_minimization_sweep_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bq_authorized": true,
+      "new_ratio_outside_family_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BQ Plateau Cost-Minimization Sweep",
+      "next_allowed_scope_bucket": "same_scoped_rows_fixed_ratio_family_cost_minimization",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
