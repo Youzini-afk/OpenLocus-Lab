@@ -28,19 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BX: Adapter Operating-Point Package**:
+The latest closed phase is **BEA-v1-N10BY: Same-Source Cost-Efficient Span-Window Policy Sweep**:
 
 ```text
-status: adapter_operating_point_package_complete_n10by_authorized
-self-test: 14 / 14
+status: same_source_cost_efficient_span_window_policy_sweep_complete_n10bz_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10BX: 0
-recomputes in N10BX: 0
-operating point: cost80_before25_after75
-before/after windows: 20 / 60
-top10/top20 span overlap: 20 / 24
-lost plateau core: 0
-next allowed phase: BEA-v1-N10BY Cost-Aware Operating-Point Exploratory Optimization
+private span rows read: 213
+variant count: 12
+cost-reduction successes: 0
+recall-improvement successes: 0
+best observed variant: anchor_cost80_before20_after60
+best observed top10/top20: 20 / 24
+next allowed phase: BEA-v1-N10BZ Same-Source Cost-Efficient Policy Sweep Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -741,6 +741,12 @@ reads or recompute. It locks the default-off adapter path, cost80 before/after
 and N10BS/N10BT/N10BU aggregate match. It authorizes only same-source exploratory
 N10BY optimization over scoped N1 rows.
 
+N10BY tests 12 predeclared same-source cost-efficient span-window policies over
+the same scoped rows. None beat the cost80 anchor under the declared success
+rules: lower-cost fixed variants and rank-conditioned policies lose at least one
+anchor top10 hit or reduce top20, while top20-only matches 20/24 without lowering
+top10 cost. It authorizes only N10BZ public audit/package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1308,6 +1314,10 @@ See the current report index:
   existing evaluator hook-in, heldout/generalization claims, method/downstream
   claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
   or BEA-v1-A.
+- N10BY authorizes only N10BZ public audit/package. It does not authorize private
+  reads, extra sweeps, new variants, adaptive tuning, runtime/default promotion,
+  heldout/generalization claims, method/downstream claims, retrieval/rerun,
+  candidate generation, selector/reranker execution, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1748,6 +1758,10 @@ eval/bea_v1_n10bw_adapter_operating_point_smoke.py
 eval/bea_v1_n10bx_adapter_operating_point_package.py
   Public package of the N10BW adapter operating-point smoke; authorizes only N10BY
   same-source exploratory optimization over scoped N1 rows.
+
+eval/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep.py
+  Same-source exploratory sweep of 12 predeclared cost-efficient span-window
+  policies; authorizes only N10BZ public audit/package.
 ```
 
 Key reports:
@@ -1831,6 +1845,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json`](artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json)
 - [`artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json`](artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json)
 - [`artifacts/bea_v1_n10bx_adapter_operating_point_package/bea_v1_n10bx_adapter_operating_point_package_report.json`](artifacts/bea_v1_n10bx_adapter_operating_point_package/bea_v1_n10bx_adapter_operating_point_package_report.json)
+- [`artifacts/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep_report.json`](artifacts/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep_report.json)
 
 Documentation mirror check:
 
