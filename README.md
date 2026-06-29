@@ -28,18 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N6XFR-E: Recovered Fixed-Pool Rank-Order Experiment**:
+The latest closed phase is **BEA-v1-N7: Recovered Fixed-Pool Rank-Order Result Audit**:
 
 ```text
-status: recovered_fixed_pool_rank_order_experiment_pass_n7_authorized
+status: recovered_fixed_pool_rank_order_result_audit_pass_n8_authorized
 self-test: 14 / 14
 forbidden scan: pass
-private rank-pack rows read: 40
-fixed arms: 4
-public sanitized arm outcome rows: 160
+case count: 40
+arm count: 4
+public arm outcome rows: 160
+best arm: extra_depth_promote_before_primary_prefix_4
 best top10 recovery: 25 / 40
 threshold: top10 >= 16 and regressions <= 2
-next allowed phase: BEA-v1-N7 Recovered Fixed-Pool Rank-Order Result Audit
+next allowed phase: BEA-v1-N8 Independent Recompute Same Private Rows Same Four Arms
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -370,6 +371,12 @@ N6F-schema public arm outcomes for the four N5 fixed-pool transforms, but the
 best arm recovers 25/40 into top-10 versus the N5 pass threshold of 16/40,
 so the recovered fixed-pool rank-order experiment passes its predeclared gate.
 
+N7 audits the N6XFR-E public artifact without reading private rows or recomputing
+outcomes. It confirms the 40-case / 4-arm / 160-row public result, best arm
+`extra_depth_promote_before_primary_prefix_4`, top-10 recovery 25/40, 0
+regressions, fixed-pool arm semantics, and N6F public schema match. It authorizes
+only N8 independent recompute over the same private rows and same four arms.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -626,6 +633,10 @@ See the current report index:
   runtime/default promotion, policy changes, retrieval/reruns, candidate-pool
   generation/materialization, selector/reranker execution, counterfactuals, P5,
   BEA-v1-A, method-winner claims, or downstream-value claims.
+- N7 authorizes only N8 independent recompute over the same private rows and same
+  four arms. It does not authorize P5, BEA-v1-A, selector/reranker execution,
+  retrieval expansion, runtime/default promotion, policy changes,
+  counterfactuals, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -809,6 +820,10 @@ eval/bea_v1_final_mechanism_route_synthesis.py
 eval/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment.py
   Recovered fixed-pool rank-order experiment over 40 private N2 rank-pack rows;
   passes with best top-10 recovery 25/40.
+
+eval/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit.py
+  Public-artifact-only audit of N6XFR-E; passes and authorizes only N8
+  independent recompute over the same private rows and four arms.
 ```
 
 Key reports:
@@ -830,6 +845,7 @@ Key reports:
 - [`artifacts/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit_report.json`](artifacts/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit_report.json)
 - [`artifacts/bea_v1_final_mechanism_route_synthesis/bea_v1_final_mechanism_route_synthesis_report.json`](artifacts/bea_v1_final_mechanism_route_synthesis/bea_v1_final_mechanism_route_synthesis_report.json)
 - [`artifacts/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment_report.json`](artifacts/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment/bea_v1_n6xfre_recovered_fixed_pool_rank_order_experiment_report.json)
+- [`artifacts/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit_report.json`](artifacts/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit_report.json)
 
 Documentation mirror check:
 
