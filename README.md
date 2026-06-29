@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CB: Same-File Span Cluster Bridge Audit Package**:
+The latest closed phase is **BEA-v1-N10CC: Observable Span-Shape Gated Expansion Smoke**:
 
 ```text
-status: cluster_bridge_audit_package_complete_n10cc_authorized
-self-test: 14 / 14
+status: observable_span_shape_gated_expansion_smoke_complete_n10cd_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10CB: 0
-recomputes in N10CB: 0
-variant count: 9
-best cluster-bridge top10/top20: 15 / 19
-cluster-bridge improvement variants: 0
-next allowed phase: BEA-v1-N10CC Next Mechanism Search Outside Fixed-Window and Cluster-Bridge Families
+private span rows read: 213
+variant count: 12
+cost-efficient preserve-anchor variants: 0
+recall-improves-anchor variants: 4
+best non-anchor recall variant: short_only_before50_after150 / short_medium_before50_after150 at 22 / 27
+next allowed phase: BEA-v1-N10CD Observable Span-Shape Gated Expansion Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -765,6 +765,13 @@ single-candidate boundary expansion rather than multi-candidate bridging. It
 authorizes only N10CC next mechanism search outside both fixed-window and
 cluster-bridge families.
 
+N10CC tests observable span-shape gated expansion outside the fixed-window and
+cluster-bridge families. Using only original span-length and candidate-position
+buckets, it finds four recall-improving same-source variants but no
+cost-efficient anchor-preserving variant: `short_only_before50_after150` and
+`short_medium_before50_after150` reach 22/27 at top10 cost 2000, while the pm200
+anchor remains 25/30. It authorizes only N10CD public audit/package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1351,6 +1358,12 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
   downstream-value claims.
+- N10CC authorizes only N10CD public observable span-shape gated expansion
+  audit/package. It does not authorize private reads, new variants, runtime/default
+  promotion, heldout/generalization claims, retrieval/rerun, candidate generation/
+  add/remove/reorder, cluster/bridge execution, adaptive tuning,
+  selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1808,6 +1821,10 @@ eval/bea_v1_n10cb_cluster_bridge_audit_package.py
   Public package of the N10CA negative same-file cluster bridge result; authorizes
   only N10CC next mechanism search outside fixed-window and cluster-bridge
   families.
+
+eval/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke.py
+  Same-source observable span-shape gated expansion smoke; authorizes only N10CD
+  public audit/package.
 ```
 
 Key reports:
@@ -1895,6 +1912,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package_report.json`](artifacts/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package_report.json)
 - [`artifacts/bea_v1_n10ca_same_file_span_cluster_bridge_smoke/bea_v1_n10ca_same_file_span_cluster_bridge_smoke_report.json`](artifacts/bea_v1_n10ca_same_file_span_cluster_bridge_smoke/bea_v1_n10ca_same_file_span_cluster_bridge_smoke_report.json)
 - [`artifacts/bea_v1_n10cb_cluster_bridge_audit_package/bea_v1_n10cb_cluster_bridge_audit_package_report.json`](artifacts/bea_v1_n10cb_cluster_bridge_audit_package/bea_v1_n10cb_cluster_bridge_audit_package_report.json)
+- [`artifacts/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke_report.json`](artifacts/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke_report.json)
 
 Documentation mirror check:
 
