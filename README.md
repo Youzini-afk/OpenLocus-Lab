@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BI: Asymmetric Window Direction Mechanism Decomposition**:
+The latest closed phase is **BEA-v1-N10BJ: Asymmetric Window Direction Mechanism Package**:
 
 ```text
-status: asymmetric_window_direction_decomposition_complete_n10bj_authorized
-self-test: 15 / 15
+status: asymmetric_window_mechanism_package_complete_n10bk_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10BJ: 0
+recomputes in N10BJ: 0
 pm50: 19/23 cost 1000
 before25_after75: 20/24 cost 1000
 net gain: +1/+1
-lost pm50 top10 hits: 0
 gain bucket: before_gold_gap=1
-next allowed phase: BEA-v1-N10BJ Asymmetric Window Direction Mechanism Package
+lost buckets: all 0
+next allowed phase: BEA-v1-N10BK Neighboring Asymmetry Micro-Sweep
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -650,6 +651,11 @@ loses zero pm50 top-10 hits, and the new top-10 gain is a before-gold gap bucket
 Gold/miss direction is not used to choose per-record windows. It authorizes only
 N10BJ public asymmetry mechanism package.
 
+N10BJ packages the N10BI asymmetry mechanism publicly without private reads or
+recompute. It locks pm50 `19/23`, `before25_after75` `20/24`, same cost `1000`,
+net `+1/+1`, gained bucket `before_gold_gap=1`, and all lost buckets `0`. It
+authorizes only N10BK neighboring asymmetry micro-sweep at the same cost proxy.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1136,6 +1142,12 @@ See the current report index:
   behavior, retrieval/rerun, candidate generation, selector/reranker execution,
   P5, BEA-v1-A, heldout/generalization claims, method-winner claims, or
   downstream-value claims.
+- N10BJ authorizes only N10BK neighboring asymmetry micro-sweep over the same
+  scoped rows and same cost proxy `1000` with the predeclared five variants. It
+  does not authorize new cost budgets, adaptive per-row choices, runtime/default
+  behavior, retrieval/rerun, candidate generation, selector/reranker execution,
+  P5, BEA-v1-A, heldout/generalization claims, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1516,6 +1528,10 @@ eval/bea_v1_n10bh_pm50_comparator_package.py
 eval/bea_v1_n10bi_asymmetric_window_direction_decomposition.py
   Direct decomposition of pm50 vs before25_after75 direction mechanism; authorizes
   only N10BJ public mechanism package.
+
+eval/bea_v1_n10bj_asymmetric_window_mechanism_package.py
+  Public package of N10BI asymmetry mechanism facts; authorizes only N10BK
+  neighboring asymmetry micro-sweep.
 ```
 
 Key reports:
@@ -1584,6 +1600,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator_report.json`](artifacts/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator_report.json)
 - [`artifacts/bea_v1_n10bh_pm50_comparator_package/bea_v1_n10bh_pm50_comparator_package_report.json`](artifacts/bea_v1_n10bh_pm50_comparator_package/bea_v1_n10bh_pm50_comparator_package_report.json)
 - [`artifacts/bea_v1_n10bi_asymmetric_window_direction_decomposition/bea_v1_n10bi_asymmetric_window_direction_decomposition_report.json`](artifacts/bea_v1_n10bi_asymmetric_window_direction_decomposition/bea_v1_n10bi_asymmetric_window_direction_decomposition_report.json)
+- [`artifacts/bea_v1_n10bj_asymmetric_window_mechanism_package/bea_v1_n10bj_asymmetric_window_mechanism_package_report.json`](artifacts/bea_v1_n10bj_asymmetric_window_mechanism_package/bea_v1_n10bj_asymmetric_window_mechanism_package_report.json)
 
 Documentation mirror check:
 
