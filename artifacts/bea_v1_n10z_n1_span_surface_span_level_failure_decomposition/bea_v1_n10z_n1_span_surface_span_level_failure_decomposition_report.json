@@ -1,0 +1,309 @@
+{
+  "aggregate_runtime_seconds": 1.877,
+  "best_arm_scope_records": [
+    {
+      "anonymous_best_arm_scope_id": "n10zscope0000",
+      "arm_bucket": "span_extra_depth_promote_before_primary_prefix_4",
+      "candidate_added_bool": false,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_bool": false,
+      "gold_used_for_ordering_bool": false,
+      "new_arm_search_bool": false,
+      "scope_bucket": "single_best_arm_from_n10x_only",
+      "uses_n10t_semantics_bool": true
+    }
+  ],
+  "claim_level": "span_level_failure_decomposition_only",
+  "downstream_value_claimed": false,
+  "file_vs_span_gap_records": [
+    {
+      "anonymous_file_vs_span_gap_id": "n10zgap0000",
+      "consistent_with_n10x_bool": true,
+      "file_hit_no_span_overlap_count": 25,
+      "gap_bucket": "file_hit_top10_but_span_overlap_below_top10_or_missing",
+      "span_reachable_total": 12,
+      "top10_file_hit_count": 34,
+      "top10_span_overlap_count": 9
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 213,
+      "value": 213
+    },
+    {
+      "gate": "span_schema_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "decomposition_consistent_with_n10x",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "top10_span_miss_bucket_sum",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 25,
+      "value": 25
+    },
+    {
+      "gate": "span_reachable_rank_bucket_sum",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 12,
+      "value": 12
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T15:30:10Z",
+  "generated_by": "bea_v1_n10z_n1_span_surface_span_level_failure_decomposition",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10zin0000",
+      "expected_status": "n1_span_surface_span_level_utility_validation_complete_below_threshold",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10x_span_level_validation_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_span_level_utility_validation_complete_below_threshold"
+    },
+    {
+      "anonymous_input_artifact_id": "n10zin0001",
+      "expected_status": "n1_span_surface_span_level_utility_result_audit_complete",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10y_span_level_result_audit_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_span_level_utility_result_audit_complete"
+    },
+    {
+      "anonymous_input_artifact_id": "n10zin0002",
+      "expected_status": "n1_span_surface_rank_order_proxy_validation_pass_n10u_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10t_proxy_validation_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_rank_order_proxy_validation_pass_n10u_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10aa_handoff_records": [
+    {
+      "anonymous_n10aa_handoff_id": "n10zhandoff0000",
+      "design_preflight_only_bool": true,
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10aa_handoff_bucket": "n10aa_span_window_repair_preflight_authorized",
+      "n10aa_span_window_repair_preflight_authorized_bool": true,
+      "repair_execution_authorized_bool": false,
+      "runtime_default_promotion_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n10znoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "counterfactual_execution_count": 0,
+      "default_change_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "single_private_span_read_decomposition_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p4l_n1_n2_n3_rerun_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "support_labeling_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10Z N1 Span-Surface Span-Level Failure Decomposition",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10zprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "bucket_counts_only_no_private_surface_details",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_span_input_intake_records": [
+    {
+      "anonymous_private_span_input_intake_id": "n10zpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "schema_valid_bool": true,
+      "single_scoped_private_input_read_bool": true
+    }
+  ],
+  "repair_signal_records": [
+    {
+      "anonymous_repair_signal_id": "n10zrepair0000",
+      "file_hit_no_span_overlap_count": 25,
+      "repair_execution_authorized_bool": false,
+      "repair_signal_bucket": "same_file_span_window_misalignment_dominates",
+      "same_file_no_overlap_count": 25,
+      "same_file_no_overlap_dominates_bool": true,
+      "span_window_repair_preflight_recommended_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10z_n1_span_surface_span_level_failure_decomposition.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "span_reachable_rank_bucket_records": [
+    {
+      "anonymous_span_reachable_rank_bucket_id": "n10zreach0000",
+      "case_count": 9,
+      "reach_bucket": "span_overlap_rank_1_10"
+    },
+    {
+      "anonymous_span_reachable_rank_bucket_id": "n10zreach0001",
+      "case_count": 1,
+      "reach_bucket": "span_overlap_rank_11_20"
+    },
+    {
+      "anonymous_span_reachable_rank_bucket_id": "n10zreach0002",
+      "case_count": 2,
+      "reach_bucket": "span_overlap_rank_21_50"
+    },
+    {
+      "anonymous_span_reachable_rank_bucket_id": "n10zreach0003",
+      "case_count": 0,
+      "reach_bucket": "span_overlap_rank_gt_50"
+    },
+    {
+      "anonymous_span_reachable_rank_bucket_id": "n10zreach0004",
+      "case_count": 0,
+      "reach_bucket": "span_overlap_not_ranked_or_missing"
+    }
+  ],
+  "status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized",
+  "status_vocabulary": [
+    "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized",
+    "no_go_n10z_required_inputs_unavailable",
+    "no_go_n10z_private_span_rows_missing",
+    "no_go_n10z_span_schema_invalid",
+    "no_go_n10z_decomposition_inconsistent_with_n10x",
+    "no_go_n10z_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10aa_span_window_repair_preflight_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10aa_preflight_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AA Span-Window Repair Preflight",
+      "next_allowed_scope_bucket": "design_preflight_only_no_repair_execution",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "repair_execution_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "top10_span_miss_bucket_records": [
+    {
+      "anonymous_top10_span_miss_bucket_id": "n10zmiss0000",
+      "case_count": 17,
+      "miss_bucket": "same_file_before_gold"
+    },
+    {
+      "anonymous_top10_span_miss_bucket_id": "n10zmiss0001",
+      "case_count": 8,
+      "miss_bucket": "same_file_after_gold"
+    },
+    {
+      "anonymous_top10_span_miss_bucket_id": "n10zmiss0002",
+      "case_count": 0,
+      "miss_bucket": "same_file_disjoint_unknown_order"
+    },
+    {
+      "anonymous_top10_span_miss_bucket_id": "n10zmiss0003",
+      "case_count": 0,
+      "miss_bucket": "same_file_malformed_or_missing_span"
+    },
+    {
+      "anonymous_top10_span_miss_bucket_id": "n10zmiss0004",
+      "case_count": 0,
+      "miss_bucket": "gold_line_schema_malformed"
+    },
+    {
+      "anonymous_top10_span_miss_bucket_id": "n10zmiss0005",
+      "case_count": 0,
+      "miss_bucket": "no_same_file_top10_despite_file_hit_in_record_bug"
+    }
+  ]
+}
