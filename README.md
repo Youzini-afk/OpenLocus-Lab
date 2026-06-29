@@ -28,25 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AP: Adapter-Enabled Variant Evaluator Result Audit Package**:
+The latest closed phase is **BEA-v1-N10AQ: Heldout Span-Surface Validation Source Discovery**:
 
 ```text
-status: adapter_enabled_variant_evaluator_result_audit_package_complete_n10aq_authorized
-self-test: 14 / 14
+status: no_go_n10aq_candidate_sources_not_heldout
+self-test: 15 / 15
 forbidden scan: pass
-explicit enablement used in N10AO: true
-default enabled: false
-private read by default: false
-private reads in N10AP: 0
-empirical recomputes in N10AP: 0
-private span rows audited from N10AO: 213
-baseline top10/top20 span overlap: 9 / 10
-pm50 top10/top20 span overlap: 19 / 23
-delta top10 vs baseline: 10
-original span-hit lost: 0
-candidate pool changed: false
-order changed: false
-next allowed phase: BEA-v1-N10AQ Heldout External Validation Source-Discovery Preflight
+max scanned entries: 50000
+candidate files schema-sniffed: 84
+max rows sniffed per file: 5
+eligible heldout source count: 0
+N10AR authorized: false
+next allowed phase: none_until_heldout_span_surface_rows_are_supplied
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -542,6 +535,12 @@ explicit enablement, keeps default/private-read-by-default disabled, and perform
 no private read or recompute in the audit package. It authorizes only N10AQ
 heldout/external validation source-discovery preflight.
 
+N10AQ performs bounded local source discovery and schema sniffing for a heldout or
+external span-surface row source. It finds no eligible heldout source: the only
+candidate with required span-surface shape is the existing N10 source or not
+distinguishable from it, and other candidates are schema-incomplete or too small.
+N10AQ therefore does not authorize N10AR validation.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -924,6 +923,11 @@ See the current report index:
   runtime/default enablement, retrieval/rerun, candidate generation, new
   arms/window tuning, selector/reranker execution, P5, BEA-v1-A, method-winner
   claims, or downstream-value claims.
+- N10AQ authorizes no next validation phase until heldout span-surface rows are
+  supplied. It does not authorize N10AR, private reads, validation execution,
+  runtime/default enablement, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1226,6 +1230,10 @@ eval/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator.py
 eval/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package.py
   Public-only audit package for the N10AO variant result; authorizes only N10AQ
   heldout/external validation source-discovery preflight.
+
+eval/bea_v1_n10aq_heldout_span_surface_source_discovery.py
+  Bounded local source discovery/schema sniffing for heldout span-surface rows;
+  closes No-Go because no eligible heldout source is present.
 ```
 
 Key reports:
@@ -1275,6 +1283,7 @@ Key reports:
 - [`artifacts/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight_report.json`](artifacts/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight/bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight_report.json)
 - [`artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json`](artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json)
 - [`artifacts/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package_report.json`](artifacts/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package_report.json)
+- [`artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json`](artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json)
 
 Documentation mirror check:
 
