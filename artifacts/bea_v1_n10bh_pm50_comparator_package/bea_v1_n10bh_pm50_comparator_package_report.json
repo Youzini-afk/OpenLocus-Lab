@@ -1,0 +1,249 @@
+{
+  "claim_boundary_records": [
+    {
+      "adaptive_selection_count": 0,
+      "anonymous_claim_boundary_id": "n10bhclaim0000",
+      "claim_boundary_bucket": "public_pm50_comparator_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_variant_count": 0,
+      "private_row_read_count": 0,
+      "public_bucket_count_only_bool": true,
+      "recompute_count": 0,
+      "runtime_default_promotion_bool": false,
+      "runtime_default_recommendation_bool": false
+    }
+  ],
+  "claim_level": "public_pm50_comparator_package_only",
+  "decision_vs_pm50_package_records": [
+    {
+      "anonymous_decision_vs_pm50_package_id": "n10bhdecision0000",
+      "budget_bucket": "strict_budget",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "low",
+      "cost_proxy_delta_vs_pm50": -400,
+      "cost_proxy_value": 600,
+      "delta_vs_pm50_top10_count": -1,
+      "delta_vs_pm50_top20_count": -1,
+      "dominance_bucket": "cost_saving_tradeoff_vs_pm50",
+      "lost_original_span_hits": 1,
+      "n10bg_match_bool": true,
+      "operating_point_bucket": "low_cost",
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_decision_vs_pm50_package_id": "n10bhdecision0001",
+      "budget_bucket": "moderate_budget",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "medium",
+      "cost_proxy_delta_vs_pm50": 0,
+      "cost_proxy_value": 1000,
+      "delta_vs_pm50_top10_count": 1,
+      "delta_vs_pm50_top20_count": 1,
+      "dominance_bucket": "dominates_pm50",
+      "lost_original_span_hits": 0,
+      "n10bg_match_bool": true,
+      "operating_point_bucket": "balanced",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_decision_vs_pm50_package_id": "n10bhdecision0002",
+      "budget_bucket": "recall_budget",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "very_high",
+      "cost_proxy_delta_vs_pm50": 3000,
+      "cost_proxy_value": 4000,
+      "delta_vs_pm50_top10_count": 6,
+      "delta_vs_pm50_top20_count": 7,
+      "dominance_bucket": "higher_recall_higher_cost_vs_pm50",
+      "lost_original_span_hits": 0,
+      "n10bg_match_bool": true,
+      "operating_point_bucket": "max_recall",
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    }
+  ],
+  "downstream_value_claimed": false,
+  "fixed_pm50_comparator_package_records": [
+    {
+      "anonymous_comparator_package_id": "n10bhcomp0000",
+      "comparator_bucket": "fixed_pm50",
+      "cost_bucket": "medium",
+      "cost_proxy_value": 1000,
+      "n10bg_match_bool": true,
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 23,
+      "variant_bucket": "pm50"
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "fixed_pm50_comparator_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "decision_vs_pm50_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T20:01:58Z",
+  "generated_by": "bea_v1_n10bh_pm50_comparator_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bhin0000",
+      "expected_status": "cost_aware_decisions_vs_fixed_pm50_comparator_complete_n10bh_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bg_pm50_comparator_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_decisions_vs_fixed_pm50_comparator_complete_n10bh_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bhin0001",
+      "expected_status": "cost_aware_budget_decision_package_complete_n10bg_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bf_budget_decision_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_budget_decision_package_complete_n10bg_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bhin0002",
+      "expected_status": "cost_aware_operating_point_decision_smoke_complete_n10bf_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10be_budget_decision_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_operating_point_decision_smoke_complete_n10bf_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bhin0003",
+      "expected_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10as_exploratory_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bi_handoff_records": [
+    {
+      "adaptive_selection_authorized_bool": false,
+      "anonymous_n10bi_handoff_id": "n10bhhandoff0000",
+      "compare_pm50_vs_before25_after75_bool": true,
+      "downstream_value_claim_authorized_bool": false,
+      "gold_direction_for_per_record_choice_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bi_authorized_bool": true,
+      "n10bi_handoff_bucket": "n10bi_asymmetric_window_direction_mechanism_decomposition_authorized",
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": true,
+      "runtime_default_authorized_bool": false,
+      "same_scoped_n1_rows_authorized_bool": true
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_selection_count": 0,
+      "anonymous_no_recompute_id": "n10bhnorecompute0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_pm50_comparator_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BH Cost-Aware Decisions vs Fixed-pm50 Comparator Audit Package",
+  "schema_version": "bea_v1_n10bh_pm50_comparator_package.v1",
+  "self_test_checks_passed": 13,
+  "self_test_checks_total": 13,
+  "self_test_passed": true,
+  "status": "pm50_comparator_package_complete_n10bi_authorized",
+  "status_vocabulary": [
+    "pm50_comparator_package_complete_n10bi_authorized",
+    "no_go_n10bh_required_public_inputs_unavailable",
+    "no_go_n10bh_comparator_chain_mismatch",
+    "no_go_n10bh_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_selection_authorized": false,
+      "authorization": "n10bi_asymmetric_window_direction_mechanism_decomposition_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bi_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BI Asymmetric Window Direction Mechanism Decomposition",
+      "next_allowed_scope_bucket": "same_scoped_rows_pm50_vs_before25_after75_direction_decomposition",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
