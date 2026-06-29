@@ -1,0 +1,321 @@
+{
+  "claim_level": "same_source_direction_mechanism_decomposition_only",
+  "comparator_pair_records": [
+    {
+      "anonymous_comparator_pair_id": "n10bipair0000",
+      "comparator_bucket": "fixed_symmetric_pm50",
+      "cost_bucket": "medium",
+      "cost_proxy_value": 1000,
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 23,
+      "variant_bucket": "pm50"
+    },
+    {
+      "anonymous_comparator_pair_id": "n10bipair0001",
+      "comparator_bucket": "asymmetric_before25_after75",
+      "cost_bucket": "medium",
+      "cost_proxy_value": 1000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gain_loss_bucket_records": [
+    {
+      "anonymous_gain_loss_bucket_id": "n10bigain0000",
+      "direction_bucket": "before_gold_gap",
+      "gain_loss_bucket": "gained_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 1
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10bigain0001",
+      "direction_bucket": "after_gold_gap",
+      "gain_loss_bucket": "gained_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10bigain0002",
+      "direction_bucket": "already_overlap",
+      "gain_loss_bucket": "gained_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10bigain0003",
+      "direction_bucket": "other",
+      "gain_loss_bucket": "gained_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10biloss0000",
+      "direction_bucket": "before_gold_gap",
+      "gain_loss_bucket": "lost_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10biloss0001",
+      "direction_bucket": "after_gold_gap",
+      "gain_loss_bucket": "lost_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10biloss0002",
+      "direction_bucket": "already_overlap",
+      "gain_loss_bucket": "lost_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    },
+    {
+      "anonymous_gain_loss_bucket_id": "n10biloss0003",
+      "direction_bucket": "other",
+      "gain_loss_bucket": "lost_by_before25_after75_vs_pm50",
+      "public_bucket_only_bool": true,
+      "top10_case_count": 0
+    }
+  ],
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "pm50_vs_asymmetric_result_accounting",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_gold_policy",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T20:08:35Z",
+  "generated_by": "bea_v1_n10bi_asymmetric_window_direction_decomposition",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10biin0000",
+      "expected_status": "pm50_comparator_package_complete_n10bi_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bh_pm50_comparator_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "pm50_comparator_package_complete_n10bi_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10biin0001",
+      "expected_status": "cost_aware_decisions_vs_fixed_pm50_comparator_complete_n10bh_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bg_pm50_comparator_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_decisions_vs_fixed_pm50_comparator_complete_n10bh_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10biin0002",
+      "expected_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10as_exploratory_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10biin0003",
+      "expected_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ba_selection_rule_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized"
+    }
+  ],
+  "mechanism_summary_records": [
+    {
+      "after_gold_gap_gain_count": 0,
+      "already_overlap_gain_count": 0,
+      "anonymous_mechanism_summary_id": "n10bimechanism0000",
+      "before_gold_gap_gain_count": 1,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "mechanism_bucket": "asymmetric_extra_after_context_recovers_before_gold_gap",
+      "other_gain_count": 0,
+      "same_cost_bool": true,
+      "top10_gained_case_count": 1,
+      "top10_lost_case_count": 0,
+      "top10_net_gain_count": 1,
+      "top20_gained_case_count": 1,
+      "top20_lost_case_count": 0,
+      "top20_net_gain_count": 1
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bj_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10bj_handoff_id": "n10bihandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bj_handoff_bucket": "n10bj_public_asymmetry_mechanism_package_authorized",
+      "n10bj_public_package_authorized_bool": true,
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10binoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_order_change_count": 0,
+      "candidate_removal_count": 0,
+      "downstream_value_claim_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_variant_count": 0,
+      "no_execution_boundary_bucket": "pm50_vs_asymmetric_direction_decomposition_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "no_gold_policy_records": [
+    {
+      "anonymous_no_gold_policy_id": "n10binogold0000",
+      "asymmetric_after_lines": 75,
+      "asymmetric_before_lines": 25,
+      "content_aware_adjustment_count": 0,
+      "gold_used_to_choose_window_count": 0,
+      "miss_direction_used_to_choose_window_count": 0,
+      "no_gold_policy_bucket": "fixed_global_pm50_vs_before25_after75_no_per_row_choice",
+      "no_gold_policy_valid_bool": true,
+      "per_row_adaptive_window_count": 0,
+      "pm50_after_lines": 50,
+      "pm50_before_lines": 50,
+      "predeclared_global_windows_bool": true
+    }
+  ],
+  "phase": "BEA-v1-N10BI Asymmetric Window Direction Mechanism Decomposition",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10biprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "hash_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_direction_buckets_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10bipriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "single_scoped_private_input_read_bool": true,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10bi_asymmetric_window_direction_decomposition.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "asymmetric_window_direction_decomposition_complete_n10bj_authorized",
+  "status_vocabulary": [
+    "asymmetric_window_direction_decomposition_complete_n10bj_authorized",
+    "no_go_n10bi_required_inputs_unavailable",
+    "no_go_n10bi_private_span_rows_missing",
+    "no_go_n10bi_comparator_result_mismatch",
+    "no_go_n10bi_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10bj_public_asymmetry_mechanism_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bj_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BJ Asymmetric Window Direction Mechanism Package",
+      "next_allowed_scope_bucket": "public_asymmetry_mechanism_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
