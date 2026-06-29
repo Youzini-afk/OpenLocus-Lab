@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10R: Targeted N2 Rank-Pack Row Generation Preflight**:
+The latest closed phase is **BEA-v1-N10T: N1 Span-Surface Fixed-Pool Rank-Order Proxy Validation**:
 
 ```text
-status: no_go_n10r_target_denominator_insufficient
+status: n1_span_surface_rank_order_proxy_validation_pass_n10u_authorized
 self-test: 15 / 15
 forbidden scan: pass
-known-good N2 rows: 40
-N1 span rows: 213
-N1 candidate/gold trace rows: 272
-P4L private arm outcome rows: 1088
-targeted denominator filter supported: false
-can run without full P4L rerun: false
-next allowed phase: none_for_n2_equivalent_broader_validation_without_new_denominator_definition
+eligible denominator: 213
+reachable in pool: 52
+best arm: span_extra_depth_promote_before_primary_prefix_4
+best top10 file reach: 34
+best top20 file reach: 44
+best delta top10 vs baseline: 34
+best regressions vs baseline: 0
+next allowed phase: BEA-v1-N10U N1 Span-Surface Proxy Result Audit
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -401,6 +402,13 @@ locked-denominator reconstruction with no targeted denominator filter. N10R does
 not materialize rows and closes as No-Go until a targeted builder or explicit full
 rerun is authorized.
 
+N10T explicitly changes surface: it is a proxy/span-surface validation, not an
+N2-equivalent broader-denominator validation. It reads only the scoped N1 span
+rows, preserves the fixed pool, and reorders the `p4_evidence` list by N5-style
+rank buckets. The proxy result passes its threshold: extra-depth promotion before
+the primary prefix reaches 34/213 top-10 file reach versus 0 baseline, with 0
+regressions. It authorizes only N10U proxy result audit.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -677,6 +685,11 @@ See the current report index:
   N1 span evidence, OpenLocus/N2/P4L execution, retrieval/reruns, generated
   private rows, selector/reranker execution, P5, BEA-v1-A, runtime/default
   promotion, method-winner claims, or downstream-value claims.
+- N10T authorizes only N10U N1 span-surface proxy result audit. It does not
+  authorize N2-equivalent validation, private reads beyond the scoped span rows,
+  retrieval/reruns, candidate generation/materialization, selector/reranker
+  execution, P5, BEA-v1-A, runtime/default promotion, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -880,6 +893,10 @@ eval/bea_v1_n10_broader_frozen_denominator_validation_preflight.py
 eval/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight.py
   Preflight for targeted N2 row generation; No-Go because the existing N2 builder
   lacks targeted denominator filtering and requires full reconstruction.
+
+eval/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation.py
+  N1 span-surface proxy fixed-pool rank-order validation; passes proxy threshold
+  and authorizes only N10U proxy result audit.
 ```
 
 Key reports:
@@ -906,6 +923,7 @@ Key reports:
 - [`artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json`](artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json)
 - [`artifacts/bea_v1_n10_broader_frozen_denominator_validation_preflight/bea_v1_n10_broader_frozen_denominator_validation_preflight_report.json`](artifacts/bea_v1_n10_broader_frozen_denominator_validation_preflight/bea_v1_n10_broader_frozen_denominator_validation_preflight_report.json)
 - [`artifacts/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight_report.json`](artifacts/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight/bea_v1_n10r_targeted_n2_rank_pack_generation_preflight_report.json)
+- [`artifacts/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation_report.json`](artifacts/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation/bea_v1_n10t_n1_span_surface_rank_order_proxy_validation_report.json)
 
 Documentation mirror check:
 
