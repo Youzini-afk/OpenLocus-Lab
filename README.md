@@ -28,16 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AZ: Cost-Aware Adapter Frontier Smoke Result Audit Package**:
+The latest closed phase is **BEA-v1-N10BA: Cost-Aware Span-Window Selection Rule Smoke**:
 
 ```text
-status: cost_aware_adapter_frontier_smoke_audit_package_complete_n10ba_authorized
-self-test: 15 / 15
+status: cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10AZ: 0
-recomputes in N10AZ: 0
-audited frontier: pm30 18/22; before25_after75 20/24; pm75 21/25; pm200 25/30
-next allowed phase: BEA-v1-N10BA Cost-Aware Span-Window Selection Rule Smoke
+private span rows read: 213
+operating points: low_cost pm30 18/22; balanced before25_after75 20/24; max_recall pm200 25/30
+new window sizes: 0
+adaptive per-case selection: 0
+next allowed phase: BEA-v1-N10BB Cost-Aware Span-Window Selection Rule Smoke Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -598,6 +599,12 @@ runtime/default hook, row-count provenance from N10AY, and the locked frontier
 metrics. It authorizes only N10BA cost-aware span-window selection rule smoke over
 the same scoped rows, using predeclared operating points only.
 
+N10BA evaluates those predeclared named operating points directly: `low_cost=pm30`
+at 18/22, `balanced=before25_after75` at 20/24, and `max_recall=pm200` at 25/30.
+It uses no new window sizes, no adaptive per-case selection, no runtime/default
+behavior, and no candidate pool/order changes. It authorizes only N10BB public
+audit/package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1040,6 +1047,11 @@ See the current report index:
   `pm200`). It does not authorize runtime/default, heldout/generalization,
   method-winner/downstream claims, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, new variants, or adaptive tuning.
+- N10BA authorizes only N10BB public audit/package. It does not authorize private
+  reads beyond the same scoped rows, runtime/default promotion, new variants,
+  adaptive selection, retrieval/rerun, candidate generation, selector/reranker
+  execution, P5, BEA-v1-A, heldout/generalization claims, method-winner claims,
+  or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1384,6 +1396,10 @@ eval/bea_v1_n10ay_cost_aware_adapter_frontier_smoke.py
 eval/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package.py
   Public audit package for N10AY adapter frontier smoke; authorizes only N10BA
   cost-aware span-window selection rule smoke.
+
+eval/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke.py
+  Direct smoke for predeclared low/balanced/max-recall operating points; authorizes
+  only N10BB public audit/package.
 ```
 
 Key reports:
@@ -1443,6 +1459,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ax_cost_sensitive_frontier_claim_package/bea_v1_n10ax_cost_sensitive_frontier_claim_package_report.json`](artifacts/bea_v1_n10ax_cost_sensitive_frontier_claim_package/bea_v1_n10ax_cost_sensitive_frontier_claim_package_report.json)
 - [`artifacts/bea_v1_n10ay_cost_aware_adapter_frontier_smoke/bea_v1_n10ay_cost_aware_adapter_frontier_smoke_report.json`](artifacts/bea_v1_n10ay_cost_aware_adapter_frontier_smoke/bea_v1_n10ay_cost_aware_adapter_frontier_smoke_report.json)
 - [`artifacts/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package_report.json`](artifacts/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package/bea_v1_n10az_cost_aware_adapter_frontier_smoke_audit_package_report.json)
+- [`artifacts/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke_report.json`](artifacts/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke/bea_v1_n10ba_cost_aware_span_window_selection_rule_smoke_report.json)
 
 Documentation mirror check:
 
