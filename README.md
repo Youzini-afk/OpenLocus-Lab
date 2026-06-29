@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CA: Same-File Span Cluster Bridge Smoke**:
+The latest closed phase is **BEA-v1-N10CB: Same-File Span Cluster Bridge Audit Package**:
 
 ```text
-status: same_file_span_cluster_bridge_smoke_complete_n10cb_authorized
-self-test: 15 / 15
+status: cluster_bridge_audit_package_complete_n10cc_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10CB: 0
+recomputes in N10CB: 0
 variant count: 9
 best cluster-bridge top10/top20: 15 / 19
 cluster-bridge improvement variants: 0
-next allowed phase: BEA-v1-N10CB Same-File Span Cluster Bridge Audit Package
+next allowed phase: BEA-v1-N10CC Next Mechanism Search Outside Fixed-Window and Cluster-Bridge Families
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -757,6 +758,13 @@ result is 15/19, all variants lose five cost80 anchor top10 hits, and no
 cluster-bridge variant improves the cost80 or pm200 anchors. It authorizes only
 N10CB public audit/package.
 
+N10CB packages the N10CA negative result publicly without private reads or
+recompute. It confirms the same-file cluster/bridge family underperforms the
+local-window anchor and that the current positive signal remains local
+single-candidate boundary expansion rather than multi-candidate bridging. It
+authorizes only N10CC next mechanism search outside both fixed-window and
+cluster-bridge families.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1338,6 +1346,11 @@ See the current report index:
   promotion, heldout/generalization claims, method/downstream claims,
   retrieval/rerun, candidate generation/add/remove/reorder, selector/reranker
   execution, P5, or BEA-v1-A.
+- N10CB authorizes only N10CC next mechanism search outside fixed-window and
+  cluster-bridge families. It does not authorize runtime/default promotion,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1790,6 +1803,11 @@ eval/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package.py
 eval/bea_v1_n10ca_same_file_span_cluster_bridge_smoke.py
   Same-source same-file span cluster bridge smoke outside the fixed-window family;
   authorizes only N10CB public audit/package.
+
+eval/bea_v1_n10cb_cluster_bridge_audit_package.py
+  Public package of the N10CA negative same-file cluster bridge result; authorizes
+  only N10CC next mechanism search outside fixed-window and cluster-bridge
+  families.
 ```
 
 Key reports:
@@ -1876,6 +1894,7 @@ Key reports:
 - [`artifacts/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep_report.json`](artifacts/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep_report.json)
 - [`artifacts/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package_report.json`](artifacts/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package_report.json)
 - [`artifacts/bea_v1_n10ca_same_file_span_cluster_bridge_smoke/bea_v1_n10ca_same_file_span_cluster_bridge_smoke_report.json`](artifacts/bea_v1_n10ca_same_file_span_cluster_bridge_smoke/bea_v1_n10ca_same_file_span_cluster_bridge_smoke_report.json)
+- [`artifacts/bea_v1_n10cb_cluster_bridge_audit_package/bea_v1_n10cb_cluster_bridge_audit_package_report.json`](artifacts/bea_v1_n10cb_cluster_bridge_audit_package/bea_v1_n10cb_cluster_bridge_audit_package_report.json)
 
 Documentation mirror check:
 
