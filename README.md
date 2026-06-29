@@ -28,20 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N9: Recovered Fixed-Pool Result Replication Package**:
+The latest closed phase is **BEA-v1-N10: Broader Frozen Denominator Validation Preflight**:
 
 ```text
-status: recovered_fixed_pool_result_replication_package_complete
-self-test: 15 / 15
+status: no_go_n10_broader_rank_pack_denominator_unavailable
+self-test: 14 / 14
 forbidden scan: pass
-case count: 40
-arm count: 4
-public rows: 160
-best arm: extra_depth_promote_before_primary_prefix_4
-best top10 recovery: 25 / 40
-best top20 recovery: 34 / 40
-threshold passed: true
-next allowed phase: BEA-v1-N10 Broader Frozen Denominator Validation Preflight
+recovered result: 25 / 40 top-10, 34 / 40 top-20, 0 regressions
+candidate denominators checked: 4
+broader N2-equivalent rank-pack rows available: false
+blocker: no_broader_n2_equivalent_rank_pack_rows
+next allowed phase: none_until_broader_n2_equivalent_rank_pack_rows_exist
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -389,6 +386,12 @@ artifacts only, confirms N6XFR-E -> N7 -> N8 consistency, records that recompute
 still requires the same uncommitted recovered N2 rank-pack rows, and authorizes
 only N10 broader frozen denominator validation preflight.
 
+N10 preflights broader frozen-denominator validation without computing new arm
+outcomes. The recovered 40-row rank pack is exact but not broader; P4L/N1 provide
+broader context buckets but not N2-equivalent rank-pack rows under the current
+public/metadata-only boundary. N10 therefore closes as No-Go until broader
+N2-equivalent rank-pack rows exist.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -657,6 +660,10 @@ See the current report index:
   not authorize capture, private reads, recompute, retrieval/reruns, new-arm
   search, selector/reranker execution, P5, BEA-v1-A, runtime/default promotion,
   method-winner claims, or downstream-value claims.
+- N10 authorizes no N11 or execution. It does not authorize private content reads,
+  retrieval/reruns, candidate generation/materialization, selector/reranker
+  execution, P5, BEA-v1-A, runtime/default promotion, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -852,6 +859,10 @@ eval/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms.py
 eval/bea_v1_n9_recovered_fixed_pool_result_replication_package.py
   Public replication package for the recovered fixed-pool result; authorizes only
   N10 broader frozen denominator validation preflight.
+
+eval/bea_v1_n10_broader_frozen_denominator_validation_preflight.py
+  Preflight for broader frozen-denominator validation; No-Go because broader
+  N2-equivalent rank-pack rows are unavailable.
 ```
 
 Key reports:
@@ -876,6 +887,7 @@ Key reports:
 - [`artifacts/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit_report.json`](artifacts/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit/bea_v1_n7_recovered_fixed_pool_rank_order_result_audit_report.json)
 - [`artifacts/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms_report.json`](artifacts/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms/bea_v1_n8_independent_recompute_same_private_rows_same_four_arms_report.json)
 - [`artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json`](artifacts/bea_v1_n9_recovered_fixed_pool_result_replication_package/bea_v1_n9_recovered_fixed_pool_result_replication_package_report.json)
+- [`artifacts/bea_v1_n10_broader_frozen_denominator_validation_preflight/bea_v1_n10_broader_frozen_denominator_validation_preflight_report.json`](artifacts/bea_v1_n10_broader_frozen_denominator_validation_preflight/bea_v1_n10_broader_frozen_denominator_validation_preflight_report.json)
 
 Documentation mirror check:
 
