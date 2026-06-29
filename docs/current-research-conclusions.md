@@ -155,6 +155,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10bi-asymmetric-window-direction-decomposition.md`: [en](en/bea-v1-n10bi-asymmetric-window-direction-decomposition.md) · [zh](zh/bea-v1-n10bi-asymmetric-window-direction-decomposition.md)
 - `bea-v1-n10bj-asymmetric-window-mechanism-package.md`: [en](en/bea-v1-n10bj-asymmetric-window-mechanism-package.md) · [zh](zh/bea-v1-n10bj-asymmetric-window-mechanism-package.md)
 - `bea-v1-n10bk-neighboring-asymmetry-micro-sweep.md`: [en](en/bea-v1-n10bk-neighboring-asymmetry-micro-sweep.md) · [zh](zh/bea-v1-n10bk-neighboring-asymmetry-micro-sweep.md)
+- `bea-v1-n10bl-direction-sensitivity-package.md`: [en](en/bea-v1-n10bl-direction-sensitivity-package.md) · [zh](zh/bea-v1-n10bl-direction-sensitivity-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

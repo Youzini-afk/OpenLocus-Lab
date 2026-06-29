@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BK: Neighboring Asymmetry Micro-Sweep**:
+The latest closed phase is **BEA-v1-N10BL: Neighboring Asymmetry Direction-Sensitivity Package**:
 
 ```text
-status: neighboring_asymmetry_micro_sweep_complete_n10bl_authorized
-self-test: 16 / 16
+status: direction_sensitivity_package_complete_n10bm_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private span rows read: 213
-variants: 5 same-cost direction points
+private reads in N10BL: 0
+recomputes in N10BL: 0
 winner: before25_after75 20/24
 pm50: 19/23
 trend: nonmonotonic_direction_sensitivity
-next allowed phase: BEA-v1-N10BL Neighboring Asymmetry Direction-Sensitivity Package
+next allowed phase: BEA-v1-N10BM After-Heavy Local Asymmetry Refinement Sweep
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -659,6 +659,12 @@ total-cost-100 variants. `before25_after75` remains the best point at 20/24;
 pm50 is 19/23; before-heavy variants are weaker; the trend is nonmonotonic. It
 authorizes only N10BL public direction-sensitivity package.
 
+N10BL packages the N10BK direction-sensitivity result publicly without private
+reads or recompute. It locks the same-cost five-point sweep, winner
+`before25_after75`, after-heavy winner bucket, and nonmonotonic trend. It
+authorizes only N10BM after-heavy local asymmetry refinement sweep at fixed total
+cost 100.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1156,6 +1162,12 @@ See the current report index:
   runtime/default behavior, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, heldout/generalization claims,
   method-winner claims, or downstream-value claims.
+- N10BL authorizes only N10BM after-heavy local asymmetry refinement sweep over
+  the same scoped rows and fixed total cost 100 with seven predeclared variants.
+  It does not authorize other variants, adaptive per-row choice, new cost budgets,
+  runtime/default behavior, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, heldout/generalization claims,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1544,6 +1556,10 @@ eval/bea_v1_n10bj_asymmetric_window_mechanism_package.py
 eval/bea_v1_n10bk_neighboring_asymmetry_micro_sweep.py
   Direct same-cost five-point asymmetry sweep; authorizes only N10BL public
   direction-sensitivity package.
+
+eval/bea_v1_n10bl_direction_sensitivity_package.py
+  Public package of N10BK direction-sensitivity facts; authorizes only N10BM
+  after-heavy local asymmetry refinement sweep.
 ```
 
 Key reports:
@@ -1614,6 +1630,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bi_asymmetric_window_direction_decomposition/bea_v1_n10bi_asymmetric_window_direction_decomposition_report.json`](artifacts/bea_v1_n10bi_asymmetric_window_direction_decomposition/bea_v1_n10bi_asymmetric_window_direction_decomposition_report.json)
 - [`artifacts/bea_v1_n10bj_asymmetric_window_mechanism_package/bea_v1_n10bj_asymmetric_window_mechanism_package_report.json`](artifacts/bea_v1_n10bj_asymmetric_window_mechanism_package/bea_v1_n10bj_asymmetric_window_mechanism_package_report.json)
 - [`artifacts/bea_v1_n10bk_neighboring_asymmetry_micro_sweep/bea_v1_n10bk_neighboring_asymmetry_micro_sweep_report.json`](artifacts/bea_v1_n10bk_neighboring_asymmetry_micro_sweep/bea_v1_n10bk_neighboring_asymmetry_micro_sweep_report.json)
+- [`artifacts/bea_v1_n10bl_direction_sensitivity_package/bea_v1_n10bl_direction_sensitivity_package_report.json`](artifacts/bea_v1_n10bl_direction_sensitivity_package/bea_v1_n10bl_direction_sensitivity_package_report.json)
 
 Documentation mirror check:
 
