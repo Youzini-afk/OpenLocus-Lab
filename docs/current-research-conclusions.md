@@ -118,6 +118,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10x-n1-span-surface-span-level-utility-validation.md`: [en](en/bea-v1-n10x-n1-span-surface-span-level-utility-validation.md) · [zh](zh/bea-v1-n10x-n1-span-surface-span-level-utility-validation.md)
 - `bea-v1-n10y-n1-span-surface-span-level-utility-result-audit.md`: [en](en/bea-v1-n10y-n1-span-surface-span-level-utility-result-audit.md) · [zh](zh/bea-v1-n10y-n1-span-surface-span-level-utility-result-audit.md)
 - `bea-v1-n10z-n1-span-surface-span-level-failure-decomposition.md`: [en](en/bea-v1-n10z-n1-span-surface-span-level-failure-decomposition.md) · [zh](zh/bea-v1-n10z-n1-span-surface-span-level-failure-decomposition.md)
+- `bea-v1-n10aa-span-window-repair-preflight.md`: [en](en/bea-v1-n10aa-span-window-repair-preflight.md) · [zh](zh/bea-v1-n10aa-span-window-repair-preflight.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

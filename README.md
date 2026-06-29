@@ -28,20 +28,21 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10Z: N1 Span-Surface Span-Level Failure Decomposition**:
+The latest closed phase is **BEA-v1-N10AA: Span-Window Repair Preflight**:
 
 ```text
-status: n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized
+status: span_window_repair_preflight_pass_n10ab_authorized
 self-test: 14 / 14
 forbidden scan: pass
-best arm: span_extra_depth_promote_before_primary_prefix_4
-top10 file-hit count: 34
-top10 span-overlap count: 9
 file-hit/no-top10-span gap: 25
 same-file before-gold bucket: 17
 same-file after-gold bucket: 8
-span-reachable total: 12
-next allowed phase: BEA-v1-N10AA Span-Window Repair Preflight
+same-file/no-overlap dominates: true
+primary variant: fixed_symmetric_span_expansion_pm50_lines
+variant count: 3
+baseline N10X best-arm top10 span overlap: 9
+N10AB threshold: pm50 top10 expanded span overlap >= 11
+next allowed phase: BEA-v1-N10AB Fixed Span-Window Repair Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -443,6 +444,12 @@ the 25-case gap is entirely same-file/no-overlap: 17 spans before the gold windo
 and 8 after it, with no malformed schema or record-bug bucket. This authorizes
 only N10AA span-window repair preflight; it does not authorize repair execution.
 
+N10AA designs the fixed span-window repair smoke without executing it. The primary
+N10AB variant is a gold-free symmetric +/-50-line expansion on top-10 evidence
+spans after the N10T best arm, with optional +/-20 and +/-100 sensitivity variants.
+It authorizes only N10AB fixed span-window repair smoke over the same private span
+rows; N10AA itself does not authorize private reads or repair execution.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -749,6 +756,11 @@ See the current report index:
   repair execution, retrieval/reruns, runtime/default promotion, P5, BEA-v1-A,
   selector/reranker execution, new-arm search, method-winner claims, or
   downstream-value claims.
+- N10AA authorizes only N10AB fixed span-window repair smoke. It does not authorize
+  private reads or repair execution within N10AA, retrieval/reruns, OpenLocus
+  execution, candidate generation/materialization, new-arm search,
+  selector/reranker execution, P5, BEA-v1-A, runtime/default promotion,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -980,6 +992,10 @@ eval/bea_v1_n10y_n1_span_surface_span_level_utility_result_audit.py
 eval/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition.py
   Direct decomposition of the N10X span-level gap; identifies same-file span-window
   misalignment and authorizes only N10AA repair preflight.
+
+eval/bea_v1_n10aa_span_window_repair_preflight.py
+  Gold-free fixed span-window repair design; authorizes only N10AB repair smoke
+  and performs no repair execution.
 ```
 
 Key reports:
@@ -1013,6 +1029,7 @@ Key reports:
 - [`artifacts/bea_v1_n10x_n1_span_surface_span_level_utility_validation/bea_v1_n10x_n1_span_surface_span_level_utility_validation_report.json`](artifacts/bea_v1_n10x_n1_span_surface_span_level_utility_validation/bea_v1_n10x_n1_span_surface_span_level_utility_validation_report.json)
 - [`artifacts/bea_v1_n10y_n1_span_surface_span_level_utility_result_audit/bea_v1_n10y_n1_span_surface_span_level_utility_result_audit_report.json`](artifacts/bea_v1_n10y_n1_span_surface_span_level_utility_result_audit/bea_v1_n10y_n1_span_surface_span_level_utility_result_audit_report.json)
 - [`artifacts/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition_report.json`](artifacts/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition/bea_v1_n10z_n1_span_surface_span_level_failure_decomposition_report.json)
+- [`artifacts/bea_v1_n10aa_span_window_repair_preflight/bea_v1_n10aa_span_window_repair_preflight_report.json`](artifacts/bea_v1_n10aa_span_window_repair_preflight/bea_v1_n10aa_span_window_repair_preflight_report.json)
 
 Documentation mirror check:
 
