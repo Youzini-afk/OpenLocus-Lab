@@ -1,0 +1,195 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10atclaim0000",
+      "claim_boundary_bucket": "same_source_exploratory_n1_span_surface_proxy_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n1_span_surface_proxy_only_bool": true,
+      "n2_equivalent_claim_bool": false,
+      "retrieval_or_rerun_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "same_source_only_bool": true,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "public_audit_package_same_source_exploratory_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "frontier_tier_audit_records": [
+    {
+      "anonymous_frontier_tier_audit_id": "n10attier0000",
+      "audit_matched_bool": true,
+      "pareto_frontier_bool": true,
+      "tier_bucket": "low_cost_frontier_point",
+      "top10_cost_proxy_bucket": "low",
+      "top10_cost_proxy_value": 600,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_frontier_tier_audit_id": "n10attier0001",
+      "audit_matched_bool": true,
+      "pareto_frontier_bool": true,
+      "tier_bucket": "balanced_frontier_point",
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_frontier_tier_audit_id": "n10attier0002",
+      "audit_matched_bool": true,
+      "pareto_frontier_bool": true,
+      "tier_bucket": "balanced_frontier_point",
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm75"
+    },
+    {
+      "anonymous_frontier_tier_audit_id": "n10attier0003",
+      "audit_matched_bool": true,
+      "pareto_frontier_bool": true,
+      "tier_bucket": "max_recall_frontier_point",
+      "top10_cost_proxy_bucket": "very_high",
+      "top10_cost_proxy_value": 4000,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    }
+  ],
+  "gate_records": [
+    {
+      "gate": "n10as_public_artifact_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "frontier_tiers_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary_valid",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T18:23:42Z",
+  "generated_by": "bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10atin0000",
+      "expected_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10as_exploratory_variant_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10au_handoff_records": [
+    {
+      "anonymous_n10au_handoff_id": "n10athandoff0000",
+      "extra_sweep_authorized_bool": false,
+      "heldout_validation_claim_authorized_bool": false,
+      "n10au_handoff_bucket": "n10au_independent_recompute_authorized",
+      "n10au_independent_recompute_authorized_bool": true,
+      "n10au_same_scoped_private_rows_authorized_bool": true,
+      "private_read_in_n10at_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10atnorecompute0000",
+      "candidate_generation_count": 0,
+      "downstream_value_claim_count": 0,
+      "extra_sweep_count": 0,
+      "method_winner_claim_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_audit_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0,
+      "variant_recompute_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AT Exploratory Span-Window Variant Sweep Audit Package",
+  "schema_version": "bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package.v1",
+  "self_test_checks_passed": 13,
+  "self_test_checks_total": 13,
+  "self_test_passed": true,
+  "status": "exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized",
+  "status_vocabulary": [
+    "exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized",
+    "no_go_n10at_required_public_inputs_unavailable",
+    "no_go_n10at_n10as_result_invalid",
+    "no_go_n10at_frontier_tier_mismatch",
+    "no_go_n10at_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10au_independent_recompute_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "extra_sweep_authorized": false,
+      "heldout_validation_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10au_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AU Independent Recompute Exploratory Span-Window Variant Sweep",
+      "next_allowed_scope_bucket": "same_scoped_private_rows_full_15_variant_independent_recompute",
+      "p5_authorized": false,
+      "private_read_authorized_for_n10au_only": true,
+      "private_read_in_n10at_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

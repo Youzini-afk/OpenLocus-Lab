@@ -28,20 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AS: Exploratory Span-Window Variant Sweep**:
+The latest closed phase is **BEA-v1-N10AT: Exploratory Span-Window Variant Sweep Audit Package**:
 
 ```text
-status: exploratory_span_window_variant_sweep_complete_n10at_authorized
+status: exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized
 self-test: 13 / 13
 forbidden scan: pass
-private span rows read: 213
-variant count: 15
-baseline unexpanded top10/top20: 9 / 10
-max-recall frontier point: pm200
-recommended top10/top20 span overlap: 25 / 30
-recommended delta top10 vs unexpanded: 16
-recommended cost proxy bucket: very_high
-next allowed phase: BEA-v1-N10AT Exploratory Span-Window Variant Sweep Audit Package
+private reads in N10AT: 0
+variant recomputes in N10AT: 0
+frontier tiers audited: pm30 18/22 low; before25_after75 20/24 medium; pm75 21/25 medium; pm200 25/30 very_high
+next allowed phase: BEA-v1-N10AU Independent Recompute Exploratory Span-Window Variant Sweep
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -558,6 +554,11 @@ frontier has clear tiers: `pm30` is the low-cost point (top10/top20 18/22),
 heldout, not N2-equivalent, not runtime/default, and not a method/downstream
 claim.
 
+N10AT packages the N10AS exploratory sweep as a public-only audit. It confirms the
+frontier tiers (`pm30` 18/22 low-cost, `before25_after75` 20/24 balanced, `pm75`
+21/25 balanced, and `pm200` 25/30 max-recall) without private reads or recompute,
+and authorizes only N10AU independent recompute of the same fixed 15-variant grid.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -964,6 +965,11 @@ See the current report index:
   runtime/default changes, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, adaptive tuning, method-winner
   claims, or downstream-value claims.
+- N10AT authorizes only N10AU independent recompute of the full fixed 15-variant
+  grid over the same scoped private rows. It does not authorize extra sweeps, new
+  variants, heldout validation claims, runtime/default changes, retrieval/rerun,
+  candidate generation, adaptive tuning, selector/reranker execution, P5,
+  BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1279,6 +1285,10 @@ eval/bea_v1_n10as_exploratory_span_window_variant_sweep.py
   Same-source exploratory sweep over 15 fixed span-window variants on the N1
   proxy; reports low-cost/balanced/max-recall frontier points and authorizes
   only N10AT audit/package.
+
+eval/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package.py
+  Public-only audit/package for the N10AS sweep frontier tiers; authorizes only
+  N10AU independent recompute over the same scoped rows and fixed grid.
 ```
 
 Key reports:
@@ -1331,6 +1341,7 @@ Key reports:
 - [`artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json`](artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json)
 - [`artifacts/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility_report.json`](artifacts/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility_report.json)
 - [`artifacts/bea_v1_n10as_exploratory_span_window_variant_sweep/bea_v1_n10as_exploratory_span_window_variant_sweep_report.json`](artifacts/bea_v1_n10as_exploratory_span_window_variant_sweep/bea_v1_n10as_exploratory_span_window_variant_sweep_report.json)
+- [`artifacts/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package_report.json`](artifacts/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package_report.json)
 
 Documentation mirror check:
 
