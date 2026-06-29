@@ -1,0 +1,271 @@
+{
+  "adapter_package_records": [
+    {
+      "adapter_imported_bool": true,
+      "adapter_package_bucket": "refined_hybrid_adapter_smoke_public_package",
+      "anonymous_adapter_package_id": "n10cppackage0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "file_hit_top10_count": 34,
+      "helper_via_adapter_bool": true,
+      "lost_winning_top10_hits": 0,
+      "matched_n10cn_n10cm_expected_bool": true,
+      "n10co_private_span_rows_read": 213,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "short75_225_top2_all_pm200"
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_claim_boundary_id": "n10cpclaim0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "claim_boundary_bucket": "same_source_adapter_smoke_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_claim_bool": false,
+      "same_source_n1_proxy_only_bool": true
+    }
+  ],
+  "claim_level": "public_refined_hybrid_adapter_smoke_package_only",
+  "default_off_boundary_records": [
+    {
+      "adapter_default_enabled_bool": false,
+      "anonymous_default_off_boundary_id": "n10cpdefault0000",
+      "default_off_boundary_bucket": "packaged_from_n10co",
+      "default_off_boundary_valid_bool": true,
+      "implementation_smoke_only_bool": true,
+      "policy_default_changed_bool": false,
+      "private_read_by_default_bool": false,
+      "runtime_config_changed_bool": false,
+      "runtime_default_enabled_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "default_off_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_existing_hook",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T23:45:48Z",
+  "generated_by": "bea_v1_n10cp_refined_hybrid_adapter_smoke_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10cpin0000",
+      "expected_status": "refined_hybrid_adapter_smoke_pass_n10cp_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10co_refined_adapter_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "refined_hybrid_adapter_smoke_pass_n10cp_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cpin0001",
+      "expected_status": "winning_hybrid_cost_refinement_package_complete_n10co_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cn_refinement_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_cost_refinement_package_complete_n10co_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cpin0002",
+      "expected_status": "winning_hybrid_cost_reduction_refinement_sweep_complete_n10cn_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cm_refinement_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_cost_reduction_refinement_sweep_complete_n10cn_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cpin0003",
+      "expected_status": "winning_hybrid_adapter_package_complete_n10cm_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cl_winning_adapter_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_adapter_package_complete_n10cm_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cpin0004",
+      "expected_status": "winning_hybrid_adapter_smoke_pass_n10cl_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ck_winning_adapter_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_adapter_smoke_pass_n10cl_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10cq_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10cq_handoff_id": "n10cphandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "decision_scope_bucket": "continued_cost_quality_exploration_or_formal_default_off_variant_evaluator",
+      "existing_evaluator_hook_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10cq_authorized_bool": true,
+      "n10cq_handoff_bucket": "n10cq_next_decision_authorized",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_hook_records": [
+    {
+      "adapter_module_modified_by_n10co_bool": false,
+      "anonymous_no_hook_id": "n10cphook0000",
+      "existing_evaluator_hook_in_bool": false,
+      "existing_validated_evaluator_modified_bool": false,
+      "helper_module_modified_by_n10co_bool": false,
+      "hook_boundary_bucket": "no_existing_evaluator_runtime_retrieval_selector_hook",
+      "no_hook_boundary_valid_bool": true,
+      "retrieval_hook_in_bool": false,
+      "runtime_hook_in_bool": false,
+      "selector_reranker_hook_in_bool": false
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10cpnorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "heldout_claim_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_adapter_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CP Refined Hybrid Adapter Smoke Public Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10cpprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "public_adapter_smoke_package_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10cp_refined_hybrid_adapter_smoke_package.v1",
+  "self_test_checks_passed": 13,
+  "self_test_checks_total": 13,
+  "self_test_passed": true,
+  "status": "refined_hybrid_adapter_package_complete_n10cq_authorized",
+  "status_vocabulary": [
+    "refined_hybrid_adapter_package_complete_n10cq_authorized",
+    "no_go_n10cp_required_public_inputs_unavailable",
+    "no_go_n10cp_adapter_chain_mismatch",
+    "no_go_n10cp_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10cq_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10cq_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CQ Refined Hybrid Next-Step Decision",
+      "next_allowed_scope_bucket": "choose_cost_quality_exploration_or_formal_default_off_variant_evaluator",
+      "p5_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

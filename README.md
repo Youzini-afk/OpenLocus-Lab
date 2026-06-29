@@ -28,18 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CO: Default-Off Adapter Smoke for Refined Hybrid**:
+The latest closed phase is **BEA-v1-N10CP: Refined Hybrid Adapter Smoke Public Package**:
 
 ```text
-status: refined_hybrid_adapter_smoke_pass_n10cp_authorized
-self-test: 16 / 16
+status: refined_hybrid_adapter_package_complete_n10cq_authorized
+self-test: 13 / 13
 forbidden scan: pass
 refined result: short75_225_top2_all_pm200, 25 / 31 at 3200 / 6200
 lost winning top10 hits: 0
 file-hit top10 count: 34
-private span rows read: 213
+private reads in N10CP: 0
+recomputes in N10CP: 0
 adapter default enabled: false
-next allowed phase: BEA-v1-N10CP Refined Hybrid Adapter Smoke Package
+next allowed phase: BEA-v1-N10CQ Refined Hybrid Next-Step Decision
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -840,6 +841,12 @@ refined hybrid `short75_225_top2_all_pm200`: 25/31 at cost10/cost20 3200/6200,
 pool/order. It does not enable runtime/default behavior or hook existing
 evaluators, and authorizes only N10CP public adapter-smoke package.
 
+N10CP packages the N10CO adapter smoke publicly without private reads or recompute.
+It confirms the refined hybrid aggregate, the default-off adapter boundary, and no
+existing evaluator/runtime/retrieval/selector hook. It authorizes only N10CQ
+next-step decision between continued cost/quality exploration and a formal
+default-off variant evaluator for the refined hybrid.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1495,6 +1502,11 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
   value claims.
+- N10CP authorizes only N10CQ refined-hybrid next-step decision. It does not
+  authorize runtime/default enablement, existing evaluator hook-in,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
+  value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2003,6 +2015,10 @@ eval/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package.py
 eval/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke.py
   Default-off adapter smoke for `short75_225_top2_all_pm200`; reproduces the
   refined aggregate and authorizes only N10CP public package.
+
+eval/bea_v1_n10cp_refined_hybrid_adapter_smoke_package.py
+  Public package of N10CO refined-hybrid adapter smoke; authorizes only N10CQ
+  next-step decision.
 ```
 
 Key reports:
@@ -2103,6 +2119,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep_report.json`](artifacts/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep/bea_v1_n10cm_winning_hybrid_cost_reduction_refinement_sweep_report.json)
 - [`artifacts/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package_report.json`](artifacts/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package_report.json)
 - [`artifacts/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke_report.json`](artifacts/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke_report.json)
+- [`artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json`](artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json)
 
 Documentation mirror check:
 
