@@ -28,18 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BF: Cost-Aware Operating-Point Decision Smoke Audit Package**:
+The latest closed phase is **BEA-v1-N10BG: Cost-Aware Decisions vs Fixed-pm50 Comparator**:
 
 ```text
-status: cost_aware_budget_decision_package_complete_n10bg_authorized
-self-test: 13 / 13
+status: cost_aware_decisions_vs_fixed_pm50_comparator_complete_n10bh_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10BF: 0
-recomputes in N10BF: 0
-strict_budget: low_cost pm30 18/22 cost 600
-moderate_budget: balanced before25_after75 20/24 cost 1000
-recall_budget: max_recall pm200 25/30 cost 4000
-next allowed phase: BEA-v1-N10BG Cost-Aware Decisions vs Fixed-pm50 Comparator
+fixed pm50: 19/23 cost 1000
+strict_budget pm30: 18/22, -1/-1 vs pm50, cost delta -400
+moderate_budget before25_after75: 20/24, +1/+1 vs pm50, cost delta 0
+recall_budget pm200: 25/30, +6/+7 vs pm50, cost delta +3000
+next allowed phase: BEA-v1-N10BH Cost-Aware Comparator Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -1476,6 +1475,10 @@ eval/bea_v1_n10be_cost_aware_operating_point_decision_smoke.py
 eval/bea_v1_n10bf_cost_aware_budget_decision_package.py
   Public package of N10BE budget-conditioned decisions; authorizes only N10BG
   fixed-pm50 comparator smoke.
+
+eval/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator.py
+  Direct comparator of budget-conditioned decisions against fixed pm50;
+  authorizes only N10BH public comparator package.
 ```
 
 Key reports:
@@ -1541,6 +1544,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bd_operating_point_tradeoff_package/bea_v1_n10bd_operating_point_tradeoff_package_report.json`](artifacts/bea_v1_n10bd_operating_point_tradeoff_package/bea_v1_n10bd_operating_point_tradeoff_package_report.json)
 - [`artifacts/bea_v1_n10be_cost_aware_operating_point_decision_smoke/bea_v1_n10be_cost_aware_operating_point_decision_smoke_report.json`](artifacts/bea_v1_n10be_cost_aware_operating_point_decision_smoke/bea_v1_n10be_cost_aware_operating_point_decision_smoke_report.json)
 - [`artifacts/bea_v1_n10bf_cost_aware_budget_decision_package/bea_v1_n10bf_cost_aware_budget_decision_package_report.json`](artifacts/bea_v1_n10bf_cost_aware_budget_decision_package/bea_v1_n10bf_cost_aware_budget_decision_package_report.json)
+- [`artifacts/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator_report.json`](artifacts/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator/bea_v1_n10bg_cost_aware_decisions_vs_fixed_pm50_comparator_report.json)
 
 Documentation mirror check:
 
