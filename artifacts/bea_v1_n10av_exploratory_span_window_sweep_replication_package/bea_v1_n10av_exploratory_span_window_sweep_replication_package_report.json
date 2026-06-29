@@ -1,0 +1,258 @@
+{
+  "claim_boundary_records": [
+    {
+      "allowed_claim_same_source_exploratory_frontier_replicated_bool": true,
+      "anonymous_claim_boundary_id": "n10avclaim0000",
+      "claim_boundary_bucket": "same_source_exploratory_n1_proxy_replication_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n1_span_surface_proxy_only_bool": true,
+      "n2_equivalent_claim_bool": false,
+      "p5_or_v1a_claim_bool": false,
+      "retrieval_or_rerun_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "public_replication_package_same_source_exploratory_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "frontier_summary_records": [
+    {
+      "anonymous_frontier_summary_id": "n10avfront0000",
+      "n10as_n10au_metric_match_bool": true,
+      "same_source_exploratory_only_bool": true,
+      "tier_bucket": "low_cost_frontier_point",
+      "top10_cost_proxy_bucket": "low",
+      "top10_cost_proxy_value": 600,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_frontier_summary_id": "n10avfront0001",
+      "n10as_n10au_metric_match_bool": true,
+      "same_source_exploratory_only_bool": true,
+      "tier_bucket": "balanced_frontier_point",
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1000,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_frontier_summary_id": "n10avfront0002",
+      "n10as_n10au_metric_match_bool": true,
+      "same_source_exploratory_only_bool": true,
+      "tier_bucket": "balanced_frontier_point",
+      "top10_cost_proxy_bucket": "medium",
+      "top10_cost_proxy_value": 1500,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm75"
+    },
+    {
+      "anonymous_frontier_summary_id": "n10avfront0003",
+      "n10as_n10au_metric_match_bool": true,
+      "same_source_exploratory_only_bool": true,
+      "tier_bucket": "max_recall_frontier_point",
+      "top10_cost_proxy_bucket": "very_high",
+      "top10_cost_proxy_value": 4000,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    }
+  ],
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "replication_chain_complete",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "frontier_summary_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "independent_recompute_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T18:35:37Z",
+  "generated_by": "bea_v1_n10av_exploratory_span_window_sweep_replication_package",
+  "independent_recompute_match_records": [
+    {
+      "all_15_variant_aggregate_match_bool": true,
+      "anonymous_independent_recompute_match_id": "n10avmatch0000",
+      "frontier_tier_match_bool": true,
+      "independent_recompute_match_bool": true,
+      "match_status_bucket": "match",
+      "n10as_evaluator_called_bool": false,
+      "n10as_evaluator_imported_bool": false
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10avin0000",
+      "expected_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10as_exploratory_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10avin0001",
+      "expected_status": "exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10at_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_audit_package_complete_n10au_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10avin0002",
+      "expected_status": "independent_recompute_span_window_variant_sweep_pass_n10av_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10au_independent_recompute_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "independent_recompute_span_window_variant_sweep_pass_n10av_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "next_research_options_records": [
+    {
+      "anonymous_next_research_option_id": "n10avopt0000",
+      "authorized_for_immediate_execution_bool": false,
+      "next_option_bucket": "cost_sensitive_window_mechanism_decomposition",
+      "option_condition_bucket": "public_or_scoped_preflight_required"
+    },
+    {
+      "anonymous_next_research_option_id": "n10avopt0001",
+      "authorized_for_immediate_execution_bool": false,
+      "next_option_bucket": "default_off_adapter_variant_over_selected_frontier_points",
+      "option_condition_bucket": "explicit_scope_required"
+    },
+    {
+      "anonymous_next_research_option_id": "n10avopt0002",
+      "authorized_for_immediate_execution_bool": false,
+      "next_option_bucket": "broader_replay_or_heldout_validation",
+      "option_condition_bucket": "requires_new_source_authorization_or_data"
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10avnorecompute0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_sweep_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_replication_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0,
+      "variant_recompute_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AV Exploratory Span-Window Variant Sweep Replication Package",
+  "replication_chain_records": [
+    {
+      "anonymous_replication_chain_id": "n10avchain0000",
+      "n10as_sweep_complete_bool": true,
+      "n10at_public_audit_complete_bool": true,
+      "n10au_all_15_aggregate_match_bool": true,
+      "n10au_independent_recompute_complete_bool": true,
+      "replication_chain_bucket": "n10as_to_n10at_to_n10au",
+      "replication_chain_complete_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10av_exploratory_span_window_sweep_replication_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "exploratory_span_window_sweep_replication_package_complete_n10aw_authorized",
+  "status_vocabulary": [
+    "exploratory_span_window_sweep_replication_package_complete_n10aw_authorized",
+    "no_go_n10av_required_public_inputs_unavailable",
+    "no_go_n10av_replication_chain_mismatch",
+    "no_go_n10av_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10aw_followup_selection_audit_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_validation_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10aw_authorized": true,
+      "new_sweep_authorized": false,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AW Exploratory Span-Window Follow-Up Selection Audit",
+      "next_allowed_scope_bucket": "mechanism_or_cost_focused_followup_selection_audit_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false,
+      "variant_recompute_authorized": false
+    }
+  ]
+}
