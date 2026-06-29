@@ -1,0 +1,280 @@
+{
+  "budget_decision_package_records": [
+    {
+      "adaptive_per_case_selection_bool": false,
+      "anonymous_budget_decision_package_id": "n10bfdecision0000",
+      "budget_bucket": "strict_budget",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "low",
+      "cost_proxy_value": 600,
+      "delta_top10_vs_baseline_count": 9,
+      "delta_top20_vs_baseline_count": 12,
+      "max_cost_proxy": 600,
+      "n10be_match_bool": true,
+      "new_window_size_bool": false,
+      "runtime_default_recommendation_bool": false,
+      "selected_operating_point_bucket": "low_cost",
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "adaptive_per_case_selection_bool": false,
+      "anonymous_budget_decision_package_id": "n10bfdecision0001",
+      "budget_bucket": "moderate_budget",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "medium",
+      "cost_proxy_value": 1000,
+      "delta_top10_vs_baseline_count": 11,
+      "delta_top20_vs_baseline_count": 14,
+      "max_cost_proxy": 1000,
+      "n10be_match_bool": true,
+      "new_window_size_bool": false,
+      "runtime_default_recommendation_bool": false,
+      "selected_operating_point_bucket": "balanced",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "adaptive_per_case_selection_bool": false,
+      "anonymous_budget_decision_package_id": "n10bfdecision0002",
+      "budget_bucket": "recall_budget",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "very_high",
+      "cost_proxy_value": 4000,
+      "delta_top10_vs_baseline_count": 16,
+      "delta_top20_vs_baseline_count": 20,
+      "max_cost_proxy": 4000,
+      "n10be_match_bool": true,
+      "new_window_size_bool": false,
+      "runtime_default_recommendation_bool": false,
+      "selected_operating_point_bucket": "max_recall",
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "adaptive_selection_claim_bool": false,
+      "allowed_claim_budget_decision_packaged_bool": true,
+      "anonymous_claim_boundary_id": "n10bfclaim0000",
+      "claim_boundary_bucket": "same_source_budget_decision_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_variant_claim_bool": false,
+      "p5_or_v1a_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "public_budget_decision_package_only",
+  "comparator_scope_records": [
+    {
+      "adaptive_selection_authorized_bool": false,
+      "anonymous_comparator_scope_id": "n10bfcomp0000",
+      "comparator_bucket": "n10bg_fixed_pm50_comparator_scope",
+      "cost_proxy_delta_vs_pm50_bool": true,
+      "decision_points_to_compare_count": 3,
+      "delta_vs_pm50_bool": true,
+      "dominance_bucket_output_bool": true,
+      "fixed_pm50_comparator_bool": true,
+      "lost_original_span_hits_bool": true,
+      "new_variant_authorized_bool": false,
+      "runtime_default_recommendation_authorized_bool": false,
+      "top10_top20_metrics_bool": true
+    }
+  ],
+  "decision_boundary_records": [
+    {
+      "adaptive_per_case_selection_count": 0,
+      "anonymous_decision_boundary_id": "n10bfboundary0000",
+      "decision_boundary_bucket": "public_budget_decision_package_not_runtime_default",
+      "decision_boundary_match_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_variant_count": 0,
+      "research_decision_only_bool": true,
+      "runtime_default_promotion_bool": false,
+      "runtime_default_recommendation_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "budget_decision_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "decision_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T19:46:21Z",
+  "generated_by": "bea_v1_n10bf_cost_aware_budget_decision_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bfin0000",
+      "expected_status": "cost_aware_operating_point_decision_smoke_complete_n10bf_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10be_budget_decision_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_operating_point_decision_smoke_complete_n10bf_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bfin0001",
+      "expected_status": "operating_point_tradeoff_package_complete_n10be_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bd_tradeoff_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "operating_point_tradeoff_package_complete_n10be_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bfin0002",
+      "expected_status": "operating_point_tradeoff_decomposition_complete_n10bd_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bc_tradeoff_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "operating_point_tradeoff_decomposition_complete_n10bd_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bfin0003",
+      "expected_status": "cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bb_selection_rule_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bfin0004",
+      "expected_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ba_selection_rule_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bg_handoff_records": [
+    {
+      "adaptive_selection_authorized_bool": false,
+      "anonymous_n10bg_handoff_id": "n10bfhandoff0000",
+      "compare_against_fixed_pm50_bool": true,
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bg_authorized_bool": true,
+      "n10bg_handoff_bucket": "n10bg_cost_aware_decisions_vs_pm50_comparator_authorized",
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": true,
+      "runtime_default_authorized_bool": false,
+      "same_scoped_n1_rows_authorized_bool": true
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_selection_count": 0,
+      "anonymous_no_recompute_id": "n10bfnorecompute0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_budget_decision_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BF Cost-Aware Operating-Point Decision Smoke Audit Package",
+  "schema_version": "bea_v1_n10bf_cost_aware_budget_decision_package.v1",
+  "self_test_checks_passed": 13,
+  "self_test_checks_total": 13,
+  "self_test_passed": true,
+  "status": "cost_aware_budget_decision_package_complete_n10bg_authorized",
+  "status_vocabulary": [
+    "cost_aware_budget_decision_package_complete_n10bg_authorized",
+    "no_go_n10bf_required_public_inputs_unavailable",
+    "no_go_n10bf_budget_decision_chain_mismatch",
+    "no_go_n10bf_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_selection_authorized": false,
+      "authorization": "n10bg_cost_aware_decisions_vs_fixed_pm50_comparator_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bg_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BG Cost-Aware Decisions vs Fixed-pm50 Comparator",
+      "next_allowed_scope_bucket": "same_scoped_rows_compare_budget_decisions_against_fixed_pm50",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_default_recommendation_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

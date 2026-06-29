@@ -149,6 +149,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10bc-operating-point-tradeoff-decomposition.md`: [en](en/bea-v1-n10bc-operating-point-tradeoff-decomposition.md) · [zh](zh/bea-v1-n10bc-operating-point-tradeoff-decomposition.md)
 - `bea-v1-n10bd-operating-point-tradeoff-package.md`: [en](en/bea-v1-n10bd-operating-point-tradeoff-package.md) · [zh](zh/bea-v1-n10bd-operating-point-tradeoff-package.md)
 - `bea-v1-n10be-cost-aware-operating-point-decision-smoke.md`: [en](en/bea-v1-n10be-cost-aware-operating-point-decision-smoke.md) · [zh](zh/bea-v1-n10be-cost-aware-operating-point-decision-smoke.md)
+- `bea-v1-n10bf-cost-aware-budget-decision-package.md`: [en](en/bea-v1-n10bf-cost-aware-budget-decision-package.md) · [zh](zh/bea-v1-n10bf-cost-aware-budget-decision-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

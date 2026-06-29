@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BE: Cost-Aware Operating-Point Decision Smoke**:
+The latest closed phase is **BEA-v1-N10BF: Cost-Aware Operating-Point Decision Smoke Audit Package**:
 
 ```text
-status: cost_aware_operating_point_decision_smoke_complete_n10bf_authorized
-self-test: 16 / 16
+status: cost_aware_budget_decision_package_complete_n10bg_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private span rows read: 213
+private reads in N10BF: 0
+recomputes in N10BF: 0
 strict_budget: low_cost pm30 18/22 cost 600
 moderate_budget: balanced before25_after75 20/24 cost 1000
 recall_budget: max_recall pm200 25/30 cost 4000
-next allowed phase: BEA-v1-N10BF Cost-Aware Operating-Point Decision Smoke Audit Package
+next allowed phase: BEA-v1-N10BG Cost-Aware Decisions vs Fixed-pm50 Comparator
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -631,6 +632,11 @@ selects max_recall/pm200 at 25/30 with cost 4000. It is a research decision smok
 only, not a runtime/default recommendation, and authorizes only N10BF public audit
 package.
 
+N10BF packages the N10BE budget decisions publicly without private reads or
+recompute. It confirms strict/moderate/recall mappings and keeps the boundary as a
+research decision only. It authorizes only N10BG comparison of those decisions
+against the original fixed pm50 comparator over the same scoped rows.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1097,6 +1103,11 @@ See the current report index:
   adaptive selection, heldout/generalization, method-winner/downstream claims,
   retrieval/rerun, candidate generation, selector/reranker execution, P5, or
   BEA-v1-A.
+- N10BF authorizes only N10BG cost-aware decisions vs fixed-pm50 comparator. It
+  does not authorize runtime/default recommendation, broad private reads, new
+  variants, adaptive selection, heldout/generalization, method-winner/downstream
+  claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
+  or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1461,6 +1472,10 @@ eval/bea_v1_n10bd_operating_point_tradeoff_package.py
 eval/bea_v1_n10be_cost_aware_operating_point_decision_smoke.py
   Direct budget-bucket decision smoke over strict/moderate/recall operating
   points; authorizes only N10BF public audit package.
+
+eval/bea_v1_n10bf_cost_aware_budget_decision_package.py
+  Public package of N10BE budget-conditioned decisions; authorizes only N10BG
+  fixed-pm50 comparator smoke.
 ```
 
 Key reports:
@@ -1525,6 +1540,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bc_operating_point_tradeoff_decomposition/bea_v1_n10bc_operating_point_tradeoff_decomposition_report.json`](artifacts/bea_v1_n10bc_operating_point_tradeoff_decomposition/bea_v1_n10bc_operating_point_tradeoff_decomposition_report.json)
 - [`artifacts/bea_v1_n10bd_operating_point_tradeoff_package/bea_v1_n10bd_operating_point_tradeoff_package_report.json`](artifacts/bea_v1_n10bd_operating_point_tradeoff_package/bea_v1_n10bd_operating_point_tradeoff_package_report.json)
 - [`artifacts/bea_v1_n10be_cost_aware_operating_point_decision_smoke/bea_v1_n10be_cost_aware_operating_point_decision_smoke_report.json`](artifacts/bea_v1_n10be_cost_aware_operating_point_decision_smoke/bea_v1_n10be_cost_aware_operating_point_decision_smoke_report.json)
+- [`artifacts/bea_v1_n10bf_cost_aware_budget_decision_package/bea_v1_n10bf_cost_aware_budget_decision_package_report.json`](artifacts/bea_v1_n10bf_cost_aware_budget_decision_package/bea_v1_n10bf_cost_aware_budget_decision_package_report.json)
 
 Documentation mirror check:
 
