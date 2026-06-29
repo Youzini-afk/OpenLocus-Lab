@@ -28,19 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CD: Observable Span-Shape Gated Expansion Audit Package**:
+The latest closed phase is **BEA-v1-N10CE: Span-Shape Gated Refinement Sweep**:
 
 ```text
-status: observable_span_shape_package_complete_n10ce_authorized
+status: span_shape_gated_refinement_sweep_complete_n10cf_authorized
 self-test: 15 / 15
 forbidden scan: pass
-private reads in N10CD: 0
-recomputes in N10CD: 0
+private span rows read: 213
 variant count: 12
-cost-efficient preserve-anchor variants: 0
-recall-improves-anchor variants: 4
-positive variants: short_only_before50_after150 and short_medium_before50_after150 at 22 / 27
-next allowed phase: BEA-v1-N10CE Span-Shape Refinement Sweep
+cheaper-preserves-short-anchor variants: 0
+recall-improves-short-anchor variants: 2
+best below-pm200 short-only variant: short_only_before75_after225 at 24 / 30, cost10 3000
+next allowed phase: BEA-v1-N10CF Span-Shape Gated Refinement Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -779,6 +778,12 @@ large expansion gated by observable short span shape improves over cost80 at
 lower top10 cost than pm200 all-spans. It authorizes only N10CE span-shape
 refinement on the same scoped rows with fixed/predeclared variants.
 
+N10CE refines that short-span gated signal with 12 fixed variants. It finds no
+cheaper variant preserving the 22/27 short50/150 anchor, but it identifies a
+same-source recall ladder: short-only 60/180 reaches 23/27 at cost10 2400 and
+short-only 75/225 reaches 24/30 at cost10 3000, still below pm200 all-spans
+cost10 4000. It authorizes only N10CF public audit/package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1377,6 +1382,11 @@ See the current report index:
   add/remove/reorder, cluster/bridge execution, adaptive tuning,
   selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
   downstream-value claims.
+- N10CE authorizes only N10CF public span-shape refinement audit/package. It does
+  not authorize private reads, new variants, runtime/default promotion,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, cluster/bridge execution, adaptive tuning, selector/reranker execution,
+  P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1842,6 +1852,10 @@ eval/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke.py
 eval/bea_v1_n10cd_observable_span_shape_audit_package.py
   Public package of the N10CC observable span-shape positive signal; authorizes
   only N10CE span-shape refinement.
+
+eval/bea_v1_n10ce_span_shape_gated_refinement_sweep.py
+  Same-source refinement of short-span gated expansion variants; authorizes only
+  N10CF public audit/package.
 ```
 
 Key reports:
@@ -1931,6 +1945,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cb_cluster_bridge_audit_package/bea_v1_n10cb_cluster_bridge_audit_package_report.json`](artifacts/bea_v1_n10cb_cluster_bridge_audit_package/bea_v1_n10cb_cluster_bridge_audit_package_report.json)
 - [`artifacts/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke_report.json`](artifacts/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke/bea_v1_n10cc_observable_span_shape_gated_expansion_smoke_report.json)
 - [`artifacts/bea_v1_n10cd_observable_span_shape_audit_package/bea_v1_n10cd_observable_span_shape_audit_package_report.json`](artifacts/bea_v1_n10cd_observable_span_shape_audit_package/bea_v1_n10cd_observable_span_shape_audit_package_report.json)
+- [`artifacts/bea_v1_n10ce_span_shape_gated_refinement_sweep/bea_v1_n10ce_span_shape_gated_refinement_sweep_report.json`](artifacts/bea_v1_n10ce_span_shape_gated_refinement_sweep/bea_v1_n10ce_span_shape_gated_refinement_sweep_report.json)
 
 Documentation mirror check:
 
