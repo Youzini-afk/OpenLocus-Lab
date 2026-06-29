@@ -169,6 +169,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10bw-adapter-operating-point-smoke.md`: [en](en/bea-v1-n10bw-adapter-operating-point-smoke.md) · [zh](zh/bea-v1-n10bw-adapter-operating-point-smoke.md)
 - `bea-v1-n10bx-adapter-operating-point-package.md`: [en](en/bea-v1-n10bx-adapter-operating-point-package.md) · [zh](zh/bea-v1-n10bx-adapter-operating-point-package.md)
 - `bea-v1-n10by-same-source-cost-efficient-span-window-policy-sweep.md`: [en](en/bea-v1-n10by-same-source-cost-efficient-span-window-policy-sweep.md) · [zh](zh/bea-v1-n10by-same-source-cost-efficient-span-window-policy-sweep.md)
+- `bea-v1-n10bz-cost-efficient-policy-sweep-audit-package.md`: [en](en/bea-v1-n10bz-cost-efficient-policy-sweep-audit-package.md) · [zh](zh/bea-v1-n10bz-cost-efficient-policy-sweep-audit-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

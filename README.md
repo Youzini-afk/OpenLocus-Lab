@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BY: Same-Source Cost-Efficient Span-Window Policy Sweep**:
+The latest closed phase is **BEA-v1-N10BZ: Same-Source Cost-Efficient Policy Sweep Audit Package**:
 
 ```text
-status: same_source_cost_efficient_span_window_policy_sweep_complete_n10bz_authorized
-self-test: 16 / 16
+status: cost_efficient_policy_sweep_package_complete_n10ca_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10BZ: 0
+recomputes in N10BZ: 0
 variant count: 12
 cost-reduction successes: 0
 recall-improvement successes: 0
 best observed variant: anchor_cost80_before20_after60
 best observed top10/top20: 20 / 24
-next allowed phase: BEA-v1-N10BZ Same-Source Cost-Efficient Policy Sweep Audit Package
+next allowed phase: BEA-v1-N10CA Next Mechanism Search Outside Fixed-Window Family
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -747,6 +748,12 @@ rules: lower-cost fixed variants and rank-conditioned policies lose at least one
 anchor top10 hit or reduce top20, while top20-only matches 20/24 without lowering
 top10 cost. It authorizes only N10BZ public audit/package.
 
+N10BZ packages the N10BY sweep publicly without private reads or recompute. It
+locks the negative finding that no tested fixed-window cost-efficient policy
+improves beyond the cost80 anchor on the same-source N1 rows. This is useful
+negative research, not a stop condition; it authorizes only N10CA next mechanism
+search outside the fixed-window family.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1318,6 +1325,11 @@ See the current report index:
   reads, extra sweeps, new variants, adaptive tuning, runtime/default promotion,
   heldout/generalization claims, method/downstream claims, retrieval/rerun,
   candidate generation, selector/reranker execution, P5, or BEA-v1-A.
+- N10BZ authorizes only N10CA next mechanism search outside the fixed-window
+  family, same-source empirical if possible. It does not authorize runtime/default
+  promotion, heldout/generalization claims, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1762,6 +1774,10 @@ eval/bea_v1_n10bx_adapter_operating_point_package.py
 eval/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep.py
   Same-source exploratory sweep of 12 predeclared cost-efficient span-window
   policies; authorizes only N10BZ public audit/package.
+
+eval/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package.py
+  Public package of the N10BY negative fixed-window policy sweep; authorizes only
+  N10CA next mechanism search outside the fixed-window family.
 ```
 
 Key reports:
@@ -1846,6 +1862,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json`](artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json)
 - [`artifacts/bea_v1_n10bx_adapter_operating_point_package/bea_v1_n10bx_adapter_operating_point_package_report.json`](artifacts/bea_v1_n10bx_adapter_operating_point_package/bea_v1_n10bx_adapter_operating_point_package_report.json)
 - [`artifacts/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep_report.json`](artifacts/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep/bea_v1_n10by_same_source_cost_efficient_span_window_policy_sweep_report.json)
+- [`artifacts/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package_report.json`](artifacts/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package/bea_v1_n10bz_cost_efficient_policy_sweep_audit_package_report.json)
 
 Documentation mirror check:
 
