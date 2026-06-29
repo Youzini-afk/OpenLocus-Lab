@@ -103,6 +103,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n6xr-explicit-bounded-candidate-pool-recapture-smoke.md`: [en](en/bea-v1-n6xr-explicit-bounded-candidate-pool-recapture-smoke.md) · [zh](zh/bea-v1-n6xr-explicit-bounded-candidate-pool-recapture-smoke.md)
 - `bea-v1-n6xfr-explicit-full-frozen-candidate-pool-reconstruction-capture.md`: [en](en/bea-v1-n6xfr-explicit-full-frozen-candidate-pool-reconstruction-capture.md) · [zh](zh/bea-v1-n6xfr-explicit-full-frozen-candidate-pool-reconstruction-capture.md)
 - `bea-v1-n6xfrb-local-reconstruction-prerequisite-recovery.md`: [en](en/bea-v1-n6xfrb-local-reconstruction-prerequisite-recovery.md) · [zh](zh/bea-v1-n6xfrb-local-reconstruction-prerequisite-recovery.md)
+- `bea-v1-n6xfrc-cargo-dependency-fetch-release-binary-build-recovery.md`: [en](en/bea-v1-n6xfrc-cargo-dependency-fetch-release-binary-build-recovery.md) · [zh](zh/bea-v1-n6xfrc-cargo-dependency-fetch-release-binary-build-recovery.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
 - `bea-v1-p0-4-support-link-input-design.md`: [en](en/bea-v1-p0-4-support-link-input-design.md) · [zh](zh/bea-v1-p0-4-support-link-input-design.md)

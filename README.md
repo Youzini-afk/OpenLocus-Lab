@@ -28,17 +28,16 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N6XFR-B: Local Reconstruction Prerequisite Recovery**:
+The latest closed phase is **BEA-v1-N6XFR-C: Cargo Dependency Fetch and Release Binary Build Recovery**:
 
 ```text
-status: no_go_n6xfrb_build_requires_unapproved_network
+status: partial_n6xfrc_binary_built_private_inputs_missing
 self-test: 15 / 15
 forbidden scan: pass
-workspace / Cargo metadata present: true
-cargo registry cache available: false
-crates.io dependency fetch required: true
-build attempted: false
-private FD1/P4L inputs available: false
+binary exists after build: true
+binary available after recovery: true
+cargo exit code bucket: zero
+raw cargo log public: false
 N6X-FR canary authorized: false
 ```
 
@@ -347,6 +346,11 @@ require an unapproved crates.io/static.crates.io dependency fetch. N6XFR-B does
 not run cargo build and still records FD1/P4L/N-series private reconstruction
 inputs as unavailable.
 
+N6XFR-C applies the newly authorized narrow build-recovery scope and runs exactly
+the release build command for `openlocus-cli`. The build succeeds and creates the
+release binary bucket, but FD1/P4L/N-series private reconstruction inputs are
+still unavailable, so N6X-FR canary/full capture remains unauthorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -582,6 +586,11 @@ See the current report index:
   retrieval, full rerun, network/git clone, private reads, selector/reranker
   execution, policy/runtime changes, counterfactuals, P5, BEA-v1-A,
   method-winner claims, or downstream-value claims.
+- N6XFR-C authorizes no N6X-FR canary/full capture because private FD1/P4L inputs
+  remain unavailable even though the release binary was built. It does not
+  authorize retrieval, full rerun, benchmark repository clone, OpenLocus binary
+  execution, private reads, selector/reranker execution, policy/runtime changes,
+  counterfactuals, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -749,6 +758,10 @@ eval/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture.py
 eval/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery.py
   Local prerequisite recovery smoke; No-Go because cargo build would require
   unapproved dependency-fetch network and private inputs remain unavailable.
+
+eval/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery.py
+  Scoped cargo dependency-fetch and release binary build recovery; partial
+  because private reconstruction inputs remain unavailable.
 ```
 
 Key reports:
@@ -766,6 +779,7 @@ Key reports:
 - [`artifacts/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke_report.json`](artifacts/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke_report.json)
 - [`artifacts/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture_report.json`](artifacts/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture_report.json)
 - [`artifacts/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery_report.json`](artifacts/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery_report.json)
+- [`artifacts/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery_report.json`](artifacts/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery_report.json)
 
 Documentation mirror check:
 
