@@ -28,19 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AJ: Default-Off Eval-Only Span Projection Adapter Patch**:
+The latest closed phase is **BEA-v1-N10AK: Eval-Only Adapter Public Fixture Integration Audit Package**:
 
 ```text
-status: default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized
-self-test: 16 / 16
+status: eval_only_adapter_public_fixture_audit_package_complete_n10al_authorized
+self-test: 13 / 13
 forbidden scan: pass
-adapter functions: 2
-synthetic projections: 8
+N10AJ adapter status: pass
+N10AI target: future_eval_only_span_projection_adapter
+N10AH helper status: pass
+synthetic projection checks: 8 / 8
 private reads: 0
-filesystem IO: 0
-existing evaluator hook-in: false
-runtime/default config changed: false
-next allowed phase: BEA-v1-N10AK Eval-Only Adapter Public Fixture Integration Audit Package
+empirical recomputes: 0
+next allowed phase: BEA-v1-N10AL Scoped Eval-Only Adapter Integration Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -501,6 +501,11 @@ and order, returns unchanged non-mutating copies when disabled, and expands only
 `start_line`/`end_line` when explicitly enabled. It uses synthetic fixtures only
 and authorizes only N10AK public/synthetic fixture audit.
 
+N10AK packages the public/synthetic adapter chain. It confirms N10AJ adapter patch,
+N10AI target selection, and N10AH helper validity without private reads or empirical
+metric recompute. It authorizes only N10AL scoped eval-only adapter integration
+smoke.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -853,6 +858,10 @@ See the current report index:
   enablement, private reads by default, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
   downstream-value claims.
+- N10AK authorizes only N10AL scoped eval-only adapter integration smoke. It does
+  not authorize existing evaluator hook-in, runtime/default enablement, private
+  reads by default, retrieval/rerun, candidate generation, selector/reranker
+  execution, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1131,6 +1140,10 @@ eval/bea_v1_span_window_projection_adapter.py
 eval/bea_v1_n10aj_default_off_eval_only_span_projection_adapter_patch.py
   Synthetic patch smoke for the adapter; authorizes only N10AK public fixture
   integration audit package.
+
+eval/bea_v1_n10ak_eval_only_adapter_public_fixture_audit_package.py
+  Public/synthetic audit package for the N10AH/N10AI/N10AJ adapter chain;
+  authorizes only N10AL scoped eval-only integration smoke.
 ```
 
 Key reports:
@@ -1174,6 +1187,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_report.json`](artifacts/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_report.json)
 - [`artifacts/bea_v1_n10ai_default_off_span_window_helper_integration_preflight/bea_v1_n10ai_default_off_span_window_helper_integration_preflight_report.json`](artifacts/bea_v1_n10ai_default_off_span_window_helper_integration_preflight/bea_v1_n10ai_default_off_span_window_helper_integration_preflight_report.json)
 - [`artifacts/bea_v1_n10aj_default_off_eval_only_span_projection_adapter_patch/bea_v1_n10aj_default_off_eval_only_span_projection_adapter_patch_report.json`](artifacts/bea_v1_n10aj_default_off_eval_only_span_projection_adapter_patch/bea_v1_n10aj_default_off_eval_only_span_projection_adapter_patch_report.json)
+- [`artifacts/bea_v1_n10ak_eval_only_adapter_public_fixture_audit_package/bea_v1_n10ak_eval_only_adapter_public_fixture_audit_package_report.json`](artifacts/bea_v1_n10ak_eval_only_adapter_public_fixture_audit_package/bea_v1_n10ak_eval_only_adapter_public_fixture_audit_package_report.json)
 
 Documentation mirror check:
 
