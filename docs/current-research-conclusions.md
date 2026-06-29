@@ -160,6 +160,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10bn-local-refinement-package.md`: [en](en/bea-v1-n10bn-local-refinement-package.md) · [zh](zh/bea-v1-n10bn-local-refinement-package.md)
 - `bea-v1-n10bo-plateau-mechanism-decomposition.md`: [en](en/bea-v1-n10bo-plateau-mechanism-decomposition.md) · [zh](zh/bea-v1-n10bo-plateau-mechanism-decomposition.md)
 - `bea-v1-n10bp-plateau-mechanism-package.md`: [en](en/bea-v1-n10bp-plateau-mechanism-package.md) · [zh](zh/bea-v1-n10bp-plateau-mechanism-package.md)
+- `bea-v1-n10bq-plateau-cost-minimization-sweep.md`: [en](en/bea-v1-n10bq-plateau-cost-minimization-sweep.md) · [zh](zh/bea-v1-n10bq-plateau-cost-minimization-sweep.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

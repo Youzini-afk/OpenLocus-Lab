@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BP: Plateau Mechanism Package**:
+The latest closed phase is **BEA-v1-N10BQ: Plateau Cost-Minimization Sweep**:
 
 ```text
-status: plateau_mechanism_package_complete_n10bq_authorized
-self-test: 14 / 14
+status: plateau_cost_minimization_sweep_complete_n10br_authorized
+self-test: 17 / 17
 forbidden scan: pass
-private reads in N10BP: 0
-recomputes in N10BP: 0
-top10/top20 common across plateau: 20 / 24
-top10/top20 union across plateau: 20 / 24
-case-swap count: 0
-next allowed phase: BEA-v1-N10BQ Plateau Cost-Minimization Sweep
+private span rows read: 213
+variant count: 20
+minimum cost preserving plateau: 80
+cost60 preserves plateau: false
+cost80 preserves plateau: true (1 variant)
+next allowed phase: BEA-v1-N10BR Plateau Cost-Minimization Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -689,6 +689,12 @@ recompute. It locks the stable plateau facts (all five variants at 20/24,
 common=union, unique cases=0, lost pm50=0) and authorizes only N10BQ plateau
 cost-minimization sweep across the stable ratio family and four fixed total costs.
 
+N10BQ runs the authorized plateau cost-minimization sweep over 20 predeclared
+variants: the five stable plateau ratios across total costs 60, 80, 100, and 120.
+Cost 60 does not preserve the plateau (best 19/23); cost 80 preserves it with one
+variant (`cost80_before25_after75`, 20/24); costs 100 and 120 preserve it for all
+five ratios. It authorizes only N10BR public cost-minimization package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1214,6 +1220,11 @@ See the current report index:
   behavior, heldout/generalization claims, method/downstream claims,
   retrieval/rerun, candidate generation, selector/reranker execution, P5, or
   BEA-v1-A.
+- N10BQ authorizes only N10BR public cost-minimization package. It does not
+  authorize private reads, adaptive tuning, new ratios outside the family,
+  runtime/default behavior, heldout/generalization claims, method/downstream
+  claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
+  or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1622,6 +1633,10 @@ eval/bea_v1_n10bo_plateau_mechanism_decomposition.py
 eval/bea_v1_n10bp_plateau_mechanism_package.py
   Public package of N10BO stable plateau facts; authorizes only N10BQ plateau
   cost-minimization sweep.
+
+eval/bea_v1_n10bq_plateau_cost_minimization_sweep.py
+  Direct 20-variant plateau cost-minimization sweep; authorizes only N10BR public
+  cost-minimization package.
 ```
 
 Key reports:
@@ -1697,6 +1712,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bn_local_refinement_package/bea_v1_n10bn_local_refinement_package_report.json`](artifacts/bea_v1_n10bn_local_refinement_package/bea_v1_n10bn_local_refinement_package_report.json)
 - [`artifacts/bea_v1_n10bo_plateau_mechanism_decomposition/bea_v1_n10bo_plateau_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bo_plateau_mechanism_decomposition/bea_v1_n10bo_plateau_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10bp_plateau_mechanism_package/bea_v1_n10bp_plateau_mechanism_package_report.json`](artifacts/bea_v1_n10bp_plateau_mechanism_package/bea_v1_n10bp_plateau_mechanism_package_report.json)
+- [`artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json`](artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json)
 
 Documentation mirror check:
 
