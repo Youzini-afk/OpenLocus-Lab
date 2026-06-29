@@ -1,0 +1,347 @@
+{
+  "aggregate_runtime_seconds": 1.783,
+  "claim_level": "independent_recompute_n1_span_surface_proxy_only",
+  "comparison_to_n10t_records": [
+    {
+      "anonymous_comparison_to_n10t_id": "n10vcmp0000",
+      "comparison_bucket": "n10t_public_aggregate_match",
+      "comparison_match_bool": true,
+      "independent_best_arm_bucket": "span_extra_depth_promote_before_primary_prefix_4",
+      "independent_best_case_regression_count_vs_baseline": 0,
+      "independent_best_delta_top10_vs_baseline": 34,
+      "independent_best_top10_file_reach_count": 34,
+      "independent_best_top20_file_reach_count": 44,
+      "independent_eligible_denominator_count": 213,
+      "independent_reachable_in_pool_count": 52,
+      "source_best_arm_bucket": "span_extra_depth_promote_before_primary_prefix_4",
+      "source_best_case_regression_count_vs_baseline": 0,
+      "source_best_delta_top10_vs_baseline": 34,
+      "source_best_top10_file_reach_count": 34,
+      "source_best_top20_file_reach_count": 44,
+      "source_eligible_denominator_count": 213,
+      "source_reachable_in_pool_count": 52
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 213,
+      "value": 213
+    },
+    {
+      "gate": "eligible_denominator_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 213,
+      "value": 213
+    },
+    {
+      "gate": "reachable_in_pool_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 52,
+      "value": 52
+    },
+    {
+      "gate": "best_top10_file_reach_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 34,
+      "value": 34
+    },
+    {
+      "gate": "best_top20_file_reach_count",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 44,
+      "value": 44
+    },
+    {
+      "gate": "best_delta_top10_vs_baseline",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 34,
+      "value": 34
+    },
+    {
+      "gate": "best_regressions",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 0,
+      "value": 0
+    },
+    {
+      "gate": "comparison_to_n10t",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T14:56:37Z",
+  "generated_by": "bea_v1_n10v_independent_recompute_n1_span_surface_proxy",
+  "independent_recompute_records": [
+    {
+      "anonymous_independent_recompute_id": "n10vrecompute0000",
+      "baseline_top10_file_reach_count": 0,
+      "baseline_top20_file_reach_count": 0,
+      "best_arm_bucket": "span_extra_depth_promote_before_primary_prefix_4",
+      "best_case_regression_count_vs_baseline": 0,
+      "best_delta_top10_vs_baseline": 34,
+      "best_top10_file_reach_count": 34,
+      "best_top20_file_reach_count": 44,
+      "candidate_pool_changed_bool": false,
+      "case_regression_threshold": 3,
+      "delta_top10_threshold": 11,
+      "eligible_denominator_count": 213,
+      "gold_used_for_ordering_bool": false,
+      "n10t_code_called_bool": false,
+      "new_arm_search_bool": false,
+      "reachable_in_pool_count": 52,
+      "recompute_bucket": "independent_same_span_rows_same_four_arms",
+      "recompute_matches_expected_bool": true,
+      "threshold_passed_bool": true,
+      "transform_implemented_independently_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10vin0000",
+      "expected_status": "n1_span_surface_proxy_result_audit_pass_n10v_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10u_proxy_result_audit_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_proxy_result_audit_pass_n10v_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10vin0001",
+      "expected_status": "n1_span_surface_rank_order_proxy_validation_pass_n10u_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10t_proxy_validation_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_rank_order_proxy_validation_pass_n10u_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10vin0002",
+      "expected_status": "no_go_n10r_target_denominator_insufficient",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10r_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "no_go_n10r_target_denominator_insufficient"
+    },
+    {
+      "anonymous_input_artifact_id": "n10vin0003",
+      "expected_status": "recovered_fixed_pool_result_replication_package_complete",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n9_replication_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "recovered_fixed_pool_result_replication_package_complete"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10w_handoff_records": [
+    {
+      "anonymous_n10w_handoff_id": "n10vhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10w_handoff_bucket": "n10w_public_replication_package_authorized",
+      "n10w_replication_package_authorized_bool": true,
+      "public_replication_package_scope_only_bool": true,
+      "runtime_default_promotion_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_execution_id": "n10vnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "counterfactual_execution_count": 0,
+      "default_change_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "n10t_code_call_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "single_private_span_read_independent_proxy_recompute",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p4l_n1_n2_n3_rerun_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "support_labeling_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "per_arm_independent_result_records": [
+    {
+      "anonymous_per_arm_independent_result_id": "n10vres0000",
+      "arm_bucket": "baseline_n1_span_order",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "case_regression_count_vs_baseline": 0,
+      "delta_top10_vs_baseline": 0,
+      "eligible_denominator_count": 213,
+      "reachable_in_pool_count": 52,
+      "result_status_bucket": "independent_proxy_no_gain",
+      "top10_file_reach_count": 0,
+      "top20_file_reach_count": 0
+    },
+    {
+      "anonymous_per_arm_independent_result_id": "n10vres0001",
+      "arm_bucket": "span_extra_depth_promote_before_primary_prefix_4",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "case_regression_count_vs_baseline": 0,
+      "delta_top10_vs_baseline": 34,
+      "eligible_denominator_count": 213,
+      "reachable_in_pool_count": 52,
+      "result_status_bucket": "independent_proxy_threshold_candidate",
+      "top10_file_reach_count": 34,
+      "top20_file_reach_count": 44
+    },
+    {
+      "anonymous_per_arm_independent_result_id": "n10vres0002",
+      "arm_bucket": "span_bounded_interleave_primary2_extra1",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "case_regression_count_vs_baseline": 0,
+      "delta_top10_vs_baseline": 17,
+      "eligible_denominator_count": 213,
+      "reachable_in_pool_count": 52,
+      "result_status_bucket": "independent_proxy_threshold_candidate",
+      "top10_file_reach_count": 17,
+      "top20_file_reach_count": 22
+    },
+    {
+      "anonymous_per_arm_independent_result_id": "n10vres0003",
+      "arm_bucket": "span_late_extra_depth_demote_after_primary_prefix_8",
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "case_regression_count_vs_baseline": 0,
+      "delta_top10_vs_baseline": 0,
+      "eligible_denominator_count": 213,
+      "reachable_in_pool_count": 52,
+      "result_status_bucket": "independent_proxy_no_gain",
+      "top10_file_reach_count": 0,
+      "top20_file_reach_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10V Independent Recompute N1 Span-Surface Proxy",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10vprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_counts_only_no_span_or_path_content",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_span_recompute_input_records": [
+    {
+      "anonymous_private_span_recompute_input_id": "n10vpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_file_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "same_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "same_private_span_rows_read_bool": true,
+      "schema_valid_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10v_independent_recompute_n1_span_surface_proxy.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "independent_recompute_n1_span_surface_proxy_pass_n10w_authorized",
+  "status_vocabulary": [
+    "independent_recompute_n1_span_surface_proxy_pass_n10w_authorized",
+    "no_go_n10v_required_inputs_unavailable",
+    "no_go_n10v_private_span_rows_missing",
+    "no_go_n10v_recompute_mismatch",
+    "no_go_n10v_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10w_replication_package_authorized",
+      "broad_private_read_authorized": false,
+      "counterfactual_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10w_replication_package_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10W N1 Span-Surface Proxy Replication Package",
+      "next_allowed_scope_bucket": "n10w_public_package_only",
+      "p5_authorized": false,
+      "policy_change_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
