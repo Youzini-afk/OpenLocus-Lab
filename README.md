@@ -28,20 +28,21 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CK: Default-Off Adapter Smoke for Winning Hybrid**:
+The latest closed phase is **BEA-v1-N10CL: Winning Hybrid Adapter Smoke Public Package**:
 
 ```text
-status: winning_hybrid_adapter_smoke_pass_n10cl_authorized
-self-test: 16 / 16
+status: winning_hybrid_adapter_package_complete_n10cm_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private span rows read: 213
+private reads in N10CL: 0
+recomputes in N10CL: 0
 winning hybrid: short75_225_top3_all_pm200
 top10/top20 span overlap: 25 / 31
 cost10/cost20: 3300 / 6300
 lost short75/225 hits: 0
 file-hit top10 count: 34
 candidate pool/order changed: false
-next allowed phase: BEA-v1-N10CL Winning Hybrid Adapter Smoke Package
+next allowed phase: BEA-v1-N10CM Winning Hybrid Next-Step Decision
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -820,6 +821,12 @@ short75/225 hits and unchanged candidate pool/order. It does not modify runtime
 defaults or hook existing validated evaluators, and authorizes only N10CL public
 adapter-smoke package.
 
+N10CL packages the N10CK adapter smoke publicly without private reads or recompute.
+It confirms the default-off adapter/helper path reproduced the winning hybrid,
+that default/runtime settings and existing evaluator hooks remain unchanged, and
+authorizes only N10CM next-step decision between continued mechanism exploration
+and a formal default-off variant evaluator.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1455,6 +1462,11 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
   value claims.
+- N10CL authorizes only N10CM winning-hybrid next-step decision. It does not
+  authorize runtime/default enablement, existing evaluator hook-in,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
+  value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1948,6 +1960,9 @@ eval/bea_v1_n10cj_winning_hybrid_replication_package.py
 eval/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke.py
   Default-off adapter smoke for `short75_225_top3_all_pm200`; reproduces the
   winning aggregate and authorizes only N10CL public package.
+
+eval/bea_v1_n10cl_winning_hybrid_adapter_smoke_package.py
+  Public package of N10CK adapter smoke; authorizes only N10CM next-step decision.
 ```
 
 Key reports:
@@ -2044,6 +2059,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ci_independent_recompute_winning_hybrid/bea_v1_n10ci_independent_recompute_winning_hybrid_report.json`](artifacts/bea_v1_n10ci_independent_recompute_winning_hybrid/bea_v1_n10ci_independent_recompute_winning_hybrid_report.json)
 - [`artifacts/bea_v1_n10cj_winning_hybrid_replication_package/bea_v1_n10cj_winning_hybrid_replication_package_report.json`](artifacts/bea_v1_n10cj_winning_hybrid_replication_package/bea_v1_n10cj_winning_hybrid_replication_package_report.json)
 - [`artifacts/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke_report.json`](artifacts/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke/bea_v1_n10ck_default_off_adapter_winning_hybrid_smoke_report.json)
+- [`artifacts/bea_v1_n10cl_winning_hybrid_adapter_smoke_package/bea_v1_n10cl_winning_hybrid_adapter_smoke_package_report.json`](artifacts/bea_v1_n10cl_winning_hybrid_adapter_smoke_package/bea_v1_n10cl_winning_hybrid_adapter_smoke_package_report.json)
 
 Documentation mirror check:
 
