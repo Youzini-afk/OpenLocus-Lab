@@ -142,6 +142,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10av-exploratory-span-window-sweep-replication-package.md`: [en](en/bea-v1-n10av-exploratory-span-window-sweep-replication-package.md) · [zh](zh/bea-v1-n10av-exploratory-span-window-sweep-replication-package.md)
 - `bea-v1-n10aw-cost-sensitive-span-window-frontier-mechanism-decomposition.md`: [en](en/bea-v1-n10aw-cost-sensitive-span-window-frontier-mechanism-decomposition.md) · [zh](zh/bea-v1-n10aw-cost-sensitive-span-window-frontier-mechanism-decomposition.md)
 - `bea-v1-n10ax-cost-sensitive-frontier-claim-package.md`: [en](en/bea-v1-n10ax-cost-sensitive-frontier-claim-package.md) · [zh](zh/bea-v1-n10ax-cost-sensitive-frontier-claim-package.md)
+- `bea-v1-n10ay-cost-aware-adapter-frontier-smoke.md`: [en](en/bea-v1-n10ay-cost-aware-adapter-frontier-smoke.md) · [zh](zh/bea-v1-n10ay-cost-aware-adapter-frontier-smoke.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AX: Cost-Sensitive Frontier Claim Package**:
+The latest closed phase is **BEA-v1-N10AY: Cost-Aware Adapter Frontier Smoke**:
 
 ```text
-status: cost_sensitive_frontier_claim_package_complete_n10ay_authorized
-self-test: 14 / 14
+status: cost_aware_adapter_frontier_smoke_pass_n10az_authorized
+self-test: 15 / 15
 forbidden scan: pass
-private reads: 0
-recomputes: 0
-new variants: 0
-frontier package: baseline 9/10; pm30 18/22 low; before25_after75 20/24 medium; pm75 21/25 medium; pm200 25/30 very_high
-next allowed phase: BEA-v1-N10AY Cost-Aware Adapter Frontier Smoke
+private span rows read: 213
+adapter imported: true
+frontier adapter metrics: pm30 18/22; before25_after75 20/24; pm75 21/25; pm200 25/30
+locked aggregate match: true
+next allowed phase: BEA-v1-N10AZ Cost-Aware Adapter Frontier Smoke Result Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -587,6 +587,12 @@ extra gains remain before/after gold-window gap recovery. It authorizes only N10
 cost-aware adapter frontier smoke over the same scoped rows and adapter/helper
 imports.
 
+N10AY executes that cost-aware adapter frontier smoke over the same scoped N1 rows.
+Using the default-off eval-only adapter path and no existing evaluator/runtime
+hook-in, it reproduces the locked frontier aggregates: pm30 18/22,
+before25_after75 20/24, pm75 21/25, and pm200 25/30, with candidate pool/order
+unchanged and zero lost original hits. It authorizes only N10AZ public audit/package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1018,6 +1024,12 @@ See the current report index:
   heldout/generalization, method-winner/downstream claims, retrieval/rerun,
   candidate generation/materialization, selector/reranker execution, P5, BEA-v1-A,
   new variants, or adaptive tuning.
+- N10AY authorizes only N10AZ public adapter frontier smoke audit/package. It does
+  not authorize additional private reads, existing evaluator hook-in,
+  runtime/default promotion, new variants, adaptive tuning, retrieval/rerun,
+  candidate generation/materialization, selector/reranker execution, P5,
+  BEA-v1-A, method-winner claims, downstream-value claims, or
+  heldout/generalization claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1354,6 +1366,10 @@ eval/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition.py
 eval/bea_v1_n10ax_cost_sensitive_frontier_claim_package.py
   Public claim package for N10AW/N10AV/N10AU/N10AS cost-sensitive frontier facts;
   authorizes only N10AY cost-aware adapter frontier smoke.
+
+eval/bea_v1_n10ay_cost_aware_adapter_frontier_smoke.py
+  Direct empirical adapter smoke over locked cost-aware frontier tiers; matches
+  N10AW/N10AV aggregates and authorizes only N10AZ public audit/package.
 ```
 
 Key reports:
@@ -1411,6 +1427,7 @@ Key reports:
 - [`artifacts/bea_v1_n10av_exploratory_span_window_sweep_replication_package/bea_v1_n10av_exploratory_span_window_sweep_replication_package_report.json`](artifacts/bea_v1_n10av_exploratory_span_window_sweep_replication_package/bea_v1_n10av_exploratory_span_window_sweep_replication_package_report.json)
 - [`artifacts/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition_report.json`](artifacts/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10ax_cost_sensitive_frontier_claim_package/bea_v1_n10ax_cost_sensitive_frontier_claim_package_report.json`](artifacts/bea_v1_n10ax_cost_sensitive_frontier_claim_package/bea_v1_n10ax_cost_sensitive_frontier_claim_package_report.json)
+- [`artifacts/bea_v1_n10ay_cost_aware_adapter_frontier_smoke/bea_v1_n10ay_cost_aware_adapter_frontier_smoke_report.json`](artifacts/bea_v1_n10ay_cost_aware_adapter_frontier_smoke/bea_v1_n10ay_cost_aware_adapter_frontier_smoke_report.json)
 
 Documentation mirror check:
 

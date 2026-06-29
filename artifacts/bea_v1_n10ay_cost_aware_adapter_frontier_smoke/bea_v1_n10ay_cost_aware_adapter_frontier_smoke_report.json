@@ -1,0 +1,312 @@
+{
+  "adapter_import_records": [
+    {
+      "adapter_import_bucket": "default_off_eval_only_projection_adapter",
+      "adapter_imported_bool": true,
+      "adapter_path_for_symmetric_variants_bool": true,
+      "anonymous_adapter_import_id": "n10ayadapter0000",
+      "existing_evaluator_called_bool": false,
+      "existing_evaluator_hook_in_bool": false,
+      "existing_evaluator_imported_bool": false,
+      "fixed_local_projection_for_asymmetric_frontier_bool": true,
+      "forbidden_import_or_hook_detected_bool": false,
+      "helper_imported_via_adapter_bool": true,
+      "runtime_default_hook_bool": false
+    }
+  ],
+  "claim_level": "same_source_adapter_frontier_smoke_only",
+  "comparison_records": [
+    {
+      "all_frontier_aggregates_match_bool": true,
+      "all_frontier_variant_count": 4,
+      "anonymous_comparison_id": "n10aycompare0000",
+      "comparison_bucket": "n10aw_n10av_locked_frontier_aggregate_match",
+      "n10au_n10as_expected_values_matched_bool": true,
+      "n10av_expected_values_matched_bool": true,
+      "n10aw_expected_values_matched_bool": true
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "frontier_adapter_result_records": [
+    {
+      "anonymous_frontier_adapter_result_id": "n10ayfront0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "low",
+      "cost_proxy_value": 600,
+      "expected_match_bool": true,
+      "expected_top10_span_overlap_count": 18,
+      "expected_top20_span_overlap_count": 22,
+      "original_span_hit_lost_count": 0,
+      "top10_span_overlap_count": 18,
+      "top20_span_overlap_count": 22,
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_frontier_adapter_result_id": "n10ayfront0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "medium",
+      "cost_proxy_value": 1000,
+      "expected_match_bool": true,
+      "expected_top10_span_overlap_count": 20,
+      "expected_top20_span_overlap_count": 24,
+      "original_span_hit_lost_count": 0,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_frontier_adapter_result_id": "n10ayfront0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "medium",
+      "cost_proxy_value": 1500,
+      "expected_match_bool": true,
+      "expected_top10_span_overlap_count": 21,
+      "expected_top20_span_overlap_count": 25,
+      "original_span_hit_lost_count": 0,
+      "top10_span_overlap_count": 21,
+      "top20_span_overlap_count": 25,
+      "variant_bucket": "pm75"
+    },
+    {
+      "anonymous_frontier_adapter_result_id": "n10ayfront0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "very_high",
+      "cost_proxy_value": 4000,
+      "expected_match_bool": true,
+      "expected_top10_span_overlap_count": 25,
+      "expected_top20_span_overlap_count": 30,
+      "original_span_hit_lost_count": 0,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "pm200"
+    }
+  ],
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_import_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "frontier_results_match",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "comparison_to_locked_aggregates",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T18:59:15Z",
+  "generated_by": "bea_v1_n10ay_cost_aware_adapter_frontier_smoke",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10ayin0000",
+      "expected_status": "cost_sensitive_frontier_claim_package_complete_n10ay_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ax_claim_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_sensitive_frontier_claim_package_complete_n10ay_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10ayin0001",
+      "expected_status": "cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aw_mechanism_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10ayin0002",
+      "expected_status": "exploratory_span_window_sweep_replication_package_complete_n10aw_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10av_replication_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_sweep_replication_package_complete_n10aw_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10ayin0003",
+      "expected_status": "independent_recompute_span_window_variant_sweep_pass_n10av_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10au_independent_recompute_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "independent_recompute_span_window_variant_sweep_pass_n10av_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10ayin0004",
+      "expected_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10as_exploratory_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "exploratory_span_window_variant_sweep_complete_n10at_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10az_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10az_handoff_id": "n10ayhandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10az_handoff_bucket": "n10az_public_audit_package_authorized",
+      "n10az_public_audit_package_authorized_bool": true,
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10aynoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "downstream_value_claim_count": 0,
+      "existing_evaluator_hook_in_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_variant_count": 0,
+      "no_execution_boundary_bucket": "adapter_frontier_smoke_same_scoped_rows_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_hook_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AY Cost-Aware Adapter Frontier Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10ayprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_counts_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10aypriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "single_scoped_private_input_read_bool": true,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10ay_cost_aware_adapter_frontier_smoke.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "cost_aware_adapter_frontier_smoke_pass_n10az_authorized",
+  "status_vocabulary": [
+    "cost_aware_adapter_frontier_smoke_pass_n10az_authorized",
+    "no_go_n10ay_required_inputs_unavailable",
+    "no_go_n10ay_private_span_rows_missing",
+    "no_go_n10ay_adapter_frontier_result_mismatch",
+    "no_go_n10ay_forbidden_import_or_hook_detected",
+    "no_go_n10ay_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10az_public_audit_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10az_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AZ Cost-Aware Adapter Frontier Smoke Result Audit Package",
+      "next_allowed_scope_bucket": "public_audit_package_only",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
