@@ -547,6 +547,15 @@ bounded acquisition path: no distinct heldout denominator is declared, no expect
 row count >=50 is available, and recovered N1/P4L/N2 surfaces are same-source,
 consumer-only, or require broader replay. N10AR remains unauthorized.
 
+N10 heldout validation is therefore closed for the current local state. Further
+N10AR-style validation requires one of three concrete inputs before any new
+execution: (1) supplied heldout span-surface rows with ordered evidence and gold
+line ranges for at least 50 rows; (2) an explicitly scoped frozen replay command
+with a declared denominator distinct from the N10 source; or (3) explicit
+authorization for broader benchmark replay/retrieval. Without one of those, do
+not continue autonomous heldout discovery/preflight phases from the same local
+artifacts.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
