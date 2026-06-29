@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CI: Independent Recompute of Winning Hybrid**:
+The latest closed phase is **BEA-v1-N10CJ: Winning Hybrid Public Replication Package**:
 
 ```text
-status: winning_hybrid_independent_recompute_pass_n10cj_authorized
-self-test: 16 / 16
+status: winning_hybrid_replication_package_complete_n10ck_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private span rows read: 213
+private reads in N10CJ: 0
+recomputes in N10CJ: 0
 winning hybrid: short75_225_top3_all_pm200
 top10/top20 span overlap: 25 / 31
 cost10/cost20: 3300 / 6300
 lost short75/225 hits: 0
-N10CG code call count: 0
-next allowed phase: BEA-v1-N10CJ Winning Hybrid Replication Package
+N10CI / N10CG aggregate match: true
+next allowed phase: BEA-v1-N10CK Default-Off Adapter Smoke for Winning Hybrid
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -808,6 +809,11 @@ calling N10CG code. It matches N10CG/N10CH exactly: 25/31 at cost10/cost20
 3300/6300, with 0 lost short75/225 hits and unchanged candidate pool/order. It
 authorizes only N10CJ public replication package.
 
+N10CJ packages the N10CG/N10CH/N10CI winning-hybrid chain publicly without private
+reads or recompute. It confirms the `short75_225_top3_all_pm200` result and the
+independent recompute match, and authorizes only N10CK default-off adapter smoke
+for the winning hybrid.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1433,6 +1439,11 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, adaptive tuning, selector/reranker execution, P5, BEA-v1-A,
   method-winner claims, or downstream-value claims.
+- N10CJ authorizes only N10CK default-off adapter smoke for the winning hybrid. It
+  does not authorize runtime/default enablement, existing evaluator hook-in,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
+  value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1918,6 +1929,10 @@ eval/bea_v1_n10ch_observable_hybrid_rule_audit_package.py
 eval/bea_v1_n10ci_independent_recompute_winning_hybrid.py
   Independent recompute of `short75_225_top3_all_pm200`; matches N10CG/N10CH and
   authorizes only N10CJ public replication package.
+
+eval/bea_v1_n10cj_winning_hybrid_replication_package.py
+  Public package of the winning hybrid replication chain; authorizes only N10CK
+  default-off adapter smoke.
 ```
 
 Key reports:
@@ -2012,6 +2027,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep_report.json`](artifacts/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep_report.json)
 - [`artifacts/bea_v1_n10ch_observable_hybrid_rule_audit_package/bea_v1_n10ch_observable_hybrid_rule_audit_package_report.json`](artifacts/bea_v1_n10ch_observable_hybrid_rule_audit_package/bea_v1_n10ch_observable_hybrid_rule_audit_package_report.json)
 - [`artifacts/bea_v1_n10ci_independent_recompute_winning_hybrid/bea_v1_n10ci_independent_recompute_winning_hybrid_report.json`](artifacts/bea_v1_n10ci_independent_recompute_winning_hybrid/bea_v1_n10ci_independent_recompute_winning_hybrid_report.json)
+- [`artifacts/bea_v1_n10cj_winning_hybrid_replication_package/bea_v1_n10cj_winning_hybrid_replication_package_report.json`](artifacts/bea_v1_n10cj_winning_hybrid_replication_package/bea_v1_n10cj_winning_hybrid_replication_package_report.json)
 
 Documentation mirror check:
 
