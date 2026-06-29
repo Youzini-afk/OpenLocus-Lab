@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N6XR: Explicit Bounded Candidate-Pool Recapture Smoke**:
+The latest closed phase is **BEA-v1-N6X-FR: Explicit Full-Frozen Candidate-Pool Reconstruction Capture Preflight**:
 
 ```text
-status: no_go_n6xr_requires_full_rerun_or_unavailable_mapping
-self-test: 19 / 19
+status: no_go_n6xfr_local_prerequisites_unavailable
+self-test: 18 / 18
 forbidden scan: pass
-N4 case count: 40
-N5 arm count: 4
-bounded replay command identified: false
-public arm outcome rows written: 0
-N7 authorized: false
-retrieval/full rerun/private read: false
+openlocus binary available: false
+FD1 private decomposition available: false
+P4L private source available: false
+local prerequisites available: false
+execution attempted: false
+network/git clone/replay: false
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -333,6 +333,13 @@ reconstruction over 272 records with network, repository clones, OpenLocus
 baseline retrieval, and full rerun scope, which is outside the bounded 40-case
 N6XR authorization. The result is a data-surface No-Go, not a method failure.
 
+N6X-FR introduces the first explicitly broader full-frozen reconstruction capture
+boundary, but the default local checkpoint is preflight-only. It verifies public
+N4/N5/N6/N6F/N6G/N6XR/P4L/N2 artifacts and local prerequisite buckets without
+running network, clone, OpenLocus binary execution, or replay. The default run is
+No-Go because the release binary and required private reconstruction inputs are
+not locally available under scanner-safe preflight.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -557,6 +564,11 @@ See the current report index:
   full rerun, retrieval, private reads, candidate-pool generation/materialization,
   selector/reranker execution, policy/runtime changes, counterfactuals, P5,
   BEA-v1-A, method-winner claims, or downstream-value claims.
+- N6X-FR authorizes no next phase in the default local checkpoint because full-
+  frozen reconstruction prerequisites are unavailable. It does not authorize N7,
+  canary/full-40 execution, retrieval, full rerun, network/git clone, private
+  reads, selector/reranker execution, policy/runtime changes, counterfactuals,
+  P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -716,6 +728,10 @@ eval/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit.py
 eval/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke.py
   Fail-closed bounded candidate-pool recapture smoke; No-Go because the bounded
   40-case replay mapping is unavailable without full P4L reconstruction.
+
+eval/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture.py
+  Preflight-only full-frozen reconstruction capture boundary; No-Go when local
+  binary/private reconstruction prerequisites are unavailable.
 ```
 
 Key reports:
@@ -731,7 +747,7 @@ Key reports:
 - [`artifacts/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design_report.json`](artifacts/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design/bea_v1_n6f_fixed_pool_public_arm_field_materialization_design_report.json)
 - [`artifacts/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit_report.json`](artifacts/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit_report.json)
 - [`artifacts/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke_report.json`](artifacts/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke/bea_v1_n6xr_explicit_bounded_candidate_pool_recapture_smoke_report.json)
-- [`artifacts/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit_report.json`](artifacts/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit/bea_v1_n6g_fixed_pool_arm_field_source_discovery_audit_report.json)
+- [`artifacts/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture_report.json`](artifacts/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture_report.json)
 
 Documentation mirror check:
 
