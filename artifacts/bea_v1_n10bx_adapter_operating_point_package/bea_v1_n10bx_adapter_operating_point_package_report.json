@@ -1,0 +1,278 @@
+{
+  "adapter_boundary_package_records": [
+    {
+      "adapter_imported_bool": true,
+      "adapter_path_bucket": "default_off_eval_only_adapter_operating_point",
+      "anonymous_adapter_boundary_package_id": "n10bxbnd0000",
+      "boundary_match_bool": true,
+      "existing_evaluator_called_bool": false,
+      "existing_evaluator_hook_in_bool": false,
+      "existing_evaluator_imported_bool": false,
+      "helper_imported_via_adapter_bool": true,
+      "n10bs_expected_values_matched_bool": true,
+      "n10bt_expected_values_matched_bool": true,
+      "n10bu_expected_values_matched_bool": true,
+      "package_bucket": "default_off_adapter_boundary",
+      "runtime_default_hook_bool": false
+    }
+  ],
+  "adapter_operating_point_package_records": [
+    {
+      "after_window_count": 60,
+      "anonymous_adapter_operating_point_package_id": "n10bxop0000",
+      "before_window_count": 20,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy": 80,
+      "file_hit_top10_count": 34,
+      "lost_plateau_core_top10_count": 0,
+      "n10bw_match_bool": true,
+      "n10bw_private_span_rows_read_count": 213,
+      "operating_point_bucket": "cost80_before25_after75",
+      "package_bucket": "adapter_operating_point_cost80_before25_after75",
+      "private_read_count_in_n10bx": 0,
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "allowed_claim_adapter_reproduces_cost80_operating_point_bool": true,
+      "anonymous_claim_boundary_id": "n10bxclaim0000",
+      "claim_boundary_bucket": "public_adapter_operating_point_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "existing_evaluator_hook_in_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_variant_count": 0,
+      "runtime_default_promotion_bool": false,
+      "runtime_default_recommendation_bool": false
+    }
+  ],
+  "claim_level": "public_adapter_operating_point_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_operating_point_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_boundary_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T21:44:35Z",
+  "generated_by": "bea_v1_n10bx_adapter_operating_point_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bxin0000",
+      "expected_status": "adapter_operating_point_smoke_pass_n10bx_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bw_adapter_operating_point_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "adapter_operating_point_smoke_pass_n10bx_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bxin0001",
+      "expected_status": "boundary_case_mechanism_package_complete_n10bw_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bv_boundary_case_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_case_mechanism_package_complete_n10bw_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bxin0002",
+      "expected_status": "boundary_cost_package_complete_n10bu_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bt_boundary_cost_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_cost_package_complete_n10bu_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bxin0003",
+      "expected_status": "boundary_cost_refinement_sweep_complete_n10bt_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bs_boundary_cost_refinement_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_cost_refinement_sweep_complete_n10bt_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bxin0004",
+      "expected_status": "boundary_case_mechanism_decomposition_complete_n10bv_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bu_boundary_case_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_case_mechanism_decomposition_complete_n10bv_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bxin0005",
+      "expected_status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ao_adapter_variant_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10by_handoff_records": [
+    {
+      "anonymous_n10by_handoff_id": "n10bxhandoff0000",
+      "candidate_generation_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "generalization_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "increase_recall_at_modest_cost_option_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "n10by_authorized_bool": true,
+      "n10by_handoff_bucket": "n10by_same_source_exploratory_optimization_authorized",
+      "p5_v1a_authorized_bool": false,
+      "reduce_cost_below_80_option_bool": true,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "same_source_scoped_n1_rows_only_bool": true
+    }
+  ],
+  "next_research_options_records": [
+    {
+      "anonymous_next_research_option_id": "n10bxopt0000",
+      "heldout_or_generalization_claim_bool": false,
+      "next_research_option_bucket": "reduce_cost_below_80_without_losing_20_24",
+      "runtime_default_claim_bool": false,
+      "same_source_exploratory_bool": true,
+      "scoped_n1_span_rows_only_bool": true
+    },
+    {
+      "anonymous_next_research_option_id": "n10bxopt0001",
+      "heldout_or_generalization_claim_bool": false,
+      "next_research_option_bucket": "increase_top10_top20_beyond_20_24_at_modest_cost",
+      "runtime_default_claim_bool": false,
+      "same_source_exploratory_bool": true,
+      "scoped_n1_span_rows_only_bool": true
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "anonymous_no_recompute_id": "n10bxnorecompute0000",
+      "candidate_generation_count": 0,
+      "no_recompute_boundary_bucket": "public_adapter_operating_point_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BX Adapter Operating-Point Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10bxprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "hash_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "public_adapter_operating_point_aggregate_package_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10bx_adapter_operating_point_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "adapter_operating_point_package_complete_n10by_authorized",
+  "status_vocabulary": [
+    "adapter_operating_point_package_complete_n10by_authorized",
+    "no_go_n10bx_required_public_inputs_unavailable",
+    "no_go_n10bx_adapter_operating_point_chain_mismatch",
+    "no_go_n10bx_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10by_exploratory_optimization_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10by_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10BY Cost-Aware Operating-Point Exploratory Optimization",
+      "next_allowed_scope_bucket": "same_source_scoped_n1_rows_exploratory_only",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

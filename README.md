@@ -28,18 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BW: Adapter Operating-Point Smoke for cost80_before25_after75**:
+The latest closed phase is **BEA-v1-N10BX: Adapter Operating-Point Package**:
 
 ```text
-status: adapter_operating_point_smoke_pass_n10bx_authorized
-self-test: 15 / 15
+status: adapter_operating_point_package_complete_n10by_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10BX: 0
+recomputes in N10BX: 0
 operating point: cost80_before25_after75
 before/after windows: 20 / 60
 top10/top20 span overlap: 20 / 24
 lost plateau core: 0
-next allowed phase: BEA-v1-N10BX Adapter Operating-Point Package
+next allowed phase: BEA-v1-N10BY Cost-Aware Operating-Point Exploratory Optimization
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -734,6 +735,12 @@ plateau core 0, file-hit top10 count 34, and candidate pool/order unchanged. It
 does not hook existing evaluators or runtime/default behavior, and authorizes only
 N10BX public adapter operating-point package.
 
+N10BX packages the N10BW adapter operating-point smoke publicly without private
+reads or recompute. It locks the default-off adapter path, cost80 before/after
+20/60 counts, top10/top20 20/24, lost plateau core 0, file-hit top10 count 34,
+and N10BS/N10BT/N10BU aggregate match. It authorizes only same-source exploratory
+N10BY optimization over scoped N1 rows.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1296,6 +1303,11 @@ See the current report index:
   new variants, adaptive tuning, heldout/generalization claims, method/downstream
   claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
   or BEA-v1-A.
+- N10BX authorizes only N10BY cost-aware operating-point exploratory optimization
+  over the same scoped N1 rows. It does not authorize runtime/default promotion,
+  existing evaluator hook-in, heldout/generalization claims, method/downstream
+  claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
+  or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1732,6 +1744,10 @@ eval/bea_v1_n10bv_boundary_case_mechanism_package.py
 eval/bea_v1_n10bw_adapter_operating_point_smoke.py
   Adapter-path smoke for cost80_before25_after75; authorizes only N10BX public
   adapter operating-point package.
+
+eval/bea_v1_n10bx_adapter_operating_point_package.py
+  Public package of the N10BW adapter operating-point smoke; authorizes only N10BY
+  same-source exploratory optimization over scoped N1 rows.
 ```
 
 Key reports:
@@ -1814,6 +1830,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json`](artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json)
 - [`artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json`](artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json)
+- [`artifacts/bea_v1_n10bx_adapter_operating_point_package/bea_v1_n10bx_adapter_operating_point_package_report.json`](artifacts/bea_v1_n10bx_adapter_operating_point_package/bea_v1_n10bx_adapter_operating_point_package_report.json)
 
 Documentation mirror check:
 
