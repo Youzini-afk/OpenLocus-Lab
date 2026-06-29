@@ -28,22 +28,25 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AD: Independent Recompute Fixed Span-Window Repair Smoke**:
+The latest closed phase is **BEA-v1-N10AE: Fixed Span-Window Repair Replication Package**:
 
 ```text
-status: independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized
-self-test: 17 / 17
+status: fixed_span_window_repair_replication_package_complete_n10af_authorized
+self-test: 15 / 15
 forbidden scan: pass
-private span rows read: 213
+N10AB: pass
+N10AC: audit complete
+N10AD: independent recompute pass
+aggregate comparison: match
+N10AB code call count in N10AD: 0
 baseline unexpanded top10/top20 span overlap: 9 / 10
 pm20 top10/top20 expanded span overlap: 15 / 19
 pm50 top10/top20 expanded span overlap: 19 / 23
 pm100 top10/top20 expanded span overlap: 21 / 25
 pm50 delta top10 vs unexpanded: 10
+pm50 threshold: 11
 original span hit lost count: 0
-aggregate comparison to N10AB: match
-N10AB code call count: 0
-next allowed phase: BEA-v1-N10AE Fixed Span-Window Repair Replication Package
+next allowed phase: BEA-v1-N10AF Next-Step Selection Stronger Validation Preflight
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -468,6 +471,12 @@ private span rows without importing or calling N10AB code. It matches N10AB exac
 baseline 9/10, pm20 15/19, pm50 19/23, pm100 21/25, pm50 delta +10, and zero
 lost original span hits. It authorizes only N10AE public replication package.
 
+N10AE packages the public N10AB/N10AC/N10AD replication chain. It confirms N10AB
+pass, N10AC audit completion, N10AD independent recompute match, pm50 19/23 with
+delta +10 over baseline 9/10, threshold 11, zero lost original hits, and unchanged
+candidate pool. It authorizes only N10AF next-step selection / stronger-validation
+preflight.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -792,6 +801,10 @@ See the current report index:
   private reads, runtime/default promotion, retrieval/reruns, candidate
   generation/materialization, new-arm search, selector/reranker execution, P5,
   BEA-v1-A, method-winner claims, or downstream-value claims.
+- N10AE authorizes only N10AF next-step selection / stronger-validation preflight.
+  It does not authorize private reads, runtime/default promotion, retrieval/reruns,
+  candidate generation/materialization, new-arm search, selector/reranker
+  execution, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1039,6 +1052,10 @@ eval/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit.py
 eval/bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke.py
   Independent recompute of the N10AB fixed-window repair smoke; matches aggregates
   and authorizes only N10AE public replication package.
+
+eval/bea_v1_n10ae_fixed_span_window_repair_replication_package.py
+  Public replication package for N10AB/N10AC/N10AD fixed-window repair chain;
+  authorizes only N10AF preflight.
 ```
 
 Key reports:
@@ -1076,6 +1093,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ab_fixed_span_window_repair_smoke/bea_v1_n10ab_fixed_span_window_repair_smoke_report.json`](artifacts/bea_v1_n10ab_fixed_span_window_repair_smoke/bea_v1_n10ab_fixed_span_window_repair_smoke_report.json)
 - [`artifacts/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit_report.json`](artifacts/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit/bea_v1_n10ac_fixed_span_window_repair_smoke_result_audit_report.json)
 - [`artifacts/bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke/bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke_report.json`](artifacts/bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke/bea_v1_n10ad_independent_recompute_fixed_span_window_repair_smoke_report.json)
+- [`artifacts/bea_v1_n10ae_fixed_span_window_repair_replication_package/bea_v1_n10ae_fixed_span_window_repair_replication_package_report.json`](artifacts/bea_v1_n10ae_fixed_span_window_repair_replication_package/bea_v1_n10ae_fixed_span_window_repair_replication_package_report.json)
 
 Documentation mirror check:
 

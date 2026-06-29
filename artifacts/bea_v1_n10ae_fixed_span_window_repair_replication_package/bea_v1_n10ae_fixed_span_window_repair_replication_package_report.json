@@ -1,0 +1,247 @@
+{
+  "aggregate_runtime_seconds": 0.001,
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10aeclaim0000",
+      "claim_boundary_bucket": "fixed_local_span_window_expansion_on_n1_proxy_surface_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n1_proxy_surface_only_bool": true,
+      "n2_equivalent_validation_bool": false,
+      "retrieval_claim_bool": false,
+      "runtime_default_policy_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "public_replication_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "replication_chain_consistent",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "metrics_stable",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T16:07:55Z",
+  "generated_by": "bea_v1_n10ae_fixed_span_window_repair_replication_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10aein0000",
+      "expected_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ab_repair_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aein0001",
+      "expected_status": "fixed_span_window_repair_smoke_result_audit_complete_n10ad_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ac_public_audit_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_smoke_result_audit_complete_n10ad_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aein0002",
+      "expected_status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ad_independent_recompute_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aein0003",
+      "expected_status": "span_window_repair_preflight_pass_n10ab_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aa_repair_preflight_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "span_window_repair_preflight_pass_n10ab_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aein0004",
+      "expected_status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10z_failure_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "n1_span_surface_span_level_failure_decomposition_complete_n10aa_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "metric_consistency_records": [
+    {
+      "anonymous_metric_consistency_id": "n10aemetric0000",
+      "baseline_top10_span_overlap_count": 9,
+      "baseline_top20_span_overlap_count": 10,
+      "candidate_added_count": 0,
+      "candidate_pool_changed_bool": false,
+      "candidate_removed_count": 0,
+      "metric_bucket": "fixed_window_repair_aggregate_metrics_stable",
+      "metric_consistency_bool": true,
+      "original_span_hit_lost_count": 0,
+      "pm100_top10_expanded_span_overlap_count": 21,
+      "pm100_top20_expanded_span_overlap_count": 25,
+      "pm20_top10_expanded_span_overlap_count": 15,
+      "pm20_top20_expanded_span_overlap_count": 19,
+      "pm50_delta_top10_vs_unexpanded_best_arm": 10,
+      "pm50_pass_threshold_count": 11,
+      "pm50_top10_expanded_span_overlap_count": 19,
+      "pm50_top20_expanded_span_overlap_count": 23
+    }
+  ],
+  "n10af_handoff_records": [
+    {
+      "anonymous_n10af_handoff_id": "n10aehandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10af_handoff_bucket": "n10af_next_step_selection_stronger_validation_preflight_authorized",
+      "n10af_preflight_authorized_bool": true,
+      "preflight_only_bool": true,
+      "private_read_authorized_bool": false,
+      "runtime_default_promotion_authorized_bool": false
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "n10aenoexec0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "default_change_count": 0,
+      "downstream_value_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_arm_search_count": 0,
+      "no_execution_boundary_bucket": "public_package_only_no_private_read_no_recompute",
+      "no_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AE Fixed Span-Window Repair Replication Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10aeprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_replication_package_aggregates_only",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "replication_chain_records": [
+    {
+      "anonymous_replication_chain_id": "n10aechain0000",
+      "chain_bucket": "n10ab_pass_n10ac_audit_n10ad_independent_match",
+      "chain_consistent_bool": true,
+      "n10ab_code_call_count": 0,
+      "n10ab_pass_bool": true,
+      "n10ac_audit_complete_bool": true,
+      "n10ad_aggregate_match_bool": true,
+      "n10ad_independent_recompute_pass_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10ae_fixed_span_window_repair_replication_package.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "fixed_span_window_repair_replication_package_complete_n10af_authorized",
+  "status_vocabulary": [
+    "fixed_span_window_repair_replication_package_complete_n10af_authorized",
+    "no_go_n10ae_required_inputs_unavailable",
+    "no_go_n10ae_chain_inconsistent",
+    "no_go_n10ae_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10af_preflight_authorized",
+      "candidate_generation_authorized": false,
+      "candidate_materialization_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "downstream_value_claimed": false,
+      "method_winner_claim_authorized": false,
+      "method_winner_claimed": false,
+      "n10af_preflight_authorized": true,
+      "new_arm_search_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AF Next-Step Selection Stronger Validation Preflight",
+      "next_allowed_scope_bucket": "preflight_only_no_execution",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
