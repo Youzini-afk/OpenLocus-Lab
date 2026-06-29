@@ -1,0 +1,428 @@
+{
+  "boundary_cost_grid_records": [
+    {
+      "after_window_count": 49,
+      "anonymous_boundary_grid_id": "n10bsgrid0000",
+      "before_window_count": 16,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 65,
+      "variant_bucket": "cost65_before25_after75"
+    },
+    {
+      "after_window_count": 53,
+      "anonymous_boundary_grid_id": "n10bsgrid0001",
+      "before_window_count": 17,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 70,
+      "variant_bucket": "cost70_before25_after75"
+    },
+    {
+      "after_window_count": 57,
+      "anonymous_boundary_grid_id": "n10bsgrid0002",
+      "before_window_count": 18,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 75,
+      "variant_bucket": "cost75_before25_after75"
+    },
+    {
+      "after_window_count": 60,
+      "anonymous_boundary_grid_id": "n10bsgrid0003",
+      "before_window_count": 20,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 80,
+      "variant_bucket": "cost80_before25_after75"
+    },
+    {
+      "after_window_count": 64,
+      "anonymous_boundary_grid_id": "n10bsgrid0004",
+      "before_window_count": 21,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 85,
+      "variant_bucket": "cost85_before25_after75"
+    },
+    {
+      "after_window_count": 68,
+      "anonymous_boundary_grid_id": "n10bsgrid0005",
+      "before_window_count": 22,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 90,
+      "variant_bucket": "cost90_before25_after75"
+    },
+    {
+      "after_window_count": 72,
+      "anonymous_boundary_grid_id": "n10bsgrid0006",
+      "before_window_count": 23,
+      "predeclared_bool": true,
+      "ratio_bucket": "before25_after75",
+      "total_cost_proxy": 95,
+      "variant_bucket": "cost95_before25_after75"
+    }
+  ],
+  "boundary_cost_variant_records": [
+    {
+      "after_window_count": 49,
+      "anonymous_boundary_variant_id": "n10bsvar0000",
+      "before_window_count": 16,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "below_boundary",
+      "lost_plateau_core_top10_count": 1,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": false,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 22,
+      "total_cost_proxy": 65,
+      "variant_bucket": "cost65_before25_after75"
+    },
+    {
+      "after_window_count": 53,
+      "anonymous_boundary_variant_id": "n10bsvar0001",
+      "before_window_count": 17,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "below_boundary",
+      "lost_plateau_core_top10_count": 1,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": false,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 22,
+      "total_cost_proxy": 70,
+      "variant_bucket": "cost70_before25_after75"
+    },
+    {
+      "after_window_count": 57,
+      "anonymous_boundary_variant_id": "n10bsvar0002",
+      "before_window_count": 18,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "below_boundary",
+      "lost_plateau_core_top10_count": 1,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": false,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 19,
+      "top20_span_overlap_count": 23,
+      "total_cost_proxy": 75,
+      "variant_bucket": "cost75_before25_after75"
+    },
+    {
+      "after_window_count": 60,
+      "anonymous_boundary_variant_id": "n10bsvar0003",
+      "before_window_count": 20,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "boundary",
+      "lost_plateau_core_top10_count": 0,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": true,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "total_cost_proxy": 80,
+      "variant_bucket": "cost80_before25_after75"
+    },
+    {
+      "after_window_count": 64,
+      "anonymous_boundary_variant_id": "n10bsvar0004",
+      "before_window_count": 21,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "above_boundary",
+      "lost_plateau_core_top10_count": 0,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": true,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "total_cost_proxy": 85,
+      "variant_bucket": "cost85_before25_after75"
+    },
+    {
+      "after_window_count": 68,
+      "anonymous_boundary_variant_id": "n10bsvar0005",
+      "before_window_count": 22,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "above_boundary",
+      "lost_plateau_core_top10_count": 0,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": true,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "total_cost_proxy": 90,
+      "variant_bucket": "cost90_before25_after75"
+    },
+    {
+      "after_window_count": 72,
+      "anonymous_boundary_variant_id": "n10bsvar0006",
+      "before_window_count": 23,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_bucket": "above_boundary",
+      "lost_plateau_core_top10_count": 0,
+      "lost_pm50_top10_count": 0,
+      "preserved_plateau_bool": true,
+      "ratio_bucket": "before25_after75",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "total_cost_proxy": 95,
+      "variant_bucket": "cost95_before25_after75"
+    }
+  ],
+  "boundary_summary_records": [
+    {
+      "anonymous_boundary_summary_id": "n10bssummary0000",
+      "boundary_margin_cost_proxy": 5,
+      "cost65_preserves_plateau_bool": false,
+      "cost70_preserves_plateau_bool": false,
+      "cost75_preserves_plateau_bool": false,
+      "cost80_preserves_plateau_bool": true,
+      "first_failing_below_boundary_cost_proxy": 75,
+      "margin_bucket": "narrow_boundary",
+      "minimum_preserving_cost_proxy": 80,
+      "monotonicity_bucket": "nondecreasing_top10",
+      "summary_bucket": "fixed_ratio_25_75_boundary_refinement"
+    }
+  ],
+  "chosen_research_operating_point_records": [
+    {
+      "anonymous_chosen_research_point_id": "n10bschoice0000",
+      "chosen_research_operating_point_bucket": "cost80_before25_after75",
+      "method_winner_claim_bool": false,
+      "minimum_cost_preserving_plateau": 80,
+      "runtime_default_recommendation_bool": false
+    }
+  ],
+  "claim_level": "boundary_cost_refinement_sweep_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "boundary_cost_grid_exact",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "boundary_result_accounting",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_gold_policy",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T21:14:28Z",
+  "generated_by": "bea_v1_n10bs_boundary_cost_refinement_sweep",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bsin0000",
+      "expected_status": "cost_minimization_package_complete_n10bs_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10br_cost_minimization_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_minimization_package_complete_n10bs_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bsin0001",
+      "expected_status": "plateau_cost_minimization_sweep_complete_n10br_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bq_cost_minimization_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "plateau_cost_minimization_sweep_complete_n10br_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bsin0002",
+      "expected_status": "plateau_mechanism_package_complete_n10bq_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bp_plateau_mechanism_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "plateau_mechanism_package_complete_n10bq_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bt_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10bt_handoff_id": "n10bshandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bt_handoff_bucket": "n10bt_public_boundary_cost_package_authorized",
+      "n10bt_public_package_authorized_bool": true,
+      "new_ratio_authorized_bool": false,
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10bsnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_order_change_count": 0,
+      "candidate_removal_count": 0,
+      "downstream_value_claim_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_cost_outside_grid_count": 0,
+      "new_ratio_count": 0,
+      "no_execution_boundary_bucket": "boundary_cost_refinement_sweep_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rank_order_change_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "no_gold_policy_records": [
+    {
+      "anonymous_no_gold_policy_id": "n10bsnogold0000",
+      "content_aware_adjustment_count": 0,
+      "gold_used_to_choose_window_count": 0,
+      "miss_direction_used_to_choose_window_count": 0,
+      "new_ratio_count": 0,
+      "no_gold_policy_bucket": "fixed_ratio_25_75_cost_grid_no_adaptive_tuning",
+      "no_gold_policy_valid_bool": true,
+      "per_row_adaptive_window_count": 0,
+      "predeclared_global_windows_bool": true,
+      "rank_order_change_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BS Boundary-Cost Refinement Sweep",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10bsprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "hash_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_boundary_cost_counts_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10bspriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "single_scoped_private_input_read_bool": true,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10bs_boundary_cost_refinement_sweep.v1",
+  "self_test_checks_passed": 17,
+  "self_test_checks_total": 17,
+  "self_test_passed": true,
+  "status": "boundary_cost_refinement_sweep_complete_n10bt_authorized",
+  "status_vocabulary": [
+    "boundary_cost_refinement_sweep_complete_n10bt_authorized",
+    "no_go_n10bs_required_inputs_unavailable",
+    "no_go_n10bs_private_span_rows_missing",
+    "no_go_n10bs_variant_grid_invalid",
+    "no_go_n10bs_result_accounting_invalid",
+    "no_go_n10bs_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10bt_public_boundary_cost_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bt_authorized": true,
+      "new_ratio_authorized": false,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BT Boundary-Cost Package",
+      "next_allowed_scope_bucket": "public_boundary_cost_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

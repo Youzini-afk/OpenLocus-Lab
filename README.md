@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BR: Plateau Cost-Minimization Package**:
+The latest closed phase is **BEA-v1-N10BS: Boundary-Cost Refinement Sweep**:
 
 ```text
-status: cost_minimization_package_complete_n10bs_authorized
-self-test: 14 / 14
+status: boundary_cost_refinement_sweep_complete_n10bt_authorized
+self-test: 17 / 17
 forbidden scan: pass
-private reads in N10BR: 0
-recomputes in N10BR: 0
-minimum cost preserving plateau: 80
-chosen research operating point: cost80_before25_after75
-next allowed phase: BEA-v1-N10BS Boundary-Cost Refinement Sweep
+private span rows read: 213
+variant count: 7
+minimum preserving cost: 80
+first failing below boundary: 75
+boundary margin: 5
+next allowed phase: BEA-v1-N10BT Boundary-Cost Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -701,6 +702,13 @@ cost preserving the plateau: `80`, with chosen research operating point
 method-winner claim. It authorizes only N10BS boundary-cost refinement over the
 fixed 25/75 ratio.
 
+N10BS runs the authorized fixed-ratio boundary-cost refinement over seven costs
+(`65`, `70`, `75`, `80`, `85`, `90`, `95`) at ratio `25/75`. Costs 65/70/75 fail
+to preserve the plateau, while costs 80/85/90/95 preserve it at 20/24 with no
+lost plateau core. The minimum preserving cost remains 80 and the boundary margin
+from the first failing value below it is 5. It authorizes only N10BT public
+boundary-cost package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1237,6 +1245,11 @@ See the current report index:
   ranking/order changes, runtime/default behavior, heldout/generalization claims,
   method/downstream claims, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, or BEA-v1-A.
+- N10BS authorizes only N10BT public boundary-cost package. It does not authorize
+  private reads, new ratios, adaptive tuning, ranking/order changes,
+  runtime/default behavior, heldout/generalization claims, method/downstream
+  claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
+  or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1653,6 +1666,10 @@ eval/bea_v1_n10bq_plateau_cost_minimization_sweep.py
 eval/bea_v1_n10br_cost_minimization_package.py
   Public package of N10BQ cost-minimization facts; authorizes only N10BS
   boundary-cost refinement sweep.
+
+eval/bea_v1_n10bs_boundary_cost_refinement_sweep.py
+  Direct fixed-ratio boundary-cost refinement sweep over costs 65..95; authorizes
+  only N10BT public boundary-cost package.
 ```
 
 Key reports:
@@ -1730,6 +1747,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bp_plateau_mechanism_package/bea_v1_n10bp_plateau_mechanism_package_report.json`](artifacts/bea_v1_n10bp_plateau_mechanism_package/bea_v1_n10bp_plateau_mechanism_package_report.json)
 - [`artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json`](artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json)
 - [`artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json`](artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json)
+- [`artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json`](artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json)
 
 Documentation mirror check:
 
