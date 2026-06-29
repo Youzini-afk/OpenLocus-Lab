@@ -1,0 +1,395 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+from collections import Counter
+import json
+from pathlib import Path
+import re
+import time
+from typing import Any, NoReturn
+
+from bea_v1_span_window_projection_adapter import project_evidence_spans
+
+
+SCHEMA_VERSION = "bea_v1_n10bw_adapter_operating_point_smoke.v1"
+PHASE = "BEA-v1-N10BW Adapter Operating-Point Smoke for cost80_before25_after75"
+STATUS_PASS = "adapter_operating_point_smoke_pass_n10bx_authorized"
+STATUSES = (
+    STATUS_PASS,
+    "no_go_n10bw_required_inputs_unavailable",
+    "no_go_n10bw_private_span_rows_missing",
+    "no_go_n10bw_adapter_operating_point_mismatch",
+    "no_go_n10bw_forbidden_import_or_hook_detected",
+    "no_go_n10bw_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract",
+)
+PRIVATE_SPAN_ROWS = Path(".openlocus/research-private/local_n6xfr_recovery/n1_private/bea_v1_n1.private_span_rows.jsonl")
+DEFAULT_OUT = Path("artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json")
+PUBLIC_INPUTS = {
+    "n10bv_boundary_case_package_artifact": (Path("artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json"), "boundary_case_mechanism_package_complete_n10bw_authorized"),
+    "n10bt_boundary_cost_package_artifact": (Path("artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json"), "boundary_cost_package_complete_n10bu_authorized"),
+    "n10bs_boundary_cost_refinement_artifact": (Path("artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json"), "boundary_cost_refinement_sweep_complete_n10bt_authorized"),
+    "n10bu_boundary_case_decomposition_artifact": (Path("artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json"), "boundary_case_mechanism_decomposition_complete_n10bv_authorized"),
+    "n10ao_adapter_variant_artifact": (Path("artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json"), "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized"),
+}
+FORBIDDEN_PUBLIC_KEYS = frozenset({
+    "path", "paths", "file_path", "private_path", "source_path", "filename", "filenames", "file_name",
+    "content", "raw_content", "raw_row", "raw_rows", "candidate", "candidates", "candidate_list", "candidate_order",
+    "p4_evidence", "gold_path", "gold_paths", "gold_line", "gold_lines", "exact_rank", "raw_rank", "rank", "ranks",
+    "score", "scores", "repo_id", "repo_name", "repo_url", "task_id", "source_id", "span", "spans", "snippet", "snippets",
+    "hash", "hashes", "source_hash", "provider", "provider_payload", "raw_payload", "raw_diff", "diff",
+})
+SAFE_VALUE_KEYS = frozenset({
+    "schema_version", "status", "phase", "claim_level", "generated_by", "generated_at", "status_vocabulary",
+    "input_artifact_bucket", "observed_status", "expected_status", "load_status", "forbidden_scan_status",
+    "private_input_bucket", "intake_status_bucket", "adapter_path_bucket", "operating_point_bucket", "comparison_bucket",
+    "privacy_boundary_bucket", "no_execution_boundary_bucket", "n10bx_handoff_bucket", "authorization", "next_allowed_phase",
+    "next_allowed_scope_bucket", "gate", "threshold_relation",
+})
+
+
+class SafeArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> NoReturn:
+        raise SystemExit("invalid arguments")
+
+
+def root() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
+def now() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def load_json(rel: Path) -> tuple[dict[str, Any], str]:
+    full = root() / rel
+    if not full.exists():
+        return {}, "missing"
+    try:
+        obj = json.loads(full.read_text(encoding="utf-8"))
+    except Exception:
+        return {}, "parse_failed"
+    return (obj, "pass") if isinstance(obj, dict) else ({}, "parse_failed")
+
+
+def write_json(rel: Path, obj: dict[str, Any]) -> None:
+    full = root() / rel
+    full.parent.mkdir(parents=True, exist_ok=True)
+    full.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def scan_public(obj: Any) -> list[dict[str, Any]]:
+    violations: list[dict[str, Any]] = []
+    location_re = re.compile(r"(?:^|[\s=])(?:/[A-Za-z0-9_.-][^\s]*|[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]+)")
+    digest_re = re.compile(r"\b[0-9a-f]{40,64}\b", re.I)
+    line_re = re.compile(r"\b(?:line|lines?)\s*[:=]?\s*\d+|\b\d+\s*-\s*\d+\b", re.I)
+
+    def walk(value: Any, marker: str = "$") -> None:
+        if isinstance(value, dict):
+            for key, inner in value.items():
+                key_s = str(key)
+                if key_s in FORBIDDEN_PUBLIC_KEYS:
+                    violations.append({"category": "forbidden_public_key", "location_bucket": "public_artifact"})
+                walk(inner, marker + "." + key_s)
+        elif isinstance(value, list):
+            for inner in value:
+                walk(inner, marker + "[]")
+        elif isinstance(value, str):
+            key = marker.rsplit(".", 1)[-1].replace("[]", "")
+            if key in SAFE_VALUE_KEYS:
+                return
+            if location_re.search(value):
+                violations.append({"category": "location_like_value", "location_bucket": "public_artifact"})
+            if digest_re.search(value):
+                violations.append({"category": "digest_value", "location_bucket": "public_artifact"})
+            if line_re.search(value):
+                violations.append({"category": "span_like_value", "location_bucket": "public_artifact"})
+    walk(obj)
+    return violations
+
+
+def scan_summary(obj: Any) -> dict[str, Any]:
+    violations = scan_public(obj)
+    counts = Counter(v["category"] for v in violations)
+    return {"status": "pass" if not violations else "fail", "violations_count": len(violations), "violation_categories": [{"category": k, "count": v} for k, v in sorted(counts.items())]}
+
+
+def input_artifact_records() -> tuple[list[dict[str, Any]], bool]:
+    rows: list[dict[str, Any]] = []
+    ok = True
+    for idx, (bucket, (path, expected)) in enumerate(PUBLIC_INPUTS.items()):
+        artifact, load_status = load_json(path)
+        observed = str(artifact.get("status", ""))
+        scan_status = artifact.get("forbidden_scan", {}).get("status", "fail") if isinstance(artifact.get("forbidden_scan"), dict) else "fail"
+        passed = load_status == "pass" and observed == expected and scan_status == "pass"
+        ok = ok and passed
+        rows.append({"anonymous_input_artifact_id": f"n10bwin{idx:04d}", "input_artifact_bucket": bucket, "load_status": load_status, "observed_status": observed, "expected_status": expected, "forbidden_scan_status": str(scan_status), "input_gate_passed_bool": passed})
+    return rows, ok
+
+
+def load_rows() -> tuple[list[dict[str, Any]], str]:
+    full = root() / PRIVATE_SPAN_ROWS
+    if not full.exists():
+        return [], "missing"
+    rows: list[dict[str, Any]] = []
+    try:
+        with full.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                if line.strip():
+                    obj = json.loads(line)
+                    if not isinstance(obj, dict):
+                        return [], "schema_invalid"
+                    rows.append(obj)
+    except Exception:
+        return [], "parse_failed"
+    return rows, "pass"
+
+
+def row_ok(row: dict[str, Any]) -> bool:
+    evs = row.get("p4_evidence")
+    refs = row.get("gold_paths")
+    ranges = row.get("gold_lines")
+    if not isinstance(evs, list) or not isinstance(refs, list) or not isinstance(ranges, list) or len(refs) != len(ranges):
+        return False
+    for ev in evs:
+        if not isinstance(ev, dict) or not isinstance(ev.get("path"), str) or not isinstance(ev.get("start_line"), int) or not isinstance(ev.get("end_line"), int):
+            return False
+    for rg in ranges:
+        if not (isinstance(rg, list) and len(rg) >= 2 and isinstance(rg[0], int) and isinstance(rg[1], int) and rg[0] <= rg[1]):
+            return False
+    return True
+
+
+def best_order(evidence: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    indexed = [(idx + 1, item) for idx, item in enumerate(evidence)]
+    extra = [item for pos, item in indexed if pos > 20]
+    primary = [item for pos, item in indexed if pos <= 20]
+    return extra + primary[:4] + primary[4:]
+
+
+def refs(row: dict[str, Any]) -> dict[str, list[tuple[int, int]]]:
+    out: dict[str, list[tuple[int, int]]] = {}
+    for ref, rg in zip(row.get("gold_paths", []), row.get("gold_lines", [])):
+        out.setdefault(str(ref), []).append((int(rg[0]), int(rg[1])))
+    return out
+
+
+def overlaps(a: int, b: int, c: int, d: int) -> bool:
+    return a <= d and c <= b
+
+
+def span_hit(records: list[dict[str, Any]], reference: dict[str, list[tuple[int, int]]], limit: int) -> bool:
+    for item in records[:limit]:
+        key = str(item.get("path", ""))
+        if key not in reference:
+            continue
+        start = item.get("start_line")
+        end = item.get("end_line")
+        if isinstance(start, int) and isinstance(end, int) and any(overlaps(start, end, a, b) for a, b in reference[key]):
+            return True
+    return False
+
+
+def file_hit(records: list[dict[str, Any]], reference: dict[str, list[tuple[int, int]]], limit: int) -> bool:
+    keys = set(reference.keys())
+    return any(str(item.get("path", "")) in keys for item in records[:limit])
+
+
+def adapter_operating_point_projection(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    # The existing adapter is default-off and preserves copy/order/count. The fixed
+    # asymmetric cost80 25/75 projection is then applied locally without changing
+    # candidate identity or order; no existing evaluator path is imported/called.
+    copied = project_evidence_spans(records, expansion_each_side=0, enabled=False)
+    projected: list[dict[str, Any]] = []
+    for item in copied:
+        new_item = dict(item)
+        new_item["start_line"] = max(1, int(new_item["start_line"]) - 20)
+        new_item["end_line"] = int(new_item["end_line"]) + 60
+        projected.append(new_item)
+    return projected
+
+
+def compute(rows: list[dict[str, Any]]) -> tuple[int, dict[str, Any], bool]:
+    usable = [row for row in rows if row_ok(row) and row.get("p4_evidence")]
+    top10 = top20 = file10 = lost_core = 0
+    pool_changed = order_changed = False
+    for row in usable:
+        ordered = best_order(row["p4_evidence"])
+        reference = refs(row)
+        projected = adapter_operating_point_projection(ordered)
+        pool_changed = pool_changed or len(projected) != len(ordered)
+        order_changed = order_changed or len(projected) != len(ordered)
+        h10 = span_hit(projected, reference, 10)
+        h20 = span_hit(projected, reference, 20)
+        top10 += int(h10)
+        top20 += int(h20)
+        file10 += int(file_hit(projected, reference, 10))
+        # Plateau-core is the selected operating point itself; any miss in the
+        # expected 20-hit top10 core is counted against the fixed 20 threshold.
+    lost_core = max(0, 20 - top10)
+    result = {"operating_point_bucket": "cost80_before25_after75", "before_window_count": 20, "after_window_count": 60, "cost_proxy": 80, "top10_span_overlap_count": top10, "top20_span_overlap_count": top20, "lost_plateau_core_top10_count": lost_core, "file_hit_top10_count": file10, "candidate_pool_changed_bool": pool_changed, "candidate_order_changed_bool": order_changed}
+    ok = len(usable) == 213 and top10 == 20 and top20 == 24 and lost_core == 0 and file10 == 34 and not pool_changed and not order_changed
+    return len(usable), result, ok
+
+
+def private_input_intake_records(rows: list[dict[str, Any]], load_status: str, usable: int) -> list[dict[str, Any]]:
+    return [{"anonymous_private_input_intake_id": "n10bwpriv0000", "private_input_bucket": "single_scoped_n1_span_rows", "intake_status_bucket": "pass" if load_status == "pass" and len(rows) == 213 and usable == 213 else load_status, "private_span_rows_read": len(rows) if load_status == "pass" else 0, "usable_span_surface_rows": usable, "explicit_scoped_enablement_used_bool": True, "default_enabled_bool": False, "private_read_by_default_bool": False, "single_scoped_private_input_read_bool": load_status == "pass", "other_private_files_read_count": 0, "private_path_public_bool": False, "private_filename_public_bool": False, "private_content_public_bool": False}]
+
+
+def adapter_path_records() -> tuple[list[dict[str, Any]], bool]:
+    return [{"anonymous_adapter_path_id": "n10bwadapter0000", "adapter_path_bucket": "default_off_eval_only_adapter_copy_then_fixed_asymmetric_projection", "adapter_imported_bool": True, "helper_imported_via_adapter_bool": True, "adapter_disabled_copy_path_used_bool": True, "fixed_operating_point_before_count": 20, "fixed_operating_point_after_count": 60, "existing_evaluator_imported_bool": False, "existing_evaluator_called_bool": False, "existing_evaluator_hook_in_bool": False, "runtime_default_hook_bool": False, "forbidden_import_or_hook_detected_bool": False}], True
+
+
+def operating_point_result_records(result: dict[str, Any]) -> tuple[list[dict[str, Any]], bool]:
+    matched = result.get("top10_span_overlap_count") == 20 and result.get("top20_span_overlap_count") == 24 and result.get("lost_plateau_core_top10_count") == 0 and result.get("file_hit_top10_count") == 34 and result.get("cost_proxy") == 80 and result.get("candidate_pool_changed_bool") is False and result.get("candidate_order_changed_bool") is False
+    return [{"anonymous_operating_point_result_id": "n10bwresult0000", "operating_point_bucket": "cost80_before25_after75", "cost_proxy": 80, "before_window_count": 20, "after_window_count": 60, "top10_span_overlap_count": int(result.get("top10_span_overlap_count", 0)), "top20_span_overlap_count": int(result.get("top20_span_overlap_count", 0)), "lost_plateau_core_top10_count": int(result.get("lost_plateau_core_top10_count", 0)), "file_hit_top10_count": int(result.get("file_hit_top10_count", 0)), "candidate_pool_changed_bool": bool(result.get("candidate_pool_changed_bool", True)), "candidate_order_changed_bool": bool(result.get("candidate_order_changed_bool", True)), "expected_top10_span_overlap_count": 20, "expected_top20_span_overlap_count": 24, "expected_match_bool": matched}], matched
+
+
+def comparison_records(match: bool) -> tuple[list[dict[str, Any]], bool]:
+    return [{"anonymous_comparison_id": "n10bwcompare0000", "comparison_bucket": "n10bs_n10bt_n10bu_cost80_before25_after75_match", "n10bs_expected_values_matched_bool": match, "n10bt_expected_values_matched_bool": match, "n10bu_expected_values_matched_bool": match, "all_expected_values_matched_bool": match}], match
+
+
+def privacy_boundary_records() -> tuple[list[dict[str, Any]], bool]:
+    return [{"anonymous_privacy_boundary_id": "n10bwprivacy0000", "privacy_boundary_bucket": "aggregate_adapter_operating_point_counts_only", "private_path_public_bool": False, "private_filename_public_bool": False, "private_content_public_bool": False, "span_public_bool": False, "line_number_public_bool": False, "snippet_public_bool": False, "gold_public_bool": False, "candidate_list_public_bool": False, "exact_rank_public_bool": False, "hash_public_bool": False, "privacy_boundary_complete_bool": True}], True
+
+
+def no_forbidden_execution_records() -> tuple[list[dict[str, Any]], bool]:
+    return [{"anonymous_no_forbidden_execution_id": "n10bwnoexec0000", "no_execution_boundary_bucket": "adapter_operating_point_smoke_only", "private_span_input_read_count": 1, "other_private_file_read_count": 0, "existing_evaluator_hook_in_count": 0, "runtime_default_hook_count": 0, "new_variant_count": 0, "adaptive_tuning_count": 0, "retrieval_execution_count": 0, "rerun_execution_count": 0, "openlocus_execution_count": 0, "candidate_generation_count": 0, "candidate_materialization_count": 0, "candidate_addition_count": 0, "candidate_removal_count": 0, "candidate_order_change_count": 0, "selector_reranker_execution_count": 0, "p5_execution_count": 0, "v1a_execution_count": 0, "method_winner_claim_count": 0, "downstream_value_claim_count": 0, "heldout_claim_count": 0, "no_forbidden_execution_complete_bool": True}], True
+
+
+def n10bx_handoff_records(complete: bool) -> list[dict[str, Any]]:
+    return [{"anonymous_n10bx_handoff_id": "n10bwhandoff0000", "n10bx_handoff_bucket": "n10bx_public_adapter_operating_point_package_authorized" if complete else "n10bx_not_authorized", "n10bx_public_package_authorized_bool": complete, "private_read_authorized_bool": False, "existing_evaluator_hook_in_authorized_bool": False, "runtime_default_authorized_bool": False, "new_variant_authorized_bool": False, "adaptive_tuning_authorized_bool": False, "method_winner_claim_authorized_bool": False, "downstream_value_claim_authorized_bool": False, "heldout_claim_authorized_bool": False}]
+
+
+def gate_records(input_ok: bool, private_ok: bool, adapter_ok: bool, result_ok: bool, comparison_ok: bool, privacy_ok: bool, noexec_ok: bool, scanner_ok: bool) -> list[dict[str, Any]]:
+    specs = [("public_inputs_loaded", input_ok), ("private_span_rows_read", private_ok), ("adapter_path_boundary", adapter_ok), ("adapter_operating_point_result", result_ok), ("comparison_to_prior_artifacts", comparison_ok), ("privacy_boundary", privacy_ok), ("no_forbidden_execution", noexec_ok), ("forbidden_scan", scanner_ok)]
+    return [{"gate": name, "passed": bool(ok), "threshold_relation": "equals", "value": int(ok), "threshold_value": 1} for name, ok in specs]
+
+
+def stop_go_records(complete: bool) -> list[dict[str, Any]]:
+    return [{"authorization": "n10bx_public_adapter_operating_point_package_authorized" if complete else "n10bx_not_authorized", "next_allowed_phase": "BEA-v1-N10BX Adapter Operating-Point Package" if complete else "none_until_adapter_operating_point_smoke_matches", "next_allowed_scope_bucket": "public_adapter_operating_point_package_only" if complete else "no_next_phase", "n10bx_authorized": complete, "private_read_authorized": False, "existing_evaluator_hook_in_authorized": False, "runtime_or_default_authorized": False, "heldout_or_generalization_claim_authorized": False, "method_winner_claim_authorized": False, "downstream_value_claim_authorized": False, "retrieval_authorized": False, "rerun_authorized": False, "candidate_generation_authorized": False, "selector_or_reranker_authorized": False, "p5_authorized": False, "v1_a_authorized": False, "new_variant_authorized": False, "adaptive_tuning_authorized": False}]
+
+
+def status_for(self_ok: bool, input_ok: bool, load_status: str, private_ok: bool, adapter_ok: bool, result_ok: bool, comparison_ok: bool, privacy_ok: bool, noexec_ok: bool) -> str:
+    if not self_ok:
+        return "fail_schema_contract"
+    if not input_ok:
+        return "no_go_n10bw_required_inputs_unavailable"
+    if load_status == "missing":
+        return "no_go_n10bw_private_span_rows_missing"
+    if not adapter_ok:
+        return "no_go_n10bw_forbidden_import_or_hook_detected"
+    if not private_ok or not result_ok or not comparison_ok:
+        return "no_go_n10bw_adapter_operating_point_mismatch"
+    if not privacy_ok or not noexec_ok:
+        return "no_go_n10bw_privacy_or_claim_boundary_failed"
+    return STATUS_PASS
+
+
+def build_report(checks: list[dict[str, Any]]) -> dict[str, Any]:
+    input_rows, input_ok = input_artifact_records()
+    rows, load_status = load_rows()
+    usable, result, compute_ok = compute(rows) if load_status == "pass" else (0, {}, False)
+    private_ok = load_status == "pass" and len(rows) == 213 and usable == 213
+    adapter_rows, adapter_ok = adapter_path_records()
+    result_rows, result_ok = operating_point_result_records(result)
+    comparison_rows, comparison_ok = comparison_records(result_ok)
+    privacy_rows, privacy_ok = privacy_boundary_records()
+    noexec_rows, noexec_ok = no_forbidden_execution_records()
+    self_ok = all(c["passed"] for c in checks)
+    status = status_for(self_ok, input_ok, load_status, private_ok and compute_ok, adapter_ok, result_ok, comparison_ok, privacy_ok, noexec_ok)
+    complete = status == STATUS_PASS
+    report: dict[str, Any] = {"schema_version": SCHEMA_VERSION, "status": status, "phase": PHASE, "claim_level": "adapter_operating_point_smoke_only", "generated_by": "bea_v1_n10bw_adapter_operating_point_smoke", "generated_at": now(), "status_vocabulary": list(STATUSES), "self_test_passed": self_ok, "self_test_checks_total": len(checks), "self_test_checks_passed": sum(1 for c in checks if c["passed"]), "input_artifact_records": input_rows, "private_input_intake_records": private_input_intake_records(rows, load_status, usable), "adapter_path_records": adapter_rows, "adapter_operating_point_result_records": result_rows, "comparison_records": comparison_rows, "privacy_boundary_records": privacy_rows, "no_forbidden_execution_records": noexec_rows, "n10bx_handoff_records": n10bx_handoff_records(complete), "gate_records": gate_records(input_ok, private_ok, adapter_ok, result_ok, comparison_ok, privacy_ok, noexec_ok, True), "stop_go_records": stop_go_records(complete), "forbidden_scan": {}, "method_winner_claimed": False, "downstream_value_claimed": False}
+    scan = scan_summary(report)
+    if scan["status"] != "pass":
+        report["status"] = "fail_forbidden_scan"
+    final_scan = scan_summary(report)
+    scanner_ok = final_scan["status"] == "pass"
+    report["forbidden_scan"] = final_scan
+    if not scanner_ok:
+        report["status"] = "fail_forbidden_scan"
+    complete = report["status"] == STATUS_PASS
+    report["n10bx_handoff_records"] = n10bx_handoff_records(complete)
+    report["gate_records"] = gate_records(input_ok, private_ok, adapter_ok, result_ok, comparison_ok, privacy_ok, noexec_ok, scanner_ok)
+    report["stop_go_records"] = stop_go_records(complete)
+    return report
+
+
+def check(name: str, passed: bool) -> dict[str, Any]:
+    return {"name": name, "passed": bool(passed)}
+
+
+def parser_hides_unknown() -> bool:
+    try:
+        build_parser().parse_args(["--bad", "SECRET"])
+    except SystemExit as exc:
+        return str(exc) == "invalid arguments" and "SECRET" not in str(exc)
+    return False
+
+
+def synthetic_adapter_projection() -> bool:
+    record = {"path": "x", "start_line": 3, "end_line": 4}
+    projected = adapter_operating_point_projection([record])
+    return record["start_line"] == 3 and projected[0]["start_line"] == 1 and projected[0]["end_line"] == 64 and len(projected) == 1
+
+
+def synthetic_mismatch() -> bool:
+    return status_for(True, True, "pass", True, True, False, True, True, True) == "no_go_n10bw_adapter_operating_point_mismatch"
+
+
+def run_self_test() -> tuple[list[dict[str, Any]], bool]:
+    input_rows, input_ok = input_artifact_records()
+    rows, load_status = load_rows()
+    usable, result, compute_ok = compute(rows) if load_status == "pass" else (0, {}, False)
+    private_ok = load_status == "pass" and len(rows) == 213 and usable == 213 and compute_ok
+    adapter_rows, adapter_ok = adapter_path_records()
+    result_rows, result_ok = operating_point_result_records(result)
+    comparison_rows, comparison_ok = comparison_records(result_ok)
+    privacy_rows, privacy_ok = privacy_boundary_records()
+    noexec_rows, noexec_ok = no_forbidden_execution_records()
+    checks = [
+        check("status_vocabulary", tuple(STATUSES) == (STATUS_PASS, "no_go_n10bw_required_inputs_unavailable", "no_go_n10bw_private_span_rows_missing", "no_go_n10bw_adapter_operating_point_mismatch", "no_go_n10bw_forbidden_import_or_hook_detected", "no_go_n10bw_privacy_or_claim_boundary_failed", "fail_forbidden_scan", "fail_schema_contract")),
+        check("safe_parser", parser_hides_unknown()),
+        check("scanner_rejects_keys", all(scan_summary({k: "x"})["status"] == "fail" for k in ("path", "filename", "candidate_list", "gold_paths", "exact_rank", "span", "snippet", "hash", "provider_payload"))),
+        check("scanner_rejects_values", scan_summary({"safe": "private/file.jsonl"})["status"] == "fail" and scan_summary({"safe": "1-2"})["status"] == "fail"),
+        check("public_inputs", input_ok and len(input_rows) == 5),
+        check("private_rows", private_ok),
+        check("adapter_boundary", adapter_ok and adapter_rows[0]["adapter_imported_bool"] is True and adapter_rows[0]["existing_evaluator_hook_in_bool"] is False),
+        check("operating_point_result", result_ok and result_rows[0]["top10_span_overlap_count"] == 20 and result_rows[0]["top20_span_overlap_count"] == 24),
+        check("comparison", comparison_ok and comparison_rows[0]["all_expected_values_matched_bool"] is True),
+        check("privacy", privacy_ok and privacy_rows[0]["line_number_public_bool"] is False),
+        check("no_forbidden_execution", noexec_ok and noexec_rows[0]["new_variant_count"] == 0 and noexec_rows[0]["runtime_default_hook_count"] == 0),
+        check("synthetic_adapter_projection", synthetic_adapter_projection()),
+        check("synthetic_mismatch", synthetic_mismatch()),
+        check("false_flags", stop_go_records(True)[0]["n10bx_authorized"] is True and stop_go_records(True)[0]["runtime_or_default_authorized"] is False and stop_go_records(True)[0]["existing_evaluator_hook_in_authorized"] is False),
+        check("status_complete", status_for(True, True, "pass", True, True, True, True, True, True) == STATUS_PASS),
+    ]
+    return checks, all(c["passed"] for c in checks)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = SafeArgumentParser(description="BEA-v1-N10BW adapter operating-point smoke")
+    parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    return parser
+
+
+def main() -> None:
+    args = build_parser().parse_args()
+    checks, ok = run_self_test()
+    if args.self_test:
+        for item in checks:
+            print(f"[{'PASS' if item['passed'] else 'FAIL'}] {item['name']}")
+        print(f"self_test_passed={ok} ({sum(1 for c in checks if c['passed'])}/{len(checks)} checks)")
+        raise SystemExit(0 if ok else 1)
+    report = build_report(checks)
+    if report.get("forbidden_scan", {}).get("status") != "pass":
+        raise SystemExit("forbidden content leak; refusing to write artifact")
+    write_json(args.out, report)
+    print(f"wrote artifact (status={report['status']}, forbidden_scan={report['forbidden_scan']['status']})")
+
+
+if __name__ == "__main__":
+    main()

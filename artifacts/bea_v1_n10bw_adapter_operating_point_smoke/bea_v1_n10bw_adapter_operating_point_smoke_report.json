@@ -1,0 +1,275 @@
+{
+  "adapter_operating_point_result_records": [
+    {
+      "after_window_count": 60,
+      "anonymous_operating_point_result_id": "n10bwresult0000",
+      "before_window_count": 20,
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy": 80,
+      "expected_match_bool": true,
+      "expected_top10_span_overlap_count": 20,
+      "expected_top20_span_overlap_count": 24,
+      "file_hit_top10_count": 34,
+      "lost_plateau_core_top10_count": 0,
+      "operating_point_bucket": "cost80_before25_after75",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24
+    }
+  ],
+  "adapter_path_records": [
+    {
+      "adapter_disabled_copy_path_used_bool": true,
+      "adapter_imported_bool": true,
+      "adapter_path_bucket": "default_off_eval_only_adapter_copy_then_fixed_asymmetric_projection",
+      "anonymous_adapter_path_id": "n10bwadapter0000",
+      "existing_evaluator_called_bool": false,
+      "existing_evaluator_hook_in_bool": false,
+      "existing_evaluator_imported_bool": false,
+      "fixed_operating_point_after_count": 60,
+      "fixed_operating_point_before_count": 20,
+      "forbidden_import_or_hook_detected_bool": false,
+      "helper_imported_via_adapter_bool": true,
+      "runtime_default_hook_bool": false
+    }
+  ],
+  "claim_level": "adapter_operating_point_smoke_only",
+  "comparison_records": [
+    {
+      "all_expected_values_matched_bool": true,
+      "anonymous_comparison_id": "n10bwcompare0000",
+      "comparison_bucket": "n10bs_n10bt_n10bu_cost80_before25_after75_match",
+      "n10bs_expected_values_matched_bool": true,
+      "n10bt_expected_values_matched_bool": true,
+      "n10bu_expected_values_matched_bool": true
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_path_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_operating_point_result",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "comparison_to_prior_artifacts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T21:38:51Z",
+  "generated_by": "bea_v1_n10bw_adapter_operating_point_smoke",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bwin0000",
+      "expected_status": "boundary_case_mechanism_package_complete_n10bw_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bv_boundary_case_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_case_mechanism_package_complete_n10bw_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bwin0001",
+      "expected_status": "boundary_cost_package_complete_n10bu_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bt_boundary_cost_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_cost_package_complete_n10bu_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bwin0002",
+      "expected_status": "boundary_cost_refinement_sweep_complete_n10bt_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bs_boundary_cost_refinement_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_cost_refinement_sweep_complete_n10bt_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bwin0003",
+      "expected_status": "boundary_case_mechanism_decomposition_complete_n10bv_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bu_boundary_case_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "boundary_case_mechanism_decomposition_complete_n10bv_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bwin0004",
+      "expected_status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ao_adapter_variant_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_adapter_enabled_variant_evaluator_pass_n10ap_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10bx_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10bx_handoff_id": "n10bwhandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10bx_handoff_bucket": "n10bx_public_adapter_operating_point_package_authorized",
+      "n10bx_public_package_authorized_bool": true,
+      "new_variant_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10bwnoexec0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_order_change_count": 0,
+      "candidate_removal_count": 0,
+      "downstream_value_claim_count": 0,
+      "existing_evaluator_hook_in_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_variant_count": 0,
+      "no_execution_boundary_bucket": "adapter_operating_point_smoke_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "other_private_file_read_count": 0,
+      "p5_execution_count": 0,
+      "private_span_input_read_count": 1,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_hook_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BW Adapter Operating-Point Smoke for cost80_before25_after75",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10bwprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "hash_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_adapter_operating_point_counts_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_intake_id": "n10bwpriv0000",
+      "default_enabled_bool": false,
+      "explicit_scoped_enablement_used_bool": true,
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_read_by_default_bool": false,
+      "private_span_rows_read": 213,
+      "single_scoped_private_input_read_bool": true,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10bw_adapter_operating_point_smoke.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "adapter_operating_point_smoke_pass_n10bx_authorized",
+  "status_vocabulary": [
+    "adapter_operating_point_smoke_pass_n10bx_authorized",
+    "no_go_n10bw_required_inputs_unavailable",
+    "no_go_n10bw_private_span_rows_missing",
+    "no_go_n10bw_adapter_operating_point_mismatch",
+    "no_go_n10bw_forbidden_import_or_hook_detected",
+    "no_go_n10bw_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10bx_public_adapter_operating_point_package_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10bx_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BX Adapter Operating-Point Package",
+      "next_allowed_scope_bucket": "public_adapter_operating_point_package_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

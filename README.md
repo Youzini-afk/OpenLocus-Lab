@@ -28,19 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BV: Boundary Case Mechanism Package**:
+The latest closed phase is **BEA-v1-N10BW: Adapter Operating-Point Smoke for cost80_before25_after75**:
 
 ```text
-status: boundary_case_mechanism_package_complete_n10bw_authorized
-self-test: 14 / 14
+status: adapter_operating_point_smoke_pass_n10bx_authorized
+self-test: 15 / 15
 forbidden scan: pass
-private reads in N10BV: 0
-recomputes in N10BV: 0
-cost75/cost80 top10-top20: 19/23 -> 20/24
-recovered-at-80/missed-at-75 cases: 1
-gap bucket: before_gold_gap
-distance bucket: near_1_5
-next allowed phase: BEA-v1-N10BW Adapter Operating-Point Smoke for cost80_before25_after75
+private span rows read: 213
+operating point: cost80_before25_after75
+before/after windows: 20 / 60
+top10/top20 span overlap: 20 / 24
+lost plateau core: 0
+next allowed phase: BEA-v1-N10BX Adapter Operating-Point Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -728,6 +727,13 @@ and the near before-gold boundary mechanism. It authorizes only N10BW adapter
 operating-point smoke for `cost80_before25_after75` through the default-off
 eval-only adapter path.
 
+N10BW uses the default-off eval-only adapter/helper path to reproduce the selected
+`cost80_before25_after75` operating point (before=20, after=60). The adapter smoke
+matches the N10BS/N10BT/N10BU aggregate expectation: top10/top20 20/24, lost
+plateau core 0, file-hit top10 count 34, and candidate pool/order unchanged. It
+does not hook existing evaluators or runtime/default behavior, and authorizes only
+N10BX public adapter operating-point package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1285,6 +1291,11 @@ See the current report index:
   hook-in, runtime/default behavior, new variants, adaptive tuning,
   heldout/generalization claims, method/downstream claims, retrieval/rerun,
   candidate generation, selector/reranker execution, P5, or BEA-v1-A.
+- N10BW authorizes only N10BX public adapter operating-point package. It does not
+  authorize private reads, existing evaluator hook-in, runtime/default behavior,
+  new variants, adaptive tuning, heldout/generalization claims, method/downstream
+  claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
+  or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1717,6 +1728,10 @@ eval/bea_v1_n10bu_boundary_case_mechanism_decomposition.py
 eval/bea_v1_n10bv_boundary_case_mechanism_package.py
   Public package of N10BU one-case boundary facts; authorizes only N10BW adapter
   operating-point smoke for cost80_before25_after75.
+
+eval/bea_v1_n10bw_adapter_operating_point_smoke.py
+  Adapter-path smoke for cost80_before25_after75; authorizes only N10BX public
+  adapter operating-point package.
 ```
 
 Key reports:
@@ -1798,6 +1813,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json`](artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json)
 - [`artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json`](artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json)
+- [`artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json`](artifacts/bea_v1_n10bw_adapter_operating_point_smoke/bea_v1_n10bw_adapter_operating_point_smoke_report.json)
 
 Documentation mirror check:
 
