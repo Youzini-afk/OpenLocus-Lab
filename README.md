@@ -28,17 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AV: Exploratory Span-Window Variant Sweep Replication Package**:
+The latest closed phase is **BEA-v1-N10AW: Cost-Sensitive Span-Window Frontier Mechanism Decomposition**:
 
 ```text
-status: exploratory_span_window_sweep_replication_package_complete_n10aw_authorized
+status: cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized
 self-test: 14 / 14
 forbidden scan: pass
-private reads: 0
-variant recomputes: 0
-replication chain: N10AS -> N10AT -> N10AU complete
-frontier package: pm30 18/22 low; before25_after75 20/24 medium; pm75 21/25 medium; pm200 25/30 very_high
-next allowed phase: BEA-v1-N10AW Exploratory Span-Window Follow-Up Selection Audit
+private span rows read: 213
+frontier chain consistent: true
+result accounting valid: true
+frontier deltas: baseline 9; pm30 +9; before25_after75 +2; pm75 +1; pm200 +4
+next allowed phase: BEA-v1-N10AX Cost-Sensitive Frontier Claim Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -572,6 +572,14 @@ adapter variants over selected frontier points, or broader/heldout replay only i
 new source authorization/data exists. It authorizes only N10AW follow-up selection
 audit, not execution.
 
+N10AW performs the authorized cost-sensitive mechanism decomposition over the
+locked frontier tiers. The cumulative top-10 span hits are baseline 9, pm30 18,
+before25_after75 20, pm75 21, and pm200 25, with no lost previous hits. Newly
+recovered cases are bucketed as before/after gold-window gaps: pm30 adds 8 before
+and 1 after, before25_after75 adds 2 before, pm75 adds 1 after, and pm200 adds 3
+before and 1 after. The max-recall pm200 gains are wider recovery of the same
+before/after miss pattern, not a qualitatively different late-rank mechanism.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -993,6 +1001,11 @@ See the current report index:
   adaptive tuning, heldout validation, runtime/default changes, retrieval/rerun,
   candidate generation, selector/reranker execution, P5, BEA-v1-A, method-winner
   claims, or downstream-value claims.
+- N10AW authorizes only N10AX cost-sensitive frontier claim package. It does not
+  authorize private reads, recompute, new variants, adaptive tuning,
+  heldout/generalization claims, runtime/default changes, retrieval/rerun,
+  candidate generation, selector/reranker execution, P5, BEA-v1-A, method-winner
+  claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1320,6 +1333,11 @@ eval/bea_v1_n10au_independent_recompute_span_window_variant_sweep.py
 eval/bea_v1_n10av_exploratory_span_window_sweep_replication_package.py
   Public replication package for N10AS/N10AT/N10AU frontier tiers; authorizes only
   N10AW follow-up selection audit.
+
+eval/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition.py
+  Cost-sensitive decomposition of the locked frontier tiers; finds incremental
+  pm200 gains are same before/after gold-window miss recovery and authorizes only
+  N10AX public claim package.
 ```
 
 Key reports:
@@ -1375,6 +1393,7 @@ Key reports:
 - [`artifacts/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package_report.json`](artifacts/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package/bea_v1_n10at_exploratory_span_window_variant_sweep_audit_package_report.json)
 - [`artifacts/bea_v1_n10au_independent_recompute_span_window_variant_sweep/bea_v1_n10au_independent_recompute_span_window_variant_sweep_report.json`](artifacts/bea_v1_n10au_independent_recompute_span_window_variant_sweep/bea_v1_n10au_independent_recompute_span_window_variant_sweep_report.json)
 - [`artifacts/bea_v1_n10av_exploratory_span_window_sweep_replication_package/bea_v1_n10av_exploratory_span_window_sweep_replication_package_report.json`](artifacts/bea_v1_n10av_exploratory_span_window_sweep_replication_package/bea_v1_n10av_exploratory_span_window_sweep_replication_package_report.json)
+- [`artifacts/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition_report.json`](artifacts/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition/bea_v1_n10aw_cost_sensitive_span_window_frontier_mechanism_decomposition_report.json)
 
 Documentation mirror check:
 
