@@ -28,19 +28,22 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CP: Refined Hybrid Adapter Smoke Public Package**:
+The latest closed phase is **BEA-v1-N10CQ: Refined Hybrid Mechanism Decomposition**:
 
 ```text
-status: refined_hybrid_adapter_package_complete_n10cq_authorized
-self-test: 13 / 13
+status: refined_hybrid_mechanism_decomposition_complete_n10cr_authorized
+self-test: 15 / 15
 forbidden scan: pass
-refined result: short75_225_top2_all_pm200, 25 / 31 at 3200 / 6200
-lost winning top10 hits: 0
-file-hit top10 count: 34
-private reads in N10CP: 0
-recomputes in N10CP: 0
-adapter default enabled: false
-next allowed phase: BEA-v1-N10CQ Refined Hybrid Next-Step Decision
+private span rows read: 213
+policies evaluated: 5
+refined hybrid: 25 / 31 at 3200 / 6200
+top1 result: 24 / 30
+top3 result: 25 / 31
+pm200 all-spans: 25 / 30
+top2-minus-top1 recovered cases: 1
+top3-minus-top2 recovered cases: 0
+remaining top10 misses: 188
+next allowed phase: BEA-v1-N10CR Mechanism-Guided Refined Hybrid Sweep
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -847,6 +850,12 @@ existing evaluator/runtime/retrieval/selector hook. It authorizes only N10CQ
 next-step decision between continued cost/quality exploration and a formal
 default-off variant evaluator for the refined hybrid.
 
+N10CQ decomposes the refined hybrid mechanism directly. It shows top2 all-span
+pm200 recovers exactly one top10 case over top1, top3 adds no further top10 cases,
+and the remaining refined-hybrid top10 misses are mostly file-not-in-top10. It
+authorizes only N10CR mechanism-guided refined-hybrid sweep over fixed variants
+derived from N10CQ.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1507,6 +1516,11 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-
   value claims.
+- N10CQ authorizes only N10CR mechanism-guided refined-hybrid sweep using the same
+  scoped rows and fixed variants derived from N10CQ. It does not authorize
+  runtime/default enablement, existing evaluator hook-in, heldout/generalization
+  claims, retrieval/rerun, candidate generation/add/remove/reorder, adaptive
+  tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2019,6 +2033,10 @@ eval/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke.py
 eval/bea_v1_n10cp_refined_hybrid_adapter_smoke_package.py
   Public package of N10CO refined-hybrid adapter smoke; authorizes only N10CQ
   next-step decision.
+
+eval/bea_v1_n10cq_refined_hybrid_mechanism_decomposition.py
+  Mechanism decomposition of the refined hybrid; authorizes only N10CR fixed
+  mechanism-guided follow-up.
 ```
 
 Key reports:
@@ -2120,6 +2138,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package_report.json`](artifacts/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package/bea_v1_n10cn_winning_hybrid_cost_refinement_audit_package_report.json)
 - [`artifacts/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke_report.json`](artifacts/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke_report.json)
 - [`artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json`](artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json)
+- [`artifacts/bea_v1_n10cq_refined_hybrid_mechanism_decomposition/bea_v1_n10cq_refined_hybrid_mechanism_decomposition_report.json`](artifacts/bea_v1_n10cq_refined_hybrid_mechanism_decomposition/bea_v1_n10cq_refined_hybrid_mechanism_decomposition_report.json)
 
 Documentation mirror check:
 
