@@ -124,6 +124,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10ad-independent-recompute-fixed-span-window-repair-smoke.md`: [en](en/bea-v1-n10ad-independent-recompute-fixed-span-window-repair-smoke.md) · [zh](zh/bea-v1-n10ad-independent-recompute-fixed-span-window-repair-smoke.md)
 - `bea-v1-n10ae-fixed-span-window-repair-replication-package.md`: [en](en/bea-v1-n10ae-fixed-span-window-repair-replication-package.md) · [zh](zh/bea-v1-n10ae-fixed-span-window-repair-replication-package.md)
 - `bea-v1-n10af-fixed-span-window-repair-robustness-validation.md`: [en](en/bea-v1-n10af-fixed-span-window-repair-robustness-validation.md) · [zh](zh/bea-v1-n10af-fixed-span-window-repair-robustness-validation.md)
+- `bea-v1-n10ag-fixed-span-window-repair-claim-boundary-package.md`: [en](en/bea-v1-n10ag-fixed-span-window-repair-claim-boundary-package.md) · [zh](zh/bea-v1-n10ag-fixed-span-window-repair-claim-boundary-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
