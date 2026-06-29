@@ -28,18 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AQ-R: Heldout Span-Surface Acquisition Feasibility**:
+The latest closed phase is **BEA-v1-N10AS: Exploratory Span-Window Variant Sweep**:
 
 ```text
-status: no_go_n10aqr_no_bounded_heldout_acquisition_path
-self-test: 12 / 12
+status: exploratory_span_window_variant_sweep_complete_n10at_authorized
+self-test: 13 / 13
 forbidden scan: pass
-bounded acquisition command identified: false
-denominator declared: false
-not same as N10 source: false
-expected rows >= 50: false
-N10AR authorized: false
-next allowed phase: none_until_bounded_heldout_span_surface_acquisition_path_or_rows_exist
+private span rows read: 213
+variant count: 15
+baseline unexpanded top10/top20: 9 / 10
+max-recall frontier point: pm200
+recommended top10/top20 span overlap: 25 / 30
+recommended delta top10 vs unexpanded: 16
+recommended cost proxy bucket: very_high
+next allowed phase: BEA-v1-N10AT Exploratory Span-Window Variant Sweep Audit Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -547,6 +549,15 @@ bounded acquisition path: no distinct heldout denominator is declared, no expect
 row count >=50 is available, and recovered N1/P4L/N2 surfaces are same-source,
 consumer-only, or require broader replay. N10AR remains unauthorized.
 
+N10AS is a same-source exploratory sweep over 15 fixed span-window variants on the
+existing N1 span-surface proxy, using only the known N10T best order. It reads the
+same 213 scoped private span rows and keeps candidate pool/order fixed. The
+frontier has clear tiers: `pm30` is the low-cost point (top10/top20 18/22),
+`before25_after75` and `pm75` are balanced points (20/24 and 21/25), and
+`pm200` is the max-recall point (25/30) with very-high cost proxy. This is not
+heldout, not N2-equivalent, not runtime/default, and not a method/downstream
+claim.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -948,6 +959,11 @@ See the current report index:
   execution, retrieval/rerun, benchmark replay, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, runtime/default changes,
   method-winner claims, or downstream-value claims.
+- N10AS authorizes only N10AT exploratory span-window variant sweep audit package.
+  It does not authorize private reads, extra sweeps, heldout validation claims,
+  runtime/default changes, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, adaptive tuning, method-winner
+  claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1258,6 +1274,11 @@ eval/bea_v1_n10aq_heldout_span_surface_source_discovery.py
 eval/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility.py
   Feasibility decision for acquiring heldout span-surface rows; closes No-Go
   because no bounded acquisition command/source is available.
+
+eval/bea_v1_n10as_exploratory_span_window_variant_sweep.py
+  Same-source exploratory sweep over 15 fixed span-window variants on the N1
+  proxy; reports low-cost/balanced/max-recall frontier points and authorizes
+  only N10AT audit/package.
 ```
 
 Key reports:
@@ -1309,6 +1330,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package_report.json`](artifacts/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package_report.json)
 - [`artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json`](artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json)
 - [`artifacts/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility_report.json`](artifacts/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility_report.json)
+- [`artifacts/bea_v1_n10as_exploratory_span_window_variant_sweep/bea_v1_n10as_exploratory_span_window_variant_sweep_report.json`](artifacts/bea_v1_n10as_exploratory_span_window_variant_sweep/bea_v1_n10as_exploratory_span_window_variant_sweep_report.json)
 
 Documentation mirror check:
 
