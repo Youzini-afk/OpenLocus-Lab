@@ -100,6 +100,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n6-fixed-pool-rank-order-experiment.md`: [en](en/bea-v1-n6-fixed-pool-rank-order-experiment.md) · [zh](zh/bea-v1-n6-fixed-pool-rank-order-experiment.md)
 - `bea-v1-n6f-fixed-pool-public-arm-field-materialization-design.md`: [en](en/bea-v1-n6f-fixed-pool-public-arm-field-materialization-design.md) · [zh](zh/bea-v1-n6f-fixed-pool-public-arm-field-materialization-design.md)
 - `bea-v1-n6g-fixed-pool-arm-field-source-discovery-audit.md`: [en](en/bea-v1-n6g-fixed-pool-arm-field-source-discovery-audit.md) · [zh](zh/bea-v1-n6g-fixed-pool-arm-field-source-discovery-audit.md)
+- `bea-v1-n6xr-explicit-bounded-candidate-pool-recapture-smoke.md`: [en](en/bea-v1-n6xr-explicit-bounded-candidate-pool-recapture-smoke.md) · [zh](zh/bea-v1-n6xr-explicit-bounded-candidate-pool-recapture-smoke.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
 - `bea-v1-p0-4-support-link-input-design.md`: [en](en/bea-v1-p0-4-support-link-input-design.md) · [zh](zh/bea-v1-p0-4-support-link-input-design.md)
