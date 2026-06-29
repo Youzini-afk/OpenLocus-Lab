@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CG: Observable Hybrid Span-Shape Rule Sweep**:
+The latest closed phase is **BEA-v1-N10CH: Observable Hybrid Span-Shape Rule Sweep Audit Package**:
 
 ```text
-status: observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized
-self-test: 15 / 15
+status: observable_hybrid_rule_package_complete_n10ci_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10CH: 0
+recomputes in N10CH: 0
 variant count: 12
 recovers pm200 at lower cost: 2
 best lower-cost hybrid variants: short75_225_top3_all_pm200 and short75_225_top5_all_pm200 at 25 / 31
-next allowed phase: BEA-v1-N10CH Observable Hybrid Span-Shape Rule Sweep Audit Package
+next allowed phase: BEA-v1-N10CI Candidate Strategy Independent Recompute or Adapter Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -795,6 +796,12 @@ exceed its top20 at lower cost: `short75_225_top3_all_pm200` reaches 25/31 at
 cost10/cost20 3300/6300, and `short75_225_top5_all_pm200` reaches 25/31 at
 3500/6500. It authorizes only N10CH public audit/package.
 
+N10CH packages the N10CG positive hybrid result publicly without private reads or
+recompute. It confirms `short75_225_top3_all_pm200` and
+`short75_225_top5_all_pm200` recover pm200 at lower cost, while `top10` all-pm200
+is not counted as a success because top10 cost is not below pm200. It authorizes
+only N10CI independent recompute or adapter smoke for `short75_225_top3_all_pm200`.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1410,6 +1417,11 @@ See the current report index:
   add/remove/reorder, cluster/bridge execution, adaptive tuning,
   selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
   downstream-value claims.
+- N10CH authorizes only N10CI independent recompute or adapter smoke for
+  `short75_225_top3_all_pm200`. It does not authorize runtime/default promotion,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, cluster/bridge execution, adaptive tuning, selector/reranker execution,
+  P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1887,6 +1899,10 @@ eval/bea_v1_n10cf_span_shape_refinement_audit_package.py
 eval/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep.py
   Same-source observable hybrid span-shape rule sweep; authorizes only N10CH
   public audit/package.
+
+eval/bea_v1_n10ch_observable_hybrid_rule_audit_package.py
+  Public package of the N10CG positive hybrid result; authorizes only N10CI
+  candidate strategy recompute or adapter smoke.
 ```
 
 Key reports:
@@ -1979,6 +1995,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ce_span_shape_gated_refinement_sweep/bea_v1_n10ce_span_shape_gated_refinement_sweep_report.json`](artifacts/bea_v1_n10ce_span_shape_gated_refinement_sweep/bea_v1_n10ce_span_shape_gated_refinement_sweep_report.json)
 - [`artifacts/bea_v1_n10cf_span_shape_refinement_audit_package/bea_v1_n10cf_span_shape_refinement_audit_package_report.json`](artifacts/bea_v1_n10cf_span_shape_refinement_audit_package/bea_v1_n10cf_span_shape_refinement_audit_package_report.json)
 - [`artifacts/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep_report.json`](artifacts/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep/bea_v1_n10cg_observable_hybrid_span_shape_rule_sweep_report.json)
+- [`artifacts/bea_v1_n10ch_observable_hybrid_rule_audit_package/bea_v1_n10ch_observable_hybrid_rule_audit_package_report.json`](artifacts/bea_v1_n10ch_observable_hybrid_rule_audit_package/bea_v1_n10ch_observable_hybrid_rule_audit_package_report.json)
 
 Documentation mirror check:
 

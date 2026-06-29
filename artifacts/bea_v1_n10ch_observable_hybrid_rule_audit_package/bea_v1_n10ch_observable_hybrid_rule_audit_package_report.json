@@ -1,0 +1,381 @@
+{
+  "claim_boundary_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_claim_boundary_id": "n10chclaim0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "claim_boundary_bucket": "same_source_observable_hybrid_rule_package_only",
+      "claim_boundary_valid_bool": true,
+      "cluster_bridge_authorized_bool": false,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_promotion_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "claim_level": "public_observable_hybrid_rule_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "hybrid_rule_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "decision_summary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "medium_long_retention",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "policy_input_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T22:53:48Z",
+  "generated_by": "bea_v1_n10ch_observable_hybrid_rule_audit_package",
+  "hybrid_decision_package_records": [
+    {
+      "anonymous_decision_summary_id": "n10chdecision0000",
+      "best_observed_top10_span_overlap_count": 25,
+      "best_observed_top20_span_overlap_count": 31,
+      "best_observed_variant_bucket": "short75_225_top3_all_pm200",
+      "improves_short_frontier_below_pm200_count": 0,
+      "n10cg_match_bool": true,
+      "no_hybrid_improvement_count": 10,
+      "package_bucket": "n10cg_hybrid_decision_package",
+      "recovers_pm200_at_lower_cost_count": 2,
+      "variant_count": 12
+    }
+  ],
+  "hybrid_rule_package_records": [
+    {
+      "anonymous_hybrid_rule_package_id": "n10chhybrid0000",
+      "cost_proxy_top10": 3000,
+      "cost_proxy_top20": 6000,
+      "decision_bucket": "no_hybrid_improvement",
+      "lost_short75_225_hits": 0,
+      "n10cg_match_bool": true,
+      "package_bucket": "n10cg_observable_hybrid_rule_package",
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "anchor_short75_225"
+    },
+    {
+      "anonymous_hybrid_rule_package_id": "n10chhybrid0001",
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 8000,
+      "decision_bucket": "no_hybrid_improvement",
+      "lost_short75_225_hits": 0,
+      "n10cg_match_bool": true,
+      "package_bucket": "n10cg_observable_hybrid_rule_package",
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "anchor_pm200_all_spans"
+    },
+    {
+      "anonymous_hybrid_rule_package_id": "n10chhybrid0002",
+      "cost_proxy_top10": 3300,
+      "cost_proxy_top20": 6300,
+      "cost_savings_vs_pm200_top10": 700,
+      "cost_savings_vs_pm200_top20": 1700,
+      "decision_bucket": "recovers_pm200_at_lower_cost",
+      "lost_short75_225_hits": 0,
+      "n10cg_match_bool": true,
+      "package_bucket": "n10cg_observable_hybrid_rule_package",
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "short75_225_top3_all_pm200"
+    },
+    {
+      "anonymous_hybrid_rule_package_id": "n10chhybrid0003",
+      "cost_proxy_top10": 3500,
+      "cost_proxy_top20": 6500,
+      "cost_savings_vs_pm200_top10": 500,
+      "cost_savings_vs_pm200_top20": 1500,
+      "decision_bucket": "recovers_pm200_at_lower_cost",
+      "lost_short75_225_hits": 0,
+      "n10cg_match_bool": true,
+      "package_bucket": "n10cg_observable_hybrid_rule_package",
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "short75_225_top5_all_pm200"
+    },
+    {
+      "anonymous_hybrid_rule_package_id": "n10chhybrid0004",
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 7000,
+      "decision_bucket": "no_hybrid_improvement",
+      "lost_short75_225_hits": 0,
+      "n10cg_match_bool": true,
+      "not_success_reason_bucket": "top10_cost_not_below_pm200",
+      "package_bucket": "n10cg_observable_hybrid_rule_package",
+      "top10_cost_saving_success_bool": false,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "short75_225_top10_all_pm200"
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10chin0000",
+      "expected_status": "observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cg_observable_hybrid_rule_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10chin0001",
+      "expected_status": "span_shape_refinement_package_complete_n10cg_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cf_span_shape_refinement_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "span_shape_refinement_package_complete_n10cg_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10chin0002",
+      "expected_status": "span_shape_gated_refinement_sweep_complete_n10cf_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ce_span_shape_refinement_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "span_shape_gated_refinement_sweep_complete_n10cf_authorized"
+    }
+  ],
+  "medium_long_retention_package_records": [
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0000",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_medium20_60"
+    },
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0001",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_medium40_120"
+    },
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0002",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_medium75_225"
+    },
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0003",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_top5_medium75_225"
+    },
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0004",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_top10_medium75_225"
+    },
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0005",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_top5_long75_225"
+    },
+    {
+      "anonymous_medium_long_package_id": "n10chmidlong0006",
+      "improved_anchor_bool": false,
+      "package_bucket": "medium_long_hybrid_retained_short75_anchor",
+      "retained_short75_anchor_bool": true,
+      "top10_span_overlap_count": 24,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "short75_225_top10_long75_225"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ci_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10ci_handoff_id": "n10chhandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "candidate_strategy_bucket": "short75_225_top3_all_pm200",
+      "candidate_strategy_scope_bucket": "independent_recompute_or_adapter_smoke_public_boundary",
+      "cluster_bridge_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10ci_authorized_bool": true,
+      "n10ci_handoff_bucket": "n10ci_candidate_strategy_recompute_or_adapter_smoke_authorized",
+      "p5_v1a_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10chnorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "cluster_bridge_execution_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_observable_hybrid_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CH Observable Hybrid Span-Shape Rule Sweep Audit Package",
+  "policy_input_boundary_records": [
+    {
+      "anonymous_policy_boundary_id": "n10chpolicy0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "candidate_position_bucket_policy_allowed_bool": true,
+      "content_used_for_policy_bool": false,
+      "file_identity_used_for_policy_bool": false,
+      "finer_bucket_used_bool": false,
+      "gold_used_for_policy_bool": false,
+      "miss_direction_used_for_policy_bool": false,
+      "outcome_used_for_policy_bool": false,
+      "policy_boundary_valid_bool": true,
+      "policy_input_boundary_bucket": "observable_span_length_and_candidate_position_only",
+      "span_length_bucket_policy_allowed_bool": true
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10chprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "public_observable_hybrid_rule_package_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10ch_observable_hybrid_rule_audit_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "observable_hybrid_rule_package_complete_n10ci_authorized",
+  "status_vocabulary": [
+    "observable_hybrid_rule_package_complete_n10ci_authorized",
+    "no_go_n10ch_required_public_inputs_unavailable",
+    "no_go_n10ch_hybrid_chain_mismatch",
+    "no_go_n10ch_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10ci_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "cluster_bridge_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10ci_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CI Candidate Strategy Independent Recompute or Adapter Smoke",
+      "next_allowed_scope_bucket": "short75_225_top3_all_pm200_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
