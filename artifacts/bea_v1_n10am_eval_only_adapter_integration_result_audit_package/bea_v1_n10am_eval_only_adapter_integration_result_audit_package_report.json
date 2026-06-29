@@ -1,0 +1,214 @@
+{
+  "adapter_result_records": [
+    {
+      "adapter_result_bucket": "eval_only_adapter_reproduces_scoped_n1_pm50_aggregate",
+      "adapter_result_valid_bool": true,
+      "anonymous_adapter_result_id": "n10amresult0000",
+      "baseline_top10_span_overlap_count": 9,
+      "baseline_top20_span_overlap_count": 10,
+      "candidate_pool_changed_bool": false,
+      "delta_top10_vs_baseline_count": 10,
+      "eligible_denominator_count": 213,
+      "order_changed_bool": false,
+      "original_span_hit_lost_count": 0,
+      "pm50_top10_span_overlap_count": 19,
+      "pm50_top20_span_overlap_count": 23
+    }
+  ],
+  "aggregate_runtime_seconds": 0.001,
+  "claim_boundary_records": [
+    {
+      "allowed_claim_bool": true,
+      "anonymous_claim_boundary_id": "n10amclaim0000",
+      "candidate_generation_claim_bool": false,
+      "claim_boundary_bucket": "eval_only_adapter_reproduces_scoped_n1_pm50_aggregate_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "existing_evaluator_hook_in_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "p5_v1a_claim_bool": false,
+      "private_read_by_default_claim_bool": false,
+      "retrieval_rerun_claim_bool": false,
+      "runtime_default_promotion_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "public_adapter_integration_result_audit_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "integration_chain",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "adapter_result",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T17:10:06Z",
+  "generated_by": "bea_v1_n10am_eval_only_adapter_integration_result_audit_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10amin0000",
+      "expected_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10al_integration_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10amin0001",
+      "expected_status": "eval_only_adapter_public_fixture_audit_package_complete_n10al_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ak_adapter_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "eval_only_adapter_public_fixture_audit_package_complete_n10al_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10amin0002",
+      "expected_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aj_adapter_patch_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10amin0003",
+      "expected_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ab_repair_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_smoke_pass_n10ac_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10amin0004",
+      "expected_status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ad_independent_recompute_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "independent_recompute_fixed_span_window_repair_smoke_pass_n10ae_authorized"
+    }
+  ],
+  "integration_chain_records": [
+    {
+      "adapter_chain_valid_bool": true,
+      "adapter_import_boundary_valid_bool": true,
+      "anonymous_integration_chain_id": "n10amchain0000",
+      "chain_bucket": "n10aj_adapter_n10ak_package_n10al_empirical_match",
+      "comparison_to_n10ab_n10ad_passed_bool": true,
+      "existing_evaluator_hook_in_bool": false,
+      "existing_evaluator_imported_bool": false,
+      "integration_chain_valid_bool": true,
+      "n10aj_status_valid_bool": true,
+      "n10ak_status_valid_bool": true,
+      "n10al_status_valid_bool": true
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10an_handoff_records": [
+    {
+      "anonymous_n10an_handoff_id": "n10amhandoff0000",
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "n10an_handoff_bucket": "n10an_default_off_existing_evaluator_hook_feasibility_preflight_authorized",
+      "n10an_preflight_authorized_bool": true,
+      "preflight_public_static_only_bool": true,
+      "private_read_authorized_bool": false,
+      "retrieval_or_rerun_authorized_bool": false,
+      "runtime_default_enablement_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10amnoexec0000",
+      "candidate_generation_count": 0,
+      "empirical_recompute_count": 0,
+      "existing_evaluator_hook_in_count": 0,
+      "no_private_recompute_bucket": "public_audit_package_only_no_private_read_no_recompute",
+      "no_private_recompute_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "private_scan_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AM Eval-Only Adapter Integration Result Audit Package",
+  "schema_version": "bea_v1_n10am_eval_only_adapter_integration_result_audit_package.v1",
+  "self_test_checks_passed": 12,
+  "self_test_checks_total": 12,
+  "self_test_passed": true,
+  "status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized",
+  "status_vocabulary": [
+    "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized",
+    "no_go_n10am_required_public_inputs_unavailable",
+    "no_go_n10am_integration_chain_mismatch",
+    "no_go_n10am_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10an_default_off_existing_evaluator_hook_feasibility_preflight_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10an_preflight_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10AN Default-Off Existing-Evaluator Hook Feasibility Preflight",
+      "next_allowed_scope_bucket": "public_static_feasibility_preflight_only",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_enablement_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
