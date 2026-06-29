@@ -28,18 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BU: Boundary Case Mechanism Decomposition**:
+The latest closed phase is **BEA-v1-N10BV: Boundary Case Mechanism Package**:
 
 ```text
-status: boundary_case_mechanism_decomposition_complete_n10bv_authorized
-self-test: 16 / 16
+status: boundary_case_mechanism_package_complete_n10bw_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10BV: 0
+recomputes in N10BV: 0
 cost75/cost80 top10-top20: 19/23 -> 20/24
 recovered-at-80/missed-at-75 cases: 1
 gap bucket: before_gold_gap
 distance bucket: near_1_5
-next allowed phase: BEA-v1-N10BV Boundary Case Mechanism Package
+next allowed phase: BEA-v1-N10BW Adapter Operating-Point Smoke for cost80_before25_after75
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -721,6 +722,12 @@ near `before_gold_gap` just outside the 75-cost window. This explains the observ
 cost boundary without publishing paths, lines, spans, snippets, gold, candidates,
 or exact ranks. It authorizes only N10BV public boundary-case mechanism package.
 
+N10BV packages the N10BU one-case mechanism publicly without private reads or
+recompute. It locks cost75/cost80 comparison counts, the single transition case,
+and the near before-gold boundary mechanism. It authorizes only N10BW adapter
+operating-point smoke for `cost80_before25_after75` through the default-off
+eval-only adapter path.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1272,6 +1279,12 @@ See the current report index:
   behavior, heldout/generalization claims, method/downstream claims,
   retrieval/rerun, candidate generation, selector/reranker execution, P5, or
   BEA-v1-A.
+- N10BV authorizes only N10BW adapter operating-point smoke for
+  `cost80_before25_after75` through the default-off eval-only adapter path. It
+  does not authorize private reads beyond the same scoped rows, existing evaluator
+  hook-in, runtime/default behavior, new variants, adaptive tuning,
+  heldout/generalization claims, method/downstream claims, retrieval/rerun,
+  candidate generation, selector/reranker execution, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1700,6 +1713,10 @@ eval/bea_v1_n10bt_boundary_cost_package.py
 eval/bea_v1_n10bu_boundary_case_mechanism_decomposition.py
   Direct one-case decomposition of the cost75/cost80 boundary; authorizes only
   N10BV public boundary-case mechanism package.
+
+eval/bea_v1_n10bv_boundary_case_mechanism_package.py
+  Public package of N10BU one-case boundary facts; authorizes only N10BW adapter
+  operating-point smoke for cost80_before25_after75.
 ```
 
 Key reports:
@@ -1780,6 +1797,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json`](artifacts/bea_v1_n10bs_boundary_cost_refinement_sweep/bea_v1_n10bs_boundary_cost_refinement_sweep_report.json)
 - [`artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json`](artifacts/bea_v1_n10bt_boundary_cost_package/bea_v1_n10bt_boundary_cost_package_report.json)
 - [`artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bu_boundary_case_mechanism_decomposition/bea_v1_n10bu_boundary_case_mechanism_decomposition_report.json)
+- [`artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json`](artifacts/bea_v1_n10bv_boundary_case_mechanism_package/bea_v1_n10bv_boundary_case_mechanism_package_report.json)
 
 Documentation mirror check:
 
