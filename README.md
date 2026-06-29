@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N6XFR-C: Cargo Dependency Fetch and Release Binary Build Recovery**:
+The latest closed phase is **BEA-v1-N6XFR-D: Private Reconstruction Input Inventory Recovery Audit**:
 
 ```text
-status: partial_n6xfrc_binary_built_private_inputs_missing
-self-test: 15 / 15
+status: no_go_n6xfrd_private_reconstruction_inputs_unavailable
+self-test: 14 / 14
 forbidden scan: pass
-binary exists after build: true
-binary available after recovery: true
-cargo exit code bucket: zero
-raw cargo log public: false
-N6X-FR canary authorized: false
+release binary available after recovery: true
+inventory scope bucket: repo_research_private_only
+metadata only: true
+FD1/P4L/N-series/N6 arm candidates: 0 / 0 / 0 / 0
+route closed: true
+next allowed phase: BEA-v1 Final Mechanism Route Synthesis
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -351,6 +352,12 @@ the release build command for `openlocus-cli`. The build succeeds and creates th
 release binary bucket, but FD1/P4L/N-series private reconstruction inputs are
 still unavailable, so N6X-FR canary/full capture remains unauthorized.
 
+N6XFR-D performs the final read-only metadata inventory of the repo
+research-private bucket. It finds zero FD1, P4L, N-series candidate-pool, or N6
+arm-outcome reconstruction input candidates, reads no private content, publishes
+no private paths or names, and closes the full-frozen reconstruction route under
+current local authorization.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -591,6 +598,12 @@ See the current report index:
   authorize retrieval, full rerun, benchmark repository clone, OpenLocus binary
   execution, private reads, selector/reranker execution, policy/runtime changes,
   counterfactuals, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N6XFR-D authorizes only final mechanism route synthesis because no private
+  reconstruction input candidates were found in the scoped metadata inventory. It
+  does not authorize private reads, OpenLocus binary execution, retrieval, full
+  rerun, candidate generation/materialization, N6X-FR canary/full execution,
+  selector/reranker execution, policy/runtime changes, counterfactuals, P5,
+  BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -762,6 +775,10 @@ eval/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery.py
 eval/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery.py
   Scoped cargo dependency-fetch and release binary build recovery; partial
   because private reconstruction inputs remain unavailable.
+
+eval/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit.py
+  Read-only metadata inventory of private reconstruction input buckets; No-Go
+  because FD1/P4L/N-series/N6 candidates are unavailable.
 ```
 
 Key reports:
@@ -780,6 +797,7 @@ Key reports:
 - [`artifacts/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture_report.json`](artifacts/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture/bea_v1_n6xfr_explicit_full_frozen_candidate_pool_reconstruction_capture_report.json)
 - [`artifacts/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery_report.json`](artifacts/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery/bea_v1_n6xfrb_local_reconstruction_prerequisite_recovery_report.json)
 - [`artifacts/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery_report.json`](artifacts/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery/bea_v1_n6xfrc_cargo_dependency_fetch_release_binary_build_recovery_report.json)
+- [`artifacts/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit_report.json`](artifacts/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit/bea_v1_n6xfrd_private_reconstruction_input_inventory_recovery_audit_report.json)
 
 Documentation mirror check:
 
