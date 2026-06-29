@@ -28,17 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BN: After-Heavy Local Asymmetry Refinement Package**:
+The latest closed phase is **BEA-v1-N10BO: Plateau Mechanism Decomposition**:
 
 ```text
-status: local_refinement_package_complete_n10bo_authorized
-self-test: 14 / 14
+status: plateau_mechanism_decomposition_complete_n10bp_authorized
+self-test: 18 / 18
 forbidden scan: pass
-private reads in N10BN: 0
-recomputes in N10BN: 0
-fixed total cost proxy: 100
-plateau: before20_after80 through before40_after60
-next allowed phase: BEA-v1-N10BO Plateau Mechanism Decomposition
+private span rows read: 213
+plateau variants: 5
+top10/top20 common across plateau: 20 / 24
+top10/top20 union across plateau: 20 / 24
+case-swap count: 0
+next allowed phase: BEA-v1-N10BP Plateau Mechanism Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -677,6 +678,12 @@ from `before20_after80` through `before40_after60`, concluding that
 `before25_after75` is a plateau member rather than a unique magic value. It
 authorizes only N10BO plateau mechanism decomposition.
 
+N10BO decomposes the N10BM plateau directly over the same scoped N1 rows. All five
+plateau variants recover the same top10/top20 sets (common = union = 20/24), with
+zero case swaps and zero lost pm50 top10 hits. The common top10 direction buckets
+are 10 before-gold gaps, 1 after-gold gap, 9 already-overlap, and 0 other. It
+authorizes only N10BP public plateau mechanism package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1191,6 +1198,11 @@ See the current report index:
   runtime/default behavior, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, heldout/generalization claims,
   method-winner claims, or downstream-value claims.
+- N10BO authorizes only N10BP public plateau mechanism package. It does not
+  authorize private reads, other variants, adaptive per-row choice, new cost
+  budgets, runtime/default behavior, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, heldout/generalization claims,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1591,6 +1603,10 @@ eval/bea_v1_n10bm_after_heavy_local_asymmetry_refinement.py
 eval/bea_v1_n10bn_local_refinement_package.py
   Public package of N10BM local-refinement facts; authorizes only N10BO plateau
   mechanism decomposition.
+
+eval/bea_v1_n10bo_plateau_mechanism_decomposition.py
+  Direct decomposition of the after-heavy plateau common/union cases; authorizes
+  only N10BP public plateau mechanism package.
 ```
 
 Key reports:
@@ -1664,6 +1680,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bl_direction_sensitivity_package/bea_v1_n10bl_direction_sensitivity_package_report.json`](artifacts/bea_v1_n10bl_direction_sensitivity_package/bea_v1_n10bl_direction_sensitivity_package_report.json)
 - [`artifacts/bea_v1_n10bm_after_heavy_local_asymmetry_refinement/bea_v1_n10bm_after_heavy_local_asymmetry_refinement_report.json`](artifacts/bea_v1_n10bm_after_heavy_local_asymmetry_refinement/bea_v1_n10bm_after_heavy_local_asymmetry_refinement_report.json)
 - [`artifacts/bea_v1_n10bn_local_refinement_package/bea_v1_n10bn_local_refinement_package_report.json`](artifacts/bea_v1_n10bn_local_refinement_package/bea_v1_n10bn_local_refinement_package_report.json)
+- [`artifacts/bea_v1_n10bo_plateau_mechanism_decomposition/bea_v1_n10bo_plateau_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bo_plateau_mechanism_decomposition/bea_v1_n10bo_plateau_mechanism_decomposition_report.json)
 
 Documentation mirror check:
 
