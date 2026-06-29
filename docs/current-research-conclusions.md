@@ -129,6 +129,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10ai-default-off-span-window-helper-integration-preflight.md`: [en](en/bea-v1-n10ai-default-off-span-window-helper-integration-preflight.md) · [zh](zh/bea-v1-n10ai-default-off-span-window-helper-integration-preflight.md)
 - `bea-v1-n10aj-default-off-eval-only-span-projection-adapter-patch.md`: [en](en/bea-v1-n10aj-default-off-eval-only-span-projection-adapter-patch.md) · [zh](zh/bea-v1-n10aj-default-off-eval-only-span-projection-adapter-patch.md)
 - `bea-v1-n10ak-eval-only-adapter-public-fixture-audit-package.md`: [en](en/bea-v1-n10ak-eval-only-adapter-public-fixture-audit-package.md) · [zh](zh/bea-v1-n10ak-eval-only-adapter-public-fixture-audit-package.md)
+- `bea-v1-n10al-scoped-eval-only-adapter-integration-smoke.md`: [en](en/bea-v1-n10al-scoped-eval-only-adapter-integration-smoke.md) · [zh](zh/bea-v1-n10al-scoped-eval-only-adapter-integration-smoke.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
