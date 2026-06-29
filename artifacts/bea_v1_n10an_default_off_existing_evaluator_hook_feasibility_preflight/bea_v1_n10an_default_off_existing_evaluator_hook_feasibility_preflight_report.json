@@ -1,0 +1,275 @@
+{
+  "aggregate_runtime_seconds": 0.001,
+  "behavior_preservation_records": [
+    {
+      "anonymous_behavior_preservation_id": "n10anbehavior0000",
+      "behavior_preservation_bucket": "new_variant_preserves_existing_validated_evaluators",
+      "behavior_preservation_valid_bool": true,
+      "candidate_generation_behavior_change_bool": false,
+      "existing_validated_evaluator_modification_bool": false,
+      "new_arm_or_window_tuning_bool": false,
+      "runtime_retrieval_config_modification_bool": false
+    }
+  ],
+  "claim_level": "public_static_hook_feasibility_preflight_only",
+  "default_off_boundary_records": [
+    {
+      "adapter_import_allowed_bool": true,
+      "anonymous_default_off_boundary_id": "n10anboundary0000",
+      "default_enabled_bool": false,
+      "default_off_boundary_bucket": "n10ao_variant_requires_explicit_enablement",
+      "default_off_boundary_complete_bool": true,
+      "default_off_required_bool": true,
+      "existing_evaluator_hook_in_bool": false,
+      "private_read_by_default_bool": false,
+      "runtime_default_enablement_bool": false,
+      "same_scoped_private_rows_only_when_enabled_bool": true
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "static_candidates_inspected",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "new_variant_strategy",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "default_off_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "behavior_preservation",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T17:18:21Z",
+  "generated_by": "bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight",
+  "hook_strategy_decision_records": [
+    {
+      "anonymous_hook_strategy_decision_id": "n10anstrategy0000",
+      "default_off_required_bool": true,
+      "direct_existing_evaluator_hook_recommended_bool": false,
+      "eval_only_bool": true,
+      "modify_existing_validated_evaluator_bool": false,
+      "new_variant_evaluator_recommended_bool": true,
+      "runtime_path_hook_bool": false,
+      "selected_strategy_bucket": "new_adapter_enabled_variant_evaluator",
+      "strategy_bucket": "add_new_eval_only_variant_evaluator_do_not_mutate_validated_evaluators",
+      "strategy_feasible_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10anin0000",
+      "expected_status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10am_adapter_integration_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "eval_only_adapter_integration_result_audit_package_complete_n10an_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10anin0001",
+      "expected_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10al_adapter_integration_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "scoped_eval_only_adapter_integration_smoke_pass_n10am_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10anin0002",
+      "expected_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aj_adapter_patch_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_eval_only_span_projection_adapter_patch_pass_n10ak_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ao_handoff_records": [
+    {
+      "anonymous_n10ao_handoff_id": "n10anhandoff0000",
+      "default_off_flag_required_bool": true,
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "modify_existing_validated_evaluator_authorized_bool": false,
+      "n10ao_authorized_bool": true,
+      "n10ao_handoff_bucket": "n10ao_default_off_adapter_enabled_variant_evaluator_patch_authorized",
+      "n10ao_patch_authorized_bool": true,
+      "patch_scope_bucket": "new_eval_only_variant_evaluator_importing_adapter",
+      "retrieval_or_rerun_authorized_bool": false,
+      "runtime_default_enablement_authorized_bool": false,
+      "same_scoped_private_rows_read_when_explicitly_enabled_bool": true
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "n10annoexec0000",
+      "candidate_evaluator_execution_count": 0,
+      "candidate_evaluator_import_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "downstream_value_claim_count": 0,
+      "hook_patch_count": 0,
+      "method_winner_claim_count": 0,
+      "no_execution_bucket": "static_preflight_only_no_import_no_hook_no_runtime",
+      "no_execution_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AN Default-Off Existing-Evaluator Hook Feasibility Preflight",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10anprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_static_preflight_only_no_private_rows",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10an_default_off_existing_evaluator_hook_feasibility_preflight.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "static_candidate_evaluator_records": [
+    {
+      "anonymous_static_candidate_evaluator_id": "n10ancand0000",
+      "candidate_executed_bool": false,
+      "candidate_imported_bool": false,
+      "direct_hook_recommended_bool": false,
+      "evaluator_bucket": "n10ab_fixed_span_window_repair_smoke",
+      "inspection_bucket": "static_text_only_no_import_no_execution",
+      "mutation_risk_bucket": "medium",
+      "static_inspection_only_bool": true,
+      "static_inspection_passed_bool": true,
+      "static_signal_count": 3,
+      "variant_evaluator_recommended_bool": true
+    },
+    {
+      "anonymous_static_candidate_evaluator_id": "n10ancand0001",
+      "candidate_executed_bool": false,
+      "candidate_imported_bool": false,
+      "direct_hook_recommended_bool": false,
+      "evaluator_bucket": "n10x_span_level_utility_validation",
+      "inspection_bucket": "static_text_only_no_import_no_execution",
+      "mutation_risk_bucket": "medium",
+      "static_inspection_only_bool": true,
+      "static_inspection_passed_bool": true,
+      "static_signal_count": 3,
+      "variant_evaluator_recommended_bool": true
+    },
+    {
+      "anonymous_static_candidate_evaluator_id": "n10ancand0002",
+      "candidate_executed_bool": false,
+      "candidate_imported_bool": false,
+      "direct_hook_recommended_bool": false,
+      "evaluator_bucket": "n10t_span_surface_proxy_validation",
+      "inspection_bucket": "static_text_only_no_import_no_execution",
+      "mutation_risk_bucket": "medium",
+      "static_inspection_only_bool": true,
+      "static_inspection_passed_bool": true,
+      "static_signal_count": 3,
+      "variant_evaluator_recommended_bool": true
+    }
+  ],
+  "status": "default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized",
+  "status_vocabulary": [
+    "default_off_existing_evaluator_hook_feasibility_preflight_pass_n10ao_authorized",
+    "no_go_n10an_required_inputs_unavailable",
+    "no_go_n10an_no_safe_eval_only_hook_strategy",
+    "no_go_n10an_existing_evaluator_mutation_risk",
+    "no_go_n10an_default_off_boundary_incomplete",
+    "no_go_n10an_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10ao_default_off_adapter_enabled_variant_evaluator_patch_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "method_winner_claim_authorized": false,
+      "modify_existing_validated_evaluator_authorized": false,
+      "n10ao_authorized": true,
+      "n10ao_patch_authorized": true,
+      "new_arm_or_window_tuning_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10AO Default-Off Adapter-Enabled Variant Evaluator Patch",
+      "next_allowed_scope_bucket": "new_eval_only_variant_evaluator_patch_default_off",
+      "p5_authorized": false,
+      "private_read_by_default_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_enablement_authorized": false,
+      "same_scoped_private_rows_when_explicitly_enabled_authorized": true,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
