@@ -1,0 +1,313 @@
+{
+  "aggregate_runtime_seconds": 0.009,
+  "behavior_preservation_records": [
+    {
+      "anonymous_behavior_preservation_id": "n10aibehavior0000",
+      "behavior_preservation_valid_bool": true,
+      "behavior_risk_bucket": "low",
+      "candidate_generation_behavior_change_bool": false,
+      "existing_evaluator_modification_bool": false,
+      "hook_target_bucket": "future_eval_only_span_projection_adapter",
+      "retrieval_behavior_change_bool": false,
+      "runtime_path_modification_bool": false,
+      "selector_reranker_behavior_change_bool": false
+    }
+  ],
+  "candidate_hook_point_records": [
+    {
+      "anonymous_candidate_hook_point_id": "n10aihook0000",
+      "behavior_risk_bucket": "medium_existing_evaluator_modification_risk",
+      "default_off_possible_bool": true,
+      "eval_only_bool": true,
+      "existing_runtime_path_bool": false,
+      "hook_candidate_bucket": "n10ab_smoke_evaluator_expansion_loop",
+      "recommended_hook_target_bool": false,
+      "static_signal_bucket": "existing_eval_smoke_loop_detected",
+      "static_signal_count": 3
+    },
+    {
+      "anonymous_candidate_hook_point_id": "n10aihook0001",
+      "behavior_risk_bucket": "medium_existing_evaluator_modification_risk",
+      "default_off_possible_bool": true,
+      "eval_only_bool": true,
+      "existing_runtime_path_bool": false,
+      "hook_candidate_bucket": "n10x_span_overlap_evaluation_loop",
+      "recommended_hook_target_bool": false,
+      "static_signal_bucket": "existing_eval_validation_loop_detected",
+      "static_signal_count": 3
+    },
+    {
+      "anonymous_candidate_hook_point_id": "n10aihook0002",
+      "behavior_risk_bucket": "low",
+      "default_off_possible_bool": true,
+      "eval_only_bool": true,
+      "existing_runtime_path_bool": false,
+      "hook_candidate_bucket": "future_eval_only_span_projection_adapter",
+      "recommended_hook_target_bool": true,
+      "static_signal_bucket": "new_eval_only_adapter_target_no_existing_hook_patch",
+      "static_signal_count": 3
+    }
+  ],
+  "changed_file_allowlist_records": [
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0000",
+      "changed_file_bucket": "README_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0001",
+      "changed_file_bucket": "docs_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0002",
+      "changed_file_bucket": "docs_en_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0003",
+      "changed_file_bucket": "docs_zh_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0004",
+      "changed_file_bucket": "artifacts_bea_v1_n10ai_default_off_span_window_helper_integration_preflight"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0005",
+      "changed_file_bucket": "docs_en_bea_v1_n10ai_default_off_span_window_helper_integration_preflight_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0006",
+      "changed_file_bucket": "docs_zh_bea_v1_n10ai_default_off_span_window_helper_integration_preflight_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_changed_file_allowlist_id": "n10aichange0007",
+      "changed_file_bucket": "eval_bea_v1_n10ai_default_off_span_window_helper_integration_preflight_py"
+    }
+  ],
+  "claim_level": "static_integration_preflight_only",
+  "default_off_interface_records": [
+    {
+      "adaptive_tuning_bool": false,
+      "anonymous_default_off_interface_id": "n10aiiface0000",
+      "default_enabled_bool": false,
+      "default_off_interface_bucket": "adapter_call_requires_explicit_eval_flag_and_fixed_window",
+      "default_off_interface_defined_bool": true,
+      "existing_evaluator_hook_in_bool": false,
+      "fixed_window_only_bool": true,
+      "gold_policy_input_bool": false,
+      "hook_target_bucket": "future_eval_only_span_projection_adapter",
+      "private_read_default_bool": false,
+      "runtime_config_change_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "n10ah_status",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "helper_pure",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "eval_only_hook_point",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "recommended_future_adapter",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "default_off_interface",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "behavior_risk_not_high",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_allowlist",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T16:41:22Z",
+  "generated_by": "bea_v1_n10ai_default_off_span_window_helper_integration_preflight",
+  "helper_contract_records": [
+    {
+      "anonymous_helper_contract_id": "n10aicontract0000",
+      "contract_bucket": "fixed_symmetric_line_window_expansion",
+      "contract_valid_bool": true,
+      "filesystem_io_bool": false,
+      "gold_input_required_bool": false,
+      "helper_function_bucket": "expand_span_window"
+    },
+    {
+      "anonymous_helper_contract_id": "n10aicontract0001",
+      "contract_bucket": "copy_record_expand_start_end_only",
+      "contract_valid_bool": true,
+      "filesystem_io_bool": false,
+      "gold_input_required_bool": false,
+      "helper_function_bucket": "expand_evidence_span_record"
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10aiin0000",
+      "expected_status": "default_off_span_window_helper_implementation_smoke_pass_n10ai_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ah_helper_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "default_off_span_window_helper_implementation_smoke_pass_n10ai_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10aiin0001",
+      "expected_status": "fixed_span_window_repair_claim_boundary_package_complete_n10ah_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ag_claim_boundary_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_claim_boundary_package_complete_n10ah_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10aj_handoff_records": [
+    {
+      "anonymous_n10aj_handoff_id": "n10aihandoff0000",
+      "existing_evaluator_hook_in_authorized_bool": false,
+      "n10aj_handoff_bucket": "n10aj_default_off_eval_only_span_projection_adapter_patch_authorized",
+      "n10aj_patch_authorized_bool": true,
+      "patch_scope_bucket": "new_eval_only_adapter_only",
+      "private_read_by_default_authorized_bool": false,
+      "retrieval_or_rerun_authorized_bool": false,
+      "runtime_default_enablement_authorized_bool": false
+    }
+  ],
+  "no_execution_records": [
+    {
+      "anonymous_no_execution_id": "n10ainoexec0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "downstream_value_claim_count": 0,
+      "hook_patch_count": 0,
+      "method_winner_claim_count": 0,
+      "no_execution_boundary_bucket": "static_integration_preflight_only_no_hook_patch",
+      "no_execution_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_config_change_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AI Default-Off Span Window Helper Integration Preflight",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10aiprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "public_static_preflight_no_private_data",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10ai_default_off_span_window_helper_integration_preflight.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "default_off_span_window_helper_integration_preflight_pass_n10aj_authorized",
+  "status_vocabulary": [
+    "default_off_span_window_helper_integration_preflight_pass_n10aj_authorized",
+    "no_go_n10ai_required_inputs_unavailable",
+    "no_go_n10ai_no_safe_eval_only_hook_point",
+    "no_go_n10ai_default_off_boundary_incomplete",
+    "no_go_n10ai_behavior_preservation_risk",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10aj_default_off_eval_only_span_projection_adapter_patch_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_in_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10aj_patch_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10AJ Default-Off Eval-Only Span Projection Adapter Patch",
+      "next_allowed_scope_bucket": "new_eval_only_adapter_patch_no_runtime_default",
+      "p5_authorized": false,
+      "private_read_by_default_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_enablement_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
