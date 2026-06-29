@@ -1,0 +1,339 @@
+{
+  "claim_boundary_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_claim_boundary_id": "n10cdclaim0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "claim_boundary_bucket": "same_source_positive_observable_span_shape_package_only",
+      "claim_boundary_valid_bool": true,
+      "cluster_bridge_authorized_bool": false,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_promotion_bool": false,
+      "runtime_default_recommendation_bool": false
+    }
+  ],
+  "claim_level": "public_same_source_observable_span_shape_package_only",
+  "conclusion_records": [
+    {
+      "anonymous_conclusion_id": "n10cdconclusion0000",
+      "conclusion_bucket": "short_span_shape_gated_large_expansion_positive_signal",
+      "cost_efficient_anchor_preservation_found_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_or_generalization_claim_bool": false,
+      "lower_cost_than_pm200_all_spans_bool": true,
+      "method_winner_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "same_source_n1_proxy_only_bool": true
+    }
+  ],
+  "decision_summary_package_records": [
+    {
+      "anonymous_decision_summary_package_id": "n10cddecision0000",
+      "cost_efficient_preserve_anchor_count": 0,
+      "n10cc_match_bool": true,
+      "package_bucket": "n10cc_decision_summary_package",
+      "recall_improves_anchor_count": 4,
+      "runtime_default_recommendation_bool": false,
+      "same_source_positive_signal_bool": true,
+      "variant_count": 12
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "policy_input_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "positive_variant_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "decision_summary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "conclusion_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T22:26:29Z",
+  "generated_by": "bea_v1_n10cd_observable_span_shape_audit_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10cdin0000",
+      "expected_status": "observable_span_shape_gated_expansion_smoke_complete_n10cd_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cc_observable_span_shape_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "observable_span_shape_gated_expansion_smoke_complete_n10cd_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cdin0001",
+      "expected_status": "cluster_bridge_audit_package_complete_n10cc_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cb_cluster_bridge_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cluster_bridge_audit_package_complete_n10cc_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cdin0002",
+      "expected_status": "cost_efficient_policy_sweep_package_complete_n10ca_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bz_policy_sweep_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_efficient_policy_sweep_package_complete_n10ca_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cdin0003",
+      "expected_status": "adapter_operating_point_package_complete_n10by_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bx_adapter_operating_point_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "adapter_operating_point_package_complete_n10by_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ce_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10ce_handoff_id": "n10cdhandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "cluster_bridge_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "fixed_predeclared_variants_only_bool": true,
+      "generalization_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10ce_authorized_bool": true,
+      "n10ce_handoff_bucket": "n10ce_span_shape_refinement_authorized",
+      "next_refinement_bucket": "short_span_gated_large_expansion_cost_benefit_boundary",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "same_scoped_rows_only_bool": true
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10cdnorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_observable_span_shape_audit_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "p5_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CD Observable Span-Shape Gated Expansion Audit Package",
+  "policy_input_boundary_records": [
+    {
+      "anonymous_policy_input_boundary_id": "n10cdpolicy0000",
+      "before_after_direction_used_for_policy_bool": false,
+      "candidate_position_bucket_policy_allowed_bool": true,
+      "content_or_snippet_used_for_policy_bool": false,
+      "file_identity_used_for_public_subgroup_bool": false,
+      "gold_line_used_for_policy_bool": false,
+      "gold_path_used_for_policy_bool": false,
+      "n10cc_match_bool": true,
+      "outcome_used_for_policy_bool": false,
+      "policy_input_boundary_bucket": "observable_span_length_and_position_only",
+      "span_length_bucket_policy_allowed_bool": true
+    }
+  ],
+  "positive_variant_package_records": [
+    {
+      "anonymous_positive_variant_package_id": "n10cdvariant0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 800,
+      "cost_proxy_top20": 1600,
+      "decision_bucket": "no_improvement_anchor_retained",
+      "lost_cost80_anchor_hits": 0,
+      "n10cc_match_bool": true,
+      "package_bucket": "n10cc_observable_span_shape_variant_package",
+      "top10_span_overlap_count": 20,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "anchor_cost80_all_spans_before20_after60"
+    },
+    {
+      "anonymous_positive_variant_package_id": "n10cdvariant0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 8000,
+      "decision_bucket": "recall_improves_anchor",
+      "lost_cost80_anchor_hits": 0,
+      "n10cc_match_bool": true,
+      "package_bucket": "n10cc_observable_span_shape_variant_package",
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "anchor_pm200_all_spans_before200_after200"
+    },
+    {
+      "anonymous_positive_variant_package_id": "n10cdvariant0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 2000,
+      "cost_proxy_top20": 4000,
+      "decision_bucket": "recall_improves_anchor",
+      "lost_cost80_anchor_hits": 0,
+      "n10cc_match_bool": true,
+      "package_bucket": "n10cc_observable_span_shape_variant_package",
+      "top10_span_overlap_count": 22,
+      "top20_span_overlap_count": 27,
+      "variant_bucket": "short_only_before50_after150"
+    },
+    {
+      "anonymous_positive_variant_package_id": "n10cdvariant0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 2000,
+      "cost_proxy_top20": 4000,
+      "decision_bucket": "recall_improves_anchor",
+      "lost_cost80_anchor_hits": 0,
+      "n10cc_match_bool": true,
+      "package_bucket": "n10cc_observable_span_shape_variant_package",
+      "top10_span_overlap_count": 22,
+      "top20_span_overlap_count": 27,
+      "variant_bucket": "short_medium_before50_after150"
+    },
+    {
+      "anonymous_positive_variant_package_id": "n10cdvariant0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 2000,
+      "cost_proxy_top20": 2000,
+      "decision_bucket": "recall_improves_anchor",
+      "lost_cost80_anchor_hits": 0,
+      "n10cc_match_bool": true,
+      "package_bucket": "n10cc_observable_span_shape_variant_package",
+      "top10_span_overlap_count": 22,
+      "top20_span_overlap_count": 23,
+      "variant_bucket": "top10_short_only_before50_after150"
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10cdprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "hash_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "public_observable_span_shape_audit_package_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10cd_observable_span_shape_audit_package.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "observable_span_shape_package_complete_n10ce_authorized",
+  "status_vocabulary": [
+    "observable_span_shape_package_complete_n10ce_authorized",
+    "no_go_n10cd_required_public_inputs_unavailable",
+    "no_go_n10cd_observable_span_shape_chain_mismatch",
+    "no_go_n10cd_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10ce_span_shape_refinement_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "cluster_bridge_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10ce_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CE Span-Shape Refinement Sweep",
+      "next_allowed_scope_bucket": "same_source_fixed_predeclared_short_span_refinement",
+      "p5_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
