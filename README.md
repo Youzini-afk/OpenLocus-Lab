@@ -28,18 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10BQ: Plateau Cost-Minimization Sweep**:
+The latest closed phase is **BEA-v1-N10BR: Plateau Cost-Minimization Package**:
 
 ```text
-status: plateau_cost_minimization_sweep_complete_n10br_authorized
-self-test: 17 / 17
+status: cost_minimization_package_complete_n10bs_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
-variant count: 20
+private reads in N10BR: 0
+recomputes in N10BR: 0
 minimum cost preserving plateau: 80
-cost60 preserves plateau: false
-cost80 preserves plateau: true (1 variant)
-next allowed phase: BEA-v1-N10BR Plateau Cost-Minimization Package
+chosen research operating point: cost80_before25_after75
+next allowed phase: BEA-v1-N10BS Boundary-Cost Refinement Sweep
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -695,6 +694,13 @@ Cost 60 does not preserve the plateau (best 19/23); cost 80 preserves it with on
 variant (`cost80_before25_after75`, 20/24); costs 100 and 120 preserve it for all
 five ratios. It authorizes only N10BR public cost-minimization package.
 
+N10BR packages the N10BQ cost-minimization result publicly without private reads
+or recompute. It locks the 20-variant grid, the cost summary, and the minimum
+cost preserving the plateau: `80`, with chosen research operating point
+`cost80_before25_after75`. This is not a runtime/default recommendation or a
+method-winner claim. It authorizes only N10BS boundary-cost refinement over the
+fixed 25/75 ratio.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1225,6 +1231,12 @@ See the current report index:
   runtime/default behavior, heldout/generalization claims, method/downstream
   claims, retrieval/rerun, candidate generation, selector/reranker execution, P5,
   or BEA-v1-A.
+- N10BR authorizes only N10BS boundary-cost refinement sweep over the same scoped
+  rows, fixed 25/75 ratio, and total costs 65/70/75/80/85/90/95. It does not
+  authorize private reads beyond the same scoped rows, new ratios, adaptive tuning,
+  ranking/order changes, runtime/default behavior, heldout/generalization claims,
+  method/downstream claims, retrieval/rerun, candidate generation,
+  selector/reranker execution, P5, or BEA-v1-A.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1637,6 +1649,10 @@ eval/bea_v1_n10bp_plateau_mechanism_package.py
 eval/bea_v1_n10bq_plateau_cost_minimization_sweep.py
   Direct 20-variant plateau cost-minimization sweep; authorizes only N10BR public
   cost-minimization package.
+
+eval/bea_v1_n10br_cost_minimization_package.py
+  Public package of N10BQ cost-minimization facts; authorizes only N10BS
+  boundary-cost refinement sweep.
 ```
 
 Key reports:
@@ -1713,6 +1729,7 @@ Key reports:
 - [`artifacts/bea_v1_n10bo_plateau_mechanism_decomposition/bea_v1_n10bo_plateau_mechanism_decomposition_report.json`](artifacts/bea_v1_n10bo_plateau_mechanism_decomposition/bea_v1_n10bo_plateau_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10bp_plateau_mechanism_package/bea_v1_n10bp_plateau_mechanism_package_report.json`](artifacts/bea_v1_n10bp_plateau_mechanism_package/bea_v1_n10bp_plateau_mechanism_package_report.json)
 - [`artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json`](artifacts/bea_v1_n10bq_plateau_cost_minimization_sweep/bea_v1_n10bq_plateau_cost_minimization_sweep_report.json)
+- [`artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json`](artifacts/bea_v1_n10br_cost_minimization_package/bea_v1_n10br_cost_minimization_package_report.json)
 
 Documentation mirror check:
 
