@@ -184,6 +184,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10cl-winning-hybrid-adapter-smoke-package.md`: [en](en/bea-v1-n10cl-winning-hybrid-adapter-smoke-package.md) · [zh](zh/bea-v1-n10cl-winning-hybrid-adapter-smoke-package.md)
 - `bea-v1-n10cm-winning-hybrid-cost-reduction-refinement-sweep.md`: [en](en/bea-v1-n10cm-winning-hybrid-cost-reduction-refinement-sweep.md) · [zh](zh/bea-v1-n10cm-winning-hybrid-cost-reduction-refinement-sweep.md)
 - `bea-v1-n10cn-winning-hybrid-cost-refinement-audit-package.md`: [en](en/bea-v1-n10cn-winning-hybrid-cost-refinement-audit-package.md) · [zh](zh/bea-v1-n10cn-winning-hybrid-cost-refinement-audit-package.md)
+- `bea-v1-n10co-default-off-adapter-refined-hybrid-smoke.md`: [en](en/bea-v1-n10co-default-off-adapter-refined-hybrid-smoke.md) · [zh](zh/bea-v1-n10co-default-off-adapter-refined-hybrid-smoke.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
