@@ -28,18 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AQ: Heldout Span-Surface Validation Source Discovery**:
+The latest closed phase is **BEA-v1-N10AQ-R: Heldout Span-Surface Acquisition Feasibility**:
 
 ```text
-status: no_go_n10aq_candidate_sources_not_heldout
-self-test: 15 / 15
+status: no_go_n10aqr_no_bounded_heldout_acquisition_path
+self-test: 12 / 12
 forbidden scan: pass
-max scanned entries: 50000
-candidate files schema-sniffed: 84
-max rows sniffed per file: 5
-eligible heldout source count: 0
+bounded acquisition command identified: false
+denominator declared: false
+not same as N10 source: false
+expected rows >= 50: false
 N10AR authorized: false
-next allowed phase: none_until_heldout_span_surface_rows_are_supplied
+next allowed phase: none_until_bounded_heldout_span_surface_acquisition_path_or_rows_exist
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -541,6 +541,12 @@ candidate with required span-surface shape is the existing N10 source or not
 distinguishable from it, and other candidates are schema-incomplete or too small.
 N10AQ therefore does not authorize N10AR validation.
 
+N10AQ-R checks whether a heldout span-surface source can be acquired by a bounded
+local command/source or frozen replay without broad retrieval/rerun. It finds no
+bounded acquisition path: no distinct heldout denominator is declared, no expected
+row count >=50 is available, and recovered N1/P4L/N2 surfaces are same-source,
+consumer-only, or require broader replay. N10AR remains unauthorized.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -928,6 +934,11 @@ See the current report index:
   runtime/default enablement, retrieval/rerun, candidate generation,
   selector/reranker execution, P5, BEA-v1-A, method-winner claims, or
   downstream-value claims.
+- N10AQ-R authorizes no next validation phase until a bounded heldout span-surface
+  acquisition path or rows are supplied. It does not authorize OpenLocus
+  execution, retrieval/rerun, benchmark replay, candidate generation,
+  selector/reranker execution, P5, BEA-v1-A, runtime/default changes,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1234,6 +1245,10 @@ eval/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package.py
 eval/bea_v1_n10aq_heldout_span_surface_source_discovery.py
   Bounded local source discovery/schema sniffing for heldout span-surface rows;
   closes No-Go because no eligible heldout source is present.
+
+eval/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility.py
+  Feasibility decision for acquiring heldout span-surface rows; closes No-Go
+  because no bounded acquisition command/source is available.
 ```
 
 Key reports:
@@ -1284,6 +1299,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json`](artifacts/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator/bea_v1_n10ao_default_off_adapter_enabled_variant_evaluator_report.json)
 - [`artifacts/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package_report.json`](artifacts/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package/bea_v1_n10ap_adapter_enabled_variant_evaluator_result_audit_package_report.json)
 - [`artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json`](artifacts/bea_v1_n10aq_heldout_span_surface_source_discovery/bea_v1_n10aq_heldout_span_surface_source_discovery_report.json)
+- [`artifacts/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility_report.json`](artifacts/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility/bea_v1_n10aqr_heldout_span_surface_acquisition_feasibility_report.json)
 
 Documentation mirror check:
 
