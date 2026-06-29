@@ -1,0 +1,341 @@
+{
+  "claim_boundary_records": [
+    {
+      "allowed_claim_operating_point_tradeoff_packaged_bool": true,
+      "anonymous_claim_boundary_id": "n10bdclaim0000",
+      "claim_boundary_bucket": "same_source_n1_proxy_tradeoff_package_only",
+      "claim_boundary_valid_bool": true,
+      "downstream_value_claim_bool": false,
+      "generalization_claim_bool": false,
+      "heldout_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n2_equivalent_claim_bool": false,
+      "p5_or_v1a_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "claim_level": "public_operating_point_tradeoff_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "tradeoff_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "mechanism_package",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T19:34:09Z",
+  "generated_by": "bea_v1_n10bd_operating_point_tradeoff_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10bdin0000",
+      "expected_status": "operating_point_tradeoff_decomposition_complete_n10bd_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bc_tradeoff_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "operating_point_tradeoff_decomposition_complete_n10bd_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bdin0001",
+      "expected_status": "cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10bb_selection_rule_audit_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_selection_rule_smoke_audit_package_complete_n10bc_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bdin0002",
+      "expected_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ba_selection_rule_smoke_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_aware_span_window_selection_rule_smoke_complete_n10bb_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10bdin0003",
+      "expected_status": "cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10aw_mechanism_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "cost_sensitive_span_window_frontier_mechanism_decomposition_complete_n10ax_authorized"
+    }
+  ],
+  "mechanism_package_records": [
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00000000",
+      "mechanism_bucket": "before_gold_gap",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 8,
+      "operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00000001",
+      "mechanism_bucket": "after_gold_gap",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 1,
+      "operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00000002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00000003",
+      "mechanism_bucket": "other_bucketed",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "low_cost"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00010000",
+      "mechanism_bucket": "before_gold_gap",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 2,
+      "operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00010001",
+      "mechanism_bucket": "after_gold_gap",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00010002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00010003",
+      "mechanism_bucket": "other_bucketed",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "balanced"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00020000",
+      "mechanism_bucket": "before_gold_gap",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 3,
+      "operating_point_bucket": "max_recall"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00020001",
+      "mechanism_bucket": "after_gold_gap",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 2,
+      "operating_point_bucket": "max_recall"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00020002",
+      "mechanism_bucket": "already_reachable_late_rank",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "max_recall"
+    },
+    {
+      "anonymous_mechanism_package_id": "n10bdmech00020003",
+      "mechanism_bucket": "other_bucketed",
+      "n10bc_match_bool": true,
+      "new_top10_hit_count": 0,
+      "operating_point_bucket": "max_recall"
+    }
+  ],
+  "mechanism_summary_records": [
+    {
+      "all_marginal_gains_before_after_gap_bool": true,
+      "anonymous_mechanism_summary_id": "n10bdsummary0000",
+      "lost_previous_hits_all_tiers_zero_bool": true,
+      "max_recall_same_mechanism_as_lower_cost_bool": true,
+      "mechanism_summary_bucket": "all_marginal_top10_gains_before_after_gold_window_gaps",
+      "n10bc_match_bool": true,
+      "qualitatively_new_max_recall_mechanism_bool": false
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10be_handoff_records": [
+    {
+      "adaptive_selection_authorized_bool": false,
+      "anonymous_n10be_handoff_id": "n10bdhandoff0000",
+      "budget_bucket_count": 3,
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_claim_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "moderate_budget_maps_to_balanced_bool": true,
+      "n10be_authorized_bool": true,
+      "n10be_handoff_bucket": "n10be_cost_aware_operating_point_decision_smoke_authorized",
+      "new_variant_authorized_bool": false,
+      "public_aggregate_bucket_output_only_bool": true,
+      "recall_budget_maps_to_max_recall_bool": true,
+      "runtime_default_recommendation_authorized_bool": false,
+      "same_scoped_n1_rows_authorized_bool": true,
+      "strict_budget_maps_to_low_cost_bool": true
+    }
+  ],
+  "no_recompute_records": [
+    {
+      "adaptive_selection_count": 0,
+      "anonymous_no_recompute_id": "n10bdnorecompute0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_tradeoff_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10BD Operating-Point Tradeoff Decomposition Audit Package",
+  "schema_version": "bea_v1_n10bd_operating_point_tradeoff_package.v1",
+  "self_test_checks_passed": 13,
+  "self_test_checks_total": 13,
+  "self_test_passed": true,
+  "status": "operating_point_tradeoff_package_complete_n10be_authorized",
+  "status_vocabulary": [
+    "operating_point_tradeoff_package_complete_n10be_authorized",
+    "no_go_n10bd_required_public_inputs_unavailable",
+    "no_go_n10bd_tradeoff_chain_mismatch",
+    "no_go_n10bd_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_selection_authorized": false,
+      "authorization": "n10be_cost_aware_operating_point_decision_smoke_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10be_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10BE Cost-Aware Operating-Point Decision Smoke",
+      "next_allowed_scope_bucket": "same_scoped_rows_budget_bucket_decision_smoke_no_defaults",
+      "p5_authorized": false,
+      "private_read_beyond_same_scoped_rows_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_default_recommendation_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "tradeoff_package_records": [
+    {
+      "anonymous_tradeoff_package_id": "n10bdtrade0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_top10_span_overlap_count": 9,
+      "cumulative_top20_span_overlap_count": 10,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "baseline",
+      "marginal_cost_proxy": 0,
+      "marginal_top10_gain": 9,
+      "marginal_top20_gain": 10,
+      "n10bc_match_bool": true,
+      "operating_point_bucket": "baseline",
+      "variant_bucket": "baseline"
+    },
+    {
+      "anonymous_tradeoff_package_id": "n10bdtrade0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_top10_span_overlap_count": 18,
+      "cumulative_top20_span_overlap_count": 22,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "low",
+      "marginal_cost_proxy": 600,
+      "marginal_top10_gain": 9,
+      "marginal_top20_gain": 12,
+      "n10bc_match_bool": true,
+      "operating_point_bucket": "low_cost",
+      "variant_bucket": "pm30"
+    },
+    {
+      "anonymous_tradeoff_package_id": "n10bdtrade0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_top10_span_overlap_count": 20,
+      "cumulative_top20_span_overlap_count": 24,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "medium",
+      "marginal_cost_proxy": 400,
+      "marginal_top10_gain": 2,
+      "marginal_top20_gain": 2,
+      "n10bc_match_bool": true,
+      "operating_point_bucket": "balanced",
+      "variant_bucket": "before25_after75"
+    },
+    {
+      "anonymous_tradeoff_package_id": "n10bdtrade0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cumulative_top10_span_overlap_count": 25,
+      "cumulative_top20_span_overlap_count": 30,
+      "lost_previous_hits": 0,
+      "marginal_cost_per_top10_hit_bucket": "very_high",
+      "marginal_cost_proxy": 3000,
+      "marginal_top10_gain": 5,
+      "marginal_top20_gain": 6,
+      "n10bc_match_bool": true,
+      "operating_point_bucket": "max_recall",
+      "variant_bucket": "pm200"
+    }
+  ]
+}
