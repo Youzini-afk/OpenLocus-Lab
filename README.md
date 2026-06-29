@@ -28,24 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10AG: Fixed Span-Window Repair Claim-Boundary Audit Package**:
+The latest closed phase is **BEA-v1-N10AH: Default-Off Span Window Helper Implementation Smoke**:
 
 ```text
-status: fixed_span_window_repair_claim_boundary_package_complete_n10ah_authorized
+status: default_off_span_window_helper_implementation_smoke_pass_n10ai_authorized
 self-test: 15 / 15
 forbidden scan: pass
-denominator: 213
-baseline top10 span overlap: 9
-pm50 top10 span overlap: 19
-pm50 top20 span overlap: 23
-pm50 delta top10: +10
-pm50 original span-hit loss: 0
-pm20 top10 span overlap: 15
-pm100 top10 span overlap: 21
-N10AD aggregate match: true
-N10AF positive-delta subgroups: 7
-N10AF baseline-hit negative-delta subgroups: 0
-next allowed phase: BEA-v1-N10AH Default-Off Implementation Feasibility Preflight
+helper functions: 2
+synthetic validations: 8
+private reads: 0
+helper filesystem IO: false
+hook-in to existing evaluators: false
+runtime/default config changed: false
+next allowed phase: BEA-v1-N10AI Default-Off Span Window Helper Integration Preflight
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -488,6 +483,12 @@ N10AB pass, N10AC audit, N10AD independent match, N10AE replication, and N10AF
 robustness. It authorizes only N10AH default-off implementation feasibility
 preflight, not actual runtime implementation or default promotion.
 
+N10AH adds the isolated pure helper `eval/bea_v1_span_window_repair_helpers.py`
+and a synthetic implementation smoke. The helper expands line windows and evidence
+record line bounds without filesystem IO, private reads, path/content/gold
+requirements, hook-in, or runtime/default config changes. It authorizes only N10AI
+default-off integration preflight.
+
 Provenance note: N2 remains the source decomposition (`28272769423`, result
 checkpoint `ce47caf`); N3 is the downstream design simulation over that closed N2
 D2 denominator.
@@ -826,6 +827,11 @@ See the current report index:
   candidate generation/materialization, new-arm search, adaptive tuning,
   selector/reranker execution, P5, BEA-v1-A, runtime/default promotion,
   method-winner claims, or downstream-value claims.
+- N10AH authorizes only N10AI default-off span-window helper integration preflight.
+  It does not authorize hook-in, runtime/default enablement, retrieval/reruns,
+  selector/reranker execution, P5, BEA-v1-A, private reads, candidate generation,
+  gold-as-policy behavior, adaptive tuning, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -1085,6 +1091,13 @@ eval/bea_v1_n10af_fixed_span_window_repair_robustness_validation.py
 eval/bea_v1_n10ag_fixed_span_window_repair_claim_boundary_package.py
   Public claim-boundary package for the fixed pm50 repair chain; authorizes only
   N10AH default-off implementation feasibility preflight.
+
+eval/bea_v1_span_window_repair_helpers.py
+  Pure default-off helper functions for fixed span-window expansion.
+
+eval/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke.py
+  Synthetic implementation smoke for the isolated helper; authorizes only N10AI
+  integration preflight.
 ```
 
 Key reports:
@@ -1125,6 +1138,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ae_fixed_span_window_repair_replication_package/bea_v1_n10ae_fixed_span_window_repair_replication_package_report.json`](artifacts/bea_v1_n10ae_fixed_span_window_repair_replication_package/bea_v1_n10ae_fixed_span_window_repair_replication_package_report.json)
 - [`artifacts/bea_v1_n10af_fixed_span_window_repair_robustness_validation/bea_v1_n10af_fixed_span_window_repair_robustness_validation_report.json`](artifacts/bea_v1_n10af_fixed_span_window_repair_robustness_validation/bea_v1_n10af_fixed_span_window_repair_robustness_validation_report.json)
 - [`artifacts/bea_v1_n10ag_fixed_span_window_repair_claim_boundary_package/bea_v1_n10ag_fixed_span_window_repair_claim_boundary_package_report.json`](artifacts/bea_v1_n10ag_fixed_span_window_repair_claim_boundary_package/bea_v1_n10ag_fixed_span_window_repair_claim_boundary_package_report.json)
+- [`artifacts/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_report.json`](artifacts/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke/bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_report.json)
 
 Documentation mirror check:
 

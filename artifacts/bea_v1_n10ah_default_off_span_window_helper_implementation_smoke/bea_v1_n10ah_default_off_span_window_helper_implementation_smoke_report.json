@@ -1,0 +1,286 @@
+{
+  "aggregate_runtime_seconds": 0.009,
+  "claim_level": "default_off_helper_synthetic_smoke_only",
+  "default_off_records": [
+    {
+      "anonymous_default_off_id": "n10ahdefault0000",
+      "default_off_bucket": "isolated_helper_no_hook_in_no_runtime_config",
+      "default_off_valid_bool": true,
+      "helper_isolated_bool": true,
+      "hook_in_to_existing_evaluators_bool": false,
+      "p5_or_v1_a_enabled_bool": false,
+      "retrieval_or_rerun_enabled_bool": false,
+      "runtime_default_config_changed_bool": false,
+      "selector_or_reranker_enabled_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_code_touch_records": [
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0000",
+      "changed_file_bucket": "README_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0001",
+      "changed_file_bucket": "docs_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0002",
+      "changed_file_bucket": "docs_en_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0003",
+      "changed_file_bucket": "docs_zh_current_research_conclusions_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0004",
+      "changed_file_bucket": "artifacts_bea_v1_n10ah_default_off_span_window_helper_implementation_smoke"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0005",
+      "changed_file_bucket": "docs_en_bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0006",
+      "changed_file_bucket": "docs_zh_bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_md"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0007",
+      "changed_file_bucket": "eval_bea_v1_n10ah_default_off_span_window_helper_implementation_smoke_py"
+    },
+    {
+      "allowed_bool": true,
+      "anonymous_forbidden_code_touch_id": "n10ahtouch0008",
+      "changed_file_bucket": "eval_bea_v1_span_window_repair_helpers_py"
+    }
+  ],
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "n10ag_input_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "helper_contract",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "synthetic_validation",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "default_off",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_io_private",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "changed_file_allowlist",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-29T16:32:44Z",
+  "generated_by": "bea_v1_n10ah_default_off_span_window_helper_implementation_smoke",
+  "helper_contract_records": [
+    {
+      "anonymous_helper_contract_id": "n10ahcontract0000",
+      "clamps_start_to_min_line_bool": true,
+      "contract_bucket": "fixed_symmetric_line_window_expansion",
+      "contract_valid_bool": true,
+      "filesystem_io_bool": false,
+      "gold_input_required_bool": false,
+      "helper_function_bucket": "expand_span_window",
+      "validates_integer_inputs_bool": true,
+      "validates_min_line_at_least_one_bool": true,
+      "validates_nonnegative_expansion_bool": true,
+      "validates_start_not_after_end_bool": true
+    },
+    {
+      "anonymous_helper_contract_id": "n10ahcontract0001",
+      "content_required_bool": false,
+      "contract_bucket": "copy_record_expand_start_end_only",
+      "contract_valid_bool": true,
+      "filesystem_io_bool": false,
+      "gold_input_required_bool": false,
+      "helper_function_bucket": "expand_evidence_span_record",
+      "input_mutation_bool": false,
+      "path_required_bool": false,
+      "preserves_other_fields_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10ahin0000",
+      "expected_status": "fixed_span_window_repair_claim_boundary_package_complete_n10ah_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ag_claim_boundary_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "fixed_span_window_repair_claim_boundary_package_complete_n10ah_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ai_handoff_records": [
+    {
+      "anonymous_n10ai_handoff_id": "n10ahhandoff0000",
+      "hook_in_authorized_bool": false,
+      "n10ai_handoff_bucket": "n10ai_default_off_helper_integration_preflight_authorized",
+      "n10ai_preflight_authorized_bool": true,
+      "private_read_authorized_bool": false,
+      "retrieval_or_rerun_authorized_bool": false,
+      "runtime_default_enablement_authorized_bool": false
+    }
+  ],
+  "no_io_private_records": [
+    {
+      "anonymous_no_io_private_id": "n10ahnoio0000",
+      "candidate_generation_count": 0,
+      "filesystem_io_in_helper_bool": false,
+      "gold_input_required_bool": false,
+      "helper_forbidden_io_call_count": 0,
+      "helper_forbidden_io_import_count": 0,
+      "no_io_private_bucket": "helper_pure_no_filesystem_no_private_read",
+      "no_io_private_valid_bool": true,
+      "private_read_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10AH Default-Off Span Window Helper Implementation Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10ahprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_line_public_bool": false,
+      "gold_path_public_bool": false,
+      "hash_public_bool": false,
+      "privacy_boundary_bucket": "synthetic_public_helper_smoke_only",
+      "privacy_boundary_valid_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "provider_payload_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10ah_default_off_span_window_helper_implementation_smoke.v1",
+  "self_test_checks_passed": 15,
+  "self_test_checks_total": 15,
+  "self_test_passed": true,
+  "status": "default_off_span_window_helper_implementation_smoke_pass_n10ai_authorized",
+  "status_vocabulary": [
+    "default_off_span_window_helper_implementation_smoke_pass_n10ai_authorized",
+    "no_go_n10ah_required_inputs_unavailable",
+    "no_go_n10ah_helper_contract_invalid",
+    "no_go_n10ah_forbidden_code_touch_detected",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "authorization": "n10ai_default_off_helper_integration_preflight_authorized",
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "hook_in_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10ai_preflight_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10AI Default-Off Span Window Helper Integration Preflight",
+      "next_allowed_scope_bucket": "integration_preflight_only_no_hook_in",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_promotion_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "synthetic_validation_records": [
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0000",
+      "passed_bool": true,
+      "validation_bucket": "pm20_arithmetic"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0001",
+      "passed_bool": true,
+      "validation_bucket": "pm50_arithmetic"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0002",
+      "passed_bool": true,
+      "validation_bucket": "pm100_arithmetic"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0003",
+      "passed_bool": true,
+      "validation_bucket": "min_line_clamp"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0004",
+      "passed_bool": true,
+      "validation_bucket": "zero_expansion"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0005",
+      "passed_bool": true,
+      "validation_bucket": "invalid_inputs"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0006",
+      "passed_bool": true,
+      "validation_bucket": "input_immutability"
+    },
+    {
+      "anonymous_synthetic_validation_id": "n10ahsynthetic0007",
+      "passed_bool": true,
+      "validation_bucket": "no_path_content_required"
+    }
+  ]
+}
