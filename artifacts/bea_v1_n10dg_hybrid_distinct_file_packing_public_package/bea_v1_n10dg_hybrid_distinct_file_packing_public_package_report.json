@@ -1,0 +1,161 @@
+{
+  "chain_validation_records": [
+    {
+      "aggressive_top10_span_count": 16,
+      "anonymous_chain_record_id": "n10dgchain0000",
+      "baseline_top10_span_count": 13,
+      "best_top10_safe_hybrid_bucket": "prefix7_then_distinct_fill_top10",
+      "chain_consistent_bool": true,
+      "prefix7_lost_baseline_top10_span_hits": 0,
+      "prefix7_top10_span_count": 16,
+      "source_forbidden_scan_bucket": "pass",
+      "source_status_bucket": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized",
+      "variant_count": 5
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_boundary_id": "n10dgboundary0000",
+      "broad_private_read_claim_bool": false,
+      "candidate_generation_claim_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "package_boundary_bucket": "public_only_no_recompute_no_private_read",
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "runtime_default_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dggate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dggate0001",
+      "gate_bucket": "n10df_chain_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dggate0002",
+      "gate_bucket": "top10_safe_prefix7_packaged",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dggate0003",
+      "gate_bucket": "top20_limitation_packaged",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dggate0004",
+      "gate_bucket": "no_private_read_or_recompute",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dggate0005",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized",
+      "anonymous_input_artifact_id": "n10dgin0000",
+      "artifact_bucket": "n10df_hybrid_smoke",
+      "expected_status_bucket": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "regression_vs_zero_loss_mechanism_decomposition_complete_n10df_authorized",
+      "anonymous_input_artifact_id": "n10dgin0001",
+      "artifact_bucket": "n10de_mechanism_decomposition",
+      "expected_status_bucket": "regression_vs_zero_loss_mechanism_decomposition_complete_n10df_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "anonymous_input_artifact_id": "n10dgin0002",
+      "artifact_bucket": "n10dc_rank_file_smoke",
+      "expected_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dh_handoff_records": [
+    {
+      "anonymous_n10dh_handoff_id": "n10dghandoff0000",
+      "candidate_generation_authorized_bool": false,
+      "next_phase_bucket": "BEA-v1-N10DH Packing Plus Span-Window or Top20 Reach Repair Experiment",
+      "packing_plus_span_window_or_top20_repair_authorized_bool": true,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scope_bucket": "same_source_empirical_followup_oracle_scoped"
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10dgno0000",
+      "new_variant_count": 0,
+      "private_read_count": 0,
+      "public_artifact_only_bool": true,
+      "recompute_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DG Hybrid Distinct-File Packing Public Package",
+  "schema_version": "bea_v1_n10dg_hybrid_public_package_v1",
+  "status": "hybrid_distinct_file_packing_public_package_complete_n10dh_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dgstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dh_empirical_experiment_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DH Packing Plus Span-Window or Top20 Reach Repair Experiment",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "top10_safe_hybrid_conclusion_records": [
+    {
+      "aggressive_top20_file_count": 47,
+      "aggressive_top20_span_count": 24,
+      "anonymous_conclusion_id": "n10dgconclusion0000",
+      "conclusion_bucket": "promising_top10_safe_packing_hybrid_not_default_winner",
+      "default_winner_claim_bool": false,
+      "prefix7_top20_file_count": 19,
+      "prefix7_top20_span_count": 17,
+      "top10_safe_hybrid_bucket": "prefix7_then_distinct_fill_top10",
+      "top10_span_matches_aggressive_bool": true,
+      "top20_limitation_bool": true,
+      "zero_baseline_top10_span_loss_bool": true
+    }
+  ],
+  "top20_limitation_records": [
+    {
+      "aggressive_top20_file_count": 47,
+      "aggressive_top20_span_count": 24,
+      "anonymous_top20_limitation_id": "n10dgtop200000",
+      "limitation_bucket": "prefix7_does_not_repair_aggressive_top20_reach",
+      "prefix7_top20_file_count": 19,
+      "prefix7_top20_span_count": 17,
+      "top20_repair_still_needed_bool": true
+    }
+  ]
+}

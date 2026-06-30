@@ -28,18 +28,17 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DD: Distinct-File Packing Rank/File-Reach Public Package**:
+The latest closed phase is **BEA-v1-N10DG: Hybrid Distinct-File Packing Public Package**:
 
 ```text
-status: distinct_file_packing_rank_file_reach_package_complete_n10de_authorized
-self-test: 13 / 13
+status: hybrid_distinct_file_packing_public_package_complete_n10dh_authorized
+self-test: 12 / 12
 forbidden scan: pass
-private reads in N10DD: 0
-recomputes in N10DD: 0
-aggressive one-file-per-file: +5 top10 file, +3 top10 span, 1 baseline span regression
-conservative max_per_file_2: +2 top10 file, +2 top10 span, 0 baseline span regression
-candidate generation/add/remove: 0 / 0 / 0
-next allowed phase: BEA-v1-N10DE Regression-vs-Zero-Loss Mechanism Decomposition
+private reads in N10DG: 0
+recomputes in N10DG: 0
+prefix7 top10-safe result: span top10 16, lost baseline span 0
+top20 limitation: prefix7 span/file 17 / 19 vs aggressive 24 / 47
+next allowed phase: BEA-v1-N10DH Packing Plus Span-Window or Top20 Reach Repair Experiment
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -932,6 +931,16 @@ file/top20 reach but 1 baseline span regression) from the conservative
 baseline span regression). N10DD authorizes only N10DE regression-vs-zero-loss
 mechanism decomposition.
 
+N10DE decomposes that tradeoff over the same scoped rows: aggressive distinct-file
+packing gains more by pulling rank-11-20 evidence into top10, but strict file
+uniqueness displaces one rank-1-10 span hit; max-per-file-2 preserves that case.
+N10DF then tests fixed hybrid packing variants. `prefix7_then_distinct_fill_top10`
+matches the aggressive top10 span count of 16 while avoiding the single baseline
+span regression; `prefix5` also reaches 16 but keeps the regression. N10DG packages
+N10DF publicly as a promising top10-safe packing hybrid, not a default winner,
+because prefix7 does not repair top20 reach (17/19 vs aggressive 24/47). N10DG
+authorizes only N10DH under the next oracle contract.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1671,6 +1680,10 @@ See the current report index:
   retrieval/rerun, candidate generation/materialization/add/remove,
   selector/reranker execution, adaptive tuning, P5, BEA-v1-A, method-winner
   claims, downstream-value claims, or broad private reads.
+- N10DG authorizes only N10DH packing-plus-span-window or top20 reach repair
+  experiment under a future oracle scope. It does not authorize runtime/default,
+  selector/reranker, candidate generation, retrieval/rerun, broad private read,
+  P5, BEA-v1-A, method-winner, downstream, or heldout/generalization claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2247,6 +2260,10 @@ eval/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition.py
 eval/bea_v1_n10df_hybrid_distinct_file_packing_smoke.py
   Direct same-source hybrid distinct-file packing smoke; finds prefix7 zero-loss
   aggressive-equivalent top10 span and authorizes only N10DG public package.
+
+eval/bea_v1_n10dg_hybrid_distinct_file_packing_public_package.py
+  Public package of N10DF; frames prefix7 as top10-safe but top20-limited and
+  authorizes only N10DH follow-up.
 ```
 
 Key reports:
@@ -2364,6 +2381,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package_report.json`](artifacts/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package_report.json)
 - [`artifacts/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition_report.json`](artifacts/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10df_hybrid_distinct_file_packing_smoke/bea_v1_n10df_hybrid_distinct_file_packing_smoke_report.json`](artifacts/bea_v1_n10df_hybrid_distinct_file_packing_smoke/bea_v1_n10df_hybrid_distinct_file_packing_smoke_report.json)
+- [`artifacts/bea_v1_n10dg_hybrid_distinct_file_packing_public_package/bea_v1_n10dg_hybrid_distinct_file_packing_public_package_report.json`](artifacts/bea_v1_n10dg_hybrid_distinct_file_packing_public_package/bea_v1_n10dg_hybrid_distinct_file_packing_public_package_report.json)
 
 Documentation mirror check:
 
