@@ -294,6 +294,14 @@ def candidate_is_citation_valid(item: dict[str, Any]) -> bool:
     return bool(path and sha and lines_ok)
 
 
+def resolve_openlocus_path(value: str) -> str:
+    """Resolve the OpenLocus binary before subprocess cwd switches into repos."""
+    path = Path(value)
+    if path.is_absolute():
+        return str(path)
+    return str((ROOT / path).resolve())
+
+
 # ── N10EM gate ─────────────────────────────────────────────────────────────
 
 def evaluate_n10em_gate() -> tuple[bool, dict[str, Any], dict[str, Any]]:
@@ -790,6 +798,7 @@ def run_self_test() -> bool:
     checks.append(("baseline_truncates_100", len(base) == BM25_LIMIT))
     checks.append(("citation_valid", candidate_is_citation_valid({"path": "a.py", "start_line": 1, "end_line": 2, "content_sha": "abc"})))
     checks.append(("citation_invalid_no_sha", not candidate_is_citation_valid({"path": "a.py", "start_line": 1, "end_line": 2})))
+    checks.append(("openlocus_path_resolved", Path(resolve_openlocus_path("target/release/openlocus")).is_absolute()))
     # Gate logic on synthetic handoff.
     checks.append(("gate_rejects_missing", evaluate_n10em_gate()[0] in (True, False)))
     # Disabled report contract.
@@ -963,7 +972,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"wrote artifact (status={report['status']})")
         return 1
 
-    orders, counters = run_phase(tasks, repo_clone_map, args.openlocus, run_dir)
+    openlocus_path = resolve_openlocus_path(args.openlocus)
+    orders, counters = run_phase(tasks, repo_clone_map, openlocus_path, run_dir)
     if counters["task_with_candidates"] == 0:
         report = build_disabled_report(gate_record)
         report["status"] = STATUS_FAIL_RUN
