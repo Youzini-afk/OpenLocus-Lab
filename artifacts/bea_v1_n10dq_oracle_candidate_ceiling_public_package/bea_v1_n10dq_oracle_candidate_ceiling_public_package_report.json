@@ -1,0 +1,145 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dqgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dqgate0001",
+      "gate_bucket": "oracle_ceiling_metrics_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dqgate0002",
+      "gate_bucket": "no_private_read_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "oracle_candidate_insertion_ceiling_smoke_complete_n10dq_authorized",
+      "anonymous_input_artifact_id": "n10dqin0000",
+      "artifact_bucket": "n10dp_oracle_ceiling_smoke",
+      "expected_status_bucket": "oracle_candidate_insertion_ceiling_smoke_complete_n10dq_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "corrected_candidate_pool_absence_source_audit_complete_n10dp_authorized",
+      "anonymous_input_artifact_id": "n10dqin0001",
+      "artifact_bucket": "n10dor_corrected_absence_audit",
+      "expected_status_bucket": "corrected_candidate_pool_absence_source_audit_complete_n10dp_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "corrected_deep_rank_promotion_public_package_complete_n10dor_authorized",
+      "anonymous_input_artifact_id": "n10dqin0002",
+      "artifact_bucket": "n10dnr_corrected_deep_rank_package",
+      "expected_status_bucket": "corrected_deep_rank_promotion_public_package_complete_n10dor_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "next_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dqhandoff0000",
+      "candidate_generation_authorized_in_n10dq_bool": false,
+      "n10dr_canary_authorized_for_future_contract_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DR Real Candidate-Source Canary",
+      "next_scope_bucket": "oracle_orchestrator_contract_required_before_execution",
+      "retrieval_authorized_in_n10dq_bool": false
+    }
+  ],
+  "no_private_read_no_recompute_records": [
+    {
+      "anonymous_no_recompute_id": "n10dqnoexec0000",
+      "oracle_insertion_count": 0,
+      "private_read_count": 0,
+      "real_candidate_generation_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "non_policy_boundary_records": [
+    {
+      "anonymous_non_policy_id": "n10dqnonpolicy0000",
+      "downstream_value_claim_bool": false,
+      "feasible_policy_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "retrieval_source_result_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "upper_bound_value_signal_bool": true
+    }
+  ],
+  "oracle_ceiling_summary_records": [
+    {
+      "anonymous_ceiling_id": "n10dqceil0000",
+      "increment_top10_over_anchor": 141,
+      "increment_top20_over_anchor": 141,
+      "non_policy_upper_bound_bool": true,
+      "oracle_variant_group_bucket": "rank1_rank5_rank10_within_top10",
+      "top10_file_ceiling": 185,
+      "top20_file_ceiling": 199
+    },
+    {
+      "anonymous_ceiling_id": "n10dqceil0001",
+      "increment_top10_over_anchor": 0,
+      "increment_top20_over_anchor": 141,
+      "non_policy_upper_bound_bool": true,
+      "oracle_variant_group_bucket": "append_after_top10",
+      "top10_file_ceiling": 44,
+      "top20_file_ceiling": 199
+    }
+  ],
+  "package_summary_records": [
+    {
+      "affected_absent_pool_cases": 141,
+      "anchor_top10_file_reach": 44,
+      "anchor_top20_file_reach": 58,
+      "anonymous_package_summary_id": "n10dqsummary0000",
+      "oracle_insertion_execution_count": 0,
+      "package_complete_bool": true,
+      "package_scope_bucket": "public_only_oracle_ceiling_package",
+      "private_read_count": 0,
+      "recompute_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DQ Oracle Candidate-Insertion Ceiling Public Package",
+  "schema_version": "bea_v1_n10dq_oracle_candidate_ceiling_public_package_v1",
+  "span_boundary_records": [
+    {
+      "anonymous_span_boundary_id": "n10dqspan0000",
+      "file_reach_primary_for_ceiling_bool": true,
+      "span_metric_status_bucket": "not_evaluated_no_oracle_span",
+      "span_overlap_faked_bool": false
+    }
+  ],
+  "status": "oracle_candidate_ceiling_public_package_complete_n10dr_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dqstop0000",
+      "candidate_generation_authorized_in_n10dq_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DR Real Candidate-Source Canary",
+      "next_phase_requires_oracle_contract_bool": true,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_in_n10dq_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "source_acquisition_executed_bool": false
+    }
+  ]
+}

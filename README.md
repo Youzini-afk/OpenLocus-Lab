@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DP: Oracle Candidate-Insertion Ceiling Smoke**:
+The latest closed phase is **BEA-v1-N10DQ: Oracle Candidate-Insertion Ceiling Public Package**:
 
 ```text
-status: oracle_candidate_insertion_ceiling_smoke_complete_n10dq_authorized
-self-test: 12 / 12
+status: oracle_candidate_ceiling_public_package_complete_n10dr_authorized
+self-test: 11 / 11
 forbidden scan: pass
-private span rows read: 213
+private reads in N10DQ: 0
+recomputes in N10DQ: 0
 current suffix-safe top10/top20 file reach: 44 / 58
 affected absent-pool cases: 141
 rank1/rank5/rank10 oracle top10 ceiling: 185 / 213
 rank1/rank5/rank10 oracle top20 ceiling: 199 / 213
 span overlap status: not_evaluated_no_oracle_span
-next allowed phase: BEA-v1-N10DQ Oracle Candidate-Insertion Ceiling Public Package
+next allowed phase: BEA-v1-N10DR Real Candidate-Source Canary (future contract required)
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
