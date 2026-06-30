@@ -1,0 +1,221 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_id": "n10egclaim0000",
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_retrieval_bool": false,
+      "recompute_retrieval_bool": false,
+      "runtime_default_change_bool": false,
+      "same_source_private_analysis_bool": true
+    }
+  ],
+  "complementarity_records": [
+    {
+      "anonymous_complementarity_id": "n10egcomp0000",
+      "baseline_top10_count": 5,
+      "complementarity_signal_bool": true,
+      "full_guard_intersection_top10_count": 8,
+      "full_guard_union_top10_count": 13,
+      "full_novel_first_top10_count": 11,
+      "full_only_top10_count": 3,
+      "guard_only_top10_count": 2,
+      "guarded_top5_novel_distinct_top10_count": 10
+    }
+  ],
+  "decision_records": [
+    {
+      "anonymous_decision_id": "n10egdecision0000",
+      "decision_bucket": "complementarity_exists_but_fixed_combo_needed",
+      "full_novel_first_still_best_single_rule_bool": true,
+      "guarded_rule_unique_cases_bool": true,
+      "n10eh_authorized_bool": true,
+      "n10eh_scope_bucket": "fixed_full_guard_combination_rules_same_rows_only"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10eggate0000",
+      "gate_bucket": "n10ef_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eggate0001",
+      "gate_bucket": "private_rows_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eggate0002",
+      "gate_bucket": "complementarity_counts_match",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_novel_guard_experiment_package_complete_n10eg_authorized",
+      "anonymous_input_artifact_id": "n10eginput0000",
+      "artifact_bucket": "n10ef_public_package",
+      "expected_status_bucket": "normalized_bm25_novel_guard_experiment_package_complete_n10eg_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EG Novel-First / Guarded Complementarity Slicing",
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10egpriv0000",
+      "case_count": 60,
+      "n10dz_top100_private_row_count": 60,
+      "n10dz_top100_private_rows_available_bool": true,
+      "other_private_read_count": 0,
+      "private_status_bucket": "present",
+      "same_scoped_n1_rows_available_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10eg_novel_first_guard_complementarity_slicing_v1",
+  "slice_feature_bucket_records": [
+    {
+      "anonymous_slice_bucket_id": "n10egslice0000",
+      "case_count": 0,
+      "feature_bucket": "novel_count_0",
+      "slice_bucket": "full_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0001",
+      "case_count": 0,
+      "feature_bucket": "novel_count_1_to_5",
+      "slice_bucket": "full_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0002",
+      "case_count": 0,
+      "feature_bucket": "novel_count_6_to_10",
+      "slice_bucket": "full_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0003",
+      "case_count": 6,
+      "feature_bucket": "novel_count_gt_10",
+      "slice_bucket": "full_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0004",
+      "case_count": 0,
+      "feature_bucket": "novel_count_0",
+      "slice_bucket": "guard_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0005",
+      "case_count": 0,
+      "feature_bucket": "novel_count_1_to_5",
+      "slice_bucket": "guard_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0006",
+      "case_count": 0,
+      "feature_bucket": "novel_count_6_to_10",
+      "slice_bucket": "guard_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0007",
+      "case_count": 5,
+      "feature_bucket": "novel_count_gt_10",
+      "slice_bucket": "guard_new"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0008",
+      "case_count": 0,
+      "feature_bucket": "novel_count_0",
+      "slice_bucket": "full_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0009",
+      "case_count": 0,
+      "feature_bucket": "novel_count_1_to_5",
+      "slice_bucket": "full_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0010",
+      "case_count": 0,
+      "feature_bucket": "novel_count_6_to_10",
+      "slice_bucket": "full_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0011",
+      "case_count": 3,
+      "feature_bucket": "novel_count_gt_10",
+      "slice_bucket": "full_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0012",
+      "case_count": 0,
+      "feature_bucket": "novel_count_0",
+      "slice_bucket": "guard_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0013",
+      "case_count": 0,
+      "feature_bucket": "novel_count_1_to_5",
+      "slice_bucket": "guard_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0014",
+      "case_count": 0,
+      "feature_bucket": "novel_count_6_to_10",
+      "slice_bucket": "guard_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0015",
+      "case_count": 2,
+      "feature_bucket": "novel_count_gt_10",
+      "slice_bucket": "guard_only"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0016",
+      "case_count": 0,
+      "feature_bucket": "novel_count_0",
+      "slice_bucket": "full_miss"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0017",
+      "case_count": 0,
+      "feature_bucket": "novel_count_1_to_5",
+      "slice_bucket": "full_miss"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0018",
+      "case_count": 0,
+      "feature_bucket": "novel_count_6_to_10",
+      "slice_bucket": "full_miss"
+    },
+    {
+      "anonymous_slice_bucket_id": "n10egslice0019",
+      "case_count": 49,
+      "feature_bucket": "novel_count_gt_10",
+      "slice_bucket": "full_miss"
+    }
+  ],
+  "status": "novel_first_guard_complementarity_slicing_complete_n10eh_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10egstop0000",
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10eh_fixed_combo_experiment_authorized_bool": true,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EH Fixed Full/Guard Combination Repacking Experiment",
+      "private_read_scope_bucket": "same_n10dz_top100_and_n1_rows_only",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
