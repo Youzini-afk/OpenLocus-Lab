@@ -1,0 +1,333 @@
+{
+  "candidate_count_latency_records": [
+    {
+      "anonymous_count_id": "n10dwcount0000",
+      "candidate_count_bucket": "thirty_one_to_fifty",
+      "case_count": 30
+    },
+    {
+      "anonymous_count_id": "n10dwlatency0000",
+      "candidate_count_bucket": "latency_not_recomputed_use_n10du_public_aggregate",
+      "case_count": 30
+    }
+  ],
+  "candidate_novelty_records": [
+    {
+      "anonymous_novelty_id": "n10dwnovelty0000",
+      "candidate_set_novelty_bucket": "few_novel_files",
+      "case_count": 6
+    },
+    {
+      "anonymous_novelty_id": "n10dwnovelty0001",
+      "candidate_set_novelty_bucket": "many_novel_files",
+      "case_count": 17
+    },
+    {
+      "anonymous_novelty_id": "n10dwnovelty0002",
+      "candidate_set_novelty_bucket": "no_novel_files",
+      "case_count": 7
+    },
+    {
+      "anonymous_novelty_id": "n10dwnovelty9990",
+      "candidate_set_novelty_bucket": "recovered_gold_file_novel_vs_n1",
+      "case_count": 10
+    },
+    {
+      "anonymous_novelty_id": "n10dwnovelty9991",
+      "candidate_set_novelty_bucket": "recovered_gold_file_already_in_n1",
+      "case_count": 0
+    }
+  ],
+  "candidate_overlap_records": [
+    {
+      "anonymous_overlap_id": "n10dwoverlap0000",
+      "candidate_overlap_bucket": "overlap_high",
+      "case_count": 7
+    },
+    {
+      "anonymous_overlap_id": "n10dwoverlap0001",
+      "candidate_overlap_bucket": "overlap_low",
+      "case_count": 3
+    },
+    {
+      "anonymous_overlap_id": "n10dwoverlap0002",
+      "candidate_overlap_bucket": "overlap_medium",
+      "case_count": 5
+    },
+    {
+      "anonymous_overlap_id": "n10dwoverlap0003",
+      "candidate_overlap_bucket": "overlap_near_duplicate",
+      "case_count": 7
+    },
+    {
+      "anonymous_overlap_id": "n10dwoverlap0004",
+      "candidate_overlap_bucket": "overlap_none",
+      "case_count": 8
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dwgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dwgate0001",
+      "gate_bucket": "private_inputs_scoped_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dwgate0002",
+      "gate_bucket": "rank_bucket_counts_match_n10du",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dwgate0003",
+      "gate_bucket": "no_forbidden_execution",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "targeted_candidate_source_variant_canary_public_package_complete_n10dw_authorized",
+      "anonymous_input_artifact_id": "n10dwinput0000",
+      "artifact_bucket": "n10dv_public_package",
+      "expected_status_bucket": "targeted_candidate_source_variant_canary_public_package_complete_n10dw_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "targeted_candidate_source_variant_canary_pass_n10dv_authorized",
+      "anonymous_input_artifact_id": "n10dwinput0001",
+      "artifact_bucket": "n10du_targeted_canary",
+      "expected_status_bucket": "targeted_candidate_source_variant_canary_pass_n10dv_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "real_candidate_source_failure_analysis_complete_n10du_authorized",
+      "anonymous_input_artifact_id": "n10dwinput0002",
+      "artifact_bucket": "n10dt_failure_analysis",
+      "expected_status_bucket": "real_candidate_source_failure_analysis_complete_n10du_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "mechanism_interpretation_records": [
+    {
+      "anonymous_interpretation_id": "n10dwinterp0000",
+      "interpretation_bucket": "normalization_unlocks_bm25_candidate_source_for_subset",
+      "normalized_bm25_specific_signal_bool": true,
+      "not_runtime_default_claim_bool": true,
+      "not_scaling_claim_bool": true,
+      "remaining_unrecovered_count": 20,
+      "top10_recovered_count": 8,
+      "top20_recovered_count": 9,
+      "top50_recovered_count": 10
+    }
+  ],
+  "n10dx_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dwhandoff0000",
+      "n10dx_topk_token_cap_canary_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DX Normalized-BM25 TopK/Token-Cap Variant Canary",
+      "scaled_retrieval_authorized_bool": false,
+      "variant_preview_bucket": "top50_top100_cap12_cap24_fixed_grid"
+    }
+  ],
+  "next_variant_signal_records": [
+    {
+      "anonymous_next_signal_id": "n10dwnext0000",
+      "clear_bounded_next_variant_signal_bool": true,
+      "network_clone_provider_authorized_bool": false,
+      "next_signal_bucket": "normalized_bm25_topk_token_cap_variant_canary",
+      "recommended_variant_count": 4,
+      "same_30_cases_only_bool": true
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10dwforbid0000",
+      "candidate_generation_count": 0,
+      "git_clone_count": 0,
+      "network_execution_count": 0,
+      "openlocus_execution_count": 0,
+      "provider_call_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "normalization_effect_records": [
+    {
+      "anonymous_normeffect_id": "n10dwnormeffect0000",
+      "case_count": 6,
+      "normalization_effect_bucket": "changed_same_length"
+    },
+    {
+      "anonymous_normeffect_id": "n10dwnormeffect0001",
+      "case_count": 1,
+      "normalization_effect_bucket": "expanded_or_split"
+    },
+    {
+      "anonymous_normeffect_id": "n10dwnormeffect0002",
+      "case_count": 23,
+      "normalization_effect_bucket": "shortened"
+    },
+    {
+      "anonymous_normbefore_id": "n10dwnormbefore0000",
+      "before_token_count_bucket": "tokens_4_8",
+      "case_count": 9
+    },
+    {
+      "anonymous_normbefore_id": "n10dwnormbefore0001",
+      "before_token_count_bucket": "tokens_9_20",
+      "case_count": 8
+    },
+    {
+      "anonymous_normbefore_id": "n10dwnormbefore0002",
+      "before_token_count_bucket": "tokens_gt20",
+      "case_count": 13
+    },
+    {
+      "after_token_count_bucket": "tokens_4_8",
+      "anonymous_normafter_id": "n10dwnormafter0000",
+      "case_count": 11
+    },
+    {
+      "after_token_count_bucket": "tokens_9_20",
+      "anonymous_normafter_id": "n10dwnormafter0001",
+      "case_count": 19
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DW Normalized-BM25 Recovery Mechanism Analysis",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10dwprivacy0000",
+      "public_candidate_lists_bool": false,
+      "public_exact_ranks_bool": false,
+      "public_paths_or_filenames_bool": false,
+      "public_raw_queries_bool": false,
+      "public_snippets_spans_gold_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dwintake0000",
+      "command_summary_load_status_bucket": "present",
+      "manifest_load_status_bucket": "present",
+      "private_content_public_bool": false,
+      "private_variant_rows_read_count": 30,
+      "same_scoped_n1_rows_read_count": 213
+    }
+  ],
+  "recovered_vs_unrecovered_query_shape_records": [
+    {
+      "anonymous_query_shape_id": "n10dwshapeR0000",
+      "case_count": 6,
+      "query_shape_bucket": "natural_language_like",
+      "recovery_group_bucket": "recovered"
+    },
+    {
+      "anonymous_query_shape_id": "n10dwshapeR0001",
+      "case_count": 1,
+      "query_shape_bucket": "path_like",
+      "recovery_group_bucket": "recovered"
+    },
+    {
+      "anonymous_query_shape_id": "n10dwshapeR0002",
+      "case_count": 3,
+      "query_shape_bucket": "symbol_like",
+      "recovery_group_bucket": "recovered"
+    },
+    {
+      "anonymous_query_shape_id": "n10dwshapeU0000",
+      "case_count": 14,
+      "query_shape_bucket": "natural_language_like",
+      "recovery_group_bucket": "unrecovered"
+    },
+    {
+      "anonymous_query_shape_id": "n10dwshapeU0001",
+      "case_count": 5,
+      "query_shape_bucket": "path_like",
+      "recovery_group_bucket": "unrecovered"
+    },
+    {
+      "anonymous_query_shape_id": "n10dwshapeU0002",
+      "case_count": 1,
+      "query_shape_bucket": "symbol_like",
+      "recovery_group_bucket": "unrecovered"
+    }
+  ],
+  "recovery_rank_bucket_records": [
+    {
+      "anonymous_rankbucket_id": "n10dwrankbucket0000",
+      "case_count": 20,
+      "recovery_rank_bucket": "not_recovered"
+    },
+    {
+      "anonymous_rankbucket_id": "n10dwrankbucket0001",
+      "case_count": 1,
+      "recovery_rank_bucket": "top11_20"
+    },
+    {
+      "anonymous_rankbucket_id": "n10dwrankbucket0002",
+      "case_count": 6,
+      "recovery_rank_bucket": "top1_5"
+    },
+    {
+      "anonymous_rankbucket_id": "n10dwrankbucket0003",
+      "case_count": 1,
+      "recovery_rank_bucket": "top21_50"
+    },
+    {
+      "anonymous_rankbucket_id": "n10dwrankbucket0004",
+      "case_count": 2,
+      "recovery_rank_bucket": "top6_10"
+    }
+  ],
+  "schema_version": "bea_v1_n10dw_normalized_bm25_recovery_mechanism_analysis_v1",
+  "status": "normalized_bm25_recovery_mechanism_analysis_complete_n10dx_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dwstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DX Normalized-BM25 TopK/Token-Cap Variant Canary",
+      "p5_v1a_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "unrecovered_failure_bucket_records": [
+    {
+      "anonymous_failure_id": "n10dwfailure0000",
+      "case_count": 13,
+      "unrecovered_failure_bucket": "high_overlap_old_pool_no_gold"
+    },
+    {
+      "anonymous_failure_id": "n10dwfailure0001",
+      "case_count": 8,
+      "unrecovered_failure_bucket": "many_novel_files_no_gold"
+    },
+    {
+      "anonymous_failure_id": "n10dwfailure0002",
+      "case_count": 20,
+      "unrecovered_failure_bucket": "nonzero_no_gold"
+    }
+  ]
+}
