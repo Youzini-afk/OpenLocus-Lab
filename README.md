@@ -34,13 +34,34 @@ valid public held-out negative — CI run `28457213423`, status
 `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`, sample
 `80/60/40`, citation `7772/7772`, baseline `37/39/40/40`, full `36/39/40/40`,
 guard `38/39/40/40`, diffaware `37/39/40/40`, risk bucket `task_count=26`,
-losses `0/0/0` — and authorized only N10ET. N10ET (close-out design/decision)
-then locked N10ES/N10ER as a valid public held-out negative, confirmed the
+losses `0/0/0` — and authorized only N10ET. N10ET (close-out design/decision,
+checkpoint `26d817e`, status
+`n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`) then
+locked N10ES/N10ER as a valid public held-out negative, confirmed the
 difference-aware rule remains a local same-source hypothesis (not a
 transferable method), and authorized **only** the next route:
 **BEA-v1-HAAE-R0 — Hierarchical Actionable Evidence Acquisition Route Design /
 Schema Preflight**. HAAE-R0 is explicitly **not** BEA-v1-A, not selector-only,
 not selector/reranker execution, not P5, and not a runtime/default promotion.
+
+**BEA-v1-HAAE-R0: Hierarchical Actionable Evidence Acquisition Route Design /
+Schema Preflight** is now complete as the public-only, design-only schema
+preflight for the next acquisition route (status
+`haae_r0_design_schema_preflight_complete_haae_r1_authorized`). HAAE-R0 locks
+the N10ET source (checkpoint `26d817e`), designs a machine-readable,
+non-empty control-plane — 4 route architecture layers (source_acquisition,
+rank_pack_depth_to_head, span_projection, scheduler_operating_point), a 10-group
+unified private trace schema spec, a 4-contract public aggregation contract,
+5 same-budget arm specs (BM25_same_budget, RRF_same_budget, BEA_v0.3_frozen,
+V1_sched_span, V1_sched_span_rank), 6 metric specs, a held-out protocol, 4 stop
+rules, and a synthetic validator with an embedded 4-task synthetic fixture —
+and authorizes **only** the next phase: **BEA-v1-HAAE-R1 — Unified Private
+Trace Schema Feasibility Inventory** (explicit private roots only, aggregate
+buckets only, no replay/scoring/retrieval/candidate generation). HAAE-R0 is
+explicitly **not** BEA-v1-A, not selector-only, not selector/reranker
+execution, not P5, and not a runtime/default promotion. It performs no
+execution, no private reads, no CI rerun, no retrieval/recompute, no candidate
+generation, no arm scoring, and no OpenLocus execution.
 
 The detailed source of truth for the closed N10E branch is
 [`docs/en/current-research-conclusions.md`](docs/en/current-research-conclusions.md)
@@ -366,6 +387,70 @@ method-winner, downstream/scaled retrieval, raw diagnostic publication, CI
 variant execution, selector/reranker, BEA-v1-A, P5, provider/model network,
 and network-run fields are `false`. See
 `docs/en/bea-v1-n10et-public-safety-probe-design-decision.md`.
+
+**BEA-v1-HAAE-R0: Hierarchical Actionable Evidence Acquisition Route Design /
+Schema Preflight** is the public-only, design-only schema preflight for the
+next acquisition route, opened by the N10ET close-out (checkpoint `26d817e`):
+
+```text
+status: haae_r0_design_schema_preflight_complete_haae_r1_authorized
+self-test: 132 / 132
+forbidden scan: pass
+private input reads: 0
+retrieval executions: 0
+recomputes: 0
+CI reruns: 0
+candidate generations: 0
+arm scorings: 0
+openlocus executions: 0
+n10et source locked: true (checkpoint 26d817e, status
+  n10et_public_safety_probe_design_decision_complete_haae_r0_authorized)
+next allowed phase: BEA-v1-HAAE-R1 Unified Private Trace Schema Feasibility Inventory
+```
+
+HAAE-R0 reads **only** the N10ET public aggregate report and public
+docs/current-conclusions/research-log/summary/README + git metadata; it performs
+no CI rerun, retrieval, recompute, candidate generation, arm scoring, OpenLocus
+execution, clone, build, or search, and reads no private directories, CI raw
+logs, repo clones, raw candidates/orders/labels/paths/queries/tasks/repos, or
+per-task diagnostics. It locks the N10ET public facts (checkpoint `26d817e`,
+status `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`,
+HAAE-R0 authorized true, HAAE-R0 execution false, BEA-v1-A false), and designs a
+machine-readable, non-empty control-plane: `route_architecture_records` (4
+hierarchical layers — source_acquisition, rank_pack_depth_to_head,
+span_projection, scheduler_operating_point, each preserving `EvidenceCore` and
+abstaining when current-source evidence is unavailable),
+`unified_private_schema_spec_records` (10 private-root-only,
+aggregate-bucket-only groups), `public_aggregation_contract_records` (4
+aggregations), `arm_spec_records` (BM25_same_budget, RRF_same_budget,
+BEA_v0.3_frozen, V1_sched_span, V1_sched_span_rank — same budget, no execution,
+no scoring, no tuning in HAAE-R0), `metric_spec_records` (6 aggregate metrics),
+`heldout_protocol_records` (overlap_zero, no gold-for-policy, no split
+materialized), `stop_rule_records` (4 abstain rules preserving EvidenceCore),
+`synthetic_validator_records` (an embedded 4-task synthetic fixture that
+validates all contracts in-process — not real data, not replay, not retrieval,
+not candidate generation), and `haae_r1_contract_records` (the HAAE-R1
+contract). The published artifact also includes `source_lock_records`,
+`risk_control_records`, `public_package_records`, `claim_boundary_records`,
+`pass_fail_gate_records` (27 audit gates, including N10ET source-lock,
+concrete-schema/arm/metric, synthetic-validator, public readback, and HAAE-R0
+non-identity gates, all aggregate, `gate_uses_gold_for_policy_bool=false`,
+`gate_performs_ci_rerun_bool=false`, `gate_reads_private_input_bool=false`), and
+`stop_go_records`. The conservative stop/go authorizes **only** the HAAE-R1
+Unified Private Trace Schema Feasibility Inventory handoff
+(`haae_r1_unified_private_trace_schema_feasibility_inventory_authorized_bool=true`,
+`haae_r1_execution_authorized_bool=false`,
+`haae_r1_replay_authorized_bool=false`,
+`haae_r1_scoring_authorized_bool=false`,
+`haae_r1_retrieval_authorized_bool=false`,
+`haae_r1_candidate_generation_authorized_bool=false`); all execution, rerun,
+retrieval, recompute, candidate generation, arm scoring, OpenLocus execution,
+tuning, promotion, runtime/default, method-winner, downstream/scaled retrieval,
+raw diagnostic publication, CI variant execution, selector/reranker, BEA-v1-A,
+P5, provider/model network, and network-run fields are `false`. HAAE-R0 is
+explicitly **not** BEA-v1-A, not selector-only, not selector/reranker
+execution, not P5, and not a runtime/default promotion. See
+`docs/en/bea-v1-haae-r0-hierarchical-actionable-evidence-acquisition-design-schema-preflight.md`.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40

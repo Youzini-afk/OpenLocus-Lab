@@ -1,0 +1,1679 @@
+{
+  "arm_spec_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_arm_spec_id": "haaer0arm0000",
+      "arm_bucket": "BM25_same_budget",
+      "arm_description_bucket": "same-budget BM25 baseline arm. the same-budget comparator carried from B16-F/N10ES. no execution in HAAE-R0; spec only.",
+      "arm_kind_bucket": "baseline",
+      "budget_bucket": "same_budget",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "is_frozen_policy_arm_bool": false,
+      "no_execution_in_haae_r0_bool": true,
+      "no_scoring_in_haae_r0_bool": true,
+      "no_tuning_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "same_budget_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_arm_spec_id": "haaer0arm0001",
+      "arm_bucket": "RRF_same_budget",
+      "arm_description_bucket": "same-budget reciprocal-rank-fusion comparator arm. no execution in HAAE-R0; spec only.",
+      "arm_kind_bucket": "comparator",
+      "budget_bucket": "same_budget",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "is_frozen_policy_arm_bool": false,
+      "no_execution_in_haae_r0_bool": true,
+      "no_scoring_in_haae_r0_bool": true,
+      "no_tuning_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "same_budget_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_arm_spec_id": "haaer0arm0002",
+      "arm_bucket": "BEA_v0.3_frozen",
+      "arm_description_bucket": "the frozen BEA v0.3 policy arm. frozen (no tuning in HAAE-R0). no execution in HAAE-R0; spec only.",
+      "arm_kind_bucket": "frozen_policy",
+      "budget_bucket": "same_budget",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "is_frozen_policy_arm_bool": true,
+      "no_execution_in_haae_r0_bool": true,
+      "no_scoring_in_haae_r0_bool": true,
+      "no_tuning_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "same_budget_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_arm_spec_id": "haaer0arm0003",
+      "arm_bucket": "V1_sched_span",
+      "arm_description_bucket": "BEA-v1 scheduler over span projection arm: the scheduler-operating-point layer applied to the span-projection layer. no execution in HAAE-R0; spec only.",
+      "arm_kind_bucket": "v1_scheduler",
+      "budget_bucket": "same_budget",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "is_frozen_policy_arm_bool": false,
+      "no_execution_in_haae_r0_bool": true,
+      "no_scoring_in_haae_r0_bool": true,
+      "no_tuning_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "same_budget_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_arm_spec_id": "haaer0arm0004",
+      "arm_bucket": "V1_sched_span_rank",
+      "arm_description_bucket": "BEA-v1 scheduler over span + rank/pack arm: the scheduler-operating-point layer applied jointly to the span-projection and rank/pack depth-to-head layers. no execution in HAAE-R0; spec only.",
+      "arm_kind_bucket": "v1_scheduler",
+      "budget_bucket": "same_budget",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "is_frozen_policy_arm_bool": false,
+      "no_execution_in_haae_r0_bool": true,
+      "no_scoring_in_haae_r0_bool": true,
+      "no_tuning_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "same_budget_bool": true,
+      "schema_preflight_bool": true
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_claim_boundary_id": "haaer0claim0000",
+      "arm_scoring_bool": false,
+      "candidate_generation_bool": false,
+      "ci_rerun_bool": false,
+      "design_only_bool": true,
+      "downstream_value_claim_bool": false,
+      "external_benchmark_download_bool": false,
+      "frozen_rule_change_bool": false,
+      "gold_used_for_policy_bool": false,
+      "haae_r0_execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "haae_r1_candidate_generation_authorized_bool": false,
+      "haae_r1_execution_authorized_bool": false,
+      "haae_r1_replay_authorized_bool": false,
+      "haae_r1_retrieval_authorized_bool": false,
+      "haae_r1_scoring_authorized_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n10et_execution_authorized_bool": false,
+      "n10et_re_run_authorized_bool": false,
+      "network_run_bool": false,
+      "openlocus_execution_bool": false,
+      "private_rows_read_bool": false,
+      "production_retrieval_change_bool": false,
+      "promotion_claim_bool": false,
+      "provider_model_network_bool": false,
+      "public_only_bool": true,
+      "quiver_dense_real_bool": false,
+      "raw_candidate_upload_bool": false,
+      "raw_diagnostic_publication_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "remote_embedding_bool": false,
+      "retrieval_recompute_bool": false,
+      "run_phase_labels_used_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_claim_bool": false,
+      "schema_preflight_only_bool": true,
+      "score_phase_labels_used_bool": false,
+      "selector_reranker_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "haaer0gate0000",
+      "gate_bucket": "n10et_public_source_locked",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0010",
+      "gate_bucket": "no_ci_rerun_retrieval_recompute_candidate_generation",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0011",
+      "gate_bucket": "no_private_input_read",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0012",
+      "gate_bucket": "no_selector_reranker_no_p5_no_bea_v1_a",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0014",
+      "gate_bucket": "no_openlocus_execution_no_arm_scoring",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0020",
+      "gate_bucket": "haae_r0_non_identity_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "haae_r1_contract_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_haae_r1_contract_id": "haaer0r1contract0000",
+      "authorized_for_next_phase_bool": true,
+      "contract_bucket": "haae_r1_unified_private_trace_schema_feasibility_inventory",
+      "contract_description_bucket": "HAAE-R1 is a feasibility inventory of the unified private trace schema: it inventories whether the 10 schema groups can be populated from explicit project-private root buckets, with aggregate buckets only, and without replay/scoring/retrieval/candidate generation. it is a feasibility check, NOT execution of any HAAE layer.",
+      "contract_name": "BEA-v1-HAAE-R1 Unified Private Trace Schema Feasibility Inventory",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "feasibility_inventory_only_bool": true,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "next_allowed_phase": "BEA-v1-HAAE-R1 Unified Private Trace Schema Feasibility Inventory",
+      "no_candidate_generation_bool": true,
+      "no_execution_of_haae_layers_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_roots_only_bool": true,
+      "schema_preflight_bool": true
+    }
+  ],
+  "heldout_protocol_records": [
+    {
+      "anonymous_heldout_protocol_id": "haaer0heldout0000",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "heldout_bucket": "public_heldout_overlap_zero",
+      "heldout_description_bucket": "the held-out protocol enforces overlap_zero between any future HAAE execution training/held-out split and the closed N10ES/N10ER public held-out sample. gold is never used for policy selection; publication is aggregate-bucket-only. design-only here; no split is materialized in HAAE-R0.",
+      "heldout_generalization_claim_bool": false,
+      "no_gold_for_policy_bool": true,
+      "no_split_materialized_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "overlap_zero_enforced_bool": true,
+      "public_aggregate_publication_only_bool": true,
+      "schema_preflight_bool": true
+    }
+  ],
+  "metric_spec_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_metric_spec_id": "haaer0metric0000",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "metric_bucket": "citation_validity",
+      "metric_description_bucket": "citation_valid_count / citation_total_count aggregate. the EvidenceCore citation-validation aggregate carried from N10ES/N10ER.",
+      "no_per_task_bool": true,
+      "no_recompute_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_metric_spec_id": "haaer0metric0001",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "metric_bucket": "file_recovery_top_k",
+      "metric_description_bucket": "per-arm top10/top20/top50/top100 file-recovery aggregate. carried from N10ES/N10ER.",
+      "no_per_task_bool": true,
+      "no_recompute_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_metric_spec_id": "haaer0metric0002",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "metric_bucket": "lost_baseline_top10",
+      "metric_description_bucket": "per-arm lost-baseline-top10 count aggregate. carried from N10ES/N10ER.",
+      "no_per_task_bool": true,
+      "no_recompute_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_metric_spec_id": "haaer0metric0003",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "metric_bucket": "risk_bucket_signal",
+      "metric_description_bucket": "risk-bucket task_count and full/guard/diffaware loss-count aggregate. the safety-probe signal aggregate carried from N10ES/N10ER.",
+      "no_per_task_bool": true,
+      "no_recompute_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_metric_spec_id": "haaer0metric0004",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "metric_bucket": "span_overlap",
+      "metric_description_bucket": "span-overlap aggregate (overlap_zero / overlap_count buckets). carried from N10ES/N10ER heldout-overlap vocabulary.",
+      "no_per_task_bool": true,
+      "no_recompute_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_metric_spec_id": "haaer0metric0005",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "metric_bucket": "action_cost",
+      "metric_description_bucket": "scheduler action-cost aggregate (action_cost_bucket distribution). the BEA-v1 P4 scheduler operating-point aggregate vocabulary.",
+      "no_per_task_bool": true,
+      "no_recompute_in_haae_r0_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer0gate0000",
+      "gate_bucket": "n10et_public_source_locked",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0001",
+      "gate_bucket": "n10et_status_locked",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0002",
+      "gate_bucket": "n10et_haae_r0_authorized_match",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0003",
+      "gate_bucket": "n10et_haae_r0_execution_false_match",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0004",
+      "gate_bucket": "n10et_bea_v1_a_false_match",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0005",
+      "gate_bucket": "n10et_non_identity_match",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0006",
+      "gate_bucket": "haae_r0_no_threshold_tuning",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0007",
+      "gate_bucket": "haae_r0_no_method_winner_claim",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0008",
+      "gate_bucket": "haae_r0_no_runtime_default_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0009",
+      "gate_bucket": "haae_r0_no_promotion_or_frozen_rule_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0010",
+      "gate_bucket": "haae_r0_no_ci_rerun_retrieval_recompute_candidate_generation",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0011",
+      "gate_bucket": "haae_r0_no_private_input_read",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0012",
+      "gate_bucket": "haae_r0_no_selector_reranker_no_p5_no_bea_v1_a",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0013",
+      "gate_bucket": "haae_r0_no_arm_scoring",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0014",
+      "gate_bucket": "haae_r0_no_openlocus_execution",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0015",
+      "gate_bucket": "haae_r0_route_architecture_design_only",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0016",
+      "gate_bucket": "haae_r0_schema_groups_concrete",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0017",
+      "gate_bucket": "haae_r0_arm_specs_concrete",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0018",
+      "gate_bucket": "haae_r0_metric_specs_concrete",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0019",
+      "gate_bucket": "haae_r0_synthetic_validator_passes",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0020",
+      "gate_bucket": "haae_r0_non_identity_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0021",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0022",
+      "gate_bucket": "readme_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0023",
+      "gate_bucket": "current_conclusions_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0024",
+      "gate_bucket": "research_log_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0025",
+      "gate_bucket": "research_summary_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0026",
+      "gate_bucket": "haae_r1_contract_feasibility_inventory_only_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer0gate0027",
+      "gate_bucket": "self_test_total_public_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight",
+  "public_aggregation_contract_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "aggregation_bucket": "task_count_aggregate",
+      "aggregation_description_bucket": "public_task_count / scored_task_count / task_with_gold_count / repo_count \u2014 the sample-aggregate vocabulary carried from the N10ES/N10ER public reports.",
+      "anonymous_public_aggregation_id": "haaer0agg0000",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_raw_release_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true,
+      "source_groups": [
+        "task_identity",
+        "candidate_pool"
+      ]
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "aggregation_bucket": "arm_aggregate",
+      "aggregation_description_bucket": "per-arm file-recovery top10/top20/top50/top100 and lost_baseline_top10 \u2014 the arm-aggregate vocabulary carried from the N10ES/N10ER public reports.",
+      "anonymous_public_aggregation_id": "haaer0agg0001",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_raw_release_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true,
+      "source_groups": [
+        "arm_assignment",
+        "outcome_metric"
+      ]
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "aggregation_bucket": "risk_bucket_aggregate",
+      "aggregation_description_bucket": "risk_bucket task_count and full/guard/diffaware loss counts inside the risk bucket \u2014 the safety-probe aggregate vocabulary carried from the N10ES/N10ER public reports.",
+      "anonymous_public_aggregation_id": "haaer0agg0002",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_raw_release_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true,
+      "source_groups": [
+        "safety_probe_signal",
+        "outcome_metric"
+      ]
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "aggregation_bucket": "citation_aggregate",
+      "aggregation_description_bucket": "citation_valid_count / citation_total_count \u2014 the citation-validity aggregate vocabulary carried from the N10ES/N10ER public reports.",
+      "anonymous_public_aggregation_id": "haaer0agg0003",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_raw_release_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true,
+      "source_groups": [
+        "evidence_core",
+        "outcome_metric"
+      ]
+    }
+  ],
+  "public_package_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "all_public_readback_match_bool": true,
+      "anonymous_public_package_id": "haaer0package0000",
+      "arm_scoring_count": 0,
+      "candidate_generation_count": 0,
+      "ci_rerun_count": 0,
+      "clone_build_search_run_bool": false,
+      "current_conclusions_match_bool": true,
+      "design_only_bool": true,
+      "haae_r0_docs_readback_match_bool": true,
+      "haae_r1_authorized_bool": true,
+      "haae_r1_design_only_feasibility_inventory_bool": true,
+      "haae_r1_execution_authorized_bool": false,
+      "n10et_docs_readback_match_bool": true,
+      "n10et_source_locked_bool": true,
+      "no_method_winner_claim_bool": true,
+      "no_runtime_default_change_bool": true,
+      "package_bucket": "haae_r0_hierarchical_actionable_evidence_acquisition_design_schema_preflight_package",
+      "private_input_read_count": 0,
+      "public_only_bool": true,
+      "readme_readback_match_bool": true,
+      "recompute_count": 0,
+      "research_log_match_bool": true,
+      "research_summary_match_bool": true,
+      "retrieval_execution_count": 0,
+      "schema_preflight_only_bool": true,
+      "schema_version": "bea_v1_haae_r0_hierarchical_actionable_evidence_acquisition_design_schema_preflight_v1",
+      "self_test_pass_claim_bool": true,
+      "self_test_total_check_count": 132,
+      "self_test_total_public_readback_match_bool": true,
+      "synthetic_validator_pass_bool": true
+    }
+  ],
+  "risk_control_records": [
+    {
+      "anonymous_risk_control_id": "haaer0risk0000",
+      "mitigation_bucket": "every control-plane record carries the explicit non-identity booleans (not_bea_v1_a, not_selector_only, not_selector_reranker_execution, not_p5, not_runtime_default_promotion); selector_reranker_authorized_bool=false; bea_v1_a_authorized_bool=false; p5_authorized_bool=false; runtime_default_change_authorized_bool=false.",
+      "risk_bucket": "haae_r0_drift_into_selector_or_p5_or_runtime",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the HAAE-R0 route could be quietly reframed as BEA-v1-A, a selector-only design, selector/reranker execution, P5, or a runtime/default promotion."
+    },
+    {
+      "anonymous_risk_control_id": "haaer0risk0001",
+      "mitigation_bucket": "every record carries design_only_bool=true, schema_preflight_bool=true, execution_authorized_bool=false; the synthetic validator runs in-process on an embedded fixture only and carries no_replay_bool/no_retrieval_bool/no_candidate_generation_bool/no_scoring_bool=true.",
+      "risk_bucket": "haae_r0_drift_into_execution",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the HAAE-R0 schema preflight could drift into executing any HAAE layer (source acquisition, rank/pack, span projection, scheduler)."
+    },
+    {
+      "anonymous_risk_control_id": "haaer0risk0002",
+      "mitigation_bucket": "the artifact carries concrete machine-readable records: 4 route architecture layers, 10 unified private schema groups, 4 public aggregation contracts, 5 arm specs, 6 metric specs, 1 heldout protocol, 4 stop rules, and a synthetic validator with an embedded 4-task fixture that validates all contracts in-process.",
+      "risk_bucket": "haae_r0_empty_control_plane",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the HAAE-R0 preflight could be an empty control-plane doc with no machine-readable schema/arm/metric/heldout/stop-rule/HAAE-R1 contract."
+    },
+    {
+      "anonymous_risk_control_id": "haaer0risk0003",
+      "mitigation_bucket": "the HAAE-R1 contract record explicitly limits HAAE-R1 to: feasibility_inventory_only_bool=true, private_roots_only_bool=true, aggregate_buckets_only_bool=true, no_replay_bool=true, no_scoring_bool=true, no_retrieval_bool=true, no_candidate_generation_bool=true, no_execution_of_haae_layers_bool=true.",
+      "risk_bucket": "haae_r1_scope_creep_beyond_feasibility_inventory",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "HAAE-R1 could be scoped beyond a feasibility inventory into replay/scoring/retrieval/candidate generation."
+    },
+    {
+      "anonymous_risk_control_id": "haaer0risk0004",
+      "mitigation_bucket": "HAAE-R0 reads only public aggregate artifacts/docs/git metadata; forbidden_scan blocks raw per-task/paths/orders/labels keys and private rerun paths; every schema group carries aggregate_buckets_only_bool=true, private_root_only_bool=true, no_raw_release_bool=true.",
+      "risk_bucket": "private_diagnostic_leakage",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the HAAE-R0 schema preflight could leak per-task diagnostics/paths/candidates/orders/labels into the public design."
+    },
+    {
+      "anonymous_risk_control_id": "haaer0risk0005",
+      "mitigation_bucket": "runtime_default_change_authorized_bool=false; any HAAE route remains opt-in/eval-only; no runtime or default change.",
+      "risk_bucket": "runtime_default_creep",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the HAAE-R0 schema preflight could implicitly drift runtime/default behavior by codifying a route as a default gate."
+    }
+  ],
+  "route_architecture_records": [
+    {
+      "abstain_when_current_source_unavailable_bool": true,
+      "aggregate_buckets_only_bool": true,
+      "anonymous_route_architecture_id": "haaer0arch0000",
+      "design_only_bool": true,
+      "evidence_core_preserved_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "layer_bucket": "source_acquisition",
+      "layer_description_bucket": "the anchor/source-acquisition layer defines how evidence-acquisition actions obtain candidate sources from a current source surface (e.g. identifier-normalized BM25, exact search, symbol, graph). it abstains when no current-source evidence is available and emits only aggregate candidate-pool buckets (no raw candidates/paths/queries). it is the anchor of the hierarchical route.",
+      "layer_kind_bucket": "anchor_source_acquisition",
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "public_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "abstain_when_current_source_unavailable_bool": true,
+      "aggregate_buckets_only_bool": true,
+      "anonymous_route_architecture_id": "haaer0arch0001",
+      "design_only_bool": true,
+      "evidence_core_preserved_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "layer_bucket": "rank_pack_depth_to_head",
+      "layer_description_bucket": "the rank/pack depth-to-head layer defines how deep candidates are packed into the head (e.g. novel-vs-old-pool-first, bounded merge-order, difference-aware guarded/else-full). it operates on aggregate rank/pack buckets only and does not execute a selector or reranker.",
+      "layer_kind_bucket": "depth_to_head_rank_pack",
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "public_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "abstain_when_current_source_unavailable_bool": true,
+      "aggregate_buckets_only_bool": true,
+      "anonymous_route_architecture_id": "haaer0arch0002",
+      "design_only_bool": true,
+      "evidence_core_preserved_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "layer_bucket": "span_projection",
+      "layer_description_bucket": "the span-projection layer defines how spans are projected over acquired content (e.g. symmetric/asymmetric span windows, shape-gated expansion). it emits only aggregate span-overlap buckets and abstains when the current source cannot yield a citation-valid span.",
+      "layer_kind_bucket": "span_window_projection",
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "public_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "abstain_when_current_source_unavailable_bool": true,
+      "aggregate_buckets_only_bool": true,
+      "anonymous_route_architecture_id": "haaer0arch0003",
+      "design_only_bool": true,
+      "evidence_core_preserved_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "layer_bucket": "scheduler_operating_point",
+      "layer_description_bucket": "the scheduler-operating-point layer defines how retrieval actions are scheduled under a cost/budget gate (the BEA-v1 P4 scheduler operating-point contract). it selects an operating point on the action-cost frontier and abstains when the operating point would violate EvidenceCore or exceed budget. it is design-only here; no scheduler is executed in HAAE-R0.",
+      "layer_kind_bucket": "retrieval_action_scheduler_operating_point",
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "public_only_bool": true,
+      "schema_preflight_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_haae_r0_hierarchical_actionable_evidence_acquisition_design_schema_preflight_v1",
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer0source0000",
+      "bea_v1_a_false_match_bool": true,
+      "haae_r0_authorized_match_bool": true,
+      "haae_r0_execution_false_match_bool": true,
+      "input_artifact_load_status_bucket": "present",
+      "locked_n10et_checkpoint": "26d817e",
+      "locked_n10et_next_allowed_phase": "BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight",
+      "locked_n10et_status": "n10et_public_safety_probe_design_decision_complete_haae_r0_authorized",
+      "n10et_next_phase_match_bool": true,
+      "n10et_non_identity_match_bool": true,
+      "n10et_scan_pass_bool": true,
+      "n10et_status_match_bool": true,
+      "no_ci_rerun_performed_bool": true,
+      "no_private_input_read_bool": true,
+      "no_recompute_performed_bool": true,
+      "no_retrieval_performed_bool": true,
+      "p5_false_match_bool": true,
+      "package_haae_r0_match_bool": true,
+      "public_readback_match_bool": true,
+      "runtime_default_false_match_bool": true,
+      "selector_reranker_false_match_bool": true,
+      "source_lock_bucket": "n10et_public_report_locked",
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r0_design_schema_preflight_complete_haae_r1_authorized",
+  "stop_go_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_stop_go_id": "haaer0stop0000",
+      "arm_scoring_authorized_bool": false,
+      "bea_v1_a_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "ci_variant_execution_authorized_bool": false,
+      "design_only_bool": true,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "execution_authorized_bool": false,
+      "frozen_rule_change_authorized_bool": false,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "haae_r0_execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "haae_r1_aggregate_buckets_only_bool": true,
+      "haae_r1_candidate_generation_authorized_bool": false,
+      "haae_r1_design_only_feasibility_inventory_bool": true,
+      "haae_r1_execution_authorized_bool": false,
+      "haae_r1_private_roots_only_bool": true,
+      "haae_r1_replay_authorized_bool": false,
+      "haae_r1_retrieval_authorized_bool": false,
+      "haae_r1_scoring_authorized_bool": false,
+      "haae_r1_unified_private_trace_schema_feasibility_inventory_authorized_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "n10es_audit_authorized_bool": false,
+      "n10es_re_run_authorized_bool": false,
+      "n10et_audit_authorized_bool": false,
+      "n10et_re_run_authorized_bool": false,
+      "network_run_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R1 Unified Private Trace Schema Feasibility Inventory",
+      "openlocus_execution_authorized_bool": false,
+      "p5_authorized_bool": false,
+      "provider_model_network_authorized_bool": false,
+      "public_only_bool": true,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "recompute_authorized_bool": false,
+      "rerun_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "schema_preflight_only_bool": true,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ],
+  "stop_rule_records": [
+    {
+      "abstain_bool": true,
+      "anonymous_stop_rule_id": "haaer0stop0000",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "preserves_evidence_core_bool": true,
+      "schema_preflight_bool": true,
+      "stop_rule_bucket": "abstain_when_current_source_unavailable",
+      "stop_rule_description_bucket": "the route abstains when the current source cannot yield candidate evidence. this is the core HAAE abstain rule, preserving EvidenceCore."
+    },
+    {
+      "abstain_bool": true,
+      "anonymous_stop_rule_id": "haaer0stop0001",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "preserves_evidence_core_bool": true,
+      "schema_preflight_bool": true,
+      "stop_rule_bucket": "stop_when_citation_invalid",
+      "stop_rule_description_bucket": "the route stops when the citation-validation aggregate falls below the citation-valid threshold. no EvidenceCore is emitted with an invalid citation."
+    },
+    {
+      "abstain_bool": true,
+      "anonymous_stop_rule_id": "haaer0stop0002",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "preserves_evidence_core_bool": true,
+      "schema_preflight_bool": true,
+      "stop_rule_bucket": "stop_when_budget_exhausted",
+      "stop_rule_description_bucket": "the scheduler-operating-point layer stops when the action-cost budget is exhausted. the route emits only what was acquired within budget."
+    },
+    {
+      "abstain_bool": true,
+      "anonymous_stop_rule_id": "haaer0stop0003",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "preserves_evidence_core_bool": true,
+      "schema_preflight_bool": true,
+      "stop_rule_bucket": "stop_when_evidence_core_violated",
+      "stop_rule_description_bucket": "the route stops when an action would violate EvidenceCore (e.g. emit a candidate as fact without path/line-range/content_sha/score/why/channels)."
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer0synth0000",
+      "design_only_bool": true,
+      "embedded_fixture_bool": true,
+      "execution_authorized_bool": false,
+      "fixture_arm_count": 5,
+      "fixture_group_count": 10,
+      "fixture_metric_count": 6,
+      "fixture_stop_rule_count": 4,
+      "fixture_task_count": 4,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_real_data_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "schema_preflight_bool": true,
+      "validates_arms_bool": true,
+      "validates_haae_r1_contract_bool": true,
+      "validates_heldout_bool": true,
+      "validates_metrics_bool": true,
+      "validates_schema_bool": true,
+      "validates_stop_rules_bool": true,
+      "validator_bucket": "embedded_synthetic_fixture",
+      "validator_description_bucket": "an embedded synthetic fixture (4 synthetic tasks with aggregate buckets only) validates that the schema/arm/metric/heldout/stop-rule/HAAE-R1 contracts are machine-readable and self-consistent. the fixture is NOT real data, NOT a replay, NOT retrieval, NOT candidate generation; it exists only to prove the control-plane is non-empty and internally consistent."
+    }
+  ],
+  "unified_private_schema_spec_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0000",
+      "column_count": 3,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "anonymous_task_id",
+          "column_type_bucket": "opaque_id_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "repo_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "language_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "task_identity",
+      "group_description_bucket": "anonymous task identity: anonymous_task_id, repo_bucket, language_bucket. no raw task_id/path/query/repo.",
+      "group_index": 0,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0001",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "anchor_kind_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "acquisition_cost_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "anchor_source",
+      "group_description_bucket": "anchor/source acquisition layer: which source surface produced the candidate pool (anchor_kind_bucket) and acquisition_cost_bucket.",
+      "group_index": 1,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0002",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "candidate_count_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "depth_distribution_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "candidate_pool",
+      "group_description_bucket": "candidate pool shape: candidate_count_bucket, depth_distribution_bucket. no raw candidate lists.",
+      "group_index": 2,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0003",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "topk_pack_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "novel_vs_old_pool_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "rank_pack",
+      "group_description_bucket": "rank/pack depth-to-head: topk_pack_bucket, novel_vs_old_pool_bucket. no exact ranks.",
+      "group_index": 3,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0004",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "span_window_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "span_overlap_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "span_projection",
+      "group_description_bucket": "span projection: span_window_bucket, span_overlap_bucket. no raw spans/line ranges.",
+      "group_index": 4,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0005",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "scheduled_action_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "action_cost_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "scheduler_action",
+      "group_description_bucket": "scheduler action: scheduled_action_bucket, action_cost_bucket. no raw provider payloads.",
+      "group_index": 5,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0006",
+      "column_count": 6,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "path_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "line_range_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "content_sha_bucket",
+          "column_type_bucket": "opaque_hash_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "score_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "why_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "channels_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "evidence_core",
+      "group_description_bucket": "EvidenceCore aggregate buckets: path_bucket, line_range_bucket, content_sha_bucket, score_bucket, why_bucket, channels_bucket. all aggregate; no raw paths/line ranges/content_sha/scores/why/channels.",
+      "group_index": 6,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0007",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "arm_bucket",
+          "column_type_bucket": "categorical_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "budget_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "arm_assignment",
+      "group_description_bucket": "arm assignment: which arm was assigned (one of BM25_same_budget, RRF_same_budget, BEA_v0.3_frozen, V1_sched_span, V1_sched_span_rank).",
+      "group_index": 7,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0008",
+      "column_count": 3,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "citation_validity_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "file_recovery_topk_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "lost_baseline_top10_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "outcome_metric",
+      "group_description_bucket": "outcome metric aggregate buckets: citation_validity_bucket, file_recovery_topk_bucket, lost_baseline_top10_bucket.",
+      "group_index": 8,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_schema_group_id": "haaer0schema0009",
+      "column_count": 2,
+      "columns": [
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "full_guard_diffaware_loss_bucket",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        },
+        {
+          "aggregate_bucket_only_bool": true,
+          "column_bucket": "risk_bucket_signal",
+          "column_type_bucket": "ordinal_bucket",
+          "no_raw_release_bool": true,
+          "private_root_only_bool": true
+        }
+      ],
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "group_bucket": "safety_probe_signal",
+      "group_description_bucket": "safety-probe signal aggregate buckets: full_guard_diffaware_loss_bucket, risk_bucket_signal. carries forward the closed N10E safety-probe vocabulary as aggregate buckets only.",
+      "group_index": 9,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "no_candidate_generation_bool": true,
+      "no_raw_release_bool": true,
+      "no_replay_bool": true,
+      "no_retrieval_bool": true,
+      "no_scoring_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "private_root_only_bool": true,
+      "schema_preflight_bool": true
+    }
+  ]
+}
