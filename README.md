@@ -196,16 +196,24 @@ promotion, runtime/default, method-winner, CI-variant-execution, and network
 fields are `false`. N10EQ reads only public aggregate artifacts; no private
 diagnostic inputs are read.
 
-**BEA-v1-N10ER: Bounded Public CI Score/Guard Safety Probe** is the real
-bounded public CI execution phase after the N10EQ checkpoint `7963831`. The
-default (`enable_public_github_network=false`) emits a fail-closed artifact
-with no clone/build/search:
+**BEA-v1-N10ER: Bounded Public CI Score/Guard Safety Probe** has run as a real
+bounded public CI safety probe after the N10EQ checkpoint `7963831`:
 
 ```text
-status: n10er_safety_probe_unavailable_network_disabled
-self-test: 51 / 51
+status: n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized
+CI run: 28457213423
+self-test: 53 / 53
 forbidden scan: pass
-n10er_execution_authorized_bool: false (default off)
+public_task_count: 80
+scored_task_count: 60
+task_with_gold_count: 40
+baseline top10/top20/top50/top100: 37 / 39 / 40 / 40
+full novel-first:                 36 / 39 / 40 / 40 (lost baseline top10: 1)
+guarded top5:                     38 / 39 / 40 / 40 (lost baseline top10: 0)
+diffaware:                        37 / 39 / 40 / 40 (lost baseline top10: 1)
+risk bucket task_count: 26
+risk bucket full/guard/diffaware lost baseline: 0 / 0 / 0
+signal reproduced: false
 n10es_audit_authorized_bool: true (stop/go)
 next allowed phase: BEA-v1-N10ES Bounded Public CI Safety Probe Audit
 ```
@@ -227,12 +235,13 @@ published artifact includes `n10eq_source_lock_records`,
 `n10en_semantics_reused_verbatim_bool=true`,
 `n10en_private_task_ids_read_bool=false`, `frozen_rule_changed_bool=false`,
 `threshold_tuned_bool=false`, `public_artifact_aggregate_only_bool=true`),
-`sample_records`, `arm_aggregate_records`, `safety_feature_bucket_records`
-(7 features), `pass_fail_gate_records` (9 gates, all aggregate,
+`sample_records`, `arm_aggregate_records`, `safety_feature_bucket_records`,
+`safety_signal_aggregate_records`, `pass_fail_gate_records` (9 gates, all aggregate,
 `gate_uses_gold_for_policy_bool=false`), `claim_boundary_records`, and
-`stop_go_records` authorizing only N10ES audit. Outcome regression is a valid
-research result (exit 0); the workflow fails on contract/privacy/build/clone/
-minimums. It does not authorize N10ER re-run, threshold tuning, promotion,
+`stop_go_records` authorizing only N10ES audit. The safety signal did not
+reproduce on this held-out public CI sample: the risk bucket was large enough
+(`26`) but full/guard/diffaware all lost `0` baseline hits inside that bucket.
+This is a valid research negative, not CI failure. It does not authorize N10ER re-run, threshold tuning, promotion,
 runtime/default, method-winner, downstream/scaled retrieval, or CI variant
 execution.
 

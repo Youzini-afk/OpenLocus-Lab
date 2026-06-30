@@ -26,6 +26,22 @@ n10er_execution_authorized: false
 The safe default never touches the network, never mutates the repo, and never
 reads private diagnostic inputs.
 
+## CI result
+
+GitHub Actions run `28457213423` executed `canary_small_heldout` with public
+GitHub network explicitly enabled. Status is
+`n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`: the sample
+met minimums (`public_task_count=80`, `scored_task_count=60`,
+`task_with_gold_count=40`) and the heldout overlap check passed (`overlap_zero`),
+but the safety signal did not reproduce. The risk bucket was sufficient
+(`task_count=26`), yet full/guard/diffaware each lost `0` baseline top-10 hits
+inside the risk bucket and `guard_would_preserve_full_loss_count=0`.
+
+Arm aggregates: baseline `37/39/40/40`; full `36/39/40/40` with lost baseline
+top10 `1`; guard `38/39/40/40` with lost baseline top10 `0`; diffaware
+`37/39/40/40` with lost baseline top10 `1`. These arm aggregates are reported
+for context; the N10ER top-level status is based on the safety signal gate.
+
 ## N10EQ source lock
 
 ```text

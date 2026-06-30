@@ -1,9 +1,46 @@
 {
-  "arm_aggregate_records": [],
+  "arm_aggregate_records": [
+    {
+      "anonymous_arm_aggregate_id": "n10eragg0000",
+      "arm_bucket": "baseline",
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 37,
+      "top20_file_recovery_count": 39,
+      "top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_arm_aggregate_id": "n10eragg0001",
+      "arm_bucket": "full",
+      "lost_baseline_top10_hits": 1,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 36,
+      "top20_file_recovery_count": 39,
+      "top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_arm_aggregate_id": "n10eragg0002",
+      "arm_bucket": "guard",
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 38,
+      "top20_file_recovery_count": 39,
+      "top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_arm_aggregate_id": "n10eragg0003",
+      "arm_bucket": "diffaware",
+      "lost_baseline_top10_hits": 1,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 37,
+      "top20_file_recovery_count": 39,
+      "top50_file_recovery_count": 40
+    }
+  ],
   "citation_validity_aggregate_records": [
     {
-      "citation_total_count": 0,
-      "citation_valid_count": 0,
+      "citation_total_count": 7772,
+      "citation_valid_count": 7772,
       "citation_validity_all_implemented_bool": true
     }
   ],
@@ -19,8 +56,8 @@
       "manifest_listed_public_repos_only_bool": true,
       "method_winner_claim_bool": false,
       "n10er_contract_authorized_bool": true,
-      "n10er_execution_authorized_bool": false,
-      "network_run_bool": false,
+      "n10er_execution_authorized_bool": true,
+      "network_run_bool": true,
       "private_rows_read_bool": false,
       "production_retrieval_change_bool": false,
       "provider_model_network_bool": false,
@@ -35,12 +72,12 @@
       "run_phase_labels_used_bool": false,
       "runtime_default_change_bool": false,
       "scaled_retrieval_claim_bool": false,
-      "score_phase_labels_used_bool": false,
+      "score_phase_labels_used_bool": true,
       "selector_reranker_bool": false,
       "threshold_tuning_bool": false
     }
   ],
-  "enable_public_github_network_bool": false,
+  "enable_public_github_network_bool": true,
   "execution_boundary_records": [
     {
       "anonymous_execution_boundary_id": "n10erexec0000",
@@ -52,12 +89,12 @@
       "n10en_private_task_ids_read_bool": false,
       "n10en_semantics_reused_verbatim_bool": true,
       "n10er_contract_authorized_bool": true,
-      "n10er_execution_authorized_bool": false,
-      "private_candidates_read_after_freeze_bool": false,
-      "private_orders_read_after_freeze_bool": false,
-      "private_per_task_diagnostics_read_bool": false,
-      "private_retrieval_output_read_bool": false,
-      "private_score_phase_labels_read_after_freeze_bool": false,
+      "n10er_execution_authorized_bool": true,
+      "private_candidates_read_after_freeze_bool": true,
+      "private_orders_read_after_freeze_bool": true,
+      "private_per_task_diagnostics_read_bool": true,
+      "private_retrieval_output_read_bool": true,
+      "private_score_phase_labels_read_after_freeze_bool": true,
       "public_artifact_aggregate_only_bool": true,
       "raw_candidate_upload_bool": false,
       "raw_label_upload_bool": false,
@@ -81,11 +118,43 @@
     },
     {
       "anonymous_gate_id": "n10ergate0007",
-      "gate_bucket": "network_disabled_fail_closed",
+      "gate_bucket": "public_tasks_generated",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ergate0008",
+      "gate_bucket": "run_candidates_materialized",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ergate0009",
+      "gate_bucket": "citation_validity_all_implemented",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ergate0010",
+      "gate_bucket": "sample_minimums_met",
+      "gate_passed_bool": true,
+      "minimum_gold": 30,
+      "minimum_scored": 50
+    },
+    {
+      "anonymous_gate_id": "n10ergate0011",
+      "gate_bucket": "gold_not_used_for_policy",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ergate0012",
+      "gate_bucket": "run_score_separation",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ergate0013",
+      "gate_bucket": "n10en_overlap_private_check_zero",
       "gate_passed_bool": true
     }
   ],
-  "local_openlocus_search_run_bool": false,
+  "local_openlocus_search_run_bool": true,
   "n10eq_source_lock_records": [
     {
       "actual_status_bucket": "n10eq_score_guard_safety_probe_design_pass_n10er_contract_authorized",
@@ -123,49 +192,205 @@
       "threshold_tuning_authorized_bool": false
     }
   ],
-  "openlocus_cli_build_run_bool": false,
-  "pass_fail_gate_records": [],
+  "openlocus_cli_build_run_bool": true,
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "n10ergate0001",
+      "gate_bucket": "n10er_private_execution_inputs_aggregate_publication_only",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0002",
+      "gate_bucket": "n10er_displacement_risk_aggregate_only",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0003",
+      "gate_bucket": "n10er_no_threshold_tuning",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0004",
+      "gate_bucket": "n10er_no_method_winner_claim",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0005",
+      "gate_bucket": "n10er_no_runtime_default_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0006",
+      "gate_bucket": "risk_bucket_sufficiency_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false,
+      "risk_bucket_candidate_available_beyond_top10_count": 0,
+      "risk_bucket_full_lost_baseline_count": 0,
+      "risk_bucket_guard_lost_baseline_count": 0,
+      "risk_bucket_guard_would_preserve_full_loss_count": 0,
+      "risk_bucket_task_count": 26,
+      "risk_bucket_unclassified_count": 0
+    },
+    {
+      "anonymous_gate_id": "n10ergate0007",
+      "gate_bucket": "low_novelty_strong_baseline_signal_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0008",
+      "gate_bucket": "guard_reference_non_regression_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10ergate0009",
+      "gate_bucket": "displacement_mechanism_classification_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_gold_for_policy_bool": false
+    }
+  ],
   "phase_bucket": "BEA-v1-N10ER Bounded Public CI Score/Guard Safety Probe",
-  "public_github_clone_fetch_run_bool": false,
+  "public_github_clone_fetch_run_bool": true,
   "run_phase_records": [
     {
       "anonymous_run_phase_id": "n10errun0000",
-      "bm25_candidate_total": 0,
-      "candidate_count": 0,
-      "clone_run_bool": false,
+      "bm25_candidate_total": 1943,
+      "candidate_count": 1943,
+      "clone_run_bool": true,
       "gold_used_for_policy_bool": false,
-      "old_pool_file_total": 0,
-      "public_task_count": 0,
-      "repo_count": 0,
+      "old_pool_file_total": 308,
+      "public_task_count": 80,
+      "repo_count": 2,
       "run_phase_labels_used_bool": false,
-      "score_phase_labels_used_bool": false,
-      "search_run_bool": false,
-      "task_with_candidates_count": 0
+      "score_phase_labels_used_bool": true,
+      "search_run_bool": true,
+      "task_with_candidates_count": 60
     }
   ],
-  "safety_feature_bucket_records": [],
+  "safety_feature_bucket_records": [
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0000",
+      "bucket_counts": {
+        "top5_novel_candidate_item_count_0_to_2": 34,
+        "top5_novel_candidate_item_count_3": 5,
+        "top5_novel_candidate_item_count_4_to_5": 21
+      },
+      "feature_bucket": "top5_novel_candidate_item_count_bucket"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0001",
+      "bucket_counts": {
+        "no_baseline_hit": 23,
+        "strong_prefix_le_5": 35,
+        "weak_prefix_gt_5": 2
+      },
+      "feature_bucket": "baseline_prefix_strength"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0002",
+      "bucket_counts": {
+        "baseline_hit_proxy": 37,
+        "baseline_miss_proxy": 23
+      },
+      "feature_bucket": "baseline_gold_proxy"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0003",
+      "bucket_counts": {
+        "low_novelty_strong_prefix_displacement_risk": 0,
+        "other_no_displacement_risk": 60
+      },
+      "feature_bucket": "full_displacement_risk"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0004",
+      "bucket_counts": {
+        "guard_lost_or_no_baseline": 23,
+        "guard_preserved_baseline": 37
+      },
+      "feature_bucket": "guard_preservation_ref"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0005",
+      "bucket_counts": {
+        "candidate_available_beyond_top10": 1,
+        "candidate_missing_or_within_top10": 59
+      },
+      "feature_bucket": "candidate_available_beyond_top10"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10erfeat0006",
+      "bucket_counts": {
+        "full_novel_first": 39,
+        "guarded_top5_novel_distinct": 21
+      },
+      "feature_bucket": "arm_selection"
+    }
+  ],
+  "safety_signal_aggregate_records": [
+    {
+      "anonymous_safety_signal_id": "n10ersignal0000",
+      "baseline_top10_count": 26,
+      "candidate_available_beyond_top10_count": 0,
+      "diffaware_lost_baseline_count": 0,
+      "diffaware_top10_count": 26,
+      "full_lost_baseline_count": 0,
+      "full_top10_count": 26,
+      "full_would_preserve_guard_loss_count": 0,
+      "guard_lost_baseline_count": 0,
+      "guard_top10_count": 26,
+      "guard_would_preserve_full_loss_count": 0,
+      "task_count": 26,
+      "unclassified_count": 0
+    }
+  ],
   "sample_records": [
     {
       "anonymous_sample_id": "n10ersample0000",
-      "heldout_from_n10en_private_check_bool": false,
+      "heldout_from_n10en_private_check_bool": true,
       "manifest_listed_public_repos_only_bool": true,
       "minimum_gold": 30,
       "minimum_scored": 50,
-      "minimums_met_bool": false,
+      "minimums_met_bool": true,
       "n10en_overlap_count": 0,
-      "n10en_overlap_public_bucket": "not_checked_network_disabled",
-      "n10en_reference_repo_private_check_performed_bool": false,
-      "public_task_count": 0,
-      "repo_count": 0,
-      "scored_task_count": 0,
+      "n10en_overlap_public_bucket": "overlap_zero",
+      "n10en_reference_repo_private_check_performed_bool": true,
+      "public_task_count": 80,
+      "repo_count": 2,
+      "scored_task_count": 60,
       "stage_bucket": "canary_small_heldout",
       "target_tasks": 80,
-      "task_with_candidates_count": 0,
-      "task_with_gold_count": 0
+      "task_with_candidates_count": 60,
+      "task_with_gold_count": 40
     }
   ],
   "schema_version": "bea_v1_n10er_bounded_public_ci_score_guard_safety_probe_v1",
-  "status": "n10er_safety_probe_unavailable_network_disabled",
+  "score_phase_records": [
+    {
+      "anonymous_score_phase_id": "n10erscore0000",
+      "baseline_top10_task_count": 37,
+      "gold_used_for_policy_bool": false,
+      "score_phase_labels_used_bool": true,
+      "scored_task_count": 60,
+      "task_with_gold_count": 40
+    }
+  ],
+  "status": "n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized",
   "stop_go_records": [
     {
       "aggregate_buckets_only_bool": true,

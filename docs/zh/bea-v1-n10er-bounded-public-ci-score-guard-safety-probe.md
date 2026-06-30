@@ -25,6 +25,21 @@ n10er_execution_authorized: false
 
 安全默认不触碰网络，不改动 repo，不读取 private diagnostic inputs。
 
+## CI 结果
+
+GitHub Actions run `28457213423` 执行了显式启用 public GitHub network 的
+`canary_small_heldout`。状态为
+`n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`：样本满足
+minimums（`public_task_count=80`、`scored_task_count=60`、`task_with_gold_count=40`），
+heldout overlap check 通过（`overlap_zero`），但 safety signal 未复现。risk bucket
+足够大（`task_count=26`），但在该 bucket 内 full/guard/diffaware 都丢失 `0` 个
+baseline top-10 hits，`guard_would_preserve_full_loss_count=0`。
+
+Arm aggregates：baseline `37/39/40/40`；full `36/39/40/40`，lost baseline top10
+`1`；guard `38/39/40/40`，lost baseline top10 `0`；diffaware `37/39/40/40`，lost
+baseline top10 `1`。这些 arm aggregates 只是上下文；N10ER top-level status 由
+safety signal gate 决定。
+
 ## N10EQ source lock
 
 ```text
