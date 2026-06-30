@@ -215,6 +215,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10dor-corrected-candidate-pool-absence-source-audit.md`: [en](en/bea-v1-n10dor-corrected-candidate-pool-absence-source-audit.md) · [zh](zh/bea-v1-n10dor-corrected-candidate-pool-absence-source-audit.md)
 - `bea-v1-n10dp-oracle-candidate-insertion-ceiling-smoke.md`: [en](en/bea-v1-n10dp-oracle-candidate-insertion-ceiling-smoke.md) · [zh](zh/bea-v1-n10dp-oracle-candidate-insertion-ceiling-smoke.md)
 - `bea-v1-n10dq-oracle-candidate-ceiling-public-package.md`: [en](en/bea-v1-n10dq-oracle-candidate-ceiling-public-package.md) · [zh](zh/bea-v1-n10dq-oracle-candidate-ceiling-public-package.md)
+- `bea-v1-n10dr-real-candidate-source-canary.md`: [en](en/bea-v1-n10dr-real-candidate-source-canary.md) · [zh](zh/bea-v1-n10dr-real-candidate-source-canary.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)

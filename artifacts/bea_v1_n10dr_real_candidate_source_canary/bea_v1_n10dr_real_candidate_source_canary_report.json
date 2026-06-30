@@ -1,0 +1,232 @@
+{
+  "canary_sample_selection_records": [
+    {
+      "anonymous_sample_id": "n10drsample0000",
+      "moderate_pool_target_count": 10,
+      "random_sampling_used_bool": false,
+      "rich_wrong_pool_target_count": 10,
+      "sample_strategy_bucket": "deterministic_stratified_absent_pool_residuals",
+      "sampled_case_count": 30,
+      "target_case_count": 30,
+      "tiny_pool_target_count": 10
+    }
+  ],
+  "candidate_count_bucket_records": [
+    {
+      "candidate_count_bucket": "thirty_one_to_fifty",
+      "case_count": 20
+    },
+    {
+      "candidate_count_bucket": "zero",
+      "case_count": 10
+    }
+  ],
+  "candidate_source_result_records": [
+    {
+      "anonymous_result_id": "n10drresult0000",
+      "executed_case_count": 30,
+      "full_denominator_improvement_claim_bool": false,
+      "gold_file_recovered_top10_count": 0,
+      "gold_file_recovered_top20_count": 0,
+      "gold_file_recovered_top50_count": 0,
+      "n10t_anchor_top10_file_hit_count": 44,
+      "sampled_case_count": 30
+    }
+  ],
+  "error_bucket_records": [
+    {
+      "case_count": 20,
+      "error_bucket": "none"
+    },
+    {
+      "case_count": 2,
+      "error_bucket": "nonzero_exit"
+    },
+    {
+      "case_count": 8,
+      "error_bucket": "zero_candidates_returned"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10drgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10drgate0001",
+      "gate_bucket": "local_prerequisites_available",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10drgate0002",
+      "gate_bucket": "executed_at_least_twenty_cases",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10drgate0003",
+      "gate_bucket": "topk_lte_50",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10drgate0004",
+      "gate_bucket": "no_forbidden_execution",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "oracle_candidate_ceiling_public_package_complete_n10dr_authorized",
+      "anonymous_input_artifact_id": "n10drinput0000",
+      "artifact_bucket": "n10dq_oracle_ceiling_package",
+      "expected_status_bucket": "oracle_candidate_ceiling_public_package_complete_n10dr_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "corrected_candidate_pool_absence_source_audit_complete_n10dp_authorized",
+      "anonymous_input_artifact_id": "n10drinput0001",
+      "artifact_bucket": "n10dor_corrected_absence_audit",
+      "expected_status_bucket": "corrected_candidate_pool_absence_source_audit_complete_n10dp_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "latency_bucket_records": [
+    {
+      "case_count": 12,
+      "latency_bucket": "1500_4999ms"
+    },
+    {
+      "case_count": 5,
+      "latency_bucket": "500_1499ms"
+    },
+    {
+      "case_count": 2,
+      "latency_bucket": "ge_5000ms"
+    },
+    {
+      "case_count": 11,
+      "latency_bucket": "lt_500ms"
+    }
+  ],
+  "local_prerequisite_records": [
+    {
+      "anonymous_prerequisite_id": "n10drpre0000",
+      "local_prerequisites_available_bool": true,
+      "local_repo_root_available_bool": true,
+      "openlocus_binary_available_bool": true,
+      "private_output_root_ignored_bool": true,
+      "private_reconstruction_available_bool": true,
+      "scoped_private_rows_available_bool": true
+    }
+  ],
+  "n10ds_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10drhandoff0000",
+      "n10ds_public_package_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DS Real Candidate-Source Canary Audit Package",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10drforbid0000",
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "git_clone_count": 0,
+      "network_execution_count": 0,
+      "p5_v1a_execution_count": 0,
+      "provider_call_count": 0,
+      "retrieval_rerun_outside_local_canary_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DR Real Candidate-Source Canary",
+  "pool_richness_recovery_records": [
+    {
+      "anonymous_pool_bucket_id": "n10drpool0000",
+      "executed_case_count": 10,
+      "gold_file_recovered_top50_count": 0,
+      "pool_richness_bucket": "moderate_pool_absence",
+      "sampled_case_count": 10
+    },
+    {
+      "anonymous_pool_bucket_id": "n10drpool0001",
+      "executed_case_count": 10,
+      "gold_file_recovered_top50_count": 0,
+      "pool_richness_bucket": "rich_wrong_pool_absence",
+      "sampled_case_count": 10
+    },
+    {
+      "anonymous_pool_bucket_id": "n10drpool0002",
+      "executed_case_count": 10,
+      "gold_file_recovered_top50_count": 0,
+      "pool_richness_bucket": "tiny_pool_absence",
+      "sampled_case_count": 10
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10drprivacy0000",
+      "public_candidate_lists_bool": false,
+      "public_exact_ranks_bool": false,
+      "public_gold_labels_bool": false,
+      "public_paths_or_filenames_bool": false,
+      "public_snippets_or_content_bool": false,
+      "public_spans_or_lines_bool": false
+    }
+  ],
+  "private_execution_summary_records": [
+    {
+      "anonymous_execution_summary_id": "n10drexec0000",
+      "executed_case_count": 30,
+      "local_repo_available_count": 30,
+      "private_output_file_count_bucket": "three_private_outputs",
+      "private_output_rows_written_bucket": "one_to_thirty",
+      "private_span_rows_read": 213,
+      "retrieval_command_success_count": 28,
+      "sampled_case_count": 30
+    }
+  ],
+  "retrieval_command_boundary_records": [
+    {
+      "anonymous_command_boundary_id": "n10drcmd0000",
+      "command_bucket": "openlocus_retrieve_regex_bm25_symbol_max_results_50_json",
+      "existing_clone_repo_cwd_bool": true,
+      "git_clone_bool": false,
+      "local_cli_only_bool": true,
+      "network_execution_bool": false,
+      "provider_call_bool": false,
+      "selector_reranker_bool": false,
+      "topk_limit": 50,
+      "topk_within_contract_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10dr_real_candidate_source_canary_v1",
+  "status": "real_candidate_source_canary_complete_no_recovery",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10drstop0000",
+      "candidate_generation_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DS Real Candidate-Source Canary Audit Package",
+      "p5_v1a_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
