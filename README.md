@@ -32,7 +32,7 @@ The latest closed phase is **BEA-v1-N10EM: Difference-Aware Winner Public Replic
 
 ```text
 status: difference_aware_winner_public_replication_package_complete_n10en_authorized
-self-test: 6 / 6
+self-test: 8 / 8
 forbidden scan: pass
 N10EK winner top10/top20/top50/top100: 13 / 16 / 20 / 26
 N10EL audit top10/top20/top50/top100: 13 / 16 / 20 / 26
@@ -47,7 +47,11 @@ N10EM packages the N10EK/N10EL public chain: the fixed difference-aware rule
 (`top5_novel_candidate_item_count >= 4` selects guarded, otherwise full) reached
 `13/16/20/26`, and the independent audit reproduced the exact same counts with
 zero lost baseline top10 hits. The only authorized next step is broader-sample / CI
-validation canary; no runtime/default or method/downstream claim is authorized.
+validation canary. N10EM itself remains public-only/no-execution, while its handoff
+explicitly authorizes N10EN-only bounded public CI clone/build/search, temporary
+candidate materialization, score-phase labels, and sanitized aggregate upload. No
+runtime/default, production retrieval change, provider network, method/downstream,
+or heldout/generalization claim is authorized.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40

@@ -59,6 +59,38 @@
       "status_match_bool": true
     }
   ],
+  "n10en_ci_handoff_records": [
+    {
+      "anonymous_n10en_handoff_id": "n10emhandoff0000",
+      "downstream_value_claim_authorized_bool": false,
+      "external_benchmark_download_authorized_bool": false,
+      "github_ci_allowed_for_long_run_bool": true,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10en_broader_sample_ci_validation_authorized_bool": true,
+      "n10en_local_openlocus_search_authorized_bool": true,
+      "n10en_manifest_listed_public_repos_only_bool": true,
+      "n10en_openlocus_cli_build_authorized_bool": true,
+      "n10en_private_rows_authorized_bool": false,
+      "n10en_public_github_clone_fetch_authorized_bool": true,
+      "n10en_raw_candidate_upload_authorized_bool": false,
+      "n10en_raw_label_upload_authorized_bool": false,
+      "n10en_raw_path_upload_authorized_bool": false,
+      "n10en_raw_query_upload_authorized_bool": false,
+      "n10en_sanitized_aggregate_artifact_upload_authorized_bool": true,
+      "n10en_score_phase_label_generation_authorized_bool": true,
+      "n10en_temporary_public_candidate_materialization_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10EN Difference-Aware Winner Broader-Sample CI Validation Canary",
+      "private_github_asset_authorized_bool": false,
+      "production_retrieval_change_authorized_bool": false,
+      "provider_model_network_authorized_bool": false,
+      "quiver_dense_real_authorized_bool": false,
+      "remote_embedding_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
   "phase_bucket": "BEA-v1-N10EM Difference-Aware Winner Public Replication Package",
   "policy_boundary_records": [
     {
@@ -93,21 +125,17 @@
   "stop_go_records": [
     {
       "anonymous_stop_go_id": "n10emstop0000",
-      "candidate_generation_authorized_bool": false,
       "downstream_value_claim_authorized_bool": false,
-      "github_ci_allowed_for_long_run_bool": true,
       "heldout_generalization_authorized_bool": false,
       "method_winner_claim_authorized_bool": false,
       "n10en_broader_sample_ci_validation_authorized_bool": true,
-      "network_authorized_bool": false,
-      "new_retrieval_authorized_bool": false,
-      "next_allowed_phase_bucket": "BEA-v1-N10EN Broader-Sample CI Validation Canary",
-      "openlocus_binary_authorized_bool": false,
-      "private_read_authorized_bool": true,
-      "private_read_scope_bucket": "bounded_rows_required_by_n10en_only",
+      "n10en_ci_handoff_record_present_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10EN Difference-Aware Winner Broader-Sample CI Validation Canary",
+      "openlocus_runtime_or_default_execution_authorized_bool": false,
+      "production_retrieval_change_authorized_bool": false,
       "runtime_default_authorized_bool": false,
-      "scaled_retrieval_authorized_bool": false,
-      "selector_reranker_authorized_bool": false
+      "selector_reranker_authorized_bool": false,
+      "unbounded_or_provider_network_authorized_bool": false
     }
   ]
 }

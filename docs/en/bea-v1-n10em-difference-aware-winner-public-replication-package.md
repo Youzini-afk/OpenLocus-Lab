@@ -8,7 +8,7 @@ BEA-v1-N10EM packages the public N10EK/N10EL chain. It reads only public artifac
 
 ```text
 status: difference_aware_winner_public_replication_package_complete_n10en_authorized
-self-test: 6 / 6
+self-test: 8 / 8
 forbidden scan: pass
 N10EK winner top10/top20/top50/top100: 13 / 16 / 20 / 26
 N10EL audit top10/top20/top50/top100: 13 / 16 / 20 / 26
@@ -31,7 +31,11 @@ N10EM confirms that the same-source N10EK experiment and N10EL independent audit
 
 ## Handoff
 
-N10EM authorizes only N10EN broader-sample / CI validation canary. Long-running validation may use GitHub Actions. N10EM does not authorize new/scaled retrieval, OpenLocus binary execution, candidate generation, network expansion, runtime/default changes, selector/reranker execution, method-winner claims, downstream claims, or heldout/generalization claims.
+N10EM itself remains a public-only package and performs no private reads, recompute, retrieval, OpenLocus execution, network access, or candidate generation.
+
+Its handoff authorizes only N10EN bounded CI-validation actions: manual GitHub Actions canary over manifest-listed public repositories, public GitHub clone/fetch, local OpenLocus CLI build, local OpenLocus search against cloned public repos, temporary public candidate materialization in runner temp space, score-phase label generation after RUN outputs are fixed, and upload of a sanitized aggregate-only report.
+
+This does not authorize provider/model network calls, remote embeddings, private assets, external benchmark downloads, raw candidate/label/query/path upload, runtime/default changes, selector/reranker execution, method-winner claims, downstream claims, heldout/generalization claims, scaled retrieval claims, or production retrieval changes.
 
 ## Artifact
 
