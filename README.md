@@ -28,20 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CR: Mechanism-Guided Local Saturation Sweep**:
+The latest closed phase is **BEA-v1-N10CS: Local Saturation Sweep Public Package**:
 
 ```text
-status: mechanism_guided_local_saturation_sweep_complete_n10cs_authorized
-self-test: 14 / 14
+status: local_saturation_package_complete_n10ct_authorized
+self-test: 12 / 12
 forbidden scan: pass
-private span rows read: 213
-variants evaluated: 8
 refined anchor: 25 / 31 at 3200 / 6200
 pm200 all-spans: 25 / 30 at 4000 / 8000
-best variant: top2_pm300_short75_225
-best result: 26 / 32 at 3600 / 6600
+positive variant: top2_pm300_short75_225, 26 / 32 at 3600 / 6600
 overall local saturation: false
-next allowed phase: BEA-v1-N10CS Local Saturation Sweep Public Package
+private reads in N10CS: 0
+next allowed phase: BEA-v1-N10CT Exploration Around top2_pm300_short75_225
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -861,6 +859,12 @@ or adding candidates. Local span-window repair is therefore not saturated yet,
 although the largest remaining blocker is still rank/file reach (`file_not_in_top10`
 remains 167). N10CR authorizes only N10CS public package.
 
+N10CS packages N10CR publicly without private reads or recompute. It confirms the
+positive local result, `local_window_not_saturated`, residual same-file/no-span
+overlap reduced from 9 to 8, and no rank/file pivot authorization from N10CR. It
+authorizes only N10CT exploration around `top2_pm300_short75_225` under a future
+oracle-scoped contract.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1530,6 +1534,11 @@ See the current report index:
   enablement, existing evaluator hook-in, heldout/generalization claims,
   retrieval/rerun, candidate generation/add/remove/reorder, rank/file promotion,
   adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N10CS authorizes only N10CT exploration around `top2_pm300_short75_225`. It does
+  not authorize runtime/default enablement, existing evaluator hook-in,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, rank/file promotion, adaptive tuning, P5, BEA-v1-A, method-winner
+  claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2050,6 +2059,10 @@ eval/bea_v1_n10cq_refined_hybrid_mechanism_decomposition.py
 eval/bea_v1_n10cr_mechanism_guided_local_saturation_sweep.py
   Mechanism-guided local saturation sweep; finds `top2_pm300_short75_225` reaches
   26/32 and authorizes only N10CS public package.
+
+eval/bea_v1_n10cs_local_saturation_package.py
+  Public package of the N10CR local saturation result; authorizes only N10CT
+  exploration around top2 pm300.
 ```
 
 Key reports:
@@ -2153,6 +2166,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json`](artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json)
 - [`artifacts/bea_v1_n10cq_refined_hybrid_mechanism_decomposition/bea_v1_n10cq_refined_hybrid_mechanism_decomposition_report.json`](artifacts/bea_v1_n10cq_refined_hybrid_mechanism_decomposition/bea_v1_n10cq_refined_hybrid_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10cr_mechanism_guided_local_saturation_sweep/bea_v1_n10cr_mechanism_guided_local_saturation_sweep_report.json`](artifacts/bea_v1_n10cr_mechanism_guided_local_saturation_sweep/bea_v1_n10cr_mechanism_guided_local_saturation_sweep_report.json)
+- [`artifacts/bea_v1_n10cs_local_saturation_package/bea_v1_n10cs_local_saturation_package_report.json`](artifacts/bea_v1_n10cs_local_saturation_package/bea_v1_n10cs_local_saturation_package_report.json)
 
 Documentation mirror check:
 

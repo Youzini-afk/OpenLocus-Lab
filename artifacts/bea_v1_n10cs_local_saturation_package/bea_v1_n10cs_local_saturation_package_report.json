@@ -1,0 +1,223 @@
+{
+  "boundary_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_boundary_id": "n10csboundary0000",
+      "boundary_bucket": "public_package_no_broad_claims",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "existing_evaluator_hook_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "privacy_boundary_complete_bool": true,
+      "private_read_count": 0,
+      "rank_file_promotion_authorized_bool": false,
+      "recompute_count": 0,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "claim_level": "public_local_saturation_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "n10cr_package_facts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_claim_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-30T00:10:47Z",
+  "generated_by": "bea_v1_n10cs_local_saturation_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10csin0000",
+      "expected_status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cr_local_saturation_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10csin0001",
+      "expected_status": "refined_hybrid_mechanism_decomposition_complete_n10cr_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cq_mechanism_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "refined_hybrid_mechanism_decomposition_complete_n10cr_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10csin0002",
+      "expected_status": "refined_hybrid_adapter_package_complete_n10cq_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cp_refined_adapter_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "refined_hybrid_adapter_package_complete_n10cq_authorized"
+    }
+  ],
+  "local_saturation_package_records": [
+    {
+      "anonymous_local_saturation_package_id": "n10cspackage0000",
+      "fixed_variant_count": 8,
+      "n10cr_status_complete_bool": true,
+      "package_bucket": "n10cr_local_saturation_sweep_public_package",
+      "package_consistent_bool": true,
+      "pm200_all_spans_cost_proxy_top10": 4000,
+      "pm200_all_spans_cost_proxy_top20": 8000,
+      "pm200_all_spans_top10_span_overlap_count": 25,
+      "pm200_all_spans_top20_span_overlap_count": 30,
+      "refined_anchor_cost_proxy_top10": 3200,
+      "refined_anchor_cost_proxy_top20": 6200,
+      "refined_anchor_top10_span_overlap_count": 25,
+      "refined_anchor_top20_span_overlap_count": 31
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10ct_handoff_records": [
+    {
+      "adapter_smoke_or_bounded_pm300_neighborhood_allowed_bool": true,
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10ct_handoff_id": "n10cshandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "existing_evaluator_hook_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10ct_authorized_bool": true,
+      "n10ct_handoff_bucket": "n10ct_next_exploration_authorized",
+      "next_exploration_bucket": "around_top2_pm300_short75_225",
+      "p5_v1a_authorized_bool": false,
+      "rank_file_promotion_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10csnorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "private_read_count": 0,
+      "rank_file_promotion_count": 0,
+      "recompute_count": 0,
+      "runtime_default_promotion_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CS Local Saturation Sweep Public Package",
+  "positive_result_package_records": [
+    {
+      "anonymous_positive_result_id": "n10cspositive0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3600,
+      "cost_proxy_top20": 6600,
+      "delta_top10_vs_refined": 1,
+      "delta_top20_vs_refined": 1,
+      "lost_refined_top10_hits": 0,
+      "positive_result_bucket": "top2_pm300_short75_225_local_window_positive",
+      "positive_result_verified_bool": true,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "top2_pm300_short75_225"
+    },
+    {
+      "anonymous_positive_result_id": "n10cssaturation0000",
+      "max_top10_span_overlap_count": 26,
+      "max_top20_span_overlap_count": 32,
+      "overall_saturation_bool": false,
+      "positive_result_bucket": "saturation_decision",
+      "rank_file_reach_pivot_allowed_next_bool": false,
+      "saturation_bucket": "local_window_not_saturated"
+    }
+  ],
+  "residual_package_records": [
+    {
+      "anonymous_residual_package_id": "n10csresidual0000",
+      "file_not_in_top10_remaining_count": 167,
+      "file_not_in_top10_remains_primary_bool": true,
+      "residual_bucket": "positive_variant_residuals",
+      "same_file_no_span_overlap_reduced_from_refined_count": 1,
+      "same_file_no_span_overlap_remaining_count": 8,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "variant_bucket": "top2_pm300_short75_225"
+    }
+  ],
+  "schema_version": "bea_v1_n10cs_local_saturation_package.v1",
+  "self_test_checks_passed": 12,
+  "self_test_checks_total": 12,
+  "self_test_passed": true,
+  "status": "local_saturation_package_complete_n10ct_authorized",
+  "status_vocabulary": [
+    "local_saturation_package_complete_n10ct_authorized",
+    "no_go_n10cs_required_public_inputs_unavailable",
+    "no_go_n10cs_n10cr_chain_mismatch",
+    "no_go_n10cs_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10ct_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10ct_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CT Exploration Around top2_pm300_short75_225",
+      "next_allowed_scope_bucket": "adapter_smoke_or_bounded_pm300_neighborhood_oracle_scoped",
+      "p5_authorized": false,
+      "rank_file_promotion_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}
