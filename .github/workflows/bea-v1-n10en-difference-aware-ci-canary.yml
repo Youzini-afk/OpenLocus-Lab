@@ -1,0 +1,99 @@
+name: bea-v1-n10en-difference-aware-ci-canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_public_github_network:
+        description: 'Allow manifest-listed public GitHub clone/fetch + local OpenLocus search (fail-closed default off)'
+        required: false
+        default: false
+        type: boolean
+      stage:
+        description: 'Canary stage (repo/task caps)'
+        required: false
+        default: 'canary_small'
+        type: choice
+        options:
+          - canary_small
+          - canary_medium
+      max_repos:
+        description: 'Optional repo cap override (empty uses stage default)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-n10en-difference-aware-ci-canary-${{ github.ref }}-${{ inputs.stage }}
+  cancel-in-progress: false
+
+jobs:
+  n10en-canary:
+    name: ${{ inputs.stage }} (network=${{ inputs.enable_public_github_network }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: N10EM handoff gate
+        id: gate
+        run: |
+          python3 eval/bea_v1_n10en_difference_aware_ci_canary.py \
+            --gate-only \
+            --out "$RUNNER_TEMP/n10en_gate.json"
+
+      - name: Resolve network flag
+        id: flags
+        run: |
+          if [[ "${{ inputs.enable_public_github_network }}" == "true" ]]; then
+            echo "network=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "network=0" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ -n "${{ inputs.max_repos }}" ]]; then
+            echo "max_repos=${{ inputs.max_repos }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build OpenLocus CLI
+        if: ${{ steps.flags.outputs.network == '1' }}
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: Run N10EN difference-aware CI canary
+        run: |
+          mkdir -p artifacts/bea_v1_n10en_difference_aware_ci_canary
+          out="artifacts/bea_v1_n10en_difference_aware_ci_canary/bea_v1_n10en_difference_aware_ci_canary_report.json"
+          args=(eval/bea_v1_n10en_difference_aware_ci_canary.py --out "$out" --stage "${{ inputs.stage }}")
+          if [[ "${{ steps.flags.outputs.network }}" == "1" ]]; then
+            args+=(--enable-public-github-network --openlocus target/release/openlocus --work-root "$RUNNER_TEMP/n10en-ci-canary-work")
+            if [[ -n "${{ steps.flags.outputs.max_repos }}" ]]; then
+              args+=(--max-repos "${{ steps.flags.outputs.max_repos }}")
+            fi
+          fi
+          python3 "${args[@]}"
+        env:
+          OPENLOCUS_CI_QUERY_TIMEOUT_SECONDS: '30'
+
+      - name: Validate N10EN contract / privacy scan
+        run: |
+          python3 eval/bea_v1_n10en_difference_aware_ci_canary.py \
+            --validate-report \
+            --report artifacts/bea_v1_n10en_difference_aware_ci_canary/bea_v1_n10en_difference_aware_ci_canary_report.json
+
+      - name: Upload sanitized aggregate artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-n10en-difference-aware-ci-canary-${{ inputs.stage }}
+          path: |
+            artifacts/bea_v1_n10en_difference_aware_ci_canary/bea_v1_n10en_difference_aware_ci_canary_report.json
+          retention-days: 7
+          if-no-files-found: error

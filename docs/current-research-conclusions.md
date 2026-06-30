@@ -237,6 +237,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10ek-fixed-difference-aware-combination-experiment.md`: [en](en/bea-v1-n10ek-fixed-difference-aware-combination-experiment.md) · [zh](zh/bea-v1-n10ek-fixed-difference-aware-combination-experiment.md)
 - `bea-v1-n10el-difference-aware-winner-audit-recompute.md`: [en](en/bea-v1-n10el-difference-aware-winner-audit-recompute.md) · [zh](zh/bea-v1-n10el-difference-aware-winner-audit-recompute.md)
 - `bea-v1-n10em-difference-aware-winner-public-replication-package.md`: [en](en/bea-v1-n10em-difference-aware-winner-public-replication-package.md) · [zh](zh/bea-v1-n10em-difference-aware-winner-public-replication-package.md)
+- `bea-v1-n10en-difference-aware-ci-canary.md`: [en](en/bea-v1-n10en-difference-aware-ci-canary.md) · [zh](zh/bea-v1-n10en-difference-aware-ci-canary.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
