@@ -19,7 +19,7 @@ abstain / request more context. Candidate is not fact.
 
 ## Current research status
 
-Status date: **2026-06-28**.
+Status date: **2026-06-30**.
 
 OpenLocus is now in the **BEA v1 actionability / retrieval-action scheduling**
 line. The current question is no longer “which retrieval channel is globally
@@ -28,26 +28,27 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EC: Normalized-BM25 Depth-to-Head Integration Audit Package**:
+The latest closed phase is **BEA-v1-N10ED: Novel-First Depth-to-Head Mechanism Analysis**:
 
 ```text
-status: normalized_bm25_depth_to_head_integration_audit_package_complete_n10ed_authorized
-self-test: 8 / 8
+status: normalized_bm25_depth_to_head_mechanism_analysis_complete_n10ee_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private reads: 0
-retrieval executions: 0
-recomputes: 0
-packaged baseline top10/top20/top50/top100: 5 / 11 / 17 / 26
-packaged best top10: 11
-success variants: 3
-next allowed phase: BEA-v1-N10ED Novel-First Depth-to-Head Mechanism Analysis
+case count: 60
+baseline BM25 top10/top20/top50/top100: 5 / 11 / 17 / 26
+novel-first top10/top20/top50/top100: 11 / 16 / 20 / 26
+new top10 recovered vs baseline: 6
+lost baseline top10: 0
+remaining top10 miss: 49
+next allowed phase: BEA-v1-N10EE Normalized-BM25 Novel-Guard Fixed Repacking Experiment
 ```
 
-N10EC packages N10EB without private reads or recompute. The key signal remains:
-repacking the existing normalized-BM25 top100 rows by putting files not already
-present in the old N1 pool first raises top10 recovery from 5/60 to 11/60, with
-three success variants and no lost baseline top10 hits. N10ED is authorized only
-to explain the mechanism and choose the next fixed experiment.
+N10ED explains the N10EB signal. All 6 newly recovered top10 cases are targets
+that were novel relative to the old N1 pool: 1 came from ranks 11-20, 2 from
+21-50, and 3 from 51-100. The remaining 49 misses include 34 targets absent from
+top100 and 15 present-but-still-below-top10 targets crowded behind many other
+novel files. N10EE is therefore a fixed guarded-novel experiment, not new
+retrieval or runtime/default work.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2504,6 +2505,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json`](artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json)
 - [`artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json`](artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json)
 - [`artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json`](artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json)
+- [`artifacts/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_report.json`](artifacts/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_report.json)
 
 Documentation mirror check:
 

@@ -1,0 +1,573 @@
+{
+  "chain_accounting_records": [
+    {
+      "anonymous_chain_accounting_id": "n10edchain0000",
+      "baseline_top100_count": 26,
+      "baseline_top10_count": 5,
+      "baseline_top20_count": 11,
+      "baseline_top50_count": 17,
+      "chain_accounting_passed_bool": true,
+      "lost_baseline_top10_count": 0,
+      "new_top10_recovered_vs_baseline_count": 6,
+      "novel_first_top100_count": 26,
+      "novel_first_top10_count": 11,
+      "novel_first_top20_count": 16,
+      "novel_first_top50_count": 20,
+      "remaining_top10_miss_count": 49
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10edgate0000",
+      "gate_bucket": "n10ec_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0001",
+      "gate_bucket": "private_n10dz_rows_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0002",
+      "gate_bucket": "case_count_eq_60",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0003",
+      "gate_bucket": "baseline_counts_match_n10eb",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0004",
+      "gate_bucket": "novel_first_counts_match_n10eb",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0005",
+      "gate_bucket": "new_recovered_count_eq_6",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0006",
+      "gate_bucket": "lost_baseline_top10_eq_0",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0007",
+      "gate_bucket": "remaining_miss_count_eq_49",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0008",
+      "gate_bucket": "candidate_pool_unchanged",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0009",
+      "gate_bucket": "no_new_retrieval",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10edgate0010",
+      "gate_bucket": "recommendation_contract_valid",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_depth_to_head_integration_audit_package_complete_n10ed_authorized",
+      "anonymous_input_artifact_id": "n10edinput0000",
+      "artifact_bucket": "n10ec_public_package",
+      "expected_status_bucket": "normalized_bm25_depth_to_head_integration_audit_package_complete_n10ed_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized",
+      "anonymous_input_artifact_id": "n10edinput0001",
+      "artifact_bucket": "n10eb_depth_to_head_smoke",
+      "expected_status_bucket": "normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "mechanism_summary_records": [
+    {
+      "anonymous_mechanism_summary_id": "n10edsummary0000",
+      "candidate_pool_changed_bool": false,
+      "dominant_recovery_mechanism_bucket": "novel_target_promoted_from_depth",
+      "dominant_remaining_blocker_bucket": "target_absent_from_top100",
+      "gold_used_for_policy_bool": false,
+      "new_recovery_count": 6,
+      "remaining_miss_count": 49,
+      "same_source_only_bool": true
+    }
+  ],
+  "n10ee_recommendation_records": [
+    {
+      "allowed_variant_family_count": 8,
+      "anonymous_recommendation_id": "n10edrecommend0000",
+      "recommendation_bucket": "n10ee_topk_guarded_novel_first_fixed_experiment",
+      "recommendation_supported_bool": true,
+      "recommended_next_phase_bucket": "BEA-v1-N10EE Normalized-BM25 Novel-Guard Fixed Repacking Experiment",
+      "requires_gold_policy_bool": false,
+      "requires_new_retrieval_bool": false,
+      "requires_runtime_default_change_bool": false,
+      "supporting_recovered_case_count": 6,
+      "supporting_remaining_miss_count": 49
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10edforbid0000",
+      "candidate_generation_materialization_count": 0,
+      "clone_execution_count": 0,
+      "network_execution_count": 0,
+      "new_retrieval_count": 0,
+      "openlocus_execution_count": 0,
+      "provider_call_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10ED Novel-First Depth-to-Head Mechanism Analysis",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10edprivacy0000",
+      "public_candidate_lists_bool": false,
+      "public_case_level_rows_bool": false,
+      "public_exact_ranks_bool": false,
+      "public_gold_labels_bool": false,
+      "public_paths_or_filenames_bool": false,
+      "public_raw_queries_bool": false,
+      "public_raw_scores_bool": false,
+      "public_snippets_spans_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10edpriv0000",
+      "case_count": 60,
+      "n10dz_top100_private_row_count": 60,
+      "n10dz_top100_private_rows_available_bool": true,
+      "other_private_read_count": 0,
+      "private_status_bucket": "present",
+      "same_scoped_n1_row_count_bucket": "gt_200",
+      "same_scoped_n1_rows_available_bool": true
+    }
+  ],
+  "recovered_mechanism_bucket_records": [
+    {
+      "anonymous_bucket_record_id": "n10edrecdepth0000",
+      "bucket": "source_depth_11_to_20",
+      "case_count": 1,
+      "dimension_bucket": "baseline_source_depth",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecdepth0001",
+      "bucket": "source_depth_21_to_50",
+      "case_count": 2,
+      "dimension_bucket": "baseline_source_depth",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecdepth0002",
+      "bucket": "source_depth_51_to_100",
+      "case_count": 3,
+      "dimension_bucket": "baseline_source_depth",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecdepth0003",
+      "bucket": "source_depth_unavailable",
+      "case_count": 0,
+      "dimension_bucket": "baseline_source_depth",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecmembership0000",
+      "bucket": "matched_target_novel_vs_n1_pool",
+      "case_count": 6,
+      "dimension_bucket": "matched_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecmembership0001",
+      "bucket": "matched_target_old_n1_pool",
+      "case_count": 0,
+      "dimension_bucket": "matched_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecmembership0002",
+      "bucket": "matched_target_membership_unknown",
+      "case_count": 0,
+      "dimension_bucket": "matched_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecplace0000",
+      "bucket": "promoted_to_positions_1_to_5",
+      "case_count": 3,
+      "dimension_bucket": "recovered_placement",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecplace0001",
+      "bucket": "promoted_to_positions_6_to_10",
+      "case_count": 3,
+      "dimension_bucket": "recovered_placement",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecrich0000",
+      "bucket": "novel_count_0",
+      "case_count": 0,
+      "dimension_bucket": "novel_pool_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecrich0001",
+      "bucket": "novel_count_1_to_5",
+      "case_count": 0,
+      "dimension_bucket": "novel_pool_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecrich0002",
+      "bucket": "novel_count_6_to_10",
+      "case_count": 0,
+      "dimension_bucket": "novel_pool_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecrich0003",
+      "bucket": "novel_count_11_to_25",
+      "case_count": 3,
+      "dimension_bucket": "novel_pool_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecrich0004",
+      "bucket": "novel_count_gt_25",
+      "case_count": 3,
+      "dimension_bucket": "novel_pool_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecunique0000",
+      "bucket": "unique_file_count_1_to_10",
+      "case_count": 0,
+      "dimension_bucket": "unique_file_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecunique0001",
+      "bucket": "unique_file_count_11_to_25",
+      "case_count": 0,
+      "dimension_bucket": "unique_file_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecunique0002",
+      "bucket": "unique_file_count_26_to_50",
+      "case_count": 4,
+      "dimension_bucket": "unique_file_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edrecunique0003",
+      "bucket": "unique_file_count_gt_50",
+      "case_count": 2,
+      "dimension_bucket": "unique_file_richness",
+      "multi_label_bool": false,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edreccontrol0000",
+      "bucket": "also_recovered_by_distinct_file_top10",
+      "case_count": 1,
+      "dimension_bucket": "distinct_file_control_overlap",
+      "multi_label_bool": true,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edreccontrol0001",
+      "bucket": "also_recovered_by_distinct_file_top20_then_top10",
+      "case_count": 1,
+      "dimension_bucket": "distinct_file_control_overlap",
+      "multi_label_bool": true,
+      "total_expected_count": 6
+    },
+    {
+      "anonymous_bucket_record_id": "n10edreccontrol0002",
+      "bucket": "not_recovered_by_distinct_file_controls",
+      "case_count": 5,
+      "dimension_bucket": "distinct_file_control_overlap",
+      "multi_label_bool": true,
+      "total_expected_count": 6
+    }
+  ],
+  "remaining_miss_mechanism_bucket_records": [
+    {
+      "anonymous_bucket_record_id": "n10edmissavail0000",
+      "bucket": "target_in_positions_11_to_20",
+      "case_count": 5,
+      "dimension_bucket": "target_availability_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissavail0001",
+      "bucket": "target_in_positions_21_to_50",
+      "case_count": 4,
+      "dimension_bucket": "target_availability_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissavail0002",
+      "bucket": "target_in_positions_51_to_100",
+      "case_count": 6,
+      "dimension_bucket": "target_availability_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissavail0003",
+      "bucket": "target_absent_from_top100",
+      "case_count": 34,
+      "dimension_bucket": "target_availability_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissmember0000",
+      "bucket": "present_target_novel_vs_n1_pool",
+      "case_count": 15,
+      "dimension_bucket": "present_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissmember0001",
+      "bucket": "present_target_old_n1_pool",
+      "case_count": 0,
+      "dimension_bucket": "present_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissmember0002",
+      "bucket": "present_target_membership_unknown",
+      "case_count": 0,
+      "dimension_bucket": "present_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissmember0003",
+      "bucket": "target_absent_from_top100",
+      "case_count": 34,
+      "dimension_bucket": "present_target_novelty_status",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissahead0000",
+      "bucket": "ahead_novel_count_0",
+      "case_count": 0,
+      "dimension_bucket": "novel_items_ahead_of_present_target",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissahead0001",
+      "bucket": "ahead_novel_count_1_to_2",
+      "case_count": 0,
+      "dimension_bucket": "novel_items_ahead_of_present_target",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissahead0002",
+      "bucket": "ahead_novel_count_3_to_5",
+      "case_count": 0,
+      "dimension_bucket": "novel_items_ahead_of_present_target",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissahead0003",
+      "bucket": "ahead_novel_count_6_to_10",
+      "case_count": 2,
+      "dimension_bucket": "novel_items_ahead_of_present_target",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissahead0004",
+      "bucket": "ahead_novel_count_gt_10",
+      "case_count": 13,
+      "dimension_bucket": "novel_items_ahead_of_present_target",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissahead0005",
+      "bucket": "target_absent_from_top100",
+      "case_count": 34,
+      "dimension_bucket": "novel_items_ahead_of_present_target",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissold0000",
+      "bucket": "top10_old_pool_count_0",
+      "case_count": 49,
+      "dimension_bucket": "top10_old_pool_composition_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissold0001",
+      "bucket": "top10_old_pool_count_1_to_2",
+      "case_count": 0,
+      "dimension_bucket": "top10_old_pool_composition_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissold0002",
+      "bucket": "top10_old_pool_count_3_to_5",
+      "case_count": 0,
+      "dimension_bucket": "top10_old_pool_composition_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissold0003",
+      "bucket": "top10_old_pool_count_6_to_10",
+      "case_count": 0,
+      "dimension_bucket": "top10_old_pool_composition_after_repack",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissscore0000",
+      "bucket": "score_band_near_head",
+      "case_count": 4,
+      "dimension_bucket": "matched_target_score_band",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissscore0001",
+      "bucket": "score_band_mid",
+      "case_count": 8,
+      "dimension_bucket": "matched_target_score_band",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissscore0002",
+      "bucket": "score_band_low",
+      "case_count": 3,
+      "dimension_bucket": "matched_target_score_band",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissscore0003",
+      "bucket": "score_unavailable",
+      "case_count": 0,
+      "dimension_bucket": "matched_target_score_band",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    },
+    {
+      "anonymous_bucket_record_id": "n10edmissscore0004",
+      "bucket": "target_absent_from_top100",
+      "case_count": 34,
+      "dimension_bucket": "matched_target_score_band",
+      "multi_label_bool": false,
+      "total_expected_count": 49
+    }
+  ],
+  "schema_version": "bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_v1",
+  "status": "normalized_bm25_depth_to_head_mechanism_analysis_complete_n10ee_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10edstop0000",
+      "clone_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "existing_n10dz_top100_rows_bool": true,
+      "existing_n1_old_pool_membership_bool": true,
+      "fixed_gold_free_variant_experiment_bool": true,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EE Normalized-BM25 Novel-Guard Fixed Repacking Experiment",
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "scoped_private_read_bool": true,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "variant_overlap_records": [
+    {
+      "anonymous_variant_overlap_id": "n10edoverlap0000",
+      "lost_baseline_top10_count": 0,
+      "new_vs_baseline_top10_count": 6,
+      "overlap_with_best_top10_count": 11,
+      "top10_count": 11,
+      "unique_recovery_count_bucket": "unique_recovery_count_6_to_10",
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_variant_overlap_id": "n10edoverlap0001",
+      "lost_baseline_top10_count": 0,
+      "new_vs_baseline_top10_count": 6,
+      "overlap_with_best_top10_count": 11,
+      "top10_count": 11,
+      "unique_recovery_count_bucket": "unique_recovery_count_0",
+      "variant_bucket": "novel_file_first_top20_then_top10"
+    },
+    {
+      "anonymous_variant_overlap_id": "n10edoverlap0002",
+      "lost_baseline_top10_count": 0,
+      "new_vs_baseline_top10_count": 5,
+      "overlap_with_best_top10_count": 8,
+      "top10_count": 10,
+      "unique_recovery_count_bucket": "unique_recovery_count_1_to_2",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ]
+}
