@@ -1,0 +1,114 @@
+{
+  "canary_result_records": [
+    {
+      "anonymous_canary_result_id": "n10dsresult0000",
+      "executed_case_count": 30,
+      "gold_file_recovered_top10_count": 0,
+      "gold_file_recovered_top20_count": 0,
+      "gold_file_recovered_top50_count": 0,
+      "local_repo_available_count": 30,
+      "moderate_pool_top50_recovered_count": 0,
+      "nonzero_candidate_case_count": 20,
+      "nonzero_exit_error_count": 2,
+      "retrieval_command_success_count": 28,
+      "rich_wrong_pool_top50_recovered_count": 0,
+      "sampled_case_count": 30,
+      "source_status_bucket": "real_candidate_source_canary_complete_no_recovery",
+      "tiny_pool_top50_recovered_count": 0,
+      "zero_candidate_case_count": 10
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dsgate0000",
+      "gate_bucket": "public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dsgate0001",
+      "gate_bucket": "canary_metrics_match_expected_negative",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dsgate0002",
+      "gate_bucket": "no_private_read_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "real_candidate_source_canary_complete_no_recovery",
+      "anonymous_input_artifact_id": "n10dsinput0000",
+      "artifact_bucket": "n10dr_real_candidate_source_canary",
+      "expected_status_bucket": "real_candidate_source_canary_complete_no_recovery",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dt_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dshandoff0000",
+      "n10dt_failure_mechanism_analysis_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DT Real Candidate-Source Canary Failure Mechanism Analysis",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "negative_result_interpretation_records": [
+    {
+      "anonymous_interpretation_id": "n10dsinterp0000",
+      "bounded_local_canary_no_recovery_bool": true,
+      "do_not_scale_source_directly_bool": true,
+      "full_denominator_improvement_claim_bool": false,
+      "infrastructure_failure_bool": false,
+      "interpretation_bucket": "valid_negative_canary_not_infrastructure_failure",
+      "next_mechanism_bucket": "failure_mechanism_analysis",
+      "valid_negative_canary_bool": true
+    }
+  ],
+  "no_private_read_no_recompute_records": [
+    {
+      "anonymous_no_recompute_id": "n10dsnoexec0000",
+      "candidate_generation_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anonymous_package_summary_id": "n10dssummary0000",
+      "package_complete_bool": true,
+      "package_scope_bucket": "public_only_real_candidate_source_canary_audit_package",
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DS Real Candidate-Source Canary Audit Package",
+  "schema_version": "bea_v1_n10ds_real_candidate_source_canary_audit_package_v1",
+  "status": "real_candidate_source_canary_audit_package_complete_n10dt_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dsstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DT Real Candidate-Source Canary Failure Mechanism Analysis",
+      "p5_v1a_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
