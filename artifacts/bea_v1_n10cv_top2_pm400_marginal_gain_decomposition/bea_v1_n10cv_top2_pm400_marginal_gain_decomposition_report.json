@@ -1,0 +1,350 @@
+{
+  "claim_level": "same_source_pm400_marginal_mechanism_decomposition_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read_213",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "policy_anchors",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "marginal_gain",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "remaining_miss",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "next_sweep_signal",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-30T00:33:12Z",
+  "generated_by": "bea_v1_n10cv_top2_pm400_marginal_gain_decomposition",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10cvin0000",
+      "expected_status": "top2_override_neighborhood_package_complete_n10cv_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cu_top2_neighborhood_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "top2_override_neighborhood_package_complete_n10cv_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cvin0001",
+      "expected_status": "top2_override_window_neighborhood_sweep_complete_n10cu_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ct_top2_neighborhood_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "top2_override_window_neighborhood_sweep_complete_n10cu_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cvin0002",
+      "expected_status": "local_saturation_package_complete_n10ct_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cs_local_saturation_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "local_saturation_package_complete_n10ct_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cvin0003",
+      "expected_status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cr_local_saturation_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized"
+    }
+  ],
+  "marginal_gain_mechanism_bucket_records": [
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0000",
+      "case_count": 0,
+      "mechanism_bucket": "near_boundary_1_25"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0001",
+      "case_count": 0,
+      "mechanism_bucket": "near_boundary_26_50"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0002",
+      "case_count": 1,
+      "mechanism_bucket": "near_boundary_51_100"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0003",
+      "case_count": 0,
+      "mechanism_bucket": "far_boundary_gt100"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0004",
+      "case_count": 1,
+      "mechanism_bucket": "same_file_before_gold"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0005",
+      "case_count": 0,
+      "mechanism_bucket": "same_file_after_gold"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0006",
+      "case_count": 0,
+      "mechanism_bucket": "already_overlap_under_candidate_but_outside_window"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0007",
+      "case_count": 0,
+      "mechanism_bucket": "non_short_span_case"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0008",
+      "case_count": 0,
+      "mechanism_bucket": "top1_override_case"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0009",
+      "case_count": 1,
+      "mechanism_bucket": "top2_override_case"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0010",
+      "case_count": 1,
+      "mechanism_bucket": "short_span_base_case"
+    },
+    {
+      "anonymous_marginal_gain_bucket_id": "n10cvbucket0011",
+      "case_count": 0,
+      "mechanism_bucket": "other_bucket"
+    }
+  ],
+  "marginal_gain_records": [
+    {
+      "anonymous_marginal_gain_id": "n10cvgain0000",
+      "bucketed_new_case_count": 1,
+      "comparison_bucket": "pm400_minus_pm300",
+      "pm400_new_top10_count": 1,
+      "pm400_new_top20_count": 1,
+      "public_row_ids_included_bool": false
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10cw_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10cw_handoff_id": "n10cvhandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10cw_authorized_bool": true,
+      "n10cw_handoff_bucket": "n10cw_high_window_sweep_authorized",
+      "next_allowed_scope_bucket": "top2_override_high_window_neighborhood_sweep",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "top3_override_authorized_bool": false
+    }
+  ],
+  "next_sweep_signal_records": [
+    {
+      "anonymous_next_sweep_signal_id": "n10cvsignal0000",
+      "n10cw_high_window_sweep_justified_bool": true,
+      "remaining_local_miss_signal_bool": true,
+      "same_file_no_span_overlap_remaining": 7,
+      "signal_bucket": "remaining_local_miss_signal_exists",
+      "span_overlap_beyond_top10_remaining": 12
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10cvnoexec0000",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_removed_count": 0,
+      "candidate_reordered_count": 0,
+      "downstream_value_claim_count": 0,
+      "generalization_claim_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "new_pm_value_count": 0,
+      "no_execution_boundary_bucket": "pm400_marginal_decomposition_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "top3_override_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CV Top2 pm400 Marginal Gain Mechanism Decomposition",
+  "policy_anchor_records": [
+    {
+      "anonymous_policy_anchor_id": "n10cvanchor0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3500,
+      "cost_proxy_top20": 6500,
+      "lost_pm400_top10_hits": 1,
+      "policy_bucket": "short75_225_top2_all_pm275",
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32
+    },
+    {
+      "anonymous_policy_anchor_id": "n10cvanchor0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3600,
+      "cost_proxy_top20": 6600,
+      "lost_pm400_top10_hits": 1,
+      "policy_bucket": "short75_225_top2_all_pm300",
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32
+    },
+    {
+      "anonymous_policy_anchor_id": "n10cvanchor0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 7000,
+      "lost_pm400_top10_hits": 0,
+      "policy_bucket": "short75_225_top2_all_pm400",
+      "top10_span_overlap_count": 27,
+      "top20_span_overlap_count": 33
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10cvprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_pm400_marginal_decomposition_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10cvpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "remaining_miss_records": [
+    {
+      "anonymous_remaining_miss_id": "n10cvmiss0000",
+      "file_not_in_top10_remaining": 167,
+      "remaining_miss_bucket": "pm400_top10_misses",
+      "remaining_top10_miss_count": 186,
+      "same_file_no_span_overlap_remaining": 7,
+      "span_overlap_beyond_top10_remaining": 12
+    }
+  ],
+  "schema_version": "bea_v1_n10cv_top2_pm400_marginal_gain_decomposition.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "top2_pm400_marginal_gain_decomposition_complete_n10cw_authorized",
+  "status_vocabulary": [
+    "top2_pm400_marginal_gain_decomposition_complete_n10cw_authorized",
+    "no_go_n10cv_required_inputs_unavailable",
+    "no_go_n10cv_private_span_rows_missing",
+    "no_go_n10cv_policy_contract_invalid",
+    "no_go_n10cv_result_accounting_invalid",
+    "no_go_n10cv_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10cw_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10cw_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CW Top2 Override High-Window Neighborhood Sweep",
+      "next_allowed_scope_bucket": "top2_override_high_window_neighborhood_sweep",
+      "p5_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "top3_override_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

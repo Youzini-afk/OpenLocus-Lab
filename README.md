@@ -28,18 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CU: Top2 Override Neighborhood Public Package**:
+The latest closed phase is **BEA-v1-N10CV: Top2 pm400 Marginal Gain Mechanism Decomposition**:
 
 ```text
-status: top2_override_neighborhood_package_complete_n10cv_authorized
-self-test: 11 / 11
+status: top2_pm400_marginal_gain_decomposition_complete_n10cw_authorized
+self-test: 14 / 14
 forbidden scan: pass
-pm200 reference: 25 / 31 at 3200 / 6200
-pm275: 26 / 32 at 3500 / 6500 (minimal preserving 26 / 32)
+private span rows read: 213
+pm275: 26 / 32 at 3500 / 6500
 pm300: 26 / 32 at 3600 / 6600
 pm400: 27 / 33 at 4000 / 7000
-private reads in N10CU: 0
-next allowed phase: BEA-v1-N10CV Follow-up Around pm400 Gain
+pm400 new top10/top20 vs pm300: 1 / 1
+new case buckets: near_boundary_51_100; same_file_before_gold; top2_override_case
+next allowed phase: BEA-v1-N10CW Top2 Override High-Window Neighborhood Sweep
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -876,6 +877,12 @@ It confirms pm275 as the minimal tested 26/32-preserving point, pm400 as a new
 27/33 same-source proxy improvement, and no candidate pool/order changes. It
 authorizes only N10CV follow-up around the pm400 gain under a future oracle scope.
 
+N10CV decomposes the pm400 marginal gain over exactly pm275/pm300/pm400. pm400
+adds one top10 and one top20 case versus pm300; the new case is a top2 override,
+same-file before-gold, near-boundary (51-100 bucket) recovery. Remaining pm400
+misses still include 7 same-file/no-span and 12 span-beyond-top10 cases, so N10CV
+authorizes only N10CW high-window neighborhood exploration.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1560,6 +1567,10 @@ See the current report index:
   evaluator hook-in, heldout/generalization claims, retrieval/rerun, candidate
   generation/add/remove/reorder, top3 overrides, adaptive tuning, P5, BEA-v1-A,
   method-winner claims, or downstream-value claims.
+- N10CV authorizes only N10CW top2 override high-window neighborhood sweep. It
+  does not authorize runtime/default enablement, heldout/generalization claims,
+  retrieval/rerun, candidate generation/add/remove/reorder, top3 overrides,
+  adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2092,6 +2103,10 @@ eval/bea_v1_n10ct_top2_override_window_neighborhood_sweep.py
 eval/bea_v1_n10cu_top2_override_neighborhood_package.py
   Public package of the N10CT top2 override neighborhood; authorizes only N10CV
   follow-up around the pm400 gain.
+
+eval/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition.py
+  Decomposes pm400's marginal gain vs pm300 and authorizes only N10CW high-window
+  neighborhood exploration.
 ```
 
 Key reports:
@@ -2198,6 +2213,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cs_local_saturation_package/bea_v1_n10cs_local_saturation_package_report.json`](artifacts/bea_v1_n10cs_local_saturation_package/bea_v1_n10cs_local_saturation_package_report.json)
 - [`artifacts/bea_v1_n10ct_top2_override_window_neighborhood_sweep/bea_v1_n10ct_top2_override_window_neighborhood_sweep_report.json`](artifacts/bea_v1_n10ct_top2_override_window_neighborhood_sweep/bea_v1_n10ct_top2_override_window_neighborhood_sweep_report.json)
 - [`artifacts/bea_v1_n10cu_top2_override_neighborhood_package/bea_v1_n10cu_top2_override_neighborhood_package_report.json`](artifacts/bea_v1_n10cu_top2_override_neighborhood_package/bea_v1_n10cu_top2_override_neighborhood_package_report.json)
+- [`artifacts/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition_report.json`](artifacts/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition_report.json)
 
 Documentation mirror check:
 
