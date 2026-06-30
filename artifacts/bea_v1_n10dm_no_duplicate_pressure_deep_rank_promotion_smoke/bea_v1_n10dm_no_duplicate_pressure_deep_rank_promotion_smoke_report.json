@@ -1,0 +1,436 @@
+{
+  "decision_summary_records": [
+    {
+      "anonymous_decision_summary_id": "n10dmdecision0000",
+      "completion_valid_even_if_all_variants_fail_bool": true,
+      "deep_rank_probe_harmful_count": 5,
+      "deep_rank_probe_positive_count": 0,
+      "no_improvement_count": 1,
+      "span_projection_positive_count": 0
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dmgate0000",
+      "gate_bucket": "inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0001",
+      "gate_bucket": "private_span_rows_213",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0002",
+      "gate_bucket": "variant_count_6",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0003",
+      "gate_bucket": "anchor_file_top10_34",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0004",
+      "gate_bucket": "anchor_file_top20_44",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0005",
+      "gate_bucket": "anchor_projected_span_top10_30",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0006",
+      "gate_bucket": "anchor_projected_span_top20_36",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0007",
+      "gate_bucket": "activation_condition_duplicate_pressure_none",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0008",
+      "gate_bucket": "gold_used_for_policy_zero",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0009",
+      "gate_bucket": "candidate_added_removed_zero",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0010",
+      "gate_bucket": "result_accounting_valid",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmgate0011",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "harm_summary_records": [
+    {
+      "anonymous_harm_summary_id": "n10dmharm0000",
+      "max_harm_count_on_non_residual_rows": 14,
+      "max_lost_anchor_file_top10_hits": 14,
+      "max_lost_anchor_span_top10_hits": 10
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "anonymous_input_artifact_id": "n10dmin0000",
+      "artifact_bucket": "n10dl_residual_analysis",
+      "expected_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+      "anonymous_input_artifact_id": "n10dmin0001",
+      "artifact_bucket": "n10dk_public_package",
+      "expected_status_bucket": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "anonymous_input_artifact_id": "n10dmin0002",
+      "artifact_bucket": "n10dj_rank_promotion_context",
+      "expected_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "anonymous_input_artifact_id": "n10dmin0003",
+      "artifact_bucket": "n10da_local_window_context",
+      "expected_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "top2_local_window_saturation_upper_bound_complete_n10da_authorized",
+      "anonymous_input_artifact_id": "n10dmin0004",
+      "artifact_bucket": "n10cz_upper_bound_context",
+      "expected_status_bucket": "top2_local_window_saturation_upper_bound_complete_n10da_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dn_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dmhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dn_public_package_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DN No-Duplicate-Pressure Deep-Rank Promotion Public Package",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_id": "n10dmnoexec0000",
+      "candidate_added_removed_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "gold_used_for_policy_count": 0,
+      "openlocus_execution_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DM No-Duplicate-Pressure Deep-Rank Promotion Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10dmprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_label_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "public_aggregate_bucket_only_bool": true,
+      "span_or_line_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dmpriv0000",
+      "load_status_bucket": "present",
+      "other_private_files_read_count": 0,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213
+    }
+  ],
+  "reachable_residual_recovery_records": [
+    {
+      "anonymous_recovery_id": "n10dmrecovery0000",
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "anonymous_recovery_id": "n10dmrecovery0001",
+      "recovered_rank11_20_residual_count": 5,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 5,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "anonymous_recovery_id": "n10dmrecovery0002",
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "anonymous_recovery_id": "n10dmrecovery0003",
+      "recovered_rank11_20_residual_count": 1,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 1,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "anonymous_recovery_id": "n10dmrecovery0004",
+      "recovered_rank11_20_residual_count": 5,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 5,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "anonymous_recovery_id": "n10dmrecovery0005",
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ],
+  "schema_version": "bea_v1_n10dm_deep_rank_promotion_smoke_v1",
+  "status": "no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized",
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_stop_go_id": "n10dmstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dn_public_package_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DN No-Duplicate-Pressure Deep-Rank Promotion Public Package",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "variant_contract_records": [
+    {
+      "activation_condition_bucket": "always_anchor",
+      "anonymous_variant_contract_id": "n10dmcontract0000",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "complete_bool": true,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmcontract0001",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "complete_bool": true,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmcontract0002",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "complete_bool": true,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmcontract0003",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "complete_bool": true,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmcontract0004",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "complete_bool": true,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmcontract0005",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "complete_bool": true,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ],
+  "variant_result_records": [
+    {
+      "activated_row_count": 0,
+      "anonymous_variant_result_id": "n10dmresult0000",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "no_improvement",
+      "delta_top10_file_vs_anchor": 0,
+      "delta_top10_span_vs_anchor": 0,
+      "harm_count_on_non_residual_rows": 0,
+      "lost_anchor_file_top10_hits": 0,
+      "lost_anchor_span_top10_hits": 0,
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "top10_file_reach_count": 34,
+      "top10_projected_span_overlap_count": 30,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmresult0001",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -9,
+      "delta_top10_span_vs_anchor": -7,
+      "harm_count_on_non_residual_rows": 14,
+      "lost_anchor_file_top10_hits": 14,
+      "lost_anchor_span_top10_hits": 10,
+      "recovered_rank11_20_residual_count": 5,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 5,
+      "top10_file_reach_count": 25,
+      "top10_projected_span_overlap_count": 23,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmresult0002",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -5,
+      "delta_top10_span_vs_anchor": -4,
+      "harm_count_on_non_residual_rows": 5,
+      "lost_anchor_file_top10_hits": 5,
+      "lost_anchor_span_top10_hits": 4,
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "top10_file_reach_count": 29,
+      "top10_projected_span_overlap_count": 26,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmresult0003",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -8,
+      "delta_top10_span_vs_anchor": -6,
+      "harm_count_on_non_residual_rows": 9,
+      "lost_anchor_file_top10_hits": 9,
+      "lost_anchor_span_top10_hits": 7,
+      "recovered_rank11_20_residual_count": 1,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 1,
+      "top10_file_reach_count": 26,
+      "top10_projected_span_overlap_count": 24,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmresult0004",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -9,
+      "delta_top10_span_vs_anchor": -7,
+      "harm_count_on_non_residual_rows": 14,
+      "lost_anchor_file_top10_hits": 14,
+      "lost_anchor_span_top10_hits": 10,
+      "recovered_rank11_20_residual_count": 5,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 5,
+      "top10_file_reach_count": 25,
+      "top10_projected_span_overlap_count": 23,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmresult0005",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -5,
+      "delta_top10_span_vs_anchor": -4,
+      "harm_count_on_non_residual_rows": 5,
+      "lost_anchor_file_top10_hits": 5,
+      "lost_anchor_span_top10_hits": 4,
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "top10_file_reach_count": 29,
+      "top10_projected_span_overlap_count": 26,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ]
+}
