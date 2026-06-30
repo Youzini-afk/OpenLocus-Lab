@@ -1,0 +1,366 @@
+{
+  "claim_boundary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_claim_boundary_id": "n10eqclaim0000",
+      "ci_variant_execution_bool": false,
+      "design_only_bool": true,
+      "downstream_value_claim_bool": false,
+      "external_benchmark_download_bool": false,
+      "frozen_rule_change_bool": false,
+      "gold_used_for_policy_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "network_run_bool": false,
+      "new_policy_experiment_bool": false,
+      "private_diagnostic_inputs_used_bool": false,
+      "private_rows_read_bool": false,
+      "production_retrieval_change_bool": false,
+      "provider_model_network_bool": false,
+      "public_only_bool": true,
+      "quiver_dense_real_bool": false,
+      "raw_candidate_upload_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "remote_embedding_bool": false,
+      "rerun_local_canary_bool": false,
+      "run_phase_labels_used_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_claim_bool": false,
+      "score_phase_labels_used_bool": false,
+      "selector_reranker_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "future_probe_feature_records": [
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0000",
+      "derivation_bucket": "public_aggregate_novelty_buckets_only",
+      "design_only_bool": true,
+      "feature_bucket": "top5_novel_candidate_item_count_bucket",
+      "feature_description_bucket": "bucket the top5_novel_candidate_item_count feature into the frozen buckets 0_to_2 / 3 / 4_to_5. the low-novelty (0_to_2) bucket is where both locked misfires occurred; the probe uses this as a coarse risk gate, not a tuned threshold.",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    },
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0001",
+      "derivation_bucket": "public_aggregate_baseline_hit_buckets_only",
+      "design_only_bool": true,
+      "feature_bucket": "baseline_prefix_strength",
+      "feature_description_bucket": "design a proxy for baseline top-k prefix strength: how strong the baseline arm's head is. the locked mechanism shows the displaced gold was at baseline rank 1-5, so a strong-prefix proxy flags arms whose baseline head is likely already a hit. uses only aggregate hit/miss buckets, never raw ranks.",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    },
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0002",
+      "derivation_bucket": "public_aggregate_baseline_hit_buckets_only",
+      "design_only_bool": true,
+      "feature_bucket": "baseline_gold_proxy",
+      "feature_description_bucket": "design a baseline-gold-presence proxy that infers, from public aggregate baseline top10 hit counts, whether a task is in the class where baseline already hits gold. this is a bucket-level proxy, not gold labels; gold_used_for_policy stays false.",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    },
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0003",
+      "derivation_bucket": "public_aggregate_combination_only",
+      "design_only_bool": true,
+      "feature_bucket": "full_displacement_risk",
+      "feature_description_bucket": "design a full-novel-first displacement risk score: combine low-novelty-bucket membership with strong-baseline-prefix proxy to flag tasks where the full arm's novel-first reordering may push an already-strong baseline hit past top-10. the locked misfire class is exactly this combination (2 tasks).",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    },
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0004",
+      "derivation_bucket": "public_aggregate_guard_outcome_buckets_only",
+      "design_only_bool": true,
+      "feature_bucket": "guard_preservation_ref",
+      "feature_description_bucket": "design a guard-preservation reference: the guard arm keeps the original top-5 and only appends distinct novel files, so it preserves the baseline head by construction. the locked outcome shows guard preserved both displaced gold cases (full_lost_guard_preserved = 2, guard_lost = 0). used as a reference, not a promotion signal.",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    },
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0005",
+      "derivation_bucket": "public_aggregate_mechanism_buckets_only",
+      "design_only_bool": true,
+      "feature_bucket": "candidate_available_beyond_top10",
+      "feature_description_bucket": "design a candidate-available-beyond-top10 reference: the locked mechanism shows the displaced gold stayed in the full order beyond top-10 (candidate_available_beyond_top10 = 2), so the loss is a reordering displacement, not a missing-candidate failure. the probe distinguishes these two failure classes.",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    },
+    {
+      "addresses_misfire_count": 2,
+      "anonymous_probe_feature_id": "n10eqfeat0006",
+      "derivation_bucket": "frozen_rule_observable_only",
+      "design_only_bool": true,
+      "feature_bucket": "arm_selection",
+      "feature_description_bucket": "design an arm-selection feature echoing the frozen difference-aware rule (top5_novel >= 4 -> guarded else full). the probe uses this to label which arm the frozen rule chose and whether the displacement risk would apply. the frozen rule is NOT changed; the feature is observational only.",
+      "reads_per_task_data_bool": false,
+      "tunes_threshold_bool": false
+    }
+  ],
+  "future_probe_input_contract_records": [
+    {
+      "aggregate_publication_only_bool": true,
+      "anonymous_input_contract_id": "n10eqinput0000",
+      "cloned_repo_contents_accepted_bool": false,
+      "future_n10er_new_retrieval_output_authorized_bool": true,
+      "future_n10er_per_task_diagnostics_private_authorized_bool": true,
+      "future_n10er_private_labels_authorized_bool": true,
+      "future_n10er_private_orders_authorized_bool": true,
+      "future_n10er_private_raw_candidates_authorized_bool": true,
+      "input_contract_bucket": "n10er_bounded_public_ci_private_execution_inputs_aggregate_publication_only",
+      "input_description_bucket": "N10EQ itself reads only public artifacts. if separately authorized, N10ER may privately produce/read bounded public-CI arm orders, raw candidate lists, retrieval output, and score-phase labels after orders are frozen, solely to compute aggregate safety buckets. raw orders/candidates/labels/paths/queries/tasks/repos remain private and are never public outputs.",
+      "policy_selection_uses_gold_bool": false,
+      "public_aggregate_buckets_accepted_bool": true,
+      "raw_candidates_publication_authorized_bool": false,
+      "raw_labels_publication_authorized_bool": false,
+      "raw_orders_publication_authorized_bool": false,
+      "raw_paths_accepted_bool": false,
+      "raw_queries_accepted_bool": false,
+      "raw_repos_accepted_bool": false,
+      "raw_tasks_accepted_bool": false,
+      "score_phase_gold_labels_private_authorized_bool": true
+    }
+  ],
+  "future_probe_output_contract_records": [
+    {
+      "anonymous_output_contract_id": "n10eqoutput0000",
+      "emits_aggregate_bucket_flags_bool": true,
+      "emits_method_winner_claim_bool": false,
+      "emits_per_task_flags_bool": false,
+      "emits_per_task_gold_presence_bool": false,
+      "emits_per_task_paths_bool": false,
+      "emits_per_task_ranks_bool": false,
+      "emits_runtime_default_change_bool": false,
+      "emits_threshold_tuned_values_bool": false,
+      "output_contract_bucket": "aggregate_bucket_safety_flags_only",
+      "output_description_bucket": "the probe emits aggregate-bucket safety flags only: per-bucket displacement-risk counts, guard-preservation reference counts, and arm-selection counts. it does NOT emit per-task flags on raw candidates/paths/ranks, per-task gold presence, or any per-task diagnostic. outputs are scanner-validated for privacy.",
+      "output_scanner_validated_bool": true
+    }
+  ],
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10eqgate0006",
+      "gate_bucket": "n10ep_source_locked",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0007",
+      "gate_bucket": "mechanism_locked",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0008",
+      "gate_bucket": "probe_features_design_only",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0009",
+      "gate_bucket": "input_contract_no_private",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0010",
+      "gate_bucket": "output_contract_aggregate_only",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0011",
+      "gate_bucket": "n10er_contract_not_execution",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0012",
+      "gate_bucket": "privacy_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "mechanism_lock_records": [
+    {
+      "aggregate_counts_match_bool": true,
+      "anonymous_mechanism_lock_id": "n10eqmech0000",
+      "full_guard_outcome_match_bool": true,
+      "locked_baseline_gold_rank_1_to_5_displaced_count": 2,
+      "locked_candidate_available_beyond_top10_count": 2,
+      "locked_diffaware_full_guard_would_preserve_count": 2,
+      "locked_full_lost_guard_preserved_count": 2,
+      "locked_guard_better_than_full_count": 2,
+      "locked_low_novelty_bucket_loss_count": 2,
+      "locked_novel_first_displaced_count": 2,
+      "locked_primary_mechanism": "novel_first_displaced_baseline_gold_from_top10",
+      "low_novelty_bucket_loss_match_bool": true,
+      "mechanism_buckets_match_bool": true,
+      "mechanism_locked_bool": true,
+      "n10eo_status_match_bool": true,
+      "primary_mechanism_match_bool": true
+    }
+  ],
+  "n10ep_source_lock_records": [
+    {
+      "actual_n10ep_status": "n10ep_design_response_pass_n10eq_authorized",
+      "anonymous_source_lock_id": "n10eqsource0000",
+      "locked_n10eo_checkpoint": "6f8eeda",
+      "locked_n10ep_checkpoint": "0a54b49",
+      "locked_n10ep_next_phase": "BEA-v1-N10EQ Score/Guard Safety Probe Design",
+      "locked_n10ep_status": "n10ep_design_response_pass_n10eq_authorized",
+      "locked_primary_mechanism": "novel_first_displaced_baseline_gold_from_top10",
+      "n10em_artifact_load_status_bucket": "present",
+      "n10en_artifact_load_status_bucket": "present",
+      "n10eo_artifact_load_status_bucket": "present",
+      "n10ep_artifact_load_status_bucket": "present",
+      "n10eq_design_authorized_match_bool": true,
+      "n10eq_execution_false_match_bool": true,
+      "n10er_execution_false_match_bool": true,
+      "next_phase_match_bool": true,
+      "source_locked_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10er_pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "n10eqgate0000",
+      "gate_bucket": "n10er_private_execution_inputs_aggregate_publication_only",
+      "gate_description_bucket": "N10ER may use private bounded-CI orders/candidates/labels for score-phase bucketing, but public output must be aggregate-only.",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_fail_condition_bucket": "any_raw_orders_candidates_labels_paths_queries_tasks_or_repos_public",
+      "gate_pass_condition_bucket": "private_execution_inputs_raw_publication_zero",
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0001",
+      "gate_bucket": "n10er_displacement_risk_aggregate_only",
+      "gate_description_bucket": "the probe's displacement-risk output must be aggregate-bucket counts only; no per-task flags on raw candidates/paths/ranks.",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_fail_condition_bucket": "any_per_task_raw_output",
+      "gate_pass_condition_bucket": "output_aggregate_buckets_only",
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0002",
+      "gate_bucket": "n10er_no_threshold_tuning",
+      "gate_description_bucket": "N10ER must not tune the frozen threshold (>=4); the probe uses the frozen buckets observationally only.",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_fail_condition_bucket": "any_threshold_tuning_on_locked_sample",
+      "gate_pass_condition_bucket": "threshold_frozen_unchanged",
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0003",
+      "gate_bucket": "n10er_no_method_winner_claim",
+      "gate_description_bucket": "N10ER must not promote guard/full/diffaware or claim method winner even if guard appears safer.",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_fail_condition_bucket": "any_promotion_or_winner_claim",
+      "gate_pass_condition_bucket": "no_promotion_or_winner_claim",
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0004",
+      "gate_bucket": "n10er_no_runtime_default_change",
+      "gate_description_bucket": "N10ER must not change runtime/default behavior; the safety probe remains opt-in/eval-only.",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_fail_condition_bucket": "any_runtime_default_change",
+      "gate_pass_condition_bucket": "runtime_default_unchanged",
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10eqgate0005",
+      "gate_bucket": "n10er_reproducibility_check_on_held_out_public",
+      "gate_description_bucket": "N10ER must run on a held-out manifest-listed public sample (not the locked N10EN sample) to test misfire reproducibility; a pass requires the aggregate displacement risk to be reported without promotion.",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_fail_condition_bucket": "uses_locked_n10en_sample_or_promotes",
+      "gate_pass_condition_bucket": "held_out_public_sample_aggregate_report",
+      "gate_uses_gold_for_policy_bool": false
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EQ Score/Guard Safety Probe Design",
+  "risk_control_records": [
+    {
+      "anonymous_risk_control_id": "n10eqrisk0000",
+      "mitigation_bucket": "probe features are bucket-level proxies; held-out public sample gate (n10er_pass_fail_gate 0005) blocks locked-sample reuse; stop_design_only_insufficient from N10EP preserved.",
+      "risk_bucket": "aggregate_overinterpretation_from_two_cases",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "designing a probe around 2 misfire cases risks aggregate overinterpretation; the probe could overfit to this sample."
+    },
+    {
+      "anonymous_risk_control_id": "n10eqrisk0001",
+      "mitigation_bucket": "features use the FROZEN buckets (0_to_2 / 3 / 4_to_5) observationally; threshold_tuning_bool=false on every feature; n10er gate 0002 blocks threshold tuning.",
+      "risk_bucket": "hindsight_threshold_tuning_in_probe_design",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "choosing probe feature thresholds by hindsight on the 49 full-selected tasks would be data snooping."
+    },
+    {
+      "anonymous_risk_control_id": "n10eqrisk0002",
+      "mitigation_bucket": "guard_preservation_ref is a reference feature, not a promotion signal; guard_full_diffaware_promotion_authorized_bool=false; n10er gate 0003 blocks promotion.",
+      "risk_bucket": "guard_promotion_from_two_cases",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the guard-preservation reference could be misread as a guard promotion signal from 2 cases."
+    },
+    {
+      "anonymous_risk_control_id": "n10eqrisk0003",
+      "mitigation_bucket": "every feature derives from public aggregate buckets only; reads_per_task_data_bool=false on every feature; forbidden_scan blocks raw per-task/paths/orders/labels keys and the private diagnostic rerun path.",
+      "risk_bucket": "private_diagnostic_leakage_into_probe_features",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "probe features could leak the private per-task diagnostics that N10EO used into the public design."
+    },
+    {
+      "anonymous_risk_control_id": "n10eqrisk0004",
+      "mitigation_bucket": "runtime_default_change_bool=false; probe stays opt-in/eval-only; n10er gate 0004 blocks runtime/default change.",
+      "risk_bucket": "runtime_default_creep_via_safety_probe",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "a safety probe could drift into a runtime/default gate."
+    },
+    {
+      "anonymous_risk_control_id": "n10eqrisk0005",
+      "mitigation_bucket": "n10er_contract_authorized_bool=true but n10er_execution_authorized_bool=false; stop/go explicitly separates contract handoff from execution.",
+      "risk_bucket": "n10er_execution_creep_from_contract_authorization",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "authorizing the N10ER contract could be misread as authorizing N10ER execution now."
+    },
+    {
+      "anonymous_risk_control_id": "n10eqrisk0006",
+      "mitigation_bucket": "the proxy is bucket-level aggregate inference only; gold_labels_accepted_bool=false in the input contract; gold_used_for_policy_bool=false; gate_uses_gold_for_policy_bool=false on every gate.",
+      "risk_bucket": "feature_proxy_treated_as_gold",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the baseline_gold_proxy feature could be misused as actual gold labels for policy."
+    }
+  ],
+  "schema_version": "bea_v1_n10eq_score_guard_safety_probe_design_v1",
+  "status": "n10eq_score_guard_safety_probe_design_pass_n10er_contract_authorized",
+  "stop_go_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_stop_go_id": "n10eqstop0000",
+      "ci_variant_execution_authorized_bool": false,
+      "design_only_bool": true,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "frozen_rule_change_authorized_bool": false,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10eq_execution_authorized_bool": false,
+      "n10er_contract_authorized_bool": true,
+      "n10er_execution_authorized_bool": false,
+      "network_run_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-N10ER Bounded Public CI Score/Guard Safety Probe",
+      "provider_model_network_authorized_bool": false,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ]
+}

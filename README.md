@@ -154,6 +154,48 @@ CI-variant-execution fields are `false`. N10EP reads only public aggregate
 artifacts (N10EO/N10EN/N10EM); no private diagnostic rerun, raw candidates,
 orders, labels, paths, or per-task diagnostics are read or published.
 
+**BEA-v1-N10EQ: Score/Guard Safety Probe Design** is a public-artifact-only
+design phase after the N10EP checkpoint `0a54b49`. It *designs* (does not
+execute) a forward safety probe:
+
+```text
+status: n10eq_score_guard_safety_probe_design_pass_n10er_contract_authorized
+self-test: 98 / 98
+forbidden scan: pass
+design-only: true
+aggregate-buckets-only: true
+n10er_contract_authorized_bool: true
+n10er_execution_authorized_bool: false
+next allowed phase: BEA-v1-N10ER Bounded Public CI Score/Guard Safety Probe
+```
+
+N10EQ re-locks the N10EO mechanism from public aggregates (checkpoint
+`6f8eeda`, primary mechanism `novel_first_displaced_baseline_gold_from_top10`,
+2 misfires in the low-novelty 0_to_2 bucket) and designs 7 forward probe
+features (`top5_novel_candidate_item_count_bucket`, `baseline_prefix_strength`,
+`baseline_gold_proxy`, `full_displacement_risk`, `guard_preservation_ref`,
+`candidate_available_beyond_top10`, `arm_selection`). Every feature derives
+from public aggregate buckets only — N10EQ reads no per-task candidates/labels/
+paths/ranks/gold and no threshold is tuned. The future N10ER input contract is
+practical: if separately authorized, N10ER may privately produce/read bounded-CI
+orders, candidates, retrieval output, per-task diagnostic state, and score-phase
+labels after orders are frozen. Those remain private execution-time inputs; the
+public output contract emits aggregate-bucket safety flags only (no raw orders,
+candidates, labels, paths, queries, tasks, repos, exact ranks, method-winner
+claim, or runtime/default change). Six N10ER pass/fail gates are designed
+(private execution inputs with aggregate-only publication, aggregate-only output,
+no threshold tuning, no method-winner, no runtime/default, held-out public reproducibility check) —
+all evaluated on aggregate buckets with gold_used_for_policy_bool=false. Seven
+risk controls are recorded (aggregate overinterpretation from two cases,
+hindsight threshold tuning, guard promotion from two cases, private diagnostic
+leakage, runtime/default creep, N10ER execution creep, feature proxy as gold)
+— all controlled. The conservative stop/go authorizes only the N10ER contract
+handoff: `n10er_contract_authorized_bool=true` but
+`n10er_execution_authorized_bool=false`. All execution, threshold-tuning,
+promotion, runtime/default, method-winner, CI-variant-execution, and network
+fields are `false`. N10EQ reads only public aggregate artifacts; no private
+diagnostic inputs are read.
+
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
 rank-blocked records and localized the blocker to extra-depth append/merge-order.
