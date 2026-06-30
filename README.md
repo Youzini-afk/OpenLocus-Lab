@@ -28,20 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DQ: Oracle Candidate-Insertion Ceiling Public Package**:
+The latest closed phase is **BEA-v1-N10DU: Targeted Candidate-Source Variant Canary**:
 
 ```text
-status: oracle_candidate_ceiling_public_package_complete_n10dr_authorized
-self-test: 11 / 11
+status: targeted_candidate_source_variant_canary_pass_n10dv_authorized
+self-test: 12 / 12
 forbidden scan: pass
-private reads in N10DQ: 0
-recomputes in N10DQ: 0
-current suffix-safe top10/top20 file reach: 44 / 58
-affected absent-pool cases: 141
-rank1/rank5/rank10 oracle top10 ceiling: 185 / 213
-rank1/rank5/rank10 oracle top20 ceiling: 199 / 213
-span overlap status: not_evaluated_no_oracle_span
-next allowed phase: BEA-v1-N10DR Real Candidate-Source Canary (future contract required)
+sampled cases: 30
+variant count: 6
+command count: 180
+cases recovered by any variant: 10
+best variant: identifier_normalized_bm25_only
+best variant recovery top10/top20/top50: 8 / 9 / 10
+next allowed phase: BEA-v1-N10DV Targeted Candidate-Source Variant Canary Public Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -2490,6 +2489,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dr_real_candidate_source_canary/bea_v1_n10dr_real_candidate_source_canary_report.json`](artifacts/bea_v1_n10dr_real_candidate_source_canary/bea_v1_n10dr_real_candidate_source_canary_report.json)
 - [`artifacts/bea_v1_n10ds_real_candidate_source_canary_audit_package/bea_v1_n10ds_real_candidate_source_canary_audit_package_report.json`](artifacts/bea_v1_n10ds_real_candidate_source_canary_audit_package/bea_v1_n10ds_real_candidate_source_canary_audit_package_report.json)
 - [`artifacts/bea_v1_n10dt_real_candidate_source_failure_analysis/bea_v1_n10dt_real_candidate_source_failure_analysis_report.json`](artifacts/bea_v1_n10dt_real_candidate_source_failure_analysis/bea_v1_n10dt_real_candidate_source_failure_analysis_report.json)
+- [`artifacts/bea_v1_n10du_targeted_candidate_source_variant_canary/bea_v1_n10du_targeted_candidate_source_variant_canary_report.json`](artifacts/bea_v1_n10du_targeted_candidate_source_variant_canary/bea_v1_n10du_targeted_candidate_source_variant_canary_report.json)
 
 Documentation mirror check:
 
