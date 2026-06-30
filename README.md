@@ -28,6 +28,27 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
+**The BEA-v1-N10E safety-probe branch is now closed.** N10ES (checkpoint
+`8c04a0a`) packaged the N10ER bounded public CI score/guard safety probe as a
+valid public held-out negative — CI run `28457213423`, status
+`n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`, sample
+`80/60/40`, citation `7772/7772`, baseline `37/39/40/40`, full `36/39/40/40`,
+guard `38/39/40/40`, diffaware `37/39/40/40`, risk bucket `task_count=26`,
+losses `0/0/0` — and authorized only N10ET. N10ET (close-out design/decision)
+then locked N10ES/N10ER as a valid public held-out negative, confirmed the
+difference-aware rule remains a local same-source hypothesis (not a
+transferable method), and authorized **only** the next route:
+**BEA-v1-HAAE-R0 — Hierarchical Actionable Evidence Acquisition Route Design /
+Schema Preflight**. HAAE-R0 is explicitly **not** BEA-v1-A, not selector-only,
+not selector/reranker execution, not P5, and not a runtime/default promotion.
+
+The detailed source of truth for the closed N10E branch is
+[`docs/en/current-research-conclusions.md`](docs/en/current-research-conclusions.md)
+(EN) / [`docs/zh/current-research-conclusions.md`](docs/zh/current-research-conclusions.md)
+(ZH), together with the per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET docs. The
+chronological narrative below preserves the N10EM → N10EN → N10EO → N10EP →
+N10EQ → N10ER → N10ES → N10ET progression as historical context.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
@@ -292,6 +313,59 @@ fields are `false`. See `docs/en/bea-v1-n10es-public-safety-probe-audit-package.
 N10ES also explicitly audits N10ER's stop/go `next_allowed_phase` and public
 readback consistency across README, EN/ZH N10ER docs, and EN/ZH current
 conclusions.
+
+**BEA-v1-N10ET: Public Safety Probe Design/Decision** is the public-only
+close-out design/decision phase for the N10E safety-probe branch, after the
+N10ES checkpoint `8c04a0a`:
+
+```text
+status: n10et_public_safety_probe_design_decision_complete_haae_r0_authorized
+self-test: 74 / 74
+forbidden scan: pass
+private input reads: 0
+retrieval executions: 0
+recomputes: 0
+CI reruns: 0
+candidate generations: 0
+n10es / n10er source locked: true (checkpoint 8c04a0a / c8fd353, CI run 28457213423)
+next allowed phase: BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition
+                   Route Design / Schema Preflight
+```
+
+N10ET reads **only** the N10ES + N10ER public aggregate reports and public
+docs/current-conclusions/research-log/summary/README + git metadata; it performs
+no CI rerun, retrieval, recompute, candidate generation, clone, build, or
+search, and reads no private directories, CI raw logs, repo clones, raw
+candidates/orders/labels/paths/queries/tasks/repos, per-task diagnostics, or
+N10EO private rerun data. It locks the N10ES/N10ER public facts (CI run
+`28457213423`, status
+`n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` and
+`n10es_public_safety_probe_audit_package_complete_n10et_authorized`, sample
+`80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/40/40`, full
+`36/39/40/40` lost `1`, guard `38/39/40/40` lost `0`, diffaware `37/39/40/40`
+lost `1`, risk bucket `task_count=26`, losses `0/0/0`,
+`guard_would_preserve_full_loss_count=0`), records the close-out decisions
+(N10E/difference-aware remains a local same-source hypothesis; N10ER/N10ES are
+a valid public held-out negative; no guard/full/diffaware promotion, no
+threshold tuning, no N10ER rerun), and designs + authorizes **only** the next
+route: **BEA-v1-HAAE-R0 — Hierarchical Actionable Evidence Acquisition Route
+Design / Schema Preflight**. HAAE-R0 is explicitly **not** BEA-v1-A, not
+selector-only, not selector/reranker execution, not P5, and not a
+runtime/default promotion. The published artifact includes
+`n10es_source_lock_records`, `decision_records`, `haae_r0_route_records`,
+`risk_control_records`, `public_package_records`, `claim_boundary_records`,
+`pass_fail_gate_records` (20 audit gates, including N10ES next-phase, public
+readback, and HAAE-R0 non-identity gates, all aggregate,
+`gate_uses_gold_for_policy_bool=false`, `gate_performs_ci_rerun_bool=false`,
+`gate_reads_private_input_bool=false`), and `stop_go_records`. The conservative
+stop/go authorizes **only** the HAAE-R0 design/schema-preflight handoff
+(`haae_r0_design_only_schema_preflight_authorized_bool=true`,
+`haae_r0_execution_authorized_bool=false`); all execution, rerun, retrieval,
+recompute, candidate generation, tuning, promotion, runtime/default,
+method-winner, downstream/scaled retrieval, raw diagnostic publication, CI
+variant execution, selector/reranker, BEA-v1-A, P5, provider/model network,
+and network-run fields are `false`. See
+`docs/en/bea-v1-n10et-public-safety-probe-design-decision.md`.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40

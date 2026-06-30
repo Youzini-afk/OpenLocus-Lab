@@ -1,0 +1,539 @@
+{
+  "claim_boundary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_claim_boundary_id": "n10etclaim0000",
+      "candidate_generation_bool": false,
+      "ci_rerun_bool": false,
+      "design_decision_only_bool": true,
+      "downstream_value_claim_bool": false,
+      "external_benchmark_download_bool": false,
+      "frozen_rule_change_bool": false,
+      "gold_used_for_policy_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "n10es_audit_authorized_bool": false,
+      "n10es_re_run_authorized_bool": false,
+      "network_run_bool": false,
+      "private_rows_read_bool": false,
+      "production_retrieval_change_bool": false,
+      "promotion_claim_bool": false,
+      "provider_model_network_bool": false,
+      "public_only_bool": true,
+      "quiver_dense_real_bool": false,
+      "raw_candidate_upload_bool": false,
+      "raw_diagnostic_publication_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "remote_embedding_bool": false,
+      "retrieval_recompute_bool": false,
+      "run_phase_labels_used_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_claim_bool": false,
+      "score_phase_labels_used_bool": false,
+      "selector_reranker_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "decision_records": [
+    {
+      "anonymous_decision_id": "n10etdecision0000",
+      "decision_bucket": "n10e_differenceaware_remains_local_same_source_hypothesis",
+      "decision_description_bucket": "the difference-aware rule (top5_novel_candidate_item_count >= 4 selects guarded else full) reached 13/60 on the same-source N10DZ/N10EB sample but regressed on the N10EN public CI canary (37/40 vs baseline 39/40) and its held-out safety signal did not reproduce on the N10ER public CI sample (risk bucket 26, losses 0/0/0). it remains a local same-source hypothesis, not a transferable method.",
+      "frozen_rule_change_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "promotion_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    },
+    {
+      "anonymous_decision_id": "n10etdecision0001",
+      "ci_failure_bool": false,
+      "decision_bucket": "n10er_n10es_valid_public_heldout_negative",
+      "decision_description_bucket": "the N10ER held-out public CI safety probe (CI run 28457213423) reproduced zero baseline-displacement signal in a sufficient risk bucket (task_count=26, full/guard/diffaware losses 0/0/0, guard_would_preserve_full_loss_count=0). N10ES locked this as a valid research negative, not a CI failure. the pair (N10ER, N10ES) is a valid public held-out negative for the N10EO low-novelty full-displacement / guard-preservation safety signal.",
+      "frozen_rule_change_authorized_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "promotion_authorized_bool": false,
+      "signal_reproduced_bool": false,
+      "threshold_tuning_authorized_bool": false,
+      "valid_research_negative_bool": true
+    },
+    {
+      "anonymous_decision_id": "n10etdecision0002",
+      "ci_variant_execution_authorized_bool": false,
+      "decision_bucket": "no_guard_full_diffaware_promotion_no_threshold_tuning_no_n10er_rerun",
+      "decision_description_bucket": "no guard/full/diffaware promotion, no threshold tuning, no N10ER rerun, no CI variant execution, no selector/reranker execution, no new policy experiment, no runtime/default change, no method-winner claim, no downstream/scaled retrieval, no raw diagnostic publication. all such stop/go fields remain false.",
+      "method_winner_claim_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "promotion_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10etgate0000",
+      "gate_bucket": "n10es_public_source_locked",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10etgate0007",
+      "gate_bucket": "no_ci_rerun_retrieval_recompute_candidate_generation",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10etgate0008",
+      "gate_bucket": "no_private_input_read",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10etgate0009",
+      "gate_bucket": "no_selector_reranker_no_p5_no_bea_v1_a",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10etgate0010",
+      "gate_bucket": "no_n10er_rerun",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10etgate0020",
+      "gate_bucket": "haae_r0_non_identity_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "haae_r0_route_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_route_id": "n10etroute0000",
+      "authorized_for_next_phase_bool": true,
+      "design_description_bucket": "design (no execution) the next acquisition route as a hierarchical, actionable-evidence acquisition route: a schema preflight that defines how evidence-acquisition actions can be layered hierarchically (anchor / span-window / candidate-source / scheduler / safety-probe) while preserving EvidenceCore and abstaining when current-source evidence is unavailable. the preflight checks the route's public schema, source inputs, claim boundary, and stop/go contract before any future execution-authorized phase is opened.",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "public_only_bool": true,
+      "rationale_bucket": "deep research report 5 recommends closing the BEA-v1-N10E safety-probe branch and opening a new HAAE-R0 route rather than BEA-v1-A. HAAE-R0 is a design/schema preflight only; it is not the coverage-preserving selector route (BEA-v1-A), not a selector-only design, not selector/reranker execution, not P5, and not a runtime/default promotion.",
+      "route_bucket": "haae_r0_hierarchical_actionable_evidence_acquisition_route_design_schema_preflight",
+      "route_kind_bucket": "hierarchical_actionable_evidence_acquisition_route_design_schema_preflight",
+      "route_name": "BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight",
+      "route_phase_bucket": "BEA-v1-HAAE-R0",
+      "schema_preflight_bool": true
+    },
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_route_id": "n10etroute0001",
+      "authorized_for_next_phase_bool": true,
+      "design_description_bucket": "the HAAE-R0 preflight reads only public artifacts/docs and git metadata: the closed N10ES/N10ER/N10EQ/N10EP/N10EO public aggregates, the BEA-v1 actionability-matrix / trace-surface contracts, and the research-design/openlocus-research-design schemas. it performs no private reads, no CI rerun, no retrieval/recompute, no candidate generation, and no selector/reranker execution.",
+      "design_only_bool": true,
+      "execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "non_identity_buckets": [
+        "not_bea_v1_a",
+        "not_selector_only",
+        "not_selector_reranker_execution",
+        "not_p5",
+        "not_runtime_default_promotion"
+      ],
+      "public_only_bool": true,
+      "rationale_bucket": "preflight is a public-artifact-only schema/contract check; execution of any layer of the HAAE route would require a separate, explicitly authorized future phase.",
+      "route_bucket": "haae_r0_schema_preflight_inputs",
+      "route_kind_bucket": "schema_preflight_public_artifact_inputs",
+      "route_name": "HAAE-R0 Schema Preflight Inputs (public-artifact-only)",
+      "route_phase_bucket": "BEA-v1-HAAE-R0",
+      "schema_preflight_bool": true
+    }
+  ],
+  "n10es_source_lock_records": [
+    {
+      "anonymous_source_lock_id": "n10etsource0000",
+      "arm_aggregate_all_match_bool": true,
+      "citation_match_bool": true,
+      "input_artifact_load_status_bucket": "present",
+      "locked_n10eo_checkpoint": "6f8eeda",
+      "locked_n10ep_checkpoint": "0a54b49",
+      "locked_n10eq_checkpoint": "7963831",
+      "locked_n10er_checkpoint": "c8fd353",
+      "locked_n10er_ci_head": "2e7894e",
+      "locked_n10er_ci_run": "28457213423",
+      "locked_n10er_next_allowed_phase": "BEA-v1-N10ES Bounded Public CI Safety Probe Audit",
+      "locked_n10er_status": "n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized",
+      "locked_n10es_checkpoint": "8c04a0a",
+      "locked_n10es_next_allowed_phase": "BEA-v1-N10ET Public Safety Probe Design/Decision",
+      "locked_n10es_status": "n10es_public_safety_probe_audit_package_complete_n10et_authorized",
+      "n10eo_checkpoint_match_bool": true,
+      "n10ep_checkpoint_match_bool": true,
+      "n10eq_checkpoint_match_bool": true,
+      "n10er_artifact_load_status_bucket": "present",
+      "n10er_checkpoint_match_bool": true,
+      "n10er_ci_head_match_bool": true,
+      "n10er_ci_run_match_bool": true,
+      "n10er_n10es_audit_authorized_match_bool": true,
+      "n10er_next_phase_match_bool": true,
+      "n10er_status_match_bool": true,
+      "n10es_next_phase_match_bool": true,
+      "n10es_no_execution_match_bool": true,
+      "n10es_scan_pass_bool": true,
+      "n10es_source_locked_bool": true,
+      "n10es_status_match_bool": true,
+      "n10et_design_decision_authorized_match_bool": true,
+      "no_ci_rerun_performed_bool": true,
+      "no_private_input_read_bool": true,
+      "no_recompute_performed_bool": true,
+      "no_retrieval_performed_bool": true,
+      "overlap_match_bool": true,
+      "public_readback_match_bool": true,
+      "risk_aggregate_match_bool": true,
+      "sample_aggregate_match_bool": true,
+      "source_lock_bucket": "n10es_public_report_locked",
+      "source_locked_bool": true
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "n10etgate0000",
+      "gate_bucket": "n10es_public_source_locked",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0001",
+      "gate_bucket": "n10er_public_facts_locked",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0002",
+      "gate_bucket": "n10es_metric_audit_no_recompute",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0003",
+      "gate_bucket": "n10et_no_threshold_tuning",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0004",
+      "gate_bucket": "n10et_no_method_winner_claim",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0005",
+      "gate_bucket": "n10et_no_runtime_default_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0006",
+      "gate_bucket": "n10et_no_promotion_or_frozen_rule_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0007",
+      "gate_bucket": "n10et_no_ci_rerun_retrieval_recompute_candidate_generation",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0008",
+      "gate_bucket": "n10et_no_private_input_read",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0009",
+      "gate_bucket": "n10et_no_selector_reranker_no_p5_no_bea_v1_a",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0010",
+      "gate_bucket": "n10et_no_n10er_rerun",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0011",
+      "gate_bucket": "n10et_interpretation_consistent_with_locked_aggregates",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0012",
+      "gate_bucket": "n10es_stop_go_next_phase_match",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0013",
+      "gate_bucket": "n10er_stop_go_next_phase_match",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0014",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0015",
+      "gate_bucket": "readme_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0016",
+      "gate_bucket": "current_conclusions_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0017",
+      "gate_bucket": "research_log_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0018",
+      "gate_bucket": "research_summary_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0019",
+      "gate_bucket": "haae_r0_authorized_design_only_schema_preflight_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10etgate0020",
+      "gate_bucket": "haae_r0_non_identity_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10ET Public Safety Probe Design/Decision",
+  "public_package_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "all_public_readback_match_bool": true,
+      "anonymous_public_package_id": "n10etpackage0000",
+      "candidate_generation_count": 0,
+      "ci_rerun_count": 0,
+      "clone_build_search_run_bool": false,
+      "current_conclusions_match_bool": true,
+      "design_decision_only_bool": true,
+      "haae_r0_authorized_bool": true,
+      "haae_r0_design_only_bool": true,
+      "haae_r0_schema_preflight_bool": true,
+      "n10es_docs_readback_match_bool": true,
+      "n10es_source_locked_bool": true,
+      "n10et_docs_readback_match_bool": true,
+      "no_method_winner_claim_bool": true,
+      "no_runtime_default_change_bool": true,
+      "package_bucket": "n10et_public_safety_probe_design_decision_package",
+      "private_input_read_count": 0,
+      "public_only_bool": true,
+      "readme_readback_match_bool": true,
+      "recompute_count": 0,
+      "research_log_match_bool": true,
+      "research_summary_match_bool": true,
+      "retrieval_execution_count": 0,
+      "schema_version": "bea_v1_n10et_public_safety_probe_design_decision_v1",
+      "self_test_pass_claim_bool": true,
+      "self_test_total_check_count": 74
+    }
+  ],
+  "risk_control_records": [
+    {
+      "anonymous_risk_control_id": "n10etrisk0000",
+      "mitigation_bucket": "guard_full_diffaware_promotion_authorized_bool=false; method_winner_claim_authorized_bool=false; no arm is promoted.",
+      "risk_bucket": "promotion_from_valid_research_negative",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "treating the N10ER valid research negative as evidence to promote guard/full/diffaware would invert the finding."
+    },
+    {
+      "anonymous_risk_control_id": "n10etrisk0001",
+      "mitigation_bucket": "threshold_tuning_authorized_bool=false; frozen rule unchanged; any threshold design must use held-out public evidence.",
+      "risk_bucket": "hindsight_threshold_tuning_from_no_signal",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "tuning the frozen threshold (>=4) with hindsight on the same canary/negative samples would be data snooping."
+    },
+    {
+      "anonymous_risk_control_id": "n10etrisk0002",
+      "mitigation_bucket": "n10er_re_run_authorized_bool=false; ci_variant_execution_authorized_bool=false; recompute_authorized_bool=false; rerun_authorized_bool=false.",
+      "risk_bucket": "n10er_rerun_creep",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "re-running N10ER until the safety signal reproduces would p-hack the held-out probe."
+    },
+    {
+      "anonymous_risk_control_id": "n10etrisk0003",
+      "mitigation_bucket": "every HAAE-R0 route record carries the explicit non-identity booleans (not_bea_v1_a, not_selector_only, not_selector_reranker_execution, not_p5, not_runtime_default_promotion); selector_reranker_authorized_bool=false; runtime_default_change_authorized_bool=false; v1_a_authorized_bool=false (carried from prior stop/go vocab).",
+      "risk_bucket": "haae_r0_drift_into_selector_or_p5_or_runtime",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the HAAE-R0 route could be quietly reframed as BEA-v1-A, a selector-only design, selector/reranker execution, P5, or a runtime/default promotion."
+    },
+    {
+      "anonymous_risk_control_id": "n10etrisk0004",
+      "mitigation_bucket": "runtime_default_change_authorized_bool=false; any HAAE route remains opt-in/eval-only; no runtime or default change.",
+      "risk_bucket": "runtime_default_creep",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "a close-out design could implicitly drift runtime/default behavior by codifying a route as a default gate."
+    },
+    {
+      "anonymous_risk_control_id": "n10etrisk0005",
+      "mitigation_bucket": "N10ET reads only public aggregate artifacts/docs/git metadata; forbidden_scan blocks raw per-task/paths/orders/labels keys and private rerun paths; aggregate_buckets_only_bool=true.",
+      "risk_bucket": "private_diagnostic_leakage",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "N10EO used a private diagnostic rerun; N10ET must not leak per-task diagnostics/paths/candidates/orders/labels into the public close-out design."
+    },
+    {
+      "anonymous_risk_control_id": "n10etrisk0006",
+      "mitigation_bucket": "N10ET is a public-only close-out design/decision; no promotion, no rule change, no method-winner claim; HAAE-R0 is design/schema-preflight only.",
+      "risk_bucket": "aggregate_overinterpretation_from_two_cases",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "drawing strong conclusions from the 2-case N10EO misfire / the no-signal N10ER reproduction risks aggregate overinterpretation."
+    }
+  ],
+  "schema_version": "bea_v1_n10et_public_safety_probe_design_decision_v1",
+  "status": "n10et_public_safety_probe_design_decision_complete_haae_r0_authorized",
+  "stop_go_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_stop_go_id": "n10etstop0000",
+      "bea_v1_a_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "ci_variant_execution_authorized_bool": false,
+      "design_decision_only_bool": true,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "execution_authorized_bool": false,
+      "frozen_rule_change_authorized_bool": false,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "haae_r0_design_only_schema_preflight_authorized_bool": true,
+      "haae_r0_execution_authorized_bool": false,
+      "haae_r0_not_bea_v1_a_bool": true,
+      "haae_r0_not_p5_bool": true,
+      "haae_r0_not_runtime_default_promotion_bool": true,
+      "haae_r0_not_selector_only_bool": true,
+      "haae_r0_not_selector_reranker_execution_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "n10es_audit_authorized_bool": false,
+      "n10es_re_run_authorized_bool": false,
+      "n10et_audit_authorized_bool": false,
+      "n10et_re_run_authorized_bool": false,
+      "network_run_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight",
+      "p5_authorized_bool": false,
+      "provider_model_network_authorized_bool": false,
+      "public_only_bool": true,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "recompute_authorized_bool": false,
+      "rerun_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ]
+}

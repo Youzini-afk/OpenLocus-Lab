@@ -11469,3 +11469,22 @@ The latest active state is N10ES:
 N10ES locks this as a **valid bounded public-CI research negative**, not an infrastructure failure and not evidence for promotion. It authorizes only **N10ET public design/decision**. It does not authorize N10ER rerun, threshold tuning, new policy experiments, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, provider/model network, or raw diagnostic publication.
 
 Detailed current state: [`current-research-conclusions.md`](current-research-conclusions.md), [`bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md`](bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md), and [`bea-v1-n10es-public-safety-probe-audit-package.md`](bea-v1-n10es-public-safety-probe-audit-package.md).
+
+
+---
+
+## 2026-06-30 — BEA-v1-N10ET: Public Safety Probe Design/Decision
+
+### Objective
+
+Close the BEA-v1-N10E safety-probe branch as a public-only design/decision phase, locking the N10ES/N10ER public facts, recording the close-out decisions, and authorizing only the next route.
+
+### Result
+
+`eval/bea_v1_n10et_public_safety_probe_design_decision.py` generated `artifacts/bea_v1_n10et_public_safety_probe_design_decision/bea_v1_n10et_public_safety_probe_design_decision_report.json` with status `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`. Self-test passed `74/74`, forbidden scan passed, private input reads `0`, retrieval executions `0`, recomputes `0`, CI reruns `0`, candidate generations `0`. N10ES/N10ER source locked: N10ES checkpoint `8c04a0a`, N10ER checkpoint `c8fd353`, CI run `28457213423` (head `2e7894e`), status `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` and `n10es_public_safety_probe_audit_package_complete_n10et_authorized`, sample `80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/40/40`, full `36/39/40/40` lost `1`, guard `38/39/40/40` lost `0`, diffaware `37/39/40/40` lost `1`, risk bucket `task_count=26`, losses `0/0/0`, `guard_would_preserve_full_loss_count=0` all match. The phase reads only public artifacts/docs/current conclusions/research logs/README and git metadata; it performs no execution, no private reads, no CI rerun, no retrieval/recompute, and no candidate generation.
+
+Three close-out decisions are recorded: BEA-v1-N10E/difference-aware remains a local same-source hypothesis; N10ER/N10ES are a valid public held-out negative (valid research negative, not CI failure); and no guard/full/diffaware promotion, no threshold tuning, no N10ER rerun, no CI variant execution, no selector/reranker execution, no new policy experiment, no runtime/default change, no method-winner claim, no downstream/scaled retrieval, no raw diagnostic publication. The phase designs and authorizes only the next route: **BEA-v1-HAAE-R0 — Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight**, a public-only, design-only schema preflight that is explicitly **not** BEA-v1-A, not selector-only, not selector/reranker execution, not P5, and not a runtime/default promotion.
+
+### Decision
+
+N10ET authorizes only the BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight (public-only, design-only, no execution). It does not authorize N10ET/N10ES re-run, N10ER re-run/execution, any execution, rerun, retrieval, recompute, candidate generation, threshold tuning, new policy experiments, frozen-rule changes, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, raw diagnostic publication, CI variant execution, selector/reranker execution, BEA-v1-A, P5, provider/model network, or network runs. All such stop/go fields are `false`. The HAAE-R0 non-identity booleans (`haae_r0_not_bea_v1_a_bool`, `haae_r0_not_selector_only_bool`, `haae_r0_not_selector_reranker_execution_bool`, `haae_r0_not_p5_bool`, `haae_r0_not_runtime_default_promotion_bool`) are all `true`. The detailed source of truth for the closed N10E branch is `current-research-conclusions.md` together with the per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET docs. See `docs/en/bea-v1-n10et-public-safety-probe-design-decision.md`.

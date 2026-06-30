@@ -10658,3 +10658,22 @@ c8fd353 feat(eval): record N10ER CI safety probe result
 N10ES 将其锁定为**有效 bounded public-CI research negative**，不是基础设施失败，也不是 promotion 证据。它只授权 **N10ET public design/decision**。不授权 N10ER rerun、threshold tuning、新 policy experiments、guard/full/diffaware promotion、runtime/default changes、method-winner claims、downstream/scaled retrieval、provider/model network 或 raw diagnostic publication。
 
 详细当前状态见：[`current-research-conclusions.md`](current-research-conclusions.md)、[`bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md`](bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md)、[`bea-v1-n10es-public-safety-probe-audit-package.md`](bea-v1-n10es-public-safety-probe-audit-package.md)。
+
+
+---
+
+## 2026-06-30 — BEA-v1-N10ET：Public Safety Probe Design/Decision
+
+### 目标
+
+以 public-only design/decision 阶段收尾 BEA-v1-N10E safety-probe 分支，锁定 N10ES/N10ER public facts，记录收尾决策，并只授权下一 route。
+
+### 结果
+
+`eval/bea_v1_n10et_public_safety_probe_design_decision.py` 生成 `artifacts/bea_v1_n10et_public_safety_probe_design_decision/bea_v1_n10et_public_safety_probe_design_decision_report.json`，状态为 `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`。Self-test 通过 `74/74`，forbidden scan 通过，private input reads `0`，retrieval executions `0`，recomputes `0`，CI reruns `0`，candidate generations `0`。N10ES/N10ER source 已锁定：N10ES checkpoint `8c04a0a`，N10ER checkpoint `c8fd353`，CI run `28457213423`（head `2e7894e`），status `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` 与 `n10es_public_safety_probe_audit_package_complete_n10et_authorized`，sample `80/60/40`，`overlap_zero`，citation `7772/7772`，baseline `37/39/40/40`，full `36/39/40/40` lost `1`，guard `38/39/40/40` lost `0`，diffaware `37/39/40/40` lost `1`，risk bucket `task_count=26`，losses `0/0/0`，`guard_would_preserve_full_loss_count=0` 均匹配。该阶段只读取 public artifacts/docs/current conclusions/research logs/README 与 git metadata；不进行任何 execution、private reads、CI rerun、retrieval/recompute 或 candidate generation。
+
+记录三条收尾决策：BEA-v1-N10E/difference-aware 仍是 local same-source hypothesis；N10ER/N10ES 是有效 public held-out negative（有效 research negative，不是 CI failure）；不推广 guard/full/diffaware，不调阈值，不 rerun N10ER，不执行 CI variant，不执行 selector/reranker，不做新 policy experiment，不改 runtime/default，不 claim method-winner，不做 downstream/scaled retrieval，不发布 raw diagnostic。该阶段设计并只授权下一 route：**BEA-v1-HAAE-R0 —— Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight**，一个 public-only、design-only 的 schema preflight，明确 **不是** BEA-v1-A、不是 selector-only、不是 selector/reranker execution、不是 P5、不是 runtime/default promotion。
+
+### 决策
+
+N10ET 只授权 BEA-v1-HAAE-R0 Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight（public-only，design-only，不执行）。它不授权 N10ET/N10ES re-run、N10ER re-run/execution、任何 execution、rerun、retrieval、recompute、candidate generation、threshold tuning、新 policy experiments、frozen-rule changes、guard/full/diffaware promotion、runtime/default changes、method-winner claims、downstream/scaled retrieval、raw diagnostic publication、CI variant execution、selector/reranker execution、BEA-v1-A、P5、provider/model network 或 network runs。所有这类 stop/go 字段均为 `false`。HAAE-R0 non-identity booleans（`haae_r0_not_bea_v1_a_bool`、`haae_r0_not_selector_only_bool`、`haae_r0_not_selector_reranker_execution_bool`、`haae_r0_not_p5_bool`、`haae_r0_not_runtime_default_promotion_bool`）全部为 `true`。已关闭 N10E 分支的详细事实来源是 `current-research-conclusions.md` 与 per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET docs。参见 `docs/zh/bea-v1-n10et-public-safety-probe-design-decision.md`。
