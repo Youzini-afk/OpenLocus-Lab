@@ -229,6 +229,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10ec-normalized-bm25-depth-to-head-integration-audit-package.md`: [en](en/bea-v1-n10ec-normalized-bm25-depth-to-head-integration-audit-package.md) · [zh](zh/bea-v1-n10ec-normalized-bm25-depth-to-head-integration-audit-package.md)
 - `bea-v1-n10ed-novel-first-depth-to-head-mechanism-analysis.md`: [en](en/bea-v1-n10ed-novel-first-depth-to-head-mechanism-analysis.md) · [zh](zh/bea-v1-n10ed-novel-first-depth-to-head-mechanism-analysis.md)
 - `bea-v1-n10ee-normalized-bm25-novel-guard-fixed-repacking-experiment.md`: [en](en/bea-v1-n10ee-normalized-bm25-novel-guard-fixed-repacking-experiment.md) · [zh](zh/bea-v1-n10ee-normalized-bm25-novel-guard-fixed-repacking-experiment.md)
+- `bea-v1-n10ef-normalized-bm25-novel-guard-experiment-package.md`: [en](en/bea-v1-n10ef-normalized-bm25-novel-guard-experiment-package.md) · [zh](zh/bea-v1-n10ef-normalized-bm25-novel-guard-experiment-package.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)

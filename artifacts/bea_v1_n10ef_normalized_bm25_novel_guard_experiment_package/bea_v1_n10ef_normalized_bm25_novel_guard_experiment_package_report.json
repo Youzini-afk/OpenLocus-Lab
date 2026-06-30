@@ -1,0 +1,116 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10efclaim0000",
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_retrieval_bool": false,
+      "private_read_bool": false,
+      "recompute_bool": false,
+      "runtime_default_change_bool": false,
+      "same_source_package_only_bool": true,
+      "scaled_retrieval_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10efgate0000",
+      "gate_bucket": "n10ee_input_status_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10efgate0001",
+      "gate_bucket": "packaged_results_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10efgate0002",
+      "gate_bucket": "tradeoff_summary_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10efgate0003",
+      "gate_bucket": "public_only_package",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_novel_guard_fixed_repacking_experiment_complete_n10ef_authorized",
+      "anonymous_input_artifact_id": "n10efinput0000",
+      "artifact_bucket": "n10ee_fixed_repacking_experiment",
+      "expected_status_bucket": "normalized_bm25_novel_guard_fixed_repacking_experiment_complete_n10ef_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "packaged_result_records": [
+    {
+      "anonymous_packaged_result_id": "n10efresult0000",
+      "lost_baseline_top10_hits": 0,
+      "matches_n10ee_bool": true,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 5,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_packaged_result_id": "n10efresult0001",
+      "lost_baseline_top10_hits": 0,
+      "matches_n10ee_bool": true,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_packaged_result_id": "n10efresult0002",
+      "lost_baseline_top10_hits": 0,
+      "matches_n10ee_bool": true,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EF Normalized-BM25 Novel-Guard Experiment Package",
+  "schema_version": "bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package_v1",
+  "status": "normalized_bm25_novel_guard_experiment_package_complete_n10eg_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10efstop0000",
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10eg_followup_experiment_authorized_bool": true,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EG Normalized-BM25 Novel-First Robustness / Failure Slicing Experiment",
+      "private_read_authorized_bool": true,
+      "private_read_scope_bucket": "same_n10dz_top100_and_n1_rows_only",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "tradeoff_summary_records": [
+    {
+      "all_tracked_variants_zero_loss_bool": true,
+      "anonymous_tradeoff_summary_id": "n10eftradeoff0000",
+      "full_novel_first_best_top10_bool": true,
+      "full_novel_first_top10_count": 11,
+      "guarded_recovery_delta_vs_full_novel_first": -1,
+      "guarded_top5_novel_distinct_top10_count": 10,
+      "interpretation_bucket": "guarded_rule_is_conservative_zero_loss_but_weaker"
+    }
+  ]
+}

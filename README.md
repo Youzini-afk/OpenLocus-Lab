@@ -28,25 +28,25 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EE: Normalized-BM25 Novel-Guard Fixed Repacking Experiment**:
+The latest closed phase is **BEA-v1-N10EF: Normalized-BM25 Novel-Guard Experiment Package**:
 
 ```text
-status: normalized_bm25_novel_guard_fixed_repacking_experiment_complete_n10ef_authorized
-self-test: 9 / 9
+status: normalized_bm25_novel_guard_experiment_package_complete_n10eg_authorized
+self-test: 6 / 6
 forbidden scan: pass
-case count: 60
-variant count: 8
+private reads: 0
+recomputes: 0
 baseline BM25 top10/top20/top50/top100: 5 / 11 / 17 / 26
 full novel-first top10/top20/top50/top100: 11 / 16 / 20 / 26
-best guarded top10/top20/top50/top100: 10 / 13 / 18 / 26
-lost baseline top10: 0 for all variants
-next allowed phase: BEA-v1-N10EF Normalized-BM25 Novel-Guard Experiment Package
+guarded top5 novel-distinct top10/top20/top50/top100: 10 / 13 / 18 / 26
+all tracked variants lost baseline top10: 0
+next allowed phase: BEA-v1-N10EG Normalized-BM25 Novel-First Robustness / Failure Slicing Experiment
 ```
 
-N10EE tests the guarded follow-up from N10ED. Full novel-first remains strongest
-at 11/60 top10. The best guarded rule, keeping the first five BM25 candidates and
-then filling with novel+distinct files, reaches 10/60 top10 and remains zero-loss.
-So guarding is a conservative trade-off, not a replacement for full novel-first.
+N10EF packages N10EE. Full novel-first remains strongest at 11/60 top10; the best
+guarded rule reaches 10/60 and remains zero-loss. Guarding is therefore a
+conservative trade-off, not a replacement for full novel-first and not a default
+policy decision.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2505,6 +2505,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json`](artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json)
 - [`artifacts/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_report.json`](artifacts/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_report.json)
 - [`artifacts/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_report.json`](artifacts/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_report.json)
+- [`artifacts/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package_report.json`](artifacts/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package_report.json)
 
 Documentation mirror check:
 
