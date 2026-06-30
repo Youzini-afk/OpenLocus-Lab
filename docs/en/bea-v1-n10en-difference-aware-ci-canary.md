@@ -6,6 +6,33 @@ BEA-v1-N10EN is the first real bounded public CI canary for the frozen
 difference-aware rule. It is gated on the BEA-v1-N10EM public replication package
 and its scoped `n10en_ci_handoff_records`, and it is `workflow_dispatch` only.
 
+## CI result
+
+N10EN ran successfully in GitHub Actions as run `28449370879` on head `9d0da19`
+with `enable_public_github_network=true`, `stage=canary_small`.
+
+```text
+status: difference_aware_winner_ci_canary_outcome_regression
+forbidden scan: pass
+repo_count: 2
+public_task_count: 80
+task_with_candidates_count: 58
+scored_task_count: 58
+task_with_gold_count: 40
+baseline top10/top20/top50/top100: 39 / 40 / 40 / 40
+full novel-first:                 37 / 40 / 40 / 40 (lost baseline top10: 2)
+guarded top5:                     39 / 40 / 40 / 40 (lost baseline top10: 0)
+diffaware:                        37 / 40 / 40 / 40 (lost baseline top10: 2)
+selected arms: full=49, guarded=9
+citation validity: 3636 / 3636
+```
+
+This is a valid research result, not a CI infrastructure failure. The frozen
+same-row difference-aware winner does not transfer to this public CI canary:
+the switch chose the full novel-first arm on most tasks and lost two baseline
+top10 hits. N10EN therefore authorizes only N10EO failure analysis / mechanism
+decomposition, not runtime/default promotion or method-winner claims.
+
 ## Default behavior (fail-closed)
 
 With `enable_public_github_network` left at its default `false`, the canary
@@ -21,8 +48,9 @@ clone_run_bool: false
 search_run_bool: false
 ```
 
-This is the safe state committed to the repo. The committed artifact is the
-network-disabled fail-closed report, not a real canary run.
+This remains the safe default behavior. The committed artifact is now the
+successful network-enabled canary report above, after explicit manual CI
+execution.
 
 ## Network-enabled canary
 
@@ -81,8 +109,8 @@ the RUN phase, provider/network policy violation, citation-validation failure,
 or raw-upload violation.
 
 Outcome regression is a valid research result, **not** an infrastructure
-failure. The outcome status records `positive` / `neutral` / `regression` and
-hands off to N10EO.
+failure. In this run the observed outcome is `regression`, and it hands off only
+to N10EO failure analysis.
 
 ## Boundary
 

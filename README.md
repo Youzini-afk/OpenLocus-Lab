@@ -28,7 +28,7 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
+The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
 status: difference_aware_winner_public_replication_package_complete_n10en_authorized
@@ -53,23 +53,32 @@ candidate materialization, score-phase labels, and sanitized aggregate upload. N
 runtime/default, production retrieval change, provider network, method/downstream,
 or heldout/generalization claim is authorized.
 
-**BEA-v1-N10EN: Difference-Aware Winner Broader-Sample CI Validation Canary** is
-now added as the first real bounded public CI canary for the frozen rule,
-`workflow_dispatch` only with `enable_public_github_network` defaulting to `false`:
+**BEA-v1-N10EN: Difference-Aware Winner Broader-Sample CI Validation Canary**
+has now run as the first real bounded public CI canary for the frozen rule:
 
 ```text
-status: n10en_public_github_network_disabled_unavailable_fail_closed
+status: difference_aware_winner_ci_canary_outcome_regression
+CI run: 28449370879
+head sha: 9d0da19
 forbidden scan: pass
 N10EM gate: authorized (handoff scoped to N10EN public CI only)
-run_phase_labels_used_bool: false
-score_phase_labels_used_bool: false
-clone_run_bool: false
-search_run_bool: false
+repo_count: 2
+public_task_count: 80
+task_with_candidates_count: 58
+scored_task_count: 58
+task_with_gold_count: 40
+baseline top10/top20/top50/top100: 39 / 40 / 40 / 40
+full novel-first:                 37 / 40 / 40 / 40 (lost baseline top10: 2)
+guarded top5:                     39 / 40 / 40 / 40 (lost baseline top10: 0)
+diffaware:                        37 / 40 / 40 / 40 (lost baseline top10: 2)
+selected arms: full=49, guarded=9
+citation validity: 3636 / 3636
 ```
 
-The committed artifact is the network-disabled fail-closed report: it performs no
-clone/build/search and exits 0. When `enable_public_github_network` is explicitly
-enabled, the canary clones manifest-listed public repos only (reusing
+The workflow remains `workflow_dispatch` only and `enable_public_github_network`
+still defaults to `false`; the safe default emits a fail-closed report with no
+clone/build/search. The successful CI run above explicitly enabled public GitHub
+network, cloned manifest-listed public repos only (reusing
 `ci_clone_and_lock_repo.py`), generates public tasks with `--no-labels` first
 (reusing `ci_generate_tasks.py`), applies the four frozen transforms (baseline raw
 BM25, full novel-first, guarded keep-top5-then-distinct-novel-fill, diffaware
@@ -78,7 +87,9 @@ N10EN helper rather than by bending `ci_run_strategy_matrix`, fixes RUN orders,
 then generates score-phase labels and scores the fixed orders (labels/gold for
 aggregate scoring only, never policy). The uploaded report is aggregate-only and
 scanner-validated; CI fails on contract/privacy/build/clone/task failures but not
-on outcome regression, which hands off to N10EO as positive/neutral/regression.
+on outcome regression. N10EN is an effective broader-sample negative for the
+N10EK same-row winner: the difference-aware switch regressed relative to baseline
+on this public CI canary. The next phase is N10EO failure analysis, not promotion.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40

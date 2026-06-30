@@ -1,9 +1,46 @@
 {
-  "aggregate_count_records": [],
+  "aggregate_count_records": [
+    {
+      "anonymous_aggregate_id": "n10enagg0000",
+      "arm_bucket": "baseline",
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 39,
+      "top20_file_recovery_count": 40,
+      "top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_aggregate_id": "n10enagg0001",
+      "arm_bucket": "full",
+      "lost_baseline_top10_hits": 2,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 37,
+      "top20_file_recovery_count": 40,
+      "top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_aggregate_id": "n10enagg0002",
+      "arm_bucket": "guard",
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 39,
+      "top20_file_recovery_count": 40,
+      "top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_aggregate_id": "n10enagg0003",
+      "arm_bucket": "diffaware",
+      "lost_baseline_top10_hits": 2,
+      "top100_file_recovery_count": 40,
+      "top10_file_recovery_count": 37,
+      "top20_file_recovery_count": 40,
+      "top50_file_recovery_count": 40
+    }
+  ],
   "citation_validity_aggregate_records": [
     {
-      "citation_total_count": 0,
-      "citation_valid_count": 0,
+      "citation_total_count": 3636,
+      "citation_valid_count": 3636,
       "citation_validity_all_implemented_bool": true
     }
   ],
@@ -16,7 +53,7 @@
       "heldout_generalization_claim_bool": false,
       "manifest_listed_public_repos_only_bool": true,
       "method_winner_claim_bool": false,
-      "network_run_bool": false,
+      "network_run_bool": true,
       "private_rows_read_bool": false,
       "production_retrieval_change_bool": false,
       "provider_model_network_bool": false,
@@ -30,11 +67,11 @@
       "run_phase_labels_used_bool": false,
       "runtime_default_change_bool": false,
       "scaled_retrieval_claim_bool": false,
-      "score_phase_labels_used_bool": false,
+      "score_phase_labels_used_bool": true,
       "selector_reranker_bool": false
     }
   ],
-  "enable_public_github_network_bool": false,
+  "enable_public_github_network_bool": true,
   "forbidden_scan": {
     "finding_buckets": [],
     "forbidden_finding_count": 0,
@@ -48,11 +85,31 @@
     },
     {
       "anonymous_gate_id": "n10engate0002",
-      "gate_bucket": "network_disabled_fail_closed",
+      "gate_bucket": "public_tasks_generated",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10engate0003",
+      "gate_bucket": "run_candidates_materialized",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10engate0004",
+      "gate_bucket": "citation_validity_all_implemented",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10engate0005",
+      "gate_bucket": "run_score_separation",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10engate0006",
+      "gate_bucket": "gold_not_used_for_policy",
       "gate_passed_bool": true
     }
   ],
-  "local_openlocus_search_run_bool": false,
+  "local_openlocus_search_run_bool": true,
   "n10em_gate_records": [
     {
       "actual_status_bucket": "difference_aware_winner_public_replication_package_complete_n10en_authorized",
@@ -95,27 +152,67 @@
       "status_match_bool": true
     }
   ],
-  "openlocus_cli_build_run_bool": false,
+  "openlocus_cli_build_run_bool": true,
   "phase_bucket": "BEA-v1-N10EN Difference-Aware Winner Broader-Sample CI Validation Canary",
-  "public_github_clone_fetch_run_bool": false,
+  "public_github_clone_fetch_run_bool": true,
   "run_phase_records": [
     {
       "anonymous_run_phase_id": "n10enrun0000",
-      "bm25_candidate_total": 0,
-      "candidate_count": 0,
-      "clone_run_bool": false,
+      "bm25_candidate_total": 909,
+      "candidate_count": 909,
+      "clone_run_bool": true,
       "gold_used_for_policy_bool": false,
-      "old_pool_file_total": 0,
-      "public_task_count": 0,
-      "repo_count": 0,
+      "old_pool_file_total": 152,
+      "public_task_count": 80,
+      "repo_count": 2,
       "run_phase_labels_used_bool": false,
-      "score_phase_labels_used_bool": false,
-      "search_run_bool": false,
-      "task_with_candidates_count": 0
+      "score_phase_labels_used_bool": true,
+      "search_run_bool": true,
+      "task_with_candidates_count": 58
     }
   ],
   "schema_version": "bea_v1_n10en_difference_aware_ci_canary_v1",
-  "selected_arm_bucket_records": [],
-  "status": "n10en_public_github_network_disabled_unavailable_fail_closed",
-  "top5_novelty_bucket_records": []
+  "score_phase_records": [
+    {
+      "anonymous_score_phase_id": "n10enscore0000",
+      "baseline_top10_task_count": 39,
+      "gold_used_for_policy_bool": false,
+      "score_phase_labels_used_bool": true,
+      "scored_task_count": 58,
+      "task_with_gold_count": 40
+    }
+  ],
+  "selected_arm_bucket_records": [
+    {
+      "anonymous_arm_bucket_id": "n10enarm0000",
+      "selected_arm_bucket": "full_novel_first",
+      "task_count": 49
+    },
+    {
+      "anonymous_arm_bucket_id": "n10enarm0001",
+      "selected_arm_bucket": "guarded_top5_novel_distinct",
+      "task_count": 9
+    }
+  ],
+  "status": "difference_aware_winner_ci_canary_outcome_regression",
+  "top5_novelty_bucket_records": [
+    {
+      "anonymous_novelty_bucket_id": "n10ennov0000",
+      "bucket": "top5_novel_candidate_item_count_0_to_2",
+      "bucket_type": "top5_novel_candidate_item_count",
+      "task_count": 47
+    },
+    {
+      "anonymous_novelty_bucket_id": "n10ennov0001",
+      "bucket": "top5_novel_candidate_item_count_3",
+      "bucket_type": "top5_novel_candidate_item_count",
+      "task_count": 2
+    },
+    {
+      "anonymous_novelty_bucket_id": "n10ennov0002",
+      "bucket": "top5_novel_candidate_item_count_4_to_5",
+      "bucket_type": "top5_novel_candidate_item_count",
+      "task_count": 9
+    }
+  ]
 }

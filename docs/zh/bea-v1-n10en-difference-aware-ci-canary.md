@@ -4,6 +4,33 @@
 
 BEA-v1-N10EN 是 frozen difference-aware rule 的第一个真正的 bounded public CI canary。它 gate 在 BEA-v1-N10EM public replication package 及其 scoped `n10en_ci_handoff_records` 上，且仅 `workflow_dispatch` 触发。
 
+## CI result
+
+N10EN 已在 GitHub Actions 中成功运行：run `28449370879`，head `9d0da19`，
+`enable_public_github_network=true`，`stage=canary_small`。
+
+```text
+status: difference_aware_winner_ci_canary_outcome_regression
+forbidden scan: pass
+repo_count: 2
+public_task_count: 80
+task_with_candidates_count: 58
+scored_task_count: 58
+task_with_gold_count: 40
+baseline top10/top20/top50/top100: 39 / 40 / 40 / 40
+full novel-first:                 37 / 40 / 40 / 40 (lost baseline top10: 2)
+guarded top5:                     39 / 40 / 40 / 40 (lost baseline top10: 0)
+diffaware:                        37 / 40 / 40 / 40 (lost baseline top10: 2)
+selected arms: full=49, guarded=9
+citation validity: 3636 / 3636
+```
+
+这是有效 research result，不是 CI infrastructure failure。Frozen same-row
+difference-aware winner 没有迁移到这个 public CI canary：switch 在多数 tasks
+选择 full novel-first arm，并丢了两个 baseline top10 hits。因此 N10EN 只授权
+N10EO failure analysis / mechanism decomposition，不授权 runtime/default promotion
+或 method-winner claims。
+
 ## 默认行为（fail-closed）
 
 当 `enable_public_github_network` 保持默认 `false` 时，canary **不** clone、build、search 或生成 candidates。它输出 fail-closed / unavailable artifact 并以 exit 0 退出：
@@ -17,7 +44,7 @@ clone_run_bool: false
 search_run_bool: false
 ```
 
-这是提交到 repo 的安全状态。已提交的 artifact 是 network-disabled fail-closed report，不是真实 canary run。
+这仍是安全默认行为。当前提交的 artifact 已经是显式手动 CI 执行后的 successful network-enabled canary report。
 
 ## Network-enabled canary
 
@@ -59,7 +86,7 @@ artifact 中禁止：repo names/URLs、commit SHAs、task IDs、queries、paths/
 
 workflow 仅在 contract failures 时失败：N10EM gate 失败、build/clone 失败、task-generation 失败、no tasks、privacy-scan 失败、RUN phase 使用 labels、provider/network policy 违反、citation-validation 失败、raw-upload 违反。
 
-Outcome regression 是有效的 research result，**不是** infrastructure failure。outcome status 记录 `positive` / `neutral` / `regression` 并 handoff 给 N10EO。
+Outcome regression 是有效的 research result，**不是** infrastructure failure。本次 run 的 observed outcome 是 `regression`，只 handoff 给 N10EO failure analysis。
 
 ## Boundary
 
