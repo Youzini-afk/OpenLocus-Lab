@@ -3450,3 +3450,17 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **BEA-v1-P1-2 Private Label Intake Validator 已完成为 contract pass**：status `private_label_intake_validator_contract_pass`，self-test `8/8`，forbidden scan `pass`。
 - **结果**：从 `.openlocus/research-private/` 验证了 18 条 project-private queue records；本轮未提供真实 private label 文件，因此有效真实 labels 仍为 `0/18`，sanitized real-label records 为空。
 - **决策**：P1-2 只授权 private support-label intake validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
+
+## BEA-v1-N-series roll-up after P1-2：到 N10ES
+
+- **为什么用 roll-up**：P1-2 之后项目进入大量细粒度 per-phase docs。权威细节见 [`current-research-conclusions.md`](current-research-conclusions.md)；这里只记录主线发现，不复制所有 N10 子阶段。
+- **恢复 fixed-pool 链路**：FD1/P4L/N1/N2 前置输入被重建，N6XFR-E fixed-pool 实验可以真实运行。修正 extra-depth 为 `rank>20` 后，最佳 top10 达到 `25/40`；N7/N8/N9 完成审计、独立复算和公开打包。
+- **Support/trace 侧线**：P1-3 填充 automated support labels，但 P1-4/P1-5R 证明 labels 不够 informative，private context 也不可用。P2/P3 将 late trace gaps 转成 frozen logger/proxy-fixture 工作，最后因没有 empirical event source 而关闭 proxy route。
+- **P4 reservoir/scheduler 分支**：P4H/P4I/P4J/P4K 将 heldout reservoir 收敛为 locked 272-record non-Python denominator，P4L 在该 denominator 上验证 frozen P4 scheduler。它仍只是 scheduler validation，不是 P5/runtime promotion。
+- **Exact broader denominator 关闭**：N10 和 N10R 证明 exact broader N2-equivalent rank-pack rows 在 40-row surface 已耗尽，继续必须换 denominator 定义。
+- **Span-surface 分支**：N10T 在 N1 span rows 上验证 file-level proxy gain；N10X/N10Y/N10Z 证明 span utility 仍失败，原因是 same-file window misalignment。
+- **Span-window repair 分支**：固定窗口恢复 span overlaps；后续探索找到更强的 observable span-shape/top2-window variants。local-window 线最后在 `30/36` 饱和，瓶颈从 window size 转向 file reach。
+- **Rank/file-reach 分支**：测试 distinct-file packing 与 deep-rank promotion；deep-rank promotion 仍有害；suffix-safe matching 修正 file-reach counts；oracle candidate insertion 显示候选来源补齐的理论上限很高。
+- **Candidate-source 分支**：identifier-normalized BM25 找到旧池没有的新文件。novel-first depth-to-head repacking 给出同源正结果；fixed difference-aware rule 在 N10DZ/N10EB sample 上达到 `13/60`。
+- **Public CI transfer 分支**：N10EN 在 GitHub Actions 上测试该 winner 并回归（diffaware `37/40` vs baseline `39/40`）。N10EO 解释为 novel-first 推掉强 baseline hits。N10ER 再测该 safety signal 于 held-out public CI sample，结果未复现：risk bucket `26`，losses `0/0/0`。N10ES 将其打包为有效 bounded research negative。
+- **当前决策**：N10ES（`8c04a0a`）只授权 N10ET public design/decision。不授权 N10ER rerun、调阈值、policy experiment、promotion、runtime/default change、method-winner claim、downstream/scaled retrieval 或 raw diagnostic publication。

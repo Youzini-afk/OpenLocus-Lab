@@ -11424,3 +11424,48 @@ No real private labels were supplied in this run, so valid real labels remain `0
 ### Decision
 
 P1-2 authorizes only private support-label intake validation. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, runtime/default promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
+
+---
+
+## 2026-06-28 to 2026-06-30 — BEA-v1 N-series roll-up: P1-2 to N10ES
+
+### Objective
+
+Bring the narrative log back in sync with the active per-phase documentation after the P1-2 support-label intake branch. The detailed phase-by-phase source of truth is now the per-phase docs plus [`current-research-conclusions.md`](current-research-conclusions.md); this section records the main research line without duplicating every N10 subphase.
+
+### Result
+
+The work moved from support-label intake into a long N-series empirical research chain:
+
+- **Recovered prerequisite chain**: rebuilt FD1, P4L, N1, and N2 private/replay inputs locally, then converted the earlier “missing inputs” blocker into runnable fixed-pool experiments.
+- **Support-label and trace-surface follow-up**: P1-3 generated automated support labels, but P1-4/P1-5R showed they were non-informative and lacked reconstructable private context. P2/P3 closed late trace-surface routes into frozen trace-logger designs/proxy fixture audits, ending with no existing empirical event source available.
+- **P4 locked-reservoir line**: P4H/P4I/P4J/P4K resolved the disjoint denominator and reservoir story into a locked non-Python reservoir; P4L validated the frozen P4 scheduler on that 272-record denominator without authorizing P5/runtime promotion.
+- **N6XFR-E through N9**: corrected the extra-depth semantics to use the real `rank>20` rule and produced a fixed-pool pass: the best arm reached `25/40` top10. N7 audited it, N8 independently recomputed it, and N9 packaged it publicly.
+- **N10 exact-denominator branch**: N10/N10R showed that broader exact N2-equivalent rank-pack rows were definitionally exhausted; the path could not honestly expand under the same denominator.
+- **N10T span-surface proxy branch**: switched to an N1 span-surface proxy. File-level reach improved, but N10X/N10Y/N10Z showed the utility gap was same-file span-window misalignment.
+- **Span-window repair branch**: fixed symmetric and asymmetric windows improved span overlap, then a long exploratory chain found stronger observable window rules. The strongest local-window line reached `30/36` under top2 wide-window saturation, then saturated; this pushed the next bottleneck to file reach rather than line-window size.
+- **Rank/file-reach branch**: distinct-file packing, deep-rank promotion, and suffix-safe path matching were tested. Deep-rank promotion stayed harmful, while the oracle candidate ceiling showed large theoretical value if absent files could be sourced.
+- **Normalized-BM25 candidate-source branch**: identifier-normalized BM25 found new files that the old pool missed. Depth-to-head repacking with novel-first/guard rules produced a same-source positive: a fixed difference-aware rule reached `13/60` on the N10DZ/N10EB sample.
+- **Public CI transfer check**: N10EN ran the difference-aware winner on GitHub Actions and got a valid negative: baseline `39/40` top10, diffaware `37/40`, lost baseline top10 `2`.
+- **Failure and safety-probe chain**: N10EO diagnosed the N10EN regression as novel-first displacing strong baseline hits; N10EP/N10EQ designed a public safety probe; N10ER ran the held-out public CI probe and found the N10EO safety signal did **not** reproduce. N10ES packaged that result as a public-only audit.
+
+Latest committed checkpoints for this roll-up:
+
+```text
+c8fd353 feat(eval): record N10ER CI safety probe result
+8c04a0a docs(eval): package N10ER safety probe audit
+```
+
+### Decision
+
+The latest active state is N10ES:
+
+- N10ER CI run `28457213423` succeeded on `canary_small_heldout`.
+- Status: `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`.
+- Sample: `80` public tasks, `60` scored, `40` with gold, citation validity `7772/7772`, heldout overlap `0`.
+- Arms: baseline `37/39/40/40`, full `36/39/40/40`, guard `38/39/40/40`, diffaware `37/39/40/40`.
+- Risk bucket was sufficient (`26` tasks), but the low-novelty strong-baseline displacement signal did not reproduce: risk-bucket full/guard/diffaware losses were `0/0/0`.
+
+N10ES locks this as a **valid bounded public-CI research negative**, not an infrastructure failure and not evidence for promotion. It authorizes only **N10ET public design/decision**. It does not authorize N10ER rerun, threshold tuning, new policy experiments, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, provider/model network, or raw diagnostic publication.
+
+Detailed current state: [`current-research-conclusions.md`](current-research-conclusions.md), [`bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md`](bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md), and [`bea-v1-n10es-public-safety-probe-audit-package.md`](bea-v1-n10es-public-safety-probe-audit-package.md).
