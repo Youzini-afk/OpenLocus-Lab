@@ -1,0 +1,162 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10eiclaim0000",
+      "candidate_generation_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_retrieval_bool": false,
+      "private_read_bool": false,
+      "public_package_only_bool": true,
+      "recompute_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_bool": false,
+      "selector_reranker_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10eigate0000",
+      "gate_bucket": "n10eh_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eigate0001",
+      "gate_bucket": "packaged_variants_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eigate0002",
+      "gate_bucket": "summary_match",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "fixed_full_guard_combination_repacking_experiment_complete_n10ei_authorized",
+      "anonymous_input_artifact_id": "n10eiinput0000",
+      "artifact_bucket": "n10eh_fixed_combo_experiment",
+      "expected_status_bucket": "fixed_full_guard_combination_repacking_experiment_complete_n10ei_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "packaged_variant_records": [
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0000",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "full_novel_first"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0001",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "guarded_top5_novel_distinct"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0002",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "guard5_then_fullfill"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0003",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "full5_then_guardfill"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0004",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "alternate_full_guard"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0005",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "union_original_order"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10eivariant0006",
+      "beats_full_novel_first_bool": false,
+      "matches_n10eh_bool": true,
+      "reaches_n10eg_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "union_full_order"
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EI Fixed Full/Guard Combination Package",
+  "schema_version": "bea_v1_n10ei_fixed_full_guard_combination_package_v1",
+  "status": "fixed_full_guard_combination_package_complete_n10ej_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10eistop0000",
+      "candidate_generation_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10ej_difference_analysis_authorized_bool": true,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EJ Full-Only vs Guard-Only Difference Analysis",
+      "private_read_authorized_bool": true,
+      "private_read_scope_bucket": "same_n10dz_top100_and_n1_rows_only",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "summary_records": [
+    {
+      "anonymous_summary_id": "n10eisummary0000",
+      "any_variant_beats_full_novel_first_bool": false,
+      "any_variant_reaches_union_bound_bool": false,
+      "best_combination_top10_count": 11,
+      "conclusion_bucket": "simple_combinations_do_not_exceed_full_novel_first",
+      "full_novel_first_top10_count": 11,
+      "n10eg_union_bound_count": 13,
+      "variant_count": 7
+    }
+  ]
+}
