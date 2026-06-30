@@ -204,6 +204,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10df-hybrid-distinct-file-packing-smoke.md`: [en](en/bea-v1-n10df-hybrid-distinct-file-packing-smoke.md) · [zh](zh/bea-v1-n10df-hybrid-distinct-file-packing-smoke.md)
 - `bea-v1-n10dg-hybrid-distinct-file-packing-public-package.md`: [en](en/bea-v1-n10dg-hybrid-distinct-file-packing-public-package.md) · [zh](zh/bea-v1-n10dg-hybrid-distinct-file-packing-public-package.md)
 - `bea-v1-n10dh-packing-span-window-combination-smoke.md`: [en](en/bea-v1-n10dh-packing-span-window-combination-smoke.md) · [zh](zh/bea-v1-n10dh-packing-span-window-combination-smoke.md)
+- `bea-v1-n10di-packing-span-window-combination-public-package.md`: [en](en/bea-v1-n10di-packing-span-window-combination-public-package.md) · [zh](zh/bea-v1-n10di-packing-span-window-combination-public-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

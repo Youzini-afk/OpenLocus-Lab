@@ -1,0 +1,161 @@
+{
+  "boundary_interpretation_records": [
+    {
+      "aggressive_reference_safe_default_bool": false,
+      "anonymous_boundary_id": "n10diboundary0000",
+      "downstream_value_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n10df_prefix7_top10_safe_context_preserved_bool": true,
+      "original_order_packing_useless_claim_bool": false,
+      "runtime_default_claim_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10digate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10digate0001",
+      "gate_bucket": "n10dh_chain_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10digate0002",
+      "gate_bucket": "scope_n10t_best_order",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10digate0003",
+      "gate_bucket": "no_private_read",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10digate0004",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "packing_span_window_combination_smoke_complete_n10di_authorized",
+      "anonymous_input_artifact_id": "n10diin0000",
+      "artifact_bucket": "n10dh_combination_smoke",
+      "expected_status_bucket": "packing_span_window_combination_smoke_complete_n10di_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "hybrid_distinct_file_packing_public_package_complete_n10dh_authorized",
+      "anonymous_input_artifact_id": "n10diin0001",
+      "artifact_bucket": "n10dg_public_context",
+      "expected_status_bucket": "hybrid_distinct_file_packing_public_package_complete_n10dh_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized",
+      "anonymous_input_artifact_id": "n10diin0002",
+      "artifact_bucket": "n10df_original_order_hybrid_context",
+      "expected_status_bucket": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "anonymous_input_artifact_id": "n10diin0003",
+      "artifact_bucket": "n10da_local_window_context",
+      "expected_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dj_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dihandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dj_oracle_scoped_experiment_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DJ Next Rank/File-Reach Empirical Experiment",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10dinorecompute0000",
+      "empirical_recompute_count": 0,
+      "private_read_count": 0,
+      "variant_recompute_count": 0
+    }
+  ],
+  "packaged_combination_result_records": [
+    {
+      "aggressive_reference_same_projection_span_top10_count": 30,
+      "aggressive_reference_same_projection_span_top20_count": 36,
+      "anonymous_packaged_result_id": "n10diresult0000",
+      "baseline_span_top10_count": 9,
+      "baseline_span_top20_count": 10,
+      "packaged_conclusion_bucket": "packing_does_not_improve_n10t_window_strategy",
+      "packing_improves_n10t_window_strategy_bool": false,
+      "prefix7_same_projection_span_top10_count": 30,
+      "prefix7_same_projection_span_top20_count": 36,
+      "window_only_span_top10_count": 30,
+      "window_only_span_top20_count": 36
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DI Packing + Span-Window Combination Public Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10diprivacy0000",
+      "candidate_list_public_bool": false,
+      "gold_label_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "public_aggregate_bucket_only_bool": true,
+      "span_or_line_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10di_public_package_v1",
+  "scope_validation_records": [
+    {
+      "anonymous_scope_id": "n10discope0000",
+      "combination_scope_bucket": "n10t_best_order_setting",
+      "n10dc_original_order_result_reused_as_anchor_bool": false,
+      "n10df_prefix7_original_order_result_preserved_as_context_bool": true,
+      "original_order_packing_anchor_used_bool": false,
+      "scope_valid_bool": true
+    }
+  ],
+  "status": "packing_span_window_combination_public_package_complete_n10dj_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10distop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dj_oracle_scoped_experiment_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DJ Next Rank/File-Reach Empirical Experiment",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
