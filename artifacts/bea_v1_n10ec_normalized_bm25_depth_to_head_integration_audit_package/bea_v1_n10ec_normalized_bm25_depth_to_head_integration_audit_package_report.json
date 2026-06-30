@@ -1,0 +1,162 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10ecclaim0000",
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "runtime_default_claim_bool": false,
+      "same_source_smoke_bool": true,
+      "scaled_retrieval_claim_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10ecgate0000",
+      "gate_bucket": "n10eb_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ecgate0001",
+      "gate_bucket": "n10eb_chain_counts_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ecgate0002",
+      "gate_bucket": "public_only_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized",
+      "anonymous_input_artifact_id": "n10ecinput0000",
+      "artifact_bucket": "n10eb_depth_to_head_integration_smoke",
+      "expected_status_bucket": "normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10ed_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10echandoff0000",
+      "n10ed_mechanism_analysis_authorized_bool": true,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10ED Novel-First Depth-to-Head Mechanism Analysis",
+      "private_read_authorized_bool": true,
+      "private_read_scope_bucket": "n10eb_mechanism_analysis_only",
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "packaged_variant_summary_records": [
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0000",
+      "decision_bucket": "no_head_improvement",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 5,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0001",
+      "decision_bucket": "no_head_improvement",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0002",
+      "decision_bucket": "top20_improvement_only",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 14,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0003",
+      "decision_bucket": "depth_to_head_success",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0004",
+      "decision_bucket": "depth_to_head_success",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 18,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "novel_file_first_top20_then_top10"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0005",
+      "decision_bucket": "top20_improvement_only",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0006",
+      "decision_bucket": "no_head_improvement",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_packaged_variant_id": "n10ecvariant0007",
+      "decision_bucket": "depth_to_head_success",
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EC Normalized-BM25 Depth-to-Head Integration Audit Package",
+  "public_package_summary_records": [
+    {
+      "anonymous_package_summary_id": "n10ecsummary0000",
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "public_only_package_bool": true,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "success_variant_count_packaged": 3,
+      "variant_count_packaged": 8
+    }
+  ],
+  "schema_version": "bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_v1",
+  "status": "normalized_bm25_depth_to_head_integration_audit_package_complete_n10ed_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10ecstop0000",
+      "clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10ED Novel-First Depth-to-Head Mechanism Analysis",
+      "p5_v1a_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}

@@ -28,29 +28,26 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EB: Normalized-BM25 Depth-to-Head Integration Smoke**:
+The latest closed phase is **BEA-v1-N10EC: Normalized-BM25 Depth-to-Head Integration Audit Package**:
 
 ```text
-status: normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized
-self-test: 13 / 13
+status: normalized_bm25_depth_to_head_integration_audit_package_complete_n10ed_authorized
+self-test: 8 / 8
 forbidden scan: pass
-case count: 60
-variant count: 8
-baseline top10/top20/top50/top100: 5 / 11 / 17 / 26
-best top10 variant: novel_file_first_top10
-best top10/top20/top50/top100: 11 / 16 / 20 / 26
-depth-to-head success variants: 3
-new retrieval executions: 0
-candidate added/removed: 0
-next allowed phase: BEA-v1-N10EC Normalized-BM25 Depth-to-Head Integration Audit Package
+private reads: 0
+retrieval executions: 0
+recomputes: 0
+packaged baseline top10/top20/top50/top100: 5 / 11 / 17 / 26
+packaged best top10: 11
+success variants: 3
+next allowed phase: BEA-v1-N10ED Novel-First Depth-to-Head Mechanism Analysis
 ```
 
-N10EB turns the N10DZ depth signal into a head-ranking gain without running new
-retrieval. Repacking the existing normalized-BM25 top100 rows by putting files
-not already present in the old N1 pool first raises top10 recovery from 5/60 to
-11/60, meeting the N10EB success threshold with no lost baseline top10 hits.
-This is still a same-source smoke, not runtime/default readiness, not scaled
-retrieval, and not a method-winner or downstream-value claim.
+N10EC packages N10EB without private reads or recompute. The key signal remains:
+repacking the existing normalized-BM25 top100 rows by putting files not already
+present in the old N1 pool first raises top10 recovery from 5/60 to 11/60, with
+three success variants and no lost baseline top10 hits. N10ED is authorized only
+to explain the mechanism and choose the next fixed experiment.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2506,6 +2503,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dz_normalized_bm25_expanded_canary/bea_v1_n10dz_normalized_bm25_expanded_canary_report.json`](artifacts/bea_v1_n10dz_normalized_bm25_expanded_canary/bea_v1_n10dz_normalized_bm25_expanded_canary_report.json)
 - [`artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json`](artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json)
 - [`artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json`](artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json)
+- [`artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json`](artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json)
 
 Documentation mirror check:
 
