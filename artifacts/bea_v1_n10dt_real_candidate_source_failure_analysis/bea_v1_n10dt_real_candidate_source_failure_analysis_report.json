@@ -1,0 +1,244 @@
+{
+  "canary_failure_bucket_records": [
+    {
+      "anonymous_failure_bucket_id": "n10dtfail0000",
+      "command_failed_count": 2,
+      "executed_case_count": 30,
+      "gold_top50_count": 0,
+      "nonzero_no_gold_count": 20,
+      "retrieval_success_count": 28,
+      "sampled_case_count": 30,
+      "zero_candidate_count": 8
+    }
+  ],
+  "candidate_novelty_records": [
+    {
+      "anonymous_novelty_id": "n10dtnovelty0000",
+      "case_count": 30,
+      "novelty_bucket": "no_novel_files"
+    }
+  ],
+  "candidate_overlap_records": [
+    {
+      "anonymous_overlap_id": "n10dtoverlap0000",
+      "case_count": 20,
+      "overlap_bucket": "overlap_near_duplicate"
+    },
+    {
+      "anonymous_overlap_id": "n10dtoverlap0001",
+      "case_count": 10,
+      "overlap_bucket": "overlap_none"
+    }
+  ],
+  "channel_metadata_records": [
+    {
+      "anonymous_channel_metadata_id": "n10dtchannel0000",
+      "bm25_channel_count": 1000,
+      "channel_metadata_available_bool": true,
+      "regex_channel_count": 0,
+      "symbol_channel_count": 0,
+      "total_candidate_metadata_rows_bucket": "one_to_thousand",
+      "unknown_channel_count": 0
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dtgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dtgate0001",
+      "gate_bucket": "private_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dtgate0002",
+      "gate_bucket": "analysis_only_no_execution",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dtgate0003",
+      "gate_bucket": "public_aggregate_only",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "real_candidate_source_canary_audit_package_complete_n10dt_authorized",
+      "anonymous_input_artifact_id": "n10dtinput0000",
+      "artifact_bucket": "n10ds_canary_audit_package",
+      "expected_status_bucket": "real_candidate_source_canary_audit_package_complete_n10dt_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "real_candidate_source_canary_complete_no_recovery",
+      "anonymous_input_artifact_id": "n10dtinput0001",
+      "artifact_bucket": "n10dr_real_canary",
+      "expected_status_bucket": "real_candidate_source_canary_complete_no_recovery",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10du_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dthandoff0000",
+      "n10du_targeted_small_canary_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DU Targeted Candidate-Source Variant Canary",
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "next_source_variant_signal_records": [
+    {
+      "anonymous_next_signal_id": "n10dtsignal0000",
+      "candidate_generation_authorized_bool": false,
+      "n10du_authorized_bool": true,
+      "network_authorized_bool": false,
+      "next_variant_bucket": "targeted_channel_query_shape_small_canary",
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10dtforbid0000",
+      "candidate_generation_count": 0,
+      "git_clone_count": 0,
+      "network_execution_count": 0,
+      "new_retrieval_execution_count": 0,
+      "openlocus_execution_count": 0,
+      "provider_call_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DT Real Candidate-Source Canary Failure Mechanism Analysis",
+  "pool_richness_failure_records": [
+    {
+      "anonymous_pool_failure_id": "n10dtpool0000",
+      "command_failed_count": 0,
+      "few_novel_files_count": 0,
+      "many_novel_files_count": 0,
+      "no_novel_files_count": 10,
+      "nonzero_no_gold_count": 10,
+      "pool_richness_bucket": "moderate_pool_absence",
+      "sampled_case_count": 10,
+      "zero_candidate_count": 0
+    },
+    {
+      "anonymous_pool_failure_id": "n10dtpool0001",
+      "command_failed_count": 0,
+      "few_novel_files_count": 0,
+      "many_novel_files_count": 0,
+      "no_novel_files_count": 10,
+      "nonzero_no_gold_count": 10,
+      "pool_richness_bucket": "rich_wrong_pool_absence",
+      "sampled_case_count": 10,
+      "zero_candidate_count": 0
+    },
+    {
+      "anonymous_pool_failure_id": "n10dtpool0002",
+      "command_failed_count": 2,
+      "few_novel_files_count": 0,
+      "many_novel_files_count": 0,
+      "no_novel_files_count": 10,
+      "nonzero_no_gold_count": 0,
+      "pool_richness_bucket": "tiny_pool_absence",
+      "sampled_case_count": 10,
+      "zero_candidate_count": 8
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10dtprivacy0000",
+      "public_candidate_lists_bool": false,
+      "public_exact_ranks_bool": false,
+      "public_gold_labels_bool": false,
+      "public_paths_or_filenames_bool": false,
+      "public_queries_bool": false,
+      "public_snippets_or_content_bool": false,
+      "public_spans_or_lines_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dtprivate0000",
+      "broad_private_read_bool": false,
+      "private_canary_rows_read": 30,
+      "private_logs_bucket": "present",
+      "private_manifest_bucket": "present",
+      "same_scoped_n1_rows_read": 213
+    }
+  ],
+  "query_shape_bucket_records": [
+    {
+      "anonymous_querytoken_id": "n10dtquerytoken0000",
+      "case_count": 9,
+      "query_token_bucket": "tokens_4_8"
+    },
+    {
+      "anonymous_querytoken_id": "n10dtquerytoken0001",
+      "case_count": 8,
+      "query_token_bucket": "tokens_9_20"
+    },
+    {
+      "anonymous_querytoken_id": "n10dtquerytoken0002",
+      "case_count": 13,
+      "query_token_bucket": "tokens_gt20"
+    },
+    {
+      "anonymous_queryshape_id": "n10dtqueryshape0000",
+      "case_count": 20,
+      "query_shape_bucket": "natural_language_like"
+    },
+    {
+      "anonymous_queryshape_id": "n10dtqueryshape0001",
+      "case_count": 6,
+      "query_shape_bucket": "path_like"
+    },
+    {
+      "anonymous_queryshape_id": "n10dtqueryshape0002",
+      "case_count": 4,
+      "query_shape_bucket": "symbol_like"
+    }
+  ],
+  "schema_version": "bea_v1_n10dt_real_candidate_source_failure_analysis_v1",
+  "source_failure_interpretation_records": [
+    {
+      "anonymous_source_failure_id": "n10dtinterpret0000",
+      "channel_metadata_insufficient_bool": false,
+      "interpretation_bucket": "source_repeats_existing_pool_with_channel_skew_and_query_mismatch",
+      "no_targeted_followup_warranted_bool": false,
+      "query_shape_mismatch_bool": true,
+      "single_channel_return_skew_bool": true,
+      "source_novel_but_wrong_bool": false,
+      "source_reliability_issue_bool": true,
+      "source_repeats_existing_pool_bool": true,
+      "targeted_channel_variant_warranted_bool": true
+    }
+  ],
+  "status": "real_candidate_source_failure_analysis_complete_n10du_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dtstop0000",
+      "candidate_generation_materialization_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DU Targeted Candidate-Source Variant Canary",
+      "p5_v1a_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
