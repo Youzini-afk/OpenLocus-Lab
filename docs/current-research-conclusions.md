@@ -219,6 +219,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10ds-real-candidate-source-canary-audit-package.md`: [en](en/bea-v1-n10ds-real-candidate-source-canary-audit-package.md) · [zh](zh/bea-v1-n10ds-real-candidate-source-canary-audit-package.md)
 - `bea-v1-n10dt-real-candidate-source-failure-analysis.md`: [en](en/bea-v1-n10dt-real-candidate-source-failure-analysis.md) · [zh](zh/bea-v1-n10dt-real-candidate-source-failure-analysis.md)
 - `bea-v1-n10du-targeted-candidate-source-variant-canary.md`: [en](en/bea-v1-n10du-targeted-candidate-source-variant-canary.md) · [zh](zh/bea-v1-n10du-targeted-candidate-source-variant-canary.md)
+- `bea-v1-n10dv-targeted-candidate-source-variant-canary-public-package.md`: [en](en/bea-v1-n10dv-targeted-candidate-source-variant-canary-public-package.md) · [zh](zh/bea-v1-n10dv-targeted-candidate-source-variant-canary-public-package.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)

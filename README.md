@@ -28,19 +28,21 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DU: Targeted Candidate-Source Variant Canary**:
+The latest closed phase is **BEA-v1-N10DV: Targeted Candidate-Source Variant Canary Public Package**:
 
 ```text
-status: targeted_candidate_source_variant_canary_pass_n10dv_authorized
-self-test: 12 / 12
+status: targeted_candidate_source_variant_canary_public_package_complete_n10dw_authorized
+self-test: 8 / 8
 forbidden scan: pass
+private reads in N10DV: 0
+recomputes in N10DV: 0
 sampled cases: 30
 variant count: 6
 command count: 180
 cases recovered by any variant: 10
 best variant: identifier_normalized_bm25_only
 best variant recovery top10/top20/top50: 8 / 9 / 10
-next allowed phase: BEA-v1-N10DV Targeted Candidate-Source Variant Canary Public Package
+next allowed phase: BEA-v1-N10DW Normalized-BM25 Recovery Mechanism Analysis
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -2490,6 +2492,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ds_real_candidate_source_canary_audit_package/bea_v1_n10ds_real_candidate_source_canary_audit_package_report.json`](artifacts/bea_v1_n10ds_real_candidate_source_canary_audit_package/bea_v1_n10ds_real_candidate_source_canary_audit_package_report.json)
 - [`artifacts/bea_v1_n10dt_real_candidate_source_failure_analysis/bea_v1_n10dt_real_candidate_source_failure_analysis_report.json`](artifacts/bea_v1_n10dt_real_candidate_source_failure_analysis/bea_v1_n10dt_real_candidate_source_failure_analysis_report.json)
 - [`artifacts/bea_v1_n10du_targeted_candidate_source_variant_canary/bea_v1_n10du_targeted_candidate_source_variant_canary_report.json`](artifacts/bea_v1_n10du_targeted_candidate_source_variant_canary/bea_v1_n10du_targeted_candidate_source_variant_canary_report.json)
+- [`artifacts/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package_report.json`](artifacts/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package_report.json)
 
 Documentation mirror check:
 

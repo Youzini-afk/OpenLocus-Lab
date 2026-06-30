@@ -1,0 +1,112 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dvgate0000",
+      "gate_bucket": "public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dvgate0001",
+      "gate_bucket": "targeted_canary_metrics_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dvgate0002",
+      "gate_bucket": "no_private_read_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "targeted_candidate_source_variant_canary_pass_n10dv_authorized",
+      "anonymous_input_artifact_id": "n10dvinput0000",
+      "artifact_bucket": "n10du_targeted_candidate_source_variant_canary",
+      "expected_status_bucket": "targeted_candidate_source_variant_canary_pass_n10dv_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dw_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dvhandoff0000",
+      "n10dw_mechanism_analysis_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DW Normalized-BM25 Recovery Mechanism Analysis",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "no_private_read_no_recompute_records": [
+    {
+      "anonymous_no_recompute_id": "n10dvnoexec0000",
+      "candidate_generation_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "normalized_bm25_signal_records": [
+    {
+      "anonymous_signal_id": "n10dvsignal0000",
+      "mechanism_followup_bucket": "normalized_bm25_recovery_mechanism_analysis",
+      "not_heldout_claim_bool": true,
+      "not_runtime_default_claim_bool": true,
+      "not_scaling_claim_bool": true,
+      "same_30_case_signal_bool": true,
+      "signal_bucket": "identifier_normalized_bm25_positive_signal",
+      "strong_targeted_canary_signal_bool": true
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anonymous_package_summary_id": "n10dvsummary0000",
+      "package_complete_bool": true,
+      "package_scope_bucket": "public_only_targeted_candidate_source_variant_canary_package",
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DV Targeted Candidate-Source Variant Canary Public Package",
+  "schema_version": "bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package_v1",
+  "status": "targeted_candidate_source_variant_canary_public_package_complete_n10dw_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dvstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DW Normalized-BM25 Recovery Mechanism Analysis",
+      "p5_v1a_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "targeted_canary_result_records": [
+    {
+      "anonymous_targeted_result_id": "n10dvresult0000",
+      "best_variant_bucket": "identifier_normalized_bm25_only",
+      "best_variant_top10_recovered_count": 8,
+      "best_variant_top20_recovered_count": 9,
+      "best_variant_top50_recovered_count": 10,
+      "cases_recovered_by_any_variant_count": 10,
+      "command_count": 180,
+      "original_bm25_top50_recovered_count": 0,
+      "regex_symbol_top50_recovered_count": 0,
+      "sampled_case_count": 30,
+      "source_status_bucket": "targeted_candidate_source_variant_canary_pass_n10dv_authorized",
+      "variant_count": 6
+    }
+  ]
+}
