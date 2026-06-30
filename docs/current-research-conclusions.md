@@ -234,6 +234,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10eh-fixed-full-guard-combination-repacking-experiment.md`: [en](en/bea-v1-n10eh-fixed-full-guard-combination-repacking-experiment.md) · [zh](zh/bea-v1-n10eh-fixed-full-guard-combination-repacking-experiment.md)
 - `bea-v1-n10ei-fixed-full-guard-combination-package.md`: [en](en/bea-v1-n10ei-fixed-full-guard-combination-package.md) · [zh](zh/bea-v1-n10ei-fixed-full-guard-combination-package.md)
 - `bea-v1-n10ej-full-guard-difference-analysis.md`: [en](en/bea-v1-n10ej-full-guard-difference-analysis.md) · [zh](zh/bea-v1-n10ej-full-guard-difference-analysis.md)
+- `bea-v1-n10ek-fixed-difference-aware-combination-experiment.md`: [en](en/bea-v1-n10ek-fixed-difference-aware-combination-experiment.md) · [zh](zh/bea-v1-n10ek-fixed-difference-aware-combination-experiment.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)

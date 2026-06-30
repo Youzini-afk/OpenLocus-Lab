@@ -1,0 +1,303 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_id": "n10ekclaim0000",
+      "candidate_generation_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "network_bool": false,
+      "new_retrieval_bool": false,
+      "openlocus_binary_execution_bool": false,
+      "runtime_default_change_bool": false,
+      "same_source_private_experiment_bool": true,
+      "selector_reranker_bool": false,
+      "uses_only_policy_time_observable_features_bool": true
+    }
+  ],
+  "experiment_summary_records": [
+    {
+      "anonymous_summary_id": "n10eksummary0000",
+      "any_variant_approaches_union_bound_bool": true,
+      "any_variant_beats_full_novel_first_bool": true,
+      "any_variant_reaches_union_bound_bool": true,
+      "baseline_top10_count": 5,
+      "best_top10_file_recovery_count": 13,
+      "best_variant_bucket": "diffaware_top5_novel_guard_else_full",
+      "best_variant_count": 1,
+      "conclusion_bucket": "difference_aware_fixed_rule_beats_full_requires_audit_recompute",
+      "full_novel_first_top10_count": 11,
+      "guarded_top5_novel_distinct_top10_count": 10,
+      "n10eg_union_bound_count": 13,
+      "variant_count": 10
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10ekgate0000",
+      "gate_bucket": "n10ej_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ekgate0001",
+      "gate_bucket": "private_rows_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ekgate0002",
+      "gate_bucket": "baseline_accounting_expected",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "full_guard_difference_analysis_complete_n10ek_authorized",
+      "anonymous_input_artifact_id": "n10ekinput0000",
+      "artifact_bucket": "n10ej_difference_analysis",
+      "expected_status_bucket": "full_guard_difference_analysis_complete_n10ek_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "observable_feature_bucket_records": [
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0000",
+      "case_count": 43,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "depth_novel_pressure_broad_only"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0001",
+      "case_count": 17,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "depth_novel_pressure_high"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0002",
+      "case_count": 60,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "novel_count_gt_10"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0003",
+      "case_count": 31,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_duplicate_pressure_none"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0004",
+      "case_count": 16,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_duplicate_pressure_one"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0005",
+      "case_count": 13,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_duplicate_pressure_two_or_more"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0006",
+      "case_count": 41,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_novel_pressure_0_to_2"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0007",
+      "case_count": 2,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_novel_pressure_3"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0008",
+      "case_count": 17,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_novel_pressure_4_to_5"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0009",
+      "case_count": 6,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_preservation_proxy_absent"
+    },
+    {
+      "anonymous_feature_bucket_id": "n10ekfeature0010",
+      "case_count": 54,
+      "case_scope_bucket": "all_cases",
+      "observable_feature_bucket": "top5_preservation_proxy_present"
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EK Fixed Difference-Aware Combination Experiment",
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10ekpriv0000",
+      "case_count": 60,
+      "n10dz_top100_private_row_count": 60,
+      "n10dz_top100_private_rows_available_bool": true,
+      "other_private_read_count": 0,
+      "private_status_bucket": "present",
+      "same_scoped_n1_rows_available_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10ek_fixed_difference_aware_combination_experiment_v1",
+  "status": "fixed_difference_aware_combination_experiment_complete_audit_recompute_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10ekstop0000",
+      "audit_recompute_authorized_bool": true,
+      "broader_sample_or_ci_after_package_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "feature_search_after_package_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10el_package_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EL Audit/Recompute of Difference-Aware Winner",
+      "openlocus_binary_authorized_bool": false,
+      "private_read_scope_bucket": "same_n10dz_top100_and_n1_rows_only",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "variant_result_records": [
+    {
+      "anonymous_variant_id": "n10ekvariant0000",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": true,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "full_novel_first"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0001",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "guarded_top5_novel_distinct"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0002",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": true,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 15,
+      "top50_file_recovery_count": 19,
+      "variant_bucket": "diffaware_dup_guard_else_full"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0003",
+      "approaches_union_bound_bool": true,
+      "beats_full_novel_first_bool": true,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": true,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 13,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "diffaware_top5_novel_guard_else_full"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0004",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "diffaware_preserve_proxy_guard_else_full"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0005",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "diffaware_deep_pressure_full8_else_guard"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0006",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "diffaware_deep_pressure_full_else_guard"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0007",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "diffaware_dup_or_low_top5_novel_guard_else_full"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0008",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": true,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 14,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "diffaware_full8_guard2"
+    },
+    {
+      "anonymous_variant_id": "n10ekvariant0009",
+      "approaches_union_bound_bool": false,
+      "beats_full_novel_first_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "matches_full_novel_first_bool": false,
+      "reaches_union_bound_bool": false,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 14,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "diffaware_guard3_full7"
+    }
+  ]
+}
