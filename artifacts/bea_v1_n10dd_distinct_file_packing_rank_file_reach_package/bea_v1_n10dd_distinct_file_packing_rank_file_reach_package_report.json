@@ -1,0 +1,260 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10ddgate0000",
+      "gate_bucket": "required_public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ddgate0001",
+      "gate_bucket": "n10dc_status_complete",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ddgate0002",
+      "gate_bucket": "variant_metrics_match_corrected_expected",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ddgate0003",
+      "gate_bucket": "privacy_boundary_complete",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ddgate0004",
+      "gate_bucket": "no_private_read_or_recompute",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ddgate0005",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "anonymous_input_artifact_id": "n10ddin0000",
+      "artifact_bucket": "n10dc_distinct_file_smoke",
+      "expected_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "rank_file_reach_policy_field_scoping_pass_n10dc_authorized",
+      "anonymous_input_artifact_id": "n10ddin0001",
+      "artifact_bucket": "n10db_field_scoping",
+      "expected_status_bucket": "rank_file_reach_policy_field_scoping_pass_n10dc_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10de_handoff_records": [
+    {
+      "anonymous_n10de_handoff_id": "n10ddhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10de_authorized_bool": true,
+      "n10de_same_scoped_private_rows_read_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DE Regression-vs-Zero-Loss Mechanism Decomposition",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10ddnorecompute0000",
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "complete_bool": true,
+      "default_change_count": 0,
+      "method_downstream_claim_count": 0,
+      "p5_v1a_execution_count": 0,
+      "policy_outcome_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anonymous_package_summary_id": "n10ddsummary0000",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "corrected_evaluation_matching_bucket": "safe_same_or_suffix_private_reference_matching",
+      "packing_scope_bucket": "topk_only_repacking_with_original_pool_preserved",
+      "source_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "source_status_expected_bool": true,
+      "variant_count": 5,
+      "variant_metrics_match_expected_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DD Distinct-File Packing Rank/File-Reach Public Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10ddprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_path_public_bool": false,
+      "privacy_boundary_bucket": "public_package_aggregate_counts_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "public_path_or_filename_count": 0,
+      "span_or_line_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10dd_distinct_file_package_v1",
+  "status": "distinct_file_packing_rank_file_reach_package_complete_n10de_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10ddstop0000",
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dd_private_read_bool": false,
+      "n10dd_recompute_bool": false,
+      "n10de_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DE Regression-vs-Zero-Loss Mechanism Decomposition",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "status_bucket": "distinct_file_packing_rank_file_reach_package_complete_n10de_authorized"
+    }
+  ],
+  "tradeoff_summary_records": [
+    {
+      "anonymous_tradeoff_summary_id": "n10ddtrade0000",
+      "baseline_span_regression_count": 1,
+      "representative_variant_bucket": "distinct_file_top20_greedy_then_top10",
+      "top10_file_gain_count": 5,
+      "top10_span_gain_count": 3,
+      "top20_file_reach_count": 47,
+      "top20_span_overlap_count": 24,
+      "tradeoff_bucket": "aggressive_one_file_per_file",
+      "tradeoff_interpretation_bucket": "higher_file_and_top20_reach_with_one_baseline_span_regression"
+    },
+    {
+      "anonymous_tradeoff_summary_id": "n10ddtrade0001",
+      "baseline_span_regression_count": 0,
+      "representative_variant_bucket": "max_per_file_2_top10",
+      "top10_file_gain_count": 2,
+      "top10_span_gain_count": 2,
+      "top20_file_reach_count": 19,
+      "top20_span_overlap_count": 17,
+      "tradeoff_bucket": "conservative_max_per_file_2",
+      "tradeoff_interpretation_bucket": "smaller_gain_with_zero_baseline_span_regression"
+    }
+  ],
+  "variant_package_records": [
+    {
+      "anonymous_variant_package_id": "n10ddvar0000",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "delta_top10_file_reach_vs_baseline": 0,
+      "delta_top10_span_vs_baseline": 0,
+      "lost_baseline_top10_span_hits": 0,
+      "source_metric_match_bool": true,
+      "top10_file_reach_count": 14,
+      "top10_span_overlap_count": 13,
+      "top20_file_reach_count": 19,
+      "top20_span_overlap_count": 17,
+      "variant_bucket": "baseline_existing_order"
+    },
+    {
+      "anonymous_variant_package_id": "n10ddvar0001",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "delta_top10_file_reach_vs_baseline": 5,
+      "delta_top10_span_vs_baseline": 3,
+      "lost_baseline_top10_span_hits": 1,
+      "source_metric_match_bool": true,
+      "top10_file_reach_count": 19,
+      "top10_span_overlap_count": 16,
+      "top20_file_reach_count": 20,
+      "top20_span_overlap_count": 18,
+      "variant_bucket": "distinct_file_top10_greedy"
+    },
+    {
+      "anonymous_variant_package_id": "n10ddvar0002",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "delta_top10_file_reach_vs_baseline": 5,
+      "delta_top10_span_vs_baseline": 3,
+      "lost_baseline_top10_span_hits": 1,
+      "source_metric_match_bool": true,
+      "top10_file_reach_count": 19,
+      "top10_span_overlap_count": 16,
+      "top20_file_reach_count": 47,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "distinct_file_top20_greedy_then_top10"
+    },
+    {
+      "anonymous_variant_package_id": "n10ddvar0003",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "delta_top10_file_reach_vs_baseline": 5,
+      "delta_top10_span_vs_baseline": 3,
+      "lost_baseline_top10_span_hits": 1,
+      "source_metric_match_bool": true,
+      "top10_file_reach_count": 19,
+      "top10_span_overlap_count": 16,
+      "top20_file_reach_count": 20,
+      "top20_span_overlap_count": 18,
+      "variant_bucket": "max_per_file_1_top10"
+    },
+    {
+      "anonymous_variant_package_id": "n10ddvar0004",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "delta_top10_file_reach_vs_baseline": 2,
+      "delta_top10_span_vs_baseline": 2,
+      "lost_baseline_top10_span_hits": 0,
+      "source_metric_match_bool": true,
+      "top10_file_reach_count": 16,
+      "top10_span_overlap_count": 15,
+      "top20_file_reach_count": 19,
+      "top20_span_overlap_count": 17,
+      "variant_bucket": "max_per_file_2_top10"
+    }
+  ]
+}
