@@ -28,17 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DG: Hybrid Distinct-File Packing Public Package**:
+The latest closed phase is **BEA-v1-N10DH: N10T-Order Packing + Span-Window Combination Smoke**:
 
 ```text
-status: hybrid_distinct_file_packing_public_package_complete_n10dh_authorized
-self-test: 12 / 12
+status: packing_span_window_combination_smoke_complete_n10di_authorized
+self-test: 16 / 16
 forbidden scan: pass
-private reads in N10DG: 0
-recomputes in N10DG: 0
-prefix7 top10-safe result: span top10 16, lost baseline span 0
-top20 limitation: prefix7 span/file 17 / 19 vs aggressive 24 / 47
-next allowed phase: BEA-v1-N10DH Packing Plus Span-Window or Top20 Reach Repair Experiment
+private span rows read: 213
+variant count: 7
+combination scope: n10t_best_order_setting
+window-only short75/top2-pm1000: 30 / 36
+prefix7 + short75/top2-pm1000: 30 / 36
+aggressive reference + short75/top2-pm1000: 30 / 36
+decision: no combination improvement
+next allowed phase: BEA-v1-N10DI Packing + Span-Window Combination Public Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -941,6 +944,12 @@ N10DF publicly as a promising top10-safe packing hybrid, not a default winner,
 because prefix7 does not repair top20 reach (17/19 vs aggressive 24/47). N10DG
 authorizes only N10DH under the next oracle contract.
 
+N10DH combines fixed packing with span-window projection over the same scoped rows in the N10T best-order setting, not the N10DC original-order anchor.
+Top2 projection is computed after the fixed packing order. Prefix7 + short75/top2
+pm1000 matches window-only 30/36 but does not improve it; the aggressive reference
+also stays 30/36 and remains labeled `aggressive_reference_not_safe_default`. The
+interpretation is `packing_does_not_improve_n10t_window_strategy`: once N10T order already gives file reach 34/44, this packing layer adds no further window-strategy gain. N10DH authorizes only N10DI public package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1684,6 +1693,10 @@ See the current report index:
   experiment under a future oracle scope. It does not authorize runtime/default,
   selector/reranker, candidate generation, retrieval/rerun, broad private read,
   P5, BEA-v1-A, method-winner, downstream, or heldout/generalization claims.
+- N10DH authorizes only N10DI public package. It does not authorize runtime/default,
+  selector/reranker, candidate generation/materialization/add/remove,
+  retrieval/rerun, broad private reads, P5, BEA-v1-A, adaptive per-record
+  selection, method-winner, downstream, or heldout/generalization claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2264,6 +2277,10 @@ eval/bea_v1_n10df_hybrid_distinct_file_packing_smoke.py
 eval/bea_v1_n10dg_hybrid_distinct_file_packing_public_package.py
   Public package of N10DF; frames prefix7 as top10-safe but top20-limited and
   authorizes only N10DH follow-up.
+
+eval/bea_v1_n10dh_packing_span_window_combination_smoke.py
+  Direct combination smoke for packing plus span-window projection; finds no
+  improvement over window-only and authorizes only N10DI public package.
 ```
 
 Key reports:
@@ -2382,6 +2399,7 @@ Key reports:
 - [`artifacts/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition_report.json`](artifacts/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition_report.json)
 - [`artifacts/bea_v1_n10df_hybrid_distinct_file_packing_smoke/bea_v1_n10df_hybrid_distinct_file_packing_smoke_report.json`](artifacts/bea_v1_n10df_hybrid_distinct_file_packing_smoke/bea_v1_n10df_hybrid_distinct_file_packing_smoke_report.json)
 - [`artifacts/bea_v1_n10dg_hybrid_distinct_file_packing_public_package/bea_v1_n10dg_hybrid_distinct_file_packing_public_package_report.json`](artifacts/bea_v1_n10dg_hybrid_distinct_file_packing_public_package/bea_v1_n10dg_hybrid_distinct_file_packing_public_package_report.json)
+- [`artifacts/bea_v1_n10dh_packing_span_window_combination_smoke/bea_v1_n10dh_packing_span_window_combination_smoke_report.json`](artifacts/bea_v1_n10dh_packing_span_window_combination_smoke/bea_v1_n10dh_packing_span_window_combination_smoke_report.json)
 
 Documentation mirror check:
 
