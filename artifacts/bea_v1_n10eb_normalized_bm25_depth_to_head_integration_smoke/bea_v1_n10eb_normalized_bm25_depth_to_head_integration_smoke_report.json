@@ -1,0 +1,715 @@
+{
+  "candidate_pool_contract_records": [
+    {
+      "anonymous_candidate_pool_contract_id": "n10ebpool0000",
+      "candidate_added_removed_count": 0,
+      "candidate_pool_changed_count": 0,
+      "candidate_universe_bucket": "n10dz_normalized_bm25_top100_cap12_existing_rows",
+      "case_count": 60,
+      "new_retrieval_count": 0,
+      "openlocus_execution_count": 0
+    }
+  ],
+  "depth_to_head_decision_records": [
+    {
+      "anonymous_decision_id": "n10ebdecision0000",
+      "baseline_top100_count": 26,
+      "baseline_top10_count": 5,
+      "baseline_top20_count": 11,
+      "baseline_top50_count": 17,
+      "best_top10_file_recovery_count": 11,
+      "best_variant_bucket": "novel_file_first_top10",
+      "best_variant_count": 2,
+      "depth_to_head_success_variant_count": 3,
+      "no_head_improvement_variant_count": 3,
+      "top20_improvement_only_variant_count": 2
+    }
+  ],
+  "distinct_fill_contract_records": [
+    {
+      "anonymous_distinct_fill_contract_id": "n10ebdistinct0006",
+      "distinct_fill_contract_passed_bool": true,
+      "fill_duplicate_against_prior_rank_count": 0,
+      "fill_slots_checked_bucket": "ranks_6_to_10",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_distinct_fill_contract_id": "n10ebdistinct0007",
+      "distinct_fill_contract_passed_bool": true,
+      "fill_duplicate_against_prior_rank_count": 0,
+      "fill_slots_checked_bucket": "ranks_6_to_10",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10ebgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ebgate0001",
+      "gate_bucket": "private_top100_rows_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ebgate0002",
+      "gate_bucket": "case_count_eq_60",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ebgate0003",
+      "gate_bucket": "variant_count_eq_8",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ebgate0004",
+      "gate_bucket": "baseline_counts_match_n10dz",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ebgate0005",
+      "gate_bucket": "distinct_fill_contract_passed",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ebgate0006",
+      "gate_bucket": "no_forbidden_execution",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_expanded_canary_public_package_complete_n10eb_authorized",
+      "anonymous_input_artifact_id": "n10ebinput0000",
+      "artifact_bucket": "n10ea_public_package",
+      "expected_status_bucket": "normalized_bm25_expanded_canary_public_package_complete_n10eb_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "normalized_bm25_expanded_canary_low_recovery_n10ea_authorized",
+      "anonymous_input_artifact_id": "n10ebinput0001",
+      "artifact_bucket": "n10dz_expanded_canary",
+      "expected_status_bucket": "normalized_bm25_expanded_canary_low_recovery_n10ea_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "normalized_bm25_recovery_mechanism_analysis_complete_n10dx_authorized",
+      "anonymous_input_artifact_id": "n10ebinput0002",
+      "artifact_bucket": "n10dw_mechanism_analysis",
+      "expected_status_bucket": "normalized_bm25_recovery_mechanism_analysis_complete_n10dx_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10ec_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10ebhandoff0000",
+      "n10ec_public_audit_package_authorized_bool": true,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EC Normalized-BM25 Depth-to-Head Integration Audit Package",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10ebforbid0000",
+      "candidate_generation_materialization_count": 0,
+      "git_clone_count": 0,
+      "network_execution_count": 0,
+      "new_retrieval_count": 0,
+      "openlocus_execution_count": 0,
+      "provider_call_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "novelty_selection_summary_records": [
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0000one_to_two",
+      "case_count": 15,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0000six_to_ten",
+      "case_count": 18,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0000three_to_five",
+      "case_count": 4,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0000zero",
+      "case_count": 23,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0000one_to_two",
+      "case_count": 2,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0000six_to_ten",
+      "case_count": 41,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0000three_to_five",
+      "case_count": 2,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0000zero",
+      "case_count": 15,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0001one_to_two",
+      "case_count": 17,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0001six_to_ten",
+      "case_count": 21,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0001three_to_five",
+      "case_count": 6,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0001zero",
+      "case_count": 16,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0001one_to_two",
+      "case_count": 4,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0001six_to_ten",
+      "case_count": 38,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0001three_to_five",
+      "case_count": 4,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0001zero",
+      "case_count": 14,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0002one_to_two",
+      "case_count": 17,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0002six_to_ten",
+      "case_count": 21,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0002three_to_five",
+      "case_count": 6,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0002zero",
+      "case_count": 16,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0002one_to_two",
+      "case_count": 4,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0002six_to_ten",
+      "case_count": 38,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0002three_to_five",
+      "case_count": 4,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0002zero",
+      "case_count": 14,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0003six_to_ten",
+      "case_count": 60,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0003zero",
+      "case_count": 60,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0004six_to_ten",
+      "case_count": 60,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "novel_file_first_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0004zero",
+      "case_count": 60,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "novel_file_first_top20_then_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0005six_to_ten",
+      "case_count": 30,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0005three_to_five",
+      "case_count": 30,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0005one_to_two",
+      "case_count": 3,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0005three_to_five",
+      "case_count": 41,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0005zero",
+      "case_count": 16,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0006one_to_two",
+      "case_count": 14,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0006six_to_ten",
+      "case_count": 18,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0006three_to_five",
+      "case_count": 10,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0006zero",
+      "case_count": 18,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0006one_to_two",
+      "case_count": 3,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0006six_to_ten",
+      "case_count": 39,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0006three_to_five",
+      "case_count": 4,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0006zero",
+      "case_count": 14,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0007six_to_ten",
+      "case_count": 30,
+      "selected_count_bucket": "six_to_ten",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebnovel0007three_to_five",
+      "case_count": 30,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "novel_vs_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0007one_to_two",
+      "case_count": 3,
+      "selected_count_bucket": "one_to_two",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0007three_to_five",
+      "case_count": 41,
+      "selected_count_bucket": "three_to_five",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    },
+    {
+      "anonymous_novelty_summary_id": "n10ebold0007zero",
+      "case_count": 16,
+      "selected_count_bucket": "zero",
+      "selected_group_bucket": "old_n1_pool",
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EB Normalized-BM25 Depth-to-Head Integration Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10ebprivacy0000",
+      "public_candidate_lists_bool": false,
+      "public_exact_ranks_bool": false,
+      "public_paths_or_filenames_bool": false,
+      "public_raw_queries_bool": false,
+      "public_snippets_spans_gold_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10ebpriv0000",
+      "case_count": 60,
+      "n10dz_top100_private_row_count": 60,
+      "n10dz_top100_private_rows_available_bool": true,
+      "other_private_read_count": 0,
+      "private_status_bucket": "present",
+      "same_scoped_n1_span_rows_available_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_v1",
+  "status": "normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10ebstop0000",
+      "clone_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "network_authorized": false,
+      "new_retrieval_authorized": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EC Normalized-BM25 Depth-to-Head Integration Audit Package",
+      "p5_authorized": false,
+      "provider_authorized": false,
+      "runtime_default_authorized": false,
+      "scaled_retrieval_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "variant_contract_records": [
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0000",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0001",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0002",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0003",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0004",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "novel_file_first_top20_then_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0005",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0006",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10ebcontract0007",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ],
+  "variant_result_records": [
+    {
+      "anonymous_variant_result_id": "n10ebvariant0000",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "no_head_improvement",
+      "delta_top10_vs_baseline_bm25": 0,
+      "delta_top20_vs_baseline_bm25": 0,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": false,
+      "recovered_depth_to_top10_count": 0,
+      "recovered_depth_to_top20_count": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 5,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0001",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "no_head_improvement",
+      "delta_top10_vs_baseline_bm25": 3,
+      "delta_top20_vs_baseline_bm25": 0,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 3,
+      "recovered_depth_to_top20_count": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "distinct_file_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0002",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "top20_improvement_only",
+      "delta_top10_vs_baseline_bm25": 3,
+      "delta_top20_vs_baseline_bm25": 3,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 3,
+      "recovered_depth_to_top20_count": 3,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 14,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "distinct_file_top20_then_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0003",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "depth_to_head_success",
+      "delta_top10_vs_baseline_bm25": 6,
+      "delta_top20_vs_baseline_bm25": 5,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 6,
+      "recovered_depth_to_top20_count": 5,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0004",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "depth_to_head_success",
+      "delta_top10_vs_baseline_bm25": 6,
+      "delta_top20_vs_baseline_bm25": 7,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 6,
+      "recovered_depth_to_top20_count": 7,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 18,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "novel_file_first_top20_then_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0005",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "top20_improvement_only",
+      "delta_top10_vs_baseline_bm25": 3,
+      "delta_top20_vs_baseline_bm25": 2,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 3,
+      "recovered_depth_to_top20_count": 2,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0006",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "no_head_improvement",
+      "delta_top10_vs_baseline_bm25": 3,
+      "delta_top20_vs_baseline_bm25": 0,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 3,
+      "recovered_depth_to_top20_count": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "top5_bm25_then_distinct_file_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10ebvariant0007",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "depth_to_head_success",
+      "delta_top10_vs_baseline_bm25": 5,
+      "delta_top20_vs_baseline_bm25": 2,
+      "lost_baseline_top10_hits": 0,
+      "novel_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "old_pool_candidate_selected_count_bucket": "aggregate_in_novelty_selection_summary_records",
+      "order_changed_bool": true,
+      "recovered_depth_to_top10_count": 5,
+      "recovered_depth_to_top20_count": 2,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    }
+  ]
+}

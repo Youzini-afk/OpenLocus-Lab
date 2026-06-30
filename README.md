@@ -28,25 +28,29 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EA: Normalized-BM25 Expanded Canary Public Package**:
+The latest closed phase is **BEA-v1-N10EB: Normalized-BM25 Depth-to-Head Integration Smoke**:
 
 ```text
-status: normalized_bm25_expanded_canary_public_package_complete_n10eb_authorized
-self-test: 8 / 8
+status: normalized_bm25_depth_to_head_integration_smoke_complete_n10ec_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private reads: 0
-retrieval executions: 0
-recomputes: 0
-primary top50/cap12 top10/top20/top50/top100: 5 / 11 / 17 / 17
-depth top100/cap12 top10/top20/top50/top100: 5 / 11 / 17 / 26
-next allowed phase: BEA-v1-N10EB Normalized-BM25 Depth-to-Head Integration Experiment
+case count: 60
+variant count: 8
+baseline top10/top20/top50/top100: 5 / 11 / 17 / 26
+best top10 variant: novel_file_first_top10
+best top10/top20/top50/top100: 11 / 16 / 20 / 26
+depth-to-head success variants: 3
+new retrieval executions: 0
+candidate added/removed: 0
+next allowed phase: BEA-v1-N10EC Normalized-BM25 Depth-to-Head Integration Audit Package
 ```
 
-N10EA packages N10DZ without private reads or recompute. The latest source signal
-is not a head-ranking pass: top50/cap12 recovers only 5/60 at top10, below the
-10-case pass gate. It is still useful at depth: top50 recovers 17/60 and top100
-recovers 26/60, but top100 again does not improve top10. The next experiment is
-therefore depth-to-head integration, not runtime/default or scaled retrieval.
+N10EB turns the N10DZ depth signal into a head-ranking gain without running new
+retrieval. Repacking the existing normalized-BM25 top100 rows by putting files
+not already present in the old N1 pool first raises top10 recovery from 5/60 to
+11/60, meeting the N10EB success threshold with no lost baseline top10 hits.
+This is still a same-source smoke, not runtime/default readiness, not scaled
+retrieval, and not a method-winner or downstream-value claim.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2501,6 +2505,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package_report.json`](artifacts/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package_report.json)
 - [`artifacts/bea_v1_n10dz_normalized_bm25_expanded_canary/bea_v1_n10dz_normalized_bm25_expanded_canary_report.json`](artifacts/bea_v1_n10dz_normalized_bm25_expanded_canary/bea_v1_n10dz_normalized_bm25_expanded_canary_report.json)
 - [`artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json`](artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json)
+- [`artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json`](artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json)
 
 Documentation mirror check:
 
