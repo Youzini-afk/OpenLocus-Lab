@@ -1,0 +1,310 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dfgate0000",
+      "gate_bucket": "required_public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dfgate0001",
+      "gate_bucket": "private_span_rows_read_213",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dfgate0002",
+      "gate_bucket": "variant_grid_exactly_5",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dfgate0003",
+      "gate_bucket": "policy_outcomes_computed_for_all_variants",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dfgate0004",
+      "gate_bucket": "candidate_generation_zero",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dfgate0005",
+      "gate_bucket": "gold_not_used_for_policy",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dfgate0006",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "hybrid_success_summary_records": [
+    {
+      "anonymous_hybrid_success_summary_id": "n10dfsummary0000",
+      "best_zero_loss_hybrid_bucket": "prefix7_then_distinct_fill_top10",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_removed_count": 0,
+      "hybrid_variant_count": 2,
+      "reference_variant_count": 3,
+      "successful_hybrid_smoke_bool": true,
+      "variant_count": 5,
+      "zero_loss_aggressive_equivalent_hybrid_count": 1
+    }
+  ],
+  "hybrid_variant_contract_records": [
+    {
+      "anonymous_variant_contract_id": "n10dfcontract0000",
+      "candidate_pool_preserved_bool": true,
+      "deterministic_gold_free_bool": true,
+      "uses_candidate_order_bool": true,
+      "uses_gold_for_policy_bool": false,
+      "uses_private_file_identity_bool": false,
+      "variant_bucket": "baseline_existing_order",
+      "variant_role_bucket": "reference"
+    },
+    {
+      "anonymous_variant_contract_id": "n10dfcontract0001",
+      "candidate_pool_preserved_bool": true,
+      "deterministic_gold_free_bool": true,
+      "uses_candidate_order_bool": true,
+      "uses_gold_for_policy_bool": false,
+      "uses_private_file_identity_bool": true,
+      "variant_bucket": "aggressive_distinct_file_top20_greedy_then_top10",
+      "variant_role_bucket": "reference"
+    },
+    {
+      "anonymous_variant_contract_id": "n10dfcontract0002",
+      "candidate_pool_preserved_bool": true,
+      "deterministic_gold_free_bool": true,
+      "uses_candidate_order_bool": true,
+      "uses_gold_for_policy_bool": false,
+      "uses_private_file_identity_bool": true,
+      "variant_bucket": "max_per_file_2_top10",
+      "variant_role_bucket": "reference"
+    },
+    {
+      "anonymous_variant_contract_id": "n10dfcontract0003",
+      "candidate_pool_preserved_bool": true,
+      "deterministic_gold_free_bool": true,
+      "uses_candidate_order_bool": true,
+      "uses_gold_for_policy_bool": false,
+      "uses_private_file_identity_bool": true,
+      "variant_bucket": "prefix5_then_distinct_fill_top10",
+      "variant_role_bucket": "hybrid"
+    },
+    {
+      "anonymous_variant_contract_id": "n10dfcontract0004",
+      "candidate_pool_preserved_bool": true,
+      "deterministic_gold_free_bool": true,
+      "uses_candidate_order_bool": true,
+      "uses_gold_for_policy_bool": false,
+      "uses_private_file_identity_bool": true,
+      "variant_bucket": "prefix7_then_distinct_fill_top10",
+      "variant_role_bucket": "hybrid"
+    }
+  ],
+  "hybrid_variant_result_records": [
+    {
+      "anonymous_variant_result_id": "n10dfvar0000",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "decision_bucket": "reference_or_no_zero_loss_aggressive_equivalent",
+      "delta_top10_span_vs_baseline": 0,
+      "duplicate_pressure_reduced_rows_count": 0,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_span_hits": 0,
+      "top10_file_reach_count": 14,
+      "top10_span_overlap_count": 13,
+      "top20_file_reach_count": 19,
+      "top20_span_overlap_count": 17,
+      "variant_bucket": "baseline_existing_order",
+      "variant_role_bucket": "reference",
+      "zero_loss_aggressive_equivalent_bool": false
+    },
+    {
+      "anonymous_variant_result_id": "n10dfvar0001",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "decision_bucket": "reference_or_no_zero_loss_aggressive_equivalent",
+      "delta_top10_span_vs_baseline": 3,
+      "duplicate_pressure_reduced_rows_count": 152,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_span_hits": 1,
+      "top10_file_reach_count": 19,
+      "top10_span_overlap_count": 16,
+      "top20_file_reach_count": 47,
+      "top20_span_overlap_count": 24,
+      "variant_bucket": "aggressive_distinct_file_top20_greedy_then_top10",
+      "variant_role_bucket": "reference",
+      "zero_loss_aggressive_equivalent_bool": false
+    },
+    {
+      "anonymous_variant_result_id": "n10dfvar0002",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "decision_bucket": "reference_or_no_zero_loss_aggressive_equivalent",
+      "delta_top10_span_vs_baseline": 2,
+      "duplicate_pressure_reduced_rows_count": 93,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_span_hits": 0,
+      "top10_file_reach_count": 16,
+      "top10_span_overlap_count": 15,
+      "top20_file_reach_count": 19,
+      "top20_span_overlap_count": 17,
+      "variant_bucket": "max_per_file_2_top10",
+      "variant_role_bucket": "reference",
+      "zero_loss_aggressive_equivalent_bool": false
+    },
+    {
+      "anonymous_variant_result_id": "n10dfvar0003",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "decision_bucket": "reference_or_no_zero_loss_aggressive_equivalent",
+      "delta_top10_span_vs_baseline": 3,
+      "duplicate_pressure_reduced_rows_count": 147,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_span_hits": 1,
+      "top10_file_reach_count": 19,
+      "top10_span_overlap_count": 16,
+      "top20_file_reach_count": 20,
+      "top20_span_overlap_count": 18,
+      "variant_bucket": "prefix5_then_distinct_fill_top10",
+      "variant_role_bucket": "hybrid",
+      "zero_loss_aggressive_equivalent_bool": false
+    },
+    {
+      "anonymous_variant_result_id": "n10dfvar0004",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_pool_preserved_bool": true,
+      "candidate_removed_count": 0,
+      "decision_bucket": "zero_loss_aggressive_equivalent_hybrid",
+      "delta_top10_span_vs_baseline": 3,
+      "duplicate_pressure_reduced_rows_count": 130,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_span_hits": 0,
+      "top10_file_reach_count": 17,
+      "top10_span_overlap_count": 16,
+      "top20_file_reach_count": 19,
+      "top20_span_overlap_count": 17,
+      "variant_bucket": "prefix7_then_distinct_fill_top10",
+      "variant_role_bucket": "hybrid",
+      "zero_loss_aggressive_equivalent_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "regression_vs_zero_loss_mechanism_decomposition_complete_n10df_authorized",
+      "anonymous_input_artifact_id": "n10dfin0000",
+      "artifact_bucket": "n10de_mechanism_decomposition",
+      "expected_status_bucket": "regression_vs_zero_loss_mechanism_decomposition_complete_n10df_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "distinct_file_packing_rank_file_reach_package_complete_n10de_authorized",
+      "anonymous_input_artifact_id": "n10dfin0001",
+      "artifact_bucket": "n10dd_public_package",
+      "expected_status_bucket": "distinct_file_packing_rank_file_reach_package_complete_n10de_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "anonymous_input_artifact_id": "n10dfin0002",
+      "artifact_bucket": "n10dc_smoke",
+      "expected_status_bucket": "distinct_file_packing_rank_file_reach_smoke_complete_n10dd_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dg_handoff_records": [
+    {
+      "anonymous_n10dg_handoff_id": "n10dfhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dg_public_package_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DG Hybrid Distinct-File Packing Public Package",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10dfnoexec0000",
+      "broad_private_read_count": 0,
+      "candidate_addition_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_removal_count": 0,
+      "method_downstream_claim_count": 0,
+      "openlocus_execution_count": 0,
+      "p5_v1a_execution_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DF Hybrid Distinct-File Packing Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10dfprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_label_public_bool": false,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "public_aggregate_bucket_only_bool": true,
+      "span_or_line_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dfpriv0000",
+      "load_status_bucket": "present",
+      "other_private_files_read_count": 0,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10df_hybrid_packing_v1",
+  "status": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dfstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dg_public_package_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DG Hybrid Distinct-File Packing Public Package",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "status_bucket": "hybrid_distinct_file_packing_smoke_pass_n10dg_authorized"
+    }
+  ]
+}

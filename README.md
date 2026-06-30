@@ -1666,6 +1666,11 @@ See the current report index:
   changes, heldout/generalization claims, retrieval/rerun, candidate generation/
   materialization/add/remove, selector/reranker execution, adaptive tuning, P5,
   BEA-v1-A, method-winner claims, or downstream-value claims.
+- N10DF authorizes only N10DG hybrid distinct-file packing public package. It does
+  not authorize runtime/default changes, heldout/generalization claims,
+  retrieval/rerun, candidate generation/materialization/add/remove,
+  selector/reranker execution, adaptive tuning, P5, BEA-v1-A, method-winner
+  claims, downstream-value claims, or broad private reads.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2238,6 +2243,10 @@ eval/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package.py
 eval/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition.py
   Direct decomposition of aggressive distinct-file regression vs max-per-file-2
   zero-loss tradeoff; authorizes only N10DF hybrid distinct-file packing smoke.
+
+eval/bea_v1_n10df_hybrid_distinct_file_packing_smoke.py
+  Direct same-source hybrid distinct-file packing smoke; finds prefix7 zero-loss
+  aggressive-equivalent top10 span and authorizes only N10DG public package.
 ```
 
 Key reports:
@@ -2354,6 +2363,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dc_distinct_file_packing_rank_file_reach_smoke/bea_v1_n10dc_distinct_file_packing_rank_file_reach_smoke_report.json`](artifacts/bea_v1_n10dc_distinct_file_packing_rank_file_reach_smoke/bea_v1_n10dc_distinct_file_packing_rank_file_reach_smoke_report.json)
 - [`artifacts/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package_report.json`](artifacts/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package/bea_v1_n10dd_distinct_file_packing_rank_file_reach_package_report.json)
 - [`artifacts/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition_report.json`](artifacts/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition/bea_v1_n10de_regression_vs_zero_loss_mechanism_decomposition_report.json)
+- [`artifacts/bea_v1_n10df_hybrid_distinct_file_packing_smoke/bea_v1_n10df_hybrid_distinct_file_packing_smoke_report.json`](artifacts/bea_v1_n10df_hybrid_distinct_file_packing_smoke/bea_v1_n10df_hybrid_distinct_file_packing_smoke_report.json)
 
 Documentation mirror check:
 
