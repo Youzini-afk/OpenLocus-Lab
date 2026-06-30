@@ -1,0 +1,342 @@
+{
+  "corrected_absence_summary_records": [
+    {
+      "anonymous_absence_summary_id": "n10dorabs0000",
+      "first_gold_file_rank_11_20_count": 14,
+      "first_gold_file_rank_21_50_count": 14,
+      "first_gold_file_rank_51_100_count": 0,
+      "first_gold_file_rank_gt100_count": 0,
+      "gold_file_absent_from_observed_pool_count": 141,
+      "primary_file_match_rule_bucket": "suffix_safe_path_match",
+      "reachable_rank11_50_count": 28,
+      "top10_file_hit_count": 44,
+      "top10_file_miss_count": 169,
+      "top20_file_hit_count": 58
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "full_pool_distinct_file_records": [
+    {
+      "anonymous_bucket_id": "n10dordist0000",
+      "case_count": 48,
+      "distinct_file_count_bucket": "distinct_file_count_1_10"
+    },
+    {
+      "anonymous_bucket_id": "n10dordist0001",
+      "case_count": 4,
+      "distinct_file_count_bucket": "distinct_file_count_11_20"
+    },
+    {
+      "anonymous_bucket_id": "n10dordist0002",
+      "case_count": 70,
+      "distinct_file_count_bucket": "distinct_file_count_21_50"
+    },
+    {
+      "anonymous_bucket_id": "n10dordist0003",
+      "case_count": 19,
+      "distinct_file_count_bucket": "distinct_file_count_gt50"
+    }
+  ],
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dorgate0000",
+      "gate_bucket": "inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dorgate0001",
+      "gate_bucket": "private_span_rows_213",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dorgate0002",
+      "gate_bucket": "corrected_absence_accounting",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dorgate0003",
+      "gate_bucket": "no_forbidden_execution",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "candidate_pool_absence_path_normalization_correction_complete_n10dmr_authorized",
+      "anonymous_input_artifact_id": "n10dorin0000",
+      "artifact_bucket": "n10do_corrected_absence_audit",
+      "expected_status_bucket": "candidate_pool_absence_path_normalization_correction_complete_n10dmr_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "suffix_safe_deep_rank_promotion_smoke_complete_n10dnr_authorized",
+      "anonymous_input_artifact_id": "n10dorin0001",
+      "artifact_bucket": "n10dmr_suffix_safe_deep_rank_smoke",
+      "expected_status_bucket": "suffix_safe_deep_rank_promotion_smoke_complete_n10dnr_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "corrected_deep_rank_promotion_public_package_complete_n10dor_authorized",
+      "anonymous_input_artifact_id": "n10dorin0002",
+      "artifact_bucket": "n10dnr_corrected_deep_rank_package",
+      "expected_status_bucket": "corrected_deep_rank_promotion_public_package_complete_n10dor_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "anonymous_input_artifact_id": "n10dorin0003",
+      "artifact_bucket": "n10dl_historical_residual_analysis",
+      "expected_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_execution_id": "n10dornoexec0000",
+      "candidate_add_remove_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "openlocus_execution_count": 0,
+      "oracle_candidate_insertion_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "observable_source_field_availability_records": [
+    {
+      "anonymous_source_field_id": "n10dorsrc0000",
+      "availability_bucket": "unavailable",
+      "complete_bool": false,
+      "field_bucket": "source_channel",
+      "usable_for_targeted_policy_bool": false
+    },
+    {
+      "anonymous_source_field_id": "n10dorsrc0001",
+      "availability_bucket": "unavailable",
+      "complete_bool": false,
+      "field_bucket": "retrieval_method",
+      "usable_for_targeted_policy_bool": false
+    },
+    {
+      "anonymous_source_field_id": "n10dorsrc0002",
+      "availability_bucket": "unavailable",
+      "complete_bool": false,
+      "field_bucket": "score",
+      "usable_for_targeted_policy_bool": false
+    },
+    {
+      "anonymous_source_field_id": "n10dorsrc0003",
+      "availability_bucket": "unavailable",
+      "complete_bool": false,
+      "field_bucket": "language_repo_task_bucket",
+      "usable_for_targeted_policy_bool": false
+    },
+    {
+      "anonymous_source_field_id": "n10dorsrc0004",
+      "availability_bucket": "unavailable",
+      "complete_bool": false,
+      "field_bucket": "query_category",
+      "usable_for_targeted_policy_bool": false
+    }
+  ],
+  "oracle_ceiling_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dorhandoff0000",
+      "candidate_generation_authorized_bool": false,
+      "n10dp_design_only_preview_bool": true,
+      "n10dp_oracle_ceiling_smoke_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DP Oracle Candidate-Insertion Ceiling Smoke",
+      "oracle_candidate_insertion_authorized_in_n10dor_bool": false,
+      "retrieval_authorized_bool": false
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DO-R Corrected Candidate-Pool Absence Source Mechanism Audit",
+  "pool_size_bucket_records": [
+    {
+      "anonymous_bucket_id": "n10dorpool0000",
+      "case_count": 34,
+      "pool_size_bucket": "pool_size_1_10"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpool0001",
+      "case_count": 15,
+      "pool_size_bucket": "pool_size_11_20"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpool0002",
+      "case_count": 57,
+      "pool_size_bucket": "pool_size_21_50"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpool0003",
+      "case_count": 35,
+      "pool_size_bucket": "pool_size_51_100"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpool0004",
+      "case_count": 0,
+      "pool_size_bucket": "pool_size_gt100"
+    }
+  ],
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10dorprivacy0000",
+      "candidate_list_public_count": 0,
+      "gold_used_for_policy_count": 0,
+      "private_path_public_count": 0,
+      "public_aggregate_only_bool": true,
+      "raw_file_identifier_public_count": 0,
+      "raw_span_or_line_public_count": 0
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dorpriv0000",
+      "load_status_bucket": "present",
+      "private_content_used_for_bucketed_audit_bool": true,
+      "private_input_bucket": "scoped_n1_span_rows",
+      "private_span_rows_read": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10dor_corrected_absence_source_audit_v1",
+  "source_mechanism_direction_records": [
+    {
+      "anonymous_signal_id": "n10dorsig0000",
+      "evidence_bucket": "corrected_deep_rank_negative",
+      "signal_bucket": "same_pool_optimization_exhausted",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dorsig0001",
+      "evidence_bucket": "absent_pool_dominant",
+      "signal_bucket": "candidate_source_absent_from_pool",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dorsig0002",
+      "evidence_bucket": "rich_wrong_pool_absence_present",
+      "signal_bucket": "rich_wrong_pool_suggests_source_quality_gap",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dorsig0003",
+      "evidence_bucket": "tiny_pool_absence_present",
+      "signal_bucket": "tiny_pool_suggests_pool_size_gap",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dorsig0004",
+      "evidence_bucket": "source_fields_incomplete",
+      "signal_bucket": "source_metadata_unavailable_for_targeted_policy",
+      "signal_present_bool": true
+    }
+  ],
+  "status": "corrected_candidate_pool_absence_source_audit_complete_n10dp_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dorstop0000",
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dp_oracle_ceiling_smoke_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DP Oracle Candidate-Insertion Ceiling Smoke",
+      "oracle_candidate_insertion_authorized_in_n10dor_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "topk_saturation_records": [
+    {
+      "anonymous_bucket_id": "n10dortop100000",
+      "case_count": 141,
+      "top10_distinct_file_bucket": "distinct_file_count_1_10"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop100001",
+      "case_count": 0,
+      "top10_distinct_file_bucket": "distinct_file_count_11_20"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop100002",
+      "case_count": 0,
+      "top10_distinct_file_bucket": "distinct_file_count_21_50"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop100003",
+      "case_count": 0,
+      "top10_distinct_file_bucket": "distinct_file_count_gt50"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop200000",
+      "case_count": 50,
+      "top20_distinct_file_bucket": "distinct_file_count_1_10"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop200001",
+      "case_count": 91,
+      "top20_distinct_file_bucket": "distinct_file_count_11_20"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop200002",
+      "case_count": 0,
+      "top20_distinct_file_bucket": "distinct_file_count_21_50"
+    },
+    {
+      "anonymous_bucket_id": "n10dortop200003",
+      "case_count": 0,
+      "top20_distinct_file_bucket": "distinct_file_count_gt50"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpress0000",
+      "case_count": 90,
+      "duplicate_pressure_bucket": "duplicate_pressure_none"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpress0001",
+      "case_count": 0,
+      "duplicate_pressure_bucket": "duplicate_pressure_low"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpress0002",
+      "case_count": 8,
+      "duplicate_pressure_bucket": "duplicate_pressure_medium"
+    },
+    {
+      "anonymous_bucket_id": "n10dorpress0003",
+      "case_count": 43,
+      "duplicate_pressure_bucket": "duplicate_pressure_high"
+    }
+  ],
+  "wrong_pool_richness_records": [
+    {
+      "anonymous_bucket_id": "n10dorwrong0000",
+      "case_count": 49,
+      "wrong_pool_richness_bucket": "tiny_pool_absence"
+    },
+    {
+      "anonymous_bucket_id": "n10dorwrong0001",
+      "case_count": 57,
+      "wrong_pool_richness_bucket": "moderate_pool_absence"
+    },
+    {
+      "anonymous_bucket_id": "n10dorwrong0002",
+      "case_count": 35,
+      "wrong_pool_richness_bucket": "rich_wrong_pool_absence"
+    }
+  ]
+}
