@@ -28,19 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DM: No-Duplicate-Pressure Deep-Rank Promotion Smoke**:
+The latest closed phase is **BEA-v1-N10DN: No-Duplicate-Pressure Deep-Rank Promotion Public Package**:
 
 ```text
-status: no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized
-self-test: 16 / 16
+status: no_duplicate_pressure_deep_rank_promotion_public_package_complete_n10do_authorized
+self-test: 12 / 12
 forbidden scan: pass
-private span rows read: 213
-variant count: 6
+private reads in N10DN: 0
+recomputes in N10DN: 0
 anchor file/projected span: 34/44 and 30/36
-activated rows for gated variants: 157
 positive variants: 0
 harmful variants: 5
-next allowed phase: BEA-v1-N10DN No-Duplicate-Pressure Deep-Rank Promotion Public Package
+fixed deep-rank promotion line: closed without new observable signal
+next allowed phase: BEA-v1-N10DO Candidate-Pool Absence Source Acquisition Mechanism Audit
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool

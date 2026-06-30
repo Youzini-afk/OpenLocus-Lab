@@ -1,0 +1,221 @@
+{
+  "fixed_deep_rank_promotion_closure_records": [
+    {
+      "anonymous_closure_id": "n10dnclosure0000",
+      "candidate_pool_absence_residual_count": 161,
+      "closure_bucket": "fixed_deep_rank_promotion_line_closed_without_new_observable_signal",
+      "further_fixed_deep_rank_promotion_authorized_bool": false,
+      "negative_result_bool": true,
+      "next_mechanism_bucket": "candidate_pool_absence_source_acquisition_audit",
+      "useful_negative_research_bool": true
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dngate0000",
+      "gate_bucket": "inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dngate0001",
+      "gate_bucket": "source_status_complete",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dngate0002",
+      "gate_bucket": "negative_metrics_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dngate0003",
+      "gate_bucket": "public_only_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized",
+      "anonymous_input_artifact_id": "n10dnin0000",
+      "artifact_bucket": "n10dm_deep_rank_smoke",
+      "expected_status_bucket": "no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "anonymous_input_artifact_id": "n10dnin0001",
+      "artifact_bucket": "n10dl_residual_analysis",
+      "expected_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+      "anonymous_input_artifact_id": "n10dnin0002",
+      "artifact_bucket": "n10dk_rank_promotion_package",
+      "expected_status_bucket": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10do_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dnhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10do_candidate_pool_absence_audit_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DO Candidate-Pool Absence Source Acquisition Mechanism Audit",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "same_source_public_package_bool": true,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10dnno0000",
+      "new_variant_count": 0,
+      "private_read_count": 0,
+      "public_artifact_only_bool": true,
+      "recompute_count": 0
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anchor_file_top10_count": 34,
+      "anchor_file_top20_count": 44,
+      "anchor_projected_span_top10_count": 30,
+      "anchor_projected_span_top20_count": 36,
+      "anonymous_package_summary_id": "n10dnsummary0000",
+      "harmful_variant_count": 5,
+      "max_lost_anchor_file_top10_hits": 14,
+      "max_lost_anchor_span_top10_hits": 10,
+      "package_consistent_bool": true,
+      "positive_variant_count": 0,
+      "source_forbidden_scan_bucket": "pass",
+      "source_status_bucket": "no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized",
+      "span_projection_positive_count": 0,
+      "variant_count": 6
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DN No-Duplicate-Pressure Deep-Rank Promotion Public Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_boundary_id": "n10dnboundary0000",
+      "broad_private_read_claim_bool": false,
+      "candidate_generation_claim_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "package_boundary_bucket": "public_only_no_recompute_no_private_read",
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "runtime_default_claim_bool": false,
+      "selector_reranker_claim_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10dn_deep_rank_public_package_v1",
+  "status": "no_duplicate_pressure_deep_rank_promotion_public_package_complete_n10do_authorized",
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_stop_go_id": "n10dnstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "further_fixed_deep_rank_promotion_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10do_candidate_pool_absence_audit_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DO Candidate-Pool Absence Source Acquisition Mechanism Audit",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "variant_package_records": [
+    {
+      "anonymous_variant_package_id": "n10dnvar0000",
+      "decision_bucket": "no_improvement",
+      "lost_anchor_file_top10_hits": 0,
+      "lost_anchor_span_top10_hits": 0,
+      "recovered_rank11_20_residual_count": 0,
+      "top10_file_reach_count": 34,
+      "top10_projected_span_overlap_count": 30,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "anonymous_variant_package_id": "n10dnvar0001",
+      "decision_bucket": "deep_rank_probe_harmful",
+      "lost_anchor_file_top10_hits": 14,
+      "lost_anchor_span_top10_hits": 10,
+      "recovered_rank11_20_residual_count": 5,
+      "top10_file_reach_count": 25,
+      "top10_projected_span_overlap_count": 23,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "anonymous_variant_package_id": "n10dnvar0002",
+      "decision_bucket": "deep_rank_probe_harmful",
+      "lost_anchor_file_top10_hits": 5,
+      "lost_anchor_span_top10_hits": 4,
+      "recovered_rank11_20_residual_count": 0,
+      "top10_file_reach_count": 29,
+      "top10_projected_span_overlap_count": 26,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "anonymous_variant_package_id": "n10dnvar0003",
+      "decision_bucket": "deep_rank_probe_harmful",
+      "lost_anchor_file_top10_hits": 9,
+      "lost_anchor_span_top10_hits": 7,
+      "recovered_rank11_20_residual_count": 1,
+      "top10_file_reach_count": 26,
+      "top10_projected_span_overlap_count": 24,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "anonymous_variant_package_id": "n10dnvar0004",
+      "decision_bucket": "deep_rank_probe_harmful",
+      "lost_anchor_file_top10_hits": 14,
+      "lost_anchor_span_top10_hits": 10,
+      "recovered_rank11_20_residual_count": 5,
+      "top10_file_reach_count": 25,
+      "top10_projected_span_overlap_count": 23,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "anonymous_variant_package_id": "n10dnvar0005",
+      "decision_bucket": "deep_rank_probe_harmful",
+      "lost_anchor_file_top10_hits": 5,
+      "lost_anchor_span_top10_hits": 4,
+      "recovered_rank11_20_residual_count": 0,
+      "top10_file_reach_count": 29,
+      "top10_projected_span_overlap_count": 26,
+      "top20_file_reach_count": 44,
+      "top20_projected_span_overlap_count": 36,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ]
+}
