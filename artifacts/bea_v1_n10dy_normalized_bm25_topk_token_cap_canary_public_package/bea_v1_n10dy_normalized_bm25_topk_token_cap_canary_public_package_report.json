@@ -1,0 +1,190 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dygate0000",
+      "gate_bucket": "n10dx_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dygate0001",
+      "gate_bucket": "n10dx_counts_match_expected",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dygate0002",
+      "gate_bucket": "public_only_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_topk_token_cap_variant_canary_pass_n10dy_authorized",
+      "anonymous_input_artifact_id": "n10dyinput0000",
+      "artifact_bucket": "n10dx_normalized_bm25_topk_token_cap_variant_canary",
+      "expected_status_bucket": "normalized_bm25_topk_token_cap_variant_canary_pass_n10dy_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "interpretation_records": [
+    {
+      "anonymous_interpretation_id": "n10dyinterp0000",
+      "cap24_worsens_head_ranking_bool": true,
+      "depth_only_improvement_bool": true,
+      "not_heldout_generalization_claim_bool": true,
+      "not_runtime_default_claim_bool": true,
+      "top10_improvement_bool": false,
+      "top20_improvement_bool": false,
+      "top50_cap12_remains_best_head_ranking_bool": true,
+      "top50_improvement_bool": false
+    }
+  ],
+  "n10dx_public_input_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_topk_token_cap_variant_canary_pass_n10dy_authorized",
+      "anonymous_input_artifact_id": "n10dyinput0000",
+      "artifact_bucket": "n10dx_normalized_bm25_topk_token_cap_variant_canary",
+      "expected_status_bucket": "normalized_bm25_topk_token_cap_variant_canary_pass_n10dy_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dz_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dyhandoff0000",
+      "another_small_sample_option_bool": true,
+      "depth_evidence_promotion_focus_bool": true,
+      "n10dz_focused_followup_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DZ Normalized-BM25 Depth Promotion or Small-Sample Expansion Decision",
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "no_private_read_no_recompute_records": [
+    {
+      "anonymous_no_private_id": "n10dynopriv0000",
+      "candidate_generation_count": 0,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anonymous_package_summary_id": "n10dysummary0000",
+      "command_count_packaged_from_n10dx": 120,
+      "private_read_count": 0,
+      "public_only_package_bool": true,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "sampled_case_count": 30,
+      "variant_count": 4
+    }
+  ],
+  "packaged_variant_result_records": [
+    {
+      "anonymous_result_id": "n10dyresult0000",
+      "interpretation_bucket": "best_head_ranking_point",
+      "top100_count": 10,
+      "top10_count": 8,
+      "top20_count": 9,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top50_cap12"
+    },
+    {
+      "additional_top100_vs_baseline_count": 5,
+      "anonymous_result_id": "n10dyresult0001",
+      "interpretation_bucket": "depth_only_improvement_ranks_51_100",
+      "top100_count": 15,
+      "top10_count": 8,
+      "top20_count": 9,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top100_cap12"
+    },
+    {
+      "anonymous_result_id": "n10dyresult0002",
+      "interpretation_bucket": "cap24_worsens_head_ranking",
+      "top100_count": 10,
+      "top10_count": 6,
+      "top20_count": 8,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top50_cap24"
+    },
+    {
+      "additional_top100_vs_baseline_count": 3,
+      "anonymous_result_id": "n10dyresult0003",
+      "interpretation_bucket": "cap24_depth_gain_but_head_worse_than_cap12",
+      "top100_count": 13,
+      "top10_count": 6,
+      "top20_count": 8,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top100_cap24"
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DY Normalized-BM25 TopK/Token-Cap Canary Public Package",
+  "schema_version": "bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package_v1",
+  "status": "normalized_bm25_topk_token_cap_canary_public_package_complete_n10dz_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dystop0000",
+      "candidate_generation_materialization_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DZ Normalized-BM25 Depth Promotion or Small-Sample Expansion Decision",
+      "p5_v1a_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "topk_token_cap_result_records": [
+    {
+      "anonymous_result_id": "n10dyresult0000",
+      "interpretation_bucket": "best_head_ranking_point",
+      "top100_count": 10,
+      "top10_count": 8,
+      "top20_count": 9,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top50_cap12"
+    },
+    {
+      "additional_top100_vs_baseline_count": 5,
+      "anonymous_result_id": "n10dyresult0001",
+      "interpretation_bucket": "depth_only_improvement_ranks_51_100",
+      "top100_count": 15,
+      "top10_count": 8,
+      "top20_count": 9,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top100_cap12"
+    },
+    {
+      "anonymous_result_id": "n10dyresult0002",
+      "interpretation_bucket": "cap24_worsens_head_ranking",
+      "top100_count": 10,
+      "top10_count": 6,
+      "top20_count": 8,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top50_cap24"
+    },
+    {
+      "additional_top100_vs_baseline_count": 3,
+      "anonymous_result_id": "n10dyresult0003",
+      "interpretation_bucket": "cap24_depth_gain_but_head_worse_than_cap12",
+      "top100_count": 13,
+      "top10_count": 6,
+      "top20_count": 8,
+      "top50_count": 10,
+      "variant_bucket": "normalized_bm25_top100_cap24"
+    }
+  ]
+}

@@ -222,6 +222,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10dv-targeted-candidate-source-variant-canary-public-package.md`: [en](en/bea-v1-n10dv-targeted-candidate-source-variant-canary-public-package.md) · [zh](zh/bea-v1-n10dv-targeted-candidate-source-variant-canary-public-package.md)
 - `bea-v1-n10dw-normalized-bm25-recovery-mechanism-analysis.md`: [en](en/bea-v1-n10dw-normalized-bm25-recovery-mechanism-analysis.md) · [zh](zh/bea-v1-n10dw-normalized-bm25-recovery-mechanism-analysis.md)
 - `bea-v1-n10dx-normalized-bm25-topk-token-cap-variant-canary.md`: [en](en/bea-v1-n10dx-normalized-bm25-topk-token-cap-variant-canary.md) · [zh](zh/bea-v1-n10dx-normalized-bm25-topk-token-cap-variant-canary.md)
+- `bea-v1-n10dy-normalized-bm25-topk-token-cap-canary-public-package.md`: [en](en/bea-v1-n10dy-normalized-bm25-topk-token-cap-canary-public-package.md) · [zh](zh/bea-v1-n10dy-normalized-bm25-topk-token-cap-canary-public-package.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
