@@ -28,22 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CQ: Refined Hybrid Mechanism Decomposition**:
+The latest closed phase is **BEA-v1-N10CR: Mechanism-Guided Local Saturation Sweep**:
 
 ```text
-status: refined_hybrid_mechanism_decomposition_complete_n10cr_authorized
-self-test: 15 / 15
+status: mechanism_guided_local_saturation_sweep_complete_n10cs_authorized
+self-test: 14 / 14
 forbidden scan: pass
 private span rows read: 213
-policies evaluated: 5
-refined hybrid: 25 / 31 at 3200 / 6200
-top1 result: 24 / 30
-top3 result: 25 / 31
-pm200 all-spans: 25 / 30
-top2-minus-top1 recovered cases: 1
-top3-minus-top2 recovered cases: 0
-remaining top10 misses: 188
-next allowed phase: BEA-v1-N10CR Mechanism-Guided Refined Hybrid Sweep
+variants evaluated: 8
+refined anchor: 25 / 31 at 3200 / 6200
+pm200 all-spans: 25 / 30 at 4000 / 8000
+best variant: top2_pm300_short75_225
+best result: 26 / 32 at 3600 / 6600
+overall local saturation: false
+next allowed phase: BEA-v1-N10CS Local Saturation Sweep Public Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -856,6 +854,13 @@ and the remaining refined-hybrid top10 misses are mostly file-not-in-top10. It
 authorizes only N10CR mechanism-guided refined-hybrid sweep over fixed variants
 derived from N10CQ.
 
+N10CR runs that mechanism-guided local saturation sweep. Contrary to the expected
+possible saturation outcome, `top2_pm300_short75_225` improves the refined anchor
+from 25/31 to 26/32 at cost10/cost20 3600/6600, without changing candidate order
+or adding candidates. Local span-window repair is therefore not saturated yet,
+although the largest remaining blocker is still rank/file reach (`file_not_in_top10`
+remains 167). N10CR authorizes only N10CS public package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1521,6 +1526,10 @@ See the current report index:
   runtime/default enablement, existing evaluator hook-in, heldout/generalization
   claims, retrieval/rerun, candidate generation/add/remove/reorder, adaptive
   tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N10CR authorizes only N10CS public package. It does not authorize runtime/default
+  enablement, existing evaluator hook-in, heldout/generalization claims,
+  retrieval/rerun, candidate generation/add/remove/reorder, rank/file promotion,
+  adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2037,6 +2046,10 @@ eval/bea_v1_n10cp_refined_hybrid_adapter_smoke_package.py
 eval/bea_v1_n10cq_refined_hybrid_mechanism_decomposition.py
   Mechanism decomposition of the refined hybrid; authorizes only N10CR fixed
   mechanism-guided follow-up.
+
+eval/bea_v1_n10cr_mechanism_guided_local_saturation_sweep.py
+  Mechanism-guided local saturation sweep; finds `top2_pm300_short75_225` reaches
+  26/32 and authorizes only N10CS public package.
 ```
 
 Key reports:
@@ -2139,6 +2152,7 @@ Key reports:
 - [`artifacts/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke_report.json`](artifacts/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke/bea_v1_n10co_default_off_adapter_refined_hybrid_smoke_report.json)
 - [`artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json`](artifacts/bea_v1_n10cp_refined_hybrid_adapter_smoke_package/bea_v1_n10cp_refined_hybrid_adapter_smoke_package_report.json)
 - [`artifacts/bea_v1_n10cq_refined_hybrid_mechanism_decomposition/bea_v1_n10cq_refined_hybrid_mechanism_decomposition_report.json`](artifacts/bea_v1_n10cq_refined_hybrid_mechanism_decomposition/bea_v1_n10cq_refined_hybrid_mechanism_decomposition_report.json)
+- [`artifacts/bea_v1_n10cr_mechanism_guided_local_saturation_sweep/bea_v1_n10cr_mechanism_guided_local_saturation_sweep_report.json`](artifacts/bea_v1_n10cr_mechanism_guided_local_saturation_sweep/bea_v1_n10cr_mechanism_guided_local_saturation_sweep_report.json)
 
 Documentation mirror check:
 

@@ -1,0 +1,514 @@
+{
+  "claim_level": "same_source_local_window_saturation_sweep_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "private_span_rows_read_213",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "variant_contract",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "variant_results",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "local_miss_residuals",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "saturation_decision",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "privacy_boundary",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_forbidden_execution",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-30T00:03:15Z",
+  "generated_by": "bea_v1_n10cr_mechanism_guided_local_saturation_sweep",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10crin0000",
+      "expected_status": "refined_hybrid_mechanism_decomposition_complete_n10cr_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cq_mechanism_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "refined_hybrid_mechanism_decomposition_complete_n10cr_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10crin0001",
+      "expected_status": "refined_hybrid_adapter_package_complete_n10cq_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cp_refined_adapter_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "refined_hybrid_adapter_package_complete_n10cq_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10crin0002",
+      "expected_status": "winning_hybrid_cost_refinement_package_complete_n10co_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cn_refinement_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "winning_hybrid_cost_refinement_package_complete_n10co_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10crin0003",
+      "expected_status": "observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cg_hybrid_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "observable_hybrid_span_shape_rule_sweep_complete_n10ch_authorized"
+    }
+  ],
+  "local_miss_residual_records": [
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0000",
+      "file_not_in_top10_remaining_count": 167,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "variant_bucket": "anchor_refined_top2_pm200_short75_225"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0001",
+      "file_not_in_top10_remaining_count": 168,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 11,
+      "variant_bucket": "anchor_pm200_all_spans"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0002",
+      "file_not_in_top10_remaining_count": 166,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 13,
+      "variant_bucket": "top2_pm200_short90_270"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0003",
+      "file_not_in_top10_remaining_count": 166,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 13,
+      "variant_bucket": "top2_pm200_short100_300"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0004",
+      "file_not_in_top10_remaining_count": 167,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "variant_bucket": "top2_pm200_short75_225_medium40_120"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0005",
+      "file_not_in_top10_remaining_count": 167,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "variant_bucket": "top2_pm200_short75_225_medium75_225"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0006",
+      "file_not_in_top10_remaining_count": 167,
+      "remaining_top10_miss_count": 188,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "variant_bucket": "top2_pm200_short75_225_medium75_225_long75_225"
+    },
+    {
+      "anonymous_local_miss_residual_id": "n10crmiss0007",
+      "file_not_in_top10_remaining_count": 167,
+      "remaining_top10_miss_count": 187,
+      "same_file_no_span_overlap_remaining_count": 8,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "variant_bucket": "top2_pm300_short75_225"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10cs_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10cs_handoff_id": "n10crhandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10cs_authorized_bool": true,
+      "n10cs_handoff_bucket": "n10cs_public_package_authorized",
+      "n10ct_rank_file_reach_preflight_may_be_authorized_by_n10cs_bool": false,
+      "p5_v1a_authorized_bool": false,
+      "public_package_only_bool": true,
+      "rank_file_promotion_authorized_in_n10cr_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_forbidden_execution_id": "n10crnoexec0000",
+      "candidate_added_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_removed_count": 0,
+      "candidate_reordered_count": 0,
+      "downstream_value_claim_count": 0,
+      "generalization_claim_count": 0,
+      "heldout_claim_count": 0,
+      "method_winner_claim_count": 0,
+      "no_execution_boundary_bucket": "local_saturation_sweep_only",
+      "no_forbidden_execution_complete_bool": true,
+      "openlocus_execution_count": 0,
+      "p5_execution_count": 0,
+      "rank_file_promotion_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_promotion_count": 0,
+      "selector_reranker_execution_count": 0,
+      "v1a_execution_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CR Mechanism-Guided Local Saturation Sweep",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10crprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_public_bool": false,
+      "line_number_public_bool": false,
+      "privacy_boundary_bucket": "aggregate_saturation_sweep_only",
+      "privacy_boundary_complete_bool": true,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "snippet_public_bool": false,
+      "span_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10crpriv0000",
+      "intake_status_bucket": "pass",
+      "other_private_files_read_count": 0,
+      "private_content_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213,
+      "usable_span_surface_rows": 213
+    }
+  ],
+  "saturation_decision_records": [
+    {
+      "anonymous_saturation_decision_id": "n10crsaturation0000",
+      "best_top10_variant_count": 1,
+      "best_top20_variant_count": 1,
+      "max_top10_span_overlap_count": 26,
+      "max_top20_span_overlap_count": 32,
+      "overall_saturation_bool": false,
+      "rank_file_reach_pivot_allowed_next_bool": false,
+      "saturation_bucket": "local_window_not_saturated"
+    }
+  ],
+  "schema_version": "bea_v1_n10cr_mechanism_guided_local_saturation_sweep.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized",
+  "status_vocabulary": [
+    "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized",
+    "no_go_n10cr_required_inputs_unavailable",
+    "no_go_n10cr_private_span_rows_missing",
+    "no_go_n10cr_variant_contract_invalid",
+    "no_go_n10cr_result_accounting_invalid",
+    "no_go_n10cr_privacy_or_claim_boundary_failed",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10cs_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10cs_authorized": true,
+      "next_allowed_phase": "BEA-v1-N10CS Local Saturation Sweep Public Package",
+      "next_allowed_scope_bucket": "public_package_only",
+      "p5_authorized": false,
+      "rank_file_promotion_authorized_in_n10cr": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "variant_contract_records": [
+    {
+      "anonymous_variant_contract_id": "n10crcontract0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "anchor_refined_top2_pm200_short75_225"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "anchor_pm200_all_spans"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "top2_pm200_short90_270"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "top2_pm200_short100_300"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "top2_pm200_short75_225_medium40_120"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0005",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "top2_pm200_short75_225_medium75_225"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0006",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "top2_pm200_short75_225_medium75_225_long75_225"
+    },
+    {
+      "anonymous_variant_contract_id": "n10crcontract0007",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "policy_gold_signal_used_bool": false,
+      "policy_outcome_signal_used_bool": false,
+      "predeclared_variant_bool": true,
+      "variant_bucket": "top2_pm300_short75_225"
+    }
+  ],
+  "variant_result_records": [
+    {
+      "anonymous_variant_result_id": "n10crresult0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": 0,
+      "file_not_in_top10_remaining_count": 167,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "anchor_refined_top2_pm200_short75_225"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 8000,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": -1,
+      "file_not_in_top10_remaining_count": 168,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 11,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 30,
+      "variant_bucket": "anchor_pm200_all_spans"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3680,
+      "cost_proxy_top20": 7280,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": 0,
+      "file_not_in_top10_remaining_count": 166,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 13,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "top2_pm200_short90_270"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 8000,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": 0,
+      "file_not_in_top10_remaining_count": 166,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 13,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "top2_pm200_short100_300"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": 0,
+      "file_not_in_top10_remaining_count": 167,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "top2_pm200_short75_225_medium40_120"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0005",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": 0,
+      "file_not_in_top10_remaining_count": 167,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "top2_pm200_short75_225_medium75_225"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0006",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_refined": 0,
+      "delta_top20_vs_refined": 0,
+      "file_not_in_top10_remaining_count": 167,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 9,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "top2_pm200_short75_225_medium75_225_long75_225"
+    },
+    {
+      "anonymous_variant_result_id": "n10crresult0007",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3600,
+      "cost_proxy_top20": 6600,
+      "decision_bucket": "local_window_improves_refined",
+      "delta_top10_vs_refined": 1,
+      "delta_top20_vs_refined": 1,
+      "file_not_in_top10_remaining_count": 167,
+      "lost_refined_top10_hits": 0,
+      "same_file_no_span_overlap_remaining_count": 8,
+      "span_overlap_beyond_top10_remaining_count": 12,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "top2_pm300_short75_225"
+    }
+  ]
+}

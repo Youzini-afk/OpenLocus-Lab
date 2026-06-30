@@ -187,6 +187,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10co-default-off-adapter-refined-hybrid-smoke.md`: [en](en/bea-v1-n10co-default-off-adapter-refined-hybrid-smoke.md) · [zh](zh/bea-v1-n10co-default-off-adapter-refined-hybrid-smoke.md)
 - `bea-v1-n10cp-refined-hybrid-adapter-smoke-package.md`: [en](en/bea-v1-n10cp-refined-hybrid-adapter-smoke-package.md) · [zh](zh/bea-v1-n10cp-refined-hybrid-adapter-smoke-package.md)
 - `bea-v1-n10cq-refined-hybrid-mechanism-decomposition.md`: [en](en/bea-v1-n10cq-refined-hybrid-mechanism-decomposition.md) · [zh](zh/bea-v1-n10cq-refined-hybrid-mechanism-decomposition.md)
+- `bea-v1-n10cr-mechanism-guided-local-saturation-sweep.md`: [en](en/bea-v1-n10cr-mechanism-guided-local-saturation-sweep.md) · [zh](zh/bea-v1-n10cr-mechanism-guided-local-saturation-sweep.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
