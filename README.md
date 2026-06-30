@@ -28,26 +28,26 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EL: Audit/Recompute of Difference-Aware Winner**:
+The latest closed phase is **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
-status: difference_aware_winner_audit_recompute_complete_n10em_authorized
-self-test: 8 / 8
+status: difference_aware_winner_public_replication_package_complete_n10en_authorized
+self-test: 6 / 6
 forbidden scan: pass
-expected top10/top20/top50/top100: 13 / 16 / 20 / 26
-observed top10/top20/top50/top100: 13 / 16 / 20 / 26
-expected/observed counts match: true
+N10EK winner top10/top20/top50/top100: 13 / 16 / 20 / 26
+N10EL audit top10/top20/top50/top100: 13 / 16 / 20 / 26
+chain consistent: true
 gold used for policy: false
 old-pool membership used for policy: true
 full/guard outcome membership used for policy: false
-next allowed phase: BEA-v1-N10EM Public Replication Package
+next allowed phase: BEA-v1-N10EN Broader-Sample CI Validation Canary
 ```
 
-N10EL independently recomputes the N10EK winner without importing or calling N10EK
-transform code. The frozen rule (`top5_novel_candidate_item_count >= 4` selects
-guarded, otherwise full) reproduces `13/16/20/26` with zero lost baseline top10 hits. The
-only authorized next step is a public replication package, then a decision about
-broader sample or CI validation.
+N10EM packages the N10EK/N10EL public chain: the fixed difference-aware rule
+(`top5_novel_candidate_item_count >= 4` selects guarded, otherwise full) reached
+`13/16/20/26`, and the independent audit reproduced the exact same counts with
+zero lost baseline top10 hits. The only authorized next step is broader-sample / CI
+validation canary; no runtime/default or method/downstream claim is authorized.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40

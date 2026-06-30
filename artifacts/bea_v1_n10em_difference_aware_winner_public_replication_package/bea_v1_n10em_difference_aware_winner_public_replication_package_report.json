@@ -1,0 +1,113 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "n10emclaim0000",
+      "candidate_generation_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "network_bool": false,
+      "new_retrieval_bool": false,
+      "openlocus_binary_execution_bool": false,
+      "private_read_bool": false,
+      "public_package_only_bool": true,
+      "recompute_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_bool": false,
+      "selector_reranker_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10emgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10emgate0001",
+      "gate_bucket": "chain_counts_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10emgate0002",
+      "gate_bucket": "public_only_package",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "fixed_difference_aware_combination_experiment_complete_audit_recompute_authorized",
+      "anonymous_input_artifact_id": "n10eminput0000",
+      "artifact_bucket": "n10ek_fixed_difference_aware_experiment",
+      "expected_status_bucket": "fixed_difference_aware_combination_experiment_complete_audit_recompute_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "difference_aware_winner_audit_recompute_complete_n10em_authorized",
+      "anonymous_input_artifact_id": "n10eminput0001",
+      "artifact_bucket": "n10el_independent_audit_recompute",
+      "expected_status_bucket": "difference_aware_winner_audit_recompute_complete_n10em_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EM Difference-Aware Winner Public Replication Package",
+  "policy_boundary_records": [
+    {
+      "anonymous_policy_boundary_id": "n10empolicy0000",
+      "full_guard_outcome_membership_used_for_policy_bool": false,
+      "gold_used_for_policy_bool": false,
+      "n10ek_code_call_count": 0,
+      "old_pool_membership_used_for_policy_bool": true,
+      "threshold_feature_bucket": "top5_novel_candidate_item_count",
+      "threshold_frozen_bool": true,
+      "threshold_operator_bucket": "greater_than_or_equal",
+      "threshold_value": 4,
+      "winner_rule_bucket": "if_top5_novel_candidate_item_count_gte_4_then_guarded_else_full"
+    }
+  ],
+  "replication_chain_records": [
+    {
+      "anonymous_chain_id": "n10emchain0000",
+      "chain_consistent_bool": true,
+      "lost_baseline_top10_hits": 0,
+      "n10ek_n10el_counts_match_bool": true,
+      "n10ek_winner_counts_match_bool": true,
+      "n10el_audit_counts_match_bool": true,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 13,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20
+    }
+  ],
+  "schema_version": "bea_v1_n10em_difference_aware_winner_public_replication_package_v1",
+  "status": "difference_aware_winner_public_replication_package_complete_n10en_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10emstop0000",
+      "candidate_generation_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "github_ci_allowed_for_long_run_bool": true,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10en_broader_sample_ci_validation_authorized_bool": true,
+      "network_authorized_bool": false,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EN Broader-Sample CI Validation Canary",
+      "openlocus_binary_authorized_bool": false,
+      "private_read_authorized_bool": true,
+      "private_read_scope_bucket": "bounded_rows_required_by_n10en_only",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
