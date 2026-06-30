@@ -91,6 +91,36 @@ on outcome regression. N10EN is an effective broader-sample negative for the
 N10EK same-row winner: the difference-aware switch regressed relative to baseline
 on this public CI canary. The next phase is N10EO failure analysis, not promotion.
 
+**BEA-v1-N10EO: Difference-Aware CI Regression Failure Analysis** explains why
+the N10EN canary regressed:
+
+```text
+status: n10eo_failure_analysis_pass_mechanism_identified
+self-test: 50 / 50
+forbidden scan: pass
+N10EN source locked: true (canary run 28449370879)
+diagnostic_source: private_diagnostic_rerun
+primary mechanism: novel_first_displaced_baseline_gold_from_top10
+```
+
+N10EO locks the N10EN aggregate artifact, then uses a matching private
+diagnostic rerun rather than inferring per-task mechanisms from aggregate counts.
+It emits aggregate-bucket-only diagnostics. The regression mechanism is
+identified: diffaware chose `full` on 49 tasks (top5_novel < 4); on 2 of those,
+`full`'s novel-first reordering displaced baseline gold already at ranks 1-5 down
+to ranks 11-20. `guard` would have preserved both. The lost-baseline mechanism
+buckets confirm: `novel_first_displaced = 2`,
+`baseline_gold_rank_1_to_5_displaced = 2`, `candidate_available_beyond_top10 =
+2`, all other mechanisms 0. No per-task candidates/labels/queries/paths/ranks
+are published. N10EO does not authorize runtime/default, method-winner,
+selector/reranker, or any change to the frozen rule.
+
+N10EO authorizes only **BEA-v1-N10EP Design-Only Threshold-Misfire Mechanism
+Response**: aggregate-bucket mechanism analysis/design. It does not authorize
+threshold tuning, new policy experiments, frozen-rule changes, promotion of
+guard/full/diffaware, runtime/default changes, method-winner claims,
+downstream/scaled retrieval, or raw diagnostic publication.
+
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
 rank-blocked records and localized the blocker to extra-depth append/merge-order.
