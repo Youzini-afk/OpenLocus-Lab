@@ -1,0 +1,121 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10eagate0000",
+      "gate_bucket": "n10dz_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eagate0001",
+      "gate_bucket": "n10dz_counts_match_expected",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eagate0002",
+      "gate_bucket": "public_only_no_recompute",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_expanded_canary_low_recovery_n10ea_authorized",
+      "anonymous_input_artifact_id": "n10eainput0000",
+      "artifact_bucket": "n10dz_normalized_bm25_expanded_canary",
+      "expected_status_bucket": "normalized_bm25_expanded_canary_low_recovery_n10ea_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "interpretation_records": [
+    {
+      "anonymous_interpretation_id": "n10eainterp0000",
+      "candidate_source_signal_at_depth_bool": true,
+      "low_top10_recovery_bool": true,
+      "primary_top10_count": 5,
+      "primary_top10_threshold": 10,
+      "runtime_default_claim_bool": false,
+      "statistical_generalization_claim_bool": false,
+      "top100_depth_only_gain_bool": true,
+      "top100_improves_top10_bool": false,
+      "top10_pass_gate_met_bool": false
+    }
+  ],
+  "n10eb_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10eahandoff0000",
+      "n10eb_depth_to_head_experiment_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10EB Normalized-BM25 Depth-to-Head Integration Experiment",
+      "public_package_complete_bool": true,
+      "runtime_default_authorized_bool": false,
+      "scaled_full_denominator_authorized_bool": false
+    }
+  ],
+  "no_private_read_no_recompute_records": [
+    {
+      "anonymous_no_private_id": "n10eanopriv0000",
+      "candidate_generation_count": 0,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anonymous_package_summary_id": "n10easummary0000",
+      "command_count_packaged_from_n10dz": 120,
+      "openlocus_execution_count": 0,
+      "private_read_count": 0,
+      "public_only_package_bool": true,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "sampled_case_count": 60
+    }
+  ],
+  "packaged_setting_result_records": [
+    {
+      "anonymous_setting_result_id": "n10easetting0000",
+      "interpretation_bucket": "low_head_recovery_primary_setting",
+      "setting_bucket": "normalized_bm25_top50_cap12",
+      "top100_count": 17,
+      "top10_count": 5,
+      "top20_count": 11,
+      "top50_count": 17
+    },
+    {
+      "additional_top100_vs_primary_count": 9,
+      "anonymous_setting_result_id": "n10easetting0001",
+      "interpretation_bucket": "depth_only_recovery_setting",
+      "setting_bucket": "normalized_bm25_top100_cap12",
+      "top100_count": 26,
+      "top10_count": 5,
+      "top20_count": 11,
+      "top50_count": 17
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EA Normalized-BM25 Expanded Canary Public Package",
+  "schema_version": "bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_v1",
+  "status": "normalized_bm25_expanded_canary_public_package_complete_n10eb_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10eastop0000",
+      "candidate_generation_materialization_authorized_bool": false,
+      "git_clone_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EB Normalized-BM25 Depth-to-Head Integration Experiment",
+      "p5_v1a_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_full_denominator_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}

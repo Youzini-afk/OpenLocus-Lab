@@ -28,23 +28,25 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DX: Normalized-BM25 TopK/Token-Cap Variant Canary**:
+The latest closed phase is **BEA-v1-N10EA: Normalized-BM25 Expanded Canary Public Package**:
 
 ```text
-status: normalized_bm25_topk_token_cap_variant_canary_pass_n10dy_authorized
-self-test: 12 / 12
+status: normalized_bm25_expanded_canary_public_package_complete_n10eb_authorized
+self-test: 8 / 8
 forbidden scan: pass
-sampled cases: 30
-variant count: 4
-command count: 120
-baseline top50/cap12 top10/top20/top50/top100: 8 / 9 / 10 / 10
-best top100/cap12 top10/top20/top50/top100: 8 / 9 / 10 / 15
-next allowed phase: BEA-v1-N10DY Normalized-BM25 TopK/Token-Cap Canary Public Package
+private reads: 0
+retrieval executions: 0
+recomputes: 0
+primary top50/cap12 top10/top20/top50/top100: 5 / 11 / 17 / 17
+depth top100/cap12 top10/top20/top50/top100: 5 / 11 / 17 / 26
+next allowed phase: BEA-v1-N10EB Normalized-BM25 Depth-to-Head Integration Experiment
 ```
 
-N10DX's improvement is depth-only: top100/cap12 adds five recovered cases in
-ranks 51-100, while top10/top20/top50 remain 8/9/10. Token cap 24 worsens the
-head result, so top50/cap12 remains the best head-ranking point.
+N10EA packages N10DZ without private reads or recompute. The latest source signal
+is not a head-ranking pass: top50/cap12 recovers only 5/60 at top10, below the
+10-case pass gate. It is still useful at depth: top50 recovers 17/60 and top100
+recovers 26/60, but top100 again does not improve top10. The next experiment is
+therefore depth-to-head integration, not runtime/default or scaled retrieval.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2498,6 +2500,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary_report.json`](artifacts/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary_report.json)
 - [`artifacts/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package_report.json`](artifacts/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package/bea_v1_n10dy_normalized_bm25_topk_token_cap_canary_public_package_report.json)
 - [`artifacts/bea_v1_n10dz_normalized_bm25_expanded_canary/bea_v1_n10dz_normalized_bm25_expanded_canary_report.json`](artifacts/bea_v1_n10dz_normalized_bm25_expanded_canary/bea_v1_n10dz_normalized_bm25_expanded_canary_report.json)
+- [`artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json`](artifacts/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package/bea_v1_n10ea_normalized_bm25_expanded_canary_public_package_report.json)
 
 Documentation mirror check:
 
