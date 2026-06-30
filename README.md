@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CZ: Top2 Local-Window Saturation Upper-Bound Smoke**:
+The latest closed phase is **BEA-v1-N10DA: Top2 Local-Window Upper-Bound Public Package**:
 
 ```text
-status: top2_local_window_saturation_upper_bound_complete_n10da_authorized
-self-test: 13 / 13
+status: top2_local_window_upper_bound_package_complete_n10db_authorized
+self-test: 14 / 14
 forbidden scan: pass
-private span rows read: 213
+private reads in N10DA: 0
+recomputes in N10DA: 0
 top2_pm1000: 30 / 36
 top2_pm1500/pm2000/pm5000: 30 / 36
 top2_file_extent_proxy: 22 / 29
 local window saturated: true
 file reach dominates residual: true
-next allowed phase: BEA-v1-N10DA Top2 Local-Window Upper-Bound Public Package
+next allowed phase: BEA-v1-N10DB Rank/File Reach Branch Scoping or Experiment
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -905,6 +906,12 @@ proxy underperforms at 22/29. The local-window family is saturated under this
 upper-bound test and file reach dominates the residual. N10CZ authorizes only
 N10DA public package; it does not itself authorize rank/file experiments.
 
+N10DA packages N10CZ publicly without private reads or recompute. It locks the
+conclusion that the local pm-growth line should stop: pm1000 and larger windows
+remain 30/36, the file-extent proxy is worse at 22/29, and the remaining misses
+are dominated by file-not-in-top10. N10DA authorizes only N10DB rank/file reach
+branch scoping or experiment as decided by oracle.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1613,6 +1620,12 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, top3 overrides, medium/long gates, rank/file promotion, adaptive
   tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N10DA authorizes only N10DB rank/file reach branch scoping or experiment, with
+  exact scope to be decided by oracle. It does not authorize private reads,
+  recompute, new variants, local refinement, runtime/default enablement,
+  heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
+  reorder, top3 overrides, adaptive tuning, P5, BEA-v1-A, method-winner claims,
+  or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2165,6 +2178,10 @@ eval/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition.py
 eval/bea_v1_n10cz_top2_local_window_saturation_upper_bound.py
   Same-source upper-bound smoke for top2 local windows; finds saturation and
   authorizes only N10DA public package.
+
+eval/bea_v1_n10da_top2_local_window_upper_bound_package.py
+  Public package of N10CZ upper-bound result; authorizes only N10DB rank/file reach
+  branch scoping or experiment as oracle decides.
 ```
 
 Key reports:
@@ -2276,6 +2293,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cx_top2_override_high_window_package/bea_v1_n10cx_top2_override_high_window_package_report.json`](artifacts/bea_v1_n10cx_top2_override_high_window_package/bea_v1_n10cx_top2_override_high_window_package_report.json)
 - [`artifacts/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition_report.json`](artifacts/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition_report.json)
 - [`artifacts/bea_v1_n10cz_top2_local_window_saturation_upper_bound/bea_v1_n10cz_top2_local_window_saturation_upper_bound_report.json`](artifacts/bea_v1_n10cz_top2_local_window_saturation_upper_bound/bea_v1_n10cz_top2_local_window_saturation_upper_bound_report.json)
+- [`artifacts/bea_v1_n10da_top2_local_window_upper_bound_package/bea_v1_n10da_top2_local_window_upper_bound_package_report.json`](artifacts/bea_v1_n10da_top2_local_window_upper_bound_package/bea_v1_n10da_top2_local_window_upper_bound_package_report.json)
 
 Documentation mirror check:
 

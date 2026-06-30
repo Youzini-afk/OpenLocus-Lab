@@ -1,0 +1,272 @@
+{
+  "claim_boundary_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_claim_boundary_id": "n10daboundary0000",
+      "boundary_bucket": "public_upper_bound_package_only",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_downstream_claim_bool": false,
+      "new_variant_count": 0,
+      "privacy_boundary_complete_bool": true,
+      "private_read_count": 0,
+      "rank_file_experiment_authorized_bool": false,
+      "recompute_count": 0,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_claim_bool": false,
+      "same_source_n1_proxy_only_bool": true,
+      "top3_override_authorized_bool": false
+    }
+  ],
+  "claim_level": "public_top2_local_window_upper_bound_package_only",
+  "decision_package_records": [
+    {
+      "anonymous_decision_package_id": "n10dadecision0000",
+      "decision_bucket": "local_pm_growth_line_should_stop",
+      "local_window_saturated_bool": true,
+      "next_research_bucket": "rank_file_reach_branch_scoping_or_experiment_oracle_decides",
+      "rank_file_experiment_authorized_here_bool": false,
+      "rank_file_reach_dominates_bool": true,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "upper_bound_package_facts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-30T01:10:53Z",
+  "generated_by": "bea_v1_n10da_top2_local_window_upper_bound_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10dain0000",
+      "expected_status": "top2_local_window_saturation_upper_bound_complete_n10da_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cz_upper_bound_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "top2_local_window_saturation_upper_bound_complete_n10da_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10dain0001",
+      "expected_status": "top2_pm1000_marginal_gain_decomposition_complete_n10cz_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cy_pm1000_decomposition_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "top2_pm1000_marginal_gain_decomposition_complete_n10cz_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10dain0002",
+      "expected_status": "top2_override_high_window_package_complete_n10cy_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cx_high_window_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "top2_override_high_window_package_complete_n10cy_authorized"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10db_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10db_handoff_id": "n10dahandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10db_authorized_bool": true,
+      "n10db_handoff_bucket": "n10db_rank_file_reach_branch_scoping_or_experiment_oracle_decides",
+      "new_variant_authorized_next_bool": false,
+      "next_allowed_scope_bucket": "rank_file_reach_branch_scoping_or_experiment_oracle_decides",
+      "p5_v1a_authorized_bool": false,
+      "private_read_authorized_next_bool": false,
+      "recompute_authorized_next_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "top3_override_authorized_bool": false
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10danorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "private_read_count": 0,
+      "rank_file_experiment_count": 0,
+      "recompute_count": 0,
+      "runtime_default_promotion_count": 0,
+      "top3_override_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10DA Top2 Local-Window Upper-Bound Public Package",
+  "residual_package_records": [
+    {
+      "anonymous_residual_package_id": "n10daresid0000",
+      "file_not_in_top10_remaining_count": 167,
+      "remaining_miss_bucket": "pm1000_and_larger_pm_variants",
+      "same_file_no_span_remaining_count": 4,
+      "span_overlap_beyond_top10_remaining_count": 12
+    }
+  ],
+  "schema_version": "bea_v1_n10da_top2_local_window_upper_bound_package.v1",
+  "self_test_checks_passed": 14,
+  "self_test_checks_total": 14,
+  "self_test_passed": true,
+  "status": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+  "status_vocabulary": [
+    "top2_local_window_upper_bound_package_complete_n10db_authorized",
+    "no_go_n10da_required_public_inputs_unavailable",
+    "no_go_n10da_upper_bound_chain_mismatch",
+    "no_go_n10da_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10db_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "local_refinement_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10db_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10DB Rank/File Reach Branch Scoping or Experiment",
+      "next_allowed_scope_bucket": "rank_file_reach_branch_scoping_or_experiment_oracle_decides",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "rank_file_experiment_authorized_here": false,
+      "recompute_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "top3_override_authorized": false,
+      "v1_a_authorized": false
+    }
+  ],
+  "upper_bound_package_records": [
+    {
+      "anonymous_upper_bound_package_id": "n10dapackage0000",
+      "file_extent_proxy_lost_pm1000_top10_hits": 8,
+      "file_extent_proxy_not_runtime_policy_top10_span_overlap_count": 22,
+      "file_extent_proxy_not_runtime_policy_top20_span_overlap_count": 29,
+      "file_reach_dominates_residual_bool": true,
+      "large_pm_variants_all_equal_pm1000_bool": true,
+      "local_window_saturated_bool": true,
+      "local_window_upper_bound_improves_bool": false,
+      "package_bucket": "top2_local_window_upper_bound_public_package",
+      "package_consistent_bool": true,
+      "pm1000_top10_span_overlap_count": 30,
+      "pm1000_top20_span_overlap_count": 36,
+      "variant_count": 5
+    }
+  ],
+  "upper_bound_variant_package_records": [
+    {
+      "anonymous_upper_bound_variant_package_id": "n10davar0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_bucket": "at_or_below_pm1000",
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_pm1000": 0,
+      "delta_top20_vs_pm1000": 0,
+      "lost_pm1000_top10_hits": 0,
+      "top10_span_overlap_count": 30,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "top2_pm1000"
+    },
+    {
+      "anonymous_upper_bound_variant_package_id": "n10davar0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_bucket": "very_high",
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_pm1000": 0,
+      "delta_top20_vs_pm1000": 0,
+      "lost_pm1000_top10_hits": 0,
+      "top10_span_overlap_count": 30,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "top2_pm1500"
+    },
+    {
+      "anonymous_upper_bound_variant_package_id": "n10davar0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_bucket": "extreme",
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_pm1000": 0,
+      "delta_top20_vs_pm1000": 0,
+      "lost_pm1000_top10_hits": 0,
+      "top10_span_overlap_count": 30,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "top2_pm2000"
+    },
+    {
+      "anonymous_upper_bound_variant_package_id": "n10davar0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_bucket": "extreme",
+      "decision_bucket": "local_window_saturated",
+      "delta_top10_vs_pm1000": 0,
+      "delta_top20_vs_pm1000": 0,
+      "lost_pm1000_top10_hits": 0,
+      "top10_span_overlap_count": 30,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "top2_pm5000"
+    },
+    {
+      "anonymous_upper_bound_variant_package_id": "n10davar0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_bucket": "file_extent_proxy_not_runtime_policy",
+      "decision_bucket": "upper_bound_no_improvement",
+      "delta_top10_vs_pm1000": -8,
+      "delta_top20_vs_pm1000": -7,
+      "lost_pm1000_top10_hits": 8,
+      "top10_span_overlap_count": 22,
+      "top20_span_overlap_count": 29,
+      "variant_bucket": "top2_file_extent_proxy"
+    }
+  ]
+}
