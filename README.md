@@ -28,24 +28,26 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EK: Fixed Difference-Aware Combination Experiment**:
+The latest closed phase is **BEA-v1-N10EL: Audit/Recompute of Difference-Aware Winner**:
 
 ```text
-status: fixed_difference_aware_combination_experiment_complete_audit_recompute_authorized
-self-test: 9 / 9
+status: difference_aware_winner_audit_recompute_complete_n10em_authorized
+self-test: 8 / 8
 forbidden scan: pass
-baseline top10: 5
-full novel-first top10: 11
-guarded top5 novel-distinct top10: 10
-best difference-aware top10: 13
-N10EG union bound: 13
-next allowed phase: BEA-v1-N10EL Audit/Recompute of Difference-Aware Winner
+expected top10/top20/top50/top100: 13 / 16 / 20 / 26
+observed top10/top20/top50/top100: 13 / 16 / 20 / 26
+expected/observed counts match: true
+gold used for policy: false
+old-pool membership used for policy: true
+full/guard outcome membership used for policy: false
+next allowed phase: BEA-v1-N10EM Public Replication Package
 ```
 
-N10EK tests fixed observable full/guard switching rules over the same scoped rows.
-One variant (`top5_novel_guard_else_full`) reaches the N10EG 13-case union bound,
-but this is still same-source experimental evidence only. The only authorized next
-step is an audit/recompute follow-up over the same rows.
+N10EL independently recomputes the N10EK winner without importing or calling N10EK
+transform code. The frozen rule (`top5_novel_candidate_item_count >= 4` selects
+guarded, otherwise full) reproduces `13/16/20/26` with zero lost baseline top10 hits. The
+only authorized next step is a public replication package, then a decision about
+broader sample or CI validation.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40

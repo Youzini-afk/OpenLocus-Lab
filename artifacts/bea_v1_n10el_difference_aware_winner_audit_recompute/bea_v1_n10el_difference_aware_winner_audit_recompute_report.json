@@ -1,0 +1,151 @@
+{
+  "aggregate_bucket_records": [
+    {
+      "anonymous_bucket_id": "n10elbucket0000",
+      "bucket": "top5_novel_candidate_item_count_0_to_2",
+      "bucket_type": "top5_novel_candidate_item_count",
+      "case_count": 41
+    },
+    {
+      "anonymous_bucket_id": "n10elbucket0001",
+      "bucket": "top5_novel_candidate_item_count_3",
+      "bucket_type": "top5_novel_candidate_item_count",
+      "case_count": 2
+    },
+    {
+      "anonymous_bucket_id": "n10elbucket0002",
+      "bucket": "top5_novel_candidate_item_count_4_to_5",
+      "bucket_type": "top5_novel_candidate_item_count",
+      "case_count": 17
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_id": "n10elclaim0000",
+      "candidate_generation_bool": false,
+      "downstream_value_claim_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "independent_reimplementation_bool": true,
+      "method_winner_claim_bool": false,
+      "network_bool": false,
+      "new_retrieval_bool": false,
+      "openlocus_binary_execution_bool": false,
+      "runtime_default_change_bool": false,
+      "same_source_private_recompute_bool": true,
+      "selector_reranker_bool": false
+    }
+  ],
+  "expected_match_records": [
+    {
+      "anonymous_expected_id": "n10elexpected0000",
+      "expected_lost_baseline_top10_hits": 0,
+      "expected_observed_counts_match_bool": true,
+      "expected_top100_file_recovery_count": 26,
+      "expected_top10_file_recovery_count": 13,
+      "expected_top20_file_recovery_count": 16,
+      "expected_top50_file_recovery_count": 20
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10elgate0000",
+      "gate_bucket": "n10ek_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10elgate0001",
+      "gate_bucket": "private_rows_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10elgate0002",
+      "gate_bucket": "expected_observed_counts_match",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "fixed_difference_aware_combination_experiment_complete_audit_recompute_authorized",
+      "anonymous_input_artifact_id": "n10elinput0000",
+      "artifact_bucket": "n10ek_difference_aware_experiment",
+      "expected_status_bucket": "fixed_difference_aware_combination_experiment_complete_audit_recompute_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "observed_recompute_records": [
+    {
+      "anonymous_recompute_id": "n10elrecompute0000",
+      "observed_lost_baseline_top10_hits": 0,
+      "observed_top100_file_recovery_count": 26,
+      "observed_top10_file_recovery_count": 13,
+      "observed_top20_file_recovery_count": 16,
+      "observed_top50_file_recovery_count": 20
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EL Audit/Recompute of Difference-Aware Winner",
+  "policy_contract_records": [
+    {
+      "anonymous_policy_id": "n10elpolicy0000",
+      "full_guard_outcome_membership_used_for_policy_bool": false,
+      "gold_used_for_policy_bool": false,
+      "n10ek_code_call_count": 0,
+      "old_pool_membership_used_for_policy_bool": true,
+      "threshold_feature_bucket": "top5_novel_candidate_item_count",
+      "threshold_frozen_bool": true,
+      "threshold_operator_bucket": "greater_than_or_equal",
+      "threshold_value": 4,
+      "winner_rule_bucket": "if_top5_novel_candidate_item_count_gte_4_then_guarded_else_full"
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10elpriv0000",
+      "case_count": 60,
+      "n10dz_top100_private_row_count": 60,
+      "n10dz_top100_private_rows_available_bool": true,
+      "other_private_read_count": 0,
+      "private_status_bucket": "present",
+      "same_scoped_n1_rows_available_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10el_difference_aware_winner_audit_recompute_v1",
+  "selected_arm_bucket_records": [
+    {
+      "anonymous_arm_bucket_id": "n10elarm0000",
+      "case_count": 43,
+      "selected_arm_bucket": "full_novel_first"
+    },
+    {
+      "anonymous_arm_bucket_id": "n10elarm0001",
+      "case_count": 17,
+      "selected_arm_bucket": "guarded_top5_novel_distinct"
+    }
+  ],
+  "status": "difference_aware_winner_audit_recompute_complete_n10em_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10elstop0000",
+      "candidate_generation_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10em_public_replication_package_authorized_bool": true,
+      "network_authorized_bool": false,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EM Public Replication Package",
+      "openlocus_binary_authorized_bool": false,
+      "post_package_decision_bucket": "decide_broader_sample_or_ci_validation",
+      "private_read_scope_bucket": "same_n10dz_top100_and_n1_rows_only",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
