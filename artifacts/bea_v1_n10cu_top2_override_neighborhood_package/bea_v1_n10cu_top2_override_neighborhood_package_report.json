@@ -1,0 +1,258 @@
+{
+  "claim_level": "public_top2_override_neighborhood_package_only",
+  "downstream_value_claimed": false,
+  "forbidden_scan": {
+    "status": "pass",
+    "violation_categories": [],
+    "violations_count": 0
+  },
+  "gate_records": [
+    {
+      "gate": "public_inputs_loaded",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "n10ct_package_facts",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "no_private_read_or_recompute",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    },
+    {
+      "gate": "forbidden_scan",
+      "passed": true,
+      "threshold_relation": "equals",
+      "threshold_value": 1,
+      "value": 1
+    }
+  ],
+  "generated_at": "2026-06-30T00:25:25Z",
+  "generated_by": "bea_v1_n10cu_top2_override_neighborhood_package",
+  "input_artifact_records": [
+    {
+      "anonymous_input_artifact_id": "n10cuin0000",
+      "expected_status": "top2_override_window_neighborhood_sweep_complete_n10cu_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10ct_top2_override_neighborhood_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "top2_override_window_neighborhood_sweep_complete_n10cu_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cuin0001",
+      "expected_status": "local_saturation_package_complete_n10ct_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cs_local_saturation_package_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "local_saturation_package_complete_n10ct_authorized"
+    },
+    {
+      "anonymous_input_artifact_id": "n10cuin0002",
+      "expected_status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized",
+      "forbidden_scan_status": "pass",
+      "input_artifact_bucket": "n10cr_local_saturation_sweep_artifact",
+      "input_gate_passed_bool": true,
+      "load_status": "pass",
+      "observed_status": "mechanism_guided_local_saturation_sweep_complete_n10cs_authorized"
+    }
+  ],
+  "key_variant_package_records": [
+    {
+      "anonymous_key_variant_id": "n10cukey0000",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3200,
+      "cost_proxy_top20": 6200,
+      "decision_bucket": "no_improvement_pm300_retained",
+      "lost_pm300_top10_hits": 1,
+      "top10_span_overlap_count": 25,
+      "top20_span_overlap_count": 31,
+      "variant_bucket": "short75_225_top2_all_pm200"
+    },
+    {
+      "anonymous_key_variant_id": "n10cukey0001",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3500,
+      "cost_proxy_top20": 6500,
+      "decision_bucket": "preserves_pm300_at_lower_cost",
+      "lost_pm300_top10_hits": 0,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "short75_225_top2_all_pm275"
+    },
+    {
+      "anonymous_key_variant_id": "n10cukey0002",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3600,
+      "cost_proxy_top20": 6600,
+      "decision_bucket": "no_improvement_pm300_retained",
+      "lost_pm300_top10_hits": 0,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "short75_225_top2_all_pm300"
+    },
+    {
+      "anonymous_key_variant_id": "n10cukey0003",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3700,
+      "cost_proxy_top20": 6700,
+      "decision_bucket": "no_improvement_pm300_retained",
+      "lost_pm300_top10_hits": 0,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "short75_225_top2_all_pm325"
+    },
+    {
+      "anonymous_key_variant_id": "n10cukey0004",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3800,
+      "cost_proxy_top20": 6800,
+      "decision_bucket": "no_improvement_pm300_retained",
+      "lost_pm300_top10_hits": 0,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "short75_225_top2_all_pm350"
+    },
+    {
+      "anonymous_key_variant_id": "n10cukey0005",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 3900,
+      "cost_proxy_top20": 6900,
+      "decision_bucket": "no_improvement_pm300_retained",
+      "lost_pm300_top10_hits": 0,
+      "top10_span_overlap_count": 26,
+      "top20_span_overlap_count": 32,
+      "variant_bucket": "short75_225_top2_all_pm375"
+    },
+    {
+      "anonymous_key_variant_id": "n10cukey0006",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "cost_proxy_top10": 4000,
+      "cost_proxy_top20": 7000,
+      "decision_bucket": "improves_pm300",
+      "lost_pm300_top10_hits": 0,
+      "top10_span_overlap_count": 27,
+      "top20_span_overlap_count": 33,
+      "variant_bucket": "short75_225_top2_all_pm400"
+    }
+  ],
+  "method_winner_claimed": false,
+  "n10cv_handoff_records": [
+    {
+      "adaptive_tuning_authorized_bool": false,
+      "anonymous_n10cv_handoff_id": "n10cuhandoff0000",
+      "candidate_add_remove_reorder_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_authorized_bool": false,
+      "n10cv_authorized_bool": true,
+      "n10cv_handoff_bucket": "n10cv_followup_authorized",
+      "new_variant_authorized_next_bool": false,
+      "next_followup_bucket": "pm400_gain_mechanism_or_pm400_neighborhood_oracle_scoped",
+      "p5_v1a_authorized_bool": false,
+      "private_read_authorized_next_bool": false,
+      "recompute_authorized_next_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "top3_override_authorized_bool": false
+    }
+  ],
+  "neighborhood_package_records": [
+    {
+      "anonymous_neighborhood_package_id": "n10cupackage0000",
+      "fixed_variant_count": 9,
+      "max_observed_top10_span_overlap_count": 27,
+      "max_observed_top20_span_overlap_count": 33,
+      "minimum_pm_for_26_32": 275,
+      "n10ct_status_complete_bool": true,
+      "package_bucket": "n10ct_top2_override_neighborhood_public_package",
+      "package_consistent_bool": true,
+      "pm_window_values_count": 9
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "adaptive_tuning_count": 0,
+      "anonymous_no_recompute_id": "n10cunorecompute0000",
+      "candidate_add_remove_reorder_count": 0,
+      "candidate_generation_count": 0,
+      "new_variant_count": 0,
+      "no_recompute_boundary_bucket": "public_package_only",
+      "no_recompute_boundary_valid_bool": true,
+      "private_read_count": 0,
+      "recompute_count": 0,
+      "runtime_default_promotion_count": 0,
+      "top3_override_count": 0
+    }
+  ],
+  "phase": "BEA-v1-N10CU Top2 Override Neighborhood Public Package",
+  "policy_boundary_records": [
+    {
+      "anonymous_policy_boundary_id": "n10cuboundary0000",
+      "boundary_bucket": "fixed_top2_pm_neighborhood_only",
+      "candidate_order_changed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "file_identity_policy_input_bool": false,
+      "gold_policy_input_bool": false,
+      "medium_long_extra_gate_bool": false,
+      "outcome_policy_input_bool": false,
+      "privacy_boundary_complete_bool": true,
+      "top3_override_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10cu_top2_override_neighborhood_package.v1",
+  "self_test_checks_passed": 11,
+  "self_test_checks_total": 11,
+  "self_test_passed": true,
+  "status": "top2_override_neighborhood_package_complete_n10cv_authorized",
+  "status_vocabulary": [
+    "top2_override_neighborhood_package_complete_n10cv_authorized",
+    "no_go_n10cu_required_public_inputs_unavailable",
+    "no_go_n10cu_n10ct_chain_mismatch",
+    "no_go_n10cu_privacy_or_claim_boundary_invalid",
+    "fail_forbidden_scan",
+    "fail_schema_contract"
+  ],
+  "stop_go_records": [
+    {
+      "adaptive_tuning_authorized": false,
+      "authorization": "n10cv_authorized",
+      "candidate_add_remove_reorder_authorized": false,
+      "candidate_generation_authorized": false,
+      "downstream_value_claim_authorized": false,
+      "existing_evaluator_hook_authorized": false,
+      "heldout_or_generalization_claim_authorized": false,
+      "method_winner_claim_authorized": false,
+      "n10cv_authorized": true,
+      "new_variant_authorized": false,
+      "next_allowed_phase": "BEA-v1-N10CV Follow-up Around pm400 Gain",
+      "next_allowed_scope_bucket": "pm400_gain_mechanism_or_pm400_neighborhood_oracle_scoped",
+      "p5_authorized": false,
+      "private_read_authorized": false,
+      "recompute_authorized": false,
+      "rerun_authorized": false,
+      "retrieval_authorized": false,
+      "runtime_or_default_authorized": false,
+      "selector_or_reranker_authorized": false,
+      "top3_override_authorized": false,
+      "v1_a_authorized": false
+    }
+  ]
+}

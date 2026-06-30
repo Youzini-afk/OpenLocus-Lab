@@ -28,19 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CT: Top2 Override Window Neighborhood Sweep**:
+The latest closed phase is **BEA-v1-N10CU: Top2 Override Neighborhood Public Package**:
 
 ```text
-status: top2_override_window_neighborhood_sweep_complete_n10cu_authorized
-self-test: 15 / 15
+status: top2_override_neighborhood_package_complete_n10cv_authorized
+self-test: 11 / 11
 forbidden scan: pass
-private span rows read: 213
-variants evaluated: 9
 pm200 reference: 25 / 31 at 3200 / 6200
-pm300 reference: 26 / 32 at 3600 / 6600
-minimum pm for 26/32: 275
-max observed: 27 / 33 at pm400
-next allowed phase: BEA-v1-N10CU Top2 Override Neighborhood Public Package
+pm275: 26 / 32 at 3500 / 6500 (minimal preserving 26 / 32)
+pm300: 26 / 32 at 3600 / 6600
+pm400: 27 / 33 at 4000 / 7000
+private reads in N10CU: 0
+next allowed phase: BEA-v1-N10CV Follow-up Around pm400 Gain
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -872,6 +871,11 @@ the pm300 26/32 result at lower cost (3500/6500), while pm400 improves to 27/33
 at cost10/cost20 4000/7000. Candidate pool/order remains unchanged, and N10CT
 authorizes only N10CU public package.
 
+N10CU packages the N10CT neighborhood publicly without private reads or recompute.
+It confirms pm275 as the minimal tested 26/32-preserving point, pm400 as a new
+27/33 same-source proxy improvement, and no candidate pool/order changes. It
+authorizes only N10CV follow-up around the pm400 gain under a future oracle scope.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1551,6 +1555,11 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, top3 overrides, medium/long extra gates, adaptive tuning, P5, BEA-v1-A,
   method-winner claims, or downstream-value claims.
+- N10CU authorizes only N10CV follow-up around the pm400 gain. It does not authorize
+  private reads, recompute, new variants, runtime/default enablement, existing
+  evaluator hook-in, heldout/generalization claims, retrieval/rerun, candidate
+  generation/add/remove/reorder, top3 overrides, adaptive tuning, P5, BEA-v1-A,
+  method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2079,6 +2088,10 @@ eval/bea_v1_n10cs_local_saturation_package.py
 eval/bea_v1_n10ct_top2_override_window_neighborhood_sweep.py
   Same-source top2 override pm-neighborhood sweep; finds pm275 preserves 26/32
   lower than pm300 and pm400 improves to 27/33, authorizing only N10CU package.
+
+eval/bea_v1_n10cu_top2_override_neighborhood_package.py
+  Public package of the N10CT top2 override neighborhood; authorizes only N10CV
+  follow-up around the pm400 gain.
 ```
 
 Key reports:
@@ -2184,6 +2197,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cr_mechanism_guided_local_saturation_sweep/bea_v1_n10cr_mechanism_guided_local_saturation_sweep_report.json`](artifacts/bea_v1_n10cr_mechanism_guided_local_saturation_sweep/bea_v1_n10cr_mechanism_guided_local_saturation_sweep_report.json)
 - [`artifacts/bea_v1_n10cs_local_saturation_package/bea_v1_n10cs_local_saturation_package_report.json`](artifacts/bea_v1_n10cs_local_saturation_package/bea_v1_n10cs_local_saturation_package_report.json)
 - [`artifacts/bea_v1_n10ct_top2_override_window_neighborhood_sweep/bea_v1_n10ct_top2_override_window_neighborhood_sweep_report.json`](artifacts/bea_v1_n10ct_top2_override_window_neighborhood_sweep/bea_v1_n10ct_top2_override_window_neighborhood_sweep_report.json)
+- [`artifacts/bea_v1_n10cu_top2_override_neighborhood_package/bea_v1_n10cu_top2_override_neighborhood_package_report.json`](artifacts/bea_v1_n10cu_top2_override_neighborhood_package/bea_v1_n10cu_top2_override_neighborhood_package_report.json)
 
 Documentation mirror check:
 
