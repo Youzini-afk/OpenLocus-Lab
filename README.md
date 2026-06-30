@@ -28,18 +28,23 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DW: Normalized-BM25 Recovery Mechanism Analysis**:
+The latest closed phase is **BEA-v1-N10DX: Normalized-BM25 TopK/Token-Cap Variant Canary**:
 
 ```text
-status: normalized_bm25_recovery_mechanism_analysis_complete_n10dx_authorized
+status: normalized_bm25_topk_token_cap_variant_canary_pass_n10dy_authorized
 self-test: 12 / 12
 forbidden scan: pass
-private variant rows read: 30
-same scoped N1 rows read: 213
-identifier_normalized_bm25 top10/top20/top50: 8 / 9 / 10
-remaining unrecovered: 20
-next allowed phase: BEA-v1-N10DX Normalized-BM25 TopK/Token-Cap Variant Canary
+sampled cases: 30
+variant count: 4
+command count: 120
+baseline top50/cap12 top10/top20/top50/top100: 8 / 9 / 10 / 10
+best top100/cap12 top10/top20/top50/top100: 8 / 9 / 10 / 15
+next allowed phase: BEA-v1-N10DY Normalized-BM25 TopK/Token-Cap Canary Public Package
 ```
+
+N10DX's improvement is depth-only: top100/cap12 adds five recovered cases in
+ranks 51-100, while top10/top20/top50 remain 8/9/10. Token cap 24 worsens the
+head result, so top50/cap12 remains the best head-ranking point.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2490,6 +2495,7 @@ Key reports:
 - [`artifacts/bea_v1_n10du_targeted_candidate_source_variant_canary/bea_v1_n10du_targeted_candidate_source_variant_canary_report.json`](artifacts/bea_v1_n10du_targeted_candidate_source_variant_canary/bea_v1_n10du_targeted_candidate_source_variant_canary_report.json)
 - [`artifacts/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package_report.json`](artifacts/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package/bea_v1_n10dv_targeted_candidate_source_variant_canary_public_package_report.json)
 - [`artifacts/bea_v1_n10dw_normalized_bm25_recovery_mechanism_analysis/bea_v1_n10dw_normalized_bm25_recovery_mechanism_analysis_report.json`](artifacts/bea_v1_n10dw_normalized_bm25_recovery_mechanism_analysis/bea_v1_n10dw_normalized_bm25_recovery_mechanism_analysis_report.json)
+- [`artifacts/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary_report.json`](artifacts/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary/bea_v1_n10dx_normalized_bm25_topk_token_cap_variant_canary_report.json)
 
 Documentation mirror check:
 
