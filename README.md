@@ -28,27 +28,25 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10ED: Novel-First Depth-to-Head Mechanism Analysis**:
+The latest closed phase is **BEA-v1-N10EE: Normalized-BM25 Novel-Guard Fixed Repacking Experiment**:
 
 ```text
-status: normalized_bm25_depth_to_head_mechanism_analysis_complete_n10ee_authorized
-self-test: 13 / 13
+status: normalized_bm25_novel_guard_fixed_repacking_experiment_complete_n10ef_authorized
+self-test: 9 / 9
 forbidden scan: pass
 case count: 60
+variant count: 8
 baseline BM25 top10/top20/top50/top100: 5 / 11 / 17 / 26
-novel-first top10/top20/top50/top100: 11 / 16 / 20 / 26
-new top10 recovered vs baseline: 6
-lost baseline top10: 0
-remaining top10 miss: 49
-next allowed phase: BEA-v1-N10EE Normalized-BM25 Novel-Guard Fixed Repacking Experiment
+full novel-first top10/top20/top50/top100: 11 / 16 / 20 / 26
+best guarded top10/top20/top50/top100: 10 / 13 / 18 / 26
+lost baseline top10: 0 for all variants
+next allowed phase: BEA-v1-N10EF Normalized-BM25 Novel-Guard Experiment Package
 ```
 
-N10ED explains the N10EB signal. All 6 newly recovered top10 cases are targets
-that were novel relative to the old N1 pool: 1 came from ranks 11-20, 2 from
-21-50, and 3 from 51-100. The remaining 49 misses include 34 targets absent from
-top100 and 15 present-but-still-below-top10 targets crowded behind many other
-novel files. N10EE is therefore a fixed guarded-novel experiment, not new
-retrieval or runtime/default work.
+N10EE tests the guarded follow-up from N10ED. Full novel-first remains strongest
+at 11/60 top10. The best guarded rule, keeping the first five BM25 candidates and
+then filling with novel+distinct files, reaches 10/60 top10 and remains zero-loss.
+So guarding is a conservative trade-off, not a replacement for full novel-first.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2506,6 +2504,7 @@ Key reports:
 - [`artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json`](artifacts/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke/bea_v1_n10eb_normalized_bm25_depth_to_head_integration_smoke_report.json)
 - [`artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json`](artifacts/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package/bea_v1_n10ec_normalized_bm25_depth_to_head_integration_audit_package_report.json)
 - [`artifacts/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_report.json`](artifacts/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis/bea_v1_n10ed_novel_first_depth_to_head_mechanism_analysis_report.json)
+- [`artifacts/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_report.json`](artifacts/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_report.json)
 
 Documentation mirror check:
 

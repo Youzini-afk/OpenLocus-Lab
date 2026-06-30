@@ -1,0 +1,311 @@
+{
+  "decision_summary_records": [
+    {
+      "anonymous_decision_summary_id": "n10eedecision0000",
+      "below_success_threshold_variant_count": 6,
+      "best_guarded_top10_file_recovery_count": 10,
+      "best_guarded_variant_bucket": "top5_bm25_then_novel_distinct_fill_top10",
+      "best_top10_file_recovery_count": 11,
+      "best_top10_variant_bucket": "novel_file_first_top10",
+      "full_novel_first_beats_guarded_bool": true,
+      "guarded_zero_loss_success_variant_count": 1,
+      "guarding_tradeoff_bucket": "guard_reduces_recovery_but_remains_zero_loss"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10eegate0000",
+      "gate_bucket": "n10ed_public_input_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eegate0001",
+      "gate_bucket": "private_rows_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eegate0002",
+      "gate_bucket": "variant_count_eq_8",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eegate0003",
+      "gate_bucket": "expected_counts_match",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10eegate0004",
+      "gate_bucket": "no_new_retrieval",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "normalized_bm25_depth_to_head_mechanism_analysis_complete_n10ee_authorized",
+      "anonymous_input_artifact_id": "n10eeinput0000",
+      "artifact_bucket": "n10ed_mechanism_analysis",
+      "expected_status_bucket": "normalized_bm25_depth_to_head_mechanism_analysis_complete_n10ee_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10ef_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10eehandoff0000",
+      "n10ef_public_package_authorized_bool": true,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EF Normalized-BM25 Novel-Guard Experiment Package",
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10eeforbid0000",
+      "candidate_generation_materialization_count": 0,
+      "clone_execution_count": 0,
+      "network_execution_count": 0,
+      "new_retrieval_count": 0,
+      "openlocus_execution_count": 0,
+      "provider_call_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EE Normalized-BM25 Novel-Guard Fixed Repacking Experiment",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10eeprivacy0000",
+      "public_candidate_lists_bool": false,
+      "public_case_level_rows_bool": false,
+      "public_exact_ranks_bool": false,
+      "public_gold_labels_bool": false,
+      "public_paths_or_filenames_bool": false,
+      "public_raw_queries_bool": false,
+      "public_raw_scores_bool": false,
+      "public_snippets_spans_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10eepriv0000",
+      "case_count": 60,
+      "n10dz_top100_private_row_count": 60,
+      "n10dz_top100_private_rows_available_bool": true,
+      "other_private_read_count": 0,
+      "private_status_bucket": "present",
+      "same_scoped_n1_rows_available_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_v1",
+  "status": "normalized_bm25_novel_guard_fixed_repacking_experiment_complete_n10ef_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10eestop0000",
+      "clone_authorized_bool": false,
+      "downstream_value_claim_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_retrieval_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10EF Normalized-BM25 Novel-Guard Experiment Package",
+      "provider_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scaled_retrieval_authorized_bool": false
+    }
+  ],
+  "variant_contract_records": [
+    {
+      "anonymous_variant_contract_id": "n10eecontract0000",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": false,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0001",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0002",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0003",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "top3_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0004",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0005",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "top7_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0006",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": true,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "top5_bm25_then_score_band_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_contract_id": "n10eecontract0007",
+      "candidate_added_removed_bool": false,
+      "fixed_predeclared_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "uses_candidate_score_bool": false,
+      "uses_old_pool_membership_bool": true,
+      "uses_original_bm25_order_bool": true,
+      "variant_bucket": "top5_bm25_then_old_pool_cap_novel_fill_top10"
+    }
+  ],
+  "variant_result_records": [
+    {
+      "anonymous_variant_result_id": "n10eevariant0000",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "below_success_threshold",
+      "delta_top10_vs_baseline": 0,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 5,
+      "top20_file_recovery_count": 11,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "baseline_bm25_order"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0001",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "full_novel_first_best_top10",
+      "delta_top10_vs_baseline": 6,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 11,
+      "top20_file_recovery_count": 16,
+      "top50_file_recovery_count": 20,
+      "variant_bucket": "novel_file_first_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0002",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "guarded_zero_loss_success",
+      "delta_top10_vs_baseline": 5,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 10,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_distinct_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0003",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "below_success_threshold",
+      "delta_top10_vs_baseline": 4,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 14,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top3_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0004",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "below_success_threshold",
+      "delta_top10_vs_baseline": 3,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 8,
+      "top20_file_recovery_count": 13,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0005",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "below_success_threshold",
+      "delta_top10_vs_baseline": 2,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 7,
+      "top20_file_recovery_count": 12,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "top7_bm25_then_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0006",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "below_success_threshold",
+      "delta_top10_vs_baseline": 4,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 12,
+      "top50_file_recovery_count": 17,
+      "variant_bucket": "top5_bm25_then_score_band_novel_fill_top10"
+    },
+    {
+      "anonymous_variant_result_id": "n10eevariant0007",
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "below_success_threshold",
+      "delta_top10_vs_baseline": 4,
+      "gold_used_for_policy_bool": false,
+      "lost_baseline_top10_hits": 0,
+      "top100_file_recovery_count": 26,
+      "top10_file_recovery_count": 9,
+      "top20_file_recovery_count": 14,
+      "top50_file_recovery_count": 18,
+      "variant_bucket": "top5_bm25_then_old_pool_cap_novel_fill_top10"
+    }
+  ]
+}
