@@ -28,19 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10CV: Top2 pm400 Marginal Gain Mechanism Decomposition**:
+The latest closed phase is **BEA-v1-N10CW: Top2 Override High-Window Neighborhood Sweep**:
 
 ```text
-status: top2_pm400_marginal_gain_decomposition_complete_n10cw_authorized
-self-test: 14 / 14
+status: top2_override_high_window_neighborhood_sweep_complete_n10cx_authorized
+self-test: 16 / 16
 forbidden scan: pass
 private span rows read: 213
-pm275: 26 / 32 at 3500 / 6500
-pm300: 26 / 32 at 3600 / 6600
-pm400: 27 / 33 at 4000 / 7000
-pm400 new top10/top20 vs pm300: 1 / 1
-new case buckets: near_boundary_51_100; same_file_before_gold; top2_override_case
-next allowed phase: BEA-v1-N10CW Top2 Override High-Window Neighborhood Sweep
+variant count: 8
+pm400 reference: 27 / 33 at 4000 / 7000
+pm450: 28 / 34 at 4200 / 7200
+pm800: 29 / 35 at 5600 / 8600
+pm1000: 30 / 36 at 6400 / 9400
+local saturation: false
+next allowed phase: BEA-v1-N10CX Top2 Override High-Window Neighborhood Public Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -883,6 +884,11 @@ same-file before-gold, near-boundary (51-100 bucket) recovery. Remaining pm400
 misses still include 7 same-file/no-span and 12 span-beyond-top10 cases, so N10CV
 authorizes only N10CW high-window neighborhood exploration.
 
+N10CW runs that high-window neighborhood sweep over exactly pm300/350/400/450/500/
+600/800/1000. Higher top2 windows continue improving the same-source proxy: pm450
+reaches 28/34, pm800 reaches 29/35, and pm1000 reaches 30/36. Local window
+saturation remains false, and N10CW authorizes only N10CX public package.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1571,6 +1577,11 @@ See the current report index:
   does not authorize runtime/default enablement, heldout/generalization claims,
   retrieval/rerun, candidate generation/add/remove/reorder, top3 overrides,
   adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
+- N10CW authorizes only N10CX top2 override high-window neighborhood public
+  package. It does not authorize private reads, recompute, new variants,
+  runtime/default enablement, heldout/generalization claims, retrieval/rerun,
+  candidate generation/add/remove/reorder, top3 overrides, medium/long gates,
+  adaptive tuning, P5, BEA-v1-A, method-winner claims, or downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2107,6 +2118,10 @@ eval/bea_v1_n10cu_top2_override_neighborhood_package.py
 eval/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition.py
   Decomposes pm400's marginal gain vs pm300 and authorizes only N10CW high-window
   neighborhood exploration.
+
+eval/bea_v1_n10cw_top2_override_high_window_neighborhood_sweep.py
+  High-window top2 override sweep; finds pm1000 reaches 30/36 and authorizes only
+  N10CX public package.
 ```
 
 Key reports:
@@ -2214,6 +2229,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ct_top2_override_window_neighborhood_sweep/bea_v1_n10ct_top2_override_window_neighborhood_sweep_report.json`](artifacts/bea_v1_n10ct_top2_override_window_neighborhood_sweep/bea_v1_n10ct_top2_override_window_neighborhood_sweep_report.json)
 - [`artifacts/bea_v1_n10cu_top2_override_neighborhood_package/bea_v1_n10cu_top2_override_neighborhood_package_report.json`](artifacts/bea_v1_n10cu_top2_override_neighborhood_package/bea_v1_n10cu_top2_override_neighborhood_package_report.json)
 - [`artifacts/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition_report.json`](artifacts/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition/bea_v1_n10cv_top2_pm400_marginal_gain_decomposition_report.json)
+- [`artifacts/bea_v1_n10cw_top2_override_high_window_neighborhood_sweep/bea_v1_n10cw_top2_override_high_window_neighborhood_sweep_report.json`](artifacts/bea_v1_n10cw_top2_override_high_window_neighborhood_sweep/bea_v1_n10cw_top2_override_high_window_neighborhood_sweep_report.json)
 
 Documentation mirror check:
 
