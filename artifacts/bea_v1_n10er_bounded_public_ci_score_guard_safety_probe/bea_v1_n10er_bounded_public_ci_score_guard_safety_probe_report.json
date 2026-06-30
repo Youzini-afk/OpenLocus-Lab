@@ -1,0 +1,190 @@
+{
+  "arm_aggregate_records": [],
+  "citation_validity_aggregate_records": [
+    {
+      "citation_total_count": 0,
+      "citation_valid_count": 0,
+      "citation_validity_all_implemented_bool": true
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_claim_boundary_id": "n10erclaim0000",
+      "downstream_value_claim_bool": false,
+      "external_benchmark_download_bool": false,
+      "frozen_rule_change_bool": false,
+      "gold_used_for_policy_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "manifest_listed_public_repos_only_bool": true,
+      "method_winner_claim_bool": false,
+      "n10er_contract_authorized_bool": true,
+      "n10er_execution_authorized_bool": false,
+      "network_run_bool": false,
+      "private_rows_read_bool": false,
+      "production_retrieval_change_bool": false,
+      "provider_model_network_bool": false,
+      "public_only_bool": true,
+      "quiver_dense_real_bool": false,
+      "raw_candidate_upload_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "remote_embedding_bool": false,
+      "run_phase_labels_used_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_claim_bool": false,
+      "score_phase_labels_used_bool": false,
+      "selector_reranker_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "enable_public_github_network_bool": false,
+  "execution_boundary_records": [
+    {
+      "anonymous_execution_boundary_id": "n10erexec0000",
+      "frozen_rule_changed_bool": false,
+      "guard_full_diffaware_promotion_bool": false,
+      "heldout_sample_bool": true,
+      "method_winner_claim_bool": false,
+      "n10en_artifact_mutated_bool": false,
+      "n10en_private_task_ids_read_bool": false,
+      "n10en_semantics_reused_verbatim_bool": true,
+      "n10er_contract_authorized_bool": true,
+      "n10er_execution_authorized_bool": false,
+      "private_candidates_read_after_freeze_bool": false,
+      "private_orders_read_after_freeze_bool": false,
+      "private_per_task_diagnostics_read_bool": false,
+      "private_retrieval_output_read_bool": false,
+      "private_score_phase_labels_read_after_freeze_bool": false,
+      "public_artifact_aggregate_only_bool": true,
+      "raw_candidate_upload_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "runtime_default_change_bool": false,
+      "threshold_tuned_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10ergate0000",
+      "gate_bucket": "n10eq_safety_probe_design_authorized",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10ergate0007",
+      "gate_bucket": "network_disabled_fail_closed",
+      "gate_passed_bool": true
+    }
+  ],
+  "local_openlocus_search_run_bool": false,
+  "n10eq_source_lock_records": [
+    {
+      "actual_status_bucket": "n10eq_score_guard_safety_probe_design_pass_n10er_contract_authorized",
+      "aggregate_buckets_only_bool": true,
+      "anonymous_gate_id": "n10ergate0000",
+      "ci_variant_execution_authorized_bool": false,
+      "design_only_bool": true,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "expected_status_bucket": "n10eq_score_guard_safety_probe_design_pass_n10er_contract_authorized",
+      "frozen_rule_change_authorized_bool": false,
+      "gate_bucket": "n10eq_safety_probe_design_authorized",
+      "gate_passed_bool": true,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "input_artifact_load_status_bucket": "present",
+      "locked_n10ep_checkpoint": "0a54b49",
+      "locked_n10eq_checkpoint": "7963831",
+      "method_winner_claim_authorized_bool": false,
+      "missing_required_true_field_count": 0,
+      "n10ep_checkpoint_match_bool": true,
+      "n10eq_checkpoint_match_bool": true,
+      "n10eq_execution_authorized_bool": false,
+      "n10er_contract_authorized_bool": true,
+      "n10er_execution_authorized_bool": false,
+      "network_run_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "next_phase_match_bool": true,
+      "nonfalse_forbidden_field_count": 0,
+      "provider_model_network_authorized_bool": false,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "required_false_stop_fields_passed_bool": true,
+      "required_true_stop_fields_passed_bool": true,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "status_match_bool": true,
+      "threshold_tuning_authorized_bool": false
+    }
+  ],
+  "openlocus_cli_build_run_bool": false,
+  "pass_fail_gate_records": [],
+  "phase_bucket": "BEA-v1-N10ER Bounded Public CI Score/Guard Safety Probe",
+  "public_github_clone_fetch_run_bool": false,
+  "run_phase_records": [
+    {
+      "anonymous_run_phase_id": "n10errun0000",
+      "bm25_candidate_total": 0,
+      "candidate_count": 0,
+      "clone_run_bool": false,
+      "gold_used_for_policy_bool": false,
+      "old_pool_file_total": 0,
+      "public_task_count": 0,
+      "repo_count": 0,
+      "run_phase_labels_used_bool": false,
+      "score_phase_labels_used_bool": false,
+      "search_run_bool": false,
+      "task_with_candidates_count": 0
+    }
+  ],
+  "safety_feature_bucket_records": [],
+  "sample_records": [
+    {
+      "anonymous_sample_id": "n10ersample0000",
+      "heldout_from_n10en_private_check_bool": false,
+      "manifest_listed_public_repos_only_bool": true,
+      "minimum_gold": 30,
+      "minimum_scored": 50,
+      "minimums_met_bool": false,
+      "n10en_overlap_count": 0,
+      "n10en_overlap_public_bucket": "not_checked_network_disabled",
+      "n10en_reference_repo_private_check_performed_bool": false,
+      "public_task_count": 0,
+      "repo_count": 0,
+      "scored_task_count": 0,
+      "stage_bucket": "canary_small_heldout",
+      "target_tasks": 80,
+      "task_with_candidates_count": 0,
+      "task_with_gold_count": 0
+    }
+  ],
+  "schema_version": "bea_v1_n10er_bounded_public_ci_score_guard_safety_probe_v1",
+  "status": "n10er_safety_probe_unavailable_network_disabled",
+  "stop_go_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_stop_go_id": "n10erstop0000",
+      "ci_variant_execution_authorized_bool": false,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "frozen_rule_change_authorized_bool": false,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "n10es_audit_authorized_bool": true,
+      "new_policy_experiment_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-N10ES Bounded Public CI Safety Probe Audit",
+      "provider_model_network_authorized_bool": false,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ]
+}

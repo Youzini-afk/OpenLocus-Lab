@@ -1,0 +1,99 @@
+name: bea-v1-n10er-bounded-public-ci-score-guard-safety-probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_public_github_network:
+        description: 'Allow manifest-listed public GitHub clone/fetch + local OpenLocus search (fail-closed default off)'
+        required: false
+        default: false
+        type: boolean
+      stage:
+        description: 'Held-out canary stage (repo/task caps)'
+        required: false
+        default: 'canary_small_heldout'
+        type: choice
+        options:
+          - canary_small_heldout
+          - canary_medium_heldout
+      max_repos:
+        description: 'Optional repo cap override (empty uses stage default)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: bea-v1-n10er-bounded-public-ci-score-guard-safety-probe-${{ github.ref }}-${{ inputs.stage }}
+  cancel-in-progress: false
+
+jobs:
+  n10er-safety-probe:
+    name: ${{ inputs.stage }} (network=${{ inputs.enable_public_github_network }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: N10EQ source lock gate
+        id: gate
+        run: |
+          python3 eval/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe.py \
+            --gate-only \
+            --out "$RUNNER_TEMP/n10er_gate.json"
+
+      - name: Resolve network flag
+        id: flags
+        run: |
+          if [[ "${{ inputs.enable_public_github_network }}" == "true" ]]; then
+            echo "network=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "network=0" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ -n "${{ inputs.max_repos }}" ]]; then
+            echo "max_repos=${{ inputs.max_repos }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build OpenLocus CLI
+        if: ${{ steps.flags.outputs.network == '1' }}
+        run: cargo build --locked --release -p openlocus-cli
+
+      - name: Run N10ER bounded public CI score/guard safety probe
+        run: |
+          mkdir -p artifacts/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe
+          out="artifacts/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe_report.json"
+          args=(eval/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe.py --out "$out" --stage "${{ inputs.stage }}")
+          if [[ "${{ steps.flags.outputs.network }}" == "1" ]]; then
+            args+=(--enable-public-github-network --openlocus target/release/openlocus --work-root "$RUNNER_TEMP/n10er-safety-probe-work")
+            if [[ -n "${{ steps.flags.outputs.max_repos }}" ]]; then
+              args+=(--max-repos "${{ steps.flags.outputs.max_repos }}")
+            fi
+          fi
+          python3 "${args[@]}"
+        env:
+          OPENLOCUS_CI_QUERY_TIMEOUT_SECONDS: '30'
+
+      - name: Validate N10ER contract / privacy scan
+        run: |
+          python3 eval/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe.py \
+            --validate-report \
+            --report artifacts/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe_report.json
+
+      - name: Upload sanitized aggregate artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bea-v1-n10er-bounded-public-ci-score-guard-safety-probe-${{ inputs.stage }}
+          path: |
+            artifacts/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe/bea_v1_n10er_bounded_public_ci_score_guard_safety_probe_report.json
+          retention-days: 7
+          if-no-files-found: error

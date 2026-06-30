@@ -241,6 +241,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10eo-difference-aware-ci-regression-failure-analysis.md`: [en](en/bea-v1-n10eo-difference-aware-ci-regression-failure-analysis.md) · [zh](zh/bea-v1-n10eo-difference-aware-ci-regression-failure-analysis.md)
 - `bea-v1-n10ep-design-only-threshold-misfire-mechanism-response.md`: [en](en/bea-v1-n10ep-design-only-threshold-misfire-mechanism-response.md) · [zh](zh/bea-v1-n10ep-design-only-threshold-misfire-mechanism-response.md)
 - `bea-v1-n10eq-score-guard-safety-probe-design.md`: [en](en/bea-v1-n10eq-score-guard-safety-probe-design.md) · [zh](zh/bea-v1-n10eq-score-guard-safety-probe-design.md)
+- `bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md`: [en](en/bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md) · [zh](zh/bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)

@@ -196,6 +196,46 @@ promotion, runtime/default, method-winner, CI-variant-execution, and network
 fields are `false`. N10EQ reads only public aggregate artifacts; no private
 diagnostic inputs are read.
 
+**BEA-v1-N10ER: Bounded Public CI Score/Guard Safety Probe** is the real
+bounded public CI execution phase after the N10EQ checkpoint `7963831`. The
+default (`enable_public_github_network=false`) emits a fail-closed artifact
+with no clone/build/search:
+
+```text
+status: n10er_safety_probe_unavailable_network_disabled
+self-test: 51 / 51
+forbidden scan: pass
+n10er_execution_authorized_bool: false (default off)
+n10es_audit_authorized_bool: true (stop/go)
+next allowed phase: BEA-v1-N10ES Bounded Public CI Safety Probe Audit
+```
+
+When network is explicitly enabled, N10ER reuses N10EN retrieval/order plumbing
+verbatim (frozen transforms, clone-and-lock, generate-tasks, OpenLocus search)
+**without** mutating N10EN semantics/artifacts, runs a held-out
+manifest-listed public sample (`canary_small_heldout`/`canary_medium_heldout`,
+small `80/50/30`, medium `160/100/60`; held-out via
+manifest-listed repos after the N10EN reference repo prefix, with a private
+overlap check that publishes only overlap count/bucket aggregates), fixes RUN-phase orders before generating score-phase labels
+(gold for aggregate scoring only, never policy), computes the seven
+N10EQ-designed safety features as aggregate buckets only
+(top5_novelty_bucket, baseline_prefix_strength, baseline_gold_proxy,
+full_displacement_risk, guard_preservation_ref, candidate_available_beyond_top10,
+arm_selection), and uploads only a sanitized aggregate-only report. The
+published artifact includes `n10eq_source_lock_records`,
+`execution_boundary_records` (`n10en_artifact_mutated_bool=false`,
+`n10en_semantics_reused_verbatim_bool=true`,
+`n10en_private_task_ids_read_bool=false`, `frozen_rule_changed_bool=false`,
+`threshold_tuned_bool=false`, `public_artifact_aggregate_only_bool=true`),
+`sample_records`, `arm_aggregate_records`, `safety_feature_bucket_records`
+(7 features), `pass_fail_gate_records` (9 gates, all aggregate,
+`gate_uses_gold_for_policy_bool=false`), `claim_boundary_records`, and
+`stop_go_records` authorizing only N10ES audit. Outcome regression is a valid
+research result (exit 0); the workflow fails on contract/privacy/build/clone/
+minimums. It does not authorize N10ER re-run, threshold tuning, promotion,
+runtime/default, method-winner, downstream/scaled retrieval, or CI variant
+execution.
+
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
 rank-blocked records and localized the blocker to extra-depth append/merge-order.
