@@ -28,25 +28,26 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EG: Novel-First / Guarded Complementarity Slicing**:
+The latest closed phase is **BEA-v1-N10EH: Fixed Full/Guard Combination Repacking Experiment**:
 
 ```text
-status: novel_first_guard_complementarity_slicing_complete_n10eh_authorized
-self-test: 5 / 5
+status: fixed_full_guard_combination_repacking_experiment_complete_n10ei_authorized
+self-test: 6 / 6
 forbidden scan: pass
-baseline top10: 5
 full novel-first top10: 11
-guarded top5 novel-distinct top10: 10
-full/guard union top10: 13
-intersection: 8
-full-only / guard-only: 3 / 2
-next allowed phase: BEA-v1-N10EH Fixed Full/Guard Combination Repacking Experiment
+guarded top5 top10: 10
+N10EG union upper bound: 13
+best combination top10: 11
+any variant beats full novel-first: false
+any variant reaches union upper bound: false
+next allowed phase: BEA-v1-N10EI Fixed Full/Guard Combination Repacking Package
 ```
 
-N10EG finds complementarity between the two best N10EE rules. Full novel-first is
-still the best single rule, but guarded top5 recovers 2 cases that full misses;
-their union is 13. The next experiment is therefore a fixed full/guard
-combination test, not more packaging.
+N10EH confirms that the full/guard complementarity is not captured by simple
+rule splicing. Full novel-first remains the best single rule at 11/60; tested
+fixed combinations also top out at 11/60 and do not reach the union upper bound
+of 13/60. The next useful step is difference analysis of full-only vs guard-only
+cases, not another simple combination.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
@@ -2507,6 +2508,7 @@ Key reports:
 - [`artifacts/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_report.json`](artifacts/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment/bea_v1_n10ee_normalized_bm25_novel_guard_fixed_repacking_experiment_report.json)
 - [`artifacts/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package_report.json`](artifacts/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package/bea_v1_n10ef_normalized_bm25_novel_guard_experiment_package_report.json)
 - [`artifacts/bea_v1_n10eg_novel_first_guard_complementarity_slicing/bea_v1_n10eg_novel_first_guard_complementarity_slicing_report.json`](artifacts/bea_v1_n10eg_novel_first_guard_complementarity_slicing/bea_v1_n10eg_novel_first_guard_complementarity_slicing_report.json)
+- [`artifacts/bea_v1_n10eh_fixed_full_guard_combination_repacking_experiment/bea_v1_n10eh_fixed_full_guard_combination_repacking_experiment_report.json`](artifacts/bea_v1_n10eh_fixed_full_guard_combination_repacking_experiment/bea_v1_n10eh_fixed_full_guard_combination_repacking_experiment_report.json)
 
 Documentation mirror check:
 
