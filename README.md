@@ -28,20 +28,18 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DA: Top2 Local-Window Upper-Bound Public Package**:
+The latest closed phase is **BEA-v1-N10DB: Rank/File-Reach Policy Field Scoping**:
 
 ```text
-status: top2_local_window_upper_bound_package_complete_n10db_authorized
-self-test: 14 / 14
+status: rank_file_reach_policy_field_scoping_pass_n10dc_authorized
+self-test: 15 / 15
 forbidden scan: pass
-private reads in N10DA: 0
-recomputes in N10DA: 0
-top2_pm1000: 30 / 36
-top2_pm1500/pm2000/pm5000: 30 / 36
-top2_file_extent_proxy: 22 / 29
-local window saturated: true
-file reach dominates residual: true
-next allowed phase: BEA-v1-N10DB Rank/File Reach Branch Scoping or Experiment
+private span rows read: 213
+policy outcome computations: 0
+selected policy family: file_dedup_distinct_file_packing
+top10 duplicate pressure buckets: none 44, low 67, medium 69, high 33
+top20 duplicate pressure buckets: none 25, low 24, medium 40, high 124
+next allowed phase: BEA-v1-N10DC Distinct-File Packing Rank/File-Reach Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -912,6 +910,12 @@ remain 30/36, the file-extent proxy is worse at 22/29, and the remaining misses
 are dominated by file-not-in-top10. N10DA authorizes only N10DB rank/file reach
 branch scoping or experiment as decided by oracle.
 
+N10DB scopes gold-free rank/file-reach policy fields on the same N1 span rows. It
+finds ordered `p4_evidence`, private candidate file identifiers, sufficient pool
+length, and substantial duplicate-file pressure in top10/top20 buckets. It does
+not execute any policy outcomes. It selects `file_dedup_distinct_file_packing` and
+authorizes only N10DC distinct-file packing smoke.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1626,6 +1630,12 @@ See the current report index:
   heldout/generalization claims, retrieval/rerun, candidate generation/add/remove/
   reorder, top3 overrides, adaptive tuning, P5, BEA-v1-A, method-winner claims,
   or downstream-value claims.
+- N10DB authorizes only N10DC distinct-file packing rank/file-reach smoke over the
+  same scoped rows and same candidate pool, with gold-free file-dedup packing and
+  public aggregate outputs only. It does not authorize retrieval/rerun, candidate
+  generation/materialization, selector/reranker execution, P5, BEA-v1-A,
+  runtime/default changes, heldout/generalization claims, method-winner claims, or
+  downstream-value claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2182,6 +2192,10 @@ eval/bea_v1_n10cz_top2_local_window_saturation_upper_bound.py
 eval/bea_v1_n10da_top2_local_window_upper_bound_package.py
   Public package of N10CZ upper-bound result; authorizes only N10DB rank/file reach
   branch scoping or experiment as oracle decides.
+
+eval/bea_v1_n10db_rank_file_reach_policy_field_scoping.py
+  Private-schema scoping for gold-free rank/file-reach policy fields; selects
+  file-dedup distinct-file packing and authorizes only N10DC smoke.
 ```
 
 Key reports:
@@ -2294,6 +2308,7 @@ Key reports:
 - [`artifacts/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition_report.json`](artifacts/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition/bea_v1_n10cy_top2_pm1000_marginal_gain_decomposition_report.json)
 - [`artifacts/bea_v1_n10cz_top2_local_window_saturation_upper_bound/bea_v1_n10cz_top2_local_window_saturation_upper_bound_report.json`](artifacts/bea_v1_n10cz_top2_local_window_saturation_upper_bound/bea_v1_n10cz_top2_local_window_saturation_upper_bound_report.json)
 - [`artifacts/bea_v1_n10da_top2_local_window_upper_bound_package/bea_v1_n10da_top2_local_window_upper_bound_package_report.json`](artifacts/bea_v1_n10da_top2_local_window_upper_bound_package/bea_v1_n10da_top2_local_window_upper_bound_package_report.json)
+- [`artifacts/bea_v1_n10db_rank_file_reach_policy_field_scoping/bea_v1_n10db_rank_file_reach_policy_field_scoping_report.json`](artifacts/bea_v1_n10db_rank_file_reach_policy_field_scoping/bea_v1_n10db_rank_file_reach_policy_field_scoping_report.json)
 
 Documentation mirror check:
 
