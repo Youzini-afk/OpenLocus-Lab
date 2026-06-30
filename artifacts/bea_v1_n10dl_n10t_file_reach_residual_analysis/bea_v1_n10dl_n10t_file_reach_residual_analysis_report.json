@@ -1,0 +1,416 @@
+{
+  "duplicate_pressure_bucket_records": [
+    {
+      "anonymous_duplicate_bucket_id": "n10dldup0000",
+      "row_count": 30,
+      "top10_distinct_file_count_bucket": "top10_distinct_file_count_1_3"
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dldup0001",
+      "row_count": 23,
+      "top10_distinct_file_count_bucket": "top10_distinct_file_count_4_6"
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dldup0002",
+      "row_count": 2,
+      "top10_distinct_file_count_bucket": "top10_distinct_file_count_7_9"
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dldup0003",
+      "row_count": 124,
+      "top10_distinct_file_count_bucket": "top10_distinct_file_count_10"
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dlpressure0000",
+      "duplicate_pressure_bucket": "duplicate_pressure_none",
+      "row_count": 124
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dlpressure0001",
+      "duplicate_pressure_bucket": "duplicate_pressure_low",
+      "row_count": 1
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dlpressure0002",
+      "duplicate_pressure_bucket": "duplicate_pressure_medium",
+      "row_count": 10
+    },
+    {
+      "anonymous_duplicate_bucket_id": "n10dlpressure0003",
+      "duplicate_pressure_bucket": "duplicate_pressure_high",
+      "row_count": 44
+    }
+  ],
+  "file_reach_residual_summary_records": [
+    {
+      "anonymous_file_reach_residual_id": "n10dlresidual0000",
+      "top10_file_hit_count": 34,
+      "top10_file_miss_count": 179,
+      "top20_file_hit_count": 44
+    }
+  ],
+  "first_gold_file_rank_bucket_records": [
+    {
+      "anonymous_rank_bucket_id": "n10dlrank0000",
+      "rank_bucket": "first_gold_file_rank_11_20",
+      "row_count": 10
+    },
+    {
+      "anonymous_rank_bucket_id": "n10dlrank0001",
+      "rank_bucket": "first_gold_file_rank_21_50",
+      "row_count": 8
+    },
+    {
+      "anonymous_rank_bucket_id": "n10dlrank0002",
+      "rank_bucket": "first_gold_file_rank_51_100",
+      "row_count": 0
+    },
+    {
+      "anonymous_rank_bucket_id": "n10dlrank0003",
+      "rank_bucket": "first_gold_file_rank_gt100",
+      "row_count": 0
+    },
+    {
+      "anonymous_rank_bucket_id": "n10dlrank0004",
+      "rank_bucket": "gold_file_absent_from_pool",
+      "row_count": 161
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "future_mechanism_signal_records": [
+    {
+      "anonymous_signal_id": "n10dlsignal0000",
+      "recommended_for_n10dm_bool": false,
+      "signal_bucket": "duplicate_pressure_conditioned_promotion_signal",
+      "signal_present_bool": false
+    },
+    {
+      "anonymous_signal_id": "n10dlsignal0001",
+      "recommended_for_n10dm_bool": true,
+      "signal_bucket": "no_duplicate_pressure_deep_rank_probe_signal",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dlsignal0002",
+      "recommended_for_n10dm_bool": false,
+      "signal_bucket": "deep_rank_retrieval_gap_signal",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dlsignal0003",
+      "recommended_for_n10dm_bool": false,
+      "signal_bucket": "pool_absence_signal",
+      "signal_present_bool": true
+    },
+    {
+      "anonymous_signal_id": "n10dlsignal0004",
+      "recommended_for_n10dm_bool": false,
+      "signal_bucket": "no_safe_gold_free_signal",
+      "signal_present_bool": false
+    }
+  ],
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dlgate0000",
+      "gate_bucket": "inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0001",
+      "gate_bucket": "private_span_rows_213",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0002",
+      "gate_bucket": "top10_file_hit_34",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0003",
+      "gate_bucket": "top20_file_hit_44",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0004",
+      "gate_bucket": "top10_hit_plus_miss_213",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0005",
+      "gate_bucket": "first_gold_rank_bucket_sum",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0006",
+      "gate_bucket": "duplicate_pressure_bucket_sum",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0007",
+      "gate_bucket": "rank_by_duplicate_pressure_sum",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0008",
+      "gate_bucket": "policy_execution_zero",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0009",
+      "gate_bucket": "candidate_order_changed_zero",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dlgate0010",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+      "anonymous_input_artifact_id": "n10dlin0000",
+      "artifact_bucket": "n10dk_public_package",
+      "expected_status_bucket": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "anonymous_input_artifact_id": "n10dlin0001",
+      "artifact_bucket": "n10dj_rank_promotion_smoke",
+      "expected_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "anonymous_input_artifact_id": "n10dlin0002",
+      "artifact_bucket": "n10da_local_window_context",
+      "expected_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dm_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dlhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "duplicate_pressure_promotion_recommended_bool": false,
+      "duplicate_pressure_rank_buckets_allowed_bool": true,
+      "fixed_variants_only_bool": true,
+      "gold_policy_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dm_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DM Residual-Aware Rank/File Promotion Rule Smoke",
+      "no_duplicate_pressure_deep_rank_probe_recommended_bool": true,
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "same_scoped_rows_only_bool": true,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_forbidden_id": "n10dlnoexec0000",
+      "candidate_add_remove_count": 0,
+      "candidate_generation_count": 0,
+      "candidate_materialization_count": 0,
+      "candidate_order_changed_count": 0,
+      "openlocus_execution_count": 0,
+      "policy_execution_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "observable_field_availability_records": [
+    {
+      "anonymous_observable_field_id": "n10dlfield0000",
+      "candidate_file_identity_private_available_bool": true,
+      "candidate_rank_position_available_bool": true,
+      "file_repeat_count_private_available_bool": true,
+      "method_bucket_complete_bool": false,
+      "score_bucket_complete_bool": false,
+      "source_channel_bucket_complete_bool": false,
+      "span_length_bucket_available_bool": true,
+      "top10_duplicate_pressure_available_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DL N10T File-Reach Residual Mechanism Analysis",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10dlprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_label_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "public_aggregate_bucket_only_bool": true,
+      "span_or_line_public_bool": false
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dlpriv0000",
+      "load_status_bucket": "present",
+      "other_private_files_read_count": 0,
+      "private_filename_public_bool": false,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_path_public_bool": false,
+      "private_span_rows_read": 213
+    }
+  ],
+  "rank_by_duplicate_pressure_records": [
+    {
+      "anonymous_cross_tab_id": "n10dlcross0000",
+      "duplicate_pressure_bucket": "duplicate_pressure_none",
+      "rank_bucket": "first_gold_file_rank_11_20",
+      "row_count": 10
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0001",
+      "duplicate_pressure_bucket": "duplicate_pressure_low",
+      "rank_bucket": "first_gold_file_rank_11_20",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0002",
+      "duplicate_pressure_bucket": "duplicate_pressure_medium",
+      "rank_bucket": "first_gold_file_rank_11_20",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0003",
+      "duplicate_pressure_bucket": "duplicate_pressure_high",
+      "rank_bucket": "first_gold_file_rank_11_20",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0004",
+      "duplicate_pressure_bucket": "duplicate_pressure_none",
+      "rank_bucket": "first_gold_file_rank_21_50",
+      "row_count": 8
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0005",
+      "duplicate_pressure_bucket": "duplicate_pressure_low",
+      "rank_bucket": "first_gold_file_rank_21_50",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0006",
+      "duplicate_pressure_bucket": "duplicate_pressure_medium",
+      "rank_bucket": "first_gold_file_rank_21_50",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0007",
+      "duplicate_pressure_bucket": "duplicate_pressure_high",
+      "rank_bucket": "first_gold_file_rank_21_50",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0008",
+      "duplicate_pressure_bucket": "duplicate_pressure_none",
+      "rank_bucket": "first_gold_file_rank_51_100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0009",
+      "duplicate_pressure_bucket": "duplicate_pressure_low",
+      "rank_bucket": "first_gold_file_rank_51_100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0010",
+      "duplicate_pressure_bucket": "duplicate_pressure_medium",
+      "rank_bucket": "first_gold_file_rank_51_100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0011",
+      "duplicate_pressure_bucket": "duplicate_pressure_high",
+      "rank_bucket": "first_gold_file_rank_51_100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0012",
+      "duplicate_pressure_bucket": "duplicate_pressure_none",
+      "rank_bucket": "first_gold_file_rank_gt100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0013",
+      "duplicate_pressure_bucket": "duplicate_pressure_low",
+      "rank_bucket": "first_gold_file_rank_gt100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0014",
+      "duplicate_pressure_bucket": "duplicate_pressure_medium",
+      "rank_bucket": "first_gold_file_rank_gt100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0015",
+      "duplicate_pressure_bucket": "duplicate_pressure_high",
+      "rank_bucket": "first_gold_file_rank_gt100",
+      "row_count": 0
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0016",
+      "duplicate_pressure_bucket": "duplicate_pressure_none",
+      "rank_bucket": "gold_file_absent_from_pool",
+      "row_count": 106
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0017",
+      "duplicate_pressure_bucket": "duplicate_pressure_low",
+      "rank_bucket": "gold_file_absent_from_pool",
+      "row_count": 1
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0018",
+      "duplicate_pressure_bucket": "duplicate_pressure_medium",
+      "rank_bucket": "gold_file_absent_from_pool",
+      "row_count": 10
+    },
+    {
+      "anonymous_cross_tab_id": "n10dlcross0019",
+      "duplicate_pressure_bucket": "duplicate_pressure_high",
+      "rank_bucket": "gold_file_absent_from_pool",
+      "row_count": 44
+    }
+  ],
+  "schema_version": "bea_v1_n10dl_residual_analysis_v1",
+  "status": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dlstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dm_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DM Residual-Aware Rank/File Promotion Rule Smoke",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}

@@ -28,19 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DK: N10T-Order Rank-Promotion Public Package**:
+The latest closed phase is **BEA-v1-N10DL: N10T File-Reach Residual Mechanism Analysis**:
 
 ```text
-status: n10t_order_rank_promotion_public_package_complete_n10dl_authorized
-self-test: 13 / 13
+status: n10t_file_reach_residual_analysis_complete_n10dm_authorized
+self-test: 15 / 15
 forbidden scan: pass
-private reads in N10DK: 0
-recomputes in N10DK: 0
-anchor file top10/top20: 34 / 44
-anchor projected span top10/top20: 30 / 36
-harmful deeper promotion: rank11-20, interleave, rank21-50 variants regress top10
-neutral variants: distinct-fill rank11-50/100 and max-per-file-2
-next allowed phase: BEA-v1-N10DL N10T Top10 File-Reach Residual Analysis
+private span rows read: 213
+top10 file hit / miss: 34 / 179
+top20 file hit: 44
+first gold rank buckets: 11-20=10, 21-50=8, absent=161
+duplicate pressure medium/high: 54, all in absent-from-pool residuals
+recommended N10DM signal: no-duplicate-pressure deep-rank probe
+next allowed phase: BEA-v1-N10DM Residual-Aware Rank/File Promotion Rule Smoke
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -969,6 +969,17 @@ variants are neutral against the N10T anchor. The next useful question is why
 correct files remain absent from N10T top10 and what observable structure predicts
 safe promotion. N10DK authorizes only N10DL residual analysis.
 
+N10DL performs that residual mechanism analysis without executing a new policy. Of
+179 top10 file misses, 10 have first gold file in ranks 11-20, 8 in ranks 21-50,
+and 161 are absent from the local candidate pool. Top10 duplicate pressure is
+medium/high for 54 misses, but those pressure cases are not the 11-50 reachable
+residuals; they are in the absent-from-pool bucket. The viable N10DM signal is
+therefore not duplicate-pressure promotion. It is a narrower no-duplicate-pressure
+deep-rank probe over the 18 reachable residuals. Gold-free observable fields exist
+for candidate rank, private file identity, duplicate pressure, file repeat count,
+and span-length bucket, while source/channel, method, and score buckets are
+incomplete. N10DL authorizes only N10DM residual-aware fixed-variant smoke.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1731,6 +1742,11 @@ See the current report index:
   generation/materialization/add/remove, retrieval/rerun, broad private reads, P5,
   BEA-v1-A, method-winner, downstream, adaptive per-record selection, or
   heldout/generalization claims.
+- N10DL authorizes only N10DM residual-aware rank/file promotion rule smoke over the
+  same scoped rows and fixed variants. It does not authorize runtime/default,
+  selector/reranker, candidate generation/materialization/add/remove,
+  retrieval/rerun, broad private reads, P5, BEA-v1-A, method-winner, downstream,
+  adaptive per-record selection, or heldout/generalization claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2327,6 +2343,10 @@ eval/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke.py
 eval/bea_v1_n10dk_n10t_order_rank_promotion_public_package.py
   Public package of N10DJ; frames deeper-band promotion as harmful/neutral and
   authorizes only N10DL residual analysis.
+
+eval/bea_v1_n10dl_n10t_file_reach_residual_analysis.py
+  Direct residual analysis of N10T top10 file misses; identifies gold-free signals
+  and authorizes only N10DM fixed-variant smoke.
 ```
 
 Key reports:
@@ -2449,6 +2469,7 @@ Key reports:
 - [`artifacts/bea_v1_n10di_packing_span_window_combination_public_package/bea_v1_n10di_packing_span_window_combination_public_package_report.json`](artifacts/bea_v1_n10di_packing_span_window_combination_public_package/bea_v1_n10di_packing_span_window_combination_public_package_report.json)
 - [`artifacts/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke_report.json`](artifacts/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke_report.json)
 - [`artifacts/bea_v1_n10dk_n10t_order_rank_promotion_public_package/bea_v1_n10dk_n10t_order_rank_promotion_public_package_report.json`](artifacts/bea_v1_n10dk_n10t_order_rank_promotion_public_package/bea_v1_n10dk_n10t_order_rank_promotion_public_package_report.json)
+- [`artifacts/bea_v1_n10dl_n10t_file_reach_residual_analysis/bea_v1_n10dl_n10t_file_reach_residual_analysis_report.json`](artifacts/bea_v1_n10dl_n10t_file_reach_residual_analysis/bea_v1_n10dl_n10t_file_reach_residual_analysis_report.json)
 
 Documentation mirror check:
 
