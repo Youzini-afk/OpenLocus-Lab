@@ -1,0 +1,390 @@
+{
+  "claim_boundary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_claim_boundary_id": "n10esclaim0000",
+      "ci_rerun_bool": false,
+      "design_decision_only_bool": true,
+      "downstream_value_claim_bool": false,
+      "external_benchmark_download_bool": false,
+      "frozen_rule_change_bool": false,
+      "gold_used_for_policy_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "network_run_bool": false,
+      "private_rows_read_bool": false,
+      "production_retrieval_change_bool": false,
+      "promotion_claim_bool": false,
+      "provider_model_network_bool": false,
+      "public_only_bool": true,
+      "quiver_dense_real_bool": false,
+      "raw_candidate_upload_bool": false,
+      "raw_diagnostic_publication_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "remote_embedding_bool": false,
+      "retrieval_recompute_bool": false,
+      "run_phase_labels_used_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_claim_bool": false,
+      "score_phase_labels_used_bool": false,
+      "selector_reranker_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10esgate0000",
+      "gate_bucket": "n10er_public_source_locked",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10esgate0006",
+      "gate_bucket": "no_ci_rerun_retrieval_recompute",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10esgate0007",
+      "gate_bucket": "no_private_input_read",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10esgate0008",
+      "gate_bucket": "privacy_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "interpretation_records": [
+    {
+      "anonymous_interpretation_id": "n10esinterp0000",
+      "ci_failure_bool": false,
+      "full_guard_diffaware_lost_baseline_bucket": "0/0/0",
+      "guard_would_preserve_full_loss_count": 0,
+      "interpretation_bucket": "valid_research_negative",
+      "interpretation_description_bucket": "the risk bucket was sufficient (task_count=26) yet full/guard/diffaware each lost 0 baseline top-10 hits inside the bucket and guard_would_preserve_full_loss_count=0, so the low-novelty + strong-baseline full-displacement / guard-preservation safety signal did not reproduce. this is a valid research negative, not a CI failure.",
+      "interpretation_match_bool": true,
+      "locked_risk_task_count": 26,
+      "not_ci_failure_bool": true,
+      "risk_bucket_sufficient_bool": true,
+      "signal_not_reproduced_bool": true,
+      "signal_reproduced_bool": false,
+      "valid_research_negative_bool": true
+    }
+  ],
+  "n10er_arm_audit_records": [
+    {
+      "anonymous_arm_audit_id": "n10esarm0000",
+      "arm_aggregate_match_bool": true,
+      "arm_bucket": "baseline",
+      "locked_lost_baseline_top10_hits": 0,
+      "locked_top100_file_recovery_count": 40,
+      "locked_top10_file_recovery_count": 37,
+      "locked_top20_file_recovery_count": 39,
+      "locked_top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_arm_audit_id": "n10esarm0001",
+      "arm_aggregate_match_bool": true,
+      "arm_bucket": "full",
+      "locked_lost_baseline_top10_hits": 1,
+      "locked_top100_file_recovery_count": 40,
+      "locked_top10_file_recovery_count": 36,
+      "locked_top20_file_recovery_count": 39,
+      "locked_top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_arm_audit_id": "n10esarm0002",
+      "arm_aggregate_match_bool": true,
+      "arm_bucket": "guard",
+      "locked_lost_baseline_top10_hits": 0,
+      "locked_top100_file_recovery_count": 40,
+      "locked_top10_file_recovery_count": 38,
+      "locked_top20_file_recovery_count": 39,
+      "locked_top50_file_recovery_count": 40
+    },
+    {
+      "anonymous_arm_audit_id": "n10esarm0003",
+      "arm_aggregate_match_bool": true,
+      "arm_bucket": "diffaware",
+      "locked_lost_baseline_top10_hits": 1,
+      "locked_top100_file_recovery_count": 40,
+      "locked_top10_file_recovery_count": 37,
+      "locked_top20_file_recovery_count": 39,
+      "locked_top50_file_recovery_count": 40
+    }
+  ],
+  "n10er_metric_audit_records": [
+    {
+      "anonymous_metric_audit_id": "n10esmetric0000",
+      "locked_public_task_count": 80,
+      "locked_repo_count": 2,
+      "locked_scored_task_count": 60,
+      "locked_task_with_gold_count": 40,
+      "metric_bucket": "sample_aggregate",
+      "metric_match_bool": true,
+      "recomputed_bool": false
+    },
+    {
+      "anonymous_metric_audit_id": "n10esmetric0001",
+      "locked_overlap_count": 0,
+      "locked_overlap_public_bucket": "overlap_zero",
+      "metric_bucket": "heldout_overlap",
+      "metric_match_bool": true,
+      "recomputed_bool": false
+    },
+    {
+      "anonymous_metric_audit_id": "n10esmetric0002",
+      "locked_citation_total_count": 7772,
+      "locked_citation_valid_count": 7772,
+      "metric_bucket": "citation_validity",
+      "metric_match_bool": true,
+      "recomputed_bool": false
+    },
+    {
+      "anonymous_metric_audit_id": "n10esmetric0003",
+      "locked_baseline_lost_baseline_top10": 0,
+      "locked_baseline_top10_top20_top50_top100": "37/39/40/40",
+      "locked_diffaware_lost_baseline_top10": 1,
+      "locked_diffaware_top10_top20_top50_top100": "37/39/40/40",
+      "locked_full_lost_baseline_top10": 1,
+      "locked_full_top10_top20_top50_top100": "36/39/40/40",
+      "locked_guard_lost_baseline_top10": 0,
+      "locked_guard_top10_top20_top50_top100": "38/39/40/40",
+      "metric_bucket": "arm_aggregates",
+      "metric_match_bool": true,
+      "recomputed_bool": false
+    },
+    {
+      "anonymous_metric_audit_id": "n10esmetric0004",
+      "locked_diffaware_lost_baseline_count": 0,
+      "locked_full_lost_baseline_count": 0,
+      "locked_guard_lost_baseline_count": 0,
+      "locked_guard_would_preserve_full_loss_count": 0,
+      "locked_risk_task_count": 26,
+      "metric_bucket": "risk_bucket_signal",
+      "metric_match_bool": true,
+      "recomputed_bool": false
+    }
+  ],
+  "n10er_source_lock_records": [
+    {
+      "anonymous_source_lock_id": "n10essource0000",
+      "arm_aggregate_all_match_bool": true,
+      "citation_aggregate_match_bool": true,
+      "guard_would_preserve_full_loss_match_bool": true,
+      "input_artifact_load_status_bucket": "present",
+      "locked_n10eo_checkpoint": "6f8eeda",
+      "locked_n10ep_checkpoint": "0a54b49",
+      "locked_n10eq_checkpoint": "7963831",
+      "locked_n10er_checkpoint": "c8fd353",
+      "locked_n10er_ci_head": "2e7894e",
+      "locked_n10er_ci_run": "28457213423",
+      "locked_n10er_next_allowed_phase": "BEA-v1-N10ES Bounded Public CI Safety Probe Audit",
+      "locked_n10er_status": "n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized",
+      "n10ep_checkpoint_match_bool": true,
+      "n10eq_checkpoint_match_bool": true,
+      "n10er_n10es_audit_authorized_bool": true,
+      "n10er_next_allowed_phase_match_bool": true,
+      "n10er_report_scan_pass_bool": true,
+      "n10er_status_match_bool": true,
+      "no_ci_rerun_performed_bool": true,
+      "no_private_input_read_bool": true,
+      "no_recompute_performed_bool": true,
+      "no_retrieval_performed_bool": true,
+      "overlap_bucket_match_bool": true,
+      "overlap_count_match_bool": true,
+      "risk_aggregate_match_bool": true,
+      "risk_diffaware_lost_match_bool": true,
+      "risk_full_lost_match_bool": true,
+      "risk_guard_lost_match_bool": true,
+      "risk_task_count_match_bool": true,
+      "sample_aggregate_match_bool": true,
+      "source_lock_bucket": "n10er_public_report_locked",
+      "source_locked_bool": true
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "n10esgate0000",
+      "gate_bucket": "n10er_public_source_locked",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0001",
+      "gate_bucket": "n10er_metric_audit_no_recompute",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0002",
+      "gate_bucket": "n10es_no_threshold_tuning",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0003",
+      "gate_bucket": "n10es_no_method_winner_claim",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0004",
+      "gate_bucket": "n10es_no_runtime_default_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0005",
+      "gate_bucket": "n10es_no_promotion_or_frozen_rule_change",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0006",
+      "gate_bucket": "n10es_no_ci_rerun_retrieval_recompute",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0007",
+      "gate_bucket": "n10es_no_private_input_read",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0008",
+      "gate_bucket": "n10es_interpretation_consistent_with_locked_aggregates",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0009",
+      "gate_bucket": "n10er_stop_go_next_phase_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0010",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0011",
+      "gate_bucket": "readme_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    },
+    {
+      "anonymous_gate_id": "n10esgate0012",
+      "gate_bucket": "current_conclusions_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_performs_ci_rerun_bool": false,
+      "gate_reads_private_input_bool": false,
+      "gate_uses_gold_for_policy_bool": false
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10ES Public Safety Probe Audit/Package",
+  "public_package_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "all_public_readback_match_bool": true,
+      "anonymous_public_package_id": "n10espackage0000",
+      "ci_rerun_count": 0,
+      "clone_build_search_run_bool": false,
+      "current_conclusions_match_bool": true,
+      "docs_readback_match_bool": true,
+      "n10er_source_locked_bool": true,
+      "no_method_winner_claim_bool": true,
+      "no_runtime_default_change_bool": true,
+      "package_bucket": "n10es_public_safety_probe_audit_package",
+      "private_input_read_count": 0,
+      "public_only_bool": true,
+      "readme_readback_match_bool": true,
+      "recompute_count": 0,
+      "retrieval_execution_count": 0,
+      "schema_version": "bea_v1_n10es_public_safety_probe_audit_package_v1",
+      "self_test_pass_claim_bool": true,
+      "self_test_total_check_count": 37
+    }
+  ],
+  "schema_version": "bea_v1_n10es_public_safety_probe_audit_package_v1",
+  "status": "n10es_public_safety_probe_audit_package_complete_n10et_authorized",
+  "stop_go_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_stop_go_id": "n10esstop0000",
+      "ci_variant_execution_authorized_bool": false,
+      "design_decision_only_bool": true,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "execution_authorized_bool": false,
+      "frozen_rule_change_authorized_bool": false,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "n10er_re_run_authorized_bool": false,
+      "n10es_audit_authorized_bool": false,
+      "n10es_re_run_authorized_bool": false,
+      "n10et_design_decision_authorized_bool": true,
+      "network_run_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-N10ET Public Safety Probe Design/Decision",
+      "provider_model_network_authorized_bool": false,
+      "public_only_bool": true,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "recompute_authorized_bool": false,
+      "rerun_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ]
+}

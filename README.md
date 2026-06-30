@@ -245,6 +245,54 @@ This is a valid research negative, not CI failure. It does not authorize N10ER r
 runtime/default, method-winner, downstream/scaled retrieval, or CI variant
 execution.
 
+**BEA-v1-N10ES: Public Safety Probe Audit/Package** is a public-only,
+no-execution audit of the N10ER result after the `c8fd353` checkpoint:
+
+```text
+status: n10es_public_safety_probe_audit_package_complete_n10et_authorized
+self-test: 37 / 37
+forbidden scan: pass
+private input reads: 0
+retrieval executions: 0
+recomputes: 0
+CI reruns: 0
+n10er source locked: true (checkpoint c8fd353, CI run 28457213423)
+next allowed phase: BEA-v1-N10ET Public Safety Probe Design/Decision
+```
+
+N10ES reads **only** the N10ER public aggregate report (+ N10ER
+evaluator/workflow for schema/status validation only) and git metadata; it
+performs no CI rerun, retrieval, recompute, clone, build, or search, and reads
+no private directories, CI raw logs, repo clones, raw
+candidates/orders/labels/paths/queries/tasks/repos, per-task diagnostics, or
+N10EO private rerun data. It locks the N10ER result (status
+`n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`, sample
+`80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/40/40`, full
+`36/39/40/40` lost `1`, guard `38/39/40/40` lost `0`, diffaware `37/39/40/40`
+lost `1`, risk bucket `task_count=26`, losses `0/0/0`,
+`guard_would_preserve_full_loss_count=0`), re-expresses those aggregates as
+`n10er_metric_audit_records` (`recomputed_bool=false`, all
+`metric_match_bool=true`), and records the interpretation: the risk bucket was
+sufficient but full/guard/diffaware lost `0/0/0` inside it and
+`guard_would_preserve_full_loss_count=0`, so the safety signal did not
+reproduce — a valid research negative, not CI failure. The published artifact
+includes `n10er_source_lock_records`, `n10er_metric_audit_records`,
+`n10er_arm_audit_records`, `interpretation_records`, `public_package_records`,
+`claim_boundary_records`, `pass_fail_gate_records` (13 audit gates, including
+N10ER next-phase and public readback checks, all
+aggregate, `gate_uses_gold_for_policy_bool=false`,
+`gate_performs_ci_rerun_bool=false`, `gate_reads_private_input_bool=false`),
+and `stop_go_records`. The conservative stop/go authorizes **only** the N10ET
+public-only design/decision handoff (`n10et_design_decision_authorized_bool=true`);
+all execution, rerun, retrieval, recompute, tuning, promotion, runtime/default,
+method-winner, downstream/scaled retrieval, raw diagnostic publication, CI
+variant execution, selector/reranker, provider/model network, and network-run
+fields are `false`. See `docs/en/bea-v1-n10es-public-safety-probe-audit-package.md`.
+
+N10ES also explicitly audits N10ER's stop/go `next_allowed_phase` and public
+readback consistency across README, EN/ZH N10ER docs, and EN/ZH current
+conclusions.
+
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
 rank-blocked records and localized the blocker to extra-depth append/merge-order.
