@@ -28,19 +28,19 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DJ: N10T-Order File-Reach Rank-Promotion Smoke**:
+The latest closed phase is **BEA-v1-N10DK: N10T-Order Rank-Promotion Public Package**:
 
 ```text
-status: n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized
-self-test: 15 / 15
+status: n10t_order_rank_promotion_public_package_complete_n10dl_authorized
+self-test: 13 / 13
 forbidden scan: pass
-private span rows read: 213
-variant count: 8
+private reads in N10DK: 0
+recomputes in N10DK: 0
 anchor file top10/top20: 34 / 44
 anchor projected span top10/top20: 30 / 36
-rank-promotion span top10 improvements: 0
-rank-promotion file top10 improvements: 0
-next allowed phase: BEA-v1-N10DK Rank/File-Reach Rank-Promotion Public Package
+harmful deeper promotion: rank11-20, interleave, rank21-50 variants regress top10
+neutral variants: distinct-fill rank11-50/100 and max-per-file-2
+next allowed phase: BEA-v1-N10DL N10T Top10 File-Reach Residual Analysis
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
@@ -963,6 +963,12 @@ current fixed span projection for span scoring. None improves the N10T anchor fi
 top10 count of 34 or projected span top10 count of 30; several promotion variants
 regress top10. N10DJ authorizes only N10DK public package.
 
+N10DK packages N10DJ publicly without private reads or recompute. It confirms that
+blind deeper-band promotion is harmful, while distinct-fill and max-per-file-2
+variants are neutral against the N10T anchor. The next useful question is why
+correct files remain absent from N10T top10 and what observable structure predicts
+safe promotion. N10DK authorizes only N10DL residual analysis.
+
 N10 heldout validation is therefore closed for the current local state. Further
 N10AR-style validation requires one of three concrete inputs before any new
 execution: (1) supplied heldout span-surface rows with ordered evidence and gold
@@ -1720,6 +1726,11 @@ See the current report index:
   materialization/add/remove, retrieval/rerun, broad private reads, P5, BEA-v1-A,
   method-winner, downstream, adaptive per-record selection, or
   heldout/generalization claims.
+- N10DK authorizes only N10DL N10T top10 file-reach residual analysis over the same
+  scoped rows. It does not authorize runtime/default, selector/reranker, candidate
+  generation/materialization/add/remove, retrieval/rerun, broad private reads, P5,
+  BEA-v1-A, method-winner, downstream, adaptive per-record selection, or
+  heldout/generalization claims.
 - The repo does **not** currently contain a real non-Python downstream solve/test
   harness for the locked denominator. Existing B16 downstream harnesses are
   synthetic Python-only; ContextBench/RepoQA locked-denominator records currently
@@ -2312,6 +2323,10 @@ eval/bea_v1_n10di_packing_span_window_combination_public_package.py
 eval/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke.py
   Direct same-source rank/file-reach smoke from N10T-best order; finds no top10
   file/span improvement and authorizes only N10DK public package.
+
+eval/bea_v1_n10dk_n10t_order_rank_promotion_public_package.py
+  Public package of N10DJ; frames deeper-band promotion as harmful/neutral and
+  authorizes only N10DL residual analysis.
 ```
 
 Key reports:
@@ -2433,6 +2448,7 @@ Key reports:
 - [`artifacts/bea_v1_n10dh_packing_span_window_combination_smoke/bea_v1_n10dh_packing_span_window_combination_smoke_report.json`](artifacts/bea_v1_n10dh_packing_span_window_combination_smoke/bea_v1_n10dh_packing_span_window_combination_smoke_report.json)
 - [`artifacts/bea_v1_n10di_packing_span_window_combination_public_package/bea_v1_n10di_packing_span_window_combination_public_package_report.json`](artifacts/bea_v1_n10di_packing_span_window_combination_public_package/bea_v1_n10di_packing_span_window_combination_public_package_report.json)
 - [`artifacts/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke_report.json`](artifacts/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke/bea_v1_n10dj_n10t_order_file_reach_rank_promotion_smoke_report.json)
+- [`artifacts/bea_v1_n10dk_n10t_order_rank_promotion_public_package/bea_v1_n10dk_n10t_order_rank_promotion_public_package_report.json`](artifacts/bea_v1_n10dk_n10t_order_rank_promotion_public_package/bea_v1_n10dk_n10t_order_rank_promotion_public_package_report.json)
 
 Documentation mirror check:
 

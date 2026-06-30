@@ -1,0 +1,206 @@
+{
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dkgate0000",
+      "gate_bucket": "public_inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dkgate0001",
+      "gate_bucket": "n10dj_chain_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dkgate0002",
+      "gate_bucket": "no_private_read",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dkgate0003",
+      "gate_bucket": "forbidden_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "harmful_promotion_records": [
+    {
+      "anonymous_harmful_promotion_id": "n10dkharm0000",
+      "delta_top10_file_vs_anchor": -10,
+      "delta_top10_span_vs_anchor_projected": -8,
+      "harmful_promotion_bool": true,
+      "top10_file_reach_count": 24,
+      "top10_span_overlap_count": 22,
+      "top20_file_reach_count": 44,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "promote_rank11_20_before_rank6_10"
+    },
+    {
+      "anonymous_harmful_promotion_id": "n10dkharm0001",
+      "delta_top10_file_vs_anchor": -5,
+      "delta_top10_span_vs_anchor_projected": -4,
+      "harmful_promotion_bool": true,
+      "top10_file_reach_count": 29,
+      "top10_span_overlap_count": 26,
+      "top20_file_reach_count": 44,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "interleave_top10_with_rank11_20_1to1_after_top5"
+    },
+    {
+      "anonymous_harmful_promotion_id": "n10dkharm0002",
+      "delta_top10_file_vs_anchor": -11,
+      "delta_top10_span_vs_anchor_projected": -8,
+      "harmful_promotion_bool": true,
+      "top10_file_reach_count": 23,
+      "top10_span_overlap_count": 22,
+      "top20_file_reach_count": 30,
+      "top20_span_overlap_count": 27,
+      "variant_bucket": "promote_rank21_50_after_top5_before_rank6_10"
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "anonymous_input_artifact_id": "n10dkin0000",
+      "artifact_bucket": "n10dj_rank_promotion_smoke",
+      "expected_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "packing_span_window_combination_public_package_complete_n10dj_authorized",
+      "anonymous_input_artifact_id": "n10dkin0001",
+      "artifact_bucket": "n10di_public_context",
+      "expected_status_bucket": "packing_span_window_combination_public_package_complete_n10dj_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "anonymous_input_artifact_id": "n10dkin0002",
+      "artifact_bucket": "n10da_local_window_context",
+      "expected_status_bucket": "top2_local_window_upper_bound_package_complete_n10db_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "interpretation_records": [
+    {
+      "anonymous_interpretation_id": "n10dkinterp0000",
+      "correct_files_absent_from_top10_analysis_needed_bool": true,
+      "downstream_value_claim_bool": false,
+      "interpretation_bucket": "do_not_blindly_promote_fixed_deeper_bands",
+      "method_winner_claim_bool": false,
+      "observable_structure_for_safe_promotion_needed_bool": true,
+      "original_order_packing_useless_claim_bool": false,
+      "runtime_default_claim_bool": false
+    }
+  ],
+  "n10dl_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dkhandoff0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "candidate_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dl_residual_analysis_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DL N10T Top10 File-Reach Residual Analysis",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "same_scoped_rows_only_bool": true,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "neutral_variant_records": [
+    {
+      "anonymous_neutral_variant_id": "n10dkneutral0000",
+      "neutral_vs_anchor_bool": true,
+      "top10_file_reach_count": 34,
+      "top10_span_overlap_count": 30,
+      "top20_file_reach_count": 44,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "fill_top10_with_distinct_files_from_rank11_50"
+    },
+    {
+      "anonymous_neutral_variant_id": "n10dkneutral0001",
+      "neutral_vs_anchor_bool": true,
+      "top10_file_reach_count": 34,
+      "top10_span_overlap_count": 30,
+      "top20_file_reach_count": 44,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "fill_top10_with_distinct_files_from_rank11_100"
+    },
+    {
+      "anonymous_neutral_variant_id": "n10dkneutral0002",
+      "neutral_vs_anchor_bool": true,
+      "top10_file_reach_count": 34,
+      "top10_span_overlap_count": 30,
+      "top20_file_reach_count": 44,
+      "top20_span_overlap_count": 36,
+      "variant_bucket": "max_per_file_2_top10_on_n10t_order"
+    }
+  ],
+  "no_private_recompute_records": [
+    {
+      "anonymous_no_private_recompute_id": "n10dknorecompute0000",
+      "empirical_recompute_count": 0,
+      "private_read_count": 0,
+      "variant_recompute_count": 0
+    }
+  ],
+  "package_summary_records": [
+    {
+      "anchor_file_top10_count": 34,
+      "anchor_file_top20_count": 44,
+      "anchor_projected_span_top10_count": 30,
+      "anchor_projected_span_top20_count": 36,
+      "anonymous_package_summary_id": "n10dksummary0000",
+      "empirical_recompute_count": 0,
+      "n10dj_status_bucket": "n10t_order_file_reach_rank_promotion_smoke_complete_n10dk_authorized",
+      "packaged_conclusion_bucket": "blind_deeper_rank_promotion_not_supported",
+      "private_read_count": 0,
+      "rank_promotion_improves_top10_file_count": 0,
+      "rank_promotion_improves_top10_span_count": 0,
+      "variant_count": 8
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DK Rank/File-Reach Rank-Promotion Public Package",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_boundary_id": "n10dkprivacy0000",
+      "candidate_list_public_bool": false,
+      "exact_rank_public_bool": false,
+      "gold_label_public_bool": false,
+      "private_filename_public_bool": false,
+      "private_path_public_bool": false,
+      "private_read_count": 0,
+      "public_aggregate_bucket_only_bool": true,
+      "span_or_line_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_n10dk_public_package_v1",
+  "status": "n10t_order_rank_promotion_public_package_complete_n10dl_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dkstop0000",
+      "broad_private_read_authorized_bool": false,
+      "candidate_generation_materialization_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "n10dl_residual_analysis_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DL N10T Top10 File-Reach Residual Analysis",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ]
+}
