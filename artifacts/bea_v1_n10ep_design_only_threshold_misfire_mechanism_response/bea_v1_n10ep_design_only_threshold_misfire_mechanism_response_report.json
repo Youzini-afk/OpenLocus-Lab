@@ -1,0 +1,246 @@
+{
+  "claim_boundary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_claim_boundary_id": "n10epclaim0000",
+      "ci_variant_execution_bool": false,
+      "design_only_bool": true,
+      "downstream_value_claim_bool": false,
+      "external_benchmark_download_bool": false,
+      "frozen_rule_change_bool": false,
+      "gold_used_for_policy_bool": false,
+      "heldout_generalization_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "network_run_bool": false,
+      "new_policy_experiment_bool": false,
+      "private_diagnostic_inputs_used_bool": false,
+      "private_rows_read_bool": false,
+      "production_retrieval_change_bool": false,
+      "provider_model_network_bool": false,
+      "public_only_bool": true,
+      "quiver_dense_real_bool": false,
+      "raw_candidate_upload_bool": false,
+      "raw_label_upload_bool": false,
+      "raw_path_upload_bool": false,
+      "raw_per_task_diagnostics_upload_bool": false,
+      "raw_query_upload_bool": false,
+      "remote_embedding_bool": false,
+      "rerun_local_canary_bool": false,
+      "run_phase_labels_used_bool": false,
+      "runtime_default_change_bool": false,
+      "scaled_retrieval_claim_bool": false,
+      "score_phase_labels_used_bool": false,
+      "selector_reranker_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "design_option_records": [
+    {
+      "addresses_mechanism_bucket": "novel_first_displaced_baseline_gold_from_top10",
+      "anonymous_design_option_id": "n10epdesign0000",
+      "authorized_for_next_phase_bool": true,
+      "design_description_bucket": "design a score/guard safety probe that, given a frozen arm order and the top5_novel_candidate_item_count feature, flags tasks where the full novel-first arm may displace an already-strong baseline gold file (rank 1-5) into ranks 11-20. probe uses only aggregate-bucket diagnostics from n10eo; no per-task candidates/labels/paths/ranks are read.",
+      "design_only_bool": true,
+      "design_option_bucket": "n10eq_score_guard_safety_probe_design",
+      "execution_authorized_bool": false,
+      "frozen_rule_change_bool": false,
+      "input_scope_bucket": "n10eo_aggregate_buckets_only",
+      "method_winner_claim_bool": false,
+      "rationale_bucket": "the misfire is a low-novelty-bucket displacement of strong baseline gold (2/49 full-selected tasks); a safety probe design can describe how to detect this class without executing any new policy.",
+      "runtime_default_change_bool": false,
+      "threshold_tuning_bool": false
+    },
+    {
+      "addresses_mechanism_bucket": "novel_first_displaced_baseline_gold_from_top10",
+      "anonymous_design_option_id": "n10epdesign0001",
+      "authorized_for_next_phase_bool": false,
+      "design_description_bucket": "design a small public CI variant that re-runs the frozen difference-aware rule on a slightly different manifest-listed public sample to confirm whether the threshold-misfire reproduces or was a 2-case artifact. design is public-ci-only and reuses the n10en bounded canary scope.",
+      "design_only_bool": true,
+      "design_option_bucket": "n10er_public_ci_small_variant_design",
+      "execution_authorized_bool": false,
+      "frozen_rule_change_bool": false,
+      "input_scope_bucket": "n10en_public_ci_scope_only",
+      "method_winner_claim_bool": false,
+      "rationale_bucket": "a small public CI variant design can probe reproducibility of the 2-case misfire on held-out public tasks; conservative default leaves this design packaged but not yet authorized.",
+      "runtime_default_change_bool": false,
+      "threshold_tuning_bool": false
+    },
+    {
+      "addresses_mechanism_bucket": "insufficient_evidence_to_act",
+      "anonymous_design_option_id": "n10epdesign0002",
+      "authorized_for_next_phase_bool": false,
+      "design_description_bucket": "stop-design-only-insufficient: design-only analysis from 2 aggregate misfire cases is insufficient to resolve the threshold-misfire. no design is promoted to execution on the strength of 2 cases alone; further bounded public evidence is required before any rule change, promotion, or execution.",
+      "design_only_bool": true,
+      "design_option_bucket": "stop_design_only_insufficient",
+      "execution_authorized_bool": false,
+      "frozen_rule_change_bool": false,
+      "input_scope_bucket": "n10eo_aggregate_buckets_only",
+      "method_winner_claim_bool": false,
+      "rationale_bucket": "2 of 49 full-selected tasks regressed; acting on this as a winner/promotion signal would overinterpret a small sample.",
+      "runtime_default_change_bool": false,
+      "threshold_tuning_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10epgate0001",
+      "gate_bucket": "n10eo_source_locked",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10epgate0002",
+      "gate_bucket": "aggregate_counts_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10epgate0003",
+      "gate_bucket": "mechanism_buckets_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10epgate0004",
+      "gate_bucket": "low_novelty_bucket_loss_consistent",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10epgate0005",
+      "gate_bucket": "design_only_no_execution",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10epgate0006",
+      "gate_bucket": "privacy_scan_pass",
+      "gate_passed_bool": true
+    }
+  ],
+  "mechanism_response_summary_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_response_summary_id": "n10epsum0000",
+      "baseline_gold_rank_1_to_5_displaced_count": 2,
+      "baseline_top10_count": 39,
+      "candidate_available_beyond_top10_count": 2,
+      "diffaware_full_guard_would_preserve_count": 2,
+      "diffaware_lost_baseline_count": 2,
+      "diffaware_top10_count": 37,
+      "frozen_rule_bucket": "if_top5_novel_candidate_item_count_gte_4_then_guarded_else_full",
+      "frozen_threshold_feature": "top5_novel_candidate_item_count",
+      "frozen_threshold_value": 4,
+      "full_lost_baseline_count": 2,
+      "full_lost_guard_preserved_count": 2,
+      "full_top10_count": 37,
+      "guard_better_than_full_count": 2,
+      "guard_lost_baseline_count": 0,
+      "guard_top10_count": 39,
+      "low_novelty_bucket_loss_count": 2,
+      "mechanism_response_design_only_bool": true,
+      "novel_first_displaced_count": 2,
+      "primary_mechanism_bucket": "novel_first_displaced_baseline_gold_from_top10"
+    }
+  ],
+  "n10eo_source_lock_records": [
+    {
+      "actual_n10eo_status": "n10eo_failure_analysis_pass_mechanism_identified",
+      "aggregate_counts_match_bool": true,
+      "anonymous_source_lock_id": "n10epsource0000",
+      "full_guard_outcome_match_bool": true,
+      "locked_baseline_top10": 39,
+      "locked_citation_total": 3636,
+      "locked_citation_valid": 3636,
+      "locked_diffaware_lost": 2,
+      "locked_diffaware_top10": 37,
+      "locked_full_lost": 2,
+      "locked_full_top10": 37,
+      "locked_guard_lost": 0,
+      "locked_guard_top10": 39,
+      "locked_n10eo_checkpoint": "6f8eeda",
+      "locked_n10eo_status": "n10eo_failure_analysis_pass_mechanism_identified",
+      "locked_task_with_gold": 40,
+      "low_novelty_bucket_loss_match_bool": true,
+      "mechanism_buckets_match_bool": true,
+      "n10em_artifact_load_status_bucket": "present",
+      "n10en_artifact_load_status_bucket": "present",
+      "n10eo_artifact_load_status_bucket": "present",
+      "next_allowed_phase": "BEA-v1-N10EP Design-Only Threshold-Misfire Mechanism Response",
+      "next_allowed_phase_match_bool": true,
+      "primary_mechanism_match_bool": true,
+      "source_locked_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10EP Design-Only Threshold-Misfire Mechanism Response",
+  "risk_control_records": [
+    {
+      "anonymous_risk_control_id": "n10eprisk0000",
+      "mitigation_bucket": "design-only response; no promotion or rule change; explicit stop_design_only_insufficient option recorded.",
+      "risk_bucket": "aggregate_overinterpretation_from_two_cases",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "drawing strong conclusions from 2 misfire cases out of 49 full-selected tasks risks aggregate overinterpretation."
+    },
+    {
+      "anonymous_risk_control_id": "n10eprisk0001",
+      "mitigation_bucket": "threshold_tuning_authorized_bool=false; frozen rule unchanged; any threshold design must use held-out public evidence.",
+      "risk_bucket": "hindsight_threshold_tuning",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the misfire suggests the frozen threshold (>=4) may be miscalibrated; tuning it with hindsight on the same 49 tasks would be data snooping."
+    },
+    {
+      "anonymous_risk_control_id": "n10eprisk0002",
+      "mitigation_bucket": "guard_full_diffaware_promotion_authorized_bool=false; no arm is promoted; design-only N10EQ safety probe instead.",
+      "risk_bucket": "guard_promotion_from_two_cases",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "guard preserved both lost cases; promoting guard over full on the strength of 2 cases would overfit to this sample."
+    },
+    {
+      "anonymous_risk_control_id": "n10eprisk0003",
+      "mitigation_bucket": "method_winner_claim_authorized_bool=false; N10ER is design-only, not executed, and not a method winner even if later run.",
+      "risk_bucket": "public_ci_variant_as_method_winner",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "treating the N10ER public CI variant design (if it favors guard) as a method-winner claim would conflate a small CI variant with a method conclusion."
+    },
+    {
+      "anonymous_risk_control_id": "n10eprisk0004",
+      "mitigation_bucket": "N10EP reads only public aggregate artifacts; forbidden_scan blocks raw per-task/paths/orders/labels keys and the private rerun path; aggregate_buckets_only_bool=true.",
+      "risk_bucket": "private_diagnostic_leakage",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "the N10EO mechanism used a private diagnostic rerun; N10EP must not leak per-task diagnostics/paths/candidates into the public design response."
+    },
+    {
+      "anonymous_risk_control_id": "n10eprisk0005",
+      "mitigation_bucket": "runtime_default_change_authorized_bool=false; any safety probe remains opt-in/eval-only; no runtime or default change.",
+      "risk_bucket": "runtime_default_creep",
+      "risk_controlled_bool": true,
+      "risk_description_bucket": "a design response could implicitly drift runtime/default behavior by codifying a safety probe as a default gate."
+    }
+  ],
+  "schema_version": "bea_v1_n10ep_design_only_threshold_misfire_mechanism_response_v1",
+  "status": "n10ep_design_response_pass_n10eq_authorized",
+  "stop_go_records": [
+    {
+      "aggregate_buckets_only_bool": true,
+      "anonymous_stop_go_id": "n10epstop0000",
+      "ci_variant_execution_authorized_bool": false,
+      "design_only_mechanism_response_bool": true,
+      "downstream_scaled_retrieval_authorized_bool": false,
+      "frozen_rule_change_authorized_bool": false,
+      "guard_full_diffaware_promotion_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "n10eq_design_only_authorized_bool": true,
+      "n10eq_execution_authorized_bool": false,
+      "n10er_design_only_authorized_bool": false,
+      "n10er_execution_authorized_bool": false,
+      "new_policy_experiment_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-N10EQ Score/Guard Safety Probe Design",
+      "provider_model_network_authorized_bool": false,
+      "raw_diagnostic_publication_authorized_bool": false,
+      "runtime_default_change_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "threshold_tuning_authorized_bool": false
+    }
+  ]
+}

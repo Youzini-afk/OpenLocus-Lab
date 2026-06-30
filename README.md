@@ -121,6 +121,39 @@ threshold tuning, new policy experiments, frozen-rule changes, promotion of
 guard/full/diffaware, runtime/default changes, method-winner claims,
 downstream/scaled retrieval, or raw diagnostic publication.
 
+**BEA-v1-N10EP: Design-Only Threshold-Misfire Mechanism Response** is a
+public-artifact-only design packaging phase after the N10EO checkpoint
+`6f8eeda`. It performs **no execution** and reads no private diagnostic inputs:
+
+```text
+status: n10ep_design_response_pass_n10eq_authorized
+self-test: 69 / 69
+forbidden scan: pass
+design-only: true
+aggregate-buckets-only: true
+N10EO source locked: true (checkpoint 6f8eeda)
+mechanism: novel_first_displaced_baseline_gold_from_top10 (low-novelty bucket loss = 2)
+next allowed phase: BEA-v1-N10EQ Score/Guard Safety Probe Design
+```
+
+N10EP re-expresses the N10EO aggregate values
+(baseline/full/guard/diffaware top10 `39/37/39/37`; full_lost `2`, guard_lost
+`0`, diffaware_lost `2`; `guard_better_than_full = 2`;
+`full_lost_guard_preserved = 2`; `baseline_gold_rank_1_to_5_displaced = 2`;
+`candidate_available_beyond_top10 = 2`; `low_novelty_bucket_loss = 2`) as a
+design-only response. It packages three design options: the **N10EQ** score/guard
+safety probe design (authorized for the next phase, design-only), the **N10ER**
+public CI small variant design (packaged but not authorized under the
+conservative default), and `stop_design_only_insufficient`. Six risk controls
+are recorded (aggregate overinterpretation from two cases, hindsight threshold
+tuning, guard promotion from two cases, public CI variant as method winner,
+private diagnostic leakage, runtime/default creep) — all controlled. The
+conservative stop/go authorizes only the N10EQ design with **no execution**:
+all execution, threshold-tuning, promotion, runtime/default, method-winner, and
+CI-variant-execution fields are `false`. N10EP reads only public aggregate
+artifacts (N10EO/N10EN/N10EM); no private diagnostic rerun, raw candidates,
+orders, labels, paths, or per-task diagnostics are read or published.
+
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
 rank-blocked records and localized the blocker to extra-depth append/merge-order.
