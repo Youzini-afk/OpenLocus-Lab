@@ -28,24 +28,25 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10EI: Fixed Full/Guard Combination Package**:
+The latest closed phase is **BEA-v1-N10EJ: Full-Only vs Guard-Only Difference Analysis**:
 
 ```text
-status: fixed_full_guard_combination_package_complete_n10ej_authorized
-self-test: 5 / 5
+status: full_guard_difference_analysis_complete_n10ek_authorized
+self-test: 8 / 8
 forbidden scan: pass
-variant count: 7
+baseline top10: 5
 full novel-first top10: 11
-best combination top10: 11
-N10EG union bound: 13
-any variant beats full novel-first: false
-any variant reaches union upper bound: false
-next allowed phase: BEA-v1-N10EJ Full-Only vs Guard-Only Difference Analysis
+guarded top5 novel-distinct top10: 10
+full/guard union top10: 13
+full-only / guard-only: 3 / 2
+next allowed phase: BEA-v1-N10EK Fixed Difference-Aware Combination Experiment
 ```
 
-N10EI packages the N10EH negative result: simple full/guard combinations do not
-beat full novel-first or reach the 13-case union bound. The next useful step is
-full-only vs guard-only difference analysis over the same scoped rows.
+N10EJ explains the N10EG complementarity using only aggregate buckets over the
+same scoped rows. Full-only gains show deep novel-first displacement; guard-only
+gains are not explained by preserving BM25 top5 hits in this sample. The only
+authorized next step is a fixed difference-aware combination experiment over the
+same rows.
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
 span-opportunity was 40, but D1 top-10 actionable was 0. N2 decomposed those 40
