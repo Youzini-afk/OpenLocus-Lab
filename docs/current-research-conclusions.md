@@ -210,6 +210,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10dl-n10t-file-reach-residual-analysis.md`: [en](en/bea-v1-n10dl-n10t-file-reach-residual-analysis.md) · [zh](zh/bea-v1-n10dl-n10t-file-reach-residual-analysis.md)
 - `bea-v1-n10dm-no-duplicate-pressure-deep-rank-promotion-smoke.md`: [en](en/bea-v1-n10dm-no-duplicate-pressure-deep-rank-promotion-smoke.md) · [zh](zh/bea-v1-n10dm-no-duplicate-pressure-deep-rank-promotion-smoke.md)
 - `bea-v1-n10dn-no-duplicate-pressure-deep-rank-promotion-public-package.md`: [en](en/bea-v1-n10dn-no-duplicate-pressure-deep-rank-promotion-public-package.md) · [zh](zh/bea-v1-n10dn-no-duplicate-pressure-deep-rank-promotion-public-package.md)
+- `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
