@@ -193,6 +193,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10cu-top2-override-neighborhood-package.md`: [en](en/bea-v1-n10cu-top2-override-neighborhood-package.md) · [zh](zh/bea-v1-n10cu-top2-override-neighborhood-package.md)
 - `bea-v1-n10cv-top2-pm400-marginal-gain-decomposition.md`: [en](en/bea-v1-n10cv-top2-pm400-marginal-gain-decomposition.md) · [zh](zh/bea-v1-n10cv-top2-pm400-marginal-gain-decomposition.md)
 - `bea-v1-n10cw-top2-override-high-window-neighborhood-sweep.md`: [en](en/bea-v1-n10cw-top2-override-high-window-neighborhood-sweep.md) · [zh](zh/bea-v1-n10cw-top2-override-high-window-neighborhood-sweep.md)
+- `bea-v1-n10cx-top2-override-high-window-package.md`: [en](en/bea-v1-n10cx-top2-override-high-window-package.md) · [zh](zh/bea-v1-n10cx-top2-override-high-window-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
