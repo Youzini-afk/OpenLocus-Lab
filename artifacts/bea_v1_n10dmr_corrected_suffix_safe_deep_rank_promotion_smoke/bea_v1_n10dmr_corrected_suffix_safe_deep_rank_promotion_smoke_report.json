@@ -1,0 +1,366 @@
+{
+  "corrected_variant_result_records": [
+    {
+      "activated_row_count": 0,
+      "anonymous_variant_result_id": "n10dmrres0000",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "no_improvement",
+      "delta_top10_file_vs_anchor": 0,
+      "delta_top10_span_vs_anchor": 0,
+      "lost_anchor_file_top10_hits": 0,
+      "lost_anchor_span_top10_hits": 0,
+      "matching_mode_bucket": "suffix_safe_primary",
+      "recovered_rank11_20_residual_count": 0,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 0,
+      "top10_file_reach_count": 44,
+      "top10_projected_span_overlap_count": 39,
+      "top20_file_reach_count": 58,
+      "top20_projected_span_overlap_count": 49,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmrres0001",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -11,
+      "delta_top10_span_vs_anchor": -9,
+      "lost_anchor_file_top10_hits": 17,
+      "lost_anchor_span_top10_hits": 13,
+      "matching_mode_bucket": "suffix_safe_primary",
+      "recovered_rank11_20_residual_count": 6,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 6,
+      "top10_file_reach_count": 33,
+      "top10_projected_span_overlap_count": 30,
+      "top20_file_reach_count": 58,
+      "top20_projected_span_overlap_count": 49,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmrres0002",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -4,
+      "delta_top10_span_vs_anchor": -3,
+      "lost_anchor_file_top10_hits": 5,
+      "lost_anchor_span_top10_hits": 4,
+      "matching_mode_bucket": "suffix_safe_primary",
+      "recovered_rank11_20_residual_count": 1,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 1,
+      "top10_file_reach_count": 40,
+      "top10_projected_span_overlap_count": 36,
+      "top20_file_reach_count": 58,
+      "top20_projected_span_overlap_count": 49,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmrres0003",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -8,
+      "delta_top10_span_vs_anchor": -6,
+      "lost_anchor_file_top10_hits": 10,
+      "lost_anchor_span_top10_hits": 8,
+      "matching_mode_bucket": "suffix_safe_primary",
+      "recovered_rank11_20_residual_count": 2,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 2,
+      "top10_file_reach_count": 36,
+      "top10_projected_span_overlap_count": 33,
+      "top20_file_reach_count": 58,
+      "top20_projected_span_overlap_count": 49,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmrres0004",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -11,
+      "delta_top10_span_vs_anchor": -9,
+      "lost_anchor_file_top10_hits": 17,
+      "lost_anchor_span_top10_hits": 13,
+      "matching_mode_bucket": "suffix_safe_primary",
+      "recovered_rank11_20_residual_count": 6,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 6,
+      "top10_file_reach_count": 33,
+      "top10_projected_span_overlap_count": 30,
+      "top20_file_reach_count": 58,
+      "top20_projected_span_overlap_count": 49,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "activated_row_count": 157,
+      "anonymous_variant_result_id": "n10dmrres0005",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "decision_bucket": "deep_rank_probe_harmful",
+      "delta_top10_file_vs_anchor": -4,
+      "delta_top10_span_vs_anchor": -3,
+      "lost_anchor_file_top10_hits": 5,
+      "lost_anchor_span_top10_hits": 4,
+      "matching_mode_bucket": "suffix_safe_primary",
+      "recovered_rank11_20_residual_count": 1,
+      "recovered_rank21_50_residual_count": 0,
+      "recovered_reachable_residual_count": 1,
+      "top10_file_reach_count": 40,
+      "top10_projected_span_overlap_count": 36,
+      "top20_file_reach_count": 58,
+      "top20_projected_span_overlap_count": 49,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ],
+  "decision_summary_records": [
+    {
+      "anonymous_decision_summary_id": "n10dmrdecision0000",
+      "harmful_variant_count": 5,
+      "n10dnr_public_package_authorized_bool": true,
+      "old_negative_conclusion_still_holds_bool": true,
+      "positive_variant_count": 0,
+      "suffix_safe_primary_bool": true
+    }
+  ],
+  "exact_vs_suffix_sensitivity_records": [
+    {
+      "anonymous_sensitivity_id": "n10dmrsens0000",
+      "exact_top10_file_reach_count": 34,
+      "exact_top20_file_reach_count": 44,
+      "suffix_minus_exact_top10_file_reach_count": 10,
+      "suffix_minus_exact_top20_file_reach_count": 14,
+      "suffix_top10_file_reach_count": 44,
+      "suffix_top20_file_reach_count": 58,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "anonymous_sensitivity_id": "n10dmrsens0001",
+      "exact_top10_file_reach_count": 25,
+      "exact_top20_file_reach_count": 44,
+      "suffix_minus_exact_top10_file_reach_count": 8,
+      "suffix_minus_exact_top20_file_reach_count": 14,
+      "suffix_top10_file_reach_count": 33,
+      "suffix_top20_file_reach_count": 58,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "anonymous_sensitivity_id": "n10dmrsens0002",
+      "exact_top10_file_reach_count": 29,
+      "exact_top20_file_reach_count": 44,
+      "suffix_minus_exact_top10_file_reach_count": 11,
+      "suffix_minus_exact_top20_file_reach_count": 14,
+      "suffix_top10_file_reach_count": 40,
+      "suffix_top20_file_reach_count": 58,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "anonymous_sensitivity_id": "n10dmrsens0003",
+      "exact_top10_file_reach_count": 26,
+      "exact_top20_file_reach_count": 44,
+      "suffix_minus_exact_top10_file_reach_count": 10,
+      "suffix_minus_exact_top20_file_reach_count": 14,
+      "suffix_top10_file_reach_count": 36,
+      "suffix_top20_file_reach_count": 58,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "anonymous_sensitivity_id": "n10dmrsens0004",
+      "exact_top10_file_reach_count": 25,
+      "exact_top20_file_reach_count": 44,
+      "suffix_minus_exact_top10_file_reach_count": 8,
+      "suffix_minus_exact_top20_file_reach_count": 14,
+      "suffix_top10_file_reach_count": 33,
+      "suffix_top20_file_reach_count": 58,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "anonymous_sensitivity_id": "n10dmrsens0005",
+      "exact_top10_file_reach_count": 29,
+      "exact_top20_file_reach_count": 44,
+      "suffix_minus_exact_top10_file_reach_count": 11,
+      "suffix_minus_exact_top20_file_reach_count": 14,
+      "suffix_top10_file_reach_count": 40,
+      "suffix_top20_file_reach_count": 58,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "gate_records": [
+    {
+      "anonymous_gate_id": "n10dmrgate0000",
+      "gate_bucket": "inputs_present",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmrgate0001",
+      "gate_bucket": "private_span_rows_213",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmrgate0002",
+      "gate_bucket": "variant_count_6",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "n10dmrgate0003",
+      "gate_bucket": "candidate_add_remove_zero",
+      "gate_passed_bool": true
+    }
+  ],
+  "input_artifact_records": [
+    {
+      "actual_status_bucket": "candidate_pool_absence_path_normalization_correction_complete_n10dmr_authorized",
+      "anonymous_input_artifact_id": "n10dmrin0000",
+      "artifact_bucket": "n10do_path_normalization_correction",
+      "expected_status_bucket": "candidate_pool_absence_path_normalization_correction_complete_n10dmr_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized",
+      "anonymous_input_artifact_id": "n10dmrin0001",
+      "artifact_bucket": "n10dm_exact_match_context",
+      "expected_status_bucket": "no_duplicate_pressure_deep_rank_promotion_smoke_complete_n10dn_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    },
+    {
+      "actual_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "anonymous_input_artifact_id": "n10dmrin0002",
+      "artifact_bucket": "n10dl_residual_context",
+      "expected_status_bucket": "n10t_file_reach_residual_analysis_complete_n10dm_authorized",
+      "load_status_bucket": "present",
+      "public_artifact_bool": true,
+      "status_match_bool": true
+    }
+  ],
+  "n10dnr_handoff_records": [
+    {
+      "anonymous_handoff_id": "n10dmrhandoff0000",
+      "n10dnr_public_package_authorized_bool": true,
+      "next_allowed_phase_bucket": "BEA-v1-N10DN-R Corrected Deep-Rank Promotion Package",
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false
+    }
+  ],
+  "no_forbidden_execution_records": [
+    {
+      "anonymous_no_exec_id": "n10dmrnoexec0000",
+      "candidate_added_removed_count": 0,
+      "candidate_generation_count": 0,
+      "openlocus_execution_count": 0,
+      "rerun_execution_count": 0,
+      "retrieval_execution_count": 0,
+      "runtime_default_change_count": 0,
+      "selector_reranker_execution_count": 0
+    }
+  ],
+  "phase_bucket": "BEA-v1-N10DM-R Corrected Suffix-Safe Deep-Rank Promotion Smoke",
+  "privacy_boundary_records": [
+    {
+      "anonymous_privacy_id": "n10dmrprivacy0000",
+      "candidate_list_public_count": 0,
+      "gold_used_for_policy_count": 0,
+      "private_path_public_count": 0,
+      "public_aggregate_bucket_only_bool": true,
+      "raw_file_name_public_count": 0,
+      "span_line_public_count": 0
+    }
+  ],
+  "private_input_intake_records": [
+    {
+      "anonymous_private_input_id": "n10dmrpriv0000",
+      "load_status_bucket": "present",
+      "other_private_files_read_count": 0,
+      "private_input_bucket": "single_scoped_n1_span_rows",
+      "private_span_rows_read": 213
+    }
+  ],
+  "schema_version": "bea_v1_n10dmr_suffix_safe_deep_rank_promotion_v1",
+  "status": "suffix_safe_deep_rank_promotion_smoke_complete_n10dnr_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "n10dmrstop0000",
+      "candidate_add_remove_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "heldout_generalization_authorized_bool": false,
+      "method_downstream_claim_authorized_bool": false,
+      "next_allowed_phase_bucket": "BEA-v1-N10DN-R Corrected Deep-Rank Promotion Package",
+      "p5_v1a_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "selector_reranker_authorized_bool": false
+    }
+  ],
+  "variant_contract_records": [
+    {
+      "activation_condition_bucket": "always_anchor",
+      "anonymous_variant_contract_id": "n10dmrcontract0000",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "anchor_n10t_order"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmrcontract0001",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_promote_rank11_20_before_rank6_10"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmrcontract0002",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_interleave_rank11_20_after_top5"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmrcontract0003",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_preserve_top7_fill_from_rank11_20"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmrcontract0004",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_promote_rank11_50_after_top5_limited5"
+    },
+    {
+      "activation_condition_bucket": "duplicate_pressure_none",
+      "anonymous_variant_contract_id": "n10dmrcontract0005",
+      "candidate_added_removed_bool": false,
+      "candidate_pool_changed_bool": false,
+      "fixed_variant_bool": true,
+      "gold_used_for_policy_bool": false,
+      "variant_bucket": "no_dup_interleave_rank11_50_after_top5_limited5"
+    }
+  ]
+}

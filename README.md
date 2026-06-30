@@ -28,20 +28,20 @@ strongest?”; it is:
 > How do we convert high-reach, high-false-cost candidate pools into low-false-
 > cost, citation-valid Evidence without weakening `EvidenceCore`?
 
-The latest closed phase is **BEA-v1-N10DO: Candidate-Pool Absence Path-Normalization Correction**:
+The latest closed phase is **BEA-v1-N10DM-R: Corrected Suffix-Safe Deep-Rank Promotion Smoke**:
 
 ```text
-status: candidate_pool_absence_path_normalization_correction_complete_n10dmr_authorized
-self-test: 13 / 13
+status: suffix_safe_deep_rank_promotion_smoke_complete_n10dnr_authorized
+self-test: 12 / 12
 forbidden scan: pass
 private span rows read: 213
 primary file match rule: suffix_safe_path_match
-suffix-safe top10 file hit / miss: 44 / 169
-suffix-safe top20 file hit: 58
-suffix-safe absent from observed pool: 141
-suffix-safe reachable rank 11-50: 28
-prior exact top10 hit / absent: 34 / 161
-next allowed phase: BEA-v1-N10DM-R Corrected Suffix-Safe Deep-Rank Promotion Smoke
+anchor suffix-safe file/span top10: 44 / 39
+anchor suffix-safe file/span top20: 58 / 49
+positive variants: 0
+harmful variants: 5
+old negative conclusion still holds: true
+next allowed phase: BEA-v1-N10DN-R Corrected Deep-Rank Promotion Package
 ```
 
 N1 first showed that span-only repair was rank-blocked: D1 total / pool
