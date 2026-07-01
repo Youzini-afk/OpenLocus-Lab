@@ -2068,7 +2068,7 @@ Eval-layer ablation study measuring the contribution of graph_basic and dense_mo
 |--------|-------|
 | Path derivation: symbol | 358/741 (48.3%) |
 | Path derivation: regex | 156/741 (21.1%) |
-| Path derivation: none | 2222/2241 (30.6%) |
+| Path derivation: none | 2224/2441 (30.6%) |
 | Impact failures (no top path) | 227 |
 | Impact no evidence (top path found but impact empty) | 355 |
 | graph_pollution_ratio | 0.000 |
@@ -11263,7 +11263,7 @@ execution, FD1 replay, runtime change, or policy implementation.
 
 `eval/bea_v1_p0_2_actionability_matrix_refresh.py` generated
 `artifacts/bea_v1_p0_2_actionability_matrix_refresh/bea_v1_p0_2_actionability_matrix_refresh_report.json`
-with status `actionability_matrix_refresh_pass`. Self-test passed `22/22`,
+with status `actionability_matrix_refresh_pass`. Self-test passed `24/24`,
 forbidden scan passed, all 72 matrix cells were refreshed, and the causal P1
 cell classes were not mutated.
 
@@ -11385,7 +11385,7 @@ Validate the P0-5 private support-label harness end to end with a synthetic priv
 
 ### Result
 
-`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `22/22`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
+`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `24/24`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
 
 ### Decision
 
@@ -11401,7 +11401,7 @@ Prepare a real project-private support-labeling queue from P0-4 design records a
 
 ### Result
 
-`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `22/22`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
+`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `24/24`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
 
 ### Decision
 
@@ -11612,7 +11612,7 @@ R2 authorizes only BEA-v1-HAAE-R2A Public Audit Package. It does not authorize R
 
 ## 2026-07-01 — BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
 
-`eval/bea_v1_haae_r2a_public_audit_package.py` generated `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json` with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`. Self-test passed `22/22`, forbidden scan passed, HAAE-R2 source checkpoint `0784be0` was locked, and the R2 source status is `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`.
+`eval/bea_v1_haae_r2a_public_audit_package.py` generated `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json` with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`. Self-test passed `24/24`, forbidden scan passed, HAAE-R2 source checkpoint `0784be0` was locked, and the R2 source status is `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`.
 
 R2A is public-only. It reads no private material, performs no recompute, and runs no candidate generation, retrieval, scheduler/HAAE execution, selector/reranker, runtime/default change, or BEA-v1-A/P5 action. The audit confirms the R2 tiny-N aggregate readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket `rate_1`; pairwise same-top agreement bucket is `rate_1`; sample bucket is `count_2_to_5`.
 
@@ -11622,7 +11622,7 @@ This is a tiny-N audit with no method-winner claim and no runtime/default decisi
 
 ## 2026-07-01 — BEA-v1-HAAE-R2B Scale Preflight Design
 
-`eval/bea_v1_haae_r2b_scale_preflight_design.py` generated `artifacts/bea_v1_haae_r2b_scale_preflight_design/bea_v1_haae_r2b_scale_preflight_design_report.json` with status `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`. Self-test passed `22/22`, forbidden scan passed, and HAAE-R2A checkpoint `2ca1ac4` was locked.
+`eval/bea_v1_haae_r2b_scale_preflight_design.py` generated `artifacts/bea_v1_haae_r2b_scale_preflight_design/bea_v1_haae_r2b_scale_preflight_design_report.json` with status `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`. Self-test passed `24/24`, forbidden scan passed, and HAAE-R2A checkpoint `2ca1ac4` was locked.
 
 R2B is public-only design/preflight. It inspects only committed public R14 fixture metadata and selects `r14_medium_local_material_smoke` with source fixture task-count `count_21_to_50`, target task-count `count_10_to_20`, selected subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate-depth `count_20`, and private-row cap `count_le_5000`. Boundary: no private/material gen/execution/CI/network/BEA-v1-A/P5/method-winner. It performs no private reads/writes, material generation, experiment, recompute, candidate generation, retrieval, source-corpus scan, OpenLocus execution, scheduler/HAAE execution, selector/reranker, CI/network/clone, runtime/default change, BEA-v1-A/P5, or method-winner/scaling claim.
 
@@ -11662,7 +11662,7 @@ R2E authorizes only R2F local medium material experiment with an operator-suppli
 
 ## 2026-07-01 — BEA-v1-HAAE-R2F Local Medium Material Experiment
 
-`eval/bea_v1_haae_r2f_local_medium_material_experiment.py` generated `artifacts/bea_v1_haae_r2f_local_medium_material_experiment/bea_v1_haae_r2f_local_medium_material_experiment_report.json` in explicit mode over the existing R2D private material. Default status remains `haae_r2f_unavailable_no_explicit_r2d_private_material_root`; explicit pass status is `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`. Self-test passed `22/22`, with R2E checkpoint `b166d79` and R2E status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`.
+`eval/bea_v1_haae_r2f_local_medium_material_experiment.py` generated `artifacts/bea_v1_haae_r2f_local_medium_material_experiment/bea_v1_haae_r2f_local_medium_material_experiment_report.json` in explicit mode over the existing R2D private material. Default status remains `haae_r2f_unavailable_no_explicit_r2d_private_material_root`; explicit pass status is `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`. Self-test passed `24/24`, with R2E checkpoint `b166d79` and R2E status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`.
 
 R2F requires an explicit private material root and reads existing R2D private material only. It computes aggregate-only metrics for `bm25_like/symbol_overlap/rrf_like` and publishes no path, basename, filename, task id, query, candidate, label, score, hash, snippet, or exact per-task value. All three rank sources have gold-file hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, and top1/top5/top10 buckets `count_10_to_20`.
 
@@ -11762,7 +11762,7 @@ R2O is not execution/CI/new material generation in R2O and makes no method/defau
 
 ## 2026-07-01 — BEA-v1-HAAE-R2P: Path-Cue Robustness Material Generation
 
-`eval/bea_v1_haae_r2p_path_cue_robustness_material_generation.py` generated `artifacts/bea_v1_haae_r2p_path_cue_robustness_material_generation/bea_v1_haae_r2p_path_cue_robustness_material_generation_report.json`. Default status is `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`; pass status is `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`; self-test `22/22`; HAAE-R2O checkpoint `4ffc9eb`; R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`.
+`eval/bea_v1_haae_r2p_path_cue_robustness_material_generation.py` generated `artifacts/bea_v1_haae_r2p_path_cue_robustness_material_generation/bea_v1_haae_r2p_path_cue_robustness_material_generation_report.json`. Default status is `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`; pass status is `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`; self-test `24/24`; HAAE-R2O checkpoint `4ffc9eb`; R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`.
 
 R2P requires explicit opt-in, target 20 tasks, candidate depth 40, row cap 20000, variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`, and rank sources `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`. gold labels private only and ranking policy ignores gold labels.
 
@@ -11869,6 +11869,16 @@ R2Z defines the bounded future explicit local real-file candidate material smoke
 ### Decision
 
 R2Z performs no execution/private/candidate generation/source scan/CI in R2Z. future private rows may contain real file candidate references but not R2Z. Boundary remains no method/default/scaling. See `docs/en/bea-v1-haae-r2z-real-file-candidate-material-preflight.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke
+
+`eval/bea_v1_haae_r2aa_actual_explicit_local_real_file_material_smoke.py` implements safe default mode and explicit local/manual real-file material generation. Default status is `haae_r2aa_unavailable_no_explicit_real_file_material_smoke_opt_in`; pass status is `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`; self-test `24/24`; HAAE-R2Z checkpoint `a763a84`; R2Z status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`.
+
+explicit opt-in required with operator public corpus manifest/allowlist, target_20, candidate_depth_40, source_file_count_bucket, source_file_cap_500, row_cap_20000, wall_clock_cap_20_minutes, gold private eval only, no experiment metrics, and public aggregate-only.
+
+### Decision
+
+R2AA writes private real-file candidate rows only under an explicit private root. No network/clone/CI/provider/retrieval runtime/OpenLocus runtime/scheduler/selector/BEA-v1-A/P5/default/method/scaling/experiment metrics are authorized. R2AA authorizes only BEA-v1-HAAE-R2AB Real-File Material Public Audit Package. See `docs/en/bea-v1-haae-r2aa-actual-explicit-local-real-file-material-smoke.md`.
 
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
