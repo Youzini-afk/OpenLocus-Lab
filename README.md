@@ -204,7 +204,7 @@ scale authorization. R2 authorizes only **BEA-v1-HAAE-R2A Public Audit Package**
 public-only audit/package of the R2 aggregate artifact (source lock `0784be0`,
 R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`,
 status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`,
-self-test `13/13`). The audit reads no private material and performs no recompute,
+self-test `22/22`). The audit reads no private material and performs no recompute,
 candidate generation, retrieval, scheduler/HAAE execution, selector/reranker,
 runtime/default change, or BEA-v1-A/P5 action. It confirms the R2 tiny-N aggregate
 readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket
@@ -217,7 +217,7 @@ authorize scale execution or CI.
 **BEA-v1-HAAE-R2B Scale Preflight Design** is complete as a public-only
 design/preflight (R2A checkpoint `2ca1ac4`, status
 `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`,
-self-test `13/13`). It selects `r14_medium_local_material_smoke` as the bounded
+self-test `22/22`). It selects `r14_medium_local_material_smoke` as the bounded
 local/manual next option, with source fixture task-count `count_21_to_50`, target task-count `count_10_to_20`, selected subset policy `deterministic_public_manifest_prefix_cap_10_to_20`,
 candidate-depth `count_20`, and private-row cap `count_le_5000`. The boundary is
 no private/material gen/execution/CI/network/BEA-v1-A/P5/method-winner: no
@@ -271,6 +271,18 @@ policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate depth
 authorizes only **R2F local medium material experiment** with an operator-supplied
 explicit private root, reading existing R2D private material only, and computing
 aggregate metrics. There is no new material/candidate generation/retrieval/runtime/source scan/CI/network/scheduler/HAAE/selector/BEA-v1-A/P5/default/method/scaling claim.
+
+**BEA-v1-HAAE-R2F Local Medium Material Experiment** is complete as the first
+medium experiment over the existing R2D private material (R2E checkpoint `b166d79`,
+R2E status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`,
+default status `haae_r2f_unavailable_no_explicit_r2d_private_material_root`, pass
+status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`,
+self-test `22/22`). Explicit mode used an explicit private material root and
+reads existing R2D private material only. It computes aggregate-only metrics for
+rank sources `bm25_like/symbol_overlap/rrf_like`: all three have gold-file hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, and top1/top5/top10 buckets `count_10_to_20`. It publishes no path, basename,
+filename, task, query, candidate, label, score, hash, snippet, or exact per-task
+value. Boundary: no new candidates/retrieval/source scan/OpenLocus/runtime/scheduler/selector/CI/network/provider/default/BEA-v1-A/P5/method/scaling claim.
+R2F authorizes only **BEA-v1-HAAE-R2G Public Audit Package**.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
