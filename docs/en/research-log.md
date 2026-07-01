@@ -11792,7 +11792,7 @@ Boundary: no method/default/scaling. R2R performs no private writes, new materia
 
 ## 2026-07-01 — BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package
 
-`eval/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package_report.json`. Status is `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `12/12`, HAAE-R2R checkpoint `7efc348`, and R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`.
+`eval/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package_report.json`. Status is `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `18/18`, HAAE-R2R checkpoint `7efc348`, and R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`.
 
 R2S confirms self-test 30/30, `path_cue_artifact_likely`, original path_prior top10/top20 count_11_to_20, all perturbation drop buckets count_11_to_20, variant_spread_bucket spread_high, and privacy/aggregate-only boundary.
 
@@ -11850,5 +11850,18 @@ R2X locks R2V checkpoint b8522de, R2U checkpoint bb95f80, `signal_present`, `spr
 
 R2X authorizes only BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design to decide whether robustness or real-file-material acquisition is next; no execution directly. R2X reads only public R2W artifact/docs and performs no private root read, recompute metrics, material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, or exact metric/raw publication. See `docs/en/bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md`.
 
+## 2026-07-01 — BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design
+
+`eval/bea_v1_haae_r2y_content_identifier_next_step_decision_design.py` generated `artifacts/bea_v1_haae_r2y_content_identifier_next_step_decision_design/bea_v1_haae_r2y_content_identifier_next_step_decision_design_report.json`. Status is `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, self-test `18/18`, HAAE-R2X checkpoint `afd86c4`, and R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`.
+
+R2Y records that R2W/R2X `signal_present/spread_high` is useful but not real-file evidence. The decision is more decoy robustness rejected/deferred and CI/batch execution deferred. The selected next step is BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight.
+
+### Decision
+
+R2Z is public-only design/preflight. R2Z preflight authorized true; R2Z execution/private/candidate generation/source scan/CI false. R2Y reads public artifacts only and performs no private/root read, execution, recompute, generation, retrieval, CI, network, source scan, provider call, scheduler, selector, or method/default/scaling claim. See `docs/en/bea-v1-haae-r2y-content-identifier-next-step-decision-design.md`.
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
+
+
+R2Y public readback markers: source file cap 500; wall-clock cap 20 minutes; gold private eval only; operator public corpus manifest.
