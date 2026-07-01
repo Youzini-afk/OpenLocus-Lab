@@ -10520,7 +10520,7 @@ P0-4 只授权 support-link labeling input work。后续 phase 可以使用该 c
 
 ### 结果
 
-`eval/bea_v1_p0_5_support_link_labeling_harness.py` 生成 `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json`，status 为 `support_link_labeling_harness_contract_pass`。Self-test 通过 `9/9`，forbidden scan 通过，public artifact 包含 18 条 sanitized harness records 与 private-template manifest。Private template 已生成到 `.openlocus/research-private/`，该目录被 git ignore。
+`eval/bea_v1_p0_5_support_link_labeling_harness.py` 生成 `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json`，status 为 `support_link_labeling_harness_contract_pass`。Self-test 通过 `16/16`，forbidden scan 通过，public artifact 包含 18 条 sanitized harness records 与 private-template manifest。Private template 已生成到 `.openlocus/research-private/`，该目录被 git ignore。
 
 本轮未提供 private labels，因此 optional full private-label validation gate 仍为 false。
 
@@ -10818,3 +10818,13 @@ R2B 是 public-only design/preflight。它只检查已提交的公开 R14 fixtur
 ### Decision
 
 R2B 只授权 BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight。R2C 仍是 preflight/package phase：execution、private read/write、CI execution 与 material generation 均为 false。参见 `docs/zh/bea-v1-haae-r2b-scale-preflight-design.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
+
+`eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` 生成 `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json`，状态为 `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`。Self-test 通过 `16/16`，forbidden scan 通过，HAAE-R2B checkpoint `dea8a2f` 已锁定。
+
+R2C 是 public-only preflight/package。它锁定 `r14_medium_local_material_smoke`、source fixture bucket `count_21_to_50`、subset policy `deterministic_public_manifest_prefix_cap_10_to_20`、target task bucket `count_10_to_20`、candidate depth `count_20` 与 private row cap `count_le_5000`。Boundary：`no_private_material_gen_execution_ci_network_bea_v1_a_p5_method_winner`。它不创建 private root，不写 private rows，不生成 material，不运行 experiment、recompute、retrieval、超过 fixture count 的 source scan、OpenLocus/runtime、network/clone/CI、scheduler/HAAE、selector/reranker、runtime/default、BEA-v1-A/P5 或 method/scaling claim。
+
+### Decision
+
+R2C 只授权 BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke，要求 explicit local/manual opt-in，在 explicit private root 下写 private rows，public output 只能 aggregate-only。CI/network/provider、experiment comparison、R2 recompute、retrieval runtime、scheduler/HAAE、selector/reranker、runtime/default、BEA-v1-A/P5、method claim 与 scaling claim 均保持 false。参见 `docs/zh/bea-v1-haae-r2c-local-medium-material-smoke-preflight.md`。

@@ -11331,7 +11331,7 @@ Turn the P0-4 support-link input contract into a private labeling harness. The h
 
 ### Result
 
-`eval/bea_v1_p0_5_support_link_labeling_harness.py` generated `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json` with status `support_link_labeling_harness_contract_pass`. Self-test passed `9/9`, forbidden scan passed, and the public artifact contains 18 sanitized harness records plus a private-template manifest. The private template was emitted under `.openlocus/research-private/`, which is ignored by git.
+`eval/bea_v1_p0_5_support_link_labeling_harness.py` generated `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json` with status `support_link_labeling_harness_contract_pass`. Self-test passed `16/16`, forbidden scan passed, and the public artifact contains 18 sanitized harness records plus a private-template manifest. The private template was emitted under `.openlocus/research-private/`, which is ignored by git.
 
 Private labels were not supplied in this run, so the optional full private-label validation gate remains false.
 
@@ -11629,3 +11629,13 @@ R2B is public-only design/preflight. It inspects only committed public R14 fixtu
 ### Decision
 
 R2B authorizes only BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight. R2C remains a preflight/package phase: execution, private read/write, CI execution, and material generation are false. See `docs/en/bea-v1-haae-r2b-scale-preflight-design.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
+
+`eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` generated `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json` with status `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`. Self-test passed `16/16`, forbidden scan passed, and HAAE-R2B checkpoint `dea8a2f` was locked.
+
+R2C is public-only preflight/package. It locks `r14_medium_local_material_smoke`, source fixture bucket `count_21_to_50`, subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, target task bucket `count_10_to_20`, candidate depth `count_20`, and private row cap `count_le_5000`. Boundary: `no_private_material_gen_execution_ci_network_bea_v1_a_p5_method_winner`. It creates no private root, writes no private rows, generates no material, runs no experiment, recompute, retrieval, source scan beyond fixture count, OpenLocus/runtime, network/clone/CI, scheduler/HAAE, selector/reranker, runtime/default, BEA-v1-A/P5, or method/scaling claim.
+
+### Decision
+
+R2C authorizes only BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke with explicit local/manual opt-in, private rows under an explicit private root, and public aggregate-only output. CI/network/provider, experiment comparison, R2 recompute, retrieval runtime, scheduler/HAAE, selector/reranker, runtime/default, BEA-v1-A/P5, method claim, and scaling claim remain false. See `docs/en/bea-v1-haae-r2c-local-medium-material-smoke-preflight.md`.

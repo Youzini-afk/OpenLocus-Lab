@@ -227,6 +227,21 @@ selector/reranker, CI/network/clone, runtime/default change, BEA-v1-A/P5, or
 method-winner/scaling claim. R2B authorizes only **BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight**; R2C execution, private read/write, CI execution, and
 material generation remain false.
 
+**BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight** is complete as a
+public-only preflight/package (R2B checkpoint `dea8a2f`, status
+`haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`,
+self-test `16/16`). It locks `r14_medium_local_material_smoke`, source fixture
+bucket `count_21_to_50`, subset policy `deterministic_public_manifest_prefix_cap_10_to_20`,
+target task bucket `count_10_to_20`, candidate depth `count_20`, and private row
+cap `count_le_5000`. Boundary: `no_private_material_gen_execution_ci_network_bea_v1_a_p5_method_winner`.
+R2C creates no private root, writes no private rows, generates no material, runs
+no experiment, recompute, retrieval, source scan beyond fixture count,
+OpenLocus/runtime, network/clone/CI, scheduler/HAAE, selector/reranker,
+runtime/default, BEA-v1-A/P5, or method/scaling claim. It authorizes only
+**BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke** with explicit
+local/manual opt-in, private rows under an explicit private root, and public
+aggregate-only output.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
