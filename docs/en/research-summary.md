@@ -4324,6 +4324,13 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Bounds**: explicit opt-in required, operator public corpus manifest/allowlist, target_20, candidate_depth_40, source_file_count_bucket, source_file_cap_500, row_cap_20000, wall_clock_cap_20_minutes, gold private eval only, no experiment metrics, and public aggregate-only.
 - **Boundary**: R2AA writes private real-file candidate rows only under explicit private root and authorizes only BEA-v1-HAAE-R2AB Real-File Material Public Audit Package.
 
+## BEA-v1-HAAE-R2AB real-file material public audit findings
+
+- **BEA-v1-HAAE-R2AB Real-File Material Public Audit Package is complete**: HAAE-R2AA checkpoint `f325b65`, R2AA status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`, status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`, self-test `15/15`, R2AA self-test 24/24, and R2Z source checkpoint `a763a84`.
+- **Audit result**: target20, depth40, source_file_count_bucket count_21_to_50, source cap 500, row cap 20000, real-file material generation complete, no metrics, aggregate-only, and R2AB-only.
+- **Boundary**: R2AB is public-only and reads only the R2AA public artifact; no private root read, recompute, generation, source scan, or metrics.
+- **Decision**: R2AB authorizes only BEA-v1-HAAE-R2AC Actual Real-File Material Experiment over existing R2AA private material with explicit private root; no new material generation/retrieval/runtime/source scan/CI/network/provider/clone/broad scan/default/method/scaling/raw publication.
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
 

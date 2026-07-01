@@ -11069,6 +11069,16 @@ explicit opt-in required with operator public corpus manifest/allowlist，target
 
 R2AA 只在 explicit private root 下写 private real-file candidate rows。不授权 network/clone/CI/provider/retrieval runtime/OpenLocus runtime/scheduler/selector/BEA-v1-A/P5/default/method/scaling/experiment metrics。R2AA 只授权 BEA-v1-HAAE-R2AB Real-File Material Public Audit Package。参见 `docs/zh/bea-v1-haae-r2aa-actual-explicit-local-real-file-material-smoke.md`。
 
+## 2026-07-01 — BEA-v1-HAAE-R2AB Real-File Material Public Audit Package
+
+`eval/bea_v1_haae_r2ab_real_file_material_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2ab_real_file_material_public_audit_package/bea_v1_haae_r2ab_real_file_material_public_audit_package_report.json`。状态为 `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`，self-test `15/15`，HAAE-R2AA checkpoint `f325b65`，R2AA status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`，R2AA self-test 24/24，R2Z source checkpoint `a763a84`。
+
+R2AB 打包 target20，depth40，source_file_count_bucket count_21_to_50，source cap 500，row cap 20000，real-file material generation complete，no metrics，aggregate-only，R2AB-only。
+
+### Decision
+
+R2AB 只授权 BEA-v1-HAAE-R2AC Actual Real-File Material Experiment 读取 existing R2AA private material with explicit private root。Boundary: no new material generation/retrieval/runtime/source scan/CI/network/provider/clone/broad scan/default/method/scaling/raw publication。参见 `docs/zh/bea-v1-haae-r2ab-real-file-material-public-audit-package.md`。
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
 
