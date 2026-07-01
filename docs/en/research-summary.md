@@ -4412,3 +4412,10 @@ R2AI result: explicit experiment complete with robustness_status_bucket `brittle
 - **Public-only audit**: read only R2AI public artifact/docs; no private roots or /tmp reads; no recompute metrics; no source/candidate scan.
 - **Audit result**: R2AI self-test 26/26, forbidden_scan pass, brittle_or_artifact, controls/perturbations match or exceed signal, bucket-only variant metrics, no raw publication, and no robust real-file method/default/scale claim.
 - **Stop/go**: authorize only BEA-v1-HAAE-R2AK Robustness Failure Decision Package to decide close route or mechanism analysis or new signal family; no execution/material generation/private read/CI/scale/retrieval/runtime/default/method.
+
+## BEA-v1-HAAE-R2AK robustness failure decision package findings
+
+- **BEA-v1-HAAE-R2AK Robustness Failure Decision Package is complete**: R2AJ checkpoint `a00a334`, R2AJ status `haae_r2aj_robustness_experiment_public_audit_package_complete_r2ak_decision_authorized_brittle_or_artifact`, status `haae_r2ak_robustness_failure_decision_complete_r2al_new_signal_family_public_design_authorized_route_closed`, self-test `22/22`, R2AJ self-test 19/19, forbidden_scan pass.
+- **Decision**: decision_bucket = close_current_real_file_signal_route; route_closed_bool = true; closed_route_bucket = r2ac_r2ai_single_rank_content_path_signal; robustness_failure_bucket = brittle_or_artifact.
+- **Reasoning**: controls_perturbations_match_or_exceed_signal_bool = true; method_default_scale_claim_rejected_bool = true; mechanism_analysis_authorized_bool = false; mechanism_analysis_deferred_bool = true; new_signal_family_public_design_recommended_bool = true.
+- **Stop/go**: authorize only BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight; no execution/material generation/private read/CI/scale/retrieval/runtime/default/method/raw.
