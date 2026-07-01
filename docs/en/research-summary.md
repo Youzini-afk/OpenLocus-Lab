@@ -4270,7 +4270,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2T non-path-cue pivot decision findings
 
-- **BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision is complete**: HAAE-R2S checkpoint `8d8d19c`, R2S status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, self-test `13/13`.
+- **BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision is complete**: HAAE-R2S checkpoint `8d8d19c`, R2S status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, self-test `14/14`.
 - **Decision**: `path_cue_artifact_likely` makes the current path-prior route unsafe to scale now; scale current path-prior rejected/deferred, more path-cue ablations deferred, CI batch deferred, and content_identifier selected.
 - **R2U contract**: BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke, target 20, candidate depth 40, row cap 20000, explicit opt-in, private output root, public aggregate-only output.
 - **Boundary**: R2T is public-only, not execution/generation/CI, and makes no method/default/scaling claim.
@@ -4282,3 +4282,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Policy**: no path tokens/extensions/directories, gold private only, gold labels not used for ranking, public aggregate-only output, and no experiment metrics in R2U.
 - **Materialization**: explicit private material generation reached target 20, candidate depth 40, row cap 20000, and all seven content/identifier rank sources.
 - **Decision**: R2U authorizes only BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package.
+
+## BEA-v1-HAAE-R2V content-identifier material public audit findings
+
+- **BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package is complete**: HAAE-R2U checkpoint `bb95f80`, R2U status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, status `haae_r2v_content_identifier_material_public_audit_package_complete_r2w_material_experiment_authorized`, self-test `14/14`.
+- **Audit result**: target 20, depth 40, row cap 20000, seven rank sources, no path tokens, no gold ranking, no metrics, public aggregate-only, and privacy/no raw leak boundary.
+- **Boundary**: R2V is public-only and does not read private roots/material, recompute, generate materials/metrics, retrieve, run runtime/source scan, use CI/network/provider/scheduler/selector, or make method/default/scaling claims.
+- **Decision**: R2V authorizes only BEA-v1-HAAE-R2W Content-Identifier Material Experiment over existing R2U private material with explicit root; boundary is no new material generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/BEA-v1-A/P5/default/method/scaling/raw publication.
