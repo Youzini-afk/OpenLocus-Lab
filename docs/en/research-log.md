@@ -11840,5 +11840,15 @@ R2W requires explicit private material root and reads existing R2U material only
 
 R2W authorizes only BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package. Boundary: no generation/candidate creation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/default/method/scaling. See `docs/en/bea-v1-haae-r2w-content-identifier-material-experiment.md`.
 
+## 2026-07-01 — BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package
+
+`eval/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package_report.json`. Status is `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, self-test `18/18`, HAAE-R2W checkpoint `1f91567`, and R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`.
+
+R2X locks R2V checkpoint b8522de, R2U checkpoint bb95f80, `signal_present`, `spread_high`, aggregate-only bucket metrics, material context `query_derived_identifier_decoys`, `real_file_candidate_evidence=false`, `file_retrieval_claim=false`, and method_winner/default/scaling false.
+
+### Decision
+
+R2X authorizes only BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design to decide whether robustness or real-file-material acquisition is next; no execution directly. R2X reads only public R2W artifact/docs and performs no private root read, recompute metrics, material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, or exact metric/raw publication. See `docs/en/bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md`.
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.

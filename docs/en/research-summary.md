@@ -4298,5 +4298,12 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Boundary**: no generation/candidate creation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/default/method/scaling.
 - **Decision**: R2W authorizes only BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package.
 
+## BEA-v1-HAAE-R2X content-identifier material experiment public audit findings
+
+- **BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package is complete**: HAAE-R2W checkpoint `1f91567`, R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`, status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, self-test `18/18`.
+- **Audit result**: R2V checkpoint b8522de, R2U checkpoint bb95f80, `signal_present`, `spread_high`, aggregate-only bucket metrics, material context `query_derived_identifier_decoys`, `real_file_candidate_evidence=false`, `file_retrieval_claim=false`, and method_winner/default/scaling false.
+- **Boundary**: R2X is public-only and does not read private roots, recompute metrics, generate material/candidates, retrieve, run runtime/source scan, use CI/network/provider/scheduler/selector, or publish exact metrics/raw values.
+- **Decision**: R2X authorizes only BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design to decide whether robustness or real-file-material acquisition is next; no execution directly.
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.

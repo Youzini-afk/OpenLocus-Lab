@@ -11029,5 +11029,15 @@ R2W 要求 explicit private material root，并且只读取 existing R2U materia
 
 R2W 只授权 BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package。Boundary: no generation/candidate creation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/default/method/scaling。参见 `docs/zh/bea-v1-haae-r2w-content-identifier-material-experiment.md`。
 
+## 2026-07-01 — BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package
+
+`eval/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package_report.json`。状态为 `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`，self-test `18/18`，HAAE-R2W checkpoint `1f91567`，R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`。
+
+R2X locks R2V checkpoint b8522de，R2U checkpoint bb95f80，`signal_present`，`spread_high`，aggregate-only bucket metrics，material context `query_derived_identifier_decoys`，`real_file_candidate_evidence=false`，`file_retrieval_claim=false`，并且 method_winner/default/scaling false。
+
+### Decision
+
+R2X 只授权 BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design，用于决定下一步应做 robustness 还是 real-file-material acquisition；no execution directly。R2X 只读取 public R2W artifact/docs，不读取 private root，不 recompute metrics，不执行 material/candidate generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector，也不发布 exact metric/raw publication。参见 `docs/zh/bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md`。
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
