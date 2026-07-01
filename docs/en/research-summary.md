@@ -4247,14 +4247,14 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2Q path-cue robustness material public audit findings
 
-- **BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package is complete**: HAAE-R2P checkpoint `1f721dd`, R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`, status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, self-test `18/18`.
+- **BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package is complete**: HAAE-R2P checkpoint `1f721dd`, R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`, status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, self-test `19/19`.
 - **Audited material properties**: explicit opt-in, private write nonzero, target 20, depth 40, 5 variants, 6 rank sources, required schema groups meaningful, gold private only, ranking gold false, no experiment metrics, aggregate-only, root safety pass, and R2O source checkpoint `4ffc9eb`.
 - **Boundary**: public-only audit; no private root/material read, recompute, experiment metrics, material generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, method/default/scaling claim, or raw publication.
 - **Decision**: R2Q authorizes only BEA-v1-HAAE-R2R Path-Cue Robustness Experiment over existing R2P private material with explicit root; no new material generation/CI/retrieval/runtime/source scan/default/method/scaling.
 
 ## BEA-v1-HAAE-R2R path-cue robustness experiment findings
 
-- **BEA-v1-HAAE-R2R Path-Cue Robustness Experiment is complete**: HAAE-R2Q checkpoint `a9f5477`, R2Q status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, default status `haae_r2r_unavailable_no_explicit_r2p_private_material_root`, result status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`, self-test `18/18`.
+- **BEA-v1-HAAE-R2R Path-Cue Robustness Experiment is complete**: HAAE-R2Q checkpoint `a9f5477`, R2Q status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, default status `haae_r2r_unavailable_no_explicit_r2p_private_material_root`, result status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`, self-test `19/19`.
 - **Result**: `path_cue_artifact_likely`; `path_prior_original_top10_bucket=count_11_to_20`, `path_prior_original_top20_bucket=count_11_to_20`, all perturbation drop buckets `count_11_to_20`, and `variant_spread_bucket=spread_high`.
 - **Interpretation**: the path-prior signal is high on original path-cue material but collapses under path-scrambled, extension-preserved, directory-depth-preserved, and strengthened-control variants. Treat it as fixture/path-cue evidence, not a robust optimization.
 - **Boundary**: no method/default/scaling; no private writes, new material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, or raw exact-value publication.
@@ -4263,7 +4263,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2S path-cue robustness experiment public audit findings
 
-- **BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package is complete**: HAAE-R2R checkpoint `7efc348`, R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`, status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `18/18`.
+- **BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package is complete**: HAAE-R2R checkpoint `7efc348`, R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`, status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `19/19`.
 - **Audit result**: R2R self-test 30/30, `path_cue_artifact_likely`, original path_prior top10/top20 count_11_to_20, all perturbation drop buckets count_11_to_20, variant_spread_bucket spread_high, privacy/aggregate-only boundary.
 - **Boundary**: public-only audit; no private root/material read, recompute, experiment execution, new material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, raw publication, method/default/scaling claim.
 - **Decision**: R2S authorizes only BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision and is not execution/generation/CI.
@@ -4300,14 +4300,14 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2X content-identifier material experiment public audit findings
 
-- **BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package is complete**: HAAE-R2W checkpoint `1f91567`, R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`, status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, self-test `18/18`.
+- **BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package is complete**: HAAE-R2W checkpoint `1f91567`, R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`, status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, self-test `19/19`.
 - **Audit result**: R2V checkpoint b8522de, R2U checkpoint bb95f80, `signal_present`, `spread_high`, aggregate-only bucket metrics, material context `query_derived_identifier_decoys`, `real_file_candidate_evidence=false`, `file_retrieval_claim=false`, and method_winner/default/scaling false.
 - **Boundary**: R2X is public-only and does not read private roots, recompute metrics, generate material/candidates, retrieve, run runtime/source scan, use CI/network/provider/scheduler/selector, or publish exact metrics/raw values.
 - **Decision**: R2X authorizes only BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design to decide whether robustness or real-file-material acquisition is next; no execution directly.
 
 ## BEA-v1-HAAE-R2Y content-identifier next-step decision design findings
 
-- **BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design is complete**: HAAE-R2X checkpoint `afd86c4`, R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, self-test `18/18`.
+- **BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design is complete**: HAAE-R2X checkpoint `afd86c4`, R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, self-test `19/19`.
 - **Decision context**: R2W/R2X `signal_present/spread_high` is useful but not real-file evidence.
 - **Route decision**: more decoy robustness rejected/deferred, CI/batch execution deferred, and BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight is selected.
 - **Boundary**: R2Z is public-only design/preflight. R2Z preflight authorized true; R2Z execution/private/candidate generation/source scan/CI false. R2Y performs no private/root read, execution, recompute, generation, retrieval, CI, network, source scan, provider call, scheduler, selector, or method/default/scaling claim.
@@ -4405,3 +4405,10 @@ R2AH readback marker: no experiment metrics in R2AH; R2AI aggregate-only experim
 
 
 R2AI result: explicit experiment complete with robustness_status_bucket `brittle_or_artifact`; all reported variant top-k/MRR values are aggregate buckets, and control variants match the high signal buckets, so this is not a robust-signal/default/method/scaling claim.
+
+## BEA-v1-HAAE-R2AJ robustness experiment public audit package findings
+
+- **BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package is complete**: R2AI checkpoint `14edd49`, R2AI status `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact`, status `haae_r2aj_robustness_experiment_public_audit_package_complete_r2ak_decision_authorized_brittle_or_artifact`, self-test `19/19`.
+- **Public-only audit**: read only R2AI public artifact/docs; no private roots or /tmp reads; no recompute metrics; no source/candidate scan.
+- **Audit result**: R2AI self-test 26/26, forbidden_scan pass, brittle_or_artifact, controls/perturbations match or exceed signal, bucket-only variant metrics, no raw publication, and no robust real-file method/default/scale claim.
+- **Stop/go**: authorize only BEA-v1-HAAE-R2AK Robustness Failure Decision Package to decide close route or mechanism analysis or new signal family; no execution/material generation/private read/CI/scale/retrieval/runtime/default/method.

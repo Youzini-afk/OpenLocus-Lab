@@ -11772,7 +11772,7 @@ R2P computes no experiment metrics in R2P and authorizes only BEA-v1-HAAE-R2Q Pu
 
 ## 2026-07-01 — BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package
 
-`eval/bea_v1_haae_r2q_public_audit_package.py` generated `artifacts/bea_v1_haae_r2q_public_audit_package/bea_v1_haae_r2q_public_audit_package_report.json`. Status is `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, self-test `18/18`, HAAE-R2P checkpoint `1f721dd`, and R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`.
+`eval/bea_v1_haae_r2q_public_audit_package.py` generated `artifacts/bea_v1_haae_r2q_public_audit_package/bea_v1_haae_r2q_public_audit_package_report.json`. Status is `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, self-test `19/19`, HAAE-R2P checkpoint `1f721dd`, and R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`.
 
 R2Q audits R2P material properties from the public artifact only: explicit opt-in, private write nonzero, target 20, depth 40, 5 variants, 6 rank sources, required schema groups meaningful, gold private only, ranking gold false, no experiment metrics, aggregate-only, root safety pass, and R2O source checkpoint `4ffc9eb`.
 
@@ -11792,7 +11792,7 @@ Boundary: no method/default/scaling. R2R performs no private writes, new materia
 
 ## 2026-07-01 — BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package
 
-`eval/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package_report.json`. Status is `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `18/18`, HAAE-R2R checkpoint `7efc348`, and R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`.
+`eval/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package_report.json`. Status is `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `19/19`, HAAE-R2R checkpoint `7efc348`, and R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`.
 
 R2S confirms self-test 30/30, `path_cue_artifact_likely`, original path_prior top10/top20 count_11_to_20, all perturbation drop buckets count_11_to_20, variant_spread_bucket spread_high, and privacy/aggregate-only boundary.
 
@@ -11842,7 +11842,7 @@ R2W authorizes only BEA-v1-HAAE-R2X Content-Identifier Material Experiment Publi
 
 ## 2026-07-01 — BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package
 
-`eval/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package_report.json`. Status is `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, self-test `18/18`, HAAE-R2W checkpoint `1f91567`, and R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`.
+`eval/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package_report.json`. Status is `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, self-test `19/19`, HAAE-R2W checkpoint `1f91567`, and R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`.
 
 R2X locks R2V checkpoint b8522de, R2U checkpoint bb95f80, `signal_present`, `spread_high`, aggregate-only bucket metrics, material context `query_derived_identifier_decoys`, `real_file_candidate_evidence=false`, `file_retrieval_claim=false`, and method_winner/default/scaling false.
 
@@ -11852,7 +11852,7 @@ R2X authorizes only BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design
 
 ## 2026-07-01 — BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design
 
-`eval/bea_v1_haae_r2y_content_identifier_next_step_decision_design.py` generated `artifacts/bea_v1_haae_r2y_content_identifier_next_step_decision_design/bea_v1_haae_r2y_content_identifier_next_step_decision_design_report.json`. Status is `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, self-test `18/18`, HAAE-R2X checkpoint `afd86c4`, and R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`.
+`eval/bea_v1_haae_r2y_content_identifier_next_step_decision_design.py` generated `artifacts/bea_v1_haae_r2y_content_identifier_next_step_decision_design/bea_v1_haae_r2y_content_identifier_next_step_decision_design_report.json`. Status is `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, self-test `19/19`, HAAE-R2X checkpoint `afd86c4`, and R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`.
 
 R2Y records that R2W/R2X `signal_present/spread_high` is useful but not real-file evidence. The decision is more decoy robustness rejected/deferred and CI/batch execution deferred. The selected next step is BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight.
 
@@ -11977,6 +11977,16 @@ R2AI default mode no private read/write/source scan/material generation/metrics.
 ### Boundary
 
 Stop/go is R2AJ public audit only for BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package. No CI/network/new generation/default/method/scale/raw publication is authorized. See `docs/en/bea-v1-haae-r2ai-explicit-local-robustness-experiment.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package
+
+`eval/bea_v1_haae_r2aj_robustness_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2aj_robustness_experiment_public_audit_package/bea_v1_haae_r2aj_robustness_experiment_public_audit_package_report.json`. Status is `haae_r2aj_robustness_experiment_public_audit_package_complete_r2ak_decision_authorized_brittle_or_artifact`, self-test `19/19`, R2AI checkpoint `14edd49`, and R2AI status `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact`.
+
+R2AJ read only R2AI public artifact/docs. It has no private roots or /tmp reads, no recompute metrics, and no source/candidate scan. The audit confirms R2AI self-test 26/26, forbidden_scan pass, brittle_or_artifact, controls/perturbations match or exceed signal, bucket-only variant metrics, no raw publication, and no robust real-file method/default/scale claim.
+
+### Boundary
+
+Stop/go authorizes only BEA-v1-HAAE-R2AK Robustness Failure Decision Package to decide close route or mechanism analysis or new signal family. R2AJ authorizes no execution/material generation/private read/CI/scale/retrieval/runtime/default/method. See `docs/en/bea-v1-haae-r2aj-robustness-experiment-public-audit-package.md`.
 
 
  R2AI result marker: robustness_status_bucket brittle_or_artifact; control_response_bucket controls_match_or_exceed_signal; variant top-k/MRR buckets are aggregate-only; no method/default/scaling claim.
