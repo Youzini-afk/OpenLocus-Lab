@@ -11525,3 +11525,21 @@ The phase reads only the HAAE-R0 public aggregate report and public docs/current
 ### Decision
 
 HAAE-R1 is a feasibility inventory only. The handoff is: pass (all 10 groups at least partial and critical groups full or sufficient) → authorizes only **BEA-v1-HAAE-R2 Feasibility-Gated Offline Trace Join Design** (design-only, no execution/replay/scoring/retrieval/candidate generation); controlled no-go (valid but insufficient) → authorizes only **BEA-v1-HAAE-R1A Private Trace Coverage Gap Design** (design-only, no execution). It does not authorize any execution, rerun, retrieval, recompute, candidate generation, arm scoring, OpenLocus execution, replay, HAAE-layer execution, threshold tuning, new policy experiments, frozen-rule changes, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, raw diagnostic publication, CI variant execution, selector/reranker, BEA-v1-A, P5, provider/model network, or network runs. All such stop/go fields are `false`. HAAE-R1 is explicitly **not** BEA-v1-A, not selector-only, not selector/reranker execution, not P5, and not a runtime/default promotion. See `docs/en/bea-v1-haae-r1-unified-private-trace-schema-feasibility-inventory.md`.
+
+---
+
+## 2026-06-30 — BEA-v1-HAAE-R1A: Private Trace Coverage Gap Design
+
+### Objective
+
+Design the root source options, bounded regeneration design, and root manifest schema for the 10 HAAE-R0 schema groups after HAAE-R1 confirmed all 10 groups `not_present` (no explicit private roots). HAAE-R1A is public-only design; no private reads, no root regeneration.
+
+### Result
+
+`eval/bea_v1_haae_r1a_private_trace_coverage_gap_design.py` generated `artifacts/bea_v1_haae_r1a_private_trace_coverage_gap_design/bea_v1_haae_r1a_private_trace_coverage_gap_design_report.json` with status `haae_r1a_private_trace_coverage_gap_design_complete_r1b_preflight_authorized`. Self-test passed `112/112`, forbidden scan passed, private input reads `0`, root regenerations `0`, replays `0`, HAAE-layer executions `0`, network runs `0`, clone/build/search `false`. HAAE-R1 source locked: checkpoint `2ea77da`, status `haae_r1_feasibility_inventory_unavailable_no_explicit_private_roots`, HAAE-R2 false, all 10 groups `not_present` confirmed.
+
+The phase reads only HAAE-R1/R0/N10ET public artifacts/docs/evaluators for constants and public artifacts/docs for FD1, P4L, N1, N2, N10-series / mechanism synthesis to classify source option buckets. It records coverage gap records for all 10 groups, classifies a root source option for each group (9 `public_evidence_strong`, 1 `public_evidence_partial`), designs 5 bounded regeneration designs (explicit opt-in, FD1 private decomposition, P4L private arm-outcome, N10EO private diagnostic rerun, N10ER public CI replay), and designs a 6-field root manifest schema. Six risk controls are recorded — all controlled.
+
+### Decision
+
+HAAE-R1A authorizes only BEA-v1-HAAE-R1B Bounded Private Trace Root Regeneration Preflight Package (design-only, no execution/private read/replay/scoring/retrieval/candidate generation): `haae_r1b_bounded_private_trace_root_regeneration_preflight_authorized_bool=true`, `haae_r1b_design_only_bool=true`, `haae_r1b_execution_authorized_bool=false`. It does not authorize any execution, rerun, retrieval, recompute, candidate generation, arm scoring, OpenLocus execution, replay, HAAE-layer execution, root regeneration, threshold tuning, new policy experiments, frozen-rule changes, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, raw diagnostic publication, CI variant execution, selector/reranker, BEA-v1-A, P5, provider/model network, or network runs. All such stop/go fields are `false`. HAAE-R1A is explicitly **not** BEA-v1-A, not selector-only, not selector/reranker execution, not P5, and not a runtime/default promotion. See `docs/en/bea-v1-haae-r1a-private-trace-coverage-gap-design.md`.

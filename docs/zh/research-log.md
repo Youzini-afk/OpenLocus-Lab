@@ -10714,3 +10714,21 @@ HAAE-R0 只授权 BEA-v1-HAAE-R1 Unified Private Trace Schema Feasibility Invent
 ### 决策
 
 HAAE-R1 只是 feasibility inventory。Handoff：pass（全部 10 个 groups 至少 partial 且 critical groups full 或 sufficient）→ **只** 授权 **BEA-v1-HAAE-R2 Feasibility-Gated Offline Trace Join Design**（design-only，不 execution/replay/scoring/retrieval/candidate generation）；controlled no-go（有效但不足）→ **只** 授权 **BEA-v1-HAAE-R1A Private Trace Coverage Gap Design**（design-only，不 execution）。它不授权任何 execution、rerun、retrieval、recompute、candidate generation、arm scoring、OpenLocus execution、replay、HAAE-layer execution、threshold tuning、新 policy experiments、frozen-rule changes、guard/full/diffaware promotion、runtime/default changes、method-winner claims、downstream/scaled retrieval、raw diagnostic publication、CI variant execution、selector/reranker、BEA-v1-A、P5、provider/model network 或 network runs。所有这类 stop/go 字段均为 `false`。HAAE-R1 明确 **不是** BEA-v1-A、不是 selector-only、不是 selector/reranker execution、不是 P5、不是 runtime/default promotion。参见 `docs/zh/bea-v1-haae-r1-unified-private-trace-schema-feasibility-inventory.md`。
+
+---
+
+## 2026-06-30 — BEA-v1-HAAE-R1A：Private Trace Coverage Gap Design
+
+### 目标
+
+在 HAAE-R1 确认全部 10 个 groups `not_present`（无 explicit private roots）后，为 10 个 HAAE-R0 schema groups 设计 root source options、bounded regeneration design 与 root manifest schema。HAAE-R1A 是 public-only design；不读取 private，不 root regeneration。
+
+### 结果
+
+`eval/bea_v1_haae_r1a_private_trace_coverage_gap_design.py` 生成 `artifacts/bea_v1_haae_r1a_private_trace_coverage_gap_design/bea_v1_haae_r1a_private_trace_coverage_gap_design_report.json`，状态为 `haae_r1a_private_trace_coverage_gap_design_complete_r1b_preflight_authorized`。Self-test 通过 `112/112`，forbidden scan 通过，private input reads `0`，root regenerations `0`，replays `0`，HAAE-layer executions `0`，network runs `0`，clone/build/search `false`。HAAE-R1 source 已锁定：checkpoint `2ea77da`，status `haae_r1_feasibility_inventory_unavailable_no_explicit_private_roots`，HAAE-R2 false，全部 10 个 groups `not_present` 已确认。
+
+该阶段只读取 HAAE-R1/R0/N10ET public artifacts/docs/evaluators 用于 constants，以及 FD1、P4L、N1、N2、N10-series / mechanism synthesis 的 public artifacts/docs 用于分类 source option buckets。它记录全部 10 个 groups 的 coverage gap records，为每个 group 分类一个 root source option（9 个 `public_evidence_strong`，1 个 `public_evidence_partial`），设计 5 个 bounded regeneration designs（explicit opt-in、FD1 private decomposition、P4L private arm-outcome、N10EO private diagnostic rerun、N10ER public CI replay），并设计一个 6 字段 root manifest schema。记录六个 risk controls ——全部已控制。
+
+### 决策
+
+HAAE-R1A 只授权 BEA-v1-HAAE-R1B Bounded Private Trace Root Regeneration Preflight Package（design-only，不 execution/private read/replay/scoring/retrieval/candidate generation）：`haae_r1b_bounded_private_trace_root_regeneration_preflight_authorized_bool=true`，`haae_r1b_design_only_bool=true`，`haae_r1b_execution_authorized_bool=false`。它不授权任何 execution、rerun、retrieval、recompute、candidate generation、arm scoring、OpenLocus execution、replay、HAAE-layer execution、root regeneration、threshold tuning、新 policy experiments、frozen-rule changes、guard/full/diffaware promotion、runtime/default changes、method-winner claims、downstream/scaled retrieval、raw diagnostic publication、CI variant execution、selector/reranker、BEA-v1-A、P5、provider/model network 或 network runs。所有这类 stop/go 字段均为 `false`。HAAE-R1A 明确 **不是** BEA-v1-A、不是 selector-only、不是 selector/reranker execution、不是 P5、不是 runtime/default promotion。参见 `docs/zh/bea-v1-haae-r1a-private-trace-coverage-gap-design.md`。
