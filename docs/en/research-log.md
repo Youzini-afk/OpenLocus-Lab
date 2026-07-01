@@ -11922,3 +11922,13 @@ R2AD audits the public R2AC signal: signal_present, aggregate-only bucket metric
 ### Decision
 
 R2AD is public-only. It reads only the public R2AC artifact/docs and performs no private root read, no recompute from private material, no material/candidate generation, no source scan, no retrieval/OpenLocus/runtime, no CI/network/provider/clone, and no raw publication. R2AD authorizes only BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision as public decision/preflight only, not direct CI/scale/execution. See `docs/en/bea-v1-haae-r2ad-actual-real-file-material-experiment-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2AE: Real-File Signal Robustness/Scale Decision
+
+`eval/bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision.py` generated `artifacts/bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision/bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision_report.json`. Status is `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`, self-test `15/15`, HAAE-R2AD checkpoint `a17ae7e`, and R2AD status `haae_r2ad_actual_real_file_material_experiment_public_audit_package_complete_r2ae_signal_robustness_scale_decision_authorized`.
+
+Decision: real-file signal is promising but not robust. R2AE reject/defer direct scale/CI, defer mechanism decomposition, and select BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight as public-only preflight. R2AG later may do explicit local bounded robustness material generation only after later authorization.
+
+### Boundary
+
+R2AE reads only public artifacts/docs. It has no private reads, no execution, no material/candidate generation, no recompute, no retrieval/OpenLocus/runtime, no source scan, no CI/network/provider/clone, no scheduler/selector, and no method/default/scaling claim. See `docs/en/bea-v1-haae-r2ae-real-file-signal-robustness-scale-decision.md`.

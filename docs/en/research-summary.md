@@ -4358,3 +4358,10 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 - **Audited signal**: signal_present, aggregate-only bucket metrics, no raw leak, symbol_name_overlap/content_identifier_fusion high bucket, query/lexical medium, control low.
 - **Boundary**: method/default/scaling false; no private root read, no recompute from private material, no material/candidate generation, no source scan, no retrieval/OpenLocus/runtime, no CI/network/provider/clone, and no raw publication.
 - **Decision**: R2AD authorizes only BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision as public decision/preflight only, not direct CI/scale/execution.
+
+## BEA-v1-HAAE-R2AE real-file signal robustness/scale decision findings
+
+- **BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision is complete**: HAAE-R2AD checkpoint `a17ae7e`, R2AD status `haae_r2ad_actual_real_file_material_experiment_public_audit_package_complete_r2ae_signal_robustness_scale_decision_authorized`, status `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`, self-test `15/15`.
+- **Decision**: real-file signal is promising but not robust; reject/defer direct scale/CI; defer mechanism decomposition; select BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight as public-only preflight.
+- **Future boundary**: R2AG later may do explicit local bounded robustness material generation only after later authorization.
+- **Boundary**: no private reads, no execution, no material/candidate generation, no recompute, no retrieval/OpenLocus/runtime, no source scan, no CI/network/provider/clone, no scheduler/selector, and no method/default/scaling claim.

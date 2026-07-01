@@ -1,0 +1,326 @@
+{
+  "cautionary_context_records": [
+    {
+      "anonymous_cautionary_context_id": "haaer2aecaution0000",
+      "caution_bucket": "robustness_checks_needed_before_scale",
+      "context_bucket": "path_cue_artifact_history",
+      "private_read_bool": false,
+      "source_phase_bucket": "R2R_R2S"
+    },
+    {
+      "anonymous_cautionary_context_id": "haaer2aecaution0001",
+      "caution_bucket": "material_validity_must_remain_explicit",
+      "context_bucket": "identifier_decoy_not_file_evidence_history",
+      "private_read_bool": false,
+      "source_phase_bucket": "R2W_R2X"
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "haaer2aeclaim0000",
+      "ci_network_provider_clone_bool": false,
+      "default_runtime_claim_bool": false,
+      "execution_bool": false,
+      "generation_bool": false,
+      "method_winner_claim_bool": false,
+      "private_read_bool": false,
+      "private_write_bool": false,
+      "public_only_decision_bool": true,
+      "raw_publication_bool": false,
+      "recompute_bool": false,
+      "retrieval_runtime_source_scan_bool": false,
+      "scaling_claim_bool": false,
+      "scheduler_selector_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "next_step_option_records": [
+    {
+      "anonymous_next_step_option_id": "haaer2aeoption0000",
+      "decision_bucket": "rejected_deferred",
+      "option_bucket": "direct_scale_or_ci",
+      "reason_bucket": "signal_promising_but_not_robust",
+      "selected_bool": false
+    },
+    {
+      "anonymous_next_step_option_id": "haaer2aeoption0001",
+      "decision_bucket": "deferred",
+      "option_bucket": "mechanism_decomposition_now",
+      "reason_bucket": "robustness_material_preflight_needed_first",
+      "selected_bool": false
+    },
+    {
+      "anonymous_next_step_option_id": "haaer2aeoption0002",
+      "decision_bucket": "rejected",
+      "option_bucket": "new_unbounded_material_generation",
+      "reason_bucket": "would_violate_bounded_local_contract",
+      "selected_bool": false
+    },
+    {
+      "anonymous_next_step_option_id": "haaer2aeoption0003",
+      "decision_bucket": "selected",
+      "option_bucket": "real_file_signal_robustness_material_preflight",
+      "reason_bucket": "define_bounded_robustness_material_before_execution",
+      "selected_bool": true
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2aegate0000",
+      "gate_bucket": "r2ad_source_locked_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0001",
+      "gate_bucket": "r2ad_r2ae_authorization_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0002",
+      "gate_bucket": "real_file_signal_present_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0003",
+      "gate_bucket": "real_file_signal_not_robust_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0004",
+      "gate_bucket": "public_only_decision_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0005",
+      "gate_bucket": "no_private_read_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0006",
+      "gate_bucket": "no_recompute_execution_generation_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0007",
+      "gate_bucket": "no_retrieval_runtime_source_scan_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0008",
+      "gate_bucket": "no_ci_network_provider_clone_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0009",
+      "gate_bucket": "direct_scale_ci_rejected_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0010",
+      "gate_bucket": "mechanism_decomposition_deferred_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0011",
+      "gate_bucket": "r2af_preflight_selected_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0012",
+      "gate_bucket": "r2af_public_only_boundary_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0013",
+      "gate_bucket": "no_method_default_scaling_claim_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0014",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aegate0015",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision",
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2aereadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "r2af_contract_records": [
+    {
+      "anonymous_r2af_contract_id": "haaer2aecontract0000",
+      "candidate_generation_in_r2ae_bool": false,
+      "ci_execution_in_r2ae_bool": false,
+      "define_robustness_material_recipe_bool": true,
+      "execution_in_r2ae_bool": false,
+      "network_provider_clone_in_r2ae_bool": false,
+      "next_phase": "BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight",
+      "no_method_default_scaling_claim_bool": true,
+      "private_read_in_r2ae_bool": false,
+      "private_write_in_r2ae_bool": false,
+      "public_aggregate_only_bool": true,
+      "public_only_preflight_bool": true,
+      "r2ag_later_may_do_explicit_local_bounded_robustness_material_generation_bool": true,
+      "source_scan_in_r2ae_bool": false
+    }
+  ],
+  "real_file_signal_context_records": [
+    {
+      "anonymous_real_file_signal_context_id": "haaer2aecontext0000",
+      "content_identifier_fusion_bucket": "high",
+      "context_readback_match_bool": true,
+      "control_baseline_bucket": "low",
+      "lexical_bm25_like_bucket": "medium",
+      "method_default_scaling_claim_bool": false,
+      "query_identifier_overlap_bucket": "medium",
+      "robustness_bucket": "not_robust_enough",
+      "signal_bucket": "signal_present",
+      "signal_strength_bucket": "promising",
+      "symbol_name_overlap_bucket": "high"
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision_v1",
+  "self_test_total": 15,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2aesource0000",
+      "locked_haae_r2ad_checkpoint": "a17ae7e",
+      "locked_haae_r2ad_status": "haae_r2ad_actual_real_file_material_experiment_public_audit_package_complete_r2ae_signal_robustness_scale_decision_authorized",
+      "r2ad_forbidden_scan_pass_bool": true,
+      "r2ad_no_forbidden_stop_go_drift_bool": true,
+      "r2ad_r2ae_authorization_match_bool": true,
+      "r2ad_status_match_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2aestop0000",
+      "bea_v1_a_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "ci_execution_authorized_bool": false,
+      "clone_authorized_bool": false,
+      "default_change_authorized_bool": false,
+      "execution_authorized_bool": false,
+      "haae_r2af_robustness_material_preflight_authorized_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_material_generation_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight",
+      "openlocus_runtime_authorized_bool": false,
+      "p5_authorized_bool": false,
+      "provider_model_authorized_bool": false,
+      "r2af_candidate_generation_authorized_bool": false,
+      "r2af_ci_execution_authorized_bool": false,
+      "r2af_execution_authorized_bool": false,
+      "r2af_network_provider_clone_authorized_bool": false,
+      "r2af_private_read_authorized_bool": false,
+      "r2af_private_write_authorized_bool": false,
+      "r2af_public_preflight_only_bool": true,
+      "r2af_source_scan_authorized_bool": false,
+      "raw_publication_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_execution_authorized_bool": false,
+      "scale_execution_authorized_bool": false,
+      "scaling_claim_authorized_bool": false,
+      "scheduler_haae_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "source_scan_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0000",
+      "validator_bucket": "source_lock_pass"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0001",
+      "validator_bucket": "wrong_r2ad_status_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0002",
+      "validator_bucket": "missing_r2ae_authorization_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0003",
+      "validator_bucket": "signal_missing_no_go"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0004",
+      "validator_bucket": "direct_scale_selected_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0005",
+      "validator_bucket": "mechanism_not_deferred_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0006",
+      "validator_bucket": "r2af_not_selected_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0007",
+      "validator_bucket": "r2af_execution_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0008",
+      "validator_bucket": "claim_boundary_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0009",
+      "validator_bucket": "leak_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0010",
+      "validator_bucket": "stale_readback_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0011",
+      "validator_bucket": "safe_parser_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0012",
+      "validator_bucket": "status_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0013",
+      "validator_bucket": "next_phase_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aesynth0014",
+      "validator_bucket": "root_current_readback_fail"
+    }
+  ]
+}
