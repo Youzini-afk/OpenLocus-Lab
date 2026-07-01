@@ -284,6 +284,17 @@ filename, task, query, candidate, label, score, hash, snippet, or exact per-task
 value. Boundary: no new candidates/retrieval/source scan/OpenLocus/runtime/scheduler/selector/CI/network/provider/default/BEA-v1-A/P5/method/scaling claim.
 R2F authorizes only **BEA-v1-HAAE-R2G Public Audit Package**.
 
+**BEA-v1-HAAE-R2G Public Audit Package** is complete as a public-only audit of
+the R2F aggregate artifact (R2F checkpoint `1e0c718`, R2F status
+`haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`,
+status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`,
+self-test `9/9`). It confirms rank-source hit-rate bucket `rate_1`, same-top
+candidate rate bucket `rate_1`, and top1/top5/top10 buckets `count_10_to_20`.
+This is a medium material experiment only with no method-winner/default/scaling claim.
+R2G reads only public artifacts/docs and authorizes only **BEA-v1-HAAE-R2H Next-Step Design Decision**; it does not authorize execution, CI, scale material
+generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling
+claims, or raw publication.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text

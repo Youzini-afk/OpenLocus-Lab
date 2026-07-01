@@ -11669,3 +11669,13 @@ R2F requires an explicit private material root and reads existing R2D private ma
 ### Decision
 
 R2F authorizes only BEA-v1-HAAE-R2G Public Audit Package. Boundary: no new candidates/retrieval/source scan/OpenLocus/runtime/scheduler/selector/CI/network/provider/default/BEA-v1-A/P5/method/scaling claim. See `docs/en/bea-v1-haae-r2f-local-medium-material-experiment.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2G Public Audit Package
+
+`eval/bea_v1_haae_r2g_public_audit_package.py` generated `artifacts/bea_v1_haae_r2g_public_audit_package/bea_v1_haae_r2g_public_audit_package_report.json`. Status is `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`, self-test `9/9`, HAAE-R2F checkpoint `1e0c718`, and R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`.
+
+R2G is public-only and reads only the public R2F artifact/docs. It confirms rank-source hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, top1/top5/top10 buckets `count_10_to_20`, and scope medium material experiment only.
+
+### Decision
+
+R2G authorizes only BEA-v1-HAAE-R2H Next-Step Design Decision. Boundary: no method-winner/default/scaling claim. It does not authorize execution, CI, scale material generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling claims, or raw publication. See `docs/en/bea-v1-haae-r2g-public-audit-package.md`.

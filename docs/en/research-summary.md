@@ -4167,3 +4167,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Aggregate result**: all three rank sources have gold-file hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, and top1/top5/top10 buckets `count_10_to_20`.
 - **Boundary**: no new candidates/retrieval/source scan/OpenLocus/runtime/scheduler/selector/CI/network/provider/default/BEA-v1-A/P5/method/scaling claim.
 - **Decision**: R2F authorizes only BEA-v1-HAAE-R2G Public Audit Package.
+
+## BEA-v1-HAAE-R2G public audit package findings
+
+- **BEA-v1-HAAE-R2G Public Audit Package is complete**: HAAE-R2F checkpoint `1e0c718`, R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`, status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`, self-test `9/9`.
+- **Aggregate readback**: rank-source hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, top1/top5/top10 buckets `count_10_to_20`.
+- **Scope**: medium material experiment only; public-only audit of R2F artifact/docs.
+- **Boundary**: no method-winner/default/scaling claim; no private root read, recompute, generation, retrieval, source scan, runtime, CI, network, scheduler, or selector execution.
+- **Decision**: R2G authorizes only BEA-v1-HAAE-R2H Next-Step Design Decision, not execution, CI, or scale material generation.

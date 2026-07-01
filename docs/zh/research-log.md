@@ -10858,3 +10858,13 @@ R2F 要求 explicit private material root，并只读取 existing R2D private ma
 ### Decision
 
 R2F 只授权 BEA-v1-HAAE-R2G Public Audit Package。Boundary: no new candidates/retrieval/source scan/OpenLocus/runtime/scheduler/selector/CI/network/provider/default/BEA-v1-A/P5/method/scaling claim。参见 `docs/zh/bea-v1-haae-r2f-local-medium-material-experiment.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2G Public Audit Package
+
+`eval/bea_v1_haae_r2g_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2g_public_audit_package/bea_v1_haae_r2g_public_audit_package_report.json`。状态为 `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，self-test `9/9`，HAAE-R2F checkpoint `1e0c718`，R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`。
+
+R2G 是 public-only，只读取 public R2F artifact/docs。它确认 rank-source hit-rate bucket `rate_1`、same-top candidate rate bucket `rate_1`、top1/top5/top10 buckets `count_10_to_20`，scope 为 medium material experiment only。
+
+### Decision
+
+R2G 只授权 BEA-v1-HAAE-R2H Next-Step Design Decision。Boundary: no method-winner/default/scaling claim。它不授权 execution、CI、scale material generation、runtime/default changes、BEA-v1-A/P5、method-winner claims、scaling claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r2g-public-audit-package.md`。
