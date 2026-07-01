@@ -11789,3 +11789,13 @@ Result: `path_cue_artifact_likely`. `path_prior_original_top10_bucket` and top20
 Public readback markers: explicit private material root; existing R2P material only; aggregate-only metrics; variant×rank_source; path_prior robustness; path_cue_artifact_likely; path_prior_original_top10_bucket; count_11_to_20; spread_high; no method/default/scaling; BEA-v1-HAAE-R2S Public Audit Package.
 
 Boundary: no method/default/scaling. R2R performs no private writes, new material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, or raw exact-value publication. R2R authorizes only BEA-v1-HAAE-R2S Public Audit Package. See `docs/en/bea-v1-haae-r2r-path-cue-robustness-experiment.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package
+
+`eval/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package.py` generated `artifacts/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package_report.json`. Status is `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `12/12`, HAAE-R2R checkpoint `7efc348`, and R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`.
+
+R2S confirms self-test 30/30, `path_cue_artifact_likely`, original path_prior top10/top20 count_11_to_20, all perturbation drop buckets count_11_to_20, variant_spread_bucket spread_high, and privacy/aggregate-only boundary.
+
+### Decision
+
+R2S is not execution/generation/CI. It authorizes only BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision and does not authorize execution, CI, retrieval, new material generation, default/runtime, method winner, or scaling claim. See `docs/en/bea-v1-haae-r2s-path-cue-robustness-experiment-public-audit-package.md`.

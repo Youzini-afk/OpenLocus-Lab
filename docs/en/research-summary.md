@@ -4260,3 +4260,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Boundary**: no method/default/scaling; no private writes, new material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, or raw exact-value publication.
 - **Public readback markers**: explicit private material root; existing R2P material only; aggregate-only metrics; variant×rank_source; path_prior robustness; path_cue_artifact_likely; path_prior_original_top10_bucket; count_11_to_20; spread_high; no method/default/scaling; BEA-v1-HAAE-R2S Public Audit Package.
 - **Decision**: R2R authorizes only BEA-v1-HAAE-R2S Public Audit Package.
+
+## BEA-v1-HAAE-R2S path-cue robustness experiment public audit findings
+
+- **BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package is complete**: HAAE-R2R checkpoint `7efc348`, R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`, status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`, self-test `12/12`.
+- **Audit result**: R2R self-test 30/30, `path_cue_artifact_likely`, original path_prior top10/top20 count_11_to_20, all perturbation drop buckets count_11_to_20, variant_spread_bucket spread_high, privacy/aggregate-only boundary.
+- **Boundary**: public-only audit; no private root/material read, recompute, experiment execution, new material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, raw publication, method/default/scaling claim.
+- **Decision**: R2S authorizes only BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision and is not execution/generation/CI.
