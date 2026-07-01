@@ -1,0 +1,523 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "haaer2acclaim0000",
+      "bea_v1_a_p5_bool": false,
+      "candidate_generation_bool": false,
+      "ci_network_provider_clone_bool": false,
+      "default_runtime_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_material_generation_bool": false,
+      "private_write_bool": false,
+      "raw_publication_bool": false,
+      "retrieval_openlocus_runtime_bool": false,
+      "scaling_claim_bool": false,
+      "scheduler_selector_bool": false,
+      "source_scan_bool": false
+    }
+  ],
+  "execution_mode_records": [
+    {
+      "aggregate_only_publication_bool": true,
+      "anonymous_execution_mode_id": "haaer2acmode0000",
+      "explicit_private_root_bool": true,
+      "mode_bucket": "explicit_real_file_material_experiment",
+      "private_read_bucket": "count_1_to_10",
+      "private_write_bucket": "count_0"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "material_consistency_records": [
+    {
+      "anonymous_material_consistency_id": "haaer2acmaterial0000",
+      "candidate_count_bucket": "count_le_20000",
+      "manifest_owner_bucket": "r2aa_real_file_material_smoke",
+      "outcome_alignment_bool": true,
+      "outcome_count_bucket": "count_11_to_20",
+      "rank_count_bucket": "count_le_20000",
+      "rank_sources_exact_bool": true,
+      "task_count_bucket": "count_11_to_20"
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2acgate0000",
+      "gate_bucket": "r2ab_source_locked_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0001",
+      "gate_bucket": "explicit_private_root_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0002",
+      "gate_bucket": "private_root_boundary_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0003",
+      "gate_bucket": "r2aa_manifest_owner_status_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0004",
+      "gate_bucket": "regular_bounded_group_files_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0005",
+      "gate_bucket": "required_group_files_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0006",
+      "gate_bucket": "rank_sources_exact_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0007",
+      "gate_bucket": "outcome_task_alignment_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0008",
+      "gate_bucket": "aggregate_metrics_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0009",
+      "gate_bucket": "no_private_write_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0010",
+      "gate_bucket": "no_new_material_generation_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0011",
+      "gate_bucket": "no_source_scan_retrieval_runtime_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0012",
+      "gate_bucket": "no_ci_network_provider_clone_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0013",
+      "gate_bucket": "no_scheduler_selector_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0014",
+      "gate_bucket": "no_method_default_scaling_claim_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0015",
+      "gate_bucket": "r2ad_only_stop_go_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0016",
+      "gate_bucket": "public_aggregate_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0017",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2acgate0018",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2AC Actual Real-File Material Experiment",
+  "private_root_boundary_records": [
+    {
+      "anonymous_private_root_boundary_id": "haaer2acroot0000",
+      "no_private_write_bool": true,
+      "no_root_discovery_bool": true,
+      "regular_bounded_group_files_bool": true,
+      "root_basename_public_bool": false,
+      "root_boundary_bucket": "valid_existing_r2aa_private_material_root",
+      "root_path_published_bool": false,
+      "root_supplied_bool": true
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2acreadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "rank_source_agreement_records": [
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0000",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "query_identifier_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_1",
+      "right_rank_source_bucket": "symbol_name_overlap",
+      "same_top_candidate_rate_bucket": "rate_25_to_50"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0001",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "query_identifier_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_1",
+      "right_rank_source_bucket": "lexical_bm25_like",
+      "same_top_candidate_rate_bucket": "rate_25_to_50"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0002",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "query_identifier_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_1",
+      "right_rank_source_bucket": "content_identifier_fusion",
+      "same_top_candidate_rate_bucket": "rate_25_to_50"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0003",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "query_identifier_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_75_to_99",
+      "right_rank_source_bucket": "control_baseline",
+      "same_top_candidate_rate_bucket": "rate_0_to_25"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0004",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "symbol_name_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_1",
+      "right_rank_source_bucket": "lexical_bm25_like",
+      "same_top_candidate_rate_bucket": "rate_25_to_50"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0005",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "symbol_name_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_1",
+      "right_rank_source_bucket": "content_identifier_fusion",
+      "same_top_candidate_rate_bucket": "rate_75_to_99"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0006",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "symbol_name_overlap",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_25_to_50",
+      "right_rank_source_bucket": "control_baseline",
+      "same_top_candidate_rate_bucket": "rate_0"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0007",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "lexical_bm25_like",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_1",
+      "right_rank_source_bucket": "content_identifier_fusion",
+      "same_top_candidate_rate_bucket": "rate_25_to_50"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0008",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "lexical_bm25_like",
+      "overlap_at_10_rate_bucket": "rate_1",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_25_to_50",
+      "right_rank_source_bucket": "control_baseline",
+      "same_top_candidate_rate_bucket": "rate_0"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2acagree0009",
+      "comparable_task_bucket": "count_11_to_20",
+      "exact_candidate_values_published_bool": false,
+      "left_rank_source_bucket": "content_identifier_fusion",
+      "overlap_at_10_rate_bucket": "rate_75_to_99",
+      "overlap_at_20_rate_bucket": "rate_1",
+      "overlap_at_5_rate_bucket": "rate_25_to_50",
+      "right_rank_source_bucket": "control_baseline",
+      "same_top_candidate_rate_bucket": "rate_0"
+    }
+  ],
+  "rank_source_metric_records": [
+    {
+      "anonymous_rank_source_metric_id": "haaer2acmetric0000",
+      "candidate_coverage_bucket": "count_le_20000",
+      "exact_values_published_bool": false,
+      "gold_file_hit_count_bucket": "count_11_to_20",
+      "gold_file_hit_rate_bucket": "rate_1",
+      "median_first_gold_rank_bucket": "rank_2_to_5",
+      "missing_outcome_bucket": "count_0",
+      "mrr_bucket": "mrr_medium",
+      "rank_source_bucket": "query_identifier_overlap",
+      "rank_source_present_bool": true,
+      "task_coverage_bucket": "count_11_to_20",
+      "top10_hit_count_bucket": "count_11_to_20",
+      "top1_hit_count_bucket": "count_6_to_10",
+      "top20_hit_count_bucket": "count_11_to_20",
+      "top5_hit_count_bucket": "count_11_to_20"
+    },
+    {
+      "anonymous_rank_source_metric_id": "haaer2acmetric0001",
+      "candidate_coverage_bucket": "count_le_20000",
+      "exact_values_published_bool": false,
+      "gold_file_hit_count_bucket": "count_11_to_20",
+      "gold_file_hit_rate_bucket": "rate_1",
+      "median_first_gold_rank_bucket": "rank_1",
+      "missing_outcome_bucket": "count_0",
+      "mrr_bucket": "mrr_high",
+      "rank_source_bucket": "symbol_name_overlap",
+      "rank_source_present_bool": true,
+      "task_coverage_bucket": "count_11_to_20",
+      "top10_hit_count_bucket": "count_11_to_20",
+      "top1_hit_count_bucket": "count_11_to_20",
+      "top20_hit_count_bucket": "count_11_to_20",
+      "top5_hit_count_bucket": "count_11_to_20"
+    },
+    {
+      "anonymous_rank_source_metric_id": "haaer2acmetric0002",
+      "candidate_coverage_bucket": "count_le_20000",
+      "exact_values_published_bool": false,
+      "gold_file_hit_count_bucket": "count_11_to_20",
+      "gold_file_hit_rate_bucket": "rate_1",
+      "median_first_gold_rank_bucket": "rank_2_to_5",
+      "missing_outcome_bucket": "count_0",
+      "mrr_bucket": "mrr_medium",
+      "rank_source_bucket": "lexical_bm25_like",
+      "rank_source_present_bool": true,
+      "task_coverage_bucket": "count_11_to_20",
+      "top10_hit_count_bucket": "count_11_to_20",
+      "top1_hit_count_bucket": "count_6_to_10",
+      "top20_hit_count_bucket": "count_11_to_20",
+      "top5_hit_count_bucket": "count_11_to_20"
+    },
+    {
+      "anonymous_rank_source_metric_id": "haaer2acmetric0003",
+      "candidate_coverage_bucket": "count_le_20000",
+      "exact_values_published_bool": false,
+      "gold_file_hit_count_bucket": "count_11_to_20",
+      "gold_file_hit_rate_bucket": "rate_1",
+      "median_first_gold_rank_bucket": "rank_1",
+      "missing_outcome_bucket": "count_0",
+      "mrr_bucket": "mrr_high",
+      "rank_source_bucket": "content_identifier_fusion",
+      "rank_source_present_bool": true,
+      "task_coverage_bucket": "count_11_to_20",
+      "top10_hit_count_bucket": "count_11_to_20",
+      "top1_hit_count_bucket": "count_11_to_20",
+      "top20_hit_count_bucket": "count_11_to_20",
+      "top5_hit_count_bucket": "count_11_to_20"
+    },
+    {
+      "anonymous_rank_source_metric_id": "haaer2acmetric0004",
+      "candidate_coverage_bucket": "count_le_20000",
+      "exact_values_published_bool": false,
+      "gold_file_hit_count_bucket": "count_11_to_20",
+      "gold_file_hit_rate_bucket": "rate_1",
+      "median_first_gold_rank_bucket": "rank_21_to_40",
+      "missing_outcome_bucket": "count_0",
+      "mrr_bucket": "mrr_low",
+      "rank_source_bucket": "control_baseline",
+      "rank_source_present_bool": true,
+      "task_coverage_bucket": "count_11_to_20",
+      "top10_hit_count_bucket": "count_1",
+      "top1_hit_count_bucket": "count_0",
+      "top20_hit_count_bucket": "count_6_to_10",
+      "top5_hit_count_bucket": "count_1"
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2ac_actual_real_file_material_experiment_v1",
+  "self_test_total": 21,
+  "signal_summary_records": [
+    {
+      "aggregate_only_bool": true,
+      "anonymous_signal_summary_id": "haaer2acsignal0000",
+      "control_baseline_gap_bucket": "control_nonzero",
+      "method_winner_bool": false,
+      "rank_source_spread_bucket": "spread_medium",
+      "real_file_material_signal_bucket": "signal_present"
+    }
+  ],
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2acsource0000",
+      "locked_haae_r2ab_checkpoint": "52a23da",
+      "locked_haae_r2ab_status": "haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized",
+      "locked_r2aa_checkpoint": "f325b65",
+      "r2ab_existing_material_boundary_bool": true,
+      "r2ab_forbidden_scan_pass_bool": true,
+      "r2ab_r2ac_authorization_match_bool": true,
+      "r2ab_status_match_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2acstop0000",
+      "bea_v1_a_authorized_bool": false,
+      "broad_scan_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "ci_execution_authorized_bool": false,
+      "clone_authorized_bool": false,
+      "default_change_authorized_bool": false,
+      "haae_r2ad_public_audit_package_authorized_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_material_generation_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package",
+      "openlocus_runtime_authorized_bool": false,
+      "p5_authorized_bool": false,
+      "provider_model_authorized_bool": false,
+      "raw_publication_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_execution_authorized_bool": false,
+      "scaling_claim_authorized_bool": false,
+      "scheduler_haae_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "source_scan_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0000",
+      "validator_bucket": "default_no_private"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0001",
+      "validator_bucket": "missing_opt_in"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0002",
+      "validator_bucket": "repo_root_reject"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0003",
+      "validator_bucket": "symlink_root_reject"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0004",
+      "validator_bucket": "manifest_status_drift"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0005",
+      "validator_bucket": "missing_group_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0006",
+      "validator_bucket": "missing_rank_source_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0007",
+      "validator_bucket": "outcome_alignment_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0008",
+      "validator_bucket": "exact_publication_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0009",
+      "validator_bucket": "stop_go_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0010",
+      "validator_bucket": "stale_readback_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0011",
+      "validator_bucket": "safe_parser_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0012",
+      "validator_bucket": "source_lock_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0013",
+      "validator_bucket": "private_root_publication_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0014",
+      "validator_bucket": "claim_boundary_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0015",
+      "validator_bucket": "status_signal_mismatch_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0016",
+      "validator_bucket": "metric_mrr_bucket_mutation_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0017",
+      "validator_bucket": "metric_rank_bucket_mutation_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0018",
+      "validator_bucket": "agreement_source_mutation_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0019",
+      "validator_bucket": "agreement_rate_mutation_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2acsynth0020",
+      "validator_bucket": "gate_mutation_fail"
+    }
+  ]
+}

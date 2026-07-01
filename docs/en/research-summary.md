@@ -4331,6 +4331,14 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Boundary**: R2AB is public-only and reads only the R2AA public artifact; no private root read, recompute, generation, source scan, or metrics.
 - **Decision**: R2AB authorizes only BEA-v1-HAAE-R2AC Actual Real-File Material Experiment over existing R2AA private material with explicit private root; no new material generation/retrieval/runtime/source scan/CI/network/provider/clone/broad scan/default/method/scaling/raw publication.
 
+## BEA-v1-HAAE-R2AC actual real-file material experiment findings
+
+- **BEA-v1-HAAE-R2AC Actual Real-File Material Experiment is implemented**: HAAE-R2AB checkpoint `52a23da`, R2AB status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`, R2AA checkpoint `f325b65`, default status `haae_r2ac_unavailable_no_explicit_r2aa_private_material_root`, pass statuses `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present` / `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_weak_or_no_signal`, self-test `21/21`.
+- **Experiment scope**: explicit private material root required, existing R2AA material only, no private writes, aggregate-only metrics.
+- **Metrics**: rank sources `query_identifier_overlap/symbol_name_overlap/lexical_bm25_like/content_identifier_fusion/control_baseline`; buckets for task/candidate coverage, gold-file hit count/rate, top1/top5/top10/top20, MRR, median first-gold rank, missing outcome, pairwise aggregate diagnostics, and `real_file_material_signal_bucket`.
+- **Boundary**: R2AD-only; no private writes/new candidate/material generation/source scan/retrieval/OpenLocus/runtime/CI/network/provider/clone, default/method/scaling claim, raw publication, or exact private values.
+- **Decision**: R2AC authorizes only BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package.
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
 
@@ -4339,3 +4347,7 @@ R2Y public readback markers: source file cap 500; wall-clock cap 20 minutes; gol
 
 
 R2Z performs no execution/private write/candidate generation/source scan; R2AA bounded local execution authorized; R2AA broad workspace scan/CI/network/runtime false.
+
+R2AC readback markers: haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present; haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_weak_or_no_signal; haae_r2ac_unavailable_no_explicit_r2aa_private_material_root; 21/21; 52a23da; haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized; f325b65; explicit private material root; existing R2AA material only; aggregate-only metrics; query_identifier_overlap/symbol_name_overlap/lexical_bm25_like/content_identifier_fusion/control_baseline; task/candidate coverage; gold-file hit; top1/top5/top10/top20; MRR; pairwise aggregate diagnostics; real_file_material_signal_bucket; R2AD-only; no private writes/new candidate/material generation/source scan/retrieval/OpenLocus/runtime/CI/network/provider/clone; BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package.
+
+R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion are high-bucket (`mrr_high`, top1/top20 `count_11_to_20`), query_identifier_overlap/lexical_bm25_like are medium, and control_baseline is low (`mrr_low`, top1 `count_0`). This is real-file material signal evidence, not method/default/scaling claim.
