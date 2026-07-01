@@ -11602,7 +11602,7 @@ R1E authorizes only a small local HAAE-R2 experiment. It does not authorize CI, 
 
 ## 2026-07-01 — BEA-v1-HAAE-R2: Small Local Lexical Material Experiment
 
-`eval/bea_v1_haae_r2_small_local_lexical_material_experiment.py` generated `artifacts/bea_v1_haae_r2_small_local_lexical_material_experiment/bea_v1_haae_r2_small_local_lexical_material_experiment_report.json` with status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`. Self-test passed `15/15`, forbidden scan passed, HAAE-R1E source checkpoint `0135e1f` was locked, and the default no-root status is `haae_r2_unavailable_no_explicit_r1e_private_material_root`.
+`eval/bea_v1_haae_r2_small_local_lexical_material_experiment.py` generated `artifacts/bea_v1_haae_r2_small_local_lexical_material_experiment/bea_v1_haae_r2_small_local_lexical_material_experiment_report.json` with status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`. Self-test passed `21/21`, forbidden scan passed, HAAE-R1E source checkpoint `0135e1f` was locked, and the default no-root status is `haae_r2_unavailable_no_explicit_r1e_private_material_root`.
 
 The explicit run reads only existing R1E private material groups from a supplied private-material root. It performs no private writes. It joins precomputed `rank_pack` rows with `outcome_metric` rows in memory and computes aggregate metrics for `bm25_like`, `symbol_overlap`, and `rrf_like`. The public artifact contains only buckets and booleans: group reads, rank-source metrics, agreement, summary, boundaries, gates, readback, stop/go, and forbidden scan. It publishes no private root path or basename, task ids, queries, candidate paths, snippets, labels, raw ranks, scores, hashes, filenames, or raw rows.
 
@@ -11689,3 +11689,13 @@ R2H diagnosis is `arms_not_separating`. The decision is to reject/defer scaling 
 ### Decision
 
 R2H authorizes only BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke. Boundary remains no method/default/scaling claim, no private read, no material generation in R2H, no execution, no recompute, no retrieval/source scan/OpenLocus/runtime, no CI/network/provider/clone, and no scheduler/HAAE/selector. See `docs/en/bea-v1-haae-r2h-next-step-design-decision.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke
+
+`eval/bea_v1_haae_r2i_harder_diversified_local_material_generation_smoke.py` generated `artifacts/bea_v1_haae_r2i_harder_diversified_local_material_generation_smoke/bea_v1_haae_r2i_harder_diversified_local_material_generation_smoke_report.json` in default mode. Default status is `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`; explicit pass status is `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`. Self-test passed `21/21`, with HAAE-R2H checkpoint `3db7366` and R2H status `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`.
+
+R2I requires explicit opt-in. The locked boundary is target 20 tasks, candidate depth 40, private row cap 10000, and rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`. It writes private rows only under an explicit operator root, publishes an aggregate public manifest, and computes no experiment metrics in R2I.
+
+### Decision
+
+R2I authorizes only BEA-v1-HAAE-R2J Harder/Diversified Material Experiment. It does not read old private roots, run retrieval/runtime/OpenLocus/source scan outside fixture, use CI/network/provider/clone, execute scheduler/HAAE/selector, change BEA-v1-A/P5/defaults, or make method/scaling claims. See `docs/en/bea-v1-haae-r2i-harder-diversified-local-material-generation-smoke.md`.

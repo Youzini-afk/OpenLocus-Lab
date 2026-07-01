@@ -1730,7 +1730,7 @@ C2 B12 CI canary (2026-06-19): after the C1 shared private-record adapter
 landed, a real CI canary (`py_fastapi × Kimi × round_robin_public_buckets × 12
 tasks`, run `27816890557`) verified that B12 consumes private P21 per-record
 records and emits only an aggregate public report. The B12 report used
-`replay_source="ci_ephemeral_records"` with `15/15` complete records,
+`replay_source="ci_ephemeral_records"` with `21/21` complete records,
 `balanced_branch_count=4`, `p25_llm_eligible_count=10`,
 `actual_call_avoided_count=4`, and `random_selected_count=4`. Canary verdict:
 `partial` (H1 `refuted`, H2 `refuted`, H3 `supported`, H4 `insufficient_data`
@@ -4115,7 +4115,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2 small local lexical material experiment findings
 
-- **BEA-v1-HAAE-R2 Small Local Lexical Material Experiment is complete**: HAAE-R1E source locked at checkpoint `0135e1f`, status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, self-test `15/15`, forbidden scan `pass`.
+- **BEA-v1-HAAE-R2 Small Local Lexical Material Experiment is complete**: HAAE-R1E source locked at checkpoint `0135e1f`, status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, self-test `21/21`, forbidden scan `pass`.
 - **Default safety**: no explicit private-material root status is `haae_r2_unavailable_no_explicit_r1e_private_material_root`; default mode performs no private reads or writes.
 - **Explicit experiment result**: read only existing R1E private material groups, private read bucket `count_1_to_10`, private write bucket `count_0`, aggregate metrics computed for `bm25_like`, `symbol_overlap`, and `rrf_like` from precomputed rank traces joined with outcomes in memory.
 - **Public result**: aggregate buckets only, no private root path/basename, task ids, queries, candidate paths, snippets, labels, raw ranks, scores, hashes, filenames, or raw rows.
@@ -4183,3 +4183,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Decision**: reject/defer scaling the same R14 medium recipe or CI batch now; select harder/diversified local material generation.
 - **R2I boundary**: target 20 tasks, candidate depth 40, private row cap 10000, explicit opt-in local private root, public aggregate-only manifest, rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`, and no experiment metrics in R2I. Next phase is BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke.
 - **Boundary**: no method/default/scaling claim, no private read, no material generation in R2H, no execution, no recompute, no retrieval/source scan/OpenLocus/runtime, no CI/network/provider/clone, no scheduler/HAAE/selector.
+
+## BEA-v1-HAAE-R2I harder/diversified local material generation smoke findings
+
+- **BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke is implemented**: HAAE-R2H checkpoint `3db7366`, R2H status `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`, default status `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`, explicit pass status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`, self-test `21/21`.
+- **Explicit contract**: explicit opt-in required; target 20 tasks, candidate depth 40, private row cap 10000.
+- **Rank sources**: `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`.
+- **Boundary**: aggregate public manifest only; no experiment metrics in R2I, no old private root read, no retrieval/runtime/OpenLocus/source scan outside fixture, no CI/network/provider/clone, no scheduler/HAAE/selector, no BEA-v1-A/P5/default change, no method/scaling claim.
+- **Decision**: R2I authorizes only BEA-v1-HAAE-R2J Harder/Diversified Material Experiment.

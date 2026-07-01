@@ -188,7 +188,7 @@ change, broad replay, and method-winner claims remain false.
 tiny local/manual aggregate experiment over existing R1E private material (source
 lock `0135e1f`, status
 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`,
-self-test `15/15`). Default mode performs no private reads or writes and emits
+self-test `21/21`). Default mode performs no private reads or writes and emits
 status `haae_r2_unavailable_no_explicit_r1e_private_material_root`. Explicit mode
 requires `--allow-private-material-experiment --private-material-root <existing-r1e-private-material-root>
 --confirm-aggregate-publication-only`; the supplied root is read only and is not
@@ -305,6 +305,21 @@ and no experiment metrics in R2I. Boundary remains no method/default/scaling cla
 no private read, no material generation in R2H, no execution, no recompute,
 no retrieval/source scan/OpenLocus/runtime, no CI/network/provider/clone, and no
 scheduler/HAAE/selector. R2H authorizes only **BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke**.
+
+**BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke** is implemented
+with safe default mode and explicit opt-in private material generation (R2H
+checkpoint `3db7366`, R2H status
+`haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`,
+default status `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`,
+pass status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`,
+self-test `21/21`). explicit opt-in is required. The locked design is target 20 tasks,
+candidate depth 40, private row cap 10000, and rank sources
+`bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`.
+R2I writes private rows only under an explicit operator root and publishes only an
+aggregate public manifest. It computes no experiment metrics in R2I and performs
+no old private root read, retrieval/runtime/OpenLocus/source scan outside fixture,
+CI/network/provider/clone, scheduler/HAAE/selector, BEA-v1-A/P5/default change,
+or method/scaling claim. R2I authorizes only **BEA-v1-HAAE-R2J Harder/Diversified Material Experiment**.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 

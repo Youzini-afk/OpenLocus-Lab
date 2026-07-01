@@ -1595,7 +1595,7 @@ spans、content hashes、prompts、responses、snippets、provider URLs 或 prov
 C2 B12 CI canary（2026-06-19）：C1 shared private-record adapter 落地后，一个真实
 CI canary（`py_fastapi × Kimi × round_robin_public_buckets × 12 tasks`，run
 `27816890557`）验证了 B12 会消费 private P21 per-record records，并且只发出 aggregate
-public report。B12 report 使用 `replay_source="ci_ephemeral_records"`，`15/15`
+public report。B12 report 使用 `replay_source="ci_ephemeral_records"`，`21/21`
 records complete，`balanced_branch_count=4`、`p25_llm_eligible_count=10`、
 `actual_call_avoided_count=4`、`random_selected_count=4`。Canary verdict：`partial`
 （H1 `refuted`、H2 `refuted`、H3 `supported`、H4 因 single-model-family slice 为
@@ -3523,7 +3523,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2 small local lexical material experiment 发现
 
-- **BEA-v1-HAAE-R2 Small Local Lexical Material Experiment 已完成**：HAAE-R1E source 锁定在 checkpoint `0135e1f`，状态 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`，self-test `15/15`，forbidden scan `pass`。
+- **BEA-v1-HAAE-R2 Small Local Lexical Material Experiment 已完成**：HAAE-R1E source 锁定在 checkpoint `0135e1f`，状态 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`，self-test `21/21`，forbidden scan `pass`。
 - **Default safety**：无显式 private-material root 的状态为 `haae_r2_unavailable_no_explicit_r1e_private_material_root`；默认模式不读取 private，也不写入 private。
 - **Explicit experiment result**：只读取已有 R1E private material groups，private read bucket 为 `count_1_to_10`，private write bucket 为 `count_0`，基于预计算 rank traces 与 outcomes 的内存 join，为 `bm25_like`、`symbol_overlap`、`rrf_like` 计算 aggregate metrics。
 - **Public result**：只发布 aggregate buckets，不发布 private root path/basename、task ids、queries、candidate paths、snippets、labels、raw ranks、scores、hashes、filenames 或 raw rows。
@@ -3591,3 +3591,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Decision**：现在 reject/defer scaling the same R14 medium recipe 或 CI batch；选择 harder/diversified local material generation。
 - **R2I boundary**：target 20 tasks，candidate depth 40，private row cap 10000，explicit opt-in local private root，public aggregate-only manifest，rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`，并且 no experiment metrics in R2I。Next phase is BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke。
 - **Boundary**：no method/default/scaling claim，no private read，no material generation in R2H，no execution，no recompute，no retrieval/source scan/OpenLocus/runtime，no CI/network/provider/clone，no scheduler/HAAE/selector。
+
+## BEA-v1-HAAE-R2I harder/diversified local material generation smoke 发现
+
+- **BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke 已实现**：HAAE-R2H checkpoint `3db7366`，R2H status `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`，默认状态 `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`，explicit pass status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`，self-test `21/21`。
+- **Explicit contract**：要求 explicit opt-in；target 20 tasks，candidate depth 40，private row cap 10000。
+- **Rank sources**：`bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`。
+- **Boundary**：只发布 aggregate public manifest；no experiment metrics in R2I，no old private root read，no retrieval/runtime/OpenLocus/source scan outside fixture，no CI/network/provider/clone，no scheduler/HAAE/selector，no BEA-v1-A/P5/default change，no method/scaling claim。
+- **决策**：R2I 只授权 BEA-v1-HAAE-R2J Harder/Diversified Material Experiment。
