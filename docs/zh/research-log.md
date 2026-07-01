@@ -11209,7 +11209,7 @@ bounded public source allowlist required；schema `bea_v1_haae_r2an_evidence_pai
 
 ## 2026-07-01 — BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation
 
-`eval/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation.py` 生成 default no-op artifact `artifacts/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation_report.json`。Default status 为 `haae_r2an_unavailable_no_explicit_material_generation_opt_in`，explicit success status 为 `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`，self-test `29/29`，R2AM checkpoint `b243924`，R2AM status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`，R2AM self-test 26/26，selected family `evidence_pair_support_complementarity`。
+`eval/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation.py` 生成 default no-op artifact `artifacts/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation_report.json`。Default status 为 `haae_r2an_unavailable_no_explicit_material_generation_opt_in`，explicit success status 为 `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`，self-test `27/27`，R2AM checkpoint `b243924`，R2AM status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`，R2AM self-test 26/26，selected family `evidence_pair_support_complementarity`。
 
 default mode no-op。explicit mode requires private output root, public corpus manifest, allow flag, confirm private output, confirm no experiment metrics。Bounds 为 target_task_count=20、evidence_unit_depth_cap_per_task=40、support_pair_cap_per_task=120、contrast_control_pair_cap_per_task=80、total_pair_cap_per_task=200、source_file_cap=500、private_row_cap=20000、wall_clock_cap_minutes=20。
 
@@ -11257,8 +11257,22 @@ Decision：select only BEA-v1-HAAE-R2AS Evidence-Pair Support Mechanism Decompos
 
 R2AR 是 public-only decision/design：no private roots、no recompute metrics、no material generation、no source/candidate/corpus scan、no method/default/winner/scale claim。
 
+## 2026-07-01 — BEA-v1-HAAE-R2AS Evidence-Pair Support Mechanism Decomposition Public Design Preflight
+
+`eval/bea_v1_haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight.py` 生成 `artifacts/bea_v1_haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight/bea_v1_haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_report.json`。状态为 `haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_complete_r2at_explicit_private_mechanism_decomposition_authorized`，self-test `34/34`，source locks R2AR 7c36376、R2AQ 77eab19、R2AP 87ea9de、R2AO 5cfa8d3、R2AN 93bba5f，inherited result support_signal and support_separation_high。
+
+R2AT contract：explicit opt-in、existing private material root、existing material only、no new source scan/material regeneration/candidate generation、private row diagnostics optional、bucketized aggregate only、gold outcome eval-only。
+
+### Boundary
+
+Mechanism axes：complementarity_vs_single_unit、support_vs_contrast、target_support_vs_hard_negative、shuffled_cross_task_control_rejection、path_token_confound_check、outcome_gold_isolation、pair_family_balance_coverage_sensitivity、evidence_quality_vs_pair_composition。R2AS 是 public-only non-executing preflight；no scale/robustness material generation/direct method adoption。
+
 
  R2AI result marker: robustness_status_bucket brittle_or_artifact; control_response_bucket controls_match_or_exceed_signal; variant top-k/MRR buckets are aggregate-only; no method/default/scaling claim.
 
 
 R2AI 结果：explicit experiment 已完成，robustness_status_bucket 为 `brittle_or_artifact`；所有 variant top-k/MRR 都只以 aggregate bucket 发布，control variants 也达到高 signal bucket，所以这不是 robust-signal/default/method/scaling claim。
+
+R2AS readback marker: BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition; mechanism axes.
+
+R2AS readback marker: read existing private material; mechanism-decomposition metrics.
