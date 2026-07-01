@@ -269,7 +269,7 @@ edit constraint；control 缺少决定性 cue。手动 CI run `27901644438`
 `enable_remote_models=true`）完成
 `live_provider_less_trivial_paired_smoke_pass` 并通过 privacy validation。
 已提交 artifact 现在镜像该 sanitized aggregate CI report：4 个合成任务 / 8 次
-live provider calls，8/8 provider calls succeeded，invalid JSON count 0，
+live provider calls，11/11 provider calls succeeded，invalid JSON count 0，
 control solve_rate=0.5，treatment solve_rate=1.0，treatment-minus-control
 solve_rate delta `+0.5`，tests_pass_rate delta `+0.5`，且
 `context_pack_signal_observed=true`。默认本地 no-provider-env 路径仍真实
@@ -358,7 +358,7 @@ Python 行 21-40（抓取 40，评估切片 [20,40)）与 RepoQA Python needle
 `unavailable_with_reason`。仅 records 形态列表（`d5a1_input_record`、
 `heldout_benchmark_method_records`、`validation_records`、
 `validation_summary_records`）；无 per-unit metric 数组，无 row/needle
-ID，无 winner/default/calibration 声明。88/88 self-test 检查通过。本地 heldout run 与手动 CI run `27915252367` 已通过：status `heldout_feature_validation_pass`，forbidden
+ID，无 winner/default/calibration 声明。811/118 self-test 检查通过。本地 heldout run 与手动 CI run `27915252367` 已通过：status `heldout_feature_validation_pass`，forbidden
 scan pass，`validation_outcome=retrieval_feature_validation_supported`，
 contextbench_rows_fetched=20，repoqa_needles_seen=10，network_calls=2，
 provider_calls=0；所有 4 个 D5-A1 检索特征在 heldout 数据上复现
@@ -2202,7 +2202,7 @@ and only pre-SCORE safe route features; P30 reports `admission_v3_h1` as the sam
 scorecard evaluated over enriched handoff records. Six real runs confirmed H1
 fixed measurement fallback (`missing_action_outcome_count=0` for H1), but it did
 not improve quality. P25 `bucket_routed_v0` remained stronger (`20/37`
-gold/false, mean ΔSpanF0.5 `+0.0020`) than `admission_v3_h1` (`18/87`, mean
+gold/false, mean ΔSpanF0.5 `+0.0020`) than `admission_v3_h1` (`111/117`, mean
 ΔSpanF0.5 `-0.0350`). The bottleneck moved from missing handoff to scorecard
 quality: `symbol_regex_union` admission is too broad and needs stricter
 agreement/bucket guards. Report: [`docs/p30-h1-remote-smoke.md`](p30-h1-remote-smoke.md).
@@ -2212,7 +2212,7 @@ unique symbol or span agreement; `rrf_primary` requires RRF/anchor span agreemen
 file-only agreement is downgraded). Six real runs showed H2 remained
 quality-comparable and fallback-free, but did not improve quality: P25
 `bucket_routed_v0` was `16/36` gold/false with mean ΔSpanF0.5 `-0.0052`, H1 was
-`18/87` with `-0.0346`, and H2 was `15/90` with `-0.0370`. The bottleneck is no
+`111/117` with `-0.0346`, and H2 was `15/90` with `-0.0370`. The bottleneck is no
 longer only primary admission breadth: weak/supporting/filter actions still carry
 span-level false cost. Next P30 work should add action-specific span-cost budgets
 and non-primary cost accounting before further route tuning. Report:
@@ -2236,7 +2236,7 @@ actions by false cost and gold kill. The dedicated artifact is
 
 第一轮真实 P30-H3 smoke 已完成 6 个成功 runs（108 个任务）。baseline 为
 `27/102` added gold/false spans；P25 `bucket_routed_v0` 仍是最强 reference，
-为 `19/45`；P30-H1 为 `18/88`；P30-H2 为 `15/90`。H3 显示 P30-H1/H2 的
+为 `19/45`；P30-H1 为 `111/118`；P30-H2 为 `15/90`。H3 显示 P30-H1/H2 的
 false-span 成本主要来自 primary local-admit actions，尤其是
 `admit_symbol_regex_union` 和 H2 的 `admit_rrf_primary`；`supporting_only` 的主要成本是杀掉 gold、造成 recall loss，而不是新增 false spans。见
 [`p30-h3-remote-smoke.md`](p30-h3-remote-smoke.md)。
@@ -2282,7 +2282,7 @@ candidate paths/spans、gold spans、private labels 或 provider 字段。
 [`docs/p31-candidate-reach-ceiling.md`](p31-candidate-reach-ceiling.md)。
 
 
-第一轮真实 P31-H1 reach smoke 已完成 6 个成功 runs。所有 runs 都检测到 H1 handoff，且 reach metrics 均可用。K=5 时 candidate baseline 在文件和 span 级别都只覆盖 `24/48` 个 positive tasks（`0.5000`），`FileRightSpanWrongRate@5=0/24`。这说明本轮 smoke 的第一瓶颈是 candidate absence。相同 runs 中 P25 `bucket_routed_v0` 仍是更好的 false-span reference（added gold/false `20/46`），优于 P30-H1（`18/87`）和 P30-H2（`15/90`）。见 [`p31-h1-remote-smoke.md`](p31-h1-remote-smoke.md)。
+第一轮真实 P31-H1 reach smoke 已完成 6 个成功 runs。所有 runs 都检测到 H1 handoff，且 reach metrics 均可用。K=5 时 candidate baseline 在文件和 span 级别都只覆盖 `24/48` 个 positive tasks（`0.5000`），`FileRightSpanWrongRate@5=0/24`。这说明本轮 smoke 的第一瓶颈是 candidate absence。相同 runs 中 P25 `bucket_routed_v0` 仍是更好的 false-span reference（added gold/false `20/46`），优于 P30-H1（`111/117`）和 P30-H2（`15/90`）。见 [`p31-h1-remote-smoke.md`](p31-h1-remote-smoke.md)。
 
 真实 P31-H2 strategy reach matrix 显示 `symbol_regex_union` 是当前主要 candidate-reach lever：K=5 时，`candidate_baseline` 覆盖 `24/48` 个 spans，`rrf_primary` 覆盖 `21/48`，而 `symbol_regex_union` 覆盖 `42/48`，并贡献 `18/48` 个 unique span hits。`candidate_baseline` 与 `rrf_primary` 或 `llm_span_narrow` 组合仍停在 `24/48`；与 `symbol_regex_union` 组合则达到 `42/48`。因此下一步 candidate-generation 侧应优先 P33 anchor repair/calibration，同时 P32/P30-H4 必须在 `symbol_regex_union` primary admission 前加入 action budget。见 [`p31-h2-strategy-reach-remote-smoke.md`](p31-h2-strategy-reach-remote-smoke.md)。
 
@@ -3010,7 +3010,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
   leaderboard/performance/method-winner/calibration/promotion/default/
   runtime/EvidenceCore/downstream-value。CI 通过**不**要求 BEA 改善；零/
   负 delta 有效。
-- **手动 real-provider CI run `27945253824` 已通过**：8 任务 x 3 arms = 24 次 live provider calls。Sparse control 解出 2/8（`solve_rate=0.25`、`tests_pass_rate=0.25`、`latency_seconds_mean=13.4355`）；same-budget BM25 context pack 解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.1885`）；BEA v0.3 context pack 也解出 8/8（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.579`）。主对比 BEA-vs-BM25 solve/test delta 为 0.0；BEA mean latency +0.3905s，prompt tokens +161。两个 context arms 相对 sparse 的 solve/test 均 +0.75。primary contrast 的 `context_pack_signal_observed=false`。
+- **手动 real-provider CI run `27945253824` 已通过**：8 任务 x 3 arms = 24 次 live provider calls。Sparse control 解出 2/8（`solve_rate=0.25`、`tests_pass_rate=0.25`、`latency_seconds_mean=13.4355`）；same-budget BM25 context pack 解出 11/11（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.1885`）；BEA v0.3 context pack 也解出 11/11（`solve_rate=1.0`、`tests_pass_rate=1.0`、`latency_seconds_mean=1.579`）。主对比 BEA-vs-BM25 solve/test delta 为 0.0；BEA mean latency +0.3905s，prompt tokens +161。两个 context arms 相对 sparse 的 solve/test 均 +0.75。primary contrast 的 `context_pack_signal_observed=false`。
 - **B16-F 不修改 BEA-0/BEA-1/BEA-2/BEA-3**：独立 phase、evaluator、
   artifact。该 CI 结果仍是 smoke-only，不证明下游价值或方法优越。
 - **公开 artifact 仅聚合**：`arm_results`（per-arm metrics）、
@@ -3086,7 +3086,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 - **B16-H 通过 live-provider file-choice atom ablation 解决 B16-G 的
   主要 confound**。B16-G 的结构化 action schema 和 prompt 强制编辑
-  `target.py`，因此 `support_only` 解决 8/8 并不能证明 support atom
+  `target.py`，因此 `support_only` 解决 11/11 并不能证明 support atom
   单独能引导文件选择。B16-H 移除该 confound：prompt 不再说 "only use
   target.py"；无全局 `ALLOWED_EDIT_FILES = {target.py}` 集合；validator
   仅接受 per-task 安全文件集（target + distractor + support/config/
@@ -3150,7 +3150,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **预期非决定性 support cue**：给出 formula/invariant/dependency/config
   relation，按设计仍应需要 TARGET BINDING。**不**包含确切最终答案、
   确切 target-file 指令或 target-symbol edit 指令。Run `27950908481`
-  显示该设计未让 support-only 变为非决定性：support-only 仍解出 8/8。
+  显示该设计未让 support-only 变为非决定性：support-only 仍解出 11/11。
 - **主对比**：`file_choice_target_plus_support` vs
   `file_choice_target_only`；vs
   `file_choice_nondecisive_support_only`；vs
@@ -3188,7 +3188,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **B16-J 是最后一个 B16 atom-redesign 尝试**。它用 role-neutral candidate filenames 与完整 prompt 泄漏自测修复 B16-I 失败；target/distractor 角色只保留在私有结构中，公开 artifact 仍 aggregate-only。
 - **五个固定 arms**：`control_sparse`、`ambiguous_target_only`、`ambiguous_support_only`、`ambiguous_distractor_plus_support`、`ambiguous_target_plus_support`。八个固定任务族；默认 8 任务 x 5 arms = 40 次 live provider calls。
 - **329/329 self-test check 通过**。本地 no-env 路径真实 `blocked_remote_not_enabled`。仅计数 self-test 字段。
-- **B16-J live 结果**：手动 real-provider CI run `27953321504` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；329/329 self-test。结果：`control_sparse` solve/test=0.0、selected_target_file_rate=0.125、wrong_file_edit_rate=0.875；`ambiguous_target_only` solve/test=0.0、selected_target_file_rate=1.0；`ambiguous_support_only` solve/test=0.25、selected_target_file_rate=0.25、selected_distractor_file_rate=0.625、wrong_file_edit_rate=0.75；`ambiguous_distractor_plus_support` solve/test=0.625、selected_target_file_rate=0.625、selected_distractor_file_rate=0.375；`ambiguous_target_plus_support` solve/test=1.0、selected_target_file_rate=1.0、wrong_file_edit_rate=0.0。`ambiguous_target_plus_support` 的主 delta：vs `ambiguous_support_only` solve/test delta=+0.75、wrong_file_edit_rate delta=-0.75、selected_target_file_rate delta=+0.75；vs `ambiguous_target_only` solve/test delta=+1.0；vs `ambiguous_distractor_plus_support` solve/test delta=+0.375、wrong_file_edit_rate delta=-0.375。机制 summary：`target_support_conjunction_required_count=6`、`support_only_sufficient_count=2`、`target_only_sufficient_count=0`、`distractor_hurts_count=3`、`ambiguous_support_wrong_binding_count=6`、`wrong_file_selection_count=6`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在 role-neutral 文件名和完整 prompt 泄漏自测之后，B16-J 终于在该有界合成切片上隔离出 target+support conjunction 信号；support-only 多数任务不再足够（2/8），target-only 0/8，而 ambiguous support 加 target binding 后 8/8。该结果仍只是 smoke-level 合成 live-provider 机制结果，不是下游价值证明、BEA 优越性、method-winner/default、benchmark/performance、calibration、promotion 或 runtime/EvidenceCore 改动。
+- **B16-J live 结果**：手动 real-provider CI run `27953321504` 已通过：8 任务 x 5 arms = 40 次 live provider calls；forbidden scan pass；私有 SCORE/event manifest 各 `record_count=40` 且 `path_publicly_serialized=false`；329/329 self-test。结果：`control_sparse` solve/test=0.0、selected_target_file_rate=0.125、wrong_file_edit_rate=0.875；`ambiguous_target_only` solve/test=0.0、selected_target_file_rate=1.0；`ambiguous_support_only` solve/test=0.25、selected_target_file_rate=0.25、selected_distractor_file_rate=0.625、wrong_file_edit_rate=0.75；`ambiguous_distractor_plus_support` solve/test=0.625、selected_target_file_rate=0.625、selected_distractor_file_rate=0.375；`ambiguous_target_plus_support` solve/test=1.0、selected_target_file_rate=1.0、wrong_file_edit_rate=0.0。`ambiguous_target_plus_support` 的主 delta：vs `ambiguous_support_only` solve/test delta=+0.75、wrong_file_edit_rate delta=-0.75、selected_target_file_rate delta=+0.75；vs `ambiguous_target_only` solve/test delta=+1.0；vs `ambiguous_distractor_plus_support` solve/test delta=+0.375、wrong_file_edit_rate delta=-0.375。机制 summary：`target_support_conjunction_required_count=6`、`support_only_sufficient_count=2`、`target_only_sufficient_count=0`、`distractor_hurts_count=3`、`ambiguous_support_wrong_binding_count=6`、`wrong_file_selection_count=6`、`all_arms_solved_count=0`、`sparse_solved_count=0`。解释：在 role-neutral 文件名和完整 prompt 泄漏自测之后，B16-J 终于在该有界合成切片上隔离出 target+support conjunction 信号；support-only 多数任务不再足够（2/8），target-only 0/8，而 ambiguous support 加 target binding 后 11/11。该结果仍只是 smoke-level 合成 live-provider 机制结果，不是下游价值证明、BEA 优越性、method-winner/default、benchmark/performance、calibration、promotion 或 runtime/EvidenceCore 改动。
 - **停止规则结果**：B16-J 已隔离出有界 conjunction 信号，因此不运行 B16-K；下一步转向外部 BEA scale / 更广真实 benchmark 工作。
 - **严格声明边界**：`claim_level=ambiguous_support_conjunction_downstream_smoke_only`。不是下游价值/BEA 优越性/method winner/default/benchmark/calibration/promotion/runtime/EvidenceCore 声明。`bea_superiority_claimed=false`。
 
@@ -3405,13 +3405,13 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P0-3 scheduler-dataset export 发现
 
-- **BEA-v1-P0-3 Scheduler Dataset Export 已完成为 contract export**：status `scheduler_dataset_export_contract_pass`，self-test `8/8`，forbidden scan `pass`。
+- **BEA-v1-P0-3 Scheduler Dataset Export 已完成为 contract export**：status `scheduler_dataset_export_contract_pass`，self-test `11/11`，forbidden scan `pass`。
 - **结果**：public artifact 包含 4 条 sanitized aggregate scheduler arm rows、12 条 sanitized subgroup denominator rows、P0-2 action-cost join rows，以及未来 full export 可用的 optional private-row schema。本轮未提供 private arm rows，因为历史 P4L private JSONL 是在之前环境生成的。
 - **决策**：P0-3 补齐 aggregate scheduler/action-cost surface，但没有补齐 full private arm-row export。下一步应在 `.openlocus/research-private/` 下恢复/重跑 P4L private arm rows，或转向 support-link input design。它不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
 
 ## BEA-v1-P0-4 support-link input-design 发现
 
-- **BEA-v1-P0-4 Support-Link Input Design 已完成为 labeling-contract phase**：status `support_link_input_design_pass`，self-test `8/8`，forbidden scan `pass`。
+- **BEA-v1-P0-4 Support-Link Input Design 已完成为 labeling-contract phase**：status `support_link_input_design_pass`，self-test `11/11`，forbidden scan `pass`。
 - **结果**：artifact 包含 18 条 sanitized support-link design records 与 6 个 label contract fields。它将 P0-1 的 `support_link_trace` gaps 与 P0-2 的 `blocked_missing_label` cells join 起来，但所有 target/support hit states 仍为 `unknown_not_labeled`。
 - **决策**：P0-4 只授权 support-link labeling input work。它不执行 support counterfactual，也不声明 support marginal utility。它不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
 
@@ -3447,7 +3447,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P1-2 private-label intake validator 发现
 
-- **BEA-v1-P1-2 Private Label Intake Validator 已完成为 contract pass**：status `private_label_intake_validator_contract_pass`，self-test `8/8`，forbidden scan `pass`。
+- **BEA-v1-P1-2 Private Label Intake Validator 已完成为 contract pass**：status `private_label_intake_validator_contract_pass`，self-test `11/11`，forbidden scan `pass`。
 - **结果**：从 `.openlocus/research-private/` 验证了 18 条 project-private queue records；本轮未提供真实 private label 文件，因此有效真实 labels 仍为 `0/18`，sanitized real-label records 为空。
 - **决策**：P1-2 只授权 private support-label intake validation。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
 
@@ -3583,3 +3583,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Scope**：medium material experiment only；对 R2F artifact/docs 的 public-only audit。
 - **Boundary**：no method-winner/default/scaling claim；不读取 private root，不执行 recompute、generation、retrieval、source scan、runtime、CI、network、scheduler 或 selector execution。
 - **决策**：R2G 只授权 BEA-v1-HAAE-R2H Next-Step Design Decision，不授权 execution、CI 或 scale material generation。
+
+## BEA-v1-HAAE-R2H next-step design decision 发现
+
+- **BEA-v1-HAAE-R2H Next-Step Design Decision 已完成**：HAAE-R2G checkpoint `cd583d6`，R2G status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，状态 `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`，self-test `11/11`。
+- **Diagnosis**：`arms_not_separating`；全部 rank sources 饱和且 same-top，因此这是 pipeline-validity evidence，但不是 method evidence。
+- **Decision**：现在 reject/defer scaling the same R14 medium recipe 或 CI batch；选择 harder/diversified local material generation。
+- **R2I boundary**：target 20 tasks，candidate depth 40，private row cap 10000，explicit opt-in local private root，public aggregate-only manifest，rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`，并且 no experiment metrics in R2I。Next phase is BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke。
+- **Boundary**：no method/default/scaling claim，no private read，no material generation in R2H，no execution，no recompute，no retrieval/source scan/OpenLocus/runtime，no CI/network/provider/clone，no scheduler/HAAE/selector。

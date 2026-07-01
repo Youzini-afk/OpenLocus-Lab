@@ -295,11 +295,22 @@ R2G reads only public artifacts/docs and authorizes only **BEA-v1-HAAE-R2H Next-
 generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling
 claims, or raw publication.
 
+**BEA-v1-HAAE-R2H Next-Step Design Decision** is complete as a public-only design
+decision (R2G checkpoint `cd583d6`, R2G status
+`haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`, status
+`haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`,
+self-test `11/11`). Diagnosis: `arms_not_separating`; R2H will reject/defer scaling the same R14 medium recipe or CI batch now and selects harder/diversified local material generation. R2I boundary: target 20 tasks, candidate depth 40, private row cap 10000, explicit opt-in local private root, public aggregate-only manifest,
+rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`,
+and no experiment metrics in R2I. Boundary remains no method/default/scaling claim,
+no private read, no material generation in R2H, no execution, no recompute,
+no retrieval/source scan/OpenLocus/runtime, no CI/network/provider/clone, and no
+scheduler/HAAE/selector. R2H authorizes only **BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke**.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
 status: difference_aware_winner_public_replication_package_complete_n10en_authorized
-self-test: 8 / 8
+self-test: 11 / 11
 forbidden scan: pass
 N10EK winner top10/top20/top50/top100: 13 / 16 / 20 / 26
 N10EL audit top10/top20/top50/top100: 13 / 16 / 20 / 26

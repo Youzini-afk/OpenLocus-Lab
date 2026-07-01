@@ -9131,7 +9131,7 @@ reread existing C5/F1 artifacts.
 
 ```text
 python3 -m py_compile eval/d5a2_heldout_feature_validation.py  => PASS
-python3 eval/d5a2_heldout_feature_validation.py --self-test  => PASS (88/88 checks)
+python3 eval/d5a2_heldout_feature_validation.py --self-test  => PASS (811/118 checks)
 python3 eval/d5a2_heldout_feature_validation.py \
   --contextbench-row-offset 20 --contextbench-row-limit 20 \
   --repoqa-needle-offset 10 --repoqa-needle-limit 10 \
@@ -9831,7 +9831,7 @@ The local no-env validation path is truthful and blocked/unavailable.
 
 ### Manual CI result
 
-Manual real-provider CI run `27945253824` passed. The committed artifact now mirrors the sanitized aggregate report from that run: 8 synthetic tasks x 3 arms = 24 live provider calls, `model_display_category=Kimi-K2.7-Code`, forbidden scan pass, 352/352 self-test checks, `private_score_manifest.record_count=24`, `private_event_manifest.record_count=24`, both manifests `storage_class=tmp_private` and `path_publicly_serialized=false`. Sparse control solved 2/8 (`solve_rate=0.25`, `tests_pass_rate=0.25`, `latency_seconds_mean=13.4355`); same-budget BM25 context pack solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.1885`); BEA v0.3 context pack also solved 8/8 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.579`). Primary BEA-vs-BM25 deltas: solve/test/wrong-file/edit-validity deltas 0.0, `latency_seconds_mean` delta +0.3905, prompt tokens +161, completion tokens +47. Secondary deltas vs sparse: both context arms +0.75 solve/test. Interpretation: B16-F shows context-pack benefit over sparse on this bounded synthetic live-provider slice, but BEA v0.3 does not improve over same-budget BM25; `context_pack_signal_observed=false` for the primary contrast. This is a downstream live-provider smoke result, not downstream value proof, not a method-winner/default/performance/calibration claim.
+Manual real-provider CI run `27945253824` passed. The committed artifact now mirrors the sanitized aggregate report from that run: 8 synthetic tasks x 3 arms = 24 live provider calls, `model_display_category=Kimi-K2.7-Code`, forbidden scan pass, 352/352 self-test checks, `private_score_manifest.record_count=24`, `private_event_manifest.record_count=24`, both manifests `storage_class=tmp_private` and `path_publicly_serialized=false`. Sparse control solved 2/8 (`solve_rate=0.25`, `tests_pass_rate=0.25`, `latency_seconds_mean=13.4355`); same-budget BM25 context pack solved 11/11 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.1885`); BEA v0.3 context pack also solved 11/11 (`solve_rate=1.0`, `tests_pass_rate=1.0`, `latency_seconds_mean=1.579`). Primary BEA-vs-BM25 deltas: solve/test/wrong-file/edit-validity deltas 0.0, `latency_seconds_mean` delta +0.3905, prompt tokens +161, completion tokens +47. Secondary deltas vs sparse: both context arms +0.75 solve/test. Interpretation: B16-F shows context-pack benefit over sparse on this bounded synthetic live-provider slice, but BEA v0.3 does not improve over same-budget BM25; `context_pack_signal_observed=false` for the primary contrast. This is a downstream live-provider smoke result, not downstream value proof, not a method-winner/default/performance/calibration claim.
 
 ### Caveats
 
@@ -9996,7 +9996,7 @@ or downstream value proof.
 
 Run a live-provider file-choice atom ablation to resolve the main B16-G
 confound: B16-G's structured action schema and prompt forced edits to
-`target.py`, so `support_only` solving 8/8 did not prove the support
+`target.py`, so `support_only` solving 11/11 did not prove the support
 atom alone can guide file choice. B16-H removes that confound while
 keeping safe structured actions and private traces.
 
@@ -10004,7 +10004,7 @@ keeping safe structured actions and private traces.
 
 - B16-G result checkpoint: `b407622`, CI run `27947247773`.
   `support_only`, `distractor_plus_support`, and `target_plus_support`
-  solved 8/8; `target_only` and sparse solved 0/8. This is bounded by
+  solved 11/11; `target_only` and sparse solved 0/8. This is bounded by
   the target-file-constrained harness.
 
 ### Scope
@@ -10261,7 +10261,7 @@ B16-J is the LAST B16 atom-redesign attempt. It fixes the B16-I failure by using
 
 ### Prior result
 
-B16-I result checkpoint `f5ad8de`, CI run `27950908481`: support-only solved 8/8; target-support conjunction was NOT observed (`target_support_conjunction_required_count=0`, `support_only_sufficient_count=8`).
+B16-I result checkpoint `f5ad8de`, CI run `27950908481`: support-only solved 11/11; target-support conjunction was NOT observed (`target_support_conjunction_required_count=0`, `support_only_sufficient_count=8`).
 
 ### Scope
 
@@ -10290,7 +10290,7 @@ python3 scripts/validate_docs_i18n.py  => PASS
 git diff --check  => PASS
 ```
 
-Manual real-provider CI run `27953321504` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 329/329 self-tests. Results: `control_sparse` solve/test=0.0, selected_target_file_rate=0.125, wrong_file_edit_rate=0.875; `ambiguous_target_only` solve/test=0.0, selected_target_file_rate=1.0; `ambiguous_support_only` solve/test=0.25, selected_target_file_rate=0.25, selected_distractor_file_rate=0.625, wrong_file_edit_rate=0.75; `ambiguous_distractor_plus_support` solve/test=0.625, selected_target_file_rate=0.625, selected_distractor_file_rate=0.375; `ambiguous_target_plus_support` solve/test=1.0, selected_target_file_rate=1.0, wrong_file_edit_rate=0.0. Primary deltas for `ambiguous_target_plus_support`: vs `ambiguous_support_only` solve/test delta=+0.75, wrong_file_edit_rate delta=-0.75, selected_target_file_rate delta=+0.75; vs `ambiguous_target_only` solve/test delta=+1.0; vs `ambiguous_distractor_plus_support` solve/test delta=+0.375, wrong_file_edit_rate delta=-0.375. Mechanism summary: `target_support_conjunction_required_count=6`, `support_only_sufficient_count=2`, `target_only_sufficient_count=0`, `distractor_hurts_count=3`, `ambiguous_support_wrong_binding_count=6`, `wrong_file_selection_count=6`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: after role-neutral filenames and full-prompt leakage tests, B16-J finally isolated a bounded target+support conjunction signal on this synthetic slice; support-only was no longer sufficient on most tasks (2/8), target-only solved 0/8, and adding target binding to ambiguous support solved 8/8. This is still a smoke-level synthetic live-provider mechanism result, not downstream value proof, BEA superiority, method-winner/default, benchmark/performance, calibration, promotion, or runtime/EvidenceCore change.
+Manual real-provider CI run `27953321504` passed: 8 tasks x 5 arms = 40 live provider calls; forbidden scan pass; private SCORE/event manifests each have `record_count=40` and `path_publicly_serialized=false`; 329/329 self-tests. Results: `control_sparse` solve/test=0.0, selected_target_file_rate=0.125, wrong_file_edit_rate=0.875; `ambiguous_target_only` solve/test=0.0, selected_target_file_rate=1.0; `ambiguous_support_only` solve/test=0.25, selected_target_file_rate=0.25, selected_distractor_file_rate=0.625, wrong_file_edit_rate=0.75; `ambiguous_distractor_plus_support` solve/test=0.625, selected_target_file_rate=0.625, selected_distractor_file_rate=0.375; `ambiguous_target_plus_support` solve/test=1.0, selected_target_file_rate=1.0, wrong_file_edit_rate=0.0. Primary deltas for `ambiguous_target_plus_support`: vs `ambiguous_support_only` solve/test delta=+0.75, wrong_file_edit_rate delta=-0.75, selected_target_file_rate delta=+0.75; vs `ambiguous_target_only` solve/test delta=+1.0; vs `ambiguous_distractor_plus_support` solve/test delta=+0.375, wrong_file_edit_rate delta=-0.375. Mechanism summary: `target_support_conjunction_required_count=6`, `support_only_sufficient_count=2`, `target_only_sufficient_count=0`, `distractor_hurts_count=3`, `ambiguous_support_wrong_binding_count=6`, `wrong_file_selection_count=6`, `all_arms_solved_count=0`, `sparse_solved_count=0`. Interpretation: after role-neutral filenames and full-prompt leakage tests, B16-J finally isolated a bounded target+support conjunction signal on this synthetic slice; support-only was no longer sufficient on most tasks (2/8), target-only solved 0/8, and adding target binding to ambiguous support solved 11/11. This is still a smoke-level synthetic live-provider mechanism result, not downstream value proof, BEA superiority, method-winner/default, benchmark/performance, calibration, promotion, or runtime/EvidenceCore change.
 
 ### Caveats
 
@@ -10912,7 +10912,7 @@ review, the audit was tightened so exact BEA-4/5 prior exclusion from FD1 must
 be used for network-enabled runs, P4H exact-key overlap is explicitly unresolved
 (`p4h_overlap_resolved=false`), and a reservoir upper bound cannot authorize a
 frozen P4H rerun unless it is qualified as all-prior-disjoint. Self-test count is
-88/88.
+811/118.
 
 ### Manual CI result
 
@@ -11295,7 +11295,7 @@ Export the scheduler/action-cost data surface requested by P0-1/P0-2. This phase
 
 ### Result
 
-`eval/bea_v1_p0_3_scheduler_dataset_export.py` generated `artifacts/bea_v1_p0_3_scheduler_dataset_export/bea_v1_p0_3_scheduler_dataset_export_report.json` with status `scheduler_dataset_export_contract_pass`. Self-test passed `8/8`, forbidden scan passed, and the artifact contains 4 sanitized aggregate scheduler arm rows, 12 sanitized subgroup denominator rows, and the P0-2 action-cost join rows.
+`eval/bea_v1_p0_3_scheduler_dataset_export.py` generated `artifacts/bea_v1_p0_3_scheduler_dataset_export/bea_v1_p0_3_scheduler_dataset_export_report.json` with status `scheduler_dataset_export_contract_pass`. Self-test passed `11/11`, forbidden scan passed, and the artifact contains 4 sanitized aggregate scheduler arm rows, 12 sanitized subgroup denominator rows, and the P0-2 action-cost join rows.
 
 The full private arm-row export remains optional and was not satisfied in this run because the historical P4L private JSONL was generated in a previous environment. Future private rows should be generated or recovered under `.openlocus/research-private/` and supplied via `--private-arm-outcomes-jsonl`.
 
@@ -11313,7 +11313,7 @@ Convert the P0-1/P0-2 support-link missing-label gap into a scanner-validated la
 
 ### Result
 
-`eval/bea_v1_p0_4_support_link_input_design.py` generated `artifacts/bea_v1_p0_4_support_link_input_design/bea_v1_p0_4_support_link_input_design_report.json` with status `support_link_input_design_pass`. Self-test passed `8/8`, forbidden scan passed, and the artifact contains 18 sanitized support-link design records plus 6 labeling contract fields.
+`eval/bea_v1_p0_4_support_link_input_design.py` generated `artifacts/bea_v1_p0_4_support_link_input_design/bea_v1_p0_4_support_link_input_design_report.json` with status `support_link_input_design_pass`. Self-test passed `11/11`, forbidden scan passed, and the artifact contains 18 sanitized support-link design records plus 6 labeling contract fields.
 
 All target/support hit states remain `unknown_not_labeled`; the artifact is an input contract, not a labeled dataset and not a support marginal-utility result.
 
@@ -11417,7 +11417,7 @@ Add a fail-closed intake validator for real private support labels against the P
 
 ### Result
 
-`eval/bea_v1_p1_2_private_label_intake_validator.py` generated `artifacts/bea_v1_p1_2_private_label_intake_validator/bea_v1_p1_2_private_label_intake_validator_report.json` with status `private_label_intake_validator_contract_pass`. Self-test passed `8/8`, forbidden scan passed, and 18 private queue records validated from `.openlocus/research-private/`.
+`eval/bea_v1_p1_2_private_label_intake_validator.py` generated `artifacts/bea_v1_p1_2_private_label_intake_validator/bea_v1_p1_2_private_label_intake_validator_report.json` with status `private_label_intake_validator_contract_pass`. Self-test passed `11/11`, forbidden scan passed, and 18 private queue records validated from `.openlocus/research-private/`.
 
 No real private labels were supplied in this run, so valid real labels remain `0/18` and the counterfactual gate remains blocked.
 
@@ -11679,3 +11679,13 @@ R2G is public-only and reads only the public R2F artifact/docs. It confirms rank
 ### Decision
 
 R2G authorizes only BEA-v1-HAAE-R2H Next-Step Design Decision. Boundary: no method-winner/default/scaling claim. It does not authorize execution, CI, scale material generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling claims, or raw publication. See `docs/en/bea-v1-haae-r2g-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2H Next-Step Design Decision
+
+`eval/bea_v1_haae_r2h_next_step_design_decision.py` generated `artifacts/bea_v1_haae_r2h_next_step_design_decision/bea_v1_haae_r2h_next_step_design_decision_report.json`. Status is `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`, self-test `11/11`, HAAE-R2G checkpoint `cd583d6`, and R2G status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`.
+
+R2H diagnosis is `arms_not_separating`. The decision is to reject/defer scaling the same R14 medium recipe and select harder/diversified local material generation. R2I boundary is target 20 tasks, candidate depth 40, private row cap 10000, explicit opt-in local private root, public aggregate-only manifest, rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`, and no experiment metrics in R2I.
+
+### Decision
+
+R2H authorizes only BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke. Boundary remains no method/default/scaling claim, no private read, no material generation in R2H, no execution, no recompute, no retrieval/source scan/OpenLocus/runtime, no CI/network/provider/clone, and no scheduler/HAAE/selector. See `docs/en/bea-v1-haae-r2h-next-step-design-decision.md`.
