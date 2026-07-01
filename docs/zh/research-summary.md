@@ -3772,3 +3772,12 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 - **Decision**：real-file signal is promising but not robust；reject/defer direct scale/CI；defer mechanism decomposition；选择 BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight 作为 public-only preflight。
 - **Future boundary**：R2AG later may do explicit local bounded robustness material generation only after later authorization。
 - **Boundary**：no private reads，no execution，no material/candidate generation，no recompute，no retrieval/OpenLocus/runtime，no source scan，no CI/network/provider/clone，no scheduler/selector，并且 no method/default/scaling claim。
+
+## BEA-v1-HAAE-R2AF real-file signal robustness material preflight 发现
+
+- **BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight 已完成**：HAAE-R2AE checkpoint `4be50bc`，R2AE status `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`，状态 `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`，self-test `26/26`。
+- **R2AG material design**：target 20 existing R2AA task frame if available、depth 40、row cap 20000，variants 为 symbol/content ablation、query-token masking、shuffled content control、negative/control strengthening。
+- **R2AG boundary**：explicit private root、bounded public corpus manifest、aggregate-only public artifact，并且 no metrics in R2AG beyond material QA。
+- **Boundary and authorization**：R2AF no private reads/writes，no execution，no source scan，no candidate/material generation，no CI/scale/default/method claim；authorize only R2AG material generation；no R2AH experiment。
+
+ R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.

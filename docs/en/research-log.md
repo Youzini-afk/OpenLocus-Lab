@@ -11932,3 +11932,15 @@ Decision: real-file signal is promising but not robust. R2AE reject/defer direct
 ### Boundary
 
 R2AE reads only public artifacts/docs. It has no private reads, no execution, no material/candidate generation, no recompute, no retrieval/OpenLocus/runtime, no source scan, no CI/network/provider/clone, no scheduler/selector, and no method/default/scaling claim. See `docs/en/bea-v1-haae-r2ae-real-file-signal-robustness-scale-decision.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2AF: Real-File Signal Robustness Material Preflight
+
+`eval/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight.py` generated `artifacts/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight_report.json`. Status is `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`, self-test `26/26`, HAAE-R2AE checkpoint `4be50bc`, and R2AE status `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`.
+
+Decision: R2AF designs R2AG explicit local bounded robustness material generation with target 20 existing R2AA task frame if available, depth 40, row cap 20000, variants symbol/content ablation, query-token masking, shuffled content control, and negative/control strengthening. The R2AG contract requires explicit private root, bounded public corpus manifest, aggregate-only public artifact, and no metrics in R2AG beyond material QA.
+
+### Boundary
+
+R2AF reads only committed public R2AE artifact/docs. It has no private reads/writes, no execution, no source scan, no candidate/material generation, and no CI/scale/default/method claim. It authorize only R2AG material generation and no R2AH experiment. See `docs/en/bea-v1-haae-r2af-real-file-signal-robustness-material-preflight.md`.
+
+ R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.

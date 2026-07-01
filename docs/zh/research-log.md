@@ -11121,3 +11121,15 @@ Decision：real-file signal is promising but not robust。R2AE reject/defer dire
 ### Boundary
 
 R2AE 只读取 public artifacts/docs。它 no private reads，no execution，no material/candidate generation，no recompute，no retrieval/OpenLocus/runtime，no source scan，no CI/network/provider/clone，no scheduler/selector，并且 no method/default/scaling claim。参见 `docs/zh/bea-v1-haae-r2ae-real-file-signal-robustness-scale-decision.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2AF: Real-File Signal Robustness Material Preflight
+
+`eval/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight.py` 生成 `artifacts/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight_report.json`。状态为 `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`，self-test `26/26`，HAAE-R2AE checkpoint `4be50bc`，R2AE status `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`。
+
+Decision：R2AF 设计 R2AG explicit local bounded robustness material generation：target 20 existing R2AA task frame if available、depth 40、row cap 20000，variants 为 symbol/content ablation、query-token masking、shuffled content control、negative/control strengthening。R2AG contract 要求 explicit private root、bounded public corpus manifest、aggregate-only public artifact，并且 no metrics in R2AG beyond material QA。
+
+### Boundary
+
+R2AF 只读取 committed public R2AE artifact/docs。它 no private reads/writes，no execution，no source scan，no candidate/material generation，且 no CI/scale/default/method claim。它 authorize only R2AG material generation，no R2AH experiment。参见 `docs/zh/bea-v1-haae-r2af-real-file-signal-robustness-material-preflight.md`。
+
+ R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.
