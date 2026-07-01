@@ -3624,3 +3624,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Selected next step**：mechanism decomposition over existing R2I material；not scale/CI or new material generation yet。
 - **R2M contract**：explicit opt-in private read only，aggregate-only mechanism buckets，no writes，no new material/candidates，no retrieval/runtime/source scan/CI/network/provider/scheduler/selector，no method/default/scaling claim。
 - **决策**：R2L 只授权 BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition；R2M next only R2N public audit。
+
+## BEA-v1-HAAE-R2M path-prior separation mechanism decomposition 发现
+
+- **BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition 已完成**：HAAE-R2L checkpoint `0dd357e`，R2L status `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`，默认状态 `haae_r2m_unavailable_no_explicit_r2i_private_material_root`，pass status `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`，self-test `19/19`。
+- **Mechanism buckets**：`dominant_mechanism_bucket=path_structure_prior`，`confidence_bucket=medium_high`，extension/language prior supporting，directory depth prior supporting，same-module/path-token overlap supporting，fixture path cues，control baseline underfit。
+- **Boundary**：private read 需要 explicit existing R2I private material root；不写 private，不执行 generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector，不 raw publication，也不提出 method/default/scaling claim。
+- **决策**：R2M 只授权 BEA-v1-HAAE-R2N Public Audit Package；下一步应 audit/robustness-plan 这个 path-structure signal，而不是提升默认规则。

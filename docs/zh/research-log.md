@@ -10918,3 +10918,13 @@ R2L 记录 R2J/R2K produced separation signal but no method/default/scaling clai
 ### Decision
 
 R2L 只授权 BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition；R2M next only R2N public audit。R2L 保持 public-only，不读取 private roots/material、source repos、raw fixture rows、CI/network/provider/clone、scheduler/HAAE/selector、retrieval/source scan/runtime，也不提出 method/default/scaling claims。参见 `docs/zh/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2M: Path-Prior Separation Mechanism Decomposition
+
+`eval/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition.py` 生成 `artifacts/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition_report.json`。默认状态为 `haae_r2m_unavailable_no_explicit_r2i_private_material_root`；pass status 为 `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`；self-test `19/19`；HAAE-R2L checkpoint `0dd357e`；R2L status `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`。
+
+R2M 只在 opt-in 下读取 explicit existing R2I private material root，并输出 aggregate-only mechanism buckets。结果：`dominant_mechanism_bucket=path_structure_prior`，`confidence_bucket=medium_high`，extension/language prior supporting，directory depth prior supporting，same-module/path-token overlap supporting，fixture pool contains path cues，control baseline underfits。
+
+### Decision
+
+R2M 不写 private rows，不执行 generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。它不发布 raw paths/tokens/extensions/filenames/directories/task ids/queries/snippets/labels/exact ranks/scores/hashes/line ranges/per-task values，也不提出 method/default/scaling claim。下一步是 public audit 和 robustness planning，不是 default promotion。R2M 只授权 BEA-v1-HAAE-R2N Public Audit Package。参见 `docs/zh/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md`。

@@ -11729,3 +11729,13 @@ R2L records that R2J/R2K produced separation signal but no method/default/scalin
 ### Decision
 
 R2L authorizes only BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition; R2M next only R2N public audit. R2L remains public-only and does not read private roots/material, source repos, raw fixture rows, CI/network/provider/clone, scheduler/HAAE/selector, retrieval/source scan/runtime, or make method/default/scaling claims. See `docs/en/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2M: Path-Prior Separation Mechanism Decomposition
+
+`eval/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition.py` generated `artifacts/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition_report.json`. Default status is `haae_r2m_unavailable_no_explicit_r2i_private_material_root`; pass status is `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`; self-test `19/19`; HAAE-R2L checkpoint `0dd357e`; R2L status `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`.
+
+R2M reads an explicit existing R2I private material root only under opt-in and emits aggregate-only mechanism buckets. Result: `dominant_mechanism_bucket=path_structure_prior`, `confidence_bucket=medium_high`, extension/language prior supporting, directory depth prior supporting, same-module/path-token overlap supporting, fixture pool contains path cues, and the control baseline underfits.
+
+### Decision
+
+R2M writes no private rows and performs no generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector. It publishes no raw paths/tokens/extensions/filenames/directories/task ids/queries/snippets/labels/exact ranks/scores/hashes/line ranges/per-task values and makes no method/default/scaling claim. The next step is public audit and robustness planning, not default promotion. R2M authorizes only BEA-v1-HAAE-R2N Public Audit Package. See `docs/en/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md`.
