@@ -46,7 +46,7 @@ not selector/reranker execution, not P5, and not a runtime/default promotion.
 
 **BEA-v1-HAAE-R0: Hierarchical Actionable Evidence Acquisition Route Design /
 Schema Preflight** is now complete as the public-only, design-only schema
-preflight for the next acquisition route (status
+preflight for the next acquisition route (checkpoint `854fc2e`, status
 `haae_r0_design_schema_preflight_complete_haae_r1_authorized`). HAAE-R0 locks
 the N10ET source (checkpoint `26d817e`), designs a machine-readable,
 non-empty control-plane — 4 route architecture layers (source_acquisition,
@@ -63,12 +63,39 @@ execution, not P5, and not a runtime/default promotion. It performs no
 execution, no private reads, no CI rerun, no retrieval/recompute, no candidate
 generation, no arm scoring, and no OpenLocus execution.
 
-The detailed source of truth for the closed N10E branch is
+**BEA-v1-HAAE-R1: Unified Private Trace Schema Feasibility Inventory** is now
+complete as the feasibility inventory for the unified private trace schema
+(checkpoint `854fc2e`, status
+`haae_r1_feasibility_inventory_unavailable_no_explicit_private_roots`,
+self-test `121/121`). HAAE-R1 locks the HAAE-R0 source (checkpoint `854fc2e`,
+status `haae_r0_design_schema_preflight_complete_haae_r1_authorized`) and
+inventories whether the 10 HAAE-R0 schema groups (`task_identity`,
+`anchor_source`, `candidate_pool`, `rank_pack`, `span_projection`,
+`scheduler_action`, `evidence_core`, `arm_assignment`, `outcome_metric`,
+`safety_probe_signal`) can be populated from explicitly supplied
+project-private root buckets, emitting aggregate buckets only. The 5 critical
+groups are `task_identity`, `candidate_pool`, `evidence_core`, `arm_assignment`,
+`outcome_metric`. Default/no-private mode produces the unavailable artifact
+(no explicit private roots, private read count bucket `count_0`); real
+inventory requires explicit `--allow-private-inventory --private-root <path>`
+opt-in. HAAE-R1 performs no replay, no scoring, no retrieval, no candidate
+generation, no arm scoring, no OpenLocus execution, and no HAAE-layer
+execution. It never publishes paths, filenames, basenames, repo names, task
+ids, queries, candidates, spans, snippets, hashes, exact ranks/scores, labels,
+or row values. HAAE-R1 is explicitly **not** BEA-v1-A, not selector-only, not
+selector/reranker execution, not P5, and not a runtime/default promotion. The
+handoff is: pass → authorizes only **BEA-v1-HAAE-R2 Feasibility-Gated Offline
+Trace Join Design** (design-only, no execution/replay/scoring/retrieval/
+candidate generation); controlled no-go → authorizes only **BEA-v1-HAAE-R1A
+Private Trace Coverage Gap Design** (design-only, no execution).
+
+The detailed source of truth for the closed N10E branch and the HAAE route is
 [`docs/en/current-research-conclusions.md`](docs/en/current-research-conclusions.md)
 (EN) / [`docs/zh/current-research-conclusions.md`](docs/zh/current-research-conclusions.md)
-(ZH), together with the per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET docs. The
-chronological narrative below preserves the N10EM → N10EN → N10EO → N10EP →
-N10EQ → N10ER → N10ES → N10ET progression as historical context.
+(ZH), together with the per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET/HAAE-R0/
+HAAE-R1 docs. The chronological narrative below preserves the N10EM → N10EN →
+N10EO → N10EP → N10EQ → N10ER → N10ES → N10ET → HAAE-R0 → HAAE-R1 progression
+as historical context.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
