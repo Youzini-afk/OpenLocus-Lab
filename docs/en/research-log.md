@@ -11809,3 +11809,13 @@ R2T uses the `path_cue_artifact_likely` result to mark scale current path-prior 
 ### Decision
 
 R2T authorizes only BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke with target 20, candidate depth 40, row cap 20000, explicit opt-in, private output root, and public aggregate-only output. R2T is not execution/generation/CI and makes no method/default/scaling claim. See `docs/en/bea-v1-haae-r2t-non-path-cue-pivot-decision.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke
+
+`eval/bea_v1_haae_r2u_content_identifier_material_generation.py` generated `artifacts/bea_v1_haae_r2u_content_identifier_material_generation/bea_v1_haae_r2u_content_identifier_material_generation_report.json` in explicit mode. Default status remains `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`; explicit pass status is `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `24/24`, HAAE-R2T checkpoint `bc58cf7`, and R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`.
+
+R2U requires explicit opt-in, target 20, candidate depth 40, row cap 20000, and uses rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`. Policy is no path tokens/extensions/directories, gold private only, and gold labels not used for ranking.
+
+### Decision
+
+R2U authorizes only BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package. It writes private rows only under explicit operator root, publishes aggregate-only public output, and computes no experiment metrics in R2U. See `docs/en/bea-v1-haae-r2u-content-identifier-material-generation.md`.

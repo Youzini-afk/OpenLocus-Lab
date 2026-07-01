@@ -4274,3 +4274,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Decision**: `path_cue_artifact_likely` makes the current path-prior route unsafe to scale now; scale current path-prior rejected/deferred, more path-cue ablations deferred, CI batch deferred, and content_identifier selected.
 - **R2U contract**: BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke, target 20, candidate depth 40, row cap 20000, explicit opt-in, private output root, public aggregate-only output.
 - **Boundary**: R2T is public-only, not execution/generation/CI, and makes no method/default/scaling claim.
+
+## BEA-v1-HAAE-R2U content-identifier material generation findings
+
+- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `24/24`.
+- **Contract**: explicit opt-in, target 20, candidate depth 40, row cap 20000, rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`.
+- **Policy**: no path tokens/extensions/directories, gold private only, gold labels not used for ranking, public aggregate-only output, and no experiment metrics in R2U.
+- **Materialization**: explicit private material generation reached target 20, candidate depth 40, row cap 20000, and all seven content/identifier rank sources.
+- **Decision**: R2U authorizes only BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package.
