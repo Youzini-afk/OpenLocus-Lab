@@ -1,0 +1,439 @@
+{
+  "boundary_records": [
+    {
+      "anonymous_boundary_id": "haaer2amboundary0000",
+      "ci_network_provider_clone_runtime_openlocus_bool": false,
+      "group_file_read_bool": false,
+      "material_generation_bool": false,
+      "metrics_bool": false,
+      "private_material_read_bool": false,
+      "private_root_read_bool": false,
+      "private_write_bool": false,
+      "public_only_preflight_bool": true,
+      "raw_publication_bool": false,
+      "read_only_r2al_public_artifact_docs_bool": true,
+      "recompute_bool": false,
+      "source_candidate_scan_bool": false,
+      "tmp_read_bool": false
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "haaer2amclaim0000",
+      "default_runtime_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "raw_publication_bool": false,
+      "robust_method_claim_bool": false,
+      "scaling_claim_bool": false,
+      "validated_signal_claim_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "inherited_signal_family_records": [
+    {
+      "anonymous_inherited_signal_family_id": "haaer2aminherited0000",
+      "closed_prior_route_bucket": "r2ac_r2ai_single_rank_content_path_signal",
+      "not_single_rank_content_path_bool": true,
+      "prior_failure_bucket": "brittle_or_artifact",
+      "r2am_public_preflight_only_bool": true,
+      "route_closure_inherited_bool": true,
+      "selected_signal_family_bucket": "evidence_pair_support_complementarity",
+      "setwise_evidence_structure_bool": true,
+      "support_complementarity_contrast_bool": true
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2amgate0000",
+      "gate_bucket": "r2al_source_locked_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0001",
+      "gate_bucket": "r2al_self_test_28_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0002",
+      "gate_bucket": "r2al_forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0003",
+      "gate_bucket": "selected_signal_family_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0004",
+      "gate_bucket": "r2al_route_closure_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0005",
+      "gate_bucket": "r2an_not_authorized_in_r2al_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0006",
+      "gate_bucket": "schema_group_set_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0007",
+      "gate_bucket": "bounds_caps_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0008",
+      "gate_bucket": "source_allowlist_contract_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0009",
+      "gate_bucket": "private_output_contract_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0010",
+      "gate_bucket": "root_safety_contract_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0011",
+      "gate_bucket": "policy_gold_constraints_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0012",
+      "gate_bucket": "privacy_publication_contract_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0013",
+      "gate_bucket": "r2an_material_qa_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0014",
+      "gate_bucket": "r2ao_public_audit_after_generation_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0015",
+      "gate_bucket": "public_only_preflight_boundary_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0016",
+      "gate_bucket": "stop_go_truth_table_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0017",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2amgate0018",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight",
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2amreadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "r2an_bounds_contract_records": [
+    {
+      "anonymous_bounds_contract_id": "haaer2ambounds0000",
+      "contrast_control_pair_cap_per_task": 80,
+      "evidence_unit_depth_cap_per_task": 40,
+      "local_only_bool": true,
+      "private_row_cap": 20000,
+      "source_file_cap": 500,
+      "support_pair_cap_per_task": 120,
+      "target_task_count": 20,
+      "total_pair_cap_per_task": 200,
+      "wall_clock_cap_minutes": 20
+    }
+  ],
+  "r2an_policy_contract_records": [
+    {
+      "anonymous_policy_contract_id": "haaer2ampolicy0000",
+      "contrast_control_required_bool": true,
+      "gold_outcome_labels_used_for_evidence_unit_selection_bool": false,
+      "gold_outcome_labels_used_for_pair_selection_bool": false,
+      "gold_private_eval_only_bool": true,
+      "isolated_single_candidate_rank_forbidden_bool": true,
+      "material_qa_only_no_experiment_metrics_bool": true,
+      "minimum_control_ratio_bucket": "control_pairs_at_least_support_pairs_or_bucketed_balance",
+      "pair_level_signal_bool": true,
+      "selected_signal_family_bucket": "evidence_pair_support_complementarity",
+      "setwise_support_bool": true,
+      "single_rank_content_path_signal_bool": false,
+      "single_rank_content_path_signal_primary_bool": false,
+      "support_control_balance_required_bool": true
+    }
+  ],
+  "r2an_privacy_publication_contract_records": [
+    {
+      "aggregate_only_public_artifact_required_bool": true,
+      "anonymous_privacy_publication_contract_id": "haaer2amprivacy0000",
+      "experiment_metrics_publication_bool": false,
+      "next_audit_phase": "BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package",
+      "private_root_path_publication_bool": false,
+      "r2ao_public_audit_required_after_generation_bool": true,
+      "raw_task_query_candidate_gold_publication_bool": false,
+      "source_filename_line_publication_bool": false
+    }
+  ],
+  "r2an_private_output_contract_records": [
+    {
+      "allow_flag_required_bool": true,
+      "anonymous_private_output_contract_id": "haaer2amoutput0000",
+      "confirm_no_experiment_metrics_required_bool": true,
+      "confirm_private_output_required_bool": true,
+      "explicit_mode_requires_private_output_root_bool": true,
+      "private_manifest_required_bool": true,
+      "private_manifest_schema_version": "bea_v1_haae_r2an_evidence_pair_support_material_generation_v1"
+    }
+  ],
+  "r2an_root_safety_contract_records": [
+    {
+      "anonymous_root_safety_contract_id": "haaer2amroot0000",
+      "private_output_root_explicit_required_bool": true,
+      "repo_root_forbidden_bool": true,
+      "symlink_escape_forbidden_bool": true,
+      "unrelated_root_overwrite_forbidden_bool": true
+    }
+  ],
+  "r2an_schema_contract_records": [
+    {
+      "anonymous_schema_contract_id": "haaer2amschema0000",
+      "candidate_pair_family_buckets": [
+        "target_support_pair",
+        "complementary_support_pair",
+        "contrastive_hard_negative_pair",
+        "single_unit_ablation_control",
+        "shuffled_relation_control",
+        "cross_task_mismatch_control"
+      ],
+      "r2an_phase": "BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation",
+      "required_private_group_buckets": [
+        "task_frame",
+        "source_manifest_private",
+        "evidence_unit_pool",
+        "evidence_pair_material",
+        "support_relation_material",
+        "contrast_control_material",
+        "outcome_eval_private",
+        "material_qa"
+      ],
+      "schema_version": "bea_v1_haae_r2an_evidence_pair_support_material_generation_v1"
+    }
+  ],
+  "r2an_source_allowlist_contract_records": [
+    {
+      "anonymous_source_allowlist_contract_id": "haaer2amallow0000",
+      "bounded_public_source_allowlist_required_bool": true,
+      "clone_forbidden_bool": true,
+      "network_forbidden_bool": true,
+      "provider_forbidden_bool": true,
+      "public_corpus_manifest_required_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight_v1",
+  "self_test_total": 26,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2amsource0000",
+      "locked_haae_r2al_checkpoint": "39800bf",
+      "locked_haae_r2al_status": "haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized",
+      "r2al_closed_prior_route_bucket": "r2ac_r2ai_single_rank_content_path_signal",
+      "r2al_forbidden_scan_pass_bool": true,
+      "r2al_prior_failure_bucket": "brittle_or_artifact",
+      "r2al_route_closure_match_bool": true,
+      "r2al_selected_signal_family_bool": true,
+      "r2al_selected_signal_family_bucket": "evidence_pair_support_complementarity",
+      "r2al_self_test_28_bool": true,
+      "r2al_single_rank_route_reopened_bool": false,
+      "r2al_status_match_bool": true,
+      "r2an_not_authorized_in_r2al_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2amstop0000",
+      "ci_execution_authorized_bool": false,
+      "clone_authorized_bool": false,
+      "default_change_authorized_bool": false,
+      "experiment_metrics_authorized_bool": false,
+      "haae_r2an_evidence_pair_support_material_generation_authorized_bool": true,
+      "mechanism_analysis_authorized_bool": false,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation",
+      "openlocus_runtime_authorized_bool": false,
+      "prior_private_material_read_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "provider_model_authorized_bool": false,
+      "r2an_aggregate_only_public_artifact_required_bool": true,
+      "r2an_bounded_public_source_scan_authorized_bool": true,
+      "r2an_evidence_pair_material_generation_authorized_bool": true,
+      "r2an_evidence_unit_generation_authorized_bool": true,
+      "r2an_explicit_local_material_generation_authorized_bool": true,
+      "r2an_material_qa_only_no_experiment_metrics_bool": true,
+      "r2an_private_output_root_required_bool": true,
+      "r2an_private_write_authorized_bool": true,
+      "r2an_public_corpus_manifest_required_bool": true,
+      "r2ao_public_audit_required_after_generation_bool": true,
+      "raw_publication_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_execution_authorized_bool": false,
+      "scale_execution_authorized_bool": false,
+      "scaling_claim_authorized_bool": false,
+      "scheduler_haae_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "single_rank_content_path_route_reopen_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0000",
+      "validator_bucket": "source_lock_pass"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0001",
+      "validator_bucket": "wrong_r2al_status_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0002",
+      "validator_bucket": "self_test_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0003",
+      "validator_bucket": "forbidden_scan_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0004",
+      "validator_bucket": "selected_family_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0005",
+      "validator_bucket": "route_closure_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0006",
+      "validator_bucket": "r2an_prior_auth_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0007",
+      "validator_bucket": "schema_group_set_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0008",
+      "validator_bucket": "schema_version_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0009",
+      "validator_bucket": "bounds_cap_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0010",
+      "validator_bucket": "source_allowlist_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0011",
+      "validator_bucket": "private_output_contract_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0012",
+      "validator_bucket": "root_safety_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0013",
+      "validator_bucket": "policy_gold_constraint_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0014",
+      "validator_bucket": "single_rank_reopen_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0015",
+      "validator_bucket": "privacy_publication_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0016",
+      "validator_bucket": "r2ao_audit_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0017",
+      "validator_bucket": "boundary_private_read_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0018",
+      "validator_bucket": "boundary_generation_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0019",
+      "validator_bucket": "stop_go_missing_true_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0020",
+      "validator_bucket": "stop_go_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0021",
+      "validator_bucket": "next_phase_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0022",
+      "validator_bucket": "gate_set_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0023",
+      "validator_bucket": "readback_record_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0024",
+      "validator_bucket": "leak_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2amsynth0025",
+      "validator_bucket": "safe_parser_fail"
+    }
+  ]
+}

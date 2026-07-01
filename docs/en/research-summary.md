@@ -3991,7 +3991,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P0-2 actionability-matrix refresh findings
 
-- **BEA-v1-P0-2 Actionability Matrix Refresh completed as a records-only join**: status `actionability_matrix_refresh_pass`, self-test `24/24`, forbidden scan `pass`, refreshed cells `72/72`, causal P1 cell classes unchanged.
+- **BEA-v1-P0-2 Actionability Matrix Refresh completed as a records-only join**: status `actionability_matrix_refresh_pass`, self-test `26/26`, forbidden scan `pass`, refreshed cells `72/72`, causal P1 cell classes unchanged.
 - **Result**: readiness summary is `ready_sanitized_trace=10`, `blocked_private_export=11`, `blocked_missing_label=18`, `blocked_missing_trace=12`, `blocked_aggregate_only=3`, and `not_applicable_by_layer=18`.
 - **Decision**: P0-2 confirms that the next BEA-v1 phase should export or design trace inputs before any new policy experiment. It authorizes scheduler dataset export and support/redundancy/risk/stop trace-surface work only; it does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
 
@@ -4027,13 +4027,13 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P1-0 support-label validator dry-run findings
 
-- **BEA-v1-P1-0 Support-Label Validator Dry Run completed**: status `support_label_validator_dry_run_pass`, self-test `24/24`, forbidden scan `pass`.
+- **BEA-v1-P1-0 Support-Label Validator Dry Run completed**: status `support_label_validator_dry_run_pass`, self-test `26/26`, forbidden scan `pass`.
 - **Result**: 18 synthetic private labels validated through the P0-5 harness, proving schema validation, conjunction derivation, sanitizer, and public summary path work end to end. The fixture is not real label data.
 - **Decision**: P1-0 authorizes real private support labeling with the validated schema and harness. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
 
 ## BEA-v1-P1-1 private-labeling queue findings
 
-- **BEA-v1-P1-1 Private Labeling Queue Preparation completed**: status `private_labeling_queue_preparation_pass`, self-test `24/24`, forbidden scan `pass`.
+- **BEA-v1-P1-1 Private Labeling Queue Preparation completed**: status `private_labeling_queue_preparation_pass`, self-test `26/26`, forbidden scan `pass`.
 - **Result**: 18 project-private queue records were generated under `.openlocus/research-private/`; the public artifact exposes only sanitized queue buckets and manifests.
 - **Decision**: P1-1 authorizes real private support labeling against the generated queue. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
 
@@ -4123,7 +4123,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2A small local experiment public audit package findings
 
-- **BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is complete**: HAAE-R2 source locked at checkpoint `0784be0`, R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`, self-test `24/24`, forbidden scan `pass`.
+- **BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is complete**: HAAE-R2 source locked at checkpoint `0784be0`, R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`, self-test `26/26`, forbidden scan `pass`.
 - **Public-only audit**: no private reads, no recompute, no candidate generation, no retrieval, no scheduler/HAAE execution, no selector/reranker, no runtime/default change, and no BEA-v1-A/P5.
 - **Metric readback**: R2 aggregate metrics confirm `bm25_like`, `symbol_overlap`, and `rrf_like` all at `rate_1`; pairwise same-top agreement `rate_1`; sample bucket `count_2_to_5`.
 - **Boundary**: tiny-N audit only, no method-winner claim and no runtime/default decision.
@@ -4131,7 +4131,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2B scale preflight design findings
 
-- **BEA-v1-HAAE-R2B Scale Preflight Design is complete**: HAAE-R2A source locked at checkpoint `2ca1ac4`, status `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`, self-test `24/24`, forbidden scan `pass`.
+- **BEA-v1-HAAE-R2B Scale Preflight Design is complete**: HAAE-R2A source locked at checkpoint `2ca1ac4`, status `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`, self-test `26/26`, forbidden scan `pass`.
 - **Selected option**: `r14_medium_local_material_smoke`, source fixture task-count `count_21_to_50`, target task-count `count_10_to_20`, selected subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate-depth `count_20`, private-row cap `count_le_5000`.
 - **Boundary**: no private/material gen/execution/CI/network/BEA-v1-A/P5/method-winner; no private reads/writes, material generation, experiment, recompute, candidate generation, retrieval, source-corpus scan, scheduler/HAAE execution, selector/reranker, runtime/default change, or method-winner/scaling claim.
 - **Decision**: R2B authorizes only BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight. R2C execution, private read/write, CI execution, and material generation remain false.
@@ -4161,7 +4161,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2F local medium material experiment findings
 
-- **BEA-v1-HAAE-R2F Local Medium Material Experiment is complete**: R2E checkpoint `b166d79`, R2E status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`, default status `haae_r2f_unavailable_no_explicit_r2d_private_material_root`, explicit pass status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`, self-test `24/24`.
+- **BEA-v1-HAAE-R2F Local Medium Material Experiment is complete**: R2E checkpoint `b166d79`, R2E status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`, default status `haae_r2f_unavailable_no_explicit_r2d_private_material_root`, explicit pass status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`, self-test `26/26`.
 - **Explicit input**: explicit private material root required; reads existing R2D private material only.
 - **Metrics**: aggregate-only metrics for `bm25_like/symbol_overlap/rrf_like`; no exact per-task values, paths, queries, candidates, labels, scores, hashes, snippets, basenames, or filenames published.
 - **Aggregate result**: all three rank sources have gold-file hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, and top1/top5/top10 buckets `count_10_to_20`.
@@ -4240,7 +4240,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2P path-cue robustness material generation findings
 
-- **BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation is complete**: HAAE-R2O checkpoint `4ffc9eb`, R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`, default status `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`, pass status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`, self-test `24/24`.
+- **BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation is complete**: HAAE-R2O checkpoint `4ffc9eb`, R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`, default status `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`, pass status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`, self-test `26/26`.
 - **Material contract**: explicit opt-in, target 20 tasks, candidate depth 40, row cap 20000, variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`, rank sources `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`.
 - **Gold policy**: gold labels private only and ranking policy ignores gold labels.
 - **Boundary**: no experiment metrics in R2P; public artifact aggregate-only; R2P authorizes only BEA-v1-HAAE-R2Q Public Audit Package.
@@ -4277,7 +4277,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2U content-identifier material generation findings
 
-- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `24/24`.
+- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `26/26`.
 - **Contract**: explicit opt-in, target 20, candidate depth 40, row cap 20000, rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`.
 - **Policy**: no path tokens/extensions/directories, gold private only, gold labels not used for ranking, public aggregate-only output, and no experiment metrics in R2U.
 - **Materialization**: explicit private material generation reached target 20, candidate depth 40, row cap 20000, and all seven content/identifier rank sources.
@@ -4320,13 +4320,13 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2AA actual explicit local real-file material smoke findings
 
-- **BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke is implemented**: HAAE-R2Z checkpoint `a763a84`, R2Z status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`, default status `haae_r2aa_unavailable_no_explicit_real_file_material_smoke_opt_in`, pass status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`, self-test `24/24`.
+- **BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke is implemented**: HAAE-R2Z checkpoint `a763a84`, R2Z status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`, default status `haae_r2aa_unavailable_no_explicit_real_file_material_smoke_opt_in`, pass status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`, self-test `26/26`.
 - **Bounds**: explicit opt-in required, operator public corpus manifest/allowlist, target_20, candidate_depth_40, source_file_count_bucket, source_file_cap_500, row_cap_20000, wall_clock_cap_20_minutes, gold private eval only, no experiment metrics, and public aggregate-only.
 - **Boundary**: R2AA writes private real-file candidate rows only under explicit private root and authorizes only BEA-v1-HAAE-R2AB Real-File Material Public Audit Package.
 
 ## BEA-v1-HAAE-R2AB real-file material public audit findings
 
-- **BEA-v1-HAAE-R2AB Real-File Material Public Audit Package is complete**: HAAE-R2AA checkpoint `f325b65`, R2AA status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`, status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`, self-test `15/15`, R2AA self-test 24/24, and R2Z source checkpoint `a763a84`.
+- **BEA-v1-HAAE-R2AB Real-File Material Public Audit Package is complete**: HAAE-R2AA checkpoint `f325b65`, R2AA status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`, status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`, self-test `15/15`, R2AA self-test 26/26, and R2Z source checkpoint `a763a84`.
 - **Audit result**: target20, depth40, source_file_count_bucket count_21_to_50, source cap 500, row cap 20000, real-file material generation complete, no metrics, aggregate-only, and R2AB-only.
 - **Boundary**: R2AB is public-only and reads only the R2AA public artifact; no private root read, recompute, generation, source scan, or metrics.
 - **Decision**: R2AB authorizes only BEA-v1-HAAE-R2AC Actual Real-File Material Experiment over existing R2AA private material with explicit private root; no new material generation/retrieval/runtime/source scan/CI/network/provider/clone/broad scan/default/method/scaling/raw publication.
@@ -4427,3 +4427,11 @@ R2AI result: explicit experiment complete with robustness_status_bucket `brittle
 - **Selected signal family**: `evidence_pair_support_complementarity`, moving from isolated single-candidate rank to multi-evidence consistency/support/contrast.
 - **Rejected alternatives**: public aggregate mechanism analysis rejected; single-rank content/path tweak rejected; lexical rank expansion rejected; provider semantic judgement rejected.
 - **Next scope**: BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight; R2AM public-only preflight may define schema/allowlist/bounds/private-output contract; R2AN generation requires separate authorization; no method/default/scale/winner/validated-signal claims.
+
+## BEA-v1-HAAE-R2AM evidence-pair support material generation preflight findings
+
+- **BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight is complete**: R2AL checkpoint `39800bf`, R2AL status `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`, status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`, self-test `26/26`, R2AL self-test 28/28, selected family `evidence_pair_support_complementarity`.
+- **R2AN phase**: BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation, with default mode no-op and explicit mode requiring private output root, public corpus manifest, allow flag, confirm private output, confirm no experiment metrics.
+- **Bounds**: target_task_count=20, evidence_unit_depth_cap_per_task=40, support_pair_cap_per_task=120, contrast_control_pair_cap_per_task=80, total_pair_cap_per_task=200, source_file_cap=500, private_row_cap=20000, wall_clock_cap_minutes=20.
+- **Policy and privacy**: bounded public source allowlist required; schema `bea_v1_haae_r2an_evidence_pair_support_material_generation_v1`; gold private eval only; single-rank content/path signal forbidden; material QA only.
+- **Stop/go**: next audit BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package; no method/default/scale/winner/validated-signal claims.
