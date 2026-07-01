@@ -11589,3 +11589,13 @@ The inventory accounted for all 10 HAAE schema groups, but the R1C bootstrap roo
 ### Decision
 
 R1D is a controlled No-Go for hydration execution and HAAE-R2. It authorizes no replay, scoring, retrieval, candidate generation, HAAE-layer execution, selector/reranker, BEA-v1-A/P5, runtime/default change, or raw publication. Future progress requires a separate bounded hydration preflight or an operator-supplied meaningful root. See `docs/en/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R1E: Bounded Private Experiment Material Generation
+
+`eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` generated `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json` with status `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`. Self-test passed `16/16`, forbidden scan passed, HAAE-R1D source checkpoint `9299b0a` was locked, and the default no-opt-in status is `haae_r1e_unavailable_no_explicit_material_generation_opt_in`.
+
+The explicit run is local/manual only and writes raw private material rows only under an explicit temp/ignored private root. It uses public R14 sanity tasks, reads labels only in explicit private mode, scans a bounded committed Rust corpus, and creates deterministic BM25-like plus symbol-overlap traces merged by an RRF-like order. The public artifact contains aggregate buckets only and no private paths, task ids, queries, candidate names, labels, spans, scores, hashes, snippets, rows, or diagnostics.
+
+### Decision
+
+R1E authorizes only a small local HAAE-R2 experiment. It does not authorize CI, network, clone, provider/model calls, broad replay, selector/reranker execution, BEA-v1-A/P5, runtime/default changes, scoring claims, method-winner claims, or raw publication. See `docs/en/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`.

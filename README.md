@@ -166,6 +166,24 @@ HAAE-R2; any future work must be a separate bounded hydration preflight or an
 operator-supplied meaningful root, still with replay/scoring/retrieval/candidate
 generation/BEA-v1-A/P5/runtime false.
 
+**BEA-v1-HAAE-R1E: Bounded Private Experiment Material Generation** is now
+complete as the first explicit-opt-in phase allowed to generate tiny real
+private material rows (source lock `9299b0a`, status
+`haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`,
+self-test `16/16`). Default/no-opt-in mode performs no private reads or writes
+and emits status `haae_r1e_unavailable_no_explicit_material_generation_opt_in`.
+Explicit mode is local/manual only and requires
+`--allow-private-material-generation --private-output-root <temp-or-ignored-root>
+--sample-size <=5 --candidate-depth <=20 --confirm-private-rows-only`. The
+materializer uses public R14 sanity tasks and labels privately, scans only a
+bounded committed Rust corpus from the R14 lock, and writes raw task/query/path/
+label/rank/evidence rows only under the explicit private root. The public
+artifact is aggregate-only and scanner-passed: no private path, task id, query,
+candidate path/name, span, score, hash, label, snippet, row, or diagnostic value
+is published. R1E authorizes only a small local HAAE-R2 experiment; CI, network,
+clone, provider/model calls, selector/reranker, BEA-v1-A/P5, runtime/default
+change, broad replay, and method-winner claims remain false.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text

@@ -2,6 +2,10 @@
 
 Date: 2026-06-28
 
+Latest HAAE status: BEA-v1-HAAE-R1E Bounded Private Experiment Material Generation is complete with status `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`, self-test `16/16`, HAAE-R1D checkpoint `9299b0a`, and HAAE-R1D status `haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`. It generated a tiny explicit-opt-in private material root locally and authorizes only BEA-v1-HAAE-R2 Small Local Experiment; public reports remain aggregate-only.
+
+最新 HAAE 状态：BEA-v1-HAAE-R1E Bounded Private Experiment Material Generation 已完成，状态为 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`，self-test `16/16`，HAAE-R1D checkpoint `9299b0a`，HAAE-R1D 状态为 `haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`。它在本地用显式 opt-in 生成了一个小型 private material root，只授权 BEA-v1-HAAE-R2 Small Local Experiment；public reports 仍只发布 aggregate。
+
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
 
@@ -243,6 +247,13 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-n10eq-score-guard-safety-probe-design.md`: [en](en/bea-v1-n10eq-score-guard-safety-probe-design.md) · [zh](zh/bea-v1-n10eq-score-guard-safety-probe-design.md)
 - `bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md`: [en](en/bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md) · [zh](zh/bea-v1-n10er-bounded-public-ci-score-guard-safety-probe.md)
 - `bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md`: [en](en/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md) · [zh](zh/bea-v1-n10do-candidate-pool-absence-source-acquisition-audit.md)
+- `bea-v1-haae-r0-hierarchical-actionable-evidence-acquisition-design-schema-preflight.md`: [en](en/bea-v1-haae-r0-hierarchical-actionable-evidence-acquisition-design-schema-preflight.md) · [zh](zh/bea-v1-haae-r0-hierarchical-actionable-evidence-acquisition-design-schema-preflight.md)
+- `bea-v1-haae-r1-unified-private-trace-schema-feasibility-inventory.md`: [en](en/bea-v1-haae-r1-unified-private-trace-schema-feasibility-inventory.md) · [zh](zh/bea-v1-haae-r1-unified-private-trace-schema-feasibility-inventory.md)
+- `bea-v1-haae-r1a-private-trace-coverage-gap-design.md`: [en](en/bea-v1-haae-r1a-private-trace-coverage-gap-design.md) · [zh](zh/bea-v1-haae-r1a-private-trace-coverage-gap-design.md)
+- `bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md`: [en](en/bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md) · [zh](zh/bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md)
+- `bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md`: [en](en/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md) · [zh](zh/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md)
+- `bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`: [en](en/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md) · [zh](zh/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md)
+- `bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`: [en](en/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md) · [zh](zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

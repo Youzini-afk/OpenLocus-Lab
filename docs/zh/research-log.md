@@ -10778,3 +10778,13 @@ Inventory accounted for 全部 10 个 HAAE schema groups，但 R1C bootstrap roo
 ### Decision
 
 R1D 是 hydration execution 与 HAAE-R2 的 controlled No-Go。它不授权 replay、scoring、retrieval、candidate generation、HAAE-layer execution、selector/reranker、BEA-v1-A/P5、runtime/default change 或 raw publication。后续进展需要单独的 bounded hydration preflight 或 operator-supplied meaningful root。参见 `docs/zh/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R1E：Bounded Private Experiment Material Generation
+
+`eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` 生成 `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json`，状态为 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`。Self-test 通过 `16/16`，forbidden scan 通过，HAAE-R1D source checkpoint `9299b0a` 已锁定，默认 no-opt-in 状态为 `haae_r1e_unavailable_no_explicit_material_generation_opt_in`。
+
+Explicit run 只允许 local/manual，并且只在显式 temp/ignored private root 下写入 raw private material rows。它使用公开 R14 sanity tasks，只在 explicit private mode 读取 labels，扫描 bounded committed Rust corpus，并生成 deterministic BM25-like、symbol-overlap trace 与 RRF-like merge order。公开 artifact 只包含 aggregate buckets，不包含 private paths、task ids、queries、candidate names、labels、spans、scores、hashes、snippets、rows 或 diagnostics。
+
+### Decision
+
+R1E 只授权 small local HAAE-R2 experiment。它不授权 CI、network、clone、provider/model calls、broad replay、selector/reranker execution、BEA-v1-A/P5、runtime/default changes、scoring claims、method-winner claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`。
