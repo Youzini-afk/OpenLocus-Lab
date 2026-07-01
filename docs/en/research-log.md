@@ -12012,11 +12012,21 @@ Next is BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight. R2
 
 `eval/bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight.py` generated `artifacts/bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight/bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight_report.json`. Status is `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`, self-test `26/26`, R2AL checkpoint `39800bf`, R2AL status `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`, R2AL self-test 28/28, and selected family `evidence_pair_support_complementarity`.
 
-R2AM specifies R2AN phase BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation with default mode no-op and explicit mode requiring private output root, public corpus manifest, allow flag, confirm private output, confirm no experiment metrics. Bounds are target_task_count=20, evidence_unit_depth_cap_per_task=40, support_pair_cap_per_task=120, contrast_control_pair_cap_per_task=80, total_pair_cap_per_task=200, source_file_cap=500, private_row_cap=20000, wall_clock_cap_minutes=20.
+R2AM specifies R2AN phase BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation with default mode no-op and explicit mode used a private output root, public corpus manifest, allow flag, confirm private output, and confirm no experiment metrics. Bounds are target_task_count=20, evidence_unit_depth_cap_per_task=40, support_pair_cap_per_task=120, contrast_control_pair_cap_per_task=80, total_pair_cap_per_task=200, source_file_cap=500, private_row_cap=20000, wall_clock_cap_minutes=20.
 
 ### Boundary
 
 bounded public source allowlist required; schema `bea_v1_haae_r2an_evidence_pair_support_material_generation_v1`; gold private eval only; single-rank content/path signal forbidden; material QA only; next audit BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package; no method/default/scale/winner/validated-signal claims.
+
+## 2026-07-01 — BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation
+
+`eval/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation.py` generated the explicit material artifact `artifacts/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation_report.json`. Default status is `haae_r2an_unavailable_no_explicit_material_generation_opt_in`, explicit success status is `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`, self-test `27/27`, R2AM checkpoint `b243924`, R2AM status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`, R2AM self-test 26/26, and selected family `evidence_pair_support_complementarity`.
+
+default mode no-op. explicit mode requires private output root, public corpus manifest, allow flag, confirm private output, confirm no experiment metrics. Bounds are target_task_count=20, evidence_unit_depth_cap_per_task=40, support_pair_cap_per_task=120, contrast_control_pair_cap_per_task=80, total_pair_cap_per_task=200, source_file_cap=500, private_row_cap=20000, wall_clock_cap_minutes=20.
+
+### Boundary
+
+Schema `bea_v1_haae_r2an_evidence_pair_support_material_generation_v1`; gold private eval only; single-rank content/path signal forbidden; pair/setwise oriented; material QA only; aggregate-only public artifact; next BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package.
 
 
  R2AI result marker: robustness_status_bucket brittle_or_artifact; control_response_bucket controls_match_or_exceed_signal; variant top-k/MRR buckets are aggregate-only; no method/default/scaling claim.
