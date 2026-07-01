@@ -3865,3 +3865,11 @@ R2AI 结果：explicit experiment 已完成，robustness_status_bucket 为 `brit
 - **Metrics**：bucketized aggregate metrics by pair family，结果为 support_signal / weak_or_artifact_signal / mixed_or_inconclusive。
 - **Privacy**：no exact counts/rates/MRR/scores；no raw task/query/path/evidence/pair/source/gold/snippet/hash/line data。
 - **Stop/go**：only BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package。
+
+## BEA-v1-HAAE-R2AQ evidence-pair support experiment public audit 发现
+
+- **BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package 已完成**：R2AP checkpoint `87ea9de`，R2AP status `haae_r2ap_explicit_local_material_experiment_complete_r2aq_public_audit_authorized_support_signal`，状态 `haae_r2aq_evidence_pair_support_experiment_public_audit_package_complete_r2ar_next_step_decision_authorized_support_signal`，self-test `28/28`，R2AP self-test 26/26，forbidden scan pass，inherited R2AO 5cfa8d3 and R2AN 93bba5f。
+- **Audit result**：bucket-only support_signal，support_vs_control_separation_bucket=support_separation_high。
+- **Privacy/claims**：no exact metrics/raw publication，no method/default/scale claim。
+- **Boundary**：public-only audit，no private roots、no recompute experiment metrics、no material generation、no source corpus scan。
+- **Stop/go**：only BEA-v1-HAAE-R2AR Evidence-Pair Support Next-Step Decision Package；no execution。
