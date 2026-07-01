@@ -3209,7 +3209,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v0.4-P1 发现
 
-- **BEA-v0.4-P1 集合角色代理冒烟已实现**：在新鲜小规模外部冒烟切片上，
+- **BEA-v0.4-P1 集合角色代理冒烟已完成**：在新鲜小规模外部冒烟切片上，
   将评估本地的确定性角色代理集合选择策略
   （`setwise_complementarity_v0_4_p1`）与 BEA v0.3 及同预算对照组比较。
   仅为 P1 冒烟证据，不是 v0.4 证明/胜者/默认/校准。
@@ -3553,7 +3553,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2D explicit local medium material generation smoke 发现
 
-- **BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke 已实现**：HAAE-R2C source 锁定在 checkpoint `68000b2`，默认状态 `haae_r2d_unavailable_no_explicit_medium_material_generation_opt_in`，explicit pass 状态 `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`，self-test `19/19`。
+- **BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke 已完成**：HAAE-R2C source 锁定在 checkpoint `68000b2`，默认状态 `haae_r2d_unavailable_no_explicit_medium_material_generation_opt_in`，explicit pass 状态 `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`，self-test `19/19`。
 - **Explicit opt-in contract**：subset policy `deterministic_public_manifest_prefix_cap_10_to_20`，public fixture bucket `count_21_to_50`，target bucket `count_10_to_20`，candidate depth `count_20`，private row cap `count_le_5000`。
 - **Public artifact**：public aggregate-only，private write bucket `count_le_5000`，private read validation bucket `count_1_to_10`，no raw publication。
 - **Boundary**：no experiment comparison、no R2 recompute、no runtime/retrieval/source scan beyond fixture、no CI/network/provider、no scheduler/HAAE/selector、no BEA-v1-A/P5/runtime/default、no method/scaling claim。
@@ -3594,7 +3594,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2I harder/diversified local material generation smoke 发现
 
-- **BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke 已实现**：HAAE-R2H checkpoint `3db7366`，R2H status `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`，默认状态 `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`，explicit pass status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`，self-test `21/21`。
+- **BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke 已完成**：HAAE-R2H checkpoint `3db7366`，R2H status `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`，默认状态 `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`，explicit pass status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`，self-test `21/21`。
 - **Explicit contract**：要求 explicit opt-in；target 20 tasks，candidate depth 40，private row cap 10000。
 - **Rank sources**：`bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`。
 - **Boundary**：只发布 aggregate public manifest；no experiment metrics in R2I，no old private root read，no retrieval/runtime/OpenLocus/source scan outside fixture，no CI/network/provider/clone，no scheduler/HAAE/selector，no BEA-v1-A/P5/default change，no method/scaling claim。
@@ -3645,3 +3645,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Selected next step**：BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation，基于 `path_structure_prior` 与 fixture path cues + control underfit。
 - **R2P contract**：target 20 tasks，candidate depth 40，row cap 20000，variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`，local explicit opt-in，private output root，public aggregate-only，且 no experiment metrics in R2P。
 - **Boundary**：R2O 是 not execution/CI/new material generation in R2O；no method/default/scaling claim；无 private reads/writes、material generation、execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。
+
+## BEA-v1-HAAE-R2P path-cue robustness material generation 发现
+
+- **BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation 已完成**：HAAE-R2O checkpoint `4ffc9eb`，R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`，默认状态 `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`，pass status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`，self-test `22/22`。
+- **Material contract**：explicit opt-in，target 20 tasks，candidate depth 40，row cap 20000，variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`，rank sources `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`。
+- **Gold policy**：gold labels private only 且 ranking policy ignores gold labels。
+- **Boundary**：no experiment metrics in R2P；public artifact aggregate-only；R2P 只授权 BEA-v1-HAAE-R2Q Public Audit Package。

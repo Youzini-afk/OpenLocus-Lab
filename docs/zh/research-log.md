@@ -10948,3 +10948,13 @@ R2O 保留 mechanism context `path_structure_prior` 与 fixture path cues + cont
 ### Decision
 
 R2O 是 not execution/CI/new material generation in R2O，并且 no method/default/scaling claim。它只读取 public artifacts/docs，不执行 private reads/writes、material generation、execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。参见 `docs/zh/bea-v1-haae-r2o-robustness-preflight-design.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2P: Path-Cue Robustness Material Generation
+
+`eval/bea_v1_haae_r2p_path_cue_robustness_material_generation.py` 生成 `artifacts/bea_v1_haae_r2p_path_cue_robustness_material_generation/bea_v1_haae_r2p_path_cue_robustness_material_generation_report.json`。默认状态为 `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`；pass status 为 `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`；self-test `22/22`；HAAE-R2O checkpoint `4ffc9eb`；R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`。
+
+R2P 要求 explicit opt-in，target 20 tasks，candidate depth 40，row cap 20000，variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`，rank sources 为 `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`。gold labels private only 且 ranking policy ignores gold labels。
+
+### Decision
+
+R2P computes no experiment metrics in R2P，并且只授权 BEA-v1-HAAE-R2Q Public Audit Package。它只读取 committed public R14 medium fixture，只在 explicit operator root 下写 private rows，并发布 aggregate-only public artifact。参见 `docs/zh/bea-v1-haae-r2p-path-cue-robustness-material-generation.md`。

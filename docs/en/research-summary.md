@@ -4237,3 +4237,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Selected next step**: BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation, grounded in `path_structure_prior` with fixture path cues + control underfit.
 - **R2P contract**: target 20 tasks, candidate depth 40, row cap 20000, variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`, local explicit opt-in, private output root, public aggregate-only, and no experiment metrics in R2P.
 - **Boundary**: R2O is not execution/CI/new material generation in R2O; no method/default/scaling claim; no private reads/writes, material generation, execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector.
+
+## BEA-v1-HAAE-R2P path-cue robustness material generation findings
+
+- **BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation is complete**: HAAE-R2O checkpoint `4ffc9eb`, R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`, default status `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`, pass status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`, self-test `22/22`.
+- **Material contract**: explicit opt-in, target 20 tasks, candidate depth 40, row cap 20000, variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`, rank sources `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`.
+- **Gold policy**: gold labels private only and ranking policy ignores gold labels.
+- **Boundary**: no experiment metrics in R2P; public artifact aggregate-only; R2P authorizes only BEA-v1-HAAE-R2Q Public Audit Package.

@@ -11759,3 +11759,13 @@ R2O keeps mechanism context `path_structure_prior` with fixture path cues + cont
 ### Decision
 
 R2O is not execution/CI/new material generation in R2O and makes no method/default/scaling claim. It reads only public artifacts/docs and performs no private reads/writes, material generation, execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector. See `docs/en/bea-v1-haae-r2o-robustness-preflight-design.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2P: Path-Cue Robustness Material Generation
+
+`eval/bea_v1_haae_r2p_path_cue_robustness_material_generation.py` generated `artifacts/bea_v1_haae_r2p_path_cue_robustness_material_generation/bea_v1_haae_r2p_path_cue_robustness_material_generation_report.json`. Default status is `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`; pass status is `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`; self-test `22/22`; HAAE-R2O checkpoint `4ffc9eb`; R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`.
+
+R2P requires explicit opt-in, target 20 tasks, candidate depth 40, row cap 20000, variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`, and rank sources `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`. gold labels private only and ranking policy ignores gold labels.
+
+### Decision
+
+R2P computes no experiment metrics in R2P and authorizes only BEA-v1-HAAE-R2Q Public Audit Package. It reads committed public R14 medium fixture only, writes private rows only under explicit operator root, and publishes aggregate-only public artifact. See `docs/en/bea-v1-haae-r2p-path-cue-robustness-material-generation.md`.
