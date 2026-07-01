@@ -3721,7 +3721,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2Z real-file candidate material preflight 发现
 
-- **BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight 已完成**：HAAE-R2Y checkpoint `b56462a`，R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`，状态 `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，self-test `20/20`。
+- **BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight 已完成**：HAAE-R2Y checkpoint `b56462a`，R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`，状态 `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，self-test `21/21`。
 - **Future recipe**：BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 使用 operator public corpus manifest/allowlist required，no broad workspace scan，no network clone by default，target 20，candidate depth 40，source file cap 500，row cap 20000，wall-clock cap 20 minutes，gold private eval only not policy，public aggregate-only。
 - **Boundary**：R2Z performs no execution/private/candidate generation/source scan/CI in R2Z。future private rows may contain real file candidate references but not R2Z。No method/default/scaling claim is made。
 
@@ -3787,4 +3787,14 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 - **Robustness material**：variants 为 symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening；rank_policy_used_gold_bool=false；rank_policy_used_path_bool=false；gold_private_eval_only_bool=true。
 - **Public boundary**：aggregate-only public artifact，no experiment metrics，authorize only R2AH public audit/package，no R2AH experiment。
 
+## BEA-v1-HAAE-R2AH robustness material public audit package 发现
+
+- **BEA-v1-HAAE-R2AH Robustness Material Public Audit Package 已完成**：HAAE-R2AG checkpoint `a0ac3b3`，R2AG status `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，状态 `haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized`，self-test `21/21`。
+- **Public-only audit**：read only committed R2AG public artifact；no private root read；no recompute material；no experiment metrics；no source/candidate scan。
+- **Audit result**：target 20、depth 40、row cap 20000，variants symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening，rank policy no gold/path，以及 aggregate-only privacy 均通过。
+- **Stop/go**：authorize only BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material，即 explicit local robustness experiment over existing R2AG private material；no CI/network/new generation/default/method/scale/raw publication。
+
  R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.
+
+
+R2AH readback marker: no experiment metrics in R2AH; R2AI aggregate-only experiment metrics authorized; explicit local robustness experiment over existing R2AG private material; no CI/network/new generation/default/method/scale/raw publication.

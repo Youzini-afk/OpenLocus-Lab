@@ -11051,7 +11051,7 @@ R2Z 是 public-only design/preflight。R2Z preflight authorized true；R2Z execu
 
 ## 2026-07-01 — BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight
 
-`eval/bea_v1_haae_r2z_real_file_candidate_material_preflight.py` 生成 `artifacts/bea_v1_haae_r2z_real_file_candidate_material_preflight/bea_v1_haae_r2z_real_file_candidate_material_preflight_report.json`。状态为 `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，self-test `20/20`，HAAE-R2Y checkpoint `b56462a`，R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`。
+`eval/bea_v1_haae_r2z_real_file_candidate_material_preflight.py` 生成 `artifacts/bea_v1_haae_r2z_real_file_candidate_material_preflight/bea_v1_haae_r2z_real_file_candidate_material_preflight_report.json`。状态为 `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，self-test `21/21`，HAAE-R2Y checkpoint `b56462a`，R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`。
 
 R2Z 定义 BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 的 bounded future explicit local real-file candidate material smoke：operator public corpus manifest/allowlist required，no broad workspace scan，no network clone by default，target 20，candidate depth 40，source file cap 500，row cap 20000，wall-clock cap 20 minutes，gold private eval only not policy，public aggregate-only。
 
@@ -11142,4 +11142,17 @@ R2AG 是 opt-in only。default mode: no private read/write/source scan/material 
 
 Public report 是 aggregate-only public artifact，no experiment metrics。Stop/go authorize only R2AH public audit/package，no R2AH experiment。参见 `docs/zh/bea-v1-haae-r2ag-explicit-local-bounded-robustness-material-generation.md`。
 
+## 2026-07-01 — BEA-v1-HAAE-R2AH Robustness Material Public Audit Package
+
+`eval/bea_v1_haae_r2ah_robustness_material_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2ah_robustness_material_public_audit_package/bea_v1_haae_r2ah_robustness_material_public_audit_package_report.json`。状态为 `haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized`，self-test `21/21`，HAAE-R2AG checkpoint `a0ac3b3`，R2AG status `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`。
+
+R2AH 是 public-only audit。它 read only committed R2AG public artifact，no private root read、no recompute material、no experiment metrics、no source/candidate scan。它审计 target 20、depth 40、row cap 20000，variants symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening，rank policy no gold/path，aggregate-only privacy 和 stop/go。
+
+### Boundary
+
+R2AH 只授权 BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material，即 explicit local robustness experiment over existing R2AG private material。它 no CI/network/new generation/default/method/scale/raw publication。参见 `docs/zh/bea-v1-haae-r2ah-robustness-material-public-audit-package.md`。
+
  R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.
+
+
+R2AH readback marker: no experiment metrics in R2AH; R2AI aggregate-only experiment metrics authorized; explicit local robustness experiment over existing R2AG private material; no CI/network/new generation/default/method/scale/raw publication.
