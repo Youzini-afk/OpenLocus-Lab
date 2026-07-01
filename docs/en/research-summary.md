@@ -3244,7 +3244,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **rrf_plus_dense_mock also dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.134. Dense mock evidence floods the RRF pool with irrelevant candidates.
 - **Graph pollution is zero**: No graph evidence returned on forbidden paths (graph_pollution_ratio=0.000).
 - **Graph has low token waste when it fires** (0.310 vs 0.779 baseline) but mostly abstains (0.785 abstain rate).
-- **Graph path derivation stats**: symbol=358/741 (48.3%), regex=156/741 (21.1%), none=227/741 (30.6%). Impact returns empty evidence for 355/514 tasks with a top path (no graph edges found).
+- **Graph path derivation stats**: symbol=358/741 (48.3%), regex=156/741 (21.1%), none=2210/1041 (30.6%). Impact returns empty evidence for 355/514 tasks with a top path (no graph edges found).
 - **Combined strategies show additive noise**: rrf_plus_dense_mock_plus_graph accumulates both graph (435) and dense (20,273) false spans (20,695 total).
 - **Citation validity remains 1.0**: graph_basic, dense_mock, and composite strategies are revalidated in R25 with Rust hash/range/path citation validation. no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use.
 - **QuIVer/TDB honestly reported as unavailable/not_measured**: No numeric zero quality results for QuIVer. TDB not applicable.
@@ -3991,7 +3991,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P0-2 actionability-matrix refresh findings
 
-- **BEA-v1-P0-2 Actionability Matrix Refresh completed as a records-only join**: status `actionability_matrix_refresh_pass`, self-test `6/6`, forbidden scan `pass`, refreshed cells `72/72`, causal P1 cell classes unchanged.
+- **BEA-v1-P0-2 Actionability Matrix Refresh completed as a records-only join**: status `actionability_matrix_refresh_pass`, self-test `10/10`, forbidden scan `pass`, refreshed cells `72/72`, causal P1 cell classes unchanged.
 - **Result**: readiness summary is `ready_sanitized_trace=10`, `blocked_private_export=11`, `blocked_missing_label=18`, `blocked_missing_trace=12`, `blocked_aggregate_only=3`, and `not_applicable_by_layer=18`.
 - **Decision**: P0-2 confirms that the next BEA-v1 phase should export or design trace inputs before any new policy experiment. It authorizes scheduler dataset export and support/redundancy/risk/stop trace-surface work only; it does not authorize P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
 
@@ -4027,13 +4027,13 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P1-0 support-label validator dry-run findings
 
-- **BEA-v1-P1-0 Support-Label Validator Dry Run completed**: status `support_label_validator_dry_run_pass`, self-test `6/6`, forbidden scan `pass`.
+- **BEA-v1-P1-0 Support-Label Validator Dry Run completed**: status `support_label_validator_dry_run_pass`, self-test `10/10`, forbidden scan `pass`.
 - **Result**: 18 synthetic private labels validated through the P0-5 harness, proving schema validation, conjunction derivation, sanitizer, and public summary path work end to end. The fixture is not real label data.
 - **Decision**: P1-0 authorizes real private support labeling with the validated schema and harness. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
 
 ## BEA-v1-P1-1 private-labeling queue findings
 
-- **BEA-v1-P1-1 Private Labeling Queue Preparation completed**: status `private_labeling_queue_preparation_pass`, self-test `7/7`, forbidden scan `pass`.
+- **BEA-v1-P1-1 Private Labeling Queue Preparation completed**: status `private_labeling_queue_preparation_pass`, self-test `10/10`, forbidden scan `pass`.
 - **Result**: 18 project-private queue records were generated under `.openlocus/research-private/`; the public artifact exposes only sanitized queue buckets and manifests.
 - **Decision**: P1-1 authorizes real private support labeling against the generated queue. It does not authorize support counterfactual execution, support marginal-utility claims, P5, BEA-v1-A, selector/reranker execution, implementation, runtime promotion, broad retrieval expansion, method-winner claims, or downstream-value claims.
 
@@ -4120,3 +4120,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Explicit experiment result**: read only existing R1E private material groups, private read bucket `count_1_to_10`, private write bucket `count_0`, aggregate metrics computed for `bm25_like`, `symbol_overlap`, and `rrf_like` from precomputed rank traces joined with outcomes in memory.
 - **Public result**: aggregate buckets only, no private root path/basename, task ids, queries, candidate paths, snippets, labels, raw ranks, scores, hashes, filenames, or raw rows.
 - **Decision**: R2 authorizes only BEA-v1-HAAE-R2A Public Audit Package. R3 scale preflight, new candidate generation, rematerialization, retrieval, runtime/default changes, BEA-v1-A/P5, selector/reranker, scheduler/HAAE layer, provider/network, method-winner claims, and raw publication remain unauthorized.
+
+## BEA-v1-HAAE-R2A small local experiment public audit package findings
+
+- **BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is complete**: HAAE-R2 source locked at checkpoint `0784be0`, R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`, self-test `10/10`, forbidden scan `pass`.
+- **Public-only audit**: no private reads, no recompute, no candidate generation, no retrieval, no scheduler/HAAE execution, no selector/reranker, no runtime/default change, and no BEA-v1-A/P5.
+- **Metric readback**: R2 aggregate metrics confirm `bm25_like`, `symbol_overlap`, and `rrf_like` all at `rate_1`; pairwise same-top agreement `rate_1`; sample bucket `count_2_to_5`.
+- **Boundary**: tiny-N audit only, no method-winner claim and no runtime/default decision.
+- **Decision**: R2A authorizes only BEA-v1-HAAE-R2B Scale Preflight Design for expanding material generation beyond three tasks. Scale execution and CI remain unauthorized.

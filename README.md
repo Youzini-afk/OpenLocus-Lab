@@ -200,6 +200,20 @@ scheduler/HAAE-layer execution, selector/reranker, CI/network/clone/provider,
 BEA-v1-A/P5, runtime/default change, raw publication, method-winner claim, or R3
 scale authorization. R2 authorizes only **BEA-v1-HAAE-R2A Public Audit Package**.
 
+**BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package** is complete as a
+public-only audit/package of the R2 aggregate artifact (source lock `0784be0`,
+R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`,
+status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`,
+self-test `10/10`). The audit reads no private material and performs no recompute,
+candidate generation, retrieval, scheduler/HAAE execution, selector/reranker,
+runtime/default change, or BEA-v1-A/P5 action. It confirms the R2 tiny-N aggregate
+readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket
+`rate_1`, pairwise same-top agreement bucket `rate_1`, and sample bucket
+`count_2_to_5`. This remains a tiny-N audit with no method-winner claim and no
+runtime/default decision. R2A authorizes only **BEA-v1-HAAE-R2B Scale Preflight Design**
+over how to expand material generation beyond three tasks; it does not
+authorize scale execution or CI.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text

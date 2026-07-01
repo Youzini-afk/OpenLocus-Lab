@@ -2068,7 +2068,7 @@ Eval-layer ablation study measuring the contribution of graph_basic and dense_mo
 |--------|-------|
 | Path derivation: symbol | 358/741 (48.3%) |
 | Path derivation: regex | 156/741 (21.1%) |
-| Path derivation: none | 227/741 (30.6%) |
+| Path derivation: none | 2210/1041 (30.6%) |
 | Impact failures (no top path) | 227 |
 | Impact no evidence (top path found but impact empty) | 355 |
 | graph_pollution_ratio | 0.000 |
@@ -11263,7 +11263,7 @@ execution, FD1 replay, runtime change, or policy implementation.
 
 `eval/bea_v1_p0_2_actionability_matrix_refresh.py` generated
 `artifacts/bea_v1_p0_2_actionability_matrix_refresh/bea_v1_p0_2_actionability_matrix_refresh_report.json`
-with status `actionability_matrix_refresh_pass`. Self-test passed `6/6`,
+with status `actionability_matrix_refresh_pass`. Self-test passed `10/10`,
 forbidden scan passed, all 72 matrix cells were refreshed, and the causal P1
 cell classes were not mutated.
 
@@ -11385,7 +11385,7 @@ Validate the P0-5 private support-label harness end to end with a synthetic priv
 
 ### Result
 
-`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `6/6`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
+`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `10/10`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
 
 ### Decision
 
@@ -11401,7 +11401,7 @@ Prepare a real project-private support-labeling queue from P0-4 design records a
 
 ### Result
 
-`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `7/7`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
+`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `10/10`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
 
 ### Decision
 
@@ -11609,3 +11609,13 @@ The explicit run reads only existing R1E private material groups from a supplied
 ### Decision
 
 R2 authorizes only BEA-v1-HAAE-R2A Public Audit Package. It does not authorize R3 scale preflight, new candidate generation, rematerialization, source-corpus scan, broad retrieval, OpenLocus runtime, scheduler/HAAE-layer execution, selector/reranker, CI/network/clone/provider, BEA-v1-A/P5, runtime/default changes, raw publication, or method-winner claims. See `docs/en/bea-v1-haae-r2-small-local-lexical-material-experiment.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
+
+`eval/bea_v1_haae_r2a_public_audit_package.py` generated `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json` with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`. Self-test passed `10/10`, forbidden scan passed, HAAE-R2 source checkpoint `0784be0` was locked, and the R2 source status is `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`.
+
+R2A is public-only. It reads no private material, performs no recompute, and runs no candidate generation, retrieval, scheduler/HAAE execution, selector/reranker, runtime/default change, or BEA-v1-A/P5 action. The audit confirms the R2 tiny-N aggregate readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket `rate_1`; pairwise same-top agreement bucket is `rate_1`; sample bucket is `count_2_to_5`.
+
+### Decision
+
+This is a tiny-N audit with no method-winner claim and no runtime/default decision. R2A authorizes only BEA-v1-HAAE-R2B Scale Preflight Design, a design phase for expanding material generation beyond three tasks. It does not authorize scale execution or CI. See `docs/en/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md`.

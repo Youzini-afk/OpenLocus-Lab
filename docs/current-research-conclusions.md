@@ -2,9 +2,9 @@
 
 Date: 2026-06-28
 
-Latest HAAE status: BEA-v1-HAAE-R2 Small Local Lexical Material Experiment is complete with status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, self-test `15/15`, HAAE-R1E checkpoint `0135e1f`, and default status `haae_r2_unavailable_no_explicit_r1e_private_material_root`. It read the existing R1E private material root, computed aggregate rank-source metrics with private writes `count_0`, and authorizes only BEA-v1-HAAE-R2A Public Audit Package; it does not authorize new candidate generation, retrieval, runtime/default changes, BEA-v1-A/P5, or any method-winner claim.
+Latest HAAE status: BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is complete with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`, self-test `10/10`, HAAE-R2 checkpoint `0784be0`, and HAAE-R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`. It is a public-only tiny-N audit: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket `rate_1`, same-top agreement bucket `rate_1`, and sample bucket `count_2_to_5`, but there is no method-winner or runtime/default claim. R2A authorizes only BEA-v1-HAAE-R2B Scale Preflight Design, not scale execution or CI.
 
-最新 HAAE 状态：BEA-v1-HAAE-R2 Small Local Lexical Material Experiment 已完成，状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`，self-test `15/15`，HAAE-R1E checkpoint `0135e1f`，默认状态为 `haae_r2_unavailable_no_explicit_r1e_private_material_root`。它只读取已有 R1E private material root，计算 aggregate rank-source metrics，private writes 为 `count_0`，并且只授权 BEA-v1-HAAE-R2A Public Audit Package；不授权新候选生成、检索、runtime/default 变更、BEA-v1-A/P5 或 method-winner claim。
+最新 HAAE 状态：BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package 已完成，状态为 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`，self-test `10/10`，HAAE-R2 checkpoint `0784be0`，HAAE-R2 状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。这是 public-only tiny-N audit：`bm25_like`、`symbol_overlap`、`rrf_like` 的 hit-rate bucket 都是 `rate_1`，same-top agreement bucket 是 `rate_1`，sample bucket 是 `count_2_to_5`，但不做 method-winner 或 runtime/default claim。R2A 只授权 BEA-v1-HAAE-R2B Scale Preflight Design，不授权 scale execution 或 CI。
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -255,6 +255,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`: [en](en/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md) · [zh](zh/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md)
 - `bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`: [en](en/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md) · [zh](zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md)
 - `bea-v1-haae-r2-small-local-lexical-material-experiment.md`: [en](en/bea-v1-haae-r2-small-local-lexical-material-experiment.md) · [zh](zh/bea-v1-haae-r2-small-local-lexical-material-experiment.md)
+- `bea-v1-haae-r2a-small-local-experiment-public-audit-package.md`: [en](en/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md) · [zh](zh/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

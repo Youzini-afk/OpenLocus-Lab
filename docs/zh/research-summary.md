@@ -2714,7 +2714,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **rrf_plus_dense_mock also dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.134. Dense mock evidence floods the RRF pool with irrelevant candidates.
 - **Graph pollution is zero**: No graph evidence returned on forbidden paths (graph_pollution_ratio=0.000).
 - **Graph has low token waste when it fires** (0.310 vs 0.779 baseline) but mostly abstains (0.785 abstain rate).
-- **Graph path derivation stats**: symbol=358/741 (48.3%), regex=156/741 (21.1%), none=227/741 (30.6%). Impact returns empty evidence for 355/514 tasks with a top path (no graph edges found).
+- **Graph path derivation stats**: symbol=358/741 (48.3%), regex=156/741 (21.1%), none=2210/1041 (30.6%). Impact returns empty evidence for 355/514 tasks with a top path (no graph edges found).
 - **Combined strategies show additive noise**: rrf_plus_dense_mock_plus_graph accumulates both graph (435) and dense (20,273) false spans (20,695 total).
 - **Citation validity remains 1.0**: graph_basic, dense_mock, and composite strategies are revalidated in R25 with Rust hash/range/path citation validation. no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use.
 - **QuIVer/TDB honestly reported as unavailable/not_measured**: No numeric zero quality results for QuIVer. TDB not applicable.
@@ -3399,7 +3399,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P0-2 actionability-matrix refresh 发现
 
-- **BEA-v1-P0-2 Actionability Matrix Refresh 已完成为 records-only join**：status `actionability_matrix_refresh_pass`，self-test `6/6`，forbidden scan `pass`，refreshed cells `72/72`，P1 causal cell classes 未改变。
+- **BEA-v1-P0-2 Actionability Matrix Refresh 已完成为 records-only join**：status `actionability_matrix_refresh_pass`，self-test `10/10`，forbidden scan `pass`，refreshed cells `72/72`，P1 causal cell classes 未改变。
 - **结果**：readiness summary 为 `ready_sanitized_trace=10`、`blocked_private_export=11`、`blocked_missing_label=18`、`blocked_missing_trace=12`、`blocked_aggregate_only=3`、`not_applicable_by_layer=18`。
 - **决策**：P0-2 确认下一步 BEA-v1 phase 应在任何新 policy experiment 前先导出或设计 trace inputs。它只授权 scheduler dataset export 与 support/redundancy/risk/stop trace-surface work；不授权 P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
 
@@ -3435,13 +3435,13 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-P1-0 support-label validator dry-run 发现
 
-- **BEA-v1-P1-0 Support-Label Validator Dry Run 已完成**：status `support_label_validator_dry_run_pass`，self-test `6/6`，forbidden scan `pass`。
+- **BEA-v1-P1-0 Support-Label Validator Dry Run 已完成**：status `support_label_validator_dry_run_pass`，self-test `10/10`，forbidden scan `pass`。
 - **结果**：18 条 synthetic private labels 通过 P0-5 harness 验证，证明 schema validation、conjunction derivation、sanitizer 与 public summary path 可端到端工作。该 fixture 不是真实 label data。
 - **决策**：P1-0 授权使用已验证 schema 与 harness 进行真实 private support labeling。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
 
 ## BEA-v1-P1-1 private-labeling queue 发现
 
-- **BEA-v1-P1-1 Private Labeling Queue Preparation 已完成**：status `private_labeling_queue_preparation_pass`，self-test `7/7`，forbidden scan `pass`。
+- **BEA-v1-P1-1 Private Labeling Queue Preparation 已完成**：status `private_labeling_queue_preparation_pass`，self-test `10/10`，forbidden scan `pass`。
 - **结果**：18 条 project-private queue records 已生成到 `.openlocus/research-private/`；public artifact 只暴露 sanitized queue buckets 与 manifests。
 - **决策**：P1-1 授权基于生成 queue 进行真实 private support labeling。它不授权 support counterfactual execution、support marginal-utility 声明、P5、BEA-v1-A、selector/reranker execution、implementation、runtime promotion、broad retrieval expansion、method-winner 声明或 downstream-value 声明。
 
@@ -3528,3 +3528,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Explicit experiment result**：只读取已有 R1E private material groups，private read bucket 为 `count_1_to_10`，private write bucket 为 `count_0`，基于预计算 rank traces 与 outcomes 的内存 join，为 `bm25_like`、`symbol_overlap`、`rrf_like` 计算 aggregate metrics。
 - **Public result**：只发布 aggregate buckets，不发布 private root path/basename、task ids、queries、candidate paths、snippets、labels、raw ranks、scores、hashes、filenames 或 raw rows。
 - **决策**：R2 只授权 BEA-v1-HAAE-R2A Public Audit Package。R3 scale preflight、new candidate generation、rematerialization、retrieval、runtime/default changes、BEA-v1-A/P5、selector/reranker、scheduler/HAAE layer、provider/network、method-winner claims 与 raw publication 仍不授权。
+
+## BEA-v1-HAAE-R2A small local experiment public audit package 发现
+
+- **BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package 已完成**：HAAE-R2 source 锁定在 checkpoint `0784be0`，R2 status 为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`，状态 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`，self-test `10/10`，forbidden scan `pass`。
+- **Public-only audit**：不读取 private，不 recompute，不执行 candidate generation、retrieval、scheduler/HAAE execution、selector/reranker、runtime/default change 或 BEA-v1-A/P5。
+- **Metric readback**：R2 aggregate metrics 确认 `bm25_like`、`symbol_overlap`、`rrf_like` 均为 `rate_1`；pairwise same-top agreement 为 `rate_1`；sample bucket 为 `count_2_to_5`。
+- **Boundary**：仅 tiny-N audit，不是 no method-winner claim，也不是 runtime/default decision。
+- **决策**：R2A 只授权 BEA-v1-HAAE-R2B Scale Preflight Design，用于设计如何把 material generation 扩展到超过三个 tasks。Scale execution 与 CI 仍不授权。
