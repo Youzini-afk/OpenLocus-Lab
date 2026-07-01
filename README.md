@@ -170,7 +170,7 @@ generation/BEA-v1-A/P5/runtime false.
 complete as the first explicit-opt-in phase allowed to generate tiny real
 private material rows (source lock `9299b0a`, status
 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`,
-self-test `16/16`). Default/no-opt-in mode performs no private reads or writes
+self-test `21/21`). Default/no-opt-in mode performs no private reads or writes
 and emits status `haae_r1e_unavailable_no_explicit_material_generation_opt_in`.
 Explicit mode is local/manual only and requires
 `--allow-private-material-generation --private-output-root <temp-or-ignored-root>
@@ -230,7 +230,7 @@ material generation remain false.
 **BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight** is complete as a
 public-only preflight/package (R2B checkpoint `dea8a2f`, status
 `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`,
-self-test `16/16`). It locks `r14_medium_local_material_smoke`, source fixture
+self-test `21/21`). It locks `r14_medium_local_material_smoke`, source fixture
 bucket `count_21_to_50`, subset policy `deterministic_public_manifest_prefix_cap_10_to_20`,
 target task bucket `count_10_to_20`, candidate depth `count_20`, and private row
 cap `count_le_5000`. Boundary: `no_private_material_gen_execution_ci_network_bea_v1_a_p5_method_winner`.
@@ -320,6 +320,8 @@ aggregate public manifest. It computes no experiment metrics in R2I and performs
 no old private root read, retrieval/runtime/OpenLocus/source scan outside fixture,
 CI/network/provider/clone, scheduler/HAAE/selector, BEA-v1-A/P5/default change,
 or method/scaling claim. R2I authorizes only **BEA-v1-HAAE-R2J Harder/Diversified Material Experiment**.
+
+**BEA-v1-HAAE-R2J Harder/Diversified Material Experiment** is complete over the existing R2I private material (R2I checkpoint `16d1349`, R2I status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`, default status `haae_r2j_unavailable_no_explicit_r2i_private_material_root`, pass status `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`, non-separating status `haae_r2j_harder_diversified_material_experiment_complete_no_go_non_separating`, self-test `21/21`). Explicit private material root is required and input is existing R2I material only. R2J publishes aggregate-only metrics for rank sources `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`, plus separation diagnostics, with `method_winner_bool=false`. Result: `separation_signal_bool=true`, `rank_spread_bucket=spread_medium`, and `control_baseline_separation_bucket=non_control_better`. Bucket-level signal: `path_prior` reaches top1/top5/top10/top20 buckets `count_10_to_20` with `mrr_high`, while `control_baseline` has top1 bucket `count_0` and `mrr_low`. This is a separation signal, not a method winner/default/scaling claim. Boundary: no method winner/default/scaling claim, no root discovery, no private writes, no candidate/material generation, and no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector. R2J authorizes only **BEA-v1-HAAE-R2K Public Audit Package**.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 

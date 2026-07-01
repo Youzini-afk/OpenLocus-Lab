@@ -11331,7 +11331,7 @@ Turn the P0-4 support-link input contract into a private labeling harness. The h
 
 ### Result
 
-`eval/bea_v1_p0_5_support_link_labeling_harness.py` generated `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json` with status `support_link_labeling_harness_contract_pass`. Self-test passed `16/16`, forbidden scan passed, and the public artifact contains 18 sanitized harness records plus a private-template manifest. The private template was emitted under `.openlocus/research-private/`, which is ignored by git.
+`eval/bea_v1_p0_5_support_link_labeling_harness.py` generated `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json` with status `support_link_labeling_harness_contract_pass`. Self-test passed `21/21`, forbidden scan passed, and the public artifact contains 18 sanitized harness records plus a private-template manifest. The private template was emitted under `.openlocus/research-private/`, which is ignored by git.
 
 Private labels were not supplied in this run, so the optional full private-label validation gate remains false.
 
@@ -11592,7 +11592,7 @@ R1D is a controlled No-Go for hydration execution and HAAE-R2. It authorizes no 
 
 ## 2026-07-01 — BEA-v1-HAAE-R1E: Bounded Private Experiment Material Generation
 
-`eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` generated `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json` with status `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`. Self-test passed `16/16`, forbidden scan passed, HAAE-R1D source checkpoint `9299b0a` was locked, and the default no-opt-in status is `haae_r1e_unavailable_no_explicit_material_generation_opt_in`.
+`eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` generated `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json` with status `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`. Self-test passed `21/21`, forbidden scan passed, HAAE-R1D source checkpoint `9299b0a` was locked, and the default no-opt-in status is `haae_r1e_unavailable_no_explicit_material_generation_opt_in`.
 
 The explicit run is local/manual only and writes raw private material rows only under an explicit temp/ignored private root. It uses public R14 sanity tasks, reads labels only in explicit private mode, scans a bounded committed Rust corpus, and creates deterministic BM25-like plus symbol-overlap traces merged by an RRF-like order. The public artifact contains aggregate buckets only and no private paths, task ids, queries, candidate names, labels, spans, scores, hashes, snippets, rows, or diagnostics.
 
@@ -11632,7 +11632,7 @@ R2B authorizes only BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight. R2C r
 
 ## 2026-07-01 — BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
 
-`eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` generated `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json` with status `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`. Self-test passed `16/16`, forbidden scan passed, and HAAE-R2B checkpoint `dea8a2f` was locked.
+`eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` generated `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json` with status `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`. Self-test passed `21/21`, forbidden scan passed, and HAAE-R2B checkpoint `dea8a2f` was locked.
 
 R2C is public-only preflight/package. It locks `r14_medium_local_material_smoke`, source fixture bucket `count_21_to_50`, subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, target task bucket `count_10_to_20`, candidate depth `count_20`, and private row cap `count_le_5000`. Boundary: `no_private_material_gen_execution_ci_network_bea_v1_a_p5_method_winner`. It creates no private root, writes no private rows, generates no material, runs no experiment, recompute, retrieval, source scan beyond fixture count, OpenLocus/runtime, network/clone/CI, scheduler/HAAE, selector/reranker, runtime/default, BEA-v1-A/P5, or method/scaling claim.
 
@@ -11699,3 +11699,13 @@ R2I requires explicit opt-in. The locked boundary is target 20 tasks, candidate 
 ### Decision
 
 R2I authorizes only BEA-v1-HAAE-R2J Harder/Diversified Material Experiment. It does not read old private roots, run retrieval/runtime/OpenLocus/source scan outside fixture, use CI/network/provider/clone, execute scheduler/HAAE/selector, change BEA-v1-A/P5/defaults, or make method/scaling claims. See `docs/en/bea-v1-haae-r2i-harder-diversified-local-material-generation-smoke.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2J Harder/Diversified Material Experiment
+
+`eval/bea_v1_haae_r2j_harder_diversified_material_experiment.py` generated `artifacts/bea_v1_haae_r2j_harder_diversified_material_experiment/bea_v1_haae_r2j_harder_diversified_material_experiment_report.json` in explicit mode over the existing R2I private material. Default status is `haae_r2j_unavailable_no_explicit_r2i_private_material_root`; pass status is `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`; non-separating status is `haae_r2j_harder_diversified_material_experiment_complete_no_go_non_separating`. Self-test passed `21/21`, with HAAE-R2I checkpoint `16d1349` and R2I status `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`.
+
+R2J requires an explicit private material root and reads existing R2I material only. It computes aggregate-only metrics for `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline`, plus separation diagnostics, and keeps `method_winner_bool=false`. The explicit result has `separation_signal_bool=true`, `rank_spread_bucket=spread_medium`, and `control_baseline_separation_bucket=non_control_better`; `path_prior` has top1/top5/top10/top20 buckets `count_10_to_20` with `mrr_high`, while `control_baseline` has top1 bucket `count_0` and `mrr_low`.
+
+### Decision
+
+R2J authorizes only BEA-v1-HAAE-R2K Public Audit Package when separation passes. Boundary remains no method winner/default/scaling claim, no root discovery, no private writes, no candidate/material generation, no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector, and no exact per-task/private publication. See `docs/en/bea-v1-haae-r2j-harder-diversified-material-experiment.md`.

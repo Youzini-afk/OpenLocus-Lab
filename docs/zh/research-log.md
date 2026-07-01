@@ -10520,7 +10520,7 @@ P0-4 只授权 support-link labeling input work。后续 phase 可以使用该 c
 
 ### 结果
 
-`eval/bea_v1_p0_5_support_link_labeling_harness.py` 生成 `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json`，status 为 `support_link_labeling_harness_contract_pass`。Self-test 通过 `16/16`，forbidden scan 通过，public artifact 包含 18 条 sanitized harness records 与 private-template manifest。Private template 已生成到 `.openlocus/research-private/`，该目录被 git ignore。
+`eval/bea_v1_p0_5_support_link_labeling_harness.py` 生成 `artifacts/bea_v1_p0_5_support_link_labeling_harness/bea_v1_p0_5_support_link_labeling_harness_report.json`，status 为 `support_link_labeling_harness_contract_pass`。Self-test 通过 `21/21`，forbidden scan 通过，public artifact 包含 18 条 sanitized harness records 与 private-template manifest。Private template 已生成到 `.openlocus/research-private/`，该目录被 git ignore。
 
 本轮未提供 private labels，因此 optional full private-label validation gate 仍为 false。
 
@@ -10781,7 +10781,7 @@ R1D 是 hydration execution 与 HAAE-R2 的 controlled No-Go。它不授权 repl
 
 ## 2026-07-01 — BEA-v1-HAAE-R1E：Bounded Private Experiment Material Generation
 
-`eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` 生成 `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json`，状态为 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`。Self-test 通过 `16/16`，forbidden scan 通过，HAAE-R1D source checkpoint `9299b0a` 已锁定，默认 no-opt-in 状态为 `haae_r1e_unavailable_no_explicit_material_generation_opt_in`。
+`eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` 生成 `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json`，状态为 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`。Self-test 通过 `21/21`，forbidden scan 通过，HAAE-R1D source checkpoint `9299b0a` 已锁定，默认 no-opt-in 状态为 `haae_r1e_unavailable_no_explicit_material_generation_opt_in`。
 
 Explicit run 只允许 local/manual，并且只在显式 temp/ignored private root 下写入 raw private material rows。它使用公开 R14 sanity tasks，只在 explicit private mode 读取 labels，扫描 bounded committed Rust corpus，并生成 deterministic BM25-like、symbol-overlap trace 与 RRF-like merge order。公开 artifact 只包含 aggregate buckets，不包含 private paths、task ids、queries、candidate names、labels、spans、scores、hashes、snippets、rows 或 diagnostics。
 
@@ -10821,7 +10821,7 @@ R2B 只授权 BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight。R2C 仍是
 
 ## 2026-07-01 — BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
 
-`eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` 生成 `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json`，状态为 `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`。Self-test 通过 `16/16`，forbidden scan 通过，HAAE-R2B checkpoint `dea8a2f` 已锁定。
+`eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` 生成 `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json`，状态为 `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`。Self-test 通过 `21/21`，forbidden scan 通过，HAAE-R2B checkpoint `dea8a2f` 已锁定。
 
 R2C 是 public-only preflight/package。它锁定 `r14_medium_local_material_smoke`、source fixture bucket `count_21_to_50`、subset policy `deterministic_public_manifest_prefix_cap_10_to_20`、target task bucket `count_10_to_20`、candidate depth `count_20` 与 private row cap `count_le_5000`。Boundary：`no_private_material_gen_execution_ci_network_bea_v1_a_p5_method_winner`。它不创建 private root，不写 private rows，不生成 material，不运行 experiment、recompute、retrieval、超过 fixture count 的 source scan、OpenLocus/runtime、network/clone/CI、scheduler/HAAE、selector/reranker、runtime/default、BEA-v1-A/P5 或 method/scaling claim。
 
@@ -10888,3 +10888,13 @@ R2I 要求 explicit opt-in。Locked boundary 为 target 20 tasks、candidate dep
 ### Decision
 
 R2I 只授权 BEA-v1-HAAE-R2J Harder/Diversified Material Experiment。它不读取 old private roots，不运行 retrieval/runtime/OpenLocus/source scan outside fixture，不使用 CI/network/provider/clone，不执行 scheduler/HAAE/selector，不改变 BEA-v1-A/P5/defaults，也不提出 method/scaling claims。参见 `docs/zh/bea-v1-haae-r2i-harder-diversified-local-material-generation-smoke.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2J Harder/Diversified Material Experiment
+
+`eval/bea_v1_haae_r2j_harder_diversified_material_experiment.py` 以 explicit mode 读取 existing R2I private material，生成 `artifacts/bea_v1_haae_r2j_harder_diversified_material_experiment/bea_v1_haae_r2j_harder_diversified_material_experiment_report.json`。默认状态为 `haae_r2j_unavailable_no_explicit_r2i_private_material_root`；pass status 为 `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`；non-separating status 为 `haae_r2j_harder_diversified_material_experiment_complete_no_go_non_separating`。Self-test 通过 `21/21`，HAAE-R2I checkpoint 为 `16d1349`，R2I status 为 `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`。
+
+R2J 要求 explicit private material root，并且 input 是 existing R2I material only。它为 `bm25_like/symbol_overlap/path_prior/structure_token_overlap/rrf_like/control_baseline` 计算 aggregate-only metrics，并计算 separation diagnostics，且保持 `method_winner_bool=false`。显式结果为 `separation_signal_bool=true`、`rank_spread_bucket=spread_medium`、`control_baseline_separation_bucket=non_control_better`；`path_prior` 的 top1/top5/top10/top20 buckets 都是 `count_10_to_20` 且 `mrr_high`，而 `control_baseline` 的 top1 bucket 是 `count_0` 且 `mrr_low`。
+
+### Decision
+
+R2J 在 separation passes 时只授权 BEA-v1-HAAE-R2K Public Audit Package。Boundary 仍为 no method winner/default/scaling claim、no root discovery、no private writes、no candidate/material generation、no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector，且 no exact per-task/private publication。参见 `docs/zh/bea-v1-haae-r2j-harder-diversified-material-experiment.md`。
