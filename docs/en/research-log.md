@@ -11599,3 +11599,13 @@ The explicit run is local/manual only and writes raw private material rows only 
 ### Decision
 
 R1E authorizes only a small local HAAE-R2 experiment. It does not authorize CI, network, clone, provider/model calls, broad replay, selector/reranker execution, BEA-v1-A/P5, runtime/default changes, scoring claims, method-winner claims, or raw publication. See `docs/en/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2: Small Local Lexical Material Experiment
+
+`eval/bea_v1_haae_r2_small_local_lexical_material_experiment.py` generated `artifacts/bea_v1_haae_r2_small_local_lexical_material_experiment/bea_v1_haae_r2_small_local_lexical_material_experiment_report.json` with status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`. Self-test passed `15/15`, forbidden scan passed, HAAE-R1E source checkpoint `0135e1f` was locked, and the default no-root status is `haae_r2_unavailable_no_explicit_r1e_private_material_root`.
+
+The explicit run reads only existing R1E private material groups from a supplied private-material root. It performs no private writes. It joins precomputed `rank_pack` rows with `outcome_metric` rows in memory and computes aggregate metrics for `bm25_like`, `symbol_overlap`, and `rrf_like`. The public artifact contains only buckets and booleans: group reads, rank-source metrics, agreement, summary, boundaries, gates, readback, stop/go, and forbidden scan. It publishes no private root path or basename, task ids, queries, candidate paths, snippets, labels, raw ranks, scores, hashes, filenames, or raw rows.
+
+### Decision
+
+R2 authorizes only BEA-v1-HAAE-R2A Public Audit Package. It does not authorize R3 scale preflight, new candidate generation, rematerialization, source-corpus scan, broad retrieval, OpenLocus runtime, scheduler/HAAE-layer execution, selector/reranker, CI/network/clone/provider, BEA-v1-A/P5, runtime/default changes, raw publication, or method-winner claims. See `docs/en/bea-v1-haae-r2-small-local-lexical-material-experiment.md`.

@@ -1,0 +1,473 @@
+{
+  "claim_boundary_records": [
+    {
+      "aggregate_publication_only_bool": true,
+      "anonymous_claim_boundary_id": "haaer2claim0000",
+      "bea_v1_a_bool": false,
+      "haae_r2a_public_audit_package_authorized_bool": true,
+      "haae_r3_scale_preflight_authorized_bool": false,
+      "method_winner_claim_bool": false,
+      "new_candidate_generation_bool": false,
+      "p5_bool": false,
+      "provider_model_network_bool": false,
+      "raw_publication_bool": false,
+      "retrieval_execution_bool": false,
+      "runtime_default_change_bool": false,
+      "scheduler_haae_layer_execution_bool": false,
+      "selector_reranker_bool": false
+    }
+  ],
+  "execution_mode_records": [
+    {
+      "anonymous_execution_mode_id": "haaer2mode0000",
+      "ci_execution_bool": false,
+      "clone_operation_count_bucket": "count_0",
+      "explicit_opt_in_bool": true,
+      "local_manual_only_bool": true,
+      "mode_bucket": "explicit_local_manual_existing_material_metric_computation",
+      "network_operation_count_bucket": "count_0",
+      "openlocus_runtime_execution_bool": false,
+      "private_read_count_bucket": "count_1_to_10",
+      "private_write_count_bucket": "count_0",
+      "provider_or_model_operation_count_bucket": "count_0",
+      "source_corpus_scan_bool": false
+    }
+  ],
+  "experiment_summary_records": [
+    {
+      "aggregate_metric_computation_only_bool": true,
+      "anonymous_experiment_summary_id": "haaer2summary0000",
+      "broad_retrieval_bool": false,
+      "candidate_private_row_count_bucket": "count_6_to_10",
+      "method_winner_claim_bool": false,
+      "new_candidate_generation_bool": false,
+      "outcome_private_row_count_bucket": "count_2_to_5",
+      "rank_private_row_count_bucket": "count_6_to_10",
+      "rematerialization_bool": false,
+      "sample_bounds_ok_bool": true,
+      "task_count_bucket": "count_2_to_5",
+      "total_private_row_read_count_bucket": "count_21_to_100"
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "material_group_read_records": [
+    {
+      "anonymous_material_group_read_id": "haaer2group0000",
+      "group_bucket": "task_identity",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_2_to_5",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": true
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0001",
+      "group_bucket": "anchor_source",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_2_to_5",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": true
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0002",
+      "group_bucket": "candidate_pool",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_6_to_10",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": true
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0003",
+      "group_bucket": "rank_pack",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_6_to_10",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": true
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0004",
+      "group_bucket": "span_projection",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_6_to_10",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": false
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0005",
+      "group_bucket": "scheduler_action",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_1",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": false
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0006",
+      "group_bucket": "evidence_core",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_6_to_10",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": true
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0007",
+      "group_bucket": "arm_assignment",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_1",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": false
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0008",
+      "group_bucket": "outcome_metric",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_2_to_5",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": true
+    },
+    {
+      "anonymous_material_group_read_id": "haaer2group0009",
+      "group_bucket": "safety_probe_signal",
+      "group_present_bool": true,
+      "private_row_count_bucket": "count_1",
+      "raw_values_published_bool": false,
+      "required_for_r2_bool": false
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2gate0000",
+      "gate_bucket": "haae_r1e_source_locked_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0001",
+      "gate_bucket": "r1e_r2_authorization_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0002",
+      "gate_bucket": "explicit_private_material_root_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0003",
+      "gate_bucket": "private_material_root_boundary_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0004",
+      "gate_bucket": "r1e_material_provenance_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0005",
+      "gate_bucket": "sample_bounds_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0006",
+      "gate_bucket": "required_material_groups_present_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0007",
+      "gate_bucket": "rank_pack_existing_only_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0008",
+      "gate_bucket": "no_new_candidate_generation_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0009",
+      "gate_bucket": "no_rematerialization_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0010",
+      "gate_bucket": "no_broad_retrieval_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0011",
+      "gate_bucket": "no_scheduler_haae_layer_execution_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0012",
+      "gate_bucket": "no_selector_reranker_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0013",
+      "gate_bucket": "no_provider_model_network_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0014",
+      "gate_bucket": "no_runtime_default_change_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0015",
+      "gate_bucket": "no_bea_v1_a_p5_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0016",
+      "gate_bucket": "aggregate_metric_computation_only_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0017",
+      "gate_bucket": "public_aggregate_only_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0018",
+      "gate_bucket": "no_raw_publication_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0019",
+      "gate_bucket": "tiny_n_no_method_winner_claim_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0020",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0021",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    },
+    {
+      "anonymous_gate_id": "haaer2gate0022",
+      "gate_bucket": "self_test_total_public_readback_match_gate",
+      "gate_evaluated_on_aggregate_bool": true,
+      "gate_passed_bool": true,
+      "gate_uses_network_clone_provider_bool": false,
+      "gate_uses_private_row_values_bool": false
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2 Small Local Lexical Material Experiment",
+  "private_material_root_records": [
+    {
+      "anonymous_private_material_root_id": "haaer2root0000",
+      "existing_r1e_material_root_only_bool": true,
+      "no_basename_or_filename_published_bool": true,
+      "no_concrete_path_published_bool": true,
+      "private_material_root_supplied_bool": true,
+      "private_writes_bool": false,
+      "r1e_material_provenance_bucket": "r1e_compatible_markerless_public_lock_matched",
+      "r1e_material_provenance_match_bool": true,
+      "root_boundary_status_bucket": "valid_external_private_material_root",
+      "root_valid_bool": true
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2readback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true,
+      "self_test_total_public_readback_match_bool": true
+    }
+  ],
+  "rank_source_agreement_records": [
+    {
+      "anonymous_rank_source_agreement_id": "haaer2agree0000",
+      "comparable_task_count_bucket": "count_2_to_5",
+      "left_rank_source_bucket": "bm25_like",
+      "raw_candidate_identity_published_bool": false,
+      "right_rank_source_bucket": "symbol_overlap",
+      "same_top_candidate_rate_bucket": "rate_1"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2agree0001",
+      "comparable_task_count_bucket": "count_2_to_5",
+      "left_rank_source_bucket": "bm25_like",
+      "raw_candidate_identity_published_bool": false,
+      "right_rank_source_bucket": "rrf_like",
+      "same_top_candidate_rate_bucket": "rate_1"
+    },
+    {
+      "anonymous_rank_source_agreement_id": "haaer2agree0002",
+      "comparable_task_count_bucket": "count_2_to_5",
+      "left_rank_source_bucket": "symbol_overlap",
+      "raw_candidate_identity_published_bool": false,
+      "right_rank_source_bucket": "rrf_like",
+      "same_top_candidate_rate_bucket": "rate_1"
+    }
+  ],
+  "rank_source_metric_records": [
+    {
+      "anonymous_rank_source_metric_id": "haaer2metric0000",
+      "candidate_private_row_count_bucket": "count_2_to_5",
+      "existing_trace_present_bool": true,
+      "first_hit_position_distribution_bucket": {
+        "position_top_1_to_5": "count_2_to_5"
+      },
+      "gold_file_hit_rate_bucket": "rate_1",
+      "rank_source_bucket": "bm25_like",
+      "raw_rank_values_published_bool": false,
+      "task_count_bucket": "count_2_to_5"
+    },
+    {
+      "anonymous_rank_source_metric_id": "haaer2metric0001",
+      "candidate_private_row_count_bucket": "count_6_to_10",
+      "existing_trace_present_bool": true,
+      "first_hit_position_distribution_bucket": {
+        "position_top_1_to_5": "count_2_to_5"
+      },
+      "gold_file_hit_rate_bucket": "rate_1",
+      "rank_source_bucket": "symbol_overlap",
+      "raw_rank_values_published_bool": false,
+      "task_count_bucket": "count_2_to_5"
+    },
+    {
+      "anonymous_rank_source_metric_id": "haaer2metric0002",
+      "candidate_private_row_count_bucket": "count_6_to_10",
+      "existing_trace_present_bool": true,
+      "first_hit_position_distribution_bucket": {
+        "position_top_1_to_5": "count_2_to_5"
+      },
+      "gold_file_hit_rate_bucket": "rate_1",
+      "rank_source_bucket": "rrf_like",
+      "raw_rank_values_published_bool": false,
+      "task_count_bucket": "count_2_to_5"
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2_small_local_lexical_material_experiment_v1",
+  "self_test_total": 15,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2source0000",
+      "locked_haae_r1e_checkpoint": "0135e1f",
+      "locked_haae_r1e_status": "haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized",
+      "r1e_aggregate_metric_authorization_match_bool": true,
+      "r1e_forbidden_operation_boundary_match_bool": true,
+      "r1e_forbidden_scan_pass_bool": true,
+      "r1e_private_material_read_authorization_match_bool": true,
+      "r1e_r2_authorization_match_bool": true,
+      "r1e_raw_publication_forbidden_match_bool": true,
+      "r1e_status_match_bool": true,
+      "source_lock_reason_bucket": "pass",
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2stop0000",
+      "haae_r2_bea_v1_a_authorized_bool": false,
+      "haae_r2_broad_retrieval_authorized_bool": false,
+      "haae_r2_method_winner_claim_authorized_bool": false,
+      "haae_r2_new_candidate_generation_authorized_bool": false,
+      "haae_r2_p5_authorized_bool": false,
+      "haae_r2_private_write_authorized_bool": false,
+      "haae_r2_provider_model_network_authorized_bool": false,
+      "haae_r2_raw_publication_authorized_bool": false,
+      "haae_r2_reads_existing_r1e_private_material_bool": true,
+      "haae_r2_rematerialization_authorized_bool": false,
+      "haae_r2_runtime_default_change_authorized_bool": false,
+      "haae_r2_scheduler_haae_layer_execution_authorized_bool": false,
+      "haae_r2_selector_reranker_authorized_bool": false,
+      "haae_r2a_public_audit_package_authorized_bool": true,
+      "haae_r3_scale_preflight_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2A Public Audit Package"
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2synth0000",
+      "expected_status_bucket": "haae_r2_unavailable_no_explicit_r1e_private_material_root",
+      "validator_bucket": "default_no_private_read_write_fixture"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2synth0001",
+      "expected_status_bucket": "haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized",
+      "validator_bucket": "synthetic_valid_existing_r1e_material_fixture"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2synth0002",
+      "expected_status_bucket": "validator_rejects_mutations",
+      "validator_bucket": "leak_overauthorization_and_rank_source_mutation_fixtures"
+    }
+  ]
+}

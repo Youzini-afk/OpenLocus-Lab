@@ -1730,7 +1730,7 @@ C2 B12 CI canary (2026-06-19): after the C1 shared private-record adapter
 landed, a real CI canary (`py_fastapi × Kimi × round_robin_public_buckets × 12
 tasks`, run `27816890557`) verified that B12 consumes private P21 per-record
 records and emits only an aggregate public report. The B12 report used
-`replay_source="ci_ephemeral_records"` with `12/12` complete records,
+`replay_source="ci_ephemeral_records"` with `15/15` complete records,
 `balanced_branch_count=4`, `p25_llm_eligible_count=10`,
 `actual_call_avoided_count=4`, and `random_selected_count=4`. Canary verdict:
 `partial` (H1 `refuted`, H2 `refuted`, H3 `supported`, H4 `insufficient_data`
@@ -4112,3 +4112,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Explicit material result**: local/manual only, no CI/network/clone/provider/model/OpenLocus runtime retrieval; sample bound `3-5`, candidate depth `<=20`; raw task/query/path/label/span/snippet/score rows are written only under the explicit private root.
 - **Public result**: aggregate buckets only, all 10 schema groups accounted, required six groups meaningful, BM25-like and RRF-like traces present, candidate/rank/evidence/outcome row buckets nonzero, no private paths/task ids/queries/candidates/labels/spans/scores/hashes/snippets/rows/diagnostics published.
 - **Decision**: R1E authorizes only a small local HAAE-R2 experiment. CI/network/clone/provider, broad replay, selector/reranker, BEA-v1-A/P5, runtime/default changes, scoring claims, method-winner claims, and raw publication remain unauthorized.
+
+## BEA-v1-HAAE-R2 small local lexical material experiment findings
+
+- **BEA-v1-HAAE-R2 Small Local Lexical Material Experiment is complete**: HAAE-R1E source locked at checkpoint `0135e1f`, status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, self-test `15/15`, forbidden scan `pass`.
+- **Default safety**: no explicit private-material root status is `haae_r2_unavailable_no_explicit_r1e_private_material_root`; default mode performs no private reads or writes.
+- **Explicit experiment result**: read only existing R1E private material groups, private read bucket `count_1_to_10`, private write bucket `count_0`, aggregate metrics computed for `bm25_like`, `symbol_overlap`, and `rrf_like` from precomputed rank traces joined with outcomes in memory.
+- **Public result**: aggregate buckets only, no private root path/basename, task ids, queries, candidate paths, snippets, labels, raw ranks, scores, hashes, filenames, or raw rows.
+- **Decision**: R2 authorizes only BEA-v1-HAAE-R2A Public Audit Package. R3 scale preflight, new candidate generation, rematerialization, retrieval, runtime/default changes, BEA-v1-A/P5, selector/reranker, scheduler/HAAE layer, provider/network, method-winner claims, and raw publication remain unauthorized.

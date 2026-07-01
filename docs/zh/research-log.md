@@ -10788,3 +10788,13 @@ Explicit run 只允许 local/manual，并且只在显式 temp/ignored private ro
 ### Decision
 
 R1E 只授权 small local HAAE-R2 experiment。它不授权 CI、network、clone、provider/model calls、broad replay、selector/reranker execution、BEA-v1-A/P5、runtime/default changes、scoring claims、method-winner claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2：Small Local Lexical Material Experiment
+
+`eval/bea_v1_haae_r2_small_local_lexical_material_experiment.py` 生成 `artifacts/bea_v1_haae_r2_small_local_lexical_material_experiment/bea_v1_haae_r2_small_local_lexical_material_experiment_report.json`，状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。Self-test 通过 `15/15`，forbidden scan 通过，HAAE-R1E source checkpoint `0135e1f` 已锁定，默认 no-root 状态为 `haae_r2_unavailable_no_explicit_r1e_private_material_root`。
+
+Explicit run 只读取调用者提供的 private-material root 中已有的 R1E private material groups，不写入 private。它只在内存中 join 预计算的 `rank_pack` rows 与 `outcome_metric` rows，并为 `bm25_like`、`symbol_overlap`、`rrf_like` 计算 aggregate metrics。公开 artifact 只包含 buckets 与 booleans：group reads、rank-source metrics、agreement、summary、boundaries、gates、readback、stop/go 和 forbidden scan。它不发布 private root path 或 basename、task ids、queries、candidate paths、snippets、labels、raw ranks、scores、hashes、filenames 或 raw rows。
+
+### Decision
+
+R2 只授权 BEA-v1-HAAE-R2A Public Audit Package。它不授权 R3 scale preflight、new candidate generation、rematerialization、source-corpus scan、broad retrieval、OpenLocus runtime、scheduler/HAAE-layer execution、selector/reranker、CI/network/clone/provider、BEA-v1-A/P5、runtime/default changes、raw publication 或 method-winner claims。参见 `docs/zh/bea-v1-haae-r2-small-local-lexical-material-experiment.md`。

@@ -184,6 +184,22 @@ is published. R1E authorizes only a small local HAAE-R2 experiment; CI, network,
 clone, provider/model calls, selector/reranker, BEA-v1-A/P5, runtime/default
 change, broad replay, and method-winner claims remain false.
 
+**BEA-v1-HAAE-R2: Small Local Lexical Material Experiment** is complete as a
+tiny local/manual aggregate experiment over existing R1E private material (source
+lock `0135e1f`, status
+`haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`,
+self-test `15/15`). Default mode performs no private reads or writes and emits
+status `haae_r2_unavailable_no_explicit_r1e_private_material_root`. Explicit mode
+requires `--allow-private-material-experiment --private-material-root <existing-r1e-private-material-root>
+--confirm-aggregate-publication-only`; the supplied root is read only and is not
+published. R2 compares only precomputed `rank_pack` traces (`bm25_like`,
+`symbol_overlap`, `rrf_like`) joined in memory with `outcome_metric` to compute
+aggregate buckets. It performs no private writes, new candidate generation,
+rematerialization, source-corpus scan, broad retrieval, OpenLocus runtime,
+scheduler/HAAE-layer execution, selector/reranker, CI/network/clone/provider,
+BEA-v1-A/P5, runtime/default change, raw publication, method-winner claim, or R3
+scale authorization. R2 authorizes only **BEA-v1-HAAE-R2A Public Audit Package**.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text

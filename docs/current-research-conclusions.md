@@ -2,9 +2,9 @@
 
 Date: 2026-06-28
 
-Latest HAAE status: BEA-v1-HAAE-R1E Bounded Private Experiment Material Generation is complete with status `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`, self-test `16/16`, HAAE-R1D checkpoint `9299b0a`, and HAAE-R1D status `haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`. It generated a tiny explicit-opt-in private material root locally and authorizes only BEA-v1-HAAE-R2 Small Local Experiment; public reports remain aggregate-only.
+Latest HAAE status: BEA-v1-HAAE-R2 Small Local Lexical Material Experiment is complete with status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`, self-test `15/15`, HAAE-R1E checkpoint `0135e1f`, and default status `haae_r2_unavailable_no_explicit_r1e_private_material_root`. It read the existing R1E private material root, computed aggregate rank-source metrics with private writes `count_0`, and authorizes only BEA-v1-HAAE-R2A Public Audit Package; it does not authorize new candidate generation, retrieval, runtime/default changes, BEA-v1-A/P5, or any method-winner claim.
 
-最新 HAAE 状态：BEA-v1-HAAE-R1E Bounded Private Experiment Material Generation 已完成，状态为 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`，self-test `16/16`，HAAE-R1D checkpoint `9299b0a`，HAAE-R1D 状态为 `haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`。它在本地用显式 opt-in 生成了一个小型 private material root，只授权 BEA-v1-HAAE-R2 Small Local Experiment；public reports 仍只发布 aggregate。
+最新 HAAE 状态：BEA-v1-HAAE-R2 Small Local Lexical Material Experiment 已完成，状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`，self-test `15/15`，HAAE-R1E checkpoint `0135e1f`，默认状态为 `haae_r2_unavailable_no_explicit_r1e_private_material_root`。它只读取已有 R1E private material root，计算 aggregate rank-source metrics，private writes 为 `count_0`，并且只授权 BEA-v1-HAAE-R2A Public Audit Package；不授权新候选生成、检索、runtime/default 变更、BEA-v1-A/P5 或 method-winner claim。
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -254,6 +254,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md`: [en](en/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md) · [zh](zh/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md)
 - `bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`: [en](en/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md) · [zh](zh/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md)
 - `bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`: [en](en/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md) · [zh](zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md)
+- `bea-v1-haae-r2-small-local-lexical-material-experiment.md`: [en](en/bea-v1-haae-r2-small-local-lexical-material-experiment.md) · [zh](zh/bea-v1-haae-r2-small-local-lexical-material-experiment.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

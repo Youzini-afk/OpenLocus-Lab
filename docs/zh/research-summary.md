@@ -1595,7 +1595,7 @@ spans、content hashes、prompts、responses、snippets、provider URLs 或 prov
 C2 B12 CI canary（2026-06-19）：C1 shared private-record adapter 落地后，一个真实
 CI canary（`py_fastapi × Kimi × round_robin_public_buckets × 12 tasks`，run
 `27816890557`）验证了 B12 会消费 private P21 per-record records，并且只发出 aggregate
-public report。B12 report 使用 `replay_source="ci_ephemeral_records"`，`12/12`
+public report。B12 report 使用 `replay_source="ci_ephemeral_records"`，`15/15`
 records complete，`balanced_branch_count=4`、`p25_llm_eligible_count=10`、
 `actual_call_avoided_count=4`、`random_selected_count=4`。Canary verdict：`partial`
 （H1 `refuted`、H2 `refuted`、H3 `supported`、H4 因 single-model-family slice 为
@@ -3520,3 +3520,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Explicit material result**：只允许 local/manual，不使用 CI/network/clone/provider/model/OpenLocus runtime retrieval；sample bound 为 `3-5`，candidate depth `<=20`；raw task/query/path/label/span/snippet/score rows 只写入显式 private root。
 - **Public result**：只发布 aggregate buckets，全部 10 个 schema groups accounted，required six groups meaningful，存在 BM25-like 与 RRF-like traces，candidate/rank/evidence/outcome row buckets 非零，不发布 private paths/task ids/queries/candidates/labels/spans/scores/hashes/snippets/rows/diagnostics。
 - **决策**：R1E 只授权 small local HAAE-R2 experiment。CI/network/clone/provider、broad replay、selector/reranker、BEA-v1-A/P5、runtime/default changes、scoring claims、method-winner claims 与 raw publication 仍不授权。
+
+## BEA-v1-HAAE-R2 small local lexical material experiment 发现
+
+- **BEA-v1-HAAE-R2 Small Local Lexical Material Experiment 已完成**：HAAE-R1E source 锁定在 checkpoint `0135e1f`，状态 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`，self-test `15/15`，forbidden scan `pass`。
+- **Default safety**：无显式 private-material root 的状态为 `haae_r2_unavailable_no_explicit_r1e_private_material_root`；默认模式不读取 private，也不写入 private。
+- **Explicit experiment result**：只读取已有 R1E private material groups，private read bucket 为 `count_1_to_10`，private write bucket 为 `count_0`，基于预计算 rank traces 与 outcomes 的内存 join，为 `bm25_like`、`symbol_overlap`、`rrf_like` 计算 aggregate metrics。
+- **Public result**：只发布 aggregate buckets，不发布 private root path/basename、task ids、queries、candidate paths、snippets、labels、raw ranks、scores、hashes、filenames 或 raw rows。
+- **决策**：R2 只授权 BEA-v1-HAAE-R2A Public Audit Package。R3 scale preflight、new candidate generation、rematerialization、retrieval、runtime/default changes、BEA-v1-A/P5、selector/reranker、scheduler/HAAE layer、provider/network、method-winner claims 与 raw publication 仍不授权。
