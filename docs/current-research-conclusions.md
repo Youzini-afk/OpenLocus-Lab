@@ -280,6 +280,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-haae-r2w-content-identifier-material-experiment.md`: [en](en/bea-v1-haae-r2w-content-identifier-material-experiment.md) · [zh](zh/bea-v1-haae-r2w-content-identifier-material-experiment.md)
 - `bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md`: [en](en/bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md) · [zh](zh/bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md)
 - `bea-v1-haae-r2y-content-identifier-next-step-decision-design.md`: [en](en/bea-v1-haae-r2y-content-identifier-next-step-decision-design.md) · [zh](zh/bea-v1-haae-r2y-content-identifier-next-step-decision-design.md)
+- `bea-v1-haae-r2z-real-file-candidate-material-preflight.md`: [en](en/bea-v1-haae-r2z-real-file-candidate-material-preflight.md) · [zh](zh/bea-v1-haae-r2z-real-file-candidate-material-preflight.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
@@ -428,3 +429,6 @@ R2B selected a bounded subset policy `deterministic_public_manifest_prefix_cap_1
 
 
 R2Y public readback markers: target 20; candidate depth 40; source file cap 500; row cap 20000; wall-clock cap 20 minutes; gold private eval only; operator public corpus manifest; R2Z execution/private/candidate generation/source scan/CI false; no method/default/scaling.
+
+
+R2Z performs no execution/private write/candidate generation/source scan; R2AA bounded local execution authorized; R2AA broad workspace scan/CI/network/runtime false.

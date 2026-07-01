@@ -353,6 +353,8 @@ or method/scaling claim. R2I authorizes only **BEA-v1-HAAE-R2J Harder/Diversifie
 
 **BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design** is complete as a public-only decision package (R2X checkpoint `afd86c4`, R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`, status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, self-test `18/18`). R2W/R2X `signal_present/spread_high` is useful but not real-file evidence, so R2Y records more decoy robustness rejected/deferred, CI/batch execution deferred, and selects **BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight**. R2Z is public-only design/preflight to define a bounded local recipe; R2Z preflight authorized true, and R2Z execution/private/candidate generation/source scan/CI false. R2Y makes no method/default/scaling claim.
 
+**BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight** is complete as a public-only design/preflight (R2Y checkpoint `b56462a`, R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`, status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`, self-test `20/20`). It defines the bounded future explicit local real-file candidate material smoke for **BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke**: operator public corpus manifest/allowlist required, no broad workspace scan, no network clone by default, target 20, candidate depth 40, source file cap 500, row cap 20000, wall-clock cap 20 minutes, gold private eval only not policy, and public aggregate-only. R2Z itself performs no execution/private/candidate generation/source scan/CI in R2Z; future private rows may contain real file candidate references but not R2Z, and no method/default/scaling claim is made.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
@@ -3229,3 +3231,6 @@ Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `s
 
 
 R2Y public readback markers: source file cap 500; wall-clock cap 20 minutes; gold private eval only; operator public corpus manifest.
+
+
+R2Z performs no execution/private write/candidate generation/source scan; R2AA bounded local execution authorized; R2AA broad workspace scan/CI/network/runtime false.

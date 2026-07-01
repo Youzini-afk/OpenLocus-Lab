@@ -3719,8 +3719,17 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Route decision**：more decoy robustness rejected/deferred，CI/batch execution deferred，并选择 BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight。
 - **Boundary**：R2Z 是 public-only design/preflight。R2Z preflight authorized true；R2Z execution/private/candidate generation/source scan/CI false。R2Y 不执行 private/root read、execution、recompute、generation、retrieval、CI、network、source scan、provider call、scheduler、selector 或 method/default/scaling claim。
 
+## BEA-v1-HAAE-R2Z real-file candidate material preflight 发现
+
+- **BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight 已完成**：HAAE-R2Y checkpoint `b56462a`，R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`，状态 `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，self-test `20/20`。
+- **Future recipe**：BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 使用 operator public corpus manifest/allowlist required，no broad workspace scan，no network clone by default，target 20，candidate depth 40，source file cap 500，row cap 20000，wall-clock cap 20 minutes，gold private eval only not policy，public aggregate-only。
+- **Boundary**：R2Z performs no execution/private/candidate generation/source scan/CI in R2Z。future private rows may contain real file candidate references but not R2Z。No method/default/scaling claim is made。
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
 
 
 R2Y public readback markers: source file cap 500; wall-clock cap 20 minutes; gold private eval only; operator public corpus manifest.
+
+
+R2Z performs no execution/private write/candidate generation/source scan; R2AA bounded local execution authorized; R2AA broad workspace scan/CI/network/runtime false.

@@ -11860,8 +11860,21 @@ R2Y records that R2W/R2X `signal_present/spread_high` is useful but not real-fil
 
 R2Z is public-only design/preflight. R2Z preflight authorized true; R2Z execution/private/candidate generation/source scan/CI false. R2Y reads public artifacts only and performs no private/root read, execution, recompute, generation, retrieval, CI, network, source scan, provider call, scheduler, selector, or method/default/scaling claim. See `docs/en/bea-v1-haae-r2y-content-identifier-next-step-decision-design.md`.
 
+## 2026-07-01 — BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight
+
+`eval/bea_v1_haae_r2z_real_file_candidate_material_preflight.py` generated `artifacts/bea_v1_haae_r2z_real_file_candidate_material_preflight/bea_v1_haae_r2z_real_file_candidate_material_preflight_report.json`. Status is `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`, self-test `20/20`, HAAE-R2Y checkpoint `b56462a`, and R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`.
+
+R2Z defines the bounded future explicit local real-file candidate material smoke for BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke: operator public corpus manifest/allowlist required, no broad workspace scan, no network clone by default, target 20, candidate depth 40, source file cap 500, row cap 20000, wall-clock cap 20 minutes, gold private eval only not policy, and public aggregate-only.
+
+### Decision
+
+R2Z performs no execution/private/candidate generation/source scan/CI in R2Z. future private rows may contain real file candidate references but not R2Z. Boundary remains no method/default/scaling. See `docs/en/bea-v1-haae-r2z-real-file-candidate-material-preflight.md`.
+
 
 Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
 
 
 R2Y public readback markers: source file cap 500; wall-clock cap 20 minutes; gold private eval only; operator public corpus manifest.
+
+
+R2Z performs no execution/private write/candidate generation/source scan; R2AA bounded local execution authorized; R2AA broad workspace scan/CI/network/runtime false.
