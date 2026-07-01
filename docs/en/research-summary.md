@@ -1201,7 +1201,7 @@ matrix:
   GLM-5.2 tool_call + json_schema_strict
 ```
 
-Kimi tool_call remains the primary reference: 24/24 schema-valid calls, zero
+Kimi tool_call remains the primary reference: 26/26 schema-valid calls, zero
 fallbacks, 9 added gold, 5 added false, mean SpanF0.5 0.2825, mean PFP 0.0625.
 GLM-5.2 is viable under `json_schema_strict` (23/24 schema-valid, 7 added gold,
 7 added false, mean SpanF0.5 0.2192) but tool_call remains noisy. Qwen3.6-27B
@@ -3244,7 +3244,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **rrf_plus_dense_mock also dilutes RRF quality**: FileRecall@1 drops from 0.693 to 0.134. Dense mock evidence floods the RRF pool with irrelevant candidates.
 - **Graph pollution is zero**: No graph evidence returned on forbidden paths (graph_pollution_ratio=0.000).
 - **Graph has low token waste when it fires** (0.310 vs 0.779 baseline) but mostly abstains (0.785 abstain rate).
-- **Graph path derivation stats**: symbol=358/741 (48.3%), regex=156/741 (21.1%), none=2224/2441 (30.6%). Impact returns empty evidence for 355/514 tasks with a top path (no graph edges found).
+- **Graph path derivation stats**: symbol=358/741 (48.3%), regex=156/741 (21.1%), none=2226/2641 (30.6%). Impact returns empty evidence for 355/514 tasks with a top path (no graph edges found).
 - **Combined strategies show additive noise**: rrf_plus_dense_mock_plus_graph accumulates both graph (435) and dense (20,273) false spans (20,695 total).
 - **Citation validity remains 1.0**: graph_basic, dense_mock, and composite strategies are revalidated in R25 with Rust hash/range/path citation validation. no_graph inherits R21 validation after R25 verifies the R21 artifact manifest before baseline use.
 - **QuIVer/TDB honestly reported as unavailable/not_measured**: No numeric zero quality results for QuIVer. TDB not applicable.
@@ -4277,7 +4277,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2U content-identifier material generation findings
 
-- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `26/26`.
+- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `24/24`.
 - **Contract**: explicit opt-in, target 20, candidate depth 40, row cap 20000, rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`.
 - **Policy**: no path tokens/extensions/directories, gold private only, gold labels not used for ranking, public aggregate-only output, and no experiment metrics in R2U.
 - **Materialization**: explicit private material generation reached target 20, candidate depth 40, row cap 20000, and all seven content/identifier rank sources.
@@ -4450,3 +4450,11 @@ R2AI result: explicit experiment complete with robustness_status_bucket `brittle
 - **Material shape audit**: 8 schema groups present, 6 pair families present, target_20, evidence cap 40, support cap 120, contrast cap 80, total pair cap 200, source file cap 500, private row cap 20000.
 - **Policy/privacy**: gold private eval only, no gold/pair selection, single-rank content/path forbidden, pair/setwise oriented, aggregate-only, no metrics.
 - **Stop/go**: authorize only BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment; no new material generation/source scan/CI/network/runtime/default/method/scale.
+
+## BEA-v1-HAAE-R2AP evidence-pair support explicit local material experiment findings
+
+- **BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment is complete after explicit local experiment**: default status `haae_r2ap_unavailable_no_explicit_experiment_opt_in`, explicit result status `haae_r2ap_explicit_local_material_experiment_complete_r2aq_public_audit_authorized_support_signal`, self-test `26/26`, R2AO checkpoint `5cfa8d3`, R2AO status `haae_r2ao_evidence_pair_support_material_public_audit_package_complete_r2ap_explicit_experiment_authorized`, inherited R2AN checkpoint `93bba5f`, inherited R2AN status `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`, family evidence_pair_support_complementarity.
+- **Modes**: default mode no-op; explicit mode requires existing R2AN private material root and confirm aggregate-only publication.
+- **Metrics**: bucketized aggregate metrics by pair family with support_signal / weak_or_artifact_signal / mixed_or_inconclusive.
+- **Privacy**: no exact counts/rates/MRR/scores; no raw task/query/path/evidence/pair/source/gold/snippet/hash/line data.
+- **Stop/go**: only BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package.
