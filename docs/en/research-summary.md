@@ -4438,7 +4438,7 @@ R2AI result: explicit experiment complete with robustness_status_bucket `brittle
 
 ## BEA-v1-HAAE-R2AN evidence-pair support explicit material generation findings
 
-- **BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation is complete after explicit local material generation**: R2AM checkpoint `b243924`, R2AM status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`, default status `haae_r2an_unavailable_no_explicit_material_generation_opt_in`, explicit success status `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`, self-test `27/27`, R2AM self-test 26/26, selected family `evidence_pair_support_complementarity`.
+- **BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation is complete after explicit local material generation**: R2AM checkpoint `b243924`, R2AM status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`, default status `haae_r2an_unavailable_no_explicit_material_generation_opt_in`, explicit success status `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`, self-test `29/29`, R2AM self-test 26/26, selected family `evidence_pair_support_complementarity`.
 - **Modes**: default mode no-op; explicit mode requires private output root, public corpus manifest, allow flag, confirm private output, confirm no experiment metrics.
 - **Bounds**: target_task_count=20, evidence_unit_depth_cap_per_task=40, support_pair_cap_per_task=120, contrast_control_pair_cap_per_task=80, total_pair_cap_per_task=200, source_file_cap=500, private_row_cap=20000, wall_clock_cap_minutes=20.
 - **Policy**: schema `bea_v1_haae_r2an_evidence_pair_support_material_generation_v1`; gold private eval only; single-rank content/path signal forbidden; pair/setwise oriented; material QA only.
@@ -4466,3 +4466,11 @@ R2AI result: explicit experiment complete with robustness_status_bucket `brittle
 - **Privacy/claims**: no exact metrics/raw publication and no method/default/scale claim.
 - **Boundary**: public-only audit with no private roots, no recompute experiment metrics, no material generation, no source corpus scan.
 - **Stop/go**: only BEA-v1-HAAE-R2AR Evidence-Pair Support Next-Step Decision Package; no execution.
+
+## BEA-v1-HAAE-R2AR evidence-pair support next-step decision findings
+
+- **BEA-v1-HAAE-R2AR Evidence-Pair Support Next-Step Decision Package is complete**: R2AQ checkpoint `77eab19`, inherited R2AP `87ea9de`, R2AO `5cfa8d3`, R2AN `93bba5f`, status `haae_r2ar_evidence_pair_support_next_step_decision_complete_r2as_mechanism_decomposition_public_design_authorized`, self-test `29/29`.
+- **Inherited signal**: support_signal and support_separation_high.
+- **Decision**: select only BEA-v1-HAAE-R2AS Evidence-Pair Support Mechanism Decomposition Public Design Preflight.
+- **Deferred/rejected**: defer robustness material generation, reject/defer scale preflight, defer close/turn.
+- **Boundary**: public-only decision/design; no private roots, no recompute metrics, no material generation, no source/candidate/corpus scan, no method/default/winner/scale claim.
