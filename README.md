@@ -204,7 +204,7 @@ scale authorization. R2 authorizes only **BEA-v1-HAAE-R2A Public Audit Package**
 public-only audit/package of the R2 aggregate artifact (source lock `0784be0`,
 R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`,
 status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`,
-self-test `10/10`). The audit reads no private material and performs no recompute,
+self-test `13/13`). The audit reads no private material and performs no recompute,
 candidate generation, retrieval, scheduler/HAAE execution, selector/reranker,
 runtime/default change, or BEA-v1-A/P5 action. It confirms the R2 tiny-N aggregate
 readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket
@@ -213,6 +213,19 @@ readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket
 runtime/default decision. R2A authorizes only **BEA-v1-HAAE-R2B Scale Preflight Design**
 over how to expand material generation beyond three tasks; it does not
 authorize scale execution or CI.
+
+**BEA-v1-HAAE-R2B Scale Preflight Design** is complete as a public-only
+design/preflight (R2A checkpoint `2ca1ac4`, status
+`haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`,
+self-test `13/13`). It selects `r14_medium_local_material_smoke` as the bounded
+local/manual next option, with source fixture task-count `count_21_to_50`, target task-count `count_10_to_20`, selected subset policy `deterministic_public_manifest_prefix_cap_10_to_20`,
+candidate-depth `count_20`, and private-row cap `count_le_5000`. The boundary is
+no private/material gen/execution/CI/network/BEA-v1-A/P5/method-winner: no
+private reads/writes, material generation, experiments, recompute, candidate
+generation, retrieval, source-corpus scan, scheduler/HAAE execution,
+selector/reranker, CI/network/clone, runtime/default change, BEA-v1-A/P5, or
+method-winner/scaling claim. R2B authorizes only **BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight**; R2C execution, private read/write, CI execution, and
+material generation remain false.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 

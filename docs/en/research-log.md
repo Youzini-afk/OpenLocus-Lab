@@ -2068,7 +2068,7 @@ Eval-layer ablation study measuring the contribution of graph_basic and dense_mo
 |--------|-------|
 | Path derivation: symbol | 358/741 (48.3%) |
 | Path derivation: regex | 156/741 (21.1%) |
-| Path derivation: none | 2210/1041 (30.6%) |
+| Path derivation: none | 2213/1341 (30.6%) |
 | Impact failures (no top path) | 227 |
 | Impact no evidence (top path found but impact empty) | 355 |
 | graph_pollution_ratio | 0.000 |
@@ -11263,7 +11263,7 @@ execution, FD1 replay, runtime change, or policy implementation.
 
 `eval/bea_v1_p0_2_actionability_matrix_refresh.py` generated
 `artifacts/bea_v1_p0_2_actionability_matrix_refresh/bea_v1_p0_2_actionability_matrix_refresh_report.json`
-with status `actionability_matrix_refresh_pass`. Self-test passed `10/10`,
+with status `actionability_matrix_refresh_pass`. Self-test passed `13/13`,
 forbidden scan passed, all 72 matrix cells were refreshed, and the causal P1
 cell classes were not mutated.
 
@@ -11385,7 +11385,7 @@ Validate the P0-5 private support-label harness end to end with a synthetic priv
 
 ### Result
 
-`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `10/10`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
+`eval/bea_v1_p1_0_support_label_validator_dry_run.py` generated `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json` with status `support_label_validator_dry_run_pass`. Self-test passed `13/13`, forbidden scan passed, and 18 synthetic private labels validated through the harness. The synthetic fixture was written under `.openlocus/research-private/` and is explicitly not real label data.
 
 ### Decision
 
@@ -11401,7 +11401,7 @@ Prepare a real project-private support-labeling queue from P0-4 design records a
 
 ### Result
 
-`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `10/10`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
+`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` generated `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json` with status `private_labeling_queue_preparation_pass`. Self-test passed `13/13`, forbidden scan passed, and 18 queue records were written under `.openlocus/research-private/`.
 
 ### Decision
 
@@ -11612,10 +11612,20 @@ R2 authorizes only BEA-v1-HAAE-R2A Public Audit Package. It does not authorize R
 
 ## 2026-07-01 — BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
 
-`eval/bea_v1_haae_r2a_public_audit_package.py` generated `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json` with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`. Self-test passed `10/10`, forbidden scan passed, HAAE-R2 source checkpoint `0784be0` was locked, and the R2 source status is `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`.
+`eval/bea_v1_haae_r2a_public_audit_package.py` generated `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json` with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`. Self-test passed `13/13`, forbidden scan passed, HAAE-R2 source checkpoint `0784be0` was locked, and the R2 source status is `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`.
 
 R2A is public-only. It reads no private material, performs no recompute, and runs no candidate generation, retrieval, scheduler/HAAE execution, selector/reranker, runtime/default change, or BEA-v1-A/P5 action. The audit confirms the R2 tiny-N aggregate readback: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket `rate_1`; pairwise same-top agreement bucket is `rate_1`; sample bucket is `count_2_to_5`.
 
 ### Decision
 
 This is a tiny-N audit with no method-winner claim and no runtime/default decision. R2A authorizes only BEA-v1-HAAE-R2B Scale Preflight Design, a design phase for expanding material generation beyond three tasks. It does not authorize scale execution or CI. See `docs/en/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2B Scale Preflight Design
+
+`eval/bea_v1_haae_r2b_scale_preflight_design.py` generated `artifacts/bea_v1_haae_r2b_scale_preflight_design/bea_v1_haae_r2b_scale_preflight_design_report.json` with status `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`. Self-test passed `13/13`, forbidden scan passed, and HAAE-R2A checkpoint `2ca1ac4` was locked.
+
+R2B is public-only design/preflight. It inspects only committed public R14 fixture metadata and selects `r14_medium_local_material_smoke` with source fixture task-count `count_21_to_50`, target task-count `count_10_to_20`, selected subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate-depth `count_20`, and private-row cap `count_le_5000`. Boundary: no private/material gen/execution/CI/network/BEA-v1-A/P5/method-winner. It performs no private reads/writes, material generation, experiment, recompute, candidate generation, retrieval, source-corpus scan, OpenLocus execution, scheduler/HAAE execution, selector/reranker, CI/network/clone, runtime/default change, BEA-v1-A/P5, or method-winner/scaling claim.
+
+### Decision
+
+R2B authorizes only BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight. R2C remains a preflight/package phase: execution, private read/write, CI execution, and material generation are false. See `docs/en/bea-v1-haae-r2b-scale-preflight-design.md`.

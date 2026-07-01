@@ -2068,7 +2068,7 @@ Eval-layer ablation study measuring the contribution of graph_basic and dense_mo
 |--------|-------|
 | Path derivation: symbol | 358/741 (48.3%) |
 | Path derivation: regex | 156/741 (21.1%) |
-| Path derivation: none | 2210/1041 (30.6%) |
+| Path derivation: none | 2213/1341 (30.6%) |
 | Impact failures (no top path) | 227 |
 | Impact no evidence (top path found but impact empty) | 355 |
 | graph_pollution_ratio | 0.000 |
@@ -10454,7 +10454,7 @@ calls、selector/reranker execution、FD1 replay、runtime change 或 policy imp
 
 `eval/bea_v1_p0_2_actionability_matrix_refresh.py` 生成
 `artifacts/bea_v1_p0_2_actionability_matrix_refresh/bea_v1_p0_2_actionability_matrix_refresh_report.json`，
-status 为 `actionability_matrix_refresh_pass`。Self-test 通过 `10/10`，forbidden scan 通过，
+status 为 `actionability_matrix_refresh_pass`。Self-test 通过 `13/13`，forbidden scan 通过，
 全部 72 个 matrix cells 已刷新，且 P1 causal cell classes 未被修改。
 
 Cell readiness summary：
@@ -10574,7 +10574,7 @@ P0-9 只授权 private labeling 或 private trace validation。它不授权 supp
 
 ### 结果
 
-`eval/bea_v1_p1_0_support_label_validator_dry_run.py` 生成 `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json`，status 为 `support_label_validator_dry_run_pass`。Self-test 通过 `10/10`，forbidden scan 通过，18 条 synthetic private labels 通过 harness 验证。Synthetic fixture 写入 `.openlocus/research-private/`，并明确不是真实 label data。
+`eval/bea_v1_p1_0_support_label_validator_dry_run.py` 生成 `artifacts/bea_v1_p1_0_support_label_validator_dry_run/bea_v1_p1_0_support_label_validator_dry_run_report.json`，status 为 `support_label_validator_dry_run_pass`。Self-test 通过 `13/13`，forbidden scan 通过，18 条 synthetic private labels 通过 harness 验证。Synthetic fixture 写入 `.openlocus/research-private/`，并明确不是真实 label data。
 
 ### 决策
 
@@ -10590,7 +10590,7 @@ P1-0 授权使用已验证 schema 与 harness 进行真实 private support label
 
 ### 结果
 
-`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` 生成 `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json`，status 为 `private_labeling_queue_preparation_pass`。Self-test 通过 `10/10`，forbidden scan 通过，并在 `.openlocus/research-private/` 下写入 18 条 queue records。
+`eval/bea_v1_p1_1_private_labeling_queue_preparation.py` 生成 `artifacts/bea_v1_p1_1_private_labeling_queue_preparation/bea_v1_p1_1_private_labeling_queue_preparation_report.json`，status 为 `private_labeling_queue_preparation_pass`。Self-test 通过 `13/13`，forbidden scan 通过，并在 `.openlocus/research-private/` 下写入 18 条 queue records。
 
 ### 决策
 
@@ -10801,10 +10801,20 @@ R2 只授权 BEA-v1-HAAE-R2A Public Audit Package。它不授权 R3 scale prefli
 
 ## 2026-07-01 — BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
 
-`eval/bea_v1_haae_r2a_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json`，状态为 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`。Self-test 通过 `10/10`，forbidden scan 通过，HAAE-R2 source checkpoint `0784be0` 已锁定，R2 source status 为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。
+`eval/bea_v1_haae_r2a_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json`，状态为 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`。Self-test 通过 `13/13`，forbidden scan 通过，HAAE-R2 source checkpoint `0784be0` 已锁定，R2 source status 为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。
 
 R2A 是 public-only。它不读取 private material，不 recompute，也不运行 candidate generation、retrieval、scheduler/HAAE execution、selector/reranker、runtime/default change 或 BEA-v1-A/P5 action。Audit 确认 R2 tiny-N aggregate readback：`bm25_like`、`symbol_overlap`、`rrf_like` 的 hit-rate bucket 均为 `rate_1`；pairwise same-top agreement bucket 为 `rate_1`；sample bucket 为 `count_2_to_5`。
 
 ### Decision
 
 这是 tiny-N audit，不是 no method-winner claim，也不是 runtime/default decision。R2A 只授权 BEA-v1-HAAE-R2B Scale Preflight Design，用于设计如何把 material generation 扩展到超过三个 tasks。它不授权 scale execution 或 CI。参见 `docs/zh/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2B Scale Preflight Design
+
+`eval/bea_v1_haae_r2b_scale_preflight_design.py` 生成 `artifacts/bea_v1_haae_r2b_scale_preflight_design/bea_v1_haae_r2b_scale_preflight_design_report.json`，状态为 `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`。Self-test 通过 `13/13`，forbidden scan 通过，HAAE-R2A checkpoint `2ca1ac4` 已锁定。
+
+R2B 是 public-only design/preflight。它只检查已提交的公开 R14 fixture metadata，并选择 `r14_medium_local_material_smoke`，source fixture task-count 为 `count_21_to_50`，target task-count 为 `count_10_to_20`，selected subset policy 为 `deterministic_public_manifest_prefix_cap_10_to_20`，candidate-depth 为 `count_20`，private-row cap 为 `count_le_5000`。Boundary：no private/material gen/execution/CI/network/BEA-v1-A/P5/method-winner。它不执行 private reads/writes、material generation、experiment、recompute、candidate generation、retrieval、source-corpus scan、OpenLocus execution、scheduler/HAAE execution、selector/reranker、CI/network/clone、runtime/default change、BEA-v1-A/P5 或 method-winner/scaling claim。
+
+### Decision
+
+R2B 只授权 BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight。R2C 仍是 preflight/package phase：execution、private read/write、CI execution 与 material generation 均为 false。参见 `docs/zh/bea-v1-haae-r2b-scale-preflight-design.md`。

@@ -2,9 +2,9 @@
 
 Date: 2026-06-28
 
-Latest HAAE status: BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is complete with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`, self-test `10/10`, HAAE-R2 checkpoint `0784be0`, and HAAE-R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`. It is a public-only tiny-N audit: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket `rate_1`, same-top agreement bucket `rate_1`, and sample bucket `count_2_to_5`, but there is no method-winner or runtime/default claim. R2A authorizes only BEA-v1-HAAE-R2B Scale Preflight Design, not scale execution or CI.
+Latest HAAE status: BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is complete with status `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`, self-test `13/13`, HAAE-R2 checkpoint `0784be0`, and HAAE-R2 status `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`. It is a public-only tiny-N audit: `bm25_like`, `symbol_overlap`, and `rrf_like` all have hit-rate bucket `rate_1`, same-top agreement bucket `rate_1`, and sample bucket `count_2_to_5`, but there is no method-winner or runtime/default claim. R2A authorizes only BEA-v1-HAAE-R2B Scale Preflight Design, not scale execution or CI.
 
-最新 HAAE 状态：BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package 已完成，状态为 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`，self-test `10/10`，HAAE-R2 checkpoint `0784be0`，HAAE-R2 状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。这是 public-only tiny-N audit：`bm25_like`、`symbol_overlap`、`rrf_like` 的 hit-rate bucket 都是 `rate_1`，same-top agreement bucket 是 `rate_1`，sample bucket 是 `count_2_to_5`，但不做 method-winner 或 runtime/default claim。R2A 只授权 BEA-v1-HAAE-R2B Scale Preflight Design，不授权 scale execution 或 CI。
+最新 HAAE 状态：BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package 已完成，状态为 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`，self-test `13/13`，HAAE-R2 checkpoint `0784be0`，HAAE-R2 状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。这是 public-only tiny-N audit：`bm25_like`、`symbol_overlap`、`rrf_like` 的 hit-rate bucket 都是 `rate_1`，same-top agreement bucket 是 `rate_1`，sample bucket 是 `count_2_to_5`，但不做 method-winner 或 runtime/default claim。R2A 只授权 BEA-v1-HAAE-R2B Scale Preflight Design，不授权 scale execution 或 CI。
 
 This is the bilingual entry point for the current research-conclusion reports.
 All language-specific reports now live under `docs/en/` and `docs/zh/` as mirrored files.
@@ -256,6 +256,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`: [en](en/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md) · [zh](zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md)
 - `bea-v1-haae-r2-small-local-lexical-material-experiment.md`: [en](en/bea-v1-haae-r2-small-local-lexical-material-experiment.md) · [zh](zh/bea-v1-haae-r2-small-local-lexical-material-experiment.md)
 - `bea-v1-haae-r2a-small-local-experiment-public-audit-package.md`: [en](en/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md) · [zh](zh/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md)
+- `bea-v1-haae-r2b-scale-preflight-design.md`: [en](en/bea-v1-haae-r2b-scale-preflight-design.md) · [zh](zh/bea-v1-haae-r2b-scale-preflight-design.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
@@ -398,3 +399,6 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `real-provider-p7-summary.md`: [en](en/real-provider-p7-summary.md) · [zh](zh/real-provider-p7-summary.md)
 - `research-log.md`: [en](en/research-log.md) · [zh](zh/research-log.md)
 - `research-summary.md`: [en](en/research-summary.md) · [zh](zh/research-summary.md)
+
+
+R2B selected a bounded subset policy `deterministic_public_manifest_prefix_cap_10_to_20`: the public medium fixture is bucketed as `count_21_to_50`, but R2C may only preflight a `count_10_to_20` deterministic subset with candidate depth `count_20` and private row cap `count_le_5000`.
