@@ -1,0 +1,459 @@
+{
+  "boundary_records": [
+    {
+      "anonymous_boundary_id": "haaer2aiboundary0000",
+      "candidate_scan_bool": false,
+      "ci_network_provider_clone_bool": false,
+      "default_method_scale_claim_bool": false,
+      "default_noop_bool": false,
+      "explicit_local_only_bool": true,
+      "material_generation_bool": false,
+      "private_write_bool": false,
+      "raw_publication_bool": false,
+      "read_only_existing_r2ag_private_groups_bool": true,
+      "runtime_openlocus_bool": false,
+      "source_scan_bool": false
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "aggregate_bucketized_robustness_metrics_bool": true,
+      "anonymous_claim_boundary_id": "haaer2aiclaim0000",
+      "default_runtime_claim_bool": false,
+      "exact_public_metrics_bool": false,
+      "method_winner_claim_bool": false,
+      "new_material_generation_bool": false,
+      "raw_publication_bool": false,
+      "scaling_claim_bool": false
+    }
+  ],
+  "execution_mode_records": [
+    {
+      "aggregate_only_publication_confirmed_bool": true,
+      "anonymous_execution_mode_id": "haaer2aimode0000",
+      "default_no_private_read_write_source_scan_material_generation_metrics_bool": false,
+      "existing_r2ag_private_material_root_required_bool": true,
+      "explicit_opt_in_bool": true,
+      "material_generation_performed_bool": false,
+      "private_read_performed_bool": true,
+      "source_candidate_scan_performed_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2aigate0000",
+      "gate_bucket": "r2ah_source_locked_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0001",
+      "gate_bucket": "default_noop_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0002",
+      "gate_bucket": "explicit_opt_in_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0003",
+      "gate_bucket": "existing_private_root_safety_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0004",
+      "gate_bucket": "private_manifest_owner_schema_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0005",
+      "gate_bucket": "required_group_files_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0006",
+      "gate_bucket": "source_manifest_schema_count_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0007",
+      "gate_bucket": "existing_material_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0008",
+      "gate_bucket": "no_source_candidate_scan_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0009",
+      "gate_bucket": "no_material_generation_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0010",
+      "gate_bucket": "aggregate_only_bucket_metrics_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0011",
+      "gate_bucket": "variant_policy_axis_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0012",
+      "gate_bucket": "no_exact_public_metrics_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0013",
+      "gate_bucket": "robustness_status_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0014",
+      "gate_bucket": "r2aj_public_audit_only_stop_go_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0015",
+      "gate_bucket": "no_ci_network_default_method_scale_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0016",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2aigate0017",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material",
+  "private_group_bucket_records": [
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup0000",
+      "group_bucket": "task_frame",
+      "public_count_bucket": "count_6_to_20",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "read_existing_required_group_file"
+    },
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup0001",
+      "group_bucket": "candidate_pool",
+      "public_count_bucket": "count_le_20000",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "read_existing_required_group_file"
+    },
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup0002",
+      "group_bucket": "variant_material",
+      "public_count_bucket": "count_le_20000",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "read_existing_required_group_file"
+    },
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup0003",
+      "group_bucket": "rank_pack",
+      "public_count_bucket": "count_le_20000",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "read_existing_required_group_file"
+    },
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup0004",
+      "group_bucket": "outcome_eval_private",
+      "public_count_bucket": "count_6_to_20",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "read_existing_required_group_file"
+    },
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup0005",
+      "group_bucket": "material_qa",
+      "public_count_bucket": "count_1",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "read_existing_required_group_file"
+    },
+    {
+      "anonymous_group_bucket_id": "haaer2aigroup9999",
+      "group_bucket": "source_manifest_private",
+      "public_count_bucket": "count_21_to_50",
+      "raw_rows_published_bool": false,
+      "read_policy_bucket": "optional_schema_count_only"
+    }
+  ],
+  "private_manifest_audit_records": [
+    {
+      "anonymous_private_manifest_audit_id": "haaer2aimanifest0000",
+      "manifest_path_published_bool": false,
+      "manifest_valid_bucket": "valid_existing_r2ag_private_manifest_and_groups",
+      "owner_schema_match_bool": true,
+      "required_groups_present_bool": true,
+      "source_manifest_private_schema_count_only_bool": true
+    }
+  ],
+  "private_material_root_records": [
+    {
+      "anonymous_private_root_id": "haaer2airoot0000",
+      "existing_material_only_bool": true,
+      "no_symlink_or_escape_bool": true,
+      "outside_public_repo_bool": true,
+      "root_path_published_bool": false,
+      "root_valid_bucket": "valid_existing_r2ag_private_material_root"
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2aireadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "prior_phase_count_guard_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "robustness_metric_aggregate_records": [
+    {
+      "anonymous_metric_aggregate_id": "haaer2aimetric0000",
+      "baseline_assumed_bool": false,
+      "coverage_ratio_bucket": "ratio_very_high",
+      "metric_publication_bucket": "aggregate_bucketized_only",
+      "no_exact_public_ranks_scores_counts_rates_mrr_task_query_path_bool": true,
+      "policy_axis_safe_bucket": "rank_policy_no_gold_path",
+      "robustness_status_bucket": "brittle_or_artifact",
+      "task_count_bucket": "count_6_to_20",
+      "variant_axis_balance_bucket": "balanced_bucket"
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2ai_explicit_local_robustness_experiment_v1",
+  "self_test_total": 26,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2aisource0000",
+      "inherited_haae_r2ag_checkpoint": "a0ac3b3",
+      "inherited_haae_r2ag_status": "haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized",
+      "locked_haae_r2ah_checkpoint": "83d7997",
+      "locked_haae_r2ah_status": "haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized",
+      "r2ag_inheritance_match_bool": true,
+      "r2ah_forbidden_scan_pass_bool": true,
+      "r2ah_r2ai_authorization_match_bool": true,
+      "r2ah_status_match_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2aistop0000",
+      "bea_v1_a_authorized_bool": false,
+      "ci_execution_authorized_bool": false,
+      "clone_authorized_bool": false,
+      "default_change_authorized_bool": false,
+      "haae_r2aj_public_audit_package_authorized_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_material_generation_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package",
+      "openlocus_runtime_authorized_bool": false,
+      "p5_authorized_bool": false,
+      "provider_model_authorized_bool": false,
+      "r2aj_public_audit_only_bool": true,
+      "raw_publication_authorized_bool": false,
+      "runtime_execution_authorized_bool": false,
+      "scaling_claim_authorized_bool": false,
+      "scheduler_haae_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "source_scan_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0000",
+      "validator_bucket": "source_lock_pass"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0001",
+      "validator_bucket": "wrong_r2ah_status_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0002",
+      "validator_bucket": "default_noop_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0003",
+      "validator_bucket": "missing_opt_in_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0004",
+      "validator_bucket": "root_inside_repo_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0005",
+      "validator_bucket": "root_symlink_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0006",
+      "validator_bucket": "root_escape_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0007",
+      "validator_bucket": "manifest_owner_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0008",
+      "validator_bucket": "manifest_schema_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0009",
+      "validator_bucket": "missing_required_group_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0010",
+      "validator_bucket": "material_generated_flag_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0011",
+      "validator_bucket": "rank_gold_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0012",
+      "validator_bucket": "rank_path_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0013",
+      "validator_bucket": "variant_missing_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0014",
+      "validator_bucket": "metric_public_boundary_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0015",
+      "validator_bucket": "raw_publication_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0016",
+      "validator_bucket": "next_phase_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0017",
+      "validator_bucket": "stop_go_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0018",
+      "validator_bucket": "gate_set_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0019",
+      "validator_bucket": "readback_record_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0020",
+      "validator_bucket": "status_metric_bucket_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0021",
+      "validator_bucket": "variant_rank_bucket_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0022",
+      "validator_bucket": "variant_mrr_bucket_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0023",
+      "validator_bucket": "prior_phase_count_guard_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0024",
+      "validator_bucket": "stale_readback_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2aisynth0025",
+      "validator_bucket": "safe_parser_fail"
+    }
+  ],
+  "variant_policy_axis_records": [
+    {
+      "aligned_task_bucket": "hit_count_16_to_20",
+      "anonymous_variant_axis_id": "haaer2aivariant0000",
+      "first_gold_rank_bucket": "rank_1",
+      "mrr_bucket": "mrr_high",
+      "policy_axis_bucket": "rank_policy_no_gold_path",
+      "rank_pack_bucket": "count_le_20000",
+      "top10_hit_bucket": "hit_count_16_to_20",
+      "top1_hit_bucket": "hit_count_16_to_20",
+      "top20_hit_bucket": "hit_count_16_to_20",
+      "top5_hit_bucket": "hit_count_16_to_20",
+      "variant_bucket": "symbol_content_ablation",
+      "variant_material_bucket": "count_le_20000"
+    },
+    {
+      "aligned_task_bucket": "hit_count_16_to_20",
+      "anonymous_variant_axis_id": "haaer2aivariant0001",
+      "first_gold_rank_bucket": "rank_1",
+      "mrr_bucket": "mrr_high",
+      "policy_axis_bucket": "rank_policy_no_gold_path",
+      "rank_pack_bucket": "count_le_20000",
+      "top10_hit_bucket": "hit_count_16_to_20",
+      "top1_hit_bucket": "hit_count_16_to_20",
+      "top20_hit_bucket": "hit_count_16_to_20",
+      "top5_hit_bucket": "hit_count_16_to_20",
+      "variant_bucket": "query_token_masking",
+      "variant_material_bucket": "count_le_20000"
+    },
+    {
+      "aligned_task_bucket": "hit_count_16_to_20",
+      "anonymous_variant_axis_id": "haaer2aivariant0002",
+      "first_gold_rank_bucket": "rank_1",
+      "mrr_bucket": "mrr_high",
+      "policy_axis_bucket": "rank_policy_no_gold_path",
+      "rank_pack_bucket": "count_le_20000",
+      "top10_hit_bucket": "hit_count_16_to_20",
+      "top1_hit_bucket": "hit_count_16_to_20",
+      "top20_hit_bucket": "hit_count_16_to_20",
+      "top5_hit_bucket": "hit_count_16_to_20",
+      "variant_bucket": "shuffled_content_control",
+      "variant_material_bucket": "count_le_20000"
+    },
+    {
+      "aligned_task_bucket": "hit_count_16_to_20",
+      "anonymous_variant_axis_id": "haaer2aivariant0003",
+      "first_gold_rank_bucket": "rank_1",
+      "mrr_bucket": "mrr_high",
+      "policy_axis_bucket": "rank_policy_no_gold_path",
+      "rank_pack_bucket": "count_le_20000",
+      "top10_hit_bucket": "hit_count_16_to_20",
+      "top1_hit_bucket": "hit_count_16_to_20",
+      "top20_hit_bucket": "hit_count_16_to_20",
+      "top5_hit_bucket": "hit_count_16_to_20",
+      "variant_bucket": "negative_control_strengthening",
+      "variant_material_bucket": "count_le_20000"
+    }
+  ]
+}

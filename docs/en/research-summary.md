@@ -4277,7 +4277,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2U content-identifier material generation findings
 
-- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `25/25`.
+- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke is complete**: HAAE-R2T checkpoint `bc58cf7`, R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`, explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `24/24`.
 - **Contract**: explicit opt-in, target 20, candidate depth 40, row cap 20000, rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`.
 - **Policy**: no path tokens/extensions/directories, gold private only, gold labels not used for ranking, public aggregate-only output, and no experiment metrics in R2U.
 - **Materialization**: explicit private material generation reached target 20, candidate depth 40, row cap 20000, and all seven content/identifier rank sources.
@@ -4391,3 +4391,17 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 
 
 R2AH readback marker: no experiment metrics in R2AH; R2AI aggregate-only experiment metrics authorized.
+
+## BEA-v1-HAAE-R2AI explicit local robustness experiment findings
+
+- **BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material is complete**: R2AH checkpoint `83d7997`, R2AH status `haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized`, inherited R2AG checkpoint `a0ac3b3`, R2AG status `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`, default status `haae_r2ai_unavailable_no_explicit_existing_r2ag_material_opt_in`, explicit pass status `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact`, self-test `26/26`.
+- **Modes**: R2AI default mode no private read/write/source scan/material generation/metrics; explicit mode requires explicit existing R2AG private material root.
+- **Private read scope**: read only existing R2AG private group files task_frame,candidate_pool,variant_material,rank_pack,outcome_eval_private,material_qa; source_manifest_private optional schema/count only.
+- **Public output**: aggregate-only bucketized robustness metrics by variant/policy axis with robust_signal / brittle_or_artifact / mixed_or_inconclusive and no exact public ranks/scores/counts/rates/MRR/task/query/path.
+- **Stop/go**: R2AJ public audit only for BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package.
+
+
+ R2AI result marker: robustness_status_bucket brittle_or_artifact; control_response_bucket controls_match_or_exceed_signal; variant top-k/MRR buckets are aggregate-only; no method/default/scaling claim.
+
+
+R2AI result: explicit experiment complete with robustness_status_bucket `brittle_or_artifact`; all reported variant top-k/MRR values are aggregate buckets, and control variants match the high signal buckets, so this is not a robust-signal/default/method/scaling claim.

@@ -3685,7 +3685,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2U content-identifier material generation 发现
 
-- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke 已完成**：HAAE-R2T checkpoint `bc58cf7`，R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`，explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`，self-test `25/25`。
+- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke 已完成**：HAAE-R2T checkpoint `bc58cf7`，R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`，explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`，self-test `24/24`。
 - **Contract**：explicit opt-in，target 20，candidate depth 40，row cap 20000，rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`。
 - **Policy**：no path tokens/extensions/directories，gold private only，gold labels not used for ranking，public aggregate-only output，并且 no experiment metrics in R2U。
 - **Decision**：R2U 只授权 BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package。
@@ -3727,7 +3727,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2AA actual explicit local real-file material smoke 发现
 
-- **BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 已实现**：HAAE-R2Z checkpoint `a763a84`，R2Z status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，默认状态 `haae_r2aa_unavailable_no_explicit_real_file_material_smoke_opt_in`，pass status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`，self-test `24/24`。
+- **BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 已完成**：HAAE-R2Z checkpoint `a763a84`，R2Z status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，默认状态 `haae_r2aa_unavailable_no_explicit_real_file_material_smoke_opt_in`，pass status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`，self-test `24/24`。
 - **Bounds**：explicit opt-in required，operator public corpus manifest/allowlist，target_20，candidate_depth_40，source_file_count_bucket，source_file_cap_500，row_cap_20000，wall_clock_cap_20_minutes，gold private eval only，no experiment metrics，public aggregate-only。
 - **Boundary**：R2AA 只在 explicit private root 下写 private real-file candidate rows，并且只授权 BEA-v1-HAAE-R2AB Real-File Material Public Audit Package。
 
@@ -3740,7 +3740,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2AC actual real-file material experiment 发现
 
-- **BEA-v1-HAAE-R2AC Actual Real-File Material Experiment 已实现**：HAAE-R2AB checkpoint `52a23da`，R2AB status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`，R2AA checkpoint `f325b65`，默认状态 `haae_r2ac_unavailable_no_explicit_r2aa_private_material_root`，pass statuses `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present` / `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_weak_or_no_signal`，self-test `21/21`。
+- **BEA-v1-HAAE-R2AC Actual Real-File Material Experiment 已完成**：HAAE-R2AB checkpoint `52a23da`，R2AB status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`，R2AA checkpoint `f325b65`，默认状态 `haae_r2ac_unavailable_no_explicit_r2aa_private_material_root`，pass statuses `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present` / `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_weak_or_no_signal`，self-test `21/21`。
 - **Experiment scope**：要求 explicit private material root，只读取 existing R2AA material only，不写 private，计算 aggregate-only metrics。
 - **Metrics**：rank sources 为 `query_identifier_overlap/symbol_name_overlap/lexical_bm25_like/content_identifier_fusion/control_baseline`；buckets 包括 task/candidate coverage、gold-file hit count/rate、top1/top5/top10/top20、MRR、median first-gold rank、missing outcome、pairwise aggregate diagnostics 和 `real_file_material_signal_bucket`。
 - **Boundary**：R2AD-only；no private writes/new candidate/material generation/source scan/retrieval/OpenLocus/runtime/CI/network/provider/clone，且不提出 default/method/scaling claim，不 raw publication，也不发布 exact private values。
@@ -3798,3 +3798,17 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 
 
 R2AH readback marker: no experiment metrics in R2AH; R2AI aggregate-only experiment metrics authorized; explicit local robustness experiment over existing R2AG private material; no CI/network/new generation/default/method/scale/raw publication.
+
+## BEA-v1-HAAE-R2AI explicit local robustness experiment 发现
+
+- **BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material 已完成**：R2AH checkpoint `83d7997`，R2AH status `haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized`，inherited R2AG checkpoint `a0ac3b3`，R2AG status `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ai_unavailable_no_explicit_existing_r2ag_material_opt_in`，explicit pass status `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact`，self-test `26/26`。
+- **Modes**：R2AI default mode no private read/write/source scan/material generation/metrics；explicit mode 需要 explicit existing R2AG private material root。
+- **Private read scope**：read only existing R2AG private group files task_frame,candidate_pool,variant_material,rank_pack,outcome_eval_private,material_qa；source_manifest_private optional schema/count only。
+- **Public output**：aggregate-only bucketized robustness metrics by variant/policy axis，状态为 robust_signal / brittle_or_artifact / mixed_or_inconclusive，并且 no exact public ranks/scores/counts/rates/MRR/task/query/path。
+- **Stop/go**：R2AJ public audit only for BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package。
+
+
+ R2AI result marker: robustness_status_bucket brittle_or_artifact; control_response_bucket controls_match_or_exceed_signal; variant top-k/MRR buckets are aggregate-only; no method/default/scaling claim.
+
+
+R2AI 结果：explicit experiment 已完成，robustness_status_bucket 为 `brittle_or_artifact`；所有 variant top-k/MRR 都只以 aggregate bucket 发布，control variants 也达到高 signal bucket，所以这不是 robust-signal/default/method/scaling claim。
