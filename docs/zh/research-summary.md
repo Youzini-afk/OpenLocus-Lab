@@ -3561,7 +3561,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2E local medium material audit package 发现
 
-- **BEA-v1-HAAE-R2E Local Medium Material Audit Package 已完成**：R2D checkpoint `c4e454a`，R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`，状态 `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`，self-test `18/18`。
+- **BEA-v1-HAAE-R2E Local Medium Material Audit Package 已完成**：R2D checkpoint `c4e454a`，R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`，状态 `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`，self-test `30/30`。
 - **Audit mode**：public-only audit，no private root read，不访问 private material。
 - **Manifest readback**：task bucket `count_10_to_20`，source fixture bucket `count_21_to_50`，subset policy `deterministic_public_manifest_prefix_cap_10_to_20`，candidate depth `count_20`，private row cap `count_le_5000`，total private row bucket `count_le_5000`。
 - **Rank source readback**：`bm25_like/symbol_overlap/rrf_like` present，不发布 exact scores 或 ranks。
@@ -3659,3 +3659,12 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Audited material properties**：explicit opt-in，private write nonzero，target 20，depth 40，5 variants，6 rank sources，required schema groups meaningful，gold private only，ranking gold false，no experiment metrics，aggregate-only，root safety pass，R2O source checkpoint `4ffc9eb`。
 - **Boundary**：public-only audit；不读取 private root/material，不 recompute，不计算 experiment metrics，不执行 material generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector，不提出 method/default/scaling claim，也不 raw publication。
 - **决策**：R2Q 只授权 BEA-v1-HAAE-R2R Path-Cue Robustness Experiment 读取 existing R2P private material with explicit root；no new material generation/CI/retrieval/runtime/source scan/default/method/scaling。
+
+## BEA-v1-HAAE-R2R path-cue robustness experiment 发现
+
+- **BEA-v1-HAAE-R2R Path-Cue Robustness Experiment 已完成**：HAAE-R2Q checkpoint `a9f5477`，R2Q status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`，default status `haae_r2r_unavailable_no_explicit_r2p_private_material_root`，result status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`，self-test `18/18`。
+- **Result**：`path_cue_artifact_likely`；`path_prior_original_top10_bucket=count_11_to_20`，`path_prior_original_top20_bucket=count_11_to_20`，所有 perturbation drop buckets 都是 `count_11_to_20`，`variant_spread_bucket=spread_high`。
+- **Interpretation**：path-prior signal 在 original path-cue material 上高，但在 path-scrambled、extension-preserved、directory-depth-preserved 和 strengthened-control variants 下崩掉。把它当作 fixture/path-cue evidence，不当作 robust optimization。
+- **Boundary**：no method/default/scaling；不执行 private writes、new material/candidate generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector 或 raw exact-value publication。
+- **Public readback markers**: explicit private material root; existing R2P material only; aggregate-only metrics; variant×rank_source; path_prior robustness; path_cue_artifact_likely; path_prior_original_top10_bucket; count_11_to_20; spread_high; no method/default/scaling; BEA-v1-HAAE-R2S Public Audit Package.
+- **决策**：R2R 只授权 BEA-v1-HAAE-R2S Public Audit Package。

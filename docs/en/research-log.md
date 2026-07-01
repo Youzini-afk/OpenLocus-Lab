@@ -11652,7 +11652,7 @@ R2D authorizes only BEA-v1-HAAE-R2E Local Medium Material Audit Package. It does
 
 ## 2026-07-01 — BEA-v1-HAAE-R2E Local Medium Material Audit Package
 
-`eval/bea_v1_haae_r2e_local_medium_material_audit_package.py` generated `artifacts/bea_v1_haae_r2e_local_medium_material_audit_package/bea_v1_haae_r2e_local_medium_material_audit_package_report.json`. Status is `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`, self-test `18/18`, R2D checkpoint `c4e454a`, and R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`.
+`eval/bea_v1_haae_r2e_local_medium_material_audit_package.py` generated `artifacts/bea_v1_haae_r2e_local_medium_material_audit_package/bea_v1_haae_r2e_local_medium_material_audit_package_report.json`. Status is `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`, self-test `30/30`, R2D checkpoint `c4e454a`, and R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`.
 
 R2E is a public-only audit with no private root read. It confirms task bucket `count_10_to_20`, source fixture bucket `count_21_to_50`, subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate depth `count_20`, private row cap `count_le_5000`, total private row bucket `count_le_5000`, and rank sources `bm25_like/symbol_overlap/rrf_like`.
 
@@ -11779,3 +11779,13 @@ R2Q audits R2P material properties from the public artifact only: explicit opt-i
 ### Decision
 
 R2Q authorizes only BEA-v1-HAAE-R2R Path-Cue Robustness Experiment over existing R2P private material with explicit root. Boundary: no new material generation/CI/retrieval/runtime/source scan/default/method/scaling. See `docs/en/bea-v1-haae-r2q-path-cue-robustness-material-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2R Path-Cue Robustness Experiment
+
+`eval/bea_v1_haae_r2r_path_cue_robustness_experiment.py` generated `artifacts/bea_v1_haae_r2r_path_cue_robustness_experiment/bea_v1_haae_r2r_path_cue_robustness_experiment_report.json` in explicit mode over the existing R2P private material. Default status is `haae_r2r_unavailable_no_explicit_r2p_private_material_root`; result status is `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`. Self-test is `30/30`. Source lock is HAAE-R2Q checkpoint `a9f5477` with status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`.
+
+Result: `path_cue_artifact_likely`. `path_prior_original_top10_bucket` and top20 are `count_11_to_20`, but path-scrambled, extension-preserved, directory-depth-preserved, and strengthened-control perturbation drop buckets are all `count_11_to_20`; `variant_spread_bucket=spread_high`. The original path-prior signal is therefore not robust under the designed perturbations.
+
+Public readback markers: explicit private material root; existing R2P material only; aggregate-only metrics; variant×rank_source; path_prior robustness; path_cue_artifact_likely; path_prior_original_top10_bucket; count_11_to_20; spread_high; no method/default/scaling; BEA-v1-HAAE-R2S Public Audit Package.
+
+Boundary: no method/default/scaling. R2R performs no private writes, new material/candidate generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, or raw exact-value publication. R2R authorizes only BEA-v1-HAAE-R2S Public Audit Package. See `docs/en/bea-v1-haae-r2r-path-cue-robustness-experiment.md`.
