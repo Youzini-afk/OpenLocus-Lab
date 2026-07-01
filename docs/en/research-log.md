@@ -11579,3 +11579,13 @@ Default mode performs no private reads or writes. Explicit opt-in requires `--al
 ### Decision
 
 Successful R1C bootstrap smoke authorizes only **BEA-v1-HAAE-R1D Explicit Private Root Schema Inventory Smoke**. R1C must not run FD1/P4L/N10EO/N10ER replay, retrieval, scoring, candidate generation, selector, BEA-v1-A/P5/runtime/default. All such stop/go fields are `false`. See `docs/en/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md`.
+
+## 2026-06-30 — BEA-v1-HAAE-R1D: Explicit Private Root Schema Inventory Smoke
+
+`eval/bea_v1_haae_r1d_explicit_private_root_schema_inventory_smoke.py` generated `artifacts/bea_v1_haae_r1d_explicit_private_root_schema_inventory_smoke/bea_v1_haae_r1d_explicit_private_root_schema_inventory_smoke_report.json` with status `haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`. Self-test passed `92/92`, forbidden scan passed, HAAE-R1C checkpoint `bc1e7a2` was locked, explicit private-root mode was used, private read bucket was `count_1_to_10`, private write bucket was `count_0`, row values read was `false`, and raw publication was `false`.
+
+The inventory accounted for all 10 HAAE schema groups, but the R1C bootstrap root was placeholder-only: placeholder groups `count_1_to_10`, meaningful groups `count_0`. This proves the root/output/manifest pipeline works, but the root has no meaningful schema coverage for hydration.
+
+### Decision
+
+R1D is a controlled No-Go for hydration execution and HAAE-R2. It authorizes no replay, scoring, retrieval, candidate generation, HAAE-layer execution, selector/reranker, BEA-v1-A/P5, runtime/default change, or raw publication. Future progress requires a separate bounded hydration preflight or an operator-supplied meaningful root. See `docs/en/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`.

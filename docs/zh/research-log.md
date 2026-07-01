@@ -10768,3 +10768,13 @@ HAAE-R1B 只授权 BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke
 ### 决策
 
 成功的 R1C bootstrap smoke 只授权 **BEA-v1-HAAE-R1D Explicit Private Root Schema Inventory Smoke**。R1C 不得运行 FD1/P4L/N10EO/N10ER replay、retrieval、scoring、candidate generation、selector、BEA-v1-A/P5/runtime/default。所有这类 stop/go 字段均为 `false`。参见 `docs/zh/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md`。
+
+## 2026-06-30 — BEA-v1-HAAE-R1D：Explicit Private Root Schema Inventory Smoke
+
+`eval/bea_v1_haae_r1d_explicit_private_root_schema_inventory_smoke.py` 生成 `artifacts/bea_v1_haae_r1d_explicit_private_root_schema_inventory_smoke/bea_v1_haae_r1d_explicit_private_root_schema_inventory_smoke_report.json`，状态为 `haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`。Self-test 通过 `92/92`，forbidden scan 通过，HAAE-R1C checkpoint `bc1e7a2` 已锁定，使用 explicit private-root mode，private read bucket 为 `count_1_to_10`，private write bucket 为 `count_0`，row values read 为 `false`，raw publication 为 `false`。
+
+Inventory accounted for 全部 10 个 HAAE schema groups，但 R1C bootstrap root 是 placeholder-only：placeholder groups `count_1_to_10`，meaningful groups `count_0`。这证明 root/output/manifest pipeline 可工作，但 root 没有可用于 hydration 的 meaningful schema coverage。
+
+### Decision
+
+R1D 是 hydration execution 与 HAAE-R2 的 controlled No-Go。它不授权 replay、scoring、retrieval、candidate generation、HAAE-layer execution、selector/reranker、BEA-v1-A/P5、runtime/default change 或 raw publication。后续进展需要单独的 bounded hydration preflight 或 operator-supplied meaningful root。参见 `docs/zh/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`。

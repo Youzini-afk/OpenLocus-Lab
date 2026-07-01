@@ -154,6 +154,18 @@ preserves the N10EM → N10EN → N10EO → N10EP → N10EQ → N10ER → N10ES 
 HAAE-R0 → HAAE-R1 → HAAE-R1A → HAAE-R1B → HAAE-R1C progression as historical
 context.
 
+**BEA-v1-HAAE-R1D: Explicit Private Root Schema Inventory Smoke** is complete as
+a controlled No-Go for the R1C bootstrap root (checkpoint `bc1e7a2`, status
+`haae_r1d_schema_inventory_complete_no_go_bootstrap_placeholders_only`, self-test
+`92/92`). R1D ran explicit private-root schema/category inventory only: private
+read bucket `count_1_to_10`, private write bucket `count_0`, row values read
+`false`, raw publication `false`, and all 10 HAAE schema groups accounted. The
+root is bootstrap placeholders only: placeholder groups `count_1_to_10`,
+meaningful groups `count_0`. It authorizes no hydration execution and no
+HAAE-R2; any future work must be a separate bounded hydration preflight or an
+operator-supplied meaningful root, still with replay/scoring/retrieval/candidate
+generation/BEA-v1-A/P5/runtime false.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
