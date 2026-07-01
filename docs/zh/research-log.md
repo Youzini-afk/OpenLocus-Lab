@@ -11132,4 +11132,14 @@ Decision：R2AF 设计 R2AG explicit local bounded robustness material generatio
 
 R2AF 只读取 committed public R2AE artifact/docs。它 no private reads/writes，no execution，no source scan，no candidate/material generation，且 no CI/scale/default/method claim。它 authorize only R2AG material generation，no R2AH experiment。参见 `docs/zh/bea-v1-haae-r2af-real-file-signal-robustness-material-preflight.md`。
 
+## 2026-07-01 — BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation
+
+`eval/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation.py` 生成 `artifacts/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation_report.json`。状态为 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `27/27`，HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`。
+
+R2AG 是 opt-in only。default mode: no private read/write/source scan/material generation。Explicit mode 使用 explicit private output root 和 bounded local public corpus manifest/allowlist，bounds 为 target 20 tasks、candidate depth cap 40、private row cap 20000，variants 为 symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening，rank_policy_used_gold_bool=false，rank_policy_used_path_bool=false，gold_private_eval_only_bool=true。
+
+### Boundary
+
+Public report 是 aggregate-only public artifact，no experiment metrics。Stop/go authorize only R2AH public audit/package，no R2AH experiment。参见 `docs/zh/bea-v1-haae-r2ag-explicit-local-bounded-robustness-material-generation.md`。
+
  R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.

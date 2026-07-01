@@ -3780,4 +3780,11 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 - **R2AG boundary**：explicit private root、bounded public corpus manifest、aggregate-only public artifact，并且 no metrics in R2AG beyond material QA。
 - **Boundary and authorization**：R2AF no private reads/writes，no execution，no source scan，no candidate/material generation，no CI/scale/default/method claim；authorize only R2AG material generation；no R2AH experiment。
 
+## BEA-v1-HAAE-R2AG explicit local bounded robustness material generation 发现
+
+- **BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation 已完成**：HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`，状态 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `27/27`。
+- **Opt-in and bounds**：opt-in only；default mode: no private read/write/source scan/material generation；explicit mode 需要 explicit private output root 和 bounded local public corpus manifest/allowlist；target 20 tasks、candidate depth cap 40、private row cap 20000。
+- **Robustness material**：variants 为 symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening；rank_policy_used_gold_bool=false；rank_policy_used_path_bool=false；gold_private_eval_only_bool=true。
+- **Public boundary**：aggregate-only public artifact，no experiment metrics，authorize only R2AH public audit/package，no R2AH experiment。
+
  R2AG local execution authorized; R2AG private write authorized; R2AG bounded source scan authorized; R2AG candidate/material generation authorized; broad source scan, CI, network/provider/clone, experiment metrics, default/method/scale claims remain forbidden.
