@@ -4208,3 +4208,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Metric readback**: path_prior top1/top5/top10/top20 bucket `count_10_to_20` with `mrr_high`; control_baseline top1 `count_0` with `mrr_low`.
 - **Framing**: separation signal worth mechanism/robustness follow-up, not method winner/default/scaling claim.
 - **Decision**: R2K authorizes only BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight as public design/decision; no execution, CI, retrieval, new material generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling claims, or raw publication.
+
+## BEA-v1-HAAE-R2L next-step decision / mechanism preflight findings
+
+- **BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight is complete**: HAAE-R2K checkpoint `99600db`, R2K status `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`, status `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`, self-test `14/14`.
+- **Decision context**: separation signal but no method/default/scaling claim.
+- **Selected next step**: mechanism decomposition over existing R2I material; not scale/CI or new material generation yet.
+- **R2M contract**: explicit opt-in private read only, aggregate-only mechanism buckets, no writes, no new material/candidates, no retrieval/runtime/source scan/CI/network/provider/scheduler/selector, no method/default/scaling claim.
+- **Decision**: R2L authorizes only BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition; R2M next only R2N public audit.

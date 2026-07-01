@@ -10908,3 +10908,13 @@ R2K 锁定 R2J public readback：separation signal true，`rank_spread_bucket=sp
 ### Decision
 
 R2K 只授权 BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight 作为 public design/decision。它不授权 execution、CI、retrieval、new material generation、runtime/default changes、BEA-v1-A/P5、method-winner claims、scaling claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r2k-public-audit-package.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight
+
+`eval/bea_v1_haae_r2l_next_step_decision_mechanism_preflight.py` 生成 `artifacts/bea_v1_haae_r2l_next_step_decision_mechanism_preflight/bea_v1_haae_r2l_next_step_decision_mechanism_preflight_report.json`。状态为 `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`，self-test `14/14`，HAAE-R2K checkpoint `99600db`，R2K status `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`。
+
+R2L 记录 R2J/R2K produced separation signal but no method/default/scaling claim。它选择 mechanism decomposition over existing R2I material，not scale/CI or new material generation yet。R2M contract 要求 explicit opt-in private read only 和 aggregate-only mechanism buckets。
+
+### Decision
+
+R2L 只授权 BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition；R2M next only R2N public audit。R2L 保持 public-only，不读取 private roots/material、source repos、raw fixture rows、CI/network/provider/clone、scheduler/HAAE/selector、retrieval/source scan/runtime，也不提出 method/default/scaling claims。参见 `docs/zh/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md`。

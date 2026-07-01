@@ -11719,3 +11719,13 @@ R2K locks the R2J public readback: separation signal true, `rank_spread_bucket=s
 ### Decision
 
 R2K authorizes only BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight as public design/decision. It does not authorize execution, CI, retrieval, new material generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling claims, or raw publication. See `docs/en/bea-v1-haae-r2k-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight
+
+`eval/bea_v1_haae_r2l_next_step_decision_mechanism_preflight.py` generated `artifacts/bea_v1_haae_r2l_next_step_decision_mechanism_preflight/bea_v1_haae_r2l_next_step_decision_mechanism_preflight_report.json`. Status is `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`, self-test `14/14`, HAAE-R2K checkpoint `99600db`, and R2K status `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`.
+
+R2L records that R2J/R2K produced separation signal but no method/default/scaling claim. It selects mechanism decomposition over existing R2I material, not scale/CI or new material generation yet. The R2M contract requires explicit opt-in private read only and aggregate-only mechanism buckets.
+
+### Decision
+
+R2L authorizes only BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition; R2M next only R2N public audit. R2L remains public-only and does not read private roots/material, source repos, raw fixture rows, CI/network/provider/clone, scheduler/HAAE/selector, retrieval/source scan/runtime, or make method/default/scaling claims. See `docs/en/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md`.
