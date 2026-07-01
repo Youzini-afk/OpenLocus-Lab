@@ -5946,7 +5946,7 @@ without a live LLM and without claiming downstream agent value.
 
 ```text
 python3 -m py_compile eval/b16a_minimal_mock_agent_paired_run.py    => PASS
-python3 eval/b16a_minimal_mock_agent_paired_run.py --self-test      => PASS (104/104 checks)
+python3 eval/b16a_minimal_mock_agent_paired_run.py --self-test      => PASS (105/105 checks)
 python3 eval/b16a_minimal_mock_agent_paired_run.py \
   --out artifacts/b16a_minimal_mock_agent_paired_run/\
 b16a_minimal_mock_agent_paired_run_report.json                     => PASS
@@ -11561,3 +11561,21 @@ The phase packages a machine-readable control-plane: 12 public input records, 10
 ### Decision
 
 HAAE-R1B authorizes only BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke (design-only, separately implemented/reviewed): `haae_r1c_bounded_private_trace_root_regeneration_smoke_authorized_bool=true`, `haae_r1c_design_only_bool=true`, `haae_r1c_execution_authorized_bool=false`, `haae_r1c_bounded_recipe_only_bool=true`. The R1C boundary requires explicit opt-in, private output only, public manifest only, bounded recipe only; unbounded replay/retrieval/candidate generation/scoring/selector/BEA-v1-A/P5/runtime are all false. R1B does not authorize any execution, private reads, root regeneration, or any other phase. See `docs/en/bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md`.
+
+---
+
+## 2026-06-30 — BEA-v1-HAAE-R1C: Bounded Private Trace Root Regeneration Smoke
+
+### Objective
+
+Execute the first bounded smoke of the private trace root regeneration pipeline after HAAE-R1B authorized R1C. R1C is the first explicit-opt-in phase allowed to create a private HAAE trace-root artifact, but only as a bounded smoke. It must not run FD1/P4L/N10EO/N10ER replay.
+
+### Result
+
+`eval/bea_v1_haae_r1c_bounded_private_trace_root_regeneration_smoke.py` generated `artifacts/bea_v1_haae_r1c_bounded_private_trace_root_regeneration_smoke/bea_v1_haae_r1c_bounded_private_trace_root_regeneration_smoke_report.json` with status `haae_r1c_bounded_private_manifest_root_smoke_complete_r1d_inventory_authorized` (explicit bootstrap smoke mode). Self-test passed `105/105`, forbidden scan passed, private input reads `0`, private writes `1`, replays `0`, FD1/P4L/N10EO/N10ER replays `0`, HAAE-layer executions `0`. HAAE-R1B source locked: checkpoint `8830492`, R1C authorized/design-only by R1B, bounded recipe only, all replay/scoring/retrieval/candidate-generation false.
+
+Default mode performs no private reads or writes. Explicit opt-in requires `--allow-private-root-regeneration-smoke --recipe <allowed> --private-output-root <path> --confirm-private-output-only`. The bootstrap recipe creates an explicit private output root, writes only manifest/control files and empty/schema-category placeholders with zero raw rows, and publishes a bucketized manifest only. 4 deferred recipes (FD1/P4L/N10EO/N10ER replay) are marked deferred. 10 schema group manifest records (all `raw_row_count=0`). 6 risk controls — all controlled.
+
+### Decision
+
+Successful R1C bootstrap smoke authorizes only **BEA-v1-HAAE-R1D Explicit Private Root Schema Inventory Smoke**. R1C must not run FD1/P4L/N10EO/N10ER replay, retrieval, scoring, candidate generation, selector, BEA-v1-A/P5/runtime/default. All such stop/go fields are `false`. See `docs/en/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md`.

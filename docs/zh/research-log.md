@@ -5554,7 +5554,7 @@ context_tokens_mean、latency_ms_mean、cost_proxy_mean），无需 live LLM
 
 ```text
 python3 -m py_compile eval/b16a_minimal_mock_agent_paired_run.py    => PASS
-python3 eval/b16a_minimal_mock_agent_paired_run.py --self-test      => PASS (104/104 checks)
+python3 eval/b16a_minimal_mock_agent_paired_run.py --self-test      => PASS (105/105 checks)
 python3 eval/b16a_minimal_mock_agent_paired_run.py \
   --out artifacts/b16a_minimal_mock_agent_paired_run/\
 b16a_minimal_mock_agent_paired_run_report.json                     => PASS
@@ -10750,3 +10750,21 @@ HAAE-R1A 只授权 BEA-v1-HAAE-R1B Bounded Private Trace Root Regeneration Prefl
 ### 决策
 
 HAAE-R1B 只授权 BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke（design-only，单独实现/审查）：`haae_r1c_bounded_private_trace_root_regeneration_smoke_authorized_bool=true`，`haae_r1c_design_only_bool=true`，`haae_r1c_execution_authorized_bool=false`，`haae_r1c_bounded_recipe_only_bool=true`。R1C boundary 要求显式 opt-in、private output only、public manifest only、bounded recipe only；unbounded replay/retrieval/candidate generation/scoring/selector/BEA-v1-A/P5/runtime 全部为 false。R1B 不授权任何 execution、private reads、root regeneration 或其他阶段。参见 `docs/zh/bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md`。
+
+---
+
+## 2026-06-30 — BEA-v1-HAAE-R1C：Bounded Private Trace Root Regeneration Smoke
+
+### 目标
+
+在 HAAE-R1B 授权 R1C 后，执行 private trace root regeneration pipeline 的第一个 bounded smoke。R1C 是第一个允许 explicit-opt-in 创建 private HAAE trace-root artifact 的阶段，但仅作为 bounded smoke。它不得运行 FD1/P4L/N10EO/N10ER replay。
+
+### 结果
+
+`eval/bea_v1_haae_r1c_bounded_private_trace_root_regeneration_smoke.py` 生成 `artifacts/bea_v1_haae_r1c_bounded_private_trace_root_regeneration_smoke/bea_v1_haae_r1c_bounded_private_trace_root_regeneration_smoke_report.json`，状态为 `haae_r1c_bounded_private_manifest_root_smoke_complete_r1d_inventory_authorized`（explicit bootstrap smoke 模式）。Self-test 通过 `105/105`，forbidden scan 通过，private input reads `0`，private writes `1`，replays `0`，FD1/P4L/N10EO/N10ER replays `0`，HAAE-layer executions `0`。HAAE-R1B source 已锁定：checkpoint `8830492`，R1C 被 R1B authorized/design-only，bounded recipe only，所有 replay/scoring/retrieval/candidate-generation 为 false。
+
+默认模式不进行任何 private reads 或 writes。Explicit opt-in 要求 `--allow-private-root-regeneration-smoke --recipe <allowed> --private-output-root <path> --confirm-private-output-only`。Bootstrap recipe 创建显式 private output root，只写 manifest/control 文件与 empty/schema-category placeholders，零 raw rows，只发布 bucketized manifest。4 个 deferred recipes（FD1/P4L/N10EO/N10ER replay）标记为 deferred。10 条 schema group manifest records（全部 `raw_row_count=0`）。6 个 risk controls ——全部已控制。
+
+### 决策
+
+成功的 R1C bootstrap smoke 只授权 **BEA-v1-HAAE-R1D Explicit Private Root Schema Inventory Smoke**。R1C 不得运行 FD1/P4L/N10EO/N10ER replay、retrieval、scoring、candidate generation、selector、BEA-v1-A/P5/runtime/default。所有这类 stop/go 字段均为 `false`。参见 `docs/zh/bea-v1-haae-r1c-bounded-private-trace-root-regeneration-smoke.md`。

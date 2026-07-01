@@ -119,9 +119,29 @@ control-plane — 12 public inputs, 10 recipes (covering all 10 HAAE-R0 schema
 groups), 5 safe operators, 3 private output contracts, 5 public manifest schema
 fields, and an R1C bounded contract — and authorizes **only** the next phase:
 **BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke** (design-only,
-separately implemented/reviewed). R1B performs no private reads, no root
-regeneration, no replay/scoring/retrieval/candidate generation/HAAE-layer
-execution/CI/network/clone. It is explicitly **not** BEA-v1-A, not
+ separately implemented/reviewed). R1B performs no private reads, no root
+ regeneration, no replay/scoring/retrieval/candidate generation/HAAE-layer
+ execution/CI/network/clone. It is explicitly **not** BEA-v1-A, not
+ selector-only, not selector/reranker execution, not P5, and not a
+ runtime/default promotion.
+
+**BEA-v1-HAAE-R1C: Bounded Private Trace Root Regeneration Smoke** is now
+complete as the first explicit-opt-in phase allowed to create a private HAAE
+trace-root artifact (checkpoint `8830492`, status
+`haae_r1c_bounded_private_manifest_root_smoke_complete_r1d_inventory_authorized`,
+self-test `105/105`, private writes `1`). R1C is a bounded smoke of the root/output/manifest pipeline: it must NOT run
+FD1/P4L/N10EO/N10ER replay, retrieval, scoring, candidate generation,
+selector, BEA-v1-A/P5/runtime/default. Default/no-private mode performs no
+private reads or writes and produces the unavailable artifact. Explicit
+opt-in (`--allow-private-root-regeneration-smoke --recipe
+bootstrap_private_manifest_root_smoke --private-output-root <path>
+--confirm-private-output-only`) creates an explicit private output root,
+writes only manifest/control files and empty/schema-category placeholders
+with **zero** raw task/query/candidate/span/score rows, and publishes a
+bucketized manifest only. The successful bootstrap smoke authorizes only
+**BEA-v1-HAAE-R1D Explicit Private Root Schema Inventory Smoke**; replay,
+scoring, retrieval, candidate generation, selector, BEA-v1-A/P5, and runtime
+remain false. R1C is explicitly **not** BEA-v1-A, not
 selector-only, not selector/reranker execution, not P5, and not a
 runtime/default promotion.
 
@@ -129,9 +149,10 @@ The detailed source of truth for the closed N10E branch and the HAAE route is
 [`docs/en/current-research-conclusions.md`](docs/en/current-research-conclusions.md)
 (EN) / [`docs/zh/current-research-conclusions.md`](docs/zh/current-research-conclusions.md)
 (ZH), together with the per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET/HAAE-R0/
-HAAE-R1/HAAE-R1A/HAAE-R1B docs. The chronological narrative below preserves the
-N10EM → N10EN → N10EO → N10EP → N10EQ → N10ER → N10ES → N10ET → HAAE-R0 →
-HAAE-R1 → HAAE-R1A → HAAE-R1B progression as historical context.
+HAAE-R1/HAAE-R1A/HAAE-R1B/HAAE-R1C docs. The chronological narrative below
+preserves the N10EM → N10EN → N10EO → N10EP → N10EQ → N10ER → N10ES → N10ET →
+HAAE-R0 → HAAE-R1 → HAAE-R1A → HAAE-R1B → HAAE-R1C progression as historical
+context.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
