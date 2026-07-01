@@ -10861,7 +10861,7 @@ R2F 只授权 BEA-v1-HAAE-R2G Public Audit Package。Boundary: no new candidates
 
 ## 2026-07-01 — BEA-v1-HAAE-R2G Public Audit Package
 
-`eval/bea_v1_haae_r2g_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2g_public_audit_package/bea_v1_haae_r2g_public_audit_package_report.json`。状态为 `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，self-test `9/9`，HAAE-R2F checkpoint `1e0c718`，R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`。
+`eval/bea_v1_haae_r2g_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2g_public_audit_package/bea_v1_haae_r2g_public_audit_package_report.json`。状态为 `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，self-test `14/14`，HAAE-R2F checkpoint `1e0c718`，R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`。
 
 R2G 是 public-only，只读取 public R2F artifact/docs。它确认 rank-source hit-rate bucket `rate_1`、same-top candidate rate bucket `rate_1`、top1/top5/top10 buckets `count_10_to_20`，scope 为 medium material experiment only。
 
@@ -10898,3 +10898,13 @@ R2J 要求 explicit private material root，并且 input 是 existing R2I materi
 ### Decision
 
 R2J 在 separation passes 时只授权 BEA-v1-HAAE-R2K Public Audit Package。Boundary 仍为 no method winner/default/scaling claim、no root discovery、no private writes、no candidate/material generation、no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector，且 no exact per-task/private publication。参见 `docs/zh/bea-v1-haae-r2j-harder-diversified-material-experiment.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2K Public Audit Package
+
+`eval/bea_v1_haae_r2k_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2k_public_audit_package/bea_v1_haae_r2k_public_audit_package_report.json`。状态为 `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`，self-test `14/14`，HAAE-R2J checkpoint `71c9a2c`，R2J status `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`，R2J self-test 21/21。
+
+R2K 锁定 R2J public readback：separation signal true，`rank_spread_bucket=spread_medium`，`control_baseline_separation_bucket=non_control_better`，`method_winner_bool=false`，path_prior top1/top5/top10/top20 bucket `count_10_to_20` 且 `mrr_high`，control_baseline top1 `count_0` 且 `mrr_low`。该结果是 separation signal worth mechanism/robustness follow-up，not method winner/default/scaling claim。
+
+### Decision
+
+R2K 只授权 BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight 作为 public design/decision。它不授权 execution、CI、retrieval、new material generation、runtime/default changes、BEA-v1-A/P5、method-winner claims、scaling claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r2k-public-audit-package.md`。

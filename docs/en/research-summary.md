@@ -4170,7 +4170,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2G public audit package findings
 
-- **BEA-v1-HAAE-R2G Public Audit Package is complete**: HAAE-R2F checkpoint `1e0c718`, R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`, status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`, self-test `9/9`.
+- **BEA-v1-HAAE-R2G Public Audit Package is complete**: HAAE-R2F checkpoint `1e0c718`, R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`, status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`, self-test `14/14`.
 - **Aggregate readback**: rank-source hit-rate bucket `rate_1`, same-top candidate rate bucket `rate_1`, top1/top5/top10 buckets `count_10_to_20`.
 - **Scope**: medium material experiment only; public-only audit of R2F artifact/docs.
 - **Boundary**: no method-winner/default/scaling claim; no private root read, recompute, generation, retrieval, source scan, runtime, CI, network, scheduler, or selector execution.
@@ -4200,3 +4200,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Result**: `separation_signal_bool=true`, `rank_spread_bucket=spread_medium`, `control_baseline_separation_bucket=non_control_better`; `path_prior` has top1/top5/top10/top20 buckets `count_10_to_20` with `mrr_high`, while `control_baseline` has top1 bucket `count_0` and `mrr_low`.
 - **Boundary**: no method winner/default/scaling claim, no root discovery, no candidate/material generation, no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector, no exact per-task/private publication.
 - **Decision**: R2J authorizes only BEA-v1-HAAE-R2K Public Audit Package when separation passes.
+
+## BEA-v1-HAAE-R2K public audit package findings
+
+- **BEA-v1-HAAE-R2K Public Audit Package is complete**: HAAE-R2J checkpoint `71c9a2c`, R2J status `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`, R2J self-test 21/21, status `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`, self-test `14/14`.
+- **Locked public signal**: separation signal true, `rank_spread_bucket=spread_medium`, `control_baseline_separation_bucket=non_control_better`, and `method_winner_bool=false`.
+- **Metric readback**: path_prior top1/top5/top10/top20 bucket `count_10_to_20` with `mrr_high`; control_baseline top1 `count_0` with `mrr_low`.
+- **Framing**: separation signal worth mechanism/robustness follow-up, not method winner/default/scaling claim.
+- **Decision**: R2K authorizes only BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight as public design/decision; no execution, CI, retrieval, new material generation, runtime/default changes, BEA-v1-A/P5, method-winner claims, scaling claims, or raw publication.

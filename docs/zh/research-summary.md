@@ -3578,7 +3578,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2G public audit package 发现
 
-- **BEA-v1-HAAE-R2G Public Audit Package 已完成**：HAAE-R2F checkpoint `1e0c718`，R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`，状态 `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，self-test `9/9`。
+- **BEA-v1-HAAE-R2G Public Audit Package 已完成**：HAAE-R2F checkpoint `1e0c718`，R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`，状态 `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，self-test `14/14`。
 - **Aggregate readback**：rank-source hit-rate bucket `rate_1`，same-top candidate rate bucket `rate_1`，top1/top5/top10 buckets `count_10_to_20`。
 - **Scope**：medium material experiment only；对 R2F artifact/docs 的 public-only audit。
 - **Boundary**：no method-winner/default/scaling claim；不读取 private root，不执行 recompute、generation、retrieval、source scan、runtime、CI、network、scheduler 或 selector execution。
@@ -3608,3 +3608,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Result**：`separation_signal_bool=true`，`rank_spread_bucket=spread_medium`，`control_baseline_separation_bucket=non_control_better`；`path_prior` 的 top1/top5/top10/top20 buckets 都是 `count_10_to_20` 且 `mrr_high`，而 `control_baseline` 的 top1 bucket 是 `count_0` 且 `mrr_low`。
 - **Boundary**：no method winner/default/scaling claim，no root discovery，no candidate/material generation，no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector，no exact per-task/private publication。
 - **决策**：R2J 在 separation passes 时只授权 BEA-v1-HAAE-R2K Public Audit Package。
+
+## BEA-v1-HAAE-R2K public audit package 发现
+
+- **BEA-v1-HAAE-R2K Public Audit Package 已完成**：HAAE-R2J checkpoint `71c9a2c`，R2J status `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`，R2J self-test 21/21，状态 `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`，self-test `14/14`。
+- **Locked public signal**：separation signal true，`rank_spread_bucket=spread_medium`，`control_baseline_separation_bucket=non_control_better`，且 `method_winner_bool=false`。
+- **Metric readback**：path_prior top1/top5/top10/top20 bucket `count_10_to_20` 且 `mrr_high`；control_baseline top1 `count_0` 且 `mrr_low`。
+- **Framing**：separation signal worth mechanism/robustness follow-up，not method winner/default/scaling claim。
+- **决策**：R2K 只授权 BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight 作为 public design/decision；不授权 execution、CI、retrieval、new material generation、runtime/default changes、BEA-v1-A/P5、method-winner claims、scaling claims 或 raw publication。
