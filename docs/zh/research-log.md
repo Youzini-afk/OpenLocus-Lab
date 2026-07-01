@@ -10732,3 +10732,21 @@ HAAE-R1 只是 feasibility inventory。Handoff：pass（全部 10 个 groups 至
 ### 决策
 
 HAAE-R1A 只授权 BEA-v1-HAAE-R1B Bounded Private Trace Root Regeneration Preflight Package（design-only，不 execution/private read/replay/scoring/retrieval/candidate generation）：`haae_r1b_bounded_private_trace_root_regeneration_preflight_authorized_bool=true`，`haae_r1b_design_only_bool=true`，`haae_r1b_execution_authorized_bool=false`。它不授权任何 execution、rerun、retrieval、recompute、candidate generation、arm scoring、OpenLocus execution、replay、HAAE-layer execution、root regeneration、threshold tuning、新 policy experiments、frozen-rule changes、guard/full/diffaware promotion、runtime/default changes、method-winner claims、downstream/scaled retrieval、raw diagnostic publication、CI variant execution、selector/reranker、BEA-v1-A、P5、provider/model network 或 network runs。所有这类 stop/go 字段均为 `false`。HAAE-R1A 明确 **不是** BEA-v1-A、不是 selector-only、不是 selector/reranker execution、不是 P5、不是 runtime/default promotion。参见 `docs/zh/bea-v1-haae-r1a-private-trace-coverage-gap-design.md`。
+
+---
+
+## 2026-06-30 — BEA-v1-HAAE-R1B：Bounded Private Trace Root Regeneration Preflight Package
+
+### 目标
+
+在 HAAE-R1A 授权 R1B 后，打包一个 public-only、design-only 的 bounded private trace root regeneration preflight。R1B 不执行任何操作；它打包 recipe catalog、operator checklist、private output contract、public manifest schema 与 R1C bounded contract。
+
+### 结果
+
+`eval/bea_v1_haae_r1b_bounded_private_trace_root_regeneration_preflight_package.py` 生成 `artifacts/bea_v1_haae_r1b_bounded_private_trace_root_regeneration_preflight_package/bea_v1_haae_r1b_bounded_private_trace_root_regeneration_preflight_package_report.json`，状态为 `haae_r1b_bounded_private_trace_root_regeneration_preflight_package_complete_r1c_smoke_authorized`。Self-test 通过 `108/108`，forbidden scan 通过，private input reads `0`，root regenerations `0`，replays `0`，HAAE-layer executions `0`，network runs `0`。HAAE-R1A source 已锁定：checkpoint `e54d1b4`，R1B authorized/design-only，所有 execution 为 false。
+
+该阶段打包了一个 machine-readable control-plane：12 条 public input records、10 条 recipe catalog records（覆盖全部 10 个 HAAE-R0 schema groups）、5 条 operator checklist records、3 条 private output contract records、5 条 public manifest schema records，以及一个 R1C bounded contract。记录六个 risk controls ——全部已控制。
+
+### 决策
+
+HAAE-R1B 只授权 BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke（design-only，单独实现/审查）：`haae_r1c_bounded_private_trace_root_regeneration_smoke_authorized_bool=true`，`haae_r1c_design_only_bool=true`，`haae_r1c_execution_authorized_bool=false`，`haae_r1c_bounded_recipe_only_bool=true`。R1C boundary 要求显式 opt-in、private output only、public manifest only、bounded recipe only；unbounded replay/retrieval/candidate generation/scoring/selector/BEA-v1-A/P5/runtime 全部为 false。R1B 不授权任何 execution、private reads、root regeneration 或其他阶段。参见 `docs/zh/bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md`。

@@ -93,7 +93,9 @@ Private Trace Coverage Gap Design** (design-only, no execution).
 public-only design phase responding to the HAAE-R1 coverage gap (checkpoint
 `2ea77da`, status
 `haae_r1_feasibility_inventory_unavailable_no_explicit_private_roots`,
-self-test `112/112`). HAAE-R1A locks the HAAE-R1 source (confirmed all 10 schema
+self-test `112/112`, R1A status
+`haae_r1a_private_trace_coverage_gap_design_complete_r1b_preflight_authorized`,
+checkpoint `e54d1b4`). HAAE-R1A locks the HAAE-R1 source (confirmed all 10 schema
 groups `not_present`, HAAE-R2 false), classifies a root source option for each
 of the 10 groups (9 `public_evidence_strong`, 1 `public_evidence_partial`),
 designs 5 bounded regeneration designs (explicit opt-in, FD1 private
@@ -107,13 +109,29 @@ HAAE-layer execution/CI/network/clone. It is explicitly **not** BEA-v1-A, not
 selector-only, not selector/reranker execution, not P5, and not a
 runtime/default promotion.
 
+**BEA-v1-HAAE-R1B: Bounded Private Trace Root Regeneration Preflight Package**
+is now complete as the public-only, design-only preflight package (checkpoint
+`e54d1b4`, status
+`haae_r1b_bounded_private_trace_root_regeneration_preflight_package_complete_r1c_smoke_authorized`,
+self-test `108/108`). HAAE-R1B locks the HAAE-R1A source (confirmed R1B
+authorized/design-only, all execution false), packages a machine-readable
+control-plane — 12 public inputs, 10 recipes (covering all 10 HAAE-R0 schema
+groups), 5 safe operators, 3 private output contracts, 5 public manifest schema
+fields, and an R1C bounded contract — and authorizes **only** the next phase:
+**BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke** (design-only,
+separately implemented/reviewed). R1B performs no private reads, no root
+regeneration, no replay/scoring/retrieval/candidate generation/HAAE-layer
+execution/CI/network/clone. It is explicitly **not** BEA-v1-A, not
+selector-only, not selector/reranker execution, not P5, and not a
+runtime/default promotion.
+
 The detailed source of truth for the closed N10E branch and the HAAE route is
 [`docs/en/current-research-conclusions.md`](docs/en/current-research-conclusions.md)
 (EN) / [`docs/zh/current-research-conclusions.md`](docs/zh/current-research-conclusions.md)
 (ZH), together with the per-phase N10EO/N10EP/N10EQ/N10ER/N10ES/N10ET/HAAE-R0/
-HAAE-R1/HAAE-R1A docs. The chronological narrative below preserves the N10EM →
-N10EN → N10EO → N10EP → N10EQ → N10ER → N10ES → N10ET → HAAE-R0 → HAAE-R1 →
-HAAE-R1A progression as historical context.
+HAAE-R1/HAAE-R1A/HAAE-R1B docs. The chronological narrative below preserves the
+N10EM → N10EN → N10EO → N10EP → N10EQ → N10ER → N10ES → N10ET → HAAE-R0 →
+HAAE-R1 → HAAE-R1A → HAAE-R1B progression as historical context.
 
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 

@@ -11543,3 +11543,21 @@ The phase reads only HAAE-R1/R0/N10ET public artifacts/docs/evaluators for const
 ### Decision
 
 HAAE-R1A authorizes only BEA-v1-HAAE-R1B Bounded Private Trace Root Regeneration Preflight Package (design-only, no execution/private read/replay/scoring/retrieval/candidate generation): `haae_r1b_bounded_private_trace_root_regeneration_preflight_authorized_bool=true`, `haae_r1b_design_only_bool=true`, `haae_r1b_execution_authorized_bool=false`. It does not authorize any execution, rerun, retrieval, recompute, candidate generation, arm scoring, OpenLocus execution, replay, HAAE-layer execution, root regeneration, threshold tuning, new policy experiments, frozen-rule changes, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, raw diagnostic publication, CI variant execution, selector/reranker, BEA-v1-A, P5, provider/model network, or network runs. All such stop/go fields are `false`. HAAE-R1A is explicitly **not** BEA-v1-A, not selector-only, not selector/reranker execution, not P5, and not a runtime/default promotion. See `docs/en/bea-v1-haae-r1a-private-trace-coverage-gap-design.md`.
+
+---
+
+## 2026-06-30 — BEA-v1-HAAE-R1B: Bounded Private Trace Root Regeneration Preflight Package
+
+### Objective
+
+Package a public-only, design-only preflight for bounded private trace root regeneration after HAAE-R1A authorized R1B. R1B executes nothing; it packages a recipe catalog, operator checklist, private output contract, public manifest schema, and R1C bounded contract.
+
+### Result
+
+`eval/bea_v1_haae_r1b_bounded_private_trace_root_regeneration_preflight_package.py` generated `artifacts/bea_v1_haae_r1b_bounded_private_trace_root_regeneration_preflight_package/bea_v1_haae_r1b_bounded_private_trace_root_regeneration_preflight_package_report.json` with status `haae_r1b_bounded_private_trace_root_regeneration_preflight_package_complete_r1c_smoke_authorized`. Self-test passed `108/108`, forbidden scan passed, private input reads `0`, root regenerations `0`, replays `0`, HAAE-layer executions `0`, network runs `0`. HAAE-R1A source locked: checkpoint `e54d1b4`, R1B authorized/design-only, all execution false.
+
+The phase packages a machine-readable control-plane: 12 public input records, 10 recipe catalog records (covering all 10 HAAE-R0 schema groups), 5 operator checklist records, 3 private output contract records, 5 public manifest schema records, and an R1C bounded contract. Six risk controls are recorded — all controlled.
+
+### Decision
+
+HAAE-R1B authorizes only BEA-v1-HAAE-R1C Bounded Private Trace Root Regeneration Smoke (design-only, separately implemented/reviewed): `haae_r1c_bounded_private_trace_root_regeneration_smoke_authorized_bool=true`, `haae_r1c_design_only_bool=true`, `haae_r1c_execution_authorized_bool=false`, `haae_r1c_bounded_recipe_only_bool=true`. The R1C boundary requires explicit opt-in, private output only, public manifest only, bounded recipe only; unbounded replay/retrieval/candidate generation/scoring/selector/BEA-v1-A/P5/runtime are all false. R1B does not authorize any execution, private reads, root regeneration, or any other phase. See `docs/en/bea-v1-haae-r1b-bounded-private-trace-root-regeneration-preflight-package.md`.
