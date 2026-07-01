@@ -10958,3 +10958,13 @@ R2P 要求 explicit opt-in，target 20 tasks，candidate depth 40，row cap 2000
 ### Decision
 
 R2P computes no experiment metrics in R2P，并且只授权 BEA-v1-HAAE-R2Q Public Audit Package。它只读取 committed public R14 medium fixture，只在 explicit operator root 下写 private rows，并发布 aggregate-only public artifact。参见 `docs/zh/bea-v1-haae-r2p-path-cue-robustness-material-generation.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package
+
+`eval/bea_v1_haae_r2q_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2q_public_audit_package/bea_v1_haae_r2q_public_audit_package_report.json`。状态为 `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`，self-test `18/18`，HAAE-R2P checkpoint `1f721dd`，R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`。
+
+R2Q 只通过 public artifact 审计 R2P material properties：explicit opt-in，private write nonzero，target 20，depth 40，5 variants，6 rank sources，required schema groups meaningful，gold private only，ranking gold false，no experiment metrics，aggregate-only，root safety pass，以及 R2O source checkpoint `4ffc9eb`。
+
+### Decision
+
+R2Q 只授权 BEA-v1-HAAE-R2R Path-Cue Robustness Experiment 读取 existing R2P private material with explicit root。Boundary: no new material generation/CI/retrieval/runtime/source scan/default/method/scaling。参见 `docs/zh/bea-v1-haae-r2q-path-cue-robustness-material-public-audit-package.md`。

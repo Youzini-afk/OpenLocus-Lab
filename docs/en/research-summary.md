@@ -4244,3 +4244,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Material contract**: explicit opt-in, target 20 tasks, candidate depth 40, row cap 20000, variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`, rank sources `path_prior/path_scrambled_prior/extension_bucket_prior/directory_depth_prior/control_baseline_strengthened/rrf_variant_fusion`.
 - **Gold policy**: gold labels private only and ranking policy ignores gold labels.
 - **Boundary**: no experiment metrics in R2P; public artifact aggregate-only; R2P authorizes only BEA-v1-HAAE-R2Q Public Audit Package.
+
+## BEA-v1-HAAE-R2Q path-cue robustness material public audit findings
+
+- **BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package is complete**: HAAE-R2P checkpoint `1f721dd`, R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`, status `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`, self-test `18/18`.
+- **Audited material properties**: explicit opt-in, private write nonzero, target 20, depth 40, 5 variants, 6 rank sources, required schema groups meaningful, gold private only, ranking gold false, no experiment metrics, aggregate-only, root safety pass, and R2O source checkpoint `4ffc9eb`.
+- **Boundary**: public-only audit; no private root/material read, recompute, experiment metrics, material generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, method/default/scaling claim, or raw publication.
+- **Decision**: R2Q authorizes only BEA-v1-HAAE-R2R Path-Cue Robustness Experiment over existing R2P private material with explicit root; no new material generation/CI/retrieval/runtime/source scan/default/method/scaling.

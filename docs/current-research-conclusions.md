@@ -271,6 +271,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-haae-r2n-public-audit-package.md`: [en](en/bea-v1-haae-r2n-public-audit-package.md) · [zh](zh/bea-v1-haae-r2n-public-audit-package.md)
 - `bea-v1-haae-r2o-robustness-preflight-design.md`: [en](en/bea-v1-haae-r2o-robustness-preflight-design.md) · [zh](zh/bea-v1-haae-r2o-robustness-preflight-design.md)
 - `bea-v1-haae-r2p-path-cue-robustness-material-generation.md`: [en](en/bea-v1-haae-r2p-path-cue-robustness-material-generation.md) · [zh](zh/bea-v1-haae-r2p-path-cue-robustness-material-generation.md)
+- `bea-v1-haae-r2q-path-cue-robustness-material-public-audit-package.md`: [en](en/bea-v1-haae-r2q-path-cue-robustness-material-public-audit-package.md) · [zh](zh/bea-v1-haae-r2q-path-cue-robustness-material-public-audit-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)
