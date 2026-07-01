@@ -3638,3 +3638,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Packaged conclusion**：`path_structure_prior`，medium_high confidence，fixture path cues + control underfit，且 no method winner。
 - **Boundary**：This is not method/default/scaling claim；R2N 是 public-only，不读取 private root/material，不从 private rows recompute，不执行 generation、retrieval/source scan/runtime、CI/network/provider/scheduler/selector，也不 raw publication。
 - **决策**：R2N 只授权 BEA-v1-HAAE-R2O Robustness Preflight Design，not execution/CI/new material generation yet。
+
+## BEA-v1-HAAE-R2O robustness preflight design 发现
+
+- **BEA-v1-HAAE-R2O Robustness Preflight Design 已完成**：HAAE-R2N checkpoint `a9066d2`，R2N status `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`，状态 `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`，self-test `14/14`。
+- **Selected next step**：BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation，基于 `path_structure_prior` 与 fixture path cues + control underfit。
+- **R2P contract**：target 20 tasks，candidate depth 40，row cap 20000，variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`，local explicit opt-in，private output root，public aggregate-only，且 no experiment metrics in R2P。
+- **Boundary**：R2O 是 not execution/CI/new material generation in R2O；no method/default/scaling claim；无 private reads/writes、material generation、execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。

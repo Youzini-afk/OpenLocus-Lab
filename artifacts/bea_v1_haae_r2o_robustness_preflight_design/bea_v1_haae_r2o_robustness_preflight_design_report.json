@@ -1,0 +1,288 @@
+{
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "haaer2oclaim0000",
+      "bea_v1_a_p5_bool": false,
+      "candidate_generation_bool": false,
+      "ci_network_bool": false,
+      "default_runtime_claim_bool": false,
+      "method_winner_claim_bool": false,
+      "new_material_generation_bool": false,
+      "raw_publication_bool": false,
+      "retrieval_runtime_bool": false,
+      "scaling_claim_bool": false,
+      "scheduler_selector_bool": false,
+      "source_scan_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "mechanism_context_records": [
+    {
+      "anonymous_mechanism_context_id": "haaer2ocontext0000",
+      "confidence_bucket": "medium_high",
+      "context_readback_match_bool": true,
+      "control_underfit_bool": true,
+      "dominant_mechanism_bucket": "path_structure_prior",
+      "fixture_path_cues_bool": true,
+      "method_winner_bool": false
+    }
+  ],
+  "next_step_options_records": [
+    {
+      "anonymous_option_id": "haaer2ooption0000",
+      "decision_bucket": "selected",
+      "next_phase": "BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation",
+      "option_bucket": "path_cue_robustness_material_generation"
+    },
+    {
+      "anonymous_option_id": "haaer2ooption0001",
+      "decision_bucket": "defer",
+      "option_bucket": "scale_current_recipe"
+    },
+    {
+      "anonymous_option_id": "haaer2ooption0002",
+      "decision_bucket": "defer",
+      "option_bucket": "ci_batch_execution"
+    },
+    {
+      "anonymous_option_id": "haaer2ooption0003",
+      "decision_bucket": "reject",
+      "option_bucket": "method_default_promotion"
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2ogate0000",
+      "gate_bucket": "r2n_source_locked_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0001",
+      "gate_bucket": "r2n_status_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0002",
+      "gate_bucket": "r2n_r2o_authorization_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0003",
+      "gate_bucket": "r2n_public_only_boundary_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0004",
+      "gate_bucket": "public_only_design_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0005",
+      "gate_bucket": "mechanism_context_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0006",
+      "gate_bucket": "robustness_question_defined_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0007",
+      "gate_bucket": "r2p_path_cue_robustness_selected_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0008",
+      "gate_bucket": "r2p_contract_bounded_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0009",
+      "gate_bucket": "no_private_read_write_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0010",
+      "gate_bucket": "no_material_generation_in_r2o_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0011",
+      "gate_bucket": "no_execution_recompute_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0012",
+      "gate_bucket": "no_retrieval_runtime_source_scan_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0013",
+      "gate_bucket": "no_ci_network_provider_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0014",
+      "gate_bucket": "no_scheduler_selector_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0015",
+      "gate_bucket": "no_method_default_scaling_claim_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0016",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2ogate0017",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_passed_bool": true,
+      "gate_public_only_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2O Robustness Preflight Design",
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2oreadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "r2p_contract_records": [
+    {
+      "anonymous_r2p_contract_id": "haaer2ocontract0000",
+      "candidate_depth_bucket": "count_40",
+      "ci_network_retrieval_runtime_source_scan_authorized_bool": false,
+      "experiment_metrics_in_r2p_bool": false,
+      "local_explicit_opt_in_bool": true,
+      "method_default_scaling_claim_bool": false,
+      "next_phase": "BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation",
+      "private_output_root_required_bool": true,
+      "private_row_cap_bucket": "count_20000",
+      "public_aggregate_only_bool": true,
+      "target_task_count_bucket": "count_20",
+      "variant_bucket": "original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened"
+    }
+  ],
+  "robustness_question_records": [
+    {
+      "anonymous_robustness_question_id": "haaer2oquestion0000",
+      "experiment_metrics_in_r2o_bool": false,
+      "public_only_design_bool": true,
+      "question_bucket": "do_path_cues_survive_controlled_path_perturbations",
+      "requires_new_private_material_bool": true,
+      "target_mechanism_bucket": "path_structure_prior"
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2o_robustness_preflight_design_v1",
+  "self_test_total": 14,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2osource0000",
+      "locked_haae_r2n_checkpoint": "a9066d2",
+      "locked_haae_r2n_status": "haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized",
+      "r2n_claim_boundary_match_bool": true,
+      "r2n_forbidden_scan_pass_bool": true,
+      "r2n_no_forbidden_stop_go_drift_bool": true,
+      "r2n_r2o_authorization_match_bool": true,
+      "r2n_status_match_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2ostop0000",
+      "bea_v1_a_authorized_bool": false,
+      "candidate_generation_authorized_bool": false,
+      "ci_execution_authorized_bool": false,
+      "default_change_authorized_bool": false,
+      "haae_r2o_execution_authorized_bool": false,
+      "haae_r2p_execution_authorized_by_r2o_bool": false,
+      "haae_r2p_path_cue_robustness_material_generation_authorized_bool": true,
+      "method_winner_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "new_material_generation_in_r2o_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation",
+      "p5_authorized_bool": false,
+      "provider_model_authorized_bool": false,
+      "raw_publication_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_execution_authorized_bool": false,
+      "scaling_claim_authorized_bool": false,
+      "scheduler_haae_authorized_bool": false,
+      "selector_reranker_authorized_bool": false,
+      "source_scan_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0000",
+      "validator_bucket": "source_lock_pass"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0001",
+      "validator_bucket": "wrong_r2n_status_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0002",
+      "validator_bucket": "mechanism_context_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0003",
+      "validator_bucket": "r2n_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0004",
+      "validator_bucket": "r2p_contract_missing_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0005",
+      "validator_bucket": "method_claim_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0006",
+      "validator_bucket": "stop_go_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0007",
+      "validator_bucket": "raw_leak_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0008",
+      "validator_bucket": "stale_readback_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2osynth0009",
+      "validator_bucket": "safe_parser_fail"
+    }
+  ]
+}

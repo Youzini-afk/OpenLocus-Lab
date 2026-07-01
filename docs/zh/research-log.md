@@ -10938,3 +10938,13 @@ R2N 打包 public R2M conclusion：`path_structure_prior`，medium_high confiden
 ### Decision
 
 R2N 只授权 BEA-v1-HAAE-R2O Robustness Preflight Design，not execution/CI/new material generation yet。R2N 只读取 public R2M artifacts/docs；不读取 private root/material，不从 private rows recompute，不执行 generation、retrieval/source scan/runtime、CI/network/provider/scheduler/selector，也不 raw publication。参见 `docs/zh/bea-v1-haae-r2n-public-audit-package.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2O: Robustness Preflight Design
+
+`eval/bea_v1_haae_r2o_robustness_preflight_design.py` 生成 `artifacts/bea_v1_haae_r2o_robustness_preflight_design/bea_v1_haae_r2o_robustness_preflight_design_report.json`。状态为 `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`，self-test `14/14`，HAAE-R2N checkpoint `a9066d2`，R2N status `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`。
+
+R2O 保留 mechanism context `path_structure_prior` 与 fixture path cues + control underfit，然后选择 BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation 作为 next bounded step。R2P contract 为 target 20 tasks、candidate depth 40、row cap 20000、variants `original/path_scrambled/extension_bucket_preserved/directory_depth_preserved/control_baseline_strengthened`、local explicit opt-in、private output root、public aggregate-only，且 no experiment metrics in R2P。
+
+### Decision
+
+R2O 是 not execution/CI/new material generation in R2O，并且 no method/default/scaling claim。它只读取 public artifacts/docs，不执行 private reads/writes、material generation、execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。参见 `docs/zh/bea-v1-haae-r2o-robustness-preflight-design.md`。
