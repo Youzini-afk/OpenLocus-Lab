@@ -11639,3 +11639,13 @@ R2C is public-only preflight/package. It locks `r14_medium_local_material_smoke`
 ### Decision
 
 R2C authorizes only BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke with explicit local/manual opt-in, private rows under an explicit private root, and public aggregate-only output. CI/network/provider, experiment comparison, R2 recompute, retrieval runtime, scheduler/HAAE, selector/reranker, runtime/default, BEA-v1-A/P5, method claim, and scaling claim remain false. See `docs/en/bea-v1-haae-r2c-local-medium-material-smoke-preflight.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke
+
+`eval/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke.py` generated `artifacts/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke_report.json`. Default mode status is `haae_r2d_unavailable_no_explicit_medium_material_generation_opt_in`; explicit pass status is `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`. Self-test passed `19/19`, and HAAE-R2C checkpoint `68000b2` was locked.
+
+R2D requires explicit opt-in. It uses subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, public fixture bucket `count_21_to_50`, target bucket `count_10_to_20`, candidate depth `count_20`, and private row cap `count_le_5000`. Explicit mode writes private rows only under the supplied private root; the public artifact records private write bucket `count_le_5000`, private read validation bucket `count_1_to_10`, public aggregate-only, and no raw publication.
+
+### Decision
+
+R2D authorizes only BEA-v1-HAAE-R2E Local Medium Material Audit Package. It does not authorize no experiment comparison, no R2 recompute, no runtime/retrieval/source scan beyond fixture, no CI/network/provider, no scheduler/HAAE/selector, no BEA-v1-A/P5/runtime/default, or no method/scaling claim. See `docs/en/bea-v1-haae-r2d-explicit-local-medium-material-generation-smoke.md`.

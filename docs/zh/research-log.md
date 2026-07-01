@@ -10828,3 +10828,13 @@ R2C 是 public-only preflight/package。它锁定 `r14_medium_local_material_smo
 ### Decision
 
 R2C 只授权 BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke，要求 explicit local/manual opt-in，在 explicit private root 下写 private rows，public output 只能 aggregate-only。CI/network/provider、experiment comparison、R2 recompute、retrieval runtime、scheduler/HAAE、selector/reranker、runtime/default、BEA-v1-A/P5、method claim 与 scaling claim 均保持 false。参见 `docs/zh/bea-v1-haae-r2c-local-medium-material-smoke-preflight.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke
+
+`eval/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke.py` 生成 `artifacts/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke_report.json`。默认模式状态为 `haae_r2d_unavailable_no_explicit_medium_material_generation_opt_in`；explicit pass 状态为 `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`。Self-test 通过 `19/19`，HAAE-R2C checkpoint `68000b2` 已锁定。
+
+R2D 要求 explicit opt-in。它使用 subset policy `deterministic_public_manifest_prefix_cap_10_to_20`、public fixture bucket `count_21_to_50`、target bucket `count_10_to_20`、candidate depth `count_20` 与 private row cap `count_le_5000`。Explicit mode 只在提供的 private root 下写 private rows；public artifact 记录 private write bucket `count_le_5000`、private read validation bucket `count_1_to_10`、public aggregate-only 与 no raw publication。
+
+### Decision
+
+R2D 只授权 BEA-v1-HAAE-R2E Local Medium Material Audit Package。它不授权 no experiment comparison、no R2 recompute、no runtime/retrieval/source scan beyond fixture、no CI/network/provider、no scheduler/HAAE/selector、no BEA-v1-A/P5/runtime/default 或 no method/scaling claim。参见 `docs/zh/bea-v1-haae-r2d-explicit-local-medium-material-generation-smoke.md`。

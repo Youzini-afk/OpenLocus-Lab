@@ -242,6 +242,22 @@ runtime/default, BEA-v1-A/P5, or method/scaling claim. It authorizes only
 local/manual opt-in, private rows under an explicit private root, and public
 aggregate-only output.
 
+**BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke** is implemented
+with safe default unavailable mode and explicit opt-in private material generation
+(R2C checkpoint `68000b2`, default status
+`haae_r2d_unavailable_no_explicit_medium_material_generation_opt_in`, pass status
+`haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`,
+self-test `19/19`). Explicit opt-in is required. It uses subset policy
+`deterministic_public_manifest_prefix_cap_10_to_20`, public fixture bucket
+`count_21_to_50`, target bucket `count_10_to_20`, candidate depth `count_20`, and
+private row cap `count_le_5000`. In explicit mode the private write bucket is
+`count_le_5000` and private read validation bucket is `count_1_to_10`; default
+mode writes `count_0`. The public artifact is public aggregate-only with no raw publication.
+Boundaries remain: no experiment comparison, no R2 recompute,
+no runtime/retrieval/source scan beyond fixture, no CI/network/provider,
+no scheduler/HAAE/selector, no BEA-v1-A/P5/runtime/default, and
+no method/scaling claim. R2D authorizes only **BEA-v1-HAAE-R2E Local Medium Material Audit Package**.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text
