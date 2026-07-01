@@ -268,6 +268,7 @@ All language-specific reports now live under `docs/en/` and `docs/zh/` as mirror
 - `bea-v1-haae-r2k-public-audit-package.md`: [en](en/bea-v1-haae-r2k-public-audit-package.md) · [zh](zh/bea-v1-haae-r2k-public-audit-package.md)
 - `bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md`: [en](en/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md) · [zh](zh/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md)
 - `bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md`: [en](en/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md) · [zh](zh/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md)
+- `bea-v1-haae-r2n-public-audit-package.md`: [en](en/bea-v1-haae-r2n-public-audit-package.md) · [zh](zh/bea-v1-haae-r2n-public-audit-package.md)
 - `bea-v1-final-mechanism-route-synthesis.md`: [en](en/bea-v1-final-mechanism-route-synthesis.md) · [zh](zh/bea-v1-final-mechanism-route-synthesis.md)
 - `bea-v1-p0-2-actionability-matrix-refresh.md`: [en](en/bea-v1-p0-2-actionability-matrix-refresh.md) · [zh](zh/bea-v1-p0-2-actionability-matrix-refresh.md)
 - `bea-v1-p0-3-scheduler-dataset-export.md`: [en](en/bea-v1-p0-3-scheduler-dataset-export.md) · [zh](zh/bea-v1-p0-3-scheduler-dataset-export.md)

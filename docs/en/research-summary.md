@@ -4223,3 +4223,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Mechanism buckets**: `dominant_mechanism_bucket=path_structure_prior`, `confidence_bucket=medium_high`, extension/language prior supporting, directory depth prior supporting, same-module/path-token overlap supporting, fixture path cues, and control baseline underfit.
 - **Boundary**: explicit existing R2I private material root required for private reads; no private writes, generation, retrieval/runtime/source scan, CI/network/provider/scheduler/selector, raw publication, or method/default/scaling claim.
 - **Decision**: R2M authorizes only BEA-v1-HAAE-R2N Public Audit Package; next should audit/robustness-plan the path-structure signal, not promote a default rule.
+
+## BEA-v1-HAAE-R2N public audit package findings
+
+- **BEA-v1-HAAE-R2N Public Audit Package is complete**: HAAE-R2M checkpoint `7a3d6dc`, R2M status `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`, status `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`, self-test `14/14`.
+- **Packaged conclusion**: `path_structure_prior`, medium_high confidence, fixture path cues + control underfit, and no method winner.
+- **Boundary**: This is not method/default/scaling claim; R2N is public-only and performs no private root/material read, no recompute from private rows, no generation, retrieval/source scan/runtime, CI/network/provider/scheduler/selector, or raw publication.
+- **Decision**: R2N authorizes only BEA-v1-HAAE-R2O Robustness Preflight Design, not execution/CI/new material generation yet.

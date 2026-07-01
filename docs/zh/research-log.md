@@ -10928,3 +10928,13 @@ R2M 只在 opt-in 下读取 explicit existing R2I private material root，并输
 ### Decision
 
 R2M 不写 private rows，不执行 generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。它不发布 raw paths/tokens/extensions/filenames/directories/task ids/queries/snippets/labels/exact ranks/scores/hashes/line ranges/per-task values，也不提出 method/default/scaling claim。下一步是 public audit 和 robustness planning，不是 default promotion。R2M 只授权 BEA-v1-HAAE-R2N Public Audit Package。参见 `docs/zh/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2N: Public Audit Package
+
+`eval/bea_v1_haae_r2n_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2n_public_audit_package/bea_v1_haae_r2n_public_audit_package_report.json`。状态为 `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`，self-test `14/14`，HAAE-R2M checkpoint `7a3d6dc`，R2M status `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`。
+
+R2N 打包 public R2M conclusion：`path_structure_prior`，medium_high confidence，fixture path cues + control underfit，且 no method winner。This is not method/default/scaling claim。
+
+### Decision
+
+R2N 只授权 BEA-v1-HAAE-R2O Robustness Preflight Design，not execution/CI/new material generation yet。R2N 只读取 public R2M artifacts/docs；不读取 private root/material，不从 private rows recompute，不执行 generation、retrieval/source scan/runtime、CI/network/provider/scheduler/selector，也不 raw publication。参见 `docs/zh/bea-v1-haae-r2n-public-audit-package.md`。

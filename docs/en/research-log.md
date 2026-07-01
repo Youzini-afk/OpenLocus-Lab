@@ -11739,3 +11739,13 @@ R2M reads an explicit existing R2I private material root only under opt-in and e
 ### Decision
 
 R2M writes no private rows and performs no generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector. It publishes no raw paths/tokens/extensions/filenames/directories/task ids/queries/snippets/labels/exact ranks/scores/hashes/line ranges/per-task values and makes no method/default/scaling claim. The next step is public audit and robustness planning, not default promotion. R2M authorizes only BEA-v1-HAAE-R2N Public Audit Package. See `docs/en/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2N: Public Audit Package
+
+`eval/bea_v1_haae_r2n_public_audit_package.py` generated `artifacts/bea_v1_haae_r2n_public_audit_package/bea_v1_haae_r2n_public_audit_package_report.json`. Status is `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`, self-test `14/14`, HAAE-R2M checkpoint `7a3d6dc`, and R2M status `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`.
+
+R2N packages the public R2M conclusion: `path_structure_prior`, medium_high confidence, fixture path cues + control underfit, and no method winner. This is not method/default/scaling claim.
+
+### Decision
+
+R2N authorizes only BEA-v1-HAAE-R2O Robustness Preflight Design, not execution/CI/new material generation yet. R2N reads only public R2M artifacts/docs; it performs no private root/material read, no recompute from private rows, no generation, retrieval/source scan/runtime, CI/network/provider/scheduler/selector, or raw publication. See `docs/en/bea-v1-haae-r2n-public-audit-package.md`.
