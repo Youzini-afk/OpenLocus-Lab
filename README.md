@@ -258,6 +258,20 @@ no runtime/retrieval/source scan beyond fixture, no CI/network/provider,
 no scheduler/HAAE/selector, no BEA-v1-A/P5/runtime/default, and
 no method/scaling claim. R2D authorizes only **BEA-v1-HAAE-R2E Local Medium Material Audit Package**.
 
+**BEA-v1-HAAE-R2E Local Medium Material Audit Package** is complete as a
+public-only audit of the R2D public aggregate artifact (R2D checkpoint `c4e454a`,
+R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`,
+status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`,
+self-test `18/18`). It performs public-only audit with no private root read,
+no private material access, and no temporary-directory scan. The audit confirms
+task bucket `count_10_to_20`, source fixture bucket `count_21_to_50`, subset
+policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate depth
+`count_20`, private row cap `count_le_5000`, total private row bucket
+`count_le_5000`, and rank sources `bm25_like/symbol_overlap/rrf_like`. R2E
+authorizes only **R2F local medium material experiment** with an operator-supplied
+explicit private root, reading existing R2D private material only, and computing
+aggregate metrics. There is no new material/candidate generation/retrieval/runtime/source scan/CI/network/scheduler/HAAE/selector/BEA-v1-A/P5/default/method/scaling claim.
+
 The previous package phase was **BEA-v1-N10EM: Difference-Aware Winner Public Replication Package**:
 
 ```text

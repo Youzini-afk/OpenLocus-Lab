@@ -4150,3 +4150,11 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Public artifact**: public aggregate-only, private write bucket `count_le_5000`, private read validation bucket `count_1_to_10`, no raw publication.
 - **Boundary**: no experiment comparison, no R2 recompute, no runtime/retrieval/source scan beyond fixture, no CI/network/provider, no scheduler/HAAE/selector, no BEA-v1-A/P5/runtime/default, no method/scaling claim.
 - **Decision**: R2D authorizes only BEA-v1-HAAE-R2E Local Medium Material Audit Package.
+
+## BEA-v1-HAAE-R2E local medium material audit package findings
+
+- **BEA-v1-HAAE-R2E Local Medium Material Audit Package is complete**: R2D checkpoint `c4e454a`, R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`, status `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`, self-test `18/18`.
+- **Audit mode**: public-only audit with no private root read and no private material access.
+- **Manifest readback**: task bucket `count_10_to_20`, source fixture bucket `count_21_to_50`, subset policy `deterministic_public_manifest_prefix_cap_10_to_20`, candidate depth `count_20`, private row cap `count_le_5000`, total private row bucket `count_le_5000`.
+- **Rank source readback**: `bm25_like/symbol_overlap/rrf_like` present, no exact scores or ranks published.
+- **Decision**: R2E authorizes only R2F local medium material experiment with an operator-supplied explicit private root, reading existing R2D private material only, and computing aggregate metrics. There is no new material/candidate generation/retrieval/runtime/source scan/CI/network/scheduler/HAAE/selector/BEA-v1-A/P5/default/method/scaling claim.

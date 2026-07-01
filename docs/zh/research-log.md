@@ -10838,3 +10838,13 @@ R2D 要求 explicit opt-in。它使用 subset policy `deterministic_public_manif
 ### Decision
 
 R2D 只授权 BEA-v1-HAAE-R2E Local Medium Material Audit Package。它不授权 no experiment comparison、no R2 recompute、no runtime/retrieval/source scan beyond fixture、no CI/network/provider、no scheduler/HAAE/selector、no BEA-v1-A/P5/runtime/default 或 no method/scaling claim。参见 `docs/zh/bea-v1-haae-r2d-explicit-local-medium-material-generation-smoke.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2E Local Medium Material Audit Package
+
+`eval/bea_v1_haae_r2e_local_medium_material_audit_package.py` 生成 `artifacts/bea_v1_haae_r2e_local_medium_material_audit_package/bea_v1_haae_r2e_local_medium_material_audit_package_report.json`。状态为 `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`，self-test `18/18`，R2D checkpoint `c4e454a`，R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`。
+
+R2E 是 public-only audit，no private root read。它确认 task bucket `count_10_to_20`、source fixture bucket `count_21_to_50`、subset policy `deterministic_public_manifest_prefix_cap_10_to_20`、candidate depth `count_20`、private row cap `count_le_5000`、total private row bucket `count_le_5000`，以及 rank sources `bm25_like/symbol_overlap/rrf_like`。
+
+### Decision
+
+R2E 只授权 R2F local medium material experiment，要求 operator-supplied explicit private root，只读取 existing R2D private material，并计算 aggregate metrics。没有 no new material/candidate generation/retrieval/runtime/source scan/CI/network/scheduler/HAAE/selector/BEA-v1-A/P5/default/method/scaling claim。参见 `docs/zh/bea-v1-haae-r2e-local-medium-material-audit-package.md`。
