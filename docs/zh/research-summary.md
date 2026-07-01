@@ -3685,7 +3685,7 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 ## BEA-v1-HAAE-R2U content-identifier material generation 发现
 
-- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke 已完成**：HAAE-R2T checkpoint `bc58cf7`，R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`，explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`，self-test `24/24`。
+- **BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke 已完成**：HAAE-R2T checkpoint `bc58cf7`，R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，default status `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`，explicit pass status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`，self-test `25/25`。
 - **Contract**：explicit opt-in，target 20，candidate depth 40，row cap 20000，rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`。
 - **Policy**：no path tokens/extensions/directories，gold private only，gold labels not used for ranking，public aggregate-only output，并且 no experiment metrics in R2U。
 - **Decision**：R2U 只授权 BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package。
@@ -3696,3 +3696,14 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Audit result**：target 20，depth 40，row cap 20000，seven rank sources，no path tokens，no gold ranking，no metrics，public aggregate-only，以及 privacy/no raw leak boundary。
 - **Boundary**：R2V 是 public-only，不读取 private roots/material，不 recompute，不生成 materials/metrics，不 retrieval，不运行 runtime/source scan，不使用 CI/network/provider/scheduler/selector，也不提出 method/default/scaling claims。
 - **Decision**：R2V 只授权 BEA-v1-HAAE-R2W Content-Identifier Material Experiment 读取 existing R2U private material with explicit root；boundary 为 no new material generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/BEA-v1-A/P5/default/method/scaling/raw publication。
+
+## BEA-v1-HAAE-R2W content-identifier material experiment 发现
+
+- **BEA-v1-HAAE-R2W Content-Identifier Material Experiment 已完成**：HAAE-R2V checkpoint `b8522de`，R2V status `haae_r2v_content_identifier_material_public_audit_package_complete_r2w_material_experiment_authorized`，R2U source checkpoint bb95f80，default status `haae_r2w_unavailable_no_explicit_r2u_private_material_root`，explicit pass status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present` or `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_weak_or_no_signal`，self-test `25/25`。
+- **Experiment scope**：要求 explicit private material root，只读取 existing R2U material only，aggregate-only metrics，seven rank sources，且 no private writes。
+- **Material context**：`query_derived_identifier_decoys`，`real_file_candidate_evidence_bool=false`，`file_retrieval_claim_bool=false`，`method_winner_claim_bool=false`。
+- **Boundary**：no generation/candidate creation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/default/method/scaling。
+- **Decision**：R2W 只授权 BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package。
+
+
+Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.

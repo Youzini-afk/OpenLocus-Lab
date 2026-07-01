@@ -11812,7 +11812,7 @@ R2T authorizes only BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generat
 
 ## 2026-07-01 — BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke
 
-`eval/bea_v1_haae_r2u_content_identifier_material_generation.py` generated `artifacts/bea_v1_haae_r2u_content_identifier_material_generation/bea_v1_haae_r2u_content_identifier_material_generation_report.json` in explicit mode. Default status remains `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`; explicit pass status is `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `24/24`, HAAE-R2T checkpoint `bc58cf7`, and R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`.
+`eval/bea_v1_haae_r2u_content_identifier_material_generation.py` generated `artifacts/bea_v1_haae_r2u_content_identifier_material_generation/bea_v1_haae_r2u_content_identifier_material_generation_report.json` in explicit mode. Default status remains `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`; explicit pass status is `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`, self-test `25/25`, HAAE-R2T checkpoint `bc58cf7`, and R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`.
 
 R2U requires explicit opt-in, target 20, candidate depth 40, row cap 20000, and uses rank sources `query_identifier_overlap/symbol_name_overlap/content_snippet_overlap/identifier_normalized_bm25_like/hard_negative_quality_control/content_identifier_fusion/control_baseline`. Policy is no path tokens/extensions/directories, gold private only, and gold labels not used for ranking.
 
@@ -11829,3 +11829,16 @@ R2V audits target 20, depth 40, row cap 20000, seven rank sources, no path token
 ### Decision
 
 R2V authorizes only BEA-v1-HAAE-R2W Content-Identifier Material Experiment over existing R2U private material with an explicit private root. Boundary: no new material generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/BEA-v1-A/P5/default/method/scaling/raw publication. See `docs/en/bea-v1-haae-r2v-content-identifier-material-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2W Content-Identifier Material Experiment
+
+`eval/bea_v1_haae_r2w_content_identifier_material_experiment.py` generated `artifacts/bea_v1_haae_r2w_content_identifier_material_experiment/bea_v1_haae_r2w_content_identifier_material_experiment_report.json`. Default status is `haae_r2w_unavailable_no_explicit_r2u_private_material_root`; explicit pass status is `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present` or `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_weak_or_no_signal`, self-test `25/25`, HAAE-R2V checkpoint `b8522de`, R2V status `haae_r2v_content_identifier_material_public_audit_package_complete_r2w_material_experiment_authorized`, and R2U source checkpoint bb95f80.
+
+R2W requires explicit private material root and reads existing R2U material only. It computes aggregate-only metrics for seven rank sources. Material context is `query_derived_identifier_decoys`, `real_file_candidate_evidence_bool=false`, `file_retrieval_claim_bool=false`, and `method_winner_claim_bool=false`.
+
+### Decision
+
+R2W authorizes only BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package. Boundary: no generation/candidate creation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/default/method/scaling. See `docs/en/bea-v1-haae-r2w-content-identifier-material-experiment.md`.
+
+
+Result: content_identifier_signal_bucket `signal_present`, rank_spread_bucket `spread_high`, query/fusion/symbol sources have high bucketed signal while control remains low; still not file retrieval evidence.
