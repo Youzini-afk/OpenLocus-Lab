@@ -10988,3 +10988,13 @@ R2S 确认 self-test 30/30，`path_cue_artifact_likely`，original path_prior to
 ### Decision
 
 R2S is not execution/generation/CI。它只授权 BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision，不授权 execution、CI、retrieval、new material generation、default/runtime、method winner 或 scaling claim。参见 `docs/zh/bea-v1-haae-r2s-path-cue-robustness-experiment-public-audit-package.md`。
+
+## 2026-07-01 — BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision
+
+`eval/bea_v1_haae_r2t_non_path_cue_pivot_decision.py` 生成 `artifacts/bea_v1_haae_r2t_non_path_cue_pivot_decision/bea_v1_haae_r2t_non_path_cue_pivot_decision_report.json`。状态为 `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，self-test `13/13`，HAAE-R2S checkpoint `8d8d19c`，R2S status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`。
+
+R2T 使用 `path_cue_artifact_likely` 结果，将 scale current path-prior rejected/deferred，more path-cue ablations deferred，CI batch deferred，并且 content_identifier selected。
+
+### Decision
+
+R2T 只授权 BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke，要求 target 20、candidate depth 40、row cap 20000、explicit opt-in、private output root、public aggregate-only output。R2T is not execution/generation/CI，并且 no method/default/scaling claim。参见 `docs/zh/bea-v1-haae-r2t-non-path-cue-pivot-decision.md`。

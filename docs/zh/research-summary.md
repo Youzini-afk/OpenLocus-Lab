@@ -3675,3 +3675,10 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 - **Audit result**：R2R self-test 30/30，`path_cue_artifact_likely`，original path_prior top10/top20 count_11_to_20，all perturbation drop buckets count_11_to_20，variant_spread_bucket spread_high，privacy/aggregate-only boundary。
 - **Boundary**：public-only audit；不读取 private root/material，不 recompute，不执行 experiment execution、new material/candidate generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector、raw publication，也不提出 method/default/scaling claim。
 - **决策**：R2S 只授权 BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision，并且 is not execution/generation/CI。
+
+## BEA-v1-HAAE-R2T non-path-cue pivot decision 发现
+
+- **BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision 已完成**：HAAE-R2S checkpoint `8d8d19c`，R2S status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`，状态 `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，self-test `13/13`。
+- **Decision**：`path_cue_artifact_likely` 表明 current path-prior route 现在不适合 scale；scale current path-prior rejected/deferred，more path-cue ablations deferred，CI batch deferred，并且 content_identifier selected。
+- **R2U contract**：BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke，target 20，candidate depth 40，row cap 20000，explicit opt-in，private output root，public aggregate-only output。
+- **Boundary**：R2T 是 public-only，not execution/generation/CI，并且 no method/default/scaling claim。

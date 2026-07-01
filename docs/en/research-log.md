@@ -11799,3 +11799,13 @@ R2S confirms self-test 30/30, `path_cue_artifact_likely`, original path_prior to
 ### Decision
 
 R2S is not execution/generation/CI. It authorizes only BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision and does not authorize execution, CI, retrieval, new material generation, default/runtime, method winner, or scaling claim. See `docs/en/bea-v1-haae-r2s-path-cue-robustness-experiment-public-audit-package.md`.
+
+## 2026-07-01 — BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision
+
+`eval/bea_v1_haae_r2t_non_path_cue_pivot_decision.py` generated `artifacts/bea_v1_haae_r2t_non_path_cue_pivot_decision/bea_v1_haae_r2t_non_path_cue_pivot_decision_report.json`. Status is `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`, self-test `13/13`, HAAE-R2S checkpoint `8d8d19c`, and R2S status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`.
+
+R2T uses the `path_cue_artifact_likely` result to mark scale current path-prior rejected/deferred, more path-cue ablations deferred, CI batch deferred, and content_identifier selected.
+
+### Decision
+
+R2T authorizes only BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke with target 20, candidate depth 40, row cap 20000, explicit opt-in, private output root, and public aggregate-only output. R2T is not execution/generation/CI and makes no method/default/scaling claim. See `docs/en/bea-v1-haae-r2t-non-path-cue-pivot-decision.md`.
