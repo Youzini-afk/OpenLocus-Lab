@@ -3782,7 +3782,7 @@ R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion
 
 ## BEA-v1-HAAE-R2AG explicit local bounded robustness material generation 发现
 
-- **BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation 已完成**：HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`，状态 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `27/27`。
+- **BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation 已完成**：HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`，状态 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `28/28`。
 - **Opt-in and bounds**：opt-in only；default mode: no private read/write/source scan/material generation；explicit mode 需要 explicit private output root 和 bounded local public corpus manifest/allowlist；target 20 tasks、candidate depth cap 40、private row cap 20000。
 - **Robustness material**：variants 为 symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening；rank_policy_used_gold_bool=false；rank_policy_used_path_bool=false；gold_private_eval_only_bool=true。
 - **Public boundary**：aggregate-only public artifact，no experiment metrics，authorize only R2AH public audit/package，no R2AH experiment。
@@ -3826,3 +3826,11 @@ R2AI 结果：explicit experiment 已完成，robustness_status_bucket 为 `brit
 - **Decision**：decision_bucket = close_current_real_file_signal_route；route_closed_bool = true；closed_route_bucket = r2ac_r2ai_single_rank_content_path_signal；robustness_failure_bucket = brittle_or_artifact。
 - **Reasoning**：controls_perturbations_match_or_exceed_signal_bool = true；method_default_scale_claim_rejected_bool = true；mechanism_analysis_authorized_bool = false；mechanism_analysis_deferred_bool = true；new_signal_family_public_design_recommended_bool = true。
 - **Stop/go**：只授权 BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight；no execution/material generation/private read/CI/scale/retrieval/runtime/default/method/raw。
+
+## BEA-v1-HAAE-R2AL new signal family public design preflight 发现
+
+- **BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight 已完成**：R2AK checkpoint `36fc4fa`，R2AK status `haae_r2ak_robustness_failure_decision_complete_r2al_new_signal_family_public_design_authorized_route_closed`，状态 `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`，self-test `28/28`，R2AK self-test 22/22。
+- **Inherited closure**：route closed `r2ac_r2ai_single_rank_content_path_signal`；robustness failure `brittle_or_artifact`。
+- **Selected signal family**：`evidence_pair_support_complementarity`，从 isolated single-candidate rank 转向 multi-evidence consistency/support/contrast。
+- **Rejected alternatives**：public aggregate mechanism analysis rejected；single-rank content/path tweak rejected；lexical rank expansion rejected；provider semantic judgement rejected。
+- **Next scope**：BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight；R2AM public-only preflight 可定义 schema/allowlist/bounds/private-output contract；R2AN generation requires separate authorization；no method/default/scale/winner/validated-signal claims。

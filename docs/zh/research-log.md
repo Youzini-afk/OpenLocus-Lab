@@ -11134,7 +11134,7 @@ R2AF 只读取 committed public R2AE artifact/docs。它 no private reads/writes
 
 ## 2026-07-01 — BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation
 
-`eval/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation.py` 生成 `artifacts/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation_report.json`。状态为 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `27/27`，HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`。
+`eval/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation.py` 生成 `artifacts/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation_report.json`。状态为 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `28/28`，HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`。
 
 R2AG 是 opt-in only。default mode: no private read/write/source scan/material generation。Explicit mode 使用 explicit private output root 和 bounded local public corpus manifest/allowlist，bounds 为 target 20 tasks、candidate depth cap 40、private row cap 20000，variants 为 symbol_content_ablation/query_token_masking/shuffled_content_control/negative_control_strengthening，rank_policy_used_gold_bool=false，rank_policy_used_path_bool=false，gold_private_eval_only_bool=true。
 
@@ -11186,6 +11186,16 @@ Decision fields：decision_bucket = close_current_real_file_signal_route，route
 ### Boundary
 
 R2AK 只授权 BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight。它 no execution/material generation/private read/CI/scale/retrieval/runtime/default/method/raw authorization。
+
+## 2026-07-01 — BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight
+
+`eval/bea_v1_haae_r2al_new_signal_family_public_design_preflight.py` 生成 `artifacts/bea_v1_haae_r2al_new_signal_family_public_design_preflight/bea_v1_haae_r2al_new_signal_family_public_design_preflight_report.json`。状态为 `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`，self-test `28/28`，R2AK checkpoint `36fc4fa`，R2AK status `haae_r2ak_robustness_failure_decision_complete_r2al_new_signal_family_public_design_authorized_route_closed`，R2AK self-test 22/22，route closed `r2ac_r2ai_single_rank_content_path_signal`，robustness failure `brittle_or_artifact`。
+
+R2AL 选择 `evidence_pair_support_complementarity`，从 isolated single-candidate rank 转向 multi-evidence consistency/support/contrast。public aggregate mechanism analysis rejected；single-rank content/path tweak rejected；lexical rank expansion rejected；provider semantic judgement rejected。
+
+### Boundary
+
+Next is BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight。R2AM public-only preflight 可定义 schema/allowlist/bounds/private-output contract。R2AN generation requires separate authorization。There are no method/default/scale/winner/validated-signal claims。
 
 
  R2AI result marker: robustness_status_bucket brittle_or_artifact; control_response_bucket controls_match_or_exceed_signal; variant top-k/MRR buckets are aggregate-only; no method/default/scaling claim.
