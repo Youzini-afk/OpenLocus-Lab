@@ -12,6 +12,15 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BT outcome-aligned material repair public audit findings
+
+- **BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package is complete**: status `haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized`, self-test `52/52`, R2BS checkpoint `71f3377`.
+- **Audit result**: explicit local repair/generation, label alignment materialized, parent refs present, output group exact.
+- **Boundary**: aggregate-only public audit, no private read, no material generation, no experiment metrics, no source scan.
+- **Stop/go**: only BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package.
+
+R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package; status haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized; self-test `52/52`; R2BS checkpoint 71f3377; R2BS status haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized; R2BS public artifact; explicit local repair/generation; label alignment materialized; parent refs present; output group exact; aggregate-only public audit; no private read; no material generation; no experiment metrics; no source scan; next phase BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package.
+
 ## BEA-v1-HAAE-R2BS explicit local outcome-aligned material repair generation findings R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 
 - **BEA-v1-HAAE-R2BS Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation is implemented**: default status `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`, success status `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`, self-test `50/50`, R2BR checkpoint `b96e717`, R2BE checkpoint `c3901d6`, R2BO checkpoint `07b9eef`. R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
