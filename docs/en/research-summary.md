@@ -4484,3 +4484,14 @@ R2AI result: explicit experiment complete with robustness_status_bucket `brittle
 - **Boundary**: public-only non-executing preflight; no scale/robustness material generation/direct method adoption.
 
 R2AS readback marker: BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition; mechanism axes.
+
+## BEA-v1-HAAE-R2AT explicit private mechanism decomposition findings
+
+- **BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition is complete after explicit private mechanism decomposition**: R2AS checkpoint `36e64d6`, R2AS status `haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_complete_r2at_explicit_private_mechanism_decomposition_authorized`, status default `haae_r2at_unavailable_no_explicit_private_mechanism_decomposition_opt_in`, explicit status prefix `haae_r2at_explicit_private_mechanism_decomposition_complete_r2au_public_audit_authorized`, self-test `35/35`, source locks R2AS `36e64d6`, R2AR `7c36376`, R2AQ `77eab19`, R2AP `87ea9de`, R2AO `5cfa8d3`, R2AN `93bba5f`.
+- **Default mode no-op**: no private read, no private write, no metrics, no diagnostics.
+- **Explicit requirements**: explicit opt-in, existing R2AN private material root, confirm aggregate-only public output; read only existing R2AN private material groups task_frame, source_manifest_private, evidence_unit_pool, evidence_pair_material, support_relation_material, contrast_control_material, outcome_eval_private, material_qa.
+- **Public metric buckets**: axis coverage bucket, task coverage bucket, pair-family coverage bucket, single-unit ablation bucket, pair-complementarity lift bucket, support-vs-contrast separation bucket, hard-negative rejection bucket, shuffled/cross-task degradation bucket, path-confound risk bucket, gold-isolation pass bucket, family concentration/sensitivity bucket, evidence-quality sensitivity bucket, mechanism interpretation bucket.
+- **Mechanism interpretation bucket values**: pair_complementarity_supported, support_relation_supported, control_artifact_risk, path_confound_risk, mixed_or_inconclusive.
+- **Boundary/stop-go**: no source/candidate/corpus scan, no material regeneration, gold outcome eval-only, No robustness generation, scale preflight, new experiment, source/candidate/corpus scan; authorizes only BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package.
+
+Explicit result: `pair_complementarity_supported`; pair_complementarity_lift_high; support_vs_contrast_separation_medium; hard_negative_rejection_medium; path_confound_risk_low; gold_isolation_pass; mechanism decomposition result only, not method/default/scale claim.
