@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BP outcome-label source acquisition public audit 发现 R2BO execution attestation exact.
+
+- **BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package 已完成**：status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`，self-test `51/51`，R2BO checkpoint `07b9eef`，R2BO self-test 51/51。 R2BO execution attestation exact.
+- **Audit input**：R2BO public artifact。
+- **Result**：explicit local outcome-label source acquisition、labels_acquired_private、outcome_label_source_manifest_private。
+- **Boundary**：aggregate-only public audit、no private read、no material repair、no experiment metrics、no source scan。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package。
+
 ## BEA-v1-HAAE-R2BO explicit local outcome label source acquisition 发现 status/execution consistency locked.
 
 - **BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition 已完成显式本地 outcome-label source acquisition**：default status `haae_r2bo_unavailable_no_explicit_local_label_source_acquisition_opt_in`，success status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`，self-test `51/51`，R2BN checkpoint `af901f6`。 status/execution consistency locked.
@@ -19,7 +27,7 @@ research conclusion is summarized first.
 - **Explicit mode**：explicit local label source acquisition with operator-provided label source manifest and existing R2BE private material root。
 - **Private group**：outcome_label_source_manifest_private。
 - **Boundary**：no material repair、no experiment metrics、no source scan、aggregate-only public artifact。
-- **Stop/go**：只授权 BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package。 R2BO execution attestation exact.
 
 ## BEA-v1-HAAE-R2BN outcome label acquisition public design preflight 发现
 

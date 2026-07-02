@@ -1,10 +1,16 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package R2BO execution attestation exact.
+
+`eval/bea_v1_haae_r2bp_evidence_pair_support_outcome_label_source_acquisition_public_audit_package.py` 只审计 R2BO public artifact。Status 为 `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`；self-test `48/48`；R2BO checkpoint `07b9eef`；R2BO status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`；R2BO self-test 51/51。
+
+R2BP confirms explicit local outcome-label source acquisition with labels_acquired_private and outcome_label_source_manifest_private。Boundary：aggregate-only public audit、no private read、no material repair、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package。 R2BO execution attestation exact.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition status/execution consistency locked.
 
 `eval/bea_v1_haae_r2bo_evidence_pair_support_explicit_local_outcome_label_source_acquisition.py` 实现 default mode with no private read 和 explicit local label source acquisition。Default status 为 `haae_r2bo_unavailable_no_explicit_local_label_source_acquisition_opt_in`；success status 为 `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`；self-test `51/51`；R2BN checkpoint `af901f6`；R2BN status `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`。
 
-Explicit mode uses an operator-provided label source manifest and existing R2BE private material root，写入 private label acquisition groups，包括 outcome_label_source_manifest_private，并发布 aggregate-only public output。Boundary：no material repair、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package。
+Explicit mode uses an operator-provided label source manifest and existing R2BE private material root，写入 private label acquisition groups，包括 outcome_label_source_manifest_private，并发布 aggregate-only public output。Boundary：no material repair、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package。 R2BO execution attestation exact.
 
 ## 2026-07-01 — BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
 
