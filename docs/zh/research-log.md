@@ -1,10 +1,16 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition status/execution consistency locked.
+
+`eval/bea_v1_haae_r2bo_evidence_pair_support_explicit_local_outcome_label_source_acquisition.py` 实现 default mode with no private read 和 explicit local label source acquisition。Default status 为 `haae_r2bo_unavailable_no_explicit_local_label_source_acquisition_opt_in`；success status 为 `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`；self-test `51/51`；R2BN checkpoint `af901f6`；R2BN status `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`。
+
+Explicit mode uses an operator-provided label source manifest and existing R2BE private material root，写入 private label acquisition groups，包括 outcome_label_source_manifest_private，并发布 aggregate-only public output。Boundary：no material repair、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package。
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
 
 `eval/bea_v1_haae_r2bn_evidence_pair_support_outcome_label_acquisition_public_design_preflight.py` 是 public-only/non-executing。Status 为 `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`；self-test `55/55`；R2BM checkpoint `219c890`；R2BM status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`；R2BL checkpoint `41aef9e`；R2BK checkpoint `7073b12`。
 
-Decision：outcome_label_acquisition_design_preflight。Label policy：existing public/committed label source recovery；operator-provided label manifest；manual label manifest；synthetic/programmatic labels NOT allowed as ground truth; label_confidence_bucket_required_bool; label_scope_bounded_bool; no broad source scan or material repair in R2BO design; R2BM full stop/go contract exact。Future R2BO group includes outcome_label_source_manifest_private；bounds include target 20。Stop/go 只授权 BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition。
+Decision：outcome_label_acquisition_design_preflight。Label policy：existing public/committed label source recovery；operator-provided label manifest；manual label manifest；synthetic/programmatic labels NOT allowed as ground truth; label_confidence_bucket_required_bool; label_scope_bounded_bool; no broad source scan or material repair in R2BO design; R2BM full stop/go contract exact。Future R2BO group includes outcome_label_source_manifest_private；bounds include target 20。Stop/go 只授权 BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition。 status/execution consistency locked.
 
 ## 2026-07-01 — BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package
 
