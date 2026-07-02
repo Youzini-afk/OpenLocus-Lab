@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2AV evidence-pair support next-step decision findings
+
+- **BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package is complete**: status `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`, self-test `50/50`, R2AU checkpoint `8af2b92`, R2AU status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`, R2AT checkpoint `0c9c108`, and R2AP checkpoint `87ea9de`.
+- **Inherited signal**: pair_complementarity_supported with pair_complementarity_lift_high, support_vs_contrast_separation_medium, hard_negative_rejection_medium, path_confound_risk_low, gold_isolation_pass, and R2AP support_signal.
+- **Decision**: robustness material generation preflight selected; not scale; not external validation execution; not close/turn; not method/default claim.
+- **Reason buckets**: pair_complementarity_supported_but_current_material_bounded and robustness_needed_before_scale_or_method_claim.
+- **Boundary/stop-go**: public-only next-step decision/design; no private roots; no metric recompute; no source/candidate/corpus scan; next phase is BEA-v1-HAAE-R2AW Evidence-Pair Support Robustness Material Generation Public Design Preflight; R2AW public-only/non-executing.
+
 ## BEA-v1-HAAE-R2AU mechanism decomposition public audit findings
 
 - **BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package is complete**: status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`, self-test `44/44`, R2AT checkpoint `0c9c108`, R2AT status `haae_r2at_explicit_private_mechanism_decomposition_complete_r2au_public_audit_authorized_pair_complementarity_supported`, and self-test count 35/35 verified from R2AT.
