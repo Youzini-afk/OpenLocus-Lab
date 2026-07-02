@@ -12,13 +12,21 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BJ outcome-aligned material repair public design preflight 发现 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+
+- **BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight 已完成**：status `haae_r2bj_outcome_aligned_material_repair_public_design_preflight_complete_r2bk_explicit_local_repair_generation_authorized`，self-test `37/37`，R2BI checkpoint `f231205`，inherited R2BH `3b566a2`，R2BG `ad8de95`，R2BF `322fbca`，R2BE `c3901d6`。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+- **Decision**：outcome_alignment_repair_design_selected_bool。
+- **Future schema**：outcome_aligned_task_frame、outcome_aligned_support_pair_material、outcome_alignment_eval_private、parent_r2be_row_ref_private、repair_provenance_private。
+- **Future R2BK**：explicit opt-in、existing R2BE private material、aggregate-only public artifact、public audit required after generation。
+- **Boundary**：R2BJ is public-only/non-executing。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+
 ## BEA-v1-HAAE-R2BI public next-step decision design 发现 R2BG explicit opt-in/private-read/no-private-write execution lock.
 
-- **BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package 已完成**：status `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`，self-test `34/34`，R2BH checkpoint `3b566a2`，R2BG checkpoint `ad8de95`，inherited R2BF `322fbca`，inherited R2BE `c3901d6`。 R2BG explicit opt-in/private-read/no-private-write execution lock.
+- **BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package 已完成**：status `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`，self-test `34/34`，R2BH checkpoint `3b566a2`，R2BG checkpoint `ad8de95`，inherited R2BF `322fbca`，inherited R2BE `c3901d6`。 R2BG explicit opt-in/private-read/no-private-write execution lock. R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
 - **Evidence lock**：artifact_or_weak_signal with outcome_eval_alignment_unavailable and no signal claim。
 - **Decision**：outcome_aligned_material_repair_design_selected；close_line_deferred；pivot_deferred；rerun_experiment_without_repair_rejected；scale_preflight_rejected；method_default_claim_rejected。
-- **Boundary**：public-only and non-executing；no private read/write、no metric recompute、no material generation in R2BJ。
-- **Stop/go**：只授权 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。
+- **Boundary**：public-only and non-executing；no private read/write、no metric recompute、no material generation in R2BJ。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
 
 ## BEA-v1-HAAE-R2BG explicit local redesigned material experiment 发现
 
