@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BB robustness next-step decision 发现
+
+- **BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package 已完成**：status `haae_r2bb_evidence_pair_support_robustness_next_step_decision_complete_r2bc_mechanism_redesign_public_design_preflight_authorized`，self-test `34/34`，R2BA checkpoint `f8984bf`，R2AZ checkpoint `72590e5`，R2AY checkpoint `126dc18`，R2AX checkpoint `f3add65`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`。
+- **Decision**：mechanism redesign preflight selected；current evidence-pair support route rejected as robust signal；negative robustness evidence locked。
+- **Evidence buckets**：artifact_likely、support_control_separation_collapsed、control_rejection_failed、path_confound_risk_elevated、support_signal_bucket_low。
+- **Claim boundary**：no method/default/scale claim。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight。
+
 ## BEA-v1-HAAE-R2BA robustness experiment public audit 发现
 
 - **BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package 已完成**：status `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`，self-test `34/34`，R2AZ checkpoint `72590e5`，R2AY checkpoint `126dc18`，R2AX checkpoint `f3add65`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`。

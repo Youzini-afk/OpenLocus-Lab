@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package
+
+`eval/bea_v1_haae_r2bb_evidence_pair_support_robustness_next_step_decision_package.py` selects mechanism redesign preflight selected after the R2BA negative audit. Status is `haae_r2bb_evidence_pair_support_robustness_next_step_decision_complete_r2bc_mechanism_redesign_public_design_preflight_authorized`; self-test `34/34`; R2BA checkpoint `f8984bf`; R2BA status `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`; R2AZ checkpoint `72590e5`; R2AZ status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`; inherited R2AY checkpoint `126dc18`, R2AX checkpoint `f3add65`, R2AW checkpoint `bc44454`, R2AN checkpoint `93bba5f`, R2AT checkpoint `0c9c108`, R2AP checkpoint `87ea9de`.
+
+Decision: current evidence-pair support route rejected as robust signal and negative robustness evidence locked. Evidence buckets: artifact_likely, support_control_separation_collapsed, control_rejection_failed, path_confound_risk_elevated, support_signal_bucket_low. Boundary: no method/default/scale claim. Stop/go authorizes only BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_package.py` audits only the R2AZ public artifact. Status is `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`; self-test `34/34`; R2AZ checkpoint `72590e5`; R2AZ status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`; inherited locks R2AY checkpoint `126dc18`, R2AX checkpoint `f3add65`, R2AW checkpoint `bc44454`, R2AN checkpoint `93bba5f`, R2AT checkpoint `0c9c108`, R2AP checkpoint `87ea9de`.
