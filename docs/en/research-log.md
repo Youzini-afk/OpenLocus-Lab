@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
+
+`eval/bea_v1_haae_r2bn_evidence_pair_support_outcome_label_acquisition_public_design_preflight.py` is public-only/non-executing. Status is `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`; self-test `55/55`; R2BM checkpoint `219c890`; R2BM status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`; R2BL checkpoint `41aef9e`; R2BK checkpoint `7073b12`.
+
+Decision: outcome_label_acquisition_design_preflight. Label policy: existing public/committed label source recovery; operator-provided label manifest; manual label manifest; synthetic/programmatic labels NOT allowed as ground truth; label_confidence_bucket_required_bool; label_scope_bounded_bool; no broad source scan or material repair in R2BO design; R2BM full stop/go contract exact. Future R2BO group includes outcome_label_source_manifest_private; bounds include target 20. Stop/go authorizes only BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package
 
 `eval/bea_v1_haae_r2bm_evidence_pair_support_outcome_label_acquisition_public_decision_design.py` is public-only/non-executing. Status is `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`; self-test `51/51`; R2BL checkpoint `41aef9e`; R2BL status `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`; R2BK checkpoint `7073b12`; R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`.
@@ -829,7 +835,7 @@ A manifest-vs-filesystem dirty summary enables incremental index updates that av
   - `eval/incremental_index_smoke.py`: 48 safety checks covering build/clean, modify/update/search/clean, add/update/search/clean, delete/update/search/clean, rename simulation, policy-excluded no dirty, policy mismatch refuses update, missing manifest refuses update, skipped empty file clean/promotion, schema/strategy mismatch refuses update, citations invalid_count=0.
   - `eval/synthetic_slo_bench.py`: Deterministic 1000-file synthetic repo (mix .rs/.py/.ts/.md/.txt), measures build_ms, dirty status latency, persistent_cli_search p95, bench_warm open-once query p95, and one-file update latency (true modification each iteration). Validates no invalid citations. Level0 synthetic only; no broad performance claims.
 
-### R10 incremental index smoke results (48/48 checks passed)
+### R10 incremental index smoke results (55/55 checks passed)
 
 | Check | Result |
 |---|---|
