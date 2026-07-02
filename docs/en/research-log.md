@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
+
+`eval/bea_v1_haae_r2bf_evidence_pair_support_redesigned_material_public_audit_package.py` audits only the R2BE public artifact. Status is `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`; self-test `40/40`; R2BE checkpoint `c3901d6`; R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`.
+
+Scope: public-only audit; read only R2BE public artifact. Audit locks explicit local generation, all_required_groups_present, matched_hard_negative_control, path_token_matched_control, bounds satisfied, gold isolation, no experiment metrics, and aggregate-only publication. Stop/go authorizes only BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
 
 `eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` completed the explicit local redesigned material generation phase. default status is `haae_r2be_unavailable_no_explicit_material_generation_opt_in`; explicit status is `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`; self-test `40/40`; R2BD checkpoint `fa6119b`; R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`.

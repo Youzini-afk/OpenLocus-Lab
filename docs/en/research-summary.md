@@ -12,6 +12,13 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BF redesigned material public audit findings
+
+- **BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package is complete**: status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`, self-test `40/40`, R2BE checkpoint `c3901d6`.
+- **Scope**: public-only audit; read only R2BE public artifact.
+- **Audit locks**: explicit local generation, all_required_groups_present, matched_hard_negative_control, path_token_matched_control, bounds satisfied, gold isolation, no experiment metrics, aggregate-only publication.
+- **Stop/go**: only BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment.
+
 ## BEA-v1-HAAE-R2BE explicit local redesigned material generation findings
 
 - **BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation is complete after explicit local generation**: default status `haae_r2be_unavailable_no_explicit_material_generation_opt_in`, explicit status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`, self-test `40/40`, R2BD checkpoint `fa6119b`.
