@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight
+
+`eval/bea_v1_haae_r2br_evidence_pair_support_outcome_aligned_material_repair_public_design_preflight.py` is public-only and non-executing. Status is `haae_r2br_outcome_aligned_material_repair_public_design_preflight_complete_r2bs_explicit_local_repair_generation_authorized`; self-test `51/51`; R2BQ checkpoint `8254d58`; R2BQ status `haae_r2bq_outcome_label_acquisition_next_step_decision_design_complete_r2br_repair_design_preflight_authorized`; R2BP checkpoint `82c5d65`; R2BO checkpoint `07b9eef`.
+
+Decision: outcome_aligned_material_repair_generation_design_selected_bool; r2bs_explicit_local_repair_generation_selected_bool. Rationale: labels_acquired_and_audited_repair_generation_now_design_scoped. Boundary: public-only, no private read, no signal evaluation. Stop/go authorizes only BEA-v1-HAAE-R2BS Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package
 
 `eval/bea_v1_haae_r2bq_evidence_pair_support_outcome_label_acquisition_next_step_decision_design.py` is public-only decision/design. Status is `haae_r2bq_outcome_label_acquisition_next_step_decision_design_complete_r2br_repair_design_preflight_authorized`; self-test `53/53`; R2BP checkpoint `82c5d65`; R2BP status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`; R2BO checkpoint `07b9eef`; R2BO status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`. R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
