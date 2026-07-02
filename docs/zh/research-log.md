@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package
+
+`eval/bea_v1_haae_r2bu_evidence_pair_support_outcome_aligned_repair_next_step_decision_design.py` 是 public-only 且 non-executing。Status 为 `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`；self-test `65/65`；R2BT checkpoint `63463b4`；R2BT status `haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized`；R2BS checkpoint `71f3377`；R2BS status `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`。
+
+Decision：R2BV explicit local outcome-aligned repair experiment selected over existing R2BS private material。repaired material locked。Boundary：public-only decision、no private read、no material generation、no metric computation。Stop/go 只授权 BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment。
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package
 
 `eval/bea_v1_haae_r2bt_evidence_pair_support_outcome_aligned_material_repair_public_audit_package.py` 是 public-only，并且只读取 R2BS public artifact。Status 为 `haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized`；self-test `52/52`；R2BS checkpoint `71f3377`；R2BS status `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`。

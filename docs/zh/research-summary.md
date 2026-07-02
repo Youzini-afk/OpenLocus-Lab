@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BU outcome-aligned repair next-step decision 发现
+
+- **BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package 已完成**：status `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`，self-test `65/65`，R2BT checkpoint `63463b4`，R2BS checkpoint `71f3377`。
+- **Decision**：R2BV explicit local outcome-aligned repair experiment selected over existing R2BS private material。
+- **Input lock**：repaired material locked。
+- **Boundary**：public-only decision、no private read、no material generation、no metric computation。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment。
+
 ## BEA-v1-HAAE-R2BT outcome-aligned material repair public audit 发现
 
 - **BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package 已完成**：status `haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized`，self-test `52/52`，R2BS checkpoint `71f3377`。
