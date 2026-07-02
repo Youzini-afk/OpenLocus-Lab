@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BM outcome label acquisition public decision design 发现
+
+- **BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package 已完成**：status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`，self-test `51/51`，R2BL checkpoint `41aef9e`，R2BK checkpoint `7073b12`。
+- **Evidence lock**：outcome_alignment_source_labels_absent with generation_bucket=outcome_alignment_unavailable_no_material_generated；generated_group_set_exact_bool=false；material_generated_bool=false。
+- **Decision**：outcome_label_acquisition_design_selected；not closure；not pivot。
+- **Boundary**：public-only/non-executing，no private read，no label generation，no material generation，no metric recompute，no source scan。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight。
+
 ## BEA-v1-HAAE-R2BL outcome-aligned material public audit 发现
 
 - **BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package 已完成**：status `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`，self-test `45/45`，R2BK checkpoint `7073b12`。
@@ -139,7 +147,7 @@ research conclusion is summarized first.
 
 ## BEA-v1-HAAE-R2AV evidence-pair support next-step decision 发现
 
-- **BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package 已完成**：status `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`，self-test `50/50`，R2AU checkpoint `8af2b92`，R2AU status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`。
+- **BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package 已完成**：status `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`，self-test `51/51`，R2AU checkpoint `8af2b92`，R2AU status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`。
 - **Inherited signal**：pair_complementarity_supported，pair_complementarity_lift_high、support_vs_contrast_separation_medium、hard_negative_rejection_medium、path_confound_risk_low、gold_isolation_pass，并且 R2AP support_signal。
 - **Decision**：robustness material generation preflight selected；not scale；not external validation execution；not close/turn；not method/default claim。
 - **Reason buckets**：pair_complementarity_supported_but_current_material_bounded 和 robustness_needed_before_scale_or_method_claim。
@@ -4052,3 +4060,6 @@ R2BG result marker: artifact_or_weak_signal; outcome_eval_alignment_unavailable;
  R2BK r2bl_no_source_scan_bool audited; R2BL publication boundary audited.
 
 R2BK signal/publication/root-boundary drift audited.
+
+
+R2BM readback marker: existing_label_recovery_design_suboption and new_label_acquisition_design_suboption are true; direct_private_label_acquisition_authorized_bool=false, direct_material_generation_authorized_bool=false, direct_experiment_authorized_bool=false; r2bn_no_source_scan_bool and outcome_alignment_source_labels_absent_locked_bool are true.
