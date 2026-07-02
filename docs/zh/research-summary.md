@@ -12,6 +12,13 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BL outcome-aligned material public audit 发现
+
+- **BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package 已完成**：status `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`，self-test `45/45`，R2BK checkpoint `7073b12`。
+- **Audit result**：controlled unavailable result、outcome_alignment_source_labels_absent、generation_bucket=outcome_alignment_unavailable_no_material_generated、generated_group_set_exact_bool=false、material_generated_bool=false。
+- **Boundary**：public-only audit、no private read、no metric recompute、no material generation、aggregate-only public output。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package。
+
 ## BEA-v1-HAAE-R2BK explicit local outcome-aligned material repair generation 发现 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 - **BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation 已实现**：default status `haae_r2bk_unavailable_no_explicit_local_outcome_aligned_repair_generation_opt_in`，actual explicit status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`; success status taxonomy includes `haae_r2bk_explicit_local_outcome_aligned_material_repair_generation_complete_r2bl_public_audit_authorized`，self-test `43/43`，R2BJ checkpoint `cab3b84`，R2BE checkpoint `c3901d6`。 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
@@ -4041,3 +4048,7 @@ R2AS readback marker: read existing private material; mechanism-decomposition me
 R2AZ readback marker: BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment; haae_r2az_unavailable_no_explicit_local_robustness_experiment_opt_in; haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely; self-test `27/27`; R2AY checkpoint `126dc18`; R2AY status `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`; R2AX checkpoint `f3add65`; R2AW checkpoint `bc44454`; R2AN checkpoint `93bba5f`; R2AT checkpoint `0c9c108`; R2AP checkpoint `87ea9de`; default/no-op mode; reads no private root; explicit opt-in mode; existing R2AX private robustness material; bucketized aggregate robustness metrics; artifact_likely; support_control_separation_collapsed; control_rejection_failed; path_confound_risk_elevated; support_signal_bucket_low; no material generation; no source/candidate/corpus scan; no runtime/OpenLocus/retrieval; BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package.
 
 R2BG result marker: artifact_or_weak_signal; outcome_eval_alignment_unavailable; haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal; haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present; signal_present; mixed_or_inconclusive; bucketized aggregate metrics; existing R2BE private material; no material generation; no source/candidate/corpus scan; no runtime/OpenLocus/retrieval; BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package. R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
+
+ R2BK r2bl_no_source_scan_bool audited; R2BL publication boundary audited.
+
+R2BK signal/publication/root-boundary drift audited.
