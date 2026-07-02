@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BD redesigned material generation public design preflight findings
+
+- **BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight is complete**: status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`, self-test `47/47`, R2BC checkpoint `2171b20`, R2BB checkpoint `a624728`, R2BA checkpoint `f8984bf`, R2AZ checkpoint `72590e5`.
+- **future R2BE private schema groups**: redesigned_task_frame and redesigned_control_pair_material are part of the locked exact group set.
+- **Controls and bounds**: matched_hard_negative_control, path_token_matched_control, target_tasks_16_to_20.
+- **Safety contract**: operator-provided public source allowlist, root ownership and symlink safety, gold eval-only, material generation only; no robustness metrics, aggregate-only publication.
+- **Stop/go**: only BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation.
+
 ## BEA-v1-HAAE-R2BC mechanism redesign public design preflight findings
 
 - **BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight is complete**: status `haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight_complete_r2bd_redesigned_material_generation_public_design_preflight_authorized`, self-test `37/37`, R2BB checkpoint `a624728`, R2BA checkpoint `f8984bf`, R2AZ checkpoint `72590e5`, R2AY checkpoint `126dc18`, R2AX checkpoint `f3add65`, R2AW checkpoint `bc44454`, R2AN checkpoint `93bba5f`, R2AT checkpoint `0c9c108`, R2AP checkpoint `87ea9de`.
