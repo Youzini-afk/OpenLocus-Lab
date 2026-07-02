@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package R2BG explicit opt-in/private-read/no-private-write execution lock.
+
+`eval/bea_v1_haae_r2bi_evidence_pair_support_next_step_decision_package.py` 是 public-only 且 non-executing。Status 为 `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`；self-test `34/34`；R2BH checkpoint `3b566a2`；R2BH status `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`；R2BG checkpoint `ad8de95`；R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`；inherited R2BF `322fbca`；inherited R2BE `c3901d6`。 R2BG explicit opt-in/private-read/no-private-write execution lock.
+
+Decision：outcome_aligned_material_repair_design_selected；close_line_deferred；pivot_deferred；rerun_experiment_without_repair_rejected；scale_preflight_rejected；method_default_claim_rejected。Evidence remains artifact_or_weak_signal with outcome_eval_alignment_unavailable and no signal claim；R2BI is public-only。Stop/go 只授权 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。 R2BG explicit opt-in/private-read/no-private-write execution lock.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment
 
 `eval/bea_v1_haae_r2bg_evidence_pair_support_explicit_local_redesigned_material_experiment.py` 实现 default mode（no private read）以及 over existing R2BE private material 的 explicit mode。Status buckets 包括 `haae_r2bg_unavailable_no_explicit_local_redesigned_material_experiment_opt_in` 和 `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present`；self-test `36/36`；R2BF checkpoint `322fbca`；R2BF status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`；R2BE checkpoint `c3901d6`。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
@@ -8,13 +14,13 @@ Explicit mode 只计算 bucketized aggregate metrics，result buckets 包括 sig
 
 ## 2026-07-01 — BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
-`eval/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package_report.json`。状态为 `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`，self-test `35/35`，R2BG checkpoint `ad8de95`，R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`，R2BG self-test 36/36。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
+`eval/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package_report.json`。状态为 `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`，self-test `35/35`，R2BG checkpoint `ad8de95`，R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`，R2BG self-test 36/36。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity. R2BG explicit opt-in/private-read/no-private-write execution lock.
 
 Result bucket artifact_or_weak_signal；key reason outcome_eval_alignment_unavailable：support rows/control rows exist but no evaluable outcome alignment，因此 no signal claim。
 
 ### Boundary
 
-R2BH 是 public-only audit/package，read only R2BG public artifact，no private roots，no metric recompute，no material generation，no source/candidate/corpus scan，aggregate-only。Stop/go 只授权 BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package；no private execution/material generation/scale/CI/method/default claims。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
+R2BH 是 public-only audit/package，read only R2BG public artifact，no private roots，no metric recompute，no material generation，no source/candidate/corpus scan，aggregate-only。Stop/go 只授权 BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package；no private execution/material generation/scale/CI/method/default claims。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity. R2BG explicit opt-in/private-read/no-private-write execution lock.
 
 ## 2026-07-01 — BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
 

@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BI public next-step decision design findings R2BG explicit opt-in/private-read/no-private-write execution lock.
+
+- **BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package is complete**: status `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`, self-test `34/34`, R2BH checkpoint `3b566a2`, R2BG checkpoint `ad8de95`, inherited R2BF `322fbca`, inherited R2BE `c3901d6`. R2BG explicit opt-in/private-read/no-private-write execution lock.
+- **Evidence lock**: artifact_or_weak_signal with outcome_eval_alignment_unavailable and no signal claim.
+- **Decision**: outcome_aligned_material_repair_design_selected; close_line_deferred; pivot_deferred; rerun_experiment_without_repair_rejected; scale_preflight_rejected; method_default_claim_rejected.
+- **Boundary**: public-only and non-executing; no private read/write, no metric recompute, no material generation in R2BJ.
+- **Stop/go**: only BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight.
+
 ## BEA-v1-HAAE-R2BG explicit local redesigned material experiment findings
 
 - **BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment is complete after explicit local evaluation**: default status `haae_r2bg_unavailable_no_explicit_local_redesigned_material_experiment_opt_in`, signal status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present`, artifact/weak status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`, self-test `36/36`, R2BF checkpoint `322fbca`, R2BE checkpoint `c3901d6`; explicit result `artifact_or_weak_signal` with `outcome_eval_alignment_unavailable`. R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
@@ -22,10 +30,10 @@ research conclusion is summarized first.
 
 ## BEA-v1-HAAE-R2BH redesigned material experiment public audit findings R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
-- **BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package is complete**: R2BG checkpoint `ad8de95`, R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`, status `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`, self-test `35/35`, R2BG self-test 36/36. R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
+- **BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package is complete**: R2BG checkpoint `ad8de95`, R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`, status `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`, self-test `35/35`, R2BG self-test 36/36. R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity. R2BG explicit opt-in/private-read/no-private-write execution lock.
 - **Audit result**: artifact_or_weak_signal because outcome_eval_alignment_unavailable; support rows/control rows exist but no evaluable outcome alignment; no signal claim.
 - **Scope**: public-only audit/package, read only R2BG public artifact, no private roots, no metric recompute, no material generation, no source/candidate/corpus scan, aggregate-only.
-- **Stop/go**: only BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package; no private execution/material generation/scale/CI/method/default claims.
+- **Stop/go**: only BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package; no private execution/material generation/scale/CI/method/default claims. R2BG explicit opt-in/private-read/no-private-write execution lock.
 
 ## BEA-v1-HAAE-R2BF redesigned material public audit findings
 
