@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BC mechanism redesign public design preflight findings
+
+- **BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight is complete**: status `haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight_complete_r2bd_redesigned_material_generation_public_design_preflight_authorized`, self-test `37/37`, R2BB checkpoint `a624728`, R2BA checkpoint `f8984bf`, R2AZ checkpoint `72590e5`, R2AY checkpoint `126dc18`, R2AX checkpoint `f3add65`, R2AW checkpoint `bc44454`, R2AN checkpoint `93bba5f`, R2AT checkpoint `0c9c108`, R2AP checkpoint `87ea9de`.
+- **Package**: redesign requirements package; existing support/complementarity insufficient after robustness failure; robust signal not claimed.
+- **Controls and policies**: matched_hard_negative_control, path_token_matched_control, gold eval-only, elevated confound fails robust-signal gates.
+- **Future bounds**: target_tasks_16_to_20 and aggregate design-only limits.
+- **Stop/go**: only BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight.
+
 ## BEA-v1-HAAE-R2BB robustness next-step decision findings
 
 - **BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package is complete**: status `haae_r2bb_evidence_pair_support_robustness_next_step_decision_complete_r2bc_mechanism_redesign_public_design_preflight_authorized`, self-test `34/34`, R2BA checkpoint `f8984bf`, R2AZ checkpoint `72590e5`, R2AY checkpoint `126dc18`, R2AX checkpoint `f3add65`, R2AW checkpoint `bc44454`, R2AN checkpoint `93bba5f`, R2AT checkpoint `0c9c108`, R2AP checkpoint `87ea9de`.
