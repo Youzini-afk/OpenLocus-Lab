@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2AX explicit local robustness material generation findings
+
+- **BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation is implemented**: default status `haae_r2ax_unavailable_no_explicit_local_robustness_material_generation_opt_in`, explicit status `haae_r2ax_explicit_local_robustness_material_generation_complete_r2ay_public_audit_authorized`, self-test `31/31`, R2AW checkpoint `bc44454`, R2AN checkpoint `93bba5f`.
+- **Default mode**: no private read/write/generation/scan/metrics.
+- **Explicit mode**: explicit local robustness material generation over existing R2AN private material, private output root, no experiment metrics, aggregate-only public artifact.
+- **Variants**: single_unit_ablation, support_contrast_perturbation, hard_negative_strengthening, shuffled_pair_control, query_evidence_masking, path_token_confound_stress, cross_task_mismatch_control, gold_isolation_control.
+- **Stop/go**: authorizes only BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package.
+
 ## BEA-v1-HAAE-R2AW robustness material generation public design preflight findings
 
 - **BEA-v1-HAAE-R2AW Evidence-Pair Support Robustness Material Generation Public Design Preflight is complete**: status `haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight_complete_r2ax_explicit_local_robustness_material_generation_authorized`, self-test `53/53`, R2AV checkpoint `c0e4b4f`, R2AU checkpoint `8af2b92`, R2AT checkpoint `0c9c108`, R2AP checkpoint `87ea9de`, R2AN checkpoint `93bba5f`.
