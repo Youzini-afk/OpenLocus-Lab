@@ -12,6 +12,13 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2AY robustness material public audit 发现
+
+- **BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package 已完成**：status `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`，self-test `36/36`，R2AX checkpoint `f3add65`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`。
+- **Scope**：public-only audit；read only R2AX public artifact；no private root。
+- **Audit result**：no experiment metrics，exact generated group set，exact 8 variant set，bounds satisfied，aggregate-only。
+- **Stop/go**：仅 BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment / R2AZ explicit local robustness experiment，aggregate metrics only，no material generation，no source scan，no runtime。
+
 ## BEA-v1-HAAE-R2AX explicit local robustness material generation 发现
 
 - **BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation 已实现**：default status `haae_r2ax_unavailable_no_explicit_local_robustness_material_generation_opt_in`，explicit status `haae_r2ax_explicit_local_robustness_material_generation_complete_r2ay_public_audit_authorized`，self-test `31/31`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`。

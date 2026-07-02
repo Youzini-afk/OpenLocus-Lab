@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package
+
+`eval/bea_v1_haae_r2ay_evidence_pair_support_robustness_material_public_audit_package.py` audits only the R2AX public artifact. Status is `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`; self-test `36/36`; R2AX checkpoint `f3add65`; R2AX status `haae_r2ax_explicit_local_robustness_material_generation_complete_r2ay_public_audit_authorized`; inherited R2AW checkpoint `bc44454`; R2AN checkpoint `93bba5f`.
+
+Scope: public-only audit, read only R2AX public artifact, no private root, no experiment metrics, exact generated group set, exact 8 variant set, bounds satisfied, aggregate-only. Stop/go authorizes only BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment / R2AZ explicit local robustness experiment with aggregate metrics only, no material generation, no source scan, no runtime.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation
 
 `eval/bea_v1_haae_r2ax_evidence_pair_support_explicit_local_robustness_material_generation.py` implements default mode and explicit local robustness material generation. Default status is `haae_r2ax_unavailable_no_explicit_local_robustness_material_generation_opt_in`; explicit status is `haae_r2ax_explicit_local_robustness_material_generation_complete_r2ay_public_audit_authorized`; self-test `31/31`; source locks R2AW checkpoint `bc44454`, R2AW status `haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight_complete_r2ax_explicit_local_robustness_material_generation_authorized`, and R2AN checkpoint `93bba5f`.
