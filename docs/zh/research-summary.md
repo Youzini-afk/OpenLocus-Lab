@@ -12,21 +12,30 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
-## BEA-v1-HAAE-R2BJ outcome-aligned material repair public design preflight 发现 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+## BEA-v1-HAAE-R2BK explicit local outcome-aligned material repair generation 发现 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
-- **BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight 已完成**：status `haae_r2bj_outcome_aligned_material_repair_public_design_preflight_complete_r2bk_explicit_local_repair_generation_authorized`，self-test `37/37`，R2BI checkpoint `f231205`，inherited R2BH `3b566a2`，R2BG `ad8de95`，R2BF `322fbca`，R2BE `c3901d6`。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+- **BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation 已实现**：default status `haae_r2bk_unavailable_no_explicit_local_outcome_aligned_repair_generation_opt_in`，actual explicit status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`; success status taxonomy includes `haae_r2bk_explicit_local_outcome_aligned_material_repair_generation_complete_r2bl_public_audit_authorized`，self-test `43/43`，R2BJ checkpoint `cab3b84`，R2BE checkpoint `c3901d6`。 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+- **Default mode**：no private read/write。
+- **Explicit mode**：explicit local outcome-aligned repair generation over existing R2BE material。
+- **Private groups**：outcome_aligned_task_frame、outcome_aligned_support_pair_material、outcome_alignment_eval_private、repair_provenance_private。
+- **Boundary**：material generation only、no experiment metrics、no source/candidate/corpus scan、aggregate-only public artifact。
+- **Stop/go**：explicit success 后只授权 BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package。
+
+## BEA-v1-HAAE-R2BJ outcome-aligned material repair public design preflight 发现 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+
+- **BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight 已完成**：status `haae_r2bj_outcome_aligned_material_repair_public_design_preflight_complete_r2bk_explicit_local_repair_generation_authorized`，self-test `41/41`，R2BI checkpoint `f231205`，inherited R2BH `3b566a2`，R2BG `ad8de95`，R2BF `322fbca`，R2BE `c3901d6`。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 - **Decision**：outcome_alignment_repair_design_selected_bool。
 - **Future schema**：outcome_aligned_task_frame、outcome_aligned_support_pair_material、outcome_alignment_eval_private、parent_r2be_row_ref_private、repair_provenance_private。
-- **Future R2BK**：explicit opt-in、existing R2BE private material、aggregate-only public artifact、public audit required after generation。
-- **Boundary**：R2BJ is public-only/non-executing。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+- **Future R2BK**：explicit opt-in、existing R2BE private material、aggregate-only public artifact、public audit required after generation。 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+- **Boundary**：R2BJ is public-only/non-executing。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 ## BEA-v1-HAAE-R2BI public next-step decision design 发现 R2BG explicit opt-in/private-read/no-private-write execution lock.
 
-- **BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package 已完成**：status `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`，self-test `34/34`，R2BH checkpoint `3b566a2`，R2BG checkpoint `ad8de95`，inherited R2BF `322fbca`，inherited R2BE `c3901d6`。 R2BG explicit opt-in/private-read/no-private-write execution lock. R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+- **BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package 已完成**：status `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`，self-test `34/34`，R2BH checkpoint `3b566a2`，R2BG checkpoint `ad8de95`，inherited R2BF `322fbca`，inherited R2BE `c3901d6`。 R2BG explicit opt-in/private-read/no-private-write execution lock. R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 - **Evidence lock**：artifact_or_weak_signal with outcome_eval_alignment_unavailable and no signal claim。
 - **Decision**：outcome_aligned_material_repair_design_selected；close_line_deferred；pivot_deferred；rerun_experiment_without_repair_rejected；scale_preflight_rejected；method_default_claim_rejected。
-- **Boundary**：public-only and non-executing；no private read/write、no metric recompute、no material generation in R2BJ。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
-- **Stop/go**：只授权 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
+- **Boundary**：public-only and non-executing；no private read/write、no metric recompute、no material generation in R2BJ。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 ## BEA-v1-HAAE-R2BG explicit local redesigned material experiment 发现
 
@@ -3424,8 +3433,8 @@ R28 promotion candidate report: conservative synthesis of R21/R23/R24/R25/R26 re
 
 - **BEA-FD2-A1 failure attribution replay 已完成**：local checkpoint `67a6d61`，manual CI run `28027342996`。
 - **重放匹配且归因通过**：status `bea_fd2a1_attribution_replay_pass`，records_attributed=38，records_regressed=38，私有 trace 计数精确（190/190/190/950/1），forbidden_scan=pass，self-test 404/404。
-- **主导机制**：`latency_category_non_actionable_or_dominating` 在 38/38 条退化记录上触发。次级机制小很多：redundancy_overcorrection 4/38，gold_file_displacement 3/38，aggregate_weight_category_collision 3/38。
-- **候选可用性不是 blocker**：`candidate_availability_limit=0/38`；38/38 记录在 budget 与 2×budget 以上的池中都有更好候选。
+- **主导机制**：`latency_category_non_actionable_or_dominating` 在 41/41 条退化记录上触发。次级机制小很多：redundancy_overcorrection 4/38，gold_file_displacement 3/38，aggregate_weight_category_collision 3/38。
+- **候选可用性不是 blocker**：`candidate_availability_limit=0/38`；41/41 记录在 budget 与 2×budget 以上的池中都有更好候选。
 - **决定**：FD2-A 失败是因为 objective 优化了一个 candidate-level proxy 不可操作的 latency-loss 类别。下一步 objective 工作必须去掉或解耦不可操作的 latency 压力，并保护 file-recall/gold-file utility；不要从 FD2-A 进入 FD2-B，不要复活 role proxy，不要调 v0.31/v0.32 权重。
 
 ## BEA-v1-P1 发现
