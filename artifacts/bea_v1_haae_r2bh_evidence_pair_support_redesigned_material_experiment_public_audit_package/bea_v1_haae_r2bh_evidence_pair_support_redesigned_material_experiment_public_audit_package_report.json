@@ -1,0 +1,339 @@
+{
+  "boundary_records": [
+    {
+      "anonymous_boundary_id": "haaer2bhboundary0000",
+      "material_generation_bool": false,
+      "metric_recompute_bool": false,
+      "openlocus_runtime_retrieval_ci_network_provider_bool": false,
+      "private_root_read_bool": false,
+      "public_only_audit_package_bool": true,
+      "raw_private_row_path_task_query_source_evidence_pair_id_publication_bool": false,
+      "source_candidate_corpus_scan_bool": false
+    }
+  ],
+  "claim_boundary_records": [
+    {
+      "anonymous_claim_boundary_id": "haaer2bhclaim0000",
+      "exact_metric_publication_bool": false,
+      "material_generation_authorized_bool": false,
+      "method_default_winner_scale_claim_bool": false,
+      "new_private_execution_authorized_bool": false,
+      "raw_publication_bool": false,
+      "scale_ci_method_default_authorized_bool": false,
+      "signal_claim_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaer2bhgate0000",
+      "gate_bucket": "r2bg_source_locked_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0001",
+      "gate_bucket": "r2bg_status_artifact_or_weak_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0002",
+      "gate_bucket": "r2bg_self_test_36_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0003",
+      "gate_bucket": "r2bg_forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0004",
+      "gate_bucket": "outcome_alignment_unavailable_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0005",
+      "gate_bucket": "aggregate_bucket_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0006",
+      "gate_bucket": "privacy_boundary_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0007",
+      "gate_bucket": "execution_boundary_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0008",
+      "gate_bucket": "gate_set_integrity_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0009",
+      "gate_bucket": "synthetic_set_integrity_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0010",
+      "gate_bucket": "readback_integrity_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0011",
+      "gate_bucket": "r2bi_stop_go_only_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0012",
+      "gate_bucket": "forbidden_scan_pass_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaer2bhgate0013",
+      "gate_bucket": "docs_readback_match_gate",
+      "gate_passed_bool": true,
+      "gate_public_artifact_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package",
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_public_readback_id": "haaer2bhreadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "r2bg_boundary_audit_records": [
+    {
+      "aggregate_bucket_metrics_only_bool": true,
+      "anonymous_r2bg_boundary_audit_id": "haaer2bhboundaryaudit0000",
+      "execution_boundary_match_bool": true,
+      "gate_integrity_match_bool": true,
+      "gate_synthetic_readback_exact_integrity_bool": true,
+      "privacy_boundary_match_bool": true,
+      "readback_integrity_match_bool": true,
+      "synthetic_integrity_match_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package_public_report_v1",
+  "self_test_total": 35,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "haaer2bhsource0000",
+      "locked_haae_r2bg_checkpoint": "ad8de95",
+      "locked_haae_r2bg_status": "haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal",
+      "r2bg_forbidden_scan_pass_bool": true,
+      "r2bg_public_source_chain_match_bool": true,
+      "r2bg_self_test_36_bool": true,
+      "r2bg_status_match_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "haaer2bhstop0000",
+      "candidate_scan_authorized_bool": false,
+      "ci_execution_authorized_bool": false,
+      "clone_authorized_bool": false,
+      "corpus_scan_authorized_bool": false,
+      "default_claim_authorized_bool": false,
+      "execution_authorized_bool": false,
+      "haae_r2bi_public_next_step_decision_design_authorized_bool": true,
+      "material_generation_authorized_bool": false,
+      "method_claim_authorized_bool": false,
+      "metric_recompute_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase": "BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package",
+      "openlocus_runtime_authorized_bool": false,
+      "private_read_authorized_bool": false,
+      "private_write_authorized_bool": false,
+      "provider_model_authorized_bool": false,
+      "r2bi_public_decision_design_only_bool": true,
+      "raw_publication_authorized_bool": false,
+      "retrieval_authorized_bool": false,
+      "runtime_execution_authorized_bool": false,
+      "scale_claim_authorized_bool": false,
+      "scale_preflight_authorized_bool": false,
+      "source_scan_authorized_bool": false,
+      "validated_signal_claim_authorized_bool": false,
+      "winner_claim_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0000",
+      "validator_bucket": "source_lock_pass"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0001",
+      "validator_bucket": "r2bg_checkpoint_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0002",
+      "validator_bucket": "r2bg_status_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0003",
+      "validator_bucket": "r2bg_self_test_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0004",
+      "validator_bucket": "r2bg_forbidden_scan_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0005",
+      "validator_bucket": "result_bucket_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0006",
+      "validator_bucket": "outcome_alignment_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0007",
+      "validator_bucket": "aggregate_bucket_only_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0008",
+      "validator_bucket": "exact_metrics_public_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0009",
+      "validator_bucket": "raw_private_rows_public_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0010",
+      "validator_bucket": "ids_public_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0011",
+      "validator_bucket": "private_root_public_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0012",
+      "validator_bucket": "execution_material_generation_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0013",
+      "validator_bucket": "execution_source_scan_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0014",
+      "validator_bucket": "execution_runtime_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0015",
+      "validator_bucket": "execution_mode_bucket_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0016",
+      "validator_bucket": "execution_explicit_opt_in_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0017",
+      "validator_bucket": "execution_private_read_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0018",
+      "validator_bucket": "stop_go_next_phase_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0019",
+      "validator_bucket": "stop_go_private_execution_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0020",
+      "validator_bucket": "stop_go_material_generation_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0021",
+      "validator_bucket": "stop_go_scale_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0022",
+      "validator_bucket": "stop_go_method_claim_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0023",
+      "validator_bucket": "gate_set_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0024",
+      "validator_bucket": "duplicate_gate_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0025",
+      "validator_bucket": "synthetic_set_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0026",
+      "validator_bucket": "duplicate_synthetic_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0027",
+      "validator_bucket": "readback_record_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0028",
+      "validator_bucket": "duplicate_readback_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0029",
+      "validator_bucket": "r2bg_gate_set_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0030",
+      "validator_bucket": "r2bg_synthetic_set_drift_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0031",
+      "validator_bucket": "r2bg_readback_duplicate_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0032",
+      "validator_bucket": "r2bg_readback_missing_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0033",
+      "validator_bucket": "public_leak_fail"
+    },
+    {
+      "anonymous_synthetic_validator_id": "haaer2bhsynth0034",
+      "validator_bucket": "safe_parser_fail"
+    }
+  ],
+  "weak_signal_audit_records": [
+    {
+      "anonymous_weak_signal_audit_id": "haaer2bhaudit0000",
+      "artifact_or_weak_signal_public_decision_bool": true,
+      "no_evaluable_outcome_alignment_bool": true,
+      "no_signal_claim_bool": true,
+      "outcome_eval_alignment_bucket": "outcome_eval_alignment_unavailable",
+      "redesigned_experiment_result_bucket": "artifact_or_weak_signal",
+      "support_rows_control_rows_exist_bool": true
+    }
+  ]
+}
