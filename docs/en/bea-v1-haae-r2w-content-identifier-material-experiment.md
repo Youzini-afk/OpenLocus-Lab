@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2W Content-Identifier Material Experiment
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2W Content-Identifier Material Experiment reads only an explicit
 existing R2U private material root. Default mode reads and writes no private data.

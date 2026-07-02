@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package 是 public-only/non-executing。它锁定 R2BL/R2BK controlled unavailable evidence，并选择 outcome-label acquisition design，不选择 closure 或 pivot。
 

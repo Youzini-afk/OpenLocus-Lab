@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R1E Bounded Private Experiment Material Generation
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R1E is the first tiny bounded phase allowed to generate real private
 experiment material rows. It is local/manual only. It does not run in CI, does

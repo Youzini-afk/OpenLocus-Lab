@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation 仅为 material generation。Default mode 为 no private read/write、no repair/generation、no scan、no metrics。Explicit mode 要求 operator opt-in、existing R2BE private material root、explicit R2BK private output root、no experiment metrics 和 aggregate-only public artifact。 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 

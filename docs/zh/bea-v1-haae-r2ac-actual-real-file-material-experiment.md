@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AC Actual Real-File Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AC Actual Real-File Material Experiment 只在 operator 提供 explicit
 private material root 时读取 existing R2AA private material。默认模式不读取 private，也

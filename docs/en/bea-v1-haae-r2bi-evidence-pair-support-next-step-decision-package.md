@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package R2BG explicit opt-in/private-read/no-private-write execution lock.
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package is public-only and non-executing. It reads public R2BH/R2BG artifacts only and does not read private roots or `/tmp`, regenerate/repair material, compute metrics, scan source/candidate/corpus, run CI/runtime/network/provider/clone, or publish raw/private/exact values. R2BG explicit opt-in/private-read/no-private-write execution lock.
 

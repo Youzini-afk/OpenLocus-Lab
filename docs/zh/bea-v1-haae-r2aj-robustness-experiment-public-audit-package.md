@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package 是针对 R2AI checkpoint `14edd49`、status `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact` 的 public-only audit/package。R2AJ read only R2AI public artifact/docs。它 no private roots or /tmp reads、no recompute metrics、no source/candidate scan。
 

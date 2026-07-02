@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package is public-only. It reads only the R2BS public artifact and does not read private roots or `/tmp`, regenerate or repair material, compute experiment metrics, scan source/candidate/corpus, or claim signal/method/default/scale.
 

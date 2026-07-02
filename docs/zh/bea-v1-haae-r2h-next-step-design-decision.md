@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2H Next-Step Design Decision
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2H Next-Step Design Decision 是基于 R2G public audit artifact 的
 public-only design decision。它不执行 private root read、material generation、

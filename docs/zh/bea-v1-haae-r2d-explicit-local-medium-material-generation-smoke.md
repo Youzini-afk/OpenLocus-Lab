@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke 是 R2C 授权的
 explicit local/manual material generation smoke。默认模式不读取 private、不写入

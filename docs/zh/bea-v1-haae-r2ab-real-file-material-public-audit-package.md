@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AB Real-File Material Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AB Real-File Material Public Audit Package 是对 R2AA public artifact
 的 public-only audit。它不读取 private root，不 recompute，不 generate material，不 scan

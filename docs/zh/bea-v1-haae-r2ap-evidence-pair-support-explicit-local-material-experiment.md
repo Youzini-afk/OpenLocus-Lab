@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment 由 R2AO checkpoint `5cfa8d3`、status `haae_r2ao_evidence_pair_support_material_public_audit_package_complete_r2ap_explicit_experiment_authorized` 授权，并继承 R2AN checkpoint `93bba5f`、status `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`。
 

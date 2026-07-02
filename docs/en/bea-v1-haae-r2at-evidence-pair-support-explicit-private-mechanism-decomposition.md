@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition follows R2AS checkpoint `36e64d6`, status `haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_complete_r2at_explicit_private_mechanism_decomposition_authorized`.
 

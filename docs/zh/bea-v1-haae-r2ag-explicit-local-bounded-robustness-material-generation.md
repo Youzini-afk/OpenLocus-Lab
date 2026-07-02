@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation 是 R2AF checkpoint `bad2b33` 之后的 opt-in only 阶段。Source status 为 `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`。
 

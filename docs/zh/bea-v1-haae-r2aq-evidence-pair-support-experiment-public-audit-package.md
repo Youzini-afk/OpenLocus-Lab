@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package 是对 committed R2AP checkpoint `87ea9de` 的 public-only audit/package。它只读取 R2AP public artifact/docs/evaluator if needed：no private roots，no recompute experiment metrics，no material generation，no source corpus scan，no retrieval/runtime/CI/network/provider。
 

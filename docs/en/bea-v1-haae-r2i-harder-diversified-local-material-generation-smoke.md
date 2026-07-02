@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke is the bounded
 local/manual material generation smoke authorized by R2H. Default mode performs

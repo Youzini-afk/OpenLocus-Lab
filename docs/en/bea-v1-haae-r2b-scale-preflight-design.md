@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2B Scale Preflight Design
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2B Scale Preflight Design is a public-only design/preflight after
 R2A. It inspects only committed public R14 fixture metadata to choose the next

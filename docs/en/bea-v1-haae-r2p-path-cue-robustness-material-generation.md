@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2P Path-Cue Robustness Material Generation has safe default mode
 and explicit opt-in private material generation. It reads committed public R14

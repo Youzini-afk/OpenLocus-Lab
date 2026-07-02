@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package 是对 R2R
 aggregate artifact 的 public-only audit/package。它不读取 private root/material，不

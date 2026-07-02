@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment 支持 default/no-op mode 与 explicit opt-in mode。Default/no-op mode reads no private root，不写 private output，不计算 metrics。Explicit opt-in mode 读取 existing R2AX private robustness material，并且只计算 bucketized aggregate robustness metrics。 Result: `artifact_likely`; `support_control_separation_collapsed`, `control_rejection_failed`, `path_confound_risk_elevated`, and `support_signal_bucket_low`.
 

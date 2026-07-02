@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package is a public-only audit after R2AZ. It reads only R2AZ public artifact and confirms negative robustness evidence without reading private roots, R2AX private material, or raw rows.
 

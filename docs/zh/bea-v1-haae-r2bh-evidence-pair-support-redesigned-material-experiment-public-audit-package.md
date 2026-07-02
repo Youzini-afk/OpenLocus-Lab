@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package 是对 R2BG checkpoint `ad8de95` 和 committed R2BG public artifact 的 public-only audit/package。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 

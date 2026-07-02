@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package 是 public-only decision package。它只读取 public R2BP/R2BO audit facts，不执行 private reads/writes、label acquisition/generation、material repair/generation、metrics、source scan、runtime/CI/network/retrieval/provider/clone 或 claims。
 

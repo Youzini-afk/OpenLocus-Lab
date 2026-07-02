@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation 由 R2AM checkpoint `b243924`、status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`、R2AM self-test 26/26，以及 selected family `evidence_pair_support_complementarity` 授权。
 

@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2N Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2N Public Audit Package 是对 committed R2M aggregate artifact 的
 public-only audit/package。它只读取 public R2M artifact/docs，不读取 private

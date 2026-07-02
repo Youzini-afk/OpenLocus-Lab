@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision 是 public-only design/decision package。
 它只读取 public artifacts/docs。不读取 private roots 或 private material，不执行

@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2F Local Medium Material Experiment
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2F Local Medium Material Experiment computes aggregate metrics from
 an operator-supplied R2D private material root. Default mode performs no private

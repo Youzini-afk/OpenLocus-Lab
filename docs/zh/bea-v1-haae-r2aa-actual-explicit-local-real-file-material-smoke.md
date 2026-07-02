@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 是 bounded explicit
 local/manual material generation phase。默认模式不执行 private read/write、source scan

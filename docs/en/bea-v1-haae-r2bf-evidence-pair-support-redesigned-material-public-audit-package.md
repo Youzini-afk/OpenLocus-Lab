@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package is a public-only audit. It reads only R2BE public artifact and does not read private roots/material, regenerate material, scan source/candidate/corpus, compute experiment metrics, or publish raw/private rows.
 

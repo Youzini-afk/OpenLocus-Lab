@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition reads an explicit
 existing R2I private material root only when the operator opts in. Default mode

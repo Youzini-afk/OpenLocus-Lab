@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package 是对 committed
 R2P aggregate artifact 的 public-only audit。它只读取 public R2P artifact/docs，

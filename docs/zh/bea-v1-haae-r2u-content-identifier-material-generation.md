@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke 已完成为 standalone
 bounded material generator。Default mode 不读取 private、不写 private，也不生成 material。

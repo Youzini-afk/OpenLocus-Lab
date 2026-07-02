@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package 是 R2BA 之后的 public-only decision/design package。它选择 mechanism redesign preflight selected，并拒绝 scale、external robustness execution、new material generation 和 current-route continuation。
 

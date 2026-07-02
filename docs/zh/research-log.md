@@ -1,96 +1,96 @@
 # OpenLocus Research Log
 
-## 2026-07-01 — BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment
 
 `eval/bea_v1_haae_r2bv_evidence_pair_support_explicit_local_outcome_aligned_repair_experiment.py` 支持 no private read 的 default mode，以及 over existing R2BS repaired private material 的 explicit mode。Status taxonomy includes `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in` and `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`；self-test `41/41`；R2BU checkpoint `1666a00`；R2BU status `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`；R2BS checkpoint `71f3377`；R2BT checkpoint `63463b4`；R2BR checkpoint `b96e717`；R2BE checkpoint `c3901d6`；R2BO checkpoint `07b9eef`。
 
 Explicit mode reads existing R2BS repaired private material and computes bucketized aggregate experiment metrics：support/control separation and outcome-alignment coverage。Interpretation buckets are signal_present、weak_signal、artifact_risk、inconclusive。Boundary：no material generation、no source/candidate/corpus scan。R2BV actual explicit result is inconclusive; support/control separation is evaluable with no separation claim; outcome-alignment coverage is present。Stop/go 只授权 BEA-v1-HAAE-R2BW Evidence-Pair Support Outcome-Aligned Repair Experiment Public Audit Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package
+## 2026-07-03 — BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package
 
 `eval/bea_v1_haae_r2bu_evidence_pair_support_outcome_aligned_repair_next_step_decision_design.py` 是 public-only 且 non-executing。Status 为 `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`；self-test `65/65`；R2BT checkpoint `63463b4`；R2BT status `haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized`；R2BS checkpoint `71f3377`；R2BS status `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`。
 
 Decision：R2BV explicit local outcome-aligned repair experiment selected over existing R2BS private material。repaired material locked。Boundary：public-only decision、no private read、no material generation、no metric computation。Stop/go 只授权 BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package
 
 `eval/bea_v1_haae_r2bt_evidence_pair_support_outcome_aligned_material_repair_public_audit_package.py` 是 public-only，并且只读取 R2BS public artifact。Status 为 `haae_r2bt_outcome_aligned_material_repair_public_audit_complete_r2bu_decision_design_authorized`；self-test `52/52`；R2BS checkpoint `71f3377`；R2BS status `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`。
 
 Audit result：explicit local repair/generation、label alignment materialized、parent refs present、output group exact。Boundary：aggregate-only public audit、no private read、no material generation、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BS Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
+## 2026-07-03 — BEA-v1-HAAE-R2BS Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 
 `eval/bea_v1_haae_r2bs_evidence_pair_support_explicit_local_outcome_aligned_material_repair_generation.py` 支持 default no private read/write 和 explicit local repair/generation。Status taxonomy：`haae_r2bs_unavailable_no_explicit_local_repair_generation_opt_in` 与 `haae_r2bs_explicit_local_outcome_aligned_material_repair_generation_complete_r2bt_public_audit_authorized`；self-test `52/52`；R2BR checkpoint `b96e717`；R2BR status `haae_r2br_outcome_aligned_material_repair_public_design_preflight_complete_r2bs_explicit_local_repair_generation_authorized`；R2BE checkpoint `c3901d6`；R2BO checkpoint `07b9eef`。 R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 
 Explicit local repair/generation writes outcome_label_alignment_eval_private and parent_r2bo_label_ref_private；label alignment materialized。Boundary：no experiment metrics、no source scan、aggregate-only public artifact。Stop/go after success 只授权 BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Aligned Material Repair Public Audit Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight
 
 `eval/bea_v1_haae_r2br_evidence_pair_support_outcome_aligned_material_repair_public_design_preflight.py` 是 public-only 且 non-executing。Status 为 `haae_r2br_outcome_aligned_material_repair_public_design_preflight_complete_r2bs_explicit_local_repair_generation_authorized`；self-test `51/51`；R2BQ checkpoint `8254d58`；R2BQ status `haae_r2bq_outcome_label_acquisition_next_step_decision_design_complete_r2br_repair_design_preflight_authorized`；R2BP checkpoint `82c5d65`；R2BO checkpoint `07b9eef`。 R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 
 Decision：outcome_aligned_material_repair_generation_design_selected_bool；r2bs_explicit_local_repair_generation_selected_bool。Rationale：labels_acquired_and_audited_repair_generation_now_design_scoped。Boundary：public-only、no private read、no signal evaluation。Stop/go 只授权 BEA-v1-HAAE-R2BS Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation。 R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package
+## 2026-07-03 — BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package
 
 `eval/bea_v1_haae_r2bq_evidence_pair_support_outcome_label_acquisition_next_step_decision_design.py` 是 public-only decision/design。Status 为 `haae_r2bq_outcome_label_acquisition_next_step_decision_design_complete_r2br_repair_design_preflight_authorized`；self-test `53/53`；R2BP checkpoint `82c5d65`；R2BP status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`；R2BO checkpoint `07b9eef`；R2BO status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`。 R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
 
 Decision：outcome_aligned_material_repair_public_design_preflight_selected。Rationale bucket：labels_acquired_but_material_repair_not_yet_designed。Boundary：public-only decision、no private read、no material repair、no experiment metrics。Stop/go 只授权 BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package R2BO execution attestation exact.
+## 2026-07-03 — BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package R2BO execution attestation exact.
 
 `eval/bea_v1_haae_r2bp_evidence_pair_support_outcome_label_source_acquisition_public_audit_package.py` 只审计 R2BO public artifact。Status 为 `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`；self-test `48/48`；R2BO checkpoint `07b9eef`；R2BO status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`；R2BO self-test 51/51。 R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
 
 R2BP confirms explicit local outcome-label source acquisition with labels_acquired_private and outcome_label_source_manifest_private。Boundary：aggregate-only public audit、no private read、no material repair、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package。 R2BO execution attestation exact.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition status/execution consistency locked.
+## 2026-07-03 — BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition status/execution consistency locked.
 
 `eval/bea_v1_haae_r2bo_evidence_pair_support_explicit_local_outcome_label_source_acquisition.py` 实现 default mode with no private read 和 explicit local label source acquisition。Default status 为 `haae_r2bo_unavailable_no_explicit_local_label_source_acquisition_opt_in`；success status 为 `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`；self-test `51/51`；R2BN checkpoint `af901f6`；R2BN status `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`。
 
 Explicit mode uses an operator-provided label source manifest and existing R2BE private material root，写入 private label acquisition groups，包括 outcome_label_source_manifest_private，并发布 aggregate-only public output。Boundary：no material repair、no experiment metrics、no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package。 R2BO execution attestation exact.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
 
 `eval/bea_v1_haae_r2bn_evidence_pair_support_outcome_label_acquisition_public_design_preflight.py` 是 public-only/non-executing。Status 为 `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`；self-test `55/55`；R2BM checkpoint `219c890`；R2BM status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`；R2BL checkpoint `41aef9e`；R2BK checkpoint `7073b12`。
 
 Decision：outcome_label_acquisition_design_preflight。Label policy：existing public/committed label source recovery；operator-provided label manifest；manual label manifest；synthetic/programmatic labels NOT allowed as ground truth; label_confidence_bucket_required_bool; label_scope_bounded_bool; no broad source scan or material repair in R2BO design; R2BM full stop/go contract exact。Future R2BO group includes outcome_label_source_manifest_private；bounds include target 20。Stop/go 只授权 BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition。 status/execution consistency locked.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package
+## 2026-07-03 — BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package
 
 `eval/bea_v1_haae_r2bm_evidence_pair_support_outcome_label_acquisition_public_decision_design.py` 是 public-only/non-executing。Status 为 `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`；self-test `51/51`；R2BL checkpoint `41aef9e`；R2BL status `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`；R2BK checkpoint `7073b12`；R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`。
 
 Decision：outcome_label_acquisition_design_selected；not closure；not pivot。Boundary：public-only/non-executing，no private read，no label generation，no material generation，no metric recompute，no source scan。Stop/go 只授权 BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package
 
 `eval/bea_v1_haae_r2bl_evidence_pair_support_outcome_aligned_material_public_audit_package.py` 只审计 R2BK public artifact。Status 为 `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`；self-test `45/45`；R2BK checkpoint `7073b12`；R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`。
 
 Audit：controlled unavailable result、outcome_alignment_source_labels_absent、generation_bucket=outcome_alignment_unavailable_no_material_generated、generated_group_set_exact_bool=false、material_generated_bool=false。Boundary：public-only audit、no private read、no metric recompute、no material generation、aggregate-only public output。Stop/go 只授权 BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+## 2026-07-03 — BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 `eval/bea_v1_haae_r2bk_evidence_pair_support_explicit_local_outcome_aligned_material_repair_generation.py` 实现 default mode（no private read/write）和 over existing R2BE material 的 explicit local outcome-aligned repair generation。Default status 为 `haae_r2bk_unavailable_no_explicit_local_outcome_aligned_repair_generation_opt_in`；actual explicit status 为 `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`；success status taxonomy includes `haae_r2bk_explicit_local_outcome_aligned_material_repair_generation_complete_r2bl_public_audit_authorized`；self-test `49/49`；R2BJ checkpoint `cab3b84`；R2BJ status `haae_r2bj_outcome_aligned_material_repair_public_design_preflight_complete_r2bk_explicit_local_repair_generation_authorized`；R2BE checkpoint `c3901d6`；artifact_or_weak_signal；outcome_eval_alignment_unavailable。 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 Boundary：material generation only、no experiment metrics、no source/candidate/corpus scan、aggregate-only public artifact。Required private group schema includes outcome_aligned_task_frame、outcome_aligned_support_pair_material、outcome_alignment_eval_private、repair_provenance_private，但 no outcome-aligned material groups were generated。Stop/go 只授权 BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package audit this controlled unavailable result, not generated material rows。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+## 2026-07-03 — BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 `eval/bea_v1_haae_r2bj_evidence_pair_support_outcome_aligned_material_repair_public_design_preflight.py` 是 public-only 且 non-executing。Status 为 `haae_r2bj_outcome_aligned_material_repair_public_design_preflight_complete_r2bk_explicit_local_repair_generation_authorized`；self-test `41/41`；R2BI checkpoint `f231205`；R2BI status `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`；inherited R2BH `3b566a2`、R2BG `ad8de95`、R2BF `322fbca`、R2BE `c3901d6`。 R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 Decision：outcome_alignment_repair_design_selected_bool。Evidence remains artifact_or_weak_signal with outcome_eval_alignment_unavailable。Future R2BK schema includes outcome_aligned_task_frame、outcome_aligned_support_pair_material、outcome_alignment_eval_private、parent_r2be_row_ref_private、repair_provenance_private。Future R2BK requires explicit opt-in、existing R2BE private material、aggregate-only public artifact、public audit required after generation。 outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package R2BG explicit opt-in/private-read/no-private-write execution lock.
+## 2026-07-03 — BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package R2BG explicit opt-in/private-read/no-private-write execution lock.
 
 `eval/bea_v1_haae_r2bi_evidence_pair_support_next_step_decision_package.py` 是 public-only 且 non-executing。Status 为 `haae_r2bi_evidence_pair_support_public_next_step_decision_design_complete_r2bj_outcome_aligned_material_repair_public_design_preflight_authorized`；self-test `34/34`；R2BH checkpoint `3b566a2`；R2BH status `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`；R2BG checkpoint `ad8de95`；R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`；inherited R2BF `322fbca`；inherited R2BE `c3901d6`。 R2BG explicit opt-in/private-read/no-private-write execution lock. R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
 Decision：outcome_aligned_material_repair_design_selected；close_line_deferred；pivot_deferred；rerun_experiment_without_repair_rejected；scale_preflight_rejected；method_default_claim_rejected。Evidence remains artifact_or_weak_signal with outcome_eval_alignment_unavailable and no signal claim；R2BI is public-only。Stop/go 只授权 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。 R2BG explicit opt-in/private-read/no-private-write execution lock. R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment
 
 `eval/bea_v1_haae_r2bg_evidence_pair_support_explicit_local_redesigned_material_experiment.py` 实现 default mode（no private read）以及 over existing R2BE private material 的 explicit mode。Status buckets 包括 `haae_r2bg_unavailable_no_explicit_local_redesigned_material_experiment_opt_in` 和 `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present`；self-test `36/36`；R2BF checkpoint `322fbca`；R2BF status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`；R2BE checkpoint `c3901d6`。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
 Explicit mode 只计算 bucketized aggregate metrics，result buckets 包括 signal_present、artifact_or_weak_signal、mixed_or_inconclusive。Boundaries：no material generation、no source/candidate/corpus scan、no runtime/OpenLocus/retrieval。Stop/go 只授权 BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
+## 2026-07-03 — BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
 `eval/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package/bea_v1_haae_r2bh_evidence_pair_support_redesigned_material_experiment_public_audit_package_report.json`。状态为 `haae_r2bh_redesigned_material_experiment_public_audit_complete_r2bi_next_step_decision_authorized_artifact_or_weak_signal`，self-test `35/35`，R2BG checkpoint `ad8de95`，R2BG status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`，R2BG self-test 36/36。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity. R2BG explicit opt-in/private-read/no-private-write execution lock.
 
@@ -100,73 +100,73 @@ Result bucket artifact_or_weak_signal；key reason outcome_eval_alignment_unavai
 
 R2BH 是 public-only audit/package，read only R2BG public artifact，no private roots，no metric recompute，no material generation，no source/candidate/corpus scan，aggregate-only。Stop/go 只授权 BEA-v1-HAAE-R2BI Evidence-Pair Support Public Next-Step Decision Design Package；no private execution/material generation/scale/CI/method/default claims。 R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity. R2BG explicit opt-in/private-read/no-private-write execution lock.
 
-## 2026-07-01 — BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
 
 `eval/bea_v1_haae_r2bf_evidence_pair_support_redesigned_material_public_audit_package.py` 只审计 R2BE public artifact。Status 为 `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`；self-test `40/40`；R2BE checkpoint `c3901d6`；R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`。
 
 Scope：public-only audit；read only R2BE public artifact。Audit locks explicit local generation、all_required_groups_present、matched_hard_negative_control、path_token_matched_control、bounds satisfied、gold isolation、no experiment metrics、aggregate-only publication。Stop/go 只授权 BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
+## 2026-07-03 — BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
 
 `eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` 完成 explicit local redesigned material generation 阶段。default status 为 `haae_r2be_unavailable_no_explicit_material_generation_opt_in`；explicit status 为 `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`；self-test `40/40`；R2BD checkpoint `fa6119b`；R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`。
 
 default mode 无 private read/write/material generation/source scan。no private read/write/material generation/source scan。explicit local redesigned material generation requires operator-provided public source allowlist and explicit private output root。Required groups include redesigned_task_frame and redesigned_control_pair_material；controls include matched_hard_negative_control and path_token_matched_control；gold eval-only；no experiment metrics；aggregate-only public report。Stop/go 只授权 BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight
 
 `eval/bea_v1_haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight.py` 将 R2BC redesign requirements 转换为未来 R2BE material-generation contract。Status 为 `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`；self-test `47/47`；R2BC checkpoint `2171b20`；R2BC status `haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight_complete_r2bd_redesigned_material_generation_public_design_preflight_authorized`；R2BB checkpoint `a624728`；R2BA checkpoint `f8984bf`；R2AZ checkpoint `72590e5`。
 
 future R2BE private schema groups include redesigned_task_frame and redesigned_control_pair_material。Required controls include matched_hard_negative_control and path_token_matched_control。Bounds include target_tasks_16_to_20。Contract 要求 operator-provided public source allowlist、root ownership and symlink safety、gold eval-only、material generation only; no robustness metrics；aggregate-only publication。Stop/go 只授权 BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight
 
 `eval/bea_v1_haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight.py` 生成 redesign requirements package。Status 为 `haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight_complete_r2bd_redesigned_material_generation_public_design_preflight_authorized`；self-test `37/37`；R2BB checkpoint `a624728`；R2BB status `haae_r2bb_evidence_pair_support_robustness_next_step_decision_complete_r2bc_mechanism_redesign_public_design_preflight_authorized`；R2BA checkpoint `f8984bf`；R2BA status `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`；R2AZ checkpoint `72590e5`；R2AZ status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`；inherited R2AY checkpoint `126dc18`、R2AX checkpoint `f3add65`、R2AW checkpoint `bc44454`、R2AN checkpoint `93bba5f`、R2AT checkpoint `0c9c108`、R2AP checkpoint `87ea9de`。
 
 R2BC states existing support/complementarity insufficient after robustness failure，并且 robust signal not claimed。Required controls include matched_hard_negative_control and path_token_matched_control；gold eval-only；elevated confound fails robust-signal gates；future design bounds include target_tasks_16_to_20。Stop/go 只授权 BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package
+## 2026-07-03 — BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package
 
 `eval/bea_v1_haae_r2bb_evidence_pair_support_robustness_next_step_decision_package.py` 在 R2BA negative audit 之后选择 mechanism redesign preflight selected。Status 为 `haae_r2bb_evidence_pair_support_robustness_next_step_decision_complete_r2bc_mechanism_redesign_public_design_preflight_authorized`；self-test `34/34`；R2BA checkpoint `f8984bf`；R2BA status `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`；R2AZ checkpoint `72590e5`；R2AZ status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`；inherited R2AY checkpoint `126dc18`、R2AX checkpoint `f3add65`、R2AW checkpoint `bc44454`、R2AN checkpoint `93bba5f`、R2AT checkpoint `0c9c108`、R2AP checkpoint `87ea9de`。
 
 Decision：current evidence-pair support route rejected as robust signal，并且 negative robustness evidence locked。Evidence buckets：artifact_likely、support_control_separation_collapsed、control_rejection_failed、path_confound_risk_elevated、support_signal_bucket_low。Boundary：no method/default/scale claim。Stop/go 只授权 BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight。
 
-## 2026-07-01 — BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_package.py` 只审计 R2AZ public artifact。Status 为 `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`；self-test `34/34`；R2AZ checkpoint `72590e5`；R2AZ status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`；inherited locks R2AY checkpoint `126dc18`、R2AX checkpoint `f3add65`、R2AW checkpoint `bc44454`、R2AN checkpoint `93bba5f`、R2AT checkpoint `0c9c108`、R2AP checkpoint `87ea9de`。
 
 Scope：public-only audit，read only R2AZ public artifact。Audit outcome：negative robustness evidence，buckets 为 artifact_likely、support_control_separation_collapsed、control_rejection_failed、path_confound_risk_elevated、support_signal_bucket_low。Boundary：no method/default/scale claim。Stop/go 只授权 BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment
 
 `eval/bea_v1_haae_r2az_evidence_pair_support_explicit_local_robustness_experiment.py` 实现 default/no-op mode 和 explicit opt-in mode。Default status 为 `haae_r2az_unavailable_no_explicit_local_robustness_experiment_opt_in`；explicit result status 为 `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`；self-test `27/27`；R2AY checkpoint `126dc18`；R2AY status `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`；source locks R2AX checkpoint `f3add65`、R2AW checkpoint `bc44454`、R2AN checkpoint `93bba5f`、R2AT checkpoint `0c9c108`、R2AP checkpoint `87ea9de`。
 
 Default/no-op mode reads no private root。Explicit opt-in mode 读取 existing R2AX private robustness material，并计算 bucketized aggregate robustness metrics。Boundary：no material generation、no source/candidate/corpus scan、no runtime/OpenLocus/retrieval。Stop/go 只授权 BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package
 
 `eval/bea_v1_haae_r2ay_evidence_pair_support_robustness_material_public_audit_package.py` 只审计 R2AX public artifact。Status 为 `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`；self-test `36/36`；R2AX checkpoint `f3add65`；R2AX status `haae_r2ax_explicit_local_robustness_material_generation_complete_r2ay_public_audit_authorized`；inherited R2AW checkpoint `bc44454`；R2AN checkpoint `93bba5f`。
 
 Scope：public-only audit，read only R2AX public artifact，no private root，no experiment metrics，exact generated group set，exact 8 variant set，bounds satisfied，aggregate-only。Stop/go 只授权 BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment / R2AZ explicit local robustness experiment，aggregate metrics only，no material generation，no source scan，no runtime。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation
+## 2026-07-03 — BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation
 
 `eval/bea_v1_haae_r2ax_evidence_pair_support_explicit_local_robustness_material_generation.py` 实现 default mode 与 explicit local robustness material generation。Default status 为 `haae_r2ax_unavailable_no_explicit_local_robustness_material_generation_opt_in`；explicit status 为 `haae_r2ax_explicit_local_robustness_material_generation_complete_r2ay_public_audit_authorized`；self-test `31/31`；source locks 为 R2AW checkpoint `bc44454`、R2AW status `haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight_complete_r2ax_explicit_local_robustness_material_generation_authorized`、R2AN checkpoint `93bba5f`。
 
 Default mode：no private read/write/generation/scan/metrics。Explicit mode 需要 explicit local robustness material generation over existing R2AN private material、private output root、no experiment metrics、aggregate-only public artifact。Variants 为 single_unit_ablation、support_contrast_perturbation、hard_negative_strengthening、shuffled_pair_control、query_evidence_masking、path_token_confound_stress、cross_task_mismatch_control、gold_isolation_control。Stop/go 只授权 BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AW Evidence-Pair Support Robustness Material Generation Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2AW Evidence-Pair Support Robustness Material Generation Public Design Preflight
 
 `eval/bea_v1_haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight.py` 生成 `artifacts/bea_v1_haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight/bea_v1_haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight_report.json`。Status 为 `haae_r2aw_evidence_pair_support_robustness_material_generation_public_design_preflight_complete_r2ax_explicit_local_robustness_material_generation_authorized`，self-test `53/53`，R2AV checkpoint `c0e4b4f`，R2AV status `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`，inherited R2AU checkpoint `8af2b92`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`，R2AN checkpoint `93bba5f`，pair_complementarity_supported、pair_complementarity_lift_high、support_vs_contrast_separation_medium、hard_negative_rejection_medium、path_confound_risk_low、gold_isolation_pass、support_signal。
 
 R2AW 是 public-only/non-executing，设计 R2AX explicit local robustness material generation over existing R2AN private material，要求 explicit opt-in、explicit private output root、no implicit /tmp discovery、target_tasks=20、private_row_cap=20000，variants 为 single_unit_ablation、support_contrast_perturbation、hard_negative_strengthening、shuffled_pair_control、query_evidence_masking、path_token_confound_stress、cross_task_mismatch_control、gold_isolation_control。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package
+## 2026-07-03 — BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package
 
 `eval/bea_v1_haae_r2av_evidence_pair_support_next_step_decision_package.py` 生成 `artifacts/bea_v1_haae_r2av_evidence_pair_support_next_step_decision_package/bea_v1_haae_r2av_evidence_pair_support_next_step_decision_package_report.json`。Status 为 `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`，self-test `51/51`，R2AU checkpoint `8af2b92`，R2AU status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`，R2AT checkpoint `0c9c108`，pair_complementarity_supported、pair_complementarity_lift_high、support_vs_contrast_separation_medium、hard_negative_rejection_medium、path_confound_risk_low、gold_isolation_pass，R2AP checkpoint `87ea9de`，support_signal。
 
 Decision：robustness material generation preflight selected；not scale；not external validation execution；not close/turn；not method/default claim。Reason buckets：pair_complementarity_supported_but_current_material_bounded 和 robustness_needed_before_scale_or_method_claim。Boundary：public-only next-step decision/design；no private roots；no metric recompute；no source/candidate/corpus scan。Next phase 是 BEA-v1-HAAE-R2AW Evidence-Pair Support Robustness Material Generation Public Design Preflight；R2AW public-only/non-executing。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package
 
 `eval/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_report.json`。Status 为 `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`，self-test `44/44`，R2AT checkpoint `0c9c108`，R2AT status `haae_r2at_explicit_private_mechanism_decomposition_complete_r2au_public_audit_authorized_pair_complementarity_supported`，并验证 self-test count 35/35。R2AU reads the R2AT public artifact only，且 public-only：no private roots、no private diagnostics、no mechanism recomputation、no source/candidate/corpus scan、no material regeneration。Audited buckets：pair_complementarity_supported、pair_complementarity_lift_high、support_vs_contrast_separation_medium、hard_negative_rejection_medium、path_confound_risk_low、gold_isolation_pass。Boundary：no exact metric/raw private public fields，no method/default/scale/raw claim。Stop/go 只授权 BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package，且为 public decision/design only。
 
@@ -10949,7 +10949,7 @@ Inventory accounted for 全部 10 个 HAAE schema groups，但 R1C bootstrap roo
 
 R1D 是 hydration execution 与 HAAE-R2 的 controlled No-Go。它不授权 replay、scoring、retrieval、candidate generation、HAAE-layer execution、selector/reranker、BEA-v1-A/P5、runtime/default change 或 raw publication。后续进展需要单独的 bounded hydration preflight 或 operator-supplied meaningful root。参见 `docs/zh/bea-v1-haae-r1d-explicit-private-root-schema-inventory-smoke.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R1E：Bounded Private Experiment Material Generation
+## 2026-07-03 — BEA-v1-HAAE-R1E：Bounded Private Experiment Material Generation
 
 `eval/bea_v1_haae_r1e_bounded_private_experiment_material_generation.py` 生成 `artifacts/bea_v1_haae_r1e_bounded_private_experiment_material_generation/bea_v1_haae_r1e_bounded_private_experiment_material_generation_report.json`，状态为 `haae_r1e_bounded_private_material_generation_complete_r2_small_experiment_authorized`。Self-test 通过 `25/25`，forbidden scan 通过，HAAE-R1D source checkpoint `9299b0a` 已锁定，默认 no-opt-in 状态为 `haae_r1e_unavailable_no_explicit_material_generation_opt_in`。
 
@@ -10959,7 +10959,7 @@ Explicit run 只允许 local/manual，并且只在显式 temp/ignored private ro
 
 R1E 只授权 small local HAAE-R2 experiment。它不授权 CI、network、clone、provider/model calls、broad replay、selector/reranker execution、BEA-v1-A/P5、runtime/default changes、scoring claims、method-winner claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r1e-bounded-private-experiment-material-generation.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2：Small Local Lexical Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2：Small Local Lexical Material Experiment
 
 `eval/bea_v1_haae_r2_small_local_lexical_material_experiment.py` 生成 `artifacts/bea_v1_haae_r2_small_local_lexical_material_experiment/bea_v1_haae_r2_small_local_lexical_material_experiment_report.json`，状态为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。Self-test 通过 `25/25`，forbidden scan 通过，HAAE-R1E source checkpoint `0135e1f` 已锁定，默认 no-root 状态为 `haae_r2_unavailable_no_explicit_r1e_private_material_root`。
 
@@ -10969,7 +10969,7 @@ Explicit run 只读取调用者提供的 private-material root 中已有的 R1E 
 
 R2 只授权 BEA-v1-HAAE-R2A Public Audit Package。它不授权 R3 scale preflight、new candidate generation、rematerialization、source-corpus scan、broad retrieval、OpenLocus runtime、scheduler/HAAE-layer execution、selector/reranker、CI/network/clone/provider、BEA-v1-A/P5、runtime/default changes、raw publication 或 method-winner claims。参见 `docs/zh/bea-v1-haae-r2-small-local-lexical-material-experiment.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2a_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2a_small_local_experiment_public_audit_package/bea_v1_haae_r2a_small_local_experiment_public_audit_package_report.json`，状态为 `haae_r2a_public_audit_package_complete_r2b_scale_preflight_design_authorized`。Self-test 通过 `26/26`，forbidden scan 通过，HAAE-R2 source checkpoint `0784be0` 已锁定，R2 source status 为 `haae_r2_small_local_lexical_material_experiment_complete_r2a_public_audit_authorized`。
 
@@ -10979,7 +10979,7 @@ R2A 是 public-only。它不读取 private material，不 recompute，也不运�
 
 这是 tiny-N audit，不是 no method-winner claim，也不是 runtime/default decision。R2A 只授权 BEA-v1-HAAE-R2B Scale Preflight Design，用于设计如何把 material generation 扩展到超过三个 tasks。它不授权 scale execution 或 CI。参见 `docs/zh/bea-v1-haae-r2a-small-local-experiment-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2B Scale Preflight Design
+## 2026-07-03 — BEA-v1-HAAE-R2B Scale Preflight Design
 
 `eval/bea_v1_haae_r2b_scale_preflight_design.py` 生成 `artifacts/bea_v1_haae_r2b_scale_preflight_design/bea_v1_haae_r2b_scale_preflight_design_report.json`，状态为 `haae_r2b_scale_preflight_design_complete_r2c_local_medium_material_smoke_preflight_authorized`。Self-test 通过 `26/26`，forbidden scan 通过，HAAE-R2A checkpoint `2ca1ac4` 已锁定。
 
@@ -10989,7 +10989,7 @@ R2B 是 public-only design/preflight。它只检查已提交的公开 R14 fixtur
 
 R2B 只授权 BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight。R2C 仍是 preflight/package phase：execution、private read/write、CI execution 与 material generation 均为 false。参见 `docs/zh/bea-v1-haae-r2b-scale-preflight-design.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
 
 `eval/bea_v1_haae_r2c_local_medium_material_smoke_preflight.py` 生成 `artifacts/bea_v1_haae_r2c_local_medium_material_smoke_preflight/bea_v1_haae_r2c_local_medium_material_smoke_preflight_report.json`，状态为 `haae_r2c_local_medium_material_smoke_preflight_complete_r2d_generation_smoke_authorized`。Self-test 通过 `25/25`，forbidden scan 通过，HAAE-R2B checkpoint `dea8a2f` 已锁定。
 
@@ -10999,7 +10999,7 @@ R2C 是 public-only preflight/package。它锁定 `r14_medium_local_material_smo
 
 R2C 只授权 BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke，要求 explicit local/manual opt-in，在 explicit private root 下写 private rows，public output 只能 aggregate-only。CI/network/provider、experiment comparison、R2 recompute、retrieval runtime、scheduler/HAAE、selector/reranker、runtime/default、BEA-v1-A/P5、method claim 与 scaling claim 均保持 false。参见 `docs/zh/bea-v1-haae-r2c-local-medium-material-smoke-preflight.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke
+## 2026-07-03 — BEA-v1-HAAE-R2D Explicit Local Medium Material Generation Smoke
 
 `eval/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke.py` 生成 `artifacts/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke/bea_v1_haae_r2d_explicit_local_medium_material_generation_smoke_report.json`。默认模式状态为 `haae_r2d_unavailable_no_explicit_medium_material_generation_opt_in`；explicit pass 状态为 `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`。Self-test 通过 `19/19`，HAAE-R2C checkpoint `68000b2` 已锁定。
 
@@ -11009,7 +11009,7 @@ R2D 要求 explicit opt-in。它使用 subset policy `deterministic_public_manif
 
 R2D 只授权 BEA-v1-HAAE-R2E Local Medium Material Audit Package。它不授权 no experiment comparison、no R2 recompute、no runtime/retrieval/source scan beyond fixture、no CI/network/provider、no scheduler/HAAE/selector、no BEA-v1-A/P5/runtime/default 或 no method/scaling claim。参见 `docs/zh/bea-v1-haae-r2d-explicit-local-medium-material-generation-smoke.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2E Local Medium Material Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2E Local Medium Material Audit Package
 
 `eval/bea_v1_haae_r2e_local_medium_material_audit_package.py` 生成 `artifacts/bea_v1_haae_r2e_local_medium_material_audit_package/bea_v1_haae_r2e_local_medium_material_audit_package_report.json`。状态为 `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`，self-test `30/30`，R2D checkpoint `c4e454a`，R2D status `haae_r2d_explicit_local_medium_material_generation_smoke_complete_r2e_material_audit_authorized`。
 
@@ -11019,7 +11019,7 @@ R2E 是 public-only audit，no private root read。它确认 task bucket `count_
 
 R2E 只授权 R2F local medium material experiment，要求 operator-supplied explicit private root，只读取 existing R2D private material，并计算 aggregate metrics。没有 no new material/candidate generation/retrieval/runtime/source scan/CI/network/scheduler/HAAE/selector/BEA-v1-A/P5/default/method/scaling claim。参见 `docs/zh/bea-v1-haae-r2e-local-medium-material-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2F Local Medium Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2F Local Medium Material Experiment
 
 `eval/bea_v1_haae_r2f_local_medium_material_experiment.py` 以 explicit mode 读取 existing R2D private material，生成 `artifacts/bea_v1_haae_r2f_local_medium_material_experiment/bea_v1_haae_r2f_local_medium_material_experiment_report.json`。默认状态仍为 `haae_r2f_unavailable_no_explicit_r2d_private_material_root`；explicit pass status 为 `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`。Self-test 通过 `26/26`，R2E checkpoint 为 `b166d79`，R2E status 为 `haae_r2e_local_medium_material_audit_package_complete_r2f_medium_experiment_authorized`。
 
@@ -11029,7 +11029,7 @@ R2F 要求 explicit private material root，并只读取 existing R2D private ma
 
 R2F 只授权 BEA-v1-HAAE-R2G Public Audit Package。Boundary: no new candidates/retrieval/source scan/OpenLocus/runtime/scheduler/selector/CI/network/provider/default/BEA-v1-A/P5/method/scaling claim。参见 `docs/zh/bea-v1-haae-r2f-local-medium-material-experiment.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2G Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2G Public Audit Package
 
 `eval/bea_v1_haae_r2g_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2g_public_audit_package/bea_v1_haae_r2g_public_audit_package_report.json`。状态为 `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`，self-test `14/14`，HAAE-R2F checkpoint `1e0c718`，R2F status `haae_r2f_local_medium_material_experiment_complete_r2g_public_audit_authorized`。
 
@@ -11039,7 +11039,7 @@ R2G 是 public-only，只读取 public R2F artifact/docs。它确认 rank-source
 
 R2G 只授权 BEA-v1-HAAE-R2H Next-Step Design Decision。Boundary: no method-winner/default/scaling claim。它不授权 execution、CI、scale material generation、runtime/default changes、BEA-v1-A/P5、method-winner claims、scaling claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r2g-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2H Next-Step Design Decision
+## 2026-07-03 — BEA-v1-HAAE-R2H Next-Step Design Decision
 
 `eval/bea_v1_haae_r2h_next_step_design_decision.py` 生成 `artifacts/bea_v1_haae_r2h_next_step_design_decision/bea_v1_haae_r2h_next_step_design_decision_report.json`。状态为 `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`，self-test `11/11`，HAAE-R2G checkpoint `cd583d6`，R2G status `haae_r2g_public_audit_package_complete_r2h_next_step_design_authorized`。
 
@@ -11049,7 +11049,7 @@ R2H diagnosis 为 `arms_not_separating`。Decision 是 reject/defer scaling the 
 
 R2H 只授权 BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke。Boundary 仍为 no method/default/scaling claim、no private read、no material generation in R2H、no execution、no recompute、no retrieval/source scan/OpenLocus/runtime、no CI/network/provider/clone、no scheduler/HAAE/selector。参见 `docs/zh/bea-v1-haae-r2h-next-step-design-decision.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke
+## 2026-07-03 — BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke
 
 `eval/bea_v1_haae_r2i_harder_diversified_local_material_generation_smoke.py` 以默认模式生成 `artifacts/bea_v1_haae_r2i_harder_diversified_local_material_generation_smoke/bea_v1_haae_r2i_harder_diversified_local_material_generation_smoke_report.json`。默认状态为 `haae_r2i_unavailable_no_explicit_harder_diversified_material_generation_opt_in`；explicit pass status 为 `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`。Self-test 通过 `25/25`，HAAE-R2H checkpoint 为 `3db7366`，R2H status 为 `haae_r2h_next_step_design_decision_complete_r2i_harder_diversified_material_generation_authorized`。
 
@@ -11059,7 +11059,7 @@ R2I 要求 explicit opt-in。Locked boundary 为 target 20 tasks、candidate dep
 
 R2I 只授权 BEA-v1-HAAE-R2J Harder/Diversified Material Experiment。它不读取 old private roots，不运行 retrieval/runtime/OpenLocus/source scan outside fixture，不使用 CI/network/provider/clone，不执行 scheduler/HAAE/selector，不改变 BEA-v1-A/P5/defaults，也不提出 method/scaling claims。参见 `docs/zh/bea-v1-haae-r2i-harder-diversified-local-material-generation-smoke.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2J Harder/Diversified Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2J Harder/Diversified Material Experiment
 
 `eval/bea_v1_haae_r2j_harder_diversified_material_experiment.py` 以 explicit mode 读取 existing R2I private material，生成 `artifacts/bea_v1_haae_r2j_harder_diversified_material_experiment/bea_v1_haae_r2j_harder_diversified_material_experiment_report.json`。默认状态为 `haae_r2j_unavailable_no_explicit_r2i_private_material_root`；pass status 为 `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`；non-separating status 为 `haae_r2j_harder_diversified_material_experiment_complete_no_go_non_separating`。Self-test 通过 `25/25`，HAAE-R2I checkpoint 为 `16d1349`，R2I status 为 `haae_r2i_harder_diversified_local_material_generation_complete_r2j_experiment_authorized`。
 
@@ -11069,7 +11069,7 @@ R2J 要求 explicit private material root，并且 input 是 existing R2I materi
 
 R2J 在 separation passes 时只授权 BEA-v1-HAAE-R2K Public Audit Package。Boundary 仍为 no method winner/default/scaling claim、no root discovery、no private writes、no candidate/material generation、no retrieval/runtime/OpenLocus/source scan/CI/network/provider/scheduler/selector，且 no exact per-task/private publication。参见 `docs/zh/bea-v1-haae-r2j-harder-diversified-material-experiment.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2K Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2K Public Audit Package
 
 `eval/bea_v1_haae_r2k_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2k_public_audit_package/bea_v1_haae_r2k_public_audit_package_report.json`。状态为 `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`，self-test `14/14`，HAAE-R2J checkpoint `71c9a2c`，R2J status `haae_r2j_harder_diversified_material_experiment_complete_r2k_public_audit_authorized`，R2J self-test 25/25。
 
@@ -11079,7 +11079,7 @@ R2K 锁定 R2J public readback：separation signal true，`rank_spread_bucket=sp
 
 R2K 只授权 BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight 作为 public design/decision。它不授权 execution、CI、retrieval、new material generation、runtime/default changes、BEA-v1-A/P5、method-winner claims、scaling claims 或 raw publication。参见 `docs/zh/bea-v1-haae-r2k-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight
 
 `eval/bea_v1_haae_r2l_next_step_decision_mechanism_preflight.py` 生成 `artifacts/bea_v1_haae_r2l_next_step_decision_mechanism_preflight/bea_v1_haae_r2l_next_step_decision_mechanism_preflight_report.json`。状态为 `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`，self-test `14/14`，HAAE-R2K checkpoint `99600db`，R2K status `haae_r2k_public_audit_package_complete_r2l_next_step_decision_authorized`。
 
@@ -11089,7 +11089,7 @@ R2L 记录 R2J/R2K produced separation signal but no method/default/scaling clai
 
 R2L 只授权 BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition；R2M next only R2N public audit。R2L 保持 public-only，不读取 private roots/material、source repos、raw fixture rows、CI/network/provider/clone、scheduler/HAAE/selector、retrieval/source scan/runtime，也不提出 method/default/scaling claims。参见 `docs/zh/bea-v1-haae-r2l-next-step-decision-mechanism-preflight.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2M: Path-Prior Separation Mechanism Decomposition
+## 2026-07-03 — BEA-v1-HAAE-R2M: Path-Prior Separation Mechanism Decomposition
 
 `eval/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition.py` 生成 `artifacts/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition/bea_v1_haae_r2m_path_prior_separation_mechanism_decomposition_report.json`。默认状态为 `haae_r2m_unavailable_no_explicit_r2i_private_material_root`；pass status 为 `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`；self-test `19/19`；HAAE-R2L checkpoint `0dd357e`；R2L status `haae_r2l_next_step_decision_mechanism_preflight_complete_r2m_mechanism_decomposition_authorized`。
 
@@ -11099,7 +11099,7 @@ R2M 只在 opt-in 下读取 explicit existing R2I private material root，并输
 
 R2M 不写 private rows，不执行 generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。它不发布 raw paths/tokens/extensions/filenames/directories/task ids/queries/snippets/labels/exact ranks/scores/hashes/line ranges/per-task values，也不提出 method/default/scaling claim。下一步是 public audit 和 robustness planning，不是 default promotion。R2M 只授权 BEA-v1-HAAE-R2N Public Audit Package。参见 `docs/zh/bea-v1-haae-r2m-path-prior-separation-mechanism-decomposition.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2N: Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2N: Public Audit Package
 
 `eval/bea_v1_haae_r2n_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2n_public_audit_package/bea_v1_haae_r2n_public_audit_package_report.json`。状态为 `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`，self-test `14/14`，HAAE-R2M checkpoint `7a3d6dc`，R2M status `haae_r2m_path_prior_separation_mechanism_decomposition_complete_r2n_public_audit_authorized`。
 
@@ -11109,7 +11109,7 @@ R2N 打包 public R2M conclusion：`path_structure_prior`，medium_high confiden
 
 R2N 只授权 BEA-v1-HAAE-R2O Robustness Preflight Design，not execution/CI/new material generation yet。R2N 只读取 public R2M artifacts/docs；不读取 private root/material，不从 private rows recompute，不执行 generation、retrieval/source scan/runtime、CI/network/provider/scheduler/selector，也不 raw publication。参见 `docs/zh/bea-v1-haae-r2n-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2O: Robustness Preflight Design
+## 2026-07-03 — BEA-v1-HAAE-R2O: Robustness Preflight Design
 
 `eval/bea_v1_haae_r2o_robustness_preflight_design.py` 生成 `artifacts/bea_v1_haae_r2o_robustness_preflight_design/bea_v1_haae_r2o_robustness_preflight_design_report.json`。状态为 `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`，self-test `14/14`，HAAE-R2N checkpoint `a9066d2`，R2N status `haae_r2n_public_audit_package_complete_r2o_robustness_preflight_design_authorized`。
 
@@ -11119,7 +11119,7 @@ R2O 保留 mechanism context `path_structure_prior` 与 fixture path cues + cont
 
 R2O 是 not execution/CI/new material generation in R2O，并且 no method/default/scaling claim。它只读取 public artifacts/docs，不执行 private reads/writes、material generation、execution/recompute/retrieval/runtime/source scan/CI/network/provider/scheduler/selector。参见 `docs/zh/bea-v1-haae-r2o-robustness-preflight-design.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2P: Path-Cue Robustness Material Generation
+## 2026-07-03 — BEA-v1-HAAE-R2P: Path-Cue Robustness Material Generation
 
 `eval/bea_v1_haae_r2p_path_cue_robustness_material_generation.py` 生成 `artifacts/bea_v1_haae_r2p_path_cue_robustness_material_generation/bea_v1_haae_r2p_path_cue_robustness_material_generation_report.json`。默认状态为 `haae_r2p_unavailable_no_explicit_path_cue_robustness_material_generation_opt_in`；pass status 为 `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`；self-test `26/26`；HAAE-R2O checkpoint `4ffc9eb`；R2O status `haae_r2o_robustness_preflight_design_complete_r2p_path_cue_robustness_material_generation_authorized`。
 
@@ -11129,7 +11129,7 @@ R2P 要求 explicit opt-in，target 20 tasks，candidate depth 40，row cap 2000
 
 R2P computes no experiment metrics in R2P，并且只授权 BEA-v1-HAAE-R2Q Public Audit Package。它只读取 committed public R14 medium fixture，只在 explicit operator root 下写 private rows，并发布 aggregate-only public artifact。参见 `docs/zh/bea-v1-haae-r2p-path-cue-robustness-material-generation.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2Q Path-Cue Robustness Material Public Audit Package
 
 `eval/bea_v1_haae_r2q_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2q_public_audit_package/bea_v1_haae_r2q_public_audit_package_report.json`。状态为 `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`，self-test `19/19`，HAAE-R2P checkpoint `1f721dd`，R2P status `haae_r2p_path_cue_robustness_material_generation_complete_r2q_public_audit_authorized`。
 
@@ -11139,7 +11139,7 @@ R2Q 只通过 public artifact 审计 R2P material properties：explicit opt-in�
 
 R2Q 只授权 BEA-v1-HAAE-R2R Path-Cue Robustness Experiment 读取 existing R2P private material with explicit root。Boundary: no new material generation/CI/retrieval/runtime/source scan/default/method/scaling。参见 `docs/zh/bea-v1-haae-r2q-path-cue-robustness-material-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2R Path-Cue Robustness Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2R Path-Cue Robustness Experiment
 
 `eval/bea_v1_haae_r2r_path_cue_robustness_experiment.py` 以 explicit mode 读取 existing R2P private material，生成 `artifacts/bea_v1_haae_r2r_path_cue_robustness_experiment/bea_v1_haae_r2r_path_cue_robustness_experiment_report.json`。Default status 为 `haae_r2r_unavailable_no_explicit_r2p_private_material_root`；result status 为 `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`。Self-test 为 `30/30`。Source lock 为 HAAE-R2Q checkpoint `a9f5477`，状态 `haae_r2q_public_audit_package_complete_r2r_local_robustness_experiment_authorized`。
 
@@ -11149,7 +11149,7 @@ Public readback markers: explicit private material root; existing R2P material o
 
 Boundary: no method/default/scaling。R2R 不执行 private writes、new material/candidate generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector 或 raw exact-value publication。R2R 只授权 BEA-v1-HAAE-R2S Public Audit Package。参见 `docs/zh/bea-v1-haae-r2r-path-cue-robustness-experiment.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2S Path-Cue Robustness Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package/bea_v1_haae_r2s_path_cue_robustness_experiment_public_audit_package_report.json`。状态为 `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`，self-test `19/19`，HAAE-R2R checkpoint `7efc348`，R2R status `haae_r2r_path_cue_robustness_experiment_complete_r2s_public_audit_authorized_artifact_likely`。
 
@@ -11159,7 +11159,7 @@ R2S 确认 self-test 30/30，`path_cue_artifact_likely`，original path_prior to
 
 R2S is not execution/generation/CI。它只授权 BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision，不授权 execution、CI、retrieval、new material generation、default/runtime、method winner 或 scaling claim。参见 `docs/zh/bea-v1-haae-r2s-path-cue-robustness-experiment-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision
+## 2026-07-03 — BEA-v1-HAAE-R2T Non-Path-Cue Pivot Decision
 
 `eval/bea_v1_haae_r2t_non_path_cue_pivot_decision.py` 生成 `artifacts/bea_v1_haae_r2t_non_path_cue_pivot_decision/bea_v1_haae_r2t_non_path_cue_pivot_decision_report.json`。状态为 `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`，self-test `14/14`，HAAE-R2S checkpoint `8d8d19c`，R2S status `haae_r2s_path_cue_robustness_experiment_public_audit_package_complete_r2t_non_path_cue_pivot_decision_authorized`。
 
@@ -11169,7 +11169,7 @@ R2T 使用 `path_cue_artifact_likely` 结果，将 scale current path-prior reje
 
 R2T 只授权 BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke，要求 target 20、candidate depth 40、row cap 20000、explicit opt-in、private output root、public aggregate-only output。R2T is not execution/generation/CI，并且 no method/default/scaling claim。参见 `docs/zh/bea-v1-haae-r2t-non-path-cue-pivot-decision.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke
+## 2026-07-03 — BEA-v1-HAAE-R2U Content-Identifier Evidence Material Generation Smoke
 
 `eval/bea_v1_haae_r2u_content_identifier_material_generation.py` 以 explicit mode 生成 `artifacts/bea_v1_haae_r2u_content_identifier_material_generation/bea_v1_haae_r2u_content_identifier_material_generation_report.json`。默认状态仍为 `haae_r2u_unavailable_no_explicit_content_identifier_material_generation_opt_in`；explicit pass status 为 `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`，self-test `24/24`，HAAE-R2T checkpoint `bc58cf7`，R2T status `haae_r2t_non_path_cue_pivot_decision_complete_r2u_content_identifier_material_generation_authorized`。
 
@@ -11179,7 +11179,7 @@ R2U 要求 explicit opt-in、target 20、candidate depth 40、row cap 20000，�
 
 R2U 只授权 BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package。它只在 explicit operator root 下写 private rows，public output 为 aggregate-only，并且 no experiment metrics in R2U。参见 `docs/zh/bea-v1-haae-r2u-content-identifier-material-generation.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package
 
 `eval/bea_v1_haae_r2v_content_identifier_material_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2v_content_identifier_material_public_audit_package/bea_v1_haae_r2v_content_identifier_material_public_audit_package_report.json`。状态为 `haae_r2v_content_identifier_material_public_audit_package_complete_r2w_material_experiment_authorized`，self-test `14/14`，HAAE-R2U checkpoint `bb95f80`，R2U status `haae_r2u_content_identifier_material_generation_complete_r2v_public_audit_authorized`。
 
@@ -11189,7 +11189,7 @@ R2V audit target 20，depth 40，row cap 20000，seven rank sources，no path to
 
 R2V 只授权 BEA-v1-HAAE-R2W Content-Identifier Material Experiment，读取 existing R2U private material with explicit private root。Boundary: no new material generation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/BEA-v1-A/P5/default/method/scaling/raw publication。参见 `docs/zh/bea-v1-haae-r2v-content-identifier-material-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2W Content-Identifier Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2W Content-Identifier Material Experiment
 
 `eval/bea_v1_haae_r2w_content_identifier_material_experiment.py` 生成 `artifacts/bea_v1_haae_r2w_content_identifier_material_experiment/bea_v1_haae_r2w_content_identifier_material_experiment_report.json`。Default status 为 `haae_r2w_unavailable_no_explicit_r2u_private_material_root`；explicit pass status 为 `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present` or `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_weak_or_no_signal`，self-test `25/25`，HAAE-R2V checkpoint `b8522de`，R2V status `haae_r2v_content_identifier_material_public_audit_package_complete_r2w_material_experiment_authorized`，R2U source checkpoint bb95f80。
 
@@ -11199,7 +11199,7 @@ R2W 要求 explicit private material root，并且只读取 existing R2U materia
 
 R2W 只授权 BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package。Boundary: no generation/candidate creation/retrieval/runtime/source scan/CI/network/provider/scheduler/selector/default/method/scaling。参见 `docs/zh/bea-v1-haae-r2w-content-identifier-material-experiment.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2X Content-Identifier Material Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package/bea_v1_haae_r2x_content_identifier_material_experiment_public_audit_package_report.json`。状态为 `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`，self-test `19/19`，HAAE-R2W checkpoint `1f91567`，R2W status `haae_r2w_content_identifier_material_experiment_complete_r2x_public_audit_authorized_signal_present`。
 
@@ -11209,7 +11209,7 @@ R2X locks R2V checkpoint b8522de，R2U checkpoint bb95f80，`signal_present`，`
 
 R2X 只授权 BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design，用于决定下一步应做 robustness 还是 real-file-material acquisition；no execution directly。R2X 只读取 public R2W artifact/docs，不读取 private root，不 recompute metrics，不执行 material/candidate generation、retrieval/runtime/source scan、CI/network/provider/scheduler/selector，也不发布 exact metric/raw publication。参见 `docs/zh/bea-v1-haae-r2x-content-identifier-material-experiment-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design
+## 2026-07-03 — BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design
 
 `eval/bea_v1_haae_r2y_content_identifier_next_step_decision_design.py` 生成 `artifacts/bea_v1_haae_r2y_content_identifier_next_step_decision_design/bea_v1_haae_r2y_content_identifier_next_step_decision_design_report.json`。状态为 `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`，self-test `19/19`，HAAE-R2X checkpoint `afd86c4`，R2X status `haae_r2x_content_identifier_material_experiment_public_audit_package_complete_r2y_decision_design_authorized`。
 
@@ -11219,7 +11219,7 @@ R2Y 记录 R2W/R2X `signal_present/spread_high` is useful but not real-file evid
 
 R2Z 是 public-only design/preflight。R2Z preflight authorized true；R2Z execution/private/candidate generation/source scan/CI false。R2Y 只读取 public artifacts，不执行 private/root read、execution、recompute、generation、retrieval、CI、network、source scan、provider call、scheduler、selector 或 method/default/scaling claim。参见 `docs/zh/bea-v1-haae-r2y-content-identifier-next-step-decision-design.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight
 
 `eval/bea_v1_haae_r2z_real_file_candidate_material_preflight.py` 生成 `artifacts/bea_v1_haae_r2z_real_file_candidate_material_preflight/bea_v1_haae_r2z_real_file_candidate_material_preflight_report.json`。状态为 `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`，self-test `25/25`，HAAE-R2Y checkpoint `b56462a`，R2Y status `haae_r2y_content_identifier_next_step_decision_design_complete_r2z_real_file_candidate_material_preflight_authorized`。
 
@@ -11229,7 +11229,7 @@ R2Z 定义 BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke 的 b
 
 R2Z performs no execution/private/candidate generation/source scan/CI in R2Z。future private rows may contain real file candidate references but not R2Z。Boundary remains no method/default/scaling。参见 `docs/zh/bea-v1-haae-r2z-real-file-candidate-material-preflight.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke
+## 2026-07-03 — BEA-v1-HAAE-R2AA Actual Explicit Local Real-File Material Smoke
 
 `eval/bea_v1_haae_r2aa_actual_explicit_local_real_file_material_smoke.py` 实现 safe default mode 与 explicit local/manual real-file material generation。默认状态为 `haae_r2aa_unavailable_no_explicit_real_file_material_smoke_opt_in`；pass status 为 `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`；self-test `26/26`；HAAE-R2Z checkpoint `a763a84`；R2Z status `haae_r2z_real_file_candidate_material_preflight_complete_r2aa_actual_explicit_local_real_file_material_smoke_authorized`。
 
@@ -11239,7 +11239,7 @@ explicit opt-in required with operator public corpus manifest/allowlist，target
 
 R2AA 只在 explicit private root 下写 private real-file candidate rows。不授权 network/clone/CI/provider/retrieval runtime/OpenLocus runtime/scheduler/selector/BEA-v1-A/P5/default/method/scaling/experiment metrics。R2AA 只授权 BEA-v1-HAAE-R2AB Real-File Material Public Audit Package。参见 `docs/zh/bea-v1-haae-r2aa-actual-explicit-local-real-file-material-smoke.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AB Real-File Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AB Real-File Material Public Audit Package
 
 `eval/bea_v1_haae_r2ab_real_file_material_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2ab_real_file_material_public_audit_package/bea_v1_haae_r2ab_real_file_material_public_audit_package_report.json`。状态为 `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`，self-test `15/15`，HAAE-R2AA checkpoint `f325b65`，R2AA status `haae_r2aa_actual_explicit_local_real_file_material_smoke_complete_r2ab_public_audit_authorized`，R2AA self-test 26/26，R2Z source checkpoint `a763a84`。
 
@@ -11249,7 +11249,7 @@ R2AB 打包 target20，depth40，source_file_count_bucket count_21_to_50，sourc
 
 R2AB 只授权 BEA-v1-HAAE-R2AC Actual Real-File Material Experiment 读取 existing R2AA private material with explicit private root。Boundary: no new material generation/retrieval/runtime/source scan/CI/network/provider/clone/broad scan/default/method/scaling/raw publication。参见 `docs/zh/bea-v1-haae-r2ab-real-file-material-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AC Actual Real-File Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2AC Actual Real-File Material Experiment
 
 `eval/bea_v1_haae_r2ac_actual_real_file_material_experiment.py` 生成 `artifacts/bea_v1_haae_r2ac_actual_real_file_material_experiment/bea_v1_haae_r2ac_actual_real_file_material_experiment_report.json`。默认状态为 `haae_r2ac_unavailable_no_explicit_r2aa_private_material_root`；explicit pass statuses 为 `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present` / `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_weak_or_no_signal`；self-test `25/25`；HAAE-R2AB checkpoint `52a23da`；R2AB status `haae_r2ab_real_file_material_public_audit_package_complete_r2ac_real_file_material_experiment_authorized`；R2AA checkpoint `f325b65`。
 
@@ -11272,7 +11272,7 @@ R2AC readback markers: haae_r2ac_actual_real_file_material_experiment_complete_r
 
 R2AC result: `signal_present`; symbol_name_overlap and content_identifier_fusion are high-bucket (`mrr_high`, top1/top20 `count_11_to_20`), query_identifier_overlap/lexical_bm25_like are medium, and control_baseline is low (`mrr_low`, top1 `count_0`). This is real-file material signal evidence, not method/default/scaling claim.
 
-## 2026-07-01 — BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2ad_actual_real_file_material_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2ad_actual_real_file_material_experiment_public_audit_package/bea_v1_haae_r2ad_actual_real_file_material_experiment_public_audit_package_report.json`。状态为 `haae_r2ad_actual_real_file_material_experiment_public_audit_package_complete_r2ae_signal_robustness_scale_decision_authorized`，self-test `15/15`，HAAE-R2AC checkpoint `6f189e4`，R2AC status `haae_r2ac_actual_real_file_material_experiment_complete_r2ad_public_audit_authorized_signal_present`，R2AC self-test 25/25，R2AB checkpoint `52a23da`，R2AA checkpoint `f325b65`。
 
@@ -11282,7 +11282,7 @@ R2AD 审计 public R2AC signal：signal_present，aggregate-only bucket metrics�
 
 R2AD 是 public-only。它只读取 public R2AC artifact/docs，不读取 private root，不从 private material recompute，不执行 material/candidate generation、source scan、retrieval/OpenLocus/runtime、CI/network/provider/clone，也不 raw publication。R2AD 只授权 BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision，作为 public decision/preflight only，not direct CI/scale/execution。参见 `docs/zh/bea-v1-haae-r2ad-actual-real-file-material-experiment-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AE: Real-File Signal Robustness/Scale Decision
+## 2026-07-03 — BEA-v1-HAAE-R2AE: Real-File Signal Robustness/Scale Decision
 
 `eval/bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision.py` 生成 `artifacts/bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision/bea_v1_haae_r2ae_real_file_signal_robustness_scale_decision_report.json`。状态为 `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`，self-test `15/15`，HAAE-R2AD checkpoint `a17ae7e`，R2AD status `haae_r2ad_actual_real_file_material_experiment_public_audit_package_complete_r2ae_signal_robustness_scale_decision_authorized`。
 
@@ -11292,7 +11292,7 @@ Decision：real-file signal is promising but not robust。R2AE reject/defer dire
 
 R2AE 只读取 public artifacts/docs。它 no private reads，no execution，no material/candidate generation，no recompute，no retrieval/OpenLocus/runtime，no source scan，no CI/network/provider/clone，no scheduler/selector，并且 no method/default/scaling claim。参见 `docs/zh/bea-v1-haae-r2ae-real-file-signal-robustness-scale-decision.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AF: Real-File Signal Robustness Material Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2AF: Real-File Signal Robustness Material Preflight
 
 `eval/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight.py` 生成 `artifacts/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight/bea_v1_haae_r2af_real_file_signal_robustness_material_preflight_report.json`。状态为 `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`，self-test `26/26`，HAAE-R2AE checkpoint `4be50bc`，R2AE status `haae_r2ae_real_file_signal_robustness_scale_decision_complete_r2af_robustness_material_preflight_authorized`。
 
@@ -11302,7 +11302,7 @@ Decision：R2AF 设计 R2AG explicit local bounded robustness material generatio
 
 R2AF 只读取 committed public R2AE artifact/docs。它 no private reads/writes，no execution，no source scan，no candidate/material generation，且 no CI/scale/default/method claim。它 authorize only R2AG material generation，no R2AH experiment。参见 `docs/zh/bea-v1-haae-r2af-real-file-signal-robustness-material-preflight.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation
+## 2026-07-03 — BEA-v1-HAAE-R2AG Explicit Local Bounded Robustness Material Generation
 
 `eval/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation.py` 生成 `artifacts/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation/bea_v1_haae_r2ag_explicit_local_bounded_robustness_material_generation_report.json`。状态为 `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`，default status `haae_r2ag_unavailable_no_explicit_material_generation_opt_in`，self-test `28/28`，HAAE-R2AF checkpoint `bad2b33`，R2AF status `haae_r2af_real_file_signal_robustness_material_preflight_complete_r2ag_material_generation_authorized`。
 
@@ -11312,7 +11312,7 @@ R2AG 是 opt-in only。default mode: no private read/write/source scan/material 
 
 Public report 是 aggregate-only public artifact，no experiment metrics。Stop/go authorize only R2AH public audit/package，no R2AH experiment。参见 `docs/zh/bea-v1-haae-r2ag-explicit-local-bounded-robustness-material-generation.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AH Robustness Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AH Robustness Material Public Audit Package
 
 `eval/bea_v1_haae_r2ah_robustness_material_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2ah_robustness_material_public_audit_package/bea_v1_haae_r2ah_robustness_material_public_audit_package_report.json`。状态为 `haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized`，self-test `25/25`，HAAE-R2AG checkpoint `a0ac3b3`，R2AG status `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`。
 
@@ -11327,7 +11327,7 @@ R2AH 只授权 BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existi
 
 R2AH readback marker: no experiment metrics in R2AH; R2AI aggregate-only experiment metrics authorized; explicit local robustness experiment over existing R2AG private material; no CI/network/new generation/default/method/scale/raw publication.
 
-## 2026-07-01 — BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material
+## 2026-07-03 — BEA-v1-HAAE-R2AI Explicit Local Robustness Experiment Over Existing R2AG Material
 
 `eval/bea_v1_haae_r2ai_explicit_local_robustness_experiment.py` 生成 default artifact `artifacts/bea_v1_haae_r2ai_explicit_local_robustness_experiment/bea_v1_haae_r2ai_explicit_local_robustness_experiment_report.json`。Default status 为 `haae_r2ai_unavailable_no_explicit_existing_r2ag_material_opt_in`，explicit pass status 为 `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact`，self-test `26/26`，R2AH checkpoint `83d7997`，R2AH status `haae_r2ah_robustness_material_public_audit_package_complete_r2ai_explicit_experiment_authorized`，inherited R2AG checkpoint `a0ac3b3`，R2AG status `haae_r2ag_explicit_local_bounded_robustness_material_generation_complete_r2ah_public_audit_authorized`。
 
@@ -11337,7 +11337,7 @@ R2AI default mode no private read/write/source scan/material generation/metrics�
 
 Stop/go 是 R2AJ public audit only for BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package。不授权 CI/network/new generation/default/method/scale/raw publication。参见 `docs/zh/bea-v1-haae-r2ai-explicit-local-robustness-experiment.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AJ Robustness Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2aj_robustness_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2aj_robustness_experiment_public_audit_package/bea_v1_haae_r2aj_robustness_experiment_public_audit_package_report.json`。状态为 `haae_r2aj_robustness_experiment_public_audit_package_complete_r2ak_decision_authorized_brittle_or_artifact`，self-test `19/19`，R2AI checkpoint `14edd49`，R2AI status `haae_r2ai_explicit_local_robustness_experiment_complete_r2aj_public_audit_authorized_brittle_or_artifact`。
 
@@ -11347,7 +11347,7 @@ R2AJ read only R2AI public artifact/docs。它 no private roots or /tmp reads、
 
 Stop/go 只授权 BEA-v1-HAAE-R2AK Robustness Failure Decision Package，用于 decide close route or mechanism analysis or new signal family。R2AJ no execution/material generation/private read/CI/scale/retrieval/runtime/default/method。参见 `docs/zh/bea-v1-haae-r2aj-robustness-experiment-public-audit-package.md`。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AK Robustness Failure Decision Package
+## 2026-07-03 — BEA-v1-HAAE-R2AK Robustness Failure Decision Package
 
 `eval/bea_v1_haae_r2ak_robustness_failure_decision_package.py` 生成 `artifacts/bea_v1_haae_r2ak_robustness_failure_decision_package/bea_v1_haae_r2ak_robustness_failure_decision_package_report.json`。状态为 `haae_r2ak_robustness_failure_decision_complete_r2al_new_signal_family_public_design_authorized_route_closed`，self-test `22/22`，R2AJ checkpoint `a00a334`，R2AJ status `haae_r2aj_robustness_experiment_public_audit_package_complete_r2ak_decision_authorized_brittle_or_artifact`。Source guard：R2AJ self-test 19/19 和 forbidden_scan pass。
 
@@ -11357,7 +11357,7 @@ Decision fields：decision_bucket = close_current_real_file_signal_route，route
 
 R2AK 只授权 BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight。它 no execution/material generation/private read/CI/scale/retrieval/runtime/default/method/raw authorization。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight
 
 `eval/bea_v1_haae_r2al_new_signal_family_public_design_preflight.py` 生成 `artifacts/bea_v1_haae_r2al_new_signal_family_public_design_preflight/bea_v1_haae_r2al_new_signal_family_public_design_preflight_report.json`。状态为 `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`，self-test `28/28`，R2AK checkpoint `36fc4fa`，R2AK status `haae_r2ak_robustness_failure_decision_complete_r2al_new_signal_family_public_design_authorized_route_closed`，R2AK self-test 22/22，route closed `r2ac_r2ai_single_rank_content_path_signal`，robustness failure `brittle_or_artifact`。
 
@@ -11367,7 +11367,7 @@ R2AL 选择 `evidence_pair_support_complementarity`，从 isolated single-candid
 
 Next is BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight。R2AM public-only preflight 可定义 schema/allowlist/bounds/private-output contract。R2AN generation requires separate authorization。There are no method/default/scale/winner/validated-signal claims。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight
 
 `eval/bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight.py` 生成 `artifacts/bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight/bea_v1_haae_r2am_evidence_pair_support_material_generation_preflight_report.json`。状态为 `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`，self-test `26/26`，R2AL checkpoint `39800bf`，R2AL status `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`，R2AL self-test 28/28，selected family `evidence_pair_support_complementarity`。
 
@@ -11377,7 +11377,7 @@ R2AM 指定 R2AN phase BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material 
 
 bounded public source allowlist required；schema `bea_v1_haae_r2an_evidence_pair_support_material_generation_v1`；gold private eval only；single-rank content/path signal forbidden；material QA only；next audit BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package；no method/default/scale/winner/validated-signal claims。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation
+## 2026-07-03 — BEA-v1-HAAE-R2AN Evidence-Pair Support Explicit Material Generation
 
 `eval/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation.py` 生成 default no-op artifact `artifacts/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation/bea_v1_haae_r2an_evidence_pair_support_explicit_material_generation_report.json`。Default status 为 `haae_r2an_unavailable_no_explicit_material_generation_opt_in`，explicit success status 为 `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`，self-test `27/27`，R2AM checkpoint `b243924`，R2AM status `haae_r2am_evidence_pair_support_material_generation_preflight_complete_r2an_explicit_material_generation_authorized`，R2AM self-test 26/26，selected family `evidence_pair_support_complementarity`。
 
@@ -11387,7 +11387,7 @@ default mode no-op。explicit mode requires private output root, public corpus m
 
 Schema `bea_v1_haae_r2an_evidence_pair_support_material_generation_v1`；gold private eval only；single-rank content/path signal forbidden；pair/setwise oriented；material QA only；aggregate-only public artifact；next BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AO Evidence-Pair Support Material Public Audit Package
 
 `eval/bea_v1_haae_r2ao_evidence_pair_support_material_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2ao_evidence_pair_support_material_public_audit_package/bea_v1_haae_r2ao_evidence_pair_support_material_public_audit_package_report.json`。状态为 `haae_r2ao_evidence_pair_support_material_public_audit_package_complete_r2ap_explicit_experiment_authorized`，self-test `25/25`，R2AN checkpoint `93bba5f`，R2AN status `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`，R2AN self-test 27/27，R2AM b243924。
 
@@ -11397,7 +11397,7 @@ Audit 确认 8 schema groups present、6 pair families present、target_20、evi
 
 Stop/go 只授权 BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment。R2AO 不授权 no new material generation/source scan/CI/network/runtime/default/method/scale。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment
+## 2026-07-03 — BEA-v1-HAAE-R2AP Evidence-Pair Support Explicit Local Material Experiment
 
 `eval/bea_v1_haae_r2ap_evidence_pair_support_explicit_local_material_experiment.py` 生成 explicit result artifact。Default status 为 `haae_r2ap_unavailable_no_explicit_experiment_opt_in`，explicit result status 为 `haae_r2ap_explicit_local_material_experiment_complete_r2aq_public_audit_authorized_support_signal`，self-test `26/26`，R2AO checkpoint `5cfa8d3`，R2AO status `haae_r2ao_evidence_pair_support_material_public_audit_package_complete_r2ap_explicit_experiment_authorized`，inherited R2AN checkpoint `93bba5f`，inherited R2AN status `haae_r2an_evidence_pair_support_explicit_material_generation_complete_r2ao_public_material_audit_authorized`，family evidence_pair_support_complementarity。
 
@@ -11407,7 +11407,7 @@ Default mode no-op。Explicit mode requires existing R2AN private material root 
 
 Stop/go only BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package。R2AP no material generation、source scan、recompute、CI/network/runtime/retrieval、default/method/scale/raw claims。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package
+## 2026-07-03 — BEA-v1-HAAE-R2AQ Evidence-Pair Support Experiment Public Audit Package
 
 `eval/bea_v1_haae_r2aq_evidence_pair_support_experiment_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2aq_evidence_pair_support_experiment_public_audit_package/bea_v1_haae_r2aq_evidence_pair_support_experiment_public_audit_package_report.json`。状态为 `haae_r2aq_evidence_pair_support_experiment_public_audit_package_complete_r2ar_next_step_decision_authorized_support_signal`，self-test `28/28`，R2AP checkpoint `87ea9de`，R2AP status `haae_r2ap_explicit_local_material_experiment_complete_r2aq_public_audit_authorized_support_signal`，R2AP self-test 26/26，forbidden scan pass，inherited R2AO 5cfa8d3 and R2AN 93bba5f。
 
@@ -11417,7 +11417,7 @@ R2AQ 是 public-only audit：no private roots，no recompute experiment metrics�
 
 Stop/go 只授权 BEA-v1-HAAE-R2AR Evidence-Pair Support Next-Step Decision Package；no execution。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AR Evidence-Pair Support Next-Step Decision Package
+## 2026-07-03 — BEA-v1-HAAE-R2AR Evidence-Pair Support Next-Step Decision Package
 
 `eval/bea_v1_haae_r2ar_evidence_pair_support_next_step_decision_package.py` 生成 `artifacts/bea_v1_haae_r2ar_evidence_pair_support_next_step_decision_package/bea_v1_haae_r2ar_evidence_pair_support_next_step_decision_package_report.json`。状态为 `haae_r2ar_evidence_pair_support_next_step_decision_complete_r2as_mechanism_decomposition_public_design_authorized`，self-test `29/29`，source locks R2AQ 77eab19，inherited R2AP 87ea9de，R2AO 5cfa8d3，R2AN 93bba5f，inherited result support_signal and support_separation_high。
 
@@ -11427,7 +11427,7 @@ Decision：select only BEA-v1-HAAE-R2AS Evidence-Pair Support Mechanism Decompos
 
 R2AR 是 public-only decision/design：no private roots、no recompute metrics、no material generation、no source/candidate/corpus scan、no method/default/winner/scale claim。
 
-## 2026-07-01 — BEA-v1-HAAE-R2AS Evidence-Pair Support Mechanism Decomposition Public Design Preflight
+## 2026-07-03 — BEA-v1-HAAE-R2AS Evidence-Pair Support Mechanism Decomposition Public Design Preflight
 
 `eval/bea_v1_haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight.py` 生成 `artifacts/bea_v1_haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight/bea_v1_haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_report.json`。状态为 `haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_complete_r2at_explicit_private_mechanism_decomposition_authorized`，self-test `34/34`，source locks R2AR 7c36376、R2AQ 77eab19、R2AP 87ea9de、R2AO 5cfa8d3、R2AN 93bba5f，inherited result support_signal and support_separation_high。
 
@@ -11447,7 +11447,7 @@ R2AS readback marker: BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Priv
 
 R2AS readback marker: read existing private material; mechanism-decomposition metrics.
 
-## 2026-07-01 — BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition
+## 2026-07-03 — BEA-v1-HAAE-R2AT Evidence-Pair Support Explicit Local Private Mechanism Decomposition
 
 `eval/bea_v1_haae_r2at_evidence_pair_support_explicit_private_mechanism_decomposition.py` 生成 `artifacts/bea_v1_haae_r2at_evidence_pair_support_explicit_private_mechanism_decomposition/bea_v1_haae_r2at_evidence_pair_support_explicit_private_mechanism_decomposition_report.json`。Default status 为 `haae_r2at_unavailable_no_explicit_private_mechanism_decomposition_opt_in`，explicit status prefix 为 `haae_r2at_explicit_private_mechanism_decomposition_complete_r2au_public_audit_authorized`，self-test `35/35`，R2AS checkpoint `36e64d6`，R2AS status `haae_r2as_evidence_pair_support_mechanism_decomposition_public_design_preflight_complete_r2at_explicit_private_mechanism_decomposition_authorized`，source locks R2AS 36e64d6、R2AR 7c36376、R2AQ 77eab19、R2AP 87ea9de、R2AO 5cfa8d3、R2AN 93bba5f，inherited result support_signal and support_separation_high。
 

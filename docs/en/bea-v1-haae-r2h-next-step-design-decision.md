@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2H Next-Step Design Decision
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2H Next-Step Design Decision is a public-only design decision over
 the R2G public audit artifact. It performs no private root read, material

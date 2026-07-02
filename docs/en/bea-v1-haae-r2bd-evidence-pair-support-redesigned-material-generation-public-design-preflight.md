@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight is public-only and non-executing. It converts R2BC redesign requirements into a fail-closed contract for future R2BE explicit local redesigned material generation.
 

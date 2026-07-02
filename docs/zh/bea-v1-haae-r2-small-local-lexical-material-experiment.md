@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2 Small Local Lexical Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2 是一个 tiny local experiment，只使用已经存在的 R1E private
 material。它不创建或 rematerialize candidates，不扫描 source code，不运行 OpenLocus

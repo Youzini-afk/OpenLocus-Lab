@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2V Content-Identifier Material Public Audit Package is a public-only
 audit of the committed R2U aggregate artifact. It reads no private root or

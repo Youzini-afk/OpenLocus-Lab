@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2O Robustness Preflight Design
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2O Robustness Preflight Design 是 R2N 之后的 public-only design
 package。它只读取 public artifacts/docs，不读写 private material，不生成 material，

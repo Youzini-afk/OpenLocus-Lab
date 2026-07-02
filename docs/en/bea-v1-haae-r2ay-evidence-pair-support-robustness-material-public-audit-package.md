@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package is a public-only audit. It reads only R2AX public artifact and does not read a private root, `/tmp`, private material, diagnostics, source/candidate/corpus, runtime/OpenLocus/retrieval, CI, network, provider, or clone paths.
 

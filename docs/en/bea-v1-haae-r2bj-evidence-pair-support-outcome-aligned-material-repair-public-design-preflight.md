@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BJ Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight is public-only and non-executing. It does not read private roots or `/tmp`, private rows, repair/regenerate material, compute/recompute metrics, scan source/candidate/corpus, run runtime/retrieval/CI/network/provider/clone, publish raw/private/exact values, or make signal/method/default/winner/scale claims. R2BI gate/synthetic/readback exact integrity. R2BK broad source scan remains false; public allowlist only if explicit/bounded.
 

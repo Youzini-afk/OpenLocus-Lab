@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2R Path-Cue Robustness Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2R Path-Cue Robustness Experiment 已作为 explicit
 private-material-root experiment 完成。Default mode 仍然不读取 private，也不写 private。

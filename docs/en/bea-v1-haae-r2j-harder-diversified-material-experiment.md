@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2J Harder/Diversified Material Experiment
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2J Harder/Diversified Material Experiment evaluates existing R2I
 private material only when an operator supplies an explicit private material

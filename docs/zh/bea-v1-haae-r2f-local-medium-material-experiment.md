@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2F Local Medium Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2F Local Medium Material Experiment 从 operator-supplied R2D private
 material root 计算 aggregate metrics。默认模式不读取 / 写入 private，并返回

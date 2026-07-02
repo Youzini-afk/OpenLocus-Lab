@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2L Next-Step Decision / Mechanism Preflight is a public-only
 decision package after R2K. It reads committed public artifacts/docs only and

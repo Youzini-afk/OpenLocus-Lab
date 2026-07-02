@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Preflight 是 R2BB 之后的 public-only、non-executing redesign requirements package。它不读取 private roots/material，不 generate material，不 recompute metrics，不 scan source/candidate/corpus，不运行 runtime/retrieval/CI/network/provider/clone，也不发布 raw/exact/private values。
 

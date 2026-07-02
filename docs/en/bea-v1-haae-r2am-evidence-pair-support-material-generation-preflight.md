@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AM Evidence-Pair Support Material Generation Preflight is a public-only material-generation preflight. It locks R2AL checkpoint `39800bf`, status `haae_r2al_new_signal_family_public_design_preflight_complete_r2am_material_generation_preflight_authorized`, R2AL self-test 28/28, and selected family `evidence_pair_support_complementarity`.
 

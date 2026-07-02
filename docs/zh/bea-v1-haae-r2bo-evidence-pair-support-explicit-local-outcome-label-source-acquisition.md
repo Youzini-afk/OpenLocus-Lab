@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition status/execution consistency locked.
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition 支持 no private read 的 default mode，以及 explicit local label source acquisition。它读取 explicit R2BE private material root 和 operator-provided label source manifest，然后把 acquired label source groups 写入 explicit private output root。Public reporting 为 aggregate-only。 status/execution consistency locked.
 

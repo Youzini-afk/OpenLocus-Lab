@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AH Robustness Material Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AH Robustness Material Public Audit Package is a public-only audit after R2AG checkpoint `a0ac3b3`. It read only committed R2AG public artifact and performs no private root read, no recompute material, no experiment metrics, and no source/candidate scan.
 

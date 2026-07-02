@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2J Harder/Diversified Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2J Harder/Diversified Material Experiment 只在 operator 提供 explicit
 private material root 时评估 existing R2I private material。默认模式不读取或写入

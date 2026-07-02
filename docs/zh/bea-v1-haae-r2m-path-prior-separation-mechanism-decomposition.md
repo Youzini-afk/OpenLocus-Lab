@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2M Path-Prior Separation Mechanism Decomposition 只在 operator 显式
 opt in 时读取 explicit existing R2I private material root。默认模式不读取 private，并输出

@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2Z Real-File Candidate Material Preflight is a public-only
 design/preflight. It reads only public R2Y/R2X/R2W artifacts/docs and public

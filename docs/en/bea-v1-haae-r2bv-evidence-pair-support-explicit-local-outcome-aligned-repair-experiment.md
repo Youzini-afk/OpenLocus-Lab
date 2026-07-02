@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment supports default mode with no private read and explicit mode over existing R2BS repaired private material. It computes bucketized aggregate experiment metrics only. R2BV actual explicit result is inconclusive; support/control separation is evaluable with no separation claim; outcome-alignment coverage is present; no material generation; no source/candidate/corpus scan.
 

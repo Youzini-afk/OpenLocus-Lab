@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AL New Signal Family Public Design Preflight is a public-only design/preflight after R2AK checkpoint `36fc4fa`, status `haae_r2ak_robustness_failure_decision_complete_r2al_new_signal_family_public_design_authorized_route_closed`. R2AK self-test 22/22, forbidden scan pass, route closed for `r2ac_r2ai_single_rank_content_path_signal`, and robustness failure `brittle_or_artifact` are source-locked.
 

@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2I Harder/Diversified Local Material Generation Smoke 是 R2H 授权的
 bounded local/manual material generation smoke。默认模式不读取、写入或生成 private。

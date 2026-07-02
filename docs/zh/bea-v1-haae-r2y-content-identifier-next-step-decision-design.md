@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2Y Content-Identifier Next-Step Decision Design 是 public-only decision
 package。它只读取 public artifacts，不执行 private/root read、execution、recompute、

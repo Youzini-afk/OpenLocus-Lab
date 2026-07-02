@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2 Small Local Lexical Material Experiment
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2 is a tiny local experiment over existing R1E private material. It
 does not create or rematerialize candidates. It does not scan source code, run

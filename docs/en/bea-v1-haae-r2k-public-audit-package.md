@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2K Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2K Public Audit Package is a public-only audit/package of the R2J
 aggregate artifact. It reads no private root and performs no metric recompute

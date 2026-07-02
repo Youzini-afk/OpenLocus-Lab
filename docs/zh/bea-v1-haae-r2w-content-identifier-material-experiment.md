@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2W Content-Identifier Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2W Content-Identifier Material Experiment 只读取 explicit existing R2U
 private material root。Default mode 不读取 private，也不写入 private。

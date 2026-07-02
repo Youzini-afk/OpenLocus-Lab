@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AF Real-File Signal Robustness Material Preflight is a public-only design/preflight package after R2AE checkpoint `4be50bc`. It reads only committed public R2AE artifact/docs. It performs no private reads/writes, no execution, no source scan, and no candidate/material generation in R2AF.
 

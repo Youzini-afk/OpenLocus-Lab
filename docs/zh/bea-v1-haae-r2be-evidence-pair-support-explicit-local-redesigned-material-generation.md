@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation 已按 R2BD contract 完成 explicit local private material generation。default mode 仍不进行 private read/write/material generation/source scan，只写入 aggregate public no-op report。
 

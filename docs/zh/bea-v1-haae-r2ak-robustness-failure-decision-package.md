@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AK Robustness Failure Decision Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AK Robustness Failure Decision Package 是 public-only decision package。它锁定 R2AJ checkpoint `a00a334`，status `haae_r2aj_robustness_experiment_public_audit_package_complete_r2ak_decision_authorized_brittle_or_artifact`，并且只读取 committed R2AJ public artifact/docs，可选读取 public R2AI docs 作为 inherited facts。
 

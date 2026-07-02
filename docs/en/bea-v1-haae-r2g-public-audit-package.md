@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2G Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2G Public Audit Package is a public-only audit/package of the R2F
 aggregate artifact. It reads no private root and performs no recompute, material

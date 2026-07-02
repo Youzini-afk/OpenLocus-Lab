@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2C Local Medium Material Smoke Preflight 是下一步 explicit local
 medium material generation smoke 的 public-only preflight/package。它不创建 private

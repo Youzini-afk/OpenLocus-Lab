@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R1E Bounded Private Experiment Material Generation
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R1E 是第一个允许生成少量真实 private experiment material rows
 的 bounded 阶段。它只能 local/manual 执行。不在 CI 中运行，不使用 network、clone、

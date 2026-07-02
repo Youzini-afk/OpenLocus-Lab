@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package 是 public-only audit，只读取 R2AT public artifact only。不读取 private roots、private diagnostics、`/tmp` material 或 R2AN private material。
 

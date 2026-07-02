@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package is a public-only next-step decision/design. It reads only public artifacts and does not execute, read private roots/material/diagnostics, read `/tmp`, recompute metrics, generate material, scan source/candidate/corpus, run CI/network/provider/clone/runtime/OpenLocus/retrieval, publish raw rows/exact metrics, or make method/default/scale claims.
 

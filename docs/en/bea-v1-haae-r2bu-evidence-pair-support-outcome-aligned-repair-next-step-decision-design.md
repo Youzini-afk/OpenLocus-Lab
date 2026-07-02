@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package is public-only and non-executing. It reads public artifacts only and does not read private roots, generate material, compute metrics, scan source/candidate/corpus, or claim signal/method/default/scale.
 

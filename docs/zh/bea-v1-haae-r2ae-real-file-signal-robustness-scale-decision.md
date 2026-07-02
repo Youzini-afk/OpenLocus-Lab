@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AE Real-File Signal Robustness/Scale Decision 是 public-only
 decision/preflight package。它只读取 public artifacts/docs。它不读取 private roots

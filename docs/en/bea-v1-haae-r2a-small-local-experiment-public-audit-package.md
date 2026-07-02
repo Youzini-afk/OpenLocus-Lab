@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2A Small Local Experiment Public Audit Package is a public-only
 audit/package of the R2 aggregate artifact. It reads no private material,

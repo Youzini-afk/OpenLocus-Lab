@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight is public-only and non-executing. It designs R2BS explicit local repair/generation and does not read private roots, inspect labels, generate material, compute metrics, scan sources, or claim signal.
 

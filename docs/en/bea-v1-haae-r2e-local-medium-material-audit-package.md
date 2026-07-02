@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2E Local Medium Material Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2E Local Medium Material Audit Package is a public-only audit of the
 R2D public aggregate artifact. It does not read a private root, does not scan

@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight 是 public-only 且 non-executing。它不读取 private roots 或 `/tmp`，不 acquire/generate labels，不 generate 或 repair material，不 compute metrics，不 scan source/candidate/corpus，不运行 CI/network/provider/clone/runtime/retrieval，不发布 raw identifiers/exact values，也不 claim signal/method/default/scale。
 

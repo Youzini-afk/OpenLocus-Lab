@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package
 
-Date: 2026-07-01
+Date: 2026-07-03
 
 BEA-v1-HAAE-R2AD Actual Real-File Material Experiment Public Audit Package is a public-only audit/package of the R2AC public aggregate artifact. It reads no private root or private material and does not recompute metrics from private material.
 

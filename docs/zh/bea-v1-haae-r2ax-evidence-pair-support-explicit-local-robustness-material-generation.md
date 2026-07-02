@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2AX Evidence-Pair Support Explicit Local Robustness Material Generation 包含 default mode 与 explicit mode。Default mode 不进行 private read/write/generation/scan/metrics，只写 unavailable aggregate-only public artifact。Explicit mode 需要 operator flags 指定 existing R2AN private material、private output root、no experiment metrics 与 aggregate-only public artifact。
 

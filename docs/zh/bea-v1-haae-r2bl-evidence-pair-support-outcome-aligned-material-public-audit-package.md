@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package 是对 R2BK controlled unavailable result 的 public-only audit。它只读取 R2BK public artifact，并且没有 private/root CLI entry point、no material generation、no metric recompute、no source scan。
 

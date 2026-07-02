@@ -1,6 +1,6 @@
 # BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment
 
-日期：2026-07-01
+日期：2026-07-03
 
 BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment 已完成 explicit local evaluation，并支持 default mode（no private read）和基于 existing R2BE private material 的 explicit mode。它只计算 bucketized aggregate metrics。
 
