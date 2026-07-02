@@ -12,9 +12,17 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BQ outcome-label acquisition next-step decision 发现
+
+- **BEA-v1-HAAE-R2BQ Evidence-Pair Support Outcome Label Source Acquisition Next-Step Decision Design Package 已完成**：status `haae_r2bq_outcome_label_acquisition_next_step_decision_design_complete_r2br_repair_design_preflight_authorized`，self-test `53/53`，R2BP checkpoint `82c5d65`，R2BO checkpoint `07b9eef`。 R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
+- **Decision**：outcome_aligned_material_repair_public_design_preflight_selected。
+- **Rationale**：labels_acquired_but_material_repair_not_yet_designed。
+- **Boundary**：public-only decision、no private read、no material repair、no experiment metrics。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight。
+
 ## BEA-v1-HAAE-R2BP outcome-label source acquisition public audit 发现 R2BO execution attestation exact.
 
-- **BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package 已完成**：status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`，self-test `51/51`，R2BO checkpoint `07b9eef`，R2BO self-test 51/51。 R2BO execution attestation exact.
+- **BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package 已完成**：status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`，self-test `51/51`，R2BO checkpoint `07b9eef`，R2BO self-test 51/51。 R2BO execution attestation exact. R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
 - **Audit input**：R2BO public artifact。
 - **Result**：explicit local outcome-label source acquisition、labels_acquired_private、outcome_label_source_manifest_private。
 - **Boundary**：aggregate-only public audit、no private read、no material repair、no experiment metrics、no source scan。
