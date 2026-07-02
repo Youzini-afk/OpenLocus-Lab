@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2AZ explicit local robustness experiment 发现
+
+- **BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment 已实现**：default status `haae_r2az_unavailable_no_explicit_local_robustness_experiment_opt_in`，explicit result status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`，self-test `27/27`，R2AY checkpoint `126dc18`，R2AX checkpoint `f3add65`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`。
+- **Default/no-op mode / default/no-op mode**：reads no private root。
+- **Explicit opt-in mode / explicit opt-in mode**：读取 existing R2AX private robustness material，并计算 bucketized aggregate robustness metrics。
+- **Boundary**：no material generation、no source/candidate/corpus scan、no runtime/OpenLocus/retrieval。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package。
+
 ## BEA-v1-HAAE-R2AY robustness material public audit 发现
 
 - **BEA-v1-HAAE-R2AY Evidence-Pair Support Robustness Material Public Audit Package 已完成**：status `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`，self-test `36/36`，R2AX checkpoint `f3add65`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`。
@@ -3941,3 +3949,5 @@ R2AS readback marker: read existing private material; mechanism-decomposition me
 - **Boundary/stop-go**：no source/candidate/corpus scan、no material regeneration、gold outcome eval-only、No robustness generation, scale preflight, new experiment, source/candidate/corpus scan；只授权 BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package。
 
 显式结果：`pair_complementarity_supported`；pair_complementarity_lift_high；support_vs_contrast_separation_medium；hard_negative_rejection_medium；path_confound_risk_low；gold_isolation_pass；仅为机制分解结果，不是 method/default/scale claim。
+
+R2AZ readback marker: BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment; haae_r2az_unavailable_no_explicit_local_robustness_experiment_opt_in; haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely; self-test `27/27`; R2AY checkpoint `126dc18`; R2AY status `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`; R2AX checkpoint `f3add65`; R2AW checkpoint `bc44454`; R2AN checkpoint `93bba5f`; R2AT checkpoint `0c9c108`; R2AP checkpoint `87ea9de`; default/no-op mode; reads no private root; explicit opt-in mode; existing R2AX private robustness material; bucketized aggregate robustness metrics; artifact_likely; support_control_separation_collapsed; control_rejection_failed; path_confound_risk_elevated; support_signal_bucket_low; no material generation; no source/candidate/corpus scan; no runtime/OpenLocus/retrieval; BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package.
