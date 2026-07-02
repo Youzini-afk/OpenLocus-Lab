@@ -12,6 +12,14 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BG explicit local redesigned material experiment 发现
+
+- **BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment 已实现**：default status `haae_r2bg_unavailable_no_explicit_local_redesigned_material_experiment_opt_in`，signal status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present`, artifact/weak status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`，self-test `36/36`，R2BF checkpoint `322fbca`，R2BE checkpoint `c3901d6`。
+- **Modes**：default mode has no private read；explicit mode reads existing R2BE private material。
+- **Metrics**：bucketized aggregate metrics only，result buckets 包括 signal_present、artifact_or_weak_signal、mixed_or_inconclusive。
+- **Boundaries**：no material generation、no source/candidate/corpus scan、no runtime/OpenLocus/retrieval。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package。
+
 ## BEA-v1-HAAE-R2BF redesigned material public audit 发现
 
 - **BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package 已完成**：status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`，self-test `40/40`，R2BE checkpoint `c3901d6`。
@@ -3999,3 +4007,5 @@ R2AS readback marker: read existing private material; mechanism-decomposition me
 显式结果：`pair_complementarity_supported`；pair_complementarity_lift_high；support_vs_contrast_separation_medium；hard_negative_rejection_medium；path_confound_risk_low；gold_isolation_pass；仅为机制分解结果，不是 method/default/scale claim。
 
 R2AZ readback marker: BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment; haae_r2az_unavailable_no_explicit_local_robustness_experiment_opt_in; haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely; self-test `27/27`; R2AY checkpoint `126dc18`; R2AY status `haae_r2ay_evidence_pair_support_robustness_material_public_audit_complete_r2az_experiment_authorized`; R2AX checkpoint `f3add65`; R2AW checkpoint `bc44454`; R2AN checkpoint `93bba5f`; R2AT checkpoint `0c9c108`; R2AP checkpoint `87ea9de`; default/no-op mode; reads no private root; explicit opt-in mode; existing R2AX private robustness material; bucketized aggregate robustness metrics; artifact_likely; support_control_separation_collapsed; control_rejection_failed; path_confound_risk_elevated; support_signal_bucket_low; no material generation; no source/candidate/corpus scan; no runtime/OpenLocus/retrieval; BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package.
+
+R2BG result marker: artifact_or_weak_signal; outcome_eval_alignment_unavailable; haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal; haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present; signal_present; mixed_or_inconclusive; bucketized aggregate metrics; existing R2BE private material; no material generation; no source/candidate/corpus scan; no runtime/OpenLocus/retrieval; BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package.
