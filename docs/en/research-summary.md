@@ -12,6 +12,16 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BV explicit local outcome-aligned repair experiment findings
+
+- **BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment is implemented**: default status `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in`, signal status `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`, self-test `41/41`, R2BU checkpoint `1666a00`, R2BS checkpoint `71f3377`. R2BV explicit result is inconclusive: support/control separation and outcome-alignment coverage are evaluable, but no separation claim is made; no material generation; no source/candidate/corpus scan.
+- **Default mode**: no private read.
+- **Explicit mode**: existing R2BS repaired private material.
+- **Metrics**: bucketized aggregate experiment metrics: support/control separation and outcome-alignment coverage.
+- **Interpretation buckets**: signal_present, weak_signal, artifact_risk, inconclusive.
+- **Boundary**: no material generation, no source/candidate/corpus scan.
+- **Stop/go**: only BEA-v1-HAAE-R2BW Evidence-Pair Support Outcome-Aligned Repair Experiment Public Audit Package.
+
 ## BEA-v1-HAAE-R2BU outcome-aligned repair next-step decision findings
 
 - **BEA-v1-HAAE-R2BU Evidence-Pair Support Outcome-Aligned Repair Next-Step Decision Design Package is complete**: status `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`, self-test `65/65`, R2BT checkpoint `63463b4`, R2BS checkpoint `71f3377`.
