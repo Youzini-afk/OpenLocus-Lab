@@ -3,6 +3,9 @@
 日期：2026-06-30
 
 
+最新 HAAE 状态（当前）：BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package 已完成，status `haae_r2ba_evidence_pair_support_robustness_experiment_public_audit_complete_r2bb_next_step_decision_authorized_negative_robustness_evidence`，self-test `34/34`，R2AZ checkpoint `72590e5`，R2AZ status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`，inherited locks R2AY checkpoint `126dc18`、R2AX checkpoint `f3add65`、R2AW checkpoint `bc44454`、R2AN checkpoint `93bba5f`、R2AT checkpoint `0c9c108`、R2AP checkpoint `87ea9de`。R2BA 是 public-only audit 且 read only R2AZ public artifact。它确认 negative robustness evidence，buckets 为 artifact_likely、support_control_separation_collapsed、control_rejection_failed、path_confound_risk_elevated、support_signal_bucket_low。Claim boundary：no method/default/scale claim。Stop/go 只授权 BEA-v1-HAAE-R2BB Evidence-Pair Support Robustness Next-Step Decision Package。
+
+
 最新 HAAE 状态（当前）：BEA-v1-HAAE-R2AZ Evidence-Pair Support Explicit Local Robustness Experiment 已完成显式本地鲁棒性实验，status `haae_r2az_explicit_local_robustness_experiment_complete_r2ba_public_audit_authorized_artifact_likely`，self-test `27/27`，R2AY checkpoint `126dc18`，R2AX checkpoint `f3add65`，R2AW checkpoint `bc44454`，R2AN checkpoint `93bba5f`，R2AT checkpoint `0c9c108`，R2AP checkpoint `87ea9de`。结果为 `artifact_likely`，包含 `support_control_separation_collapsed`、`control_rejection_failed`、`path_confound_risk_elevated`、`support_signal_bucket_low`。R2AZ 仅在 explicit opt-in 模式读取 existing R2AX private robustness material，公开只发布 bucketized aggregate robustness metrics；不授权 material generation、source/candidate/corpus scan、runtime/OpenLocus/retrieval、method/default/scale claim 或 raw publication。下一阶段只允许 BEA-v1-HAAE-R2BA Evidence-Pair Support Robustness Experiment Public Audit Package。
 状态：当前研究结论备忘录。本文不是 promotion request，不是默认策略变更申请，也不是 benchmark leaderboard 报告。
 
