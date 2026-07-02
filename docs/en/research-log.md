@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-01 — BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
+
+`eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` completed the explicit local redesigned material generation phase. default status is `haae_r2be_unavailable_no_explicit_material_generation_opt_in`; explicit status is `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`; self-test `40/40`; R2BD checkpoint `fa6119b`; R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`.
+
+default mode has no private read/write/material generation/source scan. explicit local redesigned material generation requires operator-provided public source allowlist and explicit private output root. Required groups include redesigned_task_frame and redesigned_control_pair_material; controls include matched_hard_negative_control and path_token_matched_control; gold eval-only; no experiment metrics; aggregate-only public report. Stop/go authorizes only BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package.
+
 ## 2026-07-01 — BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight
 
 `eval/bea_v1_haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight.py` converts R2BC redesign requirements into a future R2BE material-generation contract. Status is `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`; self-test `47/47`; R2BC checkpoint `2171b20`; R2BC status `haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight_complete_r2bd_redesigned_material_generation_public_design_preflight_authorized`; R2BB checkpoint `a624728`; R2BA checkpoint `f8984bf`; R2AZ checkpoint `72590e5`.

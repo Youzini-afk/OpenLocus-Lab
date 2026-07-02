@@ -12,6 +12,15 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-HAAE-R2BE explicit local redesigned material generation 发现
+
+- **BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation 已完成 explicit local generation**：default status `haae_r2be_unavailable_no_explicit_material_generation_opt_in`，explicit status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`，self-test `40/40`，R2BD checkpoint `fa6119b`。
+- **default mode**：no private read/write/material generation/source scan。
+- **explicit local redesigned material generation**：requires operator-provided public source allowlist and explicit private output root。
+- **Groups and controls**：redesigned_task_frame、redesigned_control_pair_material、matched_hard_negative_control、path_token_matched_control。
+- **Publication and metrics**：gold eval-only；no experiment metrics；aggregate-only public report。
+- **Stop/go**：只授权 BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package。
+
 ## BEA-v1-HAAE-R2BD redesigned material generation public design preflight 发现
 
 - **BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight 已完成**：status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`，self-test `47/47`，R2BC checkpoint `2171b20`，R2BB checkpoint `a624728`，R2BA checkpoint `f8984bf`，R2AZ checkpoint `72590e5`。
