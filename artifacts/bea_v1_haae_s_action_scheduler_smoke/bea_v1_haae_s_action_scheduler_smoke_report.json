@@ -1,0 +1,448 @@
+{
+  "evidencecore_currentness_records": [
+    {
+      "current_source_path_range_hash_checked_privately_bool": true,
+      "derived_metadata_used_as_evidence_bool": false,
+      "promoted_and_counted_evidence_current_bool": true
+    }
+  ],
+  "execution_mode_records": [
+    {
+      "default_no_private_read_bool": false,
+      "explicit_action_scheduler_smoke_bool": true
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "lift_summary_records": [
+    {
+      "honest_no_lift_status_bool": true,
+      "lift_over_strongest_fixed_bucket": "small_lift",
+      "oracle_private_ceiling_only_bool": true,
+      "scheduler_lift_bool": false
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "haaesgate0000",
+      "gate_bucket": "source_lock_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0001",
+      "gate_bucket": "trace_valid_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0002",
+      "gate_bucket": "label_after_action_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0003",
+      "gate_bucket": "oracle_not_stopgo_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0004",
+      "gate_bucket": "policy_set_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0005",
+      "gate_bucket": "same_budget_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0006",
+      "gate_bucket": "evidencecore_currentness_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0007",
+      "gate_bucket": "derived_not_evidence_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0008",
+      "gate_bucket": "aggregate_only_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0009",
+      "gate_bucket": "stop_go_boundary_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0010",
+      "gate_bucket": "synthetic_validator_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "haaesgate0011",
+      "gate_bucket": "public_readback_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-HAAE-S Action Scheduler Smoke",
+  "policy_aggregate_records": [
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "low",
+      "file_hit_bucket": "medium",
+      "policy_bucket": "fixed_stop_after_first",
+      "policy_family_bucket": "fixed_baseline"
+    },
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "low",
+      "file_hit_bucket": "high",
+      "policy_bucket": "fixed_top_k_continue",
+      "policy_family_bucket": "fixed_baseline"
+    },
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "high",
+      "file_hit_bucket": "high",
+      "policy_bucket": "best_baseline_pack_order",
+      "policy_family_bucket": "fixed_baseline"
+    },
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "high",
+      "file_hit_bucket": "high",
+      "policy_bucket": "scheduler_confidence_stop",
+      "policy_family_bucket": "scheduler"
+    },
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "medium",
+      "file_hit_bucket": "high",
+      "policy_bucket": "scheduler_diversify_on_redundancy",
+      "policy_family_bucket": "scheduler"
+    },
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "high",
+      "file_hit_bucket": "high",
+      "policy_bucket": "scheduler_promote_after_evidencecore_valid",
+      "policy_family_bucket": "scheduler"
+    },
+    {
+      "budget_bucket": "same_top5_budget",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "high",
+      "file_hit_bucket": "high",
+      "policy_bucket": "scheduler_budget_guard",
+      "policy_family_bucket": "scheduler"
+    },
+    {
+      "budget_bucket": "private_ceiling_not_stopgo",
+      "currentness_bucket": "all_valid_current",
+      "degenerate_policy_bool": false,
+      "evidence_hit_bucket": "high",
+      "file_hit_bucket": "high",
+      "policy_bucket": "oracle_upper_bound_private",
+      "policy_family_bucket": "oracle_private_ceiling"
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "thin_index_links_readback_match_bool": true
+    }
+  ],
+  "publication_boundary_records": [
+    {
+      "aggregate_only_public_artifact_bool": true,
+      "private_trace_public_bool": false,
+      "raw_paths_spans_tags_public_bool": false,
+      "raw_scores_ranks_hashes_public_bool": false,
+      "raw_tasks_queries_public_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_haae_s_action_scheduler_smoke_public_report_v1",
+  "self_test_total": 57,
+  "source_lock_records": [
+    {
+      "checkpoint_bucket": "63528e8",
+      "source_bucket": "frk_f_parent",
+      "status_bucket": "frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient"
+    },
+    {
+      "checkpoint_bucket": "aaf3a1c",
+      "source_bucket": "ldi_a_parent",
+      "status_bucket": "ldi_a_stop_derived_index_route_baseline_sufficient"
+    }
+  ],
+  "status": "haae_s_no_go_scheduler_no_lift_over_fixed_baselines",
+  "stop_go_records": [
+    {
+      "frk_g_authorized_bool": false,
+      "haae_t_trace_dataset_readiness_authorized_bool": false,
+      "ldi_b_authorized_bool": false,
+      "next_allowed_phase_bucket": "no_scheduler_route_authorized",
+      "oracle_used_for_stopgo_bool": false,
+      "provider_network_ci_authorized_bool": false,
+      "rpm_training_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scheduler_audit_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "validator_bucket": "default_no_private_read_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "explicit_synthetic_no_lift_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "explicit_synthetic_go_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "safe_parser_unknown_arg_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "missing_confirm_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "missing_trace_root_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "bad_trace_root_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "wrong_out_path_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "source_drift_frk_f_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "source_drift_ldi_a_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "trace_invalid_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "label_before_action_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "oracle_stopgo_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "degenerate_policy_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "same_budget_mismatch_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "evidencecore_stale_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "derived_used_as_evidence_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "privacy_path_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "privacy_query_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "privacy_span_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "privacy_score_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "privacy_hash_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "public_leak_clears_stopgo_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "stop_go_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "synthetic_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "synthetic_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "gate_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "gate_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "readback_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "self_test_count_exact",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "fixed_policy_set_exact",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "scheduler_policy_set_exact",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "oracle_private_ceiling_only",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "private_labels_scoring_only",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "private_trace_written",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "aggregate_buckets_only",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "source_path_range_hash_validated_private",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "same_budget_non_oracle",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "no_rpm_training",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "no_provider_network_ci_runtime_default",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "no_frk_g_ldi_b",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "honest_no_lift_status",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "go_only_scheduler_lift",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "best_baseline_pack_order_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "confidence_stop_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "diversify_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "promote_after_evidencecore_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "budget_guard_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "fixed_stop_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "fixed_topk_present",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "validate_report_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "schema_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "public_readback_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "frk_f_lock_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "ldi_a_lock_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "trace_root_explicit_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "validator_bucket": "labels_private_ok",
+      "validator_passed_bool": true
+    }
+  ],
+  "trace_label_boundary_records": [
+    {
+      "labels_loaded_after_actions_bool": true,
+      "private_trace_read_bool": true,
+      "private_trace_written_bool": true,
+      "r14_labels_private_scoring_bool": true,
+      "row_count_bucket": "r14_sanity"
+    }
+  ]
+}
