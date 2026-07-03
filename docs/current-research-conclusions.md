@@ -30,3 +30,5 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 - English: [`docs/en/bea-v1-frk-e-downstream-utility-probe.md`](en/bea-v1-frk-e-downstream-utility-probe.md)
 - 中文：[`docs/zh/bea-v1-frk-e-downstream-utility-probe.md`](zh/bea-v1-frk-e-downstream-utility-probe.md)
+- English: [`docs/en/bea-v1-frk-f-failure-decomposition.md`](en/bea-v1-frk-f-failure-decomposition.md)
+- 中文：[`docs/zh/bea-v1-frk-f-failure-decomposition.md`](zh/bea-v1-frk-f-failure-decomposition.md)

@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-03 — BEA-v1-FRK-F Failure Decomposition
+
+`eval/bea_v1_frk_f_failure_decomposition.py` 在 explicit mode 使用 private FRK-E traces 和 private R14 labels 分解 FRK-E no-go result。Default status 为 `frk_f_unavailable_no_explicit_failure_decomposition_opt_in`；route-stop status 为 `frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient`；self-test `50/50`；source FRK-E checkpoint `76ce2ca`，status `frk_e_no_go_no_proxy_lift_over_best_baseline`。
+
+Mechanisms include first_file_miss、best_baseline_already_strong、candidate_pool_limit、pack_ordering_loss、budget_waste、redundancy_penalty、wrong_file_risk、proxy_label_limitation、evidencecore_not_cause、latency_not_cause、frk_c_pack_not_helping_raw_frk_b、rrf_dominates_frk_route。Public output is aggregate-only，并且 no runtime/default/method/scale/RPM/CI/network/provider/FastContext/raw traces are authorized。
+
 ## 2026-07-03 — BEA-v1-FRK-A Competitive Retrieval Benchmark Package
 
 `eval/bea_v1_frk_a_competitive_retrieval_benchmark_package.py` implements the top-level FRK pivot benchmark。Default status is `frk_a_unavailable_no_explicit_local_benchmark_opt_in`；success status is `frk_a_benchmark_complete_frk_b_prototype_authorized`；self-test `42/42`；suite R14-S sanity。

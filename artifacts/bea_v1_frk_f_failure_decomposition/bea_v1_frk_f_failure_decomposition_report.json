@@ -1,0 +1,431 @@
+{
+  "evidencecore_trace_validity_records": [
+    {
+      "all_trace_pack_items_materialized_current_bool": true,
+      "evidencecore_not_cause_bool": true,
+      "invalid_trace_pack_item_count_bucket": "zero"
+    }
+  ],
+  "execution_mode_records": [
+    {
+      "default_no_private_read_no_label_read_bool": false,
+      "explicit_failure_decomposition_bool": true
+    }
+  ],
+  "failure_summary_records": [
+    {
+      "decomposition_target_bucket": "current_frk_b_c_route_stopped_no_frk_g_authorized",
+      "primary_failure_mechanism_bucket": "frk_c_pack_not_helping_raw_frk_b",
+      "route_stop_bool": true,
+      "secondary_failure_mechanism_buckets": [
+        "evidencecore_not_cause",
+        "latency_not_cause",
+        "best_baseline_already_strong"
+      ],
+      "targeted_frk_g_authorized_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "mechanism_decomposition_records": [
+    {
+      "mechanism_bucket": "first_file_miss",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    },
+    {
+      "mechanism_bucket": "best_baseline_already_strong",
+      "mechanism_present_bool": true,
+      "support_bucket": "high"
+    },
+    {
+      "mechanism_bucket": "candidate_pool_limit",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    },
+    {
+      "mechanism_bucket": "pack_ordering_loss",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    },
+    {
+      "mechanism_bucket": "budget_waste",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    },
+    {
+      "mechanism_bucket": "redundancy_penalty",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    },
+    {
+      "mechanism_bucket": "wrong_file_risk",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    },
+    {
+      "mechanism_bucket": "proxy_label_limitation",
+      "mechanism_present_bool": true,
+      "support_bucket": "medium"
+    },
+    {
+      "mechanism_bucket": "evidencecore_not_cause",
+      "mechanism_present_bool": true,
+      "support_bucket": "high"
+    },
+    {
+      "mechanism_bucket": "latency_not_cause",
+      "mechanism_present_bool": true,
+      "support_bucket": "high"
+    },
+    {
+      "mechanism_bucket": "frk_c_pack_not_helping_raw_frk_b",
+      "mechanism_present_bool": true,
+      "support_bucket": "high"
+    },
+    {
+      "mechanism_bucket": "rrf_dominates_frk_route",
+      "mechanism_present_bool": true,
+      "support_bucket": "low"
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "frkfgate0000",
+      "gate_bucket": "frk_e_source_lock_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0001",
+      "gate_bucket": "explicit_opt_in_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0002",
+      "gate_bucket": "private_trace_read_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0003",
+      "gate_bucket": "private_label_scoring_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0004",
+      "gate_bucket": "variant_set_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0005",
+      "gate_bucket": "mechanism_set_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0006",
+      "gate_bucket": "mechanism_stopgo_consistency_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0007",
+      "gate_bucket": "evidencecore_trace_validity_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0008",
+      "gate_bucket": "aggregate_public_report_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0009",
+      "gate_bucket": "no_runtime_network_provider_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0010",
+      "gate_bucket": "no_fastcontext_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkfgate0011",
+      "gate_bucket": "public_readback_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-FRK-F Failure Decomposition",
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_readback_id": "frkfreadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "publication_boundary_records": [
+    {
+      "aggregate_bucketized_public_report_bool": true,
+      "private_trace_root_public_bool": false,
+      "raw_paths_spans_snippets_public_bool": false,
+      "raw_scores_ranks_labels_public_bool": false,
+      "raw_tasks_queries_public_bool": false,
+      "runtime_default_method_scale_claim_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_frk_f_failure_decomposition_public_report_v1",
+  "self_test_total": 50,
+  "source_lock_records": [
+    {
+      "checkpoint_bucket": "76ce2ca",
+      "source_bucket": "frk_e_parent",
+      "status_bucket": "frk_e_no_go_no_proxy_lift_over_best_baseline",
+      "top_level_frk_bool": true
+    }
+  ],
+  "status": "frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "frkfstop0000",
+      "current_frk_b_c_route_stopped_bool": true,
+      "fastcontext_authorized_bool": false,
+      "frk_g_candidate_pool_repair_experiment_authorized_bool": false,
+      "frk_g_pack_ordering_experiment_authorized_bool": false,
+      "next_allowed_phase": "current_frk_b_c_route_stopped_no_frk_g_authorized",
+      "raw_trace_publication_authorized_bool": false,
+      "rpm_ci_network_provider_authorized_bool": false,
+      "runtime_default_method_scale_claim_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_id": "frkfsynth0000",
+      "validator_bucket": "default_no_private_read_pass"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0001",
+      "validator_bucket": "explicit_synthetic_decomposition_pass"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0002",
+      "validator_bucket": "safe_parser_unknown_arg_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0003",
+      "validator_bucket": "missing_confirm_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0004",
+      "validator_bucket": "missing_trace_root_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0005",
+      "validator_bucket": "wrong_out_path_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0006",
+      "validator_bucket": "bad_trace_root_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0007",
+      "validator_bucket": "frk_e_source_drift_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0008",
+      "validator_bucket": "frk_e_status_drift_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0009",
+      "validator_bucket": "trace_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0010",
+      "validator_bucket": "trace_schema_invalid_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0011",
+      "validator_bucket": "trace_variant_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0012",
+      "validator_bucket": "label_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0013",
+      "validator_bucket": "mechanism_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0014",
+      "validator_bucket": "mechanism_duplicate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0015",
+      "validator_bucket": "primary_stopgo_mismatch_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0016",
+      "validator_bucket": "secondary_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0017",
+      "validator_bucket": "evidencecore_invalid_path_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0018",
+      "validator_bucket": "evidencecore_stale_currentness_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0019",
+      "validator_bucket": "public_path_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0020",
+      "validator_bucket": "public_query_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0021",
+      "validator_bucket": "public_metric_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0022",
+      "validator_bucket": "trace_path_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0023",
+      "validator_bucket": "raw_label_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0024",
+      "validator_bucket": "public_leak_clears_stopgo_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0025",
+      "validator_bucket": "stop_go_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0026",
+      "validator_bucket": "network_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0027",
+      "validator_bucket": "fastcontext_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0028",
+      "validator_bucket": "runtime_default_claim_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0029",
+      "validator_bucket": "gate_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0030",
+      "validator_bucket": "gate_duplicate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0031",
+      "validator_bucket": "synthetic_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0032",
+      "validator_bucket": "synthetic_duplicate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0033",
+      "validator_bucket": "readback_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0034",
+      "validator_bucket": "source_lock_validate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0035",
+      "validator_bucket": "privacy_validate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0036",
+      "validator_bucket": "mechanism_validate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0037",
+      "validator_bucket": "stopgo_validate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0038",
+      "validator_bucket": "schema_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0039",
+      "validator_bucket": "validate_report_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0040",
+      "validator_bucket": "aggregate_only_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0041",
+      "validator_bucket": "labels_private_only_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0042",
+      "validator_bucket": "trace_private_only_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0043",
+      "validator_bucket": "root_current_thin_index_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0044",
+      "validator_bucket": "no_raw_trace_publication_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0045",
+      "validator_bucket": "self_test_count_matches_synth"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0046",
+      "validator_bucket": "evidencecore_not_cause_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0047",
+      "validator_bucket": "latency_not_cause_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0048",
+      "validator_bucket": "rrf_route_stop_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkfsynth0049",
+      "validator_bucket": "no_frk_g_when_route_stopped_ok"
+    }
+  ],
+  "trace_label_boundary_records": [
+    {
+      "private_trace_read_bool": true,
+      "r14_labels_private_scoring_bool": true,
+      "raw_trace_public_bool": false,
+      "trace_row_count_bucket": "r14_sanity_private_trace"
+    }
+  ],
+  "variant_decomposition_records": [
+    {
+      "variant_bucket": "bm25_like_baseline_pack",
+      "variant_present_bool": true
+    },
+    {
+      "variant_bucket": "rrf_like_baseline_pack",
+      "variant_present_bool": true
+    },
+    {
+      "variant_bucket": "frk_b_retrieve_fast_raw_pack",
+      "variant_present_bool": true
+    },
+    {
+      "variant_bucket": "frk_c_rankpack_builder_pack",
+      "variant_present_bool": true
+    }
+  ]
+}
