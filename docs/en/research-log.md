@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-03 — BEA-v1-FRK-A Competitive Retrieval Benchmark Package
+
+`eval/bea_v1_frk_a_competitive_retrieval_benchmark_package.py` implements the top-level FRK pivot benchmark. Default status is `frk_a_unavailable_no_explicit_local_benchmark_opt_in`; success status is `frk_a_benchmark_complete_frk_b_prototype_authorized`; self-test `42/42`; suite R14-S sanity.
+
+Baselines: ripgrep_text_practical, same_budget_sparse_bm25, same_budget_rrf_hybrid, current_openlocus_retrieval, simple_path_symbol; FastContext excluded. Explicit mode writes private per-query traces and publishes aggregate-only public report with EvidenceCore citation validity buckets. Stop/go authorizes only BEA-v1-FRK-B Fast Retrieval Kernel Prototype.
+
 ## 2026-07-03 — BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment
 
 `eval/bea_v1_haae_r2bv_evidence_pair_support_explicit_local_outcome_aligned_repair_experiment.py` supports default mode with no private read and explicit mode over existing R2BS repaired private material. Status taxonomy includes `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in` and `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`; self-test `41/41`; R2BU checkpoint `1666a00`; R2BU status `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`; R2BS checkpoint `71f3377`; R2BT checkpoint `63463b4`; R2BR checkpoint `b96e717`; R2BE checkpoint `c3901d6`; R2BO checkpoint `07b9eef`.

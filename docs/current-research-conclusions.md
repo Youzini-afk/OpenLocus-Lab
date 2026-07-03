@@ -25,3 +25,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 - English: [`docs/en/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md`](en/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md)
 - 中文：[`docs/zh/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md`](zh/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md)
+
+## Latest FRK detail / 最新 FRK 详情
+
+- English: [`docs/en/bea-v1-frk-a-competitive-retrieval-benchmark-package.md`](en/bea-v1-frk-a-competitive-retrieval-benchmark-package.md)
+- 中文：[`docs/zh/bea-v1-frk-a-competitive-retrieval-benchmark-package.md`](zh/bea-v1-frk-a-competitive-retrieval-benchmark-package.md)

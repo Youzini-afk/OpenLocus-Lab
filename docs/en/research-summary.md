@@ -12,6 +12,15 @@ This document will be updated after each evidence-gated stage. The detailed
 chronological notes below are preserved for traceability; the current high-level
 research conclusion is summarized first.
 
+## BEA-v1-FRK-A competitive retrieval benchmark findings
+
+- **BEA-v1-FRK-A Competitive Retrieval Benchmark Package is implemented**: default status `frk_a_unavailable_no_explicit_local_benchmark_opt_in`, success status `frk_a_benchmark_complete_frk_b_prototype_authorized`, self-test `42/42`, suite R14-S sanity.
+- **Baselines**: ripgrep_text_practical, same_budget_sparse_bm25, same_budget_rrf_hybrid, current_openlocus_retrieval, simple_path_symbol.
+- **Excluded**: FastContext excluded.
+- **Trace boundary**: private per-query traces.
+- **Public boundary**: aggregate-only public report with EvidenceCore citation validity buckets.
+- **Stop/go**: only BEA-v1-FRK-B Fast Retrieval Kernel Prototype.
+
 ## BEA-v1-HAAE-R2BV explicit local outcome-aligned repair experiment findings
 
 - **BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment is implemented**: default status `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in`, signal status `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`, self-test `41/41`, R2BU checkpoint `1666a00`, R2BS checkpoint `71f3377`. R2BV explicit result is inconclusive: support/control separation and outcome-alignment coverage are evaluable, but no separation claim is made; no material generation; no source/candidate/corpus scan.
