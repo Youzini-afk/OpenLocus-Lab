@@ -28,5 +28,5 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Latest FRK detail / 最新 FRK 详情
 
-- English: [`docs/en/bea-v1-frk-c-rankpack-builder-experiment.md`](en/bea-v1-frk-c-rankpack-builder-experiment.md)
-- 中文：[`docs/zh/bea-v1-frk-c-rankpack-builder-experiment.md`](zh/bea-v1-frk-c-rankpack-builder-experiment.md)
+- English: [`docs/en/bea-v1-frk-d-incremental-update-benchmark.md`](en/bea-v1-frk-d-incremental-update-benchmark.md)
+- 中文：[`docs/zh/bea-v1-frk-d-incremental-update-benchmark.md`](zh/bea-v1-frk-d-incremental-update-benchmark.md)
