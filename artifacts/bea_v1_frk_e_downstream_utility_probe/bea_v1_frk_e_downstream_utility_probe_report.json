@@ -1,0 +1,458 @@
+{
+  "comparative_lift_records": [
+    {
+      "anonymous_lift_id": "frkelift0000",
+      "budget_efficiency_lift_vs_best_baseline_bucket": "neutral",
+      "correct_file_proxy_lift_vs_best_baseline_bucket": "negative",
+      "redundancy_reduction_vs_best_baseline_bucket": "negative",
+      "wrong_file_risk_reduction_vs_best_baseline_bucket": "negative"
+    }
+  ],
+  "evidencecore_validity_records": [
+    {
+      "all_hits_valid_current_bool": true,
+      "evidencecore_validity_bucket": "all_valid_current",
+      "invalid_hit_count_bucket": "zero"
+    }
+  ],
+  "execution_mode_records": [
+    {
+      "default_no_labels_traces_packs_metrics_bool": false,
+      "explicit_downstream_utility_probe_bool": true,
+      "labels_score_only_after_pack_construction_bool": true
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "frkegate0000",
+      "gate_bucket": "frk_d_source_lock_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0001",
+      "gate_bucket": "explicit_opt_in_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0002",
+      "gate_bucket": "private_label_scoring_after_pack_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0003",
+      "gate_bucket": "label_independent_proxy_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0004",
+      "gate_bucket": "required_variant_set_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0005",
+      "gate_bucket": "same_budget_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0006",
+      "gate_bucket": "evidencecore_validity_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0007",
+      "gate_bucket": "proxy_metric_valid_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0008",
+      "gate_bucket": "proxy_lift_gate",
+      "gate_passed_bool": false
+    },
+    {
+      "anonymous_gate_id": "frkegate0009",
+      "gate_bucket": "wrong_file_regression_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0010",
+      "gate_bucket": "private_trace_write_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0011",
+      "gate_bucket": "aggregate_public_report_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0012",
+      "gate_bucket": "no_network_provider_runtime_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0013",
+      "gate_bucket": "no_fastcontext_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0014",
+      "gate_bucket": "frk_f_only_stop_go_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkegate0015",
+      "gate_bucket": "public_readback_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-FRK-E Downstream Utility Probe",
+  "private_trace_records": [
+    {
+      "private_trace_written_bool": true,
+      "raw_trace_public_bool": false,
+      "trace_root_bucket": "ignored_runs_or_tmp_private_trace",
+      "trace_row_count_bucket": "r14_sanity_by_variant"
+    }
+  ],
+  "proxy_metric_summary_records": [
+    {
+      "catastrophic_wrong_file_regression_bool": false,
+      "empty_fabricated_pack_bool": false,
+      "proxy_lift_over_best_baseline_bucket": "no_lift",
+      "same_budget_bool": true
+    }
+  ],
+  "proxy_policy_records": [
+    {
+      "correct_file_before_first_edit_proxy_bool": true,
+      "evidence_before_edit_proxy_bool": true,
+      "label_independent_proxy_construction_bool": true,
+      "no_runtime_agent_calls_bool": true
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_readback_id": "frkereadback0000",
+      "current_conclusions_readback_match_bool": true,
+      "detail_docs_readback_match_bool": true,
+      "readme_readback_match_bool": true,
+      "research_log_readback_match_bool": true,
+      "research_summary_readback_match_bool": true
+    }
+  ],
+  "publication_boundary_records": [
+    {
+      "aggregate_bucketized_public_report_bool": true,
+      "private_roots_trace_paths_public_bool": false,
+      "raw_candidate_pack_rows_public_bool": false,
+      "raw_paths_spans_snippets_public_bool": false,
+      "raw_scores_ranks_hashes_public_bool": false,
+      "raw_tasks_queries_public_bool": false,
+      "runtime_default_method_scale_claim_bool": false
+    }
+  ],
+  "schema_version": "bea_v1_frk_e_downstream_utility_probe_public_report_v1",
+  "self_test_total": 50,
+  "source_lock_records": [
+    {
+      "checkpoint_bucket": "f156849",
+      "source_bucket": "frk_d_parent",
+      "status_bucket": "frk_d_incremental_update_benchmark_complete_frk_e_downstream_utility_probe_authorized",
+      "top_level_frk_bool": true
+    }
+  ],
+  "status": "frk_e_no_go_no_proxy_lift_over_best_baseline",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "frkestop0000",
+      "fastcontext_authorized_bool": false,
+      "frk_f_failure_decomposition_authorized_bool": true,
+      "next_allowed_phase": "BEA-v1-FRK-F Failure Decomposition",
+      "proxy_expansion_authorized_bool": false,
+      "raw_trace_publication_authorized_bool": false,
+      "rpm_ci_network_provider_authorized_bool": false,
+      "runtime_default_method_scale_claim_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_id": "frkesynth0000",
+      "validator_bucket": "default_no_labels_pass"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0001",
+      "validator_bucket": "explicit_synthetic_probe_pass"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0002",
+      "validator_bucket": "safe_parser_unknown_arg_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0003",
+      "validator_bucket": "missing_confirm_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0004",
+      "validator_bucket": "wrong_out_path_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0005",
+      "validator_bucket": "bad_private_trace_root_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0006",
+      "validator_bucket": "frk_d_source_drift_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0007",
+      "validator_bucket": "variant_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0008",
+      "validator_bucket": "budget_mismatch_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0009",
+      "validator_bucket": "label_before_pack_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0010",
+      "validator_bucket": "proxy_uses_gold_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0011",
+      "validator_bucket": "invalid_evidencecore_path_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0012",
+      "validator_bucket": "invalid_evidencecore_range_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0013",
+      "validator_bucket": "invalid_evidencecore_currentness_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0014",
+      "validator_bucket": "no_proxy_lift_no_go"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0015",
+      "validator_bucket": "wrong_file_regression_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0016",
+      "validator_bucket": "empty_fabricated_pack_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0017",
+      "validator_bucket": "privacy_path_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0018",
+      "validator_bucket": "privacy_query_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0019",
+      "validator_bucket": "privacy_metric_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0020",
+      "validator_bucket": "trace_path_leak_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0021",
+      "validator_bucket": "public_leak_clears_stopgo_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0022",
+      "validator_bucket": "stop_go_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0023",
+      "validator_bucket": "network_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0024",
+      "validator_bucket": "fastcontext_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0025",
+      "validator_bucket": "runtime_default_claim_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0026",
+      "validator_bucket": "gate_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0027",
+      "validator_bucket": "gate_duplicate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0028",
+      "validator_bucket": "synthetic_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0029",
+      "validator_bucket": "synthetic_duplicate_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0030",
+      "validator_bucket": "readback_drop_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0031",
+      "validator_bucket": "metric_bucket_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0032",
+      "validator_bucket": "trace_bucket_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0033",
+      "validator_bucket": "proxy_lift_bucket_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0034",
+      "validator_bucket": "comparative_lift_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0035",
+      "validator_bucket": "no_go_proxy_expansion_overauth_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0036",
+      "validator_bucket": "evidencecore_bucket_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0037",
+      "validator_bucket": "variant_budget_bucket_missing_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0038",
+      "validator_bucket": "stale_current_fail"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0039",
+      "validator_bucket": "validate_report_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0040",
+      "validator_bucket": "schema_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0041",
+      "validator_bucket": "private_trace_written_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0042",
+      "validator_bucket": "frk_f_only_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0043",
+      "validator_bucket": "no_rpm_ci_network_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0044",
+      "validator_bucket": "aggregate_only_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0045",
+      "validator_bucket": "labels_private_only_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0046",
+      "validator_bucket": "proxy_label_independent_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0047",
+      "validator_bucket": "same_budget_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0048",
+      "validator_bucket": "no_runtime_agent_ok"
+    },
+    {
+      "anonymous_synthetic_id": "frkesynth0049",
+      "validator_bucket": "no_fastcontext_ok"
+    }
+  ],
+  "variant_aggregate_records": [
+    {
+      "correct_file_before_first_edit_bucket": "medium",
+      "empty_abstain_risk_bucket": "low",
+      "evidence_before_edit_bucket": "low",
+      "evidence_budget_efficiency_bucket": "very_high",
+      "first_relevant_evidence_position_bucket": "not_in_pack",
+      "gold_file_within_budget_bucket": "medium",
+      "gold_span_covered_bucket": "low",
+      "gold_span_within_budget_bucket": "low",
+      "latency_bucket": "lt_10ms",
+      "pack_item_count_bucket": "count_5",
+      "redundant_same_file_span_bucket": "count_1",
+      "same_budget_bucket": "top5_pack",
+      "token_waste_bucket": "very_high",
+      "unique_file_coverage_bucket": "count_2_to_5",
+      "variant_bucket": "bm25_like_baseline_pack",
+      "wrong_file_risk_bucket": "low"
+    },
+    {
+      "correct_file_before_first_edit_bucket": "high",
+      "empty_abstain_risk_bucket": "low",
+      "evidence_before_edit_bucket": "high",
+      "evidence_budget_efficiency_bucket": "very_high",
+      "first_relevant_evidence_position_bucket": "not_in_pack",
+      "gold_file_within_budget_bucket": "high",
+      "gold_span_covered_bucket": "high",
+      "gold_span_within_budget_bucket": "high",
+      "latency_bucket": "lt_10ms",
+      "pack_item_count_bucket": "count_5",
+      "redundant_same_file_span_bucket": "count_2_to_5",
+      "same_budget_bucket": "top5_pack",
+      "token_waste_bucket": "low",
+      "unique_file_coverage_bucket": "count_2_to_5",
+      "variant_bucket": "rrf_like_baseline_pack",
+      "wrong_file_risk_bucket": "low"
+    },
+    {
+      "correct_file_before_first_edit_bucket": "medium",
+      "empty_abstain_risk_bucket": "low",
+      "evidence_before_edit_bucket": "high",
+      "evidence_budget_efficiency_bucket": "very_high",
+      "first_relevant_evidence_position_bucket": "not_in_pack",
+      "gold_file_within_budget_bucket": "medium",
+      "gold_span_covered_bucket": "high",
+      "gold_span_within_budget_bucket": "high",
+      "latency_bucket": "lt_10ms",
+      "pack_item_count_bucket": "count_5",
+      "redundant_same_file_span_bucket": "count_2_to_5",
+      "same_budget_bucket": "top5_pack",
+      "token_waste_bucket": "low",
+      "unique_file_coverage_bucket": "count_2_to_5",
+      "variant_bucket": "frk_b_retrieve_fast_raw_pack",
+      "wrong_file_risk_bucket": "low"
+    },
+    {
+      "correct_file_before_first_edit_bucket": "medium",
+      "empty_abstain_risk_bucket": "low",
+      "evidence_before_edit_bucket": "medium",
+      "evidence_budget_efficiency_bucket": "very_high",
+      "first_relevant_evidence_position_bucket": "not_in_pack",
+      "gold_file_within_budget_bucket": "medium",
+      "gold_span_covered_bucket": "medium",
+      "gold_span_within_budget_bucket": "medium",
+      "latency_bucket": "lt_10ms",
+      "pack_item_count_bucket": "count_5",
+      "redundant_same_file_span_bucket": "count_1",
+      "same_budget_bucket": "top5_pack",
+      "token_waste_bucket": "medium",
+      "unique_file_coverage_bucket": "count_2_to_5",
+      "variant_bucket": "frk_c_rankpack_builder_pack",
+      "wrong_file_risk_bucket": "low"
+    }
+  ]
+}

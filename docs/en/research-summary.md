@@ -48,6 +48,15 @@ research conclusion is summarized first.
 - **Public boundary**: aggregate-only report.
 - **Stop/go**: only BEA-v1-FRK-E Downstream Utility Probe.
 
+## BEA-v1-FRK-E downstream utility probe findings
+
+- **BEA-v1-FRK-E Downstream Utility Probe is implemented**: default status `frk_e_unavailable_no_explicit_downstream_utility_probe_opt_in`, success status taxonomy includes `frk_e_downstream_utility_probe_complete_frk_f_failure_decomposition_or_proxy_expansion_authorized`, no-go status `frk_e_no_go_no_proxy_lift_over_best_baseline`, self-test `50/50`, FRK-D checkpoint `f156849`.
+- **Variants**: bm25_like_baseline_pack, rrf_like_baseline_pack, frk_b_retrieve_fast_raw_pack, frk_c_rankpack_builder_pack.
+- **Proxy boundary**: label-independent proxy construction; private labels score only after packs are built.
+- **Trace boundary**: private traces.
+- **Public boundary**: aggregate-only report.
+- **Stop/go**: only BEA-v1-FRK-F Failure Decomposition.
+
 ## BEA-v1-HAAE-R2BV explicit local outcome-aligned repair experiment findings
 
 - **BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment is implemented**: default status `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in`, signal status `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`, self-test `41/41`, R2BU checkpoint `1666a00`, R2BS checkpoint `71f3377`. R2BV explicit result is inconclusive: support/control separation and outcome-alignment coverage are evaluable, but no separation claim is made; no material generation; no source/candidate/corpus scan.
@@ -86,7 +95,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2BR outcome-aligned material repair public design preflight findings
 
-- **BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight is complete**: status `haae_r2br_outcome_aligned_material_repair_public_design_preflight_complete_r2bs_explicit_local_repair_generation_authorized`, self-test `51/51`, R2BQ checkpoint `8254d58`, R2BP checkpoint `82c5d65`, R2BO checkpoint `07b9eef`. R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
+- **BEA-v1-HAAE-R2BR Evidence-Pair Support Outcome-Aligned Material Repair Public Design Preflight is complete**: status `haae_r2br_outcome_aligned_material_repair_public_design_preflight_complete_r2bs_explicit_local_repair_generation_authorized`, self-test `50/50`, R2BQ checkpoint `8254d58`, R2BP checkpoint `82c5d65`, R2BO checkpoint `07b9eef`. R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 - **Decision**: outcome_aligned_material_repair_generation_design_selected_bool; r2bs_explicit_local_repair_generation_selected_bool. R2BS explicit generation complete marker: explicit local repair/generation, label alignment materialized, parent refs present, output group exact, private R2BE/R2BO read and private output write attested, no experiment metrics, no source scan, aggregate-only public artifact. input manifest source-lock checkpoints verified.
 - **Rationale**: labels_acquired_and_audited_repair_generation_now_design_scoped.
 - **Boundary**: public-only, no private read, no signal evaluation.
@@ -102,7 +111,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2BP outcome-label source acquisition public audit findings R2BO execution attestation exact.
 
-- **BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package is complete**: status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`, self-test `51/51`, R2BO checkpoint `07b9eef`, R2BO self-test 51/51. R2BO execution attestation exact. R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
+- **BEA-v1-HAAE-R2BP Evidence-Pair Support Outcome Label Source Acquisition Public Audit Package is complete**: status `haae_r2bp_outcome_label_source_acquisition_public_audit_complete_r2bq_decision_design_authorized`, self-test `50/50`, R2BO checkpoint `07b9eef`, R2BO self-test 51/51. R2BO execution attestation exact. R2BP synthetic exact names and R2BO execution attestations are locked; direct repair execution false, closure deferred true, pivot deferred true.
 - **Audit input**: R2BO public artifact.
 - **Result**: explicit local outcome-label source acquisition, labels_acquired_private, outcome_label_source_manifest_private.
 - **Boundary**: aggregate-only public audit, no private read, no material repair, no experiment metrics, no source scan.
@@ -110,7 +119,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2BO explicit local outcome label source acquisition findings status/execution consistency locked.
 
-- **BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition is complete after explicit local outcome-label source acquisition**: default status `haae_r2bo_unavailable_no_explicit_local_label_source_acquisition_opt_in`, success status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`, self-test `51/51`, R2BN checkpoint `af901f6`. status/execution consistency locked.
+- **BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition is complete after explicit local outcome-label source acquisition**: default status `haae_r2bo_unavailable_no_explicit_local_label_source_acquisition_opt_in`, success status `haae_r2bo_explicit_local_outcome_label_source_acquisition_complete_r2bp_public_audit_authorized`, self-test `50/50`, R2BN checkpoint `af901f6`. status/execution consistency locked.
 - **Default mode**: no private read.
 - **Explicit mode**: explicit local label source acquisition with operator-provided label source manifest and existing R2BE private material root.
 - **Private group**: outcome_label_source_manifest_private.
@@ -127,7 +136,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2BM outcome label acquisition public decision design findings
 
-- **BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package is complete**: status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`, self-test `51/51`, R2BL checkpoint `41aef9e`, R2BK checkpoint `7073b12`.
+- **BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package is complete**: status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`, self-test `43/43`, R2BL checkpoint `41aef9e`, R2BK checkpoint `7073b12`.
 - **Evidence lock**: outcome_alignment_source_labels_absent with generation_bucket=outcome_alignment_unavailable_no_material_generated; generated_group_set_exact_bool=false; material_generated_bool=false.
 - **Decision**: outcome_label_acquisition_design_selected; not closure; not pivot.
 - **Boundary**: public-only/non-executing, no private read, no label generation, no material generation, no metric recompute, no source scan.
@@ -142,7 +151,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2BK explicit local outcome-aligned material repair generation findings outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 
-- **BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation is implemented**: default status `haae_r2bk_unavailable_no_explicit_local_outcome_aligned_repair_generation_opt_in`, actual explicit status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`; success status taxonomy includes `haae_r2bk_explicit_local_outcome_aligned_material_repair_generation_complete_r2bl_public_audit_authorized`, self-test `49/49`, R2BJ checkpoint `cab3b84`, R2BE checkpoint `c3901d6`. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
+- **BEA-v1-HAAE-R2BK Evidence-Pair Support Explicit Local Outcome-Aligned Material Repair Generation is implemented**: default status `haae_r2bk_unavailable_no_explicit_local_outcome_aligned_repair_generation_opt_in`, actual explicit status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`; success status taxonomy includes `haae_r2bk_explicit_local_outcome_aligned_material_repair_generation_complete_r2bl_public_audit_authorized`, self-test `43/43`, R2BJ checkpoint `cab3b84`, R2BE checkpoint `c3901d6`. outcome_alignment_source_labels_absent is a controlled unavailable status when R2BE lacks outcome labels. haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated. no outcome-aligned material groups were generated.
 - **Default mode**: no private read/write.
 - **Explicit mode**: explicit local outcome-aligned repair generation over existing R2BE material.
 - **Private groups**: outcome_aligned_task_frame, outcome_aligned_support_pair_material, outcome_alignment_eval_private, repair_provenance_private.
@@ -260,7 +269,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2AV evidence-pair support next-step decision findings
 
-- **BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package is complete**: status `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`, self-test `51/51`, R2AU checkpoint `8af2b92`, R2AU status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`, R2AT checkpoint `0c9c108`, and R2AP checkpoint `87ea9de`.
+- **BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package is complete**: status `haae_r2av_evidence_pair_support_next_step_decision_complete_r2aw_robustness_material_generation_public_design_preflight_authorized`, self-test `50/50`, R2AU checkpoint `8af2b92`, R2AU status `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`, R2AT checkpoint `0c9c108`, and R2AP checkpoint `87ea9de`.
 - **Inherited signal**: pair_complementarity_supported with pair_complementarity_lift_high, support_vs_contrast_separation_medium, hard_negative_rejection_medium, path_confound_risk_low, gold_isolation_pass, and R2AP support_signal.
 - **Decision**: robustness material generation preflight selected; not scale; not external validation execution; not close/turn; not method/default claim.
 - **Reason buckets**: pair_complementarity_supported_but_current_material_bounded and robustness_needed_before_scale_or_method_claim.
