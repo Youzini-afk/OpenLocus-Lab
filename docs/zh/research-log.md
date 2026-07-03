@@ -6,6 +6,12 @@
 
 Baselines：ripgrep_text_practical、same_budget_sparse_bm25、same_budget_rrf_hybrid、current_openlocus_retrieval、simple_path_symbol；FastContext excluded。Explicit mode writes private per-query traces and publishes aggregate-only public report with EvidenceCore citation validity buckets。Stop/go 只授权 BEA-v1-FRK-B Fast Retrieval Kernel Prototype。
 
+## 2026-07-03 — BEA-v1-FRK-B Fast Retrieval Kernel Prototype
+
+`eval/bea_v1_frk_b_fast_retrieval_kernel_prototype.py` implements a top-level FRK fast retrieval kernel prototype。Default status is `frk_b_unavailable_no_explicit_local_prototype_opt_in`；success status is `frk_b_fast_retrieval_kernel_prototype_complete_frk_c_public_package_authorized`；self-test `44/44`；FRK-A checkpoint `efcfec6`。
+
+Index components：sparse_term_index、symbol_name_index、path_filename_config_index、ast_span_index。API：retrieve_fast。Explicit mode writes private per-query traces and publishes aggregate-only public report with EvidenceCore validation buckets。Stop/go 只授权 BEA-v1-FRK-C Fast Retrieval Kernel Public Package。
+
 ## 2026-07-03 — BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment
 
 `eval/bea_v1_haae_r2bv_evidence_pair_support_explicit_local_outcome_aligned_repair_experiment.py` 支持 no private read 的 default mode，以及 over existing R2BS repaired private material 的 explicit mode。Status taxonomy includes `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in` and `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`；self-test `41/41`；R2BU checkpoint `1666a00`；R2BU status `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`；R2BS checkpoint `71f3377`；R2BT checkpoint `63463b4`；R2BR checkpoint `b96e717`；R2BE checkpoint `c3901d6`；R2BO checkpoint `07b9eef`。
@@ -68,7 +74,7 @@ Decision：outcome_label_acquisition_design_selected；not closure；not pivot�
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package
 
-`eval/bea_v1_haae_r2bl_evidence_pair_support_outcome_aligned_material_public_audit_package.py` 只审计 R2BK public artifact。Status 为 `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`；self-test `45/45`；R2BK checkpoint `7073b12`；R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`。
+`eval/bea_v1_haae_r2bl_evidence_pair_support_outcome_aligned_material_public_audit_package.py` 只审计 R2BK public artifact。Status 为 `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`；self-test `44/44`；R2BK checkpoint `7073b12`；R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`。
 
 Audit：controlled unavailable result、outcome_alignment_source_labels_absent、generation_bucket=outcome_alignment_unavailable_no_material_generated、generated_group_set_exact_bool=false、material_generated_bool=false。Boundary：public-only audit、no private read、no metric recompute、no material generation、aggregate-only public output。Stop/go 只授权 BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package。
 
@@ -1227,7 +1233,7 @@ python3 eval/provider_dense_safety.py --openlocus target/debug/openlocus --out r
 
 ### Safety checks
 
-45/45 safety checks passed:
+44/44 safety checks passed:
 - remote_default=false, outbound_default=false
 - build without --experimental fails
 - build with --experimental --provider mock succeeds with remote_calls=0
