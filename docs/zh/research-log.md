@@ -12,6 +12,12 @@ Baselines：ripgrep_text_practical、same_budget_sparse_bm25、same_budget_rrf_h
 
 Index components：sparse_term_index、symbol_name_index、path_filename_config_index、ast_span_index。API：retrieve_fast。Explicit mode writes private per-query traces and publishes aggregate-only public report with EvidenceCore validation buckets。Stop/go 只授权 BEA-v1-FRK-C Fast Retrieval Kernel Public Package。
 
+## 2026-07-03 — BEA-v1-FRK-C RankPack Builder Experiment
+
+`eval/bea_v1_frk_c_rankpack_builder_experiment.py` implements a concrete executable FRK RankPack experiment。Default status is `frk_c_unavailable_no_explicit_rankpack_experiment_opt_in`；success status is `frk_c_rankpack_builder_experiment_complete_frk_d_incremental_update_benchmark_authorized`；self-test `45/45`；FRK-B checkpoint `11f9cf8`。
+
+Candidate source is FRK-B retrieve_fast。Pack arms：raw_score_order_pack、file_dedup_pack、ast_span_priority_pack、path_symbol_balanced_pack、diversity_budget_pack。Private labels score only after pack construction；private per-query RankPack traces are written under ignored storage。Public report is aggregate-only。Stop/go 只授权 BEA-v1-FRK-D Incremental Update Benchmark。
+
 ## 2026-07-03 — BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment
 
 `eval/bea_v1_haae_r2bv_evidence_pair_support_explicit_local_outcome_aligned_repair_experiment.py` 支持 no private read 的 default mode，以及 over existing R2BS repaired private material 的 explicit mode。Status taxonomy includes `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in` and `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`；self-test `41/41`；R2BU checkpoint `1666a00`；R2BU status `haae_r2bu_outcome_aligned_repair_next_step_decision_design_complete_r2bv_explicit_local_experiment_authorized`；R2BS checkpoint `71f3377`；R2BT checkpoint `63463b4`；R2BR checkpoint `b96e717`；R2BE checkpoint `c3901d6`；R2BO checkpoint `07b9eef`。

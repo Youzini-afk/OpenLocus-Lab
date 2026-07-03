@@ -30,6 +30,15 @@ research conclusion is summarized first.
 - **Public boundary**：aggregate-only public report with EvidenceCore validation buckets。
 - **Stop/go**：只授权 BEA-v1-FRK-C Fast Retrieval Kernel Public Package。
 
+## BEA-v1-FRK-C RankPack builder experiment 发现
+
+- **BEA-v1-FRK-C RankPack Builder Experiment 已实现**：default status `frk_c_unavailable_no_explicit_rankpack_experiment_opt_in`，success status `frk_c_rankpack_builder_experiment_complete_frk_d_incremental_update_benchmark_authorized`，self-test `45/45`，FRK-B checkpoint `11f9cf8`。
+- **Candidate source**：FRK-B retrieve_fast。
+- **Pack arms**：raw_score_order_pack、file_dedup_pack、ast_span_priority_pack、path_symbol_balanced_pack、diversity_budget_pack。
+- **Label boundary**：private labels score only after pack construction。
+- **Public boundary**：aggregate-only report。
+- **Stop/go**：只授权 BEA-v1-FRK-D Incremental Update Benchmark。
+
 ## BEA-v1-HAAE-R2BV explicit local outcome-aligned repair experiment 发现
 
 - **BEA-v1-HAAE-R2BV Evidence-Pair Support Explicit Local Outcome-Aligned Repair Experiment 已实现**：default status `haae_r2bv_unavailable_no_explicit_local_outcome_aligned_repair_experiment_opt_in`，signal status `haae_r2bv_explicit_local_outcome_aligned_repair_experiment_complete_r2bw_public_audit_authorized_inconclusive`，self-test `41/41`，R2BU checkpoint `1666a00`，R2BS checkpoint `71f3377`。 R2BV explicit result is inconclusive: support/control separation and outcome-alignment coverage are evaluable, but no separation claim is made; no material generation; no source/candidate/corpus scan.
