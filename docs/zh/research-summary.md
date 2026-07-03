@@ -8,9 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## BEA-v1-LDI-A derived index smoke benchmark 发现
+
+- **BEA-v1-LDI-A Derived Index Smoke Benchmark 已实现**：default status `ldi_a_unavailable_no_explicit_derived_index_smoke_opt_in`，go status `ldi_a_derived_index_smoke_complete_ldi_b_local_llm_or_tag_expansion_authorized`，no-go status `ldi_a_no_go_no_lift_over_best_baseline`，baseline-sufficient status `ldi_a_stop_derived_index_route_baseline_sufficient`，self-test `48/48`，source FRK-F checkpoint `63528e8`。
+- **Variants**：bm25_like_baseline、rrf_like_baseline、path_symbol_baseline、frk_b_retrieve_fast_baseline、ldi_derived_index_variant。
+- **Derived metadata != Evidence**：counted hits rematerialize current source path/range/hash。
+- **Public boundary**：aggregate-only。
+
 ## BEA-v1-FRK-F failure decomposition 发现
 
-- **BEA-v1-FRK-F Failure Decomposition 已完成**：default status `frk_f_unavailable_no_explicit_failure_decomposition_opt_in`，route-stop status `frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient`，self-test `46/46`，FRK-E checkpoint `76ce2ca`。
+- **BEA-v1-FRK-F Failure Decomposition 已完成**：default status `frk_f_unavailable_no_explicit_failure_decomposition_opt_in`，route-stop status `frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient`，self-test `48/48`，FRK-E checkpoint `76ce2ca`。
 - **Variants**：bm25_like_baseline_pack、rrf_like_baseline_pack、frk_b_retrieve_fast_raw_pack、frk_c_rankpack_builder_pack。
 - **Mechanisms**：first_file_miss、best_baseline_already_strong、candidate_pool_limit、pack_ordering_loss、budget_waste、redundancy_penalty、wrong_file_risk、proxy_label_limitation、evidencecore_not_cause、latency_not_cause、frk_c_pack_not_helping_raw_frk_b、rrf_dominates_frk_route。
 - **Boundary**：aggregate-only public output；no runtime/default/method/scale/RPM/CI/network/provider/FastContext/raw traces。
@@ -39,7 +46,7 @@ research conclusion is summarized first.
 
 ## BEA-v1-FRK-C RankPack builder experiment 发现
 
-- **BEA-v1-FRK-C RankPack Builder Experiment 已实现**：default status `frk_c_unavailable_no_explicit_rankpack_experiment_opt_in`，success status `frk_c_rankpack_builder_experiment_complete_frk_d_incremental_update_benchmark_authorized`，self-test `45/45`，FRK-B checkpoint `11f9cf8`。
+- **BEA-v1-FRK-C RankPack Builder Experiment 已实现**：default status `frk_c_unavailable_no_explicit_rankpack_experiment_opt_in`，success status `frk_c_rankpack_builder_experiment_complete_frk_d_incremental_update_benchmark_authorized`，self-test `48/48`，FRK-B checkpoint `11f9cf8`。
 - **Candidate source**：FRK-B retrieve_fast。
 - **Pack arms**：raw_score_order_pack、file_dedup_pack、ast_span_priority_pack、path_symbol_balanced_pack、diversity_budget_pack。
 - **Label boundary**：private labels score only after pack construction。

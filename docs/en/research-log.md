@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-03 — BEA-v1-LDI-A Derived Index Smoke Benchmark
+
+`eval/bea_v1_ldi_a_derived_index_smoke_benchmark.py` implements a local deterministic derived metadata index smoke on R14-S. Default status is `ldi_a_unavailable_no_explicit_derived_index_smoke_opt_in`; go status is `ldi_a_derived_index_smoke_complete_ldi_b_local_llm_or_tag_expansion_authorized`; no-go status is `ldi_a_no_go_no_lift_over_best_baseline`; baseline-sufficient status is `ldi_a_stop_derived_index_route_baseline_sufficient`; self-test `48/48`; source FRK-F checkpoint `63528e8`.
+
+Variants: bm25_like_baseline, rrf_like_baseline, path_symbol_baseline, frk_b_retrieve_fast_baseline, ldi_derived_index_variant. Derived metadata != Evidence; counted hits rematerialize current source path/range/hash. Public output is aggregate-only.
+
 ## 2026-07-03 — BEA-v1-FRK-F Failure Decomposition
 
 `eval/bea_v1_frk_f_failure_decomposition.py` decomposes the FRK-E no-go result using private FRK-E traces and private R14 labels in explicit mode. Default status is `frk_f_unavailable_no_explicit_failure_decomposition_opt_in`; route-stop status is `frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient`; self-test `50/50`; source FRK-E checkpoint `76ce2ca` with status `frk_e_no_go_no_proxy_lift_over_best_baseline`.
@@ -20,7 +26,7 @@ Index components: sparse_term_index, symbol_name_index, path_filename_config_ind
 
 ## 2026-07-03 — BEA-v1-FRK-C RankPack Builder Experiment
 
-`eval/bea_v1_frk_c_rankpack_builder_experiment.py` implements a concrete executable FRK RankPack experiment. Default status is `frk_c_unavailable_no_explicit_rankpack_experiment_opt_in`; success status is `frk_c_rankpack_builder_experiment_complete_frk_d_incremental_update_benchmark_authorized`; self-test `45/45`; FRK-B checkpoint `11f9cf8`.
+`eval/bea_v1_frk_c_rankpack_builder_experiment.py` implements a concrete executable FRK RankPack experiment. Default status is `frk_c_unavailable_no_explicit_rankpack_experiment_opt_in`; success status is `frk_c_rankpack_builder_experiment_complete_frk_d_incremental_update_benchmark_authorized`; self-test `48/48`; FRK-B checkpoint `11f9cf8`.
 
 Candidate source is FRK-B retrieve_fast. Pack arms: raw_score_order_pack, file_dedup_pack, ast_span_priority_pack, path_symbol_balanced_pack, diversity_budget_pack. Private labels score only after pack construction; private per-query RankPack traces are written under ignored storage. Public report is aggregate-only. Stop/go authorizes only BEA-v1-FRK-D Incremental Update Benchmark.
 
@@ -3928,7 +3934,7 @@ records are deferred to a later D2 calibration phase.
 
 ```text
 python3 -m py_compile eval/d1_dual_rubric_relevance.py   => PASS
-python3 eval/d1_dual_rubric_relevance.py --self-test     => PASS (46/46 checks)
+python3 eval/d1_dual_rubric_relevance.py --self-test     => PASS (48/48 checks)
 python3 eval/d1_dual_rubric_relevance.py \
   --out artifacts/d1_dual_rubric_relevance/\
 d1_dual_rubric_relevance_report.json                     => PASS

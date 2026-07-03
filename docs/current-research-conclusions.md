@@ -32,3 +32,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 - 中文：[`docs/zh/bea-v1-frk-e-downstream-utility-probe.md`](zh/bea-v1-frk-e-downstream-utility-probe.md)
 - English: [`docs/en/bea-v1-frk-f-failure-decomposition.md`](en/bea-v1-frk-f-failure-decomposition.md)
 - 中文：[`docs/zh/bea-v1-frk-f-failure-decomposition.md`](zh/bea-v1-frk-f-failure-decomposition.md)
+
+## Latest LDI detail / 最新 LDI 详情
+
+- English: [`docs/en/bea-v1-ldi-a-derived-index-smoke-benchmark.md`](en/bea-v1-ldi-a-derived-index-smoke-benchmark.md)
+- 中文：[`docs/zh/bea-v1-ldi-a-derived-index-smoke-benchmark.md`](zh/bea-v1-ldi-a-derived-index-smoke-benchmark.md)
