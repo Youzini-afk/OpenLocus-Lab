@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-HAAE-SF Action Scheduler Failure Decomposition
+
+[Detail](bea-v1-haae-sf-action-scheduler-failure-decomposition.md) / [report](../../artifacts/bea_v1_haae_sf_action_scheduler_failure_decomposition/bea_v1_haae_sf_action_scheduler_failure_decomposition_report.json). Status `haae_sf_action_scheduler_failure_decomposition_complete_stop_track_b_simple_scheduler_route`; self-test `41/41`; source lock HAAE-S checkpoint `5a49c90`, status `haae_s_no_go_scheduler_no_lift_over_fixed_baselines`; fixed_baseline_saturation_high; state_feature_gap_unknown_public_aggregate_only; oracle_gap_private_only; decision stop_track_b_simple_scheduler_route; HAAE-SG state-feature redesign smoke authorized = false; no RPM/provider/network/CI/runtime/default/candidate generation/policy change/new traces/raw publication.
+
 ## 2026-07-03 — BEA-v1-HAAE-S Action Scheduler Smoke
 
 [Detail](bea-v1-haae-s-action-scheduler-smoke.md) / [report](../../artifacts/bea_v1_haae_s_action_scheduler_smoke/bea_v1_haae_s_action_scheduler_smoke_report.json).
@@ -148,13 +152,13 @@ R2BH is public-only audit/package, read only R2BG public artifact, no private ro
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
 
-`eval/bea_v1_haae_r2bf_evidence_pair_support_redesigned_material_public_audit_package.py` audits only the R2BE public artifact. Status is `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`; self-test `40/40`; R2BE checkpoint `c3901d6`; R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`.
+`eval/bea_v1_haae_r2bf_evidence_pair_support_redesigned_material_public_audit_package.py` audits only the R2BE public artifact. Status is `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`; self-test `41/41`; R2BE checkpoint `c3901d6`; R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`.
 
 Scope: public-only audit; read only R2BE public artifact. Audit locks explicit local generation, all_required_groups_present, matched_hard_negative_control, path_token_matched_control, bounds satisfied, gold isolation, no experiment metrics, and aggregate-only publication. Stop/go authorizes only BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment.
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
 
-`eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` completed the explicit local redesigned material generation phase. default status is `haae_r2be_unavailable_no_explicit_material_generation_opt_in`; explicit status is `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`; self-test `40/40`; R2BD checkpoint `fa6119b`; R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`.
+`eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` completed the explicit local redesigned material generation phase. default status is `haae_r2be_unavailable_no_explicit_material_generation_opt_in`; explicit status is `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`; self-test `41/41`; R2BD checkpoint `fa6119b`; R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`.
 
 default mode has no private read/write/material generation/source scan. explicit local redesigned material generation requires operator-provided public source allowlist and explicit private output root. Required groups include redesigned_task_frame and redesigned_control_pair_material; controls include matched_hard_negative_control and path_token_matched_control; gold eval-only; no experiment metrics; aggregate-only public report. Stop/go authorizes only BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package.
 
@@ -11370,12 +11374,12 @@ they do not contradict CI `28272769423`.
 ### Result
 
 Status: `n2_rank_pack_actionability_decomposition_pass`. D2 reconstructed exactly
-(`40/40`) and all rows were classified. First gold-file rank bucket was
-`rank_21_50=40/40`. Top-20 recovery was `0/40`; top-50 and top-100 recovery were
-`40/40`; unique-file top-10 recovery was `0/40`; evidence was materializable for
-`40/40`; hard-cap violations were `0`; scanner status was `pass`.
+(`41/41`) and all rows were classified. First gold-file rank bucket was
+`rank_21_50=41/41`. Top-20 recovery was `0/40`; top-50 and top-100 recovery were
+`41/41`; unique-file top-10 recovery was `0/40`; evidence was materializable for
+`41/41`; hard-cap violations were `0`; scanner status was `pass`.
 
-Primary blocker: `extra_depth_append_blocked=40/40`.
+Primary blocker: `extra_depth_append_blocked=41/41`.
 
 ### Decision
 
@@ -11400,7 +11404,7 @@ Local checkpoint `76ebd32` added the evaluator/workflow/default artifact/docs.
 Manual CI `28278662782` completed green with public status
 `n3_merge_order_design_inconclusive`.
 
-The validated artifact reconstructed D3 exactly (`40/40`), wrote private
+The validated artifact reconstructed D3 exactly (`41/41`), wrote private
 manifests under `/tmp` only, and passed public scanning. Simulation outcomes:
 
 - frozen P4 order: `0/40` recovered into top-10;
@@ -11679,7 +11683,7 @@ The latest active state is N10ES:
 - N10ER CI run `28457213423` succeeded on `canary_small_heldout`.
 - Status: `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`.
 - Sample: `80` public tasks, `60` scored, `40` with gold, citation validity `7772/7772`, heldout overlap `0`.
-- Arms: baseline `37/39/40/40`, full `36/39/40/40`, guard `38/39/40/40`, diffaware `37/39/40/40`.
+- Arms: baseline `37/39/41/41`, full `36/39/41/41`, guard `38/39/41/41`, diffaware `37/39/41/41`.
 - Risk bucket was sufficient (`26` tasks), but the low-novelty strong-baseline displacement signal did not reproduce: risk-bucket full/guard/diffaware losses were `0/0/0`.
 
 N10ES locks this as a **valid bounded public-CI research negative**, not an infrastructure failure and not evidence for promotion. It authorizes only **N10ET public design/decision**. It does not authorize N10ER rerun, threshold tuning, new policy experiments, guard/full/diffaware promotion, runtime/default changes, method-winner claims, downstream/scaled retrieval, provider/model network, or raw diagnostic publication.
@@ -11697,7 +11701,7 @@ Close the BEA-v1-N10E safety-probe branch as a public-only design/decision phase
 
 ### Result
 
-`eval/bea_v1_n10et_public_safety_probe_design_decision.py` generated `artifacts/bea_v1_n10et_public_safety_probe_design_decision/bea_v1_n10et_public_safety_probe_design_decision_report.json` with status `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`. Self-test passed `74/74`, forbidden scan passed, private input reads `0`, retrieval executions `0`, recomputes `0`, CI reruns `0`, candidate generations `0`. N10ES/N10ER source locked: N10ES checkpoint `8c04a0a`, N10ER checkpoint `c8fd353`, CI run `28457213423` (head `2e7894e`), status `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` and `n10es_public_safety_probe_audit_package_complete_n10et_authorized`, sample `80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/40/40`, full `36/39/40/40` lost `1`, guard `38/39/40/40` lost `0`, diffaware `37/39/40/40` lost `1`, risk bucket `task_count=26`, losses `0/0/0`, `guard_would_preserve_full_loss_count=0` all match. The phase reads only public artifacts/docs/current conclusions/research logs/README and git metadata; it performs no execution, no private reads, no CI rerun, no retrieval/recompute, and no candidate generation.
+`eval/bea_v1_n10et_public_safety_probe_design_decision.py` generated `artifacts/bea_v1_n10et_public_safety_probe_design_decision/bea_v1_n10et_public_safety_probe_design_decision_report.json` with status `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`. Self-test passed `74/74`, forbidden scan passed, private input reads `0`, retrieval executions `0`, recomputes `0`, CI reruns `0`, candidate generations `0`. N10ES/N10ER source locked: N10ES checkpoint `8c04a0a`, N10ER checkpoint `c8fd353`, CI run `28457213423` (head `2e7894e`), status `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` and `n10es_public_safety_probe_audit_package_complete_n10et_authorized`, sample `80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/41/41`, full `36/39/41/41` lost `1`, guard `38/39/41/41` lost `0`, diffaware `37/39/41/41` lost `1`, risk bucket `task_count=26`, losses `0/0/0`, `guard_would_preserve_full_loss_count=0` all match. The phase reads only public artifacts/docs/current conclusions/research logs/README and git metadata; it performs no execution, no private reads, no CI rerun, no retrieval/recompute, and no candidate generation.
 
 Three close-out decisions are recorded: BEA-v1-N10E/difference-aware remains a local same-source hypothesis; N10ER/N10ES are a valid public held-out negative (valid research negative, not CI failure); and no guard/full/diffaware promotion, no threshold tuning, no N10ER rerun, no CI variant execution, no selector/reranker execution, no new policy experiment, no runtime/default change, no method-winner claim, no downstream/scaled retrieval, no raw diagnostic publication. The phase designs and authorizes only the next route: **BEA-v1-HAAE-R0 — Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight**, a public-only, design-only schema preflight that is explicitly **not** BEA-v1-A, not selector-only, not selector/reranker execution, not P5, and not a runtime/default promotion.
 

@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-HAAE-SF Action Scheduler Failure Decomposition
+
+[Detail](bea-v1-haae-sf-action-scheduler-failure-decomposition.md) / [report](../../artifacts/bea_v1_haae_sf_action_scheduler_failure_decomposition/bea_v1_haae_sf_action_scheduler_failure_decomposition_report.json)。Status `haae_sf_action_scheduler_failure_decomposition_complete_stop_track_b_simple_scheduler_route`；self-test `41/41`；source lock HAAE-S checkpoint `5a49c90`，status `haae_s_no_go_scheduler_no_lift_over_fixed_baselines`；fixed_baseline_saturation_high；state_feature_gap_unknown_public_aggregate_only；oracle_gap_private_only；decision stop_track_b_simple_scheduler_route；HAAE-SG state-feature redesign smoke authorized = false；no RPM/provider/network/CI/runtime/default/candidate generation/policy change/new traces/raw publication。
+
 ## 2026-07-03 — BEA-v1-HAAE-S Action Scheduler Smoke
 
 [Detail](bea-v1-haae-s-action-scheduler-smoke.md) / [report](../../artifacts/bea_v1_haae_s_action_scheduler_smoke/bea_v1_haae_s_action_scheduler_smoke_report.json)。
@@ -148,13 +152,13 @@ R2BH 是 public-only audit/package，read only R2BG public artifact，no private
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package
 
-`eval/bea_v1_haae_r2bf_evidence_pair_support_redesigned_material_public_audit_package.py` 只审计 R2BE public artifact。Status 为 `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`；self-test `40/40`；R2BE checkpoint `c3901d6`；R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`。
+`eval/bea_v1_haae_r2bf_evidence_pair_support_redesigned_material_public_audit_package.py` 只审计 R2BE public artifact。Status 为 `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`；self-test `41/41`；R2BE checkpoint `c3901d6`；R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`。
 
 Scope：public-only audit；read only R2BE public artifact。Audit locks explicit local generation、all_required_groups_present、matched_hard_negative_control、path_token_matched_control、bounds satisfied、gold isolation、no experiment metrics、aggregate-only publication。Stop/go 只授权 BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment。
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation
 
-`eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` 完成 explicit local redesigned material generation 阶段。default status 为 `haae_r2be_unavailable_no_explicit_material_generation_opt_in`；explicit status 为 `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`；self-test `40/40`；R2BD checkpoint `fa6119b`；R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`。
+`eval/bea_v1_haae_r2be_evidence_pair_support_explicit_local_redesigned_material_generation.py` 完成 explicit local redesigned material generation 阶段。default status 为 `haae_r2be_unavailable_no_explicit_material_generation_opt_in`；explicit status 为 `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`；self-test `41/41`；R2BD checkpoint `fa6119b`；R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`。
 
 default mode 无 private read/write/material generation/source scan。no private read/write/material generation/source scan。explicit local redesigned material generation requires operator-provided public source allowlist and explicit private output root。Required groups include redesigned_task_frame and redesigned_control_pair_material；controls include matched_hard_negative_control and path_token_matched_control；gold eval-only；no experiment metrics；aggregate-only public report。Stop/go 只授权 BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package。
 
@@ -10569,13 +10573,13 @@ checkpoint `a5b519b` 修复了该 bug。Rerun `28275921872` 与 `28277110197` �
 
 ### 结果
 
-Status：`n2_rank_pack_actionability_decomposition_pass`。D2 精确重建（`40/40`），且所有
-rows 已分类。First gold-file rank bucket 为 `rank_21_50=40/40`。Top-20 recovery 为
-`0/40`；top-50 与 top-100 recovery 均为 `40/40`；unique-file top-10 recovery 为
-`0/40`；evidence materializable 为 `40/40`；hard-cap violations 为 `0`；scanner status
+Status：`n2_rank_pack_actionability_decomposition_pass`。D2 精确重建（`41/41`），且所有
+rows 已分类。First gold-file rank bucket 为 `rank_21_50=41/41`。Top-20 recovery 为
+`0/40`；top-50 与 top-100 recovery 均为 `41/41`；unique-file top-10 recovery 为
+`0/40`；evidence materializable 为 `41/41`；hard-cap violations 为 `0`；scanner status
 为 `pass`。
 
-Primary blocker：`extra_depth_append_blocked=40/40`。
+Primary blocker：`extra_depth_append_blocked=41/41`。
 
 ### 决策
 
@@ -10597,7 +10601,7 @@ records 从 rank 21-50 移入 top-10。
 Local checkpoint `76ebd32` 新增 evaluator/workflow/default artifact/docs。Manual CI
 `28278662782` 绿色完成，public status 为 `n3_merge_order_design_inconclusive`。
 
-Validated artifact 精确重建 D3（`40/40`），private manifests 只写在 `/tmp`，public scan
+Validated artifact 精确重建 D3（`41/41`），private manifests 只写在 `/tmp`，public scan
 通过。Simulation outcomes：
 
 - frozen P4 order：`0/40` recovered into top-10；
@@ -10868,7 +10872,7 @@ c8fd353 feat(eval): record N10ER CI safety probe result
 - N10ER CI run `28457213423` 在 `canary_small_heldout` 上成功。
 - 状态：`n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`。
 - 样本：`80` public tasks，`60` scored，`40` with gold，citation validity `7772/7772`，heldout overlap `0`。
-- Arms：baseline `37/39/40/40`，full `36/39/40/40`，guard `38/39/40/40`，diffaware `37/39/40/40`。
+- Arms：baseline `37/39/41/41`，full `36/39/41/41`，guard `38/39/41/41`，diffaware `37/39/41/41`。
 - risk bucket 足够大（`26` tasks），但 low-novelty strong-baseline displacement signal 没复现：bucket 内 full/guard/diffaware losses 为 `0/0/0`。
 
 N10ES 将其锁定为**有效 bounded public-CI research negative**，不是基础设施失败，也不是 promotion 证据。它只授权 **N10ET public design/decision**。不授权 N10ER rerun、threshold tuning、新 policy experiments、guard/full/diffaware promotion、runtime/default changes、method-winner claims、downstream/scaled retrieval、provider/model network 或 raw diagnostic publication。
@@ -10886,7 +10890,7 @@ N10ES 将其锁定为**有效 bounded public-CI research negative**，不是基�
 
 ### 结果
 
-`eval/bea_v1_n10et_public_safety_probe_design_decision.py` 生成 `artifacts/bea_v1_n10et_public_safety_probe_design_decision/bea_v1_n10et_public_safety_probe_design_decision_report.json`，状态为 `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`。Self-test 通过 `74/74`，forbidden scan 通过，private input reads `0`，retrieval executions `0`，recomputes `0`，CI reruns `0`，candidate generations `0`。N10ES/N10ER source 已锁定：N10ES checkpoint `8c04a0a`，N10ER checkpoint `c8fd353`，CI run `28457213423`（head `2e7894e`），status `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` 与 `n10es_public_safety_probe_audit_package_complete_n10et_authorized`，sample `80/60/40`，`overlap_zero`，citation `7772/7772`，baseline `37/39/40/40`，full `36/39/40/40` lost `1`，guard `38/39/40/40` lost `0`，diffaware `37/39/40/40` lost `1`，risk bucket `task_count=26`，losses `0/0/0`，`guard_would_preserve_full_loss_count=0` 均匹配。该阶段只读取 public artifacts/docs/current conclusions/research logs/README 与 git metadata；不进行任何 execution、private reads、CI rerun、retrieval/recompute 或 candidate generation。
+`eval/bea_v1_n10et_public_safety_probe_design_decision.py` 生成 `artifacts/bea_v1_n10et_public_safety_probe_design_decision/bea_v1_n10et_public_safety_probe_design_decision_report.json`，状态为 `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`。Self-test 通过 `74/74`，forbidden scan 通过，private input reads `0`，retrieval executions `0`，recomputes `0`，CI reruns `0`，candidate generations `0`。N10ES/N10ER source 已锁定：N10ES checkpoint `8c04a0a`，N10ER checkpoint `c8fd353`，CI run `28457213423`（head `2e7894e`），status `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` 与 `n10es_public_safety_probe_audit_package_complete_n10et_authorized`，sample `80/60/40`，`overlap_zero`，citation `7772/7772`，baseline `37/39/41/41`，full `36/39/41/41` lost `1`，guard `38/39/41/41` lost `0`，diffaware `37/39/41/41` lost `1`，risk bucket `task_count=26`，losses `0/0/0`，`guard_would_preserve_full_loss_count=0` 均匹配。该阶段只读取 public artifacts/docs/current conclusions/research logs/README 与 git metadata；不进行任何 execution、private reads、CI rerun、retrieval/recompute 或 candidate generation。
 
 记录三条收尾决策：BEA-v1-N10E/difference-aware 仍是 local same-source hypothesis；N10ER/N10ES 是有效 public held-out negative（有效 research negative，不是 CI failure）；不推广 guard/full/diffaware，不调阈值，不 rerun N10ER，不执行 CI variant，不执行 selector/reranker，不做新 policy experiment，不改 runtime/default，不 claim method-winner，不做 downstream/scaled retrieval，不发布 raw diagnostic。该阶段设计并只授权下一 route：**BEA-v1-HAAE-R0 —— Hierarchical Actionable Evidence Acquisition Route Design / Schema Preflight**，一个 public-only、design-only 的 schema preflight，明确 **不是** BEA-v1-A、不是 selector-only、不是 selector/reranker execution、不是 P5、不是 runtime/default promotion。
 

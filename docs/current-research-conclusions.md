@@ -23,11 +23,9 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Latest HAAE detail / 最新 HAAE 详情
 
-- English: [`docs/en/bea-v1-haae-s-action-scheduler-smoke.md`](en/bea-v1-haae-s-action-scheduler-smoke.md)
-- 中文：[`docs/zh/bea-v1-haae-s-action-scheduler-smoke.md`](zh/bea-v1-haae-s-action-scheduler-smoke.md)
-- Report / 报告: [`artifacts/bea_v1_haae_s_action_scheduler_smoke/bea_v1_haae_s_action_scheduler_smoke_report.json`](../artifacts/bea_v1_haae_s_action_scheduler_smoke/bea_v1_haae_s_action_scheduler_smoke_report.json)
-- English: [`docs/en/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md`](en/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md)
-- 中文：[`docs/zh/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md`](zh/bea-v1-haae-r2bv-evidence-pair-support-explicit-local-outcome-aligned-repair-experiment.md)
+- English: [`docs/en/bea-v1-haae-sf-action-scheduler-failure-decomposition.md`](en/bea-v1-haae-sf-action-scheduler-failure-decomposition.md)
+- 中文：[`docs/zh/bea-v1-haae-sf-action-scheduler-failure-decomposition.md`](zh/bea-v1-haae-sf-action-scheduler-failure-decomposition.md)
+- Report / 报告: [`artifacts/bea_v1_haae_sf_action_scheduler_failure_decomposition/bea_v1_haae_sf_action_scheduler_failure_decomposition_report.json`](../artifacts/bea_v1_haae_sf_action_scheduler_failure_decomposition/bea_v1_haae_sf_action_scheduler_failure_decomposition_report.json)
 
 ## Latest FRK detail / 最新 FRK 详情
 

@@ -1,5 +1,7 @@
 # OpenLocus
 
+BEA-v1-HAAE-SF Action Scheduler Failure Decomposition: [EN](docs/en/bea-v1-haae-sf-action-scheduler-failure-decomposition.md) / [ZH](docs/zh/bea-v1-haae-sf-action-scheduler-failure-decomposition.md) / [report](artifacts/bea_v1_haae_sf_action_scheduler_failure_decomposition/bea_v1_haae_sf_action_scheduler_failure_decomposition_report.json). Status `haae_sf_action_scheduler_failure_decomposition_complete_stop_track_b_simple_scheduler_route`; self-test `41/41`; source lock HAAE-S checkpoint `5a49c90`, status `haae_s_no_go_scheduler_no_lift_over_fixed_baselines`; fixed_baseline_saturation_high; state_feature_gap_unknown_public_aggregate_only; oracle_gap_private_only; decision stop_track_b_simple_scheduler_route; HAAE-SG state-feature redesign smoke authorized = false; no RPM/provider/network/CI/runtime/default/candidate generation/policy change/new traces/raw publication.
+
 BEA-v1-HAAE-S Action Scheduler Smoke: [EN](docs/en/bea-v1-haae-s-action-scheduler-smoke.md) / [ZH](docs/zh/bea-v1-haae-s-action-scheduler-smoke.md) / [report](artifacts/bea_v1_haae_s_action_scheduler_smoke/bea_v1_haae_s_action_scheduler_smoke_report.json).
 
 BEA-v1-LDI-A Derived Index Smoke Benchmark is implemented: default status `ldi_a_unavailable_no_explicit_derived_index_smoke_opt_in`, go status `ldi_a_derived_index_smoke_complete_ldi_b_local_llm_or_tag_expansion_authorized`, no-go status `ldi_a_no_go_no_lift_over_best_baseline`, baseline-sufficient status `ldi_a_stop_derived_index_route_baseline_sufficient`, self-test `48/48`, source FRK-F checkpoint `63528e8` status `frk_f_stop_current_frk_b_c_pack_route_baseline_sufficient`. Variants: bm25_like_baseline, rrf_like_baseline, path_symbol_baseline, frk_b_retrieve_fast_baseline, ldi_derived_index_variant. Derived metadata != Evidence; counted hits rematerialize current source path/range/hash. Public output is aggregate-only.
@@ -38,8 +40,8 @@ strongest?”; it is:
 `8c04a0a`) packaged the N10ER bounded public CI score/guard safety probe as a
 valid public held-out negative — CI run `28457213423`, status
 `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`, sample
-`80/60/40`, citation `7772/7772`, baseline `37/39/40/40`, full `36/39/40/40`,
-guard `38/39/40/40`, diffaware `37/39/40/40`, risk bucket `task_count=26`,
+`80/60/40`, citation `7772/7772`, baseline `37/39/41/41`, full `36/39/41/41`,
+guard `38/39/41/41`, diffaware `37/39/41/41`, risk bucket `task_count=26`,
 losses `0/0/0` — and authorized only N10ET. N10ET (close-out design/decision,
 checkpoint `26d817e`, status
 `n10et_public_safety_probe_design_decision_complete_haae_r0_authorized`) then
@@ -606,8 +608,8 @@ no private directories, CI raw logs, repo clones, raw
 candidates/orders/labels/paths/queries/tasks/repos, per-task diagnostics, or
 N10EO private rerun data. It locks the N10ER result (status
 `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized`, sample
-`80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/40/40`, full
-`36/39/40/40` lost `1`, guard `38/39/40/40` lost `0`, diffaware `37/39/40/40`
+`80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/41/41`, full
+`36/39/41/41` lost `1`, guard `38/39/41/41` lost `0`, diffaware `37/39/41/41`
 lost `1`, risk bucket `task_count=26`, losses `0/0/0`,
 `guard_would_preserve_full_loss_count=0`), re-expresses those aggregates as
 `n10er_metric_audit_records` (`recomputed_bool=false`, all
@@ -659,8 +661,8 @@ N10EO private rerun data. It locks the N10ES/N10ER public facts (CI run
 `28457213423`, status
 `n10er_safety_probe_complete_no_signal_reproduced_n10es_authorized` and
 `n10es_public_safety_probe_audit_package_complete_n10et_authorized`, sample
-`80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/40/40`, full
-`36/39/40/40` lost `1`, guard `38/39/40/40` lost `0`, diffaware `37/39/40/40`
+`80/60/40`, `overlap_zero`, citation `7772/7772`, baseline `37/39/41/41`, full
+`36/39/41/41` lost `1`, guard `38/39/41/41` lost `0`, diffaware `37/39/41/41`
 lost `1`, risk bucket `task_count=26`, losses `0/0/0`,
 `guard_would_preserve_full_loss_count=0`), records the close-out decisions
 (N10E/difference-aware remains a local same-source hypothesis; N10ER/N10ES are
@@ -3303,9 +3305,9 @@ BEA-v1-HAAE-R2BC Evidence-Pair Support Mechanism Redesign Public Design Prefligh
 
 BEA-v1-HAAE-R2BD Evidence-Pair Support Redesigned Material Generation Public Design Preflight is complete: status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`, self-test `52/52`, R2BC checkpoint `2171b20`, R2BC status `haae_r2bc_evidence_pair_support_mechanism_redesign_public_design_preflight_complete_r2bd_redesigned_material_generation_public_design_preflight_authorized`, R2BB checkpoint `a624728`, R2BA checkpoint `f8984bf`, R2AZ checkpoint `72590e5`. future R2BE private schema groups include redesigned_task_frame and redesigned_control_pair_material; controls include matched_hard_negative_control and path_token_matched_control; bounds include target_tasks_16_to_20; source allowlist requires operator-provided public source allowlist; root safety requires root ownership and symlink safety; gold eval-only; material generation only; no robustness metrics; aggregate-only publication. Stop/go authorizes only BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation.
 
-BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation is complete after explicit local generation: default status `haae_r2be_unavailable_no_explicit_material_generation_opt_in`, explicit status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`, self-test `40/40`, R2BD checkpoint `fa6119b`, R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`. default mode: no private read/write/material generation/source scan. explicit local redesigned material generation requires operator-provided public source allowlist and explicit private output root. Required groups include redesigned_task_frame and redesigned_control_pair_material; controls include matched_hard_negative_control and path_token_matched_control; gold eval-only; no experiment metrics; aggregate-only public report. Stop/go authorizes only BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package.
+BEA-v1-HAAE-R2BE Evidence-Pair Support Explicit Local Redesigned Material Generation is complete after explicit local generation: default status `haae_r2be_unavailable_no_explicit_material_generation_opt_in`, explicit status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`, self-test `41/41`, R2BD checkpoint `fa6119b`, R2BD status `haae_r2bd_evidence_pair_support_redesigned_material_generation_public_design_preflight_complete_r2be_explicit_local_redesigned_material_generation_authorized`. default mode: no private read/write/material generation/source scan. explicit local redesigned material generation requires operator-provided public source allowlist and explicit private output root. Required groups include redesigned_task_frame and redesigned_control_pair_material; controls include matched_hard_negative_control and path_token_matched_control; gold eval-only; no experiment metrics; aggregate-only public report. Stop/go authorizes only BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package.
 
-BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package is complete: status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`, self-test `40/40`, R2BE checkpoint `c3901d6`, R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`. R2BF is public-only audit and read only R2BE public artifact. It locks explicit local generation, all_required_groups_present, matched_hard_negative_control, path_token_matched_control, bounds satisfied, gold isolation, no experiment metrics, and aggregate-only publication. Stop/go authorizes only BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment.
+BEA-v1-HAAE-R2BF Evidence-Pair Support Redesigned Material Public Audit Package is complete: status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`, self-test `41/41`, R2BE checkpoint `c3901d6`, R2BE status `haae_r2be_explicit_local_redesigned_material_generation_complete_r2bf_public_audit_authorized`. R2BF is public-only audit and read only R2BE public artifact. It locks explicit local generation, all_required_groups_present, matched_hard_negative_control, path_token_matched_control, bounds satisfied, gold isolation, no experiment metrics, and aggregate-only publication. Stop/go authorizes only BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment.
 
 BEA-v1-HAAE-R2BG Evidence-Pair Support Explicit Local Redesigned Material Experiment is complete after explicit local evaluation: default status `haae_r2bg_unavailable_no_explicit_local_redesigned_material_experiment_opt_in`, signal status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_signal_present`, artifact/weak status `haae_r2bg_explicit_local_redesigned_material_experiment_complete_r2bh_public_audit_authorized_artifact_or_weak_signal`, self-test `36/36`, R2BF checkpoint `322fbca`, R2BF status `haae_r2bf_evidence_pair_support_redesigned_material_public_audit_complete_r2bg_experiment_authorized`, R2BE checkpoint `c3901d6`. default mode has no private read. explicit mode reads existing R2BE private material and computes bucketized aggregate metrics with result buckets signal_present, artifact_or_weak_signal, mixed_or_inconclusive; explicit result artifact_or_weak_signal because outcome_eval_alignment_unavailable. Boundaries: no material generation, no source/candidate/corpus scan, no runtime/OpenLocus/retrieval. Stop/go authorizes only BEA-v1-HAAE-R2BH Evidence-Pair Support Redesigned Material Experiment Public Audit Package. R2BG gate/synthetic/readback exact integrity. R2BG explicit_local_experiment execution integrity.
 
