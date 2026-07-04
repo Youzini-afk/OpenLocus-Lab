@@ -18,6 +18,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Boundary**：公开报告只含 aggregate/schema；不公开 raw paths、task ids、queries、labels、snippets、hashes、prompts/responses、provider payloads、exact private values 或 rows。
 - **Stop/go**：只授权一个后续 executable phase：RPM-D0 trace capture 或 FRK product workflow benchmark；不授权 RPM training、heuristic route resurrection、broad source scan、candidate expansion、raw publication 或 default/method/scale/winner claims。
 
+## OpenLocus v2 RPM-D0 trace capture
+
+[Detail](openlocus-v2-rpm-d0-trace-capture.md) / [report](../../artifacts/rpm_d0_trace_capture/rpm_d0_trace_capture_report.json)。
+
+- **RPM-D0 已完成**：这是 executable local trace capture，不是 RPM training。
+- **Implementation**：`eval/rpm_d0_trace_capture.py` 提供 `--self-test`、`--run-local-trace-capture --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：执行前选择 bounded committed/local tasks；执行真实本地 OpenLocus `read_current_source` 与 `validate_evidence` actions；private state/action rows 通过 `eval/rpm_trace_schema.py` 校验。
+- **Boundary**：private JSONL rows 保留在 ignored `runs/` storage；公开报告仅含 aggregate buckets，不含 paths、queries、task ids、snippets、hashes、labels、prompts/responses、provider payloads、exact row values 或 raw rows。
+- **Stop/go**：只授权 `rpm_d1_bounded_offline_rpm_small_learning_smoke`；不授权 RPM training、FRK-J/B/C、FRK-I selector variants、LDI-B easy continuation、HAAE-SG/T、R2BV static support repair、provider/network/CI/runtime default、method/scale/winner/default claim 或 raw publication。
+
 ## BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
 
 [Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md)。

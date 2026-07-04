@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — OpenLocus v2 RPM-D0 Trace Capture
+
+[Detail](openlocus-v2-rpm-d0-trace-capture.md) / [report](../../artifacts/rpm_d0_trace_capture/rpm_d0_trace_capture_report.json). `eval/rpm_d0_trace_capture.py` executed real local OpenLocus `read_current_source` and `validate_evidence` actions over a bounded committed task set, wrote schema-valid private JSONL trace rows under ignored `runs/` storage, and published aggregate-only coverage/currentness/label/outcome/schema/privacy/stop-go buckets. Stop/go authorizes only `rpm_d1_bounded_offline_rpm_small_learning_smoke`; no RPM training, FRK-J/B/C, FRK-I selector variants, LDI-B easy continuation, HAAE-SG/T, R2BV static support repair, provider/network/CI/runtime default, method/scale/winner/default claim, raw publication, broad source scan, candidate expansion, or retrieval/pack rerun as a new algorithm.
+
 ## 2026-07-04 — OpenLocus v2 Phase 1 Route Closure + RPM Trace Schema
 
 [Route closure](current-route-closure.md) / [report](../../artifacts/rpm_trace_schema/rpm_trace_schema_report.json). `eval/rpm_trace_schema.py` implements strict RPM private state-action trace row validation, mutation self-tests, public report validation, and aggregate-only report regeneration. This phase closes stale heuristic routes and authorizes only one next executable schema-conformant private trace/product-workflow phase: RPM-D0 trace capture or FRK product workflow benchmark. No RPM training, FRK-J/FRK-B/C/LDI-B/HAAE-SG/T resurrection, broad source scan, candidate expansion, retrieval/pack rerun as new algorithm work, raw publication, or default/method/scale/winner/provider/network/CI/runtime-default claim.

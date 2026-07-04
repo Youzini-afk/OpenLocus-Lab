@@ -1,0 +1,99 @@
+{
+  "coverage_buckets": {
+    "action_coverage": {
+      "read_current_source": "count_2_to_5",
+      "validate_evidence": "count_6_to_20"
+    },
+    "episode_count_bucket": "count_2_to_5",
+    "evidencecore_currentness": {
+      "stale_rejected": "count_1",
+      "verified_current": "count_6_to_20"
+    },
+    "label_timing_isolation": {
+      "after_action": "count_6_to_20"
+    },
+    "outcome": {
+      "failure_bucket": "count_1",
+      "success_bucket": "count_6_to_20"
+    },
+    "required_action_types_present": [
+      "read_current_source",
+      "validate_evidence"
+    ],
+    "step_count_bucket": "count_6_to_20",
+    "task_count_bucket": "count_2_to_5"
+  },
+  "execution_attestation": {
+    "ci_execution": "local_manual_only",
+    "labels_joined_after_observation": "passed",
+    "local_openlocus_actions_executed": true,
+    "network_access": "no_network",
+    "rpm_training_executed": false,
+    "synthetic_rows_only": false,
+    "task_selection_before_execution": "passed"
+  },
+  "phase": "openlocus_v2_rpm_d0_trace_capture",
+  "privacy_contract": {
+    "exact_private_row_values_public": false,
+    "hashes_public": false,
+    "labels_public": false,
+    "prompts_or_responses_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_schema_only",
+    "queries_public": false,
+    "raw_paths_public": false,
+    "raw_publication": false,
+    "snippets_public": false,
+    "task_ids_public": false
+  },
+  "private_trace_manifest": {
+    "episode_count_bucket": "count_2_to_5",
+    "path_public": false,
+    "raw_rows_public": false,
+    "row_count_bucket": "count_6_to_20",
+    "storage_class": "ignored_repo_runs_private_jsonl",
+    "task_count_bucket": "count_2_to_5"
+  },
+  "schema_version": "rpm_d0_trace_capture_public_report_v1",
+  "status": "rpm_d0_trace_capture_complete_d1_smoke_authorized",
+  "stop_go": {
+    "authorized_next_phase": "rpm_d1_bounded_offline_rpm_small_learning_smoke",
+    "d0_must_not_train_rpm": true,
+    "decision": "go_d1_smoke_only",
+    "explicitly_forbidden": [
+      "broad_source_scan",
+      "candidate_generation_expansion",
+      "ci_claim",
+      "ci_default",
+      "default_claim",
+      "frk_b_c_resurrection",
+      "frk_i_selector_variants",
+      "frk_j",
+      "haae_sg",
+      "haae_t",
+      "ldi_b_easy_continuation",
+      "ldi_b_easy_slice_continuation",
+      "method_claim",
+      "network_claim",
+      "network_default",
+      "provider_claim",
+      "provider_default",
+      "r2bv_static_support_repair",
+      "raw_publication",
+      "retrieval_pack_rerun_new_algorithm",
+      "rpm_training",
+      "runtime_default",
+      "runtime_default_claim",
+      "scale_claim",
+      "winner_claim"
+    ],
+    "method_scale_winner_default_claims_allowed": false
+  },
+  "validation_summary": {
+    "privacy_leak_scan": "passed",
+    "private_manifest_count_proof_bucket": "count_6_to_20",
+    "private_storage_class": "ignored_repo_runs_private_jsonl",
+    "schema_error_bucket": "count_0",
+    "strict_trace_schema": "passed"
+  }
+}

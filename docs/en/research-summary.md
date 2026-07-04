@@ -18,6 +18,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Boundary**: aggregate/schema-only public report; no raw paths, task ids, queries, labels, snippets, hashes, prompts/responses, provider payloads, exact private values, or row publication.
 - **Stop/go**: authorize only one next executable phase: RPM-D0 trace capture or FRK product workflow benchmark; no RPM training, heuristic route resurrection, broad source scan, candidate expansion, raw publication, or default/method/scale/winner claims.
 
+## OpenLocus v2 RPM-D0 trace capture
+
+[Detail](openlocus-v2-rpm-d0-trace-capture.md) / [report](../../artifacts/rpm_d0_trace_capture/rpm_d0_trace_capture_report.json).
+
+- **RPM-D0 is complete** as executable local trace capture, not RPM training.
+- **Implementation**: `eval/rpm_d0_trace_capture.py` provides `--self-test`, `--run-local-trace-capture --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: bounded committed/local tasks were selected before execution; real local OpenLocus `read_current_source` and `validate_evidence` actions were executed; private state/action rows validate against `eval/rpm_trace_schema.py`.
+- **Boundary**: private JSONL rows stay under ignored `runs/` storage; the public report is aggregate-only with no paths, queries, task ids, snippets, hashes, labels, prompts/responses, provider payloads, exact row values, or raw rows.
+- **Stop/go**: authorize only `rpm_d1_bounded_offline_rpm_small_learning_smoke`; no RPM training, FRK-J/B/C, FRK-I selector variants, LDI-B easy continuation, HAAE-SG/T, R2BV static support repair, provider/network/CI/runtime default, method/scale/winner/default claim, or raw publication.
+
 ## BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
 
 [Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md).
