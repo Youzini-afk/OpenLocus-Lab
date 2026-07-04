@@ -2,6 +2,8 @@
 
 Date: 2026-07-04
 
+Latest v2 status (current): [OpenLocus v2 Current Route Closure](current-route-closure.md) / [report](../../artifacts/rpm_trace_schema/rpm_trace_schema_report.json). Phase 1 is complete as a route-closure and RPM trace-schema enabling phase. `eval/rpm_trace_schema.py` defines strict private state-action trace rows, validates required schema groups, closed enums, no unknown top-level keys, monotonic unique steps, label timing/isolation, label-blind state/action features, behavior-policy probability markers, EvidenceCore currentness, and aggregate-only public leak constraints. Stop/go authorizes only one next executable schema-conformant private trace/product-workflow phase: RPM-D0 trace capture or FRK product workflow benchmark. It does not authorize RPM training, heuristic route resurrection, broad source scan, candidate expansion, retrieval/pack rerun as new algorithm work, raw publication, or default/method/scale/winner/provider/network/CI/runtime-default claims.
+
 Latest FRK status (current): [BEA-v1-FRK-N Persistent Index Dirty-Update Hardening](bea-v1-frk-n-persistent-index-dirty-update-hardening.md). Checkpoint `09c3624`; code surface `crates/openlocus-index/src/persistent.rs`. Result: `status_index` and `dirty_index` now validate manifest paths before filesystem probing; unsafe indexed paths and symlink escapes become unclean/rebuild-or-update-required; skipped unsafe entries are not read outside the repo; single-path `update_index` rejects absolute/parent paths before probing. Full validation passed; @oracle Go. Decision: close the current bounded EvidenceCore/kernel hardening line; no further FRK phase is authorized without a concrete failing test, defect report, or product workflow pain. Boundary: no FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication.
 
 Latest FRK status (historical): [BEA-v1-FRK-M EvidenceCore Kernel Regression Expansion](bea-v1-frk-m-evidencecore-kernel-regression-expansion.md). Checkpoint `b8d970d`; code surface `crates/openlocus-index/src/persistent.rs`. Result: persistent-index currentness/path-safety regression coverage added for `Freshness::VerifiedCurrent`, stale/deleted/moved/line-insertion behavior, same-content duplicate rejection, unsafe FileRecord paths, unsafe indexed manifest paths, and symlink escape after build. Full validation passed; @oracle Go.
@@ -110,6 +112,8 @@ This file is the concise current conclusion. It is not the full chronology.
 The root `docs/current-research-conclusions.md` is only a bilingual index. Do not put status prose there.
 
 ## 1. Current bottom line
+
+OpenLocus v2 Phase 1 closes the current June-era route chain and replaces open-ended preflight continuation with a strict RPM state-action trace schema. The next step, if selected, must be executable schema-conformant private trace capture or a product-workflow benchmark with aggregate-only public reporting.
 
 OpenLocus has crossed from control-plane scaffolding into real empirical work. The project now has external benchmark runs, live-provider coding-agent runs, private per-record SCORE/event traces, and scanner-validated sanitized public analysis artifacts where license and safety boundaries allow them.
 

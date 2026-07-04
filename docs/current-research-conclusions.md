@@ -11,6 +11,12 @@ This root file is only a bilingual index. Do not put research status prose here.
 - English: [`docs/en/current-research-conclusions.md`](en/current-research-conclusions.md)
 - 中文：[`docs/zh/current-research-conclusions.md`](zh/current-research-conclusions.md)
 
+## Current route closure / 当前路线关闭
+
+- English: [`docs/en/current-route-closure.md`](en/current-route-closure.md)
+- 中文：[`docs/zh/current-route-closure.md`](zh/current-route-closure.md)
+- RPM schema report / RPM schema 报告: [`artifacts/rpm_trace_schema/rpm_trace_schema_report.json`](../artifacts/rpm_trace_schema/rpm_trace_schema_report.json)
+
 ## Long-form summaries / 长版总结
 
 - English: [`docs/en/research-summary.md`](en/research-summary.md)

@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 Phase 1 — Route closure + RPM trace schema
+
+[Route closure](current-route-closure.md) / [report](../../artifacts/rpm_trace_schema/rpm_trace_schema_report.json)。
+
+- **Phase 1 已完成**：这是 schema/closure-only enabling phase。
+- **Implementation**：`eval/rpm_trace_schema.py` 提供 `--self-test`、`--validate-report <path>`，以及默认 aggregate report regeneration。
+- **Schema**：严格 private RPM state-action trace rows，required groups 包括 identity、task state、state features、action、policy learning support、observation/result、EvidenceCore linkage、outcome/label、privacy/execution、stop/go/source-lock readback。
+- **Boundary**：公开报告只含 aggregate/schema；不公开 raw paths、task ids、queries、labels、snippets、hashes、prompts/responses、provider payloads、exact private values 或 rows。
+- **Stop/go**：只授权一个后续 executable phase：RPM-D0 trace capture 或 FRK product workflow benchmark；不授权 RPM training、heuristic route resurrection、broad source scan、candidate expansion、raw publication 或 default/method/scale/winner claims。
+
 ## BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
 
 [Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md)。

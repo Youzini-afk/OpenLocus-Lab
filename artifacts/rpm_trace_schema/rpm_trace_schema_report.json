@@ -1,0 +1,183 @@
+{
+  "phase": "openlocus_v2_phase1_route_closure_rpm_trace_schema",
+  "privacy_contract": {
+    "network_or_ci_claims": false,
+    "private_identifiers_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_schema_only",
+    "raw_rows_public": false
+  },
+  "schema": {
+    "closed_enum_field_count_bucket": "count_21_to_50",
+    "required_constraints": [
+      "no_unknown_top_level_keys",
+      "closed_enums",
+      "unique_trace_step_ids",
+      "monotonic_step_ordering",
+      "labels_after_action_or_offline_only",
+      "state_action_label_blind",
+      "behavior_policy_probability_marker_required",
+      "evidencecore_currentness_required_when_linked",
+      "aggregate_only_publication",
+      "stop_go_fail_closed"
+    ],
+    "required_field_presence_buckets": {
+      "action": {
+        "action_feature_keys": "count_2_to_5",
+        "action_scope_bucket": "count_2_to_5",
+        "action_type": "count_2_to_5",
+        "candidate_generation_policy": "count_2_to_5",
+        "pack_policy": "count_2_to_5",
+        "retrieval_budget_bucket": "count_2_to_5",
+        "source_scan_scope": "count_2_to_5"
+      },
+      "evidencecore_linkage": {
+        "currentness_verification_status": "count_2_to_5",
+        "evidencecore_link_status": "count_2_to_5",
+        "evidencecore_required_bool": "count_2_to_5",
+        "materialization_status": "count_2_to_5",
+        "path_range_hash_private_only_bool": "count_2_to_5",
+        "stale_evidence_detected_bool": "count_2_to_5"
+      },
+      "observation_result": {
+        "evidence_delta_bucket": "count_2_to_5",
+        "failure_bucket": "count_2_to_5",
+        "latency_bucket": "count_2_to_5",
+        "observation_after_action_bool": "count_2_to_5",
+        "observation_status": "count_2_to_5",
+        "result_bucket": "count_2_to_5"
+      },
+      "outcome_label": {
+        "label_available_bool": "count_2_to_5",
+        "label_source": "count_2_to_5",
+        "label_timing": "count_2_to_5",
+        "label_used_in_state_or_action_bool": "count_2_to_5",
+        "outcome_bucket": "count_2_to_5"
+      },
+      "policy_learning_support": {
+        "action_probability": "count_2_to_5",
+        "action_probability_bucket": "count_2_to_5",
+        "behavior_policy_id": "count_2_to_5",
+        "behavior_policy_kind": "count_2_to_5",
+        "deterministic_bool": "count_2_to_5",
+        "eligible_actions_bucket": "count_2_to_5",
+        "propensity_available_bool": "count_2_to_5"
+      },
+      "privacy_execution": {
+        "ci_execution": "count_2_to_5",
+        "network_access": "count_2_to_5",
+        "private_trace_bool": "count_2_to_5",
+        "private_values_public_bool": "count_2_to_5",
+        "provider_payload_public_bool": "count_2_to_5",
+        "public_report_level": "count_2_to_5",
+        "raw_publication_bool": "count_2_to_5"
+      },
+      "state_features": {
+        "ambiguity_bucket": "count_2_to_5",
+        "candidate_count_bucket": "count_2_to_5",
+        "currentness_bucket": "count_2_to_5",
+        "dirty_state_bucket": "count_2_to_5",
+        "evidence_coverage_bucket": "count_2_to_5",
+        "features_label_blind_bool": "count_2_to_5",
+        "query_shape_bucket": "count_2_to_5",
+        "repo_size_bucket": "count_2_to_5"
+      },
+      "stop_go_source_locks_readback": {
+        "allowed_next_phase": "count_2_to_5",
+        "forbidden_next_phases": "count_2_to_5",
+        "overauthorization_bool": "count_2_to_5",
+        "readback_consistency_status": "count_2_to_5",
+        "source_lock_readback_status": "count_2_to_5"
+      },
+      "task_state": {
+        "current_route_status": "count_2_to_5",
+        "objective_bucket": "count_2_to_5",
+        "route_family": "count_2_to_5",
+        "source_lock_id": "count_2_to_5",
+        "task_bucket": "count_2_to_5",
+        "task_type": "count_2_to_5"
+      },
+      "trace_identity": {
+        "created_order_index": "count_2_to_5",
+        "episode_step_index": "count_2_to_5",
+        "runner_kind": "count_2_to_5",
+        "schema_version": "count_2_to_5",
+        "step_id": "count_2_to_5",
+        "trace_id": "count_2_to_5"
+      }
+    },
+    "required_groups": [
+      "trace_identity",
+      "task_state",
+      "state_features",
+      "action",
+      "policy_learning_support",
+      "observation_result",
+      "evidencecore_linkage",
+      "outcome_label",
+      "privacy_execution",
+      "stop_go_source_locks_readback"
+    ],
+    "row_schema_version": "rpm_state_action_trace_v2_phase1"
+  },
+  "schema_version": "rpm_trace_schema_public_report_v1",
+  "self_test": {
+    "checks_passed": 16,
+    "checks_total": 16,
+    "failed_checks": [],
+    "mutation_checks": [
+      "missing_field",
+      "bad_enum",
+      "stale_evidence_currentness_drift",
+      "label_leakage",
+      "public_leak",
+      "report_selftest_drop_fail",
+      "report_schema_group_drop_fail",
+      "report_status_drift_fail",
+      "report_selection_rule_drift_fail",
+      "overauthorization",
+      "report_stop_go_training_overauth_fail",
+      "duplicate_step",
+      "non_monotonic_order",
+      "unknown_top_level_key",
+      "fake_unconditional_validator_pass_prevention"
+    ],
+    "status": "passed"
+  },
+  "status": "complete_schema_and_route_closure_only",
+  "stop_go": {
+    "authorized_next_phase_options": [
+      "rpm_d0_trace_capture",
+      "frk_product_workflow_benchmark"
+    ],
+    "explicitly_not_authorized": [
+      "broad_source_scan",
+      "candidate_generation_expansion",
+      "ci_claim",
+      "default_claim",
+      "frk_b_c_resurrection",
+      "frk_j",
+      "haae_sg",
+      "haae_t",
+      "ldi_b_easy_slice_continuation",
+      "method_claim",
+      "network_claim",
+      "provider_claim",
+      "raw_publication",
+      "retrieval_pack_rerun_new_algorithm",
+      "rpm_training",
+      "runtime_default_claim",
+      "scale_claim",
+      "winner_claim"
+    ],
+    "next_phase_public_output": "aggregate_only_report",
+    "selection_rule": "choose_exactly_one_executable_schema_conformant_private_trace_or_product_workflow_benchmark_phase"
+  },
+  "validation_summary": {
+    "fake_pass_prevention": "passed",
+    "private_fixture_rows_validated_bucket": "count_2_to_5",
+    "public_leak_scan": "passed",
+    "route_closure_readback": "passed",
+    "strict_row_validation": "passed"
+  }
+}

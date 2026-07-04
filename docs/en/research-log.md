@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — OpenLocus v2 Phase 1 Route Closure + RPM Trace Schema
+
+[Route closure](current-route-closure.md) / [report](../../artifacts/rpm_trace_schema/rpm_trace_schema_report.json). `eval/rpm_trace_schema.py` implements strict RPM private state-action trace row validation, mutation self-tests, public report validation, and aggregate-only report regeneration. This phase closes stale heuristic routes and authorizes only one next executable schema-conformant private trace/product-workflow phase: RPM-D0 trace capture or FRK product workflow benchmark. No RPM training, FRK-J/FRK-B/C/LDI-B/HAAE-SG/T resurrection, broad source scan, candidate expansion, retrieval/pack rerun as new algorithm work, raw publication, or default/method/scale/winner/provider/network/CI/runtime-default claim.
+
 ## 2026-07-04 — BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
 
 [Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md). Checkpoint `09c3624`; code surface `crates/openlocus-index/src/persistent.rs`. `status_index` and `dirty_index` now validate manifest paths before filesystem probing; unsafe indexed paths/symlink escapes become unclean; skipped unsafe entries are not read outside the repo; single-path update rejects absolute/parent paths before probing. Full validation passed; @oracle Go. This closes the current bounded EvidenceCore/kernel hardening line unless a concrete failing test, defect report, or product workflow pain appears.
