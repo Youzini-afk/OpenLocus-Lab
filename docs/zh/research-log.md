@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype
+
+[Detail](bea-v1-frk-i-existing-trace-algorithm-design.md) / [report](../../artifacts/bea_v1_frk_i_existing_trace_algorithm_design/bea_v1_frk_i_existing_trace_algorithm_design_report.json)。Status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`；self-test `57/57`；FRK-H checkpoint `a95988f`；availability_weighted_rankpack_selector；neutral_no_lift；decision stop_existing_trace_algorithm_route_no_lift；FRK-J Existing-Trace Algorithm Validation authorized = false；aggregate-only；no new candidates/retrieval/source scan/pack rerun/new traces/scheduler policy change/RPM/provider/network/CI/runtime/default/method/scale/winner/raw publication。
+
 ## 2026-07-04 — BEA-v1-FRK-H Existing-Trace Wider-Suite Stress
 
 [Detail](bea-v1-frk-h-existing-trace-wider-suite-stress.md) / [report](../../artifacts/bea_v1_frk_h_existing_trace_wider_suite_stress/bea_v1_frk_h_existing_trace_wider_suite_stress_report.json)。Status `frk_h_existing_trace_wider_suite_stress_complete_frk_i_existing_trace_algorithm_design_authorized`；self-test `58/58`；FRK-G checkpoint `0167445`；opportunity_present_weak；headroom_present；FRK-I Existing-Trace Algorithm Design authorized；aggregate-only；no candidate generation/retrieval/source scan/pack rerun/scheduler policy change/new traces/RPM/provider/network/CI/runtime/default/raw publication。

@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## BEA-v1-FRK-I existing-trace algorithm design prototype
+
+[Detail](bea-v1-frk-i-existing-trace-algorithm-design.md) / [report](../../artifacts/bea_v1_frk_i_existing_trace_algorithm_design/bea_v1_frk_i_existing_trace_algorithm_design_report.json)。
+
+- **BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype 已完成**：status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`，self-test `57/57`，source lock FRK-H checkpoint `a95988f`。
+- **Prototype**：`availability_weighted_rankpack_selector`；deterministic、nonlearned、label-blind；labels/gold 只在 design 后用于 aggregate scoring。
+- **Result**：baseline_best_bucket `rate_low`，prototype_selector_bucket `rate_low`，prototype_vs_best_fixed_delta_bucket `neutral_no_lift`，coverage_high，slice_consistency flat_or_negative，slice_failure_mode low_arm_spread_limits_algorithm，risk_medium。
+- **Decision**：stop_existing_trace_algorithm_route_no_lift；FRK-J Existing-Trace Algorithm Validation authorized = false。
+- **Boundary**：aggregate-only；no new candidates/retrieval/source scan/pack rerun/new traces/scheduler policy change/RPM/provider/network/CI/runtime/default/method/scale/winner/raw publication。
+
 ## BEA-v1-FRK-H existing-trace wider-suite stress
 
 [Detail](bea-v1-frk-h-existing-trace-wider-suite-stress.md) / [report](../../artifacts/bea_v1_frk_h_existing_trace_wider_suite_stress/bea_v1_frk_h_existing_trace_wider_suite_stress_report.json)。

@@ -1,0 +1,493 @@
+{
+  "algorithm_design_records": [
+    {
+      "algorithm_name_bucket": "availability_weighted_rankpack_selector",
+      "anonymous_algorithm_id": "frkialgo0000",
+      "deterministic_bool": true,
+      "feature_family_bucket": "existing_metadata_materializable_top100_availability_language_source_arm_family",
+      "gold_fields_read_after_design_bool": true,
+      "label_blind_design_bool": true,
+      "labels_used_for_scoring_only_bool": true,
+      "nonlearned_bool": true
+    }
+  ],
+  "comparison_records": [
+    {
+      "anonymous_comparison_id": "frkicomp0000",
+      "baseline_best_bucket": "rate_low",
+      "baseline_median_bucket": "rate_low",
+      "coverage_bucket": "coverage_high",
+      "oracle_ceiling_bucket_private_diagnostic_only": "rate_low",
+      "prototype_selector_bucket": "rate_low",
+      "prototype_vs_best_fixed_delta_bucket": "neutral_no_lift",
+      "task_count_bucket": "count_250_plus"
+    }
+  ],
+  "decision_records": [
+    {
+      "anonymous_decision_id": "frkidecision0000",
+      "decision_bucket": "stop_existing_trace_algorithm_route_no_lift",
+      "decision_reason_bucket": "neutral_no_lift",
+      "frk_j_authorized_bool": false
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "input_boundary_records": [
+    {
+      "anonymous_input_boundary_id": "frkiinput0000",
+      "candidate_generation_bool": false,
+      "default_no_private_read_bool": false,
+      "existing_trace_input_bucket": "operator_confirmed_existing_trace_recovery_bucket",
+      "explicit_existing_trace_private_read_confirmed_bool": true,
+      "new_trace_generation_bool": false,
+      "pack_rerun_bool": false,
+      "required_existing_trace_files_present_bool": true,
+      "retrieval_rerun_bool": false,
+      "scheduler_policy_change_bool": false,
+      "source_scan_bool": false
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "frkigate0000",
+      "gate_bucket": "source_lock_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0001",
+      "gate_bucket": "explicit_existing_trace_opt_in_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0002",
+      "gate_bucket": "existing_trace_root_safety_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0003",
+      "gate_bucket": "required_existing_trace_files_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0004",
+      "gate_bucket": "trace_schema_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0005",
+      "gate_bucket": "label_blind_design_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0006",
+      "gate_bucket": "deterministic_nonlearned_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0007",
+      "gate_bucket": "comparison_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0008",
+      "gate_bucket": "slice_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0009",
+      "gate_bucket": "risk_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0010",
+      "gate_bucket": "decision_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0011",
+      "gate_bucket": "no_generation_retrieval_scan_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0012",
+      "gate_bucket": "aggregate_only_public_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0013",
+      "gate_bucket": "stop_go_boundary_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0014",
+      "gate_bucket": "synthetic_validator_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0015",
+      "gate_bucket": "public_readback_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkigate0016",
+      "gate_bucket": "forbidden_scan_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype",
+  "privacy_records": [
+    {
+      "aggregate_only_public_bool": true,
+      "anonymous_privacy_id": "frkiprivacy0000",
+      "exact_metric_public_bool": false,
+      "method_default_scale_winner_claim_bool": false,
+      "private_input_location_public_bool": false,
+      "raw_public_bool": false
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_readback_id": "frkireadback0000",
+      "detail_docs_readback_match_bool": true,
+      "index_docs_readback_match_bool": true,
+      "thin_root_index_readback_match_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_frk_i_existing_trace_algorithm_design_public_report_v1",
+  "self_test_total": 57,
+  "slice_records": [
+    {
+      "anonymous_slice_id": "frkislice0000",
+      "coverage_bucket": "coverage_high",
+      "generalization_risk_bucket": "risk_medium",
+      "prototype_vs_best_fixed_delta_bucket": "neutral_no_lift",
+      "slice_consistency_bucket": "flat_or_negative",
+      "slice_failure_mode_bucket": "low_arm_spread_limits_algorithm"
+    }
+  ],
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "frkisource0000",
+      "frk_h_checkpoint_bucket": "a95988f",
+      "frk_h_required_bucket_lock_bool": true,
+      "frk_h_self_test_bucket": "58/58",
+      "frk_h_status_bucket": "frk_h_existing_trace_wider_suite_stress_complete_frk_i_existing_trace_algorithm_design_authorized",
+      "source_locked_bool": true
+    }
+  ],
+  "status": "frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "frkistop0000",
+      "candidate_generation_authorized_bool": false,
+      "existing_trace_algorithm_route_stopped_no_lift_bool": true,
+      "frk_j_existing_trace_algorithm_validation_authorized_bool": false,
+      "method_claim_authorized_bool": false,
+      "new_trace_generation_authorized_bool": false,
+      "next_allowed_phase_bucket": "stop_existing_trace_algorithm_route_no_lift",
+      "no_next_execution_authorized_bool": false,
+      "pack_rerun_authorized_bool": false,
+      "provider_network_ci_authorized_bool": false,
+      "raw_publication_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "rpm_training_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scale_claim_authorized_bool": false,
+      "scheduler_policy_change_authorized_bool": false,
+      "source_scan_authorized_bool": false,
+      "winner_claim_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0000",
+      "validator_bucket": "default_no_private_read_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0001",
+      "validator_bucket": "explicit_synthetic_lift_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0002",
+      "validator_bucket": "explicit_synthetic_no_lift_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0003",
+      "validator_bucket": "explicit_synthetic_inconclusive_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0004",
+      "validator_bucket": "source_drift_checkpoint_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0005",
+      "validator_bucket": "source_drift_status_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0006",
+      "validator_bucket": "source_drift_selftest_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0007",
+      "validator_bucket": "source_drift_bucket_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0008",
+      "validator_bucket": "source_drift_stopgo_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0009",
+      "validator_bucket": "missing_explicit_root_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0010",
+      "validator_bucket": "private_root_outside_allowed_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0011",
+      "validator_bucket": "private_root_symlink_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0012",
+      "validator_bucket": "private_root_traversal_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0013",
+      "validator_bucket": "trace_schema_invalid_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0014",
+      "validator_bucket": "label_used_in_design_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0015",
+      "validator_bucket": "labels_not_scoring_only_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0016",
+      "validator_bucket": "nondeterministic_algorithm_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0017",
+      "validator_bucket": "learned_algorithm_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0018",
+      "validator_bucket": "candidate_generation_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0019",
+      "validator_bucket": "retrieval_rerun_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0020",
+      "validator_bucket": "source_scan_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0021",
+      "validator_bucket": "pack_rerun_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0022",
+      "validator_bucket": "scheduler_policy_change_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0023",
+      "validator_bucket": "new_trace_generation_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0024",
+      "validator_bucket": "rpm_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0025",
+      "validator_bucket": "provider_network_ci_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0026",
+      "validator_bucket": "runtime_default_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0027",
+      "validator_bucket": "method_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0028",
+      "validator_bucket": "scale_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0029",
+      "validator_bucket": "winner_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0030",
+      "validator_bucket": "comparison_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0031",
+      "validator_bucket": "slice_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0032",
+      "validator_bucket": "slice_failure_mode_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0033",
+      "validator_bucket": "risk_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0034",
+      "validator_bucket": "frk_j_authorized_without_positive_lift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0035",
+      "validator_bucket": "raw_path_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0036",
+      "validator_bucket": "raw_query_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0037",
+      "validator_bucket": "raw_label_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0038",
+      "validator_bucket": "raw_score_rank_hash_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0039",
+      "validator_bucket": "exact_metric_publication_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0040",
+      "validator_bucket": "stop_go_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0041",
+      "validator_bucket": "privacy_fail_clears_success_stopgo_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0042",
+      "validator_bucket": "gate_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0043",
+      "validator_bucket": "gate_duplicate_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0044",
+      "validator_bucket": "gate_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0045",
+      "validator_bucket": "synthetic_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0046",
+      "validator_bucket": "synthetic_duplicate_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0047",
+      "validator_bucket": "synthetic_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0048",
+      "validator_bucket": "readback_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0049",
+      "validator_bucket": "schema_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0050",
+      "validator_bucket": "validate_report_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0051",
+      "validator_bucket": "aggregate_only_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0052",
+      "validator_bucket": "labels_scoring_only_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0053",
+      "validator_bucket": "no_generation_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0054",
+      "validator_bucket": "frk_j_authorized_only_on_lift_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0055",
+      "validator_bucket": "self_test_count_exact",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkisynth0056",
+      "validator_bucket": "safe_parser_unknown_arg_fail",
+      "validator_passed_bool": true
+    }
+  ]
+}
