@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-FRK-G Existing-Trace Wider Denominator Audit
+
+[Detail](bea-v1-frk-g-existing-trace-wider-denominator-audit.md) / [report](../../artifacts/bea_v1_frk_g_existing_trace_wider_denominator_audit/bea_v1_frk_g_existing_trace_wider_denominator_audit_report.json)。Status `frk_g_existing_trace_wider_denominator_audit_complete_frk_h_wider_suite_stress_authorized`；self-test `46/46`；HAAE-SF checkpoint `144b84d`；task_count_ge_50；headroom_present；label coverage high；FRK-H existing-trace wider-suite stress authorized；FRK-H Existing-Trace Wider-Suite Stress authorized = true；aggregate-only；no candidate generation/retrieval/source scan/pack rerun/scheduler policy change/new traces/RPM/provider/network/CI/runtime/default/raw publication。
+
 ## 2026-07-04 — BEA-v1-HAAE-SF Action Scheduler Failure Decomposition
 
 [Detail](bea-v1-haae-sf-action-scheduler-failure-decomposition.md) / [report](../../artifacts/bea_v1_haae_sf_action_scheduler_failure_decomposition/bea_v1_haae_sf_action_scheduler_failure_decomposition_report.json)。Status `haae_sf_action_scheduler_failure_decomposition_complete_stop_track_b_simple_scheduler_route`；self-test `41/41`；source lock HAAE-S checkpoint `5a49c90`，status `haae_s_no_go_scheduler_no_lift_over_fixed_baselines`；fixed_baseline_saturation_high；state_feature_gap_unknown_public_aggregate_only；oracle_gap_private_only；decision stop_track_b_simple_scheduler_route；HAAE-SG state-feature redesign smoke authorized = false；no RPM/provider/network/CI/runtime/default/candidate generation/policy change/new traces/raw publication。
@@ -28,7 +32,7 @@ Baselines：ripgrep_text_practical、same_budget_sparse_bm25、same_budget_rrf_h
 
 ## 2026-07-03 — BEA-v1-FRK-B Fast Retrieval Kernel Prototype
 
-`eval/bea_v1_frk_b_fast_retrieval_kernel_prototype.py` implements a top-level FRK fast retrieval kernel prototype。Default status is `frk_b_unavailable_no_explicit_local_prototype_opt_in`；success status is `frk_b_fast_retrieval_kernel_prototype_complete_frk_c_public_package_authorized`；self-test `44/44`；FRK-A checkpoint `efcfec6`。
+`eval/bea_v1_frk_b_fast_retrieval_kernel_prototype.py` implements a top-level FRK fast retrieval kernel prototype。Default status is `frk_b_unavailable_no_explicit_local_prototype_opt_in`；success status is `frk_b_fast_retrieval_kernel_prototype_complete_frk_c_public_package_authorized`；self-test `46/46`；FRK-A checkpoint `efcfec6`。
 
 Index components：sparse_term_index、symbol_name_index、path_filename_config_index、ast_span_index。API：retrieve_fast。Explicit mode writes private per-query traces and publishes aggregate-only public report with EvidenceCore validation buckets。Stop/go 只授权 BEA-v1-FRK-C Fast Retrieval Kernel Public Package。
 
@@ -112,7 +116,7 @@ Decision：outcome_label_acquisition_design_selected；not closure；not pivot�
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BL Evidence-Pair Support Outcome-Aligned Material Public Audit Package
 
-`eval/bea_v1_haae_r2bl_evidence_pair_support_outcome_aligned_material_public_audit_package.py` 只审计 R2BK public artifact。Status 为 `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`；self-test `44/44`；R2BK checkpoint `7073b12`；R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`。
+`eval/bea_v1_haae_r2bl_evidence_pair_support_outcome_aligned_material_public_audit_package.py` 只审计 R2BK public artifact。Status 为 `haae_r2bl_outcome_aligned_material_public_audit_complete_r2bm_decision_design_authorized_unavailable_no_material_generated`；self-test `46/46`；R2BK checkpoint `7073b12`；R2BK status `haae_r2bk_unavailable_outcome_alignment_source_labels_absent_no_material_generated`。
 
 Audit：controlled unavailable result、outcome_alignment_source_labels_absent、generation_bucket=outcome_alignment_unavailable_no_material_generated、generated_group_set_exact_bool=false、material_generated_bool=false。Boundary：public-only audit、no private read、no metric recompute、no material generation、aggregate-only public output。Stop/go 只授权 BEA-v1-HAAE-R2BM Evidence-Pair Support Outcome Label Acquisition Public Decision Design Package。
 
@@ -218,7 +222,7 @@ Decision：robustness material generation preflight selected；not scale；not e
 
 ## 2026-07-03 — BEA-v1-HAAE-R2AU Evidence-Pair Support Mechanism Decomposition Public Audit Package
 
-`eval/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_report.json`。Status 为 `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`，self-test `44/44`，R2AT checkpoint `0c9c108`，R2AT status `haae_r2at_explicit_private_mechanism_decomposition_complete_r2au_public_audit_authorized_pair_complementarity_supported`，并验证 self-test count 35/35。R2AU reads the R2AT public artifact only，且 public-only：no private roots、no private diagnostics、no mechanism recomputation、no source/candidate/corpus scan、no material regeneration。Audited buckets：pair_complementarity_supported、pair_complementarity_lift_high、support_vs_contrast_separation_medium、hard_negative_rejection_medium、path_confound_risk_low、gold_isolation_pass。Boundary：no exact metric/raw private public fields，no method/default/scale/raw claim。Stop/go 只授权 BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package，且为 public decision/design only。
+`eval/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package.py` 生成 `artifacts/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package/bea_v1_haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_report.json`。Status 为 `haae_r2au_evidence_pair_support_mechanism_decomposition_public_audit_package_complete_r2av_next_step_decision_authorized_pair_complementarity_supported`，self-test `46/46`，R2AT checkpoint `0c9c108`，R2AT status `haae_r2at_explicit_private_mechanism_decomposition_complete_r2au_public_audit_authorized_pair_complementarity_supported`，并验证 self-test count 35/35。R2AU reads the R2AT public artifact only，且 public-only：no private roots、no private diagnostics、no mechanism recomputation、no source/candidate/corpus scan、no material regeneration。Audited buckets：pair_complementarity_supported、pair_complementarity_lift_high、support_vs_contrast_separation_medium、hard_negative_rejection_medium、path_confound_risk_low、gold_isolation_pass。Boundary：no exact metric/raw private public fields，no method/default/scale/raw claim。Stop/go 只授权 BEA-v1-HAAE-R2AV Evidence-Pair Support Next-Step Decision Package，且为 public decision/design only。
 
 ## 2026-06-11 — R0/R1 bootstrap
 
@@ -1271,7 +1275,7 @@ python3 eval/provider_dense_safety.py --openlocus target/debug/openlocus --out r
 
 ### Safety checks
 
-44/44 safety checks passed:
+46/46 safety checks passed:
 - remote_default=false, outbound_default=false
 - build without --experimental fails
 - build with --experimental --provider mock succeeds with remote_calls=0
