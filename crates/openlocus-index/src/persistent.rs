@@ -1779,6 +1779,61 @@ mod tests {
         blake3::hash(&bytes).to_hex().to_string()
     }
 
+    fn write_file(root: &Path, path: &str, content: &str) {
+        let full_path = root.join(path);
+        if let Some(parent) = full_path.parent() {
+            std::fs::create_dir_all(parent).unwrap();
+        }
+        std::fs::write(full_path, content).unwrap();
+    }
+
+    fn file_record(root: &Path, path: &str) -> FileRecord {
+        FileRecord {
+            path: path.into(),
+            size: std::fs::metadata(root.join(path))
+                .map(|m| m.len())
+                .unwrap_or(0),
+            content_sha: compute_sha(root, path),
+            language: "rust".into(),
+        }
+    }
+
+    fn assert_current_evidence(root: &Path, evidence: &Evidence, path: &str, needle: &str) {
+        assert_eq!(evidence.core.path, path);
+        assert_eq!(evidence.core.content_sha, compute_sha(root, path));
+        assert!(evidence.core.start_line >= 1);
+        assert!(evidence.core.start_line <= evidence.core.end_line);
+        let content = std::fs::read_to_string(root.join(path)).unwrap();
+        let lines: Vec<&str> = content.lines().collect();
+        assert!(evidence.core.end_line <= lines.len() as u64);
+        let excerpt = lines
+            [(evidence.core.start_line - 1) as usize..evidence.core.end_line as usize]
+            .join("\n");
+        let meta = evidence.meta.as_ref().unwrap();
+        assert_eq!(meta.excerpt.as_deref(), Some(excerpt.as_str()));
+        assert!(excerpt.contains(needle), "excerpt was: {excerpt}");
+        assert_eq!(meta.freshness, Some(Freshness::VerifiedCurrent));
+    }
+
+    #[cfg(unix)]
+    fn symlink_file(src: &Path, dst: &Path) -> std::io::Result<()> {
+        std::os::unix::fs::symlink(src, dst)
+    }
+
+    #[cfg(windows)]
+    fn symlink_file(src: &Path, dst: &Path) -> std::io::Result<()> {
+        std::os::windows::fs::symlink_file(src, dst)
+    }
+
+    fn manifest_entry(root: &Path, path: &str) -> ManifestFileEntry {
+        let manifest = IndexManifest::load(root).unwrap();
+        manifest
+            .files
+            .into_iter()
+            .find(|entry| entry.path == path)
+            .unwrap()
+    }
+
     #[test]
     fn build_and_search() {
         let dir = tempfile::tempdir().unwrap();
@@ -1822,6 +1877,272 @@ mod tests {
         assert_eq!(evidence[0].core.path, "app.rs");
         assert_eq!(evidence[0].core.channels[0], Channel::Bm25);
         assert_eq!(stats.stale_hits_skipped, 0);
+    }
+
+    #[test]
+    fn regression_current_indexed_hit_materializes_verified_current_evidence() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(
+            root,
+            "src/current.rs",
+            "fn before() {}\nfn current_kernel_target() {\n    let currentness = true;\n}\nfn after() {}\n",
+        );
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/current.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+
+        let (evidence, stats) =
+            search_persistent_bm25(root, "current_kernel_target", 10, &policy).unwrap();
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+        let first = evidence.first().expect("expected current indexed hit");
+        assert_current_evidence(root, first, "src/current.rs", "current_kernel_target");
+
+        let handle = PersistentBm25Index::open(root, &policy).unwrap();
+        let (handle_evidence, handle_stats) =
+            handle.search(root, "current_kernel_target", 10).unwrap();
+        assert_eq!(handle_stats.stale_hits_skipped, 0);
+        assert_eq!(handle_stats.invalid_hits_skipped, 0);
+        let first = handle_evidence
+            .first()
+            .expect("expected current indexed hit from reusable handle");
+        assert_current_evidence(root, first, "src/current.rs", "current_kernel_target");
+    }
+
+    #[test]
+    fn regression_stale_edit_after_build_is_skipped_and_counted() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(root, "src/stale.rs", "fn stale_kernel_target() {}\n");
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/stale.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        write_file(root, "src/stale.rs", "fn changed_after_index() {}\n");
+
+        let (evidence, stats) =
+            search_persistent_bm25(root, "stale_kernel_target", 10, &policy).unwrap();
+        assert!(evidence.is_empty(), "stale hit must not be emitted");
+        assert_eq!(stats.stale_hits_skipped, 1);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+    }
+
+    #[test]
+    fn regression_deleted_file_after_build_is_skipped_and_validate_reports_deleted() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(root, "src/deleted.rs", "fn deleted_kernel_target() {}\n");
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/deleted.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        std::fs::remove_file(root.join("src/deleted.rs")).unwrap();
+
+        let (evidence, stats) =
+            search_persistent_bm25(root, "deleted_kernel_target", 10, &policy).unwrap();
+        assert!(evidence.is_empty(), "deleted file must not be emitted");
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 1);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(!validate.valid);
+        assert!(
+            validate
+                .deleted_files
+                .contains(&"src/deleted.rs".to_string())
+        );
+    }
+
+    #[test]
+    fn regression_moved_old_path_not_emitted_and_rebuilt_new_path_emits_current() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(root, "src/old_path.rs", "fn moved_kernel_target() {}\n");
+
+        let policy = Policy::default();
+        let old_records = vec![file_record(root, "src/old_path.rs")];
+        build_index(root, &old_records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        std::fs::rename(root.join("src/old_path.rs"), root.join("src/new_path.rs")).unwrap();
+
+        let (old_evidence, old_stats) =
+            search_persistent_bm25(root, "moved_kernel_target", 10, &policy).unwrap();
+        assert!(
+            old_evidence.is_empty(),
+            "moved old path must not be emitted"
+        );
+        assert_eq!(old_stats.invalid_hits_skipped, 1);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(
+            validate
+                .deleted_files
+                .contains(&"src/old_path.rs".to_string())
+        );
+
+        let new_records = vec![file_record(root, "src/new_path.rs")];
+        build_index(root, &new_records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        let (new_evidence, new_stats) =
+            search_persistent_bm25(root, "moved_kernel_target", 10, &policy).unwrap();
+        assert_eq!(new_stats.stale_hits_skipped, 0);
+        assert_eq!(new_stats.invalid_hits_skipped, 0);
+        let first = new_evidence.first().expect("expected rebuilt new path hit");
+        assert_current_evidence(root, first, "src/new_path.rs", "moved_kernel_target");
+    }
+
+    #[test]
+    fn regression_line_insertion_invalidates_old_index_until_rebuild() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(
+            root,
+            "src/insert.rs",
+            "fn before() {}\nfn insertion_kernel_target() {}\nfn after() {}\n",
+        );
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/insert.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        write_file(
+            root,
+            "src/insert.rs",
+            "fn inserted_line() {}\nfn before() {}\nfn insertion_kernel_target() {}\nfn after() {}\n",
+        );
+
+        let (stale_evidence, stale_stats) =
+            search_persistent_bm25(root, "insertion_kernel_target", 10, &policy).unwrap();
+        assert!(stale_evidence.is_empty(), "pre-insertion hit must be stale");
+        assert_eq!(stale_stats.stale_hits_skipped, 1);
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(validate.stale_files.contains(&"src/insert.rs".to_string()));
+
+        let rebuilt_records = vec![file_record(root, "src/insert.rs")];
+        build_index(root, &rebuilt_records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        let (fresh_evidence, fresh_stats) =
+            search_persistent_bm25(root, "insertion_kernel_target", 10, &policy).unwrap();
+        assert_eq!(fresh_stats.stale_hits_skipped, 0);
+        let first = fresh_evidence
+            .first()
+            .expect("expected rematerialized hit after rebuild");
+        assert_current_evidence(root, first, "src/insert.rs", "insertion_kernel_target");
+    }
+
+    #[test]
+    fn regression_same_content_duplicate_does_not_rescue_stale_original_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let original_content = "fn duplicate_kernel_target() {}\n";
+        write_file(root, "src/original.rs", original_content);
+        write_file(root, "src/duplicate.rs", original_content);
+
+        let policy = Policy::default();
+        let records = vec![
+            file_record(root, "src/original.rs"),
+            file_record(root, "src/duplicate.rs"),
+        ];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        write_file(root, "src/original.rs", "fn edited_original() {}\n");
+
+        let (evidence, stats) =
+            search_persistent_bm25(root, "duplicate_kernel_target", 10, &policy).unwrap();
+        assert_eq!(stats.stale_hits_skipped, 1);
+        assert!(
+            evidence.iter().all(|ev| ev.core.path != "src/original.rs"),
+            "stale original path must not be emitted: {evidence:?}"
+        );
+        assert!(
+            evidence.iter().any(|ev| ev.core.path == "src/duplicate.rs"),
+            "current duplicate may be emitted, but must not rescue original path"
+        );
+        for ev in &evidence {
+            if ev.core.path == "src/duplicate.rs" {
+                assert_current_evidence(root, ev, "src/duplicate.rs", "duplicate_kernel_target");
+            }
+        }
+    }
+
+    #[test]
+    fn regression_unsafe_record_path_is_skipped_by_build_and_not_searchable() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(root, "safe.rs", "fn safe_kernel_target() {}\n");
+
+        let policy = Policy::default();
+        let records = vec![FileRecord {
+            path: "../escape.rs".into(),
+            size: 0,
+            content_sha: "not-used".into(),
+            language: "rust".into(),
+        }];
+        let result = build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        assert_eq!(result.file_count, 0);
+        assert_eq!(result.chunk_count, 0);
+        let entry = manifest_entry(root, "../escape.rs");
+        assert_eq!(entry.status, "skipped");
+        assert_eq!(entry.skipped_reason.as_deref(), Some("path_unsafe"));
+
+        let (evidence, stats) = search_persistent_bm25(root, "escape", 10, &policy).unwrap();
+        assert!(evidence.is_empty());
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+    }
+
+    #[test]
+    fn regression_validate_reports_manifest_indexed_unsafe_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let policy = Policy::default();
+        let unsafe_entry = ManifestFileEntry {
+            path: "../escape.rs".into(),
+            content_sha: "sha".into(),
+            size_bytes: 1,
+            language: "rust".into(),
+            status: "indexed".into(),
+            skipped_reason: None,
+        };
+        let manifest = IndexManifest::new_with_strategy(
+            compute_policy_hash(&policy),
+            vec![unsafe_entry],
+            1,
+            ChunkStrategy::LineWindowV1,
+            None,
+        );
+        manifest.save(root).unwrap();
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(!validate.valid);
+        assert_eq!(validate.path_unsafe_files, vec!["../escape.rs".to_string()]);
+    }
+
+    #[test]
+    fn regression_symlink_escape_after_build_is_skipped_by_search_and_validate() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let outside = tempfile::tempdir().unwrap();
+        let outside_file = outside.path().join("outside.rs");
+        std::fs::write(&outside_file, "fn symlink_escape_target() {}\n").unwrap();
+        write_file(root, "src/link.rs", "fn symlink_escape_target() {}\n");
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/link.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+        std::fs::remove_file(root.join("src/link.rs")).unwrap();
+        symlink_file(&outside_file, &root.join("src/link.rs")).unwrap();
+
+        let (evidence, stats) =
+            search_persistent_bm25(root, "symlink_escape_target", 10, &policy).unwrap();
+        assert!(evidence.is_empty(), "symlink escape must not be emitted");
+        assert_eq!(stats.invalid_hits_skipped, 1);
+        assert_eq!(stats.stale_hits_skipped, 0);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(!validate.valid);
+        assert!(
+            validate
+                .path_unsafe_files
+                .contains(&"src/link.rs".to_string())
+        );
     }
 
     #[test]
