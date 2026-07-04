@@ -300,11 +300,18 @@ pub fn status_index(repo_root: &Path, policy: &Policy) -> Result<StatusResult> {
     // Quick stale check: for each indexed file, check if content_sha matches current file
     let mut stale_count: u64 = 0;
     let mut deleted_count: u64 = 0;
+    let mut unsafe_count: u64 = 0;
     for entry in &manifest.files {
         if entry.status != "indexed" {
             continue;
         }
-        let full_path = repo_root.join(&entry.path);
+        let full_path = match validate_path(repo_root, &entry.path) {
+            Ok(path) => path,
+            Err(_) => {
+                unsafe_count += 1;
+                continue;
+            }
+        };
         if !full_path.exists() {
             deleted_count += 1;
             continue;
@@ -317,8 +324,12 @@ pub fn status_index(repo_root: &Path, policy: &Policy) -> Result<StatusResult> {
         }
     }
 
-    let requires_rebuild =
-        !schema_ok || !policy_hash_matches || !strategy_ok || stale_count > 0 || deleted_count > 0;
+    let requires_rebuild = !schema_ok
+        || !policy_hash_matches
+        || !strategy_ok
+        || stale_count > 0
+        || deleted_count > 0
+        || unsafe_count > 0;
 
     Ok(StatusResult {
         exists: true,
@@ -327,7 +338,7 @@ pub fn status_index(repo_root: &Path, policy: &Policy) -> Result<StatusResult> {
         chunk_count: Some(manifest.chunk_count),
         policy_hash_matches: Some(policy_hash_matches),
         requires_rebuild,
-        stale_files_fast: Some(stale_count + deleted_count),
+        stale_files_fast: Some(stale_count + deleted_count + unsafe_count),
         chunk_strategy: Some(manifest.chunk_strategy.to_cli_str().to_string()),
         ast_stats: manifest.ast_stats,
     })
@@ -422,7 +433,15 @@ pub fn dirty_index(
     let mut deleted_files = Vec::new();
 
     for entry in &manifest.files {
-        let full_path = repo_root.join(&entry.path);
+        let full_path = match validate_path(repo_root, &entry.path) {
+            Ok(path) => path,
+            Err(_) => {
+                if entry.status == "indexed" {
+                    modified_files.push(entry.path.clone());
+                }
+                continue;
+            }
+        };
         if !full_path.exists() {
             // File deleted from disk: always report as deleted regardless of status
             deleted_files.push(entry.path.clone());
@@ -656,6 +675,19 @@ pub fn update_index(
         )
     } else if let Some(p) = path {
         // Single-path update mode
+        if validate_path(repo_root, p).is_err() {
+            return Ok(UpdateResult {
+                success: false,
+                added_count: 0,
+                modified_count: 0,
+                deleted_count: 0,
+                commit_ms: start.elapsed().as_millis() as u64,
+                manifest_written: false,
+                post_status_clean: false,
+                error: Some("path is unsafe; update path must be repo-relative".into()),
+            });
+        }
+
         let manifest_all_paths: std::collections::HashSet<String> =
             manifest.files.iter().map(|f| f.path.clone()).collect();
 
@@ -2146,6 +2178,112 @@ mod tests {
     }
 
     #[test]
+    fn status_and_dirty_reject_manifest_indexed_parent_escape_as_unclean() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let outside_path = dir.path().parent().unwrap().join("escape.rs");
+        std::fs::write(&outside_path, "fn outside_escape_target() {}\n").unwrap();
+
+        let policy = Policy::default();
+        let manifest = IndexManifest::new_with_strategy(
+            compute_policy_hash(&policy),
+            vec![ManifestFileEntry {
+                path: "../escape.rs".into(),
+                content_sha: blake3::hash(std::fs::read(&outside_path).unwrap().as_slice())
+                    .to_hex()
+                    .to_string(),
+                size_bytes: 1,
+                language: "rust".into(),
+                status: "indexed".into(),
+                skipped_reason: None,
+            }],
+            1,
+            ChunkStrategy::LineWindowV1,
+            None,
+        );
+        manifest.save(root).unwrap();
+
+        let status = status_index(root, &policy).unwrap();
+        assert!(status.requires_rebuild, "unsafe indexed path is not clean");
+        assert_eq!(status.stale_files_fast, Some(1));
+
+        let dirty = dirty_index(root, &policy, &[]).unwrap();
+        assert!(!dirty.clean, "unsafe indexed path is not clean");
+        assert!(dirty.requires_update);
+        assert!(dirty.modified_files.contains(&"../escape.rs".to_string()));
+
+        let _ = std::fs::remove_file(outside_path);
+    }
+
+    #[test]
+    fn status_and_dirty_reject_indexed_symlink_escape_even_with_matching_content() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let outside = tempfile::tempdir().unwrap();
+        let content = "fn symlink_dirty_escape_target() {}\n";
+        let outside_file = outside.path().join("outside.rs");
+        std::fs::write(&outside_file, content).unwrap();
+        write_file(root, "src/link.rs", content);
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/link.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+
+        std::fs::remove_file(root.join("src/link.rs")).unwrap();
+        symlink_file(&outside_file, &root.join("src/link.rs")).unwrap();
+
+        let status = status_index(root, &policy).unwrap();
+        assert!(
+            status.requires_rebuild,
+            "symlink escape is not current/clean"
+        );
+        assert_eq!(status.stale_files_fast, Some(1));
+
+        let dirty = dirty_index(root, &policy, &records).unwrap();
+        assert!(!dirty.clean, "symlink escape must require safe action");
+        assert!(dirty.requires_update);
+        assert!(dirty.modified_files.contains(&"src/link.rs".to_string()));
+    }
+
+    #[test]
+    fn dirty_skipped_unsafe_entry_does_not_read_outside_root() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let outside_path = dir.path().parent().unwrap().join("skipped_escape.rs");
+        std::fs::write(&outside_path, "changed outside content\n").unwrap();
+
+        let policy = Policy::default();
+        let manifest = IndexManifest::new_with_strategy(
+            compute_policy_hash(&policy),
+            vec![ManifestFileEntry {
+                path: "../skipped_escape.rs".into(),
+                content_sha: "original-skipped-sha".into(),
+                size_bytes: 1,
+                language: "rust".into(),
+                status: "skipped".into(),
+                skipped_reason: Some("path_unsafe".into()),
+            }],
+            0,
+            ChunkStrategy::LineWindowV1,
+            None,
+        );
+        manifest.save(root).unwrap();
+
+        let dirty = dirty_index(root, &policy, &[]).unwrap();
+        assert!(
+            dirty.modified_files.is_empty(),
+            "skipped unsafe path must not be read outside repo and reported modified"
+        );
+        assert!(dirty.deleted_files.is_empty());
+        assert!(
+            dirty.clean,
+            "unchanged skipped unsafe entry should remain skipped-only clean"
+        );
+
+        let _ = std::fs::remove_file(outside_path);
+    }
+
+    #[test]
     fn build_ast_strategy() {
         let dir = tempfile::tempdir().unwrap();
         let root = dir.path();
@@ -2867,8 +3005,27 @@ mod tests {
         assert!(result.post_status_clean);
 
         // Search should find the new content
-        let (evidence, _) = search_persistent_bm25(root, "authorize", 10, &policy).unwrap();
+        let (evidence, stats) = search_persistent_bm25(root, "authorize", 10, &policy).unwrap();
         assert!(!evidence.is_empty(), "should find updated content");
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+
+        let (old_evidence, old_stats) =
+            search_persistent_bm25(root, "authenticate", 10, &policy).unwrap();
+        assert!(
+            old_evidence.is_empty(),
+            "old modified term must not emit evidence"
+        );
+        assert_eq!(old_stats.stale_hits_skipped, 0);
+        assert_eq!(old_stats.invalid_hits_skipped, 0);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(
+            validate.valid,
+            "validate after dirty modify update: {validate:?}"
+        );
+        let dirty = dirty_index(root, &policy, &new_records).unwrap();
+        assert!(dirty.clean, "dirty after dirty modify update: {dirty:?}");
     }
 
     #[test]
@@ -2911,8 +3068,18 @@ mod tests {
         assert!(result.post_status_clean);
 
         // Search should find the new file
-        let (evidence, _) = search_persistent_bm25(root, "new_function", 10, &policy).unwrap();
+        let (evidence, stats) = search_persistent_bm25(root, "new_function", 10, &policy).unwrap();
         assert!(!evidence.is_empty(), "should find newly added file");
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(
+            validate.valid,
+            "validate after dirty add update: {validate:?}"
+        );
+        let dirty = dirty_index(root, &policy, &new_records).unwrap();
+        assert!(dirty.clean, "dirty after dirty add update: {dirty:?}");
     }
 
     #[test]
@@ -2957,11 +3124,21 @@ mod tests {
         assert!(result.post_status_clean);
 
         // Search should not find deleted file
-        let (evidence, _) = search_persistent_bm25(root, "other", 10, &policy).unwrap();
+        let (evidence, stats) = search_persistent_bm25(root, "other", 10, &policy).unwrap();
         assert!(
             evidence.is_empty(),
             "deleted file should not appear in search"
         );
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(
+            validate.valid,
+            "validate after dirty delete update: {validate:?}"
+        );
+        let dirty = dirty_index(root, &policy, &new_records).unwrap();
+        assert!(dirty.clean, "dirty after dirty delete update: {dirty:?}");
     }
 
     #[test]
@@ -3149,9 +3326,49 @@ mod tests {
         assert!(result.post_status_clean);
 
         // Should now be searchable
-        let (evidence, _) =
+        let (evidence, stats) =
             search_persistent_bm25(root, "searchable_content", 10, &policy).unwrap();
         assert!(!evidence.is_empty(), "promoted file should be searchable");
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+
+        let validate = validate_index(root, &policy).unwrap();
+        assert!(
+            validate.valid,
+            "validate after skipped-to-indexed update: {validate:?}"
+        );
+        let dirty = dirty_index(root, &policy, &new_records).unwrap();
+        assert!(
+            dirty.clean,
+            "dirty after skipped-to-indexed update: {dirty:?}"
+        );
+    }
+
+    #[test]
+    fn update_single_path_rejects_absolute_and_parent_paths_before_probe() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(root, "a.rs", "fn a() {}\n");
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "a.rs")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+
+        let absolute = root.join("a.rs");
+        let abs_result = update_index(
+            root,
+            &policy,
+            &records,
+            false,
+            Some(absolute.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(!abs_result.success);
+        assert!(abs_result.error.unwrap().contains("path is unsafe"));
+
+        let parent_result = update_index(root, &policy, &records, false, Some("../a.rs")).unwrap();
+        assert!(!parent_result.success);
+        assert!(parent_result.error.unwrap().contains("path is unsafe"));
     }
 
     #[test]
