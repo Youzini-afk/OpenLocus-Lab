@@ -1166,15 +1166,31 @@ pub fn run() -> Result<()> {
     }
 }
 
-/// Discover repo root by walking up from CWD looking for .git directory.
+/// Discover repo root by walking up from CWD looking for .git or .openlocus markers.
 fn discover_repo_root() -> Result<PathBuf> {
-    let mut dir = std::env::current_dir()?;
+    discover_repo_root_from(&std::env::current_dir()?)
+}
+
+fn discover_repo_root_from(start: &Path) -> Result<PathBuf> {
+    let mut dir = start.to_path_buf();
     loop {
-        if dir.join(".git").exists() || dir.join(".openlocus").exists() {
+        let openlocus_marker = dir.join(".openlocus");
+        if let Ok(metadata) = fs::symlink_metadata(&openlocus_marker) {
+            let file_type = metadata.file_type();
+            if file_type.is_symlink() {
+                bail!("invalid .openlocus repo marker: marker must be a real directory");
+            }
+            if !file_type.is_dir() {
+                bail!("invalid .openlocus repo marker: marker must be a real directory");
+            }
+            return Ok(dir);
+        }
+
+        if dir.join(".git").exists() {
             return Ok(dir);
         }
         if !dir.pop() {
-            return Ok(std::env::current_dir()?);
+            return Ok(start.to_path_buf());
         }
     }
 }
@@ -2438,4 +2454,177 @@ fn dense_purge(repo_root: &Path) -> Result<DensePurgeResult> {
         purged: true,
         record_count: count,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    #[cfg(unix)]
+    fn symlink_dir(src: &Path, dst: &Path) -> std::io::Result<()> {
+        std::os::unix::fs::symlink(src, dst)
+    }
+
+    #[cfg(windows)]
+    fn symlink_dir(src: &Path, dst: &Path) -> std::io::Result<()> {
+        std::os::windows::fs::symlink_dir(src, dst)
+    }
+
+    fn write_file(path: &Path, content: &str) {
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).unwrap();
+        }
+        fs::write(path, content).unwrap();
+    }
+
+    fn assert_valid(repo_root: &Path, evidence: &Evidence) {
+        validate_single_citation(repo_root, evidence).unwrap();
+        let json_path = repo_root.join(".evidence.json");
+        fs::write(&json_path, serde_json::to_string(evidence).unwrap()).unwrap();
+        let result = validate_citations(repo_root, json_path.to_str().unwrap()).unwrap();
+        assert_eq!(result.valid_count, 1);
+        assert_eq!(result.invalid_count, 0);
+    }
+
+    fn assert_invalid(repo_root: &Path, evidence: &Evidence) {
+        assert!(validate_single_citation(repo_root, evidence).is_err());
+        let json_path = repo_root.join(".evidence.json");
+        fs::write(&json_path, serde_json::to_string(evidence).unwrap()).unwrap();
+        let result = validate_citations(repo_root, json_path.to_str().unwrap()).unwrap();
+        assert_eq!(result.valid_count, 0);
+        assert_eq!(result.invalid_count, 1);
+    }
+
+    #[test]
+    fn discover_repo_root_accepts_real_openlocus_directory() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path().join("repo");
+        let nested = root.join("a/b/c");
+        fs::create_dir_all(root.join(".openlocus")).unwrap();
+        fs::create_dir_all(&nested).unwrap();
+
+        assert_eq!(discover_repo_root_from(&nested).unwrap(), root);
+    }
+
+    #[test]
+    fn discover_repo_root_rejects_symlinked_openlocus_marker() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path().join("repo");
+        let nested = root.join("a/b/c");
+        let target = temp.path().join("marker-target");
+        fs::create_dir_all(&target).unwrap();
+        fs::create_dir_all(&nested).unwrap();
+        symlink_dir(&target, &root.join(".openlocus")).unwrap();
+
+        let err = discover_repo_root_from(&nested).unwrap_err().to_string();
+        assert!(err.contains("invalid .openlocus repo marker"));
+    }
+
+    #[test]
+    fn discover_repo_root_rejects_file_openlocus_marker() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path().join("repo");
+        let nested = root.join("a/b/c");
+        fs::create_dir_all(&nested).unwrap();
+        write_file(&root.join(".openlocus"), "not a directory");
+
+        let err = discover_repo_root_from(&nested).unwrap_err().to_string();
+        assert!(err.contains("invalid .openlocus repo marker"));
+    }
+
+    #[test]
+    fn discover_repo_root_preserves_git_marker() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path().join("repo");
+        let nested = root.join("a/b/c");
+        fs::create_dir_all(root.join(".git")).unwrap();
+        fs::create_dir_all(&nested).unwrap();
+
+        assert_eq!(discover_repo_root_from(&nested).unwrap(), root);
+    }
+
+    #[test]
+    fn evidencecore_currentness_validates_current_citation() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path();
+        write_file(&root.join("src/lib.rs"), "one\ntwo\nthree\n");
+
+        let evidence = read_file(root, "src/lib.rs:2").unwrap();
+
+        assert_valid(root, &evidence);
+    }
+
+    #[test]
+    fn evidencecore_currentness_rejects_stale_edit() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path();
+        let path = root.join("src/lib.rs");
+        write_file(&path, "one\ntwo\nthree\n");
+        let evidence = read_file(root, "src/lib.rs:2").unwrap();
+
+        write_file(&path, "one\nTWO\nthree\n");
+
+        assert_invalid(root, &evidence);
+    }
+
+    #[test]
+    fn evidencecore_currentness_rejects_deleted_file() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path();
+        let path = root.join("src/lib.rs");
+        write_file(&path, "one\ntwo\nthree\n");
+        let evidence = read_file(root, "src/lib.rs:2").unwrap();
+
+        fs::remove_file(&path).unwrap();
+
+        assert_invalid(root, &evidence);
+    }
+
+    #[test]
+    fn evidencecore_currentness_rejects_moved_old_path_and_accepts_new_citation() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path();
+        let old_path = root.join("src/lib.rs");
+        let new_path = root.join("src/main.rs");
+        write_file(&old_path, "one\ntwo\nthree\n");
+        let old_evidence = read_file(root, "src/lib.rs:2").unwrap();
+        fs::create_dir_all(new_path.parent().unwrap()).unwrap();
+        fs::rename(&old_path, &new_path).unwrap();
+
+        assert_invalid(root, &old_evidence);
+        let new_evidence = read_file(root, "src/main.rs:2").unwrap();
+        assert_valid(root, &new_evidence);
+    }
+
+    #[test]
+    fn evidencecore_currentness_line_insertion_invalidates_old_and_rematerialized_validates() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path();
+        let path = root.join("src/lib.rs");
+        write_file(&path, "alpha\ntarget\nomega\n");
+        let old_evidence = read_file(root, "src/lib.rs:2").unwrap();
+
+        write_file(&path, "inserted\nalpha\ntarget\nomega\n");
+
+        assert_invalid(root, &old_evidence);
+        let rematerialized = read_file(root, "src/lib.rs:3").unwrap();
+        assert_valid(root, &rematerialized);
+    }
+
+    #[test]
+    fn evidencecore_currentness_near_duplicate_does_not_rescue_stale_original() {
+        let temp = TempDir::new().unwrap();
+        let root = temp.path();
+        let original = root.join("src/original.rs");
+        let duplicate = root.join("src/duplicate.rs");
+        write_file(&original, "alpha\ntarget\nomega\n");
+        let evidence = read_file(root, "src/original.rs:2").unwrap();
+        write_file(&duplicate, "alpha\ntarget\nomega\n");
+        write_file(&original, "alpha\nstale-target\nomega\n");
+
+        assert_invalid(root, &evidence);
+        let duplicate_evidence = read_file(root, "src/duplicate.rs:2").unwrap();
+        assert_valid(root, &duplicate_evidence);
+    }
 }
