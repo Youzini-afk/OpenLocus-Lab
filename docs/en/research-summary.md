@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 RPM-D1 bounded offline RPM-small learning smoke
+
+[Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json).
+
+- **RPM-D1 is complete** as a pipeline/learning smoke only, with status `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim`.
+- **Implementation**: `eval/rpm_d1_learning_smoke.py` provides `--self-test`, `--run-offline-learning-smoke --confirm-private-input [--trace-jsonl <private-d0-jsonl>]`, and `--validate-report <path>`.
+- **Execution**: private D0 JSONL is read only after explicit confirmation; rows are schema-validated; split is deterministic leave-one-episode-out with no train/eval trace overlap; the stdlib-only learner is a decision stump using only allowed label-blind pre-action buckets.
+- **Result**: current D0 remains insufficient (`count_6_to_20` rows, `count_2_to_5` episodes/action types, minority target `count_1`, no bucketed lift over majority). This is not an RPM-working, training, method, scale, winner, or default claim.
+- **Stop/go**: authorize only `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`; unexpected future candidate signal may authorize only `rpm_d2_larger_trace_capture_and_heldout_eval_design`.
+
 ## OpenLocus v2 Phase 1 — Route closure + RPM trace schema
 
 [Route closure](current-route-closure.md) / [report](../../artifacts/rpm_trace_schema/rpm_trace_schema_report.json).

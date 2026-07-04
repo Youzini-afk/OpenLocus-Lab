@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- RPM-D1 learning smoke / RPM-D1 learning smoke: [EN](en/openlocus-v2-rpm-d1-learning-smoke.md) / [ZH](zh/openlocus-v2-rpm-d1-learning-smoke.md)
+- RPM-D1 report / RPM-D1 报告: [`artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json`](../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json)
 - RPM-D0 trace capture / RPM-D0 trace 捕获: [EN](en/openlocus-v2-rpm-d0-trace-capture.md) / [ZH](zh/openlocus-v2-rpm-d0-trace-capture.md)
 - RPM-D0 report / RPM-D0 报告: [`artifacts/rpm_d0_trace_capture/rpm_d0_trace_capture_report.json`](../artifacts/rpm_d0_trace_capture/rpm_d0_trace_capture_report.json)
 - English: [`docs/en/current-route-closure.md`](en/current-route-closure.md)

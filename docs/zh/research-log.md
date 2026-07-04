@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — OpenLocus v2 RPM-D1 Bounded Offline RPM-small Learning Smoke
+
+[Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json)。`eval/rpm_d1_learning_smoke.py` 只有在 `--confirm-private-input` 后读取 private RPM-D0 JSONL，用 Phase 1 schema 校验全部 rows，执行 deterministic leave-one-episode-out 且无 trace overlap，在只允许的 label-blind pre-action buckets 上训练 stdlib-only decision-stump smoke learner，并与 majority 和 fixed-action baselines 比较。当前 D0 不足（rows `count_6_to_20`、episodes/action types `count_2_to_5`、minority target `count_1`、没有超过 majority 的 bucketed lift），因此状态为 `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim`。Stop/go 只授权 `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`；不授权 RPM runtime/default、provider/network/CI、method/scale/winner/default claim、raw publication、broad source scan、candidate expansion、retrieval/pack rerun as new algorithm、FRK-J/B/C、FRK-I variants、LDI-B easy continuation、HAAE-SG/T 或 R2BV static support repair。
+
 ## 2026-07-04 — OpenLocus v2 RPM-D0 Trace Capture
 
 [Detail](openlocus-v2-rpm-d0-trace-capture.md) / [report](../../artifacts/rpm_d0_trace_capture/rpm_d0_trace_capture_report.json)。`eval/rpm_d0_trace_capture.py` 在 bounded committed task set 上执行真实本地 OpenLocus `read_current_source` 与 `validate_evidence` actions，在 ignored `runs/` storage 下写入 schema-valid private JSONL trace rows，并发布 aggregate-only coverage/currentness/label/outcome/schema/privacy/stop-go buckets。Stop/go 只授权 `rpm_d1_bounded_offline_rpm_small_learning_smoke`；不授权 RPM training、FRK-J/B/C、FRK-I selector variants、LDI-B easy continuation、HAAE-SG/T、R2BV static support repair、provider/network/CI/runtime default、method/scale/winner/default claim、raw publication、broad source scan、candidate expansion，或把 retrieval/pack rerun 当作 new algorithm。

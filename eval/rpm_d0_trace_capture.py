@@ -321,7 +321,7 @@ def capture_traces(confirm_private_output: bool) -> tuple[list[dict[str, Any]], 
                 evidence_delta_bucket="delta_1",
                 latency_bucket=bucket_latency(read_latency),
                 failure_bucket="none",
-                currentness_bucket="verified_current",
+                currentness_bucket="not_checked",
                 label_available=True,
                 outcome_bucket="success_bucket",
             )
@@ -369,7 +369,7 @@ def capture_traces(confirm_private_output: bool) -> tuple[list[dict[str, Any]], 
                     evidence_delta_bucket="delta_0",
                     latency_bucket=bucket_latency(stale_latency),
                     failure_bucket=stale_failure,
-                    currentness_bucket="stale_rejected",
+                    currentness_bucket="not_checked",
                     label_available=True,
                     outcome_bucket="failure_bucket",
                     evidencecore_link_status="stale_rejected",
@@ -398,7 +398,7 @@ def capture_traces(confirm_private_output: bool) -> tuple[list[dict[str, Any]], 
 
 def aggregate_rows(rows: list[dict[str, Any]], manifest: dict[str, Any]) -> dict[str, Any]:
     action_counts = Counter(row["action"]["action_type"] for row in rows)
-    currentness_counts = Counter(row["state_features"]["currentness_bucket"] for row in rows)
+    currentness_counts = Counter(row["evidencecore_linkage"]["evidencecore_link_status"] for row in rows)
     label_timing_counts = Counter(row["outcome_label"]["label_timing"] for row in rows)
     outcome_counts = Counter(row["outcome_label"]["outcome_bucket"] for row in rows)
     schema_errors = schema.validate_trace_rows(rows)
@@ -546,7 +546,7 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
         if coverage.get("step_count_bucket") not in {"count_6_to_20", "count_21_to_50", "count_gt_50"}:
             errors.append("complete D0 requires multi-step trace rows")
         currentness = coverage.get("evidencecore_currentness", {})
-        if "verified_current" not in currentness or "stale_rejected" not in currentness:
+        if "linked_current" not in currentness or "stale_rejected" not in currentness:
             errors.append("complete D0 requires both current and stale-rejected EvidenceCore observations")
         outcome = coverage.get("outcome", {})
         if "success_bucket" not in outcome or "failure_bucket" not in outcome:
@@ -619,7 +619,7 @@ def run_self_tests() -> dict[str, Any]:
     report["coverage_buckets"]["step_count_bucket"] = "count_6_to_20"
     report["coverage_buckets"]["action_coverage"] = {"read_current_source": "count_2_to_5", "validate_evidence": "count_2_to_5"}
     report["coverage_buckets"]["required_action_types_present"] = ["read_current_source", "validate_evidence"]
-    report["coverage_buckets"]["evidencecore_currentness"] = {"verified_current": "count_2_to_5", "stale_rejected": "count_1"}
+    report["coverage_buckets"]["evidencecore_currentness"] = {"linked_current": "count_2_to_5", "stale_rejected": "count_1"}
     report["coverage_buckets"]["outcome"] = {"success_bucket": "count_2_to_5", "failure_bucket": "count_1"}
     report["validation_summary"]["privacy_leak_scan"] = "passed"
     report["stop_go"]["authorized_next_phase"] = "rpm_d1_bounded_offline_rpm_small_learning_smoke"
@@ -637,7 +637,7 @@ def run_self_tests() -> dict[str, Any]:
     bad["coverage_buckets"]["required_action_types_present"] = ["read_current_source"]
     checks.append(("missing_action_coverage_rejected", any("action type" in e for e in validate_public_report(bad))))
     bad = copy.deepcopy(report)
-    bad["coverage_buckets"]["evidencecore_currentness"] = {"verified_current": "count_6_to_20"}
+    bad["coverage_buckets"]["evidencecore_currentness"] = {"linked_current": "count_6_to_20"}
     checks.append(("missing_stale_rejection_coverage_rejected", any("stale-rejected" in e for e in validate_public_report(bad))))
     bad = copy.deepcopy(report)
     bad["execution_attestation"]["synthetic_rows_only"] = True

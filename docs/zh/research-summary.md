@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 RPM-D1 bounded offline RPM-small learning smoke
+
+[Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json)。
+
+- **RPM-D1 已完成**，但仅作为 pipeline/learning smoke；状态为 `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim`。
+- **实现**：`eval/rpm_d1_learning_smoke.py` 提供 `--self-test`、`--run-offline-learning-smoke --confirm-private-input [--trace-jsonl <private-d0-jsonl>]` 和 `--validate-report <path>`。
+- **执行**：private D0 JSONL 只有在 explicit confirmation 后读取；rows 通过 schema validation；split 是 deterministic leave-one-episode-out 且无 train/eval trace overlap；stdlib-only learner 是 decision stump，只使用允许的 label-blind pre-action buckets。
+- **结果**：当前 D0 仍不足（rows `count_6_to_20`、episodes/action types `count_2_to_5`、minority target `count_1`，没有超过 majority 的 bucketed lift）。这不是 RPM-working、training、method、scale、winner 或 default claim。
+- **Stop/go**：只授权 `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`；若未来意外出现 candidate signal，也只能授权 `rpm_d2_larger_trace_capture_and_heldout_eval_design`。
+
 ## OpenLocus v2 Phase 1 — Route closure + RPM trace schema
 
 [Route closure](current-route-closure.md) / [report](../../artifacts/rpm_trace_schema/rpm_trace_schema_report.json)。

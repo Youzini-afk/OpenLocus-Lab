@@ -6,8 +6,8 @@
     },
     "episode_count_bucket": "count_2_to_5",
     "evidencecore_currentness": {
-      "stale_rejected": "count_1",
-      "verified_current": "count_6_to_20"
+      "linked_current": "count_6_to_20",
+      "stale_rejected": "count_1"
     },
     "label_timing_isolation": {
       "after_action": "count_6_to_20"
