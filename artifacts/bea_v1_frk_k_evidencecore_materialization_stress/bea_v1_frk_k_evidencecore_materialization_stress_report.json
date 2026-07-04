@@ -1,0 +1,523 @@
+{
+  "decision_records": [
+    {
+      "anonymous_decision_id": "frkkdecision0000",
+      "decision_bucket": "authorize_frk_l_kernel_hardening",
+      "decision_reason_bucket": "none_observed",
+      "frk_l_authorized_bool": true
+    }
+  ],
+  "fixture_coverage_records": [
+    {
+      "anonymous_fixture_id": "frkkfixture0000",
+      "citation_schema_valid_bool": true,
+      "fixture_coverage_bucket": "coverage_all_required_families",
+      "fixture_family_buckets": [
+        "symbol_definition_fixture",
+        "config_key_fixture",
+        "function_callsite_fixture",
+        "path_filename_fixture",
+        "near_duplicate_fixture",
+        "moved_file_fixture",
+        "deleted_file_fixture",
+        "stale_range_fixture",
+        "line_insertion_fixture",
+        "alias_or_rename_fixture"
+      ],
+      "range_nonempty_bool": true
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "input_boundary_records": [
+    {
+      "anonymous_input_boundary_id": "frkkinput0000",
+      "candidate_generation_bool": false,
+      "default_no_local_run_bool": false,
+      "explicit_local_evidencecore_stress_run_bool": true,
+      "pack_rerun_bool": false,
+      "retrieval_rerun_bool": false,
+      "source_scan_bool": false,
+      "temp_snapshot_created_bool": true,
+      "temp_snapshot_safe_bool": true
+    }
+  ],
+  "latency_resource_records": [
+    {
+      "anonymous_resource_id": "frkkresource0000",
+      "failure_mode_bucket": "none_observed",
+      "latency_bucket": "latency_usable",
+      "resource_bucket": "resource_bounded"
+    }
+  ],
+  "materialization_currentness_records": [
+    {
+      "anonymous_materialization_id": "frkkmat0000",
+      "currentness_bucket": "currentness_pass",
+      "deleted_file_bucket": "deleted_file_rejected",
+      "line_insertion_bucket": "line_insertion_rematerialized",
+      "materialization_engine_bucket": "openlocus_cli_read_and_citations_validate",
+      "moved_file_bucket": "moved_file_rematerialized_or_safe",
+      "near_duplicate_bucket": "near_duplicate_rejected",
+      "stale_rejection_bucket": "stale_rejection_pass",
+      "validity_bucket": "validity_high"
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "frkkgate0000",
+      "gate_bucket": "source_lock_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0001",
+      "gate_bucket": "stopped_routes_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0002",
+      "gate_bucket": "explicit_local_stress_opt_in_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0003",
+      "gate_bucket": "temp_snapshot_safety_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0004",
+      "gate_bucket": "fixture_coverage_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0005",
+      "gate_bucket": "citation_schema_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0006",
+      "gate_bucket": "range_materialization_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0007",
+      "gate_bucket": "currentness_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0008",
+      "gate_bucket": "stale_rejection_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0009",
+      "gate_bucket": "deleted_file_rejection_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0010",
+      "gate_bucket": "moved_file_handling_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0011",
+      "gate_bucket": "line_insertion_handling_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0012",
+      "gate_bucket": "near_duplicate_rejection_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0013",
+      "gate_bucket": "latency_resource_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0014",
+      "gate_bucket": "aggregate_only_public_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0015",
+      "gate_bucket": "stop_go_boundary_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0016",
+      "gate_bucket": "synthetic_validator_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0017",
+      "gate_bucket": "public_readback_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkkgate0018",
+      "gate_bucket": "forbidden_scan_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-FRK-K EvidenceCore Materialization Stress Benchmark",
+  "privacy_records": [
+    {
+      "aggregate_only_public_bool": true,
+      "anonymous_privacy_id": "frkkprivacy0000",
+      "exact_count_public_bool": false,
+      "exact_timing_public_bool": false,
+      "raw_hash_public_bool": false,
+      "raw_public_bool": false,
+      "temp_root_public_bool": false
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_readback_id": "frkkreadback0000",
+      "detail_docs_readback_match_bool": true,
+      "index_docs_readback_match_bool": true,
+      "thin_root_index_readback_match_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_frk_k_evidencecore_materialization_stress_public_report_v1",
+  "self_test_total": 58,
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "frkksource0000",
+      "frk_i_checkpoint_bucket": "cc4885d",
+      "frk_i_self_test_bucket": "57/57",
+      "frk_i_status_bucket": "frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift",
+      "frk_j_not_authorized_locked_bool": true,
+      "source_locked_bool": true
+    }
+  ],
+  "status": "frk_k_evidencecore_materialization_stress_complete_frk_l_kernel_hardening_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "frkkstop0000",
+      "candidate_generation_authorized_bool": false,
+      "ci_authorized_bool": false,
+      "exact_metric_publication_authorized_bool": false,
+      "frk_b_c_authorized_bool": false,
+      "frk_j_authorized_bool": false,
+      "frk_l_kernel_hardening_authorized_bool": true,
+      "haae_sg_authorized_bool": false,
+      "haae_t_authorized_bool": false,
+      "ldi_b_authorized_bool": false,
+      "method_claim_authorized_bool": false,
+      "network_authorized_bool": false,
+      "next_allowed_phase_bucket": "FRK-L Kernel Hardening",
+      "no_go_currentness_or_materialization_failure_bool": false,
+      "no_next_execution_authorized_bool": false,
+      "pack_rerun_authorized_bool": false,
+      "provider_authorized_bool": false,
+      "provider_network_ci_authorized_bool": false,
+      "raw_publication_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "retrieval_rerun_over_private_traces_authorized_bool": false,
+      "rpm_training_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scale_claim_authorized_bool": false,
+      "source_scan_authorized_bool": false,
+      "source_scan_unbounded_authorized_bool": false,
+      "winner_claim_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0000",
+      "validator_bucket": "default_no_local_run_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0001",
+      "validator_bucket": "explicit_synthetic_go_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0002",
+      "validator_bucket": "explicit_synthetic_nogo_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0003",
+      "validator_bucket": "explicit_synthetic_inconclusive_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0004",
+      "validator_bucket": "source_lock_checkpoint_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0005",
+      "validator_bucket": "source_lock_status_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0006",
+      "validator_bucket": "source_lock_selftest_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0007",
+      "validator_bucket": "frk_j_authorized_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0008",
+      "validator_bucket": "stopped_routes_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0009",
+      "validator_bucket": "temp_snapshot_missing_opt_in_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0010",
+      "validator_bucket": "temp_snapshot_escape_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0011",
+      "validator_bucket": "temp_snapshot_symlink_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0012",
+      "validator_bucket": "temp_snapshot_parent_symlink_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0013",
+      "validator_bucket": "fixture_missing_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0014",
+      "validator_bucket": "citation_schema_invalid_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0015",
+      "validator_bucket": "citation_range_invalid_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0016",
+      "validator_bucket": "citation_empty_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0017",
+      "validator_bucket": "stale_rejection_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0018",
+      "validator_bucket": "deleted_file_rejection_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0019",
+      "validator_bucket": "moved_file_handling_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0020",
+      "validator_bucket": "line_insertion_handling_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0021",
+      "validator_bucket": "near_duplicate_rejection_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0022",
+      "validator_bucket": "latency_unusable_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0023",
+      "validator_bucket": "materialization_engine_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0024",
+      "validator_bucket": "candidate_generation_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0025",
+      "validator_bucket": "retrieval_rerun_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0026",
+      "validator_bucket": "source_scan_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0027",
+      "validator_bucket": "pack_rerun_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0028",
+      "validator_bucket": "frk_j_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0029",
+      "validator_bucket": "frk_b_c_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0030",
+      "validator_bucket": "ldi_b_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0031",
+      "validator_bucket": "haae_sg_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0032",
+      "validator_bucket": "haae_t_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0033",
+      "validator_bucket": "rpm_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0034",
+      "validator_bucket": "provider_network_ci_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0035",
+      "validator_bucket": "runtime_default_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0036",
+      "validator_bucket": "method_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0037",
+      "validator_bucket": "scale_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0038",
+      "validator_bucket": "winner_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0039",
+      "validator_bucket": "raw_path_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0040",
+      "validator_bucket": "raw_query_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0041",
+      "validator_bucket": "raw_snippet_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0042",
+      "validator_bucket": "raw_hash_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0043",
+      "validator_bucket": "exact_metric_publication_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0044",
+      "validator_bucket": "privacy_fail_clears_stopgo_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0045",
+      "validator_bucket": "stop_go_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0046",
+      "validator_bucket": "gate_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0047",
+      "validator_bucket": "gate_duplicate_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0048",
+      "validator_bucket": "gate_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0049",
+      "validator_bucket": "synthetic_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0050",
+      "validator_bucket": "synthetic_duplicate_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0051",
+      "validator_bucket": "synthetic_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0052",
+      "validator_bucket": "readback_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0053",
+      "validator_bucket": "schema_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0054",
+      "validator_bucket": "validate_report_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0055",
+      "validator_bucket": "aggregate_only_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0056",
+      "validator_bucket": "self_test_count_exact",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkksynth0057",
+      "validator_bucket": "safe_parser_unknown_arg_fail",
+      "validator_passed_bool": true
+    }
+  ]
+}

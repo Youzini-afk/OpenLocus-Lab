@@ -1,8 +1,12 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-FRK-K EvidenceCore Materialization Stress Benchmark
+
+[Detail](bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](../../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json). Status `frk_k_evidencecore_materialization_stress_complete_frk_l_kernel_hardening_authorized`; self-test `58/58`; FRK-I checkpoint `cc4885d`; coverage_all_required_families; currentness_pass; stale_rejection_pass; FRK-L Kernel Hardening authorized; aggregate-only; no FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication.
+
 ## 2026-07-04 — BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype
 
-[Detail](bea-v1-frk-i-existing-trace-algorithm-design.md) / [report](../../artifacts/bea_v1_frk_i_existing_trace_algorithm_design/bea_v1_frk_i_existing_trace_algorithm_design_report.json). Status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`; self-test `57/57`; FRK-H checkpoint `a95988f`; availability_weighted_rankpack_selector; neutral_no_lift; decision stop_existing_trace_algorithm_route_no_lift; FRK-J Existing-Trace Algorithm Validation authorized = false; aggregate-only; no new candidates/retrieval/source scan/pack rerun/new traces/scheduler policy change/RPM/provider/network/CI/runtime/default/method/scale/winner/raw publication.
+[Detail](bea-v1-frk-i-existing-trace-algorithm-design.md) / [report](../../artifacts/bea_v1_frk_i_existing_trace_algorithm_design/bea_v1_frk_i_existing_trace_algorithm_design_report.json). Status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`; self-test `58/58`; FRK-H checkpoint `a95988f`; availability_weighted_rankpack_selector; neutral_no_lift; decision stop_existing_trace_algorithm_route_no_lift; FRK-J Existing-Trace Algorithm Validation authorized = false; aggregate-only; no new candidates/retrieval/source scan/pack rerun/new traces/scheduler policy change/RPM/provider/network/CI/runtime/default/method/scale/winner/raw publication.
 
 ## 2026-07-04 — BEA-v1-FRK-H Existing-Trace Wider-Suite Stress
 
@@ -112,7 +116,7 @@ Explicit mode uses an operator-provided label source manifest and existing R2BE 
 
 ## 2026-07-03 — BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight
 
-`eval/bea_v1_haae_r2bn_evidence_pair_support_outcome_label_acquisition_public_design_preflight.py` is public-only/non-executing. Status is `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`; self-test `57/57`; R2BM checkpoint `219c890`; R2BM status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`; R2BL checkpoint `41aef9e`; R2BK checkpoint `7073b12`.
+`eval/bea_v1_haae_r2bn_evidence_pair_support_outcome_label_acquisition_public_design_preflight.py` is public-only/non-executing. Status is `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`; self-test `55/55`; R2BM checkpoint `219c890`; R2BM status `haae_r2bm_outcome_label_acquisition_public_decision_design_complete_r2bn_public_design_preflight_authorized`; R2BL checkpoint `41aef9e`; R2BK checkpoint `7073b12`.
 
 Decision: outcome_label_acquisition_design_preflight. Label policy: existing public/committed label source recovery; operator-provided label manifest; manual label manifest; synthetic/programmatic labels NOT allowed as ground truth; label_confidence_bucket_required_bool; label_scope_bounded_bool; no broad source scan or material repair in R2BO design; R2BM full stop/go contract exact. Future R2BO group includes outcome_label_source_manifest_private; bounds include target 20. Stop/go authorizes only BEA-v1-HAAE-R2BO Evidence-Pair Support Explicit Local Outcome Label Source Acquisition. status/execution consistency locked.
 
@@ -945,7 +949,7 @@ A manifest-vs-filesystem dirty summary enables incremental index updates that av
   - `eval/incremental_index_smoke.py`: 48 safety checks covering build/clean, modify/update/search/clean, add/update/search/clean, delete/update/search/clean, rename simulation, policy-excluded no dirty, policy mismatch refuses update, missing manifest refuses update, skipped empty file clean/promotion, schema/strategy mismatch refuses update, citations invalid_count=0.
   - `eval/synthetic_slo_bench.py`: Deterministic 1000-file synthetic repo (mix .rs/.py/.ts/.md/.txt), measures build_ms, dirty status latency, persistent_cli_search p95, bench_warm open-once query p95, and one-file update latency (true modification each iteration). Validates no invalid citations. Level0 synthetic only; no broad performance claims.
 
-### R10 incremental index smoke results (57/57 checks passed)
+### R10 incremental index smoke results (58/58 checks passed)
 
 | Check | Result |
 |---|---|

@@ -8,11 +8,20 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## BEA-v1-FRK-K EvidenceCore materialization stress benchmark
+
+[Detail](bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](../../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json).
+
+- **BEA-v1-FRK-K EvidenceCore Materialization Stress Benchmark is complete**: status `frk_k_evidencecore_materialization_stress_complete_frk_l_kernel_hardening_authorized`, self-test `58/58`, source lock FRK-I checkpoint `cc4885d`.
+- **Result**: coverage_all_required_families, openlocus_cli_read_and_citations_validate, validity_high, currentness_pass, stale_rejection_pass, deleted_file_rejected, moved/line insertion handled, near_duplicate_rejected, latency_usable, resource_bounded.
+- **Decision**: FRK-L Kernel Hardening authorized.
+- **Boundary**: aggregate-only; no FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication.
+
 ## BEA-v1-FRK-I existing-trace algorithm design prototype
 
 [Detail](bea-v1-frk-i-existing-trace-algorithm-design.md) / [report](../../artifacts/bea_v1_frk_i_existing_trace_algorithm_design/bea_v1_frk_i_existing_trace_algorithm_design_report.json).
 
-- **BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype is complete**: status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`, self-test `57/57`, source lock FRK-H checkpoint `a95988f`.
+- **BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype is complete**: status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`, self-test `58/58`, source lock FRK-H checkpoint `a95988f`.
 - **Prototype**: `availability_weighted_rankpack_selector`; deterministic, nonlearned, label-blind; labels/gold used only after design for aggregate scoring.
 - **Result**: baseline_best_bucket `rate_low`, prototype_selector_bucket `rate_low`, prototype_vs_best_fixed_delta_bucket `neutral_no_lift`, coverage_high, slice_consistency flat_or_negative, slice_failure_mode low_arm_spread_limits_algorithm, risk_medium.
 - **Decision**: stop_existing_trace_algorithm_route_no_lift; FRK-J Existing-Trace Algorithm Validation authorized = false.
@@ -183,7 +192,7 @@ R2BT public readback marker: BEA-v1-HAAE-R2BT Evidence-Pair Support Outcome-Alig
 
 ## BEA-v1-HAAE-R2BN outcome label acquisition public design preflight findings
 
-- **BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight is complete**: status `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`, self-test `57/57`, R2BM checkpoint `219c890`, R2BL checkpoint `41aef9e`, R2BK checkpoint `7073b12`.
+- **BEA-v1-HAAE-R2BN Evidence-Pair Support Outcome Label Acquisition Public Design Preflight is complete**: status `haae_r2bn_outcome_label_acquisition_public_design_preflight_complete_r2bo_explicit_local_label_source_acquisition_authorized`, self-test `55/55`, R2BM checkpoint `219c890`, R2BL checkpoint `41aef9e`, R2BK checkpoint `7073b12`.
 - **Decision**: outcome_label_acquisition_design_preflight.
 - **Label policy**: existing public/committed label source recovery; operator-provided label manifest; manual label manifest; synthetic/programmatic labels NOT allowed as ground truth; label_confidence_bucket_required_bool; label_scope_bounded_bool; no broad source scan or material repair in R2BO design; R2BM full stop/go contract exact.
 - **Future R2BO**: outcome_label_source_manifest_private, target 20, aggregate-only public artifact, public audit after acquisition.
@@ -3373,7 +3382,7 @@ Public outputs include `h4b_available`, `h4b_budget_overlay=true`, `h4b_selectiv
 
 ## R10 findings
 
-- **Incremental update works correctly**: dirty_index detects added/modified/deleted files; update_index applies batch changes (delete-by-term + re-add + commit + manifest file write via tmp+rename). Post-update status shows clean. 57/57 incremental smoke checks passed.
+- **Incremental update works correctly**: dirty_index detects added/modified/deleted files; update_index applies batch changes (delete-by-term + re-add + commit + manifest file write via tmp+rename). Post-update status shows clean. 58/58 incremental smoke checks passed.
 - **Dirty summary is accurate and safe**: distinguishes requires_update (file changes) from requires_rebuild (policy/schema/strategy mismatch or corrupt manifest). Policy-excluded added files do not dirty. Skipped entries (empty files, read errors) with unchanged sha are clean; skipped→nonempty is reported as modified (not added). Status never says clean if validate would fail.
 - **Safety gates enforced on update**: missing manifest, policy hash mismatch, schema mismatch, and unrecognized chunk strategy all refuse update with clear error messages requiring rebuild. Manifest load failures are also caught gracefully.
 - **Tantivy delete-by-term prevents duplicate docs**: `Term::from_field_text(path_field, path)` correctly removes all chunks for a path before re-adding. Deletes are tombstones until merge (documented, not a bug).
@@ -3414,7 +3423,7 @@ Rust tests: 243 passed (193 existing + 50 new in openlocus-provider); 29 passed 
 fmt: clean
 clippy: clean with -D warnings (default and --features tdb)
 CLI commands: read, scan, search regex/text/bm25/symbol, retrieve, fast-context, citations validate, context-lite, store status/build/purge, derived build/validate/inspect/purge, graph build/inspect, impact, tests, index build/status/dirty/validate/update/purge, search bm25 --index persistent (policy gate enforced), search symbol --mode regex|ast|auto, index build --chunk-strategy line|ast, bench warm (honest: open-once + real citation validation), provider status/audit, dense build/search/purge, version
-Eval: regex/bm25/symbol/rrf on fixtures/r2.jsonl; storage_level0_smoke; derived_level0_safety (25/25 checks passed); graph_level0_smoke (25/25 checks passed); fast_context_level0_smoke (19/19 checks passed); persistent_index_smoke (32/32 checks passed, incl. policy/manifest gates + strict validation + honest bench); ast_chunking_smoke (41/41 checks passed); ast_quality_bakeoff (25/25 safety checks passed, quality_gate_passed=false due to FileRecall@5 regression); incremental_index_smoke (57/57 checks passed, incl. dirty summary + skipped empty file + file-level update + policy/schema/strategy gates + citation validation); synthetic_slo_bench (1000 files, build_ms, dirty p50/p95, persistent_cli_search p95, bench_warm open-once query p95, one-file update p50/p95, 0 invalid citations, Level0 synthetic only); real_repo_incremental_bench (modify/add/delete/rename/policy_exclude/batch/latency_compare/growth_cycles on OpenLocus temp copy, total_invalid_citations=0, no stale VerifiedCurrent violations, Level0 one real-repo sample only); provider_dense_safety (46/46 checks passed, incl. remote/outbound defaults, experimental gate, vector/audit no raw text, secret blocking, stale rejection, disabled/unknown provider audit events, query_sha not raw query, short file range, citation validity)
+Eval: regex/bm25/symbol/rrf on fixtures/r2.jsonl; storage_level0_smoke; derived_level0_safety (25/25 checks passed); graph_level0_smoke (25/25 checks passed); fast_context_level0_smoke (19/19 checks passed); persistent_index_smoke (32/32 checks passed, incl. policy/manifest gates + strict validation + honest bench); ast_chunking_smoke (41/41 checks passed); ast_quality_bakeoff (25/25 safety checks passed, quality_gate_passed=false due to FileRecall@5 regression); incremental_index_smoke (58/58 checks passed, incl. dirty summary + skipped empty file + file-level update + policy/schema/strategy gates + citation validation); synthetic_slo_bench (1000 files, build_ms, dirty p50/p95, persistent_cli_search p95, bench_warm open-once query p95, one-file update p50/p95, 0 invalid citations, Level0 synthetic only); real_repo_incremental_bench (modify/add/delete/rename/policy_exclude/batch/latency_compare/growth_cycles on OpenLocus temp copy, total_invalid_citations=0, no stale VerifiedCurrent violations, Level0 one real-repo sample only); provider_dense_safety (46/46 checks passed, incl. remote/outbound defaults, experimental gate, vector/audit no raw text, secret blocking, stale rejection, disabled/unknown provider audit events, query_sha not raw query, short file range, citation validity)
 Structural validity: 1.0 across all methods
 Citation validity: Python scorer reports 1.0 across methods (`path_range_only` unless Python blake3 is installed); Rust CLI citation validator confirmed current aggregated R2 evidence has `0` invalid citations with hash/range/excerpt checks
 Remote dependency: none
@@ -3422,7 +3431,7 @@ TDB dependency: optional only (behind `tdb` feature; not in default build)
 LLM dependency: none (rule extractor only)
 Graph: deterministic, local-only, depth=1 only
 Fast-context: 4-turn deterministic loop, EvidencePack output, ActionRecord replay, token budget, unknown channel gate, final citation validation, no LLM, remote_calls=0
-Persistent index: r8-bm25-v2, mandatory manifest + policy gate enforced, validate_path per hit, empty sha skip, strict range no clamp, chunk_strategy line|ast, ast_stats in manifest, warm open=1ms p50=1ms, 32/32 R7 safety checks + 41/41 R8 AST safety checks + 57/57 R10 incremental safety checks
+Persistent index: r8-bm25-v2, mandatory manifest + policy gate enforced, validate_path per hit, empty sha skip, strict range no clamp, chunk_strategy line|ast, ast_stats in manifest, warm open=1ms p50=1ms, 32/32 R7 safety checks + 41/41 R8 AST safety checks + 58/58 R10 incremental safety checks
 Incremental update: dirty summary (added/modified/deleted), skipped entries tracked (not falsely added), file-level update (--dirty, --path), manifest file write via tmp+rename (not single transaction with Tantivy commit), Tantivy delete-by-term, policy/schema/strategy mismatch + load failure refusal
 TDB adapter: Level0 probe, feature-gated, dim=1 smoke, metadata+chunks only, marker-based purge, materialization conformance, no default dependency, no retrieval quality claim
 Real-repo bench: Level0 one real-repo sample (OpenLocus temp copy), per-run unique markers avoid self-contamination, cited-excerpt path+marker conjunction gates, branch old/delete markers proven indexed before removal, sampled modify/add/delete/rename/policy_exclude/batch workloads pass, latency_compare uses twin repos (report-only gate), growth_cycles catastrophic guard (observed 20-cycle ~1.10×, does not prove long-term bounded), total_invalid_citations=0, citations_validator_ok=true, no stale VerifiedCurrent violations, sys.exit(1) on safety failure only
