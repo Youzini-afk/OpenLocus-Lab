@@ -8,6 +8,31 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
+
+[Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md)。
+
+- **BEA-v1-FRK-N 已完成**：checkpoint `09c3624`；代码面 `crates/openlocus-index/src/persistent.rs`。
+- **Result**：`status_index` 与 `dirty_index` 在 filesystem probing 前验证 manifest path；unsafe indexed path 与 symlink escape 会 unclean/rebuild-or-update-required；skipped unsafe entry 不读取 repo 外部；unsafe single-path update 在 probing 前被拒绝。
+- **Validation**：fmt、clippy、openlocus-index/openlocus-cli/workspace tests、workspace build、FRK-K regression、docs i18n、diff-check 均通过；@oracle Go。
+- **Decision**：关闭当前 bounded EvidenceCore/kernel hardening line；只有出现具体 failing test、defect report 或 product workflow pain 时才继续。
+
+## BEA-v1-FRK-M EvidenceCore kernel regression expansion
+
+[Detail](bea-v1-frk-m-evidencecore-kernel-regression-expansion.md)。
+
+- **BEA-v1-FRK-M 已完成**：checkpoint `b8d970d`；代码面 `crates/openlocus-index/src/persistent.rs`。
+- **Result**：persistent-index regression coverage 已锁定 current `VerifiedCurrent` evidence、stale/deleted/moved/line-insertion 行为、same-content duplicate rejection、unsafe paths、unsafe manifest entries、symlink escape handling。
+- **Validation**：完整 kernel/docs validation 通过；@oracle Go。
+
+## BEA-v1-FRK-L kernel hardening
+
+[Detail](bea-v1-frk-l-kernel-hardening.md)。
+
+- **BEA-v1-FRK-L 已完成**：checkpoint `dbbfd25`；代码面 `crates/openlocus-cli/src/lib.rs`。
+- **Result**：repo-root discovery 接受真实 `.openlocus/`，拒绝 symlink/file `.openlocus`，保留 `.git`，并新增 CLI/EvidenceCore currentness regression tests。
+- **Validation**：完整 kernel/docs validation 通过；@oracle Go。
+
 ## BEA-v1-FRK-K EvidenceCore materialization stress benchmark
 
 [Detail](bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](../../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json)。

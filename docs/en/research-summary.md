@@ -8,6 +8,31 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
+
+[Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md).
+
+- **BEA-v1-FRK-N is complete**: checkpoint `09c3624`; code surface `crates/openlocus-index/src/persistent.rs`.
+- **Result**: `status_index` and `dirty_index` validate manifest paths before filesystem probing; unsafe indexed paths and symlink escapes are unclean/rebuild-or-update-required; skipped unsafe entries are not read outside the repo; unsafe single-path update is rejected before probing.
+- **Validation**: fmt, clippy, openlocus-index/openlocus-cli/workspace tests, workspace build, FRK-K regression, docs i18n, and diff-check passed; @oracle Go.
+- **Decision**: close the current bounded EvidenceCore/kernel hardening line until a concrete failing test, defect report, or product workflow pain appears.
+
+## BEA-v1-FRK-M EvidenceCore kernel regression expansion
+
+[Detail](bea-v1-frk-m-evidencecore-kernel-regression-expansion.md).
+
+- **BEA-v1-FRK-M is complete**: checkpoint `b8d970d`; code surface `crates/openlocus-index/src/persistent.rs`.
+- **Result**: persistent-index regression coverage now locks current `VerifiedCurrent` evidence, stale/deleted/moved/line-insertion behavior, same-content duplicate rejection, unsafe paths, unsafe manifest entries, and symlink escape handling.
+- **Validation**: full kernel/docs validation passed; @oracle Go.
+
+## BEA-v1-FRK-L kernel hardening
+
+[Detail](bea-v1-frk-l-kernel-hardening.md).
+
+- **BEA-v1-FRK-L is complete**: checkpoint `dbbfd25`; code surface `crates/openlocus-cli/src/lib.rs`.
+- **Result**: repo-root discovery accepts real `.openlocus/`, rejects symlink/file `.openlocus`, preserves `.git`, and adds CLI/EvidenceCore currentness regression tests.
+- **Validation**: full kernel/docs validation passed; @oracle Go.
+
 ## BEA-v1-FRK-K EvidenceCore materialization stress benchmark
 
 [Detail](bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](../../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json).

@@ -1,5 +1,17 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
+
+[Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md). Checkpoint `09c3624`; code surface `crates/openlocus-index/src/persistent.rs`. `status_index` and `dirty_index` now validate manifest paths before filesystem probing; unsafe indexed paths/symlink escapes become unclean; skipped unsafe entries are not read outside the repo; single-path update rejects absolute/parent paths before probing. Full validation passed; @oracle Go. This closes the current bounded EvidenceCore/kernel hardening line unless a concrete failing test, defect report, or product workflow pain appears.
+
+## 2026-07-04 — BEA-v1-FRK-M EvidenceCore Kernel Regression Expansion
+
+[Detail](bea-v1-frk-m-evidencecore-kernel-regression-expansion.md). Checkpoint `b8d970d`; code surface `crates/openlocus-index/src/persistent.rs`. Added persistent-index currentness/path-safety regression coverage for current `VerifiedCurrent` evidence, stale/deleted/moved/line-insertion behavior, same-content duplicate rejection, unsafe paths, unsafe manifest entries, and symlink escape handling. Full validation passed; @oracle Go.
+
+## 2026-07-04 — BEA-v1-FRK-L Kernel Hardening
+
+[Detail](bea-v1-frk-l-kernel-hardening.md). Checkpoint `dbbfd25`; code surface `crates/openlocus-cli/src/lib.rs`. Hardened repo-root discovery: real `.openlocus/` accepted, symlink/file `.openlocus` rejected, `.git` behavior preserved; added CLI/EvidenceCore currentness regressions. Full validation passed; @oracle Go.
+
 ## 2026-07-04 — BEA-v1-FRK-K EvidenceCore Materialization Stress Benchmark
 
 [Detail](bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](../../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json). Status `frk_k_evidencecore_materialization_stress_complete_frk_l_kernel_hardening_authorized`; self-test `58/58`; FRK-I checkpoint `cc4885d`; coverage_all_required_families; currentness_pass; stale_rejection_pass; FRK-L Kernel Hardening authorized; aggregate-only; no FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication.

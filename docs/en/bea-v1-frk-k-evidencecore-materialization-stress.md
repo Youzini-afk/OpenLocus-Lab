@@ -44,3 +44,7 @@ python3 eval/bea_v1_frk_k_evidencecore_materialization_stress.py --validate-repo
 ```
 
 The validator fails closed for source lock drift, stopped-route drift, temp snapshot escape/symlink, missing fixtures, invalid citation schema/range/empty citations, stale/deleted/moved/near-duplicate/latency failures, overauthorization, public leaks, exact metric publication, stop/go errors, and gate/synthetic/readback integrity.
+
+## Follow-up execution
+
+FRK-K authorized FRK-L Kernel Hardening. That follow-up has since executed, followed by FRK-M and FRK-N. The latest FRK detail is now [BEA-v1-FRK-N Persistent Index Dirty-Update Hardening](bea-v1-frk-n-persistent-index-dirty-update-hardening.md), checkpoint `09c3624`.

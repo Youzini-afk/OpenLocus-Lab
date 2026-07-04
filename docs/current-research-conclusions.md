@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date / 日期: 2026-07-03
+Date / 日期: 2026-07-04
 
 This root file is only a bilingual index. Do not put research status prose here.
 
@@ -29,9 +29,9 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Latest FRK detail / 最新 FRK 详情
 
-- English: [`docs/en/bea-v1-frk-k-evidencecore-materialization-stress.md`](en/bea-v1-frk-k-evidencecore-materialization-stress.md)
-- 中文：[`docs/zh/bea-v1-frk-k-evidencecore-materialization-stress.md`](zh/bea-v1-frk-k-evidencecore-materialization-stress.md)
-- Report / 报告: [`artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json`](../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json)
+- English: [`docs/en/bea-v1-frk-n-persistent-index-dirty-update-hardening.md`](en/bea-v1-frk-n-persistent-index-dirty-update-hardening.md)
+- 中文：[`docs/zh/bea-v1-frk-n-persistent-index-dirty-update-hardening.md`](zh/bea-v1-frk-n-persistent-index-dirty-update-hardening.md)
+- Code checkpoint / 代码检查点: `09c3624`
 
 ## Latest LDI detail / 最新 LDI 详情
 

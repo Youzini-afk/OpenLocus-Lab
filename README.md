@@ -1,5 +1,11 @@
 # OpenLocus
 
+BEA-v1-FRK-N Persistent Index Dirty-Update Hardening: [EN](docs/en/bea-v1-frk-n-persistent-index-dirty-update-hardening.md) / [ZH](docs/zh/bea-v1-frk-n-persistent-index-dirty-update-hardening.md). Checkpoint `09c3624`; code surface `crates/openlocus-index/src/persistent.rs`. Status: complete. `status_index` and `dirty_index` now validate manifest paths before filesystem probing; unsafe indexed paths and symlink escapes become unclean/rebuild-or-update-required; skipped unsafe entries are not read outside the repo; single-path `update_index` rejects absolute/parent paths before probing. Full validation passed; @oracle Go. This closes the current bounded EvidenceCore/kernel hardening line; no further FRK phase is authorized without a concrete failing test, defect report, or product workflow pain. No FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication.
+
+BEA-v1-FRK-M EvidenceCore Kernel Regression Expansion: [EN](docs/en/bea-v1-frk-m-evidencecore-kernel-regression-expansion.md) / [ZH](docs/zh/bea-v1-frk-m-evidencecore-kernel-regression-expansion.md). Checkpoint `b8d970d`; code surface `crates/openlocus-index/src/persistent.rs`. Status: complete. Added persistent-index regression coverage for current `Freshness::VerifiedCurrent` hits, stale/deleted/moved/line-insertion currentness, same-content duplicate rejection, unsafe FileRecord paths, unsafe indexed manifest paths, and symlink escape after build. Full validation passed; @oracle Go.
+
+BEA-v1-FRK-L Kernel Hardening: [EN](docs/en/bea-v1-frk-l-kernel-hardening.md) / [ZH](docs/zh/bea-v1-frk-l-kernel-hardening.md). Checkpoint `dbbfd25`; code surface `crates/openlocus-cli/src/lib.rs`. Status: complete. Hardened repo-root discovery so real `.openlocus/` is accepted, symlink/file `.openlocus` markers fail closed, and `.git` behavior is preserved; added CLI/EvidenceCore currentness regression tests. Full validation passed; @oracle Go.
+
 BEA-v1-FRK-K EvidenceCore Materialization Stress Benchmark: [EN](docs/en/bea-v1-frk-k-evidencecore-materialization-stress.md) / [ZH](docs/zh/bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json). Status `frk_k_evidencecore_materialization_stress_complete_frk_l_kernel_hardening_authorized`; self-test `58/58`; source lock FRK-I checkpoint `cc4885d`; coverage_all_required_families; stale_rejection_pass; currentness_pass; FRK-L Kernel Hardening authorized; aggregate-only; no FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication.
 
 BEA-v1-FRK-I Existing-Trace Algorithm Design Prototype: [EN](docs/en/bea-v1-frk-i-existing-trace-algorithm-design.md) / [ZH](docs/zh/bea-v1-frk-i-existing-trace-algorithm-design.md) / [report](artifacts/bea_v1_frk_i_existing_trace_algorithm_design/bea_v1_frk_i_existing_trace_algorithm_design_report.json). Status `frk_i_existing_trace_algorithm_design_complete_stop_existing_trace_algorithm_route_no_lift`; self-test `58/58`; source lock FRK-H checkpoint `a95988f`; algorithm `availability_weighted_rankpack_selector`; prototype_vs_best_fixed_delta_bucket `neutral_no_lift`; decision stop_existing_trace_algorithm_route_no_lift; FRK-J Existing-Trace Algorithm Validation authorized = false; aggregate-only; no new candidates/retrieval/source scan/pack rerun/new traces/scheduler policy change/RPM/provider/network/CI/runtime/default/method/scale/winner/raw publication.
@@ -35,14 +41,24 @@ abstain / request more context. Candidate is not fact.
 
 ## Current research status
 
-Status date: **2026-06-30**.
+Status date: **2026-07-04**.
 
-OpenLocus is now in the **BEA v1 actionability / retrieval-action scheduling**
-line. The current question is no longer “which retrieval channel is globally
-strongest?”; it is:
+OpenLocus is currently at **BEA-v1-FRK-N Persistent Index Dirty-Update
+Hardening** (checkpoint `09c3624`). The recent executable FRK/HAAE/LDI routes
+were intentionally conservative:
 
-> How do we convert high-reach, high-false-cost candidate pools into low-false-
-> cost, citation-valid Evidence without weakening `EvidenceCore`?
+- FRK-B/C pack utility stopped after downstream/proxy failure decomposition.
+- LDI-A deterministic derived index stopped because baseline was sufficient.
+- HAAE-S simple action scheduler stopped after no lift over fixed baselines.
+- FRK-I existing-trace selector stopped after no lift over the best fixed arm.
+- FRK-K/L/M/N formed the positive line: real EvidenceCore materialization,
+  repo-root safety, persistent-index currentness regressions, and dirty/update
+  path-safety hardening.
+
+Current practical question:
+
+> How do we keep retrieval facts current-source, path-safe, stale-rejecting,
+> and dirty-index safe before making any new method/default/scale claim?
 
 **The BEA-v1-N10E safety-probe branch is now closed.** N10ES (checkpoint
 `8c04a0a`) packaged the N10ER bounded public CI score/guard safety probe as a

@@ -1,5 +1,17 @@
 # OpenLocus Research Log
 
+## 2026-07-04 — BEA-v1-FRK-N Persistent Index Dirty-Update Hardening
+
+[Detail](bea-v1-frk-n-persistent-index-dirty-update-hardening.md)。Checkpoint `09c3624`；代码面 `crates/openlocus-index/src/persistent.rs`。`status_index` 与 `dirty_index` 现在会在 filesystem probing 前验证 manifest path；unsafe indexed path/symlink escape 会变为 unclean；skipped unsafe entry 不读取 repo 外部；single-path update 在 probing 前拒绝 absolute/parent path。Full validation passed；@oracle Go。本阶段关闭当前 bounded EvidenceCore/kernel hardening line，除非出现具体 failing test、defect report 或 product workflow pain。
+
+## 2026-07-04 — BEA-v1-FRK-M EvidenceCore Kernel Regression Expansion
+
+[Detail](bea-v1-frk-m-evidencecore-kernel-regression-expansion.md)。Checkpoint `b8d970d`；代码面 `crates/openlocus-index/src/persistent.rs`。新增 persistent-index currentness/path-safety regression coverage，覆盖 current `VerifiedCurrent` evidence、stale/deleted/moved/line-insertion 行为、same-content duplicate rejection、unsafe paths、unsafe manifest entries、symlink escape handling。Full validation passed；@oracle Go。
+
+## 2026-07-04 — BEA-v1-FRK-L Kernel Hardening
+
+[Detail](bea-v1-frk-l-kernel-hardening.md)。Checkpoint `dbbfd25`；代码面 `crates/openlocus-cli/src/lib.rs`。加固 repo-root discovery：接受真实 `.openlocus/`，拒绝 symlink/file `.openlocus`，保留 `.git` 行为；新增 CLI/EvidenceCore currentness regressions。Full validation passed；@oracle Go。
+
 ## 2026-07-04 — BEA-v1-FRK-K EvidenceCore Materialization Stress Benchmark
 
 [Detail](bea-v1-frk-k-evidencecore-materialization-stress.md) / [report](../../artifacts/bea_v1_frk_k_evidencecore_materialization_stress/bea_v1_frk_k_evidencecore_materialization_stress_report.json)。Status `frk_k_evidencecore_materialization_stress_complete_frk_l_kernel_hardening_authorized`；self-test `58/58`；FRK-I checkpoint `cc4885d`；coverage_all_required_families；currentness_pass；stale_rejection_pass；FRK-L Kernel Hardening authorized；aggregate-only；no FRK-J/FRK-B/C/LDI-B/HAAE-SG/HAAE-T/RPM/provider/network/CI/runtime/default/method/scale/winner/candidate generation/retrieval/source scan/pack rerun/raw publication。

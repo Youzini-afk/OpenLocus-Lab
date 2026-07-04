@@ -44,3 +44,7 @@ python3 eval/bea_v1_frk_k_evidencecore_materialization_stress.py --validate-repo
 ```
 
 Validator 会对 source lock drift、stopped-route drift、temp snapshot escape/symlink、missing fixtures、invalid citation schema/range/empty citations、stale/deleted/moved/near-duplicate/latency failures、overauthorization、public leaks、exact metric publication、stop/go errors，以及 gate/synthetic/readback integrity fail closed。
+
+## Follow-up execution
+
+FRK-K 授权了 FRK-L Kernel Hardening。该后续已经执行，并继续完成 FRK-M 与 FRK-N。最新 FRK detail 现在是 [BEA-v1-FRK-N Persistent Index Dirty-Update Hardening](bea-v1-frk-n-persistent-index-dirty-update-hardening.md)，checkpoint `09c3624`。
