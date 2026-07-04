@@ -1,0 +1,549 @@
+{
+  "arm_performance_stress_records": [
+    {
+      "anonymous_arm_stress_id": "frkharm0000",
+      "arm_spread_bucket": "spread_low",
+      "best_existing_arm_gold_bucket": "rate_low",
+      "fixed_baseline_saturation_bucket": "fixed_baseline_saturation_not_high",
+      "fixed_baseline_saturation_high_bool": false,
+      "median_existing_arm_gold_bucket": "rate_low",
+      "worst_existing_arm_gold_bucket": "rate_low"
+    }
+  ],
+  "availability_headroom_records": [
+    {
+      "anonymous_availability_id": "frkhavail0000",
+      "availability_limited_bool": false,
+      "gold_available_bucket": "rate_medium",
+      "headroom_bucket": "headroom_present",
+      "headroom_present_bool": true,
+      "materializable_evidence_bucket": "rate_high",
+      "rank_pack_coverage_bucket": "rate_low",
+      "rank_pack_top100_recovery_bucket": "rate_high"
+    }
+  ],
+  "decision_records": [
+    {
+      "anonymous_decision_id": "frkhdecision0000",
+      "decision_bucket": "authorize_frk_i_existing_trace_algorithm_design",
+      "decision_reason_bucket": "opportunity_present_weak",
+      "frk_i_authorized_bool": true
+    }
+  ],
+  "denominator_integrity_records": [
+    {
+      "anonymous_denominator_id": "frkhdenom0000",
+      "currentness_bucket": "currentness_partial_existing_trace_only",
+      "currentness_pass_or_partial_bool": true,
+      "label_coverage_bucket": "rate_medium",
+      "label_coverage_nonzero_bool": true,
+      "language_diversity_bucket": "language_diversity_medium_plus",
+      "source_diversity_bucket": "source_diversity_medium_plus",
+      "task_count_bucket": "count_250_plus",
+      "task_count_ge_50_bool": true,
+      "trace_schema_valid_bool": true
+    }
+  ],
+  "forbidden_scan": {
+    "finding_buckets": [],
+    "forbidden_finding_count": 0,
+    "status": "pass"
+  },
+  "input_boundary_records": [
+    {
+      "anonymous_input_boundary_id": "frkhinput0000",
+      "candidate_generation_bool": false,
+      "default_no_private_read_bool": false,
+      "existing_trace_input_bucket": "operator_confirmed_existing_trace_recovery_bucket",
+      "explicit_existing_trace_private_read_confirmed_bool": true,
+      "labels_used_for_existing_trace_stress_only_bool": true,
+      "new_trace_generation_bool": false,
+      "pack_rerun_bool": false,
+      "required_existing_trace_files_present_bool": true,
+      "retrieval_rerun_bool": false,
+      "scheduler_policy_change_bool": false,
+      "source_scan_bool": false
+    }
+  ],
+  "opportunity_classification_records": [
+    {
+      "anonymous_opportunity_id": "frkhopp0000",
+      "baseline_or_availability_limited_bool": false,
+      "inconclusive_bool": false,
+      "opportunity_bucket": "opportunity_present_weak",
+      "opportunity_present_bool": true
+    }
+  ],
+  "pass_fail_gate_records": [
+    {
+      "anonymous_gate_id": "frkhgate0000",
+      "gate_bucket": "source_lock_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0001",
+      "gate_bucket": "explicit_existing_trace_opt_in_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0002",
+      "gate_bucket": "existing_trace_root_safety_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0003",
+      "gate_bucket": "required_existing_trace_files_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0004",
+      "gate_bucket": "trace_schema_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0005",
+      "gate_bucket": "denominator_integrity_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0006",
+      "gate_bucket": "label_currentness_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0007",
+      "gate_bucket": "arm_performance_stress_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0008",
+      "gate_bucket": "availability_headroom_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0009",
+      "gate_bucket": "slice_stress_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0010",
+      "gate_bucket": "opportunity_classification_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0011",
+      "gate_bucket": "no_generation_retrieval_scan_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0012",
+      "gate_bucket": "aggregate_only_public_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0013",
+      "gate_bucket": "stop_go_boundary_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0014",
+      "gate_bucket": "synthetic_validator_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0015",
+      "gate_bucket": "public_readback_gate",
+      "gate_passed_bool": true
+    },
+    {
+      "anonymous_gate_id": "frkhgate0016",
+      "gate_bucket": "forbidden_scan_gate",
+      "gate_passed_bool": true
+    }
+  ],
+  "phase_bucket": "BEA-v1-FRK-H Existing-Trace Wider-Suite Stress",
+  "privacy_records": [
+    {
+      "aggregate_only_public_bool": true,
+      "anonymous_privacy_id": "frkhprivacy0000",
+      "exact_metric_public_bool": false,
+      "private_input_location_public_bool": false,
+      "raw_public_bool": false
+    }
+  ],
+  "public_readback_records": [
+    {
+      "all_public_readback_match_bool": true,
+      "anonymous_readback_id": "frkhreadback0000",
+      "detail_docs_readback_match_bool": true,
+      "index_docs_readback_match_bool": true,
+      "thin_root_index_readback_match_bool": true
+    }
+  ],
+  "schema_version": "bea_v1_frk_h_existing_trace_wider_suite_stress_public_report_v1",
+  "self_test_total": 58,
+  "slice_stress_records": [
+    {
+      "anonymous_slice_id": "frkhslice0000",
+      "best_arm_bucket": "existing_depth_reference_family",
+      "coverage_bucket": "coverage_broad",
+      "failure_mode_bucket": "mixed_by_language_existing_trace",
+      "headroom_bucket": "headroom_present",
+      "slice_bucket": "language_family"
+    },
+    {
+      "anonymous_slice_id": "frkhslice0001",
+      "best_arm_bucket": "existing_depth_reference_family",
+      "coverage_bucket": "coverage_broad",
+      "failure_mode_bucket": "source_balanced_existing_trace",
+      "headroom_bucket": "headroom_present",
+      "slice_bucket": "source_family"
+    },
+    {
+      "anonymous_slice_id": "frkhslice0002",
+      "best_arm_bucket": "existing_depth_reference_family",
+      "coverage_bucket": "coverage_broad",
+      "failure_mode_bucket": "depth_reference_best_current_scheduler_near_reference",
+      "headroom_bucket": "headroom_present",
+      "slice_bucket": "arm_family"
+    },
+    {
+      "anonymous_slice_id": "frkhslice0003",
+      "best_arm_bucket": "availability_conditioned_existing_arm",
+      "coverage_bucket": "rate_medium",
+      "failure_mode_bucket": "availability_not_limiting",
+      "headroom_bucket": "headroom_present",
+      "slice_bucket": "availability_family"
+    }
+  ],
+  "source_lock_records": [
+    {
+      "anonymous_source_lock_id": "frkhsource0000",
+      "frk_g_checkpoint_bucket": "0167445",
+      "frk_g_self_test_bucket": "46/46",
+      "frk_g_status_bucket": "frk_g_existing_trace_wider_denominator_audit_complete_frk_h_wider_suite_stress_authorized",
+      "source_locked_bool": true
+    }
+  ],
+  "status": "frk_h_existing_trace_wider_suite_stress_complete_frk_i_existing_trace_algorithm_design_authorized",
+  "stop_go_records": [
+    {
+      "anonymous_stop_go_id": "frkhstop0000",
+      "candidate_generation_authorized_bool": false,
+      "default_claim_authorized_bool": false,
+      "exact_metric_publication_authorized_bool": false,
+      "existing_trace_route_stopped_baseline_or_availability_limited_bool": false,
+      "frk_b_c_pack_route_authorized_bool": false,
+      "frk_i_existing_trace_algorithm_design_authorized_bool": true,
+      "haae_sg_state_feature_redesign_smoke_authorized_bool": false,
+      "haae_t_trace_dataset_readiness_authorized_bool": false,
+      "ldi_b_authorized_bool": false,
+      "method_claim_authorized_bool": false,
+      "new_trace_generation_authorized_bool": false,
+      "next_allowed_phase_bucket": "FRK-I Existing-Trace Algorithm Design",
+      "no_next_execution_authorized_bool": false,
+      "pack_rerun_authorized_bool": false,
+      "provider_network_ci_authorized_bool": false,
+      "raw_publication_authorized_bool": false,
+      "retrieval_rerun_authorized_bool": false,
+      "rpm_training_authorized_bool": false,
+      "runtime_default_authorized_bool": false,
+      "scale_claim_authorized_bool": false,
+      "scheduler_policy_change_authorized_bool": false,
+      "source_scan_authorized_bool": false,
+      "winner_claim_authorized_bool": false
+    }
+  ],
+  "synthetic_validator_records": [
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0000",
+      "validator_bucket": "default_no_private_read_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0001",
+      "validator_bucket": "explicit_synthetic_opportunity_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0002",
+      "validator_bucket": "explicit_synthetic_limited_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0003",
+      "validator_bucket": "explicit_synthetic_inconclusive_pass",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0004",
+      "validator_bucket": "source_drift_frk_g_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0005",
+      "validator_bucket": "missing_explicit_root_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0006",
+      "validator_bucket": "private_root_outside_allowed_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0007",
+      "validator_bucket": "private_root_symlink_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0008",
+      "validator_bucket": "private_root_traversal_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0009",
+      "validator_bucket": "trace_schema_invalid_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0010",
+      "validator_bucket": "denominator_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0011",
+      "validator_bucket": "label_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0012",
+      "validator_bucket": "currentness_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0013",
+      "validator_bucket": "arm_stress_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0014",
+      "validator_bucket": "saturation_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0015",
+      "validator_bucket": "headroom_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0016",
+      "validator_bucket": "slice_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0017",
+      "validator_bucket": "opportunity_bucket_drift_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0018",
+      "validator_bucket": "candidate_generation_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0019",
+      "validator_bucket": "retrieval_rerun_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0020",
+      "validator_bucket": "source_scan_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0021",
+      "validator_bucket": "pack_rerun_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0022",
+      "validator_bucket": "scheduler_policy_change_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0023",
+      "validator_bucket": "new_trace_generation_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0024",
+      "validator_bucket": "rpm_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0025",
+      "validator_bucket": "provider_network_ci_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0026",
+      "validator_bucket": "runtime_default_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0027",
+      "validator_bucket": "frk_b_c_route_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0028",
+      "validator_bucket": "ldi_b_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0029",
+      "validator_bucket": "haae_sg_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0030",
+      "validator_bucket": "haae_t_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0031",
+      "validator_bucket": "method_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0032",
+      "validator_bucket": "default_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0033",
+      "validator_bucket": "scale_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0034",
+      "validator_bucket": "winner_claim_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0035",
+      "validator_bucket": "exact_metric_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0036",
+      "validator_bucket": "raw_path_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0037",
+      "validator_bucket": "raw_query_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0038",
+      "validator_bucket": "raw_label_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0039",
+      "validator_bucket": "raw_score_rank_hash_leak_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0040",
+      "validator_bucket": "exact_metric_publication_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0041",
+      "validator_bucket": "stop_go_overauth_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0042",
+      "validator_bucket": "privacy_fail_clears_success_stopgo_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0043",
+      "validator_bucket": "gate_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0044",
+      "validator_bucket": "gate_duplicate_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0045",
+      "validator_bucket": "gate_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0046",
+      "validator_bucket": "synthetic_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0047",
+      "validator_bucket": "synthetic_duplicate_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0048",
+      "validator_bucket": "synthetic_false_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0049",
+      "validator_bucket": "readback_drop_fail",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0050",
+      "validator_bucket": "schema_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0051",
+      "validator_bucket": "validate_report_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0052",
+      "validator_bucket": "aggregate_only_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0053",
+      "validator_bucket": "labels_stress_only_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0054",
+      "validator_bucket": "no_generation_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0055",
+      "validator_bucket": "frk_i_authorized_only_on_opportunity_ok",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0056",
+      "validator_bucket": "self_test_count_exact",
+      "validator_passed_bool": true
+    },
+    {
+      "anonymous_synthetic_validator_id": "frkhsynth0057",
+      "validator_bucket": "safe_parser_unknown_arg_fail",
+      "validator_passed_bool": true
+    }
+  ]
+}

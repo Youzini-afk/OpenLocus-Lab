@@ -8,6 +8,15 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## BEA-v1-FRK-H existing-trace wider-suite stress
+
+[Detail](bea-v1-frk-h-existing-trace-wider-suite-stress.md) / [report](../../artifacts/bea_v1_frk_h_existing_trace_wider_suite_stress/bea_v1_frk_h_existing_trace_wider_suite_stress_report.json)。
+
+- **BEA-v1-FRK-H Existing-Trace Wider-Suite Stress 已完成**：status `frk_h_existing_trace_wider_suite_stress_complete_frk_i_existing_trace_algorithm_design_authorized`，self-test `58/58`，source lock FRK-G checkpoint `0167445`。
+- **Result**：task_count_ge_50，language/source diversity medium-plus，label coverage nonzero，currentness partial existing-trace-only，fixed baseline saturation not high，availability_limited_bool false with headroom_present，opportunity_present_weak。
+- **Decision**：FRK-I Existing-Trace Algorithm Design authorized。
+- **Boundary**：aggregate-only；no candidate generation/retrieval/source scan/pack rerun/scheduler policy change/new traces/RPM/provider/network/CI/runtime/default/raw publication。
+
 ## BEA-v1-FRK-G existing-trace wider denominator audit
 
 [Detail](bea-v1-frk-g-existing-trace-wider-denominator-audit.md) / [report](../../artifacts/bea_v1_frk_g_existing_trace_wider_denominator_audit/bea_v1_frk_g_existing_trace_wider_denominator_audit_report.json)。

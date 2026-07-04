@@ -29,9 +29,9 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Latest FRK detail / 最新 FRK 详情
 
-- English: [`docs/en/bea-v1-frk-g-existing-trace-wider-denominator-audit.md`](en/bea-v1-frk-g-existing-trace-wider-denominator-audit.md)
-- 中文：[`docs/zh/bea-v1-frk-g-existing-trace-wider-denominator-audit.md`](zh/bea-v1-frk-g-existing-trace-wider-denominator-audit.md)
-- Report / 报告: [`artifacts/bea_v1_frk_g_existing_trace_wider_denominator_audit/bea_v1_frk_g_existing_trace_wider_denominator_audit_report.json`](../artifacts/bea_v1_frk_g_existing_trace_wider_denominator_audit/bea_v1_frk_g_existing_trace_wider_denominator_audit_report.json)
+- English: [`docs/en/bea-v1-frk-h-existing-trace-wider-suite-stress.md`](en/bea-v1-frk-h-existing-trace-wider-suite-stress.md)
+- 中文：[`docs/zh/bea-v1-frk-h-existing-trace-wider-suite-stress.md`](zh/bea-v1-frk-h-existing-trace-wider-suite-stress.md)
+- Report / 报告: [`artifacts/bea_v1_frk_h_existing_trace_wider_suite_stress/bea_v1_frk_h_existing_trace_wider_suite_stress_report.json`](../artifacts/bea_v1_frk_h_existing_trace_wider_suite_stress/bea_v1_frk_h_existing_trace_wider_suite_stress_report.json)
 
 ## Latest LDI detail / 最新 LDI 详情
 
