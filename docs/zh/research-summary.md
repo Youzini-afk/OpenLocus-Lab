@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 TraceV2-A product workflow trace bootstrap
+
+[Detail](state-action-trace-v2-bootstrap.md) / [report](../../artifacts/state_action_trace_v2_bootstrap/state_action_trace_v2_bootstrap_report.json)。
+
+- **TraceV2-A product workflow trace bootstrap 已完成**，状态为 `tracev2_a_bootstrap_complete_frk_p2_capture_expansion_authorized`。
+- **Implementation**：`eval/state_action_trace_v2_bootstrap.py` 提供 default unavailable/no-op mode、`--self-test`、`--run-bootstrap --confirm-private-input --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：只将 existing ignored private Phase-5 product-workflow traces 与 Phase-8 bounded-repair prototype traces 转换/审计为严格的 `openlocus.state_action_trace.v2` rows；private output rows 只写入 ignored `runs/state_action_trace_v2_bootstrap_private_*/`。
+- **Validation/result**：已转换 `count_gt_50` rows 与 `count_gt_50` episodes；TraceV2 schema validation、label-after-action isolation、currentness leakage scan、EvidenceCore/candidate-state separation 与 privacy scan 通过；nested critical field coverage 为 `coverage_low`，unknown/missingness 为 `count_gt_50`，因此 coverage gaps dominate。
+- **Stop/go**：只授权 `frk_p2_workflow_v2_task_state_capture_expansion`。不授权基于 existing rows 的 HAAE-A2 replay、RPM-D2/model scaling、runtime/default、provider/network/CI、new retrieval prototype、broad FRK repair、kernel hardening、raw/private trace publication 或已关闭的 FRK/LDI/HAAE route。
+
 ## OpenLocus v2 FRK product workflow bounded retrieval repair prototype
 
 [Detail](frk-product-workflow-bounded-retrieval-repair-prototype.md) / [report](../../artifacts/frk_product_workflow_bounded_retrieval_repair_prototype/frk_product_workflow_bounded_retrieval_repair_prototype_report.json)。

@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 TraceV2-A product workflow trace bootstrap
+
+[Detail](state-action-trace-v2-bootstrap.md) / [report](../../artifacts/state_action_trace_v2_bootstrap/state_action_trace_v2_bootstrap_report.json).
+
+- **TraceV2-A product workflow trace bootstrap is complete** with status `tracev2_a_bootstrap_complete_frk_p2_capture_expansion_authorized`.
+- **Implementation**: `eval/state_action_trace_v2_bootstrap.py` provides default unavailable/no-op mode, `--self-test`, `--run-bootstrap --confirm-private-input --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: converted/audited only existing ignored private Phase-5 product-workflow traces and Phase-8 bounded-repair prototype traces into strict `openlocus.state_action_trace.v2` rows; private output rows were written only under ignored `runs/state_action_trace_v2_bootstrap_private_*/`.
+- **Validation/result**: `count_gt_50` rows and `count_gt_50` episodes converted; TraceV2 schema validation, label-after-action isolation, currentness leakage scan, EvidenceCore/candidate-state separation, and privacy scan passed; nested critical field coverage is `coverage_low` with unknown/missingness `count_gt_50`, so coverage gaps dominate.
+- **Stop/go**: only `frk_p2_workflow_v2_task_state_capture_expansion` is authorized. No HAAE-A2 replay over existing rows, RPM-D2/model scaling, runtime/default, provider/network/CI, new retrieval prototype, broad FRK repair, kernel hardening, raw/private trace publication, or closed FRK/LDI/HAAE route is authorized.
+
 ## OpenLocus v2 FRK product workflow bounded retrieval repair prototype
 
 [Detail](frk-product-workflow-bounded-retrieval-repair-prototype.md) / [report](../../artifacts/frk_product_workflow_bounded_retrieval_repair_prototype/frk_product_workflow_bounded_retrieval_repair_prototype_report.json).
