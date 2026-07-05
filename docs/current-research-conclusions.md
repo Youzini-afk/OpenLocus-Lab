@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- FRK product workflow bounded retrieval repair prototype / FRK product workflow 有界检索修复原型: [EN](en/frk-product-workflow-bounded-retrieval-repair-prototype.md) / [ZH](zh/frk-product-workflow-bounded-retrieval-repair-prototype.md)
+- FRK product workflow bounded retrieval repair prototype report / FRK product workflow 有界检索修复原型报告: [`artifacts/frk_product_workflow_bounded_retrieval_repair_prototype/frk_product_workflow_bounded_retrieval_repair_prototype_report.json`](../artifacts/frk_product_workflow_bounded_retrieval_repair_prototype/frk_product_workflow_bounded_retrieval_repair_prototype_report.json)
 - FRK product workflow specific retrieval repair design / FRK product workflow 特定检索修复设计: [EN](en/frk-product-workflow-specific-retrieval-repair-design.md) / [ZH](zh/frk-product-workflow-specific-retrieval-repair-design.md)
 - FRK product workflow specific retrieval repair design report / FRK product workflow 特定检索修复设计报告: [`artifacts/frk_product_workflow_specific_retrieval_repair_design/frk_product_workflow_specific_retrieval_repair_design_report.json`](../artifacts/frk_product_workflow_specific_retrieval_repair_design/frk_product_workflow_specific_retrieval_repair_design_report.json)
 - FRK product workflow failure decomposition / FRK product workflow 失败分解: [EN](en/frk-product-workflow-failure-decomposition.md) / [ZH](zh/frk-product-workflow-failure-decomposition.md)

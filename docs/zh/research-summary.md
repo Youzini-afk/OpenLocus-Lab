@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK product workflow bounded retrieval repair prototype
+
+[Detail](frk-product-workflow-bounded-retrieval-repair-prototype.md) / [report](../../artifacts/frk_product_workflow_bounded_retrieval_repair_prototype/frk_product_workflow_bounded_retrieval_repair_prototype_report.json)。
+
+- **FRK product workflow bounded retrieval repair prototype 已完成**，状态为 `frk_product_workflow_bounded_retrieval_repair_prototype_complete_no_lift_stop_or_failure_decomposition`。
+- **Implementation**：`eval/frk_product_workflow_bounded_retrieval_repair_prototype.py` 提供 `--self-test`、`--run-prototype --confirm-private-input --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：一个 prototype arm `frk_bounded_repair_wrong_file_guard_fixed_budget` 在 Phase-5 task set 上本地运行；保持 same candidate/read/validate caps，并且只使用 existing channel families；private rows 只有在确认后写入，并通过 Phase-1 schema 校验。
+- **Result**：prototype utility bucket `rate_25_to_50`；previous hybrid bucket `rate_25_to_50`；best fixed baseline bucket `rate_50_to_75`；相对 previous hybrid 与 best fixed baseline 的 delta 均为 `negative_delta`。
+- **Stop/go**：只授权 `frk_product_workflow_bounded_repair_failure_decomposition_or_stop_current_candidate`。不授权 D2/RPM training、runtime/default、provider/network/CI、method/scale/winner/default claim、broad source scan、candidate expansion、new channel family、kernel hardening、raw/private trace publication 或已关闭的 FRK/LDI/HAAE route。
+
 ## OpenLocus v2 FRK product workflow specific retrieval repair design
 
 [Detail](frk-product-workflow-specific-retrieval-repair-design.md) / [report](../../artifacts/frk_product_workflow_specific_retrieval_repair_design/frk_product_workflow_specific_retrieval_repair_design_report.json)。

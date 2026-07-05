@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK product workflow bounded retrieval repair prototype
+
+[Detail](frk-product-workflow-bounded-retrieval-repair-prototype.md) / [report](../../artifacts/frk_product_workflow_bounded_retrieval_repair_prototype/frk_product_workflow_bounded_retrieval_repair_prototype_report.json).
+
+- **FRK product workflow bounded retrieval repair prototype is complete** with status `frk_product_workflow_bounded_retrieval_repair_prototype_complete_no_lift_stop_or_failure_decomposition`.
+- **Implementation**: `eval/frk_product_workflow_bounded_retrieval_repair_prototype.py` provides `--self-test`, `--run-prototype --confirm-private-input --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: one prototype arm, `frk_bounded_repair_wrong_file_guard_fixed_budget`, ran locally on the Phase-5 task set with same candidate/read/validate caps and existing channel families only; private rows were written only after confirmation and validate with the Phase-1 schema.
+- **Result**: prototype utility bucket `rate_25_to_50`; previous hybrid bucket `rate_25_to_50`; best fixed baseline bucket `rate_50_to_75`; deltas versus previous hybrid and best fixed baseline are both `negative_delta`.
+- **Stop/go**: only `frk_product_workflow_bounded_repair_failure_decomposition_or_stop_current_candidate` is authorized. No D2/RPM training, runtime/default, provider/network/CI, method/scale/winner/default claim, broad source scan, candidate expansion, new channel family, kernel hardening, raw/private trace publication, or closed FRK/LDI/HAAE route is authorized.
+
 ## OpenLocus v2 FRK product workflow specific retrieval repair design
 
 [Detail](frk-product-workflow-specific-retrieval-repair-design.md) / [report](../../artifacts/frk_product_workflow_specific_retrieval_repair_design/frk_product_workflow_specific_retrieval_repair_design_report.json).
