@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK-P2R targeted capture repair
+
+[Detail](frk-p2r-targeted-capture-repair.md) / [report](../../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json)。
+
+- **FRK-P2R targeted capture repair 已完成**，状态为 `frk_p2r_capture_repair_complete_haae_a2_replay_authorized`。
+- **Implementation**：`eval/frk_p2r_targeted_capture_repair.py` 提供 default unavailable/no-op mode、`--self-test`、`--run-repair --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：使用与 FRK-P2 相同的 manifest shape、fixed caps、本地 bounded actions 与 existing channel families，重新生成更丰富的 private nested `openlocus.state_action_trace.v2` rows。本阶段只增加 instrumentation，private rows 只写入 ignored `runs/frk_p2r_targeted_capture_repair_private_*/`。
+- **Validation/result**：private row bucket `count_gt_50`，episode bucket `count_21_to_50`，candidate-pool target-scoped coverage `coverage_high`，candidate-pool label-blind feature coverage `coverage_high`，downstream-proxy stop-row coverage `coverage_high`，target-scoped unknown/missingness `count_0`，schema/privacy/label/currentness/EvidenceCore-separation 均通过。Candidate miss/rank proxies 保持 `not_available_pre_action`，不是 gold-derived。All-row downstream proxy coverage 按设计仍为 `coverage_low`，因为 non-final rows 使用 `not_applicable_nonfinal`。
+- **Stop/go**：只授权 `haae_a2_offline_action_replay_smoke_over_frk_p2r_v2_rows`。不授权 new retrieval algorithm/channel、candidate expansion、broad scan、adaptive escalation、provider/model/network/CI、P2R 内 HAAE replay、RPM-D2/model scaling、runtime/default、kernel hardening、raw/private publication 或 closed-route revival。
+
 ## OpenLocus v2 FRK-P2 workflow v2 task-state capture expansion
 
 [Detail](frk-p2-workflow-v2-task-state-capture-expansion.md) / [report](../../artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json)。

@@ -1,0 +1,211 @@
+{
+  "cost_latency_budget_buckets": {
+    "fixed_cap_bucket": "count_2_to_5",
+    "latency_bucket": "lt_1s",
+    "read_count_bucket": "count_21_to_50",
+    "token_budget_bucket": "budget_medium",
+    "validate_count_bucket": "count_21_to_50"
+  },
+  "coverage_audit": {
+    "all_row_coverage_by_group": {
+      "action": "coverage_high",
+      "behavior_policy": "coverage_high",
+      "evidence_linkage": "coverage_high",
+      "observation": "coverage_high",
+      "observation.cost_observed": "coverage_high",
+      "outcome": "coverage_high",
+      "outcome.downstream_proxy": "coverage_low",
+      "state.budget_state": "coverage_high",
+      "state.candidate_pool": "coverage_medium",
+      "state.evidence_state": "coverage_high",
+      "state.rankpack": "coverage_high",
+      "state.uncertainty_state": "coverage_high",
+      "task": "coverage_high"
+    },
+    "all_row_unknown_missingness_bucket": "count_gt_50",
+    "candidate_pool_label_blind_feature_coverage": "coverage_high",
+    "candidate_pool_preaction_proxy_marker_bucket": "count_gt_50",
+    "candidate_pool_target_scoped_coverage": "coverage_high",
+    "critical_target_scoped_coverage_sufficient": true,
+    "downstream_proxy_stop_row_coverage": "coverage_high",
+    "target_scoped_coverage_by_group": {
+      "action": "coverage_high",
+      "behavior_policy": "coverage_high",
+      "evidence_linkage": "coverage_high",
+      "observation": "coverage_high",
+      "observation.cost_observed": "coverage_high",
+      "outcome": "coverage_high",
+      "outcome.downstream_proxy": "coverage_high",
+      "state.budget_state": "coverage_high",
+      "state.candidate_pool": "coverage_high",
+      "state.evidence_state": "coverage_high",
+      "state.rankpack": "coverage_high",
+      "state.uncertainty_state": "coverage_high",
+      "task": "coverage_high"
+    },
+    "target_scoped_unknown_missingness_bucket": "count_0",
+    "target_scoped_unknown_missingness_by_group": {}
+  },
+  "downstream_proxy_buckets": {
+    "all_row_downstream_proxy_coverage": "coverage_low",
+    "solve_failure_bucket": "count_6_to_20",
+    "solve_success_bucket": "count_6_to_20",
+    "stop_row_downstream_proxy_coverage": "coverage_high"
+  },
+  "evidencecore_currentness_buckets": {
+    "citation_valid_bucket": "count_gt_50",
+    "currentness_or_citation_failure_bucket": "count_21_to_50",
+    "currentness_verified_bucket": "count_gt_50",
+    "linked_current_bucket": "count_gt_50"
+  },
+  "execution_attestations": {
+    "adaptive_escalation_executed": false,
+    "allowed_channel_families": [
+      "bm25_text",
+      "symbol_regex",
+      "existing_hybrid_retrieve"
+    ],
+    "broad_source_scan_executed": false,
+    "candidate_expansion_executed": false,
+    "ci_execution": "local_manual_only",
+    "direct_nested_v2_rows_emitted": true,
+    "executable_targeted_capture_repair": true,
+    "haae_a2_replay_executed": false,
+    "instrumentation_only_repair": true,
+    "kernel_hardening_executed": false,
+    "method_scale_winner_default_claim": false,
+    "network_access": "no_network",
+    "new_channel_family_used": false,
+    "new_retrieval_algorithm_executed": false,
+    "provider_or_model_calls_executed": false,
+    "rpm_d2_training_or_model_scaling_executed": false,
+    "runtime_default_changed": false,
+    "same_manifest_shape_as_frk_p2": true,
+    "target_scoped_coverage_accounting": true
+  },
+  "manifest_diversity_buckets": {
+    "budget_class_bucket": "count_3_to_5",
+    "episode_bucket": "count_21_to_50",
+    "expected_primary_role_bucket": "count_3_to_5",
+    "query_type_bucket": "count_3_to_5",
+    "support_role_bucket": "count_3_to_5",
+    "workflow_family_bucket": "count_3_to_5",
+    "wrong_file_cost_bucket": "count_3_to_5"
+  },
+  "outcome_class_buckets": {
+    "failure_bucket": "count_6_to_20",
+    "success_bucket": "count_6_to_20"
+  },
+  "phase": "openlocus_v2_frk_p2r_targeted_capture_repair",
+  "privacy_contract": {
+    "content_hashes_public": false,
+    "exact_candidates_ranks_scores_public": false,
+    "labels_public": false,
+    "per_task_outcomes_public": false,
+    "private_refs_public": false,
+    "private_trace_paths_public": false,
+    "publication_level": "aggregate_only",
+    "queries_public": false,
+    "ranges_public": false,
+    "raw_paths_public": false,
+    "raw_publication": false,
+    "raw_rows_public": false,
+    "raw_task_ids_public": false,
+    "snippets_public": false
+  },
+  "private_io_buckets": {
+    "private_episode_count_bucket": "count_21_to_50",
+    "private_input_confirmation": "not_required",
+    "private_output_confirmation": "confirmed",
+    "private_output_gitignore_check": "passed",
+    "private_output_storage": "ignored_runs_private_jsonl",
+    "private_row_count_bucket": "count_gt_50"
+  },
+  "replay_target_viability": {
+    "haae_a2_positive_gate": true,
+    "replay_target_bucket": "count_2_to_5",
+    "target_with_both_positive_negative_final_outcomes_bucket": "count_1"
+  },
+  "row_episode_action_buckets": {
+    "action_coverage_buckets": {
+      "read_next": "count_21_to_50",
+      "retrieve_candidates": "count_21_to_50",
+      "stop": "count_21_to_50",
+      "validate_now": "count_21_to_50"
+    },
+    "episode_count_bucket": "count_21_to_50",
+    "row_count_bucket": "count_gt_50"
+  },
+  "schema_version": "frk_p2r_targeted_capture_repair_public_report_v1",
+  "source_readbacks": {
+    "frk_p2_authorized_next_phase": "targeted_frk_p2_workflow_v2_capture_repair_only",
+    "frk_p2_candidate_pool_coverage": "coverage_low",
+    "frk_p2_downstream_proxy_coverage": "coverage_low",
+    "frk_p2_schema_validation": "passed",
+    "frk_p2_status": "frk_p2_workflow_v2_capture_complete_targeted_capture_repair_only",
+    "frk_p2_unknown_missingness": "count_gt_50",
+    "readback_scope": "public_aggregate_report_only"
+  },
+  "status": "frk_p2r_capture_repair_complete_haae_a2_replay_authorized",
+  "stop_go": {
+    "authorized_next_phase": "haae_a2_offline_action_replay_smoke_over_frk_p2r_v2_rows",
+    "candidate_pool_repair_authorized": false,
+    "closed_route_revival_authorized": false,
+    "decision": "haae_a2_replay_over_frk_p2r_v2_rows_only",
+    "explicitly_forbidden": [
+      "adaptive_escalation",
+      "bounded_repair_route_revival",
+      "broad_source_scan",
+      "candidate_expansion_beyond_fixed_caps",
+      "ci_claim",
+      "default_claim",
+      "frk_b_c_resurrection",
+      "frk_i_revival",
+      "frk_j",
+      "haae_a2_replay_inside_phase",
+      "haae_sg",
+      "haae_t",
+      "kernel_hardening",
+      "ldi_b_easy_continuation",
+      "method_claim",
+      "model_fitting",
+      "model_provider_call",
+      "model_scaling",
+      "network_claim",
+      "new_channel_family",
+      "new_retrieval_algorithm",
+      "private_trace_publication",
+      "provider_claim",
+      "raw_publication",
+      "rpm_d2_training",
+      "runtime_default_claim",
+      "scale_claim",
+      "training_claim",
+      "winner_claim"
+    ],
+    "haae_a2_replay_authorized": true,
+    "kernel_hardening_authorized": false,
+    "label_or_proxy_repair_authorized": false,
+    "manifest_balance_repair_authorized": false,
+    "method_scale_winner_default_claims_allowed": false,
+    "model_scaling_authorized": false,
+    "new_retrieval_prototype_authorized": false,
+    "provider_network_ci_authorized": false,
+    "raw_private_trace_publication_authorized": false,
+    "rpm_d2_training_authorized": false,
+    "runtime_default_authorized": false,
+    "schema_privacy_currentness_repair_authorized": false
+  },
+  "tracev2_validation": {
+    "currentness_leakage_scan": "passed",
+    "evidence_linkage_separate_from_candidate_state": "passed",
+    "label_after_action_isolation": "passed",
+    "schema_error_bucket": "count_0",
+    "v2_schema_validation": "passed"
+  },
+  "validation_summary": {
+    "privacy_scan": "passed",
+    "public_report_level": "aggregate_only",
+    "self_test_mutation_coverage": "available"
+  }
+}

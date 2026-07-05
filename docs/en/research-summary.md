@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK-P2R targeted capture repair
+
+[Detail](frk-p2r-targeted-capture-repair.md) / [report](../../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json).
+
+- **FRK-P2R targeted capture repair is complete** with status `frk_p2r_capture_repair_complete_haae_a2_replay_authorized`.
+- **Implementation**: `eval/frk_p2r_targeted_capture_repair.py` provides default unavailable/no-op mode, `--self-test`, `--run-repair --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: regenerated richer private nested `openlocus.state_action_trace.v2` rows with the same FRK-P2 manifest shape, fixed caps, local bounded actions, and existing channel families. The phase adds instrumentation only and writes private rows only under ignored `runs/frk_p2r_targeted_capture_repair_private_*/`.
+- **Validation/result**: private row bucket `count_gt_50`, episode bucket `count_21_to_50`, candidate-pool target-scoped coverage `coverage_high`, candidate-pool label-blind feature coverage `coverage_high`, downstream-proxy stop-row coverage `coverage_high`, target-scoped unknown/missingness `count_0`, and schema/privacy/label/currentness/EvidenceCore-separation pass. Candidate miss/rank proxies remain `not_available_pre_action`, not gold-derived. All-row downstream proxy coverage remains `coverage_low` by design because non-final rows use `not_applicable_nonfinal`.
+- **Stop/go**: only `haae_a2_offline_action_replay_smoke_over_frk_p2r_v2_rows` is authorized. No new retrieval algorithm/channel, candidate expansion, broad scan, adaptive escalation, provider/model/network/CI, HAAE replay inside P2R, RPM-D2/model scaling, runtime/default, kernel hardening, raw/private publication, or closed-route revival is authorized.
+
 ## OpenLocus v2 FRK-P2 workflow v2 task-state capture expansion
 
 [Detail](frk-p2-workflow-v2-task-state-capture-expansion.md) / [report](../../artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json).

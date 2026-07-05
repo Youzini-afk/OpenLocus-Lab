@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- FRK-P2R targeted capture repair / FRK-P2R targeted capture repair: [EN](en/frk-p2r-targeted-capture-repair.md) / [ZH](zh/frk-p2r-targeted-capture-repair.md)
+- FRK-P2R report / FRK-P2R 报告: [`artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json`](../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json)
 - FRK-P2 workflow v2 task-state capture expansion / FRK-P2 workflow v2 task-state 捕获扩展: [EN](en/frk-p2-workflow-v2-task-state-capture-expansion.md) / [ZH](zh/frk-p2-workflow-v2-task-state-capture-expansion.md)
 - FRK-P2 report / FRK-P2 报告: [`artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json`](../artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json)
 - TraceV2-A product workflow trace bootstrap / TraceV2-A product workflow trace bootstrap: [EN](en/state-action-trace-v2-bootstrap.md) / [ZH](zh/state-action-trace-v2-bootstrap.md)
