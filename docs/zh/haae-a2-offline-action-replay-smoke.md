@@ -49,4 +49,6 @@ Deterministic label-blind candidate policies：
 
 仅授权 `stop_haae_a2_policy_route_baseline_sufficient`。
 
+路线收口：当前 v2 trace-driven HAAE policy line 在现有证据下关闭。路线级 authorized next value 为 `none_for_current_v2_trace_driven_policy_line`；未来只有通过 `new_product_workflow_pain_or_new_trace_evidence_decision` 才能重新打开，而不是继续 HAAE-A2 tweak 或 decomposition loop。
+
 绝不直接授权：HAAE-A3 heldout design、RPM-D2、training/model fitting/model scaling、runtime/default changes、provider/model/network/CI、new retrieval/candidate expansion/source scan、kernel hardening、method/scale/winner/default claims、raw/private trace publication 或 closed-route revival。

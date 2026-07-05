@@ -49,4 +49,6 @@ At least one candidate policy was evaluable on `count_21_to_50` episodes, but th
 
 Only `stop_haae_a2_policy_route_baseline_sufficient` is authorized.
 
+Route closeout: the current v2 trace-driven HAAE policy line is closed under current evidence. The route-level authorized next value is `none_for_current_v2_trace_driven_policy_line`; future reopening requires `new_product_workflow_pain_or_new_trace_evidence_decision`, not another HAAE-A2 tweak or decomposition loop.
+
 Never authorized directly: HAAE-A3 heldout design, RPM-D2, training/model fitting/model scaling, runtime/default changes, provider/model/network/CI, new retrieval/candidate expansion/source scan, kernel hardening, method/scale/winner/default claims, raw/private trace publication, or closed-route revival.
