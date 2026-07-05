@@ -6,24 +6,24 @@ Public report: [`artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.js
 
 ## Status
 
-RPM-D1 is complete as a bounded offline pipeline/learning smoke only. The status is `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim` with current RPM-D0 input. It proves the private-trace loading, schema validation, leakage-safe split, stdlib-only tiny learner, baseline comparison, diversity gating, aggregate reporting, and stop/go mechanics. It does **not** claim that RPM works and does **not** authorize RPM training, runtime/default use, model scaling, provider/network/CI execution, or method/scale/winner/default claims.
+RPM-D1 is complete as a bounded offline pipeline/learning smoke only. The latest rerun uses RPM-D0B input and reports `rpm_d1_learning_smoke_complete_no_signal_no_training_claim`. It proves the private-trace loading, schema validation, leakage-safe split, stdlib-only tiny learner, baseline comparison, diversity gating, aggregate reporting, and stop/go mechanics. It does **not** claim that RPM works and does **not** authorize RPM training, runtime/default use, model scaling, provider/network/CI execution, or method/scale/winner/default claims.
 
 `eval/rpm_d1_learning_smoke.py` provides:
 
 - `--self-test`
-- `--run-offline-learning-smoke --trace-jsonl <private-d0-jsonl> --confirm-private-input`
-- `--run-offline-learning-smoke --confirm-private-input` to use the latest ignored `runs/rpm_d0_private_*/rpm_d0_state_action_traces.jsonl`
+- `--run-offline-learning-smoke --trace-jsonl <private-d0-or-d0b-jsonl> --confirm-private-input`
+- `--run-offline-learning-smoke --confirm-private-input` to use the latest ignored RPM-D0 or RPM-D0B trace JSONL under `runs/`
 - `--validate-report <path>`
 
 ## Execution summary
 
-RPM-D1 reads private RPM-D0 JSONL only after `--confirm-private-input`. It validates all rows with `eval/rpm_trace_schema.py`, groups rows by trace/episode id, and evaluates a deterministic leave-one-episode-out split with an assertion that no train/eval trace overlap occurs.
+RPM-D1 reads private RPM-D0 or RPM-D0B JSONL only after `--confirm-private-input`. It validates all rows with `eval/rpm_trace_schema.py`, groups rows by trace/episode id, and evaluates a deterministic leave-one-episode-out split with an assertion that no train/eval trace overlap occurs.
 
-The local learner is a stdlib-only deterministic decision stump. It uses only label-blind pre-action fields allowed for the D1 smoke: task type, objective bucket, query shape bucket, repo size bucket, candidate count bucket, evidence coverage bucket, pre-action currentness bucket, ambiguity bucket, dirty state bucket, action type, retrieval budget bucket, source scan scope, candidate generation policy, pack policy, and eligible actions bucket. Post-action currentness results such as stale rejection are explicitly excluded from features and remain only in observation/EvidenceCore linkage. The target is derived only after the action from outcome/observation as success vs failure-safe. Baselines include the majority baseline and a fixed-action/action-only stump baseline.
+The local learner is a stdlib-only deterministic decision stump. It uses only label-blind pre-action fields allowed for the D1 smoke: task type, objective bucket, query shape bucket, repo size bucket, candidate count bucket, evidence coverage bucket, pre-action currentness bucket, ambiguity bucket, dirty state bucket, action type, retrieval budget bucket, source scan scope, candidate generation policy, pack policy, and eligible actions bucket. Post-action currentness results such as stale rejection are explicitly excluded from features and remain only in observation/EvidenceCore linkage. The target is derived only after the action from outcome/observation as success vs failure-safe. Baselines include the majority baseline, a fixed-action/action-only stump baseline, and the best of those baseline buckets.
 
 ## Result and diversity gate
 
-The current D0 trace has aggregate buckets `count_6_to_20` rows, `count_2_to_5` episodes, `count_2_to_5` action types, and a minority outcome bucket of `count_1`. The required diversity gates are at least 30 real rows, 10 episodes, 3 action types, two outcome classes with at least 5 rows each, at least 3 held-out episodes, no train/eval trace overlap, and a model bucketed margin over majority. Current D0 fails the real-row, episode, action-type, class-balance, and model-vs-majority signal gates. The D1 result is therefore a controlled insufficient-diversity smoke, not a training or performance claim.
+The original D0 trace was insufficient. RPM-D0B fixes the data-shape gates: `count_21_to_50` rows, `count_6_to_20` episodes, three action types, two target classes, and no train/eval overlap. After removing post-action feature leakage and comparing against the best baseline, the model still has `delta_non_positive`. The latest D1 result is therefore no-signal, not a training or performance claim.
 
 ## Privacy and publication boundary
 
@@ -31,7 +31,7 @@ The public artifact is aggregate-only. It does not publish the private trace pat
 
 ## Stop/go
 
-Because diversity is insufficient and no bucketed signal is claimed, RPM-D1 authorizes only:
+Because the D0B rerun has no best-baseline lift, RPM-D1 authorizes only:
 
 - `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`
 

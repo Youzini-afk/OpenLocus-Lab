@@ -25,7 +25,10 @@ import rpm_trace_schema as schema
 
 REPO = Path(__file__).resolve().parent.parent
 DEFAULT_REPORT = REPO / "artifacts" / "rpm_d1_learning_smoke" / "rpm_d1_learning_smoke_report.json"
-PRIVATE_TRACE_GLOB = "rpm_d0_private_*/rpm_d0_state_action_traces.jsonl"
+PRIVATE_TRACE_GLOBS = (
+    "rpm_d0_private_*/rpm_d0_state_action_traces.jsonl",
+    "rpm_d0b_private_*/rpm_d0b_state_action_traces.jsonl",
+)
 
 REPORT_SCHEMA_VERSION = "rpm_d1_learning_smoke_public_report_v1"
 PHASE = "openlocus_v2_rpm_d1_bounded_offline_rpm_small_learning_smoke"
@@ -209,9 +212,12 @@ def load_jsonl(path: Path, *, confirm_private_input: bool) -> list[dict[str, Any
 
 def latest_private_trace() -> Path:
     root = REPO / "runs"
-    candidates = sorted(root.glob(PRIVATE_TRACE_GLOB), key=lambda p: (p.stat().st_mtime, str(p))) if root.exists() else []
+    candidates = sorted(
+        [candidate for pattern in PRIVATE_TRACE_GLOBS for candidate in root.glob(pattern)],
+        key=lambda p: (p.stat().st_mtime, str(p)),
+    ) if root.exists() else []
     if not candidates:
-        raise D1Error("no ignored RPM-D0 private trace JSONL found; pass --trace-jsonl or run RPM-D0 trace capture first")
+        raise D1Error("no ignored RPM-D0/D0B private trace JSONL found; pass --trace-jsonl or run trace capture first")
     return candidates[-1]
 
 
@@ -374,20 +380,28 @@ def aggregate_report(rows: list[dict[str, Any]], *, input_mode: str, self_test_s
     min_outcome_count = min(target_counts.values()) if len(target_counts) >= 2 else 0
     model_rate_bucket = bucket_rate(eval_summary["model_correct"], eval_summary["total_eval_rows"])
     majority_rate_bucket = bucket_rate(eval_summary["majority_correct"], eval_summary["total_eval_rows"])
+    fixed_action_rate_bucket = bucket_rate(eval_summary["fixed_action_correct"], eval_summary["total_eval_rows"])
+    best_baseline_correct = max(eval_summary["majority_correct"], eval_summary["fixed_action_correct"])
+    best_baseline_rate_bucket = bucket_rate(best_baseline_correct, eval_summary["total_eval_rows"])
     model_beats_majority = rate_rank(model_rate_bucket) > rate_rank(majority_rate_bucket)
+    model_beats_best_baseline = rate_rank(model_rate_bucket) > rate_rank(best_baseline_rate_bucket)
 
-    thresholds = {
+    data_thresholds = {
         "real_rows_ge_30": row_count >= 30,
         "episodes_ge_10": len(episodes) >= 10,
         "action_types_ge_3": len(action_types) >= 3,
         "two_outcome_classes_each_ge_5": len(target_counts) >= 2 and min_outcome_count >= 5,
         "heldout_episodes_ge_3": eval_summary["heldout_episode_count"] >= 3,
         "no_train_eval_trace_overlap": not eval_summary["train_eval_overlap"],
-        "model_beats_majority_by_bucketed_margin": model_beats_majority,
     }
-    diversity_sufficient = all(thresholds.values())
-    no_signal = not model_beats_majority
-    status = STATUS_SIGNAL if diversity_sufficient and not no_signal else (STATUS_INSUFFICIENT if not diversity_sufficient else STATUS_NO_SIGNAL)
+    thresholds = {
+        **data_thresholds,
+        "model_beats_majority_by_bucketed_margin": model_beats_majority,
+        "model_beats_best_baseline_by_bucketed_margin": model_beats_best_baseline,
+    }
+    data_diversity_sufficient = all(data_thresholds.values())
+    no_signal = not model_beats_best_baseline
+    status = STATUS_SIGNAL if data_diversity_sufficient and not no_signal else (STATUS_INSUFFICIENT if not data_diversity_sufficient else STATUS_NO_SIGNAL)
     authorized = AUTHORIZED_D2 if status == STATUS_SIGNAL else AUTHORIZED_D0B
 
     report = {
@@ -448,7 +462,7 @@ def aggregate_report(rows: list[dict[str, Any]], *, input_mode: str, self_test_s
             "binary_target_class_count_bucket": bucket_count(len(target_counts)),
             "minority_target_count_bucket": bucket_count(min_outcome_count),
             "threshold_results": thresholds,
-            "diversity_status": "passed" if diversity_sufficient else "insufficient_real_trace_diversity",
+            "diversity_status": "passed" if data_diversity_sufficient else "insufficient_real_trace_diversity",
         },
         "learning_smoke": {
             "learning_scope": "bounded_offline_pipeline_smoke_only",
@@ -461,9 +475,11 @@ def aggregate_report(rows: list[dict[str, Any]], *, input_mode: str, self_test_s
         "baseline_comparison": {
             "model_accuracy_bucket": model_rate_bucket,
             "majority_baseline_accuracy_bucket": majority_rate_bucket,
-            "fixed_action_baseline_accuracy_bucket": bucket_rate(eval_summary["fixed_action_correct"], eval_summary["total_eval_rows"]),
+            "fixed_action_baseline_accuracy_bucket": fixed_action_rate_bucket,
+            "best_baseline_accuracy_bucket": best_baseline_rate_bucket,
             "fixed_action_baseline_feasible": eval_summary["fixed_action_feasible"],
             "model_vs_majority_delta_bucket": delta_bucket(eval_summary["model_correct"], eval_summary["majority_correct"], eval_summary["total_eval_rows"]),
+            "model_vs_best_baseline_delta_bucket": delta_bucket(eval_summary["model_correct"], best_baseline_correct, eval_summary["total_eval_rows"]),
             "candidate_signal_status": "unexpected_candidate_signal" if status == STATUS_SIGNAL else "no_training_signal_claim",
         },
         "privacy_scan": {
@@ -547,18 +563,25 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
         "heldout_episodes_ge_3",
         "no_train_eval_trace_overlap",
         "model_beats_majority_by_bucketed_margin",
+        "model_beats_best_baseline_by_bucketed_margin",
     ):
         if key not in threshold_results or not isinstance(threshold_results.get(key), bool):
             errors.append(f"diversity threshold {key} missing or non-boolean")
+    if report.get("status") == STATUS_SIGNAL:
+        if thresholds.get("diversity_status") != "passed" or threshold_results.get("model_beats_best_baseline_by_bucketed_margin") is not True:
+            errors.append("signal status requires passed diversity and best-baseline lift gate")
     if report.get("status") == STATUS_INSUFFICIENT and thresholds.get("diversity_status") != "insufficient_real_trace_diversity":
         errors.append("insufficient status requires insufficient diversity readback")
+    if report.get("status") == STATUS_NO_SIGNAL:
+        if thresholds.get("diversity_status") != "passed" or threshold_results.get("model_beats_best_baseline_by_bucketed_margin") is not False:
+            errors.append("no-signal status requires passed diversity and failed best-baseline lift gate")
     learning = report.get("learning_smoke", {})
     if learning.get("model_family") != "decision_stump_stdlib":
         errors.append("model family drift")
     if learning.get("training_claim_allowed") is not False or learning.get("method_scale_winner_default_claims_allowed") is not False:
         errors.append("training/method/default claims must be false")
     baseline = report.get("baseline_comparison", {})
-    for key in ("model_accuracy_bucket", "majority_baseline_accuracy_bucket", "fixed_action_baseline_accuracy_bucket", "model_vs_majority_delta_bucket"):
+    for key in ("model_accuracy_bucket", "majority_baseline_accuracy_bucket", "fixed_action_baseline_accuracy_bucket", "best_baseline_accuracy_bucket", "model_vs_majority_delta_bucket", "model_vs_best_baseline_delta_bucket"):
         if key not in baseline:
             errors.append(f"baseline comparison key {key} missing")
     privacy = report.get("privacy_scan", {})
@@ -651,6 +674,16 @@ def run_self_tests() -> dict[str, Any]:
     bad = copy.deepcopy(report)
     bad["privacy_scan"]["debug_private_ref"] = "private_ref_trace_a"
     checks.append(("public_private_ref_leak_rejected", bool(validate_public_report(bad))))
+    bad = copy.deepcopy(report)
+    bad["status"] = STATUS_SIGNAL
+    bad["diversity_thresholds"]["diversity_status"] = "insufficient_real_trace_diversity"
+    bad["diversity_thresholds"]["threshold_results"]["model_beats_best_baseline_by_bucketed_margin"] = False
+    bad["stop_go"]["authorized_next_phase"] = AUTHORIZED_D2
+    checks.append(("fake_signal_without_best_baseline_gate_rejected", any("best-baseline" in e or "signal status" in e for e in validate_public_report(bad))))
+    bad = copy.deepcopy(report)
+    bad["status"] = STATUS_NO_SIGNAL
+    bad["diversity_thresholds"]["diversity_status"] = "insufficient_real_trace_diversity"
+    checks.append(("no_signal_requires_data_diversity_rejected", any("no-signal" in e for e in validate_public_report(bad))))
     bad_rows = copy.deepcopy(rows)
     bad_rows[0]["action"]["action_type"] = "rpm_training"
     try:

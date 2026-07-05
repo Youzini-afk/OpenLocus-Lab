@@ -1,27 +1,30 @@
 {
   "baseline_comparison": {
+    "best_baseline_accuracy_bucket": "rate_mid",
     "candidate_signal_status": "no_training_signal_claim",
-    "fixed_action_baseline_accuracy_bucket": "rate_high",
+    "fixed_action_baseline_accuracy_bucket": "rate_low_mid",
     "fixed_action_baseline_feasible": true,
-    "majority_baseline_accuracy_bucket": "rate_high",
-    "model_accuracy_bucket": "rate_high",
+    "majority_baseline_accuracy_bucket": "rate_mid",
+    "model_accuracy_bucket": "rate_low_mid",
+    "model_vs_best_baseline_delta_bucket": "delta_non_positive",
     "model_vs_majority_delta_bucket": "delta_non_positive"
   },
   "diversity_thresholds": {
     "action_type_count_bucket": "count_2_to_5",
     "binary_target_class_count_bucket": "count_2_to_5",
-    "diversity_status": "insufficient_real_trace_diversity",
-    "episode_count_bucket": "count_2_to_5",
-    "minority_target_count_bucket": "count_1",
-    "real_row_count_bucket": "count_6_to_20",
+    "diversity_status": "passed",
+    "episode_count_bucket": "count_6_to_20",
+    "minority_target_count_bucket": "count_6_to_20",
+    "real_row_count_bucket": "count_21_to_50",
     "threshold_results": {
-      "action_types_ge_3": false,
-      "episodes_ge_10": false,
+      "action_types_ge_3": true,
+      "episodes_ge_10": true,
       "heldout_episodes_ge_3": true,
+      "model_beats_best_baseline_by_bucketed_margin": false,
       "model_beats_majority_by_bucketed_margin": false,
       "no_train_eval_trace_overlap": true,
-      "real_rows_ge_30": false,
-      "two_outcome_classes_each_ge_5": false
+      "real_rows_ge_30": true,
+      "two_outcome_classes_each_ge_5": true
     }
   },
   "execution_attestation": {
@@ -53,21 +56,21 @@
       "policy_learning_support.eligible_actions_bucket"
     ],
     "feature_coverage_buckets": {
-      "action.action_type": "count_6_to_20",
-      "action.candidate_generation_policy": "count_6_to_20",
-      "action.pack_policy": "count_6_to_20",
-      "action.retrieval_budget_bucket": "count_6_to_20",
-      "action.source_scan_scope": "count_6_to_20",
-      "policy_learning_support.eligible_actions_bucket": "count_6_to_20",
-      "state_features.ambiguity_bucket": "count_6_to_20",
-      "state_features.candidate_count_bucket": "count_6_to_20",
-      "state_features.currentness_bucket": "count_6_to_20",
-      "state_features.dirty_state_bucket": "count_6_to_20",
-      "state_features.evidence_coverage_bucket": "count_6_to_20",
-      "state_features.query_shape_bucket": "count_6_to_20",
-      "state_features.repo_size_bucket": "count_6_to_20",
-      "task_state.objective_bucket": "count_6_to_20",
-      "task_state.task_type": "count_6_to_20"
+      "action.action_type": "count_21_to_50",
+      "action.candidate_generation_policy": "count_21_to_50",
+      "action.pack_policy": "count_21_to_50",
+      "action.retrieval_budget_bucket": "count_21_to_50",
+      "action.source_scan_scope": "count_21_to_50",
+      "policy_learning_support.eligible_actions_bucket": "count_21_to_50",
+      "state_features.ambiguity_bucket": "count_21_to_50",
+      "state_features.candidate_count_bucket": "count_21_to_50",
+      "state_features.currentness_bucket": "count_21_to_50",
+      "state_features.dirty_state_bucket": "count_21_to_50",
+      "state_features.evidence_coverage_bucket": "count_21_to_50",
+      "state_features.query_shape_bucket": "count_21_to_50",
+      "state_features.repo_size_bucket": "count_21_to_50",
+      "task_state.objective_bucket": "count_21_to_50",
+      "task_state.task_type": "count_21_to_50"
     },
     "forbidden_feature_sources": [
       "outcome_label_group",
@@ -80,7 +83,7 @@
     "label_blind_pre_action_features_only": true
   },
   "learning_smoke": {
-    "evaluation_row_count_bucket": "count_6_to_20",
+    "evaluation_row_count_bucket": "count_21_to_50",
     "learning_scope": "bounded_offline_pipeline_smoke_only",
     "method_scale_winner_default_claims_allowed": false,
     "model_family": "decision_stump_stdlib",
@@ -101,11 +104,11 @@
     "task_ids_public": false
   },
   "private_input_summary": {
-    "episode_count_bucket": "count_2_to_5",
-    "input_mode": "latest_ignored_d0_private_trace",
+    "episode_count_bucket": "count_6_to_20",
+    "input_mode": "explicit_private_jsonl",
     "private_input_path_public": false,
     "raw_rows_public": false,
-    "row_count_bucket": "count_6_to_20",
+    "row_count_bucket": "count_21_to_50",
     "storage_class": "ignored_repo_runs_private_jsonl_or_explicit_operator_private_jsonl"
   },
   "schema_validation": {
@@ -115,8 +118,8 @@
   },
   "schema_version": "rpm_d1_learning_smoke_public_report_v1",
   "self_test": {
-    "checks_passed": 14,
-    "checks_total": 14,
+    "checks_passed": 16,
+    "checks_total": 16,
     "failed_checks": [],
     "status": "passed"
   },
@@ -126,12 +129,12 @@
     "rpm_d0_trace_capture_checkpoint": "ffd5ea3"
   },
   "split_leakage": {
-    "heldout_episode_count_bucket": "count_2_to_5",
+    "heldout_episode_count_bucket": "count_6_to_20",
     "leakage_status": "passed",
     "split_policy": "deterministic_leave_one_episode_out",
     "train_eval_trace_overlap": false
   },
-  "status": "rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim",
+  "status": "rpm_d1_learning_smoke_complete_no_signal_no_training_claim",
   "stop_go": {
     "authorized_next_phase": "rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture",
     "decision": "go_pipeline_smoke_only_no_training_claim",

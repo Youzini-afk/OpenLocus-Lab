@@ -6,24 +6,24 @@
 
 ## 状态
 
-RPM-D1 已作为 bounded offline pipeline/learning smoke 完成。当前 RPM-D0 输入下的状态是 `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim`。它只证明 private trace 读取、schema validation、无泄漏 split、stdlib-only tiny learner、baseline comparison、diversity gate、aggregate reporting 和 stop/go 机制可运行。它**不**声称 RPM 有效，也**不**授权 RPM training、runtime/default、model scaling、provider/network/CI execution，或 method/scale/winner/default claims。
+RPM-D1 已作为 bounded offline pipeline/learning smoke 完成。最新重跑使用 RPM-D0B 输入，状态是 `rpm_d1_learning_smoke_complete_no_signal_no_training_claim`。它只证明 private trace 读取、schema validation、无泄漏 split、stdlib-only tiny learner、baseline comparison、diversity gate、aggregate reporting 和 stop/go 机制可运行。它**不**声称 RPM 有效，也**不**授权 RPM training、runtime/default、model scaling、provider/network/CI execution，或 method/scale/winner/default claims。
 
 `eval/rpm_d1_learning_smoke.py` 提供：
 
 - `--self-test`
-- `--run-offline-learning-smoke --trace-jsonl <private-d0-jsonl> --confirm-private-input`
-- `--run-offline-learning-smoke --confirm-private-input`，默认使用最新 ignored `runs/rpm_d0_private_*/rpm_d0_state_action_traces.jsonl`
+- `--run-offline-learning-smoke --trace-jsonl <private-d0-or-d0b-jsonl> --confirm-private-input`
+- `--run-offline-learning-smoke --confirm-private-input`，默认使用 `runs/` 下最新 ignored RPM-D0 或 RPM-D0B trace JSONL
 - `--validate-report <path>`
 
 ## 执行摘要
 
-RPM-D1 只有在提供 `--confirm-private-input` 后才读取 private RPM-D0 JSONL。它用 `eval/rpm_trace_schema.py` 校验全部 rows，按 trace/episode id 分组，并执行 deterministic leave-one-episode-out split，同时断言 train/eval trace 不重叠。
+RPM-D1 只有在提供 `--confirm-private-input` 后才读取 private RPM-D0 或 RPM-D0B JSONL。它用 `eval/rpm_trace_schema.py` 校验全部 rows，按 trace/episode id 分组，并执行 deterministic leave-one-episode-out split，同时断言 train/eval trace 不重叠。
 
-本地 learner 是 stdlib-only deterministic decision stump。它只使用 D1 smoke 允许的 label-blind pre-action fields：task type、objective bucket、query shape bucket、repo size bucket、candidate count bucket、evidence coverage bucket、pre-action currentness bucket、ambiguity bucket、dirty state bucket、action type、retrieval budget bucket、source scan scope、candidate generation policy、pack policy 和 eligible actions bucket。`stale_rejected` 这类 post-action currentness 结果明确不能进入 features，只能留在 observation/EvidenceCore linkage 中。Target 只在 action 之后从 outcome/observation 派生为 success vs failure-safe。Baseline 包括 majority baseline 和 fixed-action/action-only stump baseline。
+本地 learner 是 stdlib-only deterministic decision stump。它只使用 D1 smoke 允许的 label-blind pre-action fields：task type、objective bucket、query shape bucket、repo size bucket、candidate count bucket、evidence coverage bucket、pre-action currentness bucket、ambiguity bucket、dirty state bucket、action type、retrieval budget bucket、source scan scope、candidate generation policy、pack_policy 和 eligible_actions_bucket。`stale_rejected` 这类 post-action currentness 结果明确不能进入 features，只能留在 observation/EvidenceCore linkage 中。Target 只在 action 之后从 outcome/observation 派生为 success vs failure-safe。Baseline 包括 majority baseline、fixed-action/action-only stump baseline，以及二者中的 best-baseline bucket。
 
 ## 结果和 diversity gate
 
-当前 D0 trace 的 aggregate buckets 为：rows `count_6_to_20`、episodes `count_2_to_5`、action types `count_2_to_5`，minority outcome bucket 为 `count_1`。D1 要求至少 30 real rows、10 episodes、3 action types、两个 outcome classes 且每类至少 5 rows、至少 3 held-out episodes、无 train/eval trace overlap，以及 model 相对 majority 有 bucketed margin。当前 D0 未通过 real-row、episode、action-type、class-balance 和 model-vs-majority signal gates。因此 D1 结果是受控的 insufficient-diversity smoke，不是 training 或 performance claim。
+原始 D0 trace 不足。D0B 重跑现在通过数据形状门槛：rows `count_21_to_50`、episodes `count_6_to_20`、three action types、two target classes，且无 train/eval overlap。在移除 post-action feature leakage 并改为对比 best baseline 后，模型仍是 `delta_non_positive`，所以 D1 结果是 no-signal，不是 training 或 performance claim。
 
 ## 隐私和发布边界
 
@@ -31,7 +31,7 @@ RPM-D1 只有在提供 `--confirm-private-input` 后才读取 private RPM-D0 JSO
 
 ## Stop/go
 
-由于 diversity 不足且没有声称 bucketed signal，RPM-D1 只授权：
+由于 D0B 重跑没有超过 best baseline，RPM-D1 只授权：
 
 - `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`
 

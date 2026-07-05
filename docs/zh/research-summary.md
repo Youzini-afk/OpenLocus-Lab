@@ -12,11 +12,21 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 
 [Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json)。
 
-- **RPM-D1 已完成**，但仅作为 pipeline/learning smoke；状态为 `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim`。
+- **RPM-D1 已完成**，但仅作为 pipeline/learning smoke；状态为 `rpm_d1_learning_smoke_complete_no_signal_no_training_claim`。
 - **实现**：`eval/rpm_d1_learning_smoke.py` 提供 `--self-test`、`--run-offline-learning-smoke --confirm-private-input [--trace-jsonl <private-d0-jsonl>]` 和 `--validate-report <path>`。
 - **执行**：private D0 JSONL 只有在 explicit confirmation 后读取；rows 通过 schema validation；split 是 deterministic leave-one-episode-out 且无 train/eval trace overlap；stdlib-only learner 是 decision stump，只使用允许的 label-blind pre-action buckets。
-- **结果**：当前 D0 仍不足（rows `count_6_to_20`、episodes/action types `count_2_to_5`、minority target `count_1`，没有超过 majority 的 bucketed lift）。这不是 RPM-working、training、method、scale、winner 或 default claim。
-- **Stop/go**：只授权 `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`；若未来意外出现 candidate signal，也只能授权 `rpm_d2_larger_trace_capture_and_heldout_eval_design`。
+- **结果**：D0B 已修复 trace 数量/多样性，但 D1 重跑相对 best baseline 仍是 `delta_non_positive`。这不是 RPM-working、training、method、scale、winner 或 default claim。
+- **Stop/go**：只授权 `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`；D0B 重跑没有 best-baseline lift，因此 D2 仍不授权。
+
+## OpenLocus v2 RPM-D0B trace capture expansion
+
+[Detail](openlocus-v2-rpm-d0b-trace-capture-expansion.md) / [report](../../artifacts/rpm_d0b_trace_capture_expansion/rpm_d0b_trace_capture_expansion_report.json)。
+
+- **RPM-D0B 已完成**：这是 expanded private RPM trace-capture set，状态为 `rpm_d0b_trace_capture_expansion_complete_d1_rerun_authorized`。
+- **Implementation**：`eval/rpm_d0b_trace_capture_expansion.py` 提供 `--self-test`、`--run-local-trace-capture --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：fixed bounded local episodes/actions 在执行前预先声明；只执行真实本地 OpenLocus CLI actions；private rows 保留在 ignored `runs/` storage，并通过 Phase 1 schema 校验。
+- **Coverage**：aggregate buckets 显示 36 rows、12 episodes、required action types `bounded_retrieval`/`read_current_source`/`validate_evidence`、success/failure buckets、stale/currentness negative controls、retrieval no-hit failure-safe rows，以及 labels 只在 action 后 join。
+- **Stop/go**：所有 D0B gates 均通过，因此只授权 `rpm_d1_bounded_offline_rpm_small_learning_smoke_rerun`。不授权 D2/model scaling、runtime/default、provider/network/CI、training、method/scale/winner/default claim、raw publication、broad source scan、candidate expansion、把 retrieval/pack rerun 当作 new algorithm，或已关闭的 FRK/LDI/HAAE route。
 
 ## OpenLocus v2 Phase 1 — Route closure + RPM trace schema
 

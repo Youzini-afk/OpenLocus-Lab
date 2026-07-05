@@ -12,11 +12,21 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 
 [Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json).
 
-- **RPM-D1 is complete** as a pipeline/learning smoke only, with status `rpm_d1_learning_smoke_complete_insufficient_real_trace_diversity_no_training_claim`.
+- **RPM-D1 is complete** as a pipeline/learning smoke only, with status `rpm_d1_learning_smoke_complete_no_signal_no_training_claim`.
 - **Implementation**: `eval/rpm_d1_learning_smoke.py` provides `--self-test`, `--run-offline-learning-smoke --confirm-private-input [--trace-jsonl <private-d0-jsonl>]`, and `--validate-report <path>`.
 - **Execution**: private D0 JSONL is read only after explicit confirmation; rows are schema-validated; split is deterministic leave-one-episode-out with no train/eval trace overlap; the stdlib-only learner is a decision stump using only allowed label-blind pre-action buckets.
-- **Result**: current D0 remains insufficient (`count_6_to_20` rows, `count_2_to_5` episodes/action types, minority target `count_1`, no bucketed lift over majority). This is not an RPM-working, training, method, scale, winner, or default claim.
-- **Stop/go**: authorize only `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`; unexpected future candidate signal may authorize only `rpm_d2_larger_trace_capture_and_heldout_eval_design`.
+- **Result**: D0B fixes trace volume/diversity, but the D1 rerun still has `delta_non_positive` versus the best baseline. This is not an RPM-working, training, method, scale, winner, or default claim.
+- **Stop/go**: authorize only `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`; D2 remains unauthorized because the D0B rerun has no best-baseline lift.
+
+## OpenLocus v2 RPM-D0B trace capture expansion
+
+[Detail](openlocus-v2-rpm-d0b-trace-capture-expansion.md) / [report](../../artifacts/rpm_d0b_trace_capture_expansion/rpm_d0b_trace_capture_expansion_report.json).
+
+- **RPM-D0B is complete** as the expanded private RPM trace-capture set, with status `rpm_d0b_trace_capture_expansion_complete_d1_rerun_authorized`.
+- **Implementation**: `eval/rpm_d0b_trace_capture_expansion.py` provides `--self-test`, `--run-local-trace-capture --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: fixed bounded local episodes and actions are predeclared before execution; only real local OpenLocus CLI actions are executed; private rows stay under ignored `runs/` storage and validate through the Phase 1 schema.
+- **Coverage**: aggregate buckets show 36 rows, 12 episodes, required action types `bounded_retrieval`/`read_current_source`/`validate_evidence`, success and failure buckets, stale/currentness negative controls, retrieval no-hit failure-safe rows, and labels joined only after action.
+- **Stop/go**: all D0B gates pass, so only `rpm_d1_bounded_offline_rpm_small_learning_smoke_rerun` is authorized. No D2/model scaling, runtime/default, provider/network/CI, training, method/scale/winner/default claim, raw publication, broad source scan, candidate expansion, retrieval/pack rerun as a new algorithm, or closed FRK/LDI/HAAE route is authorized.
 
 ## OpenLocus v2 Phase 1 — Route closure + RPM trace schema
 

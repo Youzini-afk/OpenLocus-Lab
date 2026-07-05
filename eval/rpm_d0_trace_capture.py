@@ -345,7 +345,7 @@ def capture_traces(confirm_private_output: bool) -> tuple[list[dict[str, Any]], 
                 evidence_delta_bucket="delta_1" if failure == "none" else "delta_0",
                 latency_bucket=bucket_latency(validate_latency),
                 failure_bucket=failure,
-                currentness_bucket="verified_current" if failure == "none" else "not_checked",
+                currentness_bucket="not_checked",
                 label_available=True,
                 outcome_bucket="success_bucket" if failure == "none" else "failure_bucket",
             )
