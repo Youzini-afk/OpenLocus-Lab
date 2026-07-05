@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 HAAE-A2 offline action replay smoke
+
+[Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json).
+
+- **HAAE-A2 offline action replay smoke is complete** with status `haae_a2_offline_action_replay_smoke_complete_baseline_sufficient_stop`.
+- **Implementation**: `eval/haae_a2_offline_action_replay_smoke.py` provides default unavailable/no-op mode, `--self-test`, `--run-replay --confirm-private-input`, and `--validate-report <path>`.
+- **Execution**: loaded only existing ignored FRK-P2R private nested TraceV2 rows after confirmation, wrote no private output, and replayed logged episodes only. No retrieval/search/read/citation validation, new candidates, source scan, trace capture, provider/model/network/CI, training/model fitting/RPM-D2/model scaling, runtime/default change, new retrieval prototype, kernel hardening, raw/private trace publication, or closed-route revival occurred.
+- **Validation/result**: private row bucket `count_gt_50`, episode bucket `count_21_to_50`, strict TraceV2 validation, leakage scans, deterministic label-blind policy validation, same-budget validation, EvidenceCore/currentness regression checks, read/validate budget regression checks, and public privacy scans passed. Candidate policies were evaluable but did not beat the best fixed baseline.
+- **Stop/go**: only `stop_haae_a2_policy_route_baseline_sufficient` is authorized. No HAAE-A3 heldout design, RPM-D2/training/model scaling, runtime/default, provider/network/CI, new retrieval/candidate expansion/source scan, kernel hardening, method/scale/winner/default claim, raw/private publication, or closed-route revival is authorized.
+
 ## OpenLocus v2 FRK-P2R targeted capture repair
 
 [Detail](frk-p2r-targeted-capture-repair.md) / [report](../../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json).

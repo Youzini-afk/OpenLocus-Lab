@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-05 — OpenLocus v2 HAAE-A2 Offline Action Replay Smoke
+
+[Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)。`eval/haae_a2_offline_action_replay_smoke.py` 在 `--confirm-private-input` 后只读取 existing ignored FRK-P2R private nested TraceV2 rows，不写入 private output，并且只 replay logged episodes。它只使用 pre-action features 与 prior observations，把 logged actions 中不存在的选择标记为 `off_policy_not_evaluable`，且不合成 counterfactual outcomes。Private rows/episodes 为 `count_gt_50`/`count_21_to_50`；strict schema、leakage、label-blind policy、same-budget、EvidenceCore/currentness、budget-regression 与 privacy gates 均通过。Candidate policies 没有超过最佳 fixed baseline；状态 `haae_a2_offline_action_replay_smoke_complete_baseline_sufficient_stop`。Stop/go 只授权 `stop_haae_a2_policy_route_baseline_sufficient`。
+
 ## 2026-07-05 — OpenLocus v2 FRK-P2R Targeted Capture Repair
 
 [Detail](frk-p2r-targeted-capture-repair.md) / [report](../../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json)。`eval/frk_p2r_targeted_capture_repair.py` 在 `--confirm-private-output` 后重新生成更丰富的 private nested TraceV2 rows，并保持 FRK-P2 manifest shape、fixed caps、本地 bounded actions 与 existing channel families 不变。它只修复 candidate-pool 与 downstream-proxy coverage 的 target-scoped accounting，不改变 retrieval behavior。结果：private row bucket `count_gt_50`，episode bucket `count_21_to_50`，candidate-pool target-scoped coverage `coverage_high`，candidate-pool label-blind feature coverage `coverage_high`，downstream-proxy stop-row coverage `coverage_high`，target-scoped unknown/missingness `count_0`，schema/privacy/label/currentness/EvidenceCore separation 均通过。Candidate miss/rank proxies 保持 `not_available_pre_action`，不是 gold-derived。状态 `frk_p2r_capture_repair_complete_haae_a2_replay_authorized`；stop/go 只授权 `haae_a2_offline_action_replay_smoke_over_frk_p2r_v2_rows`。

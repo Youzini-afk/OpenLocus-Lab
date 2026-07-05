@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 HAAE-A2 offline action replay smoke
+
+[Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)。
+
+- **HAAE-A2 offline action replay smoke 已完成**，状态为 `haae_a2_offline_action_replay_smoke_complete_baseline_sufficient_stop`。
+- **Implementation**：`eval/haae_a2_offline_action_replay_smoke.py` 提供 default unavailable/no-op mode、`--self-test`、`--run-replay --confirm-private-input` 和 `--validate-report <path>`。
+- **Execution**：只在确认后读取 existing ignored FRK-P2R private nested TraceV2 rows，不写入 private output，并且只 replay logged episodes。没有执行 retrieval/search/read/citation validation、new candidates、source scan、trace capture、provider/model/network/CI、training/model fitting/RPM-D2/model scaling、runtime/default change、new retrieval prototype、kernel hardening、raw/private trace publication 或 closed-route revival。
+- **Validation/result**：private row bucket `count_gt_50`，episode bucket `count_21_to_50`，strict TraceV2 validation、leakage scans、deterministic label-blind policy validation、same-budget validation、EvidenceCore/currentness regression checks、read/validate budget regression checks 与 public privacy scans 均通过。Candidate policies 可评估，但没有超过最佳 fixed baseline。
+- **Stop/go**：只授权 `stop_haae_a2_policy_route_baseline_sufficient`。不授权 HAAE-A3 heldout design、RPM-D2/training/model scaling、runtime/default、provider/network/CI、new retrieval/candidate expansion/source scan、kernel hardening、method/scale/winner/default claim、raw/private publication 或 closed-route revival。
+
 ## OpenLocus v2 FRK-P2R targeted capture repair
 
 [Detail](frk-p2r-targeted-capture-repair.md) / [report](../../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json)。

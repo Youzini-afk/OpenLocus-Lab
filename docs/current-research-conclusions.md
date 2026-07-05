@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- HAAE-A2 offline action replay smoke / HAAE-A2 offline action replay smoke: [EN](en/haae-a2-offline-action-replay-smoke.md) / [ZH](zh/haae-a2-offline-action-replay-smoke.md)
+- HAAE-A2 report / HAAE-A2 报告: [`artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json`](../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)
 - FRK-P2R targeted capture repair / FRK-P2R targeted capture repair: [EN](en/frk-p2r-targeted-capture-repair.md) / [ZH](zh/frk-p2r-targeted-capture-repair.md)
 - FRK-P2R report / FRK-P2R 报告: [`artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json`](../artifacts/frk_p2r_targeted_capture_repair/frk_p2r_targeted_capture_repair_report.json)
 - FRK-P2 workflow v2 task-state capture expansion / FRK-P2 workflow v2 task-state 捕获扩展: [EN](en/frk-p2-workflow-v2-task-state-capture-expansion.md) / [ZH](zh/frk-p2-workflow-v2-task-state-capture-expansion.md)
