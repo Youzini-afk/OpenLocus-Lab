@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- FRK product workflow failure decomposition / FRK product workflow 失败分解: [EN](en/frk-product-workflow-failure-decomposition.md) / [ZH](zh/frk-product-workflow-failure-decomposition.md)
+- FRK product workflow failure decomposition report / FRK product workflow 失败分解报告: [`artifacts/frk_product_workflow_failure_decomposition/frk_product_workflow_failure_decomposition_report.json`](../artifacts/frk_product_workflow_failure_decomposition/frk_product_workflow_failure_decomposition_report.json)
 - FRK product workflow trace benchmark / FRK product workflow trace benchmark: [EN](en/frk-product-workflow-trace-benchmark.md) / [ZH](zh/frk-product-workflow-trace-benchmark.md)
 - FRK product workflow report / FRK product workflow 报告: [`artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json`](../artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json)
 - RPM-D0B trace capture expansion / RPM-D0B trace 捕获扩展: [EN](en/openlocus-v2-rpm-d0b-trace-capture-expansion.md) / [ZH](zh/openlocus-v2-rpm-d0b-trace-capture-expansion.md)

@@ -1,0 +1,138 @@
+{
+  "aggregate_buckets": {
+    "arm_utility_buckets_from_private_trace": {
+      "openlocus_hybrid_retrieve": "rate_25_to_50",
+      "symbol_regex_baseline": "rate_25_to_50",
+      "text_bm25_baseline": "rate_50_to_75"
+    },
+    "arm_vs_best_baseline_outcome_matrix_bucket": {
+      "best_baseline_failure_candidate_failure": "count_2_to_5",
+      "best_baseline_failure_candidate_success": "count_1",
+      "best_baseline_success_candidate_failure": "count_6_to_20",
+      "best_baseline_success_candidate_success": "count_6_to_20"
+    },
+    "family_level_loss_concentration_buckets": {
+      "cli_usage_api_lookup": "count_1",
+      "docs_readback_consistency": "count_1",
+      "evidencecore_currentness_citation_validation": "count_2_to_5",
+      "index_search_behavior": "count_2_to_5",
+      "trace_report_schema_debugging": "count_1"
+    },
+    "private_episode_count_bucket": "count_gt_50",
+    "private_row_count_bucket": "count_gt_50"
+  },
+  "decomposition_summary": {
+    "confidence_bucket": "high",
+    "primary_mechanism_bucket": "wrong_file_or_rank_miss",
+    "publication_level": "aggregate_only",
+    "recommended_next_action_bucket": "frk_product_workflow_specific_retrieval_repair_design",
+    "secondary_mechanism_bucket": "read_budget_or_topk_limit"
+  },
+  "input_attestation": {
+    "benchmark_script_used_for_schema_action_arm_readback_only": true,
+    "candidate_generation_executed": false,
+    "ci_execution": "local_manual_only",
+    "committed_public_benchmark_report_used": true,
+    "existing_private_trace_rows_only": true,
+    "matching_private_labels_used_if_present": true,
+    "network_access": "no_network",
+    "new_retrieval_actions_executed": false,
+    "private_input_confirmation": "confirmed",
+    "provider_or_model_calls_executed": false,
+    "runtime_default_changed": false,
+    "search_read_or_citations_validate_rerun": false,
+    "source_scan_executed": false,
+    "training_executed": false
+  },
+  "mechanism_buckets": {
+    "baseline_saturation": "count_0",
+    "bm25_text_dominance": "count_0",
+    "citation_or_currentness_failure": "count_0",
+    "inconclusive_private_trace_limit": "count_0",
+    "query_formulation_or_channel_mismatch": "count_0",
+    "read_budget_or_topk_limit": "count_6_to_20",
+    "retrieve_cli_fallback_or_channel_unavailable": "count_0",
+    "success_proxy_weakness": "count_0",
+    "symbol_regex_dominance": "count_0",
+    "task_fixture_bias": "count_0",
+    "wrong_file_or_rank_miss": "count_6_to_20"
+  },
+  "phase": "openlocus_v2_frk_product_workflow_failure_decomposition",
+  "privacy_contract": {
+    "evidence_filenames_public": false,
+    "exact_labels_public": false,
+    "hashes_public": false,
+    "per_task_mechanisms_public": false,
+    "per_task_outcomes_public": false,
+    "private_label_path_public": false,
+    "private_refs_public": false,
+    "private_trace_path_public": false,
+    "publication_level": "aggregate_only",
+    "queries_public": false,
+    "ranges_public": false,
+    "raw_paths_public": false,
+    "raw_publication": false,
+    "raw_rows_public": false,
+    "raw_task_ids_public": false,
+    "snippets_public": false
+  },
+  "schema_version": "frk_product_workflow_failure_decomposition_public_report_v1",
+  "source_report_readback": {
+    "source_best_baseline_delta_bucket": "negative_vs_best_baseline",
+    "source_phase": "openlocus_v2_frk_product_workflow_trace_benchmark",
+    "source_public_report_level": "aggregate_only",
+    "source_status": "frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion"
+  },
+  "status": "frk_product_workflow_failure_decomposition_query_channel_budget_repair_design_authorized",
+  "stop_go": {
+    "authorized_next_phase": "frk_product_workflow_specific_retrieval_repair_design",
+    "broad_source_scan_authorized": false,
+    "candidate_expansion_authorized": false,
+    "d2_or_model_scaling_authorized": false,
+    "decision": "specific_retrieval_repair_design_only",
+    "explicitly_forbidden": [
+      "broad_source_scan",
+      "candidate_generation_expansion",
+      "ci_claim",
+      "d2_model_scaling",
+      "default_claim",
+      "frk_b_c_resurrection",
+      "frk_i_selector_variants",
+      "frk_j",
+      "haae_sg",
+      "haae_t",
+      "kernel_hardening_continuation",
+      "ldi_b_easy_continuation",
+      "method_claim",
+      "network_claim",
+      "new_retrieval_experiment",
+      "old_heuristic_chain",
+      "private_trace_publication",
+      "provider_claim",
+      "raw_publication",
+      "rpm_training",
+      "runtime_default_claim",
+      "scale_claim",
+      "training_claim",
+      "winner_claim"
+    ],
+    "kernel_hardening_authorized": false,
+    "method_scale_winner_claims_allowed": false,
+    "new_retrieval_experiment_authorized": false,
+    "provider_network_ci_authorized": false,
+    "raw_publication_authorized": false,
+    "rpm_training_authorized": false,
+    "runtime_or_default_authorized": false,
+    "specific_retrieval_repair_design_if_query_channel_budget_mechanism": true,
+    "stop_or_collect_new_pain_if_baseline_saturation": false,
+    "targeted_repair_only_if_input_schema_privacy_fails": true,
+    "trace_expansion_with_metric_design_repair_if_inconclusive": false,
+    "trace_expansion_with_proxy_or_fixture_repair_if_proxy_fixture_bias": false
+  },
+  "validation_summary": {
+    "privacy_leak_scan": "passed",
+    "public_report_level": "aggregate_only",
+    "self_test_mutation_coverage": "available",
+    "strict_phase1_schema": "passed"
+  }
+}
