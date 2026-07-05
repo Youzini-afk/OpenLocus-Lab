@@ -36,6 +36,6 @@ Mechanism-impact buckets remain aggregate-only and cover wrong-file/rank-miss, r
 
 ## Stop/go
 
-Authorized next phase: `frk_product_workflow_bounded_repair_failure_decomposition_or_stop_current_candidate`.
+Closeout decision: stop the current bounded repair candidate. Authorized next route: `none_for_current_repair_candidate`, except a separately justified future `new_product_workflow_pain_or_new_trace_evidence_decision`.
 
 Not authorized: D2/model scaling, RPM training, runtime/default changes, provider/network/CI, method/scale/winner/default claims, broad source scan, candidate expansion, new channel families, kernel hardening, raw/private trace publication, FRK-J, FRK-B/C resurrection, FRK-I revival, LDI-B easy continuation, HAAE-SG, or HAAE-T.

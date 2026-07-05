@@ -36,6 +36,6 @@ Mechanism-impact buckets 仅以 aggregate-only 形式发布，覆盖 wrong-file/
 
 ## Stop/go
 
-授权下一阶段：`frk_product_workflow_bounded_repair_failure_decomposition_or_stop_current_candidate`。
+收口决策：停止当前 bounded repair candidate。授权下一路线：`none_for_current_repair_candidate`；只有未来出现单独证明的 `new_product_workflow_pain_or_new_trace_evidence_decision` 时才能重新选择新路线。
 
 不授权：D2/model scaling、RPM training、runtime/default changes、provider/network/CI、method/scale/winner/default claims、broad source scan、candidate expansion、new channel families、kernel hardening、raw/private trace publication、FRK-J、FRK-B/C resurrection、FRK-I revival、LDI-B easy continuation、HAAE-SG 或 HAAE-T。
