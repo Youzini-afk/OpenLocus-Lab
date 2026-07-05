@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK product workflow trace benchmark
+
+[Detail](frk-product-workflow-trace-benchmark.md) / [report](../../artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json)。
+
+- **FRK product workflow trace benchmark 已完成**，状态为 `frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion`。
+- **Implementation**：`eval/frk_product_workflow_trace_benchmark.py` 提供 `--self-test`、`--run-local-product-workflow-benchmark --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：fixed bounded local product-workflow tasks 在可用时执行本地 OpenLocus CLI actions；private rows 通过 Phase-1 RPM schema 校验，并保留在 ignored `runs/` storage。
+- **Coverage/result**：aggregate buckets 覆盖至少 20 个 tasks、5 个 workflow families、3 个 same-budget arms、超过 50 个 episodes、超过 50 行 rows，以及 `bounded_retrieval`/`read_current_source`/`validate_evidence`/`workflow_step` action types。Candidate arm 相对 best fixed baseline 为 negative，因此没有 lift claim。
+- **Stop/go**：只授权 `frk_product_workflow_failure_decomposition_or_trace_expansion`。不授权 D2/training、runtime/default、provider/network/CI、method/scale/winner/default claim、kernel hardening continuation、broad source scan、candidate expansion、raw/private trace publication 或已关闭的 FRK/LDI/HAAE route。
+
 ## OpenLocus v2 RPM-D1 bounded offline RPM-small learning smoke
 
 [Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json)。

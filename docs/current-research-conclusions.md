@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date / 日期: 2026-07-04
+Date / 日期: 2026-07-05
 
 This root file is only a bilingual index. Do not put research status prose here.
 
@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- FRK product workflow trace benchmark / FRK product workflow trace benchmark: [EN](en/frk-product-workflow-trace-benchmark.md) / [ZH](zh/frk-product-workflow-trace-benchmark.md)
+- FRK product workflow report / FRK product workflow 报告: [`artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json`](../artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json)
 - RPM-D0B trace capture expansion / RPM-D0B trace 捕获扩展: [EN](en/openlocus-v2-rpm-d0b-trace-capture-expansion.md) / [ZH](zh/openlocus-v2-rpm-d0b-trace-capture-expansion.md)
 - RPM-D0B report / RPM-D0B 报告: [`artifacts/rpm_d0b_trace_capture_expansion/rpm_d0b_trace_capture_expansion_report.json`](../artifacts/rpm_d0b_trace_capture_expansion/rpm_d0b_trace_capture_expansion_report.json)
 - RPM-D1 learning smoke / RPM-D1 learning smoke: [EN](en/openlocus-v2-rpm-d1-learning-smoke.md) / [ZH](zh/openlocus-v2-rpm-d1-learning-smoke.md)

@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK product workflow trace benchmark
+
+[Detail](frk-product-workflow-trace-benchmark.md) / [report](../../artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json).
+
+- **FRK product workflow trace benchmark is complete** with status `frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion`.
+- **Implementation**: `eval/frk_product_workflow_trace_benchmark.py` provides `--self-test`, `--run-local-product-workflow-benchmark --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: fixed bounded local product-workflow tasks were executed with local OpenLocus CLI actions where available; private rows validate through the Phase-1 RPM schema and stay under ignored `runs/` storage.
+- **Coverage/result**: aggregate buckets cover at least twenty tasks, five workflow families, three same-budget arms, more than fifty episodes, more than fifty rows, and action types `bounded_retrieval`/`read_current_source`/`validate_evidence`/`workflow_step`. The candidate arm is negative versus the best fixed baseline, so there is no lift claim.
+- **Stop/go**: only `frk_product_workflow_failure_decomposition_or_trace_expansion` is authorized. No D2/training, runtime/default, provider/network/CI, method/scale/winner/default claim, kernel hardening continuation, broad source scan, candidate expansion, raw/private trace publication, or closed FRK/LDI/HAAE route is authorized.
+
 ## OpenLocus v2 RPM-D1 bounded offline RPM-small learning smoke
 
 [Detail](openlocus-v2-rpm-d1-learning-smoke.md) / [report](../../artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json).

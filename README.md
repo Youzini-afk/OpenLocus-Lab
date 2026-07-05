@@ -1,5 +1,7 @@
 # OpenLocus
 
+OpenLocus v2 FRK Product Workflow Trace Benchmark: [EN](docs/en/frk-product-workflow-trace-benchmark.md) / [ZH](docs/zh/frk-product-workflow-trace-benchmark.md) / [report](artifacts/frk_product_workflow_trace_benchmark/frk_product_workflow_trace_benchmark_report.json). Status: `frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion`. `eval/frk_product_workflow_trace_benchmark.py` runs fixed bounded local product-workflow evidence-acquisition tasks across CLI/API lookup, EvidenceCore/currentness/citation validation, trace/report/schema debugging, docs/readback consistency, and index/search behavior; compares same-budget local `text_bm25_baseline`, `symbol_regex_baseline`, and `openlocus_hybrid_retrieve` arms; writes Phase-1 schema-valid private state-action rows under ignored `runs/` storage; and publishes aggregate buckets only. Adequate diversity and schema/privacy gates pass, but the candidate arm is negative versus the best fixed baseline, so stop/go authorizes only `frk_product_workflow_failure_decomposition_or_trace_expansion`; no D2/training, runtime/default, provider/network/CI, method/scale/winner/default claim, kernel hardening continuation, broad source scan, candidate expansion, private trace/raw publication, FRK-J/B/C, FRK-I variants, LDI-B easy continuation, HAAE-SG, or HAAE-T is authorized.
+
 OpenLocus v2 RPM-D0B Trace Capture Expansion: [EN](docs/en/openlocus-v2-rpm-d0b-trace-capture-expansion.md) / [ZH](docs/zh/openlocus-v2-rpm-d0b-trace-capture-expansion.md) / [report](artifacts/rpm_d0b_trace_capture_expansion/rpm_d0b_trace_capture_expansion_report.json). Status: `rpm_d0b_trace_capture_expansion_complete_d1_rerun_authorized`. `eval/rpm_d0b_trace_capture_expansion.py` executes fixed predeclared local OpenLocus CLI actions only, expands the private trace set to aggregate buckets for 36 rows, 12 episodes, and required action types `bounded_retrieval`/`read_current_source`/`validate_evidence`, validates every private row with the Phase 1 schema, includes stale/currentness and retrieval no-hit failure-safe controls, and publishes only aggregate buckets. Labels/outcomes are joined only after actions. Stop/go authorizes only `rpm_d1_bounded_offline_rpm_small_learning_smoke_rerun`; no D2/model scaling, runtime/default, provider/network/CI, training, method/scale/winner/default claim, raw publication, broad source scan, candidate expansion, retrieval/pack rerun as a new algorithm, FRK-J/B/C, FRK-I variants, LDI-B easy continuation, HAAE-SG/T, or R2BV static support repair is authorized.
 
 OpenLocus v2 RPM-D1 Bounded Offline RPM-small Learning Smoke: [EN](docs/en/openlocus-v2-rpm-d1-learning-smoke.md) / [ZH](docs/zh/openlocus-v2-rpm-d1-learning-smoke.md) / [report](artifacts/rpm_d1_learning_smoke/rpm_d1_learning_smoke_report.json). Status: `rpm_d1_learning_smoke_complete_no_signal_no_training_claim`. `eval/rpm_d1_learning_smoke.py` reads private RPM-D0 JSONL only with `--confirm-private-input`, validates all rows through `eval/rpm_trace_schema.py`, runs deterministic leave-one-episode-out with no train/eval trace overlap, trains a stdlib-only decision-stump RPM-small smoke learner on only allowed label-blind pre-action buckets, explicitly excludes post-action currentness results such as stale rejection from features, and compares against majority, fixed-action, and best-baseline buckets. The D0B rerun passes data-shape gates (`count_21_to_50` rows, `count_6_to_20` episodes, three action types, two outcome classes) but still has `delta_non_positive` versus the best baseline, so no RPM signal or training claim is made. Stop/go authorizes only `rpm_d0b_trace_capture_expansion_or_frk_product_workflow_trace_capture`; if future candidate signal unexpectedly appears, only `rpm_d2_larger_trace_capture_and_heldout_eval_design` is authorized. No RPM runtime/default, provider/network/CI, method/scale/winner/default claim, raw publication, broad source scan, candidate expansion, retrieval/pack rerun as new algorithm, FRK-J/B/C, FRK-I variants, LDI-B easy continuation, HAAE-SG/T, or R2BV static support repair is authorized.
@@ -49,10 +51,11 @@ abstain / request more context. Candidate is not fact.
 
 ## Current research status
 
-Status date: **2026-07-04**.
+Status date: **2026-07-05**.
 
-OpenLocus is currently at **OpenLocus v2 RPM-D0B Trace Capture Expansion**. The recent executable FRK/HAAE/LDI/RPM routes
-were intentionally conservative:
+OpenLocus is currently at **OpenLocus v2 FRK Product Workflow Trace Benchmark** with status `frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion`. It is an executable local product-workflow benchmark over fixed bounded workflow tasks and same-budget local arms, not another preflight/audit. It writes private Phase-1 schema-valid rows under ignored `runs/` storage and publishes aggregate buckets only. The candidate arm is negative versus the best fixed baseline, so the only authorized next phase is `frk_product_workflow_failure_decomposition_or_trace_expansion`; D2/training, runtime/default, provider/network/CI, method/scale/winner/default claims, kernel hardening continuation, broad source scan, candidate expansion, raw/private trace publication, FRK-J/B/C, FRK-I variants, LDI-B easy continuation, HAAE-SG, and HAAE-T remain unauthorized.
+
+The recent executable FRK/HAAE/LDI/RPM routes were intentionally conservative:
 
 - FRK-B/C pack utility stopped after downstream/proxy failure decomposition.
 - LDI-A deterministic derived index stopped because baseline was sufficient.
@@ -64,8 +67,8 @@ were intentionally conservative:
 
 Current practical question:
 
-> How do we collect real state-action traces that beat strong fixed baselines,
-> without leaking post-action outcomes into pre-action features?
+> Why does the product-workflow OpenLocus hybrid arm lose to the best fixed
+> baseline, and should the next move be failure decomposition or trace expansion?
 
 **The BEA-v1-N10E safety-probe branch is now closed.** N10ES (checkpoint
 `8c04a0a`) packaged the N10ER bounded public CI score/guard safety probe as a

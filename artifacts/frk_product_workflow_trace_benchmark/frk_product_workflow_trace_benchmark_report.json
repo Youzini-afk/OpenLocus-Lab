@@ -1,0 +1,181 @@
+{
+  "aggregate_buckets": {
+    "action_coverage": {
+      "bounded_retrieval": "count_gt_50",
+      "read_current_source": "count_gt_50",
+      "validate_evidence": "count_gt_50",
+      "workflow_step": "count_gt_50"
+    },
+    "arm_availability": {
+      "available": "count_gt_50"
+    },
+    "arm_count_bucket": "count_2_to_5",
+    "candidate_budget": {
+      "count_0": "count_2_to_5",
+      "count_1": "count_2_to_5",
+      "count_2_to_5": "count_gt_50"
+    },
+    "citation_validity": {
+      "invalid_or_stale_bucket": "count_0",
+      "valid_current_bucket": "count_gt_50"
+    },
+    "detailed_failure_buckets": {
+      "no_candidate": "count_2_to_5",
+      "none": "count_21_to_50",
+      "wrong_file": "count_21_to_50"
+    },
+    "episode_count_bucket": "count_gt_50",
+    "evidencecore_currentness": {
+      "linked_current": "count_gt_50",
+      "not_required": "count_gt_50"
+    },
+    "latency": {
+      "10s_to_60s": "count_6_to_20",
+      "1s_to_10s": "count_21_to_50",
+      "lt_1s": "count_gt_50"
+    },
+    "outcome_coverage": {
+      "failure_bucket": "count_21_to_50",
+      "partial_bucket": "count_gt_50",
+      "success_bucket": "count_gt_50"
+    },
+    "read_budget": {
+      "count_0": "count_2_to_5",
+      "count_1": "count_2_to_5",
+      "count_2_to_5": "count_gt_50"
+    },
+    "row_count_bucket": "count_gt_50",
+    "row_failure_buckets": {
+      "missing_source": "count_6_to_20",
+      "none": "count_gt_50",
+      "other": "count_21_to_50"
+    },
+    "task_count_bucket": "count_6_to_20",
+    "validate_budget": {
+      "count_0": "count_2_to_5",
+      "count_1": "count_2_to_5",
+      "count_2_to_5": "count_gt_50"
+    },
+    "workflow_family_count_bucket": "count_2_to_5",
+    "workflow_family_coverage": {
+      "cli_usage_api_lookup": "count_6_to_20",
+      "docs_readback_consistency": "count_6_to_20",
+      "evidencecore_currentness_citation_validation": "count_6_to_20",
+      "index_search_behavior": "count_6_to_20",
+      "trace_report_schema_debugging": "count_6_to_20"
+    }
+  },
+  "best_baseline_comparison": {
+    "arm_utility_buckets": {
+      "openlocus_hybrid_retrieve": "rate_25_to_50",
+      "symbol_regex_baseline": "rate_25_to_50",
+      "text_bm25_baseline": "rate_50_to_75"
+    },
+    "best_baseline_gate": "passed",
+    "best_fixed_baseline_bucket": "rate_50_to_75",
+    "candidate_arm_bucket": "rate_25_to_50",
+    "candidate_vs_best_baseline_delta_bucket": "negative_vs_best_baseline",
+    "fixed_baseline_arms_bucket": "count_2_to_5"
+  },
+  "coverage_gates": {
+    "best_baseline_lift_status": "negative_vs_best_baseline",
+    "diversity_status": "adequate",
+    "gate_results": {
+      "arm_count_ge_3": true,
+      "episode_count_ge_60": true,
+      "labels_after_action_only": true,
+      "pre_action_currentness_not_leaked": true,
+      "required_action_types_present": true,
+      "required_workflow_families_present": true,
+      "row_count_ge_120": true,
+      "strict_phase1_schema_passed": true,
+      "success_and_failure_outcomes_present": true,
+      "task_count_ge_20": true,
+      "workflow_family_count_ge_4": true
+    }
+  },
+  "execution_attestation": {
+    "ci_execution": "local_manual_only",
+    "fixed_bounded_local_product_workflow_tasks": true,
+    "labels_joined_after_action": true,
+    "local_openlocus_cli_actions_executed": true,
+    "network_access": "no_network",
+    "provider_calls_executed": false,
+    "real_executable_benchmark": true,
+    "runtime_default_changed": false,
+    "same_budget_candidate_cap_bucket": "count_2_to_5",
+    "same_budget_read_cap_bucket": "count_2_to_5",
+    "synthetic_rows_only": false,
+    "training_executed": false
+  },
+  "phase": "openlocus_v2_frk_product_workflow_trace_benchmark",
+  "primary_success_proxy": {
+    "failure_bucket": "count_21_to_50",
+    "name": "validated_current_evidence_matches_private_expected_workflow_need",
+    "publication_level": "aggregate_bucket_only",
+    "success_bucket": "count_21_to_50"
+  },
+  "privacy_contract": {
+    "evidence_filenames_public": false,
+    "hashes_public": false,
+    "labels_public": false,
+    "per_task_outcomes_public": false,
+    "private_refs_public": false,
+    "private_trace_path_public": false,
+    "private_trace_rows_public": false,
+    "prompts_or_responses_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "queries_public": false,
+    "ranges_public": false,
+    "raw_paths_public": false,
+    "raw_publication": false,
+    "raw_task_ids_public": false,
+    "snippets_public": false
+  },
+  "schema_version": "frk_product_workflow_trace_benchmark_public_report_v1",
+  "status": "frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion",
+  "stop_go": {
+    "authorized_next_phase": "frk_product_workflow_failure_decomposition_or_trace_expansion",
+    "d2_or_training_authorized": false,
+    "decision": "no_go_failure_decomposition_or_trace_expansion",
+    "expansion_only_if_insufficient_diversity": true,
+    "explicitly_forbidden": [
+      "broad_source_scan",
+      "candidate_generation_expansion",
+      "ci_claim",
+      "default_claim",
+      "frk_b_c_resurrection",
+      "frk_i_selector_variants",
+      "frk_j",
+      "haae_sg",
+      "haae_t",
+      "kernel_hardening_continuation",
+      "ldi_b_easy_continuation",
+      "method_claim",
+      "network_claim",
+      "old_heuristic_chain",
+      "private_trace_publication",
+      "provider_claim",
+      "raw_publication",
+      "runtime_default_claim",
+      "scale_claim",
+      "training_claim",
+      "winner_claim"
+    ],
+    "failure_decomposition_if_no_lift": true,
+    "heldout_design_only_if_real_lift": false,
+    "method_scale_winner_default_claims_allowed": false,
+    "provider_network_ci_authorized": false,
+    "runtime_or_default_authorized": false,
+    "targeted_repair_only_if_execution_schema_privacy_fails": true
+  },
+  "validation_summary": {
+    "privacy_leak_scan": "passed",
+    "private_output_confirmation": "confirmed",
+    "public_report_level": "aggregate_only",
+    "schema_error_bucket": "count_0",
+    "self_test_mutation_coverage": "available",
+    "strict_phase1_schema": "passed"
+  }
+}
