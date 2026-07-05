@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK product workflow specific retrieval repair design
+
+[Detail](frk-product-workflow-specific-retrieval-repair-design.md) / [report](../../artifacts/frk_product_workflow_specific_retrieval_repair_design/frk_product_workflow_specific_retrieval_repair_design_report.json)。
+
+- **FRK product workflow specific retrieval repair design 已完成**，状态为 `frk_product_workflow_specific_retrieval_repair_design_complete_bounded_prototype_authorized`。
+- **Implementation**：`eval/frk_product_workflow_specific_retrieval_repair_design.py` 提供 `--self-test`、`--run-design --confirm-private-input` 和 `--validate-report <path>`。
+- **Execution**：读取公开 benchmark/decomposition reports；existing private product-workflow traces 只有在 explicit confirmation 与 schema validation 后读取；使用 static replay，且不 rerun retrieval/search/read/citation validation，也不生成 candidates。
+- **Design/result**：design family `wrong_file_guard_fixed_budget_read_allocation`；same candidate/read caps；no new channel family；affected-loss bucket `count_6_to_20`；unresolved bucket `count_0`；proxy risk `low`；confidence `high`。
+- **Stop/go**：只授权 `frk_product_workflow_bounded_retrieval_repair_prototype`。不授权 D2/model scaling、RPM training、runtime/default、provider/network/CI、method/scale/winner/default claim、broad source scan、candidate expansion、本 design phase 中的 new retrieval experiment、kernel hardening、raw/private trace publication 或已关闭的 FRK/LDI/HAAE route。
+
 ## OpenLocus v2 FRK product workflow failure decomposition
 
 [Detail](frk-product-workflow-failure-decomposition.md) / [report](../../artifacts/frk_product_workflow_failure_decomposition/frk_product_workflow_failure_decomposition_report.json)。

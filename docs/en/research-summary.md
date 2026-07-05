@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK product workflow specific retrieval repair design
+
+[Detail](frk-product-workflow-specific-retrieval-repair-design.md) / [report](../../artifacts/frk_product_workflow_specific_retrieval_repair_design/frk_product_workflow_specific_retrieval_repair_design_report.json).
+
+- **FRK product workflow specific retrieval repair design is complete** with status `frk_product_workflow_specific_retrieval_repair_design_complete_bounded_prototype_authorized`.
+- **Implementation**: `eval/frk_product_workflow_specific_retrieval_repair_design.py` provides `--self-test`, `--run-design --confirm-private-input`, and `--validate-report <path>`.
+- **Execution**: public benchmark/decomposition reports were read, existing private product-workflow traces were read only after explicit confirmation and schema validation, and static replay was used without rerunning retrieval/search/read/citation validation or generating candidates.
+- **Design/result**: design family `wrong_file_guard_fixed_budget_read_allocation`; same candidate/read caps; no new channel family; affected-loss bucket `count_6_to_20`; unresolved bucket `count_0`; proxy risk `low`; confidence `high`.
+- **Stop/go**: only `frk_product_workflow_bounded_retrieval_repair_prototype` is authorized. No D2/model scaling, RPM training, runtime/default, provider/network/CI, method/scale/winner/default claim, broad source scan, candidate expansion, new retrieval experiment in this design phase, kernel hardening, raw/private trace publication, or closed FRK/LDI/HAAE route is authorized.
+
 ## OpenLocus v2 FRK product workflow failure decomposition
 
 [Detail](frk-product-workflow-failure-decomposition.md) / [report](../../artifacts/frk_product_workflow_failure_decomposition/frk_product_workflow_failure_decomposition_report.json).
