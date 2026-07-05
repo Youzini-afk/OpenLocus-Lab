@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK-P2 workflow v2 task-state capture expansion
+
+[Detail](frk-p2-workflow-v2-task-state-capture-expansion.md) / [report](../../artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json).
+
+- **FRK-P2 workflow v2 task-state capture expansion is complete** with status `frk_p2_workflow_v2_capture_complete_targeted_capture_repair_only`.
+- **Implementation**: `eval/frk_p2_workflow_v2_task_state_capture_expansion.py` provides default unavailable/no-op mode, `--self-test`, `--run-capture --confirm-private-output`, and `--validate-report <path>`.
+- **Execution**: direct nested `openlocus.state_action_trace.v2` trace capture over a bounded predeclared product-workflow manifest using only existing local channel families and local read/citation validation; private rows were written only under ignored `runs/frk_p2_workflow_v2_capture_private_*/`.
+- **Validation/result**: private row bucket `count_gt_50`, episode bucket `count_21_to_50`, manifest diversity buckets `count_3_to_5`, and schema/privacy/currentness/label-isolation/EvidenceCore-separation pass; candidate-pool and downstream-proxy critical coverage remain low and unknown/missingness remains `count_gt_50`.
+- **Stop/go**: only `targeted_frk_p2_workflow_v2_capture_repair_only` is authorized. No HAAE-A2 replay, RPM-D2/model scaling, new retrieval algorithm/channel, broad source scan, candidate expansion beyond caps, provider/network/CI, runtime/default, kernel hardening, raw/private trace publication, or closed-route revival is authorized.
+
 ## OpenLocus v2 TraceV2-A product workflow trace bootstrap
 
 [Detail](state-action-trace-v2-bootstrap.md) / [report](../../artifacts/state_action_trace_v2_bootstrap/state_action_trace_v2_bootstrap_report.json).

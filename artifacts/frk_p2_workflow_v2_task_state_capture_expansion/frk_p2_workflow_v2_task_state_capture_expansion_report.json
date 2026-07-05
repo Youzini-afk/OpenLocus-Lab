@@ -1,0 +1,190 @@
+{
+  "cost_latency_budget_buckets": {
+    "fixed_cap_bucket": "count_2_to_5",
+    "latency_bucket": "lt_1s",
+    "read_count_bucket": "count_21_to_50",
+    "token_budget_bucket": "budget_medium",
+    "validate_count_bucket": "count_21_to_50"
+  },
+  "coverage_audit": {
+    "critical_nested_coverage_by_group": {
+      "action": "coverage_high",
+      "behavior_policy": "coverage_high",
+      "evidence_linkage": "coverage_medium",
+      "observation": "coverage_high",
+      "observation.cost_observed": "coverage_high",
+      "outcome": "coverage_high",
+      "outcome.downstream_proxy": "coverage_low",
+      "state.budget_state": "coverage_high",
+      "state.candidate_pool": "coverage_low",
+      "state.evidence_state": "coverage_high",
+      "state.rankpack": "coverage_medium",
+      "state.uncertainty_state": "coverage_high",
+      "task": "coverage_high"
+    },
+    "critical_nested_coverage_sufficient": false,
+    "unknown_missingness_bucket": "count_gt_50",
+    "unknown_missingness_by_group": {
+      "evidence_linkage": "count_gt_50",
+      "outcome.downstream_proxy": "count_gt_50",
+      "state.candidate_pool": "count_gt_50",
+      "state.rankpack": "count_21_to_50"
+    }
+  },
+  "downstream_proxy_buckets": {
+    "correct_file_before_first_edit_bucket": "count_21_to_50",
+    "solve_failure_bucket": "count_6_to_20",
+    "solve_success_bucket": "count_6_to_20",
+    "wrong_file_edit_bucket": "count_6_to_20"
+  },
+  "evidencecore_currentness_buckets": {
+    "citation_valid_bucket": "count_gt_50",
+    "currentness_or_citation_failure_bucket": "count_0",
+    "currentness_verified_bucket": "count_gt_50",
+    "linked_current_bucket": "count_gt_50"
+  },
+  "execution_attestations": {
+    "allowed_channel_families": [
+      "bm25_text",
+      "symbol_regex",
+      "existing_hybrid_retrieve"
+    ],
+    "broad_source_scan_executed": false,
+    "candidate_expansion_executed": false,
+    "ci_execution": "local_manual_only",
+    "direct_nested_v2_rows_emitted": true,
+    "executable_trace_capture": true,
+    "haae_a2_replay_executed": false,
+    "kernel_hardening_executed": false,
+    "method_scale_winner_default_claim": false,
+    "network_access": "no_network",
+    "new_channel_family_used": false,
+    "new_retrieval_algorithm_executed": false,
+    "predeclared_bounded_manifest": true,
+    "provider_or_model_calls_executed": false,
+    "rpm_d2_training_or_model_scaling_executed": false,
+    "runtime_default_changed": false
+  },
+  "manifest_diversity_buckets": {
+    "budget_class_bucket": "count_3_to_5",
+    "episode_bucket": "count_21_to_50",
+    "expected_primary_role_bucket": "count_3_to_5",
+    "query_type_bucket": "count_3_to_5",
+    "support_role_bucket": "count_3_to_5",
+    "workflow_family_bucket": "count_3_to_5",
+    "wrong_file_cost_bucket": "count_3_to_5"
+  },
+  "outcome_class_buckets": {
+    "failure_bucket": "count_6_to_20",
+    "success_bucket": "count_6_to_20"
+  },
+  "phase": "openlocus_v2_frk_p2_workflow_v2_task_state_capture_expansion",
+  "privacy_contract": {
+    "content_hashes_public": false,
+    "exact_candidates_ranks_scores_public": false,
+    "labels_public": false,
+    "per_task_outcomes_public": false,
+    "private_refs_public": false,
+    "private_trace_paths_public": false,
+    "publication_level": "aggregate_only",
+    "queries_public": false,
+    "ranges_public": false,
+    "raw_paths_public": false,
+    "raw_publication": false,
+    "raw_rows_public": false,
+    "raw_task_ids_public": false,
+    "snippets_public": false
+  },
+  "private_io_buckets": {
+    "private_episode_count_bucket": "count_21_to_50",
+    "private_input_confirmation": "not_required",
+    "private_output_confirmation": "confirmed",
+    "private_output_gitignore_check": "passed",
+    "private_output_storage": "ignored_runs_private_jsonl",
+    "private_row_count_bucket": "count_gt_50"
+  },
+  "replay_target_viability": {
+    "haae_a2_positive_gate": false,
+    "replay_target_bucket": "count_2_to_5",
+    "target_with_both_positive_negative_outcomes_bucket": "count_1"
+  },
+  "row_episode_action_buckets": {
+    "action_coverage_buckets": {
+      "read_next": "count_21_to_50",
+      "retrieve_candidates": "count_21_to_50",
+      "stop": "count_21_to_50",
+      "validate_now": "count_21_to_50"
+    },
+    "episode_count_bucket": "count_21_to_50",
+    "row_count_bucket": "count_gt_50"
+  },
+  "schema_version": "frk_p2_workflow_v2_task_state_capture_expansion_public_report_v1",
+  "source_readbacks": {
+    "benchmark_status": "frk_product_workflow_trace_benchmark_complete_no_lift_failure_decomposition_or_trace_expansion",
+    "readback_scope": "public_aggregate_reports_only",
+    "repair_prototype_delta_vs_best": "negative_delta",
+    "repair_prototype_status": "frk_product_workflow_bounded_retrieval_repair_prototype_complete_no_lift_stop_or_failure_decomposition",
+    "tracev2_a_authorized_next_phase": "frk_p2_workflow_v2_task_state_capture_expansion",
+    "tracev2_a_critical_field_coverage": "coverage_low",
+    "tracev2_a_status": "tracev2_a_bootstrap_complete_frk_p2_capture_expansion_authorized",
+    "tracev2_a_unknown_missingness": "count_gt_50"
+  },
+  "status": "frk_p2_workflow_v2_capture_complete_targeted_capture_repair_only",
+  "stop_go": {
+    "authorized_next_phase": "targeted_frk_p2_workflow_v2_capture_repair_only",
+    "capture_repair_authorized": true,
+    "closed_route_revival_authorized": false,
+    "decision": "targeted_capture_repair_only",
+    "explicitly_forbidden": [
+      "bounded_repair_route_revival",
+      "broad_source_scan",
+      "candidate_expansion_beyond_fixed_caps",
+      "ci_claim",
+      "default_claim",
+      "frk_b_c_resurrection",
+      "frk_i_revival",
+      "frk_j",
+      "haae_a2_replay_inside_phase",
+      "haae_sg",
+      "haae_t",
+      "kernel_hardening",
+      "ldi_b_easy_continuation",
+      "method_claim",
+      "model_provider_call",
+      "model_scaling",
+      "network_claim",
+      "new_channel_family",
+      "new_retrieval_algorithm",
+      "private_trace_publication",
+      "provider_claim",
+      "raw_publication",
+      "rpm_d2_training",
+      "runtime_default_claim",
+      "scale_claim",
+      "training_claim",
+      "winner_claim"
+    ],
+    "haae_a2_replay_authorized": false,
+    "kernel_hardening_authorized": false,
+    "label_or_proxy_repair_authorized": false,
+    "method_scale_winner_default_claims_allowed": false,
+    "new_retrieval_prototype_authorized": false,
+    "provider_network_ci_authorized": false,
+    "raw_private_trace_publication_authorized": false,
+    "rpm_d2_training_authorized": false,
+    "runtime_default_authorized": false,
+    "schema_privacy_currentness_repair_authorized": false
+  },
+  "tracev2_validation": {
+    "currentness_leakage_scan": "passed",
+    "evidence_linkage_separate_from_candidate_state": "passed",
+    "label_after_action_isolation": "passed",
+    "schema_error_bucket": "count_0",
+    "v2_schema_validation": "passed"
+  },
+  "validation_summary": {
+    "privacy_scan": "passed",
+    "public_report_level": "aggregate_only",
+    "self_test_mutation_coverage": "available"
+  }
+}

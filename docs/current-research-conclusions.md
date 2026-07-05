@@ -13,6 +13,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 ## Current route closure / 当前路线关闭
 
+- FRK-P2 workflow v2 task-state capture expansion / FRK-P2 workflow v2 task-state 捕获扩展: [EN](en/frk-p2-workflow-v2-task-state-capture-expansion.md) / [ZH](zh/frk-p2-workflow-v2-task-state-capture-expansion.md)
+- FRK-P2 report / FRK-P2 报告: [`artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json`](../artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json)
 - TraceV2-A product workflow trace bootstrap / TraceV2-A product workflow trace bootstrap: [EN](en/state-action-trace-v2-bootstrap.md) / [ZH](zh/state-action-trace-v2-bootstrap.md)
 - TraceV2-A report / TraceV2-A 报告: [`artifacts/state_action_trace_v2_bootstrap/state_action_trace_v2_bootstrap_report.json`](../artifacts/state_action_trace_v2_bootstrap/state_action_trace_v2_bootstrap_report.json)
 - FRK product workflow bounded retrieval repair prototype / FRK product workflow 有界检索修复原型: [EN](en/frk-product-workflow-bounded-retrieval-repair-prototype.md) / [ZH](zh/frk-product-workflow-bounded-retrieval-repair-prototype.md)

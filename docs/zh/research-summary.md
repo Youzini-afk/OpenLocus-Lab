@@ -8,6 +8,16 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## OpenLocus v2 FRK-P2 workflow v2 task-state capture expansion
+
+[Detail](frk-p2-workflow-v2-task-state-capture-expansion.md) / [report](../../artifacts/frk_p2_workflow_v2_task_state_capture_expansion/frk_p2_workflow_v2_task_state_capture_expansion_report.json)。
+
+- **FRK-P2 workflow v2 task-state capture expansion 已完成**，状态为 `frk_p2_workflow_v2_capture_complete_targeted_capture_repair_only`。
+- **Implementation**：`eval/frk_p2_workflow_v2_task_state_capture_expansion.py` 提供 default unavailable/no-op mode、`--self-test`、`--run-capture --confirm-private-output` 和 `--validate-report <path>`。
+- **Execution**：在 bounded predeclared product-workflow manifest 上直接捕获 nested `openlocus.state_action_trace.v2` traces，只使用 existing local channel families 与本地 read/citation validation；private rows 只写入 ignored `runs/frk_p2_workflow_v2_capture_private_*/`。
+- **Validation/result**：private row bucket `count_gt_50`，episode bucket `count_21_to_50`，manifest diversity buckets `count_3_to_5`，schema/privacy/currentness/label-isolation/EvidenceCore-separation 均通过；candidate-pool 与 downstream-proxy critical coverage 仍低，unknown/missingness 仍为 `count_gt_50`。
+- **Stop/go**：只授权 `targeted_frk_p2_workflow_v2_capture_repair_only`。不授权 HAAE-A2 replay、RPM-D2/model scaling、new retrieval algorithm/channel、broad source scan、candidate expansion beyond caps、provider/network/CI、runtime/default、kernel hardening、raw/private trace publication 或 closed-route revival。
+
 ## OpenLocus v2 TraceV2-A product workflow trace bootstrap
 
 [Detail](state-action-trace-v2-bootstrap.md) / [report](../../artifacts/state_action_trace_v2_bootstrap/state_action_trace_v2_bootstrap_report.json)。
