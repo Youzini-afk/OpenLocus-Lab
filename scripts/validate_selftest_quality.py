@@ -30,6 +30,7 @@ DEFAULT_TARGETS = (
 )
 
 CHECK_NAMES = {"check", "_check"}
+SELF_TEST_FUNCTION_NAMES = {"run_self_test", "run_self_tests"}
 
 
 @dataclass(frozen=True)
@@ -56,11 +57,30 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.path = path
         self.issues: list[Issue] = []
         self.check_count = 0
+        self.selftest_check_count = 0
+        self.selftest_function_count = 0
+        self._function_stack: list[str] = []
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        if node.name in SELF_TEST_FUNCTION_NAMES:
+            self.selftest_function_count += 1
+        self._function_stack.append(node.name)
+        self.generic_visit(node)
+        self._function_stack.pop()
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        if node.name in SELF_TEST_FUNCTION_NAMES:
+            self.selftest_function_count += 1
+        self._function_stack.append(node.name)
+        self.generic_visit(node)
+        self._function_stack.pop()
 
     def visit_Call(self, node: ast.Call) -> None:
         check = self._as_check_expression(node)
         if check is not None:
             self.check_count += 1
+            if self._inside_selftest_function():
+                self.selftest_check_count += 1
         if check is not None and self._is_literal_true(check.condition):
             self.issues.append(
                 Issue(
@@ -72,6 +92,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 )
             )
         self.generic_visit(node)
+
+    def _inside_selftest_function(self) -> bool:
+        return any(name in SELF_TEST_FUNCTION_NAMES for name in self._function_stack)
 
     def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
         for check in self._check_expressions_in_body(node.body):
@@ -169,8 +192,10 @@ def collect_issues(paths: list[Path]) -> list[Issue]:
             continue
         visitor = SelfTestQualityVisitor(path)
         visitor.visit(tree)
-        if visitor.check_count == 0:
-            issues.append(Issue(path, 0, 0, "missing_selftest_checks", "target evaluator script has no recognized self-test check expressions"))
+        if visitor.selftest_function_count == 0:
+            issues.append(Issue(path, 0, 0, "missing_selftest_entrypoint", "target evaluator script has no run_self_test(s) entrypoint"))
+        elif visitor.selftest_check_count == 0:
+            issues.append(Issue(path, 0, 0, "missing_selftest_checks", "target evaluator script has no recognized check expressions inside run_self_test(s)"))
         issues.extend(visitor.issues)
     return issues
 
@@ -184,14 +209,16 @@ def run_self_test() -> list[str]:
         visitor.visit(tree)
         return len(visitor.issues)
 
-    def target_issue_count(source: str) -> int:
+    def target_issue_codes(source: str) -> list[str]:
         tree = ast.parse(source)
         visitor = SelfTestQualityVisitor(REPO / "selftest.py")
         visitor.visit(tree)
-        issues = len(visitor.issues)
-        if visitor.check_count == 0:
-            issues += 1
-        return issues
+        codes = [issue.code for issue in visitor.issues]
+        if visitor.selftest_function_count == 0:
+            codes.append("missing_selftest_entrypoint")
+        elif visitor.selftest_check_count == 0:
+            codes.append("missing_selftest_checks")
+        return codes
 
     cases = [
         ("direct_check_literal_true", "def f():\n    check('bad', True)\n", 1),
@@ -244,11 +271,17 @@ def run_self_test() -> list[str]:
             failures.append(f"{name}: expected {expected}, got {actual}")
 
     target_cases = [
-        ("target_without_checks_rejected", "def f():\n    other('ok', True)\n", 1),
-        ("target_with_tuple_check_allowed", "def f(value):\n    checks.append(('ok', value is True))\n", 0),
+        ("target_without_selftest_entrypoint_rejected", "def helper(value):\n    check('ok', value is True)\n", ["missing_selftest_entrypoint"]),
+        ("target_without_checks_rejected", "def run_self_tests():\n    other('ok', True)\n", ["missing_selftest_checks"]),
+        (
+            "target_with_helper_check_but_empty_selftest_rejected",
+            "def helper(value):\n    check('ok', value is True)\n\ndef run_self_tests():\n    pass\n",
+            ["missing_selftest_checks"],
+        ),
+        ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     for name, source, expected in target_cases:
-        actual = target_issue_count(source)
+        actual = target_issue_codes(source)
         if actual != expected:
             failures.append(f"{name}: expected {expected}, got {actual}")
 
@@ -268,7 +301,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, tuple-append, literal-true, exception-text, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, tuple-append, literal-true, exception-text, self-test entrypoint, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -280,7 +313,7 @@ def main(argv: list[str]) -> int:
         return 1
     print("Validation passed:")
     print(f"  scanned files: {len(targets)}")
-    print("  recognized helper-call and tuple-append self-test checks in every target")
+    print("  recognized helper-call and tuple-append checks inside run_self_test(s) in every target")
     print("  no literal True self-test check conditions")
     print("  exception-handler checks assert expected error text")
     return 0

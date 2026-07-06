@@ -29,6 +29,8 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**：`python scripts/validate_selftest_quality.py --self-test` 通过，默认 allowlist scan 通过，intentional ASCII literal-true 和 tuple-literal negative fixtures 按预期以 `literal_true_check` 失败，一个 intentional exception-path negative fixture 按预期以 `exception_check_without_error_text` 失败，一个 intentional no-check fixture 按预期以 `missing_selftest_checks` 失败。
 - **Interpretation**：这是 local evaluator quality gating，不改变 runtime behavior，不扩大 CI/provider/network scope，也不重开 closed routes。
 
+- **Entrypoint guard**：每个 allowlisted target 现在必须定义 `run_self_test` 或 `run_self_tests`，并且在该入口内包含至少一个可识别 helper-call 或 tuple-append check expression；intentional no-entrypoint 和 empty-entrypoint negative fixtures 已按预期以 `missing_selftest_entrypoint` 和 `missing_selftest_checks` 失败。
+
 ## Self-test quality CI gate
 
 - **Checkpoint**：`retrieval-benchmark` 现在会在 plan job 中运行 self-test quality guard 的 self-test 和默认 allowlist scan。
