@@ -48,6 +48,8 @@ literal-condition rule 现在拒绝所有 truthy literal check conditions，而�
 
 在 tuple-style check recognition 被限制为实际 `checks` collector 后，手动 `retrieval-benchmark` `pr_smoke` run [`28809583837`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28809583837) 已在 `60a3dd2` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 tuple-collector guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
+在 truthy literal self-test conditions 被拒绝且 falsey fail-closed sentinels 仍允许后，手动 `retrieval-benchmark` `pr_smoke` run [`28810764453`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28810764453) 已在 `cbdd13b` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 truthy-literal guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
