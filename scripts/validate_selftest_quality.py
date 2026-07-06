@@ -33,6 +33,7 @@ CHECK_NAMES = {"check", "_check"}
 CHECK_CONDITION_KEYWORDS = {"condition", "ok"}
 SELF_TEST_FUNCTION_NAMES = {"run_self_test", "run_self_tests"}
 EXPECTED_TEXT_BOOLEAN_METHODS = {"startswith", "endswith"}
+GENERATOR_CONSUMING_CALL_NAMES = {"all", "any", "dict", "list", "max", "min", "next", "set", "sorted", "sum", "tuple"}
 
 
 @dataclass(frozen=True)
@@ -164,7 +165,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._visit_comprehension(node.generators, [node.key, node.value])
 
     def visit_GeneratorExp(self, node: ast.GeneratorExp) -> None:
-        self._visit_comprehension(node.generators, [node.elt])
+        self._visit_lazy_generator_expression(node)
 
     def visit_If(self, node: ast.If) -> None:
         self.visit(node.test)
@@ -329,6 +330,22 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 self.visit(result_node)
             else:
                 self._visit_unreachable(result_node)
+
+    def _visit_lazy_generator_expression(self, node: ast.GeneratorExp) -> None:
+        if not node.generators:
+            self._visit_unreachable(node.elt)
+            return
+        first_generator = node.generators[0]
+        self.visit(first_generator.iter)
+        self._visit_unreachable(first_generator.target)
+        for if_clause in first_generator.ifs:
+            self._visit_unreachable(if_clause)
+        for generator in node.generators[1:]:
+            self._visit_unreachable(generator.target)
+            self._visit_unreachable(generator.iter)
+            for if_clause in generator.ifs:
+                self._visit_unreachable(if_clause)
+        self._visit_unreachable(node.elt)
 
     def _visit_statements(self, statements: list[ast.stmt]) -> None:
         unreachable = False
@@ -589,7 +606,21 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                     "self-test check uses a truthy literal as its condition",
                 )
             )
-        self.generic_visit(node)
+        self.visit(node.func)
+        for arg in node.args:
+            self._visit_call_argument(node, arg)
+        for keyword in node.keywords:
+            self._visit_call_argument(node, keyword.value)
+
+    def _visit_call_argument(self, call: ast.Call, value: ast.AST) -> None:
+        if isinstance(value, ast.GeneratorExp) and self._is_generator_consuming_call(call):
+            self._visit_comprehension(value.generators, [value.elt])
+            return
+        self.visit(value)
+
+    @classmethod
+    def _is_generator_consuming_call(cls, node: ast.Call) -> bool:
+        return isinstance(node.func, ast.Name) and node.func.id in GENERATOR_CONSUMING_CALL_NAMES
 
     def _inside_active_selftest_body(self) -> bool:
         if self._deferred_scope_depth != 0 or self._unreachable_scope_depth != 0:
@@ -1250,6 +1281,16 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_stored_genexp_check_only_rejected",
+            "def run_self_tests():\n    gen = (check('ok', value is True) for item in [1])\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_tuple_contained_genexp_check_only_rejected",
+            "def run_self_tests():\n    holder = ((check('ok', value is True) for item in [1]),)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_nested_empty_comp_check_only_rejected",
             "def run_self_tests():\n    checks = [check('ok', value is True) for outer in [1] for inner in []]\n",
             ["missing_selftest_checks"],
@@ -1450,6 +1491,16 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_list_consumed_genexp_check_allowed",
+            "def run_self_tests(value):\n    list(check('ok', value is True) for item in [1])\n",
+            [],
+        ),
+        (
+            "target_with_lazy_genexp_outer_iter_check_allowed",
+            "def run_self_tests(value):\n    gen = (item for item in check('ok', value is True))\n",
+            [],
+        ),
+        (
             "target_with_if_false_else_check_allowed",
             "def run_self_tests(value):\n    if False:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
             [],
@@ -1541,7 +1592,7 @@ def main(argv: list[str]) -> int:
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
-            "no-break infinite-loop, and missing-check cases"
+            "lazy-generator, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
