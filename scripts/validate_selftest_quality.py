@@ -335,8 +335,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     def visit_Try(self, node: ast.Try) -> None:
         self._visit_statements(node.body)
+        body_cannot_raise = self._block_cannot_raise(node.body)
         for handler in node.handlers:
-            self.visit(handler)
+            if body_cannot_raise:
+                self._visit_unreachable(handler)
+            else:
+                self.visit(handler)
         if self._block_guarantees_exit(node.body):
             self._visit_unreachable_statements(node.orelse)
         else:
@@ -504,6 +508,67 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     @classmethod
     def _block_guarantees_exit(cls, statements: list[ast.stmt]) -> bool:
         return any(cls._statement_guarantees_exit(statement) for statement in statements)
+
+    @classmethod
+    def _block_cannot_raise(cls, statements: list[ast.stmt]) -> bool:
+        for statement in statements:
+            if not cls._statement_cannot_raise(statement):
+                return False
+            if cls._statement_guarantees_exit(statement):
+                return True
+        return True
+
+    @classmethod
+    def _statement_cannot_raise(cls, node: ast.stmt) -> bool:
+        if isinstance(node, (ast.Pass, ast.Break, ast.Continue)):
+            return True
+        if isinstance(node, ast.Return):
+            return node.value is None or cls._expression_cannot_raise(node.value)
+        if isinstance(node, ast.Expr):
+            return cls._expression_cannot_raise(node.value)
+        if isinstance(node, ast.Assign):
+            return all(cls._assignment_target_cannot_raise(target) for target in node.targets) and cls._expression_cannot_raise(node.value)
+        if isinstance(node, ast.If):
+            if not cls._expression_cannot_raise(node.test):
+                return False
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_cannot_raise(node.body)
+            if test_truth is False:
+                return cls._block_cannot_raise(node.orelse)
+            return cls._block_cannot_raise(node.body) and cls._block_cannot_raise(node.orelse)
+        return False
+
+    @classmethod
+    def _assignment_target_cannot_raise(cls, node: ast.AST) -> bool:
+        if isinstance(node, ast.Name):
+            return True
+        if isinstance(node, (ast.Tuple, ast.List)):
+            return all(cls._assignment_target_cannot_raise(element) for element in node.elts)
+        return False
+
+    @classmethod
+    def _expression_cannot_raise(cls, node: ast.AST) -> bool:
+        if isinstance(node, ast.Constant):
+            return True
+        if isinstance(node, (ast.Tuple, ast.List)):
+            return all(cls._expression_cannot_raise(element) for element in node.elts)
+        if isinstance(node, ast.UnaryOp):
+            return cls._expression_cannot_raise(node.operand)
+        if isinstance(node, ast.BoolOp):
+            return all(cls._expression_cannot_raise(value) for value in node.values)
+        if isinstance(node, ast.IfExp):
+            if not cls._expression_cannot_raise(node.test):
+                return False
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._expression_cannot_raise(node.body)
+            if test_truth is False:
+                return cls._expression_cannot_raise(node.orelse)
+            return cls._expression_cannot_raise(node.body) and cls._expression_cannot_raise(node.orelse)
+        if isinstance(node, ast.Compare):
+            return cls._literal_compare_truth_value(node) is not None
+        return False
 
     @classmethod
     def _block_guarantees_function_exit(cls, statements: list[ast.stmt]) -> bool:
@@ -1570,9 +1635,34 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_pass_except_check_rejected",
+            "def run_self_tests():\n    try:\n        pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_constant_except_check_rejected",
+            "def run_self_tests():\n    try:\n        1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_assignment_except_check_rejected",
+            "def run_self_tests():\n    try:\n        value = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_return_except_check_rejected",
+            "def run_self_tests():\n    try:\n        return\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_all_paths_exit_then_check_rejected",
             "def run_self_tests():\n    try:\n        return risky()\n    except Error:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
         ),
         (
             "target_with_try_handler_then_check_allowed",
@@ -1811,7 +1901,7 @@ def main(argv: list[str]) -> int:
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
-            "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-break infinite-loop, and missing-check cases"
+            "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler, no-break infinite-loop, and missing-check cases"
         )
         return 0
 

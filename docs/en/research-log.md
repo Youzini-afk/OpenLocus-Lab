@@ -54,6 +54,8 @@ Annotation coverage now follows the Python annotation evaluation boundary as wel
 
 Self-test entrypoint coverage now requires a synchronous non-generator entrypoint body. Checks inside `async def run_self_test(s)` or inside a `run_self_test(s)` function containing `yield` / `yield from` are scanned for bad assertions but no longer satisfy active self-test coverage, because direct entrypoint calls would return a coroutine or generator without executing the body. Synthetic async, generator, unreachable-yield, and `yield from` entrypoint fixtures now fail with `missing_selftest_checks`, while a nested generator helper does not make the outer synchronous self-test deferred.
 
+Try-handler coverage now excludes except handlers when the try body is statically known not to raise. Synthetic files where the only check appeared in an except handler after `try: pass`, a literal expression, a simple literal assignment, or a bare `return` now fail with `missing_selftest_checks`, while handlers after unknown calls such as `risky()` remain conservative and active. This closes another static-coverage bypass without inferring arbitrary exception behavior.
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` now runs `python3 scripts/validate_selftest_quality.py --self-test` and the default allowlist scan in its plan job. Its pull-request path filter also includes `scripts/validate_selftest_quality.py`, so edits to the guard itself can exercise the workflow. This promotes the current evaluator-chain guard from local-only validation to a fail-closed CI quality gate while preserving the narrow allowlist and route boundary: no historical-evaluator sweep, no benchmark repo/provider expansion, no runtime/default change, and no closed-route reopening.
