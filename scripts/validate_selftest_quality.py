@@ -30,6 +30,7 @@ DEFAULT_TARGETS = (
 )
 
 CHECK_NAMES = {"check", "_check"}
+CHECK_CONDITION_KEYWORDS = {"condition", "ok"}
 SELF_TEST_FUNCTION_NAMES = {"run_self_test", "run_self_tests"}
 EXPECTED_TEXT_BOOLEAN_METHODS = {"startswith", "endswith"}
 
@@ -78,6 +79,16 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     def visit_Call(self, node: ast.Call) -> None:
         check = self._as_check_expression(node)
+        if check is None and self._is_check_call(node):
+            self.issues.append(
+                Issue(
+                    self.path,
+                    node.lineno,
+                    node.col_offset,
+                    "missing_check_condition",
+                    "self-test check call must provide a recognized condition argument",
+                )
+            )
         if check is not None:
             self.check_count += 1
             if self._inside_selftest_function():
@@ -125,9 +136,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     @classmethod
     def _as_check_expression(cls, node: ast.Call) -> CheckExpression | None:
         if cls._is_check_call(node):
-            if len(node.args) < 2:
-                return CheckExpression(node, ast.Constant(False))
-            return CheckExpression(node, node.args[1])
+            condition = cls._check_call_condition(node)
+            if condition is None:
+                return None
+            return CheckExpression(node, condition)
         tuple_condition = cls._tuple_append_condition(node)
         if tuple_condition is not None:
             return CheckExpression(node, tuple_condition)
@@ -136,6 +148,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     @classmethod
     def _is_check_call(cls, node: ast.Call) -> bool:
         return isinstance(node.func, ast.Name) and node.func.id in CHECK_NAMES
+
+    @staticmethod
+    def _check_call_condition(node: ast.Call) -> ast.AST | None:
+        if len(node.args) >= 2:
+            return node.args[1]
+        for keyword in node.keywords:
+            if keyword.arg in CHECK_CONDITION_KEYWORDS:
+                return keyword.value
+        return None
 
     @classmethod
     def _is_truthy_literal(cls, node: ast.AST) -> bool:
@@ -303,13 +324,18 @@ def run_self_test() -> list[str]:
         ("direct_check_zero_allowed", "def f():\n    check('ok', 0)\n", 0),
         ("direct_check_empty_string_allowed", "def f():\n    check('ok', '')\n", 0),
         ("direct_check_empty_tuple_allowed", "def f():\n    check('ok', ())\n", 0),
+        ("keyword_ok_truthy_rejected", "def f():\n    check('bad', ok=True)\n", 1),
+        ("keyword_condition_truthy_rejected", "def f():\n    check('bad', condition='passed')\n", 1),
+        ("keyword_condition_real_allowed", "def f(value):\n    check('ok', condition=value is True)\n", 0),
+        ("keyword_false_allowed", "def f():\n    check('ok', ok=False)\n", 0),
+        ("missing_condition_rejected", "def f():\n    check('bad')\n", 1),
+        ("unrecognized_keyword_condition_rejected", "def f():\n    check('bad', passed=True)\n", 1),
         ("nested_append_literal_true", "def f():\n    checks.append(_check('bad', True))\n", 1),
         ("tuple_append_literal_true", "def f():\n    checks.append(('bad', True))\n", 1),
         ("tuple_append_truthy_literal_rejected", "def f():\n    checks.append(('bad', 'passed'))\n", 1),
         ("real_condition_allowed", "def f(value):\n    check('ok', value is True)\n", 0),
         ("tuple_append_real_condition_allowed", "def f(value):\n    checks.append(('ok', value is True))\n", 0),
         ("non_check_call_allowed", "def f():\n    other('ok', True)\n", 0),
-        ("keyword_literal_true_allowed", "def f():\n    check('ok', ok=True)\n", 0),
         (
             "exception_text_check_allowed",
             "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
@@ -434,6 +460,11 @@ def run_self_test() -> list[str]:
             "def run_self_tests(value):\n    not_checks.append(('ok', value is True))\n",
             ["missing_selftest_checks"],
         ),
+        (
+            "target_with_malformed_check_rejected",
+            "def run_self_tests():\n    check('bad')\n",
+            ["missing_check_condition", "missing_selftest_checks"],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     for name, source, expected in target_cases:
@@ -457,7 +488,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -469,7 +500,8 @@ def main(argv: list[str]) -> int:
         return 1
     print("Validation passed:")
     print(f"  scanned files: {len(targets)}")
-    print("  recognized helper-call and checks.append tuple-append checks inside run_self_test(s) in every target")
+    print("  recognized helper-call, keyword-condition, and checks.append tuple-append checks inside run_self_test(s) in every target")
+    print("  no malformed self-test check calls")
     print("  no truthy literal self-test check conditions")
     print("  exception-handler checks compare expected error text")
     return 0

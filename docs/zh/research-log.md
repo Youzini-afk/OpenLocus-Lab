@@ -28,6 +28,8 @@ guard 现在还把 missing-check 覆盖面收紧到 self-test 入口本身。每
 
 literal-condition rule 现在拒绝所有 truthy literal check conditions，而不只拒绝精确的 `True` 常量。使用 `1`、`'passed'`、nonempty bytes 和 nonempty containers 的 synthetic helper-call / tuple-check fixtures 已按预期以 `literal_true_check` 失败；`False`、`0`、empty string 和 empty tuple 等显式 falsey sentinels 仍允许用于 fail-closed branches。默认 allowlist scan 仍通过，所以这只是在当前 evaluator-chain guard 内收紧 vacuous self-test success paths。
 
+helper-call condition extraction 现在也覆盖当前 evaluator helpers 实际使用的 keyword 名称：`ok=` 和 `condition=`。使用 `check("bad", condition=True)` 和 `check("bad", ok="passed")` 的 synthetic fixtures 已按预期以 `literal_true_check` 失败；`check("bad")` 或 `check("bad", passed=True)` 这类 malformed helper calls 会以 `missing_check_condition` 失败，而不会再被计为 recognized self-test coverage。当前 allowlist 没有 keyword-style check calls，所以默认 scan 保持通过，同时关闭了一个具体 Python call-form bypass。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。
