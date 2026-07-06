@@ -2,6 +2,8 @@
 
 日期：2026-07-06
 
+最新 self-test quality literal-bool CI gate checkpoint：在 literal boolean expressions 和 conditional expressions 被纳入 self-test coverage reachability guard 后，手动 `retrieval-benchmark` `pr_smoke` run [`28821026942`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28821026942) 已在 `d8a1ff9` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 literal-bool coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+
 最新 self-test quality literal-match CI gate checkpoint：在 literal `match` statements 被纳入 self-test coverage reachability guard 后，手动 `retrieval-benchmark` `pr_smoke` run [`28819932771`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28819932771) 已在 `4a4949f` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 literal-match coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
 最新 self-test quality literal-range CI gate checkpoint：在 literal integer `range(...)` iterables 被纳入 self-test coverage reachability guard 后，手动 `retrieval-benchmark` `pr_smoke` run [`28818781379`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28818781379) 已在 `aef060c` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 literal-range coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
