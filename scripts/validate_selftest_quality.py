@@ -229,6 +229,16 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.visit(node.body)
         self.visit(node.orelse)
 
+    def visit_Assert(self, node: ast.Assert) -> None:
+        self.visit(node.test)
+        if node.msg is None:
+            return
+        test_truth = self._literal_truth_value(node.test)
+        if test_truth is True:
+            self._visit_unreachable(node.msg)
+            return
+        self.visit(node.msg)
+
     def visit_Compare(self, node: ast.Compare) -> None:
         self.visit(node.left)
         known_left, left_value = self._static_comparison_value(node.left)
@@ -475,6 +485,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _statement_guarantees_exit(cls, node: ast.stmt) -> bool:
         if isinstance(node, (ast.Return, ast.Raise, ast.Break, ast.Continue)):
             return True
+        if isinstance(node, ast.Assert):
+            return cls._literal_truth_value(node.test) is False
         if isinstance(node, ast.If):
             test_truth = cls._literal_truth_value(node.test)
             if test_truth is True:
@@ -537,6 +549,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._expression_cannot_raise(node.value)
         if isinstance(node, ast.Assign):
             return all(cls._assignment_target_cannot_raise(target) for target in node.targets) and cls._expression_cannot_raise(node.value)
+        if isinstance(node, ast.Assert):
+            return cls._expression_cannot_raise(node.test) and cls._literal_truth_value(node.test) is True
         if isinstance(node, ast.If):
             if not cls._expression_cannot_raise(node.test):
                 return False
@@ -596,6 +610,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _statement_guarantees_function_exit(cls, node: ast.stmt) -> bool:
         if isinstance(node, (ast.Return, ast.Raise)):
             return True
+        if isinstance(node, ast.Assert):
+            return cls._literal_truth_value(node.test) is False
         if isinstance(node, ast.If):
             test_truth = cls._literal_truth_value(node.test)
             if test_truth is True:
@@ -711,6 +727,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _statement_guarantees_loop_else_skip(cls, node: ast.stmt) -> bool:
         if isinstance(node, (ast.Return, ast.Raise, ast.Break)):
             return True
+        if isinstance(node, ast.Assert):
+            return cls._literal_truth_value(node.test) is False
         if isinstance(node, ast.Continue):
             return False
         if isinstance(node, ast.If):
@@ -1435,6 +1453,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_assert_true_message_check_only_rejected",
+            "def run_self_tests():\n    assert True, check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assert_not_false_message_check_only_rejected",
+            "def run_self_tests():\n    assert not False, check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assert_false_then_check_rejected",
+            "def run_self_tests():\n    assert False\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_if_false_only_rejected",
             "def run_self_tests():\n    if False:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -1710,6 +1743,21 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_assert_true_then_check_allowed",
+            "def run_self_tests(value):\n    assert True\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_assert_false_message_check_allowed",
+            "def run_self_tests(value):\n    assert False, check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_assert_unknown_message_check_allowed",
+            "def run_self_tests(value, flag):\n    assert flag, check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_if_not_false_check_allowed",
             "def run_self_tests(value):\n    if not False:\n        check('ok', value is True)\n",
             [],
@@ -1957,7 +2005,7 @@ def main(argv: list[str]) -> int:
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
-            "try-star, no-break infinite-loop, and missing-check cases"
+            "try-star, assert-statement, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
