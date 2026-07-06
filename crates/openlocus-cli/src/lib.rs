@@ -2471,6 +2471,16 @@ mod tests {
         std::os::windows::fs::symlink_dir(src, dst)
     }
 
+    #[cfg(windows)]
+    fn symlink_unavailable_for_test(err: &std::io::Error) -> bool {
+        err.raw_os_error() == Some(1314)
+    }
+
+    #[cfg(not(windows))]
+    fn symlink_unavailable_for_test(_err: &std::io::Error) -> bool {
+        false
+    }
+
     fn write_file(path: &Path, content: &str) {
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent).unwrap();
@@ -2515,7 +2525,12 @@ mod tests {
         let target = temp.path().join("marker-target");
         fs::create_dir_all(&target).unwrap();
         fs::create_dir_all(&nested).unwrap();
-        symlink_dir(&target, &root.join(".openlocus")).unwrap();
+        if let Err(err) = symlink_dir(&target, &root.join(".openlocus")) {
+            if symlink_unavailable_for_test(&err) {
+                return;
+            }
+            panic!("failed to create symlinked .openlocus marker: {err}");
+        }
 
         let err = discover_repo_root_from(&nested).unwrap_err().to_string();
         assert!(err.contains("invalid .openlocus repo marker"));

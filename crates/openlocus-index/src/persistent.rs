@@ -1857,6 +1857,24 @@ mod tests {
         std::os::windows::fs::symlink_file(src, dst)
     }
 
+    #[cfg(windows)]
+    fn symlink_unavailable_for_test(err: &std::io::Error) -> bool {
+        err.raw_os_error() == Some(1314)
+    }
+
+    #[cfg(not(windows))]
+    fn symlink_unavailable_for_test(_err: &std::io::Error) -> bool {
+        false
+    }
+
+    fn create_symlink_file_for_test(src: &Path, dst: &Path) -> bool {
+        match symlink_file(src, dst) {
+            Ok(()) => true,
+            Err(err) if symlink_unavailable_for_test(&err) => false,
+            Err(err) => panic!("failed to create symlink test fixture: {err}"),
+        }
+    }
+
     fn manifest_entry(root: &Path, path: &str) -> ManifestFileEntry {
         let manifest = IndexManifest::load(root).unwrap();
         manifest
@@ -2160,7 +2178,9 @@ mod tests {
         let records = vec![file_record(root, "src/link.rs")];
         build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
         std::fs::remove_file(root.join("src/link.rs")).unwrap();
-        symlink_file(&outside_file, &root.join("src/link.rs")).unwrap();
+        if !create_symlink_file_for_test(&outside_file, &root.join("src/link.rs")) {
+            return;
+        }
 
         let (evidence, stats) =
             search_persistent_bm25(root, "symlink_escape_target", 10, &policy).unwrap();
@@ -2230,7 +2250,9 @@ mod tests {
         build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
 
         std::fs::remove_file(root.join("src/link.rs")).unwrap();
-        symlink_file(&outside_file, &root.join("src/link.rs")).unwrap();
+        if !create_symlink_file_for_test(&outside_file, &root.join("src/link.rs")) {
+            return;
+        }
 
         let status = status_index(root, &policy).unwrap();
         assert!(
