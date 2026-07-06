@@ -1,8 +1,12 @@
 # OpenLocus Research Log
 
+## 2026-07-06 - Targeted Django Weekly-Large CI Validation
+
+手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
+
 ## 2026-07-06 - CI Targeted Repo Dispatch
 
-在验证 `weekly_large` harness fixes 时，手动 CI 暴露了一个实际缺口：如果只想验证 `ruby_rails` 或 `py_django`，必须运行一串无关 large repos 的 prefix。`eval/ci_make_repo_matrix.py` 现在接受 `--repo-ids`，手动 `retrieval-benchmark` workflow dispatch 也暴露对应的 `repo_ids` input。该过滤是 stage-checked 且 fail-closed：duplicate ids、unknown ids、wrong-stage ids 都会在 matrix generation 前被拒绝。Pull-request 和 scheduled runs 保持原有 stage/max-repo 行为，不使用 `repo_ids`。验证已通过 `python eval/ci_make_repo_matrix.py --self-test`、targeted `weekly_large --repo-ids ruby_rails` matrix generation、wrong-stage rejection 和 `py_compile`。workflow plan job 现在运行 matrix、clone、run-strategy 三个 harness self-tests。这是 CI operability work，不是 retrieval-method evidence，也不是 route reopening。
+在验证 `weekly_large` harness fixes 时，手动 CI 暴露了一个实际缺口：如果只想验证 `ruby_rails` 或 `py_django`，必须运行一串无关 large repos 的 prefix。`eval/ci_make_repo_matrix.py` 现在接受 `--repo-ids`，手动 `retrieval-benchmark` workflow dispatch 也暴露对应的 `repo_ids` input。该过滤是 stage-checked 且 fail-closed：duplicate ids、unknown ids、wrong-stage ids 都会在 matrix generation 前被拒绝。Pull-request 和 scheduled runs 保持原有 stage/max-repo 行为，不使用 `repo_ids`。验证已通过 `python eval/ci_make_repo_matrix.py --self-test`、targeted `weekly_large --repo-ids ruby_rails` matrix generation、wrong-stage rejection 和 `py_compile`。GitHub targeted `weekly_large` runs [`28798691059`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28798691059)（`ruby_rails`）和 [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293)（`py_django`）均在 `e86f665` 上通过，各自只完成三个指定 repo shards。workflow plan job 现在运行 matrix、clone、run-strategy 三个 harness self-tests。这是 CI operability work，不是 retrieval-method evidence，也不是 route reopening。
 
 ## 2026-07-06 - CI Clone Harness MIT-LICENSE Fix
 

@@ -20,7 +20,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Evidence**: scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) failed closed with `isolated source copy file count mismatch` on large repos including Django and Next.js.
 - **Defect**: manifest recomputation lower-cased extensions, while isolated source copying used raw case-sensitive extensions, so uppercase allowed extensions could be counted but not copied.
 - **Fix**: `eval/ci_run_strategy_matrix.py` now lower-cases extensions in the copy loop and includes a `--self-test` regression using uppercase `.MD`/`.PY` files.
-- **Validation**: `python eval/ci_run_strategy_matrix.py --self-test`, `python -m py_compile eval/ci_run_strategy_matrix.py`, `python scripts/validate_docs_i18n.py`, and `git diff --check` passed.
+- **Validation**: `python eval/ci_run_strategy_matrix.py --self-test`, `python -m py_compile eval/ci_run_strategy_matrix.py`, `python scripts/validate_docs_i18n.py`, and `git diff --check` passed. Real CI validation passed on bounded `weekly_large` run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036) for all three `ts_nextjs` shards and targeted `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) for all three `py_django` shards.
 - **Interpretation**: this is benchmark harness reliability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
 
 ## CI clone harness MIT-LICENSE fix
@@ -28,7 +28,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Evidence**: scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) failed closed for `ruby_rails` during clone/lock with `License mismatch: expected one of ['MIT'], detected ['NONE']`.
 - **Defect**: Rails uses a root `MIT-LICENSE` file, but the clone harness only treated names starting with `LICENSE`/`LICENCE`/`COPYING` plus a few exact names as license candidates.
 - **Fix**: `eval/ci_clone_and_lock_repo.py` now scans root files whose names contain `LICENSE`/`LICENCE`, keeps license mismatches fail-closed, and includes a `--self-test` covering `MIT-LICENSE`, dual-license components, non-license README exclusion, and policy rejection.
-- **Validation**: `python eval/ci_clone_and_lock_repo.py --self-test`, `python -m py_compile eval/ci_clone_and_lock_repo.py`, and a targeted `ruby_rails` clone/lock that detected `['MIT']` passed. The `retrieval-benchmark` plan job now runs both CI harness self-tests.
+- **Validation**: `python eval/ci_clone_and_lock_repo.py --self-test`, `python -m py_compile eval/ci_clone_and_lock_repo.py`, and a targeted `ruby_rails` clone/lock that detected `['MIT']` passed. Targeted `weekly_large` run [`28798691059`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28798691059) also passed with all three `ruby_rails` shards. The `retrieval-benchmark` plan job now runs both CI harness self-tests.
 - **Interpretation**: this is benchmark harness reliability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
 
 ## CI targeted repo dispatch
@@ -36,7 +36,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Pain**: after fixing `ruby_rails` and `py_django`/`ts_nextjs` harness issues, validating one known large repo still required broad weekly-prefix matrix runs.
 - **Fix**: manual `retrieval-benchmark` dispatch now accepts `repo_ids`, and `eval/ci_make_repo_matrix.py --repo-ids` selects explicit repos for the chosen stage.
 - **Safety**: duplicate, unknown, and wrong-stage repo ids fail closed; scheduled and pull-request runs ignore `repo_ids`.
-- **Validation**: `python eval/ci_make_repo_matrix.py --self-test`, targeted `weekly_large --repo-ids ruby_rails` matrix generation, wrong-stage rejection, and `py_compile` passed. The workflow plan job now runs matrix, clone, and run-strategy harness self-tests.
+- **Validation**: `python eval/ci_make_repo_matrix.py --self-test`, targeted `weekly_large --repo-ids ruby_rails` matrix generation, wrong-stage rejection, and `py_compile` passed. Targeted GitHub `weekly_large` runs [`28798691059`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28798691059) (`ruby_rails`) and [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) (`py_django`) passed on `e86f665`, each with exactly three requested repo shards. The workflow plan job now runs matrix, clone, and run-strategy harness self-tests.
 - **Interpretation**: this is CI operability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
 
 ## OpenLocus v2 HAAE-A2 offline action replay smoke

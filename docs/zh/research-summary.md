@@ -8,6 +8,12 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## CI targeted Django validation checkpoint
+
+- **Evidence**：手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只完成三个 Django shards。
+- **Coverage**：bounded run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036) 已完成全部三个 `ts_nextjs` shards；这与 Django run 一起覆盖此前 uppercase-extension isolated-copy mismatch 的两个已知代表类。targeted run [`28798691059`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28798691059) 已完成全部三个 `ruby_rails` shards，验证 `repo_ids` 路径和 Rails `MIT-LICENSE` 修复。
+- **Interpretation**：这是 CI harness reliability/operability work，不支持 method、scale、winner、runtime/default、HAAE、FRK 或 RPM claims。
+
 ## Post-closeout Windows platform validation checkpoint
 
 - **Checkpoint**：commit `6b1fc16` 修复了 HAAE-A2 closeout 后发现的具体 Windows 本地验证失败。
