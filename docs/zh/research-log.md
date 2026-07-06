@@ -10,7 +10,7 @@
 
 ## 2026-07-06 - Self-Test Quality Guard
 
-`scripts/validate_selftest_quality.py` 现在把当前 evaluator chain 的 self-test hardening 变成可重复校验。它使用 Python AST inspection，扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；拒绝 `check(..., True)` 和 `_check(..., True)` literal conditions，同时允许真实条件表达式。验证已通过脚本 self-test、默认 allowlist scan，以及一个 intentional ASCII negative fixture（按预期以 `literal_true_check` 失败）。这是 local evaluator quality gating，不是 broad historical eval cleanup、CI expansion 或 route reopening。
+`scripts/validate_selftest_quality.py` 现在把当前 evaluator chain 的 self-test hardening 变成可重复校验。它使用 Python AST inspection，扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；拒绝 `check(...)` 和 `_check(...)` helper calls 中的 truthy literal conditions，同时允许真实条件表达式。验证已通过脚本 self-test、默认 allowlist scan，以及一个 intentional ASCII negative fixture（按预期以 `literal_true_check` 失败）。这是 local evaluator quality gating，不是 broad historical eval cleanup、CI expansion 或 route reopening。
 
 guard 现在也固化了当前 evaluator chain 的第二个 hardening pattern：exception handler 内的 check 调用必须把非空预期错误文本与 `str(exc)` 或 `repr(exc)` 进行比较。更新后的脚本 self-test 和默认 allowlist scan 已通过，intentional exception-path negative fixtures 按预期以 `exception_check_without_error_text` 失败。这防止 negative-path self-tests 捕获 broad exception 后没有证明预期失败原因。
 
@@ -25,6 +25,8 @@ guard 现在也会识别 tuple-append self-test checks，而不只识别 helper-
 tuple-append recognition 现在收紧到实际的 `checks` collector。使用 `not_checks.append(("ok", value is True))` 的 synthetic fixture 已按预期以 `missing_selftest_checks` 失败；当前 allowlisted tuple-style checks 都使用 `checks.append(...)`。这可以防止无关 tuple appends 满足 self-test coverage。
 
 guard 现在还把 missing-check 覆盖面收紧到 self-test 入口本身。每个 allowlisted target 必须定义 `run_self_test` 或 `run_self_tests`，并且在该入口内至少包含一个可识别 helper-call 或 tuple-append check expression；如果文件其他 helper 中有 check、但 self-test 入口为空，也不能再通过。更新后脚本 self-test 和默认 allowlist scan 已通过；intentional no-entrypoint fixture 以 `missing_selftest_entrypoint` 失败，intentional empty-entrypoint fixture 以 `missing_selftest_checks` 失败。
+
+literal-condition rule 现在拒绝所有 truthy literal check conditions，而不只拒绝精确的 `True` 常量。使用 `1`、`'passed'`、nonempty bytes 和 nonempty containers 的 synthetic helper-call / tuple-check fixtures 已按预期以 `literal_true_check` 失败；`False`、`0`、empty string 和 empty tuple 等显式 falsey sentinels 仍允许用于 fail-closed branches。默认 allowlist scan 仍通过，所以这只是在当前 evaluator-chain guard 内收紧 vacuous self-test success paths。
 
 ## 2026-07-06 - Self-Test Quality CI Gate
 

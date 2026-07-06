@@ -82,14 +82,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self.check_count += 1
             if self._inside_selftest_function():
                 self.selftest_check_count += 1
-        if check is not None and self._is_literal_true(check.condition):
+        if check is not None and self._is_truthy_literal(check.condition):
             self.issues.append(
                 Issue(
                     self.path,
                     node.lineno,
                     node.col_offset,
                     "literal_true_check",
-                    "self-test check uses literal True as its condition",
+                    "self-test check uses a truthy literal as its condition",
                 )
             )
         self.generic_visit(node)
@@ -137,9 +137,33 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _is_check_call(cls, node: ast.Call) -> bool:
         return isinstance(node.func, ast.Name) and node.func.id in CHECK_NAMES
 
+    @classmethod
+    def _is_truthy_literal(cls, node: ast.AST) -> bool:
+        return cls._literal_truth_value(node) is True
+
+    @classmethod
+    def _literal_truth_value(cls, node: ast.AST) -> bool | None:
+        if isinstance(node, ast.Constant):
+            return bool(node.value)
+        if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+            return bool(node.elts)
+        if isinstance(node, ast.Dict):
+            return bool(node.keys)
+        signed_numeric = cls._signed_numeric_literal_value(node)
+        if signed_numeric is not None:
+            return bool(signed_numeric)
+        return None
+
     @staticmethod
-    def _is_literal_true(node: ast.AST) -> bool:
-        return isinstance(node, ast.Constant) and node.value is True
+    def _signed_numeric_literal_value(node: ast.AST) -> int | float | complex | None:
+        if not isinstance(node, ast.UnaryOp) or not isinstance(node.op, (ast.UAdd, ast.USub)):
+            return None
+        if not isinstance(node.operand, ast.Constant):
+            return None
+        value = node.operand.value
+        if isinstance(value, (int, float, complex)) and not isinstance(value, bool):
+            return value
+        return None
 
     @classmethod
     def _tuple_append_condition(cls, node: ast.Call) -> ast.AST | None:
@@ -269,8 +293,19 @@ def run_self_test() -> list[str]:
     cases = [
         ("direct_check_literal_true", "def f():\n    check('bad', True)\n", 1),
         ("direct__check_literal_true", "def f():\n    _check('bad', True)\n", 1),
+        ("direct_check_numeric_truthy_rejected", "def f():\n    check('bad', 1)\n", 1),
+        ("direct_check_signed_numeric_truthy_rejected", "def f():\n    check('bad', -1)\n", 1),
+        ("direct_check_string_truthy_rejected", "def f():\n    check('bad', 'passed')\n", 1),
+        ("direct_check_bytes_truthy_rejected", "def f():\n    check('bad', b'passed')\n", 1),
+        ("direct_check_tuple_truthy_rejected", "def f():\n    check('bad', ('passed',))\n", 1),
+        ("direct_check_dict_truthy_rejected", "def f():\n    check('bad', {'passed': True})\n", 1),
+        ("direct_check_literal_false_allowed", "def f():\n    check('ok', False)\n", 0),
+        ("direct_check_zero_allowed", "def f():\n    check('ok', 0)\n", 0),
+        ("direct_check_empty_string_allowed", "def f():\n    check('ok', '')\n", 0),
+        ("direct_check_empty_tuple_allowed", "def f():\n    check('ok', ())\n", 0),
         ("nested_append_literal_true", "def f():\n    checks.append(_check('bad', True))\n", 1),
         ("tuple_append_literal_true", "def f():\n    checks.append(('bad', True))\n", 1),
+        ("tuple_append_truthy_literal_rejected", "def f():\n    checks.append(('bad', 'passed'))\n", 1),
         ("real_condition_allowed", "def f(value):\n    check('ok', value is True)\n", 0),
         ("tuple_append_real_condition_allowed", "def f(value):\n    checks.append(('ok', value is True))\n", 0),
         ("non_check_call_allowed", "def f():\n    other('ok', True)\n", 0),
@@ -422,7 +457,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, checks.append tuple-append, literal-true, expected exception-text, self-test entrypoint, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -435,7 +470,7 @@ def main(argv: list[str]) -> int:
     print("Validation passed:")
     print(f"  scanned files: {len(targets)}")
     print("  recognized helper-call and checks.append tuple-append checks inside run_self_test(s) in every target")
-    print("  no literal True self-test check conditions")
+    print("  no truthy literal self-test check conditions")
     print("  exception-handler checks compare expected error text")
     return 0
 
