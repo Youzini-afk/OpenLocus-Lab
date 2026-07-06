@@ -182,6 +182,50 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self._visit_statements(node.orelse)
         self._visit_statements(node.finalbody)
 
+    def visit_Match(self, node: ast.Match) -> None:
+        self.visit(node.subject)
+        known, subject_value = self._static_literal_value(node.subject)
+        if not known:
+            for case in node.cases:
+                self._visit_match_case(case)
+            return
+
+        selected = False
+        for index, case in enumerate(node.cases):
+            if selected:
+                self._visit_unreachable_match_case(case)
+                continue
+            pattern_match = self._match_pattern_matches_literal(subject_value, case.pattern)
+            if pattern_match is False:
+                self._visit_unreachable_match_case(case)
+                continue
+            if pattern_match is None:
+                self._visit_match_case(case)
+                for later_case in node.cases[index + 1 :]:
+                    self._visit_match_case(later_case)
+                return
+            guard_truth = True if case.guard is None else self._literal_truth_value(case.guard)
+            if guard_truth is False:
+                self._visit_match_case_guard(case)
+                self._visit_unreachable_statements(case.body)
+                continue
+            self._visit_match_case(case)
+            if guard_truth is True:
+                selected = True
+
+    def _visit_match_case(self, case: ast.match_case) -> None:
+        self._visit_match_case_guard(case)
+        self._visit_statements(case.body)
+
+    def _visit_unreachable_match_case(self, case: ast.match_case) -> None:
+        if case.guard is not None:
+            self._visit_unreachable(case.guard)
+        self._visit_unreachable_statements(case.body)
+
+    def _visit_match_case_guard(self, case: ast.match_case) -> None:
+        if case.guard is not None:
+            self.visit(case.guard)
+
     def _visit_with_items(self, items: list[ast.withitem]) -> None:
         for item in items:
             self.visit(item.context_expr)
@@ -243,6 +287,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.handlers:
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_exit(handler.body) for handler in node.handlers)
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            return selected_body is not None and cls._block_guarantees_exit(selected_body)
         return False
 
     @classmethod
@@ -282,6 +329,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.handlers:
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_function_exit(handler.body) for handler in node.handlers)
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            return selected_body is not None and cls._block_guarantees_function_exit(selected_body)
         return False
 
     @classmethod
@@ -315,6 +365,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.handlers:
                 return normal_path_returns
             return normal_path_returns and all(cls._block_guarantees_return(handler.body) for handler in node.handlers)
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            return selected_body is not None and cls._block_guarantees_return(selected_body)
         return False
 
     @classmethod
@@ -347,6 +400,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 or cls._block_may_reach_loop_break(node.finalbody)
             )
         if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            if selected_body is not None:
+                return cls._block_may_reach_loop_break(selected_body)
             return any(cls._block_may_reach_loop_break(case.body) for case in node.cases)
         return False
 
@@ -385,7 +441,29 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.handlers:
                 return normal_path_skips
             return normal_path_skips and all(cls._block_guarantees_loop_else_skip(handler.body) for handler in node.handlers)
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            return selected_body is not None and cls._block_guarantees_loop_else_skip(selected_body)
         return False
+
+    @classmethod
+    def _known_match_selected_body(cls, node: ast.Match) -> list[ast.stmt] | None:
+        known, subject_value = cls._static_literal_value(node.subject)
+        if not known:
+            return None
+        for case in node.cases:
+            pattern_match = cls._match_pattern_matches_literal(subject_value, case.pattern)
+            if pattern_match is False:
+                continue
+            if pattern_match is None:
+                return None
+            guard_truth = True if case.guard is None else cls._literal_truth_value(case.guard)
+            if guard_truth is False:
+                continue
+            if guard_truth is True:
+                return case.body
+            return None
+        return None
 
     def visit_Call(self, node: ast.Call) -> None:
         check = self._as_check_expression(node)
@@ -487,6 +565,37 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         signed_numeric = cls._signed_numeric_literal_value(node)
         if signed_numeric is not None:
             return bool(signed_numeric)
+        return None
+
+    @classmethod
+    def _static_literal_value(cls, node: ast.AST) -> tuple[bool, object]:
+        if isinstance(node, ast.Constant):
+            return True, node.value
+        signed_numeric = cls._signed_numeric_literal_value(node)
+        if signed_numeric is not None:
+            return True, signed_numeric
+        return False, None
+
+    @classmethod
+    def _match_pattern_matches_literal(cls, subject_value: object, pattern: ast.pattern) -> bool | None:
+        if isinstance(pattern, ast.MatchAs):
+            if pattern.pattern is None:
+                return True
+            return cls._match_pattern_matches_literal(subject_value, pattern.pattern)
+        if isinstance(pattern, ast.MatchOr):
+            results = [cls._match_pattern_matches_literal(subject_value, subpattern) for subpattern in pattern.patterns]
+            if any(result is True for result in results):
+                return True
+            if all(result is False for result in results):
+                return False
+            return None
+        if isinstance(pattern, ast.MatchSingleton):
+            return subject_value is pattern.value
+        if isinstance(pattern, ast.MatchValue):
+            known, pattern_value = cls._static_literal_value(pattern.value)
+            if not known:
+                return None
+            return subject_value == pattern_value
         return None
 
     @classmethod
@@ -928,6 +1037,31 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_match_nonmatching_case_only_rejected",
+            "def run_self_tests():\n    match 1:\n        case 2:\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_or_nonmatching_case_only_rejected",
+            "def run_self_tests():\n    match 3:\n        case 1 | 2:\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_singleton_nonmatching_case_only_rejected",
+            "def run_self_tests():\n    match 1:\n        case True:\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_first_return_then_check_rejected",
+            "def run_self_tests():\n    match 1:\n        case 1:\n            return\n        case _:\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_guard_false_only_rejected",
+            "def run_self_tests():\n    match 1:\n        case 1 if False:\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_return_then_check_rejected",
             "def run_self_tests():\n    try:\n        return\n    finally:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -992,6 +1126,31 @@ def run_self_test() -> list[str]:
             "def run_self_tests(value):\n    try:\n        other()\n    except Error:\n        return\n    else:\n        check('ok', value is True)\n",
             [],
         ),
+        (
+            "target_with_match_wildcard_check_allowed",
+            "def run_self_tests(value):\n    match 1:\n        case _:\n            check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_matching_literal_check_allowed",
+            "def run_self_tests(value):\n    match 'ok':\n        case 'ok':\n            check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_or_matching_check_allowed",
+            "def run_self_tests(value):\n    match 2:\n        case 1 | 2:\n            check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_value_equality_check_allowed",
+            "def run_self_tests(value):\n    match True:\n        case 1:\n            check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_guard_unknown_check_allowed",
+            "def run_self_tests(value, flag):\n    match 1:\n        case 1 if flag:\n            check('ok', value is True)\n",
+            [],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     for name, source, expected in target_cases:
@@ -1018,7 +1177,7 @@ def main(argv: list[str]) -> int:
         print(
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
-            "literal-range, no-break infinite-loop, and missing-check cases"
+            "literal-range, literal-match, no-break infinite-loop, and missing-check cases"
         )
         return 0
 

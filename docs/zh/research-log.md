@@ -38,6 +38,8 @@ self-test coverage 现在也会排除 statically unreachable loop/try `else` bod
 
 self-test coverage 现在会把 literal integer `range(...)` iterable 当作 static loop literal 处理。唯一 check 位于 `range(0)` loop body、`range(1): return` 后，或 `range(1): break` / `else` 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；empty-range `else` 和 `range(1): continue` / `else` 中的 check 仍允许。负步长 range 会保留 unary sign，因此 `range(3, 0, -1)` 被识别为 nonempty，`range(0, 3, -1)` 被识别为 empty。这关闭了常见 static-loop coverage bypass，同时不执行任意代码。
 
+self-test coverage 现在也会对 literal `match` statements 做保守的 static reachability 判断。唯一 check 位于 nonmatching literal case、matching case 已 return 后的 unselected later case，或 literal-false guard 的 matching case body 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；wildcard、matching literal、unknown guard 和 matching or-pattern cases 仍允许。guard 只推断 literal subjects 与 literal/singleton/wildcard/or patterns；未知 patterns 会保持 conservative active。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。
