@@ -44,6 +44,8 @@ self-test coverage 现在也会对 literal boolean expressions 和 conditional e
 
 self-test coverage 现在也会对 literal comparison expressions 做保守 reachability 判断。唯一 check 位于静态为假的 equality、inequality、ordering、membership 或 identity comparison 分支内，或位于 earlier literal comparison 已失败后会被跳过的 chained-comparison operand 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；匹配的 literal comparisons、unknown comparisons，以及 Python 仍会实际求值的 comparison operand 仍允许。guard 只评估静态 literal/container operands，未知或不安全 comparison 保持 conservative active。
 
+self-test coverage 现在也会对 comprehension bodies 做保守 reachability 判断。唯一 check 位于 list、set、dict 或 generator comprehension 中，且 iterable 是 empty literal / `range(0)`、comprehension filter 静态为 false，或 earlier generator 已无法 yield 后的 later nested generator/body 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；nonempty literal comprehensions、unknown filters 和 unknown iterables 仍允许。guard 只评估 static iterable truth 和 static filter truth，不执行任意代码，也不推断任意 consumer behavior。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。

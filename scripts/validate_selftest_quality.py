@@ -154,6 +154,18 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             known_left = True
             left_value = right_value
 
+    def visit_ListComp(self, node: ast.ListComp) -> None:
+        self._visit_comprehension(node.generators, [node.elt])
+
+    def visit_SetComp(self, node: ast.SetComp) -> None:
+        self._visit_comprehension(node.generators, [node.elt])
+
+    def visit_DictComp(self, node: ast.DictComp) -> None:
+        self._visit_comprehension(node.generators, [node.key, node.value])
+
+    def visit_GeneratorExp(self, node: ast.GeneratorExp) -> None:
+        self._visit_comprehension(node.generators, [node.elt])
+
     def visit_If(self, node: ast.If) -> None:
         self.visit(node.test)
         test_truth = self._literal_truth_value(node.test)
@@ -285,6 +297,38 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self.visit(item.context_expr)
             if item.optional_vars is not None:
                 self.visit(item.optional_vars)
+
+    def _visit_comprehension(self, generators: list[ast.comprehension], result_nodes: list[ast.AST]) -> None:
+        can_yield = True
+        for generator in generators:
+            if not can_yield:
+                self._visit_unreachable(generator.target)
+                self._visit_unreachable(generator.iter)
+                for if_clause in generator.ifs:
+                    self._visit_unreachable(if_clause)
+                continue
+
+            self.visit(generator.target)
+            self.visit(generator.iter)
+            if self._literal_iter_truth_value(generator.iter) is False:
+                can_yield = False
+                for if_clause in generator.ifs:
+                    self._visit_unreachable(if_clause)
+                continue
+
+            for if_clause in generator.ifs:
+                if not can_yield:
+                    self._visit_unreachable(if_clause)
+                    continue
+                self.visit(if_clause)
+                if self._literal_truth_value(if_clause) is False:
+                    can_yield = False
+
+        for result_node in result_nodes:
+            if can_yield:
+                self.visit(result_node)
+            else:
+                self._visit_unreachable(result_node)
 
     def _visit_statements(self, statements: list[ast.stmt]) -> None:
         unreachable = False
@@ -1186,6 +1230,31 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_empty_listcomp_check_only_rejected",
+            "def run_self_tests():\n    checks = [check('ok', value is True) for value in []]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_empty_range_setcomp_check_only_rejected",
+            "def run_self_tests():\n    checks = {check('ok', value is True) for value in range(0)}\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_false_filter_dictcomp_check_only_rejected",
+            "def run_self_tests():\n    checks = {item: check('ok', value is True) for item in [1] if False}\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_empty_genexp_check_only_rejected",
+            "def run_self_tests():\n    all(check('ok', value is True) for value in [])\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nested_empty_comp_check_only_rejected",
+            "def run_self_tests():\n    checks = [check('ok', value is True) for outer in [1] for inner in []]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_after_return_only_rejected",
             "def run_self_tests():\n    return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -1366,6 +1435,21 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_nonempty_listcomp_check_allowed",
+            "def run_self_tests(value):\n    checks = [check('ok', value is True) for item in [1]]\n",
+            [],
+        ),
+        (
+            "target_with_unknown_comp_filter_check_allowed",
+            "def run_self_tests(value, flag):\n    checks = [check('ok', value is True) for item in [1] if flag]\n",
+            [],
+        ),
+        (
+            "target_with_nonempty_genexp_check_allowed",
+            "def run_self_tests(value):\n    all(check('ok', value is True) for item in [1])\n",
+            [],
+        ),
+        (
             "target_with_if_false_else_check_allowed",
             "def run_self_tests(value):\n    if False:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
             [],
@@ -1456,7 +1540,8 @@ def main(argv: list[str]) -> int:
         print(
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
-            "literal-range, literal-match, literal-bool, literal-compare, no-break infinite-loop, and missing-check cases"
+            "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
+            "no-break infinite-loop, and missing-check cases"
         )
         return 0
 
