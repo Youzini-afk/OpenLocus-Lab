@@ -42,6 +42,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest literal-match validation**：在 literal `match` statements 被纳入 self-test coverage reachability guard 后，follow-up run [`28819932771`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28819932771) 已在 `4a4949f` 上通过。
 - **Latest literal-bool validation**：在 literal boolean expressions 和 conditional expressions 被纳入 self-test coverage reachability guard 后，follow-up run [`28821026942`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28821026942) 已在 `d8a1ff9` 上通过。
 - **Latest literal-compare validation**：在 literal comparison expressions 被纳入 self-test coverage reachability guard 后，follow-up run [`28822188971`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28822188971) 已在 `eea3877` 上通过。
+- **Latest literal-comprehension validation**：在 comprehension bodies 被纳入 self-test coverage reachability guard 后，follow-up run [`28823079569`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28823079569) 已在 `e363974` 上通过。
 - **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
 
 ## CI targeted Django validation checkpoint
