@@ -8,6 +8,10 @@
 
 相邻 FRK product-workflow failure-decomposition/design/prototype self-tests 有同样的 broad-exception success pattern。`eval/frk_product_workflow_failure_decomposition.py`、`eval/frk_product_workflow_specific_retrieval_repair_design.py`、`eval/frk_product_workflow_bounded_retrieval_repair_prototype.py` 现在会针对 private-input/output negative paths 检查预期 `--confirm-private-input`、missing JSONL、malformed JSONL、Phase-1 schema 和 `--confirm-private-output` 错误文本。验证已通过三个 self-tests（`30/30`、`60/60`、`60/60`）、`py_compile`、三个 public reports validation，并且静态搜索确认这些 FRK scripts 加上当前 TraceV2/HAAE scripts 中没有剩余 `check(..., True)` literal。这是 evaluator reliability work，不是 retrieval-method evidence，也不是 route reopening。
 
+## 2026-07-06 - Self-Test Quality Guard
+
+`scripts/validate_selftest_quality.py` 现在把当前 evaluator chain 的 self-test hardening 变成可重复校验。它使用 Python AST inspection，扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；拒绝 `check(..., True)` 和 `_check(..., True)` literal conditions，同时允许真实条件表达式。验证已通过脚本 self-test、默认 allowlist scan，以及一个 intentional ASCII negative fixture（按预期以 `literal_true_check` 失败）。这是 local evaluator quality gating，不是 broad historical eval cleanup、CI expansion 或 route reopening。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。

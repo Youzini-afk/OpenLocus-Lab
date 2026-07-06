@@ -22,6 +22,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**：三个 self-tests 均通过（`30/30`、`60/60`、`60/60`），`py_compile` 通过，三个 public reports 均验证通过，静态搜索确认这些 FRK scripts 加上当前 TraceV2/HAAE scripts 中没有剩余 `check(..., True)` literal。
 - **Interpretation**：这是 evaluator reliability work，不重开 FRK repair、HAAE-A2、RPM-D2/training、retrieval、runtime/default、provider/network/CI 或 method-winner claims。
 
+## Self-test quality guard
+
+- **Checkpoint**：`scripts/validate_selftest_quality.py` 把当前 evaluator chain 的 literal-true self-test guard 固化为可重复本地校验。
+- **Scope**：guard 只扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；它不会让整个历史 `eval/` 树一次性失败。
+- **Validation**：`python scripts/validate_selftest_quality.py --self-test` 通过，默认 allowlist scan 通过，一个 intentional ASCII negative fixture 按预期以 `literal_true_check` 失败。
+- **Interpretation**：这是 local evaluator quality gating，不改变 runtime behavior，不扩大 CI/provider/network scope，也不重开 closed routes。
+
 ## CI targeted Django validation checkpoint
 
 - **Evidence**：手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只完成三个 Django shards。

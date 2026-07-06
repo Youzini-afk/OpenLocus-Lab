@@ -22,6 +22,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**: the three self-tests passed (`30/30`, `60/60`, `60/60`), `py_compile` passed, all three public reports validated, and static search found no remaining `check(..., True)` literal across these FRK scripts plus the current TraceV2/HAAE scripts.
 - **Interpretation**: this is evaluator reliability work only. It does not reopen FRK repair, HAAE-A2, RPM-D2/training, retrieval, runtime/default, provider/network/CI, or method-winner claims.
 
+## Self-test quality guard
+
+- **Checkpoint**: `scripts/validate_selftest_quality.py` codifies a repeatable local guard against literal-true self-test checks for the current evaluator chain.
+- **Scope**: the guard scans a narrow allowlist: FRK product-workflow benchmark/decomposition/design/prototype and TraceV2 bootstrap/capture/repair/replay. It intentionally does not fail the whole historical `eval/` tree.
+- **Validation**: `python scripts/validate_selftest_quality.py --self-test` passed, the default allowlist scan passed, and an intentional ASCII negative fixture failed with `literal_true_check`.
+- **Interpretation**: this is local evaluator quality gating only. It does not change runtime behavior, broaden CI/provider/network scope, or reopen closed routes.
+
 ## Post-closeout Windows platform validation checkpoint
 
 - **Checkpoint**: commit `6b1fc16` fixes a concrete Windows local validation failure found after the HAAE-A2 closeout.
