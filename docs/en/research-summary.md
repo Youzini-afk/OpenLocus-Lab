@@ -31,6 +31,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**: `python eval/ci_clone_and_lock_repo.py --self-test`, `python -m py_compile eval/ci_clone_and_lock_repo.py`, and a targeted `ruby_rails` clone/lock that detected `['MIT']` passed. The `retrieval-benchmark` plan job now runs both CI harness self-tests.
 - **Interpretation**: this is benchmark harness reliability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
 
+## CI targeted repo dispatch
+
+- **Pain**: after fixing `ruby_rails` and `py_django`/`ts_nextjs` harness issues, validating one known large repo still required broad weekly-prefix matrix runs.
+- **Fix**: manual `retrieval-benchmark` dispatch now accepts `repo_ids`, and `eval/ci_make_repo_matrix.py --repo-ids` selects explicit repos for the chosen stage.
+- **Safety**: duplicate, unknown, and wrong-stage repo ids fail closed; scheduled and pull-request runs ignore `repo_ids`.
+- **Validation**: `python eval/ci_make_repo_matrix.py --self-test`, targeted `weekly_large --repo-ids ruby_rails` matrix generation, wrong-stage rejection, and `py_compile` passed. The workflow plan job now runs matrix, clone, and run-strategy harness self-tests.
+- **Interpretation**: this is CI operability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json).

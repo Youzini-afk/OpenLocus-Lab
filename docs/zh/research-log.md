@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-06 - CI Targeted Repo Dispatch
+
+在验证 `weekly_large` harness fixes 时，手动 CI 暴露了一个实际缺口：如果只想验证 `ruby_rails` 或 `py_django`，必须运行一串无关 large repos 的 prefix。`eval/ci_make_repo_matrix.py` 现在接受 `--repo-ids`，手动 `retrieval-benchmark` workflow dispatch 也暴露对应的 `repo_ids` input。该过滤是 stage-checked 且 fail-closed：duplicate ids、unknown ids、wrong-stage ids 都会在 matrix generation 前被拒绝。Pull-request 和 scheduled runs 保持原有 stage/max-repo 行为，不使用 `repo_ids`。验证已通过 `python eval/ci_make_repo_matrix.py --self-test`、targeted `weekly_large --repo-ids ruby_rails` matrix generation、wrong-stage rejection 和 `py_compile`。workflow plan job 现在运行 matrix、clone、run-strategy 三个 harness self-tests。这是 CI operability work，不是 retrieval-method evidence，也不是 route reopening。
+
 ## 2026-07-06 - CI Clone Harness MIT-LICENSE Fix
 
 同一个 scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 暴露了第二个 fail-closed CI harness 问题。`ruby_rails` jobs 在 `Clone and lock public corpus repo` 阶段失败，错误为 `License mismatch: expected one of ['MIT'], detected ['NONE']`。调查发现 Rails 使用根目录 `MIT-LICENSE` 文件，而 `eval/ci_clone_and_lock_repo.py` 只把 `LICENSE`/`LICENCE`/`COPYING` 开头的文件名和少数 exact names 当作 license candidates。修复后会扫描根目录文件名中包含 `LICENSE`/`LICENCE` 的文件，license mismatch 仍 fail-closed，并新增 `python eval/ci_clone_and_lock_repo.py --self-test`，覆盖 `MIT-LICENSE`、dual-license components、非 license README 排除和 policy rejection；`retrieval-benchmark` plan job 现在也运行两个 CI harness self-tests。本地验证通过 clone self-test、`py_compile`，以及 targeted `ruby_rails` clone/lock（检测到 `['MIT']`）。这是 CI harness reliability work，不是 retrieval-method evidence，也不是 route reopening。

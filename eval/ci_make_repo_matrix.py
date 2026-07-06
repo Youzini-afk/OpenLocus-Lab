@@ -321,9 +321,26 @@ def select_repos_for_stage(
     repos: list[dict],
     stage: str,
     max_repos: int,
+    repo_ids: list[str] | None = None,
 ) -> list[dict]:
     """Filter repos by stage and limit to max_repos."""
     selected = [r for r in repos if r.get("tier") is not None and TIER_TO_STAGE.get(r.get("tier", "")) == stage]
+    if repo_ids:
+        if len(repo_ids) != len(set(repo_ids)):
+            raise ValueError(f"duplicate --repo-ids values: {repo_ids}")
+        selected_by_id = {r["id"]: r for r in selected}
+        all_by_id = {r.get("id"): r for r in repos}
+        missing = [repo_id for repo_id in repo_ids if repo_id not in all_by_id]
+        if missing:
+            raise ValueError(f"unknown --repo-ids value(s): {missing}")
+        wrong_stage = [
+            repo_id
+            for repo_id in repo_ids
+            if repo_id not in selected_by_id
+        ]
+        if wrong_stage:
+            raise ValueError(f"--repo-ids not in stage '{stage}': {wrong_stage}")
+        return [selected_by_id[repo_id] for repo_id in repo_ids]
     return selected[:max_repos]
 
 
@@ -333,6 +350,7 @@ def build_matrix(
     stage_config: dict,
     max_repos_override: int | None = None,
     shard_count_override: int | None = None,
+    repo_ids: list[str] | None = None,
 ) -> dict:
     """Build the GitHub Actions matrix JSON."""
     max_repos = max_repos_override or stage_config.get("max_repos", 10)
@@ -347,7 +365,7 @@ def build_matrix(
             "graph_basic", "dense_mock",
         ]
 
-    selected = select_repos_for_stage(repos, stage, max_repos)
+    selected = select_repos_for_stage(repos, stage, max_repos, repo_ids)
 
     include = []
     for r in selected:
@@ -370,18 +388,74 @@ def build_matrix(
 
 # ── CLI ─────────────────────────────────────────────────────────────────────
 
+def parse_repo_ids(value: str | None) -> list[str] | None:
+    if value is None:
+        return None
+    parsed = [item.strip() for item in value.split(",") if item.strip()]
+    return parsed or None
+
+
+def run_self_test() -> int:
+    repos = [
+        {"id": "py_flask", "repo": "pallets/flask", "tier": "smoke", "primary_language": "Python", "expected_license": "BSD-3-Clause"},
+        {"id": "js_express", "repo": "expressjs/express", "tier": "smoke", "primary_language": "JavaScript", "expected_license": "MIT"},
+        {"id": "ts_nextjs", "repo": "vercel/next.js", "tier": "weekly_large", "primary_language": "TypeScript", "expected_license": "MIT"},
+        {"id": "ruby_rails", "repo": "rails/rails", "tier": "weekly_large", "primary_language": "Ruby", "expected_license": "MIT"},
+    ]
+    stage_config = {
+        "max_repos": 1,
+        "max_tasks_per_repo": 12,
+        "shard_count": 2,
+        "strategies": ["regex", "bm25"],
+    }
+    checks: list[tuple[str, bool]] = []
+
+    capped = build_matrix(repos, "weekly_large", stage_config)
+    checks.append(("default_max_repos_applies", [e["repo_id"] for e in capped["include"]] == ["ts_nextjs", "ts_nextjs"]))
+
+    targeted = build_matrix(repos, "weekly_large", stage_config, repo_ids=["ruby_rails"])
+    checks.append(("targeted_repo_ids_bypass_prefix_cap", [e["repo_id"] for e in targeted["include"]] == ["ruby_rails", "ruby_rails"]))
+
+    parsed = parse_repo_ids(" ruby_rails, ts_nextjs ,, ")
+    checks.append(("repo_ids_parser_trims_empty", parsed == ["ruby_rails", "ts_nextjs"]))
+
+    error_cases = [
+        ("duplicate_repo_ids_rejected", ["ruby_rails", "ruby_rails"], "duplicate"),
+        ("unknown_repo_ids_rejected", ["missing_repo"], "unknown"),
+        ("wrong_stage_repo_ids_rejected", ["py_flask"], "not in stage"),
+    ]
+    for check_name, repo_ids, expected_fragment in error_cases:
+        try:
+            build_matrix(repos, "weekly_large", stage_config, repo_ids=repo_ids)
+            checks.append((check_name, False))
+        except ValueError as exc:
+            checks.append((check_name, expected_fragment in str(exc)))
+
+    failed = [name for name, ok in checks if not ok]
+    if failed:
+        print("Self-test FAILED:")
+        for name in failed:
+            print(f"  - {name}")
+        return 1
+    print(f"Self-test passed: {len(checks)}/{len(checks)}")
+    return 0
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Generate GitHub Actions matrix JSON from the CI repos manifest"
     )
     p.add_argument(
+        "--self-test",
+        action="store_true",
+        help="Run built-in regression self-test",
+    )
+    p.add_argument(
         "--manifest",
-        required=True,
         help="Path to the CI repos manifest YAML",
     )
     p.add_argument(
         "--stage",
-        required=True,
         choices=sorted(VALID_STAGES),
         help="Stage to generate matrix for",
     )
@@ -397,6 +471,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Optional cap overriding the stage max_repos value",
     )
     p.add_argument(
+        "--repo-ids",
+        help="Optional comma-separated repo ids to target explicitly for the selected stage",
+    )
+    p.add_argument(
         "--shard-count",
         type=int,
         default=None,
@@ -407,6 +485,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+
+    if args.self_test:
+        sys.exit(run_self_test())
+
+    if not args.manifest:
+        print("ERROR: --manifest is required unless --self-test is used", file=sys.stderr)
+        sys.exit(2)
+    if not args.stage:
+        print("ERROR: --stage is required unless --self-test is used", file=sys.stderr)
+        sys.exit(2)
 
     manifest = parse_manifest_yaml(args.manifest)
 
@@ -433,7 +521,18 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(1)
 
     repos = manifest.get("repos", [])
-    matrix = build_matrix(repos, args.stage, stage_config, args.max_repos, args.shard_count)
+    try:
+        matrix = build_matrix(
+            repos,
+            args.stage,
+            stage_config,
+            args.max_repos,
+            args.shard_count,
+            parse_repo_ids(args.repo_ids),
+        )
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     print(json.dumps(matrix, separators=(",", ":")))
 

@@ -31,6 +31,10 @@ on:
         description: 'Optional repo cap for selected stage'
         required: false
         default: ''
+      repo_ids:
+        description: 'Optional comma-separated repo ids for targeted manual dispatch'
+        required: false
+        default: ''
       enable_remote_models:
         description: 'Allow real embedding / QuIVer providers (manual only)'
         required: false
@@ -57,6 +61,7 @@ jobs:
       stage: ${{ steps.stage.outputs.stage }}
       allow_remote: ${{ steps.remote.outputs.allow_remote }}
       timeout_minutes: ${{ steps.stage.outputs.timeout_minutes }}
+      repo_ids: ${{ steps.stage.outputs.repo_ids }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -65,23 +70,29 @@ jobs:
         run: python3 eval/ci_run_strategy_matrix.py --self-test
       - name: Run CI clone harness self-test
         run: python3 eval/ci_clone_and_lock_repo.py --self-test
+      - name: Run CI matrix harness self-test
+        run: python3 eval/ci_make_repo_matrix.py --self-test
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             stage="pr_smoke"
             max_repos="6"
+            repo_ids=""
             timeout_minutes="45"
           elif [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "43 5 * * 1" ]]; then
             stage="weekly_large"
             max_repos="12"
+            repo_ids=""
             timeout_minutes="180"
           elif [[ "${{ github.event_name }}" == "schedule" ]]; then
             stage="nightly_medium"
             max_repos="20"
+            repo_ids=""
             timeout_minutes="120"
           else
             stage="${{ inputs.stage || 'pr_smoke' }}"
             max_repos="${{ inputs.max_repos || '' }}"
+            repo_ids="${{ inputs.repo_ids || '' }}"
             case "$stage" in
               pr_smoke)
                 timeout_minutes="45"
@@ -100,8 +111,13 @@ jobs:
                 ;;
             esac
           fi
+          if [[ "$repo_ids" == *$'\n'* || "$repo_ids" == *$'\r'* ]]; then
+            echo "repo_ids must be a single-line comma-separated list" >&2
+            exit 1
+          fi
           echo "stage=$stage" >> "$GITHUB_OUTPUT"
           echo "max_repos=$max_repos" >> "$GITHUB_OUTPUT"
+          echo "repo_ids=$repo_ids" >> "$GITHUB_OUTPUT"
           echo "timeout_minutes=$timeout_minutes" >> "$GITHUB_OUTPUT"
       - id: remote
         run: |
@@ -121,6 +137,9 @@ jobs:
           extra=()
           if [[ -n "${{ steps.stage.outputs.max_repos }}" ]]; then
             extra+=(--max-repos "${{ steps.stage.outputs.max_repos }}")
+          fi
+          if [[ -n "${{ steps.stage.outputs.repo_ids }}" ]]; then
+            extra+=(--repo-ids "${{ steps.stage.outputs.repo_ids }}")
           fi
           matrix=$(python3 eval/ci_make_repo_matrix.py \
             --manifest eval/ci_repos/openlocus-ci-repos-v1.yaml \
