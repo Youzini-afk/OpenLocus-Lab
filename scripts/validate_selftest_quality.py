@@ -70,6 +70,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._visit_statements(node.body)
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._visit_function_definition_expressions(node)
         if node.name in SELF_TEST_FUNCTION_NAMES:
             self.selftest_function_count += 1
         self._function_stack.append(node.name)
@@ -81,6 +82,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack.pop()
 
     def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self._visit_function_definition_expressions(node)
         if node.name in SELF_TEST_FUNCTION_NAMES:
             self.selftest_function_count += 1
         self._function_stack.append(node.name)
@@ -92,14 +94,31 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack.pop()
 
     def visit_Lambda(self, node: ast.Lambda) -> None:
+        self._visit_arguments_defaults(node.args)
         self._deferred_scope_depth += 1
-        self.generic_visit(node)
+        self.visit(node.body)
         self._deferred_scope_depth -= 1
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
-        self._deferred_scope_depth += 1
+        for decorator in node.decorator_list:
+            self.visit(decorator)
+        for base in node.bases:
+            self.visit(base)
+        for keyword in node.keywords:
+            self.visit(keyword.value)
         self._visit_statements(node.body)
-        self._deferred_scope_depth -= 1
+
+    def _visit_function_definition_expressions(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        for decorator in node.decorator_list:
+            self.visit(decorator)
+        self._visit_arguments_defaults(node.args)
+
+    def _visit_arguments_defaults(self, node: ast.arguments) -> None:
+        for default in node.defaults:
+            self.visit(default)
+        for default in node.kw_defaults:
+            if default is not None:
+                self.visit(default)
 
     def visit_BoolOp(self, node: ast.BoolOp) -> None:
         if isinstance(node.op, ast.And):
@@ -1181,6 +1200,16 @@ def run_self_test() -> list[str]:
             ["missing_check_condition", "missing_selftest_checks"],
         ),
         (
+            "target_with_selftest_default_check_only_rejected",
+            "def run_self_tests(value=check('bad', True)):\n    pass\n",
+            ["literal_true_check", "missing_selftest_checks"],
+        ),
+        (
+            "target_with_nested_helper_default_truthy_rejected",
+            "def run_self_tests():\n    def helper(arg=check('bad', True)):\n        pass\n",
+            ["literal_true_check"],
+        ),
+        (
             "target_with_nested_helper_only_rejected",
             "def run_self_tests():\n    def helper(value):\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -1476,6 +1505,36 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_nested_helper_default_check_allowed",
+            "def run_self_tests(value):\n    def helper(arg=check('ok', value is True)):\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_nested_helper_decorator_check_allowed",
+            "def run_self_tests(value):\n    @check('ok', value is True)\n    def helper():\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_lambda_default_check_allowed",
+            "def run_self_tests(value):\n    helper = lambda arg=check('ok', value is True): None\n",
+            [],
+        ),
+        (
+            "target_with_nested_class_body_check_allowed",
+            "def run_self_tests(value):\n    class Helper:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_nested_class_base_check_allowed",
+            "def run_self_tests(value):\n    class Helper(check('ok', value is True)):\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_nested_class_decorator_check_allowed",
+            "def run_self_tests(value):\n    @check('ok', value is True)\n    class Helper:\n        pass\n",
+            [],
+        ),
+        (
             "target_with_nonempty_listcomp_check_allowed",
             "def run_self_tests(value):\n    checks = [check('ok', value is True) for item in [1]]\n",
             [],
@@ -1592,7 +1651,7 @@ def main(argv: list[str]) -> int:
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
-            "lazy-generator, no-break infinite-loop, and missing-check cases"
+            "lazy-generator, definition-time expression, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
