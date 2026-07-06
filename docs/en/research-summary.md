@@ -49,6 +49,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest no-raise try fallthrough validation**: follow-up run [`28828709810`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28828709810) passed on `7b3c162` after statically non-raising try-body facts were carried into post-try fallthrough analysis and `try*` statements were routed through the same try-like visitor.
 - **Latest assert-statement validation**: follow-up run [`28829592130`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28829592130) passed on `7023786` after normal Python assert evaluation boundaries were added to the self-test coverage guard.
 - **Latest known-exception try-handler validation**: follow-up run [`28830363816`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28830363816) passed on `a21504b` after definitely raised built-in exceptions were added to try-handler/fallthrough reachability.
+- **Latest with-control-flow validation**: follow-up run [`28831054909`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831054909) passed on `cbecc9b` after `with` control-flow exits were separated from suppressible exceptions in self-test reachability.
 - **Interpretation**: this is fail-closed evaluator quality gating in CI. It does not expand benchmark repo/provider scope, change retrieval/runtime behavior, sweep historical evaluators, or reopen closed routes.
 
 ## Post-closeout Windows platform validation checkpoint

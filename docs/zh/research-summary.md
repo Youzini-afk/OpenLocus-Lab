@@ -51,6 +51,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest no-raise try fallthrough validation**：在 statically non-raising try-body facts 被带入 post-try fallthrough analysis、且 `try*` statements 使用同一套 try-like visitor 后，follow-up run [`28828709810`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28828709810) 已在 `7b3c162` 上通过。
 - **Latest assert-statement validation**：在 normal Python assert evaluation boundaries 被纳入 self-test coverage guard 后，follow-up run [`28829592130`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28829592130) 已在 `7023786` 上通过。
 - **Latest known-exception try-handler validation**：在 definitely raised built-in exceptions 被纳入 try-handler/fallthrough reachability 后，follow-up run [`28830363816`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28830363816) 已在 `a21504b` 上通过。
+- **Latest with-control-flow validation**：在 `with` control-flow exits 与 suppressible exceptions 被分开处理 self-test reachability 后，follow-up run [`28831054909`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831054909) 已在 `cbecc9b` 上通过。
 - **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
 
 ## CI targeted Django validation checkpoint
