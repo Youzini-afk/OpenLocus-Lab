@@ -16,6 +16,8 @@ guard 现在也固化了当前 evaluator chain 的第二个 hardening pattern：
 
 exception-text rule 现在会拒绝只证明 exception text 存在或断言方向错误的弱断言。包含 `bool(str(exc))`、把 unrelated literal 和 `str(exc)` 松散相与、以及 `'needle' not in str(exc)` 的 synthetic fixtures，都按预期以 `exception_check_without_error_text` 失败；当前 allowlisted checks 中类似 `'needle' in str(exc)` 的具体文本比较仍然通过。这关闭的是 weak-assertion gap，不改变 evaluator allowlist 或任何 route decision。
 
+rule 现在也会拒绝 exception checks 中 bare non-boolean string search methods。使用 `str(exc).find("missing")` 的 synthetic fixture 已按预期以 `exception_check_without_error_text` 失败；原因是 Python 会把 `-1` 当作 truthy，substring 缺失也可能让 boolean check 通过。当前 allowlisted checks 不依赖 bare `find`、`index` 或 `count`，所以默认 scan 保持通过。
+
 guard 现在也会识别 tuple-append self-test checks，而不只识别 helper-call checks。这一点很关键，因为 `eval/frk_product_workflow_trace_benchmark.py` 的 `run_self_tests()` 使用 `checks.append((name, condition))`，此前 guard 对这个 allowlisted target 实际看不到任何 check calls。更新后每个 target 都必须至少有一个可识别 self-test check expression；intentional tuple-literal / no-check fixtures 已按预期以 `literal_true_check` 和 `missing_selftest_checks` 失败。
 
 guard 现在还把 missing-check 覆盖面收紧到 self-test 入口本身。每个 allowlisted target 必须定义 `run_self_test` 或 `run_self_tests`，并且在该入口内至少包含一个可识别 helper-call 或 tuple-append check expression；如果文件其他 helper 中有 check、但 self-test 入口为空，也不能再通过。更新后脚本 self-test 和默认 allowlist scan 已通过；intentional no-entrypoint fixture 以 `missing_selftest_entrypoint` 失败，intentional empty-entrypoint fixture 以 `missing_selftest_checks` 失败。

@@ -31,7 +31,7 @@ DEFAULT_TARGETS = (
 
 CHECK_NAMES = {"check", "_check"}
 SELF_TEST_FUNCTION_NAMES = {"run_self_test", "run_self_tests"}
-EXPECTED_TEXT_METHODS = {"startswith", "endswith", "find", "index", "count"}
+EXPECTED_TEXT_BOOLEAN_METHODS = {"startswith", "endswith"}
 
 
 @dataclass(frozen=True)
@@ -186,7 +186,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     @classmethod
     def _method_asserts_expected_exception_text(cls, node: ast.Call, exception_name: str) -> bool:
-        if not isinstance(node.func, ast.Attribute) or node.func.attr not in EXPECTED_TEXT_METHODS:
+        if not isinstance(node.func, ast.Attribute) or node.func.attr not in EXPECTED_TEXT_BOOLEAN_METHODS:
             return False
         if not cls._contains_exception_text_call(node.func.value, exception_name):
             return False
@@ -321,6 +321,21 @@ def run_self_test() -> list[str]:
         (
             "exception_unrelated_literal_and_text_rejected",
             "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' and str(exc))\n",
+            1,
+        ),
+        (
+            "exception_bare_find_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', str(exc).find('needle'))\n",
+            1,
+        ),
+        (
+            "exception_bare_index_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', str(exc).index('needle'))\n",
+            1,
+        ),
+        (
+            "exception_bare_count_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', str(exc).count('needle'))\n",
             1,
         ),
         (
