@@ -165,11 +165,21 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     @classmethod
     def _asserts_expected_exception_text(cls, node: ast.AST, exception_name: str) -> bool:
-        for subnode in ast.walk(node):
-            if isinstance(subnode, ast.Compare) and cls._compare_asserts_expected_exception_text(subnode, exception_name):
+        if isinstance(node, ast.BoolOp):
+            if isinstance(node.op, ast.And):
+                return any(cls._asserts_expected_exception_text(value, exception_name) for value in node.values)
+            if isinstance(node.op, ast.Or):
+                return all(cls._asserts_expected_exception_text(value, exception_name) for value in node.values)
+            return False
+        if isinstance(node, ast.Compare):
+            return cls._compare_asserts_expected_exception_text(node, exception_name)
+        if isinstance(node, ast.Call):
+            if cls._method_asserts_expected_exception_text(node, exception_name):
                 return True
-            if isinstance(subnode, ast.Call) and cls._method_asserts_expected_exception_text(subnode, exception_name):
-                return True
+            if isinstance(node.func, ast.Name) and node.func.id == "bool" and len(node.args) == 1:
+                return cls._asserts_expected_exception_text(node.args[0], exception_name)
+        if isinstance(node, ast.IfExp):
+            return cls._asserts_expected_exception_text(node.body, exception_name) and cls._asserts_expected_exception_text(node.orelse, exception_name)
         return False
 
     @classmethod
@@ -284,6 +294,21 @@ def run_self_test() -> list[str]:
             0,
         ),
         (
+            "exception_or_text_check_allowed",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', 'needle' in str(exc) or 'pin' in str(exc))\n",
+            0,
+        ),
+        (
+            "exception_and_text_check_allowed",
+            "def f(value):\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', value and 'needle' in str(exc))\n",
+            0,
+        ),
+        (
+            "exception_bool_wrapped_text_check_allowed",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', bool('needle' in str(exc)))\n",
+            0,
+        ),
+        (
             "exception_check_without_text_rejected",
             "def f(value):\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', value)\n",
             1,
@@ -321,6 +346,16 @@ def run_self_test() -> list[str]:
         (
             "exception_unrelated_literal_and_text_rejected",
             "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' and str(exc))\n",
+            1,
+        ),
+        (
+            "exception_text_or_true_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' in str(exc) or True)\n",
+            1,
+        ),
+        (
+            "exception_text_or_vacuous_text_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' in str(exc) or bool(str(exc)))\n",
             1,
         ),
         (
