@@ -14,6 +14,8 @@
 
 guard 现在也固化了当前 evaluator chain 的第二个 hardening pattern：exception handler 内的 check 调用必须通过 `str(exc)` 或 `repr(exc)` 断言预期错误文本。更新后的脚本 self-test 和默认 allowlist scan 已通过，一个 intentional exception-path negative fixture 按预期以 `exception_check_without_error_text` 失败。这防止 negative-path self-tests 捕获 broad exception 后没有证明预期失败原因。
 
+guard 现在也会识别 tuple-append self-test checks，而不只识别 helper-call checks。这一点很关键，因为 `eval/frk_product_workflow_trace_benchmark.py` 的 `run_self_tests()` 使用 `checks.append((name, condition))`，此前 guard 对这个 allowlisted target 实际看不到任何 check calls。更新后每个 target 都必须至少有一个可识别 self-test check expression；intentional tuple-literal / no-check fixtures 已按预期以 `literal_true_check` 和 `missing_selftest_checks` 失败。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。

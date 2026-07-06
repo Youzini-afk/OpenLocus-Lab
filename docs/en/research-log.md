@@ -14,6 +14,8 @@ The adjacent FRK product-workflow failure-decomposition/design/prototype self-te
 
 The guard now also codifies the second hardening pattern from the current evaluator chain: check calls inside exception handlers must assert expected error text through `str(exc)` or `repr(exc)`. Validation passed the updated script self-test and default allowlist scan, and an intentional exception-path negative fixture failed with `exception_check_without_error_text`. This keeps negative-path self-tests from accepting broad exceptions without proving the intended failure reason.
 
+The guard now recognizes tuple-append self-test checks as well as helper-call checks. This matters because `eval/frk_product_workflow_trace_benchmark.py` uses `checks.append((name, condition))` inside `run_self_tests()`, so the previous guard scanned that allowlisted target without seeing any check calls. The updated guard requires every target to have at least one recognized self-test check expression, and intentional tuple-literal / no-check fixtures failed with `literal_true_check` and `missing_selftest_checks`.
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` now runs `python3 scripts/validate_selftest_quality.py --self-test` and the default allowlist scan in its plan job. Its pull-request path filter also includes `scripts/validate_selftest_quality.py`, so edits to the guard itself can exercise the workflow. This promotes the current evaluator-chain guard from local-only validation to a fail-closed CI quality gate while preserving the narrow allowlist and route boundary: no historical-evaluator sweep, no benchmark repo/provider expansion, no runtime/default change, and no closed-route reopening.

@@ -45,13 +45,23 @@ class Issue:
         return f"{rel}:{self.line}:{self.column}: {self.code}: {self.message}"
 
 
+@dataclass(frozen=True)
+class CheckExpression:
+    call: ast.Call
+    condition: ast.AST
+
+
 class SelfTestQualityVisitor(ast.NodeVisitor):
     def __init__(self, path: Path) -> None:
         self.path = path
         self.issues: list[Issue] = []
+        self.check_count = 0
 
     def visit_Call(self, node: ast.Call) -> None:
-        if self._is_check_call(node) and len(node.args) >= 2 and self._is_literal_true(node.args[1]):
+        check = self._as_check_expression(node)
+        if check is not None:
+            self.check_count += 1
+        if check is not None and self._is_literal_true(check.condition):
             self.issues.append(
                 Issue(
                     self.path,
@@ -64,32 +74,43 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
-        for call in self._check_calls_in_body(node.body):
+        for check in self._check_expressions_in_body(node.body):
             if not node.name:
                 self.issues.append(
                     Issue(
                         self.path,
-                        call.lineno,
-                        call.col_offset,
+                        check.call.lineno,
+                        check.call.col_offset,
                         "exception_check_without_error_text",
                         "self-test exception handler check must bind and assert expected error text",
                     )
                 )
                 continue
-            if len(call.args) >= 2 and not self._uses_exception_text(call.args[1], node.name):
+            if not self._uses_exception_text(check.condition, node.name):
                 self.issues.append(
                     Issue(
                         self.path,
-                        call.lineno,
-                        call.col_offset,
+                        check.call.lineno,
+                        check.call.col_offset,
                         "exception_check_without_error_text",
                         "self-test exception handler check must assert expected error text with str(exc) or repr(exc)",
                     )
                 )
         self.generic_visit(node)
 
-    @staticmethod
-    def _is_check_call(node: ast.Call) -> bool:
+    @classmethod
+    def _as_check_expression(cls, node: ast.Call) -> CheckExpression | None:
+        if cls._is_check_call(node):
+            if len(node.args) < 2:
+                return CheckExpression(node, ast.Constant(False))
+            return CheckExpression(node, node.args[1])
+        tuple_condition = cls._tuple_append_condition(node)
+        if tuple_condition is not None:
+            return CheckExpression(node, tuple_condition)
+        return None
+
+    @classmethod
+    def _is_check_call(cls, node: ast.Call) -> bool:
         return isinstance(node.func, ast.Name) and node.func.id in CHECK_NAMES
 
     @staticmethod
@@ -97,13 +118,26 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return isinstance(node, ast.Constant) and node.value is True
 
     @classmethod
-    def _check_calls_in_body(cls, body: list[ast.stmt]) -> list[ast.Call]:
-        calls: list[ast.Call] = []
+    def _tuple_append_condition(cls, node: ast.Call) -> ast.AST | None:
+        if not isinstance(node.func, ast.Attribute) or node.func.attr != "append":
+            return None
+        if not node.args or not isinstance(node.args[0], ast.Tuple) or len(node.args[0].elts) < 2:
+            return None
+        label = node.args[0].elts[0]
+        if not isinstance(label, ast.Constant) or not isinstance(label.value, str):
+            return None
+        return node.args[0].elts[1]
+
+    @classmethod
+    def _check_expressions_in_body(cls, body: list[ast.stmt]) -> list[CheckExpression]:
+        checks: list[CheckExpression] = []
         for stmt in body:
             for node in ast.walk(stmt):
-                if isinstance(node, ast.Call) and cls._is_check_call(node):
-                    calls.append(node)
-        return calls
+                if isinstance(node, ast.Call):
+                    check = cls._as_check_expression(node)
+                    if check is not None:
+                        checks.append(check)
+        return checks
 
     @staticmethod
     def _uses_exception_text(node: ast.AST, exception_name: str) -> bool:
@@ -135,6 +169,8 @@ def collect_issues(paths: list[Path]) -> list[Issue]:
             continue
         visitor = SelfTestQualityVisitor(path)
         visitor.visit(tree)
+        if visitor.check_count == 0:
+            issues.append(Issue(path, 0, 0, "missing_selftest_checks", "target evaluator script has no recognized self-test check expressions"))
         issues.extend(visitor.issues)
     return issues
 
@@ -148,16 +184,32 @@ def run_self_test() -> list[str]:
         visitor.visit(tree)
         return len(visitor.issues)
 
+    def target_issue_count(source: str) -> int:
+        tree = ast.parse(source)
+        visitor = SelfTestQualityVisitor(REPO / "selftest.py")
+        visitor.visit(tree)
+        issues = len(visitor.issues)
+        if visitor.check_count == 0:
+            issues += 1
+        return issues
+
     cases = [
         ("direct_check_literal_true", "def f():\n    check('bad', True)\n", 1),
         ("direct__check_literal_true", "def f():\n    _check('bad', True)\n", 1),
         ("nested_append_literal_true", "def f():\n    checks.append(_check('bad', True))\n", 1),
+        ("tuple_append_literal_true", "def f():\n    checks.append(('bad', True))\n", 1),
         ("real_condition_allowed", "def f(value):\n    check('ok', value is True)\n", 0),
+        ("tuple_append_real_condition_allowed", "def f(value):\n    checks.append(('ok', value is True))\n", 0),
         ("non_check_call_allowed", "def f():\n    other('ok', True)\n", 0),
         ("keyword_literal_true_allowed", "def f():\n    check('ok', ok=True)\n", 0),
         (
             "exception_text_check_allowed",
             "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            0,
+        ),
+        (
+            "exception_tuple_text_check_allowed",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        checks.append(('ok', 'needle' in str(exc)))\n",
             0,
         ),
         (
@@ -168,6 +220,11 @@ def run_self_test() -> list[str]:
         (
             "exception_check_without_text_rejected",
             "def f(value):\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', value)\n",
+            1,
+        ),
+        (
+            "exception_tuple_check_without_text_rejected",
+            "def f(value):\n    try:\n        raise Error('needle')\n    except Error as exc:\n        checks.append(('bad', value))\n",
             1,
         ),
         (
@@ -183,6 +240,15 @@ def run_self_test() -> list[str]:
     ]
     for name, source, expected in cases:
         actual = issue_count(source)
+        if actual != expected:
+            failures.append(f"{name}: expected {expected}, got {actual}")
+
+    target_cases = [
+        ("target_without_checks_rejected", "def f():\n    other('ok', True)\n", 1),
+        ("target_with_tuple_check_allowed", "def f(value):\n    checks.append(('ok', value is True))\n", 0),
+    ]
+    for name, source, expected in target_cases:
+        actual = target_issue_count(source)
         if actual != expected:
             failures.append(f"{name}: expected {expected}, got {actual}")
 
@@ -202,7 +268,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers literal True and exception-text cases")
+        print("Self-test passed: self-test quality detector covers helper-call, tuple-append, literal-true, exception-text, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -214,7 +280,8 @@ def main(argv: list[str]) -> int:
         return 1
     print("Validation passed:")
     print(f"  scanned files: {len(targets)}")
-    print("  no check(..., True) or _check(..., True) literal conditions in target self-tests")
+    print("  recognized helper-call and tuple-append self-test checks in every target")
+    print("  no literal True self-test check conditions")
     print("  exception-handler checks assert expected error text")
     return 0
 

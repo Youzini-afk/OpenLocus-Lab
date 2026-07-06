@@ -25,8 +25,8 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 ## Self-test quality guard
 
 - **Checkpoint**：`scripts/validate_selftest_quality.py` 把当前 evaluator chain 的 literal-true self-test guard 固化为可重复本地校验。
-- **Scope**：guard 只扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；它会拒绝 literal-true checks，并要求 exception-handler checks 通过 `str(exc)` 或 `repr(exc)` 断言预期错误文本；它不会让整个历史 `eval/` 树一次性失败。
-- **Validation**：`python scripts/validate_selftest_quality.py --self-test` 通过，默认 allowlist scan 通过，一个 intentional ASCII literal-true negative fixture 按预期以 `literal_true_check` 失败，一个 intentional exception-path negative fixture 按预期以 `exception_check_without_error_text` 失败。
+- **Scope**：guard 只扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；它会识别 helper-call checks 和 tuple-append checks，拒绝 literal-true checks，要求 exception-handler checks 通过 `str(exc)` 或 `repr(exc)` 断言预期错误文本，并要求每个 target 至少包含一个可识别 self-test check expression；它不会让整个历史 `eval/` 树一次性失败。
+- **Validation**：`python scripts/validate_selftest_quality.py --self-test` 通过，默认 allowlist scan 通过，intentional ASCII literal-true 和 tuple-literal negative fixtures 按预期以 `literal_true_check` 失败，一个 intentional exception-path negative fixture 按预期以 `exception_check_without_error_text` 失败，一个 intentional no-check fixture 按预期以 `missing_selftest_checks` 失败。
 - **Interpretation**：这是 local evaluator quality gating，不改变 runtime behavior，不扩大 CI/provider/network scope，也不重开 closed routes。
 
 ## Self-test quality CI gate
