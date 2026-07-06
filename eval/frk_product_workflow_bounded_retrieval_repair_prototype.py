@@ -953,8 +953,8 @@ def run_self_tests() -> dict[str, Any]:
     try:
         load_previous_private_inputs(False)
         check("missing_private_input_confirmation_rejected", False)
-    except PrototypeError:
-        check("missing_private_input_confirmation_rejected", True)
+    except PrototypeError as exc:
+        check("missing_private_input_confirmation_rejected", "--confirm-private-input" in str(exc))
     tmp = REPO / "artifacts" / "frk_product_workflow_bounded_retrieval_repair_prototype" / "selftest_tmp"
     tmp.mkdir(parents=True, exist_ok=True)
     try:
@@ -963,8 +963,8 @@ def run_self_tests() -> dict[str, Any]:
         try:
             load_previous_private_inputs(True, bad)
             check("schema_invalid_or_malformed_private_rows_rejected", False)
-        except PrototypeError:
-            check("schema_invalid_or_malformed_private_rows_rejected", True)
+        except PrototypeError as exc:
+            check("schema_invalid_or_malformed_private_rows_rejected", "malformed JSONL" in str(exc) or "Phase-1 schema validation" in str(exc))
     finally:
         for child in tmp.glob("*"):
             child.unlink()
@@ -975,8 +975,8 @@ def run_self_tests() -> dict[str, Any]:
     try:
         run_executable_prototype(True, False)
         check("missing_private_output_confirmation_rejected", False)
-    except PrototypeError:
-        check("missing_private_output_confirmation_rejected", True)
+    except PrototypeError as exc:
+        check("missing_private_output_confirmation_rejected", "--confirm-private-output" in str(exc))
     mutations: list[tuple[str, list[str], Any]] = [
         ("bad_source_status_rejected", ["source_readbacks", "benchmark_status"], "bad"),
         ("bad_source_mechanism_rejected", ["source_readbacks", "decomposition_primary_mechanism"], "bad"),

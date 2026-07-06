@@ -714,23 +714,23 @@ def run_self_tests() -> dict[str, Any]:
     try:
         load_private(False)
         check("missing_private_confirmation_rejected", False)
-    except RepairDesignError:
-        check("missing_private_confirmation_rejected", True)
+    except RepairDesignError as exc:
+        check("missing_private_confirmation_rejected", "--confirm-private-input" in str(exc))
     tmp = REPO / "artifacts" / "frk_product_workflow_specific_retrieval_repair_design" / "selftest_tmp"
     tmp.mkdir(parents=True, exist_ok=True)
     try:
         try:
             load_private(True, tmp / "missing.jsonl")
             check("missing_trace_rejected", False)
-        except RepairDesignError:
-            check("missing_trace_rejected", True)
+        except RepairDesignError as exc:
+            check("missing_trace_rejected", "private trace JSONL file is missing" in str(exc))
         bad = tmp / "bad.jsonl"
         bad.write_text("{bad}\n", encoding="utf-8")
         try:
             load_private(True, bad)
             check("malformed_trace_rejected", False)
-        except RepairDesignError:
-            check("malformed_trace_rejected", True)
+        except RepairDesignError as exc:
+            check("malformed_trace_rejected", "malformed JSONL" in str(exc))
         rows = benchmark.fixture_rows_and_stats()[0]
         rows[0]["action"]["action_type"] = "bad_action"
         invalid = tmp / "invalid.jsonl"
@@ -738,8 +738,8 @@ def run_self_tests() -> dict[str, Any]:
         try:
             load_private(True, invalid)
             check("schema_invalid_trace_rejected", False)
-        except RepairDesignError:
-            check("schema_invalid_trace_rejected", True)
+        except RepairDesignError as exc:
+            check("schema_invalid_trace_rejected", "Phase-1 schema validation" in str(exc))
     finally:
         for child in tmp.glob("*"):
             child.unlink()

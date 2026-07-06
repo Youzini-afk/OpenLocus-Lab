@@ -15,6 +15,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**: all four self-tests passed (`39/39`, `58/58`, `65/65`, `57/57`), `py_compile` passed, all four public reports validated, and static search found no remaining `check(..., True)` literal in those scripts.
 - **Interpretation**: this is evaluator reliability work only. It does not reopen HAAE-A2, FRK repair, RPM-D2/training, retrieval, runtime/default, provider/network/CI, or method-winner claims.
 
+## FRK product-workflow evaluator self-test hardening
+
+- **Checkpoint**: the adjacent FRK product-workflow failure-decomposition/design/prototype self-tests now verify expected negative-path error semantics instead of accepting any phase-specific exception.
+- **Fix**: `eval/frk_product_workflow_failure_decomposition.py`, `eval/frk_product_workflow_specific_retrieval_repair_design.py`, and `eval/frk_product_workflow_bounded_retrieval_repair_prototype.py` check expected `--confirm-private-input`, missing JSONL, malformed JSONL, Phase-1 schema, and `--confirm-private-output` errors where applicable.
+- **Validation**: the three self-tests passed (`30/30`, `60/60`, `60/60`), `py_compile` passed, all three public reports validated, and static search found no remaining `check(..., True)` literal across these FRK scripts plus the current TraceV2/HAAE scripts.
+- **Interpretation**: this is evaluator reliability work only. It does not reopen FRK repair, HAAE-A2, RPM-D2/training, retrieval, runtime/default, provider/network/CI, or method-winner claims.
+
 ## Post-closeout Windows platform validation checkpoint
 
 - **Checkpoint**: commit `6b1fc16` fixes a concrete Windows local validation failure found after the HAAE-A2 closeout.

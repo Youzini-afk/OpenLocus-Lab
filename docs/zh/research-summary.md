@@ -15,6 +15,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**：四个 self-tests 均通过（`39/39`、`58/58`、`65/65`、`57/57`），`py_compile` 通过，四个 public reports 均验证通过，静态搜索确认这些脚本中没有剩余 `check(..., True)` literal。
 - **Interpretation**：这是 evaluator reliability work，不重开 HAAE-A2、FRK repair、RPM-D2/training、retrieval、runtime/default、provider/network/CI 或 method-winner claims。
 
+## FRK product-workflow evaluator self-test hardening
+
+- **Checkpoint**：相邻 FRK product-workflow failure-decomposition/design/prototype self-tests 现在会验证预期 negative-path 错误语义，而不是捕获任意 phase-specific exception 即通过。
+- **Fix**：`eval/frk_product_workflow_failure_decomposition.py`、`eval/frk_product_workflow_specific_retrieval_repair_design.py`、`eval/frk_product_workflow_bounded_retrieval_repair_prototype.py` 会按场景检查预期 `--confirm-private-input`、missing JSONL、malformed JSONL、Phase-1 schema 和 `--confirm-private-output` 错误。
+- **Validation**：三个 self-tests 均通过（`30/30`、`60/60`、`60/60`），`py_compile` 通过，三个 public reports 均验证通过，静态搜索确认这些 FRK scripts 加上当前 TraceV2/HAAE scripts 中没有剩余 `check(..., True)` literal。
+- **Interpretation**：这是 evaluator reliability work，不重开 FRK repair、HAAE-A2、RPM-D2/training、retrieval、runtime/default、provider/network/CI 或 method-winner claims。
+
 ## CI targeted Django validation checkpoint
 
 - **Evidence**：手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只完成三个 Django shards。

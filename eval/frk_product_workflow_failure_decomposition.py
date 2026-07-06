@@ -826,23 +826,23 @@ def run_self_tests() -> dict[str, Any]:
     try:
         load_private_inputs(False)
         check("missing_private_input_confirmation_rejected", False)
-    except DecompositionError:
-        check("missing_private_input_confirmation_rejected", True)
+    except DecompositionError as exc:
+        check("missing_private_input_confirmation_rejected", "--confirm-private-input" in str(exc))
     tmp = REPO / "artifacts" / "frk_product_workflow_failure_decomposition" / "selftest_tmp"
     tmp.mkdir(parents=True, exist_ok=True)
     try:
         try:
             load_private_inputs(True, tmp / "missing.jsonl")
             check("missing_trace_file_rejected", False)
-        except DecompositionError:
-            check("missing_trace_file_rejected", True)
+        except DecompositionError as exc:
+            check("missing_trace_file_rejected", "private trace JSONL file is missing" in str(exc))
         bad_jsonl = tmp / "bad.jsonl"
         bad_jsonl.write_text("{not json}\n", encoding="utf-8")
         try:
             load_private_inputs(True, bad_jsonl)
             check("malformed_jsonl_rejected", False)
-        except DecompositionError:
-            check("malformed_jsonl_rejected", True)
+        except DecompositionError as exc:
+            check("malformed_jsonl_rejected", "malformed JSONL" in str(exc))
         rows, _stats, _manifest = benchmark.fixture_rows_and_stats()
         rows[0]["trace_identity"]["schema_version"] = "bad"
         invalid_trace = tmp / "invalid_rows.jsonl"
@@ -850,8 +850,8 @@ def run_self_tests() -> dict[str, Any]:
         try:
             load_private_inputs(True, invalid_trace)
             check("phase1_schema_invalid_row_rejected", False)
-        except DecompositionError:
-            check("phase1_schema_invalid_row_rejected", True)
+        except DecompositionError as exc:
+            check("phase1_schema_invalid_row_rejected", "Phase-1 schema validation" in str(exc))
     finally:
         for child in tmp.glob("*"):
             child.unlink()
