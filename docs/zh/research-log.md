@@ -40,6 +40,8 @@ self-test coverage 现在会把 literal integer `range(...)` iterable 当作 sta
 
 self-test coverage 现在也会对 literal `match` statements 做保守的 static reachability 判断。唯一 check 位于 nonmatching literal case、matching case 已 return 后的 unselected later case，或 literal-false guard 的 matching case body 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；wildcard、matching literal、unknown guard 和 matching or-pattern cases 仍允许。guard 只推断 literal subjects 与 literal/singleton/wildcard/or patterns；未知 patterns 会保持 conservative active。
 
+self-test coverage 现在也会对 literal boolean expressions 和 conditional expressions 做保守 reachability 判断。唯一 check 位于 `if not True`、`if False or False`、`if True and False` 下，位于 `False and check(...)` 或 `True or check(...)` 的 short-circuited operand 内，或位于 `check(...) if False else None` 的 unreachable branch 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；`not False`、`True or flag`、`flag or True` 和 unknown conditional-expression branches 仍允许。literal-truth helper 现在能识别 `not`、`and`、`or`，但不执行任意表达式。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。

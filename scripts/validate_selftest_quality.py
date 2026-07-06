@@ -100,6 +100,39 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._visit_statements(node.body)
         self._deferred_scope_depth -= 1
 
+    def visit_BoolOp(self, node: ast.BoolOp) -> None:
+        if isinstance(node.op, ast.And):
+            for index, value in enumerate(node.values):
+                self.visit(value)
+                if self._literal_truth_value(value) is False:
+                    for later_value in node.values[index + 1 :]:
+                        self._visit_unreachable(later_value)
+                    return
+            return
+        if isinstance(node.op, ast.Or):
+            for index, value in enumerate(node.values):
+                self.visit(value)
+                if self._literal_truth_value(value) is True:
+                    for later_value in node.values[index + 1 :]:
+                        self._visit_unreachable(later_value)
+                    return
+            return
+        self.generic_visit(node)
+
+    def visit_IfExp(self, node: ast.IfExp) -> None:
+        self.visit(node.test)
+        test_truth = self._literal_truth_value(node.test)
+        if test_truth is True:
+            self.visit(node.body)
+            self._visit_unreachable(node.orelse)
+            return
+        if test_truth is False:
+            self._visit_unreachable(node.body)
+            self.visit(node.orelse)
+            return
+        self.visit(node.body)
+        self.visit(node.orelse)
+
     def visit_If(self, node: ast.If) -> None:
         self.visit(node.test)
         test_truth = self._literal_truth_value(node.test)
@@ -562,6 +595,25 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return bool(node.elts)
         if isinstance(node, ast.Dict):
             return bool(node.keys)
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+            operand_truth = cls._literal_truth_value(node.operand)
+            if operand_truth is not None:
+                return not operand_truth
+            return None
+        if isinstance(node, ast.BoolOp):
+            value_truths = [cls._literal_truth_value(value) for value in node.values]
+            if isinstance(node.op, ast.And):
+                if any(value_truth is False for value_truth in value_truths):
+                    return False
+                if all(value_truth is True for value_truth in value_truths):
+                    return True
+                return None
+            if isinstance(node.op, ast.Or):
+                if any(value_truth is True for value_truth in value_truths):
+                    return True
+                if all(value_truth is False for value_truth in value_truths):
+                    return False
+                return None
         signed_numeric = cls._signed_numeric_literal_value(node)
         if signed_numeric is not None:
             return bool(signed_numeric)
@@ -790,6 +842,8 @@ def run_self_test() -> list[str]:
         ("direct_check_zero_allowed", "def f():\n    check('ok', 0)\n", 0),
         ("direct_check_empty_string_allowed", "def f():\n    check('ok', '')\n", 0),
         ("direct_check_empty_tuple_allowed", "def f():\n    check('ok', ())\n", 0),
+        ("direct_check_boolean_or_truthy_rejected", "def f(value):\n    check('bad', True or value)\n", 1),
+        ("direct_check_boolean_and_false_allowed", "def f(value):\n    check('ok', False and value)\n", 0),
         ("keyword_ok_truthy_rejected", "def f():\n    check('bad', ok=True)\n", 1),
         ("keyword_condition_truthy_rejected", "def f():\n    check('bad', condition='passed')\n", 1),
         ("keyword_condition_real_allowed", "def f(value):\n    check('ok', condition=value is True)\n", 0),
@@ -880,7 +934,7 @@ def run_self_test() -> list[str]:
         (
             "exception_text_or_true_rejected",
             "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' in str(exc) or True)\n",
-            1,
+            2,
         ),
         (
             "exception_text_or_vacuous_text_rejected",
@@ -949,6 +1003,36 @@ def run_self_test() -> list[str]:
         (
             "target_with_if_false_only_rejected",
             "def run_self_tests():\n    if False:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_not_true_only_rejected",
+            "def run_self_tests():\n    if not True:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_false_or_false_only_rejected",
+            "def run_self_tests():\n    if False or False:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_true_and_false_only_rejected",
+            "def run_self_tests():\n    if True and False:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_short_circuited_and_check_only_rejected",
+            "def run_self_tests():\n    if False and check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_short_circuited_or_check_only_rejected",
+            "def run_self_tests():\n    if True or check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_ifexp_false_branch_check_only_rejected",
+            "def run_self_tests():\n    result = check('ok', value is True) if False else None\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -1087,6 +1171,26 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_if_not_false_check_allowed",
+            "def run_self_tests(value):\n    if not False:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_if_true_or_unknown_check_allowed",
+            "def run_self_tests(value, flag):\n    if True or flag:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_if_unknown_or_true_check_allowed",
+            "def run_self_tests(value, flag):\n    if flag or True:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_ifexp_unknown_branch_check_allowed",
+            "def run_self_tests(value, flag):\n    result = check('ok', value is True) if flag else None\n",
+            [],
+        ),
+        (
             "target_with_if_false_else_check_allowed",
             "def run_self_tests(value):\n    if False:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
             [],
@@ -1177,7 +1281,7 @@ def main(argv: list[str]) -> int:
         print(
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
-            "literal-range, literal-match, no-break infinite-loop, and missing-check cases"
+            "literal-range, literal-match, literal-bool, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
