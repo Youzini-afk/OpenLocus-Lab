@@ -32,7 +32,7 @@ Helper-call condition extraction now also covers the real keyword names used by 
 
 Self-test coverage now excludes deferred nested scopes inside a self-test entrypoint. Synthetic files where `run_self_tests()` only defined a nested helper, lambda, or class method containing `check(...)` failed with `missing_selftest_checks`, while a real check in the active entrypoint body remained allowed. This closes the static-coverage bypass where a target could appear covered by assertions that are merely defined but not executed by the self-test entrypoint.
 
-Self-test coverage now also excludes statically unreachable bodies inside a self-test entrypoint. Synthetic files where the only check appeared under `if False`, `while False`, `for ... in []`, or after `return` failed with `missing_selftest_checks`, while checks in reachable `if True` or `else` bodies remained allowed. This closes another static-coverage bypass where a target could appear covered by assertions that the entrypoint cannot execute.
+Self-test coverage now also excludes statically unreachable bodies inside a self-test entrypoint. Synthetic files where the only check appeared under `if False`, `while False`, `for ... in []`, after `return`, after `while True: return`, after a nonempty literal `for` loop whose body returns, or after `try: return` / `finally: pass` failed with `missing_selftest_checks`, while checks in reachable `if True`, `else`, empty-loop `else`, and `while True: break` fallthrough bodies remained allowed. This closes another static-coverage bypass where a target could appear covered by assertions that the entrypoint cannot execute.
 
 ## 2026-07-06 - Self-Test Quality CI Gate
 

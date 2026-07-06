@@ -32,7 +32,7 @@ helper-call condition extraction 现在也覆盖当前 evaluator helpers 实际�
 
 self-test coverage 现在会排除 self-test entrypoint 内的 deferred nested scopes。只有在 nested helper、lambda 或 class method 中包含 `check(...)` 的 synthetic files 已按预期以 `missing_selftest_checks` 失败；active entrypoint body 中的真实 check 仍允许。这关闭了仅定义但不由 self-test entrypoint 执行的断言被静态计为 coverage 的 bypass。
 
-self-test coverage 现在也会排除 self-test entrypoint 内 statically unreachable bodies。唯一 check 位于 `if False`、`while False`、`for ... in []` 或 `return` 之后的 synthetic files 已按预期以 `missing_selftest_checks` 失败；reachable `if True` 或 `else` body 中的真实 check 仍允许。这关闭了 self-test entrypoint 无法执行的断言被静态计为 coverage 的另一类 bypass。
+self-test coverage 现在也会排除 self-test entrypoint 内 statically unreachable bodies。唯一 check 位于 `if False`、`while False`、`for ... in []`、`return` 之后、`while True: return` 之后、body 会 return 的非空 literal `for` 之后，或 `try: return` / `finally: pass` 之后的 synthetic files 已按预期以 `missing_selftest_checks` 失败；reachable `if True`、`else`、empty-loop `else` 和 `while True: break` fallthrough body 中的真实 check 仍允许。这关闭了 self-test entrypoint 无法执行的断言被静态计为 coverage 的另一类 bypass。
 
 ## 2026-07-06 - Self-Test Quality CI Gate
 

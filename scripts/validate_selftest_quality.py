@@ -196,11 +196,97 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.orelse:
                 return False
             return cls._block_guarantees_exit(node.body) and cls._block_guarantees_exit(node.orelse)
+        if isinstance(node, ast.While):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guarantees_function_exit(node.body)
+            if test_truth is False:
+                return cls._block_guarantees_exit(node.orelse)
+            return False
+        if isinstance(node, (ast.For, ast.AsyncFor)):
+            iter_truth = cls._literal_truth_value(node.iter)
+            if iter_truth is True:
+                return cls._block_guarantees_function_exit(node.body)
+            if iter_truth is False:
+                return cls._block_guarantees_exit(node.orelse)
+            return False
+        if isinstance(node, (ast.With, ast.AsyncWith)):
+            return cls._block_guarantees_return(node.body)
+        if isinstance(node, ast.Try):
+            if cls._block_guarantees_exit(node.finalbody):
+                return True
+            if node.handlers:
+                return False
+            return cls._block_guarantees_return(node.body)
         return False
 
     @classmethod
     def _block_guarantees_exit(cls, statements: list[ast.stmt]) -> bool:
         return any(cls._statement_guarantees_exit(statement) for statement in statements)
+
+    @classmethod
+    def _block_guarantees_function_exit(cls, statements: list[ast.stmt]) -> bool:
+        for statement in statements:
+            if cls._statement_guarantees_function_exit(statement):
+                return True
+            if cls._statement_guarantees_exit(statement):
+                return False
+        return False
+
+    @classmethod
+    def _statement_guarantees_function_exit(cls, node: ast.stmt) -> bool:
+        if isinstance(node, (ast.Return, ast.Raise)):
+            return True
+        if isinstance(node, ast.If):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guarantees_function_exit(node.body)
+            if test_truth is False:
+                return cls._block_guarantees_function_exit(node.orelse)
+            if not node.orelse:
+                return False
+            return cls._block_guarantees_function_exit(node.body) and cls._block_guarantees_function_exit(node.orelse)
+        if isinstance(node, (ast.With, ast.AsyncWith)):
+            return cls._block_guarantees_return(node.body)
+        if isinstance(node, ast.Try):
+            if cls._block_guarantees_function_exit(node.finalbody):
+                return True
+            if node.handlers:
+                return False
+            return cls._block_guarantees_return(node.body)
+        return False
+
+    @classmethod
+    def _block_guarantees_return(cls, statements: list[ast.stmt]) -> bool:
+        for statement in statements:
+            if cls._statement_guarantees_return(statement):
+                return True
+            if cls._statement_guarantees_exit(statement):
+                return False
+        return False
+
+    @classmethod
+    def _statement_guarantees_return(cls, node: ast.stmt) -> bool:
+        if isinstance(node, ast.Return):
+            return True
+        if isinstance(node, ast.If):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guarantees_return(node.body)
+            if test_truth is False:
+                return cls._block_guarantees_return(node.orelse)
+            if not node.orelse:
+                return False
+            return cls._block_guarantees_return(node.body) and cls._block_guarantees_return(node.orelse)
+        if isinstance(node, (ast.With, ast.AsyncWith)):
+            return cls._block_guarantees_return(node.body)
+        if isinstance(node, ast.Try):
+            if cls._block_guarantees_return(node.finalbody):
+                return True
+            if node.handlers:
+                return False
+            return cls._block_guarantees_return(node.body)
+        return False
 
     def visit_Call(self, node: ast.Call) -> None:
         check = self._as_check_expression(node)
@@ -635,6 +721,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_suppressible_raise_then_check_allowed",
+            "def run_self_tests(value, guard):\n    with guard:\n        raise Error('maybe suppressed')\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_except_after_return_only_rejected",
             "def run_self_tests():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        return\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -645,9 +736,29 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_while_true_return_then_check_rejected",
+            "def run_self_tests():\n    while True:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_empty_for_only_rejected",
             "def run_self_tests():\n    for value in []:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nonempty_for_return_then_check_rejected",
+            "def run_self_tests():\n    for value in [1]:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_return_then_check_rejected",
+            "def run_self_tests():\n    try:\n        return\n    finally:\n        pass\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_handler_then_check_allowed",
+            "def run_self_tests(value):\n    try:\n        return risky()\n    except Error:\n        pass\n    check('ok', value is True)\n",
+            [],
         ),
         (
             "target_with_if_true_check_allowed",
@@ -657,6 +768,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_if_false_else_check_allowed",
             "def run_self_tests(value):\n    if False:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_empty_for_else_check_allowed",
+            "def run_self_tests(value):\n    for item in []:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_while_true_break_then_check_allowed",
+            "def run_self_tests(value):\n    while True:\n        break\n    check('ok', value is True)\n",
             [],
         ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
