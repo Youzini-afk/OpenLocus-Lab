@@ -23,6 +23,22 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**：`python eval/ci_run_strategy_matrix.py --self-test`、`python -m py_compile eval/ci_run_strategy_matrix.py`、`python scripts/validate_docs_i18n.py` 和 `git diff --check` 均通过。
 - **Interpretation**：这是 benchmark harness reliability work，不支持 method、scale、winner、runtime/default、HAAE、FRK 或 RPM claims。
 
+## CI clone harness MIT-LICENSE fix
+
+- **Evidence**：scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 中，`ruby_rails` 在 clone/lock 阶段因 `License mismatch: expected one of ['MIT'], detected ['NONE']` fail-closed。
+- **Defect**：Rails 使用根目录 `MIT-LICENSE` 文件，但 clone harness 只把 `LICENSE`/`LICENCE`/`COPYING` 开头的文件名和少数 exact names 当作 license candidates。
+- **Fix**：`eval/ci_clone_and_lock_repo.py` 现在扫描根目录文件名中包含 `LICENSE`/`LICENCE` 的文件，license mismatch 仍 fail-closed，并新增 `--self-test` 覆盖 `MIT-LICENSE`、dual-license components、非 license README 排除和 policy rejection。
+- **Validation**：`python eval/ci_clone_and_lock_repo.py --self-test`、`python -m py_compile eval/ci_clone_and_lock_repo.py`、targeted `ruby_rails` clone/lock（检测到 `['MIT']`）均通过；`retrieval-benchmark` plan job 现在运行两个 CI harness self-tests。
+- **Interpretation**：这是 benchmark harness reliability work，不支持 method、scale、winner、runtime/default、HAAE、FRK 或 RPM claims。
+
+## CI clone harness MIT-LICENSE fix
+
+- **Evidence**：scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 中，`ruby_rails` 在 clone/lock 阶段因 `License mismatch: expected one of ['MIT'], detected ['NONE']` fail-closed。
+- **Defect**：Rails 使用根目录 `MIT-LICENSE` 文件，但 clone harness 只把 `LICENSE`/`LICENCE`/`COPYING` 开头的文件名和少数 exact names 当作 license candidates。
+- **Fix**：`eval/ci_clone_and_lock_repo.py` 现在扫描根目录文件名中包含 `LICENSE`/`LICENCE` 的文件，license mismatch 仍 fail-closed，并新增 `--self-test` 覆盖 `MIT-LICENSE`、dual-license components、非 license README 排除和 policy rejection。
+- **Validation**：`python eval/ci_clone_and_lock_repo.py --self-test`、`python -m py_compile eval/ci_clone_and_lock_repo.py`、targeted `ruby_rails` clone/lock（检测到 `['MIT']`）均通过；`retrieval-benchmark` plan job 现在运行两个 CI harness self-tests。
+- **Interpretation**：这是 benchmark harness reliability work，不支持 method、scale、winner、runtime/default、HAAE、FRK 或 RPM claims。
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)。

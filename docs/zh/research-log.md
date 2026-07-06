@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-06 - CI Clone Harness MIT-LICENSE Fix
+
+同一个 scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 暴露了第二个 fail-closed CI harness 问题。`ruby_rails` jobs 在 `Clone and lock public corpus repo` 阶段失败，错误为 `License mismatch: expected one of ['MIT'], detected ['NONE']`。调查发现 Rails 使用根目录 `MIT-LICENSE` 文件，而 `eval/ci_clone_and_lock_repo.py` 只把 `LICENSE`/`LICENCE`/`COPYING` 开头的文件名和少数 exact names 当作 license candidates。修复后会扫描根目录文件名中包含 `LICENSE`/`LICENCE` 的文件，license mismatch 仍 fail-closed，并新增 `python eval/ci_clone_and_lock_repo.py --self-test`，覆盖 `MIT-LICENSE`、dual-license components、非 license README 排除和 policy rejection；`retrieval-benchmark` plan job 现在也运行两个 CI harness self-tests。本地验证通过 clone self-test、`py_compile`，以及 targeted `ruby_rails` clone/lock（检测到 `['MIT']`）。这是 CI harness reliability work，不是 retrieval-method evidence，也不是 route reopening。
+
 ## 2026-07-06 — CI Benchmark Harness Uppercase Extension Copy Fix
 
 Scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 在多个 large-repo jobs 上 fail-closed。Django 和 Next.js 暴露了具体 RUN-phase harness 问题：`isolated source copy file count mismatch`，copied count 比 manifest 少 1。调查发现 `compute_source_manifest` 在应用 allowlist 前会 lower-case file extensions，但 `create_isolated_root` copy source files 时使用原始大小写扩展名。包含 uppercase source/doc extensions 的 repo 因此可能被 manifest 计入，却没有复制到 isolated benchmark root。修复后 copy loop 也会 lower-case extensions，并新增 `python eval/ci_run_strategy_matrix.py --self-test`：该自测创建包含 uppercase `.MD` 和 `.PY` 文件的临时 repo，并验证 manifest/copy parity。本地验证通过 `python eval/ci_run_strategy_matrix.py --self-test`、`python -m py_compile eval/ci_run_strategy_matrix.py`、`python scripts/validate_docs_i18n.py` 和 `git diff --check`。这是 CI harness reliability work，不是 retrieval-method evidence，也不重新打开路线。

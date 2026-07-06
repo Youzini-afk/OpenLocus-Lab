@@ -12,6 +12,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -102,8 +103,8 @@ def detect_license(repo_root: str) -> list[str]:
         for child in os.listdir(repo_root):
             upper = child.upper()
             if (
-                upper.startswith("LICENSE")
-                or upper.startswith("LICENCE")
+                "LICENSE" in upper
+                or "LICENCE" in upper
                 or upper.startswith("COPYING")
                 or upper in {"UNLICENSE", "NOTICE"}
             ):
@@ -162,6 +163,54 @@ def validate_license_policy(expected: str | None, allowed_licenses: set[str]) ->
     if disallowed:
         return f"Expected license includes disallowed identifiers: {sorted(disallowed)}"
     return None
+
+
+# ── Self-test ───────────────────────────────────────────────────────────────
+
+def run_self_test() -> int:
+    checks: list[tuple[str, bool]] = []
+    mit_text = "Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+    apache_text = "Apache License\nVersion 2.0, January 2004\n"
+
+    with tempfile.TemporaryDirectory(prefix="ci-clone-selftest-") as tmp:
+        root = Path(tmp)
+
+        rails_like = root / "rails_like"
+        rails_like.mkdir()
+        (rails_like / "MIT-LICENSE").write_text(mit_text, encoding="utf-8")
+        (rails_like / "README.md").write_text(mit_text, encoding="utf-8")
+        rails_detected = detect_license(str(rails_like))
+        checks.append(("mit_dash_license_detected", rails_detected == ["MIT"]))
+        checks.append(("mit_expected_accepts_mit_dash_license", check_license(rails_detected, "MIT") is None))
+        checks.append(("mismatch_still_fails_closed", check_license(rails_detected, "Apache-2.0") is not None))
+
+        dual = root / "dual"
+        dual.mkdir()
+        (dual / "LICENSE-APACHE").write_text(apache_text, encoding="utf-8")
+        (dual / "UNLICENSE").write_text(
+            "This is free and unencumbered software released into the public domain.\n",
+            encoding="utf-8",
+        )
+        dual_detected = set(detect_license(str(dual)))
+        checks.append(("dual_license_files_detected", dual_detected == {"Apache-2.0", "Unlicense"}))
+        checks.append(("dual_expected_policy_accepts_component", check_license(["Apache-2.0"], "MIT_OR_APACHE") is None))
+
+        no_license = root / "no_license"
+        no_license.mkdir()
+        (no_license / "README.md").write_text(mit_text, encoding="utf-8")
+        checks.append(("non_license_readme_not_scanned", detect_license(str(no_license)) == []))
+
+        checks.append(("known_dual_policy_valid", validate_license_policy("MIT_OR_APACHE", KNOWN_LICENSES) is None))
+        checks.append(("unknown_license_policy_rejected", validate_license_policy("NOPE", KNOWN_LICENSES) is not None))
+
+    failed = [name for name, ok in checks if not ok]
+    if failed:
+        print("Self-test FAILED:")
+        for name in failed:
+            print(f"  - {name}")
+        return 1
+    print(f"Self-test passed: {len(checks)}/{len(checks)}")
+    return 0
 
 
 # ── Git helpers ─────────────────────────────────────────────────────────────
@@ -401,7 +450,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Clone a public GitHub repo, verify license, lock HEAD, produce repo-lock.json"
     )
-    group = p.add_mutually_exclusive_group(required=True)
+    p.add_argument("--self-test", action="store_true", help="Run built-in regression self-test")
+    group = p.add_mutually_exclusive_group()
     group.add_argument(
         "--manifest",
         help="Path to the CI repos manifest YAML (use with --repo-id)",
@@ -411,7 +461,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="GitHub owner/repo slug, e.g. pallets/flask",
     )
     p.add_argument("--repo-id", help="Short identifier for the repo (required with --repo)")
-    p.add_argument("--out-root", required=True, help="Root directory for cloned repos")
+    p.add_argument("--out-root", help="Root directory for cloned repos")
     p.add_argument("--lock-out", help="Path to write repo-lock.json, or a directory for {repo_id}-repo-lock.json (default: out-root)")
     p.add_argument("--jsonl-out", help="Path to append repos.lock.jsonl entry")
     p.add_argument("--expected-license", help="Expected license (e.g. MIT, MIT_OR_UNLICENSE)")
@@ -586,6 +636,16 @@ def load_repo_from_manifest(manifest_path: str, repo_id: str) -> dict:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+
+    if args.self_test:
+        sys.exit(run_self_test())
+
+    if not args.manifest and not args.repo:
+        print("ERROR: one of --manifest or --repo is required unless --self-test is used", file=sys.stderr)
+        sys.exit(2)
+    if not args.out_root:
+        print("ERROR: --out-root is required unless --self-test is used", file=sys.stderr)
+        sys.exit(2)
 
     # Resolve repo info
     if args.manifest:

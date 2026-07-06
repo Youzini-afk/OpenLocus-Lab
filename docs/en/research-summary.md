@@ -23,6 +23,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**: `python eval/ci_run_strategy_matrix.py --self-test`, `python -m py_compile eval/ci_run_strategy_matrix.py`, `python scripts/validate_docs_i18n.py`, and `git diff --check` passed.
 - **Interpretation**: this is benchmark harness reliability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
 
+## CI clone harness MIT-LICENSE fix
+
+- **Evidence**: scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) failed closed for `ruby_rails` during clone/lock with `License mismatch: expected one of ['MIT'], detected ['NONE']`.
+- **Defect**: Rails uses a root `MIT-LICENSE` file, but the clone harness only treated names starting with `LICENSE`/`LICENCE`/`COPYING` plus a few exact names as license candidates.
+- **Fix**: `eval/ci_clone_and_lock_repo.py` now scans root files whose names contain `LICENSE`/`LICENCE`, keeps license mismatches fail-closed, and includes a `--self-test` covering `MIT-LICENSE`, dual-license components, non-license README exclusion, and policy rejection.
+- **Validation**: `python eval/ci_clone_and_lock_repo.py --self-test`, `python -m py_compile eval/ci_clone_and_lock_repo.py`, and a targeted `ruby_rails` clone/lock that detected `['MIT']` passed. The `retrieval-benchmark` plan job now runs both CI harness self-tests.
+- **Interpretation**: this is benchmark harness reliability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json).
