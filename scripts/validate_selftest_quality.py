@@ -31,6 +31,7 @@ DEFAULT_TARGETS = (
 
 CHECK_NAMES = {"check", "_check"}
 SELF_TEST_FUNCTION_NAMES = {"run_self_test", "run_self_tests"}
+EXPECTED_TEXT_METHODS = {"startswith", "endswith", "find", "index", "count"}
 
 
 @dataclass(frozen=True)
@@ -109,14 +110,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                     )
                 )
                 continue
-            if not self._uses_exception_text(check.condition, node.name):
+            if not self._asserts_expected_exception_text(check.condition, node.name):
                 self.issues.append(
                     Issue(
                         self.path,
                         check.call.lineno,
                         check.call.col_offset,
                         "exception_check_without_error_text",
-                        "self-test exception handler check must assert expected error text with str(exc) or repr(exc)",
+                        "self-test exception handler check must compare expected error text with str(exc) or repr(exc)",
                     )
                 )
         self.generic_visit(node)
@@ -162,8 +163,41 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                         checks.append(check)
         return checks
 
+    @classmethod
+    def _asserts_expected_exception_text(cls, node: ast.AST, exception_name: str) -> bool:
+        for subnode in ast.walk(node):
+            if isinstance(subnode, ast.Compare) and cls._compare_asserts_expected_exception_text(subnode, exception_name):
+                return True
+            if isinstance(subnode, ast.Call) and cls._method_asserts_expected_exception_text(subnode, exception_name):
+                return True
+        return False
+
+    @classmethod
+    def _compare_asserts_expected_exception_text(cls, node: ast.Compare, exception_name: str) -> bool:
+        left = node.left
+        for op, right in zip(node.ops, node.comparators):
+            if isinstance(op, (ast.In, ast.Eq)):
+                if cls._is_nonempty_string_literal(left) and cls._contains_exception_text_call(right, exception_name):
+                    return True
+                if cls._contains_exception_text_call(left, exception_name) and cls._is_nonempty_string_literal(right):
+                    return True
+            left = right
+        return False
+
+    @classmethod
+    def _method_asserts_expected_exception_text(cls, node: ast.Call, exception_name: str) -> bool:
+        if not isinstance(node.func, ast.Attribute) or node.func.attr not in EXPECTED_TEXT_METHODS:
+            return False
+        if not cls._contains_exception_text_call(node.func.value, exception_name):
+            return False
+        return any(cls._is_nonempty_string_literal(arg) for arg in node.args)
+
     @staticmethod
-    def _uses_exception_text(node: ast.AST, exception_name: str) -> bool:
+    def _is_nonempty_string_literal(node: ast.AST) -> bool:
+        return isinstance(node, ast.Constant) and isinstance(node.value, str) and bool(node.value.strip())
+
+    @staticmethod
+    def _contains_exception_text_call(node: ast.AST, exception_name: str) -> bool:
         for subnode in ast.walk(node):
             if not isinstance(subnode, ast.Call):
                 continue
@@ -245,6 +279,11 @@ def run_self_test() -> list[str]:
             0,
         ),
         (
+            "exception_method_text_check_allowed",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', str(exc).startswith('needle'))\n",
+            0,
+        ),
+        (
             "exception_check_without_text_rejected",
             "def f(value):\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', value)\n",
             1,
@@ -257,6 +296,31 @@ def run_self_test() -> list[str]:
         (
             "exception_type_check_without_text_rejected",
             "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', isinstance(exc, Error))\n",
+            1,
+        ),
+        (
+            "exception_bool_text_without_expected_text_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', bool(str(exc)))\n",
+            1,
+        ),
+        (
+            "exception_empty_text_compare_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', str(exc) != '')\n",
+            1,
+        ),
+        (
+            "exception_negative_text_compare_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' not in str(exc))\n",
+            1,
+        ),
+        (
+            "exception_nonempty_not_equal_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', str(exc) != 'needle')\n",
+            1,
+        ),
+        (
+            "exception_unrelated_literal_and_text_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', 'needle' and str(exc))\n",
             1,
         ),
         (
@@ -301,7 +365,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, tuple-append, literal-true, exception-text, self-test entrypoint, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, tuple-append, literal-true, expected exception-text, self-test entrypoint, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -315,7 +379,7 @@ def main(argv: list[str]) -> int:
     print(f"  scanned files: {len(targets)}")
     print("  recognized helper-call and tuple-append checks inside run_self_test(s) in every target")
     print("  no literal True self-test check conditions")
-    print("  exception-handler checks assert expected error text")
+    print("  exception-handler checks compare expected error text")
     return 0
 
 
