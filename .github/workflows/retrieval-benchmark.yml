@@ -61,6 +61,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Run CI harness self-test
+        run: python3 eval/ci_run_strategy_matrix.py --self-test
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
