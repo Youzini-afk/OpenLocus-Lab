@@ -369,7 +369,7 @@ def create_isolated_root(repo_id: str, entry: dict) -> tuple[Path, list[str]]:
     for dirpath, dirnames, filenames in os.walk(source_path):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIR_NAMES]
         for fname in sorted(filenames):
-            ext = os.path.splitext(fname)[1]
+            ext = os.path.splitext(fname)[1].lower()
             if ext not in extensions:
                 continue
             src_file = Path(dirpath) / fname
@@ -390,6 +390,57 @@ def create_isolated_root(repo_id: str, entry: dict) -> tuple[Path, list[str]]:
         )
 
     return isolated, issues
+
+
+def run_self_test() -> int:
+    checks: list[tuple[str, bool]] = []
+
+    with tempfile.TemporaryDirectory(prefix="ci-run-selftest-") as tmp:
+        root = Path(tmp)
+        source = root / "source"
+        (source / "pkg").mkdir(parents=True)
+        (source / "README.MD").write_text("# Uppercase extension\n", encoding="utf-8")
+        (source / "pkg" / "VIEW.PY").write_text("def view():\n    return 1\n", encoding="utf-8")
+        (source / "pkg" / "ignored.bin").write_bytes(b"\0binary")
+
+        manifest = compute_source_manifest(source, SOURCE_EXTENSIONS)
+        entry = {
+            "source": {"type": "local_absolute_path", "path": str(source)},
+            "metadata": {
+                "extensions": sorted(SOURCE_EXTENSIONS),
+                "files": manifest["indexed_file_count"],
+                "bytes": manifest["indexed_bytes"],
+            },
+            "content_manifest_sha": manifest["content_manifest_sha"],
+            "indexed_file_count": manifest["indexed_file_count"],
+            "indexed_bytes": manifest["indexed_bytes"],
+        }
+
+        isolated, issues = create_isolated_root("selftest_repo", entry)
+        try:
+            copied_root = isolated / "selftest_repo"
+            copied_files = sorted(
+                str(p.relative_to(copied_root)).replace(os.sep, "/")
+                for p in copied_root.rglob("*")
+                if p.is_file()
+            )
+            checks.append(("uppercase_extensions_manifested", manifest["indexed_file_count"] == 2))
+            checks.append(("isolated_copy_has_no_issues", issues == []))
+            checks.append(("uppercase_md_copied", "README.MD" in copied_files))
+            checks.append(("uppercase_py_copied", "pkg/VIEW.PY" in copied_files))
+            checks.append(("binary_skipped", "pkg/ignored.bin" not in copied_files))
+            checks.append(("copy_count_matches_manifest", len(copied_files) == manifest["indexed_file_count"]))
+        finally:
+            shutil.rmtree(isolated, ignore_errors=True)
+
+    failed = [name for name, ok in checks if not ok]
+    if failed:
+        print("Self-test FAILED:")
+        for name in failed:
+            print(f"  - {name}")
+        return 1
+    print(f"Self-test passed: {len(checks)}/{len(checks)}")
+    return 0
 
 
 def clean_runtime_artifacts(isolated: Path, preserve_dense: bool = False) -> None:
@@ -939,10 +990,11 @@ def scan_artifacts_for_private_fields(out_dir: Path) -> tuple[dict[str, Any], li
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="R48 CI Run Strategy Matrix")
-    parser.add_argument("--tasks", required=True, help="Public tasks JSONL")
-    parser.add_argument("--repo-lock", required=True, help="repo-lock.json path")
-    parser.add_argument("--openlocus", required=True, help="Path to openlocus binary")
-    parser.add_argument("--out-dir", required=True, help="Output directory for run artifacts")
+    parser.add_argument("--self-test", action="store_true", help="Run built-in regression self-test")
+    parser.add_argument("--tasks", help="Public tasks JSONL")
+    parser.add_argument("--repo-lock", help="repo-lock.json path")
+    parser.add_argument("--openlocus", help="Path to openlocus binary")
+    parser.add_argument("--out-dir", help="Output directory for run artifacts")
     parser.add_argument(
         "--strategies",
         default=",".join(ALL_IMPLEMENTED_STRATEGIES),
@@ -952,6 +1004,22 @@ def main() -> None:
     parser.add_argument("--shard-id", type=int, default=0, help="Task shard id for large CI matrices")
     parser.add_argument("--shard-count", type=int, default=1, help="Total task shard count")
     args = parser.parse_args()
+
+    if args.self_test:
+        sys.exit(run_self_test())
+
+    missing = [
+        name
+        for name, value in [
+            ("--tasks", args.tasks),
+            ("--repo-lock", args.repo_lock),
+            ("--openlocus", args.openlocus),
+            ("--out-dir", args.out_dir),
+        ]
+        if not value
+    ]
+    if missing:
+        parser.error("missing required arguments unless --self-test is used: " + ", ".join(missing))
 
     openlocus = str(Path(args.openlocus).resolve())
     if not Path(openlocus).exists():

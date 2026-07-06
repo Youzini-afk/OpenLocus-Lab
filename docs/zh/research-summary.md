@@ -15,6 +15,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**：`cargo test --workspace`、`cargo clippy --workspace --all-targets -- -D warnings`、`cargo fmt --all -- --check`、`python scripts/validate_docs_i18n.py`、HAAE-A2 self-test/report validation，以及手动 GitHub `retrieval-benchmark` `pr_smoke` run [`28789568227`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28789568227) 均通过。
 - **Interpretation**：这是 platform/workflow hardening，不重新打开 HAAE-A2、RPM-D2/training、FRK repair、broad retrieval、runtime/default、provider/network 或 method-winner claims。
 
+## CI benchmark harness uppercase extension copy fix
+
+- **Evidence**：scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 在 Django 和 Next.js 等 large repos 上因 `isolated source copy file count mismatch` fail-closed。
+- **Defect**：manifest recomputation 会 lower-case extensions，但 isolated source copying 使用原始大小写扩展名，因此 uppercase allowed extensions 可能被计入 manifest 却没有被复制。
+- **Fix**：`eval/ci_run_strategy_matrix.py` 现在在 copy loop 中也 lower-case extensions，并新增使用 uppercase `.MD`/`.PY` 文件的 `--self-test` regression。
+- **Validation**：`python eval/ci_run_strategy_matrix.py --self-test`、`python -m py_compile eval/ci_run_strategy_matrix.py`、`python scripts/validate_docs_i18n.py` 和 `git diff --check` 均通过。
+- **Interpretation**：这是 benchmark harness reliability work，不支持 method、scale、winner、runtime/default、HAAE、FRK 或 RPM claims。
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)。

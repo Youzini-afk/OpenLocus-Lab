@@ -15,6 +15,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**: `cargo test --workspace`, `cargo clippy --workspace --all-targets -- -D warnings`, `cargo fmt --all -- --check`, `python scripts/validate_docs_i18n.py`, HAAE-A2 self-test/report validation, and manual GitHub `retrieval-benchmark` `pr_smoke` run [`28789568227`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28789568227) passed.
 - **Interpretation**: this is platform/workflow hardening only. It does not reopen HAAE-A2, RPM-D2/training, FRK repair, broad retrieval, runtime/default, provider/network, or method-winner claims.
 
+## CI benchmark harness uppercase extension copy fix
+
+- **Evidence**: scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) failed closed with `isolated source copy file count mismatch` on large repos including Django and Next.js.
+- **Defect**: manifest recomputation lower-cased extensions, while isolated source copying used raw case-sensitive extensions, so uppercase allowed extensions could be counted but not copied.
+- **Fix**: `eval/ci_run_strategy_matrix.py` now lower-cases extensions in the copy loop and includes a `--self-test` regression using uppercase `.MD`/`.PY` files.
+- **Validation**: `python eval/ci_run_strategy_matrix.py --self-test`, `python -m py_compile eval/ci_run_strategy_matrix.py`, `python scripts/validate_docs_i18n.py`, and `git diff --check` passed.
+- **Interpretation**: this is benchmark harness reliability work only. It does not support method, scale, winner, runtime/default, HAAE, FRK, or RPM claims.
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json).

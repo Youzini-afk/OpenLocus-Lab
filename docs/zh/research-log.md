@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-06 — CI Benchmark Harness Uppercase Extension Copy Fix
+
+Scheduled `retrieval-benchmark` `weekly_large` run [`28774075127`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28774075127) 在多个 large-repo jobs 上 fail-closed。Django 和 Next.js 暴露了具体 RUN-phase harness 问题：`isolated source copy file count mismatch`，copied count 比 manifest 少 1。调查发现 `compute_source_manifest` 在应用 allowlist 前会 lower-case file extensions，但 `create_isolated_root` copy source files 时使用原始大小写扩展名。包含 uppercase source/doc extensions 的 repo 因此可能被 manifest 计入，却没有复制到 isolated benchmark root。修复后 copy loop 也会 lower-case extensions，并新增 `python eval/ci_run_strategy_matrix.py --self-test`：该自测创建包含 uppercase `.MD` 和 `.PY` 文件的临时 repo，并验证 manifest/copy parity。本地验证通过 `python eval/ci_run_strategy_matrix.py --self-test`、`python -m py_compile eval/ci_run_strategy_matrix.py`、`python scripts/validate_docs_i18n.py` 和 `git diff --check`。这是 CI harness reliability work，不是 retrieval-method evidence，也不重新打开路线。
+
 ## 2026-07-06 — Post-Closeout Windows Platform Validation Checkpoint
 
 Commit `6b1fc16` 修复了在 Windows 上验证 HAAE-A2 closeout 时发现的真实本地 workflow 缺陷。`cargo test --workspace` 最初失败，是因为多个 symlink regression tests 无条件假设 Windows 具备 symlink creation 权限，而该权限并不总是存在；同时 repo scanning 在应为 slash-normalized 的 repo-relative `FileRecord.path` 表面生成了平台分隔符。修复后新增 Windows-aware symlink fixture handling：只有 fixture 无法创建时才跳过，symlink creation 可用时仍保留断言；并且扫描得到的 repo-relative paths 统一用 `/` 规范化。验证已通过本地 `cargo test --workspace`、`cargo clippy --workspace --all-targets -- -D warnings`、`cargo fmt --all -- --check`、`python scripts/validate_docs_i18n.py`、HAAE-A2 self-test/report validation，以及手动 GitHub `retrieval-benchmark` `pr_smoke` run [`28789568227`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28789568227)。该 checkpoint 只是 platform/workflow hardening，不重新打开已关闭的 HAAE-A2 trace-driven policy route 或任何 FRK/RPM algorithm route。
