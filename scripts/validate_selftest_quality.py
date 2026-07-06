@@ -45,7 +45,7 @@ class Issue:
         return f"{rel}:{self.line}:{self.column}: {self.code}: {self.message}"
 
 
-class LiteralTrueCheckVisitor(ast.NodeVisitor):
+class SelfTestQualityVisitor(ast.NodeVisitor):
     def __init__(self, path: Path) -> None:
         self.path = path
         self.issues: list[Issue] = []
@@ -63,6 +63,31 @@ class LiteralTrueCheckVisitor(ast.NodeVisitor):
             )
         self.generic_visit(node)
 
+    def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
+        for call in self._check_calls_in_body(node.body):
+            if not node.name:
+                self.issues.append(
+                    Issue(
+                        self.path,
+                        call.lineno,
+                        call.col_offset,
+                        "exception_check_without_error_text",
+                        "self-test exception handler check must bind and assert expected error text",
+                    )
+                )
+                continue
+            if len(call.args) >= 2 and not self._uses_exception_text(call.args[1], node.name):
+                self.issues.append(
+                    Issue(
+                        self.path,
+                        call.lineno,
+                        call.col_offset,
+                        "exception_check_without_error_text",
+                        "self-test exception handler check must assert expected error text with str(exc) or repr(exc)",
+                    )
+                )
+        self.generic_visit(node)
+
     @staticmethod
     def _is_check_call(node: ast.Call) -> bool:
         return isinstance(node.func, ast.Name) and node.func.id in CHECK_NAMES
@@ -70,6 +95,26 @@ class LiteralTrueCheckVisitor(ast.NodeVisitor):
     @staticmethod
     def _is_literal_true(node: ast.AST) -> bool:
         return isinstance(node, ast.Constant) and node.value is True
+
+    @classmethod
+    def _check_calls_in_body(cls, body: list[ast.stmt]) -> list[ast.Call]:
+        calls: list[ast.Call] = []
+        for stmt in body:
+            for node in ast.walk(stmt):
+                if isinstance(node, ast.Call) and cls._is_check_call(node):
+                    calls.append(node)
+        return calls
+
+    @staticmethod
+    def _uses_exception_text(node: ast.AST, exception_name: str) -> bool:
+        for subnode in ast.walk(node):
+            if not isinstance(subnode, ast.Call):
+                continue
+            if not isinstance(subnode.func, ast.Name) or subnode.func.id not in {"str", "repr"}:
+                continue
+            if subnode.args and isinstance(subnode.args[0], ast.Name) and subnode.args[0].id == exception_name:
+                return True
+        return False
 
 
 def resolve_paths(paths: list[str] | None) -> list[Path]:
@@ -88,7 +133,7 @@ def collect_issues(paths: list[Path]) -> list[Issue]:
         except SyntaxError as exc:
             issues.append(Issue(path, exc.lineno or 0, exc.offset or 0, "syntax_error", exc.msg))
             continue
-        visitor = LiteralTrueCheckVisitor(path)
+        visitor = SelfTestQualityVisitor(path)
         visitor.visit(tree)
         issues.extend(visitor.issues)
     return issues
@@ -99,7 +144,7 @@ def run_self_test() -> list[str]:
 
     def issue_count(source: str) -> int:
         tree = ast.parse(source)
-        visitor = LiteralTrueCheckVisitor(REPO / "selftest.py")
+        visitor = SelfTestQualityVisitor(REPO / "selftest.py")
         visitor.visit(tree)
         return len(visitor.issues)
 
@@ -110,6 +155,31 @@ def run_self_test() -> list[str]:
         ("real_condition_allowed", "def f(value):\n    check('ok', value is True)\n", 0),
         ("non_check_call_allowed", "def f():\n    other('ok', True)\n", 0),
         ("keyword_literal_true_allowed", "def f():\n    check('ok', ok=True)\n", 0),
+        (
+            "exception_text_check_allowed",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            0,
+        ),
+        (
+            "exception_repr_check_allowed",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('ok', 'needle' in repr(exc))\n",
+            0,
+        ),
+        (
+            "exception_check_without_text_rejected",
+            "def f(value):\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', value)\n",
+            1,
+        ),
+        (
+            "exception_type_check_without_text_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        check('bad', isinstance(exc, Error))\n",
+            1,
+        ),
+        (
+            "unbound_exception_check_rejected",
+            "def f():\n    try:\n        raise Error('needle')\n    except Error:\n        check('bad', False)\n",
+            1,
+        ),
     ]
     for name, source, expected in cases:
         actual = issue_count(source)
@@ -132,7 +202,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: literal True check detector covers positive and negative cases")
+        print("Self-test passed: self-test quality detector covers literal True and exception-text cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -145,6 +215,7 @@ def main(argv: list[str]) -> int:
     print("Validation passed:")
     print(f"  scanned files: {len(targets)}")
     print("  no check(..., True) or _check(..., True) literal conditions in target self-tests")
+    print("  exception-handler checks assert expected error text")
     return 0
 
 

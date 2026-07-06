@@ -25,8 +25,8 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 ## Self-test quality guard
 
 - **Checkpoint**: `scripts/validate_selftest_quality.py` codifies a repeatable local guard against literal-true self-test checks for the current evaluator chain.
-- **Scope**: the guard scans a narrow allowlist: FRK product-workflow benchmark/decomposition/design/prototype and TraceV2 bootstrap/capture/repair/replay. It intentionally does not fail the whole historical `eval/` tree.
-- **Validation**: `python scripts/validate_selftest_quality.py --self-test` passed, the default allowlist scan passed, and an intentional ASCII negative fixture failed with `literal_true_check`.
+- **Scope**: the guard scans a narrow allowlist: FRK product-workflow benchmark/decomposition/design/prototype and TraceV2 bootstrap/capture/repair/replay. It rejects literal-true checks and requires exception-handler checks to assert expected error text through `str(exc)` or `repr(exc)`. It intentionally does not fail the whole historical `eval/` tree.
+- **Validation**: `python scripts/validate_selftest_quality.py --self-test` passed, the default allowlist scan passed, an intentional ASCII literal-true negative fixture failed with `literal_true_check`, and an intentional exception-path negative fixture failed with `exception_check_without_error_text`.
 - **Interpretation**: this is local evaluator quality gating only. It does not change runtime behavior, broaden CI/provider/network scope, or reopen closed routes.
 
 ## Self-test quality CI gate
