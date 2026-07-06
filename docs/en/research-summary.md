@@ -33,7 +33,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 
 - **Checkpoint**: `retrieval-benchmark` now runs the self-test quality guard self-test and default allowlist scan in the plan job.
 - **Scope**: the PR path filter includes only `scripts/validate_selftest_quality.py` in addition to the existing eval/docs/workflow paths; the guard allowlist remains limited to the current evaluator chain.
-- **Validation**: manual `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) passed on `e0a6943` with `max_repos=1` and `enable_remote_models=false`; both guard steps and the bounded `py_flask` benchmark job succeeded.
+- **Validation**: manual `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) passed on `e0a6943` with `max_repos=1` and `enable_remote_models=false`; follow-up run [`28803501036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28803501036) passed on `15f9db8` after the guard was extended to require exception-handler error-text checks. In both runs, the guard steps and the bounded `py_flask` benchmark job succeeded.
 - **Interpretation**: this is fail-closed evaluator quality gating in CI. It does not expand benchmark repo/provider scope, change retrieval/runtime behavior, sweep historical evaluators, or reopen closed routes.
 
 ## Post-closeout Windows platform validation checkpoint

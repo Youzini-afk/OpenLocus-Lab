@@ -20,6 +20,8 @@ guard 现在也固化了当前 evaluator chain 的第二个 hardening pattern：
 
 手动 `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) 已在 `e0a6943` 上以 `max_repos=1`、`enable_remote_models=false` 通过。Plan job 完成了既有 CI harness self-tests，以及新增的 evaluator self-test quality guard self-test 和 guard scan；bounded `py_flask` benchmark job 也成功完成。这只验证 CI wiring，不是 retrieval-method 或 scale claim。
 
+在 guard 扩展为要求 exception-handler error-text checks 后，手动 `retrieval-benchmark` `pr_smoke` run [`28803501036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28803501036) 已在 `15f9db8` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 也成功完成。这只验证 updated guard 的 CI wiring，不改变 benchmark scope 或 route decisions。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
