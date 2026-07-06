@@ -39,6 +39,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest literal-range validation**: follow-up run [`28818781379`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28818781379) passed on `aef060c` after literal integer `range(...)` iterables were added to the self-test coverage reachability guard.
 - **Latest literal-match validation**: follow-up run [`28819932771`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28819932771) passed on `4a4949f` after literal `match` statements were added to the self-test coverage reachability guard.
 - **Latest literal-bool validation**: follow-up run [`28821026942`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28821026942) passed on `d8a1ff9` after literal boolean expressions and conditional expressions were added to the self-test coverage reachability guard.
+- **Latest literal-compare validation**: follow-up run [`28822188971`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28822188971) passed on `eea3877` after literal comparison expressions were added to the self-test coverage reachability guard.
 - **Interpretation**: this is fail-closed evaluator quality gating in CI. It does not expand benchmark repo/provider scope, change retrieval/runtime behavior, sweep historical evaluators, or reopen closed routes.
 
 ## Post-closeout Windows platform validation checkpoint
