@@ -32,6 +32,8 @@ Helper-call condition extraction now also covers the real keyword names used by 
 
 Self-test coverage now excludes deferred nested scopes inside a self-test entrypoint. Synthetic files where `run_self_tests()` only defined a nested helper, lambda, or class method containing `check(...)` failed with `missing_selftest_checks`, while a real check in the active entrypoint body remained allowed. This closes the static-coverage bypass where a target could appear covered by assertions that are merely defined but not executed by the self-test entrypoint.
 
+Self-test coverage now also excludes statically unreachable bodies inside a self-test entrypoint. Synthetic files where the only check appeared under `if False`, `while False`, `for ... in []`, or after `return` failed with `missing_selftest_checks`, while checks in reachable `if True` or `else` bodies remained allowed. This closes another static-coverage bypass where a target could appear covered by assertions that the entrypoint cannot execute.
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` now runs `python3 scripts/validate_selftest_quality.py --self-test` and the default allowlist scan in its plan job. Its pull-request path filter also includes `scripts/validate_selftest_quality.py`, so edits to the guard itself can exercise the workflow. This promotes the current evaluator-chain guard from local-only validation to a fail-closed CI quality gate while preserving the narrow allowlist and route boundary: no historical-evaluator sweep, no benchmark repo/provider expansion, no runtime/default change, and no closed-route reopening.

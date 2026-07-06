@@ -32,6 +32,8 @@ helper-call condition extraction 现在也覆盖当前 evaluator helpers 实际�
 
 self-test coverage 现在会排除 self-test entrypoint 内的 deferred nested scopes。只有在 nested helper、lambda 或 class method 中包含 `check(...)` 的 synthetic files 已按预期以 `missing_selftest_checks` 失败；active entrypoint body 中的真实 check 仍允许。这关闭了仅定义但不由 self-test entrypoint 执行的断言被静态计为 coverage 的 bypass。
 
+self-test coverage 现在也会排除 self-test entrypoint 内 statically unreachable bodies。唯一 check 位于 `if False`、`while False`、`for ... in []` 或 `return` 之后的 synthetic files 已按预期以 `missing_selftest_checks` 失败；reachable `if True` 或 `else` body 中的真实 check 仍允许。这关闭了 self-test entrypoint 无法执行的断言被静态计为 coverage 的另一类 bypass。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。

@@ -63,6 +63,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.selftest_function_count = 0
         self._function_stack: list[str] = []
         self._deferred_scope_depth = 0
+        self._unreachable_scope_depth = 0
+
+    def visit_Module(self, node: ast.Module) -> None:
+        self._visit_statements(node.body)
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         if node.name in SELF_TEST_FUNCTION_NAMES:
@@ -70,7 +74,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack.append(node.name)
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth += 1
-        self.generic_visit(node)
+        self._visit_statements(node.body)
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth -= 1
         self._function_stack.pop()
@@ -81,7 +85,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack.append(node.name)
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth += 1
-        self.generic_visit(node)
+        self._visit_statements(node.body)
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth -= 1
         self._function_stack.pop()
@@ -93,8 +97,110 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         self._deferred_scope_depth += 1
-        self.generic_visit(node)
+        self._visit_statements(node.body)
         self._deferred_scope_depth -= 1
+
+    def visit_If(self, node: ast.If) -> None:
+        self.visit(node.test)
+        test_truth = self._literal_truth_value(node.test)
+        if test_truth is True:
+            self._visit_statements(node.body)
+            self._visit_unreachable_statements(node.orelse)
+            return
+        if test_truth is False:
+            self._visit_unreachable_statements(node.body)
+            self._visit_statements(node.orelse)
+            return
+        self._visit_statements(node.body)
+        self._visit_statements(node.orelse)
+
+    def visit_While(self, node: ast.While) -> None:
+        self.visit(node.test)
+        if self._literal_truth_value(node.test) is False:
+            self._visit_unreachable_statements(node.body)
+            self._visit_statements(node.orelse)
+            return
+        self._visit_statements(node.body)
+        self._visit_statements(node.orelse)
+
+    def visit_For(self, node: ast.For) -> None:
+        self.visit(node.target)
+        self.visit(node.iter)
+        if self._literal_truth_value(node.iter) is False:
+            self._visit_unreachable_statements(node.body)
+            self._visit_statements(node.orelse)
+            return
+        self._visit_statements(node.body)
+        self._visit_statements(node.orelse)
+
+    def visit_AsyncFor(self, node: ast.AsyncFor) -> None:
+        self.visit(node.target)
+        self.visit(node.iter)
+        if self._literal_truth_value(node.iter) is False:
+            self._visit_unreachable_statements(node.body)
+            self._visit_statements(node.orelse)
+            return
+        self._visit_statements(node.body)
+        self._visit_statements(node.orelse)
+
+    def visit_With(self, node: ast.With) -> None:
+        self._visit_with_items(node.items)
+        self._visit_statements(node.body)
+
+    def visit_AsyncWith(self, node: ast.AsyncWith) -> None:
+        self._visit_with_items(node.items)
+        self._visit_statements(node.body)
+
+    def visit_Try(self, node: ast.Try) -> None:
+        self._visit_statements(node.body)
+        for handler in node.handlers:
+            self.visit(handler)
+        self._visit_statements(node.orelse)
+        self._visit_statements(node.finalbody)
+
+    def _visit_with_items(self, items: list[ast.withitem]) -> None:
+        for item in items:
+            self.visit(item.context_expr)
+            if item.optional_vars is not None:
+                self.visit(item.optional_vars)
+
+    def _visit_statements(self, statements: list[ast.stmt]) -> None:
+        unreachable = False
+        for statement in statements:
+            if unreachable:
+                self._visit_unreachable(statement)
+            else:
+                self.visit(statement)
+            if self._statement_guarantees_exit(statement):
+                unreachable = True
+
+    def _visit_unreachable_statements(self, statements: list[ast.stmt]) -> None:
+        for statement in statements:
+            self._visit_unreachable(statement)
+
+    def _visit_unreachable(self, node: ast.AST) -> None:
+        self._unreachable_scope_depth += 1
+        self.visit(node)
+        self._unreachable_scope_depth -= 1
+
+    @classmethod
+    def _statement_guarantees_exit(cls, node: ast.stmt) -> bool:
+        if isinstance(node, (ast.Return, ast.Raise, ast.Break, ast.Continue)):
+            return True
+        if isinstance(node, ast.If):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guarantees_exit(node.body)
+            if test_truth is False:
+                return cls._block_guarantees_exit(node.orelse)
+            if not node.orelse:
+                return False
+            return cls._block_guarantees_exit(node.body) and cls._block_guarantees_exit(node.orelse)
+        return False
+
+    @classmethod
+    def _block_guarantees_exit(cls, statements: list[ast.stmt]) -> bool:
+        return any(cls._statement_guarantees_exit(statement) for statement in statements)
 
     def visit_Call(self, node: ast.Call) -> None:
         check = self._as_check_expression(node)
@@ -125,7 +231,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _inside_active_selftest_body(self) -> bool:
-        if self._deferred_scope_depth != 0:
+        if self._deferred_scope_depth != 0 or self._unreachable_scope_depth != 0:
             return False
         return bool(self._function_stack) and self._function_stack[-1] in SELF_TEST_FUNCTION_NAMES
 
@@ -152,7 +258,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                         "self-test exception handler check must compare expected error text with str(exc) or repr(exc)",
                     )
                 )
-        self.generic_visit(node)
+        if node.type is not None:
+            self.visit(node.type)
+        self._visit_statements(node.body)
 
     @classmethod
     def _as_check_expression(cls, node: ast.Call) -> CheckExpression | None:
@@ -501,6 +609,56 @@ def run_self_test() -> list[str]:
             "def run_self_tests():\n    class Helper:\n        def check_value(self, value):\n            check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
+        (
+            "target_with_if_false_only_rejected",
+            "def run_self_tests():\n    if False:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_after_return_only_rejected",
+            "def run_self_tests():\n    return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_true_return_then_check_rejected",
+            "def run_self_tests():\n    if True:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_after_return_only_rejected",
+            "def run_self_tests():\n    try:\n        return\n        check('ok', value is True)\n    finally:\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_with_after_return_only_rejected",
+            "def run_self_tests(lock):\n    with lock:\n        return\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_except_after_return_only_rejected",
+            "def run_self_tests():\n    try:\n        raise Error('needle')\n    except Error as exc:\n        return\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_while_false_only_rejected",
+            "def run_self_tests():\n    while False:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_empty_for_only_rejected",
+            "def run_self_tests():\n    for value in []:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_true_check_allowed",
+            "def run_self_tests(value):\n    if True:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_if_false_else_check_allowed",
+            "def run_self_tests(value):\n    if False:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     for name, source, expected in target_cases:
@@ -524,7 +682,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
