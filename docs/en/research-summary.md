@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Post-closeout Windows platform validation checkpoint
+
+- **Checkpoint**: commit `6b1fc16` fixes a concrete Windows local validation failure found after the HAAE-A2 closeout.
+- **Defect**: symlink regression tests assumed Windows symlink privileges, and repo scan records could use platform separators where repo-relative `FileRecord.path` values should be slash-normalized.
+- **Validation**: `cargo test --workspace`, `cargo clippy --workspace --all-targets -- -D warnings`, `cargo fmt --all -- --check`, `python scripts/validate_docs_i18n.py`, HAAE-A2 self-test/report validation, and manual GitHub `retrieval-benchmark` `pr_smoke` run [`28789568227`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28789568227) passed.
+- **Interpretation**: this is platform/workflow hardening only. It does not reopen HAAE-A2, RPM-D2/training, FRK repair, broad retrieval, runtime/default, provider/network, or method-winner claims.
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json).

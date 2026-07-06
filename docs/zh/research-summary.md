@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Post-closeout Windows platform validation checkpoint
+
+- **Checkpoint**：commit `6b1fc16` 修复了 HAAE-A2 closeout 后发现的具体 Windows 本地验证失败。
+- **Defect**：symlink regression tests 假设 Windows 具备 symlink 权限，同时 repo scan records 在应为 slash-normalized 的 repo-relative `FileRecord.path` 表面可能使用平台分隔符。
+- **Validation**：`cargo test --workspace`、`cargo clippy --workspace --all-targets -- -D warnings`、`cargo fmt --all -- --check`、`python scripts/validate_docs_i18n.py`、HAAE-A2 self-test/report validation，以及手动 GitHub `retrieval-benchmark` `pr_smoke` run [`28789568227`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28789568227) 均通过。
+- **Interpretation**：这是 platform/workflow hardening，不重新打开 HAAE-A2、RPM-D2/training、FRK repair、broad retrieval、runtime/default、provider/network 或 method-winner claims。
+
 ## OpenLocus v2 HAAE-A2 offline action replay smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)。

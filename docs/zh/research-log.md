@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-06 — Post-Closeout Windows Platform Validation Checkpoint
+
+Commit `6b1fc16` 修复了在 Windows 上验证 HAAE-A2 closeout 时发现的真实本地 workflow 缺陷。`cargo test --workspace` 最初失败，是因为多个 symlink regression tests 无条件假设 Windows 具备 symlink creation 权限，而该权限并不总是存在；同时 repo scanning 在应为 slash-normalized 的 repo-relative `FileRecord.path` 表面生成了平台分隔符。修复后新增 Windows-aware symlink fixture handling：只有 fixture 无法创建时才跳过，symlink creation 可用时仍保留断言；并且扫描得到的 repo-relative paths 统一用 `/` 规范化。验证已通过本地 `cargo test --workspace`、`cargo clippy --workspace --all-targets -- -D warnings`、`cargo fmt --all -- --check`、`python scripts/validate_docs_i18n.py`、HAAE-A2 self-test/report validation，以及手动 GitHub `retrieval-benchmark` `pr_smoke` run [`28789568227`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28789568227)。该 checkpoint 只是 platform/workflow hardening，不重新打开已关闭的 HAAE-A2 trace-driven policy route 或任何 FRK/RPM algorithm route。
+
 ## 2026-07-05 — OpenLocus v2 HAAE-A2 Offline Action Replay Smoke
 
 [Detail](haae-a2-offline-action-replay-smoke.md) / [report](../../artifacts/haae_a2_offline_action_replay_smoke/haae_a2_offline_action_replay_smoke_report.json)。`eval/haae_a2_offline_action_replay_smoke.py` 在 `--confirm-private-input` 后只读取 existing ignored FRK-P2R private nested TraceV2 rows，不写入 private output，并且只 replay logged episodes。它只使用 pre-action features 与 prior observations，把 logged actions 中不存在的选择标记为 `off_policy_not_evaluable`，且不合成 counterfactual outcomes。Private rows/episodes 为 `count_gt_50`/`count_21_to_50`；strict schema、leakage、label-blind policy、same-budget、EvidenceCore/currentness、budget-regression 与 privacy gates 均通过。Candidate policies 没有超过最佳 fixed baseline；状态 `haae_a2_offline_action_replay_smoke_complete_baseline_sufficient_stop`。路线收口关闭当前 v2 trace-driven HAAE policy line；route-level authorized next 为 `none_for_current_v2_trace_driven_policy_line`，未来只有通过 `new_product_workflow_pain_or_new_trace_evidence_decision` 才能重新打开。
