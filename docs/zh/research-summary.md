@@ -33,7 +33,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 
 - **Checkpoint**：`retrieval-benchmark` 现在会在 plan job 中运行 self-test quality guard 的 self-test 和默认 allowlist scan。
 - **Scope**：PR path filter 只额外包含 `scripts/validate_selftest_quality.py`；guard allowlist 仍限定在当前 evaluator chain。
-- **Validation**：手动 `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) 已在 `e0a6943` 上以 `max_repos=1`、`enable_remote_models=false` 通过；在 guard 扩展为要求 exception-handler error-text checks 后，follow-up run [`28803501036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28803501036) 已在 `15f9db8` 上通过。两次 run 中 guard steps 和 bounded `py_flask` benchmark job 均成功。
+- **Validation**：手动 `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) 已在 `e0a6943` 上以 `max_repos=1`、`enable_remote_models=false` 通过；在 guard 扩展为要求 exception-handler error-text checks 后，follow-up run [`28803501036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28803501036) 已在 `15f9db8` 上通过；在 guard 扩展为识别 tuple-append checks 和拒绝 missing checks 后，follow-up run [`28804478421`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28804478421) 已在 `c8a0311` 上通过。所有 run 中 guard steps 和 bounded `py_flask` benchmark job 均成功。
 - **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
 
 ## CI targeted Django validation checkpoint
