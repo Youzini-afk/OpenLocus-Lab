@@ -2,6 +2,8 @@
 
 日期：2026-07-06
 
+最新 self-test quality annotation CI gate checkpoint：在 annotation expressions 被纳入 self-test coverage reachability guard 后，手动 `retrieval-benchmark` `pr_smoke` run [`28826207381`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28826207381) 已在 `b87eb3f` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 annotation coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+
 最新 self-test quality definition-time CI gate checkpoint：在 definition-time expressions 被纳入 self-test coverage reachability guard 后，手动 `retrieval-benchmark` `pr_smoke` run [`28825079426`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28825079426) 已在 `810d1fd` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 definition-time coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
 最新 self-test quality lazy-generator CI gate checkpoint：在 lazy generator expressions 被纳入 self-test coverage reachability guard 后，手动 `retrieval-benchmark` `pr_smoke` run [`28824069999`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28824069999) 已在 `8d48068` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 lazy-generator coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
