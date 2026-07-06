@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import builtins
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -353,9 +354,24 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _visit_try_like(self, node: ast.Try) -> None:
         self._visit_statements(node.body)
         body_cannot_raise = self._block_cannot_raise(node.body)
+        guaranteed_raise = self._block_guaranteed_raise_exception(node.body)
+        known_raise_caught = False
+        unknown_handler_before = False
         for handler in node.handlers:
             if body_cannot_raise:
                 self._visit_unreachable(handler)
+            elif known_raise_caught:
+                self._visit_unreachable(handler)
+            elif guaranteed_raise is not None and not unknown_handler_before:
+                match = self._handler_matches_exception(handler.type, guaranteed_raise)
+                if match is False:
+                    self._visit_unreachable(handler)
+                else:
+                    self.visit(handler)
+                    if match is True:
+                        known_raise_caught = True
+                    else:
+                        unknown_handler_before = True
             else:
                 self.visit(handler)
         if self._block_guarantees_exit(node.body):
@@ -515,6 +531,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_exit(node.finalbody):
                 return True
+            guaranteed_raise = cls._block_guaranteed_raise_exception(node.body)
+            if guaranteed_raise is not None:
+                handler_resolution, handler_body = cls._known_exception_handler_resolution(node.handlers, guaranteed_raise)
+                if handler_resolution == "uncaught":
+                    return True
+                if handler_resolution == "caught":
+                    return cls._block_guarantees_exit(handler_body or [])
             normal_path_exits = cls._block_guarantees_exit(node.body) or (bool(node.orelse) and cls._block_guarantees_exit(node.orelse))
             if cls._block_cannot_raise(node.body):
                 return normal_path_exits
@@ -561,6 +584,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return cls._block_cannot_raise(node.orelse)
             return cls._block_cannot_raise(node.body) and cls._block_cannot_raise(node.orelse)
         if isinstance(node, TRY_STATEMENT_TYPES):
+            guaranteed_raise = cls._block_guaranteed_raise_exception(node.body)
+            if guaranteed_raise is not None:
+                handler_resolution, handler_body = cls._known_exception_handler_resolution(node.handlers, guaranteed_raise)
+                if handler_resolution == "caught":
+                    return cls._block_cannot_raise(handler_body or []) and cls._block_cannot_raise(node.finalbody)
+                if handler_resolution == "uncaught":
+                    return False
             if not cls._block_cannot_raise(node.body):
                 return False
             return cls._block_cannot_raise(node.orelse) and cls._block_cannot_raise(node.finalbody)
@@ -626,6 +656,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_function_exit(node.finalbody):
                 return True
+            guaranteed_raise = cls._block_guaranteed_raise_exception(node.body)
+            if guaranteed_raise is not None:
+                handler_resolution, handler_body = cls._known_exception_handler_resolution(node.handlers, guaranteed_raise)
+                if handler_resolution == "uncaught":
+                    return True
+                if handler_resolution == "caught":
+                    return cls._block_guarantees_function_exit(handler_body or [])
             normal_path_exits = cls._block_guarantees_function_exit(node.body) or (
                 bool(node.orelse) and cls._block_guarantees_function_exit(node.orelse)
             )
@@ -745,6 +782,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_loop_else_skip(node.finalbody):
                 return True
+            guaranteed_raise = cls._block_guaranteed_raise_exception(node.body)
+            if guaranteed_raise is not None:
+                handler_resolution, handler_body = cls._known_exception_handler_resolution(node.handlers, guaranteed_raise)
+                if handler_resolution == "uncaught":
+                    return True
+                if handler_resolution == "caught":
+                    return cls._block_guarantees_loop_else_skip(handler_body or [])
             normal_path_skips = cls._block_guarantees_loop_else_skip(node.body) or (
                 bool(node.orelse) and cls._block_guarantees_loop_else_skip(node.orelse)
             )
@@ -757,6 +801,80 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             selected_body = cls._known_match_selected_body(node)
             return selected_body is not None and cls._block_guarantees_loop_else_skip(selected_body)
         return False
+
+    @classmethod
+    def _block_guaranteed_raise_exception(cls, statements: list[ast.stmt]) -> type[BaseException] | None:
+        for statement in statements:
+            raised_type = cls._statement_guaranteed_raise_exception(statement)
+            if raised_type is not None:
+                return raised_type
+            if cls._statement_guarantees_exit(statement):
+                return None
+            if not cls._statement_cannot_raise(statement):
+                return None
+        return None
+
+    @classmethod
+    def _statement_guaranteed_raise_exception(cls, node: ast.stmt) -> type[BaseException] | None:
+        if isinstance(node, ast.Raise):
+            return cls._raised_exception_type(node.exc)
+        if isinstance(node, ast.Assert) and cls._literal_truth_value(node.test) is False:
+            return AssertionError
+        if isinstance(node, ast.If):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guaranteed_raise_exception(node.body)
+            if test_truth is False:
+                return cls._block_guaranteed_raise_exception(node.orelse)
+            return None
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            if selected_body is not None:
+                return cls._block_guaranteed_raise_exception(selected_body)
+        return None
+
+    @classmethod
+    def _raised_exception_type(cls, node: ast.AST | None) -> type[BaseException] | None:
+        if node is None:
+            return None
+        if isinstance(node, ast.Call):
+            return cls._raised_exception_type(node.func)
+        if isinstance(node, ast.Name):
+            candidate = getattr(builtins, node.id, None)
+            if isinstance(candidate, type) and issubclass(candidate, BaseException):
+                return candidate
+        return None
+
+    @classmethod
+    def _known_exception_handler_resolution(
+        cls, handlers: list[ast.ExceptHandler], raised_type: type[BaseException]
+    ) -> tuple[str, list[ast.stmt] | None]:
+        for handler in handlers:
+            match = cls._handler_matches_exception(handler.type, raised_type)
+            if match is True:
+                return "caught", handler.body
+            if match is None:
+                return "unknown", None
+        return "uncaught", None
+
+    @classmethod
+    def _handler_matches_exception(cls, node: ast.AST | None, raised_type: type[BaseException]) -> bool | None:
+        if node is None:
+            return True
+        if isinstance(node, ast.Tuple):
+            saw_unknown = False
+            for element in node.elts:
+                match = cls._handler_matches_exception(element, raised_type)
+                if match is True:
+                    return True
+                if match is None:
+                    saw_unknown = True
+            return None if saw_unknown else False
+        if isinstance(node, ast.Name):
+            candidate = getattr(builtins, node.id, None)
+            if isinstance(candidate, type) and issubclass(candidate, BaseException):
+                return issubclass(raised_type, candidate)
+        return None
 
     @classmethod
     def _known_match_selected_body(cls, node: ast.Match) -> list[ast.stmt] | None:
@@ -1703,6 +1821,16 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_known_raise_disjoint_except_check_rejected",
+            "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_known_raise_tuple_disjoint_except_check_rejected",
+            "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except (TypeError, KeyError) as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_return_except_check_rejected",
             "def run_self_tests():\n    try:\n        return\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -1718,6 +1846,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_known_raise_disjoint_except_then_check_rejected",
+            "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError:\n        pass\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_all_paths_exit_then_check_rejected",
             "def run_self_tests():\n    try:\n        return risky()\n    except Error:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -1730,6 +1863,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_handler_then_check_allowed",
             "def run_self_tests(value):\n    try:\n        return risky()\n    except Error:\n        pass\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_try_known_raise_matching_except_check_allowed",
+            "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except ValueError as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_known_raise_base_except_check_allowed",
+            "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except Exception as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_unknown_before_known_raise_except_check_allowed",
+            "def run_self_tests():\n    try:\n        risky()\n        raise ValueError('needle')\n    except TypeError as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2005,7 +2153,7 @@ def main(argv: list[str]) -> int:
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
-            "try-star, assert-statement, no-break infinite-loop, and missing-check cases"
+            "known-exception try handler/fallthrough, try-star, assert-statement, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
