@@ -30,6 +30,8 @@ The literal-condition rule now rejects all truthy literal check conditions rathe
 
 Helper-call condition extraction now also covers the real keyword names used by the current evaluator helpers: `ok=` and `condition=`. Synthetic fixtures using `check("bad", condition=True)` and `check("bad", ok="passed")` failed with `literal_true_check`, and malformed helper calls such as `check("bad")` or `check("bad", passed=True)` failed with `missing_check_condition` instead of counting as recognized self-test coverage. The current allowlist has no keyword-style check calls, so the default scan remains unchanged while the guard closes a concrete Python-call-form bypass.
 
+Self-test coverage now excludes deferred nested scopes inside a self-test entrypoint. Synthetic files where `run_self_tests()` only defined a nested helper, lambda, or class method containing `check(...)` failed with `missing_selftest_checks`, while a real check in the active entrypoint body remained allowed. This closes the static-coverage bypass where a target could appear covered by assertions that are merely defined but not executed by the self-test entrypoint.
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` now runs `python3 scripts/validate_selftest_quality.py --self-test` and the default allowlist scan in its plan job. Its pull-request path filter also includes `scripts/validate_selftest_quality.py`, so edits to the guard itself can exercise the workflow. This promotes the current evaluator-chain guard from local-only validation to a fail-closed CI quality gate while preserving the narrow allowlist and route boundary: no historical-evaluator sweep, no benchmark repo/provider expansion, no runtime/default change, and no closed-route reopening.

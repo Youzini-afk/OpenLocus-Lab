@@ -62,20 +62,39 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.selftest_check_count = 0
         self.selftest_function_count = 0
         self._function_stack: list[str] = []
+        self._deferred_scope_depth = 0
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         if node.name in SELF_TEST_FUNCTION_NAMES:
             self.selftest_function_count += 1
         self._function_stack.append(node.name)
+        if node.name not in SELF_TEST_FUNCTION_NAMES:
+            self._deferred_scope_depth += 1
         self.generic_visit(node)
+        if node.name not in SELF_TEST_FUNCTION_NAMES:
+            self._deferred_scope_depth -= 1
         self._function_stack.pop()
 
     def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
         if node.name in SELF_TEST_FUNCTION_NAMES:
             self.selftest_function_count += 1
         self._function_stack.append(node.name)
+        if node.name not in SELF_TEST_FUNCTION_NAMES:
+            self._deferred_scope_depth += 1
         self.generic_visit(node)
+        if node.name not in SELF_TEST_FUNCTION_NAMES:
+            self._deferred_scope_depth -= 1
         self._function_stack.pop()
+
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        self._deferred_scope_depth += 1
+        self.generic_visit(node)
+        self._deferred_scope_depth -= 1
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        self._deferred_scope_depth += 1
+        self.generic_visit(node)
+        self._deferred_scope_depth -= 1
 
     def visit_Call(self, node: ast.Call) -> None:
         check = self._as_check_expression(node)
@@ -91,7 +110,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             )
         if check is not None:
             self.check_count += 1
-            if self._inside_selftest_function():
+            if self._inside_active_selftest_body():
                 self.selftest_check_count += 1
         if check is not None and self._is_truthy_literal(check.condition):
             self.issues.append(
@@ -105,8 +124,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             )
         self.generic_visit(node)
 
-    def _inside_selftest_function(self) -> bool:
-        return any(name in SELF_TEST_FUNCTION_NAMES for name in self._function_stack)
+    def _inside_active_selftest_body(self) -> bool:
+        if self._deferred_scope_depth != 0:
+            return False
+        return bool(self._function_stack) and self._function_stack[-1] in SELF_TEST_FUNCTION_NAMES
 
     def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
         for check in self._check_expressions_in_body(node.body):
@@ -465,6 +486,21 @@ def run_self_test() -> list[str]:
             "def run_self_tests():\n    check('bad')\n",
             ["missing_check_condition", "missing_selftest_checks"],
         ),
+        (
+            "target_with_nested_helper_only_rejected",
+            "def run_self_tests():\n    def helper(value):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_lambda_only_rejected",
+            "def run_self_tests():\n    helper = lambda value: check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nested_class_only_rejected",
+            "def run_self_tests():\n    class Helper:\n        def check_value(self, value):\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     for name, source, expected in target_cases:
@@ -488,7 +524,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
