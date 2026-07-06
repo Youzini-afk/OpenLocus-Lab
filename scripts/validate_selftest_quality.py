@@ -497,6 +497,37 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return bool(node.keys)
         if isinstance(node, ast.Constant) and isinstance(node.value, (str, bytes)):
             return bool(node.value)
+        range_truth = cls._literal_range_truth_value(node)
+        if range_truth is not None:
+            return range_truth
+        return None
+
+    @classmethod
+    def _literal_range_truth_value(cls, node: ast.AST) -> bool | None:
+        if not isinstance(node, ast.Call):
+            return None
+        if not isinstance(node.func, ast.Name) or node.func.id != "range":
+            return None
+        if node.keywords or not 1 <= len(node.args) <= 3:
+            return None
+        values: list[int] = []
+        for arg in node.args:
+            value = cls._integer_literal_value(arg)
+            if value is None:
+                return None
+            values.append(value)
+        try:
+            return bool(range(*values))
+        except ValueError:
+            return None
+
+    @classmethod
+    def _integer_literal_value(cls, node: ast.AST) -> int | None:
+        if isinstance(node, ast.Constant) and isinstance(node.value, int) and not isinstance(node.value, bool):
+            return node.value
+        signed_numeric = cls._signed_numeric_literal_value(node)
+        if isinstance(signed_numeric, int) and not isinstance(signed_numeric, bool):
+            return signed_numeric
         return None
 
     @staticmethod
@@ -507,6 +538,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return None
         value = node.operand.value
         if isinstance(value, (int, float, complex)) and not isinstance(value, bool):
+            if isinstance(node.op, ast.USub):
+                return -value
             return value
         return None
 
@@ -865,13 +898,33 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_empty_range_for_only_rejected",
+            "def run_self_tests():\n    for value in range(0):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_nonempty_for_return_then_check_rejected",
             "def run_self_tests():\n    for value in [1]:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_nonempty_range_return_then_check_rejected",
+            "def run_self_tests():\n    for value in range(1):\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_nonempty_for_break_else_check_rejected",
             "def run_self_tests():\n    for value in [1]:\n        break\n    else:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nonempty_range_break_else_check_rejected",
+            "def run_self_tests():\n    for value in range(1):\n        break\n    else:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_negative_step_range_break_else_check_rejected",
+            "def run_self_tests():\n    for value in range(3, 0, -1):\n        break\n    else:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -910,6 +963,16 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_empty_range_else_check_allowed",
+            "def run_self_tests(value):\n    for item in range(0):\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_negative_step_empty_range_else_check_allowed",
+            "def run_self_tests(value):\n    for item in range(0, 3, -1):\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_while_true_break_then_check_allowed",
             "def run_self_tests(value):\n    while True:\n        break\n    check('ok', value is True)\n",
             [],
@@ -917,6 +980,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_for_continue_else_check_allowed",
             "def run_self_tests(value):\n    for item in [1]:\n        continue\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_range_continue_else_check_allowed",
+            "def run_self_tests(value):\n    for item in range(1):\n        continue\n    else:\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -950,7 +1018,7 @@ def main(argv: list[str]) -> int:
         print(
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
-            "no-break infinite-loop, and missing-check cases"
+            "literal-range, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
