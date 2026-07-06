@@ -527,7 +527,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return cls._block_guarantees_exit(node.orelse)
             return False
         if isinstance(node, (ast.With, ast.AsyncWith)):
-            return cls._block_guarantees_return(node.body)
+            return cls._block_guarantees_nonsuppressible_exit(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_exit(node.finalbody):
                 return True
@@ -634,6 +634,50 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return True
             if cls._statement_guarantees_exit(statement):
                 return False
+        return False
+
+    @classmethod
+    def _block_guarantees_nonsuppressible_exit(cls, statements: list[ast.stmt]) -> bool:
+        for statement in statements:
+            if cls._statement_guarantees_nonsuppressible_exit(statement):
+                return True
+            if cls._statement_guarantees_exit(statement):
+                return False
+        return False
+
+    @classmethod
+    def _statement_guarantees_nonsuppressible_exit(cls, node: ast.stmt) -> bool:
+        if isinstance(node, (ast.Return, ast.Break, ast.Continue)):
+            return True
+        if isinstance(node, (ast.Raise, ast.Assert)):
+            return False
+        if isinstance(node, ast.If):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guarantees_nonsuppressible_exit(node.body)
+            if test_truth is False:
+                return cls._block_guarantees_nonsuppressible_exit(node.orelse)
+            if not node.orelse:
+                return False
+            return cls._block_guarantees_nonsuppressible_exit(node.body) and cls._block_guarantees_nonsuppressible_exit(
+                node.orelse
+            )
+        if isinstance(node, (ast.With, ast.AsyncWith)):
+            return cls._block_guarantees_nonsuppressible_exit(node.body)
+        if isinstance(node, TRY_STATEMENT_TYPES):
+            if cls._block_guarantees_nonsuppressible_exit(node.finalbody):
+                return True
+            normal_path_exits = cls._block_guarantees_nonsuppressible_exit(node.body) or (
+                bool(node.orelse) and cls._block_guarantees_nonsuppressible_exit(node.orelse)
+            )
+            if cls._block_cannot_raise(node.body):
+                return normal_path_exits
+            if not node.handlers:
+                return normal_path_exits
+            return normal_path_exits and all(cls._block_guarantees_nonsuppressible_exit(handler.body) for handler in node.handlers)
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            return selected_body is not None and cls._block_guarantees_nonsuppressible_exit(selected_body)
         return False
 
     @classmethod
@@ -778,7 +822,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return False
             return cls._block_guarantees_loop_else_skip(node.body) and cls._block_guarantees_loop_else_skip(node.orelse)
         if isinstance(node, (ast.With, ast.AsyncWith)):
-            return cls._block_guarantees_loop_else_skip(node.body)
+            return cls._block_guarantees_nonsuppressible_loop_else_skip(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_loop_else_skip(node.finalbody):
                 return True
@@ -800,6 +844,52 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.Match):
             selected_body = cls._known_match_selected_body(node)
             return selected_body is not None and cls._block_guarantees_loop_else_skip(selected_body)
+        return False
+
+    @classmethod
+    def _block_guarantees_nonsuppressible_loop_else_skip(cls, statements: list[ast.stmt]) -> bool:
+        for statement in statements:
+            if cls._statement_guarantees_nonsuppressible_loop_else_skip(statement):
+                return True
+            if cls._statement_guarantees_exit(statement):
+                return False
+        return False
+
+    @classmethod
+    def _statement_guarantees_nonsuppressible_loop_else_skip(cls, node: ast.stmt) -> bool:
+        if isinstance(node, (ast.Return, ast.Break)):
+            return True
+        if isinstance(node, (ast.Raise, ast.Assert, ast.Continue)):
+            return False
+        if isinstance(node, ast.If):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._block_guarantees_nonsuppressible_loop_else_skip(node.body)
+            if test_truth is False:
+                return cls._block_guarantees_nonsuppressible_loop_else_skip(node.orelse)
+            if not node.orelse:
+                return False
+            return cls._block_guarantees_nonsuppressible_loop_else_skip(
+                node.body
+            ) and cls._block_guarantees_nonsuppressible_loop_else_skip(node.orelse)
+        if isinstance(node, (ast.With, ast.AsyncWith)):
+            return cls._block_guarantees_nonsuppressible_loop_else_skip(node.body)
+        if isinstance(node, TRY_STATEMENT_TYPES):
+            if cls._block_guarantees_nonsuppressible_loop_else_skip(node.finalbody):
+                return True
+            normal_path_skips = cls._block_guarantees_nonsuppressible_loop_else_skip(node.body) or (
+                bool(node.orelse) and cls._block_guarantees_nonsuppressible_loop_else_skip(node.orelse)
+            )
+            if cls._block_cannot_raise(node.body):
+                return normal_path_skips
+            if not node.handlers:
+                return normal_path_skips
+            return normal_path_skips and all(
+                cls._block_guarantees_nonsuppressible_loop_else_skip(handler.body) for handler in node.handlers
+            )
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            return selected_body is not None and cls._block_guarantees_nonsuppressible_loop_else_skip(selected_body)
         return False
 
     @classmethod
@@ -1706,6 +1796,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_break_then_body_check_rejected",
+            "def run_self_tests(lock):\n    for item in [1]:\n        with lock:\n            break\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_continue_then_body_check_rejected",
+            "def run_self_tests(lock):\n    for item in [1]:\n        with lock:\n            continue\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_break_loop_else_check_rejected",
+            "def run_self_tests(lock):\n    for item in [1]:\n        with lock:\n            break\n    else:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_suppressible_raise_then_check_allowed",
             "def run_self_tests(value, guard):\n    with guard:\n        raise Error('maybe suppressed')\n    check('ok', value is True)\n",
             [],
@@ -1883,6 +1988,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_no_raise_fallthrough_check_allowed",
             "def run_self_tests(value):\n    try:\n        value = 1\n    except Error:\n        pass\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_suppressible_raise_loop_else_check_allowed",
+            "def run_self_tests(value, guard):\n    for item in [1]:\n        with guard:\n            raise ValueError('maybe suppressed')\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_suppressible_assert_loop_else_check_allowed",
+            "def run_self_tests(value, guard):\n    for item in [1]:\n        with guard:\n            assert False\n    else:\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -2153,7 +2268,8 @@ def main(argv: list[str]) -> int:
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
-            "known-exception try handler/fallthrough, try-star, assert-statement, no-break infinite-loop, and missing-check cases"
+            "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
+            "and missing-check cases"
         )
         return 0
 
