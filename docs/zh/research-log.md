@@ -52,6 +52,8 @@ self-test coverage 现在会按 Python 实际执行边界访问 definition-time 
 
 annotation coverage 现在也按 Python annotation evaluation boundary 处理。没有 `from __future__ import annotations` 时，nested function argument/return annotations 以及 class/module variable annotations 会在 defining statement 执行时被访问；启用 future annotations 后，这些 annotations 对 coverage 是 inert。function-local variable annotations 即使没有 future annotations 也保持 inert，而 annotated assignment values 仍按 active expressions 访问。synthetic annotation fixtures 已区分 active signature/class annotations、future-annotation-only coverage 和 local-annotation-only coverage。
 
+self-test entrypoint coverage 现在要求入口是同步非 generator function body。`async def run_self_test(s)` 内或包含 `yield` / `yield from` 的 `run_self_test(s)` function body 内的 checks 仍会被扫描坏断言，但不再满足 active self-test coverage，因为直接调用入口只会返回 coroutine 或 generator，并不会执行 body。synthetic async、generator、unreachable-yield 和 `yield from` entrypoint fixtures 现在按预期以 `missing_selftest_checks` 失败，而 nested generator helper 不会让外层同步 self-test 变成 deferred。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。

@@ -77,13 +77,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if node.name in SELF_TEST_FUNCTION_NAMES:
             self.selftest_function_count += 1
         self._function_stack.append(node.name)
-        if node.name not in SELF_TEST_FUNCTION_NAMES:
+        body_is_deferred = node.name not in SELF_TEST_FUNCTION_NAMES or self._function_body_contains_yield(node.body)
+        if body_is_deferred:
             self._deferred_scope_depth += 1
         saved_class_scope_depth = self._class_scope_depth
         self._class_scope_depth = 0
         self._visit_statements(node.body)
         self._class_scope_depth = saved_class_scope_depth
-        if node.name not in SELF_TEST_FUNCTION_NAMES:
+        if body_is_deferred:
             self._deferred_scope_depth -= 1
         self._function_stack.pop()
 
@@ -92,14 +93,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if node.name in SELF_TEST_FUNCTION_NAMES:
             self.selftest_function_count += 1
         self._function_stack.append(node.name)
-        if node.name not in SELF_TEST_FUNCTION_NAMES:
-            self._deferred_scope_depth += 1
+        self._deferred_scope_depth += 1
         saved_class_scope_depth = self._class_scope_depth
         self._class_scope_depth = 0
         self._visit_statements(node.body)
         self._class_scope_depth = saved_class_scope_depth
-        if node.name not in SELF_TEST_FUNCTION_NAMES:
-            self._deferred_scope_depth -= 1
+        self._deferred_scope_depth -= 1
         self._function_stack.pop()
 
     def visit_Lambda(self, node: ast.Lambda) -> None:
@@ -162,6 +161,37 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not isinstance(statement, ast.ImportFrom) or statement.module != "__future__":
                 continue
             if any(alias.name == "annotations" for alias in statement.names):
+                return True
+        return False
+
+    @staticmethod
+    def _function_body_contains_yield(statements: list[ast.stmt]) -> bool:
+        class YieldFinder(ast.NodeVisitor):
+            def __init__(self) -> None:
+                self.found = False
+
+            def visit_Yield(self, node: ast.Yield) -> None:
+                self.found = True
+
+            def visit_YieldFrom(self, node: ast.YieldFrom) -> None:
+                self.found = True
+
+            def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+                return
+
+            def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+                return
+
+            def visit_Lambda(self, node: ast.Lambda) -> None:
+                return
+
+            def visit_ClassDef(self, node: ast.ClassDef) -> None:
+                return
+
+        finder = YieldFinder()
+        for statement in statements:
+            finder.visit(statement)
+            if finder.found:
                 return True
         return False
 
@@ -1245,6 +1275,26 @@ def run_self_test() -> list[str]:
             ["missing_check_condition", "missing_selftest_checks"],
         ),
         (
+            "target_with_async_selftest_check_only_rejected",
+            "async def run_self_tests(value):\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_generator_selftest_check_only_rejected",
+            "def run_self_tests(value):\n    check('ok', value is True)\n    yield None\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_unreachable_yield_selftest_check_only_rejected",
+            "def run_self_tests(value):\n    if False:\n        yield None\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_yield_from_selftest_check_only_rejected",
+            "def run_self_tests(value):\n    check('ok', value is True)\n    yield from []\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_selftest_default_check_only_rejected",
             "def run_self_tests(value=check('bad', True)):\n    pass\n",
             ["literal_true_check", "missing_selftest_checks"],
@@ -1640,6 +1690,11 @@ def run_self_test() -> list[str]:
             ["literal_true_check"],
         ),
         (
+            "target_with_nested_generator_helper_then_active_check_allowed",
+            "def run_self_tests(value):\n    def helper():\n        yield value\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_nonempty_listcomp_check_allowed",
             "def run_self_tests(value):\n    checks = [check('ok', value is True) for item in [1]]\n",
             [],
@@ -1756,7 +1811,7 @@ def main(argv: list[str]) -> int:
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
-            "lazy-generator, definition-time/annotation expression, no-break infinite-loop, and missing-check cases"
+            "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
