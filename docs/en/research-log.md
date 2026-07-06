@@ -56,6 +56,8 @@ Self-test entrypoint coverage now requires a synchronous non-generator entrypoin
 
 Try-handler coverage now excludes except handlers when the try body is statically known not to raise. Synthetic files where the only check appeared in an except handler after `try: pass`, a literal expression, a simple literal assignment, or a bare `return` now fail with `missing_selftest_checks`, while handlers after unknown calls such as `risky()` remain conservative and active. This closes another static-coverage bypass without inferring arbitrary exception behavior.
 
+Try reachability now also carries statically non-raising try-body facts into post-try fallthrough analysis and uses the same try-like visitor for Python `try*` statements. Synthetic files where the only check appeared after `try: return` / `except: pass`, after a non-raising try body whose `else` returns, or inside `try: pass` / `except*` now fail with `missing_selftest_checks`. Non-exiting normal fallthrough such as a simple literal assignment followed by a check, and handlers after unknown calls such as `risky()`, remain conservative and active.
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` now runs `python3 scripts/validate_selftest_quality.py --self-test` and the default allowlist scan in its plan job. Its pull-request path filter also includes `scripts/validate_selftest_quality.py`, so edits to the guard itself can exercise the workflow. This promotes the current evaluator-chain guard from local-only validation to a fail-closed CI quality gate while preserving the narrow allowlist and route boundary: no historical-evaluator sweep, no benchmark repo/provider expansion, no runtime/default change, and no closed-route reopening.

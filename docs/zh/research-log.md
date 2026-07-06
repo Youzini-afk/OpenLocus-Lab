@@ -56,6 +56,8 @@ self-test entrypoint coverage 现在要求入口是同步非 generator function 
 
 try-handler coverage 现在会在 try body 静态确定不会抛异常时排除 except handlers。唯一 check 位于 `try: pass`、literal expression、simple literal assignment 或 bare `return` 后的 except handler 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败；`risky()` 等未知调用后的 handlers 仍保持 conservative active。这关闭了另一个 static-coverage bypass，同时不推断任意 exception behavior。
 
+try reachability 现在也会把 statically non-raising try-body facts 带入 post-try fallthrough analysis，并且用同一套 try-like visitor 处理 Python `try*` statements。唯一 check 位于 `try: return` / `except: pass` 之后、位于 non-raising try body 且 `else` 会 return 之后，或位于 `try: pass` / `except*` 内的 synthetic files 已按预期以 `missing_selftest_checks` 失败。simple literal assignment 后继续 fallthrough 的真实 check，以及 `risky()` 等未知调用后的 handlers，仍保持 conservative active。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。
