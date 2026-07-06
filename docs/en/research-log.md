@@ -22,6 +22,8 @@ The exception-text rule now follows Boolean success paths instead of accepting a
 
 The guard now recognizes tuple-append self-test checks as well as helper-call checks. This matters because `eval/frk_product_workflow_trace_benchmark.py` uses `checks.append((name, condition))` inside `run_self_tests()`, so the previous guard scanned that allowlisted target without seeing any check calls. The updated guard requires every target to have at least one recognized self-test check expression, and intentional tuple-literal / no-check fixtures failed with `literal_true_check` and `missing_selftest_checks`.
 
+Tuple-append recognition is now scoped to the actual `checks` collector. A synthetic fixture using `not_checks.append(("ok", value is True))` inside `run_self_tests()` failed with `missing_selftest_checks`, while current allowlisted tuple-style checks all use `checks.append(...)`. This prevents unrelated tuple appends from satisfying self-test coverage.
+
 The guard now scopes missing-check coverage to the self-test entrypoint itself. `scripts/validate_selftest_quality.py` requires each allowlisted target to define `run_self_test` or `run_self_tests` and to place at least one recognized helper-call or tuple-append check expression inside that entrypoint. This closes the synthetic bypass where a target could contain a check call in another helper while leaving `run_self_tests()` empty. Validation passed the updated script self-test, default allowlist scan, and two intentional negative fixtures: a file with no self-test entrypoint failed with `missing_selftest_entrypoint`, and a file with an empty `run_self_tests()` plus an outside helper check failed with `missing_selftest_checks`.
 
 ## 2026-07-06 - Self-Test Quality CI Gate

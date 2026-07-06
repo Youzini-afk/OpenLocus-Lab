@@ -145,6 +145,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _tuple_append_condition(cls, node: ast.Call) -> ast.AST | None:
         if not isinstance(node.func, ast.Attribute) or node.func.attr != "append":
             return None
+        if not isinstance(node.func.value, ast.Name) or node.func.value.id != "checks":
+            return None
         if not node.args or not isinstance(node.args[0], ast.Tuple) or len(node.args[0].elts) < 2:
             return None
         label = node.args[0].elts[0]
@@ -392,6 +394,11 @@ def run_self_test() -> list[str]:
             "def helper(value):\n    check('ok', value is True)\n\ndef run_self_tests():\n    pass\n",
             ["missing_selftest_checks"],
         ),
+        (
+            "target_with_wrong_tuple_receiver_rejected",
+            "def run_self_tests(value):\n    not_checks.append(('ok', value is True))\n",
+            ["missing_selftest_checks"],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     for name, source, expected in target_cases:
@@ -415,7 +422,7 @@ def main(argv: list[str]) -> int:
             for failure in failures:
                 print(f"  - {failure}")
             return 1
-        print("Self-test passed: self-test quality detector covers helper-call, tuple-append, literal-true, expected exception-text, self-test entrypoint, and missing-check cases")
+        print("Self-test passed: self-test quality detector covers helper-call, checks.append tuple-append, literal-true, expected exception-text, self-test entrypoint, and missing-check cases")
         return 0
 
     targets = resolve_paths(args.paths)
@@ -427,7 +434,7 @@ def main(argv: list[str]) -> int:
         return 1
     print("Validation passed:")
     print(f"  scanned files: {len(targets)}")
-    print("  recognized helper-call and tuple-append checks inside run_self_test(s) in every target")
+    print("  recognized helper-call and checks.append tuple-append checks inside run_self_test(s) in every target")
     print("  no literal True self-test check conditions")
     print("  exception-handler checks compare expected error text")
     return 0
