@@ -133,6 +133,27 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.visit(node.body)
         self.visit(node.orelse)
 
+    def visit_Compare(self, node: ast.Compare) -> None:
+        self.visit(node.left)
+        known_left, left_value = self._static_comparison_value(node.left)
+        comparison_still_reachable = True
+        for op, comparator in zip(node.ops, node.comparators):
+            if comparison_still_reachable:
+                self.visit(comparator)
+            else:
+                self._visit_unreachable(comparator)
+                continue
+            known_right, right_value = self._static_comparison_value(comparator)
+            if not known_left or not known_right:
+                known_left = known_right
+                left_value = right_value
+                continue
+            pair_truth = self._literal_compare_pair_truth_value(left_value, op, right_value)
+            if pair_truth is False:
+                comparison_still_reachable = False
+            known_left = True
+            left_value = right_value
+
     def visit_If(self, node: ast.If) -> None:
         self.visit(node.test)
         test_truth = self._literal_truth_value(node.test)
@@ -614,6 +635,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 if all(value_truth is False for value_truth in value_truths):
                     return False
                 return None
+        compare_truth = cls._literal_compare_truth_value(node)
+        if compare_truth is not None:
+            return compare_truth
         signed_numeric = cls._signed_numeric_literal_value(node)
         if signed_numeric is not None:
             return bool(signed_numeric)
@@ -627,6 +651,100 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if signed_numeric is not None:
             return True, signed_numeric
         return False, None
+
+    @classmethod
+    def _static_comparison_value(cls, node: ast.AST) -> tuple[bool, object]:
+        known, value = cls._static_literal_value(node)
+        if known:
+            return True, value
+        if isinstance(node, ast.Tuple):
+            values = []
+            for element in node.elts:
+                known, value = cls._static_comparison_value(element)
+                if not known:
+                    return False, None
+                values.append(value)
+            return True, tuple(values)
+        if isinstance(node, ast.List):
+            values = []
+            for element in node.elts:
+                known, value = cls._static_comparison_value(element)
+                if not known:
+                    return False, None
+                values.append(value)
+            return True, values
+        if isinstance(node, ast.Set):
+            values = []
+            for element in node.elts:
+                known, value = cls._static_comparison_value(element)
+                if not known:
+                    return False, None
+                values.append(value)
+            try:
+                return True, set(values)
+            except TypeError:
+                return False, None
+        if isinstance(node, ast.Dict):
+            pairs = []
+            for key, value_node in zip(node.keys, node.values):
+                if key is None:
+                    return False, None
+                known_key, key_value = cls._static_comparison_value(key)
+                known_value, value = cls._static_comparison_value(value_node)
+                if not known_key or not known_value:
+                    return False, None
+                pairs.append((key_value, value))
+            try:
+                return True, dict(pairs)
+            except TypeError:
+                return False, None
+        return False, None
+
+    @classmethod
+    def _literal_compare_truth_value(cls, node: ast.AST) -> bool | None:
+        if not isinstance(node, ast.Compare):
+            return None
+        known_left, left_value = cls._static_comparison_value(node.left)
+        if not known_left:
+            return None
+        for op, comparator in zip(node.ops, node.comparators):
+            known_right, right_value = cls._static_comparison_value(comparator)
+            if not known_right:
+                return None
+            pair_truth = cls._literal_compare_pair_truth_value(left_value, op, right_value)
+            if pair_truth is None:
+                return None
+            if pair_truth is False:
+                return False
+            left_value = right_value
+        return True
+
+    @staticmethod
+    def _literal_compare_pair_truth_value(left: object, op: ast.cmpop, right: object) -> bool | None:
+        try:
+            if isinstance(op, ast.Eq):
+                return left == right
+            if isinstance(op, ast.NotEq):
+                return left != right
+            if isinstance(op, ast.Is):
+                return left is right
+            if isinstance(op, ast.IsNot):
+                return left is not right
+            if isinstance(op, ast.Lt):
+                return left < right  # type: ignore[operator]
+            if isinstance(op, ast.LtE):
+                return left <= right  # type: ignore[operator]
+            if isinstance(op, ast.Gt):
+                return left > right  # type: ignore[operator]
+            if isinstance(op, ast.GtE):
+                return left >= right  # type: ignore[operator]
+            if isinstance(op, ast.In):
+                return left in right  # type: ignore[operator]
+            if isinstance(op, ast.NotIn):
+                return left not in right  # type: ignore[operator]
+        except (TypeError, ValueError):
+            return None
+        return None
 
     @classmethod
     def _match_pattern_matches_literal(cls, subject_value: object, pattern: ast.pattern) -> bool | None:
@@ -844,6 +962,8 @@ def run_self_test() -> list[str]:
         ("direct_check_empty_tuple_allowed", "def f():\n    check('ok', ())\n", 0),
         ("direct_check_boolean_or_truthy_rejected", "def f(value):\n    check('bad', True or value)\n", 1),
         ("direct_check_boolean_and_false_allowed", "def f(value):\n    check('ok', False and value)\n", 0),
+        ("direct_check_literal_compare_truthy_rejected", "def f():\n    check('bad', 1 == 1)\n", 1),
+        ("direct_check_literal_compare_false_allowed", "def f():\n    check('ok', 1 == 2)\n", 0),
         ("keyword_ok_truthy_rejected", "def f():\n    check('bad', ok=True)\n", 1),
         ("keyword_condition_truthy_rejected", "def f():\n    check('bad', condition='passed')\n", 1),
         ("keyword_condition_real_allowed", "def f(value):\n    check('ok', condition=value is True)\n", 0),
@@ -1036,6 +1156,36 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_if_literal_eq_false_only_rejected",
+            "def run_self_tests():\n    if 1 == 2:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_literal_ne_false_only_rejected",
+            "def run_self_tests():\n    if 'a' != 'a':\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_literal_order_false_only_rejected",
+            "def run_self_tests():\n    if 3 < 2:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_literal_membership_false_only_rejected",
+            "def run_self_tests():\n    if 'x' in ('a', 'b'):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_literal_identity_false_only_rejected",
+            "def run_self_tests():\n    if None is not None:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_short_circuited_compare_check_only_rejected",
+            "def run_self_tests():\n    if 1 == 2 == check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_after_return_only_rejected",
             "def run_self_tests():\n    return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -1191,6 +1341,31 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_if_literal_eq_true_check_allowed",
+            "def run_self_tests(value):\n    if 1 == 1:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_if_literal_membership_true_check_allowed",
+            "def run_self_tests(value):\n    if 'a' in ('a', 'b'):\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_unknown_compare_check_allowed",
+            "def run_self_tests(value, flag):\n    if flag == 1:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_compare_operand_check_allowed",
+            "def run_self_tests(value):\n    if 1 == check('ok', value is True):\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_compare_chain_after_true_check_allowed",
+            "def run_self_tests(value):\n    if 1 == 1 == check('ok', value is True):\n        pass\n",
+            [],
+        ),
+        (
             "target_with_if_false_else_check_allowed",
             "def run_self_tests(value):\n    if False:\n        other('bad', True)\n    else:\n        check('ok', value is True)\n",
             [],
@@ -1281,7 +1456,7 @@ def main(argv: list[str]) -> int:
         print(
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
-            "literal-range, literal-match, literal-bool, no-break infinite-loop, and missing-check cases"
+            "literal-range, literal-match, literal-bool, literal-compare, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
