@@ -33,6 +33,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 
 - **Checkpoint**：`retrieval-benchmark` 现在会在 plan job 中运行 self-test quality guard 的 self-test 和默认 allowlist scan。
 - **Scope**：PR path filter 只额外包含 `scripts/validate_selftest_quality.py`；guard allowlist 仍限定在当前 evaluator chain。
+- **Validation**：手动 `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) 已在 `e0a6943` 上以 `max_repos=1`、`enable_remote_models=false` 通过；两个 guard steps 和 bounded `py_flask` benchmark job 均成功。
 - **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
 
 ## CI targeted Django validation checkpoint

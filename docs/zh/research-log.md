@@ -16,6 +16,8 @@
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。
 
+手动 `retrieval-benchmark` `pr_smoke` run [`28802685797`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28802685797) 已在 `e0a6943` 上以 `max_repos=1`、`enable_remote_models=false` 通过。Plan job 完成了既有 CI harness self-tests，以及新增的 evaluator self-test quality guard self-test 和 guard scan；bounded `py_flask` benchmark job 也成功完成。这只验证 CI wiring，不是 retrieval-method 或 scale claim。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
