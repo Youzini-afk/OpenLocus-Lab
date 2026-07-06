@@ -50,6 +50,8 @@ self-test coverage 现在会区分 lazy generator expressions 和 eager comprehe
 
 self-test coverage 现在会按 Python 实际执行边界访问 definition-time expressions。nested functions 的 defaults/decorators、lambda defaults、class bases/decorators 和 class bodies 会在 defining statement 位于 `run_self_test(s)` active path 时按 active 访问；top-level self-test function defaults 仍不计为 self-test body coverage，nested function/lambda/method bodies 仍保持 deferred。synthetic default/decorator/class-body/base fixtures 已按这些执行点 pass 或 fail，其中 truthy default checks 按预期以 `literal_true_check` 失败。
 
+annotation coverage 现在也按 Python annotation evaluation boundary 处理。没有 `from __future__ import annotations` 时，nested function argument/return annotations 以及 class/module variable annotations 会在 defining statement 执行时被访问；启用 future annotations 后，这些 annotations 对 coverage 是 inert。function-local variable annotations 即使没有 future annotations 也保持 inert，而 annotated assignment values 仍按 active expressions 访问。synthetic annotation fixtures 已区分 active signature/class annotations、future-annotation-only coverage 和 local-annotation-only coverage。
+
 ## 2026-07-06 - Self-Test Quality CI Gate
 
 `retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。

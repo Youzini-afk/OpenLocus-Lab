@@ -65,8 +65,11 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack: list[str] = []
         self._deferred_scope_depth = 0
         self._unreachable_scope_depth = 0
+        self._class_scope_depth = 0
+        self._future_annotations = False
 
     def visit_Module(self, node: ast.Module) -> None:
+        self._future_annotations = self._module_has_future_annotations(node)
         self._visit_statements(node.body)
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
@@ -76,7 +79,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack.append(node.name)
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth += 1
+        saved_class_scope_depth = self._class_scope_depth
+        self._class_scope_depth = 0
         self._visit_statements(node.body)
+        self._class_scope_depth = saved_class_scope_depth
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth -= 1
         self._function_stack.pop()
@@ -88,7 +94,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._function_stack.append(node.name)
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth += 1
+        saved_class_scope_depth = self._class_scope_depth
+        self._class_scope_depth = 0
         self._visit_statements(node.body)
+        self._class_scope_depth = saved_class_scope_depth
         if node.name not in SELF_TEST_FUNCTION_NAMES:
             self._deferred_scope_depth -= 1
         self._function_stack.pop()
@@ -106,12 +115,17 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self.visit(base)
         for keyword in node.keywords:
             self.visit(keyword.value)
+        self._class_scope_depth += 1
         self._visit_statements(node.body)
+        self._class_scope_depth -= 1
 
     def _visit_function_definition_expressions(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         for decorator in node.decorator_list:
             self.visit(decorator)
         self._visit_arguments_defaults(node.args)
+        self._visit_arguments_annotations(node.args)
+        if node.returns is not None:
+            self._visit_annotation(node.returns, evaluated=not self._future_annotations)
 
     def _visit_arguments_defaults(self, node: ast.arguments) -> None:
         for default in node.defaults:
@@ -119,6 +133,37 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         for default in node.kw_defaults:
             if default is not None:
                 self.visit(default)
+
+    def _visit_arguments_annotations(self, node: ast.arguments) -> None:
+        for arg in [*node.posonlyargs, *node.args, *node.kwonlyargs]:
+            if arg.annotation is not None:
+                self._visit_annotation(arg.annotation, evaluated=not self._future_annotations)
+        if node.vararg is not None and node.vararg.annotation is not None:
+            self._visit_annotation(node.vararg.annotation, evaluated=not self._future_annotations)
+        if node.kwarg is not None and node.kwarg.annotation is not None:
+            self._visit_annotation(node.kwarg.annotation, evaluated=not self._future_annotations)
+
+    def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
+        self.visit(node.target)
+        annotation_is_evaluated = not self._future_annotations and (not self._function_stack or self._class_scope_depth > 0)
+        self._visit_annotation(node.annotation, evaluated=annotation_is_evaluated)
+        if node.value is not None:
+            self.visit(node.value)
+
+    def _visit_annotation(self, node: ast.AST, *, evaluated: bool) -> None:
+        if evaluated:
+            self.visit(node)
+        else:
+            self._visit_unreachable(node)
+
+    @staticmethod
+    def _module_has_future_annotations(node: ast.Module) -> bool:
+        for statement in node.body:
+            if not isinstance(statement, ast.ImportFrom) or statement.module != "__future__":
+                continue
+            if any(alias.name == "annotations" for alias in statement.names):
+                return True
+        return False
 
     def visit_BoolOp(self, node: ast.BoolOp) -> None:
         if isinstance(node.op, ast.And):
@@ -1205,13 +1250,43 @@ def run_self_test() -> list[str]:
             ["literal_true_check", "missing_selftest_checks"],
         ),
         (
+            "target_with_selftest_annotation_check_only_rejected",
+            "def run_self_tests(value: check('bad', True)):\n    pass\n",
+            ["literal_true_check", "missing_selftest_checks"],
+        ),
+        (
+            "target_with_future_selftest_annotation_check_only_rejected",
+            "from __future__ import annotations\n\ndef run_self_tests(value: check('bad', True)):\n    pass\n",
+            ["literal_true_check", "missing_selftest_checks"],
+        ),
+        (
             "target_with_nested_helper_default_truthy_rejected",
             "def run_self_tests():\n    def helper(arg=check('bad', True)):\n        pass\n",
             ["literal_true_check"],
         ),
         (
+            "target_with_nested_helper_annotation_truthy_rejected",
+            "def run_self_tests():\n    def helper(arg: check('bad', True)):\n        pass\n",
+            ["literal_true_check"],
+        ),
+        (
             "target_with_nested_helper_only_rejected",
             "def run_self_tests():\n    def helper(value):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_future_nested_helper_annotation_only_rejected",
+            "from __future__ import annotations\n\ndef run_self_tests(value):\n    def helper(arg: check('ok', value is True)):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_local_annotation_only_rejected",
+            "def run_self_tests(value):\n    local: check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_method_local_annotation_only_rejected",
+            "def run_self_tests(value):\n    class Helper:\n        def method(self):\n            local: check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -1510,6 +1585,16 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_nested_helper_arg_annotation_check_allowed",
+            "def run_self_tests(value):\n    def helper(arg: check('ok', value is True)):\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_nested_helper_return_annotation_check_allowed",
+            "def run_self_tests(value):\n    def helper() -> check('ok', value is True):\n        pass\n",
+            [],
+        ),
+        (
             "target_with_nested_helper_decorator_check_allowed",
             "def run_self_tests(value):\n    @check('ok', value is True)\n    def helper():\n        pass\n",
             [],
@@ -1533,6 +1618,26 @@ def run_self_test() -> list[str]:
             "target_with_nested_class_decorator_check_allowed",
             "def run_self_tests(value):\n    @check('ok', value is True)\n    class Helper:\n        pass\n",
             [],
+        ),
+        (
+            "target_with_nested_class_annotation_check_allowed",
+            "def run_self_tests(value):\n    class Helper:\n        field: check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_method_signature_annotation_check_allowed",
+            "def run_self_tests(value):\n    class Helper:\n        def method(self, arg: check('ok', value is True)):\n            pass\n",
+            [],
+        ),
+        (
+            "target_with_local_annotation_value_check_allowed",
+            "def run_self_tests(value):\n    local: object = check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_future_annotation_value_bad_annotation_rejected",
+            "from __future__ import annotations\n\ndef run_self_tests(value):\n    local: check('bad', True) = check('ok', value is True)\n",
+            ["literal_true_check"],
         ),
         (
             "target_with_nonempty_listcomp_check_allowed",
@@ -1651,7 +1756,7 @@ def main(argv: list[str]) -> int:
             "Self-test passed: self-test quality detector covers helper-call, keyword-condition, checks.append tuple-append, "
             "truthy-literal, expected exception-text, self-test entrypoint, deferred-scope, unreachable-body, loop/try-else, "
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
-            "lazy-generator, definition-time expression, no-break infinite-loop, and missing-check cases"
+            "lazy-generator, definition-time/annotation expression, no-break infinite-loop, and missing-check cases"
         )
         return 0
 
