@@ -768,18 +768,18 @@ def run_self_test() -> dict[str, Any]:
     try:
         load_private_rows(False)
         check("missing_confirmation_rejected", False)
-    except ReplayError:
-        check("missing_confirmation_rejected", True)
+    except ReplayError as exc:
+        check("missing_confirmation_rejected", "--confirm-private-input" in str(exc))
     try:
         parse_jsonl_text("{bad json")
         check("malformed_private_jsonl_rejected", False)
-    except ReplayError:
-        check("malformed_private_jsonl_rejected", True)
+    except ReplayError as exc:
+        check("malformed_private_jsonl_rejected", "malformed private JSONL" in str(exc))
     try:
         latest_private_rows_path([])
         check("missing_private_trace_rejected", False)
-    except ReplayError:
-        check("missing_private_trace_rejected", True)
+    except ReplayError as exc:
+        check("missing_private_trace_rejected", "missing confirmed FRK-P2R private rows" in str(exc))
 
     row_mutations = [
         ("tracev2_missing_group_rejected", [0, "state"], None),

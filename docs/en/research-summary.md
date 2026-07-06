@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## TraceV2 evaluator self-test hardening
+
+- **Checkpoint**: the current TraceV2 bootstrap/capture/repair/replay self-tests no longer contain vacuous `check(..., True)` literals.
+- **Fix**: `eval/frk_p2_workflow_v2_task_state_capture_expansion.py` now anchors its fixture self-test on row count, episode count, per-episode action count, action coverage, and manifest diversity. `eval/state_action_trace_v2_bootstrap.py`, `eval/frk_p2r_targeted_capture_repair.py`, and `eval/haae_a2_offline_action_replay_smoke.py` now verify expected error text on missing-confirmation, malformed-private-JSONL, and missing-private-trace negative paths.
+- **Validation**: all four self-tests passed (`39/39`, `58/58`, `65/65`, `57/57`), `py_compile` passed, all four public reports validated, and static search found no remaining `check(..., True)` literal in those scripts.
+- **Interpretation**: this is evaluator reliability work only. It does not reopen HAAE-A2, FRK repair, RPM-D2/training, retrieval, runtime/default, provider/network/CI, or method-winner claims.
+
 ## Post-closeout Windows platform validation checkpoint
 
 - **Checkpoint**: commit `6b1fc16` fixes a concrete Windows local validation failure found after the HAAE-A2 closeout.

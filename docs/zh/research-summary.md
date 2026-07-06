@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## TraceV2 evaluator self-test hardening
+
+- **Checkpoint**：当前 TraceV2 bootstrap/capture/repair/replay self-tests 不再包含 vacuous `check(..., True)` literals。
+- **Fix**：`eval/frk_p2_workflow_v2_task_state_capture_expansion.py` 现在用 row count、episode count、每个 episode 的 action 数、action coverage 和 manifest diversity 锚定 fixture self-test；`eval/state_action_trace_v2_bootstrap.py`、`eval/frk_p2r_targeted_capture_repair.py`、`eval/haae_a2_offline_action_replay_smoke.py` 现在会验证 missing-confirmation、malformed-private-JSONL、missing-private-trace negative paths 的预期错误文本。
+- **Validation**：四个 self-tests 均通过（`39/39`、`58/58`、`65/65`、`57/57`），`py_compile` 通过，四个 public reports 均验证通过，静态搜索确认这些脚本中没有剩余 `check(..., True)` literal。
+- **Interpretation**：这是 evaluator reliability work，不重开 HAAE-A2、FRK repair、RPM-D2/training、retrieval、runtime/default、provider/network/CI 或 method-winner claims。
+
 ## CI targeted Django validation checkpoint
 
 - **Evidence**：手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只完成三个 Django shards。

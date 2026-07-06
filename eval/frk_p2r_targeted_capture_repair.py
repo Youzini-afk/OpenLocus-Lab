@@ -721,8 +721,8 @@ def run_self_test() -> dict[str, Any]:
     try:
         run_repair(False)
         check("missing_confirmation_rejected", False)
-    except P2RError:
-        check("missing_confirmation_rejected", True)
+    except P2RError as exc:
+        check("missing_confirmation_rejected", "--confirm-private-output" in str(exc))
     check("ignored_private_output_proof_present", report["private_io_buckets"]["private_output_gitignore_check"] == "passed")
     row_mutations = [
         ("unknown_top_level_rejected", ["unexpected"], True),

@@ -1064,12 +1064,23 @@ def run_self_test() -> dict[str, Any]:
     check("valid_rows", not validate_rows(rows))
     report = fixture_report()
     check("valid_report", not validate_report(report))
-    check("selftest_minimum_count_anchor", True)
+    fixture_episode_counts = Counter(row["episode_id"] for row in rows)
+    fixture_actions = {row["action"]["action_type"] for row in rows}
+    check(
+        "selftest_minimum_count_anchor",
+        len(rows) >= 90
+        and len(fixture_episode_counts) >= 30
+        and set(fixture_episode_counts.values()) == {len(ACTION_SEQUENCE)}
+        and fixture_actions == set(ACTION_SEQUENCE)
+        and manifest.get("manifest_episode_count") == len(fixture_episode_counts)
+        and int(manifest.get("manifest_family_count", 0)) >= 3
+        and int(manifest.get("manifest_query_type_count", 0)) >= 3,
+    )
     try:
         run_capture(False)
         check("missing_private_output_confirmation_rejected", False)
-    except CaptureError:
-        check("missing_private_output_confirmation_rejected", True)
+    except CaptureError as exc:
+        check("missing_private_output_confirmation_rejected", "--confirm-private-output" in str(exc))
     row_mutations = [
         ("unknown_top_level_rejected", ["unexpected"], True),
         ("missing_required_group_rejected", ["task"], None),

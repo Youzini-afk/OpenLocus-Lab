@@ -971,13 +971,13 @@ def run_self_test() -> dict[str, Any]:
     try:
         load_allowed_private_inputs(False)
         check("missing_private_input_confirmation_rejected", False)
-    except TraceV2Error:
-        check("missing_private_input_confirmation_rejected", True)
+    except TraceV2Error as exc:
+        check("missing_private_input_confirmation_rejected", "--confirm-private-input" in str(exc))
     try:
         run_bootstrap(True, False)
         check("missing_private_output_confirmation_rejected", False)
-    except TraceV2Error:
-        check("missing_private_output_confirmation_rejected", True)
+    except TraceV2Error as exc:
+        check("missing_private_output_confirmation_rejected", "--confirm-private-output" in str(exc))
     tmp = REPO / "artifacts" / "state_action_trace_v2_bootstrap" / "selftest_bad.jsonl"
     tmp.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -985,8 +985,8 @@ def run_self_test() -> dict[str, Any]:
         try:
             read_jsonl(tmp)
             check("malformed_private_jsonl_rejected", False)
-        except TraceV2Error:
-            check("malformed_private_jsonl_rejected", True)
+        except TraceV2Error as exc:
+            check("malformed_private_jsonl_rejected", "malformed JSONL" in str(exc))
     finally:
         if tmp.exists():
             tmp.unlink()

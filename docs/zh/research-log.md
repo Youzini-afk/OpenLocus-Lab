@@ -1,5 +1,9 @@
 # OpenLocus Research Log
 
+## 2026-07-06 - TraceV2 Evaluator Self-Test Hardening
+
+当前 TraceV2 bootstrap/capture/repair/replay line 有一个 vacuous self-test anchor，以及若干只证明捕获到 broad phase-specific exception 的 negative-path checks。`eval/frk_p2_workflow_v2_task_state_capture_expansion.py` 现在让 `selftest_minimum_count_anchor` 断言真实 fixture 结构：row count、episode count、每个 episode 四行、完整 action coverage 和 manifest diversity。`eval/state_action_trace_v2_bootstrap.py`、`eval/frk_p2r_targeted_capture_repair.py`、`eval/haae_a2_offline_action_replay_smoke.py` 现在会在捕获 negative-path exceptions 后检查预期 confirmation/JSONL/missing-trace 错误文本。验证已通过四个 self-tests（`39/39`、`58/58`、`65/65`、`57/57`）、`py_compile`、四个 public reports validation，并且静态搜索确认这些脚本中没有剩余 `check(..., True)` literal。这是 evaluator reliability work，不是 retrieval-method evidence，也不是 route reopening。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
