@@ -40,6 +40,8 @@ guard 现在还把 missing-check 覆盖面收紧到 self-test 入口本身。每
 
 在 guard 拒绝 bare non-boolean exception-text search checks 后，手动 `retrieval-benchmark` `pr_smoke` run [`28807810864`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28807810864) 已在 `9eafc0a` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 bare-search rejection 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
+在 guard 要求 exception-text `or` branches 的每条 success branch 都断言 expected text 后，手动 `retrieval-benchmark` `pr_smoke` run [`28808779661`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28808779661) 已在 `2a26539` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 short-circuit guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
