@@ -46,6 +46,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest annotation validation**: follow-up run [`28826207381`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28826207381) passed on `b87eb3f` after annotation expressions were added to the self-test coverage reachability guard.
 - **Latest async/generator entrypoint validation**: follow-up run [`28826973177`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28826973177) passed on `c160825` after async/generator entrypoint bodies were excluded from active self-test coverage.
 - **Latest no-raise try-handler validation**: follow-up run [`28827729941`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28827729941) passed on `16f7706` after except handlers for statically non-raising try bodies were excluded from active self-test coverage.
+- **Latest no-raise try fallthrough validation**: follow-up run [`28828709810`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28828709810) passed on `7b3c162` after statically non-raising try-body facts were carried into post-try fallthrough analysis and `try*` statements were routed through the same try-like visitor.
 - **Interpretation**: this is fail-closed evaluator quality gating in CI. It does not expand benchmark repo/provider scope, change retrieval/runtime behavior, sweep historical evaluators, or reopen closed routes.
 
 ## Post-closeout Windows platform validation checkpoint

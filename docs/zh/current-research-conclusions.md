@@ -2,7 +2,7 @@
 
 日期：2026-07-06
 
-最新 self-test quality no-raise try fallthrough checkpoint：`scripts/validate_selftest_quality.py` 现在会把 statically non-raising try-body facts 带入 post-try fallthrough analysis，并且用同一套 try-like visitor 处理 `try` 和 Python `try*` statements。位于 `try: return` / `except: pass` 之后，或位于 non-raising try body 且 `else` 会 return 之后的 checks 不再满足 active self-test coverage；non-exiting normal fallthrough 和 `risky()` 等未知调用仍保持 conservative active。本地 guard self-test 和默认 allowlist scan 已通过。这仍只是 evaluator-chain quality gating，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+最新 self-test quality no-raise try fallthrough CI gate checkpoint：在 statically non-raising try-body facts 被带入 post-try fallthrough analysis、且 `try*` statements 使用同一套 try-like visitor 后，手动 `retrieval-benchmark` `pr_smoke` run [`28828709810`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28828709810) 已在 `7b3c162` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 no-raise try fallthrough coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
 最新 self-test quality no-raise try-handler CI gate checkpoint：在 statically non-raising try bodies 的 except handlers 被排除出 active self-test coverage 后，手动 `retrieval-benchmark` `pr_smoke` run [`28827729941`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28827729941) 已在 `16f7706` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 no-raise try-handler coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
