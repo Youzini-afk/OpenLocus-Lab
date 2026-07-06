@@ -60,6 +60,8 @@ self-test coverage 现在也会排除 self-test entrypoint 内 statically unreac
 
 在 deferred nested-scope checks 被排除出 self-test coverage 后，手动 `retrieval-benchmark` `pr_smoke` run [`28814245139`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28814245139) 已在 `7a55f9e` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 deferred-scope coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
+在 unreachable-body checks 被排除出 self-test coverage 后，手动 `retrieval-benchmark` `pr_smoke` run [`28815522355`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28815522355) 已在 `95d8190` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 unreachable-body coverage guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。
