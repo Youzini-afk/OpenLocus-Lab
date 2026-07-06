@@ -8,6 +8,7 @@ on:
       - 'eval/**'
       - 'docs/**'
       - '.github/workflows/retrieval-benchmark.yml'
+      - 'scripts/validate_selftest_quality.py'
       - 'Cargo.toml'
       - 'Cargo.lock'
   schedule:
@@ -72,6 +73,10 @@ jobs:
         run: python3 eval/ci_clone_and_lock_repo.py --self-test
       - name: Run CI matrix harness self-test
         run: python3 eval/ci_make_repo_matrix.py --self-test
+      - name: Run evaluator self-test quality guard self-test
+        run: python3 scripts/validate_selftest_quality.py --self-test
+      - name: Run evaluator self-test quality guard
+        run: python3 scripts/validate_selftest_quality.py
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then

@@ -12,6 +12,10 @@
 
 `scripts/validate_selftest_quality.py` 现在把当前 evaluator chain 的 self-test hardening 变成可重复校验。它使用 Python AST inspection，扫描 narrow allowlist：FRK product-workflow benchmark/decomposition/design/prototype 和 TraceV2 bootstrap/capture/repair/replay；拒绝 `check(..., True)` 和 `_check(..., True)` literal conditions，同时允许真实条件表达式。验证已通过脚本 self-test、默认 allowlist scan，以及一个 intentional ASCII negative fixture（按预期以 `literal_true_check` 失败）。这是 local evaluator quality gating，不是 broad historical eval cleanup、CI expansion 或 route reopening。
 
+## 2026-07-06 - Self-Test Quality CI Gate
+
+`retrieval-benchmark` 现在会在 plan job 中运行 `python3 scripts/validate_selftest_quality.py --self-test` 和默认 allowlist scan。PR path filter 也包含 `scripts/validate_selftest_quality.py`，因此 guard 自身被修改时会触发 workflow。这把当前 evaluator-chain guard 从 local-only validation 提升为 fail-closed CI quality gate，同时保留 narrow allowlist 和路线边界：不扫描 historical evaluators、不扩大 benchmark repo/provider scope、不改变 runtime/default，也不重开 closed routes。
+
 ## 2026-07-06 - Targeted Django Weekly-Large CI Validation
 
 手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只运行三个 Django shards。结合已完成全部三个 `ts_nextjs` shards 的 bounded weekly-large run [`28793408036`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28793408036)，此前 scheduled failure 暴露出的两个 uppercase-extension isolated-copy mismatch 代表类都已经获得真实 CI 验证。这只是 CI benchmark harness reliability evidence，不是 retrieval lift、method superiority、scale readiness、runtime/default promotion，也不是 route reopening。

@@ -29,6 +29,12 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**：`python scripts/validate_selftest_quality.py --self-test` 通过，默认 allowlist scan 通过，一个 intentional ASCII negative fixture 按预期以 `literal_true_check` 失败。
 - **Interpretation**：这是 local evaluator quality gating，不改变 runtime behavior，不扩大 CI/provider/network scope，也不重开 closed routes。
 
+## Self-test quality CI gate
+
+- **Checkpoint**：`retrieval-benchmark` 现在会在 plan job 中运行 self-test quality guard 的 self-test 和默认 allowlist scan。
+- **Scope**：PR path filter 只额外包含 `scripts/validate_selftest_quality.py`；guard allowlist 仍限定在当前 evaluator chain。
+- **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
+
 ## CI targeted Django validation checkpoint
 
 - **Evidence**：手动 `retrieval-benchmark` `weekly_large` run [`28799399293`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28799399293) 在 commit `e86f665` 上以 `repo_ids=py_django` 和 `enable_remote_models=false` 通过，并只完成三个 Django shards。

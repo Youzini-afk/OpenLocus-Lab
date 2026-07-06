@@ -29,6 +29,12 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Validation**: `python scripts/validate_selftest_quality.py --self-test` passed, the default allowlist scan passed, and an intentional ASCII negative fixture failed with `literal_true_check`.
 - **Interpretation**: this is local evaluator quality gating only. It does not change runtime behavior, broaden CI/provider/network scope, or reopen closed routes.
 
+## Self-test quality CI gate
+
+- **Checkpoint**: `retrieval-benchmark` now runs the self-test quality guard self-test and default allowlist scan in the plan job.
+- **Scope**: the PR path filter includes only `scripts/validate_selftest_quality.py` in addition to the existing eval/docs/workflow paths; the guard allowlist remains limited to the current evaluator chain.
+- **Interpretation**: this is fail-closed evaluator quality gating in CI. It does not expand benchmark repo/provider scope, change retrieval/runtime behavior, sweep historical evaluators, or reopen closed routes.
+
 ## Post-closeout Windows platform validation checkpoint
 
 - **Checkpoint**: commit `6b1fc16` fixes a concrete Windows local validation failure found after the HAAE-A2 closeout.
