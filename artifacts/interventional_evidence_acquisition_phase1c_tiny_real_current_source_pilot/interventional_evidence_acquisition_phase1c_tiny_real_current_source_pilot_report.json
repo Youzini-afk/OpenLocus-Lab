@@ -1,0 +1,102 @@
+{
+  "authorization_attestation": {
+    "local_only": true,
+    "method_winner_claimed": false,
+    "model_training_executed": false,
+    "new_retrieval_channel_family_added": false,
+    "private_rows_published": false,
+    "private_rows_written": true,
+    "provider_network_authorized": false,
+    "provider_network_used": false,
+    "runtime_default_change_authorized": false,
+    "runtime_default_changed": false,
+    "signal_claim": "no_signal_claim",
+    "training_authorized": false
+  },
+  "conservative_recommendation": "maybe_expand_with_new_explicit_decision",
+  "coverage_summary": {
+    "family_coverage_buckets": {
+      "boundary_condition": "count_6_to_20",
+      "config_or_test_mismatch": "count_6_to_20",
+      "cross_file_symbol": "count_6_to_20",
+      "distractor_file": "count_6_to_20",
+      "helper_dependency_choice": "count_6_to_20",
+      "nearby_wrong_function": "count_6_to_20",
+      "operation_ambiguity": "count_6_to_20",
+      "same_symbol_support_relation": "count_6_to_20"
+    },
+    "policy_coverage_buckets": {
+      "abstain": "count_6_to_20",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_6_to_20",
+      "stop": "count_6_to_20",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "row_count_bucket": "count_gt_50"
+  },
+  "evidencecore_summary": {
+    "candidate_found_is_not_evidence": true,
+    "content_hash_recorded_private_only": true,
+    "control_success_bucket": "count_0",
+    "real_current_source_materialization_performed": true,
+    "success_requires_materialization_hash_currentness": true
+  },
+  "phase": "interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot",
+  "policy_outcome_summary": {
+    "candidate_found_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_6_to_20",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "evidence_success_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_0",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "materialized_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_0",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "materialized_but_not_success_bucket": "count_0"
+  },
+  "privacy_summary": {
+    "private_hashes_public": false,
+    "private_paths_public": false,
+    "private_ranges_public": false,
+    "private_rows_published": false,
+    "private_rows_written": true,
+    "private_run_paths_public": false,
+    "private_snippets_public": false,
+    "private_task_ids_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "raw_rows_public": false
+  },
+  "schema_version": "interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_public_report_v1",
+  "source_summary": {
+    "real_current_source_materialization_performed": true,
+    "source_kind": "real_current_repository_files",
+    "task_count_bucket": "count_6_to_20"
+  },
+  "status": "phase1c_tiny_real_current_source_pilot_evidencecore_feasibility_no_claim",
+  "validation_summary": {
+    "route_specific_phase1c_validation": "passed",
+    "self_test_available": true,
+    "singleton_private_count_buckets_avoided": true
+  }
+}

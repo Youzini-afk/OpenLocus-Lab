@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import random
 import re
@@ -35,6 +36,11 @@ PHASE1B_SCHEMA_VERSION = "interventional_evidence_acquisition_phase1b_micro_poli
 PHASE1B_STATUS = "phase1b_micro_policy_tiny_collection_synthetic_preflight_no_real_evidencecore_no_claim"
 DEFAULT_PHASE1B_REPORT = REPO / "artifacts" / PHASE1B_PHASE / f"{PHASE1B_PHASE}_report.json"
 PHASE1B_PRIVATE_RUN_ROOT = REPO / "runs" / PHASE1B_PHASE
+PHASE1C_PHASE = "interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot"
+PHASE1C_SCHEMA_VERSION = "interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_public_report_v1"
+PHASE1C_STATUS = "phase1c_tiny_real_current_source_pilot_evidencecore_feasibility_no_claim"
+DEFAULT_PHASE1C_REPORT = REPO / "artifacts" / PHASE1C_PHASE / f"{PHASE1C_PHASE}_report.json"
+PHASE1C_PRIVATE_RUN_ROOT = REPO / "runs" / PHASE1C_PHASE
 STATUS_PREFLIGHT = "phase1_hard_source_preflight_no_private_rows"
 STATUS_COMPLETE = "phase1_hard_source_private_pilot_complete_no_claim"
 NEXT_ACTION = "stop/request explicit decision before any follow-up experiment"
@@ -111,6 +117,19 @@ PHASE1B_REPORT_KEYS = {
     "coverage_summary",
     "policy_outcome_summary",
     "baseline_screen",
+    "evidencecore_summary",
+    "privacy_summary",
+    "validation_summary",
+    "conservative_recommendation",
+}
+PHASE1C_REPORT_KEYS = {
+    "schema_version",
+    "phase",
+    "status",
+    "authorization_attestation",
+    "source_summary",
+    "coverage_summary",
+    "policy_outcome_summary",
     "evidencecore_summary",
     "privacy_summary",
     "validation_summary",
@@ -1019,6 +1038,318 @@ def run_phase1b_micro_policy(*, confirm_private_output: bool, output: Path, priv
     }
 
 
+def load_phase1c_private_manifest(path: Path) -> list[dict[str, Any]]:
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PreflightError(f"cannot load Phase 1C private manifest: {exc}") from exc
+    tasks = raw.get("tasks") if isinstance(raw, dict) else raw
+    if not isinstance(tasks, list):
+        raise PreflightError("Phase 1C private manifest must be a task list or an object with tasks")
+    normalized: list[dict[str, Any]] = []
+    for index, task in enumerate(tasks):
+        if not isinstance(task, dict):
+            raise PreflightError(f"Phase 1C manifest task {index} is not an object")
+        normalized.append(
+            {
+                "private_task_id": str(task.get("private_task_id", f"private-task-{index}")),
+                "family_bucket": str(task["family_bucket"]),
+                "private_path": str(task["private_path"]),
+                "start_line": int(task["start_line"]),
+                "end_line": int(task["end_line"]),
+                "has_related_test": bool(task.get("has_related_test", False)),
+            }
+        )
+    if not normalized or len(normalized) > 8:
+        raise PreflightError("Phase 1C private manifest must contain 1-8 tasks")
+    return normalized
+
+
+def write_phase1c_manifest_template(output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    template = {
+        "schema_version": "interventional_evidence_acquisition_phase1c_private_manifest_template_v1",
+        "note": "Replace placeholder values locally under ignored runs/. Do not commit real paths, ranges, task text, or labels.",
+        "tasks": [],
+    }
+    output.write_text(json.dumps(template, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def write_phase1c_local_example_manifest(output: Path) -> None:
+    candidates: list[Path] = []
+    for pattern in ("docs/en/*.md", "docs/zh/*.md", "eval/*.py", "scripts/*.py"):
+        candidates.extend(sorted(REPO.glob(pattern)))
+    tasks: list[dict[str, Any]] = []
+    for path in candidates:
+        if len(tasks) >= 8:
+            break
+        try:
+            line_count = len(path.read_text(encoding="utf-8").splitlines())
+        except UnicodeDecodeError:
+            continue
+        if line_count < 2:
+            continue
+        tasks.append(
+            {
+                "private_task_id": f"phase1c-local-private-{len(tasks):02d}",
+                "family_bucket": FAMILY_BUCKETS[len(tasks)],
+                "private_path": path.relative_to(REPO).as_posix(),
+                "start_line": 1,
+                "end_line": min(8, line_count),
+                "has_related_test": False,
+            }
+        )
+    if len(tasks) != 8:
+        raise PreflightError("could not build 8 local Phase 1C manifest tasks")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(
+            {
+                "schema_version": "interventional_evidence_acquisition_phase1c_private_manifest_v1",
+                "storage_class": "ignored_runs_private",
+                "tasks": tasks,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def read_current_range(private_path: str, start_line: int, end_line: int, *, base_dir: Path = REPO) -> dict[str, Any]:
+    base = base_dir.resolve()
+    path = (base / private_path).resolve()
+    if not str(path).startswith(str(base)):
+        raise PreflightError("Phase 1C path escapes repository")
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if start_line < 1 or end_line < start_line or end_line > len(lines):
+        raise PreflightError("Phase 1C line range unavailable")
+    content = "\n".join(lines[start_line - 1 : end_line]) + "\n"
+    content_bytes = content.encode("utf-8")
+    digest = hashlib.sha256(content_bytes).hexdigest()
+    reread = path.read_text(encoding="utf-8").splitlines()
+    reread_content = "\n".join(reread[start_line - 1 : end_line]) + "\n"
+    return {
+        "private_path": private_path,
+        "private_range": f"{start_line}-{end_line}",
+        "content_text": content,
+        "content_byte_length": len(content_bytes),
+        "content_sha256": digest,
+        "currentness_reread_match": reread_content == content,
+        "range_content_match": hashlib.sha256(reread_content.encode("utf-8")).hexdigest() == digest,
+    }
+
+
+def phase1c_policy_observation(task: dict[str, Any], policy: str, *, base_dir: Path = REPO) -> dict[str, Any]:
+    candidate_found = policy not in {"stop", "abstain"}
+    materializing_policy = policy in PHASE1B_ACQUISITION_POLICIES and (policy != "read_related_test_when_available" or task["has_related_test"])
+    materialization: dict[str, Any] | None = read_current_range(task["private_path"], int(task["start_line"]), int(task["end_line"]), base_dir=base_dir) if materializing_policy else None
+    evidence_success = bool(materialization and materialization["currentness_reread_match"] and materialization["range_content_match"] and materialization["content_byte_length"] > 0)
+    return {
+        "candidate_found": candidate_found,
+        "read_attempted": materializing_policy,
+        "materialized_current_source": materialization is not None,
+        "evidence_success": evidence_success,
+        "failure_safe_reason_bucket": "real_current_source_materialized" if evidence_success else ("control_no_acquisition" if policy in {"stop", "abstain"} else "not_eligible_or_no_materialization"),
+        "materialization": materialization,
+    }
+
+
+def build_phase1c_private_rows(tasks: list[dict[str, Any]], *, base_dir: Path = REPO) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    row_index = 0
+    for task in tasks:
+        eligible = [policy for policy in PHASE1B_MICRO_POLICIES if policy != "read_related_test_when_available" or task["has_related_test"]]
+        for policy in PHASE1B_MICRO_POLICIES:
+            observation = phase1c_policy_observation(task, policy, base_dir=base_dir)
+            materialization = observation["materialization"] or {}
+            rows.append({
+                "schema_version": "interventional_evidence_acquisition_phase1c_real_source_private_row_v1",
+                "phase": PHASE1C_PHASE,
+                "row_index": row_index,
+                "private_task_id": task["private_task_id"],
+                "family_bucket": task["family_bucket"],
+                "micro_policy_id": policy,
+                "micro_policy_version": "v1",
+                "assignment_mode": "deterministic_full_panel_all_policies",
+                "eligible_micro_policies": eligible,
+                "candidate_found": observation["candidate_found"],
+                "read_attempted": observation["read_attempted"],
+                "materialized_current_source": observation["materialized_current_source"],
+                "evidence_success": observation["evidence_success"],
+                "failure_safe_reason_bucket": observation["failure_safe_reason_bucket"],
+                "private_exact_refs": materialization,
+                "evidencecore": {
+                    "candidate_is_fact": observation["evidence_success"],
+                    "counted_evidence_requires_current_source": True,
+                    "content_sha256_present": bool(materialization.get("content_sha256")),
+                    "currentness_reread_match": bool(materialization.get("currentness_reread_match")),
+                    "range_content_match": bool(materialization.get("range_content_match")),
+                },
+                "privacy": {"private_row": True, "public_artifact_allowed": False, "provider_network_used": False, "model_training_executed": False},
+            })
+            row_index += 1
+    if len(rows) > 56:
+        raise PreflightError("Phase 1C private row cap exceeded")
+    return rows
+
+
+def validate_phase1c_private_rows(rows: list[dict[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    if not rows or len(rows) > 56:
+        errors.append("Phase 1C row count outside allowed range")
+    for index, row in enumerate(rows):
+        policy = str(row.get("micro_policy_id", ""))
+        if policy not in PHASE1B_MICRO_POLICIES:
+            errors.append(f"unknown Phase 1C policy at row {index}")
+        if row.get("privacy", {}).get("provider_network_used") is not False or row.get("privacy", {}).get("model_training_executed") is not False:
+            errors.append(f"Phase 1C provider/training boundary failure at row {index}")
+        evidence_success = row.get("evidence_success") is True
+        materialized = row.get("materialized_current_source") is True
+        refs = row.get("private_exact_refs", {})
+        if policy in {"stop", "abstain"} and evidence_success:
+            errors.append(f"Phase 1C control policy succeeded at row {index}")
+        if evidence_success and (not materialized or not refs.get("content_sha256") or refs.get("currentness_reread_match") is not True or refs.get("range_content_match") is not True or not refs.get("content_text")):
+            errors.append(f"Phase 1C success without complete EvidenceCore materialization at row {index}")
+        if row.get("evidencecore", {}).get("candidate_is_fact") is not evidence_success:
+            errors.append(f"Phase 1C candidate_is_fact mismatch at row {index}")
+    return errors
+
+
+def build_phase1c_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    errors = validate_phase1c_private_rows(rows)
+    if errors:
+        raise PreflightError("Phase 1C report input invalid: " + "; ".join(errors[:8]))
+    policies = Counter(str(row["micro_policy_id"]) for row in rows)
+    families = Counter(str(row["family_bucket"]) for row in rows)
+    candidate_found = Counter(str(row["micro_policy_id"]) for row in rows if row.get("candidate_found") is True)
+    materialized = Counter(str(row["micro_policy_id"]) for row in rows if row.get("materialized_current_source") is True)
+    evidence_success = Counter(str(row["micro_policy_id"]) for row in rows if row.get("evidence_success") is True)
+    materialized_not_success = sum(1 for row in rows if row.get("materialized_current_source") is True and row.get("evidence_success") is not True)
+    recommendation = "maybe_expand_with_new_explicit_decision" if sum(evidence_success.values()) > 0 else "stop_no_claim"
+    report = {
+        "schema_version": PHASE1C_SCHEMA_VERSION,
+        "phase": PHASE1C_PHASE,
+        "status": PHASE1C_STATUS,
+        "authorization_attestation": {"local_only": True, "private_rows_written": True, "private_rows_published": False, "provider_network_authorized": False, "provider_network_used": False, "training_authorized": False, "model_training_executed": False, "runtime_default_change_authorized": False, "runtime_default_changed": False, "new_retrieval_channel_family_added": False, "method_winner_claimed": False, "signal_claim": "no_signal_claim"},
+        "source_summary": {"source_kind": "real_current_repository_files", "task_count_bucket": bucket_private_screen_count(len({row["private_task_id"] for row in rows})), "real_current_source_materialization_performed": True},
+        "coverage_summary": {"row_count_bucket": bucket_private_screen_count(len(rows)), "family_coverage_buckets": {family: bucket_private_screen_count(families[family]) for family in FAMILY_BUCKETS}, "policy_coverage_buckets": {policy: bucket_private_screen_count(policies[policy]) for policy in PHASE1B_MICRO_POLICIES}},
+        "policy_outcome_summary": {"candidate_found_buckets": {policy: bucket_private_screen_count(candidate_found[policy]) for policy in PHASE1B_MICRO_POLICIES}, "materialized_buckets": {policy: bucket_private_screen_count(materialized[policy]) for policy in PHASE1B_MICRO_POLICIES}, "evidence_success_buckets": {policy: bucket_private_screen_count(evidence_success[policy]) for policy in PHASE1B_MICRO_POLICIES}, "materialized_but_not_success_bucket": bucket_private_screen_count(materialized_not_success)},
+        "evidencecore_summary": {"success_requires_materialization_hash_currentness": True, "candidate_found_is_not_evidence": True, "control_success_bucket": bucket_private_screen_count(evidence_success["stop"] + evidence_success["abstain"]), "content_hash_recorded_private_only": True, "real_current_source_materialization_performed": True},
+        "privacy_summary": {"publication_level": "aggregate_only", "private_rows_written": True, "private_rows_published": False, "raw_rows_public": False, "private_task_ids_public": False, "private_paths_public": False, "private_ranges_public": False, "private_hashes_public": False, "private_snippets_public": False, "private_run_paths_public": False, "provider_payloads_public": False},
+        "validation_summary": {"route_specific_phase1c_validation": "passed", "singleton_private_count_buckets_avoided": True, "self_test_available": True},
+        "conservative_recommendation": recommendation,
+    }
+    report_errors = validate_phase1c_report(report)
+    if report_errors:
+        raise PreflightError("generated invalid Phase 1C report: " + "; ".join(report_errors[:8]))
+    return report
+
+
+def validate_phase1c_report(report: Any) -> list[str]:
+    if not isinstance(report, dict):
+        return ["Phase 1C report must be an object"]
+    errors: list[str] = []
+    if set(report) != PHASE1C_REPORT_KEYS:
+        errors.append("Phase 1C report top-level shape drift")
+    if report.get("schema_version") != PHASE1C_SCHEMA_VERSION or report.get("phase") != PHASE1C_PHASE or report.get("status") != PHASE1C_STATUS:
+        errors.append("Phase 1C identity/status drift")
+    auth = report.get("authorization_attestation", {})
+    for key in ("provider_network_authorized", "provider_network_used", "training_authorized", "model_training_executed", "runtime_default_change_authorized", "runtime_default_changed", "new_retrieval_channel_family_added", "method_winner_claimed"):
+        if auth.get(key) is not False:
+            errors.append(f"Phase 1C overclaim: {key}")
+    if auth.get("local_only") is not True or auth.get("private_rows_published") is not False or auth.get("signal_claim") != "no_signal_claim":
+        errors.append("Phase 1C authorization boundary failed")
+    if report.get("source_summary", {}).get("real_current_source_materialization_performed") is not True:
+        errors.append("Phase 1C real materialization missing")
+    coverage = report.get("coverage_summary", {})
+    outcomes = report.get("policy_outcome_summary", {})
+    if set(coverage.get("policy_coverage_buckets", {})) != set(PHASE1B_MICRO_POLICIES) or set(outcomes.get("evidence_success_buckets", {})) != set(PHASE1B_MICRO_POLICIES):
+        errors.append("Phase 1C policy shape drift")
+    if outcomes.get("evidence_success_buckets", {}).get("stop") != "count_0" or outcomes.get("evidence_success_buckets", {}).get("abstain") != "count_0":
+        errors.append("Phase 1C control success overclaim")
+    evidence = report.get("evidencecore_summary", {})
+    if evidence.get("success_requires_materialization_hash_currentness") is not True or evidence.get("candidate_found_is_not_evidence") is not True or evidence.get("control_success_bucket") != "count_0":
+        errors.append("Phase 1C EvidenceCore boundary failed")
+    privacy = report.get("privacy_summary", {})
+    for key in ("raw_rows_public", "private_task_ids_public", "private_paths_public", "private_ranges_public", "private_hashes_public", "private_snippets_public", "private_run_paths_public", "provider_payloads_public"):
+        if privacy.get(key) is not False:
+            errors.append(f"Phase 1C privacy boundary failed: {key}")
+    if contains_singleton_bucket(report):
+        errors.append("Phase 1C singleton private count bucket published")
+    if report.get("conservative_recommendation") not in {"maybe_expand_with_new_explicit_decision", "stop_no_claim"}:
+        errors.append("Phase 1C recommendation drift")
+    errors.extend(public_leak_errors(report))
+    return errors
+
+
+def write_phase1c_test_manifest(base_dir: Path, output: Path) -> None:
+    files: list[Path] = []
+    for index in range(8):
+        path = base_dir / f"phase1c_source_{index}.txt"
+        path.write_text(f"phase1c local source {index}\nline two\nline three\n", encoding="utf-8")
+        files.append(path)
+    manifest = {
+        "schema_version": "interventional_evidence_acquisition_phase1c_private_manifest_v1",
+        "tasks": [
+            {
+                "private_task_id": f"temp-private-{index}",
+                "family_bucket": FAMILY_BUCKETS[index],
+                "private_path": path.name,
+                "start_line": 1,
+                "end_line": 2,
+                "has_related_test": False,
+            }
+            for index, path in enumerate(files)
+        ],
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def write_phase1c_private_outputs(rows: list[dict[str, Any]], private_root: Path = PHASE1C_PRIVATE_RUN_ROOT) -> dict[str, Any]:
+    errors = validate_phase1c_private_rows(rows)
+    if errors:
+        raise PreflightError("Phase 1C private row validation failed: " + "; ".join(errors[:8]))
+    run_dir = private_root / time.strftime("%Y%m%d-%H%M%S")
+    row_path = run_dir / "phase1c_real_source_private_rows.jsonl"
+    manifest_path = run_dir / "phase1c_real_source_private_manifest.json"
+    write_jsonl(row_path, rows)
+    manifest = {"schema_version": "interventional_evidence_acquisition_phase1c_private_manifest_v1", "storage_class": "ignored_runs_private", "row_count_bucket": bucket_private_screen_count(len(rows)), "private_rows_path": str(row_path), "public_report_must_not_include_private_paths": True}
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return manifest
+
+
+def write_phase1c_report(report: dict[str, Any], output: Path) -> None:
+    errors = validate_phase1c_report(report)
+    if errors:
+        raise PreflightError("Phase 1C report validation failed: " + "; ".join(errors[:8]))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def validate_phase1c_report_file(path: Path) -> list[str]:
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"cannot load Phase 1C report: {exc}"]
+    return validate_phase1c_report(report)
+
+
+def run_phase1c_real_source(*, confirm_private_output: bool, output: Path, private_manifest: Path | None, private_root: Path = PHASE1C_PRIVATE_RUN_ROOT, base_dir: Path = REPO) -> dict[str, Any]:
+    if not confirm_private_output:
+        raise PreflightError("Phase 1C private output requires --confirm-private-output")
+    if private_manifest is None:
+        raise PreflightError("Phase 1C requires --phase1c-private-manifest pointing to ignored local task manifest")
+    tasks = load_phase1c_private_manifest(private_manifest)
+    rows = build_phase1c_private_rows(tasks, base_dir=base_dir)
+    manifest = write_phase1c_private_outputs(rows, private_root)
+    report = build_phase1c_report(rows)
+    write_phase1c_report(report, output)
+    return {"status": report["status"], "conservative_recommendation": report["conservative_recommendation"], "private_rows_location": "runs/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot/.../phase1c_real_source_private_rows.jsonl", "public_report": str(output), "_private_manifest": manifest}
+
+
 def build_report(tasks: list[HardTaskShape] | None = None, rows: list[dict[str, Any]] | None = None, *, confirmed: bool = False) -> dict[str, Any]:
     tasks = tasks or build_hard_task_source()
     rows = rows or []
@@ -1345,6 +1676,14 @@ def run_self_test() -> dict[str, Any]:
         checks.append(("phase1b_generates_report", phase1b_result["status"] == PHASE1B_STATUS and phase1b_report["privacy_summary"]["private_rows_published"] is False))
         checks.append(("phase1b_report_valid", not validate_phase1b_report(phase1b_report)))
         checks.append(("phase1b_private_rows_written_under_temp_runs", Path((phase1b_result.get("_private_manifest") or {}).get("private_rows_path", "")).is_file()))
+        phase1c_output = Path(temp_dir) / "phase1c_report.json"
+        phase1c_manifest = Path(temp_dir) / "phase1c_manifest.json"
+        write_phase1c_test_manifest(Path(temp_dir), phase1c_manifest)
+        phase1c_result = run_phase1c_real_source(confirm_private_output=True, output=phase1c_output, private_manifest=phase1c_manifest, private_root=Path(temp_dir) / "phase1c_runs", base_dir=Path(temp_dir))
+        phase1c_report = json.loads(phase1c_output.read_text(encoding="utf-8"))
+        checks.append(("phase1c_generates_report", phase1c_result["status"] == PHASE1C_STATUS and phase1c_report["privacy_summary"]["private_rows_published"] is False))
+        checks.append(("phase1c_report_valid", not validate_phase1c_report(phase1c_report)))
+        checks.append(("phase1c_private_rows_written_under_temp_runs", Path((phase1c_result.get("_private_manifest") or {}).get("private_rows_path", "")).is_file()))
     bad_report = copy.deepcopy(report)
     bad_report["source_summary"]["leaky_value_bucket"] = "src/private/example.py"
     checks.append(("privacy_leak_rejected", bool(validate_report(bad_report))))
@@ -1424,6 +1763,29 @@ def run_self_test() -> dict[str, Any]:
     bad_phase1b_rows = copy.deepcopy(phase1b_rows)
     bad_phase1b_rows[0]["evidence_success"] = True
     checks.append(("phase1b_unqualified_private_evidence_success_rejected", bool(validate_phase1b_private_rows(bad_phase1b_rows))))
+    with tempfile.TemporaryDirectory() as temp_dir:
+        phase1c_manifest = Path(temp_dir) / "phase1c_manifest.json"
+        write_phase1c_test_manifest(Path(temp_dir), phase1c_manifest)
+        phase1c_rows = build_phase1c_private_rows(load_phase1c_private_manifest(phase1c_manifest), base_dir=Path(temp_dir))
+    phase1c_report = build_phase1c_report(phase1c_rows)
+    checks.append(("phase1c_private_rows_valid", not validate_phase1c_private_rows(phase1c_rows)))
+    checks.append(("phase1c_row_cap", len(phase1c_rows) <= 56))
+    checks.append(("phase1c_no_singleton_public_buckets", not contains_singleton_bucket(phase1c_report)))
+    checks.append(("phase1c_success_requires_hash_currentness", all((row["evidence_success"] is not True) or (row["materialized_current_source"] is True and row["private_exact_refs"].get("content_sha256") and row["private_exact_refs"].get("currentness_reread_match") is True and row["private_exact_refs"].get("range_content_match") is True) for row in phase1c_rows)))
+    checks.append(("phase1c_controls_do_not_succeed", all(row["evidence_success"] is False for row in phase1c_rows if row["micro_policy_id"] in {"stop", "abstain"})))
+    bad_phase1c_rows = copy.deepcopy(phase1c_rows)
+    bad_phase1c_rows[0]["evidence_success"] = True
+    bad_phase1c_rows[0]["materialized_current_source"] = False
+    checks.append(("phase1c_success_without_materialization_rejected", bool(validate_phase1c_private_rows(bad_phase1c_rows))))
+    bad_phase1c_report = copy.deepcopy(phase1c_report)
+    bad_phase1c_report["coverage_summary"]["row_count_bucket"] = "count_1"
+    checks.append(("phase1c_singleton_bucket_rejected", bool(validate_phase1c_report(bad_phase1c_report))))
+    bad_phase1c_report = copy.deepcopy(phase1c_report)
+    bad_phase1c_report["privacy_summary"]["private_paths_public"] = True
+    checks.append(("phase1c_privacy_flag_rejected", bool(validate_phase1c_report(bad_phase1c_report))))
+    bad_phase1c_report = copy.deepcopy(phase1c_report)
+    bad_phase1c_report["source_summary"]["leaky_value_bucket"] = "docs/en/private.md"
+    checks.append(("phase1c_public_path_leak_rejected", bool(validate_phase1c_report(bad_phase1c_report))))
     bad_report = copy.deepcopy(confirmed_report)
     bad_report["action_summary"]["confirmed_action_coverage_buckets"]["stop"] = "count_0"
     checks.append(("confirmed_missing_action_coverage_rejected", bool(validate_report(bad_report))))
@@ -1438,19 +1800,33 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--confirm-private-output", action="store_true", help="write ignored private rows under runs/ and aggregate-only public report")
     parser.add_argument("--aggregate-private-rows", action="store_true", help="read ignored private rows locally and write aggregate-only outcome screen")
     parser.add_argument("--run-phase1b-micro-policy", action="store_true", help="run Phase 1B tiny local micro-policy collection; requires --confirm-private-output")
+    parser.add_argument("--run-phase1c-real-source", action="store_true", help="run Phase 1C tiny real current-source feasibility pilot; requires --confirm-private-output")
+    parser.add_argument("--write-phase1c-manifest-template", type=Path, help="write an empty private manifest template; keep real filled manifests under ignored runs/")
+    parser.add_argument("--write-phase1c-local-example-manifest", type=Path, help="write a local filled private manifest under ignored runs/; do not commit it")
     parser.add_argument("--private-rows-path", type=Path, help="local ignored private rows JSONL path for aggregate screen; never published")
+    parser.add_argument("--phase1c-private-manifest", type=Path, help="ignored local Phase 1C private manifest with real task paths/ranges")
     parser.add_argument("--validate-report", type=Path, help="validate an existing aggregate report")
     parser.add_argument("--validate-aggregate-screen", type=Path, help="validate an existing aggregate-only private row outcome screen")
     parser.add_argument("--validate-phase1b-report", type=Path, help="validate an existing Phase 1B public report")
+    parser.add_argument("--validate-phase1c-report", type=Path, help="validate an existing Phase 1C public report")
     parser.add_argument("--output", type=Path, default=DEFAULT_REPORT, help="dry-run report output path")
     parser.add_argument("--aggregate-output", type=Path, default=DEFAULT_AGGREGATE_SCREEN_REPORT, help="aggregate screen output path")
     parser.add_argument("--phase1b-output", type=Path, default=DEFAULT_PHASE1B_REPORT, help="Phase 1B public report output path")
+    parser.add_argument("--phase1c-output", type=Path, default=DEFAULT_PHASE1C_REPORT, help="Phase 1C public report output path")
     args = parser.parse_args(argv)
 
     if args.self_test:
         result = run_self_test()
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0 if result["status"] == "passed" else 1
+    if args.write_phase1c_manifest_template:
+        write_phase1c_manifest_template(args.write_phase1c_manifest_template)
+        print(json.dumps({"status": "phase1c_private_manifest_template_written", "path": str(args.write_phase1c_manifest_template)}, indent=2, sort_keys=True))
+        return 0
+    if args.write_phase1c_local_example_manifest:
+        write_phase1c_local_example_manifest(args.write_phase1c_local_example_manifest)
+        print(json.dumps({"status": "phase1c_local_private_manifest_written", "path": str(args.write_phase1c_local_example_manifest)}, indent=2, sort_keys=True))
+        return 0
     if args.validate_report:
         errors = validate_report_file(args.validate_report)
         if errors:
@@ -1471,6 +1847,22 @@ def main(argv: list[str] | None = None) -> int:
             print("Phase 1B report validation failed: " + "; ".join(errors[:8]), file=sys.stderr)
             return 1
         print(f"Phase 1B report validation passed: {args.validate_phase1b_report}")
+        return 0
+    if args.validate_phase1c_report:
+        errors = validate_phase1c_report_file(args.validate_phase1c_report)
+        if errors:
+            print("Phase 1C report validation failed: " + "; ".join(errors[:8]), file=sys.stderr)
+            return 1
+        print(f"Phase 1C report validation passed: {args.validate_phase1c_report}")
+        return 0
+    if args.run_phase1c_real_source:
+        try:
+            result = run_phase1c_real_source(confirm_private_output=args.confirm_private_output, output=args.phase1c_output, private_manifest=args.phase1c_private_manifest)
+        except PreflightError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        result.pop("_private_manifest", None)
+        print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     if args.run_phase1b_micro_policy:
         try:

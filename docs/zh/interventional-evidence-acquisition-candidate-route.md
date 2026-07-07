@@ -46,6 +46,12 @@ Public report 仍然只包含 aggregate 信息：task/action/family count bucket
 
 Phase 1B 只使用 7 个 local micro-policy/control labels：`bm25_then_read_top1`、`bm25_then_read_next_unique_file`、`symbol_regex_then_read_top1`、`symbol_regex_then_read_next_unique_file`、`read_related_test_when_available`、`stop` 和 `abstain`。Standalone retrieval 不是 Phase 1B top-level policy。由于当前 source 仍是模拟 materialization，而不是读取真实 current files/ranges/content，因此这只是 synthetic preflight，不是真实 EvidenceCore evidence。Public output 只包含 synthetic success labels 的 buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`，且不提出 method-winner 或 signal claim。
 
+## Phase 1C real current-source feasibility status
+
+同一 script 现在支持 `--run-phase1c-real-source --confirm-private-output --phase1c-private-manifest <ignored-local-path>`。它在 8 个 current repository-file tasks 上运行 tiny local feasibility pilot，并覆盖全部 7 个既有 Phase 1B micro-policy/control labels；exact task paths/ranges 从 ignored private manifest 读取。Private rows 位于 ignored `runs/`；public report 为 `artifacts/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_report.json`，status 为 `phase1c_tiny_real_current_source_pilot_evidencecore_feasibility_no_claim`。
+
+这只检查 local micro-policy framework 是否能安全执行 real current-source materialization。Counted success 需要 private path/range/content bytes、SHA-256、re-read/currentness match 和 range/content match。Public output 只包含 aggregate buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`。它不提出 method-winner、lift 或 signal claim，也不改变 provider/network、training/model、runtime/default 或 retrieval-family 边界。
+
 ## 候选问题
 
 在 hard product-workflow episodes 上，使用极小的本地 randomized intervention 来选择既有 evidence-acquisition actions，是否比 passive trace review 更能产生清晰的 workflow evidence，同时保持 EvidenceCore 与 privacy invariants？

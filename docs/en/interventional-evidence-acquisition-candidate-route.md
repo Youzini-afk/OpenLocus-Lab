@@ -46,6 +46,12 @@ The same script now supports `--run-phase1b-micro-policy --confirm-private-outpu
 
 Phase 1B uses only the seven local micro-policy/control labels: `bm25_then_read_top1`, `bm25_then_read_next_unique_file`, `symbol_regex_then_read_top1`, `symbol_regex_then_read_next_unique_file`, `read_related_test_when_available`, `stop`, and `abstain`. Standalone retrieval is not a top-level Phase 1B policy. Because the source still simulates materialization instead of reading real current files/ranges/content, this is synthetic preflight only, not real EvidenceCore evidence. Public output uses buckets for synthetic success labels only, recommendation `maybe_expand_with_new_explicit_decision`, and no method-winner or signal claim.
 
+## Phase 1C real current-source feasibility status
+
+The same script now supports `--run-phase1c-real-source --confirm-private-output --phase1c-private-manifest <ignored-local-path>`. It ran a tiny local feasibility pilot over 8 current repository-file tasks and all seven existing Phase 1B micro-policy/control labels, with exact task paths/ranges read from an ignored private manifest. Private rows are under ignored `runs/`; the public report is `artifacts/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_report.json` with status `phase1c_tiny_real_current_source_pilot_evidencecore_feasibility_no_claim`.
+
+This only checks whether the local micro-policy framework can safely perform real current-source materialization. Counted success requires private path/range/content bytes, SHA-256, re-read/currentness match, and range/content match. Public output is aggregate buckets only with recommendation `maybe_expand_with_new_explicit_decision`. It makes no method-winner, lift, or signal claim and does not change provider/network, training/model, runtime/default, or retrieval-family boundaries.
+
 ## Candidate question
 
 Can a tiny, local, randomized intervention over existing evidence-acquisition actions produce clearer product-workflow evidence than passive trace review, while preserving EvidenceCore and privacy invariants?

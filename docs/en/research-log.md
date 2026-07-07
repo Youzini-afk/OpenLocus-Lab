@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 1C Real Current-Source Feasibility
+
+Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase1c-real-source --confirm-private-output`. The run reads its exact local task paths/ranges from an ignored private manifest, uses 8 repository-file tasks and the same seven micro-policy/control labels, writes private rows only under ignored `runs/`, and publishes the aggregate-only report [`interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_report.json`](../../artifacts/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_report.json), status `phase1c_tiny_real_current_source_pilot_evidencecore_feasibility_no_claim`.
+
+This is a feasibility check for real current-source materialization only. Counted success requires private path/range/content bytes, SHA-256, re-read/currentness match, and range/content match. Public output is buckets only, recommendation `maybe_expand_with_new_explicit_decision`, and no claim: no provider/network, no model/training, no runtime/default change, no new retrieval family, no method winner.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 1B Micro-Policy Collection
 
 Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase1b-micro-policy --confirm-private-output`. The run writes private rows only under ignored `runs/` and publishes the aggregate-only report [`interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_report.json`](../../artifacts/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_report.json), status `phase1b_micro_policy_tiny_collection_synthetic_preflight_no_real_evidencecore_no_claim`.
