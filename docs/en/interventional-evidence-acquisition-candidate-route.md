@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: `phase3_independent_local_holdout_validation_no_claim`
+Status: `phase3b_cross_phase_public_replication_closeout_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 3 independent local holdout validation screen. Public report: `artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json`, status `phase3_independent_local_holdout_validation_no_claim`, recommendation `phase3_holdout_positive_screen_no_promotion`. It is an aggregate screen only, not method selection, winner, lift, signal, product, or default evidence.
+Latest checkpoint: Phase 3B public replication closeout. See [`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md) and `artifacts/phase3b_cross_phase_public_replication_closeout/phase3b_cross_phase_public_replication_closeout_report.json`. Status is `phase3b_cross_phase_public_replication_closeout_no_claim`. It uses only public Phase 2/3 aggregate reports and does not read private rows, read new source, collect data, add scripts, or create private artifacts.
 
 ## Phase 2 small fair local comparison status
 
@@ -23,6 +23,12 @@ The screen compares fixed-label buckets and records best fixed local baselines. 
 The same script now supports `--run-phase3-holdout --confirm-private-output --phase3-private-manifest <ignored-local-path>`. It uses a fresh ignored private manifest and the same seven labels to validate that the Phase 2 fixed-label comparison protocol still behaves on a holdout slice. Private rows stay under ignored `runs/`; public output is aggregate-only.
 
 The Phase 3 screen checks protocol validity, control behavior, EvidenceCore materialization, and a nontrivial best fixed acquisition baseline. It does not select a method and does not promote any product/default behavior.
+
+## Phase 3B public replication closeout status
+
+Phase 3B records that Phase 2 and Phase 3 replicated the protocol-level bucket pattern: no-claim positive screens, best fixed acquisition/local baseline buckets `count_21_to_50`, controls `count_0`, and intact EvidenceCore/private-public boundaries. This preserves the small local comparison protocol as a research asset.
+
+Phase 3B does not prove which method is best and does not justify lift, signal, runtime/default, product, provider/network, or training claims. If there is a Phase 4, it should start as design-only action-outcome learning precheck; no model training until feature, label, leakage, and split rules are written.
 
 ## Boundary
 

@@ -10,6 +10,8 @@ Latest result：public aggregate-only report [`phase2_small_fair_local_compariso
 
 Follow-up holdout screen：[`phase3_independent_local_holdout_validation_screen_report.json`](../../artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json)，status 为 `phase3_independent_local_holdout_validation_no_claim`，recommendation 为 `phase3_holdout_positive_screen_no_promotion`。这只是在 fresh local holdout slice 上验证 protocol；不是 method selection 或 promotion。
 
+Closeout pointer：[`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md)，status 为 `phase3b_cross_phase_public_replication_closeout_no_claim`。它只使用 public Phase 2/3 reports，并将 protocol 作为 research asset 保留，而不是 method claim。
+
 ## Phase 1 说明了什么
 
 Phase 1 有用，但范围有限：

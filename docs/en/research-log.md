@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 3B Public Closeout
+
+Added [`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md) and public aggregate report [`phase3b_cross_phase_public_replication_closeout_report.json`](../../artifacts/phase3b_cross_phase_public_replication_closeout/phase3b_cross_phase_public_replication_closeout_report.json). Status is `phase3b_cross_phase_public_replication_closeout_no_claim`.
+
+This closeout uses only already public Phase 2 and Phase 3 reports. It records that both reports show no-claim positive screens, best fixed acquisition/local baseline buckets `count_21_to_50`, control success `count_0`, and intact EvidenceCore/privacy boundaries. It does not read private rows, read new source, collect data, add scripts, add evaluator modes, or create private artifacts. It preserves the protocol as a research asset, not as winner/lift/signal/product/default evidence.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 3 Independent Holdout Validation
 
 Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase3-holdout --confirm-private-output`, `--phase3-private-manifest`, `--write-phase3-local-example-manifest`, and `--validate-phase3-report`. The confirmed local holdout run used a new ignored private manifest under `runs/`, wrote private rows only under ignored `runs/`, and published the aggregate-only report [`phase3_independent_local_holdout_validation_screen_report.json`](../../artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json), status `phase3_independent_local_holdout_validation_no_claim`.

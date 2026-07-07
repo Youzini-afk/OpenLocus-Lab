@@ -2,7 +2,7 @@
 
 日期：2026-07-07
 
-Status: `phase3_independent_local_holdout_validation_no_claim`
+Status: `phase3b_cross_phase_public_replication_closeout_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 3 independent local holdout validation screen。Public report：`artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json`，status 为 `phase3_independent_local_holdout_validation_no_claim`，recommendation 为 `phase3_holdout_positive_screen_no_promotion`。它只是 aggregate screen，不是 method selection、winner、lift、signal、product 或 default evidence。
+最新 checkpoint：Phase 3B public replication closeout。参见 [`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md) 和 `artifacts/phase3b_cross_phase_public_replication_closeout/phase3b_cross_phase_public_replication_closeout_report.json`。Status 为 `phase3b_cross_phase_public_replication_closeout_no_claim`。它只使用 public Phase 2/3 aggregate reports，不读取 private rows、不读取新 source、不收集 data、不新增 scripts，也不创建 private artifacts。
 
 ## Phase 2 small fair local comparison status
 
@@ -23,6 +23,12 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 同一 script 现在支持 `--run-phase3-holdout --confirm-private-output --phase3-private-manifest <ignored-local-path>`。它使用 fresh ignored private manifest 和同样 7 个 labels，验证 Phase 2 fixed-label comparison protocol 在 holdout slice 上仍能正常运行。Private rows 保留在 ignored `runs/`；public output 只包含 aggregate 信息。
 
 Phase 3 screen 检查 protocol validity、control behavior、EvidenceCore materialization，以及 nontrivial best fixed acquisition baseline。它不选择 method，也不推广任何 product/default behavior。
+
+## Phase 3B public replication closeout status
+
+Phase 3B 记录 Phase 2 和 Phase 3 复现了 protocol-level bucket pattern：no-claim positive screens、best fixed acquisition/local baseline buckets `count_21_to_50`、controls `count_0`，以及 intact EvidenceCore/private-public boundaries。这将 small local comparison protocol 作为 research asset 保留。
+
+Phase 3B 不证明哪个 method 最好，也不支持 lift、signal、runtime/default、product、provider/network 或 training claims。如果有 Phase 4，应先从 design-only action-outcome learning precheck 开始；在写出 feature、label、leakage 和 split rules 前，不进行 model training。
 
 ## 边界
 

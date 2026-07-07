@@ -1,0 +1,66 @@
+{
+  "authorization_attestation": {
+    "local_public_reports_only": true,
+    "method_winner_claimed": false,
+    "model_training_executed": false,
+    "new_private_artifacts_created": false,
+    "new_retrieval_channel_family_added": false,
+    "new_source_evidence_read": false,
+    "private_rows_read": false,
+    "provider_network_used": false,
+    "runtime_default_changed": false,
+    "signal_lift_claim": "no_signal_claim"
+  },
+  "closeout_summary": {
+    "best_fixed_label_interpretation": "baseline_not_winner",
+    "research_asset_recommendation": "preserve_small_local_protocol_as_research_asset",
+    "status": "protocol_level_bucket_pattern_replicated_no_claim"
+  },
+  "evidencecore_public_boundary_summary": {
+    "candidate_found_is_not_evidence": true,
+    "controls_stayed_count_0": true,
+    "private_rows_published": false,
+    "public_outputs_aggregate_only": true,
+    "success_required_materialization_hash_currentness": true
+  },
+  "future_phase4_note": {
+    "first_step_if_any": "design_only_action_outcome_learning_precheck",
+    "model_training_allowed_now": false,
+    "required_before_training": "feature_label_leakage_split_rules_written"
+  },
+  "phase": "phase3b_cross_phase_public_replication_closeout",
+  "public_input_summary": {
+    "phase2_best_fixed_acquisition_baseline_bucket": "count_21_to_50",
+    "phase2_best_fixed_local_baseline_bucket": "count_21_to_50",
+    "phase2_control_success_bucket": "count_0",
+    "phase2_public_status": "phase2_small_fair_local_comparison_no_claim",
+    "phase2_recommendation": "phase2_positive_screen_no_promotion",
+    "phase3_best_fixed_acquisition_baseline_bucket": "count_21_to_50",
+    "phase3_best_fixed_local_baseline_bucket": "count_21_to_50",
+    "phase3_control_success_bucket": "count_0",
+    "phase3_public_status": "phase3_independent_local_holdout_validation_no_claim",
+    "phase3_recommendation": "phase3_holdout_positive_screen_no_promotion"
+  },
+  "replication_screen": {
+    "both_public_reports_no_claim_positive_screens": true,
+    "both_reports_local_only": true,
+    "both_reports_validated_publicly": true,
+    "bucket_level_pattern_replicated": true,
+    "controls_replicated_count_0": true
+  },
+  "risk_limit_summary": {
+    "best_fixed_label_is_baseline_not_winner": true,
+    "buckets_are_coarse": true,
+    "exact_effects_hidden_for_privacy": true,
+    "positive_screens_are_not_generalization_proof": true,
+    "private_tasks_not_public_auditable": true
+  },
+  "schema_version": "phase3b_cross_phase_public_replication_closeout_public_report_v1",
+  "status": "phase3b_cross_phase_public_replication_closeout_no_claim",
+  "validation_summary": {
+    "no_count_1_values": true,
+    "no_private_rows_read": true,
+    "no_winner_lift_signal_product_default_claim": true,
+    "public_reports_only": true
+  }
+}
