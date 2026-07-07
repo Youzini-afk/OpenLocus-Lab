@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Hard-Source Private Pilot
+
+Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with explicit `--confirm-private-output` mode and ran the confirmed local private pilot. Private rows were written only under ignored `runs/`; the public report [`interventional_evidence_acquisition_phase1_hard_source_preflight_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json) has status `phase1_hard_source_private_pilot_complete_no_claim`.
+
+The public report is aggregate-only. It records local randomized action coverage, candidate-found buckets, materialized buckets, evidence-success buckets, and no-claim attestations. Retrieval-only actions can find candidates but do not count as evidence success without current-source materialization. This remains a small local experiment: no provider/network, no model/training, no runtime/default change, no new retrieval family, no method-winner claim, and no route reopening.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Hard-Source Preflight
 
 Added `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` and generated the aggregate-only public report [`interventional_evidence_acquisition_phase1_hard_source_preflight_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json). The report status is `phase1_hard_source_preflight_no_private_rows`.

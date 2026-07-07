@@ -2,9 +2,9 @@
 
 Date: 2026-07-07
 
-Status: `candidate_route_phase1_hard_source_preflight_no_private_rows`
+Status: `candidate_route_phase1_hard_source_private_pilot_complete_no_claim`
 
-Authorization: `hard_source_preflight_only_no_confirmed_private_capture`
+Authorization: `hard_source_local_private_pilot_confirmed_ignored_private_rows`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
@@ -27,6 +27,12 @@ The report is aggregate-only: no private row contents, task text, paths, ranges,
 The hard-source preflight script is `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py`. It generated `artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json` with status `phase1_hard_source_preflight_no_private_rows`.
 
 This is not a confirmed private capture. It checks 32 synthetic/local hard task shapes across 8 family buckets and publishes only aggregate buckets for balance, structural availability, candidate ambiguity, baseline non-saturation, EvidenceCore summary, and privacy summary. It does not write private rows and does not authorize provider/network work, training, runtime/default changes, new retrieval families, method-winner claims, or route reopening.
+
+## Hard-source private pilot status
+
+The same script now supports explicit `--confirm-private-output` mode. A confirmed local private pilot wrote private rows only under ignored `runs/` storage and updated the same public report to status `phase1_hard_source_private_pilot_complete_no_claim`.
+
+The public report remains aggregate-only: task/action/family count buckets, candidate-found buckets, materialized buckets, evidence-success buckets, baseline/non-saturation buckets, privacy summary, and no-claim attestations. Retrieval-only actions may find candidates but do not count as evidence success without current-source materialization. No provider/network work, training, runtime/default changes, new retrieval families, method-winner claims, or route reopening are authorized.
 
 ## Candidate question
 

@@ -2,9 +2,9 @@
 
 日期：2026-07-07
 
-Status: `candidate_route_phase1_hard_source_preflight_no_private_rows`
+Status: `candidate_route_phase1_hard_source_private_pilot_complete_no_claim`
 
-Authorization: `hard_source_preflight_only_no_confirmed_private_capture`
+Authorization: `hard_source_local_private_pilot_confirmed_ignored_private_rows`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
@@ -27,6 +27,12 @@ Phase 1 private pilot output 仍需要显式 `--confirm-private-output`；未提
 Hard-source preflight script 为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py`。它生成了 `artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json`，status 为 `phase1_hard_source_preflight_no_private_rows`。
 
 这不是 confirmed private capture。它检查 32 个 synthetic/local hard task shapes、8 个 family buckets，并且只公开 balance、structural availability、candidate ambiguity、baseline non-saturation、EvidenceCore summary 和 privacy summary 的 aggregate buckets。它不写入 private rows，也不授权 provider/network work、training、runtime/default changes、新 retrieval families、method-winner claims 或 route reopening。
+
+## Hard-source private pilot status
+
+同一 script 现在支持 explicit `--confirm-private-output` mode。一次 confirmed local private pilot 只向 ignored `runs/` storage 写入 private rows，并把同一个 public report 更新为 status `phase1_hard_source_private_pilot_complete_no_claim`。
+
+Public report 仍然只包含 aggregate 信息：task/action/family count buckets、candidate-found buckets、materialized buckets、evidence-success buckets、baseline/non-saturation buckets、privacy summary 和 no-claim attestations。Retrieval-only actions 可以找到 candidates，但没有 current-source materialization 时不计为 evidence success。不授权 provider/network work、training、runtime/default changes、新 retrieval families、method-winner claims 或 route reopening。
 
 ## 候选问题
 
