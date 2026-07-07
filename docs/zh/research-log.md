@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Assignment-Unpack Boundary
+
+Assignment-unpack boundary validation 现在会在 tuple/list unpack assignments 可能 raise 时让 try/except checks 保持 active。唯一看似 active 的 check 位于 `a, b = (1, 2)` 这类 safe same-shape unpack assignment 后的 except handler 时，仍会以 `missing_selftest_checks` 失败；matching unpack body 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。`a, b = 1`、`a, b = (1,)`、nested shape mismatches 和 dynamic RHS values 这类 unsafe/uncertain unpack assignments 仍保持 conservative active。
+
+加入 assignment-unpack boundary guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probes、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28840990565`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28840990565) 已在 `f4e3501` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Comprehension-Expression Reachability
 
 Comprehension-expression reachability 现在会把 conservative eager-comprehension truth/no-raise facts 和 generator-expression construction facts 带入 self-test analysis。唯一看似 active 的 check 位于 `if [risky() for item in []]:` 这类 empty eager comprehension 下、位于 `[1 for item in [1]] or ...` 这类 static truthy eager comprehension 后的 short-circuited operand 内，或位于 statically non-raising eager comprehension / generator-expression construction 之后的 except handler/post-try check 时，synthetic files 现在会以 `missing_selftest_checks` 失败。Dynamic iterables、nonempty risky eager-comprehension results、unhashable set/dict-comprehension results，以及 conservative bound-name list-comprehension results 仍保持 active。

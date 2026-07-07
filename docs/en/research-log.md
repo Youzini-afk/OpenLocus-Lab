@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Assignment-Unpack Boundary
+
+Assignment-unpack boundary validation now keeps try/except checks active when tuple/list unpack assignments may raise. Synthetic files where the only active-looking check lived in an except handler after safe same-shape unpack assignments such as `a, b = (1, 2)` still fail with `missing_selftest_checks`, and post-try checks after a matching unpack body whose `else` exits also fail as unreachable. Unsafe or uncertain unpack assignments such as `a, b = 1`, `a, b = (1,)`, nested shape mismatches, and dynamic RHS values remain conservative and active.
+
+After the assignment-unpack boundary guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28840990565`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28840990565) passed on `f4e3501` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Comprehension-Expression Reachability
 
 Comprehension-expression reachability now carries conservative eager-comprehension truth/no-raise facts and generator-expression construction facts into self-test analysis. Synthetic files where the only active-looking check lived under an empty eager comprehension such as `if [risky() for item in []]:`, inside a short-circuited operand after a static truthy eager comprehension such as `[1 for item in [1]] or ...`, or in an except handler/post-try check after a statically non-raising eager comprehension or generator-expression construction now fail with `missing_selftest_checks`. Dynamic iterables, nonempty risky eager-comprehension results, unhashable set/dict-comprehension results, and conservative bound-name list-comprehension results remain active.
