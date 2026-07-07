@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Literal-FString Reachability
+
+Literal-fstring reachability 现在会把 pure literal f-string truth 和 no-raise facts 带入 self-test analysis。唯一看似 active 的 check 位于 `if f'':` 下、位于 `f'a' == 'b'` 这类 false literal f-string comparison 后，或位于 non-raising `f'abc'` try body 之后的 except handler/post-try check 时，synthetic files 现在会以 `missing_selftest_checks` 失败。带 formatted values 的 dynamic f-strings 仍保持 conservative active。
+
+加入 literal-fstring reachability guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probes、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28839207436`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28839207436) 已在 `1d9df8d` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard NamedExpr Reachability
 
 NamedExpr reachability 现在会把 simple assignment-expression truth 和 no-raise facts 带入 self-test analysis。唯一看似 active 的 check 位于 `(flag := False)` 下、位于 `(flag := False) and ...` 之后的 short-circuited operand 内，或位于 non-raising `(value := 1)` try body 之后的 except handler/post-try check 时，synthetic files 现在会以 `missing_selftest_checks` 失败。True/unknown assignment-expression branches 和 risky assigned values 仍保持 conservative active。

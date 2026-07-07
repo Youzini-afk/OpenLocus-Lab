@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Literal-FString Reachability
+
+Literal-fstring reachability now carries pure literal f-string truth and no-raise facts into self-test analysis. Synthetic files where the only active-looking check lived under `if f'':`, behind a false literal f-string comparison such as `f'a' == 'b'`, or in an except handler/post-try check after a non-raising `f'abc'` try body now fail with `missing_selftest_checks`. Dynamic f-strings with formatted values remain conservative and active.
+
+After the literal-fstring reachability guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28839207436`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28839207436) passed on `1d9df8d` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard NamedExpr Reachability
 
 NamedExpr reachability now carries simple assignment-expression truth and no-raise facts into self-test analysis. Synthetic files where the only active-looking check lived under `(flag := False)`, inside a short-circuited operand after `(flag := False) and ...`, or in an except handler/post-try check after a non-raising `(value := 1)` try body now fail with `missing_selftest_checks`. True/unknown assignment-expression branches and risky assigned values remain conservative and active.
