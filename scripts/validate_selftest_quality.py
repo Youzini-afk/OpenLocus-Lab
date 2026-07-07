@@ -646,6 +646,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._literal_compare_truth_value(node) is not None
         if isinstance(node, ast.Subscript):
             return cls._subscript_expression_cannot_raise(node)
+        if isinstance(node, ast.NamedExpr):
+            return cls._assignment_target_cannot_raise(node.target) and cls._expression_cannot_raise(node.value)
         return False
 
     @classmethod
@@ -1263,6 +1265,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _literal_truth_value(cls, node: ast.AST) -> bool | None:
         if isinstance(node, ast.Constant):
             return bool(node.value)
+        if isinstance(node, ast.NamedExpr):
+            if not cls._assignment_target_cannot_raise(node.target):
+                return None
+            return cls._literal_truth_value(node.value)
         if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
             return bool(node.elts)
         if isinstance(node, ast.Dict):
@@ -1435,6 +1441,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._static_binop_value(node)
         if isinstance(node, ast.Subscript):
             return cls._static_subscript_value(node)
+        if isinstance(node, ast.NamedExpr):
+            if not cls._assignment_target_cannot_raise(node.target):
+                return False, None
+            return cls._static_comparison_value(node.value)
         if isinstance(node, ast.Tuple):
             values = []
             for element in node.elts:
@@ -2046,6 +2056,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_namedexpr_false_branch_rejected",
+            "def run_self_tests():\n    if (flag := False):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_if_not_true_only_rejected",
             "def run_self_tests():\n    if not True:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2063,6 +2078,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_short_circuited_and_check_only_rejected",
             "def run_self_tests():\n    if False and check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_namedexpr_short_circuited_and_check_rejected",
+            "def run_self_tests():\n    if (flag := False) and check('ok', value is True):\n        pass\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -2511,6 +2531,16 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_namedexpr_literal_except_check_rejected",
+            "def run_self_tests():\n    try:\n        (value := 1)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_namedexpr_literal_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        (item := 1)\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_known_raise_disjoint_except_then_check_rejected",
             "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2596,6 +2626,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_try_namedexpr_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        (value := risky())\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
             "target_with_try_handler_then_check_allowed",
             "def run_self_tests(value):\n    try:\n        return risky()\n    except Error:\n        pass\n    check('ok', value is True)\n",
             [],
@@ -2633,6 +2668,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_if_true_check_allowed",
             "def run_self_tests(value):\n    if True:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_namedexpr_true_branch_allowed",
+            "def run_self_tests(value):\n    if (flag := True):\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_namedexpr_unknown_branch_allowed",
+            "def run_self_tests(value, flag):\n    if (seen := flag):\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -2965,7 +3010,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop/unary/subscript no-raise, "
+            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr no-raise, "
             "and missing-check cases"
         )
         return 0
