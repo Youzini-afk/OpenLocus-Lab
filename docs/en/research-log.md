@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Class-Body Caught-Try No-Raise
+
+Class-body caught-try no-raise validation now keeps fake active coverage out of try/except checks for narrow class-body `try` statements whose known built-in exception is caught internally. Synthetic files where the only active-looking check lived in an except handler after `raise ValueError(...)` caught by `except ValueError` or a bare `except` now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Disjoint handlers, unknown handler types, risky caught handlers, risky `finally` suites, and class-body annotations before the raise remain conservative and active.
+
+After the class-body caught-try no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused class-body caught-try probes including annotation-before-raise sanity, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28846359299`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28846359299) passed on `078115a` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Class-Body Try No-Raise
 
 Class-body try no-raise validation now keeps fake active coverage out of try/except checks for narrow class-body `try` statements inside simple class definitions. Synthetic files where the only active-looking check lived in an except handler after safe `try: pass`, safe `try/finally`, safe `try/else`, or unreachable risky handlers now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Risky class-body try bodies, class-body annotations inside try bodies, risky `finally` suites, and risky `else` suites remain conservative and active.
