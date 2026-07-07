@@ -2,9 +2,9 @@
 
 日期：2026-07-07
 
-Status: `candidate_route_phase1_private_pilot_complete_no_claim`
+Status: `candidate_route_phase1_methodology_repair_preflight_no_private_write`
 
-Authorization: `phase1_local_private_pilot_authorized_confirmed_ignored_private_rows`
+Authorization: `methodology_repair_preflight_only_no_confirmed_private_capture`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
@@ -18,7 +18,7 @@ Phase 1 private pilot output 仍需要显式 `--confirm-private-output`；未提
 
 ## Phase 1 local private pilot status
 
-最小 local pilot runner 为 `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`。一次 confirmed low-resource local run 已在提供 `--confirm-private-output` 后，只向 ignored `runs/` storage 写入 private rows。Public aggregate report 为 `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json`，status 为 `phase1_private_pilot_complete_no_claim`。
+最小 local pilot runner 为 `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`。此前一次 confirmed low-resource local run 已在提供 `--confirm-private-output` 后，只向 ignored `runs/` storage 写入 private rows。当前 public aggregate report `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json` 已作为 methodology-repair `phase1_preflight` dry run 重新生成，未写入 private rows。
 
 该 report 仅包含 aggregate 信息：private row contents、task text、paths、ranges、hashes、snippets、provider payloads 和 per-episode details 均不公开。未授权或执行 provider/network actions，未授权 training 或 runtime/default change，不提出 method-winner claim；下一步授权动作仍为 `stop/request next explicit decision`。
 

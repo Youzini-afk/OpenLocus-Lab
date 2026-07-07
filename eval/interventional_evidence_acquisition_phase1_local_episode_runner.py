@@ -49,8 +49,8 @@ STATUS_INSUFFICIENT_SOURCE = "preflight_insufficient_episode_source"
 NEXT_ACTION = "stop/request next explicit decision"
 REPORT_KEYS = {
     "schema_version", "phase", "status", "authorization_attestation", "aggregate_buckets",
-    "randomized_action_health", "evidencecore_summary", "privacy_summary", "hard_gates",
-    "best_fixed_local_action_baseline", "validation_summary", "next_authorized_action",
+    "preflight_availability", "randomized_action_health", "evidencecore_summary", "privacy_summary",
+    "hard_gates", "best_fixed_local_action_baseline", "validation_summary", "next_authorized_action",
 }
 ROW_KEYS = {
     "schema_version", "episode_private_id", "step_index", "created_order_index",
@@ -73,6 +73,7 @@ class Episode:
     action: str
     block_id: str
     action_probability: float
+    eligible_actions: tuple[str, ...]
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -199,23 +200,68 @@ def ensure_episode_count(episodes: int) -> None:
         raise RunnerError("preflight_insufficient_episode_source: expected at least 20 FRK workflow tasks")
 
 
-def generate_episodes(count: int) -> list[Episode]:
+def action_is_structurally_available(action: str, task: WorkflowTask) -> bool:
+    if action in TERMINAL_ACTIONS:
+        return True
+    if action == "retrieve_bm25":
+        candidates, _latency, _availability = local_bm25_like_search(task)
+        return bool(candidates)
+    if action == "retrieve_symbol_regex":
+        candidates, _latency, _availability = local_symbol_regex_search(task)
+        return bool(candidates)
+    if action == "read_top1":
+        candidates, _latency, _availability = local_bm25_like_search(task)
+        return bool(candidates)
+    if action == "read_next_unique_file":
+        candidates, _latency, _availability = local_bm25_like_search(task)
+        return len(candidates) > 1
+    if action == "read_related_test":
+        return bool(related_test_candidates())
+    return False
+
+
+def build_action_availability() -> dict[str, list[WorkflowTask]]:
+    return {action: [task for task in TASKS if action_is_structurally_available(action, task)] for action in ALLOWED_ACTIONS}
+
+
+def available_actions_from(availability: dict[str, list[WorkflowTask]]) -> list[str]:
+    return [action for action in ALLOWED_ACTIONS if availability.get(action)]
+
+
+def action_eligibility_counts(availability: dict[str, list[WorkflowTask]]) -> dict[str, int]:
+    return {action: len(availability.get(action, [])) for action in ALLOWED_ACTIONS}
+
+
+def generate_episodes(count: int, availability: dict[str, list[WorkflowTask]] | None = None) -> list[Episode]:
     ensure_episode_count(count)
+    if availability is None:
+        availability = build_action_availability()
+    available_actions = available_actions_from(availability)
+    if not available_actions:
+        raise RunnerError("preflight_no_structurally_available_actions")
     rng = random.Random(FIXED_SEED)
-    task_schedule = list(TASKS)
-    rng.shuffle(task_schedule)
-    expanded: list[WorkflowTask] = []
-    while len(expanded) < count:
-        block = list(task_schedule)
-        rng.shuffle(block)
-        expanded.extend(block)
-    actions = list(ALLOWED_ACTIONS)
+    actions: list[str] = []
     while len(actions) < count:
-        block = list(ALLOWED_ACTIONS)
+        block = list(available_actions)
         rng.shuffle(block)
         actions.extend(block)
-    probability = 1.0 / len(ALLOWED_ACTIONS)
-    return [Episode(i, expanded[i], actions[i], private_ref("randomization_block", str(FIXED_SEED), str(i // len(ALLOWED_ACTIONS))), probability) for i in range(count)]
+    task_pools = {action: list(availability[action]) for action in available_actions}
+    task_offsets = {action: 0 for action in available_actions}
+    for pool in task_pools.values():
+        rng.shuffle(pool)
+    probability = 1.0 / len(available_actions)
+    episodes: list[Episode] = []
+    for i in range(count):
+        action = actions[i]
+        pool = task_pools[action]
+        offset = task_offsets[action]
+        if offset >= len(pool):
+            rng.shuffle(pool)
+            offset = 0
+        task = pool[offset]
+        task_offsets[action] = offset + 1
+        episodes.append(Episode(i, task, action, private_ref("randomization_block", str(FIXED_SEED), str(i // len(available_actions))), probability, tuple(available_actions)))
+    return episodes
 
 
 def walk_values(obj: Any) -> list[Any]:
@@ -270,7 +316,7 @@ def build_row(
             "new_retrieval_family": False,
         },
         "randomization": {
-            "eligible_actions": list(ALLOWED_ACTIONS),
+            "eligible_actions": list(episode.eligible_actions),
             "assignment_policy_id_private": private_ref("policy", str(FIXED_SEED)),
             "action_probability_bucket": bucket_probability(episode.action_probability),
             "propensity_available_bool": True,
@@ -399,8 +445,14 @@ def validate_private_rows(rows: list[dict[str, Any]]) -> list[str]:
         action = row.get("action", {}).get("label") if isinstance(row.get("action"), dict) else None
         if action not in ALLOWED_ACTIONS:
             errors.append(f"{loc}: action set drift")
-        if row.get("randomization", {}).get("eligible_actions") != list(ALLOWED_ACTIONS):
+        eligible_actions = row.get("randomization", {}).get("eligible_actions")
+        if not isinstance(eligible_actions, list) or not eligible_actions:
             errors.append(f"{loc}: eligible action drift")
+            eligible_actions = []
+        elif any(action_name not in ALLOWED_ACTIONS for action_name in eligible_actions) or len(set(eligible_actions)) != len(eligible_actions):
+            errors.append(f"{loc}: eligible action drift")
+        elif action not in eligible_actions:
+            errors.append(f"{loc}: selected action not eligible")
         for group_name in ("state", "action", "randomization"):
             for value in walk_values(row.get(group_name, {})):
                 if isinstance(value, str) and LABEL_LEAK_TERMS.search(value) and value not in ALLOWED_ACTIONS:
@@ -425,22 +477,31 @@ def validate_private_rows(rows: list[dict[str, Any]]) -> list[str]:
 def run_episodes(episode_count: int, dry_run: bool) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     stats: list[dict[str, Any]] = []
-    for order, episode in enumerate(generate_episodes(episode_count)):
+    availability = build_action_availability()
+    for order, episode in enumerate(generate_episodes(episode_count, availability)):
         row, stat = execute_episode(episode, order, dry_run)
         rows.append(row)
         stats.append(stat)
     errors = validate_private_rows(rows)
     if errors:
         raise RunnerError("private row validation failed: " + "; ".join(errors[:5]))
-    return rows, stats, {"episode_count": len(rows), "row_count": len(rows), "private_rows_written": False, "storage_class": "none"}
+    return rows, stats, {
+        "episode_count": len(rows),
+        "row_count": len(rows),
+        "private_rows_written": False,
+        "storage_class": "none",
+        "action_eligible_episode_counts": action_eligibility_counts(availability),
+    }
 
 
 def hard_gates(rows: list[dict[str, Any]], stats: list[dict[str, Any]], confirmed: bool) -> dict[str, bool]:
     actions = Counter(row["action"]["label"] for row in rows)
+    eligible_actions = set(rows[0]["randomization"]["eligible_actions"]) if rows else set()
     return {
         "episode_source_bounded_to_frk_tasks": len(TASKS) >= 20,
         "episode_count_in_authorized_range": MIN_EPISODES <= len(rows) <= MAX_EPISODES,
-        "allowed_action_set_exact": set(actions) == set(ALLOWED_ACTIONS),
+        "selected_actions_subset_of_allowed": set(actions).issubset(set(ALLOWED_ACTIONS)),
+        "all_eligible_actions_observed": set(actions) == eligible_actions,
         "no_provider_network_actions": all(not row["action"]["network_or_provider_action"] and row["privacy"]["network_access"] == "no_network" for row in rows),
         "no_training_or_runtime_default_change": True,
         "private_rows_schema_valid": not validate_private_rows(rows),
@@ -469,6 +530,10 @@ def public_leak_errors(report: dict[str, Any]) -> list[str]:
 
 def aggregate_report(rows: list[dict[str, Any]], stats: list[dict[str, Any]], manifest: dict[str, Any], *, confirmed: bool, dry_run: bool) -> dict[str, Any]:
     actions = Counter(row["action"]["label"] for row in rows)
+    eligible_actions = set(rows[0]["randomization"]["eligible_actions"]) if rows else set()
+    eligible_counts = manifest.get("action_eligible_episode_counts")
+    if not isinstance(eligible_counts, dict):
+        eligible_counts = {action: (len(TASKS) if action in eligible_actions else 0) for action in ALLOWED_ACTIONS}
     outcomes = Counter(row["outcome"]["outcome_bucket"] for row in rows)
     failures = Counter(row["observation"]["failure_bucket"] for row in rows)
     currentness = Counter(row["evidence_core"]["currentness_status"] for row in rows)
@@ -506,12 +571,23 @@ def aggregate_report(rows: list[dict[str, Any]], stats: list[dict[str, Any]], ma
             "candidate_count_buckets": {name: bucket_count(count) for name, count in sorted(Counter(bucket_count(s["candidate_count"]) for s in stats).items())},
             "latency_buckets": {name: bucket_count(count) for name, count in sorted(Counter(s["latency_bucket"] for s in stats).items())},
         },
+        "preflight_availability": {
+            action: {
+                "availability_status": "eligible" if int(eligible_counts.get(action, 0)) > 0 else "structurally_unavailable",
+                "eligible_episode_count_bucket": bucket_count(int(eligible_counts.get(action, 0))),
+                "sampled_episode_count_bucket": bucket_count(actions.get(action, 0)),
+            }
+            for action in ALLOWED_ACTIONS
+        },
         "randomized_action_health": {
-            "policy": "fixed_seed_uniform_over_allowed_actions",
+            "policy": "fixed_seed_shuffled_blocks_over_structurally_eligible_actions",
             "allowed_action_count_bucket": bucket_count(len(ALLOWED_ACTIONS)),
+            "eligible_action_count_bucket": bucket_count(len(eligible_actions)),
+            "unavailable_action_count_bucket": bucket_count(len(set(ALLOWED_ACTIONS) - eligible_actions)),
             "all_allowed_actions_observed": set(actions) == set(ALLOWED_ACTIONS),
+            "all_eligible_actions_observed": set(actions) == eligible_actions,
             "propensity_available": True,
-            "assignment_probability_bucket": bucket_probability(1.0 / len(ALLOWED_ACTIONS)),
+            "assignment_probability_bucket": bucket_probability(1.0 / len(eligible_actions)) if eligible_actions else "probability_0_to_0_25",
             "coverage_bucket_by_action_min": bucket_count(min(actions.values()) if actions else 0),
         },
         "evidencecore_summary": {
@@ -576,8 +652,19 @@ def validate_public_report(report: dict[str, Any]) -> list[str]:
     action_coverage = report.get("aggregate_buckets", {}).get("action_coverage", {})
     if set(action_coverage) != set(ALLOWED_ACTIONS):
         errors.append("allowed action set drift in coverage")
-    if not report.get("randomized_action_health", {}).get("all_allowed_actions_observed"):
-        errors.append("not all allowed actions observed")
+    availability = report.get("preflight_availability", {})
+    if set(availability) != set(ALLOWED_ACTIONS):
+        errors.append("preflight availability action set drift")
+    elif any((not isinstance(value, dict)) or set(value) != {"availability_status", "eligible_episode_count_bucket", "sampled_episode_count_bucket"} for value in availability.values()):
+        errors.append("preflight availability shape drift")
+    for action_name, value in (availability.items() if isinstance(availability, dict) else []):
+        if not isinstance(value, dict):
+            errors.append("preflight availability row must be aggregate object")
+            continue
+        if value.get("availability_status") == "structurally_unavailable" and value.get("sampled_episode_count_bucket") != "count_0":
+            errors.append(f"unavailable action sampled: {action_name}")
+    if not report.get("randomized_action_health", {}).get("all_eligible_actions_observed"):
+        errors.append("not all eligible actions observed")
     privacy = report.get("privacy_summary", {})
     if privacy.get("publication_level") != "aggregate_only":
         errors.append("publication level drift")
@@ -623,7 +710,8 @@ def fixture_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str
     rows: list[dict[str, Any]] = []
     stats: list[dict[str, Any]] = []
     evidence = {"path_private": "private/source.rs", "range_private": "1-3", "currentness_status": "verified_current", "materialization_status": "materialized_current", "content_digest_private": "0" * 64}
-    for order, episode in enumerate(generate_episodes(DEFAULT_EPISODES)):
+    availability = build_action_availability()
+    for order, episode in enumerate(generate_episodes(DEFAULT_EPISODES, availability)):
         success = episode.action not in TERMINAL_ACTIONS
         row = build_row(
             episode=episode,
@@ -643,7 +731,7 @@ def fixture_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str
         )
         rows.append(row)
         stats.append({"action": episode.action, "success": success, "evidence_required": success, "materialized": success, "availability": "available", "failure": "none", "latency_bucket": "lt_1s", "candidate_count": 1 if success else 0})
-    return rows, stats, {"episode_count": len(rows), "row_count": len(rows), "private_rows_written": False, "storage_class": "none"}
+    return rows, stats, {"episode_count": len(rows), "row_count": len(rows), "private_rows_written": False, "storage_class": "none", "action_eligible_episode_counts": action_eligibility_counts(availability)}
 
 
 def run_self_tests() -> dict[str, Any]:
@@ -670,6 +758,42 @@ def run_self_tests() -> dict[str, Any]:
     bad_report = copy.deepcopy(report)
     bad_report["aggregate_buckets"]["action_coverage"].pop("abstain", None)
     checks.append(("report_action_set_drift_rejected", bool(validate_public_report(bad_report))))
+    first_block_actions = [episode.action for episode in generate_episodes(DEFAULT_EPISODES)[:len(ALLOWED_ACTIONS)]]
+    checks.append(("first_action_block_shuffled", first_block_actions != list(ALLOWED_ACTIONS)))
+    availability = build_action_availability()
+    unavailable_action = "read_related_test"
+    availability[unavailable_action] = []
+    unavailable_episodes = generate_episodes(DEFAULT_EPISODES, availability)
+    checks.append(("unavailable_action_not_selected", unavailable_action not in {episode.action for episode in unavailable_episodes}))
+    rows_unavailable = []
+    stats_unavailable = []
+    evidence = {"path_private": "private/source.rs", "range_private": "1-3", "currentness_status": "verified_current", "materialization_status": "materialized_current", "content_digest_private": "0" * 64}
+    for order, episode in enumerate(unavailable_episodes):
+        success = episode.action not in TERMINAL_ACTIONS
+        row = build_row(
+            episode=episode,
+            order_index=order,
+            action_label=episode.action,
+            seen_count=1 if success else 0,
+            candidate_count=1 if success else 0,
+            observation_status="observed" if success else ("stopped" if episode.action == "stop" else "abstained"),
+            result_bucket="evidence_added" if success else "not_applicable",
+            failure_bucket="none",
+            latency_seconds=0.001,
+            evidence_delta=1 if success else 0,
+            evidence_required=success,
+            evidence=evidence if success else None,
+            outcome_bucket="success_bucket" if success else ("stop_bucket" if episode.action == "stop" else "abstain_bucket"),
+            dry_run=True,
+        )
+        rows_unavailable.append(row)
+        stats_unavailable.append({"action": episode.action, "success": success, "evidence_required": success, "materialized": success, "availability": "available", "failure": "none", "latency_bucket": "lt_1s", "candidate_count": 1 if success else 0})
+    manifest_unavailable = {"episode_count": len(rows_unavailable), "row_count": len(rows_unavailable), "private_rows_written": False, "storage_class": "none", "action_eligible_episode_counts": action_eligibility_counts(availability)}
+    unavailable_report = aggregate_report(rows_unavailable, stats_unavailable, manifest_unavailable, confirmed=False, dry_run=True)
+    checks.append(("unavailable_action_report_valid", not validate_public_report(unavailable_report)))
+    bad_report = copy.deepcopy(unavailable_report)
+    bad_report["preflight_availability"][unavailable_action]["sampled_episode_count_bucket"] = "count_1"
+    checks.append(("unavailable_action_sample_rejected", bool(validate_public_report(bad_report))))
     try:
         temp = REPO / "artifacts" / PHASE / "__phase1_selftest_report__.json"
         capture(24, confirm_private_output=False, dry_run=True, output=temp)

@@ -2,9 +2,9 @@
 
 Date: 2026-07-07
 
-Status: `candidate_route_phase1_private_pilot_complete_no_claim`
+Status: `candidate_route_phase1_methodology_repair_preflight_no_private_write`
 
-Authorization: `phase1_local_private_pilot_authorized_confirmed_ignored_private_rows`
+Authorization: `methodology_repair_preflight_only_no_confirmed_private_capture`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
@@ -18,7 +18,7 @@ Phase 1 private pilot output still requires explicit `--confirm-private-output`.
 
 ## Phase 1 local private pilot status
 
-The minimal local pilot runner is `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`. A confirmed low-resource local run wrote private rows only under ignored `runs/` storage after `--confirm-private-output`. The public aggregate report is `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json` with status `phase1_private_pilot_complete_no_claim`.
+The minimal local pilot runner is `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`. A confirmed low-resource local run previously wrote private rows only under ignored `runs/` storage after `--confirm-private-output`. The current public aggregate report at `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json` was regenerated as a methodology-repair `phase1_preflight` dry run with no private rows written.
 
 The report is aggregate-only: no private row contents, task text, paths, ranges, hashes, snippets, provider payloads, or per-episode details are public. No provider/network actions were authorized or executed, no training or runtime/default change was authorized, no method-winner claim is made, and the next authorized action remains `stop/request next explicit decision`.
 

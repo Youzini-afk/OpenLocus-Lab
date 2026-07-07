@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Methodology Repair Preflight
+
+Updated `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py` to shuffle every randomized action block, including the first block, and to exclude structurally unavailable actions from randomized assignment. The aggregate-only public report now includes per-action preflight availability buckets and was regenerated with `--dry-run`, so no private rows were written.
+
+The repair keeps the existing boundaries: local-only actions, no provider/network, no model/training, no runtime/default change, no new retrieval family, no method-winner claim, and no route reopening.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 1 Local Private Pilot
 
 Added `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py` and generated the aggregate-only public report [`interventional_evidence_acquisition_phase1_local_episode_runner_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json). A confirmed low-resource local run used 24 bounded episodes from existing FRK workflow tasks and wrote private rows only under ignored `runs/` storage after `--confirm-private-output`.

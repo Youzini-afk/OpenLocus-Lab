@@ -3,7 +3,7 @@
     "action_coverage": {
       "abstain": "count_2_to_5",
       "read_next_unique_file": "count_2_to_5",
-      "read_related_test": "count_2_to_5",
+      "read_related_test": "count_0",
       "read_top1": "count_2_to_5",
       "retrieve_bm25": "count_2_to_5",
       "retrieve_symbol_regex": "count_2_to_5",
@@ -16,15 +16,13 @@
     },
     "episode_count_bucket": "count_21_to_50",
     "failure_buckets": {
-      "missing_source": "count_2_to_5",
-      "none": "count_6_to_20"
+      "none": "count_21_to_50"
     },
     "latency_buckets": {
       "lt_1s": "count_21_to_50"
     },
     "outcome_buckets": {
       "abstain_bucket": "count_2_to_5",
-      "failure_bucket": "count_2_to_5",
       "stop_bucket": "count_2_to_5",
       "success_bucket": "count_6_to_20"
     },
@@ -32,12 +30,12 @@
     "source_task_count_bucket": "count_6_to_20"
   },
   "authorization_attestation": {
-    "dry_run_preflight": false,
+    "dry_run_preflight": true,
     "local_existing_capabilities_only": true,
     "method_winner_claimed": false,
     "model_training_executed": false,
     "new_retrieval_channel_family_added": false,
-    "private_output_confirmation": "confirmed",
+    "private_output_confirmation": "not_confirmed_no_private_rows_written",
     "provider_network_authorized": false,
     "runtime_default_change_authorized": false,
     "training_authorized": false
@@ -56,44 +54,85 @@
       "verified_current": "count_6_to_20"
     },
     "materialized_current_bucket": "count_6_to_20",
-    "not_materialized_bucket": "count_2_to_5",
+    "not_materialized_bucket": "count_0",
     "required_evidence_bucket": "count_6_to_20"
   },
   "hard_gates": {
-    "allowed_action_set_exact": true,
-    "confirm_private_output_for_private_write": true,
+    "all_eligible_actions_observed": true,
+    "confirm_private_output_for_private_write": false,
     "episode_count_in_authorized_range": true,
     "episode_source_bounded_to_frk_tasks": true,
     "evidencecore_checked_for_counted_evidence": true,
     "no_provider_network_actions": true,
     "no_training_or_runtime_default_change": true,
     "private_rows_schema_valid": true,
-    "public_private_boundary_preserved": true
+    "public_private_boundary_preserved": true,
+    "selected_actions_subset_of_allowed": true
   },
   "next_authorized_action": "stop/request next explicit decision",
   "phase": "interventional_evidence_acquisition_phase1_local_episode_runner",
+  "preflight_availability": {
+    "abstain": {
+      "availability_status": "eligible",
+      "eligible_episode_count_bucket": "count_6_to_20",
+      "sampled_episode_count_bucket": "count_2_to_5"
+    },
+    "read_next_unique_file": {
+      "availability_status": "eligible",
+      "eligible_episode_count_bucket": "count_6_to_20",
+      "sampled_episode_count_bucket": "count_2_to_5"
+    },
+    "read_related_test": {
+      "availability_status": "structurally_unavailable",
+      "eligible_episode_count_bucket": "count_0",
+      "sampled_episode_count_bucket": "count_0"
+    },
+    "read_top1": {
+      "availability_status": "eligible",
+      "eligible_episode_count_bucket": "count_6_to_20",
+      "sampled_episode_count_bucket": "count_2_to_5"
+    },
+    "retrieve_bm25": {
+      "availability_status": "eligible",
+      "eligible_episode_count_bucket": "count_6_to_20",
+      "sampled_episode_count_bucket": "count_2_to_5"
+    },
+    "retrieve_symbol_regex": {
+      "availability_status": "eligible",
+      "eligible_episode_count_bucket": "count_6_to_20",
+      "sampled_episode_count_bucket": "count_2_to_5"
+    },
+    "stop": {
+      "availability_status": "eligible",
+      "eligible_episode_count_bucket": "count_6_to_20",
+      "sampled_episode_count_bucket": "count_2_to_5"
+    }
+  },
   "privacy_summary": {
     "central_privacy_scan": "passed",
     "per_episode_details_public": false,
     "private_hashes_public": false,
     "private_paths_public": false,
     "private_ranges_public": false,
-    "private_rows_written": true,
+    "private_rows_written": false,
     "private_task_text_public": false,
     "provider_payloads_public": false,
     "publication_level": "aggregate_only",
     "raw_private_rows_public": false
   },
   "randomized_action_health": {
-    "all_allowed_actions_observed": true,
+    "all_allowed_actions_observed": false,
+    "all_eligible_actions_observed": true,
     "allowed_action_count_bucket": "count_6_to_20",
     "assignment_probability_bucket": "probability_0_to_0_25",
     "coverage_bucket_by_action_min": "count_2_to_5",
-    "policy": "fixed_seed_uniform_over_allowed_actions",
-    "propensity_available": true
+    "eligible_action_count_bucket": "count_6_to_20",
+    "policy": "fixed_seed_shuffled_blocks_over_structurally_eligible_actions",
+    "propensity_available": true,
+    "unavailable_action_count_bucket": "count_1"
   },
   "schema_version": "interventional_evidence_acquisition_phase1_public_report_v1",
-  "status": "phase1_private_pilot_complete_no_claim",
+  "status": "phase1_preflight",
   "validation_summary": {
     "central_privacy_scanner": "passed",
     "private_row_validation": "passed",
