@@ -154,6 +154,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if node.value is not None:
             self.visit(node.value)
 
+    def visit_Assign(self, node: ast.Assign) -> None:
+        self.visit(node.value)
+        if self._expression_guarantees_raise(node.value):
+            for target in node.targets:
+                self._visit_unreachable(target)
+            return
+        for target in node.targets:
+            self.visit(target)
+
     def _visit_annotation(self, node: ast.AST, *, evaluated: bool) -> None:
         if evaluated:
             self.visit(node)
@@ -1031,6 +1040,91 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._eager_comprehension_cannot_raise(node)
         if isinstance(node, ast.GeneratorExp):
             return cls._generator_expression_cannot_raise(node)
+        return False
+
+    @classmethod
+    def _expression_guarantees_raise(cls, node: ast.AST) -> bool:
+        if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+            return any(cls._expression_guarantees_raise(element) for element in node.elts)
+        if isinstance(node, ast.Dict):
+            for key, value in zip(node.keys, node.values):
+                if key is not None and cls._expression_guarantees_raise(key):
+                    return True
+                if cls._expression_guarantees_raise(value):
+                    return True
+            return False
+        if isinstance(node, ast.NamedExpr):
+            return cls._expression_guarantees_raise(node.value)
+        if isinstance(node, ast.IfExp):
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._expression_guarantees_raise(node.body)
+            if test_truth is False:
+                return cls._expression_guarantees_raise(node.orelse)
+            return cls._expression_guarantees_raise(node.body) and cls._expression_guarantees_raise(node.orelse)
+        if isinstance(node, ast.UnaryOp):
+            if cls._expression_guarantees_raise(node.operand):
+                return True
+            known_operand, operand_value = cls._static_comparison_value(node.operand)
+            if not known_operand:
+                return False
+            try:
+                if isinstance(node.op, ast.Not):
+                    not operand_value
+                elif isinstance(node.op, ast.UAdd):
+                    +operand_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.USub):
+                    -operand_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.Invert):
+                    ~operand_value  # type: ignore[operator]
+                else:
+                    return False
+            except (ArithmeticError, TypeError, ValueError, OverflowError):
+                return True
+            return False
+        if isinstance(node, ast.BinOp):
+            if cls._expression_guarantees_raise(node.left) or cls._expression_guarantees_raise(node.right):
+                return True
+            known_left, left_value = cls._static_comparison_value(node.left)
+            known_right, right_value = cls._static_comparison_value(node.right)
+            if not known_left or not known_right:
+                return False
+            try:
+                if isinstance(node.op, ast.Add):
+                    left_value + right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.Sub) and cls._static_values_are_numbers(left_value, right_value):
+                    left_value - right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.Mult) and cls._static_values_are_numbers(left_value, right_value):
+                    left_value * right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.Div) and cls._static_values_are_numbers(left_value, right_value):
+                    left_value / right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.FloorDiv) and cls._static_values_are_numbers(left_value, right_value):
+                    left_value // right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.Mod) and cls._static_values_are_numbers(left_value, right_value):
+                    left_value % right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.BitAnd) and cls._static_values_are_ints(left_value, right_value):
+                    left_value & right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.BitOr) and cls._static_values_are_ints(left_value, right_value):
+                    left_value | right_value  # type: ignore[operator]
+                elif isinstance(node.op, ast.BitXor) and cls._static_values_are_ints(left_value, right_value):
+                    left_value ^ right_value  # type: ignore[operator]
+                else:
+                    return False
+            except (ArithmeticError, TypeError, ValueError, OverflowError):
+                return True
+            return False
+        if isinstance(node, ast.Subscript):
+            if cls._expression_guarantees_raise(node.value) or cls._expression_guarantees_raise(node.slice):
+                return True
+            known_value, value = cls._static_comparison_value(node.value)
+            known_slice, slice_value = cls._static_slice_value(node.slice)
+            if not known_value or not known_slice:
+                return False
+            try:
+                value[slice_value]  # type: ignore[index]
+            except (LookupError, TypeError, ValueError, OverflowError):
+                return True
+            return False
         return False
 
     @classmethod
@@ -2526,6 +2620,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_assign_static_oob_rhs_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)] = [][0]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assign_static_missing_key_rhs_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)] = {}['x']\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assign_static_divzero_rhs_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)] = 1 / 0\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_literal_fstring_false_branch_rejected",
             "def run_self_tests():\n    if f'':\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -3941,6 +4050,21 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_assign_safe_rhs_subscript_target_check_allowed",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)] = 1\n",
+            [],
+        ),
+        (
+            "target_with_assign_dynamic_rhs_subscript_target_check_allowed",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)] = risky()\n",
+            [],
+        ),
+        (
+            "target_with_assign_rhs_check_before_static_raise_allowed",
+            "def run_self_tests(value, items):\n    items[0] = (check('ok', value is True), [][0])\n",
+            [],
+        ),
+        (
             "target_with_future_annotation_value_bad_annotation_rejected",
             "from __future__ import annotations\n\ndef run_self_tests(value):\n    local: check('bad', True) = check('ok', value is True)\n",
             ["literal_true_check"],
@@ -4170,7 +4294,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "risky match-guard exit, loop/comprehension target reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
