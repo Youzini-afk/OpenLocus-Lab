@@ -579,8 +579,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _statement_cannot_raise(cls, node: ast.stmt) -> bool:
         if isinstance(node, (ast.Pass, ast.Break, ast.Continue)):
             return True
+        if isinstance(node, (ast.Global, ast.Nonlocal)):
+            return True
         if isinstance(node, ast.Return):
             return node.value is None or cls._expression_cannot_raise(node.value)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return cls._function_definition_statement_cannot_raise(node)
         if isinstance(node, ast.Expr):
             return cls._expression_cannot_raise(node.value)
         if isinstance(node, ast.Assign):
@@ -612,6 +616,27 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return False
             return cls._block_cannot_raise(node.orelse) and cls._block_cannot_raise(node.finalbody)
         return False
+
+    @classmethod
+    def _function_definition_statement_cannot_raise(cls, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
+        if node.decorator_list:
+            return False
+        if cls._function_definition_has_annotations(node):
+            return False
+        defaults = [*node.args.defaults, *(default for default in node.args.kw_defaults if default is not None)]
+        return all(cls._expression_cannot_raise(default) for default in defaults)
+
+    @staticmethod
+    def _function_definition_has_annotations(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
+        if node.returns is not None:
+            return True
+        args = node.args
+        for arg in [*args.posonlyargs, *args.args, *args.kwonlyargs]:
+            if arg.annotation is not None:
+                return True
+        if args.vararg is not None and args.vararg.annotation is not None:
+            return True
+        return args.kwarg is not None and args.kwarg.annotation is not None
 
     @classmethod
     def _annassign_statement_cannot_raise(cls, node: ast.AnnAssign) -> bool:
@@ -2630,6 +2655,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_global_except_check_rejected",
+            "def run_self_tests():\n    try:\n        global flag\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_functiondef_except_check_rejected",
+            "def run_self_tests():\n    try:\n        def helper():\n            pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_async_functiondef_except_check_rejected",
+            "def run_self_tests():\n    try:\n        async def helper():\n            pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_functiondef_literal_default_except_check_rejected",
+            "def run_self_tests():\n    try:\n        def helper(value=1, *, other=f'ok'):\n            pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_literal_unary_minus_except_check_rejected",
             "def run_self_tests():\n    try:\n        -1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2777,6 +2822,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_no_raise_else_return_then_check_rejected",
             "def run_self_tests():\n    try:\n        pass\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_global_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        global flag\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_functiondef_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        def helper():\n            pass\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -3007,6 +3062,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_dynamic_fstring_except_check_allowed",
             "def run_self_tests():\n    try:\n        f'{risky()}'\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_functiondef_risky_default_except_check_allowed",
+            "def run_self_tests():\n    try:\n        def helper(value=risky()):\n            pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_functiondef_decorator_except_check_allowed",
+            "def run_self_tests():\n    try:\n        @decorator\n        def helper():\n            pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_functiondef_annotation_except_check_allowed",
+            "def run_self_tests():\n    try:\n        def helper(value: int) -> int:\n            return value\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -3484,7 +3554,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "boolop no-raise, declaration/functiondef no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
