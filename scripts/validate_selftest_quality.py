@@ -648,6 +648,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._subscript_expression_cannot_raise(node)
         if isinstance(node, ast.NamedExpr):
             return cls._assignment_target_cannot_raise(node.target) and cls._expression_cannot_raise(node.value)
+        if isinstance(node, ast.JoinedStr):
+            known, _value = cls._static_joined_str_value(node)
+            return known
         return False
 
     @classmethod
@@ -1269,6 +1272,11 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not cls._assignment_target_cannot_raise(node.target):
                 return None
             return cls._literal_truth_value(node.value)
+        if isinstance(node, ast.JoinedStr):
+            known, value = cls._static_joined_str_value(node)
+            if known:
+                return bool(value)
+            return None
         if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
             return bool(node.elts)
         if isinstance(node, ast.Dict):
@@ -1304,10 +1312,24 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _static_literal_value(cls, node: ast.AST) -> tuple[bool, object]:
         if isinstance(node, ast.Constant):
             return True, node.value
+        if isinstance(node, ast.JoinedStr):
+            return cls._static_joined_str_value(node)
         signed_numeric = cls._signed_numeric_literal_value(node)
         if signed_numeric is not None:
             return True, signed_numeric
         return False, None
+
+    @classmethod
+    def _static_joined_str_value(cls, node: ast.JoinedStr) -> tuple[bool, object]:
+        parts = []
+        for value in node.values:
+            if not isinstance(value, ast.Constant) or not isinstance(value.value, str):
+                return False, None
+            parts.append(value.value)
+        result = "".join(parts)
+        if len(result) > MAX_STATIC_STRING_CHARS:
+            return False, None
+        return True, result
 
     @classmethod
     def _static_unaryop_value(cls, node: ast.UnaryOp) -> tuple[bool, object]:
@@ -2061,6 +2083,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_literal_fstring_false_branch_rejected",
+            "def run_self_tests():\n    if f'':\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_if_not_true_only_rejected",
             "def run_self_tests():\n    if not True:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2103,6 +2130,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_if_literal_ne_false_only_rejected",
             "def run_self_tests():\n    if 'a' != 'a':\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_if_literal_fstring_compare_false_only_rejected",
+            "def run_self_tests():\n    if f'a' == 'b':\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -2531,6 +2563,16 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_fstring_except_check_rejected",
+            "def run_self_tests():\n    try:\n        f'abc'\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_fstring_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        f'abc'\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_namedexpr_literal_except_check_rejected",
             "def run_self_tests():\n    try:\n        (value := 1)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2631,6 +2673,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_try_dynamic_fstring_except_check_allowed",
+            "def run_self_tests():\n    try:\n        f'{risky()}'\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
             "target_with_try_handler_then_check_allowed",
             "def run_self_tests(value):\n    try:\n        return risky()\n    except Error:\n        pass\n    check('ok', value is True)\n",
             [],
@@ -2673,6 +2720,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_namedexpr_true_branch_allowed",
             "def run_self_tests(value):\n    if (flag := True):\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_literal_fstring_true_branch_allowed",
+            "def run_self_tests(value):\n    if f'abc':\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_dynamic_fstring_branch_allowed",
+            "def run_self_tests(value):\n    if f'{value}':\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -3010,7 +3067,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr no-raise, "
+            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr/literal-fstring no-raise, "
             "and missing-check cases"
         )
         return 0
