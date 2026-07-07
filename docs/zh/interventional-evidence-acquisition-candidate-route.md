@@ -2,7 +2,7 @@
 
 日期：2026-07-07
 
-Status: `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`
+Status: `feature_balance_precheck_ready_no_training`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 4 action-outcome learning precheck design。参见 [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md)。Status 为 `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`。它只是 design，不训练 models、不读取 private rows、不收集 data、不改变 CI，也不授权 runtime/default changes。
+最新 checkpoint：Phase 4A private-row feature/leakage/class-balance precheck。参见 [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) 和 `artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json`。Status 为 `feature_balance_precheck_ready_no_training`。它在显式确认后本地读取既有 ignored Phase 2/3 private rows，并只发布 aggregate buckets；它不训练，也不授权 training。
 
 ## Phase 2 small fair local comparison status
 
@@ -35,6 +35,10 @@ Phase 3B 不证明哪个 method 最好，也不支持 lift、signal、runtime/de
 Phase 4 写下 possible future action-outcome learning precheck 的 feature、label、leakage 和 split contract。Allowed future features 必须是 pre-action 且 non-leaky；forbidden features 包括 actual success labels、target paths/ranges/hashes/content、post-action reads、snippets、gold labels 和 provider payloads。
 
 这不是 training authorization。Stop/go outcomes 仅限 `stop_no_learning_claim`、`repair_feature_contract_no_claim` 或 `learning_precheck_ready_no_training`。
+
+## Phase 4A feature/leakage/class-balance precheck status
+
+Phase 4A 检查 pre-action feature contract 是否足够 non-leaky，能否作为 future learning precheck input 保留。它拒绝 evidence-success-as-feature、target path/range/hash/content features、post-action read/currentness/materialization fields、leak-shaped public strings 和 exact singleton public buckets。它报告 `feature_balance_precheck_ready_no_training`，这不是 training、scoring、ranking 或 predictive-performance evidence。
 
 ## 边界
 

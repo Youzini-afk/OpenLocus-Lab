@@ -1,0 +1,80 @@
+{
+  "authorization_attestation": {
+    "ci_changed": false,
+    "confirm_private_input_required": true,
+    "effect_claim": "no_effect_claim",
+    "llm_used": false,
+    "local_only": true,
+    "method_claimed": false,
+    "model_fitting_executed": false,
+    "model_quality_estimate_executed": false,
+    "model_training_executed": false,
+    "new_data_collected": false,
+    "new_retrieval_channel_family_added": false,
+    "private_rows_published": false,
+    "private_rows_read_locally": true,
+    "provider_network_used": false,
+    "runtime_default_changed": false,
+    "source_files_read_for_new_evidence": false
+  },
+  "class_balance_summary": {
+    "class_balance_screen_passed": true,
+    "control_positive_bucket": "count_0",
+    "target_non_positive_bucket": "count_gt_50",
+    "target_positive_bucket": "count_gt_50"
+  },
+  "conservative_recommendation": "feature_balance_precheck_ready_no_training",
+  "feature_contract_summary": {
+    "allowed_pre_action_features_only": true,
+    "candidate_found_alone_is_evidence": false,
+    "evidence_success_used_as_feature": false,
+    "feature_coverage_buckets": {
+      "action_label": "count_gt_50",
+      "availability_bucket": "count_gt_50",
+      "budget_bucket": "count_gt_50",
+      "candidate_count_bucket": "count_gt_50",
+      "task_family_bucket": "count_gt_50"
+    }
+  },
+  "input_summary": {
+    "action_coverage_buckets": {
+      "abstain": "count_gt_50",
+      "bm25_then_read_next_unique_file": "count_gt_50",
+      "bm25_then_read_top1": "count_gt_50",
+      "read_related_test_when_available": "count_gt_50",
+      "stop": "count_gt_50",
+      "symbol_regex_then_read_next_unique_file": "count_gt_50",
+      "symbol_regex_then_read_top1": "count_gt_50"
+    },
+    "phase_source_buckets": {
+      "phase2": "count_gt_50",
+      "phase3": "count_gt_50"
+    },
+    "row_count_bucket": "count_gt_50",
+    "source_bucket": "existing_ignored_phase2_phase3_private_rows"
+  },
+  "leakage_validation_summary": {
+    "fail_closed_validator": true,
+    "leakage_errors_bucket": "count_0",
+    "post_action_read_currentness_materialization_features_rejected": true,
+    "private_identifiers_rejected": true,
+    "target_label_as_feature_rejected": true,
+    "target_path_range_hash_content_features_rejected": true
+  },
+  "phase": "phase4a_private_row_feature_leakage_balance_precheck",
+  "schema_version": "phase4a_feature_leakage_balance_precheck_public_report_v1",
+  "split_readiness_summary": {
+    "holdout_by_task_family_repo_file_family_required": true,
+    "no_task_leakage_rule_required": true,
+    "public_split_output_buckets_only": true,
+    "split_ready_for_training": false
+  },
+  "status": "feature_balance_precheck_ready_no_training",
+  "validation_summary": {
+    "no_count_1_values": true,
+    "no_training_or_model_quality_estimate": true,
+    "public_leak_scan": "passed",
+    "route_specific_phase4a_validation": "passed",
+    "self_test_available": true
+  }
+}

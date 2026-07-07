@@ -8,6 +8,8 @@ Status: `phase4_action_outcome_learning_precheck_design_only_no_training_no_clai
 
 这只是 design。它不训练 model，不授权 training，不读取 private rows，不收集 data，不改变 CI，不改变 runtime/default behavior，不新增 retrieval families，也不提出 method claim。
 
+Phase 4A non-training precheck 现已在既有 ignored Phase 2/3 private rows 上本地运行。Public report：[`phase4a_private_row_feature_leakage_balance_precheck_report.json`](../../artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json)，status 为 `feature_balance_precheck_ready_no_training`。它只检查 feature contract、leakage rules 和 class balance。不训练、不拟合、不评分、不排序，也不声称 predictive performance。
+
 ## Phase 2、Phase 3 和 Phase 3B 说明了什么
 
 Phase 2 和 Phase 3 说明 small local comparison protocol 可以在 hard current-source tasks 上运行，并在 bucket level 复现同类 pattern：

@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`
+Status: `feature_balance_precheck_ready_no_training`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 4 action-outcome learning precheck design. See [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md). Status is `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`. It is design only and does not train models, read private rows, collect data, change CI, or authorize runtime/default changes.
+Latest checkpoint: Phase 4A private-row feature/leakage/class-balance precheck. See [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) and `artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json`. Status is `feature_balance_precheck_ready_no_training`. It reads existing ignored Phase 2/3 private rows locally with explicit confirmation and publishes aggregate buckets only; it does not train or authorize training.
 
 ## Phase 2 small fair local comparison status
 
@@ -35,6 +35,10 @@ Phase 3B does not prove which method is best and does not justify lift, signal, 
 Phase 4 writes the feature, label, leakage, and split contract for a possible future action-outcome learning precheck. Allowed future features must be pre-action and non-leaky; forbidden features include actual success labels, target paths/ranges/hashes/content, post-action reads, snippets, gold labels, and provider payloads.
 
 This is not authorization to train. Stop/go outcomes are limited to `stop_no_learning_claim`, `repair_feature_contract_no_claim`, or `learning_precheck_ready_no_training`.
+
+## Phase 4A feature/leakage/class-balance precheck status
+
+Phase 4A checks whether the pre-action feature contract is non-leaky enough to preserve as a future learning precheck input. It rejects evidence-success-as-feature, target path/range/hash/content features, post-action read/currentness/materialization fields, leak-shaped public strings, and exact singleton public buckets. It reports `feature_balance_precheck_ready_no_training`, which is not training, scoring, ranking, or predictive-performance evidence.
 
 ## Boundary
 

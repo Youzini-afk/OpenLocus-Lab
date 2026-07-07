@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 4A Feature Precheck
+
+已新增 `eval/interventional_evidence_acquisition_phase4a_action_outcome_learning_precheck.py`，并生成 aggregate-only report：[`phase4a_private_row_feature_leakage_balance_precheck_report.json`](../../artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json)。Status 为 `feature_balance_precheck_ready_no_training`。
+
+该 script 只有在提供 `--confirm-private-input` 后才读取既有 ignored Phase 2/3 private rows。它检查 allowed pre-action feature coverage、leakage rejection、class balance 和 split readiness。它不训练、不拟合、不评分、不排序、不读取 source、不收集 data、不改变 CI、不使用 provider/network/LLM、不改变 runtime/default behavior、不新增 retrieval families，也不提出 method/product claims。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 4 Learning Precheck Design
 
 已新增 paired design-only docs：[`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md)。Status 为 `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`。
