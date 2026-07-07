@@ -628,7 +628,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.Set):
             return cls._set_expression_cannot_raise(node)
         if isinstance(node, ast.UnaryOp):
-            return cls._expression_cannot_raise(node.operand)
+            return cls._unaryop_expression_cannot_raise(node)
         if isinstance(node, ast.BinOp):
             return cls._binop_expression_cannot_raise(node)
         if isinstance(node, ast.BoolOp):
@@ -645,6 +645,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.Compare):
             return cls._literal_compare_truth_value(node) is not None
         return False
+
+    @classmethod
+    def _unaryop_expression_cannot_raise(cls, node: ast.UnaryOp) -> bool:
+        if not cls._expression_cannot_raise(node.operand):
+            return False
+        if isinstance(node.op, ast.Not):
+            return True
+        known, _value = cls._static_unaryop_value(node)
+        return known
 
     @classmethod
     def _boolop_expression_cannot_raise(cls, node: ast.BoolOp) -> bool:
@@ -1277,6 +1286,28 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return False, None
 
     @classmethod
+    def _static_unaryop_value(cls, node: ast.UnaryOp) -> tuple[bool, object]:
+        known_operand, operand_value = cls._static_comparison_value(node.operand)
+        if not known_operand:
+            return False, None
+        try:
+            if isinstance(node.op, ast.Not):
+                value = not operand_value
+            elif isinstance(node.op, ast.UAdd):
+                value = +operand_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.USub):
+                value = -operand_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.Invert):
+                value = ~operand_value  # type: ignore[operator]
+            else:
+                return False, None
+        except (ArithmeticError, TypeError, ValueError, OverflowError):
+            return False, None
+        if not cls._static_value_is_small(value):
+            return False, None
+        return True, value
+
+    @classmethod
     def _static_binop_value(cls, node: ast.BinOp) -> tuple[bool, object]:
         known_left, left_value = cls._static_comparison_value(node.left)
         known_right, right_value = cls._static_comparison_value(node.right)
@@ -1346,6 +1377,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         known, value = cls._static_literal_value(node)
         if known:
             return True, value
+        if isinstance(node, ast.UnaryOp):
+            return cls._static_unaryop_value(node)
         if isinstance(node, ast.BinOp):
             return cls._static_binop_value(node)
         if isinstance(node, ast.Tuple):
@@ -2299,6 +2332,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_unary_minus_except_check_rejected",
+            "def run_self_tests():\n    try:\n        -1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_invert_int_except_check_rejected",
+            "def run_self_tests():\n    try:\n        ~1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_not_except_check_rejected",
+            "def run_self_tests():\n    try:\n        not False\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_assignment_except_check_rejected",
             "def run_self_tests():\n    try:\n        value = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2431,6 +2479,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_risky_binop_except_check_allowed",
             "def run_self_tests():\n    try:\n        risky() + 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_unary_plus_type_error_except_check_allowed",
+            "def run_self_tests():\n    try:\n        +'x'\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_invert_type_error_except_check_allowed",
+            "def run_self_tests():\n    try:\n        ~1.0\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_risky_unary_except_check_allowed",
+            "def run_self_tests():\n    try:\n        -risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2803,7 +2866,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop no-raise, "
+            "boolop no-raise, literal-container/binop/unary no-raise, "
             "and missing-check cases"
         )
         return 0
