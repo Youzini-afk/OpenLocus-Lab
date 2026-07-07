@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Annotated Assignment Target Reachability
+
+Annotated assignment target reachability now follows Python's value-before-target-before-evaluated-annotation order. Synthetic files where the only recognized check is hidden in an annotated-assignment subscript target after a statically raising RHS such as `[][0]`, `{}['x']`, or `1 / 0` now fail with `missing_selftest_checks`; evaluated class-body annotation checks after a statically raising RHS or target also fail. Checks after safe or dynamic RHS values, and checks inside the RHS before a later static raise, remain active.
+
+After the annotated assignment target reachability change, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused annotated-assignment target probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py` with an isolated pycache, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28850457473`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28850457473) passed on `4043a22` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Assignment Target Reachability
 
 Assignment target reachability now follows Python's RHS-before-target evaluation order for ordinary assignments. Synthetic files where the only recognized check is hidden in a subscript target after a statically raising RHS such as `[][0]`, `{}['x']`, or `1 / 0` now fail with `missing_selftest_checks`; checks inside the RHS before a later static raise, and target checks after safe or dynamic RHS values, remain active.

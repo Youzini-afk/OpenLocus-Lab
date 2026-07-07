@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Annotated Assignment Target Reachability
+
+Annotated assignment target reachability 现在会遵循 Python 的 value-before-target-before-evaluated-annotation 求值顺序。唯一 recognized check 藏在 `[][0]`、`{}['x']` 或 `1 / 0` 这类 statically raising RHS 之后的 annotated-assignment subscript target 中时，synthetic files 现在会以 `missing_selftest_checks` 失败；位于 statically raising RHS 或 target 之后、会被求值的 class-body annotation checks 也会失败。safe 或 dynamic RHS 之后的 checks，以及 RHS 内在 later static raise 之前被求值的 checks 仍保持 active。
+
+加入 annotated assignment target reachability change 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused annotated-assignment target probes、默认 allowlist scan、使用 isolated pycache 的 `python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28850457473`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28850457473) 已在 `4043a22` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Assignment Target Reachability
 
 Assignment target reachability 现在会让 ordinary assignments 遵循 Python 的 RHS-before-target 求值顺序。唯一 recognized check 藏在 `[][0]`、`{}['x']` 或 `1 / 0` 这类 statically raising RHS 之后的 subscript target 中时，synthetic files 现在会以 `missing_selftest_checks` 失败；RHS 内在 later static raise 之前被求值的 checks，以及 safe 或 dynamic RHS 之后的 target checks 仍保持 active。
