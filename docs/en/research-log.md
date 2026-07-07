@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Literal-Subscript No-Raise
+
+Literal-subscript no-raise coverage now carries bounded static literal subscript expression facts into try-body no-raise analysis. Synthetic files where the only active-looking check lived in an except handler after `(1, 2)[0]`, `'abc'[1]`, `(1, 2, 3)[1:]`, or `{'a': 1}['a']` now fail with `missing_selftest_checks`, and a post-try check after a statically non-raising subscript body whose `else` returns also fails as unreachable. Out-of-bounds indexes, missing keys, type-error subscripts, and dynamic operands remain conservative and active.
+
+After the literal-subscript no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, the focused probe, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28837990386`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28837990386) passed on `5aacb95` with `max_repos=1` and `enable_remote_models=false`. This validates the guard in CI only; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Literal-Unary No-Raise
 
 Literal-unary no-raise coverage now carries bounded static literal unary expression facts into try-body no-raise analysis. Synthetic files where the only active-looking check lived in an except handler after `-1`, `~1`, or `not False` now fail with `missing_selftest_checks`. Unary expressions that can raise, such as `+'x'` and `~1.0`, and dynamic operands such as `-risky()`, remain conservative and active.

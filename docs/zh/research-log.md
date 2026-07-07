@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Literal-Subscript No-Raise
+
+Literal-subscript no-raise coverage 现在会把 bounded static literal subscript expression facts 带入 try-body no-raise analysis。唯一看似 active 的 check 位于 `(1, 2)[0]`、`'abc'[1]`、`(1, 2, 3)[1:]` 或 `{'a': 1}['a']` 后的 except handler 内时，synthetic files 现在会以 `missing_selftest_checks` 失败；statically non-raising subscript body 且 `else` 会 return 之后的 post-try check 也会作为 unreachable 失败。Out-of-bounds indexes、missing keys、type-error subscripts 和 dynamic operands 仍保持 conservative active。
+
+加入 literal-subscript no-raise guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probe、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28837990386`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28837990386) 已在 `5aacb95` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Literal-Unary No-Raise
 
 Literal-unary no-raise coverage 现在会把 bounded static literal unary expression facts 带入 try-body no-raise analysis。唯一看似 active 的 check 位于 `-1`、`~1` 或 `not False` 后的 except handler 内时，synthetic files 现在会以 `missing_selftest_checks` 失败。`+'x'` 和 `~1.0` 这类会 raise 的 unary expressions，以及 `-risky()` 这类 dynamic operands 仍保持 conservative active。
