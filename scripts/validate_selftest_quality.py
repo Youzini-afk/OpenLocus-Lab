@@ -770,9 +770,45 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     @classmethod
     def _class_try_statement_cannot_raise(cls, node: ast.Try) -> bool:
+        guaranteed_raise = cls._class_block_guaranteed_raise_exception(node.body)
+        if guaranteed_raise is not None:
+            handler_resolution, handler_body = cls._known_exception_handler_resolution(node.handlers, guaranteed_raise)
+            if handler_resolution == "caught":
+                return cls._class_block_cannot_raise(handler_body or []) and cls._class_block_cannot_raise(node.finalbody)
+            return False
         if not cls._class_block_cannot_raise(node.body):
             return False
         return cls._class_block_cannot_raise(node.orelse) and cls._class_block_cannot_raise(node.finalbody)
+
+    @classmethod
+    def _class_block_guaranteed_raise_exception(cls, statements: list[ast.stmt]) -> type[BaseException] | None:
+        for statement in statements:
+            raised_type = cls._class_statement_guaranteed_raise_exception(statement)
+            if raised_type is not None:
+                return raised_type
+            if cls._statement_guarantees_exit(statement):
+                return None
+            if not cls._class_statement_cannot_raise(statement):
+                return None
+        return None
+
+    @classmethod
+    def _class_statement_guaranteed_raise_exception(cls, node: ast.stmt) -> type[BaseException] | None:
+        if isinstance(node, ast.Raise):
+            return cls._raised_exception_type(node.exc)
+        if isinstance(node, ast.If):
+            if not cls._expression_cannot_raise(node.test):
+                return None
+            test_truth = cls._literal_truth_value(node.test)
+            if test_truth is True:
+                return cls._class_block_guaranteed_raise_exception(node.body)
+            if test_truth is False:
+                return cls._class_block_guaranteed_raise_exception(node.orelse)
+        if isinstance(node, ast.Match):
+            selected_body = cls._known_match_selected_body(node)
+            if selected_body is not None:
+                return cls._class_block_guaranteed_raise_exception(selected_body)
+        return None
 
     @classmethod
     def _function_definition_statement_cannot_raise(cls, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
@@ -2897,6 +2933,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_classdef_body_try_caught_exception_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except ValueError:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_caught_finally_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except ValueError:\n                value = 1\n            finally:\n                other = 2\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_caught_else_unreachable_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except ValueError:\n                pass\n            else:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_caught_bare_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_while_false_except_check_rejected",
             "def run_self_tests():\n    try:\n        while False:\n            risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -3129,6 +3185,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_classdef_body_try_else_return_then_check_rejected",
             "def run_self_tests(value):\n    try:\n        class Helper:\n            try:\n                value = 1\n            finally:\n                other = 2\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_caught_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except ValueError:\n                value = 1\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -3439,6 +3500,31 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_classdef_body_try_else_risky_except_check_allowed",
             "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value = 1\n            except Error:\n                pass\n            else:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_disjoint_handler_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except TypeError:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_unknown_handler_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except Error:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_caught_handler_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except ValueError:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_caught_finally_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                raise ValueError('x')\n            except ValueError:\n                pass\n            finally:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_annassign_before_caught_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value: risky() = 1\n                raise ValueError('x')\n            except ValueError:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
