@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Class-Definition No-Raise
+
+Class-definition no-raise validation now keeps fake active coverage out of try/except checks for narrow class definitions. Synthetic files where the only active-looking check lived in an except handler after simple class definitions such as `class Helper: pass`, class bodies with static assignments, class bodies with simple method definitions, or statically false class-body branches now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Class definitions with base classes, decorators, risky class-body expressions, or class-body annotations remain conservative and active because those class-creation/body paths may raise or are intentionally not interpreted.
+
+After the class-definition no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28843107120`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28843107120) passed on `fa3d66b` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Declaration and Function-Definition No-Raise
 
 Declaration/function-definition no-raise validation now keeps fake active coverage out of try/except checks for declarations and narrow function definitions. Synthetic files where the only active-looking check lived in an except handler after `global flag`, simple `def helper(): ...`, simple `async def helper(): ...`, or a function definition with statically non-raising defaults now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Function definitions with risky defaults, decorators, or annotations remain conservative and active because those definition-time paths may raise or are intentionally not interpreted.
