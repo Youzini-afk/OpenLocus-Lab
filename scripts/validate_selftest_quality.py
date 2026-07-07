@@ -584,7 +584,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.Expr):
             return cls._expression_cannot_raise(node.value)
         if isinstance(node, ast.Assign):
-            return all(cls._assignment_target_cannot_raise(target) for target in node.targets) and cls._expression_cannot_raise(node.value)
+            return cls._expression_cannot_raise(node.value) and all(
+                cls._assignment_statement_target_cannot_raise(target, node.value) for target in node.targets
+            )
         if isinstance(node, ast.Assert):
             return cls._expression_cannot_raise(node.test) and cls._literal_truth_value(node.test) is True
         if isinstance(node, ast.If):
@@ -616,6 +618,30 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, (ast.Tuple, ast.List)):
             return all(cls._assignment_target_cannot_raise(element) for element in node.elts)
         return False
+
+    @classmethod
+    def _assignment_statement_target_cannot_raise(cls, target: ast.AST, value: ast.AST) -> bool:
+        if isinstance(target, ast.Name):
+            return True
+        if isinstance(target, (ast.Tuple, ast.List)):
+            known, static_value = cls._static_comparison_value(value)
+            return known and cls._unpack_assignment_target_matches_value(target, static_value)
+        return False
+
+    @classmethod
+    def _unpack_assignment_target_matches_value(cls, target: ast.AST, value: object) -> bool:
+        if isinstance(target, ast.Name):
+            return True
+        if not isinstance(target, (ast.Tuple, ast.List)):
+            return False
+        if not isinstance(value, (tuple, list)):
+            return False
+        if len(target.elts) != len(value):
+            return False
+        return all(
+            cls._unpack_assignment_target_matches_value(element, item)
+            for element, item in zip(target.elts, value)
+        )
 
     @classmethod
     def _lambda_expression_cannot_raise(cls, node: ast.Lambda) -> bool:
@@ -2591,6 +2617,16 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_tuple_unpack_except_check_rejected",
+            "def run_self_tests():\n    try:\n        a, b = (1, 2)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_nested_literal_unpack_except_check_rejected",
+            "def run_self_tests():\n    try:\n        a, (b, c) = (1, (2, 3))\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_empty_dict_except_check_rejected",
             "def run_self_tests():\n    try:\n        {}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2756,6 +2792,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_unpack_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        a, b = (1, 2)\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_namedexpr_literal_except_check_rejected",
             "def run_self_tests():\n    try:\n        (value := 1)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2893,6 +2934,26 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_lambda_risky_default_except_check_allowed",
             "def run_self_tests():\n    try:\n        lambda item=risky(): item\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_unpack_noniterable_except_check_allowed",
+            "def run_self_tests():\n    try:\n        a, b = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_unpack_too_short_except_check_allowed",
+            "def run_self_tests():\n    try:\n        a, b = (1,)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_nested_unpack_mismatch_except_check_allowed",
+            "def run_self_tests():\n    try:\n        a, (b, c) = (1, 2)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_dynamic_unpack_except_check_allowed",
+            "def run_self_tests(items):\n    try:\n        a, b = items\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -3310,7 +3371,8 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
+            "boolop no-raise, assignment-unpack boundaries, "
+            "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
         return 0
