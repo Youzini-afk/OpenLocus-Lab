@@ -58,6 +58,12 @@ The same script now supports `--run-phase1d-real-source --confirm-private-output
 
 This tests coverage robustness only, not policy efficacy. Counted success requires real current-source materialization with private hash and currentness checks. Public output is aggregate buckets only with recommendation `maybe_expand_with_new_explicit_decision`; it makes no method-winner, lift, or signal claim.
 
+## Phase 1E cross-phase diagnostic status
+
+The same script now supports `--run-phase1e-diagnostic --confirm-private-input`. It reads existing ignored Phase 1C and Phase 1D private rows locally and writes `artifacts/phase1e_cross_phase_private_row_diagnostic_screen/phase1e_cross_phase_private_row_diagnostic_screen_report.json` with status `phase1e_cross_phase_private_row_diagnostic_no_claim`.
+
+Phase 1E does not collect new rows and does not read new source. It is aggregate-only and diagnostic: input coverage, EvidenceCore consistency, failure modes, policy-label coverage, and coarse phase comparison. It makes no policy efficacy, method-winner, signal, or lift claim.
+
 ## Candidate question
 
 Can a tiny, local, randomized intervention over existing evidence-acquisition actions produce clearer product-workflow evidence than passive trace review, while preserving EvidenceCore and privacy invariants?

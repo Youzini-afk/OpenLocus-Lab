@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 1E Cross-Phase Diagnostic
+
+已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase1e-diagnostic --confirm-private-input`。该模式只在本地读取既有 ignored Phase 1C 和 Phase 1D private rows，并发布 aggregate-only report：[`phase1e_cross_phase_private_row_diagnostic_screen_report.json`](../../artifacts/phase1e_cross_phase_private_row_diagnostic_screen/phase1e_cross_phase_private_row_diagnostic_screen_report.json)，status 为 `phase1e_cross_phase_private_row_diagnostic_no_claim`。
+
+这只是 diagnostic screen。它只公开 input coverage、EvidenceCore consistency、failure modes、policy-label coverage 和 phase comparison 的 coarse buckets。它不收集新 rows、不读取新 source、不排序 policies、不声称 efficacy。无 provider/network、无 model/training、无 runtime/default change、无新增 retrieval family。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 1D Coverage Robustness
 
 已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase1d-real-source --confirm-private-output`。该 run 从 ignored private manifest 读取 exact local task paths/ranges，使用最多 16 个 repository-file tasks 和同样 7 个 micro-policy/control labels，只向 ignored `runs/` 写入 private rows，并发布 aggregate-only report：[`interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json`](../../artifacts/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json)，status 为 `phase1d_real_source_coverage_robustness_no_claim`。

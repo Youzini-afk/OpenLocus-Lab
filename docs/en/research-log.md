@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 1E Cross-Phase Diagnostic
+
+Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase1e-diagnostic --confirm-private-input`. The mode reads existing ignored Phase 1C and Phase 1D private rows locally and publishes the aggregate-only report [`phase1e_cross_phase_private_row_diagnostic_screen_report.json`](../../artifacts/phase1e_cross_phase_private_row_diagnostic_screen/phase1e_cross_phase_private_row_diagnostic_screen_report.json), status `phase1e_cross_phase_private_row_diagnostic_no_claim`.
+
+This is a diagnostic screen only. It publishes coarse buckets for input coverage, EvidenceCore consistency, failure modes, policy-label coverage, and phase comparison. It does not collect rows, read new source, rank policies, or claim efficacy. No provider/network, no model/training, no runtime/default change, and no new retrieval family.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 1D Coverage Robustness
 
 Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase1d-real-source --confirm-private-output`. The run reads exact local task paths/ranges from an ignored private manifest, uses up to 16 repository-file tasks and the same seven micro-policy/control labels, writes private rows only under ignored `runs/`, and publishes the aggregate-only report [`interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json`](../../artifacts/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json), status `phase1d_real_source_coverage_robustness_no_claim`.

@@ -58,6 +58,12 @@ Phase 1B 只使用 7 个 local micro-policy/control labels：`bm25_then_read_top
 
 这只测试 coverage robustness，不是 policy efficacy。Counted success 需要 real current-source materialization，以及 private hash 和 currentness checks。Public output 只包含 aggregate buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`；它不提出 method-winner、lift 或 signal claim。
 
+## Phase 1E cross-phase diagnostic status
+
+同一 script 现在支持 `--run-phase1e-diagnostic --confirm-private-input`。它在本地读取既有 ignored Phase 1C 和 Phase 1D private rows，并写出 `artifacts/phase1e_cross_phase_private_row_diagnostic_screen/phase1e_cross_phase_private_row_diagnostic_screen_report.json`，status 为 `phase1e_cross_phase_private_row_diagnostic_no_claim`。
+
+Phase 1E 不收集新 rows，也不读取新 source。它是 aggregate-only diagnostic：input coverage、EvidenceCore consistency、failure modes、policy-label coverage 和 coarse phase comparison。它不提出 policy efficacy、method-winner、signal 或 lift claim。
+
 ## 候选问题
 
 在 hard product-workflow episodes 上，使用极小的本地 randomized intervention 来选择既有 evidence-acquisition actions，是否比 passive trace review 更能产生清晰的 workflow evidence，同时保持 EvidenceCore 与 privacy invariants？
