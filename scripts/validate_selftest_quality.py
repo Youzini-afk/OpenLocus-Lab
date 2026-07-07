@@ -623,7 +623,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.UnaryOp):
             return cls._expression_cannot_raise(node.operand)
         if isinstance(node, ast.BoolOp):
-            return all(cls._expression_cannot_raise(value) for value in node.values)
+            return cls._boolop_expression_cannot_raise(node)
         if isinstance(node, ast.IfExp):
             if not cls._expression_cannot_raise(node.test):
                 return False
@@ -636,6 +636,18 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.Compare):
             return cls._literal_compare_truth_value(node) is not None
         return False
+
+    @classmethod
+    def _boolop_expression_cannot_raise(cls, node: ast.BoolOp) -> bool:
+        for value in node.values:
+            if not cls._expression_cannot_raise(value):
+                return False
+            truth = cls._literal_truth_value(value)
+            if isinstance(node.op, ast.And) and truth is False:
+                return True
+            if isinstance(node.op, ast.Or) and truth is True:
+                return True
+        return True
 
     @classmethod
     def _block_guarantees_function_exit(cls, statements: list[ast.stmt]) -> bool:
@@ -2179,6 +2191,16 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_true_or_risky_except_check_rejected",
+            "def run_self_tests():\n    try:\n        True or risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_false_and_risky_except_check_rejected",
+            "def run_self_tests():\n    try:\n        False and risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_known_raise_disjoint_except_check_rejected",
             "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2204,6 +2226,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_true_or_risky_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        True or risky()\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_known_raise_disjoint_except_then_check_rejected",
             "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2216,6 +2243,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_risky_except_check_allowed",
             "def run_self_tests():\n    try:\n        risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_false_or_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        False or risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_true_and_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        True and risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2588,6 +2625,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
+            "boolop no-raise, "
             "and missing-check cases"
         )
         return 0
