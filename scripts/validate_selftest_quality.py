@@ -148,11 +148,18 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self._visit_annotation(node.kwarg.annotation, evaluated=not self._future_annotations)
 
     def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
-        self.visit(node.target)
-        annotation_is_evaluated = not self._future_annotations and (not self._function_stack or self._class_scope_depth > 0)
-        self._visit_annotation(node.annotation, evaluated=annotation_is_evaluated)
         if node.value is not None:
             self.visit(node.value)
+            if self._expression_guarantees_raise(node.value):
+                self._visit_unreachable(node.target)
+                self._visit_unreachable(node.annotation)
+                return
+        self.visit(node.target)
+        if self._expression_guarantees_raise(node.target):
+            self._visit_unreachable(node.annotation)
+            return
+        annotation_is_evaluated = not self._future_annotations and (not self._function_stack or self._class_scope_depth > 0)
+        self._visit_annotation(node.annotation, evaluated=annotation_is_evaluated)
 
     def visit_Assign(self, node: ast.Assign) -> None:
         self.visit(node.value)
@@ -2635,6 +2642,46 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_annassign_static_oob_rhs_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)]: int = [][0]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_annassign_static_missing_key_rhs_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)]: int = {}['x']\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_annassign_static_divzero_rhs_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)]: int = 1 / 0\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_annassign_class_static_oob_rhs_annotation_check_rejected",
+            "def run_self_tests(value):\n    class Helper:\n        field: check('ok', value is True) = [][0]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_annassign_static_oob_target_annotation_check_rejected",
+            "def run_self_tests(value):\n    class Helper:\n        [][0]: check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_annassign_safe_rhs_subscript_target_check_allowed",
+            "def run_self_tests(value, items):\n    items[check('ok', value is True)]: int = 1\n",
+            [],
+        ),
+        (
+            "target_with_annassign_dynamic_rhs_subscript_target_check_allowed",
+            "def run_self_tests(value, items, maybe):\n    items[check('ok', value is True)]: int = maybe\n",
+            [],
+        ),
+        (
+            "target_with_annassign_rhs_check_before_later_raise_allowed",
+            "def run_self_tests(value, items):\n    items[0]: int = (check('ok', value is True), [][0])\n",
+            [],
+        ),
+        (
             "target_with_literal_fstring_false_branch_rejected",
             "def run_self_tests():\n    if f'':\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -4294,7 +4341,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, annotated assignment target reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
