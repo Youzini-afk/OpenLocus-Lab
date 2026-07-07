@@ -34,6 +34,12 @@ Hard-source preflight script 为 `eval/interventional_evidence_acquisition_phase
 
 Public report 仍然只包含 aggregate 信息：task/action/family count buckets、candidate-found buckets、materialized buckets、evidence-success buckets、baseline/non-saturation buckets、privacy summary 和 no-claim attestations。Retrieval-only actions 可以找到 candidates，但没有 current-source materialization 时不计为 evidence success。不授权 provider/network work、training、runtime/default changes、新 retrieval families、method-winner claims 或 route reopening。
 
+## Private-row aggregate screen status
+
+同一 script 现在支持 `--aggregate-private-rows`。它在本地读取已有的 ignored hard-source private rows，并写出 `artifacts/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_report.json`，status 为 `phase1_hard_source_private_row_aggregate_screen_no_claim`。
+
+该 screen 是 public aggregate-only diagnostic。它只公开 row/action/family coverage、candidate-found、materialized、evidence-success、materialized-but-not-success、baseline/randomized screen 和 conservative recommendation `maybe_expand_with_new_explicit_decision` 的 buckets。它不公开 raw rows、private paths、symbols、queries、ranges、snippets、hashes、run paths、prompts、responses、provider payloads 或 labels，也不提出 method-winner 或 signal claim。
+
 ## 候选问题
 
 在 hard product-workflow episodes 上，使用极小的本地 randomized intervention 来选择既有 evidence-acquisition actions，是否比 passive trace review 更能产生清晰的 workflow evidence，同时保持 EvidenceCore 与 privacy invariants？

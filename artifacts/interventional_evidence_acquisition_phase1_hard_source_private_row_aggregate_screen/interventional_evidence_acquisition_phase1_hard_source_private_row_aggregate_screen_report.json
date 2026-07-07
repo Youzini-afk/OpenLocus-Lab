@@ -1,0 +1,103 @@
+{
+  "action_outcome_summary": {
+    "candidate_found_buckets": {
+      "abstain": "count_0",
+      "read_next_unique_file": "count_6_to_20",
+      "read_related_test": "count_1_to_5",
+      "read_top1": "count_1_to_5",
+      "retrieve_bm25": "count_6_to_20",
+      "retrieve_symbol_regex": "count_6_to_20",
+      "stop": "count_0"
+    },
+    "evidence_success_buckets": {
+      "abstain": "count_0",
+      "read_next_unique_file": "count_1_to_5",
+      "read_related_test": "count_1_to_5",
+      "read_top1": "count_0",
+      "retrieve_bm25": "count_0",
+      "retrieve_symbol_regex": "count_0",
+      "stop": "count_0"
+    },
+    "materialized_buckets": {
+      "abstain": "count_0",
+      "read_next_unique_file": "count_6_to_20",
+      "read_related_test": "count_1_to_5",
+      "read_top1": "count_1_to_5",
+      "retrieve_bm25": "count_0",
+      "retrieve_symbol_regex": "count_0",
+      "stop": "count_0"
+    },
+    "materialized_but_not_success_bucket": "count_6_to_20"
+  },
+  "authorization_attestation": {
+    "diagnostic_screen_only": true,
+    "method_winner_claimed": false,
+    "model_training_executed": false,
+    "new_retrieval_channel_family_added": false,
+    "private_rows_published": false,
+    "private_rows_read_locally": true,
+    "provider_network_authorized": false,
+    "provider_network_used": false,
+    "runtime_default_change_authorized": false,
+    "runtime_default_changed": false,
+    "signal_claim": "no_signal_claim",
+    "training_authorized": false
+  },
+  "baseline_screen": {
+    "best_fixed_local_action_success_rate_bucket": "rate_0_to_25",
+    "method_winner_claimed": false,
+    "randomized_policy_evidence_success_rate_bucket": "rate_0_to_25",
+    "signal_claim": "no_signal_claim"
+  },
+  "conservative_recommendation": "maybe_expand_with_new_explicit_decision",
+  "coverage_summary": {
+    "action_coverage_buckets": {
+      "abstain": "count_1_to_5",
+      "read_next_unique_file": "count_6_to_20",
+      "read_related_test": "count_1_to_5",
+      "read_top1": "count_1_to_5",
+      "retrieve_bm25": "count_6_to_20",
+      "retrieve_symbol_regex": "count_6_to_20",
+      "stop": "count_1_to_5"
+    },
+    "family_coverage_buckets": {
+      "boundary_condition": "count_1_to_5",
+      "config_or_test_mismatch": "count_1_to_5",
+      "cross_file_symbol": "count_1_to_5",
+      "distractor_file": "count_1_to_5",
+      "helper_dependency_choice": "count_1_to_5",
+      "nearby_wrong_function": "count_1_to_5",
+      "operation_ambiguity": "count_1_to_5",
+      "same_symbol_support_relation": "count_1_to_5"
+    },
+    "missing_action_coverage_bucket": "count_0",
+    "missing_family_coverage_bucket": "count_0",
+    "row_count_bucket": "count_21_to_50"
+  },
+  "evidencecore_summary": {
+    "candidate_is_not_fact_without_evidence_success": true,
+    "current_source_required_for_counted_evidence": true,
+    "evidence_success_implies_materialization": true,
+    "retrieval_only_evidence_success_bucket": "count_0"
+  },
+  "phase": "interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen",
+  "privacy_summary": {
+    "private_hashes_public": false,
+    "private_paths_public": false,
+    "private_queries_public": false,
+    "private_ranges_public": false,
+    "private_rows_published": false,
+    "private_rows_read_locally": true,
+    "private_run_paths_public": false,
+    "private_symbols_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "raw_rows_public": false
+  },
+  "schema_version": "interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_v1",
+  "status": "phase1_hard_source_private_row_aggregate_screen_no_claim",
+  "validation_summary": {
+    "route_specific_public_screen_validation": "passed",
+    "self_test_available": true
+  }
+}

@@ -34,6 +34,12 @@ The same script now supports explicit `--confirm-private-output` mode. A confirm
 
 The public report remains aggregate-only: task/action/family count buckets, candidate-found buckets, materialized buckets, evidence-success buckets, baseline/non-saturation buckets, privacy summary, and no-claim attestations. Retrieval-only actions may find candidates but do not count as evidence success without current-source materialization. No provider/network work, training, runtime/default changes, new retrieval families, method-winner claims, or route reopening are authorized.
 
+## Private-row aggregate screen status
+
+The same script now supports `--aggregate-private-rows`. It reads existing ignored hard-source private rows locally and writes `artifacts/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_report.json` with status `phase1_hard_source_private_row_aggregate_screen_no_claim`.
+
+This screen is public aggregate-only and diagnostic. It publishes buckets for row/action/family coverage, candidate-found, materialized, evidence-success, materialized-but-not-success, baseline/randomized screen, and conservative recommendation `maybe_expand_with_new_explicit_decision`. It publishes no raw rows, private paths, symbols, queries, ranges, snippets, hashes, run paths, prompts, responses, provider payloads, or labels, and it makes no method-winner or signal claim.
+
 ## Candidate question
 
 Can a tiny, local, randomized intervention over existing evidence-acquisition actions produce clearer product-workflow evidence than passive trace review, while preserving EvidenceCore and privacy invariants?

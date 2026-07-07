@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Private-Row Aggregate Screen
+
+已在 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 local-only aggregate screen mode。它读取 `runs/` 下已有的 ignored hard-source private rows，并只写出 public diagnostic screen：[`interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_report.json)，status 为 `phase1_hard_source_private_row_aggregate_screen_no_claim`。
+
+该 screen 只公开 buckets：row/action/family coverage、candidate-found/materialized/evidence-success outcomes、materialized-but-not-success，以及 conservative recommendation `maybe_expand_with_new_explicit_decision`。它仅是 diagnostic/no-claim：不公开 private rows 或 paths，无 provider/network、无 model/training、无 runtime/default change、无新增 retrieval family、无 method-winner claim，也不重启已关闭路线。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Hard-Source Private Pilot
 
 已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 explicit `--confirm-private-output` mode，并运行 confirmed local private pilot。Private rows 只写入 ignored `runs/`；public report [`interventional_evidence_acquisition_phase1_hard_source_preflight_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json) 的 status 为 `phase1_hard_source_private_pilot_complete_no_claim`。

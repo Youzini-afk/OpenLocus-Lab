@@ -26,6 +26,10 @@ REPO = Path(__file__).resolve().parent.parent
 PHASE = "interventional_evidence_acquisition_phase1_hard_source_preflight"
 REPORT_SCHEMA_VERSION = "interventional_evidence_acquisition_phase1_hard_source_preflight_public_report_v1"
 DEFAULT_REPORT = REPO / "artifacts" / PHASE / f"{PHASE}_report.json"
+AGGREGATE_SCREEN_PHASE = "interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen"
+AGGREGATE_SCREEN_SCHEMA_VERSION = "interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_v1"
+AGGREGATE_SCREEN_STATUS = "phase1_hard_source_private_row_aggregate_screen_no_claim"
+DEFAULT_AGGREGATE_SCREEN_REPORT = REPO / "artifacts" / AGGREGATE_SCREEN_PHASE / f"{AGGREGATE_SCREEN_PHASE}_report.json"
 STATUS_PREFLIGHT = "phase1_hard_source_preflight_no_private_rows"
 STATUS_COMPLETE = "phase1_hard_source_private_pilot_complete_no_claim"
 NEXT_ACTION = "stop/request explicit decision before any follow-up experiment"
@@ -69,6 +73,19 @@ REPORT_KEYS = {
     "privacy_summary",
     "validation_summary",
     "next_authorized_action",
+}
+AGGREGATE_SCREEN_KEYS = {
+    "schema_version",
+    "phase",
+    "status",
+    "authorization_attestation",
+    "coverage_summary",
+    "action_outcome_summary",
+    "baseline_screen",
+    "evidencecore_summary",
+    "privacy_summary",
+    "validation_summary",
+    "conservative_recommendation",
 }
 PRIVATE_DETAIL_KEYS = {
     "task_id",
@@ -124,6 +141,18 @@ def bucket_count(count: int) -> str:
         return "count_1"
     if count <= 5:
         return "count_2_to_5"
+    if count <= 20:
+        return "count_6_to_20"
+    if count <= 50:
+        return "count_21_to_50"
+    return "count_gt_50"
+
+
+def bucket_private_screen_count(count: int) -> str:
+    if count <= 0:
+        return "count_0"
+    if count <= 5:
+        return "count_1_to_5"
     if count <= 20:
         return "count_6_to_20"
     if count <= 50:
@@ -369,6 +398,221 @@ def run_capture(*, confirm_private_output: bool, dry_run: bool, output: Path, pr
         "public_report": str(output),
         "private_rows_location": "runs/interventional_evidence_acquisition_phase1_hard_source_pilot/.../hard_source_private_rows.jsonl" if manifest else "none",
         "_private_manifest": manifest,
+    }
+
+
+def find_latest_private_rows_path(private_root: Path = PRIVATE_RUN_ROOT) -> Path:
+    candidates = sorted(private_root.glob(f"*/{PRIVATE_ROWS_FILENAME}"), key=lambda path: path.stat().st_mtime, reverse=True)
+    if not candidates:
+        raise PreflightError("no hard-source private rows found under ignored runs/")
+    return candidates[0]
+
+
+def load_private_rows(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                row = json.loads(stripped)
+            except json.JSONDecodeError as exc:
+                raise PreflightError(f"invalid private row json at line {line_number}: {exc}") from exc
+            if not isinstance(row, dict):
+                raise PreflightError(f"private row line {line_number} is not an object")
+            rows.append(row)
+    if not rows:
+        raise PreflightError("private row file is empty")
+    semantic_errors = private_row_semantic_errors(rows)
+    if semantic_errors:
+        raise PreflightError("private row semantic validation failed: " + "; ".join(semantic_errors[:8]))
+    return rows
+
+
+def _row_bool(row: dict[str, Any], key: str) -> bool:
+    return row.get(key) is True
+
+
+def build_aggregate_screen(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    row_actions = Counter(str(row.get("action", "")) for row in rows)
+    row_families = Counter(str(row.get("family_bucket", "")) for row in rows)
+    candidate_found = Counter(str(row.get("action", "")) for row in rows if _row_bool(row, "candidate_found"))
+    materialized = Counter(str(row.get("action", "")) for row in rows if _row_bool(row, "materialized_current_source"))
+    evidence_success = Counter(str(row.get("action", "")) for row in rows if _row_bool(row, "evidence_success"))
+    materialized_not_success = sum(1 for row in rows if _row_bool(row, "materialized_current_source") and not _row_bool(row, "evidence_success"))
+    missing_action_coverage = sum(1 for action in ALLOWED_ACTIONS if row_actions[action] == 0)
+    missing_family_coverage = sum(1 for family in FAMILY_BUCKETS if row_families[family] == 0)
+    best_fixed_success = max((evidence_success[action] for action in EVIDENCE_SUCCESS_ACTIONS), default=0)
+    randomized_success = sum(evidence_success.values())
+    recommendation = "maybe_expand_with_new_explicit_decision" if missing_action_coverage == 0 and missing_family_coverage == 0 and randomized_success > 0 else "redesign_before_expansion"
+    report = {
+        "schema_version": AGGREGATE_SCREEN_SCHEMA_VERSION,
+        "phase": AGGREGATE_SCREEN_PHASE,
+        "status": AGGREGATE_SCREEN_STATUS,
+        "authorization_attestation": {
+            "private_rows_read_locally": True,
+            "private_rows_published": False,
+            "provider_network_authorized": False,
+            "provider_network_used": False,
+            "training_authorized": False,
+            "model_training_executed": False,
+            "runtime_default_change_authorized": False,
+            "runtime_default_changed": False,
+            "new_retrieval_channel_family_added": False,
+            "method_winner_claimed": False,
+            "signal_claim": "no_signal_claim",
+            "diagnostic_screen_only": True,
+        },
+        "coverage_summary": {
+            "row_count_bucket": bucket_private_screen_count(len(rows)),
+            "action_coverage_buckets": {action: bucket_private_screen_count(row_actions[action]) for action in ALLOWED_ACTIONS},
+            "family_coverage_buckets": {family: bucket_private_screen_count(row_families[family]) for family in FAMILY_BUCKETS},
+            "missing_action_coverage_bucket": bucket_private_screen_count(missing_action_coverage),
+            "missing_family_coverage_bucket": bucket_private_screen_count(missing_family_coverage),
+        },
+        "action_outcome_summary": {
+            "candidate_found_buckets": {action: bucket_private_screen_count(candidate_found[action]) for action in ALLOWED_ACTIONS},
+            "materialized_buckets": {action: bucket_private_screen_count(materialized[action]) for action in ALLOWED_ACTIONS},
+            "evidence_success_buckets": {action: bucket_private_screen_count(evidence_success[action]) for action in ALLOWED_ACTIONS},
+            "materialized_but_not_success_bucket": bucket_private_screen_count(materialized_not_success),
+        },
+        "baseline_screen": {
+            "best_fixed_local_action_success_rate_bucket": bucket_rate(best_fixed_success, len(rows)),
+            "randomized_policy_evidence_success_rate_bucket": bucket_rate(randomized_success, len(rows)),
+            "method_winner_claimed": False,
+            "signal_claim": "no_signal_claim",
+        },
+        "evidencecore_summary": {
+            "current_source_required_for_counted_evidence": True,
+            "candidate_is_not_fact_without_evidence_success": True,
+            "retrieval_only_evidence_success_bucket": bucket_private_screen_count(evidence_success["retrieve_bm25"] + evidence_success["retrieve_symbol_regex"]),
+            "evidence_success_implies_materialization": True,
+        },
+        "privacy_summary": {
+            "publication_level": "aggregate_only",
+            "private_rows_read_locally": True,
+            "private_rows_published": False,
+            "raw_rows_public": False,
+            "private_paths_public": False,
+            "private_symbols_public": False,
+            "private_queries_public": False,
+            "private_ranges_public": False,
+            "private_hashes_public": False,
+            "private_run_paths_public": False,
+            "provider_payloads_public": False,
+        },
+        "validation_summary": {
+            "route_specific_public_screen_validation": "passed",
+            "self_test_available": True,
+        },
+        "conservative_recommendation": recommendation,
+    }
+    errors = validate_aggregate_screen(report)
+    if errors:
+        raise PreflightError("generated invalid aggregate screen: " + "; ".join(errors[:8]))
+    return report
+
+
+def validate_private_rows_for_aggregate(rows: list[dict[str, Any]]) -> list[str]:
+    errors = private_row_semantic_errors(rows)
+    for index, row in enumerate(rows):
+        action = str(row.get("action", ""))
+        if action not in ALLOWED_ACTIONS:
+            errors.append(f"unknown action at private row {index}")
+        if str(row.get("family_bucket", "")) not in FAMILY_BUCKETS:
+            errors.append(f"unknown family bucket at private row {index}")
+        if _row_bool(row, "evidence_success") and not _row_bool(row, "materialized_current_source"):
+            errors.append(f"evidence success without materialization at private row {index}")
+        if action.startswith("retrieve_") and _row_bool(row, "evidence_success"):
+            errors.append(f"retrieval-only evidence success at private row {index}")
+    return errors
+
+
+def validate_aggregate_screen(report: Any) -> list[str]:
+    if not isinstance(report, dict):
+        return ["aggregate screen must be an object"]
+    errors: list[str] = []
+    if set(report) != AGGREGATE_SCREEN_KEYS:
+        errors.append("aggregate screen top-level shape drift")
+    if report.get("schema_version") != AGGREGATE_SCREEN_SCHEMA_VERSION:
+        errors.append("bad aggregate screen schema version")
+    if report.get("phase") != AGGREGATE_SCREEN_PHASE:
+        errors.append("bad aggregate screen phase")
+    if report.get("status") != AGGREGATE_SCREEN_STATUS:
+        errors.append("bad aggregate screen status")
+    auth = report.get("authorization_attestation", {})
+    if auth.get("private_rows_read_locally") is not True or auth.get("private_rows_published") is not False:
+        errors.append("private row read/publish attestation failed")
+    for key in ("provider_network_authorized", "provider_network_used", "training_authorized", "model_training_executed", "runtime_default_change_authorized", "runtime_default_changed", "new_retrieval_channel_family_added", "method_winner_claimed"):
+        if auth.get(key) is not False:
+            errors.append(f"aggregate screen overclaim: {key}")
+    if auth.get("signal_claim") != "no_signal_claim" or auth.get("diagnostic_screen_only") is not True:
+        errors.append("aggregate screen claim boundary failed")
+    coverage = report.get("coverage_summary", {})
+    if set(coverage.get("action_coverage_buckets", {})) != set(ALLOWED_ACTIONS) or set(coverage.get("family_coverage_buckets", {})) != set(FAMILY_BUCKETS):
+        errors.append("aggregate coverage shape drift")
+    outcomes = report.get("action_outcome_summary", {})
+    for key in ("candidate_found_buckets", "materialized_buckets", "evidence_success_buckets"):
+        if set(outcomes.get(key, {})) != set(ALLOWED_ACTIONS):
+            errors.append(f"aggregate outcome shape drift: {key}")
+    success = outcomes.get("evidence_success_buckets", {})
+    materialized = outcomes.get("materialized_buckets", {})
+    if success.get("retrieve_bm25") != "count_0" or success.get("retrieve_symbol_regex") != "count_0":
+        errors.append("retrieval-only action counted as evidence success")
+    for action in ALLOWED_ACTIONS:
+        if materialized.get(action) == "count_0" and success.get(action) != "count_0":
+            errors.append(f"aggregate evidence success without materialization: {action}")
+    baseline = report.get("baseline_screen", {})
+    if baseline.get("method_winner_claimed") is not False or baseline.get("signal_claim") != "no_signal_claim":
+        errors.append("aggregate baseline overclaim")
+    evidence = report.get("evidencecore_summary", {})
+    if evidence.get("current_source_required_for_counted_evidence") is not True or evidence.get("candidate_is_not_fact_without_evidence_success") is not True:
+        errors.append("aggregate EvidenceCore boundary failed")
+    if evidence.get("retrieval_only_evidence_success_bucket") != "count_0" or evidence.get("evidence_success_implies_materialization") is not True:
+        errors.append("aggregate EvidenceCore success/materialization failed")
+    privacy = report.get("privacy_summary", {})
+    if privacy.get("publication_level") != "aggregate_only" or privacy.get("private_rows_read_locally") is not True or privacy.get("private_rows_published") is not False:
+        errors.append("aggregate privacy level failed")
+    for key in ("raw_rows_public", "private_paths_public", "private_symbols_public", "private_queries_public", "private_ranges_public", "private_hashes_public", "private_run_paths_public", "provider_payloads_public"):
+        if privacy.get(key) is not False:
+            errors.append(f"aggregate privacy boundary failed: {key}")
+    if report.get("conservative_recommendation") not in {"stop_no_expansion", "redesign_before_expansion", "maybe_expand_with_new_explicit_decision"}:
+        errors.append("bad conservative recommendation")
+    errors.extend(public_leak_errors(report))
+    return errors
+
+
+def validate_aggregate_screen_file(path: Path) -> list[str]:
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"cannot load aggregate screen: {exc}"]
+    return validate_aggregate_screen(report)
+
+
+def write_aggregate_screen(report: dict[str, Any], output: Path) -> None:
+    errors = validate_aggregate_screen(report)
+    if errors:
+        raise PreflightError("aggregate screen validation failed: " + "; ".join(errors[:8]))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def run_aggregate_private_rows(private_rows_path: Path | None, output: Path) -> dict[str, Any]:
+    source_path = private_rows_path or find_latest_private_rows_path()
+    rows = load_private_rows(source_path)
+    row_errors = validate_private_rows_for_aggregate(rows)
+    if row_errors:
+        raise PreflightError("private row aggregate validation failed: " + "; ".join(row_errors[:8]))
+    report = build_aggregate_screen(rows)
+    write_aggregate_screen(report, output)
+    return {
+        "status": report["status"],
+        "conservative_recommendation": report["conservative_recommendation"],
+        "private_rows_read_locally": True,
+        "private_rows_published": False,
+        "public_report": str(output),
     }
 
 
@@ -673,6 +917,7 @@ def run_self_test() -> dict[str, Any]:
     rows = build_private_rows(tasks)
     confirmed_report = build_report(tasks, rows, confirmed=True)
     checks.append(("private_row_candidate_is_fact_matches_evidence_success", not private_row_semantic_errors(rows)))
+    checks.append(("private_rows_valid_for_aggregate", not validate_private_rows_for_aggregate(rows)))
     checks.append(("confirmed_report_valid", not validate_report(confirmed_report)))
     checks.append(("confirmed_all_actions_covered", all(value != "count_0" for value in confirmed_report["action_summary"]["confirmed_action_coverage_buckets"].values())))
     checks.append(("confirmed_retrieval_success_zero", confirmed_report["evidencecore_summary"]["randomized_evidence_success_count_buckets"]["retrieve_bm25"] == "count_0" and confirmed_report["evidencecore_summary"]["randomized_evidence_success_count_buckets"]["retrieve_symbol_regex"] == "count_0"))
@@ -686,6 +931,11 @@ def run_self_test() -> dict[str, Any]:
         checks.append(("confirm_flag_required_for_private_rows", confirmed_result["private_rows_written"] is True and Path(manifest.get("private_rows_path", "")).is_file()))
         loaded_confirmed = json.loads(confirmed_output.read_text(encoding="utf-8"))
         checks.append(("confirmed_manifest_path_not_public", not public_leak_errors(loaded_confirmed) and "private_rows_path" not in json.dumps(loaded_confirmed)))
+        aggregate_output = Path(temp_dir) / "aggregate_screen.json"
+        aggregate_result = run_aggregate_private_rows(Path(manifest["private_rows_path"]), aggregate_output)
+        aggregate_report = json.loads(aggregate_output.read_text(encoding="utf-8"))
+        checks.append(("aggregate_private_rows_generates_screen", aggregate_result["status"] == AGGREGATE_SCREEN_STATUS and aggregate_report["privacy_summary"]["private_rows_published"] is False))
+        checks.append(("aggregate_screen_valid", not validate_aggregate_screen(aggregate_report)))
     bad_report = copy.deepcopy(report)
     bad_report["source_summary"]["leaky_value_bucket"] = "src/private/example.py"
     checks.append(("privacy_leak_rejected", bool(validate_report(bad_report))))
@@ -713,6 +963,18 @@ def run_self_test() -> dict[str, Any]:
     false_success_row = next(row for row in bad_rows if row["evidence_success"] is False)
     false_success_row["evidencecore"]["candidate_is_fact"] = True
     checks.append(("private_row_candidate_fact_without_success_rejected", bool(private_row_semantic_errors(bad_rows))))
+    bad_rows = copy.deepcopy(rows)
+    retrieval_row = next(row for row in bad_rows if str(row["action"]).startswith("retrieve_"))
+    retrieval_row["evidence_success"] = True
+    retrieval_row["materialized_current_source"] = False
+    retrieval_row["evidencecore"]["candidate_is_fact"] = True
+    checks.append(("aggregate_retrieval_success_row_rejected", bool(validate_private_rows_for_aggregate(bad_rows))))
+    bad_screen = build_aggregate_screen(rows)
+    bad_screen["authorization_attestation"]["method_winner_claimed"] = True
+    checks.append(("aggregate_overclaim_rejected", bool(validate_aggregate_screen(bad_screen))))
+    bad_screen = build_aggregate_screen(rows)
+    bad_screen["privacy_summary"]["private_run_paths_public"] = True
+    checks.append(("aggregate_privacy_overclaim_rejected", bool(validate_aggregate_screen(bad_screen))))
     bad_report = copy.deepcopy(confirmed_report)
     bad_report["action_summary"]["confirmed_action_coverage_buckets"]["stop"] = "count_0"
     checks.append(("confirmed_missing_action_coverage_rejected", bool(validate_report(bad_report))))
@@ -725,8 +987,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--self-test", action="store_true", help="run synthetic self-tests")
     parser.add_argument("--dry-run", action="store_true", help="write aggregate-only dry-run report")
     parser.add_argument("--confirm-private-output", action="store_true", help="write ignored private rows under runs/ and aggregate-only public report")
+    parser.add_argument("--aggregate-private-rows", action="store_true", help="read ignored private rows locally and write aggregate-only outcome screen")
+    parser.add_argument("--private-rows-path", type=Path, help="local ignored private rows JSONL path for aggregate screen; never published")
     parser.add_argument("--validate-report", type=Path, help="validate an existing aggregate report")
+    parser.add_argument("--validate-aggregate-screen", type=Path, help="validate an existing aggregate-only private row outcome screen")
     parser.add_argument("--output", type=Path, default=DEFAULT_REPORT, help="dry-run report output path")
+    parser.add_argument("--aggregate-output", type=Path, default=DEFAULT_AGGREGATE_SCREEN_REPORT, help="aggregate screen output path")
     args = parser.parse_args(argv)
 
     if args.self_test:
@@ -740,9 +1006,20 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         print(f"Validation passed: {args.validate_report}")
         return 0
+    if args.validate_aggregate_screen:
+        errors = validate_aggregate_screen_file(args.validate_aggregate_screen)
+        if errors:
+            print("Aggregate screen validation failed: " + "; ".join(errors[:8]), file=sys.stderr)
+            return 1
+        print(f"Aggregate screen validation passed: {args.validate_aggregate_screen}")
+        return 0
     if args.dry_run or args.confirm_private_output:
         result = run_capture(confirm_private_output=args.confirm_private_output, dry_run=args.dry_run, output=args.output)
         result.pop("_private_manifest", None)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
+    if args.aggregate_private_rows:
+        result = run_aggregate_private_rows(args.private_rows_path, args.aggregate_output)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     parser.print_help()
