@@ -587,6 +587,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._expression_cannot_raise(node.value) and all(
                 cls._assignment_statement_target_cannot_raise(target, node.value) for target in node.targets
             )
+        if isinstance(node, ast.AnnAssign):
+            return cls._annassign_statement_cannot_raise(node)
         if isinstance(node, ast.Assert):
             return cls._expression_cannot_raise(node.test) and cls._literal_truth_value(node.test) is True
         if isinstance(node, ast.If):
@@ -610,6 +612,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return False
             return cls._block_cannot_raise(node.orelse) and cls._block_cannot_raise(node.finalbody)
         return False
+
+    @classmethod
+    def _annassign_statement_cannot_raise(cls, node: ast.AnnAssign) -> bool:
+        if not isinstance(node.target, ast.Name):
+            return False
+        return node.value is None or cls._expression_cannot_raise(node.value)
 
     @classmethod
     def _assignment_target_cannot_raise(cls, node: ast.AST) -> bool:
@@ -2642,6 +2650,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_annassign_except_check_rejected",
+            "def run_self_tests():\n    try:\n        value: int = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_annassign_no_value_except_check_rejected",
+            "def run_self_tests():\n    try:\n        value: int\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_annassign_risky_annotation_except_check_rejected",
+            "def run_self_tests():\n    try:\n        value: risky() = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_literal_tuple_unpack_except_check_rejected",
             "def run_self_tests():\n    try:\n        a, b = (1, 2)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2842,6 +2865,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_annassign_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        item: int = 1\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_star_unpack_else_return_then_check_rejected",
             "def run_self_tests(value):\n    try:\n        a, *rest = (1, 2)\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -3004,6 +3032,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_dynamic_unpack_except_check_allowed",
             "def run_self_tests(items):\n    try:\n        a, b = items\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_annassign_risky_value_except_check_allowed",
+            "def run_self_tests():\n    try:\n        value: int = risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_annassign_attribute_except_check_allowed",
+            "def run_self_tests(obj):\n    try:\n        obj.value: int = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_annassign_subscript_except_check_allowed",
+            "def run_self_tests(items):\n    try:\n        items[0]: int = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -3441,7 +3484,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, assignment-unpack/starred-unpack boundaries, "
+            "boolop no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
