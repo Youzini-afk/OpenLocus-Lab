@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Match No-Raise
+
+Match no-raise validation now keeps fake active coverage out of try/except checks for narrow static `match` statements. Synthetic files where the only active-looking check lived in an except handler after static literal, sequence, mapping, nonmatching, or false-guard match paths now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Risky selected bodies, dynamic subjects, risky guards, class patterns, and mapping-rest patterns remain conservative and active.
+
+After the match no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused match probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28844303944`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28844303944) passed on `3f5b91d` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Loop No-Raise
 
 Loop no-raise validation now keeps fake active coverage out of try/except checks for narrow loop statements. Synthetic files where the only active-looking check lived in an except handler after `while False` with skipped risky bodies, `while True: break`, empty `for` / `range(0)` loops, or static safe `for item in [1]: value = 1` loop bodies now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Risky loop `else` suites, risky loop bodies, dynamic while conditions, dynamic iterables, and complex `for` targets remain conservative and active.
