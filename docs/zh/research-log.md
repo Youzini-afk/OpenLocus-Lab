@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Loop No-Raise
+
+Loop no-raise validation 现在会阻止 narrow loop statements 之后的 try/except checks 形成 fake active coverage。唯一看似 active 的 check 位于带 skipped risky bodies 的 `while False`、`while True: break`、empty `for` / `range(0)` loops，或 static safe `for item in [1]: value = 1` loop bodies 之后的 except handler 时，synthetic files 现在会以 `missing_selftest_checks` 失败；这些 no-raise try bodies 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。Risky loop `else` suites、risky loop bodies、dynamic while conditions、dynamic iterables 和 complex `for` targets 仍保持 conservative active。
+
+加入 loop no-raise guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused loop probes、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28843719417`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28843719417) 已在 `258b0d5` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Class-Definition No-Raise
 
 Class-definition no-raise validation 现在会阻止 narrow class definitions 之后的 try/except checks 形成 fake active coverage。唯一看似 active 的 check 位于 `class Helper: pass` 这类 simple class definitions、带 static assignments 的 class bodies、带 simple method definitions 的 class bodies，或 statically false class-body branches 之后的 except handler 时，synthetic files 现在会以 `missing_selftest_checks` 失败；这些 no-raise try bodies 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。带 base classes、decorators、risky class-body expressions 或 class-body annotations 的 class definitions 仍保持 conservative active，因为这些 class-creation/body paths 可能 raise 或被故意不解释。
