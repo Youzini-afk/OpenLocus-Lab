@@ -1,5 +1,13 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - CI Report/Privacy Validator Self-Test Gate
+
+`eval/ci_validate_report.py` 现在为既有 CI report validator 新增 narrow `--self-test` mode。该 mode 只使用 synthetic in-process/tempdir fixtures，调用既有 `validate_report()` function，并复用既有 report object 与 run-dir JSONL artifacts private-field scans。它不新增 artifact discovery、historical scanning、schema changes、configuration knobs 或 dependencies。
+
+Self-test 覆盖 clean positive fixture，以及 citation validity、run/score separation、labels-used、`promotion_ready`、`default_should_change`、unavailable-strategy extra metric keys、report 内 nested private fields、run-dir JSONL evidence 内 private fields 的 negative fixtures。`retrieval-benchmark` plan job 现在会在 evaluator runtime self-test quality guard 之后运行 `python3 eval/ci_validate_report.py --self-test`。
+
+这只是 CI report/privacy validator quality gating。它不是新的 artifact audit framework、historical artifact audit、retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Runtime Self-Test Quality Gate
 
 Self-test quality guard 现在新增 narrow `--runtime-check` mode，范围仅限 current evaluator chain。Runtime mode 只导入既有默认 allowlisted targets，或通过同一 path logic 解析的 explicit paths；它会临时把 repository/import roots prepend 到 `sys.path` 并恢复，优先选择 `run_self_tests`、否则选择 `run_self_test`，拒绝缺失或需要参数的 entrypoints，执行 entrypoint，并要求返回 simple passing dict result，且没有 failed checks，存在 check counts 时保持一致。

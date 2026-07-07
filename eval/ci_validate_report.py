@@ -10,6 +10,8 @@ Checks:
 6. default_should_change == false
 
 Usage:
+    python3 eval/ci_validate_report.py --self-test
+
     python3 eval/ci_validate_report.py \\
         --report eval/ci_output/score/report.json \\
         --run-dir eval/ci_output/run
@@ -20,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -178,11 +181,224 @@ def _scan_run_dir_for_private_fields(run_dir: Path) -> list[str]:
     return issues
 
 
+def _selftest_base_report() -> dict[str, Any]:
+    return {
+        "citation_validity_all_implemented": True,
+        "private_scan_summary": {"clean": True, "violations": 0},
+        "run_score_separation": True,
+        "labels_used_in_run_phase": False,
+        "promotion_ready": False,
+        "default_should_change": False,
+        "strategies": {
+            "baseline": {
+                "citation_validity": 1.0,
+                "citation_valid_count": 2,
+                "citation_total_count": 2,
+            }
+        },
+        "unavailable_strategies": {
+            "dense_real": {
+                "status": "unavailable",
+                "reason": "remote providers disabled in CI",
+            }
+        },
+        "strategy_registry": {
+            "dense_real": {
+                "status": "unavailable",
+                "reason": "remote providers disabled in CI",
+            }
+        },
+    }
+
+
+def _selftest_validate_case(
+    name: str,
+    report: dict[str, Any],
+    run_dir: Path,
+    expected_substrings: list[str],
+) -> list[str]:
+    failures = validate_report(report, run_dir)
+    case_failures: list[str] = []
+
+    if not expected_substrings:
+        if failures:
+            case_failures.append(f"{name}: expected pass, got {failures}")
+        return case_failures
+
+    if not failures:
+        case_failures.append(f"{name}: expected validation failure, got pass")
+        return case_failures
+
+    joined = "\n".join(failures)
+    for expected in expected_substrings:
+        if expected not in joined:
+            case_failures.append(
+                f"{name}: expected failure containing {expected!r}, got {failures}"
+            )
+    return case_failures
+
+
+def run_self_test() -> list[str]:
+    """Run narrow in-process validator self-tests over synthetic fixtures."""
+    failures: list[str] = []
+
+    with tempfile.TemporaryDirectory(prefix="ci-validate-report-selftest-") as tmp:
+        root = Path(tmp)
+        clean_run_dir = root / "clean-run"
+        clean_run_dir.mkdir()
+
+        failures.extend(
+            _selftest_validate_case(
+                "clean_positive",
+                _selftest_base_report(),
+                clean_run_dir,
+                [],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["strategies"]["baseline"].update(
+            {
+                "citation_validity": 0.5,
+                "citation_valid_count": 1,
+                "citation_total_count": 2,
+            }
+        )
+        failures.extend(
+            _selftest_validate_case(
+                "citation_validity_failure",
+                report,
+                clean_run_dir,
+                ["Strategy baseline: citation_validity=0.5 < 1.0"],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["run_score_separation"] = False
+        failures.extend(
+            _selftest_validate_case(
+                "run_score_separation_failure",
+                report,
+                clean_run_dir,
+                ["run_score_separation flag is not true"],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["labels_used_in_run_phase"] = True
+        failures.extend(
+            _selftest_validate_case(
+                "labels_used_failure",
+                report,
+                clean_run_dir,
+                ["labels_used_in_run_phase should be false"],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["promotion_ready"] = True
+        failures.extend(
+            _selftest_validate_case(
+                "promotion_ready_failure",
+                report,
+                clean_run_dir,
+                ["promotion_ready must be false"],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["default_should_change"] = True
+        failures.extend(
+            _selftest_validate_case(
+                "default_should_change_failure",
+                report,
+                clean_run_dir,
+                ["default_should_change must be false"],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["unavailable_strategies"]["dense_real"]["FileRecall"] = 0.0
+        failures.extend(
+            _selftest_validate_case(
+                "unavailable_strategy_extra_metric_key_failure",
+                report,
+                clean_run_dir,
+                ["contains quality metric key 'FileRecall'"],
+            )
+        )
+
+        report = _selftest_base_report()
+        report["strategies"]["baseline"]["debug"] = {
+            "nested": [{"source_category": "private_label"}]
+        }
+        failures.extend(
+            _selftest_validate_case(
+                "private_field_nested_in_report_failure",
+                report,
+                clean_run_dir,
+                [
+                    "CRITICAL: Private field 'source_category' "
+                    "in report.strategies.baseline.debug.nested[0]"
+                ],
+            )
+        )
+
+        run_dir = root / "run-private-jsonl"
+        run_dir.mkdir()
+        (run_dir / "baseline.jsonl").write_text(
+            json.dumps(
+                {
+                    "task_id": "synthetic",
+                    "evidence": [
+                        {
+                            "path": "src/lib.rs",
+                            "source_category": "private_label",
+                        }
+                    ],
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        failures.extend(
+            _selftest_validate_case(
+                "private_field_in_run_dir_jsonl_evidence_failure",
+                _selftest_base_report(),
+                run_dir,
+                ["CRITICAL: Private field 'source_category' in evidence in baseline.jsonl:1"],
+            )
+        )
+
+    return failures
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="R50 CI Validate Report")
-    parser.add_argument("--report", required=True, help="Score report JSON path")
-    parser.add_argument("--run-dir", required=True, help="Run output directory for artifact scan")
+    parser.add_argument("--report", help="Score report JSON path")
+    parser.add_argument("--run-dir", help="Run output directory for artifact scan")
+    parser.add_argument(
+        "--self-test",
+        action="store_true",
+        help="Run narrow synthetic in-process validator self-tests",
+    )
     args = parser.parse_args()
+
+    if args.self_test:
+        failures = run_self_test()
+        if failures:
+            print("CI VALIDATION SELF-TEST FAILED:", file=sys.stderr)
+            for f in failures:
+                print(f"  ✗ {f}", file=sys.stderr)
+            sys.exit(1)
+        print("CI VALIDATION SELF-TEST PASSED")
+        return
+
+    if not args.report:
+        parser.error("--report is required unless --self-test is used")
+    if not args.run_dir:
+        parser.error("--run-dir is required unless --self-test is used")
 
     report_path = Path(args.report)
     run_dir = Path(args.run_dir)
