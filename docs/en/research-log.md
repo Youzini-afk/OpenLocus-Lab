@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Comprehension-Expression Reachability
+
+Comprehension-expression reachability now carries conservative eager-comprehension truth/no-raise facts and generator-expression construction facts into self-test analysis. Synthetic files where the only active-looking check lived under an empty eager comprehension such as `if [risky() for item in []]:`, inside a short-circuited operand after a static truthy eager comprehension such as `[1 for item in [1]] or ...`, or in an except handler/post-try check after a statically non-raising eager comprehension or generator-expression construction now fail with `missing_selftest_checks`. Dynamic iterables, nonempty risky eager-comprehension results, unhashable set/dict-comprehension results, and conservative bound-name list-comprehension results remain active.
+
+After the comprehension-expression reachability guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28840406296`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28840406296) passed on `fe09bd2` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Lambda Reachability
 
 Lambda reachability now carries simple lambda truth and no-raise facts into self-test analysis while preserving definition-time default evaluation. Synthetic files where the only active-looking check lived under `not (lambda: 1)`, inside a short-circuited operand after `(lambda: 1) or ...`, or in an except handler/post-try check after a non-raising `lambda: 1` or `lambda item=1: item` try body now fail with `missing_selftest_checks`. Lambda definitions with risky defaults such as `lambda item=risky(): item` remain conservative and active.
