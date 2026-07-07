@@ -8,6 +8,8 @@ Authorization：low-resource local pilot 已完成，private rows 只在 ignored
 
 Latest result：public aggregate-only report [`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json)，status 为 `phase2_small_fair_local_comparison_no_claim`，recommendation 为 `phase2_positive_screen_no_promotion`。
 
+Follow-up holdout screen：[`phase3_independent_local_holdout_validation_screen_report.json`](../../artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json)，status 为 `phase3_independent_local_holdout_validation_no_claim`，recommendation 为 `phase3_holdout_positive_screen_no_promotion`。这只是在 fresh local holdout slice 上验证 protocol；不是 method selection 或 promotion。
+
 ## Phase 1 说明了什么
 
 Phase 1 有用，但范围有限：

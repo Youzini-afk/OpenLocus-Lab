@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 3 Independent Holdout Validation
+
+已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase3-holdout --confirm-private-output`、`--phase3-private-manifest`、`--write-phase3-local-example-manifest` 和 `--validate-phase3-report`。Confirmed local holdout run 使用 `runs/` 下新的 ignored private manifest，只向 ignored `runs/` 写入 private rows，并发布 aggregate-only report：[`phase3_independent_local_holdout_validation_screen_report.json`](../../artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json)，status 为 `phase3_independent_local_holdout_validation_no_claim`。
+
+这只是 holdout protocol validation。它检查 controls 保持 `count_0`、EvidenceCore materialization 保持 intact，并且 best fixed acquisition baseline 在 fresh local slice 上 nontrivial。Recommendation 为 `phase3_holdout_positive_screen_no_promotion`。它不是 method selection、winner、lift、signal、product readiness 或 default change。无 provider/network/LLM、无 model/training、无 runtime/default change、无新增 retrieval family。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 2 Small Fair Local Comparison
 
 已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase2-comparison --confirm-private-output` 和 `--validate-phase2-report`。Confirmed local run 使用 `runs/` 下 ignored private manifest，只向 ignored `runs/` 写入 private rows，并发布 aggregate-only report：[`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json)，status 为 `phase2_small_fair_local_comparison_no_claim`。

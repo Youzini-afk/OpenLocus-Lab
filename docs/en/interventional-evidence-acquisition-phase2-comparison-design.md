@@ -8,6 +8,8 @@ Authorization: low-resource local pilot completed with private rows under ignore
 
 Latest result: public aggregate-only report [`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json), status `phase2_small_fair_local_comparison_no_claim`, recommendation `phase2_positive_screen_no_promotion`.
 
+Follow-up holdout screen: [`phase3_independent_local_holdout_validation_screen_report.json`](../../artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json), status `phase3_independent_local_holdout_validation_no_claim`, recommendation `phase3_holdout_positive_screen_no_promotion`. This validates the protocol on a fresh local holdout slice only; it is not method selection or promotion.
+
 ## What Phase 1 showed
 
 Phase 1 was useful, but limited:

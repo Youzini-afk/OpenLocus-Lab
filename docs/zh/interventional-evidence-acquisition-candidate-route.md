@@ -2,7 +2,7 @@
 
 日期：2026-07-07
 
-Status: `phase2_small_fair_local_comparison_no_claim`
+Status: `phase3_independent_local_holdout_validation_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,13 +10,19 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 2 small fair local comparison pilot。Public report：`artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json`，status 为 `phase2_small_fair_local_comparison_no_claim`，recommendation 为 `phase2_positive_screen_no_promotion`。它只是 aggregate screen，不是 method winner、lift、signal、product 或 default claim。
+最新 checkpoint：Phase 3 independent local holdout validation screen。Public report：`artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json`，status 为 `phase3_independent_local_holdout_validation_no_claim`，recommendation 为 `phase3_holdout_positive_screen_no_promotion`。它只是 aggregate screen，不是 method selection、winner、lift、signal、product 或 default evidence。
 
 ## Phase 2 small fair local comparison status
 
 同一 script 现在支持 `--run-phase2-comparison --confirm-private-output --phase2-private-manifest <ignored-local-path>`。它使用 ignored private manifest 中的 hard current-source tasks，对既有 7 个 micro-policy/control labels 做 paired local comparison。Private rows 保留在 ignored `runs/`；public output 只包含 aggregate 信息。
 
 该 screen 比较 fixed-label buckets，并记录 best fixed local baselines。Best label 被视为 baseline，不是 winner。Counted success 需要 real current-source read、path/range/content/hash/currentness/range match、non-empty content 和 task-target tie。Candidate-found 不是 evidence。`stop` 和 `abstain` 仍保持 controls。
+
+## Phase 3 independent local holdout validation status
+
+同一 script 现在支持 `--run-phase3-holdout --confirm-private-output --phase3-private-manifest <ignored-local-path>`。它使用 fresh ignored private manifest 和同样 7 个 labels，验证 Phase 2 fixed-label comparison protocol 在 holdout slice 上仍能正常运行。Private rows 保留在 ignored `runs/`；public output 只包含 aggregate 信息。
+
+Phase 3 screen 检查 protocol validity、control behavior、EvidenceCore materialization，以及 nontrivial best fixed acquisition baseline。它不选择 method，也不推广任何 product/default behavior。
 
 ## 边界
 

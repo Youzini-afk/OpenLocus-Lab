@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 3 Independent Holdout Validation
+
+Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase3-holdout --confirm-private-output`, `--phase3-private-manifest`, `--write-phase3-local-example-manifest`, and `--validate-phase3-report`. The confirmed local holdout run used a new ignored private manifest under `runs/`, wrote private rows only under ignored `runs/`, and published the aggregate-only report [`phase3_independent_local_holdout_validation_screen_report.json`](../../artifacts/phase3_independent_local_holdout_validation_screen/phase3_independent_local_holdout_validation_screen_report.json), status `phase3_independent_local_holdout_validation_no_claim`.
+
+This is holdout protocol validation only. It checks controls stay at `count_0`, EvidenceCore materialization remains intact, and the best fixed acquisition baseline is nontrivial on a fresh local slice. Recommendation is `phase3_holdout_positive_screen_no_promotion`. It is not method selection, winner, lift, signal, product readiness, or default change. No provider/network/LLM, no model/training, no runtime/default change, no new retrieval family.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 2 Small Fair Local Comparison
 
 Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase2-comparison --confirm-private-output` and `--validate-phase2-report`. The confirmed local run used an ignored private manifest under `runs/`, wrote private rows only under ignored `runs/`, and published the aggregate-only report [`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json), status `phase2_small_fair_local_comparison_no_claim`.
