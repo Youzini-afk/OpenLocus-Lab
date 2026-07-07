@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Short-Circuit No-Raise
+
+Short-circuit no-raise coverage 现在会把 Python `and`/`or` evaluation facts 带入 try-body no-raise analysis。唯一看似 active 的 check 位于 `True or risky()` 或 `False and risky()` 后的 except handler 内时，synthetic files 现在会以 `missing_selftest_checks` 失败；short-circuited no-raise body 且 `else` 会 return 之后的 post-try check 也会作为 unreachable 失败。`False or risky()` 和 `True and risky()` 仍保持 conservative active，因为 risky operand 可能执行。
+
+加入 short-circuit no-raise guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probe、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28835659057`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28835659057) 已在 `f0d5e0d` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-06 - TraceV2 Evaluator Self-Test Hardening
 
 当前 TraceV2 bootstrap/capture/repair/replay line 有一个 vacuous self-test anchor，以及若干只证明捕获到 broad phase-specific exception 的 negative-path checks。`eval/frk_p2_workflow_v2_task_state_capture_expansion.py` 现在让 `selftest_minimum_count_anchor` 断言真实 fixture 结构：row count、episode count、每个 episode 四行、完整 action coverage 和 manifest diversity。`eval/state_action_trace_v2_bootstrap.py`、`eval/frk_p2r_targeted_capture_repair.py`、`eval/haae_a2_offline_action_replay_smoke.py` 现在会在捕获 negative-path exceptions 后检查预期 confirmation/JSONL/missing-trace 错误文本。验证已通过四个 self-tests（`39/39`、`58/58`、`65/65`、`57/57`）、`py_compile`、四个 public reports validation，并且静态搜索确认这些脚本中没有剩余 `check(..., True)` literal。这是 evaluator reliability work，不是 retrieval-method evidence，也不是 route reopening。

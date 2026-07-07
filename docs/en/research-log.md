@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Short-Circuit No-Raise
+
+Short-circuit no-raise coverage now carries Python `and`/`or` evaluation facts into try-body no-raise analysis. Synthetic files where the only active-looking check lived in an except handler after `True or risky()` or `False and risky()` now fail with `missing_selftest_checks`, and a post-try check after a short-circuited no-raise body whose `else` returns also fails as unreachable. `False or risky()` and `True and risky()` remain conservative and active because the risky operand can execute.
+
+After the short-circuit no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, the focused probe, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28835659057`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28835659057) passed on `f0d5e0d` with `max_repos=1` and `enable_remote_models=false`. This validates the guard in CI only; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-06 - TraceV2 Evaluator Self-Test Hardening
 
 The current TraceV2 bootstrap/capture/repair/replay line had one vacuous self-test anchor and several negative-path exception checks that only proved a broad phase-specific exception was raised. `eval/frk_p2_workflow_v2_task_state_capture_expansion.py` now makes `selftest_minimum_count_anchor` assert real fixture structure: row count, episode count, four rows per episode, full action coverage, and manifest diversity. `eval/state_action_trace_v2_bootstrap.py`, `eval/frk_p2r_targeted_capture_repair.py`, and `eval/haae_a2_offline_action_replay_smoke.py` now check the expected confirmation/JSONL/missing-trace error text after catching negative-path exceptions. Validation passed all four self-tests (`39/39`, `58/58`, `65/65`, `57/57`), `py_compile`, public report validation for all four phases, and static search found no remaining `check(..., True)` literal in those scripts. This is evaluator reliability work only, not retrieval-method evidence or a route reopening.

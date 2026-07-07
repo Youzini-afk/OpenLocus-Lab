@@ -1,6 +1,8 @@
 # OpenLocus 当前研究结论
 
-日期：2026-07-06
+日期：2026-07-07
+
+最新 self-test quality short-circuit no-raise CI gate checkpoint：在 Python `and`/`or` short-circuit facts 被带入 self-test try-body no-raise analysis 后，手动 `retrieval-benchmark` `pr_smoke` run [`28835659057`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28835659057) 已在 `f0d5e0d` 上通过。位于 `True or risky()` 和 `False and risky()` 后的 except-handler checks 现在会按 missing active coverage 失败，short-circuited no-raise body 且 `else` 会退出后的 post-try checks 也会按预期失败。`False or risky()` 和 `True and risky()` 仍保持 conservative active，因为 risky operand 可能执行。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 short-circuit no-raise guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
 最新 self-test quality literal-mapping match exit CI gate checkpoint：在 static dict `match` subjects with simple no-rest mapping patterns 被纳入 self-test reachability 后，手动 `retrieval-benchmark` `pr_smoke` run [`28834937475`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28834937475) 已在 `f1f5fcb` 上通过。Matching mapping cases that exit、extra-key mapping matches 和 nonmatching mapping-only cases 现在会按预期阻止 fake active coverage；missing-key fallthrough、unknown subject values 和 `**rest` patterns 仍保持 conservative active。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 literal-mapping match exit guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
