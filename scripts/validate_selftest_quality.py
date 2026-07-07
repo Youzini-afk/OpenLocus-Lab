@@ -538,7 +538,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_exit(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            return cls._match_statement_guarantees(node, cls._block_guarantees_exit)
+            return cls._match_statement_guarantees(
+                node, cls._block_guarantees_exit, guard_exception_counts=True
+            )
         return False
 
     @classmethod
@@ -1198,7 +1200,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_function_exit(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            return cls._match_statement_guarantees(node, cls._block_guarantees_function_exit)
+            return cls._match_statement_guarantees(
+                node, cls._block_guarantees_function_exit, guard_exception_counts=True
+            )
         return False
 
     @classmethod
@@ -1372,7 +1376,9 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_skips
             return normal_path_skips and all(cls._block_guarantees_loop_else_skip(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            return cls._match_statement_guarantees(node, cls._block_guarantees_loop_else_skip)
+            return cls._match_statement_guarantees(
+                node, cls._block_guarantees_loop_else_skip, guard_exception_counts=True
+            )
         return False
 
     @classmethod
@@ -1495,13 +1501,52 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return None
 
     @classmethod
-    def _match_statement_guarantees(cls, node: ast.Match, block_checker) -> bool:
+    def _match_statement_guarantees(
+        cls, node: ast.Match, block_checker, *, guard_exception_counts: bool = False
+    ) -> bool:
+        if guard_exception_counts:
+            known, subject_value = cls._static_match_subject_value(node.subject)
+            if known:
+                return cls._known_subject_match_statement_guarantees(node, subject_value, block_checker)
+
         selected_body = cls._known_match_selected_body(node)
         if selected_body is not None:
             return block_checker(selected_body)
         if not any(cls._case_is_unguarded_irrefutable(case) for case in node.cases):
             return False
         return all(block_checker(case.body) for case in node.cases)
+
+    @classmethod
+    def _known_subject_match_statement_guarantees(cls, node: ast.Match, subject_value: object, block_checker) -> bool:
+        return cls._known_subject_match_cases_guarantee_from(node.cases, subject_value, block_checker)
+
+    @classmethod
+    def _known_subject_match_cases_guarantee_from(
+        cls, cases: list[ast.match_case], subject_value: object, block_checker
+    ) -> bool:
+        for index, case in enumerate(cases):
+            pattern_match = cls._match_pattern_matches_literal(subject_value, case.pattern)
+            if pattern_match is False:
+                continue
+            if pattern_match is None:
+                if cls._case_is_unguarded_irrefutable(case):
+                    return block_checker(case.body)
+                if not block_checker(case.body):
+                    return False
+                return cls._known_subject_match_cases_guarantee_from(
+                    cases[index + 1 :], subject_value, block_checker
+                )
+            if case.guard is None:
+                return block_checker(case.body)
+            guard_truth = cls._literal_truth_value(case.guard)
+            if guard_truth is True:
+                return block_checker(case.body)
+            if guard_truth is False:
+                continue
+            return block_checker(case.body) and cls._known_subject_match_cases_guarantee_from(
+                cases[index + 1 :], subject_value, block_checker
+            )
+        return False
 
     @classmethod
     def _case_is_unguarded_irrefutable(cls, case: ast.match_case) -> bool:
@@ -2783,6 +2828,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_match_risky_truthy_guard_return_then_check_rejected",
+            "def run_self_tests():\n    match 1:\n        case 1 if risky() or True:\n            return\n        case _:\n            pass\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_risky_false_guard_wildcard_return_then_check_rejected",
+            "def run_self_tests():\n    match 1:\n        case 1 if risky() and False:\n            pass\n        case _:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_risky_unknown_guard_all_paths_exit_then_check_rejected",
+            "def run_self_tests():\n    match 1:\n        case 1 if risky():\n            return\n        case _:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_match_unknown_wildcard_return_then_check_rejected",
             "def run_self_tests(value):\n    match value:\n        case _:\n            return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -3983,6 +4043,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_match_risky_truthy_guard_pass_then_check_allowed",
+            "def run_self_tests(value):\n    match 1:\n        case 1 if risky() or True:\n            pass\n        case _:\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_match_unknown_guarded_wildcard_then_check_allowed",
             "def run_self_tests(value, flag):\n    match value:\n        case _ if flag:\n            return\n    check('ok', value is True)\n",
             [],
@@ -4077,7 +4142,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
