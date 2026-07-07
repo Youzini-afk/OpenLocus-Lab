@@ -2,7 +2,7 @@
 
 日期：2026-07-07
 
-Status: `phase3b_cross_phase_public_replication_closeout_no_claim`
+Status: `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 3B public replication closeout。参见 [`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md) 和 `artifacts/phase3b_cross_phase_public_replication_closeout/phase3b_cross_phase_public_replication_closeout_report.json`。Status 为 `phase3b_cross_phase_public_replication_closeout_no_claim`。它只使用 public Phase 2/3 aggregate reports，不读取 private rows、不读取新 source、不收集 data、不新增 scripts，也不创建 private artifacts。
+最新 checkpoint：Phase 4 action-outcome learning precheck design。参见 [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md)。Status 为 `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`。它只是 design，不训练 models、不读取 private rows、不收集 data、不改变 CI，也不授权 runtime/default changes。
 
 ## Phase 2 small fair local comparison status
 
@@ -29,6 +29,12 @@ Phase 3 screen 检查 protocol validity、control behavior、EvidenceCore materi
 Phase 3B 记录 Phase 2 和 Phase 3 复现了 protocol-level bucket pattern：no-claim positive screens、best fixed acquisition/local baseline buckets `count_21_to_50`、controls `count_0`，以及 intact EvidenceCore/private-public boundaries。这将 small local comparison protocol 作为 research asset 保留。
 
 Phase 3B 不证明哪个 method 最好，也不支持 lift、signal、runtime/default、product、provider/network 或 training claims。如果有 Phase 4，应先从 design-only action-outcome learning precheck 开始；在写出 feature、label、leakage 和 split rules 前，不进行 model training。
+
+## Phase 4 learning precheck design status
+
+Phase 4 写下 possible future action-outcome learning precheck 的 feature、label、leakage 和 split contract。Allowed future features 必须是 pre-action 且 non-leaky；forbidden features 包括 actual success labels、target paths/ranges/hashes/content、post-action reads、snippets、gold labels 和 provider payloads。
+
+这不是 training authorization。Stop/go outcomes 仅限 `stop_no_learning_claim`、`repair_feature_contract_no_claim` 或 `learning_precheck_ready_no_training`。
 
 ## 边界
 

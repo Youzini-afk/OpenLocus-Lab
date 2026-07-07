@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 4 Learning Precheck Design
+
+已新增 paired design-only docs：[`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md)。Status 为 `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`。
+
+这会写明 future action-outcome learning precheck 在 action 前可以使用什么、什么会泄露答案、task splits 应如何处理，以及 stop/go outcomes 的含义。它不读取 private rows、不收集 data、不训练 models、不改变 CI、不改变 runtime/default behavior、不新增 retrieval families，也不提出 winner/lift/signal/product/default claims。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 3B Public Closeout
 
 已新增 [`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md) 和 public aggregate report [`phase3b_cross_phase_public_replication_closeout_report.json`](../../artifacts/phase3b_cross_phase_public_replication_closeout/phase3b_cross_phase_public_replication_closeout_report.json)。Status 为 `phase3b_cross_phase_public_replication_closeout_no_claim`。

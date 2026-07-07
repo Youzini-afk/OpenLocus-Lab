@@ -53,3 +53,5 @@ It also does not justify:
 ## Future Phase 4 note
 
 If there is any Phase 4, it should start as design-only action-outcome learning precheck. No model training should begin until feature, label, leakage, and split rules are written and reviewed.
+
+Phase 4 design is now documented in [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md). It remains design-only and does not authorize training.

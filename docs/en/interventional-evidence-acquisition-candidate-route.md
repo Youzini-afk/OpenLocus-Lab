@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: `phase3b_cross_phase_public_replication_closeout_no_claim`
+Status: `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 3B public replication closeout. See [`interventional-evidence-acquisition-phase3b-closeout.md`](./interventional-evidence-acquisition-phase3b-closeout.md) and `artifacts/phase3b_cross_phase_public_replication_closeout/phase3b_cross_phase_public_replication_closeout_report.json`. Status is `phase3b_cross_phase_public_replication_closeout_no_claim`. It uses only public Phase 2/3 aggregate reports and does not read private rows, read new source, collect data, add scripts, or create private artifacts.
+Latest checkpoint: Phase 4 action-outcome learning precheck design. See [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md). Status is `phase4_action_outcome_learning_precheck_design_only_no_training_no_claim`. It is design only and does not train models, read private rows, collect data, change CI, or authorize runtime/default changes.
 
 ## Phase 2 small fair local comparison status
 
@@ -29,6 +29,12 @@ The Phase 3 screen checks protocol validity, control behavior, EvidenceCore mate
 Phase 3B records that Phase 2 and Phase 3 replicated the protocol-level bucket pattern: no-claim positive screens, best fixed acquisition/local baseline buckets `count_21_to_50`, controls `count_0`, and intact EvidenceCore/private-public boundaries. This preserves the small local comparison protocol as a research asset.
 
 Phase 3B does not prove which method is best and does not justify lift, signal, runtime/default, product, provider/network, or training claims. If there is a Phase 4, it should start as design-only action-outcome learning precheck; no model training until feature, label, leakage, and split rules are written.
+
+## Phase 4 learning precheck design status
+
+Phase 4 writes the feature, label, leakage, and split contract for a possible future action-outcome learning precheck. Allowed future features must be pre-action and non-leaky; forbidden features include actual success labels, target paths/ranges/hashes/content, post-action reads, snippets, gold labels, and provider payloads.
+
+This is not authorization to train. Stop/go outcomes are limited to `stop_no_learning_claim`, `repair_feature_contract_no_claim`, or `learning_precheck_ready_no_training`.
 
 ## Boundary
 

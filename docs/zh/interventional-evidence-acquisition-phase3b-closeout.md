@@ -53,3 +53,5 @@ Phase 2 和 Phase 3 在 bucket level 上显示同一 protocol-level pattern：
 ## Future Phase 4 note
 
 如果有任何 Phase 4，应先从 design-only action-outcome learning precheck 开始。在写出并审查 feature、label、leakage 和 split rules 之前，不应开始 model training。
+
+Phase 4 design 现已记录在 [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md)。它仍是 design-only，不授权 training。
