@@ -2,7 +2,7 @@
 
 日期：2026-07-06
 
-最新 self-test quality unknown-while else-exit local checkpoint：`scripts/validate_selftest_quality.py` 现在会在判断 self-test reachability 时，把没有可达 `break` 且 `else` suite 保证退出的 unknown-condition `while` loops 视为 non-fallthrough。Synthetic `while flag: pass`、`while flag: return` 和 `while flag: continue` bodies 后接 `else: return` 现在会以 `missing_selftest_checks` 失败；possible-break 和 no-else paths 仍保持 active。这只验证本地 evaluator guard reachability，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
+最新 self-test quality unknown-while else-exit CI gate checkpoint：在 unknown-condition no-break `while` loops with exiting `else` suites 被作为 non-fallthrough 处理 self-test reachability 后，手动 `retrieval-benchmark` `pr_smoke` run [`28833275744`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28833275744) 已在 `4fe7881` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 unknown-while else-exit guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 
 最新 self-test quality nested-loop function-exit CI gate checkpoint：在 actual function exits 被传播进 nested loop self-test reachability 后，手动 `retrieval-benchmark` `pr_smoke` run [`28832634252`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28832634252) 已在 `c2961d6` 上通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 nested-loop function-exit guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。
 

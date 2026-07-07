@@ -54,7 +54,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest with-control-flow validation**：在 `with` control-flow exits 与 suppressible exceptions 被分开处理 self-test reachability 后，follow-up run [`28831054909`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831054909) 已在 `cbecc9b` 上通过。
 - **Latest for-else exit validation**：在 no-break loop `else` exits 被带入 post-loop self-test reachability 后，follow-up run [`28831889828`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831889828) 已在 `9ec18aa` 上通过。
 - **Latest nested-loop function-exit validation**：在 actual function exits 被传播进 nested loop self-test reachability 后，follow-up run [`28832634252`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28832634252) 已在 `c2961d6` 上通过。
-- **Latest unknown-while else-exit local guard**：本地 guard probes 现在会拒绝 unknown-condition no-break `while ... else: return` 路径之后的 checks，同时 possible-break 和 no-else paths 仍保持 active。
+- **Latest unknown-while else-exit validation**：在 unknown-condition no-break `while` loops with exiting `else` suites 被作为 non-fallthrough 处理后，follow-up run [`28833275744`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28833275744) 已在 `4fe7881` 上通过。
 - **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
 
 ## CI targeted Django validation checkpoint
